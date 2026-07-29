@@ -1,0 +1,27 @@
+//! Agent package: loop, tools, session, compaction.
+const std = @import("std");
+
+pub const tools = @import("tools.zig");
+pub const loop = @import("loop.zig");
+pub const session = @import("session.zig");
+pub const compaction = @import("compaction.zig");
+
+pub const ToolResult = tools.ToolResult;
+pub const ToolContext = tools.ToolContext;
+pub const ToolFilter = tools.ToolFilter;
+pub const execute = tools.execute;
+pub const toolSchemasJson = tools.toolSchemasJson;
+
+pub const AgentConfig = loop.AgentConfig;
+pub const RunResult = loop.RunResult;
+pub const AgentEvent = loop.AgentEvent;
+pub const EventKind = loop.EventKind;
+pub const run = loop.run;
+pub const default_system_prompt = loop.default_system_prompt;
+
+pub const Session = session.Session;
+pub const SessionEntry = session.SessionEntry;
+
+test {
+    std.testing.refAllDecls(@This());
+}

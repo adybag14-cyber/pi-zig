@@ -1,0 +1,11 @@
+.zig-cache/
+zig-out/
+*.pdb
+*.obj
+
+# local fixtures / smoke leftovers
+side-effect.txt
+smoke-*.txt
+smoke-*.json
+*.html
+
