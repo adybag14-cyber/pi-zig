@@ -21,6 +21,39 @@ zig build test
 
 Binary: `zig-out/bin/pi` (or `pi.exe` on Windows).
 
+### Cross-compile
+
+```bash
+zig build -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu
+zig build -Doptimize=ReleaseSafe -Dtarget=aarch64-linux-gnu
+zig build -Doptimize=ReleaseSafe -Dtarget=x86_64-windows-gnu
+zig build -Doptimize=ReleaseSafe -Dtarget=aarch64-windows-gnu
+zig build -Doptimize=ReleaseSafe -Dtarget=x86_64-macos
+zig build -Doptimize=ReleaseSafe -Dtarget=aarch64-macos
+```
+
+### GitHub Releases
+
+CI builds and tests on Linux, Windows, and macOS.
+
+Tagged releases (`v*`) publish multi-arch binaries via GitHub Actions:
+
+| Asset | Platform |
+|-------|----------|
+| `pi-x86_64-linux` | Linux x86_64 |
+| `pi-aarch64-linux` | Linux aarch64 |
+| `pi-x86_64-windows.exe` | Windows x86_64 |
+| `pi-aarch64-windows.exe` | Windows aarch64 |
+| `pi-x86_64-macos` | macOS Intel |
+| `pi-aarch64-macos` | macOS Apple Silicon |
+
+```bash
+# create and push a release tag
+git tag v0.2.0
+git push origin v0.2.0
+# or: Actions → Release → Run workflow → tag v0.2.0
+```
+
 ## Packages (source layout)
 
 Single binary `pi`, library module `pi_zig` from `src/root.zig`:

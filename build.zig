@@ -21,8 +21,10 @@ pub fn build(b: *std.Build) void {
             },
         }),
     });
-    if (target.result.os.tag == .windows) {
-        // Avoid missing PDB install failures on some Windows toolchains.
+    // Strip debug info for smaller release artifacts; also avoids Windows PDB install issues.
+    if (optimize != .Debug) {
+        exe.root_module.strip = true;
+    } else if (target.result.os.tag == .windows) {
         exe.root_module.strip = true;
     }
 
