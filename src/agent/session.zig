@@ -1,6 +1,35 @@
 //! JSONL tree session: header + messages, fork, branch tip, auto-save dir.
 const std = @import("std");
+const builtin = @import("builtin");
 const Io = std.Io;
+
+/// Optional assistant metadata (upstream AgentMessage fields).
+pub const AssistantMeta = struct {
+    provider: []const u8 = "",
+    model: []const u8 = "",
+    stop_reason: []const u8 = "",
+    usage_input: u64 = 0,
+    usage_output: u64 = 0,
+    usage_total: u64 = 0,
+
+    pub fn deinit(self: *AssistantMeta, gpa: std.mem.Allocator) void {
+        if (self.provider.len > 0) gpa.free(self.provider);
+        if (self.model.len > 0) gpa.free(self.model);
+        if (self.stop_reason.len > 0) gpa.free(self.stop_reason);
+        self.* = .{};
+    }
+
+    pub fn dupe(self: AssistantMeta, gpa: std.mem.Allocator) !AssistantMeta {
+        return .{
+            .provider = if (self.provider.len > 0) try gpa.dupe(u8, self.provider) else "",
+            .model = if (self.model.len > 0) try gpa.dupe(u8, self.model) else "",
+            .stop_reason = if (self.stop_reason.len > 0) try gpa.dupe(u8, self.stop_reason) else "",
+            .usage_input = self.usage_input,
+            .usage_output = self.usage_output,
+            .usage_total = self.usage_total,
+        };
+    }
+};
 
 pub const SessionEntry = struct {
     id: []const u8,
@@ -9,6 +38,11 @@ pub const SessionEntry = struct {
     content: []const u8,
     tool_call_id: ?[]const u8 = null,
     tool_calls_json: ?[]const u8 = null,
+    /// Tool name for toolResult entries (needed for Google functionResponse replay).
+    tool_name: ?[]const u8 = null,
+    /// ISO-8601 timestamp owned string (persisted on save/load).
+    timestamp: []const u8 = "",
+    meta: AssistantMeta = .{},
 
     pub fn deinit(self: *SessionEntry, gpa: std.mem.Allocator) void {
         gpa.free(self.id);
@@ -17,6 +51,9 @@ pub const SessionEntry = struct {
         gpa.free(self.content);
         if (self.tool_call_id) |t| gpa.free(t);
         if (self.tool_calls_json) |t| gpa.free(t);
+        if (self.tool_name) |t| gpa.free(t);
+        if (self.timestamp.len > 0) gpa.free(self.timestamp);
+        self.meta.deinit(gpa);
         self.* = undefined;
     }
 };
@@ -95,10 +132,35 @@ pub const Session = struct {
         tool_call_id: ?[]const u8,
         tool_calls_json: ?[]const u8,
     ) ![]const u8 {
+        return self.appendMessageMeta(parent_id, role, content, tool_call_id, tool_calls_json, null, .{});
+    }
+
+    pub fn appendToolResult(
+        self: *Session,
+        parent_id: ?[]const u8,
+        content: []const u8,
+        tool_call_id: []const u8,
+        tool_name: []const u8,
+    ) ![]const u8 {
+        return self.appendMessageMeta(parent_id, "tool", content, tool_call_id, null, tool_name, .{});
+    }
+
+    pub fn appendMessageMeta(
+        self: *Session,
+        parent_id: ?[]const u8,
+        role: []const u8,
+        content: []const u8,
+        tool_call_id: ?[]const u8,
+        tool_calls_json: ?[]const u8,
+        tool_name: ?[]const u8,
+        meta: AssistantMeta,
+    ) ![]const u8 {
         const id = try std.fmt.allocPrint(self.gpa, "m{d}", .{self.next_seq});
         self.next_seq += 1;
         errdefer self.gpa.free(id);
 
+        var ts_buf: [32]u8 = undefined;
+        const ts_now = formatIsoTimestamp(&ts_buf);
         try self.entries.append(self.gpa, .{
             .id = id,
             .parent_id = if (parent_id) |p| try self.gpa.dupe(u8, p) else null,
@@ -106,6 +168,9 @@ pub const Session = struct {
             .content = try self.gpa.dupe(u8, content),
             .tool_call_id = if (tool_call_id) |t| try self.gpa.dupe(u8, t) else null,
             .tool_calls_json = if (tool_calls_json) |t| try self.gpa.dupe(u8, t) else null,
+            .tool_name = if (tool_name) |t| try self.gpa.dupe(u8, t) else null,
+            .timestamp = try self.gpa.dupe(u8, ts_now),
+            .meta = try meta.dupe(self.gpa),
         });
         if (self.tip_id) |t| self.gpa.free(t);
         self.tip_id = try self.gpa.dupe(u8, id);
@@ -142,6 +207,7 @@ pub const Session = struct {
         return try chain.toOwnedSlice(gpa);
     }
 
+    /// Serialize as upstream pi session-format v3 JSONL (type:session header + nested message).
     pub fn toJsonl(self: *const Session, gpa: std.mem.Allocator) ![]u8 {
         var out: std.ArrayList(u8) = .empty;
         errdefer out.deinit(gpa);
@@ -149,18 +215,28 @@ pub const Session = struct {
         {
             var line: std.Io.Writer.Allocating = .init(gpa);
             defer line.deinit();
-            try line.writer.writeAll("{\"type\":\"header\",\"id\":");
+            // Upstream SessionHeader: {"type":"session","version":3,"id":"...","timestamp":"...","cwd":"..."}
+            try line.writer.writeAll("{\"type\":\"session\",\"version\":3,\"id\":");
             try std.json.Stringify.value(self.id, .{}, &line.writer);
+            try line.writer.writeAll(",\"timestamp\":");
+            {
+                var ts_buf: [32]u8 = undefined;
+                const ts = formatIsoTimestamp(&ts_buf);
+                try std.json.Stringify.value(ts, .{}, &line.writer);
+            }
             try line.writer.writeAll(",\"cwd\":");
             try std.json.Stringify.value(self.cwd, .{}, &line.writer);
-            try line.writer.writeAll(",\"name\":");
-            try std.json.Stringify.value(self.name, .{}, &line.writer);
-            try line.writer.writeAll(",\"next_seq\":");
-            try line.writer.print("{d}", .{self.next_seq});
+            if (self.name.len > 0) {
+                try line.writer.writeAll(",\"name\":");
+                try std.json.Stringify.value(self.name, .{}, &line.writer);
+            }
+            // Tip is an extension field for pi-zig (ignored by upstream)
             if (self.tip_id) |t| {
                 try line.writer.writeAll(",\"tipId\":");
                 try std.json.Stringify.value(t, .{}, &line.writer);
             }
+            try line.writer.writeAll(",\"next_seq\":");
+            try line.writer.print("{d}", .{self.next_seq});
             try line.writer.writeAll("}");
             try out.appendSlice(gpa, line.written());
             try out.append(gpa, '\n');
@@ -177,19 +253,65 @@ pub const Session = struct {
             } else {
                 try line.writer.writeAll("null");
             }
-            try line.writer.writeAll(",\"role\":");
-            try std.json.Stringify.value(e.role, .{}, &line.writer);
-            try line.writer.writeAll(",\"content\":");
-            try std.json.Stringify.value(e.content, .{}, &line.writer);
-            if (e.tool_call_id) |tid| {
+            try line.writer.writeAll(",\"timestamp\":");
+            if (e.timestamp.len > 0) {
+                try std.json.Stringify.value(e.timestamp, .{}, &line.writer);
+            } else {
+                var ts_buf: [32]u8 = undefined;
+                try std.json.Stringify.value(formatIsoTimestamp(&ts_buf), .{}, &line.writer);
+            }
+            try line.writer.writeAll(",\"message\":{");
+            // Map internal "tool" role → upstream "toolResult"
+            const out_role: []const u8 = if (std.mem.eql(u8, e.role, "tool")) "toolResult" else e.role;
+            try line.writer.writeAll("\"role\":");
+            try std.json.Stringify.value(out_role, .{}, &line.writer);
+            if (std.mem.eql(u8, out_role, "assistant")) {
+                try line.writer.writeAll(",\"content\":[{\"type\":\"text\",\"text\":");
+                try std.json.Stringify.value(e.content, .{}, &line.writer);
+                try line.writer.writeAll("}]");
+                if (e.tool_calls_json) |tcj| {
+                    try line.writer.writeAll(",\"toolCalls\":");
+                    try line.writer.writeAll(tcj);
+                }
+                // Upstream AssistantMessage metadata
+                if (e.meta.provider.len > 0) {
+                    try line.writer.writeAll(",\"provider\":");
+                    try std.json.Stringify.value(e.meta.provider, .{}, &line.writer);
+                }
+                if (e.meta.model.len > 0) {
+                    try line.writer.writeAll(",\"model\":");
+                    try std.json.Stringify.value(e.meta.model, .{}, &line.writer);
+                }
+                const sr: []const u8 = if (e.meta.stop_reason.len > 0)
+                    e.meta.stop_reason
+                else if (e.tool_calls_json != null)
+                    "toolUse"
+                else
+                    "stop";
+                try line.writer.writeAll(",\"stopReason\":");
+                try std.json.Stringify.value(sr, .{}, &line.writer);
+                if (e.meta.usage_total > 0 or e.meta.usage_input > 0 or e.meta.usage_output > 0) {
+                    try line.writer.writeAll(",\"usage\":{\"input\":");
+                    try line.writer.print("{d}", .{e.meta.usage_input});
+                    try line.writer.writeAll(",\"output\":");
+                    try line.writer.print("{d}", .{e.meta.usage_output});
+                    try line.writer.writeAll(",\"totalTokens\":");
+                    try line.writer.print("{d}", .{e.meta.usage_total});
+                    try line.writer.writeAll("}");
+                }
+            } else if (std.mem.eql(u8, out_role, "toolResult")) {
                 try line.writer.writeAll(",\"toolCallId\":");
-                try std.json.Stringify.value(tid, .{}, &line.writer);
+                try std.json.Stringify.value(e.tool_call_id orelse "", .{}, &line.writer);
+                try line.writer.writeAll(",\"toolName\":");
+                try std.json.Stringify.value(e.tool_name orelse "tool", .{}, &line.writer);
+                try line.writer.writeAll(",\"content\":[{\"type\":\"text\",\"text\":");
+                try std.json.Stringify.value(e.content, .{}, &line.writer);
+                try line.writer.writeAll("}],\"isError\":false");
+            } else {
+                try line.writer.writeAll(",\"content\":");
+                try std.json.Stringify.value(e.content, .{}, &line.writer);
             }
-            if (e.tool_calls_json) |tcj| {
-                try line.writer.writeAll(",\"toolCalls\":");
-                try line.writer.writeAll(tcj);
-            }
-            try line.writer.writeAll("}");
+            try line.writer.writeAll("}}");
             try out.appendSlice(gpa, line.written());
             try out.append(gpa, '\n');
         }
@@ -212,12 +334,15 @@ pub const Session = struct {
         return try parseJsonl(gpa, raw);
     }
 
+    /// Parse JSONL: accepts upstream v3 (`type:session` + nested `message`) and legacy pi-zig
+    /// flat `type:header` / top-level role+content lines.
     pub fn parseJsonl(gpa: std.mem.Allocator, raw: []const u8) !Session {
         var session: ?Session = null;
         errdefer if (session) |*s| s.deinit();
 
         var it = std.mem.splitScalar(u8, raw, '\n');
-        while (it.next()) |line| {
+        while (it.next()) |line_raw| {
+            const line = std.mem.trim(u8, line_raw, " \t\r");
             if (line.len == 0) continue;
             var parsed = try std.json.parseFromSlice(std.json.Value, gpa, line, .{});
             defer parsed.deinit();
@@ -226,7 +351,8 @@ pub const Session = struct {
             const typ = parsed.value.object.get("type") orelse return error.InvalidSession;
             if (typ != .string) return error.InvalidSession;
 
-            if (std.mem.eql(u8, typ.string, "header")) {
+            // Header: upstream "session" or legacy "header"
+            if (std.mem.eql(u8, typ.string, "session") or std.mem.eql(u8, typ.string, "header")) {
                 const id = parsed.value.object.get("id") orelse return error.InvalidSession;
                 const cwd = parsed.value.object.get("cwd") orelse return error.InvalidSession;
                 if (id != .string or cwd != .string) return error.InvalidSession;
@@ -244,38 +370,210 @@ pub const Session = struct {
                     if (tip == .string) s.tip_id = try gpa.dupe(u8, tip.string);
                 }
                 session = s;
-            } else if (std.mem.eql(u8, typ.string, "message")) {
+                continue;
+            }
+
+            // Non-message entry types (model_change, compaction, …) — keep tree links as synthetic system notes
+            if (std.mem.eql(u8, typ.string, "model_change") or
+                std.mem.eql(u8, typ.string, "thinking_level_change") or
+                std.mem.eql(u8, typ.string, "compaction") or
+                std.mem.eql(u8, typ.string, "branch_summary") or
+                std.mem.eql(u8, typ.string, "session_info") or
+                std.mem.eql(u8, typ.string, "label") or
+                std.mem.eql(u8, typ.string, "custom") or
+                std.mem.eql(u8, typ.string, "custom_message"))
+            {
+                const s = &(session orelse return error.InvalidSession);
+                const id = parsed.value.object.get("id") orelse continue;
+                if (id != .string) continue;
+                var parent_id: ?[]const u8 = null;
+                if (parsed.value.object.get("parentId")) |p| {
+                    if (p == .string) parent_id = p.string;
+                }
+                if (std.mem.eql(u8, typ.string, "session_info")) {
+                    if (parsed.value.object.get("name")) |nm| {
+                        if (nm == .string) {
+                            gpa.free(s.name);
+                            s.name = try gpa.dupe(u8, nm.string);
+                        }
+                    }
+                }
+                if (std.mem.eql(u8, typ.string, "compaction")) {
+                    const summary = if (parsed.value.object.get("summary")) |sm|
+                        (if (sm == .string) sm.string else "")
+                    else
+                        "";
+                    try s.entries.append(gpa, .{
+                        .id = try gpa.dupe(u8, id.string),
+                        .parent_id = if (parent_id) |p| try gpa.dupe(u8, p) else null,
+                        .role = try gpa.dupe(u8, "system"),
+                        .content = try std.fmt.allocPrint(gpa, "[compaction] {s}", .{summary}),
+                    });
+                    if (s.tip_id) |t| gpa.free(t);
+                    s.tip_id = try gpa.dupe(u8, id.string);
+                }
+                continue;
+            }
+
+            if (std.mem.eql(u8, typ.string, "message")) {
                 const s = &(session orelse return error.InvalidSession);
                 const id = parsed.value.object.get("id") orelse return error.InvalidSession;
-                const role = parsed.value.object.get("role") orelse return error.InvalidSession;
-                const content = parsed.value.object.get("content") orelse return error.InvalidSession;
-                if (id != .string or role != .string or content != .string) return error.InvalidSession;
+                if (id != .string) return error.InvalidSession;
 
                 var parent_id: ?[]const u8 = null;
                 if (parsed.value.object.get("parentId")) |p| {
                     if (p == .string) parent_id = p.string;
                 }
+
+                // Nested upstream message object OR flat legacy fields
+                var role_str: []const u8 = undefined;
+                var content_owned: []u8 = undefined;
                 var tool_call_id: ?[]const u8 = null;
-                if (parsed.value.object.get("toolCallId")) |t| {
-                    if (t == .string) tool_call_id = t.string;
-                }
                 var tool_calls_json: ?[]u8 = null;
-                if (parsed.value.object.get("toolCalls")) |tc| {
-                    var aw: std.Io.Writer.Allocating = .init(gpa);
-                    defer aw.deinit();
-                    try std.json.Stringify.value(tc, .{}, &aw.writer);
-                    tool_calls_json = try aw.toOwnedSlice();
+
+                if (parsed.value.object.get("message")) |msg| {
+                    if (msg != .object) return error.InvalidSession;
+                    const role = msg.object.get("role") orelse return error.InvalidSession;
+                    if (role != .string) return error.InvalidSession;
+                    // Map toolResult → tool for internal loop
+                    role_str = if (std.mem.eql(u8, role.string, "toolResult")) "tool" else role.string;
+
+                    content_owned = try extractMessageText(gpa, msg);
+                    if (msg.object.get("toolCallId")) |t| {
+                        if (t == .string) tool_call_id = t.string;
+                    }
+                    if (msg.object.get("toolCalls")) |tc| {
+                        var aw: std.Io.Writer.Allocating = .init(gpa);
+                        defer aw.deinit();
+                        try std.json.Stringify.value(tc, .{}, &aw.writer);
+                        tool_calls_json = try aw.toOwnedSlice();
+                    } else if (msg.object.get("content")) |c| {
+                        // Extract toolCall blocks from content array
+                        if (c == .array) {
+                            var tcs: std.ArrayList(u8) = .empty;
+                            defer tcs.deinit(gpa);
+                            try tcs.appendSlice(gpa, "[");
+                            var first = true;
+                            for (c.array.items) |block| {
+                                if (block != .object) continue;
+                                const bt = block.object.get("type") orelse continue;
+                                if (bt != .string) continue;
+                                if (!std.mem.eql(u8, bt.string, "toolCall") and !std.mem.eql(u8, bt.string, "tool_use")) continue;
+                                if (!first) try tcs.appendSlice(gpa, ",");
+                                first = false;
+                                const tid = if (block.object.get("id")) |v| (if (v == .string) v.string else "") else "";
+                                const nm = if (block.object.get("name")) |v| (if (v == .string) v.string else "") else "";
+                                // arguments may be object or string
+                                var args_aw: std.Io.Writer.Allocating = .init(gpa);
+                                defer args_aw.deinit();
+                                if (block.object.get("arguments")) |a| {
+                                    if (a == .string) {
+                                        try args_aw.writer.writeAll(a.string);
+                                    } else {
+                                        try std.json.Stringify.value(a, .{}, &args_aw.writer);
+                                    }
+                                } else if (block.object.get("input")) |inp| {
+                                    try std.json.Stringify.value(inp, .{}, &args_aw.writer);
+                                } else {
+                                    try args_aw.writer.writeAll("{}");
+                                }
+                                try tcs.appendSlice(gpa, "{\"id\":");
+                                var tmp: std.Io.Writer.Allocating = .init(gpa);
+                                defer tmp.deinit();
+                                try std.json.Stringify.value(tid, .{}, &tmp.writer);
+                                try tcs.appendSlice(gpa, tmp.written());
+                                try tcs.appendSlice(gpa, ",\"type\":\"function\",\"function\":{\"name\":");
+                                tmp.deinit();
+                                tmp = .init(gpa);
+                                try std.json.Stringify.value(nm, .{}, &tmp.writer);
+                                try tcs.appendSlice(gpa, tmp.written());
+                                try tcs.appendSlice(gpa, ",\"arguments\":");
+                                tmp.deinit();
+                                tmp = .init(gpa);
+                                try std.json.Stringify.value(args_aw.written(), .{}, &tmp.writer);
+                                try tcs.appendSlice(gpa, tmp.written());
+                                try tcs.appendSlice(gpa, "}}");
+                            }
+                            try tcs.appendSlice(gpa, "]");
+                            if (!first) {
+                                tool_calls_json = try tcs.toOwnedSlice(gpa);
+                            }
+                        }
+                    }
+                } else {
+                    // Legacy flat format
+                    const role = parsed.value.object.get("role") orelse return error.InvalidSession;
+                    const content = parsed.value.object.get("content") orelse return error.InvalidSession;
+                    if (role != .string or content != .string) return error.InvalidSession;
+                    role_str = role.string;
+                    content_owned = try gpa.dupe(u8, content.string);
+                    if (parsed.value.object.get("toolCallId")) |t| {
+                        if (t == .string) tool_call_id = t.string;
+                    }
+                    if (parsed.value.object.get("toolCalls")) |tc| {
+                        var aw: std.Io.Writer.Allocating = .init(gpa);
+                        defer aw.deinit();
+                        try std.json.Stringify.value(tc, .{}, &aw.writer);
+                        tool_calls_json = try aw.toOwnedSlice();
+                    }
                 }
+                defer gpa.free(content_owned);
                 defer if (tool_calls_json) |t| gpa.free(t);
 
+                var meta: AssistantMeta = .{};
+                // Nested message object carries assistant metadata
+                if (parsed.value.object.get("message")) |msg| {
+                    if (msg == .object) {
+                        if (msg.object.get("provider")) |pv| {
+                            if (pv == .string) meta.provider = try gpa.dupe(u8, pv.string);
+                        }
+                        if (msg.object.get("model")) |mv| {
+                            if (mv == .string) meta.model = try gpa.dupe(u8, mv.string);
+                        }
+                        if (msg.object.get("stopReason")) |sr| {
+                            if (sr == .string) meta.stop_reason = try gpa.dupe(u8, sr.string);
+                        }
+                        if (msg.object.get("usage")) |uv| {
+                            if (uv == .object) {
+                                if (uv.object.get("input")) |v| {
+                                    if (v == .integer) meta.usage_input = @intCast(v.integer);
+                                }
+                                if (uv.object.get("output")) |v| {
+                                    if (v == .integer) meta.usage_output = @intCast(v.integer);
+                                }
+                                if (uv.object.get("totalTokens") orelse uv.object.get("total_tokens")) |v| {
+                                    if (v == .integer) meta.usage_total = @intCast(v.integer);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                var tool_name_owned: ?[]const u8 = null;
+                if (parsed.value.object.get("message")) |msg2| {
+                    if (msg2 == .object) {
+                        if (msg2.object.get("toolName")) |tn| {
+                            if (tn == .string) tool_name_owned = try gpa.dupe(u8, tn.string);
+                        }
+                    }
+                }
+                var ts_owned: []const u8 = "";
+                if (parsed.value.object.get("timestamp")) |tsv| {
+                    if (tsv == .string) ts_owned = try gpa.dupe(u8, tsv.string);
+                }
                 try s.entries.append(gpa, .{
                     .id = try gpa.dupe(u8, id.string),
                     .parent_id = if (parent_id) |p| try gpa.dupe(u8, p) else null,
-                    .role = try gpa.dupe(u8, role.string),
-                    .content = try gpa.dupe(u8, content.string),
+                    .role = try gpa.dupe(u8, role_str),
+                    .content = try gpa.dupe(u8, content_owned),
                     .tool_call_id = if (tool_call_id) |t| try gpa.dupe(u8, t) else null,
                     .tool_calls_json = if (tool_calls_json) |t| try gpa.dupe(u8, t) else null,
+                    .tool_name = tool_name_owned,
+                    .timestamp = ts_owned,
+                    .meta = meta,
                 });
+                if (s.tip_id) |t| gpa.free(t);
+                s.tip_id = try gpa.dupe(u8, id.string);
             }
         }
 
@@ -296,6 +594,9 @@ pub const Session = struct {
                 .content = try gpa.dupe(u8, e.content),
                 .tool_call_id = if (e.tool_call_id) |t| try gpa.dupe(u8, t) else null,
                 .tool_calls_json = if (e.tool_calls_json) |t| try gpa.dupe(u8, t) else null,
+                .tool_name = if (e.tool_name) |t| try gpa.dupe(u8, t) else null,
+                .timestamp = if (e.timestamp.len > 0) try gpa.dupe(u8, e.timestamp) else "",
+                .meta = try e.meta.dupe(gpa),
             });
         }
         if (self.tip_id) |t| s.tip_id = try gpa.dupe(u8, t);
@@ -336,6 +637,86 @@ pub const Session = struct {
 fn truncate(s: []const u8, max: usize) []const u8 {
     if (s.len <= max) return s;
     return s[0..max];
+}
+
+/// Wall-clock Unix seconds when available; else monotonic fallback.
+var timestamp_tick: i64 = 0;
+const timestamp_anchor: i64 = 1_704_067_200; // 2024-01-01T00:00:00Z
+
+fn wallishSeconds() i64 {
+    if (builtin.os.tag == .windows) {
+        // 100-ns intervals since 1601-01-01 UTC
+        const ticks: i64 = std.os.windows.ntdll.RtlGetSystemTimePrecise();
+        // Windows epoch → Unix epoch
+        return @divTrunc(ticks - 11_644_473_600_000_0000, 10_000_000);
+    }
+    // POSIX: clock_gettime(CLOCK_REALTIME) via libc when linked
+    if (builtin.link_libc) {
+        const c = @cImport({
+            @cInclude("time.h");
+        });
+        var ts: c.timespec = undefined;
+        if (c.clock_gettime(c.CLOCK_REALTIME, &ts) == 0) {
+            return @intCast(ts.tv_sec);
+        }
+    }
+    // Fallback: process-local monotonic from 2024 anchor
+    timestamp_tick += 1;
+    return timestamp_anchor + timestamp_tick;
+}
+
+/// Public helper for protocol headers (JSON/RPC session line).
+pub fn formatIsoNow(buf: *[32]u8) []const u8 {
+    return formatIsoTimestamp(buf);
+}
+
+fn formatIsoTimestamp(buf: *[32]u8) []const u8 {
+    const secs: i64 = wallishSeconds();
+    const days = @divFloor(secs, 86400);
+    var rem = @mod(secs, 86400);
+    if (rem < 0) rem += 86400;
+    const hour: u32 = @intCast(@divFloor(rem, 3600));
+    const minute: u32 = @intCast(@divFloor(@mod(rem, 3600), 60));
+    const second: u32 = @intCast(@mod(rem, 60));
+    // Civil from days (Howard Hinnant algorithm)
+    const z = days + 719468;
+    const era = @divFloor(if (z >= 0) z else z - 146096, 146097);
+    const doe: i64 = z - era * 146097;
+    const yoe: i64 = @divFloor(doe - @divFloor(doe, 1460) + @divFloor(doe, 36524) - @divFloor(doe, 146096), 365);
+    var y: i64 = yoe + era * 400;
+    const doy: i64 = doe - (365 * yoe + @divFloor(yoe, 4) - @divFloor(yoe, 100));
+    const mp: i64 = @divFloor(5 * doy + 2, 153);
+    const d: i64 = doy - @divFloor(153 * mp + 2, 5) + 1;
+    const m: i64 = mp + (if (mp < 10) @as(i64, 3) else -9);
+    y += @intFromBool(m <= 2);
+    return std.fmt.bufPrint(buf, "{d:0>4}-{d:0>2}-{d:0>2}T{d:0>2}:{d:0>2}:{d:0>2}.000Z", .{
+        y, m, d, hour, minute, second,
+    }) catch "2024-01-01T00:00:00.000Z";
+}
+
+/// Extract plain text from upstream message.content (string or content-block array).
+fn extractMessageText(gpa: std.mem.Allocator, msg: std.json.Value) ![]u8 {
+    const content = msg.object.get("content") orelse return try gpa.dupe(u8, "");
+    if (content == .string) return try gpa.dupe(u8, content.string);
+    if (content == .array) {
+        var out: std.ArrayList(u8) = .empty;
+        errdefer out.deinit(gpa);
+        for (content.array.items) |block| {
+            if (block != .object) continue;
+            const bt = block.object.get("type") orelse continue;
+            if (bt != .string) continue;
+            if (std.mem.eql(u8, bt.string, "text")) {
+                if (block.object.get("text")) |tx| {
+                    if (tx == .string) {
+                        if (out.items.len > 0) try out.append(gpa, '\n');
+                        try out.appendSlice(gpa, tx.string);
+                    }
+                }
+            }
+        }
+        return try out.toOwnedSlice(gpa);
+    }
+    return try gpa.dupe(u8, "");
 }
 
 /// List session JSONL files in a directory.
@@ -467,6 +848,33 @@ test "session save then load roundtrip" {
     try std.testing.expectEqualStrings(user_id, loaded.entries.items[1].parent_id.?);
 }
 
+test "per-entry timestamps persist across save/load" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const n = try tmp.dir.realPath(io, &path_buf);
+    const tmp_path = path_buf[0..n];
+    const session_path = try std.fs.path.join(gpa, &.{ tmp_path, "ts.jsonl" });
+    defer gpa.free(session_path);
+
+    var s = try Session.init(gpa, "ts-1", tmp_path);
+    defer s.deinit();
+    _ = try s.appendMessage(null, "user", "with-ts", null, null);
+    try std.testing.expect(s.entries.items[0].timestamp.len > 0);
+    const ts_before = try gpa.dupe(u8, s.entries.items[0].timestamp);
+    defer gpa.free(ts_before);
+
+    try s.save(io, session_path);
+    var loaded = try Session.load(gpa, io, session_path);
+    defer loaded.deinit();
+    try std.testing.expectEqual(@as(usize, 1), loaded.entries.items.len);
+    try std.testing.expect(loaded.entries.items[0].timestamp.len > 0);
+    try std.testing.expectEqualStrings(ts_before, loaded.entries.items[0].timestamp);
+}
+
 test "session fork copies branch" {
     const gpa = std.testing.allocator;
     var s = try Session.init(gpa, "orig", "/tmp");
@@ -479,6 +887,114 @@ test "session fork copies branch" {
     try std.testing.expectEqualStrings("forked", f.id);
     try std.testing.expectEqual(@as(usize, 2), f.entries.items.len);
     try std.testing.expectEqualStrings("hi", f.entries.items[0].content);
+}
+
+test "assistant metadata round-trip provider model stopReason usage" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const n = try tmp.dir.realPath(io, &path_buf);
+    const tmp_path = path_buf[0..n];
+    const session_path = try std.fs.path.join(gpa, &.{ tmp_path, "meta.jsonl" });
+    defer gpa.free(session_path);
+
+    var s = try Session.init(gpa, "meta-sess", tmp_path);
+    defer s.deinit();
+    const uid = try s.appendMessage(null, "user", "go", null, null);
+    _ = try s.appendMessageMeta(uid, "assistant", "calling tool", null,
+        \\[{"id":"c1","type":"function","function":{"name":"ls","arguments":"{}"}}]
+    , null, .{
+        .provider = "openai",
+        .model = "gpt-4o-mini",
+        .stop_reason = "toolUse",
+        .usage_input = 12,
+        .usage_output = 4,
+        .usage_total = 16,
+    });
+    const tip = s.lastEntryId().?;
+    _ = try s.appendMessageMeta(tip, "assistant", "all done", null, null, null, .{
+        .provider = "openai",
+        .model = "gpt-4o-mini",
+        .stop_reason = "stop",
+        .usage_input = 20,
+        .usage_output = 8,
+        .usage_total = 28,
+    });
+
+    try s.save(io, session_path);
+    var loaded = try Session.load(gpa, io, session_path);
+    defer loaded.deinit();
+
+    try std.testing.expectEqual(@as(usize, 3), loaded.entries.items.len);
+    const a1 = loaded.entries.items[1];
+    try std.testing.expectEqualStrings("assistant", a1.role);
+    try std.testing.expectEqualStrings("openai", a1.meta.provider);
+    try std.testing.expectEqualStrings("gpt-4o-mini", a1.meta.model);
+    try std.testing.expectEqualStrings("toolUse", a1.meta.stop_reason);
+    try std.testing.expectEqual(@as(u64, 12), a1.meta.usage_input);
+    try std.testing.expectEqual(@as(u64, 16), a1.meta.usage_total);
+    const a2 = loaded.entries.items[2];
+    try std.testing.expectEqualStrings("stop", a2.meta.stop_reason);
+    try std.testing.expectEqual(@as(u64, 28), a2.meta.usage_total);
+
+    // Also assert serialized JSON contains fields
+    const raw = try std.Io.Dir.cwd().readFileAlloc(io, session_path, gpa, .limited(1024 * 1024));
+    defer gpa.free(raw);
+    try std.testing.expect(std.mem.indexOf(u8, raw, "\"provider\":\"openai\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, raw, "\"stopReason\":\"toolUse\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, raw, "\"totalTokens\":16") != null);
+}
+
+test "upstream v3 session fixture loads branch tip and roles" {
+    const gpa = std.testing.allocator;
+    // Shaped from packages/coding-agent/docs/session-format.md (version 3 nested message)
+    const fixture =
+        \\{"type":"session","version":3,"id":"uuid-upstream-1","timestamp":"2024-12-03T14:00:00.000Z","cwd":"/path/to/project"}
+        \\{"type":"message","id":"a1b2c3d4","parentId":null,"timestamp":"2024-12-03T14:00:01.000Z","message":{"role":"user","content":"Hello"}}
+        \\{"type":"message","id":"b2c3d4e5","parentId":"a1b2c3d4","timestamp":"2024-12-03T14:00:02.000Z","message":{"role":"assistant","content":[{"type":"text","text":"Hi!"}],"provider":"anthropic","model":"claude","stopReason":"stop"}}
+        \\{"type":"message","id":"c3d4e5f6","parentId":"b2c3d4e5","timestamp":"2024-12-03T14:00:03.000Z","message":{"role":"toolResult","toolCallId":"call_123","toolName":"bash","content":[{"type":"text","text":"output"}],"isError":false}}
+        \\{"type":"model_change","id":"d4e5f6g7","parentId":"c3d4e5f6","timestamp":"2024-12-03T14:05:00.000Z","provider":"openai","modelId":"gpt-4o"}
+        \\{"type":"session_info","id":"e5f6g7h8","parentId":"c3d4e5f6","timestamp":"2024-12-03T14:06:00.000Z","name":"Refactor auth"}
+        \\{"type":"compaction","id":"f6g7h8i9","parentId":"c3d4e5f6","timestamp":"2024-12-03T14:10:00.000Z","summary":"User discussed Hello/Hi","tokensBefore":50000}
+        \\
+    ;
+    var s = try Session.parseJsonl(gpa, fixture);
+    defer s.deinit();
+
+    try std.testing.expectEqualStrings("uuid-upstream-1", s.id);
+    try std.testing.expectEqualStrings("/path/to/project", s.cwd);
+    try std.testing.expectEqualStrings("Refactor auth", s.name);
+    // messages + compaction synthetic entry
+    try std.testing.expect(s.entries.items.len >= 3);
+    try std.testing.expectEqualStrings("user", s.entries.items[0].role);
+    try std.testing.expectEqualStrings("Hello", s.entries.items[0].content);
+    try std.testing.expectEqualStrings("assistant", s.entries.items[1].role);
+    try std.testing.expectEqualStrings("Hi!", s.entries.items[1].content);
+    try std.testing.expectEqualStrings("a1b2c3d4", s.entries.items[1].parent_id.?);
+    try std.testing.expectEqualStrings("tool", s.entries.items[2].role);
+    try std.testing.expectEqualStrings("call_123", s.entries.items[2].tool_call_id.?);
+    try std.testing.expectEqualStrings("output", s.entries.items[2].content);
+
+    // Active tip after compaction
+    try std.testing.expect(s.tip_id != null);
+    try std.testing.expectEqualStrings("f6g7h8i9", s.tip_id.?);
+
+    const branch = try s.branchEntries(gpa);
+    defer gpa.free(branch);
+    try std.testing.expect(branch.len >= 3);
+    try std.testing.expectEqualStrings("user", branch[0].role);
+
+    // Round-trip save→reload preserves topology
+    const jsonl = try s.toJsonl(gpa);
+    defer gpa.free(jsonl);
+    var again = try Session.parseJsonl(gpa, jsonl);
+    defer again.deinit();
+    try std.testing.expectEqualStrings(s.id, again.id);
+    try std.testing.expectEqual(@as(usize, s.entries.items.len), again.entries.items.len);
+    try std.testing.expectEqualStrings(s.entries.items[0].id, again.entries.items[0].id);
+    try std.testing.expectEqualStrings(s.entries.items[1].parent_id.?, again.entries.items[1].parent_id.?);
 }
 
 test "listSessions and mostRecentSessionPath" {

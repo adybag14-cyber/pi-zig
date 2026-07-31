@@ -50,11 +50,19 @@ pub fn parseArgs(arena: std.mem.Allocator, raw_args: []const []const u8) !Args {
     // skip argv[0]
     var i: usize = if (raw_args.len > 0) 1 else 0;
 
-    // Detect package subcommands early
+    // Detect package / monorepo C subcommands early
     if (i < raw_args.len) {
         const c = raw_args[i];
         if (std.mem.eql(u8, c, "install") or std.mem.eql(u8, c, "list") or
-            std.mem.eql(u8, c, "remove") or std.mem.eql(u8, c, "uninstall"))
+            std.mem.eql(u8, c, "remove") or std.mem.eql(u8, c, "uninstall") or
+            std.mem.eql(u8, c, "serve") or std.mem.eql(u8, c, "mcp") or
+            std.mem.eql(u8, c, "eval") or std.mem.eql(u8, c, "oauth") or
+            std.mem.eql(u8, c, "theme") or std.mem.eql(u8, c, "index") or
+            std.mem.eql(u8, c, "surface") or std.mem.eql(u8, c, "tui-demo") or
+            std.mem.eql(u8, c, "skills-list") or std.mem.eql(u8, c, "llama-list") or
+            std.mem.eql(u8, c, "routes") or std.mem.eql(u8, c, "ext-list") or
+            std.mem.eql(u8, c, "schema-sql") or std.mem.eql(u8, c, "auth-list") or
+            std.mem.eql(u8, c, "cases") or std.mem.eql(u8, c, "protocol-ping"))
         {
             result.command = c;
             i += 1;
@@ -215,16 +223,21 @@ pub fn printHelp(writer: anytype) !void {
         \\Usage:
         \\  pi [options] [@files...] [messages...]
         \\  pi install path:./local-pkg
-        \\  pi list
-        \\  pi remove <name>
+        \\  pi list | remove <name>
+        \\  pi serve [--port N] [--host H] [--token T]
+        \\  pi mcp <command...>        Spawn MCP server and list tools
+        \\  pi eval --script mock.json --expect TEXT [prompt...]
+        \\  pi oauth parse-device <json-file>
+        \\  pi theme <theme.json>
+        \\  pi index [session-dir]     Rebuild session index store
         \\
         \\Options:
         \\  -h, --help                 Show help
         \\  -v, --version              Show version
-        \\  --provider <name>          openai | anthropic | google | mock
+        \\  --provider <name>          openai | anthropic | google | mock | groq | ollama | xai | …
         \\  --model <id>               Model id
         \\  --api-key <key>            API key (or env vars)
-        \\  --base-url <url>           Provider base URL
+        \\  --base-url <url>           Provider base URL (openai-compat gateways)
         \\  --system-prompt <text>     Replace system prompt
         \\  --append-system-prompt <t> Append to system prompt (repeatable)
         \\  --mode text|json|rpc       Output mode
@@ -240,14 +253,14 @@ pub fn printHelp(writer: anytype) !void {
         \\  -xt, --exclude-tools <l>   Comma-separated exclude list
         \\  -nt, --no-tools            Disable all tools
         \\  -nbt, --no-builtin-tools   Disable built-in tools (same as --no-tools)
-        \\  --thinking <level>         Append thinking guidance to system prompt
+        \\  --thinking <level>         off|low|medium|high|xhigh (system + API budgets)
         \\  --export <path.html>       Export session to HTML
         \\  --skill <name>             Enable skill by name (repeatable filter)
         \\  --no-skills                Disable skill discovery
         \\  --prompt-template <name>   Load prompt template
         \\  --no-prompt-templates      Disable prompt templates
         \\  -nc, --no-context-files    Skip AGENTS.md / CLAUDE.md
-        \\  --list-models [query]      List known models
+        \\  --list-models [query]      List known models (40+ catalog)
         \\  --verbose                  Verbose tool output
         \\  --offline                  Require --mock-script / PI_MOCK_SCRIPT
         \\  -a, --approve              Trust project-local .pi resources
@@ -258,7 +271,7 @@ pub fn printHelp(writer: anytype) !void {
         \\Env:
         \\  OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY, GEMINI_API_KEY,
         \\  PI_API_KEY, PI_MODEL, PI_PROVIDER, OPENAI_BASE_URL, PI_MOCK_SCRIPT,
-        \\  PI_AGENT_DIR, PI_SESSION_DIR
+        \\  PI_AGENT_DIR, PI_SESSION_DIR, GROQ_API_KEY, OPENROUTER_API_KEY, XAI_API_KEY
         \\
         \\Interactive slash commands:
         \\  /help /quit /exit /session /new /name /model /compact /export

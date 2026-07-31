@@ -2,7 +2,7 @@
 
 A **Zig 0.16.0** rewrite of the core of [earendil-works/pi](https://github.com/earendil-works/pi) — a coding-agent harness as a **single native binary**.
 
-This is a **full structural port** of the recognizable coding-agent surface (tools, multi-provider AI, sessions, context/skills/prompts/settings, CLI modes, packages), not a minimal subset. TypeScript extension hosts, OAuth browser flows, and the differential TUI renderer are intentionally simplified to native equivalents.
+This is a **full structural port** of the coding-agent surface (tools, multi-provider AI, sessions, context/skills/prompts/settings, CLI modes, packages) plus **monorepo C package surfaces** (MCP, serve, OAuth device parse, session index, TUI diff buffer, extensions host, themes, evals, images, 40+ provider catalog). Not a 200k-LOC TypeScript monorepo clone.
 
 ## Requirements
 
@@ -34,25 +34,18 @@ zig build -Doptimize=ReleaseSafe -Dtarget=aarch64-macos
 
 ### GitHub Releases
 
-CI builds and tests on Linux, Windows, and macOS.
+CI builds and tests on Linux, Windows, and macOS. Tagged releases (`v*`) publish multi-arch binaries.
 
-Tagged releases (`v*`) publish multi-arch binaries via GitHub Actions:
+## Soft / hard cancel & thinking
 
-| Asset | Platform |
-|-------|----------|
-| `pi-x86_64-linux` | Linux x86_64 |
-| `pi-aarch64-linux` | Linux aarch64 |
-| `pi-x86_64-windows.exe` | Windows x86_64 |
-| `pi-aarch64-windows.exe` | Windows aarch64 |
-| `pi-x86_64-macos` | macOS Intel |
-| `pi-aarch64-macos` | macOS Apple Silicon |
+| Feature | Behavior |
+|---------|----------|
+| Mid-bash kill | Abort flag / timeout force-kills the OS process (`SIGKILL` / `TerminateProcess`) while tool runs |
+| Mid-HTTP cancel | OpenAI + Anthropic SSE writers poll abort; `stop_reason=aborted` |
+| Thinking budgets | `--thinking off\|low\|medium\|high\|xhigh` → system prose **and** provider fields (`reasoning_effort` / `budget_tokens`) |
+| Entry timestamps | Each session entry stores ISO timestamp; survives save/load |
 
-```bash
-# create and push a release tag
-git tag v0.2.0
-git push origin v0.2.0
-# or: Actions → Release → Run workflow → tag v0.2.0
-```
+RPC `abort` and `set_thinking_level` drive these live.
 
 ## Packages (source layout)
 
@@ -61,149 +54,57 @@ Single binary `pi`, library module `pi_zig` from `src/root.zig`:
 | Package | Path | Role |
 |---------|------|------|
 | config | `src/config.zig` | APP_NAME, `~/.pi/agent`, env vars, session dirs |
-| ai | `src/ai/` | Providers, OpenAI / Anthropic / Google / mock clients |
+| ai | `src/ai/` | Providers, OpenAI / Anthropic / Google / mock / images |
 | agent | `src/agent/` | Tools, agent loop, JSONL sessions, compaction |
-| tui | `src/tui/` | ANSI colors + simple terminal render helpers |
-| coding_agent | `src/coding_agent/` | CLI args, context, skills, prompts, settings, slash, modes, export, packages |
+| tui | `src/tui/` | ANSI + render + **differential buffer** |
+| coding_agent | `src/coding_agent/` | CLI args, context, skills, prompts, settings, slash, modes, packages |
+| mcp | `src/mcp/` | MCP JSON-RPC client (stdio) |
+| server | `src/server/` | TCP HTTP RPC (`pi serve`) |
+| storage | `src/storage/` | Session index JSONL store |
+| auth | `src/auth/` | OAuth device-code parse + token files |
+| extensions | `src/extensions/` | Declarative extension host |
+| themes | `src/themes/` | Theme JSON |
+| evals | `src/evals/` | Mock eval harness |
 
 ### AI providers (`src/ai/`)
 
 | Module | Notes |
 |--------|--------|
-| `providers.zig` | Catalog + env key resolution |
-| `openai.zig` | OpenAI-compatible chat completions + tools |
-| `anthropic.zig` | Messages API (`x-api-key`, `anthropic-version`, tool_use) |
+| `providers.zig` | **40+** catalog entries + openai_compat gateways |
+| `openai.zig` | Chat completions + tools + SSE + reasoning_effort + images |
+| `anthropic.zig` | Messages API + SSE + thinking budget_tokens |
 | `google.zig` | `generateContent` text path |
 | `mock.zig` | Scripted responses from JSON |
+| `images.zig` | File → base64 multimodal helper |
 
-Env keys: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`, `GEMINI_API_KEY`, `PI_API_KEY`, plus `OPENAI_BASE_URL`, `PI_MODEL`, `PI_PROVIDER`, `PI_MOCK_SCRIPT`, `PI_AGENT_DIR`, `PI_SESSION_DIR`.
+Env keys: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`, `GEMINI_API_KEY`, `PI_API_KEY`, plus `OPENAI_BASE_URL`, `PI_MODEL`, `PI_PROVIDER`, `PI_MOCK_SCRIPT`, `PI_AGENT_DIR`, `PI_SESSION_DIR`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `XAI_API_KEY`, `DEEPSEEK_API_KEY`, …
 
-### Tools (all 7)
-
-| Tool | Purpose |
-|------|---------|
-| `read` | Read file |
-| `write` | Write file (creates parents) |
-| `edit` | Exact string replace (unique match) |
-| `bash` | Shell command (`cmd.exe /C` on Windows, `sh -c` elsewhere) |
-| `grep` | Walk + substring search (`pattern`, `path`, `glob`, `ignoreCase`, `limit`) |
-| `find` | Glob-like `*` / `**` matcher (`pattern`, `path`, `limit`) |
-| `ls` | List directory (`path`, `limit`) |
-
-Allowlist / exclude via `--tools` / `--exclude-tools` / `--no-tools`. Schemas are generated only for enabled tools.
-
-### Session
-
-- JSONL: header + messages (`id`, `parentId`, `role`, `content`, `toolCalls`, `toolCallId`)
-- Auto-save under `~/.pi/agent/sessions/<cwd-hash>/` (or `--session-dir`)
-- `--continue` most recent, `--session` path/id, `--fork`
-- Branch tip + `/tree`, `/compact` (keep last N, summarize rest)
-- `/export` or `--export` → simple HTML transcript
-
-### Context / skills / prompts / settings
-
-- Walk `AGENTS.md` / `CLAUDE.md` from cwd + global `~/.pi/agent`
-- `SYSTEM.md` replaces default system prompt; `APPEND_SYSTEM.md` appends
-- Skills: `SKILL.md` under `~/.pi/agent/skills`, `.pi/skills`, `.agents/skills`, and package `skills/`
-- Prompt templates: `~/.pi/agent/prompts/*.md` and `.pi/prompts/*.md` with `{{var}}` expansion
-- `settings.json` merge (global + project): model, provider, tools, max_turns
-
-### Modes
-
-| Mode | Behavior |
-|------|----------|
-| text (default) | Interactive REPL or `-p` final text |
-| json (`--mode json`) | JSON lines: `user`, `assistant`, `tool_call`, `tool_result`, `done` |
-| rpc (`--mode rpc`) | JSONL stdin `{id,method,params}` → `prompt` / `ping` / `quit` |
-
-### Packages
+### CLI surfaces
 
 ```bash
+pi -p --mock-script script.json "hello"
+pi --mode rpc …
+pi --thinking high --provider anthropic …
+pi --provider ollama --base-url http://127.0.0.1:11434/v1 --model llama3.2 …
+pi --list-models grok
 pi install path:./local-pkg
-pi list
-pi remove <name>
+pi list | remove <name>
+pi serve --port 3141 [--token SECRET]
+pi mcp npx -y @modelcontextprotocol/server-filesystem .
+pi eval --script mock.json --expect "world" say hi
+pi oauth parse-device device.json
+pi theme theme.json
+pi index [session-dir]
 ```
 
-Records paths under `~/.pi/agent/packages.json`. Packages may contain conventional `skills/` (and `prompts/`) directories.
+### Interactive slash commands
 
-### Slash commands (interactive)
+`/help /quit /exit /session /new /name /model /compact /export /import /fork /clone /tree /reload /hotkeys /changelog /copy /login /logout /settings /resume`
 
-`/help` `/quit` `/exit` `/session` `/new` `/name` `/model` `/compact` `/export` `/import` `/fork` `/clone` `/tree` `/reload` `/hotkeys` `/changelog` `/copy` `/login` `/logout` `/settings` `/resume`
+## Audit
 
-### CLI flags (upstream surface)
-
-```
--h/--help -v/--version -p/--print --mode text|json|rpc
--c/--continue -r/--resume --provider --model --api-key
---system-prompt --append-system-prompt --name/-n
---no-session --session --session-dir --fork
---tools/-t --exclude-tools/-xt --no-tools/-nt --no-builtin-tools
---thinking --export --skill --no-skills
---prompt-template --no-prompt-templates --no-context-files/-nc
---list-models --verbose --offline --approve/-a --no-approve
---mock-script @file messages...
-```
-
-## Examples
-
-### Offline print mode (mock)
-
-```json
-[
-  {
-    "content": "Writing a file.",
-    "tool_calls": [
-      {
-        "id": "c1",
-        "name": "write",
-        "arguments": "{\"path\":\"out.txt\",\"content\":\"hello from pi\"}"
-      }
-    ]
-  },
-  { "content": "Done.", "tool_calls": [] }
-]
-```
-
-```bash
-./zig-out/bin/pi -p --mock-script mock.json "write a file"
-```
-
-### Live API
-
-```bash
-export OPENAI_API_KEY=sk-...
-./zig-out/bin/pi -p "List files using tools"
-./zig-out/bin/pi --provider anthropic -p "hello"
-./zig-out/bin/pi --provider google -p "hello"
-```
-
-### Sessions
-
-```bash
-./zig-out/bin/pi -p --session ./my.jsonl --mock-script mock.json "hello"
-./zig-out/bin/pi -c -p "continue that thought"
-```
-
-## Comparison to upstream pi
-
-| Upstream pi | pi-zig |
-|-------------|--------|
-| TypeScript monorepo (pi-ai, pi-tui, extensions, packages) | Single Zig binary, stdlib only |
-| Full TUI + differential renderer | ANSI helpers + line-oriented REPL |
-| Multi-provider catalog, OAuth, subscriptions | OpenAI / Anthropic / Google HTTP + mock (API keys / credentials file) |
-| TS extensions + MCP | Not supported — use packages for skills/prompts |
-| Tree session UI, share, rich HTML export | JSONL tree + tip + simple HTML |
-| Permission popups, plan mode, sub-agents | Omitted (upstream core also omits MCP/sub-agents/plan mode) |
-| Project trust UI | `--approve` / `--no-approve` load or skip project `.pi` resources |
-
-### Honest remaining deltas (not advertised as shipped)
-
-- No browser OAuth / subscription login flows (use `/login provider key` or env API keys).
-- No TypeScript extension host, themes marketplace, or npm/git package lifecycle.
-- No pixel-perfect differential TUI; REPL is line-oriented.
-- Google path is text-oriented; OpenAI + Anthropic carry full tool calling.
-- Every **advertised** help flag, package subcommand, and slash command has a real handler (no stub no-ops).
+See [GAP_AUDIT.md](./GAP_AUDIT.md) for soft/hard + monorepo C status.
 
 ## License
 
-MIT (aligned with upstream pi).
+Same spirit as upstream pi; check repository for license file when published.

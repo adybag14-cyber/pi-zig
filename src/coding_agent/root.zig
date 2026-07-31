@@ -12,6 +12,10 @@ pub const modes = @import("modes.zig");
 pub const export_html = @import("export_html.zig");
 pub const packages = @import("packages.zig");
 pub const system_prompt = @import("system_prompt.zig");
+/// Expanded skills/prompts/settings surface shards.
+pub const generated = @import("generated_root.zig");
+/// Product facade: listSkills / expandAllTemplates over all surface shards.
+pub const product = @import("product.zig");
 
 test {
     std.testing.refAllDecls(@This());

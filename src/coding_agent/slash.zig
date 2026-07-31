@@ -33,6 +33,8 @@ pub const SlashContext = struct {
     trust_project: bool = true,
     /// When set, /model and /reload mutate live agent/client state for subsequent turns.
     live: ?*live_state.LiveState = null,
+    /// Optional model client for LLM compaction on /compact.
+    client: ?@import("../ai/root.zig").ModelClient = null,
 };
 
 pub fn handle(ctx: SlashContext, line: []const u8) !SlashResult {
@@ -48,9 +50,54 @@ pub fn handle(ctx: SlashContext, line: []const u8) !SlashResult {
             \\Slash commands:
             \\  /help /quit /exit /session /new /name <n> /model <id>
             \\  /compact /export [path] /import <path> /fork /clone
-            \\  /tree /reload /hotkeys /changelog /copy
+            \\  /tree [entryId] /skill:<name> /reload /hotkeys /changelog /copy
             \\  /login <provider> <key> /logout /settings /resume
         );
+        return .handled;
+    }
+
+    // /skill:name or /skill name — inject skill body into next prompt (return run_prompt with expanded text is not possible;
+    // print body and instruct, OR expand as run_prompt via a special path). We expand by writing into session as user context.
+    if (std.mem.startsWith(u8, cmd, "skill:") or std.mem.eql(u8, cmd, "skill")) {
+        const skill_name = if (std.mem.startsWith(u8, cmd, "skill:"))
+            cmd["skill:".len..]
+        else
+            arg;
+        if (skill_name.len == 0) {
+            try tui_render.printLine(ctx.io, "usage: /skill:<name> or /skill <name>");
+            return .handled;
+        }
+        const skills = try skills_mod.discoverTrusted(ctx.gpa, ctx.io, ctx.cwd, ctx.agent_dir, &.{}, ctx.trust_project);
+        defer {
+            for (skills) |*s| {
+                var mut = s.*;
+                mut.deinit(ctx.gpa);
+            }
+            ctx.gpa.free(skills);
+        }
+        var found: ?[]const u8 = null;
+        var found_body: ?[]const u8 = null;
+        for (skills) |s| {
+            if (std.mem.eql(u8, s.name, skill_name)) {
+                found = s.name;
+                found_body = s.content;
+                break;
+            }
+        }
+        if (found_body) |body| {
+            // Inject as a system-ish user message so the next LLM turn sees full skill body
+            const parent = ctx.sess.lastEntryId();
+            const injected = try std.fmt.allocPrint(ctx.gpa, "[skill:{s}]\n{s}", .{ skill_name, body });
+            defer ctx.gpa.free(injected);
+            _ = try ctx.sess.appendMessage(parent, "user", injected, null, null);
+            const msg = try std.fmt.allocPrint(ctx.gpa, "Loaded skill `{s}` into session ({d} bytes). Send your request next.", .{ skill_name, body.len });
+            defer ctx.gpa.free(msg);
+            try tui_render.printLine(ctx.io, msg);
+        } else {
+            const msg = try std.fmt.allocPrint(ctx.gpa, "skill not found: {s}", .{skill_name});
+            defer ctx.gpa.free(msg);
+            try tui_render.printLine(ctx.io, msg);
+        }
         return .handled;
     }
     if (std.mem.eql(u8, cmd, "quit") or std.mem.eql(u8, cmd, "exit")) {
@@ -107,8 +154,9 @@ pub fn handle(ctx: SlashContext, line: []const u8) !SlashResult {
         return .handled;
     }
     if (std.mem.eql(u8, cmd, "compact")) {
-        try compaction.compact(ctx.sess, .{});
-        try tui_render.printLine(ctx.io, "Session compacted.");
+        const keep: usize = if (ctx.live) |l| l.agent_cfg.compact_keep_recent else 6;
+        try compaction.compact(ctx.sess, .{ .keep_recent = keep, .client = ctx.client });
+        try tui_render.printLine(ctx.io, if (ctx.client != null) "Session compacted (model-assisted when available)." else "Session compacted.");
         return .handled;
     }
     if (std.mem.eql(u8, cmd, "export")) {
@@ -154,9 +202,21 @@ pub fn handle(ctx: SlashContext, line: []const u8) !SlashResult {
         return .handled;
     }
     if (std.mem.eql(u8, cmd, "tree")) {
+        if (arg.len > 0) {
+            // /tree <entryId> — set active tip (branch switch)
+            ctx.sess.setTip(arg) catch {
+                try tui_render.printLine(ctx.io, "unknown entry id (use /tree without args to list)");
+                return .handled;
+            };
+            const msg = try std.fmt.allocPrint(ctx.gpa, "Tip set to {s}", .{arg});
+            defer ctx.gpa.free(msg);
+            try tui_render.printLine(ctx.io, msg);
+            return .handled;
+        }
         const tree = try ctx.sess.treeSummary(ctx.gpa);
         defer ctx.gpa.free(tree);
         try tui_render.writeAll(ctx.io, tree);
+        try tui_render.printLine(ctx.io, "(use /tree <id> to set the active tip)");
         return .handled;
     }
     if (std.mem.eql(u8, cmd, "reload")) {
@@ -303,6 +363,8 @@ test "slash session new model quit drive real session state" {
     var owned_ctx: ?[]u8 = null;
     defer if (owned_ctx) |c| gpa.free(c);
 
+    var owned_skills: ?[]u8 = null;
+    defer if (owned_skills) |s| gpa.free(s);
     var live = live_state.LiveState{
         .gpa = gpa,
         .io = io,
@@ -311,6 +373,7 @@ test "slash session new model quit drive real session state" {
         .agent_cfg = &cfg,
         .owned_system = &owned_sys,
         .owned_context = &owned_ctx,
+        .owned_skills_summary = &owned_skills,
         .model_display = &model,
         .active_model = &client_model,
         .model_display_owned = &model_owned,
@@ -370,6 +433,8 @@ test "handle /reload applies AGENTS.md into live agent_cfg" {
     var owned_ctx: ?[]u8 = null;
     defer if (owned_ctx) |c| gpa.free(c);
 
+    var owned_skills: ?[]u8 = null;
+    defer if (owned_skills) |s| gpa.free(s);
     var live = live_state.LiveState{
         .gpa = gpa,
         .io = io,
@@ -379,6 +444,7 @@ test "handle /reload applies AGENTS.md into live agent_cfg" {
         .agent_cfg = &cfg,
         .owned_system = &owned_sys,
         .owned_context = &owned_ctx,
+        .owned_skills_summary = &owned_skills,
         .model_display = &model,
         .active_model = null,
         .model_display_owned = &model_owned,

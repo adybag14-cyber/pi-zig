@@ -1,13 +1,17 @@
 //! Compact older messages into a single summary, keep recent N.
 const std = @import("std");
 const session_mod = @import("session.zig");
+const ai = @import("../ai/root.zig");
 
 pub const CompactOptions = struct {
     /// Keep this many most recent messages on the active branch (default 6).
     keep_recent: usize = 6,
+    /// Optional model client for LLM-written summary (falls back to heuristic).
+    client: ?ai.ModelClient = null,
 };
 
-/// Heuristic compaction: replace older branch messages with one system summary message.
+/// Compaction: replace older branch messages with one system summary message.
+/// Uses LLM when client is provided; otherwise heuristic extractive summary.
 /// Mutates session in place.
 pub fn compact(sess: *session_mod.Session, opts: CompactOptions) !void {
     if (sess.entries.items.len <= opts.keep_recent) return;
@@ -21,11 +25,39 @@ pub fn compact(sess: *session_mod.Session, opts: CompactOptions) !void {
     const cut = branch.len - opts.keep_recent;
     var summary: std.ArrayList(u8) = .empty;
     defer summary.deinit(gpa);
-    try summary.appendSlice(gpa, "[Compacted conversation summary]\n");
+
+    // Build extractive material first
+    var material: std.ArrayList(u8) = .empty;
+    defer material.deinit(gpa);
     for (branch[0..cut]) |e| {
         const line = try std.fmt.allocPrint(gpa, "- {s}: {s}\n", .{ e.role, truncate(e.content, 200) });
         defer gpa.free(line);
-        try summary.appendSlice(gpa, line);
+        try material.appendSlice(gpa, line);
+    }
+
+    if (opts.client) |client| {
+        const prompt = try std.fmt.allocPrint(gpa,
+            \\Summarize this coding-agent conversation for future context. Keep file paths, decisions, and open tasks. Be concise.
+            \\
+            \\{s}
+        , .{material.items});
+        defer gpa.free(prompt);
+        const msgs = [_]ai.ChatMessage{
+            .{ .role = "user", .content = prompt },
+        };
+        if (client.complete(gpa, &msgs, "[]")) |r0| {
+            var r = r0;
+            defer r.deinit(gpa);
+            const ok = r.content.len > 0 and (r.stop_reason.len == 0 or !std.mem.eql(u8, r.stop_reason, "error"));
+            if (ok) {
+                try summary.appendSlice(gpa, "[Compacted conversation summary]\n");
+                try summary.appendSlice(gpa, r.content);
+            }
+        } else |_| {}
+    }
+    if (summary.items.len == 0) {
+        try summary.appendSlice(gpa, "[Compacted conversation summary]\n");
+        try summary.appendSlice(gpa, material.items);
     }
 
     // Collect ids to keep (recent branch + anything not on branch? we keep only recent branch for simplicity)
@@ -76,6 +108,8 @@ pub fn compact(sess: *session_mod.Session, opts: CompactOptions) !void {
             .content = try gpa.dupe(u8, e.content),
             .tool_call_id = if (e.tool_call_id) |t| try gpa.dupe(u8, t) else null,
             .tool_calls_json = if (e.tool_calls_json) |t| try gpa.dupe(u8, t) else null,
+            .tool_name = if (e.tool_name) |t| try gpa.dupe(u8, t) else null,
+            .meta = try e.meta.dupe(gpa),
         });
     }
 

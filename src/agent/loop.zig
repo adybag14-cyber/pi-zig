@@ -1,8 +1,9 @@
-//! Agent loop with tool filter, turn limit, events.
+//! Agent loop with tool filter, turn limit, streaming events (pi-aligned kinds).
 const std = @import("std");
 const Io = std.Io;
 const tools = @import("tools.zig");
 const session_mod = @import("session.zig");
+const compaction = @import("compaction.zig");
 const ai = @import("../ai/root.zig");
 
 pub const default_system_prompt =
@@ -16,9 +17,31 @@ pub const AgentConfig = struct {
     context_prompt: []const u8 = "",
     tool_filter: tools.ToolFilter = .{},
     verbose: bool = false,
+    /// Cooperative abort flag (RPC abort sets this). Checked between tools/turns.
+    abort_flag: ?*bool = null,
+    /// Steering messages delivered after current tool batch, before next LLM call.
+    steer_queue: ?*std.ArrayList([]const u8) = null,
+    /// Follow-up messages delivered only when the agent would otherwise stop (idle).
+    follow_up_queue: ?*std.ArrayList([]const u8) = null,
+    /// Approximate char budget for auto-compaction (0 = disabled). ~4 chars/token.
+    auto_compact_chars: usize = 120_000,
+    /// Messages to keep after auto-compact / compact.
+    compact_keep_recent: usize = 6,
 };
 
+/// Event kinds aligned with packages/agent AgentEvent (+ legacy aliases).
 pub const EventKind = enum {
+    // Lifecycle (upstream)
+    agent_start,
+    agent_end,
+    turn_start,
+    turn_end,
+    message_start,
+    message_update,
+    message_end,
+    tool_execution_start,
+    tool_execution_end,
+    // Legacy simplified names (still emitted for compatibility)
     user,
     assistant,
     tool_call,
@@ -32,6 +55,9 @@ pub const AgentEvent = struct {
     text: []const u8 = "",
     name: []const u8 = "",
     id: []const u8 = "",
+    /// JSON-ish args for tool_execution_start
+    args_json: []const u8 = "",
+    is_error: bool = false,
 };
 
 pub const EventHandler = *const fn (ctx: ?*anyopaque, event: AgentEvent) void;
@@ -40,10 +66,19 @@ pub const RunResult = struct {
     final_text: []u8,
     turns: usize,
     hit_turn_limit: bool,
+    text_deltas: usize = 0,
 
     pub fn deinit(self: *RunResult, gpa: std.mem.Allocator) void {
         gpa.free(self.final_text);
         self.* = undefined;
+    }
+};
+
+const DeltaCount = struct {
+    n: usize = 0,
+    fn onDelta(ptr: ?*anyopaque, d: ai.StreamDelta) void {
+        const self: *DeltaCount = @ptrCast(@alignCast(ptr.?));
+        if (d.kind == .text_delta and d.text.len > 0) self.n += 1;
     }
 };
 
@@ -58,9 +93,21 @@ pub fn run(
     on_event: ?EventHandler,
     event_ctx: ?*anyopaque,
 ) !RunResult {
+    emit(on_event, event_ctx, .{ .kind = .agent_start });
+
     const parent = sess.lastEntryId();
     _ = try sess.appendMessage(parent, "user", user_message, null, null);
     emit(on_event, event_ctx, .{ .kind = .user, .text = user_message });
+    emit(on_event, event_ctx, .{
+        .kind = .message_start,
+        .text = user_message,
+        .name = "user",
+    });
+    emit(on_event, event_ctx, .{
+        .kind = .message_end,
+        .text = user_message,
+        .name = "user",
+    });
 
     const schemas = try tools.toolSchemasJson(gpa, config.tool_filter);
     defer gpa.free(schemas);
@@ -68,13 +115,94 @@ pub fn run(
     var turns: usize = 0;
     var last_text: []u8 = try gpa.dupe(u8, "");
     errdefer gpa.free(last_text);
+    var total_deltas: usize = 0;
 
     while (turns < config.max_turns) : (turns += 1) {
+        if (config.abort_flag) |f| {
+            if (f.*) {
+                emit(on_event, event_ctx, .{ .kind = .agent_end, .text = last_text });
+                return .{
+                    .final_text = last_text,
+                    .turns = turns,
+                    .hit_turn_limit = false,
+                    .text_deltas = total_deltas,
+                };
+            }
+        }
+        // Drain steer queue into session as user messages before next LLM call
+        if (config.steer_queue) |q| {
+            while (q.items.len > 0) {
+                const msg = q.orderedRemove(0);
+                defer gpa.free(msg);
+                const p = sess.lastEntryId();
+                _ = try sess.appendMessage(p, "user", msg, null, null);
+                emit(on_event, event_ctx, .{ .kind = .user, .text = msg });
+            }
+        }
+
+        // Auto-compact when session context is large (prefer LLM summary via client)
+        if (config.auto_compact_chars > 0) {
+            const chars = estimateSessionChars(sess);
+            if (chars > config.auto_compact_chars) {
+                try compaction.compact(sess, .{ .keep_recent = config.compact_keep_recent, .client = client });
+            }
+        }
+
+        emit(on_event, event_ctx, .{ .kind = .turn_start });
+
         const chat = try buildChatMessages(gpa, sess, config);
         defer freeChatMessages(gpa, chat);
 
-        var response = try client.complete(gpa, chat, schemas);
+        var delta_count = DeltaCount{};
+        const StreamCtx = struct {
+            outer: ?EventHandler,
+            outer_ctx: ?*anyopaque,
+            counter: *DeltaCount,
+            abort_flag: ?*bool,
+            fn onDelta(ptr: ?*anyopaque, d: ai.StreamDelta) void {
+                const self: *@This() = @ptrCast(@alignCast(ptr.?));
+                if (self.abort_flag) |f| {
+                    if (f.*) return;
+                }
+                DeltaCount.onDelta(self.counter, d);
+                if (self.outer) |h| {
+                    if (d.kind == .text_delta and d.text.len > 0) {
+                        h(self.outer_ctx, .{ .kind = .message_update, .text = d.text, .name = "assistant" });
+                        h(self.outer_ctx, .{ .kind = .assistant, .text = d.text });
+                    }
+                }
+            }
+        };
+        var sctx = StreamCtx{ .outer = on_event, .outer_ctx = event_ctx, .counter = &delta_count, .abort_flag = config.abort_flag };
+
+        emit(on_event, event_ctx, .{ .kind = .message_start, .name = "assistant" });
+        var response = try client.completeStreaming(gpa, chat, schemas, StreamCtx.onDelta, &sctx);
+        // Context overflow recovery: compact once and retry the LLM call
+        if (response.stop_reason.len > 0 and std.mem.eql(u8, response.stop_reason, "error")) {
+            if (looksLikeContextOverflow(response.content)) {
+                response.deinit(gpa);
+                try compaction.compact(sess, .{ .keep_recent = config.compact_keep_recent, .client = client });
+                const chat2 = try buildChatMessages(gpa, sess, config);
+                defer freeChatMessages(gpa, chat2);
+                response = try client.completeStreaming(gpa, chat2, schemas, StreamCtx.onDelta, &sctx);
+            }
+        }
         defer response.deinit(gpa);
+        total_deltas += delta_count.n;
+
+        if (config.abort_flag) |f| {
+            if (f.*) {
+                gpa.free(last_text);
+                last_text = try gpa.dupe(u8, response.content);
+                emit(on_event, event_ctx, .{ .kind = .agent_end, .text = last_text });
+                return .{
+                    .final_text = last_text,
+                    .turns = turns + 1,
+                    .hit_turn_limit = false,
+                    .text_deltas = total_deltas,
+                };
+            }
+        }
 
         var tool_calls_json: ?[]u8 = null;
         defer if (tool_calls_json) |t| gpa.free(t);
@@ -83,23 +211,62 @@ pub fn run(
         }
 
         const prev = sess.lastEntryId();
-        _ = try sess.appendMessage(prev, "assistant", response.content, null, tool_calls_json);
+        const stop_reason: []const u8 = if (response.stop_reason.len > 0)
+            response.stop_reason
+        else if (response.tool_calls.len > 0)
+            "toolUse"
+        else
+            "stop";
+        _ = try sess.appendMessageMeta(prev, "assistant", response.content, null, tool_calls_json, null, .{
+            .provider = response.provider,
+            .model = response.model,
+            .stop_reason = stop_reason,
+            .usage_input = response.usage.input,
+            .usage_output = response.usage.output,
+            .usage_total = response.usage.total(),
+        });
 
         gpa.free(last_text);
         last_text = try gpa.dupe(u8, response.content);
-        emit(on_event, event_ctx, .{ .kind = .assistant, .text = response.content });
+        emit(on_event, event_ctx, .{ .kind = .message_end, .text = last_text, .name = "assistant" });
+        emit(on_event, event_ctx, .{ .kind = .assistant, .text = last_text });
 
         if (response.tool_calls.len == 0) {
+            // Deliver one follow-up message and continue the loop if queued
+            if (config.follow_up_queue) |fq| {
+                if (fq.items.len > 0) {
+                    const msg = fq.orderedRemove(0);
+                    defer gpa.free(msg);
+                    const p = sess.lastEntryId();
+                    _ = try sess.appendMessage(p, "user", msg, null, null);
+                    emit(on_event, event_ctx, .{ .kind = .user, .text = msg });
+                    emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
+                    continue;
+                }
+            }
+            emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
             emit(on_event, event_ctx, .{ .kind = .done, .text = last_text });
+            emit(on_event, event_ctx, .{ .kind = .agent_end, .text = last_text });
             return .{
                 .final_text = last_text,
                 .turns = turns + 1,
                 .hit_turn_limit = false,
+                .text_deltas = total_deltas,
             };
         }
 
-        const tool_ctx = tools.ToolContext{ .gpa = gpa, .io = io, .cwd = cwd };
+        const tool_ctx = tools.ToolContext{ .gpa = gpa, .io = io, .cwd = cwd, .abort_flag = config.abort_flag };
         for (response.tool_calls) |tc| {
+            if (config.abort_flag) |f| {
+                if (f.*) break;
+            }
+            emit(on_event, event_ctx, .{
+                .kind = .tool_execution_start,
+                .id = tc.id,
+                .name = tc.name,
+                .args_json = tc.arguments,
+                .text = tc.arguments,
+            });
             emit(on_event, event_ctx, .{ .kind = .tool_call, .name = tc.name, .id = tc.id, .text = tc.arguments });
 
             var result: tools.ToolResult = undefined;
@@ -113,23 +280,59 @@ pub fn run(
             }
             defer result.deinit(gpa);
 
-            emit(on_event, event_ctx, .{ .kind = .tool_result, .name = tc.name, .id = tc.id, .text = result.content });
+            emit(on_event, event_ctx, .{
+                .kind = .tool_execution_end,
+                .id = tc.id,
+                .name = tc.name,
+                .text = result.content,
+                .is_error = result.is_error,
+            });
+            emit(on_event, event_ctx, .{ .kind = .tool_result, .name = tc.name, .id = tc.id, .text = result.content, .is_error = result.is_error });
 
             const p = sess.lastEntryId();
-            _ = try sess.appendMessage(p, "tool", result.content, tc.id, null);
+            _ = try sess.appendToolResult(p, result.content, tc.id, tc.name);
         }
+        emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
     }
 
     emit(on_event, event_ctx, .{ .kind = .turn_limit, .text = last_text });
+    emit(on_event, event_ctx, .{ .kind = .agent_end, .text = last_text });
     return .{
         .final_text = last_text,
         .turns = turns,
         .hit_turn_limit = true,
+        .text_deltas = total_deltas,
     };
 }
 
 fn emit(handler: ?EventHandler, ctx: ?*anyopaque, event: AgentEvent) void {
     if (handler) |h| h(ctx, event);
+}
+
+fn estimateSessionChars(sess: *session_mod.Session) usize {
+    var n: usize = 0;
+    for (sess.entries.items) |e| {
+        n += e.content.len;
+        if (e.tool_calls_json) |t| n += t.len;
+    }
+    return n;
+}
+
+fn looksLikeContextOverflow(msg: []const u8) bool {
+    const needles = [_][]const u8{
+        "context_length",
+        "maximum context",
+        "context window",
+        "too many tokens",
+        "prompt is too long",
+        "token limit",
+        "max_tokens",
+        "CONTEXT_LENGTH",
+    };
+    for (needles) |n| {
+        if (std.mem.indexOf(u8, msg, n) != null) return true;
+    }
+    return false;
 }
 
 fn buildChatMessages(gpa: std.mem.Allocator, sess: *session_mod.Session, config: AgentConfig) ![]ai.ChatMessage {
@@ -145,7 +348,6 @@ fn buildChatMessages(gpa: std.mem.Allocator, sess: *session_mod.Session, config:
         .content = system_body,
     });
 
-    // Prefer active branch if tree exists
     const branch = try sess.branchEntries(gpa);
     defer gpa.free(branch);
     if (branch.len > 0) {
@@ -160,6 +362,7 @@ fn buildChatMessages(gpa: std.mem.Allocator, sess: *session_mod.Session, config:
                     .content = e.content,
                     .tool_call_id = e.tool_call_id,
                     .tool_calls_json = e.tool_calls_json,
+                    .tool_name = e.tool_name,
                 });
             }
         }
@@ -174,6 +377,7 @@ fn buildChatMessages(gpa: std.mem.Allocator, sess: *session_mod.Session, config:
                     .content = e.content,
                     .tool_call_id = e.tool_call_id,
                     .tool_calls_json = e.tool_calls_json,
+                    .tool_name = e.tool_name,
                 });
             }
         }
@@ -220,8 +424,8 @@ test "agent loop executes tool then finishes with mock model" {
 
     const script =
         \\[
-        \\  {"content":"Writing marker.","tool_calls":[{"id":"c1","name":"write","arguments":"{\"path\":\"marker.txt\",\"content\":\"agent-loop-ok\"}"}]},
-        \\  {"content":"Marker written successfully.","tool_calls":[]}
+        \\  {"content":"Writing marker.","stream_chunks":["Writing ","marker."],"tool_calls":[{"id":"c1","name":"write","arguments":"{\"path\":\"marker.txt\",\"content\":\"agent-loop-ok\"}"}]},
+        \\  {"content":"Marker written successfully.","stream_chunks":["Marker ","written successfully."],"tool_calls":[]}
         \\]
     ;
     var m = try mock.MockModel.loadFromJson(gpa, script);
@@ -236,6 +440,7 @@ test "agent loop executes tool then finishes with mock model" {
     try std.testing.expectEqualStrings("Marker written successfully.", result.final_text);
     try std.testing.expect(!result.hit_turn_limit);
     try std.testing.expect(result.turns >= 2);
+    try std.testing.expect(result.text_deltas >= 2);
 
     const marker_path = try std.fs.path.join(gpa, &.{ tmp_path, "marker.txt" });
     defer gpa.free(marker_path);
@@ -244,7 +449,6 @@ test "agent loop executes tool then finishes with mock model" {
     try std.testing.expectEqualStrings("agent-loop-ok", data);
 }
 
-/// Records the system message content from the first complete() call.
 const SystemRecorder = struct {
     last_system: ?[]u8 = null,
     gpa: std.mem.Allocator,
@@ -297,9 +501,52 @@ test "updated agent_cfg.context_prompt appears in next chat system message" {
     try std.testing.expect(recorder.last_system != null);
     try std.testing.expect(std.mem.indexOf(u8, recorder.last_system.?, "CONTEXT-V1") != null);
 
-    // Simulate /reload applying new context into agent_cfg
     cfg.context_prompt = "CONTEXT-V2-RELOADED";
     var result2 = try run(gpa, io, tmp_path, recorder.client(), &sess, "again", cfg, null, null);
     defer result2.deinit(gpa);
     try std.testing.expect(std.mem.indexOf(u8, recorder.last_system.?, "CONTEXT-V2-RELOADED") != null);
+}
+
+test "loop emits agent_start and tool_execution events" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    const mock = @import("../ai/mock.zig");
+
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const n = try tmp.dir.realPath(io, &path_buf);
+    const tmp_path = path_buf[0..n];
+
+    const script =
+        \\[{"content":"x","tool_calls":[{"id":"c1","name":"ls","arguments":"{}"}]},{"content":"done","tool_calls":[]}]
+    ;
+    var m = try mock.MockModel.loadFromJson(gpa, script);
+    defer m.deinit(gpa);
+    var sess = try session_mod.Session.init(gpa, "ev", tmp_path);
+    defer sess.deinit();
+
+    const C = struct {
+        saw_agent_start: bool = false,
+        saw_tool_start: bool = false,
+        saw_tool_end: bool = false,
+        saw_agent_end: bool = false,
+        fn onEvent(ptr: ?*anyopaque, e: AgentEvent) void {
+            const self: *@This() = @ptrCast(@alignCast(ptr.?));
+            switch (e.kind) {
+                .agent_start => self.saw_agent_start = true,
+                .tool_execution_start => self.saw_tool_start = true,
+                .tool_execution_end => self.saw_tool_end = true,
+                .agent_end => self.saw_agent_end = true,
+                else => {},
+            }
+        }
+    };
+    var c = C{};
+    var result = try run(gpa, io, tmp_path, m.client(), &sess, "ls", .{}, C.onEvent, &c);
+    defer result.deinit(gpa);
+    try std.testing.expect(c.saw_agent_start);
+    try std.testing.expect(c.saw_tool_start);
+    try std.testing.expect(c.saw_tool_end);
+    try std.testing.expect(c.saw_agent_end);
 }

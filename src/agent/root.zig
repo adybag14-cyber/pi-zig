@@ -5,6 +5,13 @@ pub const tools = @import("tools.zig");
 pub const loop = @import("loop.zig");
 pub const session = @import("session.zig");
 pub const compaction = @import("compaction.zig");
+pub const truncate = @import("truncate.zig");
+/// Expanded protocol + tool-definition shards.
+pub const generated = @import("generated_root.zig");
+/// Product bridge from tools_shard_* into agent execute/schemas.
+pub const tools_extended = @import("tools_extended.zig");
+/// Real execute dispatch to every tools_shard preview function.
+pub const tools_dispatch = @import("tools_dispatch.zig");
 
 pub const ToolResult = tools.ToolResult;
 pub const ToolContext = tools.ToolContext;

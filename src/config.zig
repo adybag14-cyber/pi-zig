@@ -6,7 +6,7 @@ const builtin = @import("builtin");
 pub const APP_NAME = "pi";
 pub const CONFIG_DIR_NAME = ".pi";
 pub const AGENT_DIR_NAME = "agent";
-pub const version = "0.2.0";
+pub const version = "0.3.0";
 pub const identity = "pi (pi-zig) coding agent " ++ version;
 
 pub const ENV_AGENT_DIR = "PI_AGENT_DIR";

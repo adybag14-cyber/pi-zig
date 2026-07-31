@@ -7,12 +7,15 @@ pub const Settings = struct {
     provider: ?[]const u8 = null,
     tools: ?[]const []const u8 = null,
     max_turns: usize = 16,
+    thinking_level: ?[]const u8 = null,
+    compaction_keep_recent: usize = 6,
     /// Owned storage for parsed strings
     arena_owned: bool = false,
 
     pub fn deinit(self: *Settings, gpa: std.mem.Allocator) void {
         if (self.model) |m| gpa.free(m);
         if (self.provider) |p| gpa.free(p);
+        if (self.thinking_level) |t| gpa.free(t);
         if (self.tools) |t| {
             for (t) |x| gpa.free(x);
             gpa.free(t);
@@ -38,14 +41,21 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
     var s: Settings = .{};
     errdefer s.deinit(gpa);
 
-    if (parsed.value.object.get("model")) |v| {
+    // Accept upstream keys (defaultModel/defaultProvider) and short aliases
+    if (parsed.value.object.get("model") orelse parsed.value.object.get("defaultModel") orelse parsed.value.object.get("default_model")) |v| {
         if (v == .string) s.model = try gpa.dupe(u8, v.string);
     }
-    if (parsed.value.object.get("provider")) |v| {
+    if (parsed.value.object.get("provider") orelse parsed.value.object.get("defaultProvider") orelse parsed.value.object.get("default_provider")) |v| {
         if (v == .string) s.provider = try gpa.dupe(u8, v.string);
     }
     if (parsed.value.object.get("max_turns") orelse parsed.value.object.get("maxTurns")) |v| {
         if (v == .integer) s.max_turns = @intCast(v.integer);
+    }
+    if (parsed.value.object.get("thinkingLevel") orelse parsed.value.object.get("thinking_level") orelse parsed.value.object.get("defaultThinkingLevel")) |v| {
+        if (v == .string) s.thinking_level = try gpa.dupe(u8, v.string);
+    }
+    if (parsed.value.object.get("compactionKeepRecent") orelse parsed.value.object.get("compaction_keep_recent")) |v| {
+        if (v == .integer) s.compaction_keep_recent = @intCast(v.integer);
     }
     if (parsed.value.object.get("tools")) |v| {
         if (v == .array) {
@@ -113,6 +123,10 @@ fn mergeInto(gpa: std.mem.Allocator, dst: *Settings, src: Settings) !void {
         if (dst.provider) |old| gpa.free(old);
         dst.provider = try gpa.dupe(u8, p);
     }
+    if (src.thinking_level) |t| {
+        if (dst.thinking_level) |old| gpa.free(old);
+        dst.thinking_level = try gpa.dupe(u8, t);
+    }
     if (src.tools) |t| {
         if (dst.tools) |old| {
             for (old) |x| gpa.free(x);
@@ -123,18 +137,22 @@ fn mergeInto(gpa: std.mem.Allocator, dst: *Settings, src: Settings) !void {
         dst.tools = try list.toOwnedSlice(gpa);
     }
     if (src.max_turns != 16 or dst.max_turns == 16) {
-        // always take src max_turns if explicitly different, or just take it
         dst.max_turns = src.max_turns;
+    }
+    if (src.compaction_keep_recent != 6) {
+        dst.compaction_keep_recent = src.compaction_keep_recent;
     }
 }
 
 pub fn formatSettings(gpa: std.mem.Allocator, s: Settings) ![]u8 {
     var out: std.ArrayList(u8) = .empty;
     errdefer out.deinit(gpa);
-    const header = try std.fmt.allocPrint(gpa, "model={s}\nprovider={s}\nmax_turns={d}\n", .{
+    const header = try std.fmt.allocPrint(gpa, "model={s}\nprovider={s}\nmax_turns={d}\nthinking={s}\ncompaction_keep_recent={d}\n", .{
         s.model orelse "(default)",
         s.provider orelse "(default)",
         s.max_turns,
+        s.thinking_level orelse "(default)",
+        s.compaction_keep_recent,
     });
     defer gpa.free(header);
     try out.appendSlice(gpa, header);
@@ -248,4 +266,16 @@ test "parse and merge settings" {
     try std.testing.expectEqualStrings("gpt-4o", s.model.?);
     try std.testing.expectEqual(@as(usize, 8), s.max_turns);
     try std.testing.expectEqual(@as(usize, 2), s.tools.?.len);
+}
+
+test "parse accepts upstream defaultModel defaultProvider thinkingLevel keys" {
+    const gpa = std.testing.allocator;
+    var s = try parse(gpa,
+        \\{"defaultModel":"claude-sonnet","defaultProvider":"anthropic","defaultThinkingLevel":"high","compactionKeepRecent":10}
+    );
+    defer s.deinit(gpa);
+    try std.testing.expectEqualStrings("claude-sonnet", s.model.?);
+    try std.testing.expectEqualStrings("anthropic", s.provider.?);
+    try std.testing.expectEqualStrings("high", s.thinking_level.?);
+    try std.testing.expectEqual(@as(usize, 10), s.compaction_keep_recent);
 }
