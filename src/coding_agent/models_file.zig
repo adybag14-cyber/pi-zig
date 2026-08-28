@@ -286,10 +286,12 @@ fn parseCompat(object: std.json.ObjectMap) !metadata.Compat {
         .supports_strict_mode = try optionalCompatBool(compat, "supportsStrictMode"),
         .supports_openai_grammar_tools = try optionalCompatBool(compat, "supportsOpenAIGrammarTools"),
         .supports_tool_search = try optionalCompatBool(compat, "supportsToolSearch"),
+        .supports_additional_tools = try optionalCompatBool(compat, "supportsAdditionalTools"),
         .supports_tool_references = try optionalCompatBool(compat, "supportsToolReferences"),
         .supports_eager_tool_input_streaming = try optionalCompatBool(compat, "supportsEagerToolInputStreaming"),
         .supports_cache_control_on_tools = try optionalCompatBool(compat, "supportsCacheControlOnTools"),
         .supports_temperature = try optionalCompatBool(compat, "supportsTemperature"),
+        .supports_thinking_token_budget = try optionalCompatBool(compat, "supportsThinkingTokenBudget"),
         .force_adaptive_thinking = try optionalCompatBool(compat, "forceAdaptiveThinking"),
         .supports_strict_tools = try optionalCompatBool(compat, "supportsStrictTools"),
         .requires_tool_result_name = try optionalCompatBool(compat, "requiresToolResultName"),
@@ -789,7 +791,7 @@ test "models.json parses request metadata and applies upstream custom-model defa
     const path = try std.fs.path.join(gpa, &.{ agent_dir, "models.json" });
     defer gpa.free(path);
     try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = path, .data =
-        \\{"providers":{"corp":{"baseUrl":"https://example.test/v1","api":"openai-completions","headers":{"X-Provider":"$P_HEADER"},"compat":{"supportsDeveloperRole":true,"supportsUsageInStreaming":true},"models":[{"id":"m","headers":{"X-Model":"literal"},"samplingParams":{"temperature":0.2,"top_p":0.9},"compat":{"supportsDeveloperRole":false,"maxTokensField":"max_tokens","thinkingFormat":"qwen"}}],"modelOverrides":{"m":{"headers":{"X-Override":"$O_HEADER"},"samplingParams":{"top_p":0.5},"compat":{"supportsReasoningEffort":false}}}}}}
+        \\{"providers":{"corp":{"baseUrl":"https://example.test/v1","api":"openai-completions","headers":{"X-Provider":"$P_HEADER"},"compat":{"supportsDeveloperRole":true,"supportsUsageInStreaming":true},"models":[{"id":"m","headers":{"X-Model":"literal"},"samplingParams":{"temperature":0.2,"top_p":0.9},"compat":{"supportsDeveloperRole":false,"supportsAdditionalTools":true,"supportsThinkingTokenBudget":true,"maxTokensField":"max_tokens","thinkingFormat":"qwen"}}],"modelOverrides":{"m":{"headers":{"X-Override":"$O_HEADER"},"samplingParams":{"top_p":0.5},"compat":{"supportsReasoningEffort":false}}}}}}
     });
     var file = try load(gpa, io, agent_dir);
     defer file.deinit();
@@ -804,6 +806,8 @@ test "models.json parses request metadata and applies upstream custom-model defa
     try std.testing.expectEqual(@as(usize, 1), override.sampling_params.len);
     try std.testing.expectEqual(false, model.compat.supports_developer_role.?);
     try std.testing.expectEqual(true, model.compat.supports_usage_in_streaming.?);
+    try std.testing.expectEqual(true, model.compat.supports_additional_tools.?);
+    try std.testing.expectEqual(true, model.compat.supports_thinking_token_budget.?);
     try std.testing.expect(model.compat.max_tokens_field.? == .max_tokens);
     try std.testing.expect(model.compat.thinking_format.? == .qwen);
     try std.testing.expectEqual(false, override.compat.supports_reasoning_effort.?);

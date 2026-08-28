@@ -1377,7 +1377,8 @@ fn writeResponseInputMessages(
             try w.writeAll(",\"output\":");
             try writeToolResultOutput(gpa, w, msg, supports_image_input);
             try w.writeAll("}");
-            if (compat.supports_tool_search == true and msg.added_tool_names.len > 0) {
+            const deferred_mode = compat.supports_additional_tools == true or compat.supports_tool_search == true;
+            if (deferred_mode and msg.added_tool_names.len > 0) {
                 var names: std.ArrayList([]const u8) = .empty;
                 defer names.deinit(gpa);
                 for (msg.added_tool_names) |name| {
@@ -1386,28 +1387,37 @@ fn writeResponseInputMessages(
                     try names.append(gpa, name);
                 }
                 if (names.items.len > 0) {
-                    const search_id = try std.fmt.allocPrint(gpa, "pi_tool_load_{d}", .{msg_index});
-                    defer gpa.free(search_id);
-                    try w.writeAll(",{");
-                    try w.writeAll("\"type\":\"tool_search_call\",\"call_id\":");
-                    try std.json.Stringify.value(search_id, .{}, w);
-                    try w.writeAll(",\"execution\":\"client\",\"status\":\"completed\",\"arguments\":{\"query\":");
-                    var query: std.Io.Writer.Allocating = .init(gpa);
-                    defer query.deinit();
-                    for (names.items, 0..) |name, i| {
-                        if (i > 0) try query.writer.writeByte(' ');
-                        try query.writer.writeAll(name);
-                    }
-                    try std.json.Stringify.value(query.written(), .{}, w);
-                    try w.print(",\"limit\":{d}}}}}", .{names.items.len});
-                    if (try convertToolsSelected(gpa, tools_json, compat, messages, names.items, false, true)) |loaded_tools| {
-                        defer gpa.free(loaded_tools);
+                    if (compat.supports_additional_tools == true) {
+                        if (try convertToolsSelected(gpa, tools_json, compat, messages, names.items, false, false)) |loaded_tools| {
+                            defer gpa.free(loaded_tools);
+                            try w.writeAll(",{\"type\":\"additional_tools\",\"role\":\"developer\",\"tools\":");
+                            try w.writeAll(loaded_tools);
+                            try w.writeAll("}");
+                        }
+                    } else {
+                        const search_id = try std.fmt.allocPrint(gpa, "pi_tool_load_{d}", .{msg_index});
+                        defer gpa.free(search_id);
                         try w.writeAll(",{");
-                        try w.writeAll("\"type\":\"tool_search_output\",\"call_id\":");
+                        try w.writeAll("\"type\":\"tool_search_call\",\"call_id\":");
                         try std.json.Stringify.value(search_id, .{}, w);
-                        try w.writeAll(",\"execution\":\"client\",\"status\":\"completed\",\"tools\":");
-                        try w.writeAll(loaded_tools);
-                        try w.writeAll("}");
+                        try w.writeAll(",\"execution\":\"client\",\"status\":\"completed\",\"arguments\":{\"query\":");
+                        var query: std.Io.Writer.Allocating = .init(gpa);
+                        defer query.deinit();
+                        for (names.items, 0..) |name, i| {
+                            if (i > 0) try query.writer.writeByte(' ');
+                            try query.writer.writeAll(name);
+                        }
+                        try std.json.Stringify.value(query.written(), .{}, w);
+                        try w.print(",\"limit\":{d}}}}}", .{names.items.len});
+                        if (try convertToolsSelected(gpa, tools_json, compat, messages, names.items, false, true)) |loaded_tools| {
+                            defer gpa.free(loaded_tools);
+                            try w.writeAll(",{");
+                            try w.writeAll("\"type\":\"tool_search_output\",\"call_id\":");
+                            try std.json.Stringify.value(search_id, .{}, w);
+                            try w.writeAll(",\"execution\":\"client\",\"status\":\"completed\",\"tools\":");
+                            try w.writeAll(loaded_tools);
+                            try w.writeAll("}");
+                        }
                     }
                 }
             }
@@ -1726,7 +1736,8 @@ pub fn buildRequestBody(
     if (options.reasoning and !emitted_reasoning_include and std.ascii.eqlIgnoreCase(options.provider_id, "xai") and !hasSampling(options.sampling_params, "include"))
         try w.writeAll(",\"include\":[\"reasoning.encrypted_content\"]");
     if (tools_json.len > 2) {
-        if (try convertToolsSelected(gpa, tools_json, options.compat, messages, null, options.compat.supports_tool_search == true, false)) |tools| {
+        const defer_tools = options.compat.supports_additional_tools == true or options.compat.supports_tool_search == true;
+        if (try convertToolsSelected(gpa, tools_json, options.compat, messages, null, defer_tools, false)) |tools| {
             defer gpa.free(tools);
             try w.writeAll(",\"tools\":");
             try w.writeAll(tools);
@@ -1785,7 +1796,8 @@ pub fn buildCodexRequestBody(
         try w.writeAll(",\"summary\":\"auto\"}");
     };
     if (tools_json.len > 2) {
-        if (try convertToolsSelected(gpa, tools_json, options.compat, filtered.items, null, options.compat.supports_tool_search == true, false)) |tools| {
+        const defer_tools = options.compat.supports_additional_tools == true or options.compat.supports_tool_search == true;
+        if (try convertToolsSelected(gpa, tools_json, options.compat, filtered.items, null, defer_tools, false)) |tools| {
             defer gpa.free(tools);
             try w.writeAll(",\"tools\":");
             try w.writeAll(tools);
@@ -2666,6 +2678,25 @@ test "Responses deferred tools load at addedToolNames boundary" {
         pos = found + 1;
     }
     try std.testing.expectEqual(@as(usize, 1), count);
+}
+
+test "Responses additional_tools loads deferred definitions at message boundary" {
+    const gpa = std.testing.allocator;
+    const tools =
+        \\[{"type":"function","function":{"name":"immediate","description":"now","parameters":{"type":"object"}}},{"type":"function","function":{"name":"late_tool","description":"later","parameters":{"type":"object"}}}]
+    ;
+    const added = [_][]const u8{"late_tool"};
+    const messages = [_]ai.ChatMessage{
+        .{ .role = "user", .content = "go" },
+        .{ .role = "assistant", .content = "", .tool_calls_json = "[{\"id\":\"c1\",\"type\":\"function\",\"function\":{\"name\":\"immediate\",\"arguments\":\"{}\"}}]" },
+        .{ .role = "tool", .content = "ok", .tool_call_id = "c1", .tool_name = "immediate", .added_tool_names = &added },
+    };
+    const body = try buildRequestBody(gpa, "m", &messages, tools, .{ .compat = .{ .supports_additional_tools = true } });
+    defer gpa.free(body);
+    try std.testing.expect(std.mem.indexOf(u8, body, "\"type\":\"additional_tools\",\"role\":\"developer\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "tool_search_call") == null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "\"name\":\"late_tool\",\"description\":\"later\",\"parameters\":{\"type\":\"object\"}") != null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "defer_loading") == null);
 }
 
 test "Responses reasoning maps levels and off independently from Codex" {

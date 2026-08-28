@@ -8,6 +8,7 @@ const config = @import("../config.zig");
 const thinking = @import("thinking.zig");
 const api_mod = @import("api.zig");
 const metadata = @import("request_metadata.zig");
+const catalog_generated = @import("catalog_generated.zig");
 
 pub const Provider = enum {
     openai,
@@ -39,6 +40,24 @@ pub const Provider = enum {
     qwen_token_plan,
     qwen_token_plan_cn,
     qwen_token_plan_individual,
+    ant_ling,
+    azure_openai_responses,
+    google_vertex,
+    huggingface,
+    minimax,
+    minimax_cn,
+    moonshotai,
+    moonshotai_cn,
+    opencode,
+    opencode_go,
+    openai_codex,
+    vercel_ai_gateway,
+    xiaomi,
+    xiaomi_token_plan_ams,
+    xiaomi_token_plan_cn,
+    xiaomi_token_plan_sgp,
+    zai,
+    zai_coding_cn,
 
     pub fn fromString(s: []const u8) ?Provider {
         if (std.ascii.eqlIgnoreCase(s, "amazon-bedrock")) return .amazon_bedrock;
@@ -49,6 +68,18 @@ pub const Provider = enum {
         if (std.ascii.eqlIgnoreCase(s, "qwen-token-plan")) return .qwen_token_plan;
         if (std.ascii.eqlIgnoreCase(s, "qwen-token-plan-cn")) return .qwen_token_plan_cn;
         if (std.ascii.eqlIgnoreCase(s, "qwen-token-plan-individual")) return .qwen_token_plan_individual;
+        if (std.ascii.eqlIgnoreCase(s, "ant-ling")) return .ant_ling;
+        if (std.ascii.eqlIgnoreCase(s, "azure-openai-responses")) return .azure_openai_responses;
+        if (std.ascii.eqlIgnoreCase(s, "google-vertex")) return .google_vertex;
+        if (std.ascii.eqlIgnoreCase(s, "minimax-cn")) return .minimax_cn;
+        if (std.ascii.eqlIgnoreCase(s, "moonshotai-cn")) return .moonshotai_cn;
+        if (std.ascii.eqlIgnoreCase(s, "opencode-go")) return .opencode_go;
+        if (std.ascii.eqlIgnoreCase(s, "openai-codex")) return .openai_codex;
+        if (std.ascii.eqlIgnoreCase(s, "vercel-ai-gateway")) return .vercel_ai_gateway;
+        if (std.ascii.eqlIgnoreCase(s, "xiaomi-token-plan-ams")) return .xiaomi_token_plan_ams;
+        if (std.ascii.eqlIgnoreCase(s, "xiaomi-token-plan-cn")) return .xiaomi_token_plan_cn;
+        if (std.ascii.eqlIgnoreCase(s, "xiaomi-token-plan-sgp")) return .xiaomi_token_plan_sgp;
+        if (std.ascii.eqlIgnoreCase(s, "zai-coding-cn")) return .zai_coding_cn;
         inline for (std.meta.fields(Provider)) |field| {
             if (std.ascii.eqlIgnoreCase(s, field.name)) return @enumFromInt(field.value);
         }
@@ -68,6 +99,18 @@ pub const Provider = enum {
             .qwen_token_plan => "qwen-token-plan",
             .qwen_token_plan_cn => "qwen-token-plan-cn",
             .qwen_token_plan_individual => "qwen-token-plan-individual",
+            .ant_ling => "ant-ling",
+            .azure_openai_responses => "azure-openai-responses",
+            .google_vertex => "google-vertex",
+            .minimax_cn => "minimax-cn",
+            .moonshotai_cn => "moonshotai-cn",
+            .opencode_go => "opencode-go",
+            .openai_codex => "openai-codex",
+            .vercel_ai_gateway => "vercel-ai-gateway",
+            .xiaomi_token_plan_ams => "xiaomi-token-plan-ams",
+            .xiaomi_token_plan_cn => "xiaomi-token-plan-cn",
+            .xiaomi_token_plan_sgp => "xiaomi-token-plan-sgp",
+            .zai_coding_cn => "zai-coding-cn",
             else => @tagName(self),
         };
     }
@@ -75,8 +118,9 @@ pub const Provider = enum {
     /// Native wire/API implementation used for requests.
     pub fn transport(self: Provider) Provider {
         return switch (self) {
-            .groq, .together, .deepseek, .ollama, .openrouter, .xai, .mistral, .fireworks, .cerebras, .lmstudio, .vllm, .perplexity, .nvidia, .cloudflare_workers_ai, .cloudflare_ai_gateway, .github_copilot, .baseten, .qwen_token_plan, .qwen_token_plan_cn, .qwen_token_plan_individual => .openai,
-            .kimi_coding => .anthropic,
+            .groq, .together, .deepseek, .ollama, .openrouter, .xai, .mistral, .fireworks, .cerebras, .lmstudio, .vllm, .perplexity, .nvidia, .cloudflare_workers_ai, .cloudflare_ai_gateway, .github_copilot, .baseten, .qwen_token_plan, .qwen_token_plan_cn, .qwen_token_plan_individual, .ant_ling, .azure_openai_responses, .huggingface, .moonshotai, .moonshotai_cn, .opencode, .opencode_go, .openai_codex, .xiaomi, .xiaomi_token_plan_ams, .xiaomi_token_plan_cn, .xiaomi_token_plan_sgp, .zai, .zai_coding_cn => .openai,
+            .kimi_coding, .minimax, .minimax_cn, .vercel_ai_gateway => .anthropic,
+            .google_vertex => .google,
             else => self,
         };
     }
@@ -131,6 +175,9 @@ pub const ModelInfo = struct {
     api: ?api_mod.Api = null,
     /// Generated/provider-owned request compatibility defaults for this model.
     compat: metadata.Compat = .{},
+    /// Generated model-scoped request headers and sampling defaults.
+    headers: []const metadata.Header = &.{},
+    sampling_params: []const metadata.SamplingParam = &.{},
 
     pub fn apiKind(self: ModelInfo) api_mod.Api {
         if (self.api) |value| return value;
@@ -270,174 +317,18 @@ const qwen_effort_compat = metadata.Compat{
     .thinking_format = .qwen,
 };
 
-/// Models represented by provider implementations that pi-zig can actually dispatch.
-/// This is a curated runtime catalog, not a generated LOC surface.
-pub const known_models = [_]ModelInfo{
-    // OpenAI
-    .{ .provider = .openai, .id = "gpt-4o-mini", .display = "OpenAI GPT-4o mini" },
-    .{ .provider = .openai, .id = "gpt-4o", .display = "OpenAI GPT-4o" },
-    .{ .provider = .openai, .id = "gpt-4.1", .display = "OpenAI GPT-4.1" },
-    .{ .provider = .openai, .id = "gpt-4.1-mini", .display = "OpenAI GPT-4.1 mini" },
-    .{ .provider = .openai, .id = "gpt-4.1-nano", .display = "OpenAI GPT-4.1 nano" },
-    .{ .provider = .openai, .id = "o3-mini", .display = "OpenAI o3-mini", .reasoning = true },
-    .{ .provider = .openai, .id = "o4-mini", .display = "OpenAI o4-mini", .reasoning = true },
-    .{ .provider = .openai, .id = "gpt-5", .display = "OpenAI GPT-5", .reasoning = true },
-    .{ .provider = .openai, .id = "gpt-5-mini", .display = "OpenAI GPT-5 mini", .reasoning = true },
-
-    // Anthropic
-    .{ .provider = .anthropic, .id = "claude-sonnet-4-20250514", .display = "Anthropic Claude Sonnet 4", .reasoning = true },
-    .{ .provider = .anthropic, .id = "claude-opus-4-20250514", .display = "Anthropic Claude Opus 4", .reasoning = true },
-    .{ .provider = .anthropic, .id = "claude-3-5-haiku-latest", .display = "Anthropic Claude 3.5 Haiku" },
-    .{ .provider = .anthropic, .id = "claude-3-5-sonnet-latest", .display = "Anthropic Claude 3.5 Sonnet" },
-    .{ .provider = .anthropic, .id = "claude-3-opus-latest", .display = "Anthropic Claude 3 Opus" },
-    .{ .provider = .anthropic, .id = "claude-haiku-4-5-20251001", .display = "Anthropic Claude Haiku 4.5" },
-
-    // Google
-    .{ .provider = .google, .id = "gemini-2.0-flash", .display = "Google Gemini 2.0 Flash" },
-    .{ .provider = .google, .id = "gemini-2.0-flash-lite", .display = "Google Gemini 2.0 Flash Lite" },
-    .{ .provider = .google, .id = "gemini-1.5-pro", .display = "Google Gemini 1.5 Pro" },
-    .{ .provider = .google, .id = "gemini-1.5-flash", .display = "Google Gemini 1.5 Flash" },
-    .{ .provider = .google, .id = "gemini-2.5-pro", .display = "Google Gemini 2.5 Pro", .reasoning = true },
-    .{ .provider = .google, .id = "gemini-2.5-flash", .display = "Google Gemini 2.5 Flash", .reasoning = true },
-
-    // xAI
-    .{ .provider = .xai, .id = "grok-3", .display = "xAI Grok 3" },
-    .{ .provider = .xai, .id = "grok-3-mini", .display = "xAI Grok 3 mini", .reasoning = true },
-    .{ .provider = .xai, .id = "grok-2", .display = "xAI Grok 2" },
-
-    // Groq
-    .{ .provider = .groq, .id = "llama-3.3-70b-versatile", .display = "Groq Llama 3.3 70B" },
-    .{ .provider = .groq, .id = "llama-3.1-8b-instant", .display = "Groq Llama 3.1 8B" },
-    .{ .provider = .groq, .id = "mixtral-8x7b-32768", .display = "Groq Mixtral 8x7B" },
-
-    // DeepSeek
-    .{ .provider = .deepseek, .id = "deepseek-chat", .display = "DeepSeek Chat" },
-    .{ .provider = .deepseek, .id = "deepseek-reasoner", .display = "DeepSeek Reasoner", .reasoning = true },
-
-    // Mistral
-    .{ .provider = .mistral, .api = .mistral_conversations, .id = "mistral-large-latest", .display = "Mistral Large" },
-    .{ .provider = .mistral, .api = .mistral_conversations, .id = "mistral-small-latest", .display = "Mistral Small" },
-    .{ .provider = .mistral, .api = .mistral_conversations, .id = "codestral-latest", .display = "Mistral Codestral" },
-
-    // Together / Fireworks / Cerebras / NVIDIA
-    .{ .provider = .together, .id = "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo", .display = "Together Llama 3.1 70B" },
-    .{ .provider = .fireworks, .id = "accounts/fireworks/models/llama-v3p1-70b-instruct", .display = "Fireworks Llama 3.1 70B" },
-    .{ .provider = .cerebras, .id = "llama3.1-70b", .display = "Cerebras Llama 3.1 70B" },
-    .{ .provider = .nvidia, .id = "meta/llama-3.1-70b-instruct", .display = "NVIDIA Llama 3.1 70B" },
-
-    // OpenRouter IDs can legitimately contain slashes/colon suffixes.
-    // `openrouter/free` is the live zero-cost capability router. OpenRouter
-    // currently advertises text/image input, a 200k context window, and
-    // capability-aware routing for tool calling and structured output.
-    .{ .provider = .openrouter, .id = "openrouter/free", .display = "OpenRouter Free Models Router", .reasoning = true, .thinking_level_map = .{ .off = .unsupported }, .input_image = true, .context_window = 200_000 },
-    .{ .provider = .openrouter, .id = "openrouter/auto", .display = "OpenRouter Auto" },
-    .{ .provider = .openrouter, .id = "anthropic/claude-sonnet-4", .display = "OpenRouter Claude Sonnet 4" },
-
-    // Local OpenAI-compatible runtimes
-    .{ .provider = .ollama, .id = "llama3.2", .display = "Ollama Llama 3.2" },
-    .{ .provider = .ollama, .id = "llama3.1", .display = "Ollama Llama 3.1" },
-    .{ .provider = .ollama, .id = "qwen2.5-coder", .display = "Ollama Qwen2.5 Coder" },
-    .{ .provider = .ollama, .id = "codellama", .display = "Ollama Code Llama" },
-    .{ .provider = .lmstudio, .id = "local-model", .display = "LM Studio local model" },
-    .{ .provider = .vllm, .id = "local-model", .display = "vLLM local model" },
-
-    // Baseten generated catalog (pi-ai v0.84.1).
-    .{ .provider = .baseten, .id = "deepseek-ai/DeepSeek-V4-Flash-0731", .display = "Deepseek V4 Flash 0731", .reasoning = true, .context_window = 1_048_576, .max_tokens = 1_048_576, .cost = .{ .input = 0.13, .output = 0.26, .cache_read = 0.028, .cache_write = 0 }, .compat = baseten_base_compat },
-    .{ .provider = .baseten, .id = "deepseek-ai/DeepSeek-V4-Pro", .display = "Deepseek V4 Pro", .reasoning = true, .thinking_level_map = map_all_efforts, .context_window = 262_144, .max_tokens = 262_144, .cost = .{ .input = 1.74, .output = 3.48, .cache_read = 0.145, .cache_write = 0 }, .compat = baseten_openai_compat },
-    .{ .provider = .baseten, .id = "moonshotai/Kimi-K2.5", .display = "Kimi K2.5", .reasoning = true, .input_image = true, .thinking_level_map = map_toggle_high, .context_window = 262_000, .max_tokens = 262_000, .cost = .{ .input = 0.6, .output = 3, .cache_read = 0.12, .cache_write = 0 }, .compat = baseten_template_compat },
-    .{ .provider = .baseten, .id = "moonshotai/Kimi-K2.6", .display = "Kimi K2.6", .reasoning = true, .input_image = true, .thinking_level_map = map_toggle_high, .context_window = 262_000, .max_tokens = 262_000, .cost = .{ .input = 0.95, .output = 4, .cache_read = 0.16, .cache_write = 0 }, .compat = baseten_template_compat },
-    .{ .provider = .baseten, .id = "moonshotai/Kimi-K2.7-Code", .display = "Kimi K2.7 Code", .reasoning = true, .input_image = true, .thinking_level_map = map_toggle_high, .context_window = 262_000, .max_tokens = 262_000, .cost = .{ .input = 0.95, .output = 4, .cache_read = 0.16, .cache_write = 0 }, .compat = baseten_template_compat },
-    .{ .provider = .baseten, .id = "moonshotai/Kimi-K3", .display = "Kimi K3", .reasoning = true, .input_image = true, .thinking_level_map = map_none_low_high_max, .context_window = 1_048_576, .max_tokens = 262_144, .cost = .{ .input = 3, .output = 15, .cache_read = 0, .cache_write = 0 }, .compat = baseten_openai_compat },
-    .{ .provider = .baseten, .id = "nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B", .display = "Nemotron Ultra", .reasoning = true, .thinking_level_map = map_toggle_high, .context_window = 202_800, .max_tokens = 202_800, .cost = .{ .input = 0.6, .output = 2.4, .cache_read = 0.12, .cache_write = 0 }, .compat = baseten_template_compat },
-    .{ .provider = .baseten, .id = "nvidia/Nemotron-120B-A12B", .display = "Nemotron Super", .reasoning = true, .thinking_level_map = map_toggle_high, .context_window = 202_800, .max_tokens = 202_800, .cost = .{ .input = 0.3, .output = 0.75, .cache_read = 0.06, .cache_write = 0 }, .compat = baseten_template_compat },
-    .{ .provider = .baseten, .id = "openai/gpt-oss-120b", .display = "OpenAI GPT 120B", .reasoning = true, .thinking_level_map = map_all_efforts, .context_window = 128_072, .max_tokens = 128_072, .cost = .{ .input = 0.1, .output = 0.5, .cache_read = 0, .cache_write = 0 }, .compat = baseten_openai_compat },
-    .{ .provider = .baseten, .id = "thinkingmachines/inkling", .display = "Inkling", .reasoning = true, .input_image = true, .thinking_level_map = map_all_efforts, .context_window = 1_048_576, .max_tokens = 32_768, .cost = .{ .input = 1, .output = 4.05, .cache_read = 0, .cache_write = 0 }, .compat = baseten_openai_compat },
-    .{ .provider = .baseten, .id = "thinkingmachines/inkling-small", .display = "Inkling Small", .reasoning = true, .input_image = true, .thinking_level_map = map_all_efforts, .context_window = 1_048_576, .max_tokens = 32_768, .cost = .{ .input = 0.5, .output = 1.2, .cache_read = 0.1, .cache_write = 0 }, .compat = baseten_openai_compat },
-    .{ .provider = .baseten, .id = "zai-org/GLM-4.7", .display = "GLM 4.7", .reasoning = true, .thinking_level_map = map_toggle_high, .context_window = 200_000, .max_tokens = 200_000, .cost = .{ .input = 0.6, .output = 2.2, .cache_read = 0.12, .cache_write = 0 }, .compat = baseten_template_compat },
-    .{ .provider = .baseten, .id = "zai-org/GLM-5", .display = "GLM 5", .reasoning = true, .thinking_level_map = map_toggle_high, .context_window = 202_800, .max_tokens = 202_800, .cost = .{ .input = 0.95, .output = 3.15, .cache_read = 0.2, .cache_write = 0 }, .compat = baseten_template_compat },
-    .{ .provider = .baseten, .id = "zai-org/GLM-5.1", .display = "GLM 5.1", .reasoning = true, .thinking_level_map = map_toggle_high, .context_window = 202_800, .max_tokens = 202_800, .cost = .{ .input = 1.3, .output = 4.3, .cache_read = 0.26, .cache_write = 0 }, .compat = baseten_template_compat },
-    .{ .provider = .baseten, .id = "zai-org/GLM-5.2", .display = "GLM 5.2", .reasoning = true, .thinking_level_map = map_none_high_max, .context_window = 1_048_576, .max_tokens = 262_144, .cost = .{ .input = 1.4, .output = 4.4, .cache_read = 0.3, .cache_write = 0 }, .compat = baseten_template_effort_compat },
-    .{ .provider = .baseten, .id = "zai-org/GLM-5.2-Fast", .display = "GLM 5.2 Fast", .reasoning = true, .thinking_level_map = map_none_high_max, .context_window = 524_288, .max_tokens = 262_144, .cost = .{ .input = 2.1, .output = 6.6, .cache_read = 0.21, .cache_write = 0 }, .compat = baseten_template_effort_compat },
-
-    // Qwen Token Plan international catalog (pi-ai v0.84.1).
-    .{ .provider = .qwen_token_plan, .id = "MiniMax-M2.5", .display = "MiniMax-M2.5", .reasoning = true, .context_window = 196_608, .max_tokens = 32_768, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "deepseek-v3.2", .display = "DeepSeek V3.2", .reasoning = true, .context_window = 131_072, .max_tokens = 65_536, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "deepseek-v4-flash", .display = "DeepSeek V4 Flash", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 1_000_000, .max_tokens = 384_000, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "deepseek-v4-flash-0731", .display = "DeepSeek V4 Flash 0731", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 1_000_000, .max_tokens = 384_000, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "deepseek-v4-pro", .display = "DeepSeek V4 Pro", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 1_000_000, .max_tokens = 384_000, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "glm-5", .display = "GLM-5", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 202_752, .max_tokens = 16_384, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "glm-5.1", .display = "GLM-5.1", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 202_752, .max_tokens = 128_000, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "glm-5.2", .display = "GLM-5.2", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 1_000_000, .max_tokens = 131_072, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "kimi-k2.5", .display = "Kimi K2.5", .reasoning = true, .input_image = true, .context_window = 262_144, .max_tokens = 98_304, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "kimi-k2.6", .display = "Kimi K2.6", .reasoning = true, .input_image = true, .context_window = 262_144, .max_tokens = 262_144, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "kimi-k2.7-code", .display = "Kimi K2.7 Code", .reasoning = true, .input_image = true, .context_window = 262_144, .max_tokens = 262_144, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "qwen3.6-flash", .display = "Qwen3.6 Flash", .reasoning = true, .input_image = true, .context_window = 1_000_000, .max_tokens = 65_536, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "qwen3.6-plus", .display = "Qwen3.6 Plus", .reasoning = true, .input_image = true, .context_window = 1_000_000, .max_tokens = 65_536, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "qwen3.7-max", .display = "Qwen3.7 Max", .reasoning = true, .context_window = 1_000_000, .max_tokens = 131_072, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "qwen3.7-plus", .display = "Qwen3.7 Plus", .reasoning = true, .input_image = true, .context_window = 1_000_000, .max_tokens = 65_536, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan, .id = "qwen3.8-max", .display = "Qwen3.8 Max", .reasoning = true, .input_image = true, .thinking_level_map = map_qwen38, .context_window = 1_000_000, .max_tokens = 131_072, .compat = qwen_effort_compat },
-
-    // Qwen Token Plan China mirrors the broad catalog on its Beijing endpoint.
-    .{ .provider = .qwen_token_plan_cn, .id = "MiniMax-M2.5", .display = "MiniMax-M2.5", .reasoning = true, .context_window = 196_608, .max_tokens = 32_768, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "deepseek-v3.2", .display = "DeepSeek V3.2", .reasoning = true, .context_window = 131_072, .max_tokens = 65_536, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "deepseek-v4-flash", .display = "DeepSeek V4 Flash", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 1_000_000, .max_tokens = 384_000, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "deepseek-v4-flash-0731", .display = "DeepSeek V4 Flash 0731", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 1_000_000, .max_tokens = 384_000, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "deepseek-v4-pro", .display = "DeepSeek V4 Pro", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 1_000_000, .max_tokens = 384_000, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "glm-5", .display = "GLM-5", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 202_752, .max_tokens = 16_384, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "glm-5.1", .display = "GLM-5.1", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 202_752, .max_tokens = 128_000, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "glm-5.2", .display = "GLM-5.2", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 1_000_000, .max_tokens = 131_072, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "kimi-k2.5", .display = "Kimi K2.5", .reasoning = true, .input_image = true, .context_window = 262_144, .max_tokens = 98_304, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "kimi-k2.6", .display = "Kimi K2.6", .reasoning = true, .input_image = true, .context_window = 262_144, .max_tokens = 262_144, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "kimi-k2.7-code", .display = "Kimi K2.7 Code", .reasoning = true, .input_image = true, .context_window = 262_144, .max_tokens = 262_144, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "qwen3.6-flash", .display = "Qwen3.6 Flash", .reasoning = true, .input_image = true, .context_window = 1_000_000, .max_tokens = 65_536, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "qwen3.6-plus", .display = "Qwen3.6 Plus", .reasoning = true, .input_image = true, .context_window = 1_000_000, .max_tokens = 65_536, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "qwen3.7-max", .display = "Qwen3.7 Max", .reasoning = true, .context_window = 1_000_000, .max_tokens = 131_072, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "qwen3.7-plus", .display = "Qwen3.7 Plus", .reasoning = true, .input_image = true, .context_window = 1_000_000, .max_tokens = 65_536, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan_cn, .id = "qwen3.8-max", .display = "Qwen3.8 Max", .reasoning = true, .input_image = true, .thinking_level_map = map_qwen38, .context_window = 1_000_000, .max_tokens = 131_072, .compat = qwen_effort_compat },
-
-    // Qwen Token Plan Individual intentionally exposes only subscription-documented models.
-    .{ .provider = .qwen_token_plan_individual, .id = "deepseek-v4-flash-0731", .display = "DeepSeek V4 Flash 0731", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 1_000_000, .max_tokens = 384_000, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan_individual, .id = "deepseek-v4-pro", .display = "DeepSeek V4 Pro", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 1_000_000, .max_tokens = 384_000, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan_individual, .id = "glm-5.2", .display = "GLM-5.2", .reasoning = true, .thinking_level_map = map_high_max, .context_window = 1_000_000, .max_tokens = 131_072, .compat = qwen_effort_compat },
-    .{ .provider = .qwen_token_plan_individual, .id = "qwen3.6-flash", .display = "Qwen3.6 Flash", .reasoning = true, .input_image = true, .context_window = 1_000_000, .max_tokens = 65_536, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan_individual, .id = "qwen3.7-max", .display = "Qwen3.7 Max", .reasoning = true, .context_window = 1_000_000, .max_tokens = 131_072, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan_individual, .id = "qwen3.7-plus", .display = "Qwen3.7 Plus", .reasoning = true, .input_image = true, .context_window = 1_000_000, .max_tokens = 65_536, .compat = qwen_no_effort_compat },
-    .{ .provider = .qwen_token_plan_individual, .id = "qwen3.8-max", .display = "Qwen3.8 Max", .reasoning = true, .input_image = true, .thinking_level_map = map_qwen38, .context_window = 1_000_000, .max_tokens = 131_072, .compat = qwen_effort_compat },
-
-    // GitHub Copilot is a mixed-API provider. Public identity stays
-    // `github-copilot`, while each model selects its native wire transport.
-    // API selection follows upstream generation: Claude 4/5 -> Anthropic,
-    // gpt-5*/grok-4.5/oswe/mai -> Responses, remaining models -> Chat Completions.
-    .{ .provider = .openai, .provider_id = "github-copilot", .api = .openai_completions, .id = "gpt-4.1", .display = "GitHub Copilot GPT-4.1", .input_image = true },
-    .{ .provider = .openai, .provider_id = "github-copilot", .api = .openai_completions, .id = "gpt-4o", .display = "GitHub Copilot GPT-4o", .input_image = true },
-    .{ .provider = .openai, .provider_id = "github-copilot", .api = .openai_completions, .id = "gemini-3-flash-preview", .display = "GitHub Copilot Gemini 3 Flash Preview", .reasoning = true, .input_image = true },
-    .{ .provider = .openai, .provider_id = "github-copilot", .api = .openai_completions, .id = "grok-code-fast-1", .display = "GitHub Copilot Grok Code Fast 1", .reasoning = true },
-    .{ .provider = .openai, .provider_id = "github-copilot", .api = .openai_responses, .id = "grok-4.5", .display = "GitHub Copilot Grok 4.5", .reasoning = true },
-    .{ .provider = .openai, .provider_id = "github-copilot", .api = .openai_responses, .id = "gpt-5", .display = "GitHub Copilot GPT-5", .reasoning = true, .input_image = true, .thinking_level_map = .{ .off = .unsupported, .minimal = .{ .mapped = "low" } } },
-    .{ .provider = .openai, .provider_id = "github-copilot", .api = .openai_responses, .id = "gpt-5-mini", .display = "GitHub Copilot GPT-5 mini", .reasoning = true, .input_image = true, .thinking_level_map = .{ .off = .unsupported, .minimal = .{ .mapped = "low" } } },
-    .{ .provider = .openai, .provider_id = "github-copilot", .api = .openai_responses, .id = "gpt-5.1-codex", .display = "GitHub Copilot GPT-5.1 Codex", .reasoning = true, .input_image = true, .thinking_level_map = .{ .off = .unsupported, .minimal = .{ .mapped = "low" } } },
-    .{ .provider = .openai, .provider_id = "github-copilot", .api = .openai_responses, .id = "gpt-5.2-codex", .display = "GitHub Copilot GPT-5.2 Codex", .reasoning = true, .input_image = true, .thinking_level_map = .{ .off = .unsupported, .minimal = .{ .mapped = "low" }, .xhigh = .{ .mapped = "xhigh" } } },
-    .{ .provider = .openai, .provider_id = "github-copilot", .api = .openai_responses, .id = "gpt-5.3-codex", .display = "GitHub Copilot GPT-5.3 Codex", .reasoning = true, .input_image = true, .context_window = 1_000_000, .thinking_level_map = .{ .off = .unsupported, .minimal = .{ .mapped = "low" }, .xhigh = .{ .mapped = "xhigh" } } },
-    .{ .provider = .openai, .provider_id = "github-copilot", .api = .openai_responses, .id = "gpt-5.5", .display = "GitHub Copilot GPT-5.5", .reasoning = true, .input_image = true, .context_window = 1_000_000, .thinking_level_map = .{ .off = .unsupported, .minimal = .{ .mapped = "low" }, .xhigh = .{ .mapped = "xhigh" } } },
-    .{ .provider = .anthropic, .provider_id = "github-copilot", .api = .anthropic_messages, .id = "claude-haiku-4.5", .display = "GitHub Copilot Claude Haiku 4.5", .input_image = true },
-    .{ .provider = .anthropic, .provider_id = "github-copilot", .api = .anthropic_messages, .id = "claude-sonnet-4.5", .display = "GitHub Copilot Claude Sonnet 4.5", .reasoning = true, .input_image = true },
-    .{ .provider = .anthropic, .provider_id = "github-copilot", .api = .anthropic_messages, .id = "claude-sonnet-4.6", .display = "GitHub Copilot Claude Sonnet 4.6", .reasoning = true, .input_image = true, .context_window = 1_000_000, .thinking_level_map = .{ .minimal = .{ .mapped = "low" }, .max = .{ .mapped = "max" } } },
-    .{ .provider = .anthropic, .provider_id = "github-copilot", .api = .anthropic_messages, .id = "claude-opus-4.7", .display = "GitHub Copilot Claude Opus 4.7", .reasoning = true, .input_image = true, .context_window = 1_000_000, .thinking_level_map = .{ .minimal = .{ .mapped = "low" }, .xhigh = .{ .mapped = "xhigh" }, .max = .{ .mapped = "max" } } },
-    .{ .provider = .anthropic, .provider_id = "github-copilot", .api = .anthropic_messages, .id = "claude-opus-5", .display = "GitHub Copilot Claude Opus 5", .reasoning = true, .input_image = true, .context_window = 1_000_000, .thinking_level_map = .{ .minimal = .{ .mapped = "low" }, .xhigh = .{ .mapped = "xhigh" }, .max = .{ .mapped = "max" } } },
-
-    // Kimi For Coding subscription models use Anthropic Messages with Kimi OAuth/API-key auth.
-    .{ .provider = .kimi_coding, .api = .anthropic_messages, .id = "kimi-for-coding", .display = "Kimi For Coding", .reasoning = true, .cost = .{ .input = 0.95, .output = 4, .cache_read = 0.19, .cache_write = 0 } },
-    .{ .provider = .kimi_coding, .api = .anthropic_messages, .id = "k3", .display = "Kimi K3", .reasoning = true, .max_tokens = 131_072, .thinking_level_map = .{ .off = .unsupported, .minimal = .unsupported, .low = .{ .mapped = "low" }, .medium = .unsupported, .high = .{ .mapped = "high" }, .xhigh = .unsupported, .max = .{ .mapped = "max" } }, .cost = .{ .input = 3, .output = 15, .cache_read = 0.3, .cache_write = 0 } },
-    .{ .provider = .kimi_coding, .api = .anthropic_messages, .id = "kimi-for-coding-highspeed", .display = "Kimi For Coding Highspeed", .reasoning = true, .cost = .{ .input = 1.9, .output = 8, .cache_read = 0.38, .cache_write = 0 } },
-
-    // Amazon Bedrock (curated executable entry; full authoritative catalog is separate)
-    .{ .provider = .amazon_bedrock, .api = .bedrock_converse_stream, .id = "anthropic.claude-sonnet-4-20250514-v1:0", .display = "Amazon Bedrock Claude Sonnet 4", .reasoning = true, .input_image = true },
-
-    // Radius / Pi-native gateway
-    .{ .provider = .radius, .api = .pi_messages, .id = "auto", .display = "Radius Auto", .context_window = 128_000, .max_tokens = 16_384 },
-
+/// Exact built-in pi-ai 0.84.1 catalog plus native-only local/runtime entries.
+/// The generated rows retain provider identity while selecting a native API transport per model.
+const native_extra_models = [_]ModelInfo{
+    .{ .provider = .radius, .api = .pi_messages, .id = "auto", .display = "Radius Auto", .base_url = "https://radius.pi.dev", .context_window = 128_000, .max_tokens = 16_384 },
+    .{ .provider = .ollama, .id = "llama3.2", .display = "Ollama llama3.2", .base_url = "http://127.0.0.1:11434/v1" },
+    .{ .provider = .lmstudio, .id = "local-model", .display = "LM Studio local model", .base_url = "http://127.0.0.1:1234/v1" },
+    .{ .provider = .vllm, .id = "local-model", .display = "vLLM local model", .base_url = "http://127.0.0.1:8000/v1" },
+    .{ .provider = .perplexity, .id = "sonar", .display = "Perplexity Sonar", .base_url = "https://api.perplexity.ai" },
     .{ .provider = .mock, .id = "mock", .display = "Mock (scripted)", .context_window = 1_000_000, .max_tokens = 1_000_000 },
 };
+
+pub const known_models = catalog_generated.rows(ModelInfo) ++ native_extra_models;
 
 pub fn credentialEnvName(provider: Provider) ?[]const u8 {
     return switch (provider) {
@@ -462,6 +353,22 @@ pub fn credentialEnvName(provider: Provider) ?[]const u8 {
         .baseten => "BASETEN_API_KEY",
         .qwen_token_plan, .qwen_token_plan_individual => "QWEN_TOKEN_PLAN_API_KEY",
         .qwen_token_plan_cn => "QWEN_TOKEN_PLAN_CN_API_KEY",
+        .ant_ling => "ANT_LING_API_KEY",
+        .azure_openai_responses => "AZURE_OPENAI_API_KEY",
+        .google_vertex => "GOOGLE_CLOUD_API_KEY",
+        .huggingface => "HF_TOKEN",
+        .minimax => "MINIMAX_API_KEY",
+        .minimax_cn => "MINIMAX_CN_API_KEY",
+        .moonshotai, .moonshotai_cn => "MOONSHOT_API_KEY",
+        .opencode, .opencode_go => "OPENCODE_API_KEY",
+        .openai_codex => null,
+        .vercel_ai_gateway => "AI_GATEWAY_API_KEY",
+        .xiaomi => "XIAOMI_API_KEY",
+        .xiaomi_token_plan_ams => "XIAOMI_TOKEN_PLAN_AMS_API_KEY",
+        .xiaomi_token_plan_cn => "XIAOMI_TOKEN_PLAN_CN_API_KEY",
+        .xiaomi_token_plan_sgp => "XIAOMI_TOKEN_PLAN_SGP_API_KEY",
+        .zai => "ZAI_API_KEY",
+        .zai_coding_cn => "ZAI_CODING_CN_API_KEY",
         .ollama, .lmstudio, .vllm, .mock => null,
     };
 }
@@ -483,6 +390,11 @@ pub fn resolveApiKey(provider: Provider, explicit: ?[]const u8, environ: *const 
 
 pub fn hasUsableCredential(provider: Provider, explicit: ?[]const u8, environ: *const std.process.Environ.Map) bool {
     if (resolveApiKey(provider, explicit, environ) != null) return true;
+    if (provider == .google_vertex) {
+        return environ.get("GOOGLE_APPLICATION_CREDENTIALS") != null or
+            environ.get("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE") != null or
+            environ.get("GOOGLE_CLOUD_PROJECT") != null or environ.get("GCLOUD_PROJECT") != null;
+    }
     if (provider == .amazon_bedrock) {
         const has_access_pair = environ.get("AWS_ACCESS_KEY_ID") != null and environ.get("AWS_SECRET_ACCESS_KEY") != null;
         const has_profile = environ.get("AWS_PROFILE") != null or environ.get("AWS_DEFAULT_PROFILE") != null;
@@ -500,10 +412,12 @@ pub fn resolveProvider(explicit: ?[]const u8, environ: *const std.process.Enviro
 
     // Match upstream intent: select a configured provider, preserving its real identity.
     const priority = [_]Provider{
-        .openai,                .anthropic,             .google,         .openrouter,  .xai,        .groq,            .deepseek,
-        .together,              .fireworks,             .mistral,        .cerebras,    .perplexity, .nvidia,          .radius,
-        .cloudflare_workers_ai, .cloudflare_ai_gateway, .github_copilot, .kimi_coding, .baseten,    .qwen_token_plan, .qwen_token_plan_individual,
-        .qwen_token_plan_cn,    .amazon_bedrock,
+        .openai,                .anthropic,             .google,                .openrouter,             .xai,           .groq,              .deepseek,
+        .together,              .fireworks,             .mistral,               .cerebras,               .perplexity,    .nvidia,            .radius,
+        .cloudflare_workers_ai, .cloudflare_ai_gateway, .github_copilot,        .kimi_coding,            .baseten,       .qwen_token_plan,   .qwen_token_plan_individual,
+        .qwen_token_plan_cn,    .amazon_bedrock,        .ant_ling,              .azure_openai_responses, .google_vertex, .huggingface,       .minimax,
+        .minimax_cn,            .moonshotai,            .moonshotai_cn,         .opencode,               .opencode_go,   .vercel_ai_gateway, .xiaomi,
+        .xiaomi_token_plan_ams, .xiaomi_token_plan_cn,  .xiaomi_token_plan_sgp, .zai,                    .zai_coding_cn,
     };
     for (priority) |p| if (hasUsableCredential(p, null, environ)) return p;
     return .openai;
@@ -512,30 +426,43 @@ pub fn resolveProvider(explicit: ?[]const u8, environ: *const std.process.Enviro
 pub fn defaultModel(provider: Provider) []const u8 {
     return switch (provider) {
         .openai => "gpt-4o-mini",
-        .anthropic => "claude-sonnet-4-20250514",
-        .google => "gemini-2.0-flash",
+        .anthropic => "claude-sonnet-4-6",
+        .google => "gemini-2.5-flash",
         .mock => "mock",
         .groq => "llama-3.3-70b-versatile",
-        .together => "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
-        .deepseek => "deepseek-chat",
+        .together => "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+        .deepseek => "deepseek-v4-flash",
         .ollama => "llama3.2",
         .openrouter => "openrouter/auto",
-        .xai => "grok-3",
+        .xai => "grok-4.5",
         .mistral => "mistral-large-latest",
-        .fireworks => "accounts/fireworks/models/llama-v3p1-70b-instruct",
-        .cerebras => "llama3.1-70b",
+        .fireworks => "accounts/fireworks/models/glm-5p2",
+        .cerebras => "gpt-oss-120b",
         .lmstudio, .vllm => "local-model",
         .perplexity => "sonar",
-        .nvidia => "meta/llama-3.1-70b-instruct",
+        .nvidia => "deepseek-ai/deepseek-v4-pro-0813",
         .radius => "auto",
         .cloudflare_workers_ai => "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-        .cloudflare_ai_gateway => "workers-ai/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-        .amazon_bedrock => "anthropic.claude-sonnet-4-20250514-v1:0",
+        .cloudflare_ai_gateway => "claude-sonnet-4.6",
+        .amazon_bedrock => "anthropic.claude-sonnet-4-6",
         .github_copilot => "gpt-5-mini",
         .kimi_coding => "kimi-for-coding",
         .baseten => "zai-org/GLM-5.2",
         .qwen_token_plan, .qwen_token_plan_cn => "qwen3.7-max",
         .qwen_token_plan_individual => "qwen3.8-max",
+        .ant_ling => "Ling-2.6-flash",
+        .azure_openai_responses => "gpt-5.2",
+        .google_vertex => "gemini-2.5-pro",
+        .huggingface => "deepseek-ai/DeepSeek-V3",
+        .minimax, .minimax_cn => "MiniMax-M2.7",
+        .moonshotai, .moonshotai_cn => "kimi-k2.5",
+        .opencode => "big-pickle",
+        .opencode_go => "glm-5.2",
+        .openai_codex => "gpt-5.6-sol",
+        .vercel_ai_gateway => "anthropic/claude-sonnet-4.6",
+        .xiaomi => "mimo-v2-flash",
+        .xiaomi_token_plan_ams, .xiaomi_token_plan_cn, .xiaomi_token_plan_sgp => "mimo-v2.5",
+        .zai, .zai_coding_cn => "glm-5.2",
     };
 }
 
@@ -567,6 +494,24 @@ pub fn defaultBaseUrl(provider: Provider) []const u8 {
         .baseten => "https://inference.baseten.co/v1",
         .qwen_token_plan, .qwen_token_plan_individual => "https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1",
         .qwen_token_plan_cn => "https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1",
+        .ant_ling => "https://api.ant-ling.com/v1",
+        .azure_openai_responses => "",
+        .google_vertex => "https://aiplatform.googleapis.com/v1/publishers/google",
+        .huggingface => "https://router.huggingface.co/v1",
+        .minimax => "https://api.minimax.io/anthropic",
+        .minimax_cn => "https://api.minimaxi.com/anthropic",
+        .moonshotai => "https://api.moonshot.ai/v1",
+        .moonshotai_cn => "https://api.moonshot.cn/v1",
+        .opencode => "https://opencode.ai/zen/v1",
+        .opencode_go => "https://opencode.ai/zen/go/v1",
+        .openai_codex => "https://chatgpt.com/backend-api",
+        .vercel_ai_gateway => "https://ai-gateway.vercel.sh",
+        .xiaomi => "https://api.xiaomimimo.com/v1",
+        .xiaomi_token_plan_ams => "https://token-plan-ams.xiaomimimo.com/v1",
+        .xiaomi_token_plan_cn => "https://token-plan-cn.xiaomimimo.com/v1",
+        .xiaomi_token_plan_sgp => "https://token-plan-sgp.xiaomimimo.com/v1",
+        .zai => "https://api.z.ai/api/coding/paas/v4",
+        .zai_coding_cn => "https://open.bigmodel.cn/api/coding/paas/v4",
     };
 }
 
@@ -587,26 +532,69 @@ test "provider identity is not collapsed" {
     try std.testing.expect(.openai == Provider.groq.transport());
 }
 
+test "every provider default resolves to its public catalog identity" {
+    inline for (std.meta.fields(Provider)) |field| {
+        const provider: Provider = @enumFromInt(field.value);
+        const wanted = defaultModel(provider);
+        var found = false;
+        for (known_models) |model| {
+            if (std.ascii.eqlIgnoreCase(model.providerName(), provider.name()) and std.mem.eql(u8, model.id, wanted)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) std.debug.print("missing default model: {s}/{s}\n", .{ provider.name(), wanted });
+        try std.testing.expect(found);
+    }
+}
+
 test "catalog has distinct gateway provider ids" {
     var saw_groq = false;
     var saw_openrouter = false;
     for (known_models) |m| {
-        saw_groq = saw_groq or m.provider == .groq;
-        saw_openrouter = saw_openrouter or m.provider == .openrouter;
+        saw_groq = saw_groq or std.mem.eql(u8, m.providerName(), "groq");
+        saw_openrouter = saw_openrouter or std.mem.eql(u8, m.providerName(), "openrouter");
     }
     try std.testing.expect(saw_groq and saw_openrouter);
+}
+
+test "generated catalog preserves exact upstream identity cardinality" {
+    try std.testing.expectEqual(@as(usize, 1258), catalog_generated.model_count);
+    try std.testing.expectEqual(@as(usize, 39), catalog_generated.provider_count);
+    try std.testing.expectEqual(@as(usize, 1264), known_models.len);
+    try std.testing.expectEqualStrings("0.84.1", catalog_generated.upstream_version);
+    try std.testing.expectEqualStrings("0c3347c3bcf0d71a3d2b8b6bf9d8aee899cab258abc50a63a57db1282729ef2f", catalog_generated.source_sha256);
+
+    var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var identities: std.StringHashMap(void) = .init(a);
+    defer identities.deinit();
+    var public_providers: std.StringHashMap(void) = .init(a);
+    defer public_providers.deinit();
+    for (known_models[0..catalog_generated.model_count]) |model| {
+        const identity = try std.fmt.allocPrint(a, "{s}\x00{s}", .{ model.providerName(), model.id });
+        try std.testing.expect(!identities.contains(identity));
+        try identities.put(identity, {});
+        try public_providers.put(model.providerName(), {});
+        try std.testing.expect(Provider.fromString(model.providerName()) != null);
+        try std.testing.expect(model.base_url != null);
+        try std.testing.expect(model.context_window > 0);
+        try std.testing.expect(model.max_tokens > 0);
+    }
+    try std.testing.expectEqual(@as(usize, 39), public_providers.count());
 }
 
 test "catalog exposes the current OpenRouter free capability router" {
     var found: ?ModelInfo = null;
     for (known_models) |model| {
-        if (model.provider == .openrouter and std.mem.eql(u8, model.id, "openrouter/free")) {
+        if (std.mem.eql(u8, model.providerName(), "openrouter") and std.mem.eql(u8, model.id, "openrouter/free")) {
             found = model;
             break;
         }
     }
     const model = found orelse return error.TestExpectedEqual;
-    try std.testing.expectEqualStrings("OpenRouter Free Models Router", model.display);
+    try std.testing.expectEqualStrings("Free Models Router", model.display);
     try std.testing.expect(model.reasoning);
     try std.testing.expect(model.thinking_level_map.?.off == .unsupported);
     try std.testing.expect(model.clampThinkingLevel(.off) == .minimal);
@@ -717,7 +705,7 @@ test "Kimi Coding provider is Anthropic Messages with subscription metadata" {
     var canonical: ?ModelInfo = null;
     var fast: ?ModelInfo = null;
     for (known_models) |model| {
-        if (model.provider != .kimi_coding) continue;
+        if (!std.mem.eql(u8, model.providerName(), "kimi-coding")) continue;
         if (std.mem.eql(u8, model.id, "k3")) k3 = model;
         if (std.mem.eql(u8, model.id, "kimi-for-coding")) canonical = model;
         if (std.mem.eql(u8, model.id, "kimi-for-coding-highspeed")) fast = model;
@@ -759,17 +747,14 @@ test "generated Baseten and Qwen catalogs preserve capability metadata" {
     var cn_count: usize = 0;
     var individual_count: usize = 0;
     for (known_models) |model| {
-        switch (model.provider) {
-            .qwen_token_plan => broad_count += 1,
-            .qwen_token_plan_cn => cn_count += 1,
-            .qwen_token_plan_individual => individual_count += 1,
-            else => {},
-        }
-        if (model.provider == .baseten and std.mem.eql(u8, model.id, "zai-org/GLM-5.2")) baseten_glm = model;
-        if (model.provider == .qwen_token_plan and std.mem.eql(u8, model.id, "qwen3.8-max")) qwen38 = model;
+        if (std.mem.eql(u8, model.providerName(), "qwen-token-plan")) broad_count += 1;
+        if (std.mem.eql(u8, model.providerName(), "qwen-token-plan-cn")) cn_count += 1;
+        if (std.mem.eql(u8, model.providerName(), "qwen-token-plan-individual")) individual_count += 1;
+        if (std.mem.eql(u8, model.providerName(), "baseten") and std.mem.eql(u8, model.id, "zai-org/GLM-5.2")) baseten_glm = model;
+        if (std.mem.eql(u8, model.providerName(), "qwen-token-plan") and std.mem.eql(u8, model.id, "qwen3.8-max")) qwen38 = model;
     }
-    try std.testing.expectEqual(@as(usize, 16), broad_count);
-    try std.testing.expectEqual(@as(usize, 16), cn_count);
+    try std.testing.expectEqual(@as(usize, 18), broad_count);
+    try std.testing.expectEqual(@as(usize, 18), cn_count);
     try std.testing.expectEqual(@as(usize, 7), individual_count);
     try std.testing.expect(baseten_glm != null and qwen38 != null);
     try std.testing.expect(baseten_glm.?.compat.thinking_format.? == .baseten);

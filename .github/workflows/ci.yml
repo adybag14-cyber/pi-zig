@@ -33,6 +33,20 @@ jobs:
       - name: Zig version
         run: zig version
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Verify generated model catalog
+        run: node scripts/generate_builtin_catalog.mjs --check
+
+      - name: Check Zig formatting
+        run: zig fmt --check build.zig src
+
+      - name: Audit native source
+        run: python scripts/audit_real_source.py
+
       - name: Build
         run: zig build -Doptimize=ReleaseSafe
 

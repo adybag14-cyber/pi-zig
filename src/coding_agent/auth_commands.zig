@@ -255,7 +255,7 @@ const Context = struct {
         if (self.models_file.findProvider(provider_id)) |provider| if (provider.api_key != null) return .api_key;
         const builtin = providers.Provider.fromString(provider_id) orelse return null;
         if (!std.ascii.eqlIgnoreCase(provider_id, builtin.name())) return null;
-        if (providers.resolveApiKey(builtin, null, self.environ) != null) return .api_key;
+        if (providers.hasUsableCredential(builtin, null, self.environ)) return .api_key;
         return null;
     }
 
@@ -264,7 +264,7 @@ const Context = struct {
         for (self.models_file.providers) |provider| if (provider.api_key != null) try appendUniqueProvider(self.gpa, out, provider.id);
         inline for (std.meta.fields(providers.Provider)) |field| {
             const p: providers.Provider = @enumFromInt(field.value);
-            if (providers.resolveApiKey(p, null, self.environ) != null) try appendUniqueProvider(self.gpa, out, p.name());
+            if (providers.hasUsableCredential(p, null, self.environ)) try appendUniqueProvider(self.gpa, out, p.name());
         }
     }
 };

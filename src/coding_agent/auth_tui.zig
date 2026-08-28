@@ -237,6 +237,11 @@ const Selector = struct {
                 .credential_type = .api_key,
                 .source = app_config.ENV_GEMINI_KEY,
             };
+            if (builtin == .google_vertex) {
+                if (self.environ.get("GOOGLE_APPLICATION_CREDENTIALS") != null) return .{ .credential_type = .api_key, .source = "GOOGLE_APPLICATION_CREDENTIALS" };
+                if (self.environ.get("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE") != null) return .{ .credential_type = .api_key, .source = "CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE" };
+                if (self.environ.get("GOOGLE_CLOUD_PROJECT") != null or self.environ.get("GCLOUD_PROJECT") != null) return .{ .credential_type = .api_key, .source = "Google ADC" };
+            }
             if (builtin == .amazon_bedrock) {
                 if (self.environ.get("AWS_PROFILE") != null) return .{ .credential_type = .api_key, .source = "AWS_PROFILE" };
                 if (self.environ.get("AWS_DEFAULT_PROFILE") != null) return .{ .credential_type = .api_key, .source = "AWS_DEFAULT_PROFILE" };

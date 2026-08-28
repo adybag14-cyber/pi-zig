@@ -467,6 +467,8 @@ pub const ClientPool = struct {
     active_api: @import("../ai/api.zig").Api = .openai_completions,
     /// Resolved models.json runtime endpoints/credentials. Borrowed for process lifetime.
     runtime_providers: []const RuntimeProviderConfig = &.{},
+    /// Effective static plus models.json catalog used for native hot switching.
+    model_catalog: []const providers.ModelInfo = &providers.known_models,
     /// Extension-defined OAuth resolver and currently derived request key.
     extension_oauth_bridge: ?ExtensionOAuthBridge = null,
     extension_oauth_provider: ?[]u8 = null,
@@ -868,6 +870,10 @@ pub const ClientPool = struct {
         self.runtime_providers = configs;
     }
 
+    pub fn setModelCatalog(self: *ClientPool, catalog: []const providers.ModelInfo) void {
+        self.model_catalog = if (catalog.len > 0) catalog else &providers.known_models;
+    }
+
     pub fn setExtensionOAuthBridge(self: *ClientPool, bridge: ?ExtensionOAuthBridge) void {
         self.extension_oauth_bridge = bridge;
         if (bridge == null) self.invalidateExtensionOAuth();
@@ -988,6 +994,13 @@ pub const ClientPool = struct {
         return provider_fallback;
     }
 
+    fn catalogModel(self: *const ClientPool, provider_id: []const u8, model_id: []const u8) ?providers.ModelInfo {
+        for (self.model_catalog) |model| {
+            if (std.ascii.eqlIgnoreCase(model.providerName(), provider_id) and std.mem.eql(u8, model.id, model_id)) return model;
+        }
+        return null;
+    }
+
     const RequestMetadata = struct {
         headers: []const metadata.Header = &.{},
         sampling_params: []const metadata.SamplingParam = &.{},
@@ -1028,7 +1041,28 @@ pub const ClientPool = struct {
             .context_window = self.primary_context_window,
             .api = self.primary_api,
             .model_cost = self.primary_model_cost,
+        } else if (self.catalogModel(provider_id, model_id)) |model| .{
+            .headers = model.headers,
+            .sampling_params = model.sampling_params,
+            .compat = model.compat,
+            .reasoning = model.reasoning,
+            .input_image = model.input_image,
+            .thinking_level_map = model.thinking_level_map,
+            .max_tokens = model.max_tokens,
+            .context_window = model.context_window,
+            .api = model.apiKind(),
+            .model_cost = model.cost,
         } else .{};
+        if (self.catalogModel(provider_id, model_id)) |model| {
+            const base_url = model.base_url orelse providers.defaultBaseUrl(model.provider);
+            const detected: metadata.Compat = switch (out.api) {
+                .openai_completions => metadata.detectOpenAICompat(provider_id, base_url, model.id),
+                .openai_responses, .openai_codex_responses, .azure_openai_responses => metadata.detectOpenAIResponsesCompat(provider_id, base_url, model.id),
+                .anthropic_messages => metadata.detectAnthropicCompat(provider_id, model.id),
+                else => .{},
+            };
+            out.compat = metadata.Compat.merge(detected, out.compat);
+        }
         out.compat = cloudflare.applyCompatDefaults(provider_id, model_id, out.compat);
         return out;
     }
@@ -1326,7 +1360,12 @@ pub const ClientPool = struct {
         // Only apply a built-in provider's env/cache credential when the public
         // identity is actually that provider. A custom OpenAI-compatible provider
         // must not accidentally inherit OPENAI_API_KEY.
-        if (!std.ascii.eqlIgnoreCase(provider_id, provider.name())) return null;
+        if (!std.ascii.eqlIgnoreCase(provider_id, provider.name())) {
+            if (providers.Provider.fromString(provider_id)) |public_provider| {
+                return if (self.environ) |env| providers.resolveApiKey(public_provider, null, env) else null;
+            }
+            return null;
+        }
         return switch (provider) {
             .openai => self.openai_key,
             .anthropic => if (self.environ) |env| providers.resolveApiKey(.anthropic, null, env) orelse self.anthropic_key else self.anthropic_key,
@@ -1345,6 +1384,7 @@ pub const ClientPool = struct {
             if (self.primary_base_url) |url| return url;
         }
         if (std.ascii.eqlIgnoreCase(provider_id, "openai")) return self.openai_base;
+        if (self.catalogModel(provider_id, model_id)) |model| if (model.base_url) |url| return url;
         return providers.defaultBaseUrl(provider);
     }
 
@@ -2226,6 +2266,7 @@ pub fn reloadDynamicAuthCatalog(state: *LiveState) !void {
 
     // Publish all borrowed slices before releasing the previous snapshot.
     state.model_catalog = fresh.model_catalog;
+    pool.setModelCatalog(fresh.model_catalog);
     pool.setRuntimeProviders(fresh.runtime_configs);
     if (state.dynamic_catalog_snapshot) |*old| old.deinit();
     state.dynamic_catalog_snapshot = fresh;
@@ -2241,7 +2282,7 @@ pub fn applyModel(state: *LiveState, new_id: []const u8) !void {
     var selected_id = new_id;
 
     if (state.client_pool) |pool| {
-        var fallback_configured_buf: [32][]const u8 = undefined;
+        var fallback_configured_buf: [256][]const u8 = undefined;
         var fallback_configured_len: usize = 0;
         if (state.configured_providers.len == 0) {
             inline for (std.meta.fields(providers.Provider)) |field| {
@@ -2251,7 +2292,7 @@ pub fn applyModel(state: *LiveState, new_id: []const u8) !void {
                     else => false,
                 };
                 if (!configured and std.ascii.eqlIgnoreCase(candidate.name(), pool.primary_provider_id) and pool.primary_key != null) configured = true;
-                if (!configured and std.ascii.eqlIgnoreCase(candidate.name(), pool.primary_provider_id)) {
+                if (!configured) {
                     configured = switch (candidate) {
                         .openai => pool.openai_key != null,
                         .anthropic => pool.anthropic_key != null,
@@ -2889,12 +2930,12 @@ test "applyModel fuzzy selection switches concrete provider" {
     };
     defer if (owned_flag) if (display) |v| gpa.free(v);
 
-    try applyModel(&state, "grok-3");
-    try std.testing.expect(pool.active_provider == .xai);
+    try applyModel(&state, "grok-4.5");
+    try std.testing.expect(pool.active_provider == .openai);
     try std.testing.expectEqualStrings("xai", provider_name.?);
-    try std.testing.expectEqualStrings("grok-3", display.?);
-    try std.testing.expectEqualStrings("https://api.x.ai/v1", pool.openai.?.base_url);
-    try std.testing.expectEqualStrings("xai-key", pool.openai.?.api_key);
+    try std.testing.expectEqualStrings("grok-4.5", display.?);
+    try std.testing.expectEqualStrings("https://api.x.ai/v1", pool.responses.?.base_url);
+    try std.testing.expectEqualStrings("xai-key", pool.responses.?.api_key);
 }
 
 test "applyModel hot-switches into arbitrary models.json provider identity" {
@@ -3528,13 +3569,13 @@ test "dynamic Copilot catalog reload synthesizes account model runtime" {
     for (snapshot.model_catalog) |model| {
         if (!std.ascii.eqlIgnoreCase(model.providerName(), "github-copilot") or !std.mem.eql(u8, model.id, "gpt-5.4")) continue;
         model_ok = model.apiKind() == .openai_responses and
-            model.context_window == 1_000_000 and model.max_tokens == 8_192;
+            model.context_window == 1_000_000 and model.max_tokens == 128_000;
     }
     for (snapshot.runtime_configs) |runtime| {
         if (!std.ascii.eqlIgnoreCase(runtime.id, "github-copilot") or runtime.model_id == null or
             !std.mem.eql(u8, runtime.model_id.?, "gpt-5.4")) continue;
         runtime_ok = runtime.transport == .openai and runtime.api == .openai_responses and
-            runtime.context_window == 1_000_000 and runtime.max_tokens == 8_192 and
+            runtime.context_window == 1_000_000 and runtime.max_tokens == 128_000 and
             runtime.api_key != null and std.mem.eql(u8, runtime.api_key.?, "copilot-access");
     }
     try std.testing.expect(model_ok);

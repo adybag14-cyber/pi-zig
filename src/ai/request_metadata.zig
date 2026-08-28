@@ -159,11 +159,15 @@ pub const Compat = struct {
     supports_openai_grammar_tools: ?bool = null,
     /// OpenAI Responses client-executed tool search / deferred tool loading.
     supports_tool_search: ?bool = null,
+    /// OpenAI Responses message-anchored `additional_tools` deferred loading.
+    supports_additional_tools: ?bool = null,
     /// Anthropic client-side deferred tool loading through tool_reference blocks.
     supports_tool_references: ?bool = null,
     supports_eager_tool_input_streaming: ?bool = null,
     supports_cache_control_on_tools: ?bool = null,
     supports_temperature: ?bool = null,
+    /// vLLM-compatible top-level reasoning token reservation.
+    supports_thinking_token_budget: ?bool = null,
     force_adaptive_thinking: ?bool = null,
     supports_strict_tools: ?bool = null,
     /// Kimi/OpenAI-completions transcript-driven deferred tool injection.
@@ -186,6 +190,9 @@ pub const Compat = struct {
     /// models.json tree, which remains alive for the runtime configuration.
     chat_template_kwargs: ?std.json.ObjectMap = null,
     chat_template_args: ?std.json.ObjectMap = null,
+    /// Static generated Baseten catalogs use one canonical template argument.
+    /// models.json retains the general ObjectMap representation above.
+    chat_template_args_enable_thinking: ?bool = null,
     openrouter_routing: ?OpenRouterRouting = null,
     vercel_gateway_routing: ?VercelGatewayRouting = null,
 
@@ -223,6 +230,7 @@ pub fn detectOpenAIResponsesCompat(provider_id: []const u8, base_url: []const u8
         .supports_long_cache_retention = true,
         .supports_strict_mode = false,
         .supports_openai_grammar_tools = grammar,
+        .supports_additional_tools = false,
         .supports_tool_search = false,
         .supports_explicit_prompt_cache_mode = false,
     };
@@ -266,6 +274,7 @@ pub fn detectOpenAICompat(provider_id: []const u8, base_url: []const u8, model_i
         .zai_tool_stream = false,
         .supports_strict_mode = !is_moonshot and !is_together and !is_cloudflare_gateway and !is_nvidia,
         .supports_openai_grammar_tools = false,
+        .supports_thinking_token_budget = false,
         .cache_control_format = if (providerIs(provider_id, "openrouter") and std.mem.startsWith(u8, model_id, "anthropic/")) .anthropic else null,
         .send_session_affinity_headers = false,
         .session_affinity_format = if (is_openrouter) .openrouter else .openai,

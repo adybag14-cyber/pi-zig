@@ -8,6 +8,11 @@ All notable changes to `pi-zig` are documented in this file.
 
 - Current zero-cost `openrouter/free` capability-router catalog entry with
   reasoning, image-input, context-window, and no-spend metadata.
+- Exact generated Pi AI 0.84.1 catalog coverage: 1,258 models across 39
+  providers, including per-model APIs, endpoints, headers, pricing tiers,
+  reasoning maps, and compatibility metadata.
+- Deterministic catalog source/generator checks that reject unknown or dropped
+  model fields and run on every CI platform.
 
 ### Fixed
 
@@ -18,6 +23,13 @@ All notable changes to `pi-zig` are documented in this file.
   `INVALID_INFO_CLASS` diagnostics in one-shot and JSON output.
 - OpenRouter free-router requests no longer send a forbidden explicit
   `reasoning.effort: "none"` value when thinking is left at its default.
+- Native hot switching now retains generated per-model endpoints, headers,
+  credentials, API protocols, pricing, and compatibility metadata for mixed
+  providers such as GitHub Copilot, Cloudflare, Fireworks, and OpenCode.
+- Added OpenAI Responses `additional_tools` replay and vLLM
+  `thinking_token_budget` behavior, including models.json compatibility flags.
+- Daily free-tier quota responses fail fast instead of consuming the retry
+  budget on deterministic OpenRouter 429 errors.
 
 ## [1.0.0] - 2026-08-28
 

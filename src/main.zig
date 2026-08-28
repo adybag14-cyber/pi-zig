@@ -2163,7 +2163,9 @@ const RuntimeResourceReloadContext = struct {
         // before the old provider registry is destroyed.
         if (self.live.client_pool) |pool| {
             const old_runtimes = self.provider_registry.runtimes();
+            const old_catalog = self.provider_registry.catalog();
             pool.invalidateExtensionOAuth();
+            pool.setModelCatalog(new_provider_registry.catalog());
             pool.setRuntimeProviders(new_provider_registry.runtimes());
             // Make the freshly loaded auth.json/models.json snapshot
             // authoritative for the replacement. A deep copy in
@@ -2173,6 +2175,7 @@ const RuntimeResourceReloadContext = struct {
             applyReloadClientSettings(pool, &fresh_credentials, &fresh_settings) catch |err| {
                 self.extension_oauth.registry = old_oauth_registry;
                 self.provider_stream.registry = old_stream_registry;
+                pool.setModelCatalog(old_catalog);
                 pool.setRuntimeProviders(old_runtimes);
                 if (client_backup) |*backup| backup.restore(pool) catch return error.ReloadRollbackFailed;
                 if (active_provider != null and active_model != null) {
@@ -2193,6 +2196,7 @@ const RuntimeResourceReloadContext = struct {
                     pool.switchToIdentity(model.providerName(), model.provider, model.id) catch |err| {
                         self.extension_oauth.registry = old_oauth_registry;
                         self.provider_stream.registry = old_stream_registry;
+                        pool.setModelCatalog(old_catalog);
                         pool.setRuntimeProviders(old_runtimes);
                         if (client_backup) |*backup| backup.restore(pool) catch return error.ReloadRollbackFailed;
                         pool.switchToIdentity(active_provider.?, client_backup.?.active_provider, active_model.?) catch return error.ReloadRollbackFailed;
@@ -2255,7 +2259,10 @@ const RuntimeResourceReloadContext = struct {
         }
 
         self.live.model_catalog = self.provider_registry.catalog();
-        if (self.live.client_pool) |pool| pool.setRuntimeProviders(self.provider_registry.runtimes());
+        if (self.live.client_pool) |pool| {
+            pool.setModelCatalog(self.provider_registry.catalog());
+            pool.setRuntimeProviders(self.provider_registry.runtimes());
+        }
         self.live.agent_cfg.tool_filter = self.active_filter.*;
         self.live.agent_cfg.max_turns = fresh_settings.max_turns;
         self.live.agent_cfg.auto_compaction_enabled = fresh_settings.compaction_enabled orelse true;
@@ -3747,6 +3754,7 @@ pub fn main(init: std.process.Init) !void {
     client_pool.setPrimaryRequestMetadata(primary_runtime.headers, primary_runtime.sampling_params, primary_runtime.compat, primary_runtime.max_tokens, primary_runtime.context_window, primary_runtime.input_image);
     client_pool.setPrimaryModelRuntime(primary_runtime.api, primary_runtime.model_cost);
     client_pool.setPrimaryThinkingMetadata(primary_runtime.reasoning, primary_runtime.thinking_level_map);
+    client_pool.setModelCatalog(model_catalog);
     client_pool.setRuntimeProviders(extension_provider_registry.runtimes());
     const cache_retention = if (environ.get("PI_CACHE_RETENTION")) |value|
         (ai.request_metadata.CacheRetention.parse(value) orelse .short)

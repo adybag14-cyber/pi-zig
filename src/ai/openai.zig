@@ -942,10 +942,7 @@ fn writeThinkingFields(w: anytype, options: RequestOptions) !void {
         if (!hasSampling(options.sampling_params, "chat_template_args")) {
             if (options.compat.chat_template_args != null) {
                 try writeChatTemplateObject(w, "chat_template_args", options.compat.chat_template_args, options);
-            } else {
-                // Generated Baseten models all use
-                // { enable_thinking: { $var: "thinking.enabled" } }. Keep the
-                // static catalog allocation-free while preserving that wire shape.
+            } else if (options.compat.chat_template_args_enable_thinking == true) {
                 try w.print(",\"chat_template_args\":{{\"enable_thinking\":{s}}}", .{if (enabled) "true" else "false"});
             }
         }
@@ -1026,6 +1023,20 @@ fn writeThinkingFields(w: anytype, options: RequestOptions) !void {
             try std.json.Stringify.value(value, .{}, w);
         }
     }
+}
+
+fn writeThinkingTokenBudget(w: anytype, options: RequestOptions) !void {
+    if (options.compat.supports_thinking_token_budget != true or !options.reasoning or options.thinking == .off) return;
+    if (options.max_tokens <= 1024 or hasSampling(options.sampling_params, "thinking_token_budget")) return;
+    const requested: u64 = switch (options.thinking) {
+        .minimal => 1024,
+        .low => 2048,
+        .medium => 8192,
+        .high, .xhigh, .max => 16_384,
+        .off => unreachable,
+    };
+    const budget = @min(requested, options.max_tokens - 1024);
+    if (budget > 0) try w.print(",\"thinking_token_budget\":{d}", .{budget});
 }
 
 fn isToolIdChar(c: u8) bool {
@@ -1440,6 +1451,7 @@ pub fn buildRequestBodyConfigured(
         }
     }
     try writeThinkingFields(w, options);
+    try writeThinkingTokenBudget(w, options);
     try w.writeAll(",\"messages\":[");
     var first_message = true;
     var last_role: ?[]const u8 = null;
@@ -2130,7 +2142,7 @@ test "static Baseten compatibility emits generated chat template toggle" {
     const high = try buildRequestBodyConfigured(gpa, "m", &msgs, "[]", .{
         .thinking = .high,
         .thinking_level_map = thinking_mod.ThinkingLevelMap{ .off = .{ .mapped = "none" }, .high = .{ .mapped = "high" } },
-        .compat = .{ .thinking_format = .baseten, .supports_reasoning_effort = true },
+        .compat = .{ .thinking_format = .baseten, .supports_reasoning_effort = true, .chat_template_args_enable_thinking = true },
     });
     defer gpa.free(high);
     try std.testing.expect(std.mem.indexOf(u8, high, "\"chat_template_args\":{\"enable_thinking\":true}") != null);
@@ -2139,10 +2151,34 @@ test "static Baseten compatibility emits generated chat template toggle" {
     const off = try buildRequestBodyConfigured(gpa, "m", &msgs, "[]", .{
         .thinking = .off,
         .reasoning = true,
-        .compat = .{ .thinking_format = .baseten },
+        .compat = .{ .thinking_format = .baseten, .chat_template_args_enable_thinking = true },
     });
     defer gpa.free(off);
     try std.testing.expect(std.mem.indexOf(u8, off, "\"chat_template_args\":{\"enable_thinking\":false}") != null);
+}
+
+test "vLLM thinking token budget reserves answer space" {
+    const gpa = std.testing.allocator;
+    const msgs = [_]ai.ChatMessage{.{ .role = "user", .content = "hi" }};
+    const body = try buildRequestBodyConfigured(gpa, "m", &msgs, "[]", .{
+        .thinking = .high,
+        .reasoning = true,
+        .max_tokens = 2_000,
+        .compat = .{ .supports_thinking_token_budget = true },
+    });
+    defer gpa.free(body);
+    try std.testing.expect(std.mem.indexOf(u8, body, "\"thinking_token_budget\":976") != null);
+
+    const overridden = try buildRequestBodyConfigured(gpa, "m", &msgs, "[]", .{
+        .thinking = .high,
+        .reasoning = true,
+        .max_tokens = 2_000,
+        .sampling_params = &.{.{ .name = "thinking_token_budget", .value_json = "123" }},
+        .compat = .{ .supports_thinking_token_budget = true },
+    });
+    defer gpa.free(overridden);
+    try std.testing.expect(std.mem.indexOf(u8, overridden, "\"thinking_token_budget\":123") != null);
+    try std.testing.expect(std.mem.indexOf(u8, overridden, "\"thinking_token_budget\":976") == null);
 }
 
 test "thinking dialects respect mapped and explicitly unsupported levels" {

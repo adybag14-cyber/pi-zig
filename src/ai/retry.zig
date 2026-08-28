@@ -160,6 +160,8 @@ const non_retryable_patterns = [_][]const u8{
     "insufficient_quota",
     "out of budget",
     "quota exceeded",
+    "free-models-per-day",
+    "free model daily limit",
     "billing",
 };
 
@@ -384,6 +386,7 @@ test "retry classifier rejects quota billing and deterministic failures" {
         "insufficient_quota",
         "Monthly usage limit reached; enable available balance",
         "quota exceeded",
+        "HTTP 429: Rate limit exceeded: free-models-per-day. Wait for the daily reset or purchase credits to raise your free model daily limit.",
         "billing account disabled",
         "invalid request body",
         "authentication failed",

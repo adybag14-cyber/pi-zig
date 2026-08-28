@@ -156,6 +156,7 @@ fn resolveHeaders(
     gpa: std.mem.Allocator,
     io: Io,
     environ: *const std.process.Environ.Map,
+    builtin_model: providers.ModelInfo,
     provider: ?*const models_file_mod.ProviderConfig,
     model: ?*const models_file_mod.ModelConfig,
     override: ?*const models_file_mod.ModelOverride,
@@ -172,6 +173,7 @@ fn resolveHeaders(
     // Match upstream rawModelHeaders composition: override first, then model
     // definition. A definition therefore wins on a duplicate model-header key.
     if (override) |cfg| for (cfg.headers) |header| try putHeader(gpa, io, environ, &out, header);
+    for (builtin_model.headers) |header| try putHeader(gpa, io, environ, &out, header);
     if (model) |cfg| for (cfg.headers) |header| try putHeader(gpa, io, environ, &out, header);
     return try out.toOwnedSlice(gpa);
 }
@@ -196,6 +198,7 @@ fn putSampling(gpa: std.mem.Allocator, out: *std.ArrayList(metadata.SamplingPara
 
 fn resolveSampling(
     gpa: std.mem.Allocator,
+    builtin_model: providers.ModelInfo,
     model: ?*const models_file_mod.ModelConfig,
     override: ?*const models_file_mod.ModelOverride,
 ) ![]metadata.SamplingParam {
@@ -207,6 +210,7 @@ fn resolveSampling(
         }
         out.deinit(gpa);
     }
+    for (builtin_model.sampling_params) |param| try putSampling(gpa, &out, param);
     if (model) |cfg| for (cfg.sampling_params) |param| try putSampling(gpa, &out, param);
     // Unlike model headers, upstream samplingParams are explicitly merged with
     // modelOverrides last, so override values win by key.
@@ -401,6 +405,7 @@ pub fn resolveForModel(
         if (std.ascii.eqlIgnoreCase(provider_id, "openai")) {
             if (environ.get(config.ENV_OPENAI_BASE)) |url| break :blk url;
         }
+        if (model.base_url) |url| break :blk url;
         if (effective_api == .google_vertex) break :blk "https://aiplatform.googleapis.com/v1/publishers/google";
         if (providers.compatBaseUrl(provider_id)) |url| break :blk url;
         break :blk providers.defaultBaseUrl(transport);
@@ -413,7 +418,7 @@ pub fn resolveForModel(
     defer gpa.free(cf_base);
     const owned_base = try materializeGoogleVertexBaseUrl(gpa, environ, effective_api, cf_base, has_explicit_vertex_base, owned_key);
     errdefer gpa.free(owned_base);
-    const headers = try resolveHeaders(gpa, io, environ, configured_provider, configured_model, configured_override);
+    const headers = try resolveHeaders(gpa, io, environ, model, configured_provider, configured_model, configured_override);
     errdefer {
         for (headers) |header| {
             gpa.free(header.name);
@@ -421,7 +426,7 @@ pub fn resolveForModel(
         }
         if (headers.len > 0) gpa.free(headers);
     }
-    const sampling_params = try resolveSampling(gpa, configured_model, configured_override);
+    const sampling_params = try resolveSampling(gpa, model, configured_model, configured_override);
     errdefer {
         for (sampling_params) |param| {
             gpa.free(param.name);
@@ -463,6 +468,39 @@ pub fn resolveForModel(
         .max_tokens = model.max_tokens,
         .context_window = model.context_window,
     };
+}
+
+test "generated built-in models retain endpoint headers auth and mixed API transport" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var env = std.process.Environ.Map.init(gpa);
+    defer env.deinit();
+    try env.put("COPILOT_GITHUB_TOKEN", "copilot-token");
+
+    var responses_model: ?providers.ModelInfo = null;
+    var anthropic_model: ?providers.ModelInfo = null;
+    for (providers.known_models) |model| {
+        if (!std.mem.eql(u8, model.providerName(), "github-copilot")) continue;
+        if (std.mem.eql(u8, model.id, "gpt-5.4")) responses_model = model;
+        if (std.mem.eql(u8, model.id, "claude-sonnet-4.6")) anthropic_model = model;
+    }
+    try std.testing.expect(responses_model != null and anthropic_model != null);
+
+    var responses = try resolveForModel(gpa, io, &env, null, responses_model.?, .{});
+    defer responses.deinit();
+    try std.testing.expect(responses.transport == .openai);
+    try std.testing.expect(responses.api == .openai_responses);
+    try std.testing.expectEqualStrings("copilot-token", responses.api_key.?);
+    try std.testing.expectEqualStrings("https://api.individual.githubcopilot.com", responses.base_url);
+    try std.testing.expectEqual(@as(usize, 4), responses.headers.len);
+    try std.testing.expectEqual(@as(u64, 128_000), responses.max_tokens);
+    try std.testing.expectEqual(@as(usize, 1), responses.model_cost.tiers.len);
+
+    var anthropic = try resolveForModel(gpa, io, &env, null, anthropic_model.?, .{});
+    defer anthropic.deinit();
+    try std.testing.expect(anthropic.transport == .anthropic);
+    try std.testing.expect(anthropic.api == .anthropic_messages);
+    try std.testing.expectEqualStrings("copilot-token", anthropic.api_key.?);
 }
 
 test "runtime config keeps custom identity and resolves configured env key and model URL" {

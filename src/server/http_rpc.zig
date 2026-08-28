@@ -973,7 +973,8 @@ pub const Server = struct {
             }
         }
         const environ = self.config.environ orelse return false;
-        return providers.hasUsableCredential(model.provider, null, environ);
+        const public_provider = providers.Provider.fromString(model.providerName()) orelse return false;
+        return providers.hasUsableCredential(public_provider, null, environ);
     }
 
     fn sessionResultJson(self: *Server, request_id: []const u8, command: []const u8, session: *session_store.Session, connection_id: []const u8) ![]u8 {
