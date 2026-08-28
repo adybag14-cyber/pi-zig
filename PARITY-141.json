@@ -1,0 +1,34 @@
+{
+  "checkpoint": 141,
+  "reference": {
+    "project": "earendil-works/pi",
+    "version": "0.84.1",
+    "archive": "pi-main (3)(1).zip"
+  },
+  "toolchain": "zig 0.16.0",
+  "measurements": {
+    "zig_source_files": 139,
+    "zig_source_lines": 63091,
+    "tests_passed": 644,
+    "tests_total": 644
+  },
+  "gains": [
+    "native telemetry contexts and spans",
+    "strict protocol-v1 server decoder",
+    "stateful native client, typed requests and leases",
+    "Kitty and iTerm2 terminal images",
+    "width-aware Markdown and LaTeX rendering",
+    "Kitty/xterm key parsing and incremental stdin framing",
+    "Unicode 15.1 terminal-cell semantics",
+    "retained stack, clipping, scrolling and scrollbar layout"
+  ],
+  "remaining_major": [
+    "arbitrary JavaScript/TypeScript extension compatibility",
+    "complete overlay/dialog/mouse/IME application TUI",
+    "original SQLite and remote session backends",
+    "complete enterprise provider auth/proxy/retry behavior",
+    "full auxiliary eval/client/server package breadth",
+    "exhaustive byte-level interoperability fixtures"
+  ],
+  "complete_parity_claimed": false
+}

@@ -1,0 +1,37 @@
+Pi Zig checkpoint 153 multi-image extension E2E
+================================================
+
+Fixture
+-------
+A trusted project TypeScript extension registered `multi_image_153`.
+The scripted mock model issued tool call ID `multi-call-153`.
+The extension streamed one text block plus two images, then returned one text block plus three images.
+
+Live partial result
+-------------------
+Text: partial-153
+Image 1: cGFydGlhbC0x / image/png
+Image 2: cGFydGlhbC0y / image/webp
+
+Final result
+------------
+Text: final-153
+Image 1: ZmluYWwtMQ== / image/jpeg
+Image 2: ZmluYWwtMg== / image/png
+Image 3: ZmluYWwtMw== / image/gif
+
+Validated surfaces
+------------------
+MULTI_IMAGE_EXECUTABLE_E2E=PASS
+JSON event order=PASS
+Partial image count=2
+Final image count=3
+Durable JSONL image count=3
+Durable image order and MIME types=PASS
+Final assistant response=multi-image-complete-153
+Process exit=0
+Process stderr bytes=0
+
+Additional integration closure
+------------------------------
+The complete Zig test topology also validates multi-image allocator ownership, session load/fork, hook replacement, custom rendering, sequential and parallel live updates, JSON mode, protocol v1, and every implemented multimodal provider serializer.

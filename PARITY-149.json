@@ -1,0 +1,47 @@
+{
+  "checkpoint": 149,
+  "reference": {
+    "project": "Pi",
+    "version": "0.84.1",
+    "baseline_checkpoint": 148,
+    "zig": "0.16.0",
+    "node": "22.16.0"
+  },
+  "measurements": {
+    "zig_files": 170,
+    "zig_lines": 83452,
+    "embedded_js_lines": 775,
+    "synthetic_files": 0,
+    "root_tests": {
+      "passed": 750,
+      "isolated": 7,
+      "failed": 0,
+      "total": 757
+    }
+  },
+  "implemented_or_substantial": [
+    "persistent JavaScript and TypeScript extension loading",
+    "custom message and durable entry renderer execution",
+    "ordered Markdown transformation before native final rendering",
+    "stateful tool call and result renderers",
+    "renderer-only built-in tool re-registration with native execution retained",
+    "ordered command and shortcut actions across startup interactive print and RPC",
+    "startup preflight and exactly-once deferred action replay",
+    "native sessions providers tools TUI protocol remote transport and SQLite persistence"
+  ],
+  "validated_e2e": [
+    "print startup action ordering without duplicate prompt",
+    "interactive custom message entry and Markdown rendering",
+    "single stateful custom tool call and result rendering",
+    "unchanged original built-in-tool-renderer.ts over native read"
+  ],
+  "remaining": [
+    "fully arbitrary extension component trees overlays dialogs and asynchronous invalidation",
+    "complete renderer details images partial updates and expanded-state fidelity",
+    "executable built-in tool replacement and function-valued providers",
+    "extension-owned OAuth and automatic npm dependency installation",
+    "complete original coding-agent screen wiring",
+    "server TLS and mutual TLS plus automatic image normalization",
+    "remaining enterprise credential retry and cross-language interoperability coverage"
+  ]
+}

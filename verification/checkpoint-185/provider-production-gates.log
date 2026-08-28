@@ -1,0 +1,8 @@
+production provider-method bridge e2e: ok
+production provider OAuth login bridge e2e: ok
+production provider refreshModels bridge e2e: ok
+production provider streamSimple bridge e2e: ok (14 ordered events)
+production provider-method integration: 13/13 checks passed
+production provider OAuth integration: 22/22 checks passed
+production provider refreshModels integration: 32/32 checks passed
+provider streamSimple production integration: 18/18

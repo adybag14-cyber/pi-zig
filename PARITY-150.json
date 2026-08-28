@@ -1,0 +1,50 @@
+{
+  "checkpoint": 150,
+  "reference": {
+    "project": "Pi",
+    "version": "0.84.1",
+    "baseline_checkpoint": 149,
+    "zig": "0.16.0",
+    "node": "22.16.0"
+  },
+  "measurements": {
+    "zig_files": 170,
+    "zig_lines": 84735,
+    "embedded_js_lines": 865,
+    "synthetic_files": 0,
+    "source_test_declarations": 778,
+    "root_tests": {
+      "passed": 760,
+      "isolated": 7,
+      "failed": 0,
+      "total": 767
+    }
+  },
+  "implemented_or_substantial": [
+    "persistent JavaScript and TypeScript extension loading",
+    "executable same-name replacement of native built-in tools",
+    "safe native delegation through original createReadTool and related factories",
+    "extension prepareArguments before native schema validation",
+    "ordered rich partial tool updates with text image details and error state",
+    "rich tool_result hook replacement across allocator boundaries",
+    "JSON print TUI protocol and session propagation for rich tool progress",
+    "deterministic script-worker teardown when SIGTERM is ignored",
+    "native sessions providers tools TUI protocol remote transport and SQLite persistence"
+  ],
+  "validated_e2e": [
+    "unchanged original tool-override.ts blocks sensitive read and logs access",
+    "unchanged original built-in-tool-renderer.ts delegates to native Zig read",
+    "TypeScript prepareArguments transforms legacy input before validation",
+    "ordered partial image and details update precedes rich final result",
+    "original tool_result hook replaces text image details and error state"
+  ],
+  "remaining": [
+    "true live cross-process onUpdate delivery and multiple-image fidelity",
+    "fully arbitrary extension component trees overlays dialogs and asynchronous invalidation",
+    "function-valued providers custom streams and extension-owned OAuth",
+    "automatic npm dependency installation",
+    "complete original coding-agent screen wiring",
+    "server TLS and mutual TLS plus automatic image normalization",
+    "remaining enterprise credential retry and cross-language interoperability coverage"
+  ]
+}

@@ -1,0 +1,67 @@
+Pi Zig checkpoint 155 package and extension end-to-end validation
+==================================================================
+
+Executable and environment
+--------------------------
+Zig toolchain: supplied 0.16.0 archive
+Node runtime: 22.16.0
+Network access: none; configurable package-manager behavior used a deterministic local wrapper
+
+Direct temporary local extension
+--------------------------------
+Direct TypeScript source accepted by --extension: PASS
+Temporary package scope used: PASS
+Extension tool registration and execution: PASS
+Provider-issued tool-call ID preserved: call-explicit-155
+Tool result: scoped:ok:call-explicit-155
+Final assistant response: explicit-extension-complete-155
+User packages.json created: no
+Temporary packages.json created: no
+Process stderr: 0 bytes
+EXPLICIT_LOCAL_EXTENSION_E2E=PASS
+
+Configured pnpm-compatible command
+----------------------------------
+Settings npmCommand used for all operations: PASS
+Manager detected as pnpm: PASS
+Pnpm-specific peer settings emitted: PASS
+User managed root: agent/npm
+Project managed root: project/.pi/npm
+Temporary managed root: agent/tmp/extensions/npm
+
+User package lifecycle
+----------------------
+Install npm:managed-155: PASS
+Machine-readable scope: user
+List user package: PASS
+Remove managed-155: PASS
+Final user registry: []
+CONFIGURED_PNPM_USER_LIFECYCLE=PASS
+
+Trusted project package lifecycle
+---------------------------------
+Install npm:project-155 with --local --approve: PASS
+Machine-readable scope: project
+Project package listed ahead of user scope: PASS
+Remove project-155 with --local --approve: PASS
+Final project registry: []
+PROJECT_SCOPE_TRUST_LIFECYCLE=PASS
+
+Temporary npm TypeScript extension
+----------------------------------
+Install npm:temporary-155 through -e: PASS
+Installed entrypoint location: agent/tmp/extensions/npm/node_modules/temporary-155/index.ts
+Node node_modules TypeScript transformation: PASS
+Extension tool execution: npm155:ok:npm-call-155
+Final assistant response: npm-temporary-complete-155
+Persistent temporary registry created: no
+Process stderr: 0 bytes
+TEMPORARY_NPM_TYPESCRIPT_EXTENSION_E2E=PASS
+
+Safety and persistence
+----------------------
+Project write required explicit trust: PASS
+Temporary source did not mutate user packages.json: PASS
+Temporary source did not mutate project packages.json: PASS
+Local extension source retained: PASS
+Package-manager invocation arguments verified: PASS

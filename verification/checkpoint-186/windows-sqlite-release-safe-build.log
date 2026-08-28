@@ -1,0 +1,7 @@
+Build Summary: 5/5 steps succeeded
+sqlite cached
++- install pi-sqlite cached
+|  +- compile exe pi-sqlite ReleaseSafe native cached 101ms MaxRSS:20M
++- install pi-sqlite-live cached
+   +- compile exe pi-sqlite-live ReleaseSafe native cached 101ms MaxRSS:20M
+

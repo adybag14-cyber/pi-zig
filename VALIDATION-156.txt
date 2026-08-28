@@ -1,0 +1,89 @@
+Pi Zig checkpoint 156 validation record
+=======================================
+
+Toolchain
+---------
+Zig: 0.16.0 from supplied archive
+Node: 22.16.0
+Reference source: supplied Pi 0.84.1 tree
+Baseline: uploaded checkpoint 155
+
+Source measurements
+-------------------
+Native Zig files: 172
+Native Zig lines: 91,776
+Embedded JavaScript bridge lines: 937
+Source-level Zig test declarations: 816
+Synthetic/generated feature files: 0
+Implementation diff before reports: 3 files, +569 / -14
+
+Static checks
+-------------
+zig fmt --check build.zig src: PASS
+node --check src/extensions/js_bridge.mjs: PASS
+python3 scripts/audit_real_source.py: PASS
+  zig_files=172
+  zig_loc=91776
+  synthetic_files=0
+git diff --check: PASS
+
+Focused test suites
+-------------------
+src/coding_agent/packages.zig: 32/32 PASS
+src/coding_agent/args.zig: 7/7 PASS
+src/extensions/js_runtime.zig: 10/10 PASS
+
+Complete build-test graph
+-------------------------
+All-package module graph: 815 passed, 7 skipped, 0 failed (822 cases)
+SQLite repository process: 11/11 PASS
+SQLite CLI/schema process: 8 passed, 6 isolated, 0 failed
+Ordinary executable process: 5/5 PASS
+SQLite live-persistence process: 5/5 PASS
+SQLite-enabled executable process: 5/5 PASS
+Build graph: 13/13 steps succeeded
+
+The seven root-graph skips are deliberate SQLite isolates. Their behavior is
+executed in the separately linked SQLite processes above.
+
+Builds
+------
+zig build -Doptimize=Debug: PASS
+zig build sqlite -Doptimize=Debug: PASS
+  pi-sqlite: PASS
+  pi-sqlite-live: PASS
+
+Executable types
+----------------
+pi: static Linux x86-64 Debug ELF
+pi-sqlite: Linux x86-64 Debug ELF linked to sqlite3/libc
+pi-sqlite-live: Linux x86-64 Debug ELF linked to sqlite3/libc
+
+Package recovery E2E
+--------------------
+pi repair --json: PASS
+Prepared Git checkout committed: PASS
+Previous backup removed: PASS
+Recovery marker removed: PASS
+Legacy settings package migrated: PASS
+Native packages.json re-read and validated: PASS
+Unrelated settings preserved: PASS
+Temporary/backup artifacts remaining: 0
+
+Archive and patch reconstruction
+--------------------------------
+Frozen source files: 260
+Pre-publication ZIP structural integrity: PASS
+ZIP extraction/source equivalence: byte-for-byte PASS (260/260 files)
+Tests from exact ZIP extraction: PASS (13/13 build-test steps)
+All three Debug builds from exact ZIP extraction: PASS
+Patch dry-run and application to pristine checkpoint 155: PASS
+Patch reconstruction/source equivalence: byte-for-byte PASS (260/260 files)
+Tests from patch reconstruction: PASS (13/13 build-test steps)
+All three Debug builds from patch reconstruction: PASS
+
+Publication transfer
+--------------------
+The checksum manifest, complete final-path reads, chunked-copy/fsync checks,
+post-publication ZIP/executable/SQLite smokes, and stable hash snapshots are
+performed after the final artifact names are installed in /mnt/data.

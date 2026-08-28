@@ -1,0 +1,72 @@
+{
+  "checkpoint": 178,
+  "originalPiVersion": "0.84.1",
+  "zigVersion": "0.16.0",
+  "focus": "staged authentication-type/provider selection and source-aware credential status",
+  "closed": [
+    "separate authentication-type and provider selector stages",
+    "provider-scoped method selection for explicit /login provider",
+    "single-method direct provider routing",
+    "environment credential source labels",
+    "resolvable models.json configured-key status",
+    "AWS ambient credential source labels",
+    "credential-type mismatch presentation",
+    "ANTHROPIC_OAUTH_TOKEN API-key classification",
+    "standalone Escape search-clear, back, and cancellation",
+    "retained masked secret entry and terminal restoration",
+    "retained live provider credential rebinding and logout fallback"
+  ],
+  "qualified": [
+    "provider-owned OAuth/device progress still uses the current flow-specific presentation rather than the complete original asynchronous dialog",
+    "enterprise provider-specific source labels may still differ on uncommon credential chains",
+    "ambient and models.json credentials are visible but intentionally not removable through /logout"
+  ],
+  "validation": {
+    "nativeZigFiles": 190,
+    "nativeZigLines": 114787,
+    "trackedZigFiles": 191,
+    "namedZigTests": 981,
+    "authFilteredGraph": {
+      "passed": 100,
+      "failed": 0
+    },
+    "authSelectorFocusedGraph": {
+      "passed": 20,
+      "failed": 0
+    },
+    "explicitProviderFocusedGraph": {
+      "passed": 19,
+      "failed": 0
+    },
+    "mainExecutableProcessObserved": {
+      "passed": 10,
+      "failed": 0
+    },
+    "staticPiBuild": true,
+    "staticPiBackend": "self-hosted/non-LLVM",
+    "sqliteAdministrationBuild": true,
+    "sqliteLiveBuild": false,
+    "stagedAuthenticationE2E": true,
+    "authScreenRegressionE2E": true,
+    "liveProviderRebindE2E": true,
+    "stderrBytes": 0,
+    "syntheticFeatureShards": 0,
+    "aggregateBuildTestQualifiedTimeout": true,
+    "uploadedBaselineFiles": 405,
+    "finalTrackedFiles": 412,
+    "zipReconstructionEquivalent": true,
+    "patchReconstructionEquivalent": true,
+    "zipAuthGraph": {
+      "passed": 100,
+      "failed": 0
+    },
+    "patchAuthGraph": {
+      "passed": 100,
+      "failed": 0
+    },
+    "zipStaticPiBuild": true,
+    "patchStaticPiBuild": true,
+    "zipStagedAuthenticationE2E": true,
+    "patchStagedAuthenticationE2E": true
+  }
+}

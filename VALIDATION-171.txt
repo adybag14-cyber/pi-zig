@@ -1,0 +1,84 @@
+PI ZIG CHECKPOINT 171 — SOURCE VALIDATION RECORD
+================================================
+
+Evidence
+--------
+Original source: uploaded Pi 0.84.1 archive
+Baseline: uploaded pi-zig checkpoint 170
+Compiler: supplied Zig 0.16.0 Linux x86-64 archive
+
+Source measurements
+-------------------
+Native Zig source files: 186
+Native Zig logical lines: 109279
+Named Zig test declarations: 934
+Synthetic/generated source files: 0
+
+Static gates
+------------
+Whole-tree `zig fmt --check`: PASS
+Python E2E fixture `py_compile`: PASS
+Git diff whitespace/error validation: PASS
+Real-source audit: PASS
+Node extension bridge syntax: PASS
+
+Authoritative direct root closure
+---------------------------------
+Command shape:
+  PI_SQLITE_CLI_TESTS=1
+  PI_SQLITE_REPOSITORY_TESTS=1
+  zig test src/root.zig -fno-llvm -lsqlite3 -lc
+
+Result: 935/935 PASS
+Skipped: 0
+Failed: 0
+Exit status: 0
+
+Normal build-test topology
+--------------------------
+All-package module process: 928 pass / 7 intentional isolates / 0 fail
+SQLite repository process: 11/11 PASS
+SQLite CLI/schema process: 8 pass / 6 intentional isolates / 0 fail
+Ordinary executable process: 10/10 PASS
+SQLite live-persistence process: 5/5 PASS
+SQLite-enabled executable process: 10/10 PASS
+Build graph: 13/13 steps succeeded
+
+The seven module-process isolates are deliberate linked-SQLite cases. Six run
+in the dedicated repository process and the CLI integration case runs in the
+dedicated SQLite CLI process. The direct root closure links sqlite3/libc and
+executes every case without skips.
+
+Builds
+------
+Static pi Debug ELF: PASS
+pi-sqlite Debug ELF linked to sqlite3/libc: PASS
+pi-sqlite-live Debug ELF linked to sqlite3/libc: PASS
+
+Settings executable E2E
+-----------------------
+Fullscreen selector: PASS
+Atomic retry-enabled persistence: PASS
+Atomic retry-count persistence: PASS
+Nested provider retry settings preserved: PASS
+Unrelated settings preserved: PASS
+Transactional live reload: PASS
+Steering mode live application: all
+Follow-up mode live application: all
+Tree filter live application: no-tools
+Quiet startup after restart: PASS
+Terminal restoration: PASS
+Process exit: 0
+Stderr bytes: 0
+
+Regression executable E2Es
+--------------------------
+Fullscreen tree controls: PASS
+Model selector/update/managed rg lifecycle: PASS
+Startup/live session resume and self-update: PASS
+Combined child-process stderr: 0 bytes per fixture
+
+This source-stage record is intentionally free of circular archive hashes. The
+published release-root copy appends exact ZIP extraction, patch reconstruction,
+SQLite smoke, artifact hashes, and transfer-stability results after immutable
+artifacts are created.

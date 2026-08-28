@@ -1,0 +1,49 @@
+Pi Zig checkpoint 176 validation
+
+Inputs
+  Original Pi source:                     0.84.1
+  Supplied Zig compiler:                  0.16.0
+  Baseline:                               checkpoint 175
+
+Source measurements
+  Native Zig files under src/:            189
+  Native Zig logical lines:               113,190
+  Named Zig test declarations:            970
+  Synthetic/generated feature shards:     0
+
+Completed source/test gates
+  Changed/imported module graph:           692/692 passed
+  All-package module process:              964 passed, 7 isolated, 0 failed
+  SQLite repository process:              11/11 passed
+  SQLite CLI/schema process:               8 passed, 6 isolated, 0 failed
+  Ordinary executable process:            10/10 passed
+  SQLite live-persistence process:         5/5 passed
+  SQLite-enabled executable process:      10/10 passed
+  Build-test graph:                        13/13 steps succeeded
+  New clipboard writer tests:              passed
+  Bounded OSC 52 tests:                    passed
+  Slash/tree/extension integration tests: passed
+  Windows right-click event test:          passed
+  Whole-tree Zig formatting:               passed
+  Embedded Node bridge syntax:             passed
+  Python E2E fixture compilation:           passed
+  Git diff validation:                     passed
+
+Production artifacts
+  Static Linux x86-64 Debug Pi:            built, valid ELF, E2E passed
+  SQLite administration companion:         built, valid ELF
+  SQLite live companion:                   built, valid ELF, help smoke passed
+  Fresh SQLite database init:              passed
+  Required SQLite tables missing:          0
+  SQLite integrity result:                 ok
+
+Real process E2E
+  Local native clipboard write:            passed
+  Local OSC 52 suppression:                passed
+  Remote native clipboard write:           passed
+  Remote bounded OSC 52:                   passed
+  /copy assistant reprint count:           0
+  Extension copyToClipboard:               passed
+  Combined child stderr:                   0 bytes
+
+Archive and patch validation is completed after the source is frozen. See the final published checksum manifest for artifact hashes.

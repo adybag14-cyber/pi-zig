@@ -2,7 +2,7 @@
 const std = @import("std");
 const Io = std.Io;
 
-pub const ContextKind = enum { agents, claude, system, append_system, other };
+pub const ContextKind = enum { agents_override, agents, claude, system, append_system, other };
 
 pub const ContextFile = struct {
     path: []const u8,
@@ -66,8 +66,7 @@ pub fn discoverTrusted(
     }
 
     if (global_dir) |gdir| {
-        _ = try tryLoad(gpa, io, gdir, "AGENTS.md", .agents, &files);
-        _ = try tryLoad(gpa, io, gdir, "CLAUDE.md", .claude, &files);
+        _ = try tryLoadDirectoryContext(gpa, io, gdir, &files);
         if (try loadOptional(gpa, io, gdir, "SYSTEM.md")) |s| {
             if (system_override) |old| gpa.free(old);
             system_override = s;
@@ -83,10 +82,7 @@ pub fn discoverTrusted(
         var depth: usize = 0;
 
         while (depth < 64) : (depth += 1) {
-            const loaded_agents = try tryLoad(gpa, io, current, "AGENTS.md", .agents, &files);
-            if (!loaded_agents) {
-                _ = try tryLoad(gpa, io, current, "CLAUDE.md", .claude, &files);
-            }
+            _ = try tryLoadDirectoryContext(gpa, io, current, &files);
             // Project SYSTEM.md overrides global
             if (try loadOptional(gpa, io, current, "SYSTEM.md")) |s| {
                 if (system_override) |old| gpa.free(old);
@@ -123,6 +119,20 @@ pub fn discoverTrusted(
         .system_override = system_override,
         .append_system = append_joined,
     };
+}
+
+/// Load the single context file selected for one directory. An override is
+/// directory-local: it replaces AGENTS.md/CLAUDE.md only at this level while
+/// parent and child directory context files continue to layer normally.
+fn tryLoadDirectoryContext(
+    gpa: std.mem.Allocator,
+    io: Io,
+    dir: []const u8,
+    out: *std.ArrayList(ContextFile),
+) !bool {
+    if (try tryLoad(gpa, io, dir, "AGENTS.override.md", .agents_override, out)) return true;
+    if (try tryLoad(gpa, io, dir, "AGENTS.md", .agents, out)) return true;
+    return try tryLoad(gpa, io, dir, "CLAUDE.md", .claude, out);
 }
 
 fn tryLoad(
@@ -202,4 +212,49 @@ test "discover AGENTS and SYSTEM" {
     try std.testing.expect(bundle.system_override != null);
     try std.testing.expectEqualStrings("custom system", bundle.system_override.?);
     try std.testing.expect(std.mem.indexOf(u8, bundle.append_system, "append me") != null);
+}
+
+test "AGENTS override replaces only same-directory context" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const n = try tmp.dir.realPath(io, &path_buf);
+    const root = path_buf[0..n];
+    const child = try std.fs.path.join(gpa, &.{ root, "child" });
+    defer gpa.free(child);
+    try std.Io.Dir.cwd().createDirPath(io, child);
+
+    const root_agents = try std.fs.path.join(gpa, &.{ root, "AGENTS.md" });
+    defer gpa.free(root_agents);
+    try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = root_agents, .data = "root instructions" });
+
+    const child_agents = try std.fs.path.join(gpa, &.{ child, "AGENTS.md" });
+    defer gpa.free(child_agents);
+    try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = child_agents, .data = "shadowed child instructions" });
+
+    const child_claude = try std.fs.path.join(gpa, &.{ child, "CLAUDE.md" });
+    defer gpa.free(child_claude);
+    try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = child_claude, .data = "shadowed claude instructions" });
+
+    const child_override = try std.fs.path.join(gpa, &.{ child, "AGENTS.override.md" });
+    defer gpa.free(child_override);
+    try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = child_override, .data = "child override" });
+
+    var bundle = try discover(gpa, io, child, null);
+    defer bundle.deinit(gpa);
+
+    try std.testing.expectEqual(@as(usize, 2), bundle.files.len);
+    var saw_root = false;
+    var saw_override = false;
+    for (bundle.files) |file| {
+        if (file.kind == .agents and std.mem.eql(u8, file.content, "root instructions")) saw_root = true;
+        if (file.kind == .agents_override and std.mem.eql(u8, file.content, "child override")) saw_override = true;
+        try std.testing.expect(!std.mem.eql(u8, file.content, "shadowed child instructions"));
+        try std.testing.expect(!std.mem.eql(u8, file.content, "shadowed claude instructions"));
+    }
+    try std.testing.expect(saw_root);
+    try std.testing.expect(saw_override);
 }

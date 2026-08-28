@@ -1,25 +1,166 @@
 //! Built-in coding tools: read, write, edit, bash, grep, find, ls.
 const std = @import("std");
+const tool_manager = @import("tool_manager.zig");
 const Io = std.Io;
 const builtin = @import("builtin");
 const truncate_mod = @import("truncate.zig");
+const image_process = @import("../ai/image_process.zig");
+
+pub const ToolCost = struct {
+    input: f64 = 0,
+    output: f64 = 0,
+    cache_read: f64 = 0,
+    cache_write: f64 = 0,
+    total: f64 = 0,
+};
+
+/// Accounting reported by the tool itself. Kept separate from ai.Usage so the
+/// dependency-free tool package remains directly testable as a root module.
+pub const ToolImage = struct {
+    data_b64: []u8,
+    mime_type: []u8,
+
+    pub fn deinit(self: *ToolImage, gpa: std.mem.Allocator) void {
+        gpa.free(self.data_b64);
+        gpa.free(self.mime_type);
+        self.* = undefined;
+    }
+};
+
+pub fn cloneImages(gpa: std.mem.Allocator, images: []const ToolImage) ![]ToolImage {
+    if (images.len == 0) return &.{};
+    const out = try gpa.alloc(ToolImage, images.len);
+    errdefer gpa.free(out);
+    var initialized: usize = 0;
+    errdefer for (out[0..initialized]) |*image| image.deinit(gpa);
+    for (images, 0..) |image, index| {
+        out[index] = .{
+            .data_b64 = try gpa.dupe(u8, image.data_b64),
+            .mime_type = try gpa.dupe(u8, image.mime_type),
+        };
+        initialized += 1;
+    }
+    return out;
+}
+
+pub fn deinitImages(gpa: std.mem.Allocator, images: []ToolImage) void {
+    for (images) |*image| image.deinit(gpa);
+    if (images.len > 0) gpa.free(images);
+}
+
+pub const ToolUsage = struct {
+    input: u64 = 0,
+    output: u64 = 0,
+    cache_read: u64 = 0,
+    cache_write: u64 = 0,
+    cache_write_1h: ?u64 = null,
+    reasoning: ?u64 = null,
+    total_tokens: u64 = 0,
+    cost: ToolCost = .{},
+
+    pub fn total(self: ToolUsage) u64 {
+        if (self.total_tokens > 0) return self.total_tokens;
+        return self.input + self.output + self.cache_read + self.cache_write;
+    }
+};
+
+pub const ToolUpdate = struct {
+    content: []u8,
+    is_error: bool = false,
+    image_b64: ?[]u8 = null,
+    image_mime: ?[]u8 = null,
+    /// Additional image blocks, preserving every image returned by rich tools.
+    /// The legacy singular fields above remain accepted for checkpoint/session
+    /// compatibility and are serialized before this array when both are set.
+    images: []ToolImage = &.{},
+    details_json: ?[]u8 = null,
+    /// Optional tool-local accounting. This is distinct from the surrounding
+    /// model request usage and mirrors upstream AgentToolResult.usage.
+    usage: ?ToolUsage = null,
+    /// Tool names introduced by this partial result. Kept for fidelity even
+    /// though most tools only publish the names on their terminal result.
+    added_tool_names: []const []const u8 = &.{},
+    /// This update was already delivered to the primary sink while an
+    /// extension worker was executing. Replay it only to lifecycle observers.
+    observer_deferred: bool = false,
+
+    pub fn deinit(self: *ToolUpdate, gpa: std.mem.Allocator) void {
+        gpa.free(self.content);
+        if (self.image_b64) |data| gpa.free(data);
+        if (self.image_mime) |mime| gpa.free(mime);
+        deinitImages(gpa, self.images);
+        if (self.details_json) |details| gpa.free(details);
+        if (self.added_tool_names.len > 0) {
+            for (self.added_tool_names) |name| gpa.free(name);
+            gpa.free(self.added_tool_names);
+        }
+        self.* = undefined;
+    }
+};
 
 pub const ToolResult = struct {
     content: []u8,
     is_error: bool,
+    /// Optional binary image result encoded as base64. Built-ins are text-only
+    /// today, but external/future tools can return vision content losslessly.
+    image_b64: ?[]u8 = null,
+    image_mime: ?[]u8 = null,
+    /// Additional image blocks. Together with the legacy singular image this
+    /// models the upstream `(TextContent | ImageContent)[]` result without
+    /// silently dropping the second and subsequent images.
+    images: []ToolImage = &.{},
+    /// Structured extension/native details used by terminal renderers and
+    /// lifecycle observers. These never enter model context directly.
+    details_json: ?[]u8 = null,
+    /// Usage produced by the tool itself, not by the main assistant request.
+    usage: ?ToolUsage = null,
+    /// Tool definitions that become available from this transcript boundary.
+    added_tool_names: []const []const u8 = &.{},
+    /// Ordered partial results produced while the tool executes. The current
+    /// bridge delivers them before the final event, retaining upstream event
+    /// and renderer semantics even when a script runtime buffers transport I/O.
+    updates: []ToolUpdate = &.{},
+    /// Hint that the agent should stop after this tool batch. The batch only
+    /// terminates when every finalized tool result sets this true.
+    terminate: bool = false,
 
     pub fn deinit(self: *ToolResult, gpa: std.mem.Allocator) void {
         gpa.free(self.content);
+        if (self.image_b64) |data| gpa.free(data);
+        if (self.image_mime) |mime| gpa.free(mime);
+        deinitImages(gpa, self.images);
+        if (self.details_json) |details| gpa.free(details);
+        if (self.added_tool_names.len > 0) {
+            for (self.added_tool_names) |name| gpa.free(name);
+            gpa.free(self.added_tool_names);
+        }
+        for (self.updates) |*update| update.deinit(gpa);
+        if (self.updates.len > 0) gpa.free(self.updates);
         self.* = undefined;
     }
 };
+
+pub const ToolProgressFn = *const fn (?*anyopaque, []const u8) void;
 
 pub const ToolContext = struct {
     gpa: std.mem.Allocator,
     io: Io,
     cwd: []const u8,
+    /// Parent process environment. When present, bash receives a cloned map
+    /// augmented with pi's live session metadata.
+    environ: ?*const std.process.Environ.Map = null,
+    session_id: ?[]const u8 = null,
+    session_file: ?[]const u8 = null,
+    provider_name: ?[]const u8 = null,
+    model_id: ?[]const u8 = null,
+    reasoning_level: ?[]const u8 = null,
+    /// Original `images.autoResize` policy for built-in read results.
+    auto_resize_images: bool = true,
     /// Cooperative abort: checked around long tools (bash).
     abort_flag: ?*bool = null,
+    /// Optional raw stdout/stderr progress callback used by direct RPC bash.
+    progress_fn: ?ToolProgressFn = null,
+    progress_ctx: ?*anyopaque = null,
 };
 
 pub const ToolName = enum {
@@ -44,6 +185,11 @@ pub const ToolName = enum {
 };
 
 pub const all_tool_names = [_][]const u8{ "read", "write", "edit", "bash", "grep", "find", "ls" };
+
+pub fn isBuiltin(name: []const u8) bool {
+    for (all_tool_names) |candidate| if (std.mem.eql(u8, candidate, name)) return true;
+    return false;
+}
 
 pub const ToolFilter = struct {
     /// If non-null, only these tools are enabled.
@@ -90,7 +236,7 @@ const schema_write =
     \\{"type":"function","function":{"name":"write","description":"Write content to a file, creating parent directories as needed.","parameters":{"type":"object","properties":{"path":{"type":"string"},"content":{"type":"string"}},"required":["path","content"]}}}
 ;
 const schema_edit =
-    \\{"type":"function","function":{"name":"edit","description":"Apply one or more exact-string replacements in a file. Prefer edits[] with oldText/newText (upstream pi). Legacy old_string/new_string also accepted.","parameters":{"type":"object","properties":{"path":{"type":"string"},"edits":{"type":"array","items":{"type":"object","properties":{"oldText":{"type":"string"},"newText":{"type":"string"}},"required":["oldText","newText"]}},"old_string":{"type":"string"},"new_string":{"type":"string"},"oldText":{"type":"string"},"newText":{"type":"string"}},"required":["path"]}}}
+    \\{"type":"function","function":{"name":"edit","description":"Edit a single file using exact text replacement. Every edits[].oldText must match a unique, non-overlapping region of the original file. If two changes affect the same block or nearby lines, merge them into one edit instead of emitting overlapping edits.","parameters":{"type":"object","properties":{"path":{"type":"string","description":"Path to the file to edit (relative or absolute)"},"edits":{"type":"array","description":"One or more targeted replacements. Each edit is matched against the original file, not incrementally.","items":{"type":"object","properties":{"oldText":{"type":"string","description":"Exact text for one targeted replacement."},"newText":{"type":"string","description":"Replacement text for this targeted edit."}},"required":["oldText","newText"]}}},"required":["path","edits"]}}}
 ;
 const schema_bash =
     \\{"type":"function","function":{"name":"bash","description":"Run a shell command and return stdout, stderr, and exit code. Optional timeout in seconds.","parameters":{"type":"object","properties":{"command":{"type":"string"},"timeout":{"type":"number","description":"Timeout in seconds (default 120)"}},"required":["command"]}}}
@@ -116,33 +262,18 @@ fn schemaFor(name: []const u8) ?[]const u8 {
     return null;
 }
 
-/// Full OpenAI tools array for enabled tools (caller frees).
-/// Includes built-in suite plus monorepo extended tool shards when not filtered out.
+/// OpenAI-compatible tools array for enabled native tools (caller frees).
 pub fn toolSchemasJson(gpa: std.mem.Allocator, filter: ToolFilter) ![]u8 {
-    const extended = @import("tools_extended.zig");
     var out: std.ArrayList(u8) = .empty;
     errdefer out.deinit(gpa);
     try out.appendSlice(gpa, "[");
     var first = true;
     for (all_tool_names) |n| {
         if (!filter.isEnabled(n)) continue;
-        const s = schemaFor(n) orelse continue;
+        const schema = schemaFor(n) orelse continue;
         if (!first) try out.append(gpa, ',');
         first = false;
-        try out.appendSlice(gpa, s);
-    }
-    // Merge extended catalog tools (product surface from tools_shard_*)
-    if (!filter.no_tools) {
-        const ext_json = try extended.openAiToolsJson(gpa);
-        defer gpa.free(ext_json);
-        if (ext_json.len >= 2) {
-            const inner = ext_json[1 .. ext_json.len - 1];
-            if (inner.len > 0) {
-                if (!first) try out.append(gpa, ',');
-                try out.appendSlice(gpa, inner);
-                first = false;
-            }
-        }
+        try out.appendSlice(gpa, schema);
     }
     try out.appendSlice(gpa, "]");
     return try out.toOwnedSlice(gpa);
@@ -150,8 +281,375 @@ pub fn toolSchemasJson(gpa: std.mem.Allocator, filter: ToolFilter) ![]u8 {
 
 /// Default full schema JSON (all tools) as a static string for simple cases.
 pub const tool_schemas_json_all =
-    \\[{"type":"function","function":{"name":"read","description":"Read a file from the filesystem.","parameters":{"type":"object","properties":{"path":{"type":"string","description":"Path to the file to read"}},"required":["path"]}}},{"type":"function","function":{"name":"write","description":"Write content to a file, creating parent directories as needed.","parameters":{"type":"object","properties":{"path":{"type":"string"},"content":{"type":"string"}},"required":["path","content"]}}},{"type":"function","function":{"name":"edit","description":"Replace an exact string in a file.","parameters":{"type":"object","properties":{"path":{"type":"string"},"old_string":{"type":"string"},"new_string":{"type":"string"}},"required":["path","old_string","new_string"]}}},{"type":"function","function":{"name":"bash","description":"Run a shell command and return stdout, stderr, and exit code.","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}},{"type":"function","function":{"name":"grep","description":"Search files for a pattern.","parameters":{"type":"object","properties":{"pattern":{"type":"string"},"path":{"type":"string"},"glob":{"type":"string"},"ignoreCase":{"type":"boolean"},"limit":{"type":"number"}},"required":["pattern"]}}},{"type":"function","function":{"name":"find","description":"Find files by glob-like pattern.","parameters":{"type":"object","properties":{"pattern":{"type":"string"},"path":{"type":"string"},"limit":{"type":"number"}},"required":["pattern"]}}},{"type":"function","function":{"name":"ls","description":"List directory entries.","parameters":{"type":"object","properties":{"path":{"type":"string"},"limit":{"type":"number"}},"required":[]}}}]
+    \\[{"type":"function","function":{"name":"read","description":"Read a file from the filesystem.","parameters":{"type":"object","properties":{"path":{"type":"string","description":"Path to the file to read"}},"required":["path"]}}},{"type":"function","function":{"name":"write","description":"Write content to a file, creating parent directories as needed.","parameters":{"type":"object","properties":{"path":{"type":"string"},"content":{"type":"string"}},"required":["path","content"]}}},{"type":"function","function":{"name":"edit","description":"Apply exact text replacements in a file.","parameters":{"type":"object","properties":{"path":{"type":"string"},"edits":{"type":"array","items":{"type":"object","properties":{"oldText":{"type":"string"},"newText":{"type":"string"}},"required":["oldText","newText"]}}},"required":["path","edits"]}}},{"type":"function","function":{"name":"bash","description":"Run a shell command and return stdout, stderr, and exit code.","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}},{"type":"function","function":{"name":"grep","description":"Search files for a pattern.","parameters":{"type":"object","properties":{"pattern":{"type":"string"},"path":{"type":"string"},"glob":{"type":"string"},"ignoreCase":{"type":"boolean"},"limit":{"type":"number"}},"required":["pattern"]}}},{"type":"function","function":{"name":"find","description":"Find files by glob-like pattern.","parameters":{"type":"object","properties":{"pattern":{"type":"string"},"path":{"type":"string"},"limit":{"type":"number"}},"required":["pattern"]}}},{"type":"function","function":{"name":"ls","description":"List directory entries.","parameters":{"type":"object","properties":{"path":{"type":"string"},"limit":{"type":"number"}},"required":[]}}}]
 ;
+
+/// Upstream-compatible pre-validation compatibility shims. Returns owned JSON
+/// only when arguments were transformed; null means use the original bytes.
+pub fn prepareArguments(gpa: std.mem.Allocator, name: []const u8, arguments_json: []const u8) !?[]u8 {
+    if (!std.mem.eql(u8, name, "edit")) return null;
+    return prepareEditArgumentsJson(gpa, arguments_json);
+}
+
+/// Validate a tool call against the exact OpenAI-compatible schema array sent
+/// to the model. Returns an owned human-readable error on validation failure,
+/// or null when the call is valid. Compatibility preparation belongs before
+/// this function; before-tool mutations intentionally happen after it and are
+/// not revalidated, matching upstream pi-agent semantics.
+pub fn validateArgumentsAgainstToolSchemas(
+    gpa: std.mem.Allocator,
+    tools_json: []const u8,
+    tool_name: []const u8,
+    arguments_json: []const u8,
+) !?[]u8 {
+    var tools_doc = std.json.parseFromSlice(std.json.Value, gpa, tools_json, .{}) catch {
+        return try std.fmt.allocPrint(gpa, "Tool schema catalog is invalid JSON while validating \"{s}\"", .{tool_name});
+    };
+    defer tools_doc.deinit();
+    if (tools_doc.value != .array) {
+        return try std.fmt.allocPrint(gpa, "Tool schema catalog is not an array while validating \"{s}\"", .{tool_name});
+    }
+
+    var schema: ?std.json.Value = null;
+    for (tools_doc.value.array.items) |item| {
+        if (item != .object) continue;
+        const function = item.object.get("function") orelse continue;
+        if (function != .object) continue;
+        const name = function.object.get("name") orelse continue;
+        if (name != .string or !std.mem.eql(u8, name.string, tool_name)) continue;
+        schema = function.object.get("parameters") orelse std.json.Value{ .object = function.object };
+        break;
+    }
+    if (schema == null) return try std.fmt.allocPrint(gpa, "Tool {s} not found", .{tool_name});
+
+    var args_doc = std.json.parseFromSlice(std.json.Value, gpa, arguments_json, .{}) catch {
+        return try std.fmt.allocPrint(
+            gpa,
+            "Validation failed for tool \"{s}\":\n  - root: invalid JSON\n\nReceived arguments:\n{s}",
+            .{ tool_name, arguments_json },
+        );
+    };
+    defer args_doc.deinit();
+
+    if (try validateSchemaValue(gpa, schema.?, args_doc.value, "root")) |detail| {
+        defer gpa.free(detail);
+        return try std.fmt.allocPrint(
+            gpa,
+            "Validation failed for tool \"{s}\":\n  - {s}\n\nReceived arguments:\n{s}",
+            .{ tool_name, detail, arguments_json },
+        );
+    }
+    return null;
+}
+
+fn validateSchemaValue(
+    gpa: std.mem.Allocator,
+    schema: std.json.Value,
+    value: std.json.Value,
+    path: []const u8,
+) !?[]u8 {
+    if (schema != .object) return null;
+    const object = schema.object;
+
+    if (object.get("allOf")) |branches| {
+        if (branches == .array) for (branches.array.items) |branch| {
+            if (try validateSchemaValue(gpa, branch, value, path)) |err| return err;
+        };
+    }
+    if (object.get("anyOf")) |branches| {
+        if (branches == .array and branches.array.items.len > 0) {
+            var matched = false;
+            for (branches.array.items) |branch| {
+                if (try validateSchemaValue(gpa, branch, value, path)) |err| {
+                    gpa.free(err);
+                } else {
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched) return try std.fmt.allocPrint(gpa, "{s}: does not match any allowed schema", .{path});
+        }
+    }
+    if (object.get("oneOf")) |branches| {
+        if (branches == .array and branches.array.items.len > 0) {
+            var matches: usize = 0;
+            for (branches.array.items) |branch| {
+                if (try validateSchemaValue(gpa, branch, value, path)) |err| {
+                    gpa.free(err);
+                } else matches += 1;
+            }
+            if (matches != 1) return try std.fmt.allocPrint(gpa, "{s}: must match exactly one allowed schema", .{path});
+        }
+    }
+
+    if (object.get("type")) |type_spec| {
+        if (!schemaTypeMatches(type_spec, value)) {
+            return try std.fmt.allocPrint(gpa, "{s}: expected {s}, received {s}", .{ path, schemaTypeDescription(type_spec), jsonValueTypeName(value) });
+        }
+    }
+
+    if (object.get("const")) |constant| {
+        if (!jsonValueEqual(constant, value)) return try std.fmt.allocPrint(gpa, "{s}: value does not match const", .{path});
+    }
+    if (object.get("enum")) |choices| {
+        if (choices == .array) {
+            var matched = false;
+            for (choices.array.items) |choice| if (jsonValueEqual(choice, value)) {
+                matched = true;
+                break;
+            };
+            if (!matched) return try std.fmt.allocPrint(gpa, "{s}: value is not in enum", .{path});
+        }
+    }
+
+    if (value == .object) {
+        if (object.get("required")) |required| {
+            if (required == .array) for (required.array.items) |required_name| {
+                if (required_name != .string) continue;
+                if (!value.object.contains(required_name.string)) {
+                    const child = try childPath(gpa, path, required_name.string);
+                    defer gpa.free(child);
+                    return try std.fmt.allocPrint(gpa, "{s}: required property is missing", .{child});
+                }
+            };
+        }
+        if (object.get("properties")) |properties| {
+            if (properties == .object) {
+                var it = properties.object.iterator();
+                while (it.next()) |entry| {
+                    if (value.object.get(entry.key_ptr.*)) |child_value| {
+                        const child = try childPath(gpa, path, entry.key_ptr.*);
+                        defer gpa.free(child);
+                        if (try validateSchemaValue(gpa, entry.value_ptr.*, child_value, child)) |err| return err;
+                    }
+                }
+                if (object.get("additionalProperties")) |additional| {
+                    if (additional == .bool and !additional.bool) {
+                        var actual = value.object.iterator();
+                        while (actual.next()) |entry| {
+                            if (!properties.object.contains(entry.key_ptr.*)) {
+                                const child = try childPath(gpa, path, entry.key_ptr.*);
+                                defer gpa.free(child);
+                                return try std.fmt.allocPrint(gpa, "{s}: additional property is not allowed", .{child});
+                            }
+                        }
+                    } else if (additional == .object) {
+                        var actual = value.object.iterator();
+                        while (actual.next()) |entry| {
+                            if (properties.object.contains(entry.key_ptr.*)) continue;
+                            const child = try childPath(gpa, path, entry.key_ptr.*);
+                            defer gpa.free(child);
+                            if (try validateSchemaValue(gpa, additional, entry.value_ptr.*, child)) |err| return err;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (value == .array) {
+        if (object.get("minItems")) |minimum| if (jsonNonNegativeUsize(minimum)) |n| {
+            if (value.array.items.len < n) return try std.fmt.allocPrint(gpa, "{s}: expected at least {d} items", .{ path, n });
+        };
+        if (object.get("maxItems")) |maximum| if (jsonNonNegativeUsize(maximum)) |n| {
+            if (value.array.items.len > n) return try std.fmt.allocPrint(gpa, "{s}: expected at most {d} items", .{ path, n });
+        };
+        if (object.get("items")) |item_schema| {
+            for (value.array.items, 0..) |item, index| {
+                const child = try std.fmt.allocPrint(gpa, "{s}[{d}]", .{ path, index });
+                defer gpa.free(child);
+                if (try validateSchemaValue(gpa, item_schema, item, child)) |err| return err;
+            }
+        }
+    }
+
+    if (value == .string) {
+        if (object.get("minLength")) |minimum| if (jsonNonNegativeUsize(minimum)) |n| {
+            const length = std.unicode.utf8CountCodepoints(value.string) catch value.string.len;
+            if (length < n) {
+                return try std.fmt.allocPrint(gpa, "{s}: string is shorter than {d} characters", .{ path, n });
+            }
+        };
+        if (object.get("maxLength")) |maximum| if (jsonNonNegativeUsize(maximum)) |n| {
+            const length = std.unicode.utf8CountCodepoints(value.string) catch value.string.len;
+            if (length > n) {
+                return try std.fmt.allocPrint(gpa, "{s}: string is longer than {d} characters", .{ path, n });
+            }
+        };
+    }
+
+    const numeric = jsonNumber(value);
+    if (numeric) |number| {
+        if (object.get("minimum")) |minimum| if (jsonNumber(minimum)) |n| {
+            if (number < n) return try std.fmt.allocPrint(gpa, "{s}: must be >= {d}", .{ path, n });
+        };
+        if (object.get("maximum")) |maximum| if (jsonNumber(maximum)) |n| {
+            if (number > n) return try std.fmt.allocPrint(gpa, "{s}: must be <= {d}", .{ path, n });
+        };
+        if (object.get("exclusiveMinimum")) |minimum| if (jsonNumber(minimum)) |n| {
+            if (number <= n) return try std.fmt.allocPrint(gpa, "{s}: must be > {d}", .{ path, n });
+        };
+        if (object.get("exclusiveMaximum")) |maximum| if (jsonNumber(maximum)) |n| {
+            if (number >= n) return try std.fmt.allocPrint(gpa, "{s}: must be < {d}", .{ path, n });
+        };
+    }
+    return null;
+}
+
+fn childPath(gpa: std.mem.Allocator, parent: []const u8, child: []const u8) ![]u8 {
+    if (std.mem.eql(u8, parent, "root")) return try gpa.dupe(u8, child);
+    return try std.fmt.allocPrint(gpa, "{s}.{s}", .{ parent, child });
+}
+
+fn schemaTypeMatches(type_spec: std.json.Value, value: std.json.Value) bool {
+    if (type_spec == .string) return jsonValueMatchesType(value, type_spec.string);
+    if (type_spec == .array) {
+        for (type_spec.array.items) |candidate| {
+            if (candidate == .string and jsonValueMatchesType(value, candidate.string)) return true;
+        }
+    }
+    return true;
+}
+
+fn schemaTypeDescription(type_spec: std.json.Value) []const u8 {
+    if (type_spec == .string) return type_spec.string;
+    if (type_spec == .array) return "one of the declared types";
+    return "declared type";
+}
+
+fn jsonValueMatchesType(value: std.json.Value, expected: []const u8) bool {
+    if (std.mem.eql(u8, expected, "object")) return value == .object;
+    if (std.mem.eql(u8, expected, "array")) return value == .array;
+    if (std.mem.eql(u8, expected, "string")) return value == .string;
+    if (std.mem.eql(u8, expected, "number")) return value == .integer or value == .float or value == .number_string;
+    if (std.mem.eql(u8, expected, "integer")) return value == .integer;
+    if (std.mem.eql(u8, expected, "boolean")) return value == .bool;
+    if (std.mem.eql(u8, expected, "null")) return value == .null;
+    return true;
+}
+
+fn jsonValueTypeName(value: std.json.Value) []const u8 {
+    return switch (value) {
+        .object => "object",
+        .array => "array",
+        .string => "string",
+        .integer => "integer",
+        .float, .number_string => "number",
+        .bool => "boolean",
+        .null => "null",
+    };
+}
+
+fn jsonNonNegativeUsize(value: std.json.Value) ?usize {
+    return switch (value) {
+        .integer => |n| if (n >= 0) @intCast(n) else null,
+        .float => |n| if (n >= 0 and std.math.isFinite(n)) @intFromFloat(n) else null,
+        else => null,
+    };
+}
+
+fn jsonNumber(value: std.json.Value) ?f64 {
+    return switch (value) {
+        .integer => |n| @floatFromInt(n),
+        .float => |n| if (std.math.isFinite(n)) n else null,
+        .number_string => |s| std.fmt.parseFloat(f64, s) catch null,
+        else => null,
+    };
+}
+
+fn jsonValueEqual(a: std.json.Value, b: std.json.Value) bool {
+    if (jsonNumber(a)) |an| if (jsonNumber(b)) |bn| return an == bn;
+    if (std.meta.activeTag(a) != std.meta.activeTag(b)) return false;
+    return switch (a) {
+        .null => true,
+        .bool => |v| v == b.bool,
+        .integer => |v| v == b.integer,
+        .float => |v| v == b.float,
+        .number_string => |v| std.mem.eql(u8, v, b.number_string),
+        .string => |v| std.mem.eql(u8, v, b.string),
+        .array => |items| blk: {
+            if (items.items.len != b.array.items.len) break :blk false;
+            for (items.items, b.array.items) |av, bv| if (!jsonValueEqual(av, bv)) break :blk false;
+            break :blk true;
+        },
+        .object => |map| blk: {
+            if (map.count() != b.object.count()) break :blk false;
+            var it = map.iterator();
+            while (it.next()) |entry| {
+                const other = b.object.get(entry.key_ptr.*) orelse break :blk false;
+                if (!jsonValueEqual(entry.value_ptr.*, other)) break :blk false;
+            }
+            break :blk true;
+        },
+    };
+}
+
+fn prepareEditArgumentsJson(gpa: std.mem.Allocator, arguments_json: []const u8) !?[]u8 {
+    var parsed = std.json.parseFromSlice(std.json.Value, gpa, arguments_json, .{}) catch return null;
+    defer parsed.deinit();
+    if (parsed.value != .object) return null;
+    const obj = parsed.value.object;
+
+    const old_v = obj.get("oldText") orelse obj.get("old_string");
+    const new_v = obj.get("newText") orelse obj.get("new_string");
+    const has_legacy_pair = old_v != null and new_v != null and old_v.? == .string and new_v.? == .string;
+
+    var parsed_string_edits: ?std.json.Parsed(std.json.Value) = null;
+    defer if (parsed_string_edits) |*owned| owned.deinit();
+    var edits_value: ?std.json.Value = obj.get("edits");
+    var converted_string = false;
+    if (edits_value) |ev| {
+        if (ev == .string) {
+            const p = std.json.parseFromSlice(std.json.Value, gpa, ev.string, .{}) catch null;
+            if (p) |owned_value| {
+                if (owned_value.value == .array) {
+                    parsed_string_edits = owned_value;
+                    edits_value = parsed_string_edits.?.value;
+                    converted_string = true;
+                } else {
+                    var tmp = owned_value;
+                    tmp.deinit();
+                }
+            }
+        }
+    }
+
+    if (!has_legacy_pair and !converted_string) return null;
+
+    var out: std.Io.Writer.Allocating = .init(gpa);
+    errdefer out.deinit();
+    try out.writer.writeByte('{');
+    var first = true;
+    if (obj.get("path")) |path_v| {
+        try out.writer.writeAll("\"path\":");
+        try std.json.Stringify.value(path_v, .{}, &out.writer);
+        first = false;
+    }
+    if (!first) try out.writer.writeByte(',');
+    try out.writer.writeAll("\"edits\":[");
+    var wrote_edit = false;
+    if (edits_value) |ev| {
+        if (ev == .array) {
+            for (ev.array.items) |item| {
+                if (wrote_edit) try out.writer.writeByte(',');
+                try std.json.Stringify.value(item, .{}, &out.writer);
+                wrote_edit = true;
+            }
+        } else if (!converted_string and !has_legacy_pair) {
+            return null;
+        }
+    }
+    if (has_legacy_pair) {
+        if (wrote_edit) try out.writer.writeByte(',');
+        try out.writer.writeAll("{\"oldText\":");
+        try std.json.Stringify.value(old_v.?.string, .{}, &out.writer);
+        try out.writer.writeAll(",\"newText\":");
+        try std.json.Stringify.value(new_v.?.string, .{}, &out.writer);
+        try out.writer.writeByte('}');
+    }
+    try out.writer.writeAll("]}");
+    return try out.toOwnedSlice();
+}
 
 pub fn execute(ctx: ToolContext, name: []const u8, arguments_json: []const u8) !ToolResult {
     if (std.mem.eql(u8, name, "read")) return executeRead(ctx, arguments_json);
@@ -161,11 +659,6 @@ pub fn execute(ctx: ToolContext, name: []const u8, arguments_json: []const u8) !
     if (std.mem.eql(u8, name, "grep")) return executeGrep(ctx, arguments_json);
     if (std.mem.eql(u8, name, "find")) return executeFind(ctx, arguments_json);
     if (std.mem.eql(u8, name, "ls")) return executeLs(ctx, arguments_json);
-    // Monorepo extended tools (tools_shard_*) — real product dispatch path
-    const extended = @import("tools_extended.zig");
-    if (try extended.execute(ctx.gpa, name, arguments_json)) |content| {
-        return try maybeTruncate(ctx.gpa, content, false);
-    }
     return try errMsg(ctx.gpa, "unknown tool: {s}", .{name});
 }
 
@@ -245,9 +738,42 @@ fn executeRead(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     const full = try resolvePath(ctx.gpa, ctx.cwd, path_owned);
     defer ctx.gpa.free(full);
 
-    const data = std.Io.Dir.cwd().readFileAlloc(ctx.io, full, ctx.gpa, .limited(8 * 1024 * 1024)) catch |err| {
+    const data = std.Io.Dir.cwd().readFileAlloc(ctx.io, full, ctx.gpa, .limited(32 * 1024 * 1024)) catch |err| {
         return try errMsg(ctx.gpa, "read failed: {s}", .{@errorName(err)});
     };
+
+    // Images ignore line slicing and become structured tool content. Safe
+    // provider-native payloads remain byte-for-byte; oversized, rotated and
+    // BMP inputs are normalized according to `images.autoResize`.
+    if (image_process.inspect(data)) |inspection| {
+        defer ctx.gpa.free(data);
+        var normalized = try image_process.processBytes(ctx.gpa, ctx.io, data, .{
+            .auto_resize = ctx.auto_resize_images,
+            .environ = ctx.environ,
+        });
+        if (normalized) |*image| {
+            errdefer image.deinit(ctx.gpa);
+            const hints = try image.formatHints(ctx.gpa);
+            defer ctx.gpa.free(hints);
+            const content = if (hints.len > 0)
+                try std.fmt.allocPrint(ctx.gpa, "Read image file [{s}]\n{s}", .{ image.mime_type, hints })
+            else
+                try std.fmt.allocPrint(ctx.gpa, "Read image file [{s}]", .{image.mime_type});
+            if (image.converted_from) |value| ctx.gpa.free(value);
+            return .{
+                .content = content,
+                .is_error = false,
+                .image_b64 = image.data_b64,
+                .image_mime = image.mime_type,
+            };
+        }
+
+        const content = if (std.mem.eql(u8, inspection.mime_type, "image/bmp"))
+            try std.fmt.allocPrint(ctx.gpa, "Read image file [{s}]\n[Image omitted: could not be converted to a supported inline image format.]", .{inspection.mime_type})
+        else
+            try std.fmt.allocPrint(ctx.gpa, "Read image file [{s}]\n[Image omitted: could not be resized below the inline image size limit.]", .{inspection.mime_type});
+        return .{ .content = content, .is_error = false };
+    }
 
     // Apply line offset/limit when requested (upstream pi read tool)
     if (offset_raw > 0 or limit_raw > 0) {
@@ -529,7 +1055,7 @@ fn executeBash(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     defer ctx.gpa.free(command);
 
     if (ctx.abort_flag) |f| {
-        if (f.*) return try errMsg(ctx.gpa, "bash: aborted before start", .{});
+        if (@atomicLoad(bool, f, .acquire)) return try errMsg(ctx.gpa, "bash: aborted before start", .{});
     }
 
     const timeout_sec: i64 = @intCast(@max(1, parseIntField(ctx.gpa, arguments_json, "timeout", 120)));
@@ -542,12 +1068,35 @@ fn executeBash(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     return executeBashKillable(ctx, argv, timeout_sec);
 }
 
+fn buildBashEnvironment(ctx: ToolContext) !?std.process.Environ.Map {
+    const parent = ctx.environ orelse return null;
+    var child = try parent.clone(ctx.gpa);
+    errdefer child.deinit();
+
+    // AI_AGENT is the cross-agent convention; PI_* is intentionally scoped to
+    // subprocesses rather than mutating the parent process environment.
+    try child.put("AI_AGENT", "pi");
+    if (ctx.session_id) |value| try child.put("PI_SESSION_ID", value);
+    if (ctx.session_file) |value| try child.put("PI_SESSION_FILE", value);
+    if (ctx.provider_name) |value| try child.put("PI_PROVIDER", value);
+    if (ctx.model_id) |value| try child.put("PI_MODEL", value);
+    if (ctx.reasoning_level) |value| try child.put("PI_REASONING_LEVEL", value);
+    return child;
+}
+
 fn executeBashKillable(ctx: ToolContext, argv: []const []const u8, timeout_sec: i64) !ToolResult {
-    // When no abort flag, use reliable process.run (timeout only).
-    if (ctx.abort_flag == null) {
+    var child_environment = try buildBashEnvironment(ctx);
+    defer if (child_environment) |*environment| environment.deinit();
+    const child_environment_ptr: ?*const std.process.Environ.Map = if (child_environment) |*environment| environment else null;
+
+    // When neither cancellation nor live progress is needed, use the compact
+    // process.run path. Progress requires the pipe-draining child path so
+    // updates can be forwarded while the command is still running.
+    if (ctx.abort_flag == null and ctx.progress_fn == null) {
         const run_result = std.process.run(ctx.gpa, ctx.io, .{
             .argv = argv,
             .cwd = .{ .path = ctx.cwd },
+            .environ_map = child_environment_ptr,
             .stdout_limit = .limited(1024 * 1024),
             .stderr_limit = .limited(1024 * 1024),
             .timeout = .{ .duration = .{ .raw = .fromSeconds(timeout_sec), .clock = .real } },
@@ -563,6 +1112,10 @@ fn executeBashKillable(ctx: ToolContext, argv: []const []const u8, timeout_sec: 
             .stopped => -1,
             .unknown => |u| -@as(i32, @intCast(u)),
         };
+        if (ctx.progress_fn) |progress| {
+            if (run_result.stdout.len > 0) progress(ctx.progress_ctx, run_result.stdout);
+            if (run_result.stderr.len > 0) progress(ctx.progress_ctx, run_result.stderr);
+        }
         const body = try std.fmt.allocPrint(ctx.gpa, "exit={d}\nstdout:\n{s}\nstderr:\n{s}", .{
             code, run_result.stdout, run_result.stderr,
         });
@@ -574,9 +1127,11 @@ fn executeBashKillable(ctx: ToolContext, argv: []const []const u8, timeout_sec: 
     var child = std.process.spawn(ctx.io, .{
         .argv = argv,
         .cwd = .{ .path = ctx.cwd },
+        .environ_map = child_environment_ptr,
         .stdout = .pipe,
         .stderr = .pipe,
         .stdin = .ignore,
+        .pgid = if (builtin.os.tag == .windows) null else 0,
     }) catch |err| {
         return try errMsg(ctx.gpa, "bash spawn failed: {s}", .{@errorName(err)});
     };
@@ -598,6 +1153,8 @@ fn executeBashKillable(ctx: ToolContext, argv: []const []const u8, timeout_sec: 
         io: Io,
         gpa: std.mem.Allocator,
         out: *[]u8,
+        progress_fn: ?ToolProgressFn,
+        progress_ctx: ?*anyopaque,
     };
     const drainPipe = struct {
         fn run(ps: *PipeState) void {
@@ -612,6 +1169,7 @@ fn executeBashKillable(ctx: ToolContext, argv: []const []const u8, timeout_sec: 
                 var slice = [_][]u8{buf[0..]};
                 const n = f.readStreaming(ps.io, &slice) catch break;
                 if (n == 0) break;
+                if (ps.progress_fn) |progress| progress(ps.progress_ctx, buf[0..n]);
                 aw.writer.writeAll(buf[0..n]) catch break;
                 if (aw.written().len > 1024 * 1024) break;
             }
@@ -621,8 +1179,8 @@ fn executeBashKillable(ctx: ToolContext, argv: []const []const u8, timeout_sec: 
 
     var stdout_owned: []u8 = &.{};
     var stderr_owned: []u8 = &.{};
-    var out_ps = PipeState{ .file = child.stdout, .io = ctx.io, .gpa = ctx.gpa, .out = &stdout_owned };
-    var err_ps = PipeState{ .file = child.stderr, .io = ctx.io, .gpa = ctx.gpa, .out = &stderr_owned };
+    var out_ps = PipeState{ .file = child.stdout, .io = ctx.io, .gpa = ctx.gpa, .out = &stdout_owned, .progress_fn = ctx.progress_fn, .progress_ctx = ctx.progress_ctx };
+    var err_ps = PipeState{ .file = child.stderr, .io = ctx.io, .gpa = ctx.gpa, .out = &stderr_owned, .progress_fn = ctx.progress_fn, .progress_ctx = ctx.progress_ctx };
     const out_thr = try std.Thread.spawn(.{}, drainPipe, .{&out_ps});
     const err_thr = try std.Thread.spawn(.{}, drainPipe, .{&err_ps});
 
@@ -639,7 +1197,7 @@ fn executeBashKillable(ctx: ToolContext, argv: []const []const u8, timeout_sec: 
     var killed_for_timeout = false;
     while (!state.done.load(.acquire)) {
         if (ctx.abort_flag) |f| {
-            if (f.*) {
+            if (@atomicLoad(bool, f, .acquire)) {
                 forceKillProcess(&child);
                 killed_for_abort = true;
                 break;
@@ -685,7 +1243,12 @@ fn forceKillProcess(child: *std.process.Child) void {
         // Do not call Child.kill — it races with the waiter thread's wait().
         _ = std.os.windows.ntdll.NtTerminateProcess(id, @enumFromInt(1));
     } else {
-        std.posix.kill(id, std.posix.SIG.KILL) catch {};
+        // Child was spawned into its own process group (pgid=0), so kill the
+        // group rather than only the shell. This prevents grandchildren from
+        // retaining stdout/stderr pipes after an abort.
+        std.posix.kill(-id, std.posix.SIG.KILL) catch {
+            std.posix.kill(id, std.posix.SIG.KILL) catch {};
+        };
     }
 }
 
@@ -699,9 +1262,13 @@ fn tryRipgrep(
     limit: usize,
     context_lines: usize,
 ) !?ToolResult {
+    const rg_path = tool_manager.ensure(ctx.gpa, ctx.io, ctx.environ, .rg, .{}) catch return null;
+    const rg_executable = rg_path orelse return null;
+    defer ctx.gpa.free(rg_executable);
+
     var argv_list: std.ArrayList([]const u8) = .empty;
     defer argv_list.deinit(ctx.gpa);
-    try argv_list.append(ctx.gpa, "rg");
+    try argv_list.append(ctx.gpa, rg_executable);
     try argv_list.append(ctx.gpa, "-n");
     try argv_list.append(ctx.gpa, "--no-heading");
     try argv_list.append(ctx.gpa, "--color");
@@ -728,6 +1295,7 @@ fn tryRipgrep(
     const run_result = std.process.run(ctx.gpa, ctx.io, .{
         .argv = argv_list.items,
         .cwd = .{ .path = ctx.cwd },
+        .environ_map = ctx.environ,
         .stdout_limit = .limited(1024 * 1024),
         .stderr_limit = .limited(64 * 1024),
         .timeout = .{ .duration = .{
@@ -788,7 +1356,7 @@ fn matchGlobRec(pattern: []const u8, path: []const u8) bool {
                 si += 1;
             }
             return matchGlobRec(pattern[pi..], path[si..]);
-        } else if (pattern[pi] == '?' ) {
+        } else if (pattern[pi] == '?') {
             if (si >= path.len) return false;
             if (path[si] == '/' or path[si] == '\\') return false;
             pi += 1;
@@ -951,6 +1519,68 @@ fn containsIgnoreCase(hay: []const u8, needle: []const u8) bool {
     return false;
 }
 
+fn tryFdFind(
+    ctx: ToolContext,
+    pattern: []const u8,
+    search_root: []const u8,
+    limit: usize,
+) !?ToolResult {
+    const fd_path = tool_manager.ensure(ctx.gpa, ctx.io, ctx.environ, .fd, .{
+        // Unit tests and embedders without an environment retain the native
+        // walker and never perform an implicit network operation.
+        .offline = ctx.environ == null,
+    }) catch return null;
+    const fd_executable = fd_path orelse return null;
+    defer ctx.gpa.free(fd_executable);
+
+    var argv: std.ArrayList([]const u8) = .empty;
+    defer argv.deinit(ctx.gpa);
+    try argv.append(ctx.gpa, fd_executable);
+    try argv.append(ctx.gpa, "--glob");
+    try argv.append(ctx.gpa, "--color=never");
+    try argv.append(ctx.gpa, "--hidden");
+    try argv.append(ctx.gpa, "--exclude");
+    try argv.append(ctx.gpa, "node_modules");
+    try argv.append(ctx.gpa, "--exclude");
+    try argv.append(ctx.gpa, ".git");
+    try argv.append(ctx.gpa, "--max-results");
+    const limit_text = try std.fmt.allocPrint(ctx.gpa, "{d}", .{limit});
+    defer ctx.gpa.free(limit_text);
+    try argv.append(ctx.gpa, limit_text);
+
+    var effective_pattern: []const u8 = pattern;
+    var owned_pattern: ?[]u8 = null;
+    defer if (owned_pattern) |value| ctx.gpa.free(value);
+    if (std.mem.indexOfAny(u8, pattern, "/\\") != null) {
+        try argv.append(ctx.gpa, "--full-path");
+        if (!std.mem.startsWith(u8, pattern, "/") and !std.mem.startsWith(u8, pattern, "**/") and !std.mem.eql(u8, pattern, "**")) {
+            owned_pattern = try std.fmt.allocPrint(ctx.gpa, "**/{s}", .{pattern});
+            effective_pattern = owned_pattern.?;
+        }
+    }
+    try argv.append(ctx.gpa, "--");
+    try argv.append(ctx.gpa, effective_pattern);
+    try argv.append(ctx.gpa, ".");
+
+    const result = std.process.run(ctx.gpa, ctx.io, .{
+        .argv = argv.items,
+        .cwd = .{ .path = search_root },
+        .environ_map = ctx.environ,
+        .stdout_limit = .limited(1024 * 1024),
+        .stderr_limit = .limited(64 * 1024),
+        .timeout = .{ .duration = .{ .raw = .fromSeconds(60), .clock = .real } },
+    }) catch return null;
+    defer ctx.gpa.free(result.stdout);
+    defer ctx.gpa.free(result.stderr);
+    const code: u8 = switch (result.term) {
+        .exited => |value| @intCast(value),
+        else => return null,
+    };
+    if (code != 0) return null;
+    if (result.stdout.len == 0) return try okMsg(ctx.gpa, "No files matching {s}", .{pattern});
+    return try maybeTruncate(ctx.gpa, try ctx.gpa.dupe(u8, result.stdout), false);
+}
+
 fn executeFind(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     const pattern = try parseStringField(ctx.gpa, arguments_json, "pattern") orelse
         return try errMsg(ctx.gpa, "find: missing pattern", .{});
@@ -961,6 +1591,8 @@ fn executeFind(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
 
     const search_root = try resolvePath(ctx.gpa, ctx.cwd, path_opt orelse ".");
     defer ctx.gpa.free(search_root);
+
+    if (try tryFdFind(ctx, pattern, search_root, limit)) |result| return result;
 
     var out: std.ArrayList(u8) = .empty;
     errdefer out.deinit(ctx.gpa);
@@ -1068,6 +1700,65 @@ test "read write edit tools on temp fixture" {
     try std.testing.expectEqualStrings("hello pi", r2.content);
 }
 
+test "read tool returns structured provider image content" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const n = try tmp.dir.realPath(io, &path_buf);
+    const tmp_path = path_buf[0..n];
+
+    var png = [_]u8{0} ** 24;
+    @memcpy(png[0..8], &[_]u8{ 0x89, 'P', 'N', 'G', 0x0d, 0x0a, 0x1a, 0x0a });
+    png[11] = 13;
+    @memcpy(png[12..16], "IHDR");
+    png[19] = 2;
+    png[23] = 3;
+    try tmp.dir.writeFile(io, .{ .sub_path = "renamed.data", .data = &png });
+
+    const ctx = ToolContext{ .gpa = gpa, .io = io, .cwd = tmp_path };
+    var result = try execute(ctx, "read", "{\"path\":\"renamed.data\",\"offset\":99}");
+    defer result.deinit(gpa);
+    try std.testing.expect(!result.is_error);
+    try std.testing.expect(result.image_b64 != null);
+    try std.testing.expectEqualStrings("image/png", result.image_mime.?);
+    try std.testing.expect(std.mem.indexOf(u8, result.content, "Read image file [image/png]") != null);
+}
+
+test "read tool omits unsupported image when conversion is unavailable" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var env = std.process.Environ.Map.init(gpa);
+    defer env.deinit();
+    try env.put("PI_IMAGE_CONVERTER", "none");
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const n = try tmp.dir.realPath(io, &path_buf);
+    const tmp_path = path_buf[0..n];
+
+    var bmp = [_]u8{0} ** 58;
+    bmp[0] = 'B';
+    bmp[1] = 'M';
+    bmp[2] = 58;
+    bmp[10] = 54;
+    bmp[14] = 40;
+    bmp[18] = 1;
+    bmp[22] = 1;
+    bmp[26] = 1;
+    bmp[28] = 24;
+    bmp[34] = 4;
+    try tmp.dir.writeFile(io, .{ .sub_path = "photo.bmp", .data = &bmp });
+
+    const ctx = ToolContext{ .gpa = gpa, .io = io, .cwd = tmp_path, .environ = &env };
+    var result = try execute(ctx, "read", "{\"path\":\"photo.bmp\"}");
+    defer result.deinit(gpa);
+    try std.testing.expect(!result.is_error);
+    try std.testing.expect(result.image_b64 == null);
+    try std.testing.expect(std.mem.indexOf(u8, result.content, "Image omitted") != null);
+}
+
 test "bash tool echoes" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
@@ -1141,21 +1832,6 @@ test "tool filter allowlist" {
     defer gpa.free(json);
     try std.testing.expect(std.mem.indexOf(u8, json, "\"read\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, json, "\"bash\"") == null);
-}
-
-test "extended tools product path in schemas and execute" {
-    const gpa = std.testing.allocator;
-    const filter = ToolFilter{};
-    const json = try toolSchemasJson(gpa, filter);
-    defer gpa.free(json);
-    const ext_name = @import("generated_root.zig").tools_shard_0.tools[0].name;
-    try std.testing.expect(std.mem.indexOf(u8, json, ext_name) != null);
-
-    const ctx = ToolContext{ .gpa = gpa, .io = std.testing.io, .cwd = "." };
-    var r = try execute(ctx, ext_name, "{\"path\":\"x.txt\"}");
-    defer r.deinit(gpa);
-    try std.testing.expect(!r.is_error);
-    try std.testing.expect(std.mem.indexOf(u8, r.content, "preview:read_0_0") != null);
 }
 
 test "matchGlob basics" {
@@ -1289,4 +1965,133 @@ test "read tool truncates oversized file output" {
     try std.testing.expect(std.mem.indexOf(u8, r.content, "truncated") != null);
     // Output should be well under full size
     try std.testing.expect(r.content.len < big.items.len);
+}
+
+test "prepareArguments folds legacy edit pair into edits array" {
+    const gpa = std.testing.allocator;
+    const prepared = (try prepareArguments(gpa, "edit", "{\"path\":\"file.txt\",\"oldText\":\"before\",\"newText\":\"after\"}")).?;
+    defer gpa.free(prepared);
+    try std.testing.expectEqualStrings("{\"path\":\"file.txt\",\"edits\":[{\"oldText\":\"before\",\"newText\":\"after\"}]}", prepared);
+}
+
+test "prepareArguments appends legacy edit and parses stringified edits" {
+    const gpa = std.testing.allocator;
+    const prepared = (try prepareArguments(gpa, "edit", "{\"path\":\"f\",\"edits\":\"[{\\\"oldText\\\":\\\"a\\\",\\\"newText\\\":\\\"b\\\"}]\",\"oldText\":\"c\",\"newText\":\"d\"}")).?;
+    defer gpa.free(prepared);
+    try std.testing.expect(std.mem.indexOf(u8, prepared, "{\"oldText\":\"a\",\"newText\":\"b\"}") != null);
+    try std.testing.expect(std.mem.indexOf(u8, prepared, "{\"oldText\":\"c\",\"newText\":\"d\"}") != null);
+}
+
+test "prepareArguments leaves current edit shape unchanged" {
+    const prepared = try prepareArguments(std.testing.allocator, "edit", "{\"path\":\"f\",\"edits\":[{\"oldText\":\"a\",\"newText\":\"b\"}]}");
+    try std.testing.expect(prepared == null);
+}
+
+test "tool schema validator handles required nested types and additional properties" {
+    const gpa = std.testing.allocator;
+    const schemas =
+        \\[{"type":"function","function":{"name":"typed_probe","parameters":{"type":"object","properties":{"value":{"type":"string"},"items":{"type":"array","items":{"type":"integer"}}},"required":["value"],"additionalProperties":false}}}]
+    ;
+    try std.testing.expect((try validateArgumentsAgainstToolSchemas(gpa, schemas, "typed_probe", "{\"value\":\"ok\",\"items\":[1,2]}")) == null);
+
+    if (try validateArgumentsAgainstToolSchemas(gpa, schemas, "typed_probe", "{\"value\":123}")) |err| {
+        defer gpa.free(err);
+        try std.testing.expect(std.mem.indexOf(u8, err, "value: expected string") != null);
+    } else return error.TestExpectedValidationFailure;
+
+    if (try validateArgumentsAgainstToolSchemas(gpa, schemas, "typed_probe", "{\"value\":\"ok\",\"extra\":true}")) |err| {
+        defer gpa.free(err);
+        try std.testing.expect(std.mem.indexOf(u8, err, "extra: additional property") != null);
+    } else return error.TestExpectedValidationFailure;
+}
+
+test "tool schema validator reports missing tool and invalid JSON" {
+    const gpa = std.testing.allocator;
+    const schemas = "[]";
+    if (try validateArgumentsAgainstToolSchemas(gpa, schemas, "missing", "{}")) |err| {
+        defer gpa.free(err);
+        try std.testing.expectEqualStrings("Tool missing not found", err);
+    } else return error.TestExpectedValidationFailure;
+
+    const one = "[{\"type\":\"function\",\"function\":{\"name\":\"one\",\"parameters\":{\"type\":\"object\"}}}]";
+    if (try validateArgumentsAgainstToolSchemas(gpa, one, "one", "{")) |err| {
+        defer gpa.free(err);
+        try std.testing.expect(std.mem.indexOf(u8, err, "invalid JSON") != null);
+    } else return error.TestExpectedValidationFailure;
+}
+
+test "edit public schema stays strict while legacy arguments prepare before validation" {
+    const gpa = std.testing.allocator;
+    const schemas = try toolSchemasJson(gpa, .{ .allow = &[_][]const u8{"edit"} });
+    defer gpa.free(schemas);
+
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, schemas, .{});
+    defer parsed.deinit();
+    const function = parsed.value.array.items[0].object.get("function").?;
+    const params = function.object.get("parameters").?;
+    const props = params.object.get("properties").?.object;
+    try std.testing.expect(props.contains("path"));
+    try std.testing.expect(props.contains("edits"));
+    try std.testing.expect(!props.contains("oldText"));
+    try std.testing.expect(!props.contains("newText"));
+    try std.testing.expect(!props.contains("old_string"));
+    try std.testing.expect(!props.contains("new_string"));
+
+    const required = params.object.get("required").?.array.items;
+    try std.testing.expectEqual(@as(usize, 2), required.len);
+    try std.testing.expectEqualStrings("path", required[0].string);
+    try std.testing.expectEqualStrings("edits", required[1].string);
+
+    const legacy = "{\"path\":\"a.txt\",\"oldText\":\"before\",\"newText\":\"after\"}";
+    const prepared = (try prepareArguments(gpa, "edit", legacy)).?;
+    defer gpa.free(prepared);
+    try std.testing.expect(std.mem.indexOf(u8, prepared, "\"oldText\":\"before\"") != null);
+    try std.testing.expect((try validateArgumentsAgainstToolSchemas(gpa, schemas, "edit", prepared)) == null);
+}
+
+test "bash child environment exposes live pi metadata without mutating parent" {
+    const gpa = std.testing.allocator;
+    var parent = std.process.Environ.Map.init(gpa);
+    defer parent.deinit();
+    try parent.put("PATH", "/bin");
+    try parent.put("PI_MODEL", "parent-model");
+
+    const ctx = ToolContext{
+        .gpa = gpa,
+        .io = std.testing.io,
+        .cwd = ".",
+        .environ = &parent,
+        .session_id = "session-42",
+        .session_file = "/tmp/session-42.jsonl",
+        .provider_name = "anthropic",
+        .model_id = "claude-test",
+        .reasoning_level = "high",
+    };
+    var child = (try buildBashEnvironment(ctx)).?;
+    defer child.deinit();
+
+    try std.testing.expectEqualStrings("pi", child.get("AI_AGENT").?);
+    try std.testing.expectEqualStrings("session-42", child.get("PI_SESSION_ID").?);
+    try std.testing.expectEqualStrings("/tmp/session-42.jsonl", child.get("PI_SESSION_FILE").?);
+    try std.testing.expectEqualStrings("anthropic", child.get("PI_PROVIDER").?);
+    try std.testing.expectEqualStrings("claude-test", child.get("PI_MODEL").?);
+    try std.testing.expectEqualStrings("high", child.get("PI_REASONING_LEVEL").?);
+    try std.testing.expectEqualStrings("parent-model", parent.get("PI_MODEL").?);
+    try std.testing.expect(parent.get("AI_AGENT") == null);
+}
+
+test "tool image arrays deep clone and deinitialize" {
+    const gpa = std.testing.allocator;
+    var input = [_]ToolImage{
+        .{ .data_b64 = try gpa.dupe(u8, "AA=="), .mime_type = try gpa.dupe(u8, "image/png") },
+        .{ .data_b64 = try gpa.dupe(u8, "AQ=="), .mime_type = try gpa.dupe(u8, "image/jpeg") },
+    };
+    defer for (&input) |*image| image.deinit(gpa);
+
+    const cloned = try cloneImages(gpa, &input);
+
+    defer deinitImages(gpa, cloned);
+    try std.testing.expectEqual(@as(usize, 2), cloned.len);
+    try std.testing.expectEqualStrings("AQ==", cloned[1].data_b64);
+    try std.testing.expect(cloned[0].data_b64.ptr != input[0].data_b64.ptr);
 }

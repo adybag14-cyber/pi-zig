@@ -1,0 +1,49 @@
+{
+  "checkpoint": 147,
+  "reference": "Pi 0.84.1 supplied source",
+  "toolchain": "Zig 0.16.0",
+  "measurements": {
+    "zigFiles": 168,
+    "zigLines": 81047,
+    "embeddedJsBridgeLines": 602,
+    "zigTestDeclarations": 758,
+    "syntheticFeatureFiles": 0
+  },
+  "validation": {
+    "format": "pass",
+    "nodeSyntax": "pass",
+    "sourceAudit": "pass",
+    "root": { "declared": 748, "passed": 741, "isolated": 7, "failed": 0 },
+    "sqliteRepository": { "passed": 11, "failed": 0 },
+    "sqliteCli": { "passed": 8, "isolated": 6, "failed": 0 },
+    "sqlitePersistence": { "passed": 5, "failed": 0 },
+    "ordinaryExecutable": { "passed": 4, "failed": 0 },
+    "sqliteExecutable": { "passed": 4, "failed": 0 },
+    "allUniqueDeclarationsExecuted": true,
+    "builds": ["pi", "pi-sqlite", "pi-sqlite-live"],
+    "extensionUiE2e": "pass",
+    "extensionActionsSessionE2e": "pass",
+    "extensionToolFilterE2e": "pass",
+    "debugAllocatorToolLeakCheck": "pass"
+  },
+  "implementedThisCheckpoint": [
+    "bidirectional correlated extension UI requests",
+    "native select confirm input editor and bounded custom dialogs",
+    "retained extension status widget header footer title and editor state",
+    "live model provider tool and session context snapshots",
+    "read-oriented compatibility session manager",
+    "native application of labels model thinking and active-tool actions",
+    "deduplicated native and extension tool registry",
+    "allocator-safe parallel extension tool result ownership"
+  ],
+  "remaining": [
+    "arbitrary extension component and renderer equivalence",
+    "ordered side-effect queue for every hook and tool callback",
+    "script provider OAuth model injection and reload semantics",
+    "automatic extension dependency installation",
+    "complete original coding-agent screen wiring",
+    "server TLS and mutual TLS",
+    "automatic image resizing and transcoding",
+    "remaining enterprise credential retry and interoperability matrix"
+  ]
+}

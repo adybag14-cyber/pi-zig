@@ -1,0 +1,63 @@
+Pi Zig checkpoint 160 disk reload end-to-end record
+===================================================
+
+Toolchain
+---------
+Zig:                                      0.16.0
+Runtime mode:                             persistent strict JSONL RPC
+Provider protocol:                        local OpenAI-compatible SSE
+
+Initial request
+---------------
+Provider/model:                           disk160/fast
+HTTP path:                                /one/chat/completions
+Authorization:                            Bearer token-v1
+Configured active tool:                   read
+Completion:                               disk-reply-1
+
+Disk mutation while process remained alive
+-------------------------------------------
+models.json endpoint changed:              yes
+auth.json API key changed:                 yes
+settings.json tool selection changed:      yes
+maxTurns changed:                          yes
+compactionKeepRecent changed:              yes
+HTTP idle timeout changed:                 yes
+WebSocket connect timeout changed:         yes
+Codex transport setting changed:           yes
+
+Reload command
+--------------
+Request:                                   {"id":"r1","type":"reload"}
+Success:                                   true
+Status mentions settings:                  yes
+Status mentions models:                    yes
+Status mentions credentials:               yes
+Changed model visible via RPC catalog:     yes
+
+Second request
+--------------
+Provider/model:                           disk160/fast
+HTTP path:                                /two/chat/completions
+Authorization:                            Bearer token-v2
+Configured active tool:                   bash
+Stale read schema absent:                  yes
+Completion:                               disk-reply-2
+
+RPC lifecycle
+-------------
+Prompt responses:                          2/2 accepted
+Agent completions:                         2/2 completed
+Quit response:                             accepted
+Process exit:                              0
+Process stderr:                            0 bytes
+DebugAllocator diagnostics:                none
+Result:                                    PASS
+
+Focused stale-context gates
+---------------------------
+Bridge ctx invalidation after reload:       passed
+Post-reload append_entry quarantined:       passed
+Post-reload prompt/session mutation absent: passed
+Native action queue stops at reload:        passed
+Legacy compatibility replay stops:         passed

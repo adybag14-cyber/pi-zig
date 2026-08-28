@@ -1,0 +1,78 @@
+Pi Zig checkpoint 147 validation
+================================
+
+Reference source: uploaded Pi 0.84.1 archive pi-main (3)(7).zip
+Reference SHA-256: 42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a
+Exact patch baseline: uploaded pi-zig-v8-checkpoint-146(1).zip
+Baseline SHA-256: 2c09e1c4018057a58e4b17c4de88d68de37a4e991cf9c050697b82cca514c091
+Toolchain: supplied Zig 0.16.0 Linux x86-64
+Toolchain SHA-256: 70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+Script runtime used for compatibility tests: Node.js 22.16.0
+
+Source measurements
+-------------------
+Native Zig files under src/: 168
+Native Zig logical lines under src/: 81,047
+Embedded JavaScript bridge lines: 602
+Zig test declarations (named + anonymous): 758
+Synthetic/generated feature files: 0
+Checkpoint-146 to checkpoint-147 implementation diff: 8 source files
+Implementation diff additions/deletions: +2,161 / -100
+
+Worktree implementation gates
+-----------------------------
+Whole-tree Zig formatting: PASS
+Node bridge syntax check: PASS
+Real-source audit: PASS
+All-package root graph: 741 passed, 7 isolated, 0 failed (748 declarations)
+Dedicated SQLite repository: 11/11 passed
+Dedicated live SQLite persistence: 5/5 passed
+SQLite CLI/ABI/schema process: 8 passed, 6 isolated, 0 failed
+Ordinary executable/main suite: 4/4 passed
+SQLite-enabled executable/main suite: 4/4 passed
+All 758 unique Zig test declarations executed at least once: PASS
+Debug build of ordinary pi: PASS
+Debug build of optional pi-sqlite: PASS
+Debug build of optional pi-sqlite-live: PASS
+Ordinary pi executable: static Linux x86-64 ELF with Debug information
+Ordinary pi dynamic Node/SQLite library dependency: NONE
+pi-sqlite and pi-sqlite-live: explicitly linked to sqlite3/libc
+
+Extension UI and action gates
+-----------------------------
+Correlated worker-to-native UI request protocol: PASS
+Multiple async UI requests in one persistent handler: PASS
+Native select/confirm/input/editor/custom request flow: PASS
+Noninteractive deterministic fallbacks: PASS
+Status/widget/header/footer/title/editor retained actions: PASS
+Nested raw-mode editor restoration: PASS
+Live model/provider/thinking/tool context projection: PASS
+Canonical session header/entries/branch/leaf projection: PASS
+Session-manager entries/branch/entry/leaf/label/header/tree/path APIs: PASS
+Durable session name/custom entry/label actions: PASS
+Native model and thinking-level actions: PASS
+Execution-time active-tool filtering and schema rebuild: PASS
+Disabled built-in tool omitted and rejected without filesystem mutation: PASS
+Enabled extension tool execution and durable result: PASS
+Parallel extension-tool DebugAllocator shutdown: PASS (no leak report)
+Interactive extension UI end-to-end smoke: PASS
+Runtime actions/session-manager end-to-end smoke: PASS
+Active-tool enforcement end-to-end smoke: PASS
+
+Isolation qualification
+-----------------------
+The seven all-package root skips are the SQLite CLI live integration case and
+six C-backed repository cases. The CLI case passes in the linked SQLite CLI
+process; all six repository cases pass in the dedicated 11-test repository
+process. No behavior is counted as passed solely because it was skipped in the
+self-contained root process.
+
+Packaging qualification
+------------------------
+The final source archive and checkpoint patch are validated after this report is
+written. The published archive must contain one pi-zig-v8-checkpoint-147 root,
+exclude .git/.zig-cache/zig-out/__pycache__, and reproduce this source tree.
+The patch must apply to a pristine extraction of the exact uploaded checkpoint
+146 and reconstruct checkpoint 147 byte-for-byte. Final artifact hashes and
+transfer verification are recorded in the published checksum manifest and the
+assistant's delivery report.

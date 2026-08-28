@@ -1,0 +1,111 @@
+Pi Zig checkpoint 179 validation
+================================
+
+Original Pi source:                         0.84.1
+Supplied Zig compiler:                     0.16.0
+Baseline checkpoint:                       178
+Implementation commit:                     06cfdd6145487f566ea8e4506637abc7ec51db0f
+Documentation commit before this report:   b993b9d69ee2788ab9fd1d9ebc78a848843e044b
+
+Source measurements
+-------------------
+Native Zig source files under src/:        191
+Native Zig logical lines under src/:       115,569
+Named Zig test declarations:               983
+Synthetic/generated feature shards:        0
+Implementation source diff:                5 files, +1,054 / -171
+
+Completed tests
+---------------
+Authentication/import graph:               102/102 passed
+Login-filtered graph:                      19/19 passed
+Auth-flow focused reconstruction:          18/18 passed
+Executable process from build graph:       10/10 passed
+SQLite repository process:                 11/11 passed
+SQLite CLI/schema process:                 8 passed, 6 intentional isolates, 0 failed
+
+The complete multi-process `zig build test` topology was attempted. The
+executable, SQLite repository, and SQLite CLI processes completed without a
+failure before the cold aggregate module compilation exceeded the command
+deadline. No aggregate all-package pass or failure is claimed.
+
+Static and source gates
+-----------------------
+Whole-tree Zig formatting:                 passed
+Python fixture compilation:                passed
+Embedded Node bridge syntax:               passed
+Git diff validation:                       passed
+Real-source audit:                         passed
+Synthetic-source count:                    0
+Static Pi Debug build:                     passed
+SQLite administration Debug build:         passed
+SQLite live-server Debug build:            passed
+
+Real executable E2E
+-------------------
+AUTH_DIALOG_E2E_179:                       passed
+Browser retained dialog:                   passed
+OSC 8 authorization hyperlink:             passed
+Real local callback:                       passed
+Authorization-code exchange:               passed
+OAuth credential persistence:              passed
+Device-code retained dialog:               passed
+Cooperative Escape cancellation:           passed
+Terminal restoration:                      passed
+Process exit:                              0
+Process stderr:                            0 bytes
+
+Checkpoint-178 staged auth regression:     passed
+Checkpoint-177 live credential regression: passed
+Regression child-process stderr:           0 bytes
+
+Exact source-ZIP prevalidation
+------------------------------
+Tracked/extracted files:                   419/419
+Missing/extra/changed files:               0 / 0 / 0
+Executable-mode differences:               0
+Byte-for-byte equivalence:                 passed
+ZIP compressed-data integrity:             passed
+Authentication/import graph:               102/102 passed
+Static Pi Debug rebuild:                   passed
+Auth dialog PTY E2E:                       passed
+E2E stderr:                                0 bytes
+
+Patch reconstruction prevalidation
+----------------------------------
+Baseline files matched checkpoint 178:      passed
+Patch dry-run:                             passed
+Patch application:                        passed
+Tracked/reconstructed files:               419/419
+Missing/extra/changed files:               0 / 0 / 0
+Executable-mode differences:               0
+Byte-for-byte equivalence:                 passed
+Auth-flow focused graph:                   18/18 passed
+Static Pi Debug rebuild:                   passed
+Auth dialog PTY E2E:                       passed
+E2E stderr:                                0 bytes
+
+Published binary validation
+---------------------------
+pi executable:                             static Linux x86-64 Debug ELF
+pi-sqlite executable:                      Linux x86-64 Debug ELF, sqlite3/libc
+pi-sqlite-live executable:                 Linux x86-64 Debug ELF, sqlite3/libc
+Published auth dialog E2E:                 passed
+Published SQLite version:                  3.46.1
+Fresh database initialization:             passed
+Missing canonical tables:                  0
+SQLite integrity result:                   ok
+
+Final frozen publication
+------------------------
+Final tracked files:                       420
+Final ZIP files:                           420/420
+Final patch-reconstructed files:           420/420
+Final ZIP missing/extra/changed:            0 / 0 / 0
+Final patch missing/extra/changed:          0 / 0 / 0
+Final ZIP executable-mode differences:      0
+Final patch executable-mode differences:    0
+Final ZIP auth-flow tests:                 18/18 passed
+Final patch auth-flow tests:               18/18 passed
+Final ZIP auth dialog PTY E2E:             passed
+Final ZIP E2E stderr:                      0 bytes

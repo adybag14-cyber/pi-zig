@@ -1,0 +1,77 @@
+Pi Zig checkpoint 158 validation record
+=======================================
+
+Toolchain
+---------
+Zig: 0.16.0 from supplied archive
+Node: 22.16.0
+Reference source: newly supplied Pi 0.84.1 tree
+Baseline: uploaded checkpoint 157
+
+Source measurements
+-------------------
+Native Zig files: 175
+Native Zig lines: 94,809
+Embedded JavaScript bridge lines: 937
+Source-level Zig test declarations: 831
+Synthetic/generated feature files: 0
+Implementation diff before checkpoint reports: 11 files, +1,479 / -56
+
+Static checks
+-------------
+zig fmt --check build.zig build.zig.zon src: PASS
+node --check src/extensions/js_bridge.mjs: PASS
+python3 scripts/audit_real_source.py: PASS
+  zig_files=175
+  zig_loc=94809
+  synthetic_files=0
+git diff whitespace validation: PASS
+
+Complete build-test graph
+-------------------------
+All-package module graph: 830 passed, 7 skipped, 0 failed (837 cases)
+SQLite repository process: 11/11 PASS
+SQLite CLI/schema process: 8 passed, 6 isolated, 0 failed
+Ordinary executable process: 5/5 PASS
+SQLite live-persistence process: 5/5 PASS
+SQLite-enabled executable process: 5/5 PASS
+
+The seven root-graph skips are deliberate SQLite isolates. Their behavior is
+executed in the separately linked SQLite processes above.
+
+Builds
+------
+zig build -Doptimize=Debug: PASS
+zig build sqlite -Doptimize=Debug: PASS
+zig build sqlite-server -Doptimize=Debug: PASS
+
+Top-level resource E2E
+----------------------
+Four resource classes discovered: 4/4 PASS
+Expected concrete resources: 6/6 PASS
+Extension enabled execution: PASS
+Extension disabled schema/dispatch: PASS
+Prompt enabled expansion: PASS
+Prompt disabled literal behavior: PASS
+Project unload/load/inherit: PASS
+Empty project override pruning: PASS
+Concurrent two-process rounds: 12/12 PASS
+Lost updates: 0
+Enabled extension stderr: 0 bytes
+
+Archive and patch reconstruction
+--------------------------------
+The exact source ZIP is extracted into a cache-free directory and validated
+against the frozen source tree byte-for-byte. It passes formatting, source
+audit, the complete test topology, all three Debug builds, and the resource
+E2E. The binary patch is independently applied to a pristine checkpoint 157
+extraction and reconstructs every checkpoint 158 file byte-for-byte before
+repeating the complete tests and builds.
+
+Publication transfer
+--------------------
+Final artifacts are copied in explicit 1 MiB chunks, flushed with fsync,
+atomically installed, fully re-read, compared byte-for-byte, independently
+SHA-256 checked, verified against the published checksum manifest, and checked
+through stable pre/post-smoke size, mtime, and hash snapshots. Publication is
+complete before the response links are emitted.

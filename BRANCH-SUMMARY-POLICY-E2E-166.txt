@@ -1,0 +1,32 @@
+BRANCH_SUMMARY_POLICY_E2E_166=PASS
+RPC_PROMPTS=4
+RESERVE_TOKENS=77
+INTERACTIVE_SUMMARY_PROMPT=PASS
+CUSTOM_PROMPT=focus-166
+SUMMARY_FROM_HOOK=true
+SUMMARY_USAGE_TOTAL=130
+SUMMARY_LABEL=branch-label-166
+SKIP_PROMPT=true
+SKIP_PROMPT_DIALOG_SUPPRESSED=PASS
+SUMMARY_COUNT_AFTER_SKIP=1
+RPC_EXIT=0
+FIRST_INTERACTIVE_EXIT=0
+SECOND_INTERACTIVE_EXIT=0
+STDERR_BYTES=0
+
+{
+  "customPrompt": "focus-166",
+  "firstInteractiveExit": 0,
+  "interactivePrompt": true,
+  "reserveTokens": 77,
+  "rpcExit": 0,
+  "rpcPrompts": 4,
+  "secondInteractiveExit": 0,
+  "skipPrompt": true,
+  "skipPromptDialogSuppressed": true,
+  "stderrBytes": 0,
+  "summaryCountAfterSkip": 1,
+  "summaryFromHook": true,
+  "summaryLabel": "branch-label-166",
+  "summaryUsageTotal": 130
+}

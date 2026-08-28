@@ -1,0 +1,79 @@
+PI ZIG CHECKPOINT 170 — SOURCE VALIDATION RECORD
+================================================
+
+Evidence
+--------
+Original source: uploaded Pi 0.84.1 archive
+Baseline: uploaded pi-zig checkpoint 169
+Compiler: supplied Zig 0.16.0 Linux x86-64 archive
+
+Source measurements
+-------------------
+Native Zig source files: 185
+Native Zig logical lines: 108028
+Named Zig test declarations: 930
+Synthetic/generated source files: 0
+
+Static gates
+------------
+Whole-tree `zig fmt --check`: PASS
+Python E2E fixture `py_compile`: PASS
+Git diff whitespace/error validation: PASS
+Real-source audit: PASS
+Node extension bridge syntax: PASS
+
+Authoritative direct root closure
+---------------------------------
+Command shape:
+  PI_SQLITE_CLI_TESTS=1
+  PI_SQLITE_REPOSITORY_TESTS=1
+  zig test src/root.zig -fno-llvm -lsqlite3 -lc
+
+Result: 932/932 PASS
+Skipped: 0
+Failed: 0
+Exit status: 0
+
+Normal build-test topology
+--------------------------
+All-package module process: 925 pass / 7 intentional isolates / 0 fail
+SQLite repository process: 11/11 PASS
+SQLite CLI/schema process: 8 pass / 6 intentional isolates / 0 fail
+Ordinary executable process: 9/9 PASS
+SQLite live-persistence process: 5/5 PASS
+SQLite-enabled executable process: 9/9 PASS
+Build graph: PASS
+
+The seven module-process isolates are deliberate linked-SQLite cases. Six run
+in the dedicated repository process and the CLI integration case runs in the
+dedicated SQLite CLI process. The direct root closure links sqlite3/libc and
+executes every case without skips.
+
+Focused changed-area closure
+----------------------------
+Session-related filtered root graph: 97/97 PASS
+Update-related filtered root graph: 35/35 PASS
+
+Builds
+------
+Static pi Debug ELF: PASS
+pi-sqlite Debug ELF linked to sqlite3/libc: PASS
+pi-sqlite-live Debug ELF linked to sqlite3/libc: PASS
+
+Session and update executable E2E
+---------------------------------
+Startup resume selector: PASS
+Startup target rename persistence: PASS
+Live /resume replacement: PASS
+Source/target JSONL isolation: PASS
+Self-update check plan: PASS
+Unsafe source install rejected: PASS
+Managed package-name migration: PASS
+Latest-release requests: 3
+Package-manager steps: 2
+Combined stderr bytes: 0
+
+This source-stage record is intentionally free of circular archive hashes. The
+published release-root copy appends exact ZIP extraction, patch reconstruction,
+SQLite smoke, artifact hashes, and transfer-stability results after immutable
+artifacts are created.

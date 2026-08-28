@@ -1,0 +1,51 @@
+{
+  "zig_version": {
+    "exit": 0,
+    "seconds": 0.006,
+    "required": true,
+    "log": "cp180-focused-zig_version.log"
+  },
+  "fmt_module": {
+    "exit": 0,
+    "seconds": 0.004,
+    "required": true,
+    "log": "cp180-focused-fmt_module.log"
+  },
+  "zig_module_test": {
+    "exit": 0,
+    "seconds": 3.712,
+    "required": true,
+    "log": "cp180-focused-zig_module_test.log"
+  },
+  "node_bridge_test": {
+    "exit": 0,
+    "seconds": 0.028,
+    "required": true,
+    "log": "cp180-focused-node_bridge_test.log"
+  },
+  "codec_syntax": {
+    "exit": 0,
+    "seconds": 0.018,
+    "required": true,
+    "log": "cp180-focused-codec_syntax.log"
+  },
+  "production_checker": {
+    "exit": 0,
+    "seconds": 0.636,
+    "required": true,
+    "log": "cp180-focused-production_checker.log"
+  },
+  "build_help": {
+    "exit": 0,
+    "seconds": 1.313,
+    "required": true,
+    "log": "cp180-focused-build_help.log"
+  },
+  "summary": {
+    "required_ok": true,
+    "required_failures": [],
+    "full_build_policy": "not run: continuation policy for this rewrite requests focused checks instead of full build tests",
+    "runtime_file": "src/extensions/js_bridge.mjs",
+    "module_file": "src/provider_method_ref.zig"
+  }
+}

@@ -2,6 +2,7 @@
 //! Full browser OAuth requires OS browser launch; device-code flow is offline-testable.
 const std = @import("std");
 const Io = std.Io;
+const storage = @import("storage.zig");
 
 pub const DeviceCodeResponse = struct {
     device_code: []const u8,
@@ -74,32 +75,43 @@ pub fn parseTokenResponse(gpa: std.mem.Allocator, json_text: []const u8) !TokenR
     };
 }
 
-/// Store tokens under agent_dir/oauth_<provider>.json
+/// Store OAuth tokens in upstream-compatible `agent_dir/auth.json`.
+/// `expires` is absolute Unix epoch milliseconds, matching pi-ai OAuthCredential.
 pub fn saveTokens(gpa: std.mem.Allocator, io: Io, agent_dir: []const u8, provider: []const u8, token: TokenResponse) !void {
-    const path = try std.fmt.allocPrint(gpa, "{s}/oauth_{s}.json", .{ agent_dir, provider });
-    defer gpa.free(path);
-    try std.Io.Dir.cwd().createDirPath(io, agent_dir);
-    var aw: std.Io.Writer.Allocating = .init(gpa);
-    defer aw.deinit();
-    try aw.writer.writeAll("{\"access_token\":");
-    try std.json.Stringify.value(token.access_token, .{}, &aw.writer);
-    try aw.writer.writeAll(",\"refresh_token\":");
-    try std.json.Stringify.value(token.refresh_token, .{}, &aw.writer);
-    try aw.writer.writeAll("}");
-    try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = path, .data = aw.written() });
+    var store = try storage.AuthStorage.init(gpa, io, agent_dir);
+    defer store.deinit();
+    const now_ns = std.Io.Clock.real.now(io).nanoseconds;
+    const now_ms: i64 = @intCast(@divTrunc(now_ns, std.time.ns_per_ms));
+    const expires_ms = now_ms + @as(i64, @intCast(token.expires_in)) * std.time.ms_per_s;
+    const credential = storage.OAuthCredential{
+        .refresh = @constCast(token.refresh_token),
+        .access = @constCast(token.access_token),
+        .expires = expires_ms,
+    };
+    try store.setOAuth(provider, credential);
 }
 
+/// Load the access token from `auth.json`. For migration only, an old
+/// `oauth_<provider>.json` file is still accepted if no canonical credential exists.
 pub fn loadAccessToken(gpa: std.mem.Allocator, io: Io, agent_dir: []const u8, provider: []const u8) !?[]u8 {
+    var store = try storage.AuthStorage.init(gpa, io, agent_dir);
+    defer store.deinit();
+    if (try store.read(provider)) |credential_value| {
+        var credential = credential_value;
+        defer credential.deinit(gpa);
+        switch (credential) {
+            .oauth => |oauth_credential| return try gpa.dupe(u8, oauth_credential.access),
+            .api_key => |api_key| if (api_key.key) |key| return try gpa.dupe(u8, key),
+        }
+    }
+
+    // Legacy pi-zig token-file fallback. New writes never use this path.
     const path = try std.fmt.allocPrint(gpa, "{s}/oauth_{s}.json", .{ agent_dir, provider });
     defer gpa.free(path);
     const raw = std.Io.Dir.cwd().readFileAlloc(io, path, gpa, .limited(64 * 1024)) catch return null;
     defer gpa.free(raw);
-    const tok = parseTokenResponse(gpa, raw) catch return null;
-    defer {
-        // only free refresh; return access
-        gpa.free(tok.access_token);
-        if (tok.refresh_token.len > 0) gpa.free(tok.refresh_token);
-    }
+    var tok = parseTokenResponse(gpa, raw) catch return null;
+    defer tok.deinit(gpa);
     return try gpa.dupe(u8, tok.access_token);
 }
 
@@ -117,4 +129,31 @@ test "parse device code and token responses" {
     );
     defer tok.deinit(gpa);
     try std.testing.expectEqualStrings("sk-abc", tok.access_token);
+}
+
+test "OAuth save uses canonical auth json" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const n = try tmp.dir.realPath(io, &path_buf);
+    const agent_dir = path_buf[0..n];
+
+    const token = TokenResponse{
+        .access_token = "access-canonical",
+        .refresh_token = "refresh-canonical",
+        .expires_in = 3600,
+    };
+    try saveTokens(gpa, io, agent_dir, "custom-oauth", token);
+    const access = (try loadAccessToken(gpa, io, agent_dir, "custom-oauth")).?;
+    defer gpa.free(access);
+    try std.testing.expectEqualStrings("access-canonical", access);
+
+    const auth_path = try std.fs.path.join(gpa, &.{ agent_dir, "auth.json" });
+    defer gpa.free(auth_path);
+    const raw = try std.Io.Dir.cwd().readFileAlloc(io, auth_path, gpa, .limited(64 * 1024));
+    defer gpa.free(raw);
+    try std.testing.expect(std.mem.indexOf(u8, raw, "custom-oauth") != null);
+    try std.testing.expect(std.mem.indexOf(u8, raw, "\"type\": \"oauth\"") != null);
 }

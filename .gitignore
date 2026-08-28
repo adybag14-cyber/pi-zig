@@ -10,3 +10,7 @@ smoke-*.txt
 smoke-*.json
 *.html
 
+
+__pycache__/
+*.pyc
+.pi-zig-js-bridge-*.mjs

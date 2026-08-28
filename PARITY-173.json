@@ -1,0 +1,48 @@
+{
+  "checkpoint": 173,
+  "original_version": "0.84.1",
+  "zig_version": "0.16.0",
+  "closed": [
+    "expanded original settings model",
+    "global and trusted-project settings scopes",
+    "project explicit versus inherited value visualization",
+    "atomic project override removal",
+    "explicit default maxTurns override semantics",
+    "selector identity preservation across search clearing and reload",
+    "live terminal progress",
+    "live editor and assistant-output padding",
+    "settings-driven fullscreen startup"
+  ],
+  "validation": {
+    "focused_settings_tui_import_graph": "165/165 passed",
+    "global_settings_pty": "passed; stderr 0",
+    "project_settings_pty": "passed; stderr 0",
+    "ordinary_executable_tests": "10/10 passed",
+    "sqlite_repository": "11/11 passed",
+    "sqlite_cli_schema": "8 passed, 6 intentional isolates, 0 failed",
+    "static_pi_build": "passed",
+    "pi_sqlite_build": "passed",
+    "sqlite_integrity": "ok",
+    "aggregate_root": "compile deadline exceeded; no failure emitted and no pass claimed",
+    "aggregate_build_module": "compile deadline exceeded after dedicated processes passed; no aggregate pass claimed",
+    "pi_sqlite_live": "compile deadline interrupted output; incomplete file rejected and not published"
+  },
+  "source": {
+    "src_zig_files": 186,
+    "src_zig_lines": 110741,
+    "tracked_zig_files": 187,
+    "named_test_declarations": 942,
+    "synthetic_files": 0
+  },
+  "remaining": [
+    "complete retained-shell behavior for remaining UI settings",
+    "automatic light and dark themes",
+    "automatic image resize EXIF normalization and transcoding",
+    "fullscreen package and account management",
+    "complete npm pnpm Yarn and Bun behavior",
+    "asynchronously invalidated extension component trees",
+    "function-valued providers and extension-owned OAuth",
+    "native server TLS and mutual TLS",
+    "enterprise credential telemetry update retry and interoperability breadth"
+  ]
+}

@@ -1,0 +1,46 @@
+PI ZIG CHECKPOINT 173 — SETTINGS/PROJECT REAL PTY E2E
+=====================================================
+
+Legacy global settings screen regression
+----------------------------------------
+SETTINGS_SCREEN_E2E_171=PASS
+fullscreen=true
+retryEnabled=false
+retryMaxRetries=5
+nestedProviderPreserved=true
+unrelatedSettingPreserved=true
+liveReload=true
+steeringMode=all
+followUpMode=all
+treeFilterMode=no-tools
+liveTreeFilter=true
+quietStartup=true
+terminalRestored=true
+exit=0
+stderrBytes=0
+
+Project/global scope workflow
+-----------------------------
+PROJECT_SETTINGS_E2E_173=PASS
+projectScope=true
+projectClearAndRestore=true
+globalEdit=true
+maxTurnsProjectDefaultOverride=16
+terminalProgress=true
+editorPadding=1
+outputPad=0
+settingsDrivenFullscreen=true
+terminalRestored=true
+stderrBytes=0
+
+Validated behavior
+------------------
+- Tab switches the retained selector between GLOBAL and trusted PROJECT scopes.
+- Project values display inherited versus explicit state.
+- Backspace/Delete removes an explicit project override atomically.
+- Clearing search preserves selection by EditableKey rather than by row index.
+- An explicit project maxTurns=16 overrides a global maxTurns=32.
+- Global and project sibling JSON fields survive every transaction.
+- Terminal progress, editor padding and output padding apply after one live reload.
+- A fresh process enters fullscreen from project tuiMode without a CLI override.
+- Both child processes restore terminal state and emit zero stderr bytes.

@@ -1,0 +1,3 @@
+Scoped implementation whitespace check: passed
+Paths: .github .gitignore README.md CHANGELOG.md LICENSE CONTINUATION.md CHECKPOINT-186.md GAP_AUDIT.md build.zig build.zig.zon src verification/checkpoint-186/verification-summary.json
+Excluded immutable evidence: upstream reference tree, historical checkpoint patches, and generated logs

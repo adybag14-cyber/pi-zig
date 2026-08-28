@@ -1,110 +1,86 @@
 # pi-zig
 
-A **Zig 0.16.0** rewrite of the core of [earendil-works/pi](https://github.com/earendil-works/pi) — a coding-agent harness as a **single native binary**.
+`pi-zig` is a native Zig 0.16 rewrite of the Pi coding-agent and AI runtime. It
+preserves Pi's provider, model, session, extension, tool, RPC, TUI, storage,
+authentication, and protocol behavior while keeping the default executable
+self-contained.
 
-This is a **full structural port** of the coding-agent surface (tools, multi-provider AI, sessions, context/skills/prompts/settings, CLI modes, packages) plus **monorepo C package surfaces** (MCP, serve, OAuth device parse, session index, TUI diff buffer, extensions host, themes, evals, images, 40+ provider catalog). Not a 200k-LOC TypeScript monorepo clone.
+The behavioral reference for this tree is the complete Pi 0.84.1 source
+snapshot under `upstream/pi-main/`. The untouched reference archive and its
+per-file integrity manifests are retained under `upstream/source-archive/` and
+at the repository root. The reference is included for comparison and testing;
+`pi-zig` is an independent rewrite and is not an official upstream release.
 
-## Requirements
+## Highlights
 
-- **Zig 0.16.0** (required — uses 0.16 process/Io/HTTP APIs)
+- native multi-turn agent loop, tool execution, steering, retry, compaction,
+  branch summaries, and append-only JSONL sessions;
+- OpenAI Chat/Responses/Codex, Anthropic, Google, Mistral, Bedrock, Pi
+  Messages, Azure-compatible, and custom-provider transports;
+- persistent JavaScript/TypeScript extension workers with tools, commands,
+  hooks, renderers, OAuth, dynamic models, provider streams, credential-aware
+  model filters, and deferred fetch/cancel callbacks;
+- generation-safe provider callback ownership with bounded active-stream
+  retirement and hostile-iterator worker isolation;
+- retained fullscreen terminal application, Markdown/LaTeX rendering, terminal
+  images, model/session/settings/auth/package selectors, mouse input, clipboard,
+  completion, and configurable keybindings;
+- optional SQLite repository and live-server companions, remote protocol
+  clients, TLS/proxy support, MCP, telemetry, image normalization, and package
+  management;
+- Windows, Linux, and macOS release targets.
 
-```text
-zig version   # must report 0.16.0
+## Build
+
+Use the final Zig 0.16.0 release:
+
+```sh
+zig build -Doptimize=Debug
 ```
 
-## Build / test
+The default artifact is `zig-out/bin/pi` (`pi.exe` on Windows). It does not
+link SQLite.
 
-```bash
-zig build
-zig build test
+Build the optional SQLite administration and live-server binaries with:
+
+```sh
+zig build sqlite -Doptimize=ReleaseSafe
 ```
 
-Binary: `zig-out/bin/pi` (or `pi.exe` on Windows).
+On Windows, pass the directory containing `sqlite3.lib` when it is not already
+in the compiler's library search path, and ensure the matching `sqlite3.dll` is
+on `PATH` when running the linked binaries:
 
-### Cross-compile
-
-```bash
-zig build -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu
-zig build -Doptimize=ReleaseSafe -Dtarget=aarch64-linux-gnu
-zig build -Doptimize=ReleaseSafe -Dtarget=x86_64-windows-gnu
-zig build -Doptimize=ReleaseSafe -Dtarget=aarch64-windows-gnu
-zig build -Doptimize=ReleaseSafe -Dtarget=x86_64-macos
-zig build -Doptimize=ReleaseSafe -Dtarget=aarch64-macos
+```powershell
+zig build sqlite -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\path\to\sqlite
 ```
 
-### GitHub Releases
+## Test
 
-CI builds and tests on Linux, Windows, and macOS. Tagged releases (`v*`) publish multi-arch binaries.
-
-## Soft / hard cancel & thinking
-
-| Feature | Behavior |
-|---------|----------|
-| Mid-bash kill | Abort flag / timeout force-kills the OS process (`SIGKILL` / `TerminateProcess`) while tool runs |
-| Mid-HTTP cancel | OpenAI + Anthropic SSE writers poll abort; `stop_reason=aborted` |
-| Thinking budgets | `--thinking off\|low\|medium\|high\|xhigh` → system prose **and** provider fields (`reasoning_effort` / `budget_tokens`) |
-| Entry timestamps | Each session entry stores ISO timestamp; survives save/load |
-
-RPC `abort` and `set_thinking_level` drive these live.
-
-## Packages (source layout)
-
-Single binary `pi`, library module `pi_zig` from `src/root.zig`:
-
-| Package | Path | Role |
-|---------|------|------|
-| config | `src/config.zig` | APP_NAME, `~/.pi/agent`, env vars, session dirs |
-| ai | `src/ai/` | Providers, OpenAI / Anthropic / Google / mock / images |
-| agent | `src/agent/` | Tools, agent loop, JSONL sessions, compaction |
-| tui | `src/tui/` | ANSI + render + **differential buffer** |
-| coding_agent | `src/coding_agent/` | CLI args, context, skills, prompts, settings, slash, modes, packages |
-| mcp | `src/mcp/` | MCP JSON-RPC client (stdio) |
-| server | `src/server/` | TCP HTTP RPC (`pi serve`) |
-| storage | `src/storage/` | Session index JSONL store |
-| auth | `src/auth/` | OAuth device-code parse + token files |
-| extensions | `src/extensions/` | Declarative extension host |
-| themes | `src/themes/` | Theme JSON |
-| evals | `src/evals/` | Mock eval harness |
-
-### AI providers (`src/ai/`)
-
-| Module | Notes |
-|--------|--------|
-| `providers.zig` | **40+** catalog entries + openai_compat gateways |
-| `openai.zig` | Chat completions + tools + SSE + reasoning_effort + images |
-| `anthropic.zig` | Messages API + SSE + thinking budget_tokens |
-| `google.zig` | `generateContent` text path |
-| `mock.zig` | Scripted responses from JSON |
-| `images.zig` | File → base64 multimodal helper |
-
-Env keys: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`, `GEMINI_API_KEY`, `PI_API_KEY`, plus `OPENAI_BASE_URL`, `PI_MODEL`, `PI_PROVIDER`, `PI_MOCK_SCRIPT`, `PI_AGENT_DIR`, `PI_SESSION_DIR`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `XAI_API_KEY`, `DEEPSEEK_API_KEY`, …
-
-### CLI surfaces
-
-```bash
-pi -p --mock-script script.json "hello"
-pi --mode rpc …
-pi --thinking high --provider anthropic …
-pi --provider ollama --base-url http://127.0.0.1:11434/v1 --model llama3.2 …
-pi --list-models grok
-pi install path:./local-pkg
-pi list | remove <name>
-pi serve --port 3141 [--token SECRET]
-pi mcp npx -y @modelcontextprotocol/server-filesystem .
-pi eval --script mock.json --expect "world" say hi
-pi oauth parse-device device.json
-pi theme theme.json
-pi index [session-dir]
+```sh
+zig build test --summary all
 ```
 
-### Interactive slash commands
+The Windows test command accepts the same `-Dsqlite-lib-dir` option. CI installs
+a matching SQLite development package before running the complete graph.
 
-`/help /quit /exit /session /new /name /model /compact /export /import /fork /clone /tree /reload /hotkeys /changelog /copy /login /logout /settings /resume`
+Focused extension bridge checks can also be run directly:
 
-## Audit
+```sh
+node --check src/extensions/js_bridge.mjs
+zig test src/extensions/js_runtime.zig
+```
 
-See [GAP_AUDIT.md](./GAP_AUDIT.md) for soft/hard + monorepo C status.
+## Repository layout
+
+- `src/` — native Zig implementation and JavaScript extension bridge;
+- `checkpoint-tests/` — production/custom-provider integration fixtures;
+- `scripts/` — source, packaging, and parity audits;
+- `upstream/pi-main/` — complete reference source snapshot;
+- `verification/` — retained checkpoint evidence;
+- `CHECKPOINT-*.md` and `GAP_AUDIT.md` — implementation history and audit trail.
 
 ## License
 
-Same spirit as upstream pi; check repository for license file when published.
+The `pi-zig` rewrite is released under the [MIT License](LICENSE). The embedded
+upstream reference carries its own license at `upstream/pi-main/LICENSE`.

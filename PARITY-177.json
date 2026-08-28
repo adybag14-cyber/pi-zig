@@ -1,0 +1,42 @@
+{
+  "checkpoint": 177,
+  "originalPiVersion": "0.84.1",
+  "zigVersion": "0.16.0",
+  "focus": "fullscreen login/logout account selection and transactional live credential synchronization",
+  "closed": [
+    "bare /login retained fullscreen selector",
+    "bare /logout stored-credential selector",
+    "searchable provider and authentication-method rows",
+    "masked API-key entry",
+    "private atomic auth.json persistence",
+    "immediate active-provider API-key rebinding",
+    "custom provider identity preservation",
+    "transactional credential reload after logout",
+    "models.json fallback after stored override removal",
+    "deep API-key and OAuth rollback snapshots",
+    "secret zeroing and terminal-output exclusion"
+  ],
+  "qualified": [
+    "provider and auth type are combined into one list rather than two original selector stages",
+    "not every environment or configuration-source status label is rendered",
+    "OAuth progress presentation does not yet reproduce the complete original login dialog"
+  ],
+  "validation": {
+    "nativeZigFiles": 190,
+    "nativeZigLines": 114308,
+    "namedZigTests": 994,
+    "authSelectorGraph": { "passed": 107, "failed": 0 },
+    "credentialFocusedGraph": { "passed": 29, "failed": 0 },
+    "loginFocusedGraph": { "passed": 6, "failed": 0 },
+    "mainExecutableProcess": { "passed": 10, "failed": 0 },
+    "sqliteRepositoryProcess": { "passed": 11, "failed": 0 },
+    "sqliteCliProcess": { "passed": 8, "isolated": 6, "failed": 0 },
+    "staticPiBuild": true,
+    "sqliteAdministrationBuild": true,
+    "sqliteLiveBuild": false,
+    "fullscreenAuthE2E": true,
+    "liveProviderRebindE2E": true,
+    "stderrBytes": 0,
+    "syntheticFeatureShards": 0
+  }
+}

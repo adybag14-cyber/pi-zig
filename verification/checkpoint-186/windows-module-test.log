@@ -1,0 +1,1012 @@
+1/1010 root.test_0...OK
+2/1010 config.test.identity contains version...OK
+3/1010 config.test.session directory leaf matches upstream and retains legacy hash helper...OK
+4/1010 ai.root.test_0...OK
+5/1010 ai.root.test.request-local output caps respect configured model limits...OK
+6/1010 ai.root.test.chat messages expose legacy and ordered image arrays...OK
+7/1010 agent.root.test_0...OK
+8/1010 tui.root.test_0...OK
+9/1010 coding_agent.root.test_0...OK
+10/1010 mcp.root.test_0...OK
+11/1010 server.root.test_0...OK
+12/1010 storage.root.test_0...OK
+13/1010 auth.root.test_0...OK
+14/1010 extensions.root.test_0...OK
+15/1010 themes.root.test_0...OK
+16/1010 evals.root.test_0...OK
+17/1010 protocol.root.test_0...OK
+18/1010 telemetry.root.test_0...OK
+19/1010 client.root.test_0...OK
+20/1010 client.state.test.client state rejects stale server and session snapshots...OK
+21/1010 client.state.test.client state detach is forced while reacquisition can accept lower revisions...OK
+22/1010 client.state.test.client state listeners unsubscribe and failures are isolated...OK
+23/1010 client.connection.test.connection sends hello then accepts fragmented server hello...OK
+24/1010 client.connection.test.connection rejects data before transport readiness and non-hello first messages...OK
+25/1010 client.connection.test.connection rejects duplicate handshake and detects truncated terminal frame...OK
+26/1010 client.request.test.typed request encoder covers every protocol command...OK
+27/1010 client.request.test.typed request encoder rejects empty ids and enforces configured frame limit...OK
+28/1010 client.lease.test.lease manager shares attachment and detaches only the final lease...OK
+29/1010 client.lease.test.lease manager enforces shared and exclusive ownership...OK
+30/1010 client.lease.test.explicit release failure restores while disposal failure schedules cleanup...OK
+31/1010 client.lease.test.disconnect invalidates leases without requiring protocol cleanup...OK
+32/1010 client.session_handle.test.session handle commands are lease gated and final shared release detaches...OK
+33/1010 client.session_handle.test.session handle explicit detach failure restores while dispose relinquishes...OK
+34/1010 client.session_handle.test.session acquisition attaches and returns an owned high-level handle...OK
+35/1010 client.session_handle.test.session acquisition reconciles abandoned cleanup before reattaching...OK
+36/1010 client.session_handle.test.failed session acquisition owns a durable error and releases its lease...OK
+37/1010 client.session_handle.test.session creation returns an exclusive owned handle...OK
+38/1010 client.session_handle.test.session creation compensates with detach when exclusive adoption conflicts...OK
+39/1010 client.client.test.client handshake request correlation and authoritative snapshot state...OK
+40/1010 client.client.test.client rejects unmatched and command-mismatched responses...OK
+41/1010 client.client.test.client disconnect invalidates leases and rejects pending requests...OK
+42/1010 client.unix.test.unix transport validates path and pending limits...OK
+43/1010 client.unix.test.stream adapter orders client hello and pumps fragmented server data...SKIP
+44/1010 client.tcp.test.TCP transport validates IPv4 IPv6 and hostname endpoints...OK
+45/1010 client.tcp.test.TCP stream adapter performs protocol handshake over a stream pair...SKIP
+46/1010 client.secure_tcp.test.secure TCP options validate endpoint and proxy conflicts...OK
+47/1010 client.secure_tcp.test.secure transport explicit proxy overrides environment and disable_proxy bypasses both...OK
+48/1010 client.search.test.snapshot search projects every transcript role and filters...OK
+49/1010 client.search.test.snapshot search empty query and limit semantics...OK
+50/1010 telemetry.types.test.owned attribute values detach array and string storage...OK
+51/1010 telemetry.memory.test.in-memory telemetry preserves callback result and deterministic settlement...OK
+52/1010 telemetry.memory.test.in-memory telemetry preserves error union and automatic status...OK
+53/1010 telemetry.memory.test.attributes merge last-write-wins and events remain ordered...OK
+54/1010 telemetry.memory.test.explicit status is last-write-wins and is not overwritten by failure...OK
+55/1010 telemetry.memory.test.nested and concurrent-shaped children retain explicit parentage...OK
+56/1010 telemetry.memory.test.calls after settlement are inert including child recording...OK
+57/1010 telemetry.memory.test.noop telemetry admits callback and records nothing...OK
+58/1010 telemetry.schema.test.schema validates required, closed and enumerated attributes...OK
+59/1010 protocol.messages.test.protocol command vocabulary matches upstream...OK
+60/1010 agent.search.test.search session is case insensitive, ranked, filtered and branch aware...OK
+61/1010 agent.search.test.empty query and zero limit yield no hits...OK
+62/1010 agent.search.test.entry type filters and auxiliary projection...OK
+63/1010 agent.search.test.directory search isolates malformed JSONL and owns results...OK
+64/1010 agent.search.test.snippets retain valid UTF-8 boundaries...OK
+65/1010 agent.session.test.ISO timestamps use unsigned zero-padded civil fields...OK
+66/1010 agent.session.test.session save then load roundtrip...OK
+67/1010 agent.session.test.per-entry timestamps persist across save/load...OK
+68/1010 agent.session.test.session fork copies branch...OK
+69/1010 agent.session.test.assistant metadata round-trip provider model stopReason usage...OK
+70/1010 agent.session.test.upstream v3 session fixture loads branch tip and roles...OK
+71/1010 agent.session.test.listSessions and mostRecentSessionPath...OK
+72/1010 agent.session.test.assistant thinking survives JSONL round trip...OK
+73/1010 agent.session.test.tool result addedToolNames survive JSONL and fork...OK
+74/1010 agent.session.test.tool result usage survives JSONL reload fork and stats...OK
+75/1010 agent.session.test.tool result image survives JSONL load and fork...OK
+76/1010 agent.session.test.session auxiliary label custom and info entries stay out of model roles...OK
+77/1010 agent.session.test.session label clearing and session info are append-only tree entries...OK
+78/1010 agent.session.test.session explicit tip survives later physical JSONL entries...OK
+79/1010 agent.session.test.assistant diagnostics raw JSON survives session round trip...OK
+80/1010 agent.session.test.bash execution message survives exact session round trip and fork...OK
+81/1010 agent.session.test.bash execution text follows upstream projection rules...OK
+82/1010 agent.session.test.model and thinking changes serialize and round trip natively...OK
+83/1010 agent.session.test.user image message persists through JSONL and fork...OK
+84/1010 agent.session.test.explicit session id validation matches portable upstream grammar...OK
+85/1010 agent.session.test.find exact session path does not accept prefixes...OK
+86/1010 agent.session.test.active settings follow the selected branch...OK
+87/1010 agent.session.test.load migrates legacy upstream session and rewrites durable v3...OK
+88/1010 agent.session.test.session header creation time and parent path survive repeated saves...OK
+89/1010 agent.session.test.session stats include all history and summary billing...OK
+90/1010 agent.session.test.append-only compaction preserves history and rebuilds active context...OK
+91/1010 agent.session.test.malformed compaction boundary falls back to the complete active path...OK
+92/1010 agent.session.test.retry context exclusions are live-only and survive later turns...OK
+93/1010 agent.session.test.session listing projects latest metadata and malformed files...OK
+94/1010 agent.session.test.multiple tool-result images survive JSONL load and fork...OK
+95/1010 agent.session.test.one user message persists multiple ordered images...OK
+96/1010 agent.session.test.session entry deep copy preserves every rich field...OK
+97/1010 agent.session_migration.test.migrate v1 adds tree ids and converts compaction index...OK
+98/1010 agent.session_migration.test.migrate v2 renames hookMessage role and current v3 is unchanged...OK
+99/1010 agent.session_migration.test.future versions and unrelated JSONL are rejected...OK
+100/1010 ai.http_proxy.test.proxy resolution matches environment precedence settings and no_proxy...OK
+101/1010 ai.http_proxy.test.settings proxy fills protocol environment before all_proxy and accepts credentials...OK
+102/1010 ai.http_proxy.test.unsupported proxy schemes are rejected...OK
+103/1010 protocol.framing.test.frame encode and fragmented decode...OK
+104/1010 protocol.framing.test.frame prefix handles multi-byte lengths without narrowing traps...OK
+105/1010 protocol.server_json.test.parse strict server hello and metadata list...OK
+106/1010 protocol.server_json.test.server messages reject extra fields and inconsistent transcript status...OK
+107/1010 protocol.server_json.test.server messages preserve recursive JSON tool details...OK
+108/1010 protocol.codec.test.client hello CBOR frame roundtrip...OK
+109/1010 protocol.codec.test.prompt frame roundtrip...OK
+110/1010 protocol.json.test.parse upstream hello and prompt envelopes...OK
+111/1010 protocol.json.test.protocol objects are closed and prompt text may be empty...OK
+112/1010 protocol.cbor.test.CBOR primitives match RFC encodings...OK
+113/1010 protocol.cbor.test.CBOR object roundtrip...OK
+114/1010 protocol.cbor.test.CBOR multi-byte integers do not trap while narrowing...OK
+115/1010 protocol.clone.test.protocol clone owns nested transcript strings and JSON...OK
+116/1010 protocol.clone.test.protocol clone preserves complete snapshots and optional fields...OK
+117/1010 evals.harness.test.eval case passes with mock...OK
+118/1010 ai.mock.test.mock model returns scripted tool call then final...OK
+119/1010 ai.mock.test.mock stream emits multi-chunk text then tool call...OK
+120/1010 ai.cost.test.cost uses uncached/cache buckets and one-hour anthropic writes...OK
+121/1010 ai.cost.test.highest matching request-wide pricing tier wins...OK
+122/1010 agent.loop.test.tool call serialization preserves provider thought signature...OK
+123/1010 agent.loop.test.agent loop executes tool then finishes with mock model...OK
+124/1010 agent.loop.test.agent_end runtime actions can queue a durable continuation...OK
+125/1010 agent.loop.test.agent loop persists and sends multiple user images in order...OK
+126/1010 agent.loop.test.before_agent_start can replace assembled system prompt and append durable custom context...OK
+127/1010 agent.loop.test.updated agent_cfg.context_prompt appears in next chat system message...OK
+128/1010 agent.loop.test.loop emits agent_start and tool_execution events...OK
+129/1010 agent.loop.test.agent hook callbacks mutate prompt and persisted tool result...OK
+130/1010 agent.loop.test.agent dispatches external tool while builtins can be disabled...OK
+131/1010 agent.loop.test.extension dispatcher can replace a built-in tool and its schema...OK
+132/1010 agent.loop.test.extension dispatcher can delegate an overridden built-in back to Zig...OK
+133/1010 agent.loop.test.length-truncated assistant tool calls are failed without execution...OK
+134/1010 agent.loop.test.parallel tool end events follow completion order while persistence follows source order...OK
+135/1010 agent.loop.test.one sequential tool forces the full batch to execute sequentially...OK
+136/1010 agent.loop.test.agent stops after a tool batch only when every result terminates...OK
+137/1010 agent.loop.test.agent continues when only some parallel tool results terminate...OK
+138/1010 agent.loop.test.after tool override can mark a result terminating...OK
+139/1010 agent.loop.test.before tool hook mutates execution arguments without revalidation...OK
+140/1010 agent.loop.test.before tool hook blocks execution and persists the reason...OK
+141/1010 agent.loop.test.invalid tool arguments fail validation before before hook or execution...OK
+142/1010 agent.loop.test.should stop after turn runs before queued follow-up...OK
+143/1010 agent.loop.test.should stop after turn waits for current tool batch to finish...OK
+144/1010 agent.loop.test.steering queued during tool execution is injected before the next model turn...OK
+145/1010 agent.loop.test.terminating tool batch still allows queued follow-up...OK
+146/1010 agent.loop.test.prepare next turn can replace client and system prompt before continuation...OK
+147/1010 agent.loop.test.tool-result image normalization trusts bytes over extension MIME...OK
+148/1010 agent.loop.test.tool-result image normalization retains invalid extension payload...OK
+149/1010 agent.loop.test.blockImages strips legacy and ordered images after extension transforms...OK
+150/1010 agent.loop.test.blockImages preserves image-free request slices without allocation...OK
+151/1010 agent.loop.test.transform context rewrites provider view without mutating durable session...OK
+152/1010 agent.loop.test.queue mode parsing uses upstream wire names...OK
+153/1010 agent.loop.test.one-at-a-time queue mode drains one item while all drains every item...OK
+154/1010 agent.loop.test.external tool partial updates retain details images and canonical order...OK
+155/1010 agent.loop.test.full-fidelity external dispatcher receives exact call ID and abort flag without event sink...OK
+156/1010 agent.loop.test.streaming external update is emitted before tool execution returns...OK
+157/1010 agent.loop.test.parallel streaming tools deliver each update before its matching end event...OK
+158/1010 agent.loop.test.streamed extension updates reach primary live and lifecycle observer after worker release...OK
+159/1010 agent.loop.test.native bash streams bounded snapshots before command completion...SKIP
+160/1010 agent.loop.test.native progress snapshots are throttled and tail bounded...OK
+161/1010 agent.loop.test.extension prepareArguments runs before schema validation and execution...OK
+162/1010 agent.loop.test.extension prepareArguments failure becomes an isolated tool error...OK
+163/1010 agent.loop.test.tool result cloning and event persistence retain additional images...OK
+164/1010 agent.loop.test.compaction and branch summaries use canonical user context wrappers...OK
+165/1010 agent.loop.test.automatic retry recovers transient assistant errors and emits canonical events...OK
+166/1010 agent.loop.test.retry request excludes durable failed assistant attempts...OK
+167/1010 agent.loop.test.automatic retry fails fast for quota and billing errors...OK
+168/1010 agent.loop.test.retry-only cancellation aborts backoff without consuming another response...OK
+169/1010 agent.loop.test.automatic retry emits one final failure after exhausting the budget...OK
+170/1010 agent.loop.test.automatic retry converts transient Zig transport errors into retryable assistant failures...OK
+171/1010 ai.stream.test.OpenAI SSE fixture accumulates text and tool call...OK
+172/1010 ai.stream.test.Anthropic stream fixture accumulates text and tool_use...OK
+173/1010 ai.stream.test.OpenAI and Anthropic stream parsers retain thinking deltas...OK
+174/1010 agent.tools.test.read write edit tools on temp fixture...OK
+175/1010 agent.tools.test.read tool returns structured provider image content...OK
+176/1010 agent.tools.test.read tool omits unsupported image when conversion is unavailable...OK
+177/1010 agent.tools.test.bash tool echoes...OK
+178/1010 agent.tools.test.grep find ls tools...OK
+179/1010 agent.tools.test.tool filter allowlist...OK
+180/1010 agent.tools.test.matchGlob basics...OK
+181/1010 agent.tools.test.edit multi-edit matches all on original not sequential...OK
+182/1010 agent.tools.test.edit accepts oldText/newText and multi-edit edits array...OK
+183/1010 agent.tools.test.read supports offset and limit lines...OK
+184/1010 agent.tools.test.read tool truncates oversized file output...OK
+185/1010 agent.tools.test.prepareArguments folds legacy edit pair into edits array...OK
+186/1010 agent.tools.test.prepareArguments appends legacy edit and parses stringified edits...OK
+187/1010 agent.tools.test.prepareArguments leaves current edit shape unchanged...OK
+188/1010 agent.tools.test.tool schema validator handles required nested types and additional properties...OK
+189/1010 agent.tools.test.tool schema validator reports missing tool and invalid JSON...OK
+190/1010 agent.tools.test.edit public schema stays strict while legacy arguments prepare before validation...OK
+191/1010 agent.tools.test.bash child environment exposes live pi metadata without mutating parent...OK
+192/1010 agent.tools.test.tool image arrays deep clone and deinitialize...OK
+193/1010 agent.compaction.test.summarization output budgets match upstream reserve fractions...OK
+194/1010 agent.compaction.test.compaction threshold uses reserve tokens without underflow...OK
+195/1010 agent.compaction.test.new compaction prefix invalidates stale retained assistant usage...OK
+196/1010 agent.compaction.test.token cut never begins at a tool result and reports split-turn prefix...OK
+197/1010 agent.compaction.test.compact keeps recent messages...OK
+198/1010 agent.compaction.test.compact rejects an empty retained tail...OK
+199/1010 agent.compaction.test.repeated compaction keeps the complete append-only branch...OK
+200/1010 agent.compaction.test.compaction is append-only and repeated unchanged compaction is a no-op...OK
+201/1010 agent.compaction.test.compaction preserves rich recent session entries...OK
+202/1010 agent.compaction.test.model compaction retries transient summarization and emits canonical sequence...OK
+203/1010 agent.compaction.test.model compaction fails without mutating session on terminal summarization error...OK
+204/1010 agent.compaction.test.session compaction hooks can replace summary and receive the saved boundary...OK
+205/1010 agent.compaction.test.session_before_compact cancellation leaves the append-only tree unchanged...OK
+206/1010 agent.summarization.test.summarization forwards request-local output cap...OK
+207/1010 agent.summarization.test.summarization retries transient response then succeeds...OK
+208/1010 agent.summarization.test.summarization quota failure is not retried...OK
+209/1010 agent.summarization.test.summarization retry backoff observes cancellation...OK
+210/1010 agent.summarization.test.summarization cancellation during backoff emits finished and preserves next response...OK
+211/1010 agent.summarization.test.summarization emits one finished event after retry exhaustion...OK
+212/1010 agent.branch_summary.test.branch preparation keeps newest token budget and cumulative file operations...OK
+213/1010 agent.branch_summary.test.collect branch summary entries finds deepest common ancestor...OK
+214/1010 agent.branch_summary.test.branch summary retries and persists at navigation target...OK
+215/1010 agent.branch_summary.test.session tree hooks can provide a durable labeled summary without a model...OK
+216/1010 agent.branch_summary.test.session_before_tree cancellation preserves the active leaf...OK
+217/1010 ai.retry.test.provider retry metadata honors headers status and date forms...OK
+218/1010 ai.retry.test.provider retry delay caps server requests and bounds exponential jitter...OK
+219/1010 ai.retry.test.provider retry defaults match upstream request policy...OK
+220/1010 ai.retry.test.retry classifier accepts transient provider and transport failures...OK
+221/1010 ai.retry.test.retry classifier rejects quota billing and deterministic failures...OK
+222/1010 ai.retry.test.retry delay uses saturating exponential backoff...OK
+223/1010 ai.retry.test.retry wait observes a retry-only cancellation...OK
+224/1010 ai.image_process.test.image inspection reads PNG GIF BMP JPEG and WebP dimensions...OK
+225/1010 ai.image_process.test.JPEG EXIF orientation swaps display dimensions...OK
+226/1010 ai.image_process.test.safe EXIF-oriented JPEG remains byte-for-byte like upstream...OK
+227/1010 ai.image_process.test.safe supported image remains byte-for-byte when converter is disabled...OK
+228/1010 ai.image_process.test.BMP conversion requires a backend...OK
+229/1010 ai.image_process.test.fitDimensions preserves aspect ratio...OK
+230/1010 ai.images.test.detectSupportedMime recognizes supported magic bytes...OK
+231/1010 ai.images.test.detectSupportedMime rejects JPEG-LS and animated PNG...OK
+232/1010 ai.images.test.detectSupportedMime validates BMP structure...OK
+233/1010 ai.images.test.detectMime remains case insensitive...OK
+234/1010 ai.images.test.base64 encoding...OK
+235/1010 agent.truncate.test.truncateHead leaves small content intact...OK
+236/1010 agent.truncate.test.truncateHead hits line limit...OK
+237/1010 agent.truncate.test.truncateHead hits byte limit...OK
+238/1010 agent.tool_manager.test.tool release response strips v prefix...OK
+239/1010 agent.tool_manager.test.tool manager resolves agent-private binary before PATH...OK
+240/1010 agent.tool_manager.test.offline and Termux tool acquisition remain nonfatal...OK
+241/1010 ai.bootstrap_http.test.bootstrap transport errors preserve cancellation and retry timeouts...OK
+242/1010 ai.bootstrap_http.test.bootstrap response policy obeys explicit provider overrides...OK
+243/1010 ai.bootstrap_http.test.bootstrap request rejects pre-abort without opening a socket...OK
+244/1010 ai.http_fetch.test.fetch captures standard provider retry headers...OK
+245/1010 ai.http_fetch.test.controlled fetch rejects immediate timeout and pre-abort before I/O...OK
+246/1010 ai.context_estimate.test.tool-call estimation ignores transport wrappers and compacts arguments...OK
+247/1010 ai.context_estimate.test.tool catalog estimation uses compact JSON and no-context clamp keeps one token...OK
+248/1010 ai.context_estimate.test.latest valid assistant usage plus trailing estimate drives clamp...OK
+249/1010 ai.context_estimate.test.newer inserted prefix timestamp invalidates stale assistant usage...OK
+250/1010 ai.context_estimate.test.trusted usage counts only trailing deferred tool definitions...OK
+251/1010 ai.providers.test.provider identity is not collapsed...OK
+252/1010 ai.providers.test.catalog has distinct gateway provider ids...OK
+253/1010 ai.providers.test.Bedrock ambient AWS access keys count as usable credentials...OK
+254/1010 ai.providers.test.resolveApiKey uses provider-specific key...OK
+255/1010 ai.providers.test.compat base urls preserve provider identity...OK
+256/1010 ai.providers.test.Bedrock ambient chain markers count as usable credentials...OK
+257/1010 ai.providers.test.Cloudflare provider identities use scoped credential and endpoint templates...OK
+258/1010 ai.providers.test.GitHub Copilot curated models preserve mixed API and thinking metadata...OK
+259/1010 ai.providers.test.Anthropic env credential precedence is auth token then OAuth then API key...OK
+260/1010 ai.providers.test.Kimi Coding provider is Anthropic Messages with subscription metadata...OK
+261/1010 ai.providers.test.Baseten and Qwen Token Plan provider contracts match upstream...OK
+262/1010 ai.providers.test.generated Baseten and Qwen catalogs preserve capability metadata...OK
+263/1010 ai.thinking.test.supported levels match upstream holes and opt-in xhigh/max...OK
+264/1010 ai.thinking.test.clamp searches upward before downward like upstream...OK
+265/1010 ai.api.test.api protocol names round trip...OK
+266/1010 ai.request_metadata.test.GitHub Copilot compatibility follows generated API restrictions...OK
+267/1010 ai.request_metadata.test.Anthropic compat detection matches first-party tool references and adaptive models...OK
+268/1010 ai.request_metadata.test.compat merge preserves base and applies explicit false...OK
+269/1010 ai.request_metadata.test.cache and affinity compatibility names parse...OK
+270/1010 ai.request_metadata.test.Responses compat detection matches upstream defaults...OK
+271/1010 ai.request_metadata.test.OpenAI compat detection matches major provider families...OK
+272/1010 ai.request_metadata.test.Kimi Coding Anthropic compat forces adaptive thinking and empty signatures selectively...OK
+273/1010 themes.theme.test.parse legacy flat theme owns all strings...OK
+274/1010 themes.theme.test.parse original nested theme resolves variables truecolor and 256 color...OK
+275/1010 themes.theme.test.theme parser rejects circular variables...OK
+276/1010 themes.theme.test.theme parser rejects dangling variables and malformed hex...OK
+277/1010 themes.registry.test.theme registry loads sorted directory and keeps first duplicate...OK
+278/1010 themes.registry.test.theme registry records malformed files without blocking valid siblings...OK
+279/1010 themes.registry.test.theme registry reports missing explicit path...OK
+280/1010 extensions.actions.test.action batches preserve invocation order and canonical payloads...OK
+281/1010 extensions.actions.test.queue moves batches atomically and assigns monotonic sequence numbers...OK
+282/1010 extensions.actions.test.malformed action queues are rejected without leaking...OK
+283/1010 extensions.host.test.load extension manifest and record hook...OK
+284/1010 extensions.host.test.extension manifests retain declarative provider registrations...OK
+285/1010 extensions.host.test.extension discovery is trust gated...OK
+286/1010 extensions.host.test.extension executable hook returns JSON and failures are isolated...SKIP
+287/1010 extensions.host.test.extension manifest declares tools and executes them...SKIP
+288/1010 extensions.host.test.duplicate extension tool names are rejected...OK
+289/1010 extensions.host.test.explicit extension paths load directories and manifest files...OK
+290/1010 extensions.host.test.explicit empty extension directory is a valid no-op source...OK
+291/1010 extensions.host.test.extension flags validate defaults and command-line overrides...OK
+292/1010 extensions.host.test.string extension flag requires a value and duplicate names fail...OK
+293/1010 extensions.host.test.hook receives extension-local flag JSON as final argument...SKIP
+294/1010 extensions.host.test.extension commands execute with raw arguments and scoped flags...SKIP
+295/1010 extensions.host.test.extension shortcuts register and later extensions take precedence...SKIP
+296/1010 extensions.host.test.extension command names are unique and command output is validated...OK
+297/1010 extensions.host.test.JavaScript package manifest declares multiple extension entries ahead of index...OK
+298/1010 extensions.host.test.explicit extension directory scans direct scripts and one-level packages...OK
+299/1010 extensions.host.test.JavaScript renderers retain original component and tool state semantics...OK
+300/1010 extensions.host.test.JavaScript tools retain ordered partial updates details and images...OK
+301/1010 extensions.host.test.JavaScript host forwards live updates before resolution and retains observer replay...OK
+302/1010 extensions.host.test.JavaScript extension prepareArguments transforms raw tool input...OK
+303/1010 extensions.integration.test.agent event payloads are valid upstream-shaped JSON...OK
+304/1010 extensions.integration.test.bridge forwards canonical agent events once and isolates compatibility aliases...SKIP
+305/1010 extensions.integration.test.bridge applies last prompt replacement...SKIP
+306/1010 extensions.integration.test.context projection preserves native messages while filtering and injecting...OK
+307/1010 extensions.integration.test.JavaScript context hook filters custom messages and preserves assistant metadata...SKIP
+308/1010 extensions.integration.test.bridge applies before_agent_start system prompt and custom context message...SKIP
+309/1010 extensions.integration.test.bridge can override tool content and error status...SKIP
+310/1010 extensions.integration.test.bridge exposes and executes extension tools...SKIP
+311/1010 extensions.integration.test.built-in extension tools expose replacement schemas and renderer metadata...OK
+312/1010 extensions.integration.test.bridge exposes extension tool executionMode...SKIP
+313/1010 extensions.integration.test.JavaScript tool_result hook can replace text image details and error state...OK
+314/1010 extensions.integration.test.JavaScript session compaction and tree hooks round trip native payloads and actions...SKIP
+315/1010 extensions.js_runtime.test.script path recognition...OK
+316/1010 extensions.js_runtime.test.persistent TypeScript compatibility runtime registers and executes upstream-shaped APIs...OK
+317/1010 extensions.js_runtime.test.provider methods use the production manifest bridge with ownership re-registration errors cancellation and cleanup...OK
+318/1010 extensions.js_runtime.test.provider OAuth login uses a human interaction timeout distinct from ordinary callbacks...OK
+319/1010 extensions.js_runtime.test.command and shortcut contexts expose reload as an ordered native action...OK
+320/1010 extensions.js_runtime.test.TypeScript package entrypoints below node_modules bypass Node stripping restriction...OK
+321/1010 extensions.js_runtime.test.JavaScript runtime ignores ordinary stdout before protocol records...OK
+322/1010 extensions.js_runtime.test.hung JavaScript extension invocation is terminated at the runtime deadline...OK
+323/1010 extensions.js_runtime.test.runtime teardown force-reaps extensions that ignore SIGTERM...OK
+324/1010 extensions.js_runtime.test.script tool receives exact call ID and live AbortSignal...OK
+325/1010 extensions.js_runtime.test.lifecycle hook context receives live abort signal and worker remains reusable...OK
+326/1010 extensions.js_runtime.test.script UI requests round-trip through native bridge and retain synchronous actions...OK
+327/1010 extensions.js_runtime.test.streaming tool updates arrive before the JavaScript promise resolves...OK
+328/1010 extensions.js_runtime.test.reload invalidates the producing command context and quarantines later actions...OK
+329/1010 extensions.js_runtime.test.provider streamSimple crosses the persistent worker with ordered acknowledgements...OK
+330/1010 extensions.js_runtime.test.provider stream generation retirement drains cooperative iterators and preserves worker reuse...OK
+331/1010 extensions.js_runtime.test.provider stream retirement force-closes only the worker whose iterator ignores return...OK
+332/1010 extensions.ui.test.extension UI actions retain status widgets editor and title state...OK
+333/1010 extensions.ui.test.extension UI context snapshot owns live editor model and status data...OK
+334/1010 extensions.ui.test.extension UI clears retained surfaces and returns noninteractive fallbacks...OK
+335/1010 extensions.ui.test.extension UI reset for reload clears worker-owned state but preserves editor binding...OK
+336/1010 extensions.ui.test.extension copyToClipboard request uses the native clipboard without requiring a dialog UI...OK
+337/1010 extensions.provider_registry.test.extension provider registration replaces models and resolves runtime metadata...OK
+338/1010 extensions.provider_registry.test.extension provider partial re-registration shallow merges and unregister restores baseline...OK
+339/1010 extensions.provider_registry.test.provider registry invokes OAuth methods through the owning persistent worker...OK
+340/1010 extensions.provider_registry.test.provider callback ownership remains distinct when separate workers emit colliding IDs...OK
+341/1010 extensions.provider_registry.test.provider registry routes streamSimple to its exact persistent callback owner...OK
+342/1010 extensions.provider_registry.test.object-form provider filterModels receives credential and owns its callback generation...OK
+343/1010 extensions.provider_oauth.test.extension OAuth login refresh key derivation and model projection are end to end...OK
+344/1010 extensions.provider_oauth.test.extension OAuth login cancellation aborts the callback without persisting partial credentials...OK
+345/1010 extensions.provider_oauth.test.extension OAuth ignores a late noncooperative login result after native cancellation...OK
+346/1010 extensions.provider_oauth.test.extension OAuth reload routing follows the replacement registry and unregister removes ownership...OK
+347/1010 extensions.provider_stream.test.extension stream adapter selects a live ModelClient and defers terminal delivery...OK
+348/1010 extensions.models_store.test.extension models store writes deletes and preserves unrelated entries atomically...OK
+349/1010 extensions.models_store.test.extension models store rejects invalid entry without replacing committed data...OK
+350/1010 extensions.provider_models.test.extension provider models restore cache refresh credentials persist and survive reload...OK
+351/1010 extensions.provider_models.test.extension provider models reject stale publication generations transactionally...OK
+352/1010 extensions.provider_models.test.extension provider model refresh abort leaves catalog and persistence unchanged...OK
+353/1010 coding_agent.live_state.test.applyModel mutates active client model field...OK
+354/1010 coding_agent.live_state.test.applyModel without client pool resolves canonical provider identity...OK
+355/1010 coding_agent.live_state.test.model switch thinking uses explicit scope and clamps to capabilities...OK
+356/1010 coding_agent.live_state.test.applyReload updates agent_cfg context from AGENTS.md...OK
+357/1010 coding_agent.live_state.test.ClientPool named gateway uses its own env key and base URL...OK
+358/1010 coding_agent.live_state.test.ClientPool preserves primary custom base URL...OK
+359/1010 coding_agent.live_state.test.ClientPool propagates provider retry policy across client switches...OK
+360/1010 coding_agent.live_state.test.applyModel fuzzy selection switches concrete provider...OK
+361/1010 coding_agent.live_state.test.applyModel hot-switches into arbitrary models.json provider identity...OK
+362/1010 coding_agent.live_state.test.ClientPool prefers model-specific runtime over provider fallback...OK
+363/1010 coding_agent.live_state.test.ClientPool dispatches custom pi-messages runtime without collapsing provider identity...OK
+364/1010 coding_agent.live_state.test.ClientPool dispatches custom Bedrock runtime with bearer auth metadata...OK
+365/1010 coding_agent.live_state.test.ClientPool dispatches built-in Bedrock with ambient SigV4 credentials...OK
+366/1010 coding_agent.live_state.test.ClientPool hot-switches GitHub Copilot across native APIs...OK
+367/1010 coding_agent.live_state.test.ClientPool session context survives model switches...OK
+368/1010 coding_agent.live_state.test.ClientPool dispatches Bedrock with selected AWS shared profile...OK
+369/1010 coding_agent.live_state.test.Bedrock environment keys outrank profile keys while profile supplies region...OK
+370/1010 coding_agent.live_state.test.ClientPool accepts Bedrock web identity lazily...OK
+371/1010 coding_agent.live_state.test.ClientPool accepts Bedrock credential_process lazily...OK
+372/1010 coding_agent.live_state.test.ClientPool accepts Bedrock container credentials lazily...OK
+373/1010 coding_agent.live_state.test.ClientPool accepts Bedrock IMDS lazily when metadata is enabled...OK
+374/1010 coding_agent.live_state.test.ClientPool rejects credentialless Bedrock when IMDS is disabled...OK
+375/1010 coding_agent.live_state.test.ClientPool accepts source_profile AssumeRole lazily...OK
+376/1010 coding_agent.live_state.test.ClientPool wires stored Radius OAuth expiry and custom gateway...OK
+377/1010 coding_agent.live_state.test.interactive Radius OAuth credential overrides startup runtime snapshot...OK
+378/1010 coding_agent.live_state.test.interactive API key credential is owned and removable...OK
+379/1010 coding_agent.live_state.test.live credential snapshot clears and restores owned API key...OK
+380/1010 coding_agent.live_state.test.dynamic Radius catalog reload rebuilds model and runtime snapshots...OK
+381/1010 coding_agent.live_state.test.dynamic catalog reload replaces models json runtime and auth without retaining removed providers...OK
+382/1010 coding_agent.live_state.test.ClientPool owned reload keys and proxy do not borrow caller storage...OK
+383/1010 coding_agent.live_state.test.dynamic Copilot catalog reload synthesizes account model runtime...OK
+384/1010 coding_agent.live_state.test.ClientPool Codex live OAuth credential preserves accountId...OK
+385/1010 coding_agent.live_state.test.ClientPool owns pending Codex PKCE flow across commands...OK
+386/1010 coding_agent.live_state.test.ClientPool stored Anthropic OAuth selects bearer mode with refresh...OK
+387/1010 coding_agent.live_state.test.ClientPool Anthropic environment auth token and OAuth token select distinct modes...OK
+388/1010 coding_agent.live_state.test.ClientPool owns pending Anthropic PKCE flow across commands...OK
+389/1010 coding_agent.live_state.test.ClientPool stored Kimi OAuth uses Anthropic bearer mode with lazy refresh...OK
+390/1010 coding_agent.live_state.test.reload honors top-level skill settings changes...OK
+391/1010 coding_agent.live_state.test.thinking and reload preserve every custom prompt source...OK
+392/1010 coding_agent.live_state.test.runtime reload callback contributes resource counts to status...OK
+393/1010 coding_agent.live_state.test.runtime reload failure reports rollback without hiding core reload...OK
+394/1010 coding_agent.live_state.test.extension OAuth invalidation scrubs the active transport before releasing its key...OK
+395/1010 coding_agent.models_file.test.models.json loads arbitrary provider id and OpenAI-compatible models...OK
+396/1010 coding_agent.models_file.test.models.json accepts native pi-messages providers and radius inheritance...OK
+397/1010 coding_agent.models_file.test.models.json accepts Bedrock API and built-in inheritance...OK
+398/1010 coding_agent.models_file.test.models.json supports provider api inheritance and per-model API override...OK
+399/1010 coding_agent.models_file.test.models.json recognizes responses API but marks current runtime unsupported...OK
+400/1010 coding_agent.models_file.test.models.json parses modelOverrides without fabricating omitted fields...OK
+401/1010 coding_agent.models_file.test.models.json preserves thinkingLevelMap null holes and mapped max...OK
+402/1010 coding_agent.models_file.test.models.json parses request metadata and applies upstream custom-model defaults...OK
+403/1010 coding_agent.models_file.test.models.json parses cache retention and session affinity compat...OK
+404/1010 coding_agent.models_file.test.models.json parses chat-template compat variables...OK
+405/1010 coding_agent.models_file.test.models.json merges OpenRouter and Vercel routing compat by field...OK
+406/1010 coding_agent.models_file.test.models.json accepts custom Radius OAuth provider without static models...OK
+407/1010 coding_agent.runtime_config.test.runtime config keeps custom identity and resolves configured env key and model URL...OK
+408/1010 coding_agent.runtime_config.test.runtime config auth json outranks models json and provider URL outranks default...OK
+409/1010 coding_agent.runtime_config.test.runtime config explicit overrides win...OK
+410/1010 coding_agent.runtime_config.test.runtime config resolves header values and merges sampling and compat...OK
+411/1010 coding_agent.runtime_config.test.Cloudflare endpoint templates materialize per API protocol...OK
+412/1010 coding_agent.runtime_config.test.Cloudflare endpoint templates require scoped account and gateway ids...OK
+413/1010 coding_agent.runtime_config.test.runtime OpenAI compat layers detected provider model and override values...OK
+414/1010 coding_agent.runtime_config.test.runtime config retains stored OAuth refresh metadata without affecting env keys...OK
+415/1010 coding_agent.runtime_config.test.Radius runtime uses cached model API base instead of OAuth gateway root...OK
+416/1010 provider_method_ref.test.provider method callback descriptor round-trips through JSON...OK
+417/1010 provider_method_ref.test.ordinary provider data is not mistaken for a callable descriptor...OK
+418/1010 ai.google_adc.test.authorized_user ADC parses and forms refresh request...OK
+419/1010 ai.google_adc.test.ADC token response owns token and expiration...OK
+420/1010 ai.google_adc.test.Vertex auth markers are never literal bearer tokens...OK
+421/1010 ai.google_adc.test.service account ADC parses owned identity and quota metadata...OK
+422/1010 ai.google_adc.test.service account JWT is RS256 and verifies against embedded RSA key...OK
+423/1010 auth.storage.test.auth storage reads writes lists and deletes arbitrary provider ids...OK
+424/1010 auth.storage.test.auth storage OAuth is compatible with upstream field names...OK
+425/1010 auth.storage.test.auth storage preserves unknown credential fields while updating another provider...OK
+426/1010 auth.storage.test.extension OAuth JSON transactions preserve arbitrary fields and rollback invalid replacements...OK
+427/1010 auth.storage.test.extension OAuth abort-aware transactions reject late replacements without changing storage...OK
+428/1010 auth.storage.test.runtime credentials override persistent values without writing them...OK
+429/1010 auth.storage.test.auth storage Codex OAuth preserves accountId...OK
+430/1010 auth.storage.test.auth storage GitHub Copilot preserves enterprise and available models...OK
+431/1010 auth.storage.test.credential clone owns complete OAuth state...OK
+432/1010 coding_agent.config_value.test.config values resolve literals environment templates and escapes...OK
+433/1010 coding_agent.config_value.test.config values execute shell commands trim output and reject failure...SKIP
+434/1010 coding_agent.config_value.test.command resolution is cached while environment resolution is dynamic...SKIP
+435/1010 coding_agent.config_value.test.single env reference detection matches upstream...OK
+436/1010 coding_agent.settings.test.media privacy and skill-command settings parse merge format and persist...OK
+437/1010 coding_agent.settings.test.settings parse and deeply merge retry and compaction policy...OK
+438/1010 coding_agent.settings.test.legacy retry maxDelayMs migrates into provider policy unless nested value exists...OK
+439/1010 coding_agent.settings.test.settings accept RPC-style retry and compaction aliases...OK
+440/1010 coding_agent.settings.test.defaultProjectTrust is global only...OK
+441/1010 coding_agent.settings.test.loadMergeTrusted skips project when untrusted...OK
+442/1010 coding_agent.settings.test.parse and merge settings...OK
+443/1010 coding_agent.settings.test.parse accepts upstream defaultModel defaultProvider thinkingLevel keys...OK
+444/1010 coding_agent.settings.test.branch summary settings deep merge independently...OK
+445/1010 coding_agent.settings.test.settings parses and merges Codex transport...OK
+446/1010 coding_agent.settings.test.settings parses Codex HTTP idle timeout and disabled alias...OK
+447/1010 coding_agent.settings.test.settings merge preserves inherited HTTP idle timeout unless overridden...OK
+448/1010 coding_agent.settings.test.settings parses Codex websocket connect timeout and disabled alias...OK
+449/1010 coding_agent.settings.test.settings parses and merges active theme...OK
+450/1010 coding_agent.settings.test.settings parses global HTTP proxy and keeps it global-only...OK
+451/1010 coding_agent.settings.test.settings parse merge and format argv-style npm command...OK
+452/1010 coding_agent.settings.test.settings reject malformed npm command without poisoning defaults...OK
+453/1010 coding_agent.settings.test.setCompactionEnabled atomically preserves token budgets and unrelated settings...OK
+454/1010 coding_agent.settings.test.setCompactionEnabled rejects malformed compaction without replacing the file...OK
+455/1010 coding_agent.settings.test.setRetryEnabled atomically preserves nested retry and unrelated settings...OK
+456/1010 coding_agent.settings.test.setRetryEnabled rejects malformed retry without replacing the file...OK
+457/1010 coding_agent.settings.test.lifecycle settings parse format and durable acknowledgement preserve unrelated fields...OK
+458/1010 coding_agent.settings.test.settings parse merge and format delivery and interactive policy...OK
+459/1010 coding_agent.settings.test.extended interactive settings parse merge format and scoped persistence...OK
+460/1010 coding_agent.radius_models_store.test.Radius models store round trips upstream model entry and preserves other providers...OK
+461/1010 coding_agent.radius_models_store.test.Radius legacy OAuth gatewayConfig imports offline...OK
+462/1010 coding_agent.radius_models_store.test.Radius available catalog tolerates empty legacy auth cache...OK
+463/1010 coding_agent.radius_models_store.test.Radius available catalog falls back from corrupt store to valid legacy auth...OK
+464/1010 coding_agent.radius_models_store.test.Radius available catalog tolerates corrupt store and corrupt auth...OK
+465/1010 coding_agent.radius_catalog.test.Radius gateway catalog preserves custom identity runtime metadata and API base...OK
+466/1010 ai.radius_config.test.Radius gateway URL normalization and endpoint resolution...OK
+467/1010 ai.radius_config.test.Radius gateway config filters malformed models and owns thinking map...OK
+468/1010 ai.openai.test.buildRequestBody includes tools and messages...OK
+469/1010 ai.openai.test.OpenAI chat serializes every ordered image attachment...OK
+470/1010 ai.openai.test.buildRequestBodyFull includes reasoning_effort for thinking...OK
+471/1010 ai.openai.test.buildRequestBodyFull omits reasoning_effort when off...OK
+472/1010 ai.openai.test.mutating OpenAIClient.model changes subsequent request body model...OK
+473/1010 ai.openai.test.parseOpenAIResponse extracts tool calls...OK
+474/1010 ai.openai.test.buildRequestBodyOpts stream true includes stream flag...OK
+475/1010 ai.openai.test.consumeOpenAIStreamBody multi-chunk text and tool fragment via shipped path...OK
+476/1010 ai.openai.test.LiveSseWriter binds Zig 0.16 backing buffer and releases streamed accumulator...OK
+477/1010 ai.openai.test.configured OpenAI request applies compat and sampling last...OK
+478/1010 ai.openai.test.configured OpenAI request supports qwen thinking toggle...OK
+479/1010 ai.openai.test.compat inserts assistant bridge after tool result before user...OK
+480/1010 ai.openai.test.compat adds empty reasoning content to replayed assistant...OK
+481/1010 ai.openai.test.compat supports qwen chat template string thinking and ant ling fields...OK
+482/1010 ai.openai.test.responses pipe tool ids normalize consistently for completions replay...OK
+483/1010 ai.openai.test.thinking replay supports text and reasoning_content compatibility modes...OK
+484/1010 ai.openai.test.OpenAI compat strips strict and enables z.ai tool streaming...OK
+485/1010 ai.openai.test.OpenAI stream observer distinguishes missing finish reason...OK
+486/1010 ai.openai.test.OpenAI encrypted reasoning detail round-trips with tool call...OK
+487/1010 ai.openai.test.OpenAI streaming reasoning detail attaches even when it arrives before tool call...OK
+488/1010 ai.openai.test.OpenAI and Vercel routing preferences use distinct request fields and sampling wins...OK
+489/1010 ai.openai.test.OpenAI anthropic cache control marks first instruction last conversation and last tool...OK
+490/1010 ai.openai.test.OpenAI session affinity headers require explicit enable flag...OK
+491/1010 ai.openai.test.chat completions cache key clamps and long retention emits 24h...OK
+492/1010 ai.openai.test.Kimi deferred tools are injected after tool-result group...OK
+493/1010 ai.openai.test.chat-template and baseten resolve variables through thinking level map...OK
+494/1010 ai.openai.test.static Baseten compatibility emits generated chat template toggle...OK
+495/1010 ai.openai.test.thinking dialects respect mapped and explicitly unsupported levels...OK
+496/1010 ai.openai_responses.test.Responses omitted compat defaults developer strict off and long cache on...OK
+497/1010 ai.openai_responses.test.Responses request uses input replay, tools, minimum tokens and reasoning...OK
+498/1010 ai.openai_responses.test.Responses nonstream parser extracts function call and accounting...OK
+499/1010 ai.openai_responses.test.Responses incomplete max output maps to length...OK
+500/1010 ai.openai_responses.test.Responses parser and stream retain reasoning summary text...OK
+501/1010 ai.openai_responses.test.Responses reasoning replay is identity gated and cross-model degrades to text...OK
+502/1010 ai.openai_responses.test.responses cache modes and codex request shape...OK
+503/1010 ai.openai_responses.test.codex URL and JWT account extraction...OK
+504/1010 ai.openai_responses.test.Responses deferred tools load at addedToolNames boundary...OK
+505/1010 ai.openai_responses.test.Responses reasoning maps levels and off independently from Codex...OK
+506/1010 ai.openai_responses.test.Responses reasoning respects unsupported holes and model capability...OK
+507/1010 ai.openai_responses.test.Responses service tier pricing matches upstream multipliers...OK
+508/1010 ai.openai_responses.test.Responses service tier resolution handles Codex default and request fallback...OK
+509/1010 ai.openai_responses.test.xAI Responses requests encrypted reasoning include even when off...OK
+510/1010 ai.openai_responses.test.Responses tool results preserve images for vision models without user-message conversion...OK
+511/1010 ai.openai_responses.test.Responses tool image fallback never drops the tool output...OK
+512/1010 ai.openai_responses.test.Codex websocket response.create frame wraps request body...OK
+513/1010 ai.openai_responses.test.Codex websocket event classifier distinguishes terminal and transport error...OK
+514/1010 ai.openai_responses.test.Codex cached continuation sends only input after prior response...OK
+515/1010 ai.openai_responses.test.Codex cached continuation invalidates when request shape changes...OK
+516/1010 ai.openai_responses.test.Codex websocket close invalidates connection-scoped continuation...OK
+517/1010 ai.openai_responses.test.Codex websocket request id is RFC9562 UUIDv7...OK
+518/1010 ai.openai_responses.test.Codex pure Zig Zstandard request framing round-trips raw and RLE blocks...OK
+519/1010 ai.openai_responses.test.Codex Retry-After parser honors ms seconds and IMF-fixdate...OK
+520/1010 ai.openai_responses.test.Codex retry policy bounds server delays and treats quota exhaustion as terminal...OK
+521/1010 ai.openai_responses.test.Codex cache session affinity clamps to 64 and disables with retention none...OK
+522/1010 ai.openai_responses.test.Codex sampling tool choice overrides default without duplicate keys...OK
+523/1010 ai.openai_responses.test.Codex SSE terminal event becomes visible before EOF...OK
+524/1010 ai.openai_responses.test.Codex SSE nonterminal delta does not stop body pump...OK
+525/1010 ai.openai_responses.test.Codex transport diagnostic is redacted JSON and survives live retry reset...OK
+526/1010 ai.openai_responses.test.Codex post-start transport failure preserves partial assistant response...OK
+527/1010 ai.openai_responses.test.Codex API error preserves partial text and stays distinct from transport diagnostics...OK
+528/1010 ai.openai_responses.test.Codex response.failed captures nested provider message...OK
+529/1010 ai.openai_responses.test.Codex malformed event JSON becomes protocol error response metadata...OK
+530/1010 ai.openai_responses.test.ordinary Responses parser remains tolerant of malformed provider event...OK
+531/1010 ai.anthropic.test.convertToolsToAnthropic maps OpenAI function schema...OK
+532/1010 ai.anthropic.test.buildRequestBody includes model tools and tool_use shape...OK
+533/1010 ai.anthropic.test.buildRequestBodyFull includes thinking budget_tokens...OK
+534/1010 ai.anthropic.test.mutating client.model changes subsequent buildRequestBody...OK
+535/1010 ai.anthropic.test.parseAnthropicResponse extracts text and tool_use...OK
+536/1010 ai.anthropic.test.buildRequestBodyOpts stream true for Anthropic...OK
+537/1010 ai.anthropic.test.consumeAnthropicStreamBody multi-chunk via shipped path...OK
+538/1010 ai.anthropic.test.Anthropic response preserves thinking signature...OK
+539/1010 ai.anthropic.test.Anthropic replay uses signature and empty-signature compatibility...OK
+540/1010 ai.anthropic.test.Anthropic signature_delta is accumulated...OK
+541/1010 ai.anthropic.test.anthropic cache-control marks system last user and last tool with 1h ttl...OK
+542/1010 ai.anthropic.test.Anthropic deferred tools use root defer_loading and tool_reference boundary...OK
+543/1010 ai.anthropic.test.Anthropic all-deferred catalog falls back to immediate tools...OK
+544/1010 ai.anthropic.test.Anthropic compat emits eager strict adaptive sampling and gates tool cache...OK
+545/1010 ai.anthropic.test.Anthropic serializes user and tool images as base64 blocks...OK
+546/1010 ai.anthropic.test.Kimi Anthropic request uses adaptive summarized thinking and preserves empty signature...OK
+547/1010 ai.google.test.parseGoogleResponse extracts text...OK
+548/1010 ai.google.test.parseGoogleResponse extracts functionCall tools...OK
+549/1010 ai.google.test.convertToolsToGoogle maps functionDeclarations...OK
+550/1010 ai.google.test.parseGoogleResponse preserves thought signatures...OK
+551/1010 ai.google.test.Vertex express and ADC request URLs keep credentials in the correct channel...OK
+552/1010 ai.google.test.google request replays signatures only to same provider and model...OK
+553/1010 ai.google.test.google configured request carries max tokens thinking and sampling...OK
+554/1010 ai.google.test.consumeGoogleStreamBody preserves deltas signatures tools and usage...OK
+555/1010 ai.google.test.Google tool call IDs follow upstream model-family requirements...OK
+556/1010 ai.google.test.Google replay drops malformed thought signatures...OK
+557/1010 ai.google.test.Google serializes user images as inlineData...OK
+558/1010 ai.google.test.Google tool images nest for Gemini 3 and split for Gemini 2...OK
+559/1010 ai.google.test.Google groups consecutive function responses into one user turn...OK
+560/1010 ai.mistral.test.Mistral serializes all ordered image URLs...OK
+561/1010 ai.mistral.test.Mistral tool IDs are exactly nine alphanumeric characters and stable...OK
+562/1010 ai.mistral.test.Mistral request replays thinking and pairs normalized tool IDs...OK
+563/1010 ai.mistral.test.Mistral small uses reasoning_effort and cached usage is separated...OK
+564/1010 ai.bedrock.test.Bedrock SigV4 signing matches deterministic vector...OK
+565/1010 ai.bedrock.test.Bedrock region resolution prefers ARN then configured region then endpoint...OK
+566/1010 ai.bedrock.test.Bedrock request serializes system user assistant tools results and cache...OK
+567/1010 ai.bedrock.test.Bedrock cache points are gated to supported Claude models...OK
+568/1010 ai.bedrock.test.Bedrock Claude replay without thinking signature falls back to text...OK
+569/1010 ai.bedrock.test.Bedrock adaptive Claude thinking maps effort and omits legacy beta...OK
+570/1010 ai.bedrock.test.Bedrock GovCloud Claude thinking omits display...OK
+571/1010 ai.bedrock.test.Bedrock URL percent encodes model path label...OK
+572/1010 ai.bedrock.test.Bedrock AWS EventStream accumulates text thinking tools usage and stop reason...OK
+573/1010 ai.bedrock.test.Bedrock event stream validates CRC and surfaces exceptions...OK
+574/1010 ai.bedrock.test.Bedrock standard endpoint parsing supports FIPS and China partitions...OK
+575/1010 ai.bedrock.test.generic SigV4 signer supports STS service and form content type...OK
+576/1010 ai.aws_credentials.test.AWS shared credentials and config merge selected profile...OK
+577/1010 ai.aws_credentials.test.default config section does not use profile prefix...OK
+578/1010 ai.aws_web_identity.test.STS web identity form encodes sensitive parameters...OK
+579/1010 ai.aws_web_identity.test.STS web identity XML parses owned temporary credentials...OK
+580/1010 ai.aws_web_identity.test.RFC3339 expiration handles fractions and offsets...OK
+581/1010 ai.aws_web_identity.test.web identity environment overrides profile...OK
+582/1010 ai.aws_process.test.credential_process parses Version 1 JSON...OK
+583/1010 ai.aws_process.test.credential_process command parser preserves quoted arguments...OK
+584/1010 ai.aws_process.test.credential_process rejects unsupported versions...OK
+585/1010 ai.aws_container.test.container relative URI outranks full URI and token file outranks token env...OK
+586/1010 ai.aws_container.test.container credential JSON parses expiry...OK
+587/1010 ai.aws_imds.test.IMDS config supports IPv6 and profile v1 disable...OK
+588/1010 ai.aws_imds.test.IMDSv1 fallback is limited to token 403 404 405...OK
+589/1010 ai.aws_imds.test.IMDS validates role names and credentials...OK
+590/1010 ai.aws_assume_role.test.AssumeRole body includes role metadata...OK
+591/1010 ai.aws_assume_role.test.AssumeRole endpoint respects China partition...OK
+592/1010 ai.aws_assume_role.test.AssumeRole XML parses temporary credentials...OK
+593/1010 ai.pi_messages.test.pi-messages request serializes native context tools and options...OK
+594/1010 ai.pi_messages.test.pi-messages stream accumulates text thinking tools and backend usage...OK
+595/1010 ai.pi_messages.test.pi-messages stream terminal error becomes ModelResponse error...OK
+596/1010 ai.pi_messages.test.pi-messages stream detects missing terminal event...OK
+597/1010 ai.pi_messages.test.pi-messages refresh hook runs only after OAuth expiry...OK
+598/1010 auth.openai_codex_oauth.test.Codex callback target validates route state code and OAuth errors...OK
+599/1010 auth.openai_codex_oauth.test.Codex callback host respects PI_OAUTH_CALLBACK_HOST...OK
+600/1010 auth.openai_codex_oauth.test.Codex browser flow uses exact upstream PKCE authorization parameters...OK
+601/1010 auth.openai_codex_oauth.test.Codex authorization input accepts redirect query hash pair and raw code...OK
+602/1010 auth.openai_codex_oauth.test.Codex token parser extracts ChatGPT account id and absolute expiry...OK
+603/1010 auth.openai_codex_oauth.test.Codex exchange refresh and device request bodies match upstream...OK
+604/1010 auth.openai_codex_oauth.test.Codex device auth accepts string interval and 403 404 pending semantics...OK
+605/1010 auth.openai_codex_oauth.test.Codex successful device poll owns authorization code and verifier...OK
+606/1010 auth.openai_codex_oauth.test.Codex device polling uses immediate minimum cadence and slow down increment...OK
+607/1010 auth.openai_codex_oauth.test.Codex token persistence keeps accountId...OK
+608/1010 auth.anthropic_oauth.test.Anthropic OAuth authorization URL uses verifier as state and exact scopes...OK
+609/1010 auth.anthropic_oauth.test.Anthropic OAuth manual authorization input accepts redirect code state and raw code...OK
+610/1010 auth.anthropic_oauth.test.Anthropic OAuth exchange and refresh JSON omit refresh scope...OK
+611/1010 auth.anthropic_oauth.test.Anthropic OAuth token parsing applies five minute expiry skew...OK
+612/1010 auth.anthropic_oauth.test.Anthropic callback target validates exact route state and OAuth errors...OK
+613/1010 auth.anthropic_oauth.test.Anthropic callback host respects PI_OAUTH_CALLBACK_HOST...OK
+614/1010 auth.github_copilot_oauth.test.GitHub Copilot normalizes enterprise domain and builds endpoints...OK
+615/1010 auth.github_copilot_oauth.test.GitHub Copilot device forms and response validation match upstream...OK
+616/1010 auth.github_copilot_oauth.test.GitHub Copilot device poll handles pending slow down and completion...OK
+617/1010 auth.github_copilot_oauth.test.GitHub Copilot token derives endpoint and safety-skewed expiry...OK
+618/1010 auth.github_copilot_oauth.test.GitHub Copilot model availability filters disabled picker and no-tool models...OK
+619/1010 auth.radius_oauth.test.Radius OAuth discovery/token/device protocol parses upstream shapes...OK
+620/1010 auth.radius_oauth.test.Radius OAuth forms are percent encoded and exact...OK
+621/1010 auth.radius_oauth.test.Radius device token classification follows RFC 8628 states...OK
+622/1010 auth.radius_oauth.test.Radius persisted OAuth token preserves optional scope...OK
+623/1010 auth.radius_oauth.test.Radius browser OAuth PKCE and callback protocol...OK
+624/1010 auth.radius_oauth.test.Radius browser OAuth callback validates route state and errors...OK
+625/1010 auth.radius_oauth.test.Radius callback HTTP request target parsing...OK
+626/1010 ai.codex_websocket.test.websocket accept matches RFC6455 vector...OK
+627/1010 ai.codex_websocket.test.websocket header lookup is case insensitive...OK
+628/1010 ai.codex_websocket.test.transport parser supports cached websocket spelling...OK
+629/1010 coding_agent.model_resolver.test.exact model reference supports canonical provider/model and rejects ambiguous bare id...OK
+630/1010 coding_agent.model_resolver.test.fuzzy model pattern prefers alias over dated version...OK
+631/1010 coding_agent.model_resolver.test.model pattern keeps colon-bearing raw id before thinking parsing...OK
+632/1010 coding_agent.model_resolver.test.model pattern extracts thinking suffix...OK
+633/1010 coding_agent.model_resolver.test.scope resolver handles globs thinking and deduplication...OK
+634/1010 coding_agent.model_resolver.test.scope invalid thinking suffix warns and resolves prefix...OK
+635/1010 coding_agent.model_resolver.test.CLI provider/model split beats slash-bearing gateway ids...OK
+636/1010 coding_agent.model_resolver.test.CLI ambiguous bare exact id prefers sole authenticated provider...OK
+637/1010 coding_agent.model_resolver.test.CLI ambiguous bare exact id errors without unique authenticated provider...OK
+638/1010 coding_agent.model_resolver.test.CLI explicit provider custom model strips thinking suffix...OK
+639/1010 coding_agent.model_resolver.test.glob matcher supports case insensitive star question and ranges...OK
+640/1010 coding_agent.model_resolver.test.CLI resolves arbitrary models.json provider identity without collapsing transport...OK
+641/1010 coding_agent.radius_cached_catalogs.test.offline Radius catalog set restores builtin and custom OAuth providers...OK
+642/1010 coding_agent.copilot_catalog_filter.test.Copilot OAuth availableModelIds filters only that provider...OK
+643/1010 coding_agent.copilot_catalog_filter.test.Copilot OAuth explicit empty model list hides all Copilot models...OK
+644/1010 coding_agent.copilot_catalog_filter.test.Copilot account overlay synthesizes an unknown selectable model with upstream routing...OK
+645/1010 auth.pkce.test.PKCE verifier and S256 challenge are base64url without padding...OK
+646/1010 auth.pkce.test.OpenAI state is 16 random bytes rendered as lowercase hex...OK
+647/1010 auth.pkce.test.shared UUIDv4 generator sets version and variant...OK
+648/1010 ai.transcript_repair.test.repair drops aborted assistants and fills orphan tool results...OK
+649/1010 ai.transcript_repair.test.prepare downgrades unsupported user and tool images...OK
+650/1010 ai.transcript_repair.test.prepare preserves images for vision models...OK
+651/1010 ai.transcript_repair.test.prepare strips opaque thinking and tool signatures across model identity...OK
+652/1010 ai.transcript_repair.test.prepare normalizes cross-model tool ids and matching results...OK
+653/1010 ai.constrained_sampling.test.grammar prefers lark and validates one required string property...OK
+654/1010 ai.constrained_sampling.test.grammar falls back when unsupported and strict require fails...OK
+655/1010 ai.constrained_sampling.test.grammar input normalizes to ordinary JSON arguments...OK
+656/1010 ai.tool_arguments.test.repair malformed escapes and raw controls...OK
+657/1010 ai.tool_arguments.test.complete truncated object string and nested array...OK
+658/1010 ai.tool_arguments.test.drop incomplete final member and reject scalar...OK
+659/1010 coding_agent.packages.test.install list remove package...OK
+660/1010 coding_agent.packages.test.package Pi manifest resolves all resource types and suppresses conventional fallback...OK
+661/1010 coding_agent.packages.test.packages without Pi manifest use conventional resource directories...OK
+662/1010 coding_agent.packages.test.package resource filters honor autoload and ordered selectors...OK
+663/1010 coding_agent.packages.test.packages json preserves empty filters and autoload false...OK
+664/1010 coding_agent.packages.test.local reinstall preserves package filters and package manifest name...OK
+665/1010 coding_agent.packages.test.offline package update classifies local pinned and managed sources...OK
+666/1010 coding_agent.packages.test.managed Git removal is root confined and prunes empty parents...OK
+667/1010 coding_agent.packages.test.managed removal rejects tampered paths outside package roots...OK
+668/1010 coding_agent.packages.test.direct script packages and root extension directories are discovered...OK
+669/1010 coding_agent.packages.test.direct script package install persists and removes only configuration...OK
+670/1010 coding_agent.packages.test.manifest and package filters suppress root extension fallback...OK
+671/1010 coding_agent.packages.test.configured package scopes enforce trust and project precedence...OK
+672/1010 coding_agent.packages.test.project autoload delta uses user installation and remains first...OK
+673/1010 coding_agent.packages.test.project and temporary installs use scoped storage and trust...OK
+674/1010 coding_agent.packages.test.project autoload delta tombstones suppress lower scope resources...OK
+675/1010 coding_agent.packages.test.configured npm command identifies wrapped managers...OK
+676/1010 coding_agent.packages.test.legacy settings package arrays remain loadable in both trusted scopes...OK
+677/1010 coding_agent.packages.test.package operation locks retry then recover after release...OK
+678/1010 coding_agent.packages.test.package repair migrates legacy settings only after verified native persistence...OK
+679/1010 coding_agent.packages.test.package repair commits a prepared git swap and removes its backup...OK
+680/1010 coding_agent.packages.test.package repair restores a backup when the prepared checkout disappeared...OK
+681/1010 coding_agent.packages.test.package repair rejects marker artifacts outside the checkout parent...OK
+682/1010 coding_agent.packages.test.package operation inspection reports active owner and clean release...OK
+683/1010 coding_agent.packages.test.package scope health exposes stale metadata markers and legacy migration need...OK
+684/1010 coding_agent.package_source.test.package source parser distinguishes local npm and validated git...OK
+685/1010 coding_agent.package_source.test.package source parser rejects unsafe managed paths...OK
+686/1010 coding_agent.package_resources.test.glob matcher supports minimatch-style globstar question and classes...OK
+687/1010 coding_agent.package_resources.test.manifest directories exclusions and force selectors resolve exact files...OK
+688/1010 coding_agent.package_resources.test.manifest positive glob expands directories before recursive skill discovery...OK
+689/1010 coding_agent.package_resources.test.extension directory discovery loads entry points but not helper modules...OK
+690/1010 coding_agent.package_resources.test.autoload disabled selectors only enable explicitly matched resources...OK
+691/1010 coding_agent.package_resources.test.conventional discovery honors nested ignore files and negation...OK
+692/1010 coding_agent.package_resources.test.exact manifest files bypass directory ignore rules...OK
+693/1010 ai.cloudflare.test.gateway compat is conservative and explicit values win...OK
+694/1010 ai.github_copilot.test.Copilot dynamic headers infer initiator and vision from transcript...OK
+695/1010 coding_agent.system_prompt.test.assemble includes override and skills...OK
+696/1010 coding_agent.context.test.discover AGENTS and SYSTEM...OK
+697/1010 coding_agent.context.test.AGENTS override replaces only same-directory context...OK
+698/1010 coding_agent.top_level_resources.test.global auto resource remains configurable when disabled...OK
+699/1010 coding_agent.top_level_resources.test.explicit top-level source and unrelated settings survive exact toggle...OK
+700/1010 coding_agent.top_level_resources.test.malformed settings are rejected without replacement...OK
+701/1010 coding_agent.top_level_resources.test.project inherited resource override can return to inheritance...OK
+702/1010 coding_agent.skills.test.discover skills from temp dir...OK
+703/1010 coding_agent.skills.test.skill frontmatter controls prompt visibility and XML escaping...OK
+704/1010 coding_agent.skills.test.skill without description is not loaded...OK
+705/1010 auth.kimi_coding_oauth.test.Kimi OAuth host override precedence and trimming...OK
+706/1010 auth.kimi_coding_oauth.test.Kimi device authorization validates trusted URLs and defaults intervals...OK
+707/1010 auth.kimi_coding_oauth.test.Kimi forms and poll states match RFC 8628 contract...OK
+708/1010 auth.kimi_coding_oauth.test.Kimi token response uses exact expiry without skew...OK
+709/1010 auth.xai_oauth.test.xAI OAuth forms use exact client scope referrer and device grant...OK
+710/1010 auth.xai_oauth.test.xAI OAuth device response requires https and defaults zero interval...OK
+711/1010 auth.xai_oauth.test.xAI OAuth token expiry skew and refresh preservation match upstream...OK
+712/1010 auth.xai_oauth.test.xAI OAuth poll classification handles pending slowdown denial and expiry...OK
+713/1010 coding_agent.effective_catalog.test.effective catalog upserts custom models and applies overrides...OK
+714/1010 coding_agent.effective_catalog.test.effective catalog upserts cached Radius extras and applies model override...OK
+715/1010 coding_agent.clipboard.test.clipboard MIME preference handles parameters and arbitrary image fallback...OK
+716/1010 coding_agent.clipboard.test.Wayland clipboard image and text use bounded command paths...OK
+717/1010 coding_agent.clipboard.test.macOS clipboard text uses pbpaste rather than image transport...OK
+718/1010 coding_agent.clipboard.test.Termux skips image probing and retains text clipboard fallback...OK
+719/1010 coding_agent.clipboard.test.X11 clipboard image uses advertised target before text fallback...OK
+720/1010 coding_agent.clipboard.test.clipboard temp store writes private attachment and formats quoted reference...SKIP
+721/1010 coding_agent.clipboard.test.Wayland copy prefers native wl-copy without OSC 52 locally...OK
+722/1010 coding_agent.clipboard.test.Wayland copy falls back to X11 and remote sessions also emit bounded OSC 52...OK
+723/1010 coding_agent.clipboard.test.copy falls back to OSC 52 and rejects oversized terminal payloads...OK
+724/1010 coding_agent.clipboard.test.Termux and Windows copy select their native commands...OK
+725/1010 coding_agent.clipboard.test.native clipboard writer force-terminates a hung command...SKIP
+726/1010 tui.osc52.test.OSC 52 framing is deterministic and bounded...OK
+727/1010 tui.render.test.renderer accepts active custom theme palette...OK
+728/1010 tui.render.test.assistant Markdown renderer accepts terminal capabilities and active palette...OK
+729/1010 tui.editor.test.editor is UTF-8 safe and undo restores text plus cursor...OK
+730/1010 tui.editor.test.editor kill accumulation yank and yank-pop follow upstream semantics...OK
+731/1010 tui.editor.test.editor vertical movement preserves scalar column...OK
+732/1010 tui.editor.test.editor history restores draft after newest entry...OK
+733/1010 tui.kill_ring.test.kill ring accumulates directionally and rotates...OK
+734/1010 tui.keybindings.test.keybinding defaults normalize modifier order...OK
+735/1010 tui.keybindings.test.keybindings json replaces defaults, accepts legacy ids and reports conflicts...OK
+736/1010 tui.line_editor.test.paste normalization is shared by bracketed and clipboard text...OK
+737/1010 tui.line_editor.test.extension shortcuts run before editor keybindings...OK
+738/1010 tui.line_editor.test.shortcut handlers can mutate editor without ending the read...OK
+739/1010 tui.line_editor.test.Kitty CSI-u dispatches modifiers and ignores releases...OK
+740/1010 tui.line_editor.test.Kitty CSI-u inserts Unicode identity codepoints...OK
+741/1010 tui.line_editor.test.rich terminal sequence dispatch uses base-layout identity and ignores releases...OK
+742/1010 tui.line_editor.test.rich terminal sequence inserts shifted and Unicode printable CSI-u...OK
+743/1010 tui.line_editor.test.Windows right click requests non-interrupting clipboard paste...OK
+744/1010 tui.terminal.test.key decoding...OK
+745/1010 tui.terminal.test.visible width strips ansi...OK
+746/1010 tui.terminal.test.alternate screen sequences use DEC private mode 1049...OK
+747/1010 tui.terminal.test.terminal columns use environment with bounded fallback...OK
+748/1010 tui.terminal.test.terminal negotiation parser handles Kitty flags and device attributes...OK
+749/1010 tui.terminal.test.terminal negotiation buffer reassembles and safely forwards prefixes...OK
+750/1010 tui.terminal.test.escape timeout, dimensions and native Shift Enter follow environment policy...OK
+751/1010 tui.terminal.test.terminal control constants and relative motion are exact...OK
+752/1010 tui.mouse.test.SGR mouse reports buttons drag modifiers release and wheels...OK
+753/1010 tui.mouse.test.legacy X10 mouse coordinates normalize to zero...OK
+754/1010 tui.keys.test.Kitty CSI-u parses alternate layouts, modifiers and events...OK
+755/1010 tui.keys.test.Kitty codepoint remains authoritative for Latin and symbol remaps...OK
+756/1010 tui.keys.test.Kitty keypad and navigation functional keys normalize...OK
+757/1010 tui.keys.test.modifyOtherKeys and printable decoding...OK
+758/1010 tui.keys.test.legacy parsing covers control symbols, aliases, functions and rxvt...OK
+759/1010 tui.keys.test.Kitty mode disambiguates linefeed and escape return...OK
+760/1010 tui.keys.test.raw backspace Windows Terminal heuristic is SSH-safe at options boundary...OK
+761/1010 tui.keys.test.formatAlloc uses canonical modifier and key names...OK
+762/1010 tui.word_navigation.test.word navigation separates words punctuation and whitespace...OK
+763/1010 tui.word_navigation.test.word navigation is UTF-8 scalar safe...OK
+764/1010 tui.terminal_text.test.Unicode terminal widths cover controls CJK emoji and marks...OK
+765/1010 tui.terminal_text.test.sequence extraction strips CSI OSC DCS and APC...OK
+766/1010 tui.terminal_text.test.grapheme cell hit testing keeps wide clusters atomic...OK
+767/1010 tui.terminal_text.test.OSC 8 links are found by visible column...OK
+768/1010 tui.terminal_text.test.normalization expands visible tabs and decomposes Thai Lao AM...OK
+769/1010 tui.terminal_text.test.truncate and slice never divide wide or styled clusters...OK
+770/1010 tui.terminal_image.test.terminal environment snapshot maps emulator variables...OK
+771/1010 tui.terminal_image.test.terminal capability detection keeps tmux conservative...OK
+772/1010 tui.terminal_image.test.terminal capability detection identifies supported emulators...OK
+773/1010 tui.terminal_image.test.capability and cell dimension state are overrideable...OK
+774/1010 tui.terminal_image.test.Kitty encoding uses direct and chunked transmission forms...OK
+775/1010 tui.terminal_image.test.Kitty delete commands free image data or placements...OK
+776/1010 tui.terminal_image.test.iTerm2 encoding reports decoded size and name...OK
+777/1010 tui.terminal_image.test.Kitty registry produces placement-only redraw and crop...OK
+778/1010 tui.terminal_image.test.Kitty registry refreshes generations and evicts oldest metadata...OK
+779/1010 tui.terminal_image.test.image cell sizing preserves pixel aspect ratio...OK
+780/1010 tui.terminal_image.test.PNG GIF JPEG and WebP dimensions are parsed without decoders...OK
+781/1010 tui.terminal_image.test.base64 image dimensions dispatch by MIME type...OK
+782/1010 tui.terminal_image.test.render image uses active protocol and registers Kitty metadata...OK
+783/1010 tui.terminal_image.test.hyperlink and image fallback shorten and encode absolute paths...OK
+784/1010 tui.terminal_image.test.allocated image IDs are never zero...OK
+785/1010 tui.markdown.test.Markdown headings and inline styles render ANSI...OK
+786/1010 tui.markdown.test.Markdown links use OSC 8 or visible URL fallback...OK
+787/1010 tui.markdown.test.Markdown fenced code blocks trim streamed partial closing fence...OK
+788/1010 tui.markdown.test.Markdown task ordered and nested list markers render...OK
+789/1010 tui.markdown.test.Markdown blockquotes recursively render blocks...OK
+790/1010 tui.markdown.test.Markdown tables fit viewport and wrap cells...OK
+791/1010 tui.markdown.test.Markdown narrow tables fall back to source...OK
+792/1010 tui.markdown.test.ANSI wrapping ignores styles and OSC hyperlinks...OK
+793/1010 tui.markdown.test.Markdown preserves escaped punctuation only when requested...OK
+794/1010 tui.markdown.test.Markdown horizontal rules and hard line breaks render...OK
+795/1010 tui.markdown.test.Markdown padding and width constraints apply after wrapping...OK
+796/1010 tui.markdown.test.Markdown inline image syntax has explicit fallback...OK
+797/1010 tui.markdown.test.Markdown renders inline LaTeX and preserves currency shell and unsupported input...OK
+798/1010 tui.markdown.test.Markdown display LaTeX renders blocks and preserves pending streams...OK
+799/1010 tui.markdown.test.Markdown can disable LaTeX rendering and excludes fenced code...OK
+800/1010 tui.latex.test.LaTeX common symbols scripts roots and fractions...OK
+801/1010 tui.latex.test.LaTeX relations operators wrappers and accents...OK
+802/1010 tui.latex.test.LaTeX aligned cases and matrices...OK
+803/1010 tui.latex.test.LaTeX display fractions operators and matrix composition...OK
+804/1010 tui.latex.test.LaTeX returns null for unsupported and malformed syntax...OK
+805/1010 tui.ansi.test.ansi paint wraps codes...OK
+806/1010 auth.oauth.test.parse device code and token responses...OK
+807/1010 auth.oauth.test.OAuth save uses canonical auth json...OK
+808/1010 auth.openrouter_oauth.test.OpenRouter OAuth authorization URL uses callback PKCE and no state...OK
+809/1010 auth.openrouter_oauth.test.OpenRouter OAuth manual input accepts redirect query params and raw code...OK
+810/1010 auth.openrouter_oauth.test.OpenRouter OAuth exchange JSON and permanent key parsing match upstream...OK
+811/1010 auth.openrouter_oauth.test.OpenRouter OAuth exchange errors preserve upstream detail priority...OK
+812/1010 auth.openrouter_oauth.test.OpenRouter OAuth callback path is UUIDv4 and callback parsing validates route...OK
+813/1010 auth.openrouter_oauth.test.OpenRouter OAuth callback host defaults and honors override...OK
+814/1010 storage.session_index.test.session index upsert save load...OK
+815/1010 storage.sqlite.test_0...OK
+816/1010 storage.sqlite_cli.test.SQLite CLI parses global options around actions...OK
+817/1010 storage.sqlite_cli.test.SQLite CLI init list search show and doctor...SKIP
+818/1010 storage.sqlite.repository.test.SQLite repository sessions facts stats and durable reopen...SKIP
+819/1010 storage.sqlite.repository.test.SQLite repository branch queries lanes custom types and cache repair...SKIP
+820/1010 storage.sqlite.repository.test.SQLite writer leases fence expired owners transactionally...SKIP
+821/1010 storage.sqlite.repository.test.SQLite records track open operations usage and merged log order...SKIP
+822/1010 storage.sqlite.repository.test.SQLite FTS search indexes existing and newly inserted entries...SKIP
+823/1010 storage.sqlite.repository.test.SQLite branch and tree forks preserve canonical scope facts and lanes...SKIP
+824/1010 storage.sqlite.ffi.test.SQLite ABI wrapper executes parameterized statements...OK
+825/1010 storage.sqlite.ffi.test.SQLite wrapper reports transactions and rollbacks...OK
+826/1010 storage.sqlite.schema.test.SQLite schema applies idempotently and exposes canonical tables...OK
+827/1010 storage.sqlite.schema.test.SQLite search schema creates triggers and indexes existing entries...OK
+828/1010 storage.sqlite.types.test.entry type wire names round-trip...OK
+829/1010 server.http_rpc.test.HTTP bearer authentication is header scoped and unambiguous...OK
+830/1010 server.http_rpc.test.server bind parser accepts IPv4 and IPv6 literals only...OK
+831/1010 server.http_rpc.test.HTTP head parser enforces complete unambiguous body framing...OK
+832/1010 server.http_rpc.test.secure token comparison checks content...OK
+833/1010 server.http_rpc.test.server protocol hello...OK
+834/1010 server.http_rpc.test.server create list detach attachment state...OK
+835/1010 server.http_rpc.test.server production persistence loads saves fences and releases...OK
+836/1010 server.http_rpc.test.server rejects simultaneous JSON and custom persistence backends...OK
+837/1010 server.http_rpc.test.server tool progress preserves partial details and images...OK
+838/1010 server.session_store.test.connection-relative attachments and disconnect cleanup...OK
+839/1010 server.session_store.test.set thinking clamps to selected model capability and model switch reclamps...OK
+840/1010 server.session_store.test.operations require the requesting connection to be attached...OK
+841/1010 server.session_store.test.disconnect during active operation stays locked until idle...OK
+842/1010 server.session_store.test.durable session roundtrip excludes attachment locks...OK
+843/1010 server.session_store.test.busy prompt mutation and active steer abort semantics...OK
+844/1010 mcp.client.test.parse MCP tools/list response...OK
+845/1010 mcp.client.test.MCP method registry rejects synthetic methods...OK
+846/1010 mcp.methods.test.real MCP methods only...OK
+847/1010 coding_agent.project_environment.test.project environment owns settings tool filter and prompt resources...OK
+848/1010 coding_agent.project_environment.test.project environment tool filter remains valid after settings ownership is internal...OK
+849/1010 coding_agent.project_environment.test.project environment honors disabled top-level skill settings...OK
+850/1010 coding_agent.project_environment.test.project environment loads manifest-selected package skill file...OK
+851/1010 coding_agent.args.test.parse print and tools...OK
+852/1010 coding_agent.args.test.at-file parsing supports literal escapes and bare at...OK
+853/1010 coding_agent.args.test.parse original resource session model and tui options...OK
+854/1010 coding_agent.args.test.no builtin tools does not disable extension tools...OK
+855/1010 coding_agent.args.test.extension long flags preserve values and triple-dash print messages...OK
+856/1010 coding_agent.args.test.invalid tui mode and unknown short option are errors...OK
+857/1010 coding_agent.args.test.repair package command preserves scope and output arguments...OK
+858/1010 coding_agent.args.test.config package command preserves selector arguments...OK
+859/1010 coding_agent.args.test.repair check command remains package administration...OK
+860/1010 coding_agent.prompts.test.expand named placeholders...OK
+861/1010 coding_agent.prompts.test.prompt argument substitution matches positional defaults and slices...OK
+862/1010 coding_agent.prompts.test.replacement text is not recursively substituted...OK
+863/1010 coding_agent.prompts.test.frontmatter is stripped and exposed as metadata...OK
+864/1010 coding_agent.prompts.test.explicit prompt paths work while defaults are disabled...OK
+865/1010 coding_agent.prompts.test.untrusted default discovery excludes project templates...OK
+866/1010 coding_agent.path_utils.test.normalize path strips at, expands tilde, and normalizes Unicode spaces...OK
+867/1010 coding_agent.path_utils.test.resolve path is lexical and relative to cwd...OK
+868/1010 coding_agent.path_utils.test.file URL percent decoding...OK
+869/1010 coding_agent.file_processor.test.process file arguments separates text, images, and unsupported binary...OK
+870/1010 coding_agent.file_processor.test.process file arguments omits BMP when conversion is unavailable...OK
+871/1010 coding_agent.file_processor.test.process file arguments rejects missing files and skips empty files...OK
+872/1010 coding_agent.inline_files.test.interactive file extraction supports quotes spaces and literal at...OK
+873/1010 coding_agent.inline_files.test.interactive file extraction preserves Windows backslashes and ordinary mentions...OK
+874/1010 coding_agent.initial_message.test.initial message matches stdin file and first-message concatenation...OK
+875/1010 coding_agent.initial_message.test.initial message retains explicit empty first message consumption...OK
+876/1010 coding_agent.initial_message.test.initial message does not consume follow-up turns...OK
+877/1010 coding_agent.initial_message.test.stdin presence preserves an empty stdin value but no message is synthesized...OK
+878/1010 coding_agent.repl_completion.test.completion expands commands models and tree ids...OK
+879/1010 coding_agent.repl_completion.test.completion omits disabled skill command...OK
+880/1010 coding_agent.repl_completion.test.completion quotes file paths and descends directories...OK
+881/1010 coding_agent.update.test.semantic versions include prerelease precedence and fallback inequality...OK
+882/1010 coding_agent.update.test.latest release parser and install URL use owned normalized values...OK
+883/1010 coding_agent.update.test.changelog parser retains only bounded newer released sections...OK
+884/1010 coding_agent.update.test.startup lifecycle records fresh installs and skips resumed sessions...OK
+885/1010 coding_agent.update.test.self update manager detection preserves global install safety...OK
+886/1010 coding_agent.update.test.self update commands support package rename wrappers and prefixes...OK
+887/1010 coding_agent.update.test.self update prefix and pnpm global bin inference mirror global layouts...OK
+888/1010 coding_agent.update.test.update command target parser matches upstream defaults aliases and conflicts...OK
+Skill commands are disabled by enableSkillCommands=false.
+889/1010 coding_agent.slash.test.disabled skill commands do not mutate session...OK
+890/1010 coding_agent.slash.test.tree arguments support summarized navigation in both orders...OK
+891/1010 coding_agent.slash.test.slash session new model quit drive real session state...OK
+892/1010 coding_agent.slash.test.interactive tree prompt honors branchSummary skipPrompt...OK
+893/1010 coding_agent.slash.test.interactive tree selector supplies target for bare command...OK
+894/1010 coding_agent.slash.test.handle /reload applies AGENTS.md into live agent_cfg...OK
+895/1010 coding_agent.slash.test.slash login executes extension OAuth and persists complete credentials...OK
+896/1010 coding_agent.slash.test.Radius login gateway resolves custom OAuth provider and builtin default...OK
+897/1010 coding_agent.slash.test.Kimi Coding login provider defaults to device-code identity...OK
+898/1010 coding_agent.slash.test.slash copy writes the latest assistant text instead of printing it...OK
+899/1010 coding_agent.slash.test.bare login and logout use retained authentication selector choices...OK
+900/1010 coding_agent.modes.test.tool result JSON preserves usage and added tool names...OK
+901/1010 coding_agent.modes.test.parse rpc prompt upstream type field...OK
+902/1010 coding_agent.modes.test.parse rpc prompt legacy method...OK
+903/1010 coding_agent.modes.test.parse rpc set_model and set_thinking_level fields...OK
+904/1010 coding_agent.modes.test.parse rpc command-specific top-level and nested parameters...OK
+905/1010 coding_agent.export_html.test.export html contains messages...OK
+906/1010 coding_agent.package_config.test.global package config retains disabled resources and persists exact toggles...OK
+907/1010 coding_agent.package_config.test.shared inventory includes package and top-level origins...OK
+908/1010 coding_agent.package_config.test.project package config cycles exact override back to inheritance...OK
+909/1010 coding_agent.package_config.test.locked configuration updates preserve independent selectors...OK
+910/1010 coding_agent.package_config_tui.test.project override cycle follows inherited state...OK
+911/1010 coding_agent.tree_tui.test.tree selector builds branches and selects active tip...OK
+912/1010 coding_agent.tree_tui.test.tree selector search filters labels and content...OK
+913/1010 coding_agent.tree_tui.test.tree selector fold hides descendants and tab cycles filters...OK
+914/1010 coding_agent.tree_tui.test.tree selector escape clears search before cancelling and movement wraps...OK
+915/1010 coding_agent.tree_tui.test.tree selector direct filters and editable labels match original controls...OK
+916/1010 coding_agent.tree_tui.test.tree selector mouse selects rows and scrolls wrapped selection...OK
+917/1010 coding_agent.tree_tui.test.tree selector copy uses the native clipboard projection...OK
+918/1010 coding_agent.model_tui.test.model selector defaults to scoped scope and tab switches to all...OK
+919/1010 coding_agent.model_tui.test.model selector fuzzy query ranks canonical provider identity...OK
+920/1010 coding_agent.model_tui.test.model selector selection returns canonical provider and id...OK
+921/1010 coding_agent.model_tui.test.model selector escape clears search before cancelling...OK
+922/1010 coding_agent.settings_tui.test.settings selector cycles boolean and persists through settings parser...OK
+923/1010 coding_agent.settings_tui.test.settings selector persists media privacy and skill command controls...OK
+924/1010 coding_agent.settings_tui.test.settings selector fuzzy search ranks retry timeout...OK
+925/1010 coding_agent.settings_tui.test.settings selector edits and clears trusted project overrides...OK
+926/1010 coding_agent.session_tui.test.session search supports fuzzy tokens and quoted phrases...OK
+927/1010 coding_agent.session_tui.test.session selector sort mode cycles through all original modes...OK
+928/1010 coding_agent.radius_refresh.test.Radius refresh honors PI_OFFLINE before network work...OK
+929/1010 coding_agent.radius_refresh.test.Radius persistConfig creates reloadable models-store entry...OK
+930/1010 coding_agent.auth_commands.test.auth command parses duration and rejects command-specific flags...OK
+931/1010 coding_agent.auth_commands.test.auth check reports stored API key and can emit JSON credentials...OK
+932/1010 coding_agent.auth_commands.test.auth no-refresh returns persisted expired OAuth token without network...OK
+933/1010 coding_agent.auth_commands.test.credential printers enforce API-key versus OAuth type...OK
+934/1010 coding_agent.auth_commands.test.custom models provider API key resolves config-value environment...OK
+935/1010 coding_agent.auth_commands.test.Anthropic OAuth token environment is classified as API-key authentication...OK
+936/1010 coding_agent.auth_tui.test.auth selector exposes subscription and API-key choices without local providers...OK
+937/1010 coding_agent.auth_tui.test.auth selector exposes extension OAuth providers without catalog models...OK
+938/1010 coding_agent.auth_tui.test.auth selector masks API key and returns owned choice...OK
+939/1010 coding_agent.auth_tui.test.logout selector contains only persisted credentials...OK
+940/1010 coding_agent.auth_tui.test.auth selector uses separate authentication type and provider stages...OK
+941/1010 coding_agent.auth_tui.test.explicit provider with multiple methods opens scoped authentication type stage...OK
+942/1010 coding_agent.auth_tui.test.auth selector reports stored models and environment credential sources...OK
+943/1010 coding_agent.auth_flow_tui.test.auth flow dialog accepts manual input and cancellation state...OK
+944/1010 coding_agent.auth_flow_tui.test.auth flow dialog renders OSC 8 links without raw control injection...OK
+945/1010 coding_agent.rpc_data.test.RPC entries use durable JSONL shapes and cursor semantics...OK
+946/1010 coding_agent.rpc_data.test.RPC tree, fork messages, last text, and stats are structured...OK
+947/1010 coding_agent.rpc_data.test.RPC commands include native extension metadata...OK
+948/1010 coding_agent.rpc_bash.test.RPC bash parser combines stdout and stderr...OK
+949/1010 coding_agent.rpc_bash.test.RPC bash parser recognizes cancellation and truncation...OK
+950/1010 coding_agent.rpc_bash.test.RPC bash JSON contract uses camel-case fields...OK
+951/1010 coding_agent.rpc_queue.test.RPC message queue transfers owned messages in FIFO order...OK
+952/1010 coding_agent.remote_transcript.test.remote transcript projects deltas without mutating snapshot...OK
+953/1010 coding_agent.remote_transcript.test.remote transcript accumulates and parses streamed tool call input...OK
+954/1010 coding_agent.remote_transcript.test.remote transcript restores partial tool input from authoritative snapshot...OK
+955/1010 coding_agent.remote_transcript.test.remote transcript appends transient items replaces by id and queues steering...OK
+956/1010 coding_agent.remote_transcript.test.remote transcript snapshot authority and runtime reset semantics...OK
+957/1010 coding_agent.remote_transcript.test.remote transcript compaction preserves visible projection and buffers...OK
+958/1010 coding_agent.remote_session.test.remote session opens projects progress and selects prompt versus steer...OK
+959/1010 coding_agent.remote_session.test.remote session replacement detaches previous only after candidate attaches...OK
+960/1010 coding_agent.remote_session.test.remote session abort preempts submit lifecycle and disposal survives detach failure...OK
+961/1010 coding_agent.remote_session.test.remote session reconnects through a replacement transport and reacquires ownership...OK
+962/1010 coding_agent.remote_session.test.remote session reconnect failure becomes unbound and listener failures are isolated...OK
+963/1010 coding_agent.remote_session.test.remote session removal invalidates the binding without corrupting listeners...OK
+964/1010 coding_agent.remote_cli.test.remote CLI parses list prompt and create options...OK
+965/1010 coding_agent.remote_cli.test.remote CLI rejects malformed arguments...OK
+966/1010 coding_agent.remote_cli.test.remote CLI renders lists and snapshots as valid JSON...OK
+967/1010 coding_agent.remote_cli.test.remote CLI renders search results as valid JSON...OK
+968/1010 coding_agent.session_commands.test.parse search options and query...OK
+969/1010 coding_agent.session_commands.test.session commands list search show and doctor...OK
+970/1010 coding_agent.session_commands.test.doctor reports malformed sessions without aborting...OK
+971/1010 coding_agent.session_commands.test.session commands migrate stats tree rename and guarded delete...OK
+972/1010 coding_agent.migrations.test.startup migrations preserve credentials and move legacy resources without clobbering...OK
+973/1010 coding_agent.trust.test.project trust store inherits parent and child override...OK
+974/1010 coding_agent.trust.test.project trust options match parent session and deny choices...OK
+975/1010 coding_agent.trust.test.detect trust requiring project resources and ignore user agents skills...OK
+976/1010 coding_agent.trust.test.project trust startup policy matches override store default and no-ui ordering...OK
+977/1010 tui.diff.test.diff buffer detects changes...OK
+978/1010 tui.layout.test.stack allocation grows shrinks and obeys bounds...OK
+979/1010 tui.layout.test.vertical stack uses grow gap and clipping...OK
+980/1010 tui.layout.test.horizontal stack composes allocated columns and wide text...OK
+981/1010 tui.layout.test.scroll view follows end and returns unused overscroll...OK
+982/1010 tui.layout.test.scrollbar geometry is proportional and reserves always column...OK
+983/1010 tui.layout.test.text and truncated text honor terminal cells...OK
+984/1010 tui.stdin_buffer.test.regular UTF-8 and complete terminal sequences are framed...OK
+985/1010 tui.stdin_buffer.test.fragmented CSI SGR mouse OSC DCS and APC stay buffered...OK
+986/1010 tui.stdin_buffer.test.Kitty batches split WezTerm escape and suppress duplicate printable...OK
+987/1010 tui.stdin_buffer.test.modified Kitty printable does not suppress following raw character...OK
+988/1010 tui.stdin_buffer.test.old style mouse consumes exactly three payload bytes...OK
+989/1010 tui.stdin_buffer.test.bracketed paste is emitted atomically across chunks with trailing input...OK
+990/1010 tui.stdin_buffer.test.separate escape and sequence timeouts flush deterministically...OK
+991/1010 tui.stdin_buffer.test.Linux double bracket and split UTF-8 are preserved...OK
+992/1010 tui.stdin_buffer.test.clear discards all parser state...OK
+993/1010 tui.fuzzy.test.fuzzy score ranks exact prefix boundary and subsequence...OK
+994/1010 tui.fuzzy.test.fuzzy scoring is case insensitive but rewards exact case...OK
+995/1010 tui.fuzzy.test.bestScore searches provider model and display fields...OK
+996/1010 tui.undo_stack.test.undo stack deep-clones, pops ownership and clears...OK
+997/1010 tui.undo_stack.test.bounded undo stack evicts oldest snapshots...OK
+998/1010 tui.widgets.test.box applies padding and background around retained children...OK
+999/1010 tui.widgets.test.input is Unicode safe, horizontally scrolls and emits cursor marker...OK
+1000/1010 tui.widgets.test.select list filters wraps skips disabled items and renders scrolling...OK
+1001/1010 tui.widgets.test.settings list cycles values and fuzzy filters...OK
+1002/1010 tui.widgets.test.cancellable loader advances and consumes escape...OK
+1003/1010 tui.application.test.application overlays compose, focus and restore deterministically...OK
+1004/1010 tui.application.test.application extracts cursor and emits differential synchronized output...OK
+1005/1010 tui.application.test.mouse hit testing drives selectors while drag selection extracts cells...OK
+1006/1010 tui.application.test.search highlights matches and cycles while IME commits atomically...OK
+1007/1010 tui.application.test.alternate-screen lifecycle sequences include paste mouse and cursor restoration...OK
+1008/1010 ai.openrouter_images.test.OpenRouter images request serializes multimodal input and modalities...OK
+1009/1010 ai.openrouter_images.test.OpenRouter images parser returns text data image id and cost...OK
+1010/1010 ai.catalog.test.catalog contains only real provider entries...OK
+983 passed; 27 skipped; 0 failed.

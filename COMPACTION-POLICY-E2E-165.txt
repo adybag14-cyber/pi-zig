@@ -1,0 +1,31 @@
+COMPACTION_POLICY_E2E_165=PASS
+RPC_SET_AUTO_COMPACTION_PERSISTENCE=PASS
+TOKEN_BUDGET_SETTINGS_PRESERVED=PASS
+SPLIT_TURN_SELECTION=PASS
+HOOK_MESSAGES_TO_SUMMARIZE=4
+HOOK_TURN_PREFIX_MESSAGES=1
+FIRST_KEPT_ROLE=assistant
+DURABLE_HISTORY_APPEND_ONLY=PASS
+ACTIVE_CONTEXT_PROJECTION=PASS
+PROCESS_EXIT=0
+STDERR_BYTES=0
+
+{
+  "activeContextStartsWith": "compactionSummary",
+  "afterHookActionImmediate": true,
+  "beforeHookActionImmediate": true,
+  "directRootPolicy": "token-budget",
+  "durableMessagesAfter": 6,
+  "durableMessagesBefore": 6,
+  "firstKeptRole": "assistant",
+  "keepRecentTokens": 20,
+  "messagesToSummarize": 4,
+  "oldHistoryExcludedFromActiveContext": true,
+  "processExit": 0,
+  "reserveTokens": 123,
+  "settingsPersistence": true,
+  "splitTurn": true,
+  "stderrBytes": 0,
+  "turnPrefixMessages": 1,
+  "unrelatedSettingsPreserved": true
+}

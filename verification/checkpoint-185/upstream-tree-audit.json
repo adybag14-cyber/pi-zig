@@ -1,0 +1,13 @@
+{
+  "archive_crc_test": "passed",
+  "archive_files": 1366,
+  "archive_sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a",
+  "byte_identical_to_supplied_archive": true,
+  "extra": [],
+  "extra_count": 0,
+  "extracted_files": 1366,
+  "hash_mismatch_count": 0,
+  "hash_mismatches": [],
+  "missing": [],
+  "missing_count": 0
+}

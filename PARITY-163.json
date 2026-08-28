@@ -1,0 +1,78 @@
+{
+  "checkpoint": 163,
+  "original": "Pi coding-agent 0.84.1",
+  "zig": "0.16.0",
+  "focus": "provider-internal request retries and timeouts",
+  "closed": [
+    "retry.provider timeoutMs/maxRetries/maxRetryDelayMs parsing and deep merge",
+    "general HTTP timeout inheritance",
+    "live client propagation and reload rollback",
+    "x-should-retry true/false",
+    "retry-after-ms",
+    "retry-after seconds and HTTP dates",
+    "bounded server-directed delay",
+    "abortable provider request timeout and retry sleep",
+    "stream-start replay protection",
+    "OpenAI Chat/Responses/Codex, Anthropic, Google, Mistral, Bedrock, Pi Messages, and OpenRouter image integration"
+  ],
+  "completedValidation": {
+    "aiGraph": {
+      "passed": 189,
+      "failed": 0
+    },
+    "runtimeGraph": {
+      "passed": 524,
+      "failed": 0
+    },
+    "mainExecutable": {
+      "passed": 9,
+      "failed": 0
+    },
+    "sqliteRepository": {
+      "passed": 11,
+      "failed": 0
+    },
+    "sqliteCli": {
+      "passed": 8,
+      "isolated": 6,
+      "failed": 0
+    },
+    "providerRetryE2eScenarios": 7,
+    "format": true,
+    "sourceAudit": true,
+    "syntheticSourceFiles": 0,
+    "directRoot": {
+      "passed": 884,
+      "skipped": 0,
+      "failed": 0
+    },
+    "moduleProcess": {
+      "passed": 877,
+      "isolated": 7,
+      "failed": 0
+    },
+    "sqlitePersistence": {
+      "passed": 5,
+      "failed": 0
+    },
+    "sqliteEnabledExecutable": {
+      "passed": 9,
+      "failed": 0
+    },
+    "allExecutableBuilds": true
+  },
+  "remaining": [
+    "OAuth and cloud/bootstrap provider retry propagation",
+    "full provider HTTP/2 idle timeout parity",
+    "complete compaction prompt/token/file-operation policy and hooks",
+    "branch tree hooks and fullscreen workflow",
+    "remaining fullscreen managers",
+    "complete package-manager platform behavior",
+    "arbitrary asynchronously invalidated extension components",
+    "function-valued providers and extension OAuth",
+    "server TLS and mTLS",
+    "automatic image transforms",
+    "enterprise credential telemetry retry and interoperability breadth"
+  ],
+  "aggregateQualification": "Direct root closure completed 884/884. The normal module process passed 877 cases and its seven intentional SQLite isolates all passed in dedicated linked processes."
+}

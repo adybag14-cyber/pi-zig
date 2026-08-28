@@ -1,0 +1,119 @@
+Pi Zig checkpoint 163 validation record
+=========================================
+
+Inputs
+------
+Original source:                            uploaded Pi coding-agent 0.84.1 tree
+Rewrite baseline:                           uploaded checkpoint 162 source ZIP
+Compiler:                                   supplied Zig 0.16.0 Linux x86-64
+
+Implementation integrity
+------------------------
+Whole-tree Zig formatting:                  PASS
+Node bridge syntax validation:              PASS
+Git diff validation:                        PASS
+Real-source audit:                          PASS
+Synthetic/generated feature shards:         0
+Native Zig source files:                    179
+Native Zig logical lines:                   99,774
+Named Zig test declarations:                882
+Direct root test cases:                     884
+Checkpoint implementation/report diff:      22 files, +1,692 / -230
+
+Complete direct root closure
+----------------------------
+Command topology:                           Zig self-hosted backend + sqlite3/libc
+Tests passed:                               884/884
+Tests skipped:                              0
+Tests failed:                               0
+
+Normal multi-process build-test topology
+----------------------------------------
+All-package module process:                 877 passed, 7 isolated, 0 failed
+SQLite repository process:                  11/11 passed
+SQLite CLI/schema process:                    8 passed, 6 isolated, 0 failed
+Ordinary executable process:                  9/9 passed
+SQLite live-persistence process:              5/5 passed
+SQLite-enabled executable process:            9/9 passed
+Build graph completion:                     PASS
+
+The seven all-package isolates are intentional C-linked SQLite cases. Six run
+in the dedicated 11-test repository process and the CLI integration case runs
+in the separately linked SQLite CLI process. No declared behavior is omitted.
+
+Changed-area regression graphs
+------------------------------
+AI provider import graph:                   189/189 passed
+Settings/live client import graph:          524/524 passed
+Shared retry focused suite:                   7/7 passed
+Controlled HTTP focused suite:                7/7 passed
+
+Production gates
+----------------
+Static pi Debug build:                      PASS
+pi-sqlite Debug build:                      PASS
+pi-sqlite-live build:                       PASS
+pi executable type:                        static Linux x86-64 ELF, Debug
+pi-sqlite type:                             Linux x86-64 ELF, sqlite3/libc, Debug
+pi-sqlite-live type:                        Linux x86-64 ELF, sqlite3/libc
+Provider retry executable E2E:              PASS (7 scenarios)
+Provider retry E2E stderr:                   0 bytes
+
+Provider retry executable scenarios
+-----------------------------------
+Retry-After-Ms then success:                PASS, 2 requests
+X-Should-Retry true on HTTP 400:            PASS, 2 requests
+X-Should-Retry false on HTTP 503:           PASS, 1 request
+Maximum server-delay enforcement:           PASS, 1 request
+Explicit provider request timeout:          PASS, 2 timed requests
+Inherited general HTTP timeout:             PASS, 1 timed request
+Persistent RPC settings reload:             PASS, 1 request before / 2 after
+Persistent RPC stderr:                       0 bytes
+
+Exact source-ZIP validation
+---------------------------
+Single archive root:                        PASS
+Frozen source files:                        303
+Forbidden cache/build entries:               0
+Frozen/extracted equivalence:               303/303 byte-for-byte
+Whole-tree formatting/source audit:         PASS
+Direct root closure:                        884/884 passed
+Normal multi-process build graph:           PASS
+Static pi rebuild:                          PASS
+pi-sqlite rebuild:                          PASS
+pi-sqlite-live rebuild:                     PASS
+Provider retry E2E from ZIP build:          PASS
+Provider retry E2E stderr:                   0 bytes
+
+Binary patch reconstruction
+---------------------------
+git apply --check:                          PASS
+Patch application:                         PASS
+Reconstructed source files:                303
+Missing files:                                0
+Extra files:                                  0
+Changed files:                                0
+Frozen/reconstructed equivalence:           303/303 byte-for-byte
+Formatting/Node/source audits:              PASS
+
+SQLite executable smoke
+-----------------------
+SQLite version:                             3.46.1
+Fresh database initialization:              PASS
+Missing canonical tables:                   0
+Integrity result:                           ok
+pi-sqlite-live help:                        PASS
+
+Publication and transfer integrity
+----------------------------------
+Final source ZIP structural test:           PASS
+Final checksum-manifest verification:       PASS
+Chunked 1 MiB publication writes:           PASS
+Per-file flush and fsync:                   PASS
+Atomic final-path replacement:              PASS
+Destination-directory fsync:               PASS
+Complete final-path rereads:                PASS
+Staging/final byte comparisons:             PASS
+Stable final size/mtime/hash snapshots:      3/3
+Executable permissions:                     PASS
+Incomplete transfer files remaining:        0

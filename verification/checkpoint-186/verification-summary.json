@@ -1,0 +1,58 @@
+{
+  "checkpoint": 186,
+  "release_version": "1.0.0",
+  "generated_at_utc": "2026-08-28T11:55:35.1033549Z",
+  "toolchain": {
+    "zig": "0.16.0",
+    "zig_windows_zip_sha256": "68659eb5f1e4eb1437a722f1dd889c5a322c9954607f5edcf337bc3684a75a7e",
+    "checkpoint_185_zip_sha256": "3f8745b58d441d97d83d0d54349f79e188527a659442c5b9e2f0d10fdb0e118f",
+    "sqlite": "3.53.4",
+    "sqlite_archive_sha3_256": "deddee963c810d1eeac3ce5e15c7c41da21a1c54d7a39cf54fbf577d2f50de3a",
+    "sqlite_published_sha3_match": true
+  },
+  "upstream_reference": {
+    "files_expected": 1366,
+    "files_actual": 1366,
+    "missing": 0,
+    "extra": 0,
+    "hash_mismatches": 0,
+    "archive_sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a"
+  },
+  "source": {
+    "zig_files": 197,
+    "zig_lines": 122487,
+    "synthetic_files": 0
+  },
+  "debug_test_graph": {
+    "build_steps_succeeded": 13,
+    "build_steps_total": 13,
+    "module_tests_passed": 984,
+    "module_tests_skipped": 27,
+    "module_tests_failed": 0,
+    "module_tests_total": 1011,
+    "sqlite_repository_tests_passed": 11,
+    "sqlite_repository_tests_failed": 0,
+    "sqlite_cli_active_tests_passed": 11,
+    "sqlite_cli_isolated_tests_skipped": 6,
+    "sqlite_live_persistence_tests_passed": 5,
+    "ordinary_executable_tests_passed": 10,
+    "sqlite_enabled_executable_tests_passed": 10
+  },
+  "release_safe": {
+    "default_build_steps": "3/3",
+    "sqlite_build_steps": "5/5",
+    "pi_sha256": "507e58e1a55b66affaaeacaf876497f3bc1a642c9e0d58ebb99121050a9ca419",
+    "pi_sqlite_sha256": "85052793021cbf3e56914a9bfdc961760b281f3e93a99ab5d3942f616d8e8662",
+    "pi_sqlite_live_sha256": "de230e260e5fb0ef82d41a02203524a14bfd7150c7ca9c7e8dac210504a6a5d4",
+    "version_help_smoke": "passed"
+  },
+  "logs": {
+    "full_test_sha256": "b6bd6d603d852bcf8d0f1bceaee6efa7a6f04872a27655c77268f7fa96d05c49",
+    "release_safe_build_sha256": "29eba3ed3661957ec4f772afff92d37fa22f420e78b354e70b904505374b8bc3",
+    "sqlite_release_safe_build_sha256": "4b19b7e4543ad0c450d9d66d287211df4801636c1cea43c6fe2e6c7d99a8c62e",
+    "source_audit_sha256": "67a2e33f8df892dc461656fef078f26b4aad17d590a32d6f98773c9b59771a32",
+    "smoke_sha256": "e835ed66f6a8d02be2e4483c9987c7266562c27bc1a6e2714462ae0e3042daba",
+    "git_diff_check_sha256": "e297411e20e6284d0f6494dfac71af10de9caa96c0507b7c1ab19391f6a33b89"
+  },
+  "status": "verified on final Zig 0.16.0 for Windows x86_64"
+}

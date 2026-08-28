@@ -1,0 +1,103 @@
+Pi Zig checkpoint 149 validation
+================================
+
+Reference source: uploaded Pi 0.84.1 archive pi-main (3)(9).zip
+Reference SHA-256: 42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a
+Exact patch baseline: uploaded pi-zig-v8-checkpoint-148(1).zip
+Baseline SHA-256: 9fb95b90a4c2fc16436280800768e6c27376153caa19ae2fe1e59c07b592754a
+Toolchain: supplied Zig 0.16.0 Linux x86-64
+Toolchain SHA-256: 70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+Script runtime used for compatibility tests: Node.js 22.16.0
+
+Source measurements
+-------------------
+Native Zig files under src/: 170
+Native Zig logical lines under src/: 83,452
+Embedded JavaScript bridge lines: 775
+All-package root graph declarations: 757
+Synthetic/generated feature files: 0
+Checkpoint-148 to checkpoint-149 implementation source diff: 5 files
+Implementation source additions/deletions: +1,126 / -94
+
+Worktree implementation gates
+-----------------------------
+Whole-tree Zig formatting: PASS
+Node bridge syntax check: PASS
+Real-source audit: PASS (170 Zig files, 83,452 lines, 0 synthetic files)
+All-package root graph: 750 passed, 7 isolated, 0 failed (757 declarations)
+Dedicated SQLite repository: 11/11 passed
+Dedicated live SQLite persistence: 5/5 passed
+SQLite CLI/ABI/schema process: 8 passed, 6 isolated, 0 failed
+Ordinary executable/main suite: 5/5 passed
+SQLite-enabled executable/main suite: 5/5 passed
+Debug build of ordinary pi: PASS
+Debug build of optional pi-sqlite: PASS
+Debug build of optional pi-sqlite-live: PASS
+Ordinary pi executable: static Linux x86-64 ELF with Debug information
+Ordinary pi dynamic Node/SQLite library dependency: NONE
+pi-sqlite and pi-sqlite-live: explicitly linked to sqlite3/libc
+
+Renderer gates
+--------------
+Message renderer manifest discovery: PASS
+Durable entry renderer manifest discovery: PASS
+Markdown transformer discovery and chaining: PASS
+Tool call renderer discovery: PASS
+Tool result renderer discovery: PASS
+renderShell self metadata: PASS
+Persistent tool renderer context.state: PASS
+Persistent lastComponent state: PASS
+Component Text/Box/Container/Markdown/Spacer projection: PASS
+Malformed renderer result isolation: PASS
+Canonical tool-event de-duplication: PASS
+Native fallback when no renderer exists: PASS
+
+Ordered command/shortcut gates
+------------------------------
+Canonical action order: PASS
+Canonical record duplicate suppression: PASS
+Provider registration before same-batch model switch: PASS
+Immediate active-tool schema rebuild: PASS
+Session name/entry/label persistence: PASS
+Steering/follow-up transfer: PASS
+Startup action preflight: PASS
+Single replay after live graph initialization: PASS
+Consumed startup prompt removal: PASS
+Durable actions before startup termination: PASS
+Interactive command application: PASS
+RPC command application and queue transfer: PASS
+Legacy return-only fallback: PASS
+
+End-to-end executable gates
+---------------------------
+Print startup action/session ordering: PASS
+Observed entry order: custom entry -> custom message -> user -> assistant
+Duplicate startup user prompt count: zero
+Interactive message/entry/Markdown rendering: PASS
+Observed custom entry output: CARD:first
+Observed custom message output: NOTICE:visible
+Observed transformed assistant output: TRANSFORMED:assistant 149
+Stateful custom tool renderer: PASS
+Observed call output: CALL149:blue:state=1
+Observed result output: RESULT149:painted:blue:state=1
+Observed call/result render count: one each
+Original built-in-tool-renderer.ts: PASS unchanged
+Native tool used by original renderer fixture: read
+Native read result persisted: PASS
+
+Isolation qualification
+-----------------------
+The seven all-package root skips are the SQLite CLI live integration case and
+six C-backed repository cases. The CLI case passes in the linked SQLite CLI
+process; all six repository cases pass in the dedicated 11-test repository
+process. No behavior is counted as passed solely because it was skipped in the
+self-contained root process.
+
+Packaging qualification
+------------------------
+The publication workflow must validate the exact final ZIP bytes from a clean
+extraction, apply the binary-safe checkpoint patch to a pristine checkpoint-148
+extraction, compare reconstructed content byte-for-byte, rebuild all three
+executables, verify the test graph, and fully transfer/hash every linked file
+before delivery. Final artifact hashes are recorded in the checksum manifest
+and delivery report.

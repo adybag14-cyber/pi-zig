@@ -1,0 +1,90 @@
+Pi Zig checkpoint 162 validation record
+=========================================
+
+Inputs
+------
+Original source:                            uploaded Pi coding-agent 0.84.1 tree
+Rewrite baseline:                           uploaded checkpoint 161 source ZIP
+Compiler:                                   supplied Zig 0.16.0 Linux x86-64
+
+Implementation integrity
+------------------------
+Whole-tree Zig formatting:                  PASS
+Node bridge syntax validation:              PASS
+Git diff validation:                        PASS
+Real-source audit:                          PASS
+Synthetic/generated feature shards:         0
+
+Direct complete root test
+-------------------------
+Command:
+  PI_SQLITE_CLI_TESTS=1 PI_SQLITE_REPOSITORY_TESTS=1
+  zig test src/root.zig -fno-llvm -lsqlite3 -lc
+
+Passed:                                     877
+Skipped:                                    0
+Failed:                                     0
+
+Normal build-test topology
+--------------------------
+Module process:                             871 passed
+Intentional SQLite isolates:                 6
+Module-process failures:                     0
+Dedicated SQLite repository:                11/11 passed
+SQLite CLI/schema process:                   8 passed, 6 isolated, 0 failed
+Ordinary executable process:                 7/7 passed
+SQLite live-persistence process:             5/5 passed
+SQLite-enabled executable process:           7/7 passed
+Build-test command:                         PASS
+
+Production builds
+-----------------
+Static pi Debug build:                      PASS
+pi-sqlite Debug build:                      PASS
+pi-sqlite-live Debug build:                 PASS
+Static pi file type:                        Linux x86-64 static Debug ELF
+SQLite companion file types:                Linux x86-64 Debug ELF, sqlite3/libc
+
+Changed-area regression coverage
+--------------------------------
+Shared summarization retry:                 PASS
+Quota/billing no-retry behavior:             PASS
+Retry cancellation/backoff:                 PASS
+Retry exhaustion event closure:             PASS
+Transactional model compaction:             PASS
+Append-only compaction boundary:             PASS
+Repeated compaction preservation:           PASS
+Unchanged-tip compaction no-op:              PASS
+Malformed boundary safe fallback:           PASS
+Compaction JSONL save/reload/fork fields:    PASS
+Canonical summary context wrappers:          PASS
+Compaction-aware token/size estimation:      PASS
+Durable failed assistant attempts:          PASS
+Failed-attempt live-context exclusion:       PASS
+Atomic retry setting persistence:           PASS
+Malformed retry setting no-replace:          PASS
+Branch common-ancestor collection:          PASS
+Branch summary retry/persistence:            PASS
+Branch-summary JSONL reload:                PASS
+RPC get_entries durable history:            PASS
+RPC get_messages compacted projection:      PASS
+
+Executable end-to-end gates
+----------------------------
+RPC retry setting persistence:              PASS
+RPC get_state synchronization:              PASS
+Durable failed assistant JSONL entry:       PASS
+Durable successful assistant JSONL entry:   PASS
+Failed retry attempt excluded from request: PASS
+RPC compaction transient retry:             PASS
+Canonical summary retry sequence:           PASS
+Second-attempt summary success:              PASS
+Append-only history after compaction:       PASS
+Compaction-aware get_messages:              PASS
+Combined process stderr bytes:               0
+
+Final frozen archive and reconstruction
+----------------------------------------
+This section is finalized only after the exact checkpoint-162 ZIP and patch are
+created, extracted/reconstructed into clean directories, and retested. The
+published external validation record is generated from those completed gates.

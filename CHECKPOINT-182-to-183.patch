@@ -1,0 +1,2387 @@
+diff --git a/checkpoint-tests/check-provider-models-production-integration.py b/checkpoint-tests/check-provider-models-production-integration.py
+new file mode 100644
+index 0000000..dc65a63
+--- /dev/null
++++ b/checkpoint-tests/check-provider-models-production-integration.py
+@@ -0,0 +1,182 @@
++from pathlib import Path
++
++bridge = Path("src/extensions/js_bridge.mjs").read_text(encoding="utf-8")
++js_runtime = Path("src/extensions/js_runtime.zig").read_text(encoding="utf-8")
++registry = Path("src/extensions/provider_registry.zig").read_text(encoding="utf-8")
++coordinator = Path("src/extensions/provider_models.zig").read_text(encoding="utf-8")
++models_store = Path("src/extensions/models_store.zig").read_text(encoding="utf-8")
++oauth = Path("src/extensions/provider_oauth.zig").read_text(encoding="utf-8")
++auth_storage = Path("src/auth/storage.zig").read_text(encoding="utf-8")
++main = Path("src/main.zig").read_text(encoding="utf-8")
++root = Path("src/extensions/root.zig").read_text(encoding="utf-8")
++
++refresh_start = bridge.index("async function invokeProviderRefreshModels")
++refresh_end = bridge.index("async function invokeProviderOAuthLogin", refresh_start)
++refresh_body = bridge[refresh_start:refresh_end]
++install_start = bridge.index("const installProvider =")
++install_end = bridge.index("const pi =", install_start)
++install_body = bridge[install_start:install_end]
++run_phase_start = coordinator.index("    fn runPhase(")
++run_phase_end = coordinator.index("    fn buildContextJson", run_phase_start)
++run_phase_body = coordinator[run_phase_start:run_phase_end]
++persist_start = coordinator.index("    fn applyPersistencePublication")
++persist_end = coordinator.index("    fn applyCatalogPublication", persist_start)
++persist_body = coordinator[persist_start:persist_end]
++refresh_one_start = coordinator.index("    fn refreshOne(")
++refresh_one_end = coordinator.index("    fn runPhase(", refresh_one_start)
++refresh_one_body = coordinator[refresh_one_start:refresh_one_end]
++reload_start = main.index("const RuntimeResourceReloadContext")
++reload_end = main.index("const ExtensionShortcutContext", reload_start)
++reload_body = main[reload_start:reload_end]
++
++checks = {
++    "live provider objects are retained separately from JSON snapshots": (
++        "const providerLiveConfigs = new Map()" in bridge
++        and "providerLiveConfigs.set(name, liveConfig)" in install_body
++        and "providers.set(name, encoded.config)" in install_body
++    ),
++    "refresh contexts clone and deeply freeze credential and stored snapshots": (
++        "deepFreezeProviderJson(cloneProviderJson(rawContext.credential" in refresh_body
++        and "deepFreezeProviderJson(cloneProviderJson(rawContext.stored" in refresh_body
++    ),
++    "offline refresh never exposes force": (
++        "if (allowNetwork && Object.prototype.hasOwnProperty.call(rawContext, 'force'))" in refresh_body
++    ),
++    "every refresh receives a live AbortSignal": (
++        "signal," in refresh_body and "signal?.throwIfAborted?.()" in refresh_body
++    ),
++    "publish persistence is native-acknowledged before synchronous update": (
++        "requestHost('provider_models_publish'" in refresh_body
++        and "if (accepted !== true) return false" in refresh_body
++        and refresh_body.index("publication.update()") > refresh_body.index("requestHost('provider_models_publish'")
++    ),
++    "provider-private updates publish their resulting catalog": (
++        "requestHost('provider_models_catalog'" in refresh_body
++        and "currentProviderModels(provider)" in refresh_body
++    ),
++    "async publication updates are rejected": "provider model publication update must execute synchronously" in refresh_body,
++    "config and object provider refresh results are both supported": (
++        "Array.isArray(returned)" in refresh_body
++        and "typeof providerLiveConfigs.get(provider)?.getModels === 'function'" in refresh_body
++    ),
++    "production dispatch reaches the refresh bridge": (
++        "request.kind === 'provider_refresh_models'" in bridge
++        and "invokeProviderRefreshModels(request.callbackId" in bridge
++    ),
++    "native worker invocation installs a scoped host bridge and abort protocol": (
++        "pub fn invokeProviderRefreshModels(" in js_runtime
++        and "defer self.ui_bridge = previous_bridge" in js_runtime
++        and 'provider_refresh_models' in js_runtime
++        and 'abortable' in js_runtime
++    ),
++    "model refresh remains caller-bounded rather than using the ordinary timeout": (
++        "models_refresh_timeout_ms: u64 = 0" in js_runtime
++        and "self.timeout_ms = self.models_refresh_timeout_ms" in js_runtime
++        and "defer self.timeout_ms = previous_timeout" in js_runtime
++    ),
++    "registry invocation resolves callback ownership on the persistent worker": (
++        "pub fn refreshModels(" in registry
++        and 'valueAtProviderPath(parsed.value, "refreshModels")' in registry
++        and "registration.callbackRuntime(method.callback_id, method.path)" in registry
++    ),
++    "refresh iteration owns provider names across transactional replacement": (
++        "pub fn refreshProviderNames" in registry
++        and "try gpa.dupe(u8, registration.name)" in registry
++        and "dangling after the first catalog commit" in registry
++    ),
++    "dynamic models validate before transactional registry replacement": (
++        "pub fn validateDynamicModels" in registry
++        and "var candidate = try Registration.init" in registry
++        and "pub fn applyDynamicModels" in registry
++    ),
++    "complete credential JSON is preserved for refresh context": (
++        "pub fn readCredentialJson" in auth_storage
++        and "std.json.Stringify.value(value" in auth_storage
++    ),
++    "offline OAuth never refreshes while online OAuth uses canonical locked modification": (
++        "if (allow_network and is_oauth)" in oauth
++        and "modifyOAuthJsonAbortable" in oauth
++        and "credentialForModelRefresh" in oauth
++    ),
++    "credential-aware model projection runs after dynamic publication": (
++        "applyModelsForCredential" in oauth
++        and "applyModelsForCredential(provider_id, credential" in run_phase_body
++    ),
++    "models-store uses a sidecar lock and atomic replacement": (
++        '"models-store.json"' in models_store
++        and '"{s}.lock"' in models_store
++        and "createFileAtomic" in models_store
++        and "atomic.replace" in models_store
++    ),
++    "models-store validates and cancellation-checks before authoritative replace": (
++        "validateEntryValue" in models_store
++        and models_store.count("ensureNotAborted(abort_flag)") >= 5
++        and "make that file authoritative after cancellation" in models_store
++    ),
++    "persistence semantics distinguish omit write and delete": (
++        "if (!has_persist.bool) return true" in persist_body
++        and ".null => try self.deleteStored" in persist_body
++        and ".object =>" in persist_body
++        and "writeStored(context.provider_id" in persist_body
++    ),
++    "persisted model entries are semantically validated before writes": (
++        "validateEntryValue(persist)" in persist_body
++        and "validateDynamicModels(context.provider_id" in persist_body
++    ),
++    "generation and sequence guards protect every publication": (
++        "isCurrentLocked" in persist_body
++        and "InvalidProviderModelsPublicationOrder" in coordinator
++        and "state.generation == generation" in coordinator
++    ),
++    "provider refreshes serialize registry mutation while newer generations abort older ones": (
++        "refresh_mutex: Io.Mutex" in coordinator
++        and "const generation = self.begin(state, &invocation_abort)" in refresh_one_body
++        and "self.refresh_mutex.lockUncancelable" in refresh_one_body
++        and "setAborted(state.active_abort)" in coordinator
++    ),
++    "cache-only phase precedes online credential resolution": (
++        "offline_credential" in refresh_one_body
++        and "runPhase(state, generation" in refresh_one_body
++        and "online_credential" in refresh_one_body
++        and refresh_one_body.index("offline_credential") < refresh_one_body.index("online_credential")
++    ),
++    "force is passed only into the online phase": (
++        "false, null" in refresh_one_body
++        and "true, options.force" in refresh_one_body
++    ),
++    "catalog commits update registry clients and live selector snapshots": (
++        "self.registry.applyDynamicModels" in coordinator
++        and "pool.setRuntimeProviders(self.registry.runtimes())" in coordinator
++        and "state.model_catalog = self.registry.catalog()" in coordinator
++    ),
++    "reload preparation makes registry commitment allocation-free": (
++        "pub fn prepareRegistry" in coordinator
++        and "pub fn commitPreparedRegistry" in coordinator
++        and "commitPreparedRegistry(self.provider_registry" in reload_body
++    ),
++    "reload supersedes generations before worker shutdown": (
++        "self.provider_models.supersedeAll()" in reload_body
++        and reload_body.index("self.provider_models.supersedeAll()") < reload_body.index("sessionShutdown")
++    ),
++    "startup restores cached extension catalogs before client construction": (
++        "extension_models_runtime.refresh(.{ .allow_network = false })" in main
++        and main.index("extension_models_runtime.refresh(.{ .allow_network = false })") < main.index("var client_pool: coding.live_state.ClientPool")
++    ),
++    "dynamic registration and unregister flow through the coordinator": (
++        "self.provider_models.registerProvider(name" in main
++        and "self.provider_models.unregisterProvider(name)" in main
++    ),
++    "interactive model selection performs an online selective-capable refresh": (
++        "provider_models: *extensions.provider_models.Runtime" in main
++        and ".allow_network = true" in main[main.index("const ModelTargetPromptContext"):main.index("const SettingsTargetPromptContext")]
++    ),
++    "provider-model modules are exported by the extension package": (
++        'pub const models_store = @import("models_store.zig")' in root
++        and 'pub const provider_models = @import("provider_models.zig")' in root
++    ),
++}
++
++missing = [name for name, ok in checks.items() if not ok]
++if missing:
++    raise SystemExit("production provider refreshModels integration checks failed: " + "; ".join(missing))
++print(f"production provider refreshModels integration: {len(checks)}/{len(checks)} checks passed")
+diff --git a/checkpoint-tests/provider-refresh-models-bridge.mjs b/checkpoint-tests/provider-refresh-models-bridge.mjs
+new file mode 100644
+index 0000000..cf959f6
+--- /dev/null
++++ b/checkpoint-tests/provider-refresh-models-bridge.mjs
+@@ -0,0 +1,232 @@
++import assert from "node:assert/strict";
++import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
++import { tmpdir } from "node:os";
++import path from "node:path";
++import { spawn } from "node:child_process";
++import readline from "node:readline";
++import { fileURLToPath } from "node:url";
++
++const here = path.dirname(fileURLToPath(import.meta.url));
++const root = path.resolve(here, "..");
++const bridgeSource = readFileSync(path.join(root, "src/extensions/js_bridge.mjs"), "utf8");
++const temp = mkdtempSync(path.join(tmpdir(), "pi-provider-models-183-"));
++const extensionPath = path.join(temp, "provider-models-e2e.mjs");
++
++writeFileSync(extensionPath, String.raw`
++export default function (pi) {
++  const model = (id, name = id) => ({ id, name, reasoning: false, input: ["text"], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 });
++  const config = {
++    name: "Refresh Production E2E",
++    baseUrl: "https://models.invalid/v1",
++    api: "openai-completions",
++    apiKey: "local",
++    models: [model("initial")],
++    async refreshModels(context) {
++      if (!(context.signal instanceof AbortSignal)) throw new Error("refresh AbortSignal missing");
++      if (!Object.isFrozen(context)) throw new Error("refresh context is mutable");
++      if (context.credential && !Object.isFrozen(context.credential)) throw new Error("credential is mutable");
++      if (context.stored && !Object.isFrozen(context.stored)) throw new Error("stored snapshot is mutable");
++      if (!context.allowNetwork && Object.hasOwn(context, "force")) throw new Error("offline force leaked");
++      if (context.stored?.mode === "reject") throw new Error("refresh-models-exploded-183");
++      if (context.stored?.mode === "abort") {
++        await context.publish({ persist: { models: [model("never")] } });
++        return [model("never")];
++      }
++      if (context.stored?.mode === "stale") {
++        const accepted = await context.publish({
++          persist: { models: [model("stale")] },
++          update: () => { config.models = [model("must-not-update")]; },
++        });
++        if (accepted) throw new Error("stale publication unexpectedly accepted");
++        return [model("stale-result")];
++      }
++      if (!context.allowNetwork) {
++        const restored = context.stored?.models ?? [model("offline-empty")];
++        const accepted = await context.publish({
++          update: () => { config.models = restored.map((entry) => ({ ...entry, name: entry.name + ":updated" })); },
++        });
++        if (!accepted) throw new Error("offline publication rejected");
++        return restored;
++      }
++      if (context.force !== true) throw new Error("online force missing");
++      if (context.credential?.tenant !== "corp") throw new Error("effective credential missing");
++      const fresh = [model("fresh", "Fresh")];
++      const accepted = await context.publish({
++        persist: { models: fresh, checkedAt: 183, etag: '"etag-183"' },
++        update: () => { config.models = fresh.map((entry) => ({ ...entry, name: entry.name + ":committed" })); },
++      });
++      if (!accepted) throw new Error("online publication rejected");
++      return fresh;
++    },
++  };
++  pi.registerProvider("refresh-production-e2e", config);
++  const objectState = { models: [model("object-initial")] };
++  pi.registerProvider({
++    id: "object-refresh-production-e2e",
++    name: "Object Refresh Production E2E",
++    baseUrl: "https://object-models.invalid/v1",
++    api: "openai-completions",
++    apiKey: "local",
++    getModels() { return objectState.models; },
++    async refreshModels(context) {
++      const next = [model("object-fresh", "Object Fresh")];
++      const accepted = await context.publish({ update: () => { objectState.models = next; } });
++      if (!accepted) throw new Error("object publication rejected");
++    },
++  });
++  pi.registerCommand("refresh-ping", { handler: async (_args, ctx) => ctx.ui.notify(config.models[0].name) });
++}
++`);
++
++const child = spawn(process.execPath, [
++  "--no-warnings",
++  "--experimental-strip-types",
++  "--experimental-transform-types",
++  "--input-type=module",
++  "-e",
++  bridgeSource,
++  extensionPath,
++], { stdio: ["pipe", "pipe", "pipe"] });
++let stderr = "";
++child.stderr.setEncoding("utf8");
++child.stderr.on("data", (chunk) => { stderr += chunk; });
++const lines = readline.createInterface({ input: child.stdout, crlfDelay: Infinity })[Symbol.asyncIterator]();
++
++async function record() {
++  for (;;) {
++    const next = await lines.next();
++    if (next.done) throw new Error(`bridge closed before protocol record; stderr=${stderr}`);
++    const marker = next.value.indexOf("\x1e");
++    if (marker >= 0) return JSON.parse(next.value.slice(marker + 1));
++  }
++}
++function send(value) { child.stdin.write(JSON.stringify(value) + "\n"); }
++function model(id, name = id) {
++  return { id, name, reasoning: false, input: ["text"], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 };
++}
++function start(callbackId, invocationId, refreshContext, providerName = "refresh-production-e2e") {
++  send({ kind: "provider_refresh_models", callbackId, providerName, refreshContext, abortable: true, invocationId, context: { mode: "print", hasUI: false } });
++}
++async function command(name, invocationId) {
++  send({ kind: "command", name, rawArguments: "", flags: {}, invocationId, context: { mode: "print", hasUI: false } });
++  return record();
++}
++
++try {
++  const ready = await record();
++  assert.equal(ready.type, "ready");
++  const registration = ready.manifest.providers.find((entry) => entry.name === "refresh-production-e2e");
++  assert.ok(registration);
++  const descriptor = registration.config.refreshModels;
++  assert.equal(descriptor.__pi_callback_kind, "provider_method");
++  assert.equal(descriptor.__pi_callback_path, "refreshModels");
++  const objectRegistration = ready.manifest.providers.find((entry) => entry.name === "object-refresh-production-e2e");
++  assert.ok(objectRegistration);
++  const objectDescriptor = objectRegistration.config.refreshModels;
++  assert.equal(objectDescriptor.__pi_callback_path, "refreshModels");
++
++  start(descriptor.__pi_callback_id, "offline-183", {
++    generation: 1,
++    allowNetwork: false,
++    credential: { type: "api_key", key: "local" },
++    stored: { models: [model("cached", "Cached")], checkedAt: 1 },
++  });
++  const offlinePublish = await record();
++  assert.equal(offlinePublish.type, "ui_request");
++  assert.equal(offlinePublish.method, "provider_models_publish");
++  assert.equal(offlinePublish.args.hasPersist, false);
++  send({ kind: "ui_response", id: offlinePublish.id, ok: true, result: true });
++  const offlineCatalog = await record();
++  assert.equal(offlineCatalog.method, "provider_models_catalog");
++  assert.equal(offlineCatalog.args.models[0].name, "Cached:updated");
++  send({ kind: "ui_response", id: offlineCatalog.id, ok: true, result: true });
++  const offlineResult = await record();
++  assert.equal(offlineResult.ok, true);
++  assert.equal(offlineResult.result.models[0].id, "cached");
++
++  start(descriptor.__pi_callback_id, "online-183", {
++    generation: 2,
++    allowNetwork: true,
++    force: true,
++    credential: { type: "oauth", access: "a", refresh: "r", expires: 9999999999999, tenant: "corp" },
++    stored: { models: [model("cached")], checkedAt: 1 },
++  });
++  const onlinePublish = await record();
++  assert.equal(onlinePublish.method, "provider_models_publish");
++  assert.equal(onlinePublish.args.hasPersist, true);
++  assert.equal(onlinePublish.args.persist.checkedAt, 183);
++  assert.equal(onlinePublish.args.persist.etag, '"etag-183"');
++  send({ kind: "ui_response", id: onlinePublish.id, ok: true, result: true });
++  const onlineCatalog = await record();
++  assert.equal(onlineCatalog.method, "provider_models_catalog");
++  assert.equal(onlineCatalog.args.models[0].name, "Fresh:committed");
++  send({ kind: "ui_response", id: onlineCatalog.id, ok: true, result: true });
++  const onlineResult = await record();
++  assert.equal(onlineResult.ok, true);
++  assert.equal(onlineResult.result.models[0].name, "Fresh");
++
++  start(objectDescriptor.__pi_callback_id, "object-183", {
++    generation: 1,
++    allowNetwork: false,
++    credential: { type: "api_key", key: "local" },
++  }, "object-refresh-production-e2e");
++  const objectPublish = await record();
++  assert.equal(objectPublish.method, "provider_models_publish");
++  assert.equal(objectPublish.args.hasPersist, false);
++  send({ kind: "ui_response", id: objectPublish.id, ok: true, result: true });
++  const objectCatalog = await record();
++  assert.equal(objectCatalog.method, "provider_models_catalog");
++  assert.equal(objectCatalog.args.models[0].id, "object-fresh");
++  send({ kind: "ui_response", id: objectCatalog.id, ok: true, result: true });
++  const objectResult = await record();
++  assert.equal(objectResult.ok, true);
++  assert.equal(objectResult.result.models[0].name, "Object Fresh");
++
++  start(descriptor.__pi_callback_id, "stale-183", {
++    generation: 3,
++    allowNetwork: false,
++    stored: { mode: "stale", models: [model("old")] },
++  });
++  const stalePublish = await record();
++  assert.equal(stalePublish.method, "provider_models_publish");
++  send({ kind: "ui_response", id: stalePublish.id, ok: true, result: false });
++  const staleResult = await record();
++  assert.equal(staleResult.ok, true);
++  assert.equal(staleResult.result.models[0].id, "stale-result");
++  const ping = await command("refresh-ping", "ping-183");
++  assert.equal(ping.ok, true);
++  assert.match(ping.result.message, /Fresh:committed/);
++
++  start(descriptor.__pi_callback_id, "abort-183", {
++    generation: 4,
++    allowNetwork: false,
++    stored: { mode: "abort", models: [] },
++  });
++  const pending = await record();
++  assert.equal(pending.method, "provider_models_publish");
++  send({ kind: "abort_current", invocationId: "abort-183", reason: "Operation aborted" });
++  const aborted = await record();
++  assert.equal(aborted.ok, false);
++  assert.match(aborted.error, /Operation aborted/);
++
++  start(descriptor.__pi_callback_id, "reject-183", {
++    generation: 5,
++    allowNetwork: false,
++    stored: { mode: "reject", models: [] },
++  });
++  const rejected = await record();
++  assert.equal(rejected.ok, false);
++  assert.match(rejected.error, /refresh-models-exploded-183/);
++  assert.match(rejected.error, /refreshModels/);
++
++  const reuse = await command("refresh-ping", "reuse-183");
++  assert.equal(reuse.ok, true);
++  send({ kind: "shutdown" });
++  assert.equal((await record()).ok, true);
++  child.stdin.end();
++  assert.equal(await new Promise((resolve) => child.once("close", resolve)), 0, stderr);
++  console.log("production provider refreshModels bridge e2e: ok");
++} finally {
++  if (child.exitCode === null) child.kill("SIGKILL");
++  rmSync(temp, { recursive: true, force: true });
++}
+diff --git a/src/auth/storage.zig b/src/auth/storage.zig
+index 10970be..9ba8d1c 100644
+--- a/src/auth/storage.zig
++++ b/src/auth/storage.zig
+@@ -341,6 +341,33 @@ pub const AuthStorage = struct {
+         return value;
+     }
+ 
++    /// Return the complete persisted credential object without projecting away
++    /// provider-defined fields. This is used by dynamic model refresh contexts;
++    /// the caller owns the returned JSON slice.
++    pub fn readCredentialJson(self: *const AuthStorage, provider_id: []const u8) !?[]u8 {
++        const file = try self.openLocked(.shared);
++        defer file.close(self.io);
++        const raw = try self.readLockedAlloc(file);
++        defer self.gpa.free(raw);
++        var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, raw, .{}) catch return error.InvalidAuthJson;
++        defer parsed.deinit();
++        if (parsed.value != .object) return error.InvalidAuthJson;
++        const value = parsed.value.object.get(provider_id) orelse return null;
++        if (value != .object) return error.InvalidCredential;
++        const type_value = value.object.get("type") orelse return error.InvalidCredential;
++        if (type_value != .string or
++            (!std.mem.eql(u8, type_value.string, "api_key") and !std.mem.eql(u8, type_value.string, "oauth")))
++            return error.InvalidCredential;
++        if (std.mem.eql(u8, type_value.string, "oauth")) try validateOAuthValue(value);
++        if (std.mem.eql(u8, type_value.string, "api_key")) {
++            if (value.object.get("key")) |key| if (key != .string and key != .null) return error.InvalidCredential;
++        }
++        var out: std.Io.Writer.Allocating = .init(self.gpa);
++        errdefer out.deinit();
++        try std.json.Stringify.value(value, .{}, &out.writer);
++        return @as(?[]u8, try out.toOwnedSlice());
++    }
++
+     /// Return the complete persisted OAuth object without dropping
+     /// extension-specific credential fields. The caller owns the JSON slice.
+     pub fn readOAuthJson(self: *const AuthStorage, provider_id: []const u8) !?[]u8 {
+diff --git a/src/extensions/js_bridge.mjs b/src/extensions/js_bridge.mjs
+index a62d721..7df7de5 100644
+--- a/src/extensions/js_bridge.mjs
++++ b/src/extensions/js_bridge.mjs
+@@ -321,6 +321,7 @@ const flagValues = new Map();
+ const eventHandlers = new Map();
+ const providers = new Map();
+ const providerSourceConfigs = new Map();
++const providerLiveConfigs = new Map();
+ const providerCallbacks = new Map();
+ const providerCallbackIds = new Map();
+ let nextProviderCallbackOrdinal = 1;
+@@ -455,6 +456,22 @@ const installProvider = (rawName, rawConfig, replace = false) => {
+   // previous registration receive live IDs instead of dangling descriptors.
+   const effective = replace ? {} : { ...(providerSourceConfigs.get(name) ?? {}) };
+   for (const [key, value] of Object.entries(rawConfig)) if (value !== undefined) effective[key] = value;
++  // Keep a live, identity-preserving provider object beside the JSON-facing
++  // shallow snapshot. Config-form refresh callbacks commonly close over and
++  // mutate their original config object inside publish.update(); cloning that
++  // object here would make the native catalog snapshot observe stale models.
++  let liveConfig;
++  if (replace) {
++    liveConfig = rawConfig;
++  } else {
++    const previousLive = providerLiveConfigs.get(name);
++    if (previousLive) {
++      for (const [key, value] of Object.entries(rawConfig)) if (value !== undefined) previousLive[key] = value;
++      liveConfig = previousLive;
++    } else {
++      liveConfig = rawConfig;
++    }
++  }
+   const encoded = encodeProviderConfig(name, effective);
+   // Fail before changing the live registration when any retained non-function
+   // value cannot cross the JSON protocol (for example BigInt).
+@@ -470,6 +487,7 @@ const installProvider = (rawName, rawConfig, replace = false) => {
+   }
+   providerCallbackIds.set(name, retainedIds);
+   providerSourceConfigs.set(name, effective);
++  providerLiveConfigs.set(name, liveConfig);
+   providers.set(name, encoded.config);
+   return encoded.config;
+ };
+@@ -584,6 +602,7 @@ const pi = {
+     const name = String(rawName);
+     providers.delete(name);
+     providerSourceConfigs.delete(name);
++    providerLiveConfigs.delete(name);
+     removeProviderCallbacks(name);
+     if (currentActions) currentActions.providers.push({ action: 'unregister', name });
+     recordAction('unregister_provider', { name });
+@@ -938,6 +957,109 @@ async function invokeProviderMethod(callbackId, args, signal = undefined, append
+   const invokeArgs = appendSignal ? [...args, signal] : args;
+   return await callback(...invokeArgs);
+ }
++const cloneProviderJson = (value, label) => {
++  if (value === undefined) return undefined;
++  let encoded;
++  try { encoded = JSON.stringify(value); }
++  catch (error) { throw new TypeError(`${label} must be JSON serializable: ${error?.message ?? String(error)}`); }
++  if (encoded === undefined) throw new TypeError(`${label} must be JSON serializable`);
++  try { return JSON.parse(encoded); }
++  catch (error) { throw new TypeError(`${label} must be valid JSON: ${error?.message ?? String(error)}`); }
++};
++const deepFreezeProviderJson = (value) => {
++  if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;
++  for (const item of Object.values(value)) deepFreezeProviderJson(item);
++  return Object.freeze(value);
++};
++const currentProviderModels = async (providerName) => {
++  const source = providerLiveConfigs.get(String(providerName));
++  if (!source) throw new Error(`unknown or unloaded provider: ${providerName}`);
++  if (typeof source.getModels === 'function') {
++    const models = await source.getModels();
++    if (!Array.isArray(models)) throw new TypeError(`provider ${providerName} getModels() must return an array`);
++    return cloneProviderJson(models, `provider ${providerName} models`);
++  }
++  if (Array.isArray(source.models)) return cloneProviderJson(source.models, `provider ${providerName} models`);
++  return undefined;
++};
++async function invokeProviderRefreshModels(callbackId, providerName, rawContext, signal) {
++  const callback = providerCallbacks.get(String(callbackId));
++  if (typeof callback !== 'function') throw new Error(`unknown or unloaded provider callback: ${callbackId}`);
++  const provider = String(providerName);
++  if (!rawContext || typeof rawContext !== 'object' || Array.isArray(rawContext)) {
++    throw new TypeError('provider refresh context must be an object');
++  }
++  const generation = Number(rawContext.generation);
++  if (!Number.isSafeInteger(generation) || generation <= 0) throw new TypeError('provider refresh generation must be a positive integer');
++  const allowNetwork = rawContext.allowNetwork === true;
++  const credential = deepFreezeProviderJson(cloneProviderJson(rawContext.credential, 'provider refresh credential'));
++  const stored = deepFreezeProviderJson(cloneProviderJson(rawContext.stored, 'provider refresh stored catalog'));
++  let publicationSequence = 0;
++  const publish = async (publication = {}) => {
++    if (!publication || typeof publication !== 'object' || Array.isArray(publication)) {
++      throw new TypeError('provider model publication must be an object');
++    }
++    signal?.throwIfAborted?.();
++    const hasPersist = Object.prototype.hasOwnProperty.call(publication, 'persist') && publication.persist !== undefined;
++    const request = {
++      provider,
++      generation,
++      sequence: ++publicationSequence,
++      hasPersist,
++    };
++    if (hasPersist) {
++      if (publication.persist !== null && (typeof publication.persist !== 'object' || Array.isArray(publication.persist))) {
++        throw new TypeError('provider model publication persist must be an object, null, or omitted');
++      }
++      request.persist = cloneProviderJson(publication.persist, 'provider model publication persist');
++    }
++    const accepted = await requestHost('provider_models_publish', request, signal);
++    if (accepted !== true) return false;
++
++    if (publication.update !== undefined) {
++      if (typeof publication.update !== 'function') throw new TypeError('provider model publication update must be a function');
++      const updateResult = publication.update();
++      if (updateResult && typeof updateResult.then === 'function') {
++        throw new TypeError('provider model publication update must execute synchronously');
++      }
++      const models = await currentProviderModels(provider);
++      if (models !== undefined) {
++        const catalogAccepted = await requestHost('provider_models_catalog', {
++          provider,
++          generation,
++          sequence: ++publicationSequence,
++          models,
++        }, signal);
++        if (catalogAccepted !== true) return false;
++      }
++    }
++    return true;
++  };
++  const context = {
++    credential,
++    stored,
++    publish,
++    allowNetwork,
++    signal,
++  };
++  if (allowNetwork && Object.prototype.hasOwnProperty.call(rawContext, 'force')) context.force = rawContext.force === true;
++  Object.freeze(context);
++
++  const returned = await callback(context);
++  let models;
++  if (Array.isArray(returned)) {
++    models = cloneProviderJson(returned, `provider ${provider} refreshModels result`);
++  } else if (returned === undefined && typeof providerLiveConfigs.get(provider)?.getModels === 'function') {
++    models = await currentProviderModels(provider);
++  } else if (returned === undefined) {
++    throw new TypeError(`provider ${provider} refreshModels() must return a model array`);
++  } else {
++    throw new TypeError(`provider ${provider} refreshModels() must return a model array`);
++  }
++  signal?.throwIfAborted?.();
++  return { models };
++}
++
+ async function invokeProviderOAuthLogin(callbackId, signal) {
+   const callback = providerCallbacks.get(String(callbackId));
+   if (typeof callback !== 'function') throw new Error(`unknown or unloaded provider callback: ${callbackId}`);
+@@ -1091,6 +1213,11 @@ const runInvocation = async (request) => {
+       writeResponse({ ok: true, result: { value: result === undefined ? null : result } });
+       return;
+     }
++    else if (request.kind === 'provider_refresh_models') {
++      result = await invokeProviderRefreshModels(request.callbackId, request.providerName, request.refreshContext ?? {}, abortController?.signal);
++      writeResponse({ ok: true, result });
++      return;
++    }
+     else if (request.kind === 'command') result = await invokeCommand(request.name, request.rawArguments ?? '', actions);
+     else if (request.kind === 'shortcut') result = await invokeShortcut(request.name, actions);
+     else if (request.kind.startsWith('render_') || request.kind === 'transform_markdown' || request.kind === 'prepare_tool_arguments') {
+diff --git a/src/extensions/js_runtime.zig b/src/extensions/js_runtime.zig
+index 3b8c097..d582317 100644
+--- a/src/extensions/js_runtime.zig
++++ b/src/extensions/js_runtime.zig
+@@ -40,6 +40,9 @@ pub const Runtime = struct {
+     /// OAuth login includes human browser/device interaction and must not inherit
+     /// the short ordinary extension callback deadline. Zero disables this bound.
+     oauth_login_timeout_ms: u64 = 15 * 60 * 1000,
++    /// Dynamic catalog refresh is caller-bounded through its AbortSignal. Zero
++    /// preserves upstream's unbounded default when the public caller supplies no deadline.
++    models_refresh_timeout_ms: u64 = 0,
+     closed: bool = false,
+     last_error: ?[]u8 = null,
+     ui_bridge: ?UiBridge = null,
+@@ -340,6 +343,53 @@ pub const Runtime = struct {
+         return self.exchangeWithUpdatesUnlocked(request.written(), invocation_id, abort_flag, null, null);
+     }
+ 
++    /// Invoke an extension-defined `refreshModels(context)` callback with a
++    /// dedicated host bridge for generation-checked `context.publish()` calls.
++    /// The worker returns `{"models":[...]}` after validating JSON safety and
++    /// preserving the callback's live AbortSignal.
++    pub fn invokeProviderRefreshModels(
++        self: *Runtime,
++        callback_id: []const u8,
++        provider_name: []const u8,
++        refresh_context_json: []const u8,
++        abort_flag: ?*bool,
++        bridge: UiBridge,
++    ) ![]u8 {
++        if (callback_id.len == 0 or callback_id.len > 4096) return error.InvalidProviderCallbackId;
++        if (provider_name.len == 0 or provider_name.len > 4096) return error.InvalidExtensionProviderName;
++        try validateObjectJson(self.gpa, refresh_context_json);
++
++        self.mutex.lockUncancelable(self.io);
++        defer self.mutex.unlock(self.io);
++        if (self.closed) return error.JavaScriptExtensionClosed;
++        const previous_bridge = self.ui_bridge;
++        self.ui_bridge = bridge;
++        defer self.ui_bridge = previous_bridge;
++        const previous_timeout = self.timeout_ms;
++        self.timeout_ms = self.models_refresh_timeout_ms;
++        defer self.timeout_ms = previous_timeout;
++
++        var request: std.Io.Writer.Allocating = .init(self.gpa);
++        defer request.deinit();
++        try request.writer.writeAll("{\"kind\":\"provider_refresh_models\",\"callbackId\":");
++        try std.json.Stringify.value(callback_id, .{}, &request.writer);
++        try request.writer.writeAll(",\"providerName\":");
++        try std.json.Stringify.value(provider_name, .{}, &request.writer);
++        try request.writer.writeAll(",\"refreshContext\":");
++        try request.writer.writeAll(refresh_context_json);
++
++        const invocation_id = self.next_invocation_id;
++        self.next_invocation_id +%= 1;
++        if (self.next_invocation_id == 0) self.next_invocation_id = 1;
++        try request.writer.print(",\"invocationId\":\"{d}\",\"abortable\":true", .{invocation_id});
++        if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire))
++            try request.writer.writeAll(",\"aborted\":true");
++        try request.writer.writeAll(",\"context\":");
++        try self.writeContext(&request.writer);
++        try request.writer.writeByte('}');
++        return self.exchangeWithUpdatesUnlocked(request.written(), invocation_id, abort_flag, null, null);
++    }
++
+     /// Invoke a pure extension renderer or markdown transformer. The bridge
+     /// returns an owned object such as `{"found":true,"lines":[...]}`.
+     /// Renderer calls share the persistent worker, so tool renderer state and
+diff --git a/src/extensions/models_store.zig b/src/extensions/models_store.zig
+new file mode 100644
+index 0000000..b2ab0a8
+--- /dev/null
++++ b/src/extensions/models_store.zig
+@@ -0,0 +1,262 @@
++//! Locked, atomic persistence for extension-owned dynamic model catalogs.
++//!
++//! The file format is upstream-compatible `models-store.json`: a JSON object
++//! keyed by provider ID whose values are `ModelsStoreEntry` objects. A sidecar
++//! advisory lock survives atomic replacement of the data file, so cooperating
++//! readers and writers never observe a torn read/modify/write transaction.
++const std = @import("std");
++const Io = std.Io;
++
++const max_store_bytes: usize = 16 * 1024 * 1024;
++
++fn ensureNotAborted(abort_flag: ?*const bool) !void {
++    if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) return error.Canceled;
++}
++
++fn permissions0600() std.Io.File.Permissions {
++    if (@hasDecl(std.Io.File.Permissions, "fromMode")) return std.Io.File.Permissions.fromMode(0o600);
++    return .default_file;
++}
++
++fn validateTimestamp(value: std.json.Value) !void {
++    switch (value) {
++        .integer, .float => {},
++        else => return error.InvalidModelsStoreEntry,
++    }
++}
++
++/// Validate the storage envelope. Model-specific semantic validation is also
++/// performed by provider_registry against the effective provider config before
++/// a write or catalog publication is accepted.
++pub fn validateEntryValue(value: std.json.Value) !void {
++    if (value != .object) return error.InvalidModelsStoreEntry;
++    const models = value.object.get("models") orelse return error.InvalidModelsStoreEntry;
++    if (models != .array) return error.InvalidModelsStoreEntry;
++    for (models.array.items) |model| if (model != .object) return error.InvalidModelsStoreEntry;
++    if (value.object.get("lastModified")) |timestamp| try validateTimestamp(timestamp);
++    if (value.object.get("checkedAt")) |timestamp| try validateTimestamp(timestamp);
++    if (value.object.get("etag")) |etag| if (etag != .string) return error.InvalidModelsStoreEntry;
++}
++
++pub fn validateEntryJson(gpa: std.mem.Allocator, raw: []const u8) !void {
++    var parsed = std.json.parseFromSlice(std.json.Value, gpa, raw, .{}) catch return error.InvalidModelsStoreEntry;
++    defer parsed.deinit();
++    try validateEntryValue(parsed.value);
++}
++
++pub const Store = struct {
++    gpa: std.mem.Allocator,
++    io: Io,
++    path: []u8,
++    lock_path: []u8,
++
++    pub fn init(gpa: std.mem.Allocator, io: Io, agent_dir: []const u8) !Store {
++        const path = try std.fs.path.join(gpa, &.{ agent_dir, "models-store.json" });
++        errdefer gpa.free(path);
++        const lock_path = try std.fmt.allocPrint(gpa, "{s}.lock", .{path});
++        return .{ .gpa = gpa, .io = io, .path = path, .lock_path = lock_path };
++    }
++
++    pub fn initPath(gpa: std.mem.Allocator, io: Io, owned_path: []u8) !Store {
++        const lock_path = try std.fmt.allocPrint(gpa, "{s}.lock", .{owned_path});
++        return .{ .gpa = gpa, .io = io, .path = owned_path, .lock_path = lock_path };
++    }
++
++    pub fn deinit(self: *Store) void {
++        self.gpa.free(self.path);
++        self.gpa.free(self.lock_path);
++        self.* = undefined;
++    }
++
++    fn ensureParent(self: *const Store) !void {
++        if (std.fs.path.dirname(self.path)) |parent| try std.Io.Dir.cwd().createDirPath(self.io, parent);
++    }
++
++    fn openLock(self: *const Store, lock: std.Io.File.Lock) !std.Io.File {
++        try self.ensureParent();
++        const file = try std.Io.Dir.cwd().createFile(self.io, self.lock_path, .{
++            .read = true,
++            .truncate = false,
++            .lock = lock,
++            .permissions = permissions0600(),
++        });
++        file.setPermissions(self.io, permissions0600()) catch {};
++        return file;
++    }
++
++    fn readRootAlloc(self: *const Store) !?[]u8 {
++        const file = std.Io.Dir.cwd().openFile(self.io, self.path, .{ .mode = .read_only }) catch |err| switch (err) {
++            error.FileNotFound => return null,
++            else => return err,
++        };
++        defer file.close(self.io);
++        const len64 = try file.length(self.io);
++        if (len64 > max_store_bytes) return error.ModelsStoreTooLarge;
++        const len: usize = @intCast(len64);
++        const raw = try self.gpa.alloc(u8, len);
++        errdefer self.gpa.free(raw);
++        if (len > 0) {
++            const got = try file.readPositionalAll(self.io, raw, 0);
++            if (got != len) return error.UnexpectedEndOfFile;
++        }
++        return raw;
++    }
++
++    fn parseRoot(self: *const Store, raw: ?[]const u8) !std.json.Parsed(std.json.Value) {
++        const input = if (raw) |value| if (value.len == 0) "{}" else value else "{}";
++        var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, input, .{}) catch return error.InvalidModelsStore;
++        errdefer parsed.deinit();
++        if (parsed.value != .object) return error.InvalidModelsStore;
++        return parsed;
++    }
++
++    fn writeAtomic(self: *const Store, raw: []const u8, abort_flag: ?*const bool) !void {
++        if (raw.len > max_store_bytes) return error.ModelsStoreTooLarge;
++        try ensureNotAborted(abort_flag);
++        var atomic = try std.Io.Dir.cwd().createFileAtomic(self.io, self.path, .{
++            .permissions = permissions0600(),
++            .make_path = true,
++            .replace = true,
++        });
++        defer atomic.deinit(self.io);
++        try atomic.file.writePositionalAll(self.io, raw, 0);
++        atomic.file.setPermissions(self.io, permissions0600()) catch {};
++        try atomic.file.sync(self.io);
++        // A canceled generation may prepare a temporary file, but it must never
++        // make that file authoritative after cancellation becomes observable.
++        try ensureNotAborted(abort_flag);
++        try atomic.replace(self.io);
++    }
++
++    fn composeRoot(
++        self: *const Store,
++        root: std.json.Value,
++        provider_id: []const u8,
++        replacement_json: ?[]const u8,
++    ) ![]u8 {
++        var out: std.Io.Writer.Allocating = .init(self.gpa);
++        errdefer out.deinit();
++        try out.writer.writeByte('{');
++        var first = true;
++        var iterator = root.object.iterator();
++        while (iterator.next()) |entry| {
++            if (std.mem.eql(u8, entry.key_ptr.*, provider_id)) continue;
++            if (!first) try out.writer.writeByte(',');
++            first = false;
++            try std.json.Stringify.value(entry.key_ptr.*, .{}, &out.writer);
++            try out.writer.writeByte(':');
++            try std.json.Stringify.value(entry.value_ptr.*, .{}, &out.writer);
++        }
++        if (replacement_json) |replacement| {
++            if (!first) try out.writer.writeByte(',');
++            try std.json.Stringify.value(provider_id, .{}, &out.writer);
++            try out.writer.writeByte(':');
++            try out.writer.writeAll(replacement);
++        }
++        try out.writer.writeAll("}\n");
++        return out.toOwnedSlice();
++    }
++
++    /// Return an owned immutable-snapshot JSON object for one provider.
++    pub fn read(self: *const Store, provider_id: []const u8) !?[]u8 {
++        const lock = try self.openLock(.shared);
++        defer lock.close(self.io);
++        const raw = (try self.readRootAlloc()) orelse return null;
++        defer self.gpa.free(raw);
++        var parsed = try self.parseRoot(raw);
++        defer parsed.deinit();
++        const value = parsed.value.object.get(provider_id) orelse return null;
++        try validateEntryValue(value);
++        var out: std.Io.Writer.Allocating = .init(self.gpa);
++        errdefer out.deinit();
++        try std.json.Stringify.value(value, .{}, &out.writer);
++        return @as(?[]u8, try out.toOwnedSlice());
++    }
++
++    /// Atomically replace one provider entry while preserving unrelated providers.
++    pub fn write(self: *const Store, provider_id: []const u8, entry_json: []const u8) !void {
++        return self.writeAbortable(provider_id, entry_json, null);
++    }
++
++    pub fn writeAbortable(
++        self: *const Store,
++        provider_id: []const u8,
++        entry_json: []const u8,
++        abort_flag: ?*const bool,
++    ) !void {
++        try ensureNotAborted(abort_flag);
++        try validateEntryJson(self.gpa, entry_json);
++        const lock = try self.openLock(.exclusive);
++        defer lock.close(self.io);
++        try ensureNotAborted(abort_flag);
++        const raw = try self.readRootAlloc();
++        defer if (raw) |value| self.gpa.free(value);
++        var parsed = try self.parseRoot(raw);
++        defer parsed.deinit();
++        const next = try self.composeRoot(parsed.value, provider_id, entry_json);
++        defer self.gpa.free(next);
++        try self.writeAtomic(next, abort_flag);
++    }
++
++    /// Atomically delete one provider entry. Missing entries leave the file untouched.
++    pub fn delete(self: *const Store, provider_id: []const u8) !void {
++        return self.deleteAbortable(provider_id, null);
++    }
++
++    pub fn deleteAbortable(self: *const Store, provider_id: []const u8, abort_flag: ?*const bool) !void {
++        try ensureNotAborted(abort_flag);
++        const lock = try self.openLock(.exclusive);
++        defer lock.close(self.io);
++        try ensureNotAborted(abort_flag);
++        const raw = (try self.readRootAlloc()) orelse return;
++        defer self.gpa.free(raw);
++        var parsed = try self.parseRoot(raw);
++        defer parsed.deinit();
++        if (parsed.value.object.get(provider_id) == null) return;
++        const next = try self.composeRoot(parsed.value, provider_id, null);
++        defer self.gpa.free(next);
++        try self.writeAtomic(next, abort_flag);
++    }
++};
++
++test "extension models store writes deletes and preserves unrelated entries atomically" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    var root_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &root_buf);
++    const path = try std.fs.path.join(gpa, &.{ root_buf[0..root_len], "models-store.json" });
++    var store = try Store.initPath(gpa, io, path);
++    defer store.deinit();
++
++    try store.write("other", "{\"models\":[],\"checkedAt\":1}");
++    try store.write("dynamic", "{\"models\":[{\"id\":\"one\"}],\"etag\":\"\\\"v1\\\"\"}");
++    const entry = (try store.read("dynamic")).?;
++    defer gpa.free(entry);
++    try std.testing.expect(std.mem.indexOf(u8, entry, "\\\"v1\\\"") != null);
++    try store.delete("dynamic");
++    try std.testing.expect((try store.read("dynamic")) == null);
++    const other = (try store.read("other")).?;
++    defer gpa.free(other);
++    try std.testing.expect(std.mem.indexOf(u8, other, "\"checkedAt\":1") != null);
++}
++
++test "extension models store rejects invalid entry without replacing committed data" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    var root_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &root_buf);
++    var store = try Store.init(gpa, io, root_buf[0..root_len]);
++    defer store.deinit();
++    try store.write("dynamic", "{\"models\":[],\"checkedAt\":7}");
++    try std.testing.expectError(error.InvalidModelsStoreEntry, store.write("dynamic", "{\"models\":{}}"));
++    var canceled = true;
++    try std.testing.expectError(error.Canceled, store.writeAbortable("dynamic", "{\"models\":[],\"checkedAt\":8}", &canceled));
++    try std.testing.expectError(error.Canceled, store.deleteAbortable("dynamic", &canceled));
++    const entry = (try store.read("dynamic")).?;
++    defer gpa.free(entry);
++    try std.testing.expect(std.mem.indexOf(u8, entry, "\"checkedAt\":7") != null);
++}
+diff --git a/src/extensions/provider_models.zig b/src/extensions/provider_models.zig
+new file mode 100644
+index 0000000..5a05d86
+--- /dev/null
++++ b/src/extensions/provider_models.zig
+@@ -0,0 +1,992 @@
++//! Generation-safe dynamic model refresh for extension-defined providers.
++//!
++//! Each provider owns an independent generation and publication lock. A newer
++//! refresh aborts the previous invocation; persistence and catalog publication
++//! re-check the generation while holding that same lock, so stale callbacks
++//! cannot mutate `models-store.json` or the live registry. JavaScript executes
++//! provider-private `publication.update` only after native persistence commits.
++const std = @import("std");
++const Io = std.Io;
++const live_state = @import("../coding_agent/live_state.zig");
++const js_runtime = @import("js_runtime.zig");
++const models_store = @import("models_store.zig");
++const provider_oauth = @import("provider_oauth.zig");
++const provider_registry = @import("provider_registry.zig");
++
++const max_safe_generation: u64 = 9_007_199_254_740_991;
++
++fn aborted(flag: ?*const bool) bool {
++    return if (flag) |value| @atomicLoad(bool, value, .acquire) else false;
++}
++
++fn setAborted(flag: ?*bool) void {
++    if (flag) |value| @atomicStore(bool, value, true, .release);
++}
++
++fn ensureActive(flag: ?*const bool) !void {
++    if (aborted(flag)) return error.Canceled;
++}
++
++const ProviderState = struct {
++    gpa: std.mem.Allocator,
++    name: []u8,
++    mutex: Io.Mutex = .init,
++    generation: u64 = 0,
++    active_abort: ?*bool = null,
++    registered: bool = true,
++    last_error: ?[]u8 = null,
++
++    fn deinit(self: *ProviderState) void {
++        setAborted(self.active_abort);
++        if (self.last_error) |message| self.gpa.free(message);
++        self.gpa.free(self.name);
++        const gpa = self.gpa;
++        self.* = undefined;
++        gpa.destroy(self);
++    }
++
++    fn nextGeneration(self: *ProviderState) u64 {
++        self.generation = if (self.generation >= max_safe_generation) 1 else self.generation + 1;
++        return self.generation;
++    }
++
++    fn setError(self: *ProviderState, message: []const u8) !void {
++        const owned = try self.gpa.dupe(u8, message);
++        if (self.last_error) |previous| self.gpa.free(previous);
++        self.last_error = owned;
++    }
++
++    fn clearError(self: *ProviderState) void {
++        if (self.last_error) |previous| self.gpa.free(previous);
++        self.last_error = null;
++    }
++};
++
++pub const RefreshOptions = struct {
++    allow_network: bool = true,
++    force: ?bool = null,
++    providers: ?[]const []const u8 = null,
++    abort_flag: ?*bool = null,
++};
++
++pub const RefreshError = struct {
++    provider_id: []u8,
++    message: []u8,
++
++    fn deinit(self: *RefreshError, gpa: std.mem.Allocator) void {
++        gpa.free(self.provider_id);
++        gpa.free(self.message);
++        self.* = undefined;
++    }
++};
++
++pub const RefreshResult = struct {
++    gpa: std.mem.Allocator,
++    aborted: bool,
++    errors: []RefreshError,
++
++    pub fn deinit(self: *RefreshResult) void {
++        for (self.errors) |*entry| entry.deinit(self.gpa);
++        if (self.errors.len > 0) self.gpa.free(self.errors);
++        self.* = undefined;
++    }
++};
++
++/// Allocation-bearing reload preparation. Once this succeeds, committing the
++/// replacement registry is infallible and cannot strand the reload after its
++/// old resources have been moved out of the stable stack locations.
++pub const RegistryPreparation = struct {
++    gpa: std.mem.Allocator,
++    names: [][]u8,
++
++    pub fn deinit(self: *RegistryPreparation) void {
++        for (self.names) |name| self.gpa.free(name);
++        if (self.names.len > 0) self.gpa.free(self.names);
++        self.* = undefined;
++    }
++};
++
++const PublishContext = struct {
++    runtime: *Runtime,
++    state: *ProviderState,
++    provider_id: []const u8,
++    generation: u64,
++    abort_flag: *bool,
++    last_sequence: u64 = 0,
++};
++
++pub const Runtime = struct {
++    gpa: std.mem.Allocator,
++    io: Io,
++    agent_dir: ?[]const u8,
++    registry: *provider_registry.Registry,
++    oauth: *provider_oauth.Runtime,
++    store: ?models_store.Store = null,
++    memory_entries: std.StringHashMap([]u8),
++    memory_mutex: Io.Mutex = .init,
++    /// Registry publication is globally serialized because separate extension
++    /// workers may refresh concurrently while Registry snapshots are replaced.
++    refresh_mutex: Io.Mutex = .init,
++    states: std.StringHashMap(*ProviderState),
++    states_mutex: Io.Mutex = .init,
++    client_pool: ?*live_state.ClientPool = null,
++    live: ?*live_state.LiveState = null,
++
++    pub fn init(
++        gpa: std.mem.Allocator,
++        io: Io,
++        agent_dir: ?[]const u8,
++        registry: *provider_registry.Registry,
++        oauth: *provider_oauth.Runtime,
++    ) !Runtime {
++        return .{
++            .gpa = gpa,
++            .io = io,
++            .agent_dir = agent_dir,
++            .registry = registry,
++            .oauth = oauth,
++            .store = if (agent_dir) |root| try models_store.Store.init(gpa, io, root) else null,
++            .memory_entries = std.StringHashMap([]u8).init(gpa),
++            .states = std.StringHashMap(*ProviderState).init(gpa),
++        };
++    }
++
++    pub fn deinit(self: *Runtime) void {
++        self.supersedeAll();
++        var iterator = self.states.iterator();
++        while (iterator.next()) |entry| entry.value_ptr.*.deinit();
++        self.states.deinit();
++        var memory_iterator = self.memory_entries.iterator();
++        while (memory_iterator.next()) |entry| {
++            self.gpa.free(entry.key_ptr.*);
++            self.gpa.free(entry.value_ptr.*);
++        }
++        self.memory_entries.deinit();
++        if (self.store) |*store| store.deinit();
++        self.* = undefined;
++    }
++
++    pub fn bindClientPool(self: *Runtime, pool: *live_state.ClientPool) void {
++        self.client_pool = pool;
++    }
++
++    pub fn bindLiveState(self: *Runtime, live: *live_state.LiveState) void {
++        self.live = live;
++    }
++
++    /// Abort every active generation before an extension reload swaps workers or
++    /// callback ownership. Persisted catalogs intentionally survive reload.
++    pub fn supersedeAll(self: *Runtime) void {
++        self.states_mutex.lockUncancelable(self.io);
++        defer self.states_mutex.unlock(self.io);
++        var iterator = self.states.iterator();
++        while (iterator.next()) |entry| {
++            const state = entry.value_ptr.*;
++            state.mutex.lockUncancelable(self.io);
++            setAborted(state.active_abort);
++            state.active_abort = null;
++            _ = state.nextGeneration();
++            state.mutex.unlock(self.io);
++        }
++    }
++
++    /// Allocate provider names and any new stable state objects before reload
++    /// ownership moves. `commitPreparedRegistry` then performs no allocation.
++    pub fn prepareRegistry(self: *Runtime, registry: *const provider_registry.Registry) !RegistryPreparation {
++        const names = try registry.refreshProviderNames(self.gpa);
++        errdefer {
++            for (names) |name| self.gpa.free(name);
++            if (names.len > 0) self.gpa.free(names);
++        }
++        self.states_mutex.lockUncancelable(self.io);
++        defer self.states_mutex.unlock(self.io);
++        for (names) |name| _ = try self.getOrCreateStateLocked(name);
++        return .{ .gpa = self.gpa, .names = names };
++    }
++
++    /// Commit a registry prepared before the reload ownership boundary. Active
++    /// generations are aborted and fully unwound before the pointer changes.
++    pub fn commitPreparedRegistry(
++        self: *Runtime,
++        registry: *provider_registry.Registry,
++        preparation: *const RegistryPreparation,
++    ) void {
++        self.supersedeAll();
++        self.refresh_mutex.lockUncancelable(self.io);
++        defer self.refresh_mutex.unlock(self.io);
++        self.registry = registry;
++        self.oauth.registry = registry;
++        self.states_mutex.lockUncancelable(self.io);
++        defer self.states_mutex.unlock(self.io);
++        self.applyRegistrationNamesLocked(preparation.names);
++    }
++
++    /// Repoint the coordinator after a transactional registry reload. Existing
++    /// state objects remain stable, while removed providers are superseded and
++    /// newly dynamic providers become refreshable.
++    pub fn setRegistry(self: *Runtime, registry: *provider_registry.Registry) !void {
++        self.supersedeAll();
++        // Wait until any invocation that observed the previous registry has
++        // unwound before replacing callback ownership and snapshots.
++        self.refresh_mutex.lockUncancelable(self.io);
++        defer self.refresh_mutex.unlock(self.io);
++        self.registry = registry;
++        self.oauth.registry = registry;
++        try self.synchronizeRegistrationsLocked();
++    }
++
++    pub fn synchronizeRegistrations(self: *Runtime) !void {
++        self.refresh_mutex.lockUncancelable(self.io);
++        defer self.refresh_mutex.unlock(self.io);
++        return self.synchronizeRegistrationsLocked();
++    }
++
++    fn synchronizeRegistrationsLocked(self: *Runtime) !void {
++        self.states_mutex.lockUncancelable(self.io);
++        defer self.states_mutex.unlock(self.io);
++        const names = try self.registry.refreshProviderNames(self.gpa);
++        defer {
++            for (names) |name| self.gpa.free(name);
++            if (names.len > 0) self.gpa.free(names);
++        }
++        for (names) |name| _ = try self.getOrCreateStateLocked(name);
++        self.applyRegistrationNamesLocked(names);
++    }
++
++    fn applyRegistrationNamesLocked(self: *Runtime, names: []const []const u8) void {
++        var iterator = self.states.iterator();
++        while (iterator.next()) |entry| entry.value_ptr.*.registered = false;
++        for (names) |name| self.states.get(name).?.registered = true;
++        iterator = self.states.iterator();
++        while (iterator.next()) |entry| {
++            const state = entry.value_ptr.*;
++            if (state.registered) continue;
++            state.mutex.lockUncancelable(self.io);
++            setAborted(state.active_abort);
++            state.active_abort = null;
++            _ = state.nextGeneration();
++            state.mutex.unlock(self.io);
++        }
++    }
++
++    pub fn registerProvider(self: *Runtime, provider_id: []const u8, abort_flag: ?*bool) !RefreshResult {
++        try self.synchronizeRegistrations();
++        const selected = [_][]const u8{provider_id};
++        return self.refresh(.{ .allow_network = false, .providers = &selected, .abort_flag = abort_flag });
++    }
++
++    /// Explicit unregister removes provider-owned persisted catalog state. A
++    /// reload uses `setRegistry` instead and therefore preserves cache entries.
++    pub fn unregisterProvider(self: *Runtime, provider_id: []const u8) !void {
++        const state = try self.getOrCreateState(provider_id);
++        state.mutex.lockUncancelable(self.io);
++        defer state.mutex.unlock(self.io);
++        setAborted(state.active_abort);
++        state.active_abort = null;
++        state.registered = false;
++        _ = state.nextGeneration();
++        try self.deleteStored(provider_id, null);
++    }
++
++    pub fn lastError(self: *Runtime, provider_id: []const u8) ?[]const u8 {
++        self.states_mutex.lockUncancelable(self.io);
++        defer self.states_mutex.unlock(self.io);
++        const state = self.states.get(provider_id) orelse return null;
++        return state.last_error;
++    }
++
++    pub fn refresh(self: *Runtime, options: RefreshOptions) !RefreshResult {
++        try self.synchronizeRegistrations();
++        var errors: std.ArrayList(RefreshError) = .empty;
++        errdefer {
++            for (errors.items) |*entry| entry.deinit(self.gpa);
++            errors.deinit(self.gpa);
++        }
++        if (aborted(options.abort_flag)) return .{
++            .gpa = self.gpa,
++            .aborted = true,
++            .errors = try self.gpa.alloc(RefreshError, 0),
++        };
++
++        self.refresh_mutex.lockUncancelable(self.io);
++        const names = self.registry.refreshProviderNames(self.gpa) catch |err| {
++            self.refresh_mutex.unlock(self.io);
++            return err;
++        };
++        self.refresh_mutex.unlock(self.io);
++        defer {
++            for (names) |name| self.gpa.free(name);
++            if (names.len > 0) self.gpa.free(names);
++        }
++        for (names) |provider_id| {
++            if (!isSelected(provider_id, options.providers)) continue;
++            self.refreshOne(provider_id, options) catch |err| {
++                if (err == error.Canceled or err == error.StaleProviderRefresh or aborted(options.abort_flag)) break;
++                const state = try self.getOrCreateState(provider_id);
++                const detail = self.registry.providerMethodLastError(provider_id, "refreshModels") orelse @errorName(err);
++                state.mutex.lockUncancelable(self.io);
++                state.setError(detail) catch {};
++                state.mutex.unlock(self.io);
++                try errors.append(self.gpa, .{
++                    .provider_id = try self.gpa.dupe(u8, provider_id),
++                    .message = try self.gpa.dupe(u8, detail),
++                });
++            };
++        }
++        return .{
++            .gpa = self.gpa,
++            .aborted = aborted(options.abort_flag),
++            .errors = try errors.toOwnedSlice(self.gpa),
++        };
++    }
++
++    fn refreshOne(self: *Runtime, provider_id: []const u8, options: RefreshOptions) !void {
++        const state = try self.getOrCreateState(provider_id);
++        var invocation_abort = false;
++        const generation = self.begin(state, &invocation_abort);
++        defer self.finish(state, generation, &invocation_abort);
++
++        var mirror_done = false;
++        var mirror_group: Io.Group = .init;
++        const mirrors_caller = options.abort_flag != null;
++        if (options.abort_flag) |caller| {
++            if (aborted(caller)) @atomicStore(bool, &invocation_abort, true, .release);
++            mirror_group.async(self.io, mirrorAbortTask, .{ self.io, caller, &invocation_abort, &mirror_done });
++        }
++        defer if (mirrors_caller) {
++            @atomicStore(bool, &mirror_done, true, .release);
++            mirror_group.cancel(self.io);
++            mirror_group.await(self.io) catch {};
++        };
++
++        // All Registry reads and transactional snapshot replacements run under
++        // one coordinator lock. A newer same-provider generation is started
++        // before waiting here, so it still aborts and collapses the older call.
++        self.refresh_mutex.lockUncancelable(self.io);
++        defer self.refresh_mutex.unlock(self.io);
++        try ensureActive(&invocation_abort);
++
++        var credential_error: ?anyerror = null;
++        const now_ms = std.Io.Clock.real.now(self.io).toMilliseconds();
++        const offline_credential = self.oauth.credentialForModelRefresh(self.gpa, provider_id, now_ms, false, &invocation_abort) catch |err| blk: {
++            credential_error = err;
++            break :blk null;
++        };
++        defer if (offline_credential) |value| self.gpa.free(value);
++        try self.runPhase(state, generation, &invocation_abort, provider_id, offline_credential, false, null);
++        if (credential_error) |err| return err;
++        try ensureActive(&invocation_abort);
++        if (!options.allow_network) {
++            state.mutex.lockUncancelable(self.io);
++            state.clearError();
++            state.mutex.unlock(self.io);
++            return;
++        }
++
++        const online_credential = try self.oauth.credentialForModelRefresh(self.gpa, provider_id, now_ms, true, &invocation_abort);
++        defer if (online_credential) |value| self.gpa.free(value);
++        if (online_credential == null) {
++            state.mutex.lockUncancelable(self.io);
++            state.clearError();
++            state.mutex.unlock(self.io);
++            return;
++        }
++        try self.runPhase(state, generation, &invocation_abort, provider_id, online_credential, true, options.force);
++        state.mutex.lockUncancelable(self.io);
++        state.clearError();
++        state.mutex.unlock(self.io);
++    }
++
++    fn runPhase(
++        self: *Runtime,
++        state: *ProviderState,
++        generation: u64,
++        invocation_abort: *bool,
++        provider_id: []const u8,
++        credential_json: ?[]const u8,
++        allow_network: bool,
++        force: ?bool,
++    ) !void {
++        try ensureActive(invocation_abort);
++        const stored_json = try self.readStored(provider_id);
++        defer if (stored_json) |value| self.gpa.free(value);
++        const context_json = try self.buildContextJson(generation, credential_json, stored_json, allow_network, force);
++        defer self.gpa.free(context_json);
++        var publish_context = PublishContext{
++            .runtime = self,
++            .state = state,
++            .provider_id = provider_id,
++            .generation = generation,
++            .abort_flag = invocation_abort,
++        };
++        const models_json = try self.registry.refreshModels(provider_id, context_json, invocation_abort, .{
++            .context = &publish_context,
++            .request_fn = publishRequest,
++            .action_fn = publishAction,
++        });
++        defer self.gpa.free(models_json);
++        if (!(try self.commitModels(state, generation, invocation_abort, provider_id, models_json))) return error.StaleProviderRefresh;
++
++        // Legacy OAuth projection executes only after the worker invocation has
++        // released its mutex, avoiding recursive entry into the same worker.
++        if (credential_json) |credential| {
++            state.mutex.lockUncancelable(self.io);
++            defer state.mutex.unlock(self.io);
++            if (!self.isCurrentLocked(state, generation, invocation_abort)) return error.StaleProviderRefresh;
++            try self.oauth.applyModelsForCredential(provider_id, credential, invocation_abort);
++            self.publishSnapshots();
++        }
++    }
++
++    fn buildContextJson(
++        self: *Runtime,
++        generation: u64,
++        credential_json: ?[]const u8,
++        stored_json: ?[]const u8,
++        allow_network: bool,
++        force: ?bool,
++    ) ![]u8 {
++        var out: std.Io.Writer.Allocating = .init(self.gpa);
++        errdefer out.deinit();
++        try out.writer.print("{{\"generation\":{d},\"allowNetwork\":{s}", .{ generation, if (allow_network) "true" else "false" });
++        if (credential_json) |credential| {
++            try out.writer.writeAll(",\"credential\":");
++            try out.writer.writeAll(credential);
++        }
++        if (stored_json) |stored| {
++            try out.writer.writeAll(",\"stored\":");
++            try out.writer.writeAll(stored);
++        }
++        if (allow_network and force != null) try out.writer.print(",\"force\":{s}", .{if (force.?) "true" else "false"});
++        try out.writer.writeByte('}');
++        return out.toOwnedSlice();
++    }
++
++    fn begin(self: *Runtime, state: *ProviderState, invocation_abort: *bool) u64 {
++        state.mutex.lockUncancelable(self.io);
++        defer state.mutex.unlock(self.io);
++        setAborted(state.active_abort);
++        const generation = state.nextGeneration();
++        state.active_abort = invocation_abort;
++        return generation;
++    }
++
++    fn finish(self: *Runtime, state: *ProviderState, generation: u64, invocation_abort: *bool) void {
++        state.mutex.lockUncancelable(self.io);
++        defer state.mutex.unlock(self.io);
++        if (state.generation == generation and state.active_abort == invocation_abort) state.active_abort = null;
++    }
++
++    fn isCurrentLocked(self: *Runtime, state: *const ProviderState, generation: u64, invocation_abort: *const bool) bool {
++        _ = self;
++        return state.registered and state.generation == generation and state.active_abort == invocation_abort and !aborted(invocation_abort);
++    }
++
++    fn commitModels(
++        self: *Runtime,
++        state: *ProviderState,
++        generation: u64,
++        invocation_abort: *bool,
++        provider_id: []const u8,
++        models_json: []const u8,
++    ) !bool {
++        state.mutex.lockUncancelable(self.io);
++        defer state.mutex.unlock(self.io);
++        if (!self.isCurrentLocked(state, generation, invocation_abort)) return false;
++        try self.registry.validateDynamicModels(provider_id, models_json);
++        if (!self.isCurrentLocked(state, generation, invocation_abort)) return false;
++        try self.registry.applyDynamicModels(provider_id, models_json);
++        self.publishSnapshots();
++        return true;
++    }
++
++    fn publishSnapshots(self: *Runtime) void {
++        if (self.client_pool) |pool| pool.setRuntimeProviders(self.registry.runtimes());
++        if (self.live) |state| state.model_catalog = self.registry.catalog();
++    }
++
++    fn readStored(self: *Runtime, provider_id: []const u8) !?[]u8 {
++        if (self.store) |*store| return store.read(provider_id);
++        self.memory_mutex.lockUncancelable(self.io);
++        defer self.memory_mutex.unlock(self.io);
++        const entry = self.memory_entries.get(provider_id) orelse return null;
++        return @as(?[]u8, try self.gpa.dupe(u8, entry));
++    }
++
++    fn writeStored(
++        self: *Runtime,
++        provider_id: []const u8,
++        entry_json: []const u8,
++        abort_flag: ?*const bool,
++    ) !void {
++        try ensureActive(abort_flag);
++        try models_store.validateEntryJson(self.gpa, entry_json);
++        if (self.store) |*store| return store.writeAbortable(provider_id, entry_json, abort_flag);
++        const owned = try self.gpa.dupe(u8, entry_json);
++        errdefer self.gpa.free(owned);
++        self.memory_mutex.lockUncancelable(self.io);
++        defer self.memory_mutex.unlock(self.io);
++        try ensureActive(abort_flag);
++        if (self.memory_entries.getPtr(provider_id)) |existing| {
++            self.gpa.free(existing.*);
++            existing.* = owned;
++            return;
++        }
++        const key = try self.gpa.dupe(u8, provider_id);
++        errdefer self.gpa.free(key);
++        try self.memory_entries.put(key, owned);
++    }
++
++    fn deleteStored(self: *Runtime, provider_id: []const u8, abort_flag: ?*const bool) !void {
++        try ensureActive(abort_flag);
++        if (self.store) |*store| return store.deleteAbortable(provider_id, abort_flag);
++        self.memory_mutex.lockUncancelable(self.io);
++        defer self.memory_mutex.unlock(self.io);
++        try ensureActive(abort_flag);
++        if (self.memory_entries.fetchRemove(provider_id)) |removed| {
++            self.gpa.free(removed.key);
++            self.gpa.free(removed.value);
++        }
++    }
++
++    fn getOrCreateState(self: *Runtime, provider_id: []const u8) !*ProviderState {
++        self.states_mutex.lockUncancelable(self.io);
++        defer self.states_mutex.unlock(self.io);
++        return self.getOrCreateStateLocked(provider_id);
++    }
++
++    fn getOrCreateStateLocked(self: *Runtime, provider_id: []const u8) !*ProviderState {
++        if (self.states.get(provider_id)) |state| return state;
++        const state = try self.gpa.create(ProviderState);
++        errdefer self.gpa.destroy(state);
++        const name = try self.gpa.dupe(u8, provider_id);
++        errdefer self.gpa.free(name);
++        state.* = .{ .gpa = self.gpa, .name = name };
++        try self.states.put(name, state);
++        return state;
++    }
++
++    fn publishRequest(
++        raw: ?*anyopaque,
++        allocator: std.mem.Allocator,
++        method: []const u8,
++        args_json: []const u8,
++    ) ![]u8 {
++        const context: *PublishContext = @ptrCast(@alignCast(raw orelse return error.MissingProviderPublishContext));
++        if (std.mem.eql(u8, method, "provider_models_publish")) {
++            const accepted = try context.runtime.applyPersistencePublication(context, args_json);
++            return allocator.dupe(u8, if (accepted) "true" else "false");
++        }
++        if (std.mem.eql(u8, method, "provider_models_catalog")) {
++            const accepted = try context.runtime.applyCatalogPublication(context, args_json);
++            return allocator.dupe(u8, if (accepted) "true" else "false");
++        }
++        return error.UnexpectedProviderModelsRequest;
++    }
++
++    fn publishAction(
++        raw: ?*anyopaque,
++        allocator: std.mem.Allocator,
++        method: []const u8,
++        args_json: []const u8,
++    ) !void {
++        _ = raw;
++        _ = allocator;
++        _ = method;
++        _ = args_json;
++        return error.UnexpectedProviderModelsAction;
++    }
++
++    fn validatePublishEnvelope(self: *Runtime, context: *PublishContext, object: std.json.ObjectMap) !u64 {
++        _ = self;
++        const provider = object.get("provider") orelse return error.InvalidProviderModelsPublication;
++        const generation = object.get("generation") orelse return error.InvalidProviderModelsPublication;
++        const sequence = object.get("sequence") orelse return error.InvalidProviderModelsPublication;
++        if (provider != .string or !std.mem.eql(u8, provider.string, context.provider_id)) return error.InvalidProviderModelsPublication;
++        if (generation != .integer or generation.integer < 1 or @as(u64, @intCast(generation.integer)) != context.generation) return error.InvalidProviderModelsPublication;
++        if (sequence != .integer or sequence.integer < 1) return error.InvalidProviderModelsPublication;
++        const value: u64 = @intCast(sequence.integer);
++        if (value <= context.last_sequence) return error.InvalidProviderModelsPublicationOrder;
++        context.last_sequence = value;
++        return value;
++    }
++
++    fn applyPersistencePublication(self: *Runtime, context: *PublishContext, args_json: []const u8) !bool {
++        var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, args_json, .{});
++        defer parsed.deinit();
++        if (parsed.value != .object) return error.InvalidProviderModelsPublication;
++        _ = try self.validatePublishEnvelope(context, parsed.value.object);
++        const has_persist = parsed.value.object.get("hasPersist") orelse return error.InvalidProviderModelsPublication;
++        if (has_persist != .bool) return error.InvalidProviderModelsPublication;
++
++        context.state.mutex.lockUncancelable(self.io);
++        defer context.state.mutex.unlock(self.io);
++        if (!self.isCurrentLocked(context.state, context.generation, context.abort_flag)) return false;
++        if (!has_persist.bool) return true;
++        const persist = parsed.value.object.get("persist") orelse return error.InvalidProviderModelsPublication;
++        switch (persist) {
++            .null => try self.deleteStored(context.provider_id, context.abort_flag),
++            .object => {
++                try models_store.validateEntryValue(persist);
++                const models = persist.object.get("models").?;
++                var models_out: std.Io.Writer.Allocating = .init(self.gpa);
++                defer models_out.deinit();
++                try std.json.Stringify.value(models, .{}, &models_out.writer);
++                try self.registry.validateDynamicModels(context.provider_id, models_out.written());
++                var entry_out: std.Io.Writer.Allocating = .init(self.gpa);
++                defer entry_out.deinit();
++                try std.json.Stringify.value(persist, .{}, &entry_out.writer);
++                try self.writeStored(context.provider_id, entry_out.written(), context.abort_flag);
++            },
++            else => return error.InvalidProviderModelsPublication,
++        }
++        return self.isCurrentLocked(context.state, context.generation, context.abort_flag);
++    }
++
++    fn applyCatalogPublication(self: *Runtime, context: *PublishContext, args_json: []const u8) !bool {
++        var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, args_json, .{});
++        defer parsed.deinit();
++        if (parsed.value != .object) return error.InvalidProviderModelsPublication;
++        _ = try self.validatePublishEnvelope(context, parsed.value.object);
++        const models = parsed.value.object.get("models") orelse return error.InvalidProviderModelsPublication;
++        if (models != .array) return error.InvalidProviderModelsPublication;
++        var out: std.Io.Writer.Allocating = .init(self.gpa);
++        defer out.deinit();
++        try std.json.Stringify.value(models, .{}, &out.writer);
++        return self.commitModels(context.state, context.generation, context.abort_flag, context.provider_id, out.written());
++    }
++};
++
++fn isSelected(provider_id: []const u8, selected: ?[]const []const u8) bool {
++    const list = selected orelse return true;
++    for (list) |candidate| if (std.ascii.eqlIgnoreCase(provider_id, candidate)) return true;
++    return false;
++}
++
++fn mirrorAbortTask(io: Io, source: *const bool, target: *bool, done: *bool) Io.Cancelable!void {
++    while (!@atomicLoad(bool, done, .acquire)) {
++        if (@atomicLoad(bool, source, .acquire)) {
++            @atomicStore(bool, target, true, .release);
++            return;
++        }
++        const pause: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(5), .clock = .awake } };
++        pause.sleep(io) catch return;
++    }
++}
++
++fn testProviderConfigFromManifest(gpa: std.mem.Allocator, manifest_json: []const u8, name: []const u8) ![]u8 {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, manifest_json, .{});
++    defer parsed.deinit();
++    const registrations = parsed.value.object.get("providers") orelse return error.TestProviderNotFound;
++    if (registrations != .array) return error.TestProviderNotFound;
++    for (registrations.array.items) |entry| {
++        if (entry != .object) continue;
++        const provider_name = entry.object.get("name") orelse continue;
++        const config = entry.object.get("config") orelse continue;
++        if (provider_name != .string or !std.mem.eql(u8, provider_name.string, name)) continue;
++        var out: std.Io.Writer.Allocating = .init(gpa);
++        errdefer out.deinit();
++        try std.json.Stringify.value(config, .{}, &out.writer);
++        return out.toOwnedSlice();
++    }
++    return error.TestProviderNotFound;
++}
++
++fn testCatalogModel(registry: *const provider_registry.Registry, provider_id: []const u8, model_id: []const u8) ?@import("../ai/providers.zig").ModelInfo {
++    for (registry.catalog()) |model| {
++        if (std.ascii.eqlIgnoreCase(model.providerName(), provider_id) and std.mem.eql(u8, model.id, model_id)) return model;
++    }
++    return null;
++}
++
++test "extension provider models restore cache refresh credentials persist and survive reload" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
++
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    const source =
++        \\export default function(pi) {
++        \\  const model = (id, name = id) => ({ id, name, reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 });
++        \\  const config = {
++        \\    name: 'Dynamic 183', baseUrl: 'https://dynamic.invalid/v1', api: 'openai-completions', apiKey: 'unused', models: [model('initial', 'Initial')],
++        \\    async refreshModels(context) {
++        \\      if (!(context.signal instanceof AbortSignal)) throw new Error('missing-refresh-signal-183');
++        \\      if (!context.allowNetwork) return context.stored?.models ?? config.models;
++        \\      if (context.force !== true) throw new Error('missing-force-183');
++        \\      if (context.credential?.access !== 'fresh-access-183' || context.credential?.tenant !== 'corp') throw new Error('credential-not-refreshed-183');
++        \\      const fresh = [model('fresh-183', 'Fresh 183')];
++        \\      const accepted = await context.publish({
++        \\        persist: { models: fresh, checkedAt: 183, etag: '\"etag-183\"' },
++        \\        update: () => { config.models = fresh; },
++        \\      });
++        \\      if (!accepted) throw new Error('publication-rejected-183');
++        \\      return fresh;
++        \\    },
++        \\    oauth: {
++        \\      async refreshToken(credentials, signal) {
++        \\        if (!(signal instanceof AbortSignal)) throw new Error('missing-oauth-signal-183');
++        \\        return { ...credentials, access: 'fresh-access-183', expires: 9999999999999, refreshCount: (credentials.refreshCount ?? 0) + 1 };
++        \\      },
++        \\      getApiKey(credentials) { return `key:${credentials.access}`; },
++        \\      modifyModels(models, credentials) { return models.map((entry) => ({ ...entry, name: `${entry.name}:${credentials.access}` })); },
++        \\    },
++        \\  };
++        \\  pi.registerProvider('dynamic-183', config);
++        \\  pi.registerProvider('reject-183', {
++        \\    name: 'Reject 183', baseUrl: 'https://reject.invalid/v1', api: 'openai-completions', apiKey: 'configured', models: [model('reject-initial')],
++        \\    async refreshModels() { throw new Error('refresh-rejection-stack-183'); },
++        \\  });
++        \\}
++    ;
++    try tmp.dir.writeFile(io, .{ .sub_path = "provider-models.mjs", .data = source });
++    var root_buf: [std.fs.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &root_buf);
++    const root = root_buf[0..root_len];
++    const source_path = try std.fs.path.join(gpa, &.{ root, "provider-models.mjs" });
++    defer gpa.free(source_path);
++
++    var started = try js_runtime.Runtime.start(gpa, io, source_path, "node");
++    defer started.runtime.deinit();
++    defer gpa.free(started.manifest_json);
++    const dynamic_config = try testProviderConfigFromManifest(gpa, started.manifest_json, "dynamic-183");
++    defer gpa.free(dynamic_config);
++    const reject_config = try testProviderConfigFromManifest(gpa, started.manifest_json, "reject-183");
++    defer gpa.free(reject_config);
++
++    var env = std.process.Environ.Map.init(gpa);
++    defer env.deinit();
++    var registry_a = provider_registry.Registry.init(gpa, io, &env, root, &.{}, &.{});
++    defer registry_a.deinit();
++    try registry_a.registerJsonWithRuntime("dynamic-183", dynamic_config, started.runtime);
++    try registry_a.registerJsonWithRuntime("reject-183", reject_config, started.runtime);
++    var registry_b = provider_registry.Registry.init(gpa, io, &env, root, &.{}, &.{});
++    defer registry_b.deinit();
++    try registry_b.registerJsonWithRuntime("dynamic-183", dynamic_config, started.runtime);
++    try registry_b.registerJsonWithRuntime("reject-183", reject_config, started.runtime);
++
++    const auth_storage = @import("../auth/storage.zig");
++    var auth = try auth_storage.AuthStorage.init(gpa, io, root);
++    defer auth.deinit();
++    try auth.setOAuthJson("dynamic-183", "{\"type\":\"oauth\",\"refresh\":\"refresh-183\",\"access\":\"old-access-183\",\"expires\":1,\"tenant\":\"corp\",\"custom\":{\"keep\":true}}");
++
++    var cache = try models_store.Store.init(gpa, io, root);
++    defer cache.deinit();
++    try cache.write("dynamic-183", "{\"models\":[{\"id\":\"cached-183\",\"name\":\"Cached 183\",\"reasoning\":false,\"input\":[\"text\"],\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0},\"contextWindow\":4096,\"maxTokens\":512}],\"checkedAt\":1}");
++
++    var oauth = provider_oauth.Runtime.init(gpa, io, root, &registry_a);
++    var runtime = try Runtime.init(gpa, io, root, &registry_a, &oauth);
++    defer runtime.deinit();
++
++    const dynamic_only = [_][]const u8{"dynamic-183"};
++    var refreshed = try runtime.refresh(.{
++        .allow_network = true,
++        .force = true,
++        .providers = &dynamic_only,
++    });
++    defer refreshed.deinit();
++    try std.testing.expect(!refreshed.aborted);
++    try std.testing.expectEqual(@as(usize, 0), refreshed.errors.len);
++    const fresh = testCatalogModel(&registry_a, "dynamic-183", "fresh-183") orelse return error.TestModelMissing;
++    try std.testing.expectEqualStrings("Fresh 183:fresh-access-183", fresh.display);
++
++    const persisted = (try cache.read("dynamic-183")).?;
++    defer gpa.free(persisted);
++    try std.testing.expect(std.mem.indexOf(u8, persisted, "fresh-183") != null);
++    try std.testing.expect(std.mem.indexOf(u8, persisted, "\"checkedAt\":183") != null);
++    const credential = (try auth.readOAuthJson("dynamic-183")).?;
++    defer gpa.free(credential);
++    try std.testing.expect(std.mem.indexOf(u8, credential, "fresh-access-183") != null);
++    try std.testing.expect(std.mem.indexOf(u8, credential, "\"refreshCount\":1") != null);
++    try std.testing.expect(std.mem.indexOf(u8, credential, "\"custom\":{\"keep\":true}") != null);
++
++    // A registry reload supersedes the old generation but deliberately retains
++    // provider-owned persisted catalogs. Offline restoration uses that cache.
++    var preparation = try runtime.prepareRegistry(&registry_b);
++    defer preparation.deinit();
++    runtime.commitPreparedRegistry(&registry_b, &preparation);
++    var restored = try runtime.refresh(.{ .allow_network = false, .providers = &dynamic_only });
++    defer restored.deinit();
++    try std.testing.expectEqual(@as(usize, 0), restored.errors.len);
++    const restored_model = testCatalogModel(&registry_b, "dynamic-183", "fresh-183") orelse return error.TestModelMissing;
++    try std.testing.expectEqualStrings("Fresh 183:fresh-access-183", restored_model.display);
++
++    const reject_only = [_][]const u8{"reject-183"};
++    var rejected = try runtime.refresh(.{ .allow_network = false, .providers = &reject_only });
++    defer rejected.deinit();
++    try std.testing.expectEqual(@as(usize, 1), rejected.errors.len);
++    try std.testing.expect(std.mem.indexOf(u8, rejected.errors[0].message, "refresh-rejection-stack-183") != null);
++    try std.testing.expect(runtime.lastError("reject-183") != null);
++
++    try runtime.unregisterProvider("dynamic-183");
++    try std.testing.expect((try cache.read("dynamic-183")) == null);
++}
++
++test "extension provider models reject stale publication generations transactionally" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    var env = std.process.Environ.Map.init(gpa);
++    defer env.deinit();
++    var registry = provider_registry.Registry.init(gpa, io, &env, null, &.{}, &.{});
++    defer registry.deinit();
++    try registry.registerJson("guard-183",
++        \\{"name":"Guard 183","baseUrl":"https://guard.invalid/v1","api":"openai-completions","apiKey":"guard","models":[{"id":"initial","name":"Initial","reasoning":false,"input":["text"],"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0},"contextWindow":4096,"maxTokens":512}]}
++    );
++    var oauth = provider_oauth.Runtime.init(gpa, io, null, &registry);
++    var runtime = try Runtime.init(gpa, io, null, &registry, &oauth);
++    defer runtime.deinit();
++    const state = try runtime.getOrCreateState("guard-183");
++    var first_abort = false;
++    var second_abort = false;
++    const first_generation = runtime.begin(state, &first_abort);
++    const second_generation = runtime.begin(state, &second_abort);
++    try std.testing.expect(first_generation < second_generation);
++    try std.testing.expect(@atomicLoad(bool, &first_abort, .acquire));
++
++    var stale_context = PublishContext{
++        .runtime = &runtime,
++        .state = state,
++        .provider_id = "guard-183",
++        .generation = first_generation,
++        .abort_flag = &first_abort,
++    };
++    const stale_json = try std.fmt.allocPrint(
++        gpa,
++        "{{\"provider\":\"guard-183\",\"generation\":{d},\"sequence\":1,\"hasPersist\":true,\"persist\":{{\"models\":[{{\"id\":\"stale\",\"name\":\"Stale\",\"reasoning\":false,\"input\":[\"text\"],\"cost\":{{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0}},\"contextWindow\":4096,\"maxTokens\":512}}]}}}}",
++        .{first_generation},
++    );
++    defer gpa.free(stale_json);
++    try std.testing.expect(!(try runtime.applyPersistencePublication(&stale_context, stale_json)));
++    try std.testing.expect((try runtime.readStored("guard-183")) == null);
++
++    var current_context = PublishContext{
++        .runtime = &runtime,
++        .state = state,
++        .provider_id = "guard-183",
++        .generation = second_generation,
++        .abort_flag = &second_abort,
++    };
++    const current_json = try std.fmt.allocPrint(
++        gpa,
++        "{{\"provider\":\"guard-183\",\"generation\":{d},\"sequence\":1,\"hasPersist\":true,\"persist\":{{\"models\":[{{\"id\":\"current\",\"name\":\"Current\",\"reasoning\":false,\"input\":[\"text\"],\"cost\":{{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0}},\"contextWindow\":4096,\"maxTokens\":512}}]}}}}",
++        .{second_generation},
++    );
++    defer gpa.free(current_json);
++    try std.testing.expect(try runtime.applyPersistencePublication(&current_context, current_json));
++    const stored = (try runtime.readStored("guard-183")).?;
++    defer gpa.free(stored);
++    try std.testing.expect(std.mem.indexOf(u8, stored, "current") != null);
++
++    const catalog_json = try std.fmt.allocPrint(
++        gpa,
++        "{{\"provider\":\"guard-183\",\"generation\":{d},\"sequence\":2,\"models\":[{{\"id\":\"current\",\"name\":\"Current\",\"reasoning\":false,\"input\":[\"text\"],\"cost\":{{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0}},\"contextWindow\":4096,\"maxTokens\":512}}]}}",
++        .{second_generation},
++    );
++    defer gpa.free(catalog_json);
++    try std.testing.expect(try runtime.applyCatalogPublication(&current_context, catalog_json));
++    try std.testing.expect(testCatalogModel(&registry, "guard-183", "current") != null);
++
++    const invalid_persist = try std.fmt.allocPrint(
++        gpa,
++        "{{\"provider\":\"guard-183\",\"generation\":{d},\"sequence\":3,\"hasPersist\":true,\"persist\":{{\"models\":{{}}}}}}",
++        .{second_generation},
++    );
++    defer gpa.free(invalid_persist);
++    try std.testing.expectError(error.InvalidModelsStoreEntry, runtime.applyPersistencePublication(&current_context, invalid_persist));
++    const after_invalid = (try runtime.readStored("guard-183")).?;
++    defer gpa.free(after_invalid);
++    try std.testing.expect(std.mem.indexOf(u8, after_invalid, "current") != null);
++
++    const delete_persisted = try std.fmt.allocPrint(
++        gpa,
++        "{{\"provider\":\"guard-183\",\"generation\":{d},\"sequence\":4,\"hasPersist\":true,\"persist\":null}}",
++        .{second_generation},
++    );
++    defer gpa.free(delete_persisted);
++    try std.testing.expect(try runtime.applyPersistencePublication(&current_context, delete_persisted));
++    try std.testing.expect((try runtime.readStored("guard-183")) == null);
++    try std.testing.expectError(error.InvalidProviderModelsPublicationOrder, runtime.applyPersistencePublication(&current_context, delete_persisted));
++    runtime.finish(state, second_generation, &second_abort);
++}
++
++test "extension provider model refresh abort leaves catalog and persistence unchanged" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
++
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    const source =
++        \\export default function(pi) {
++        \\  const model = (id) => ({ id, name: id, reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 });
++        \\  pi.registerProvider('abort-models-183', {
++        \\    name: 'Abort Models 183', baseUrl: 'https://abort.invalid/v1', api: 'openai-completions', apiKey: 'configured', models: [model('initial-183')],
++        \\    async refreshModels(context) {
++        \\      if (!context.allowNetwork) return context.stored?.models ?? [model('initial-183')];
++        \\      await new Promise((resolve, reject) => {
++        \\        if (context.signal.aborted) { reject(context.signal.reason); return; }
++        \\        const timer = setTimeout(() => reject(new Error('model refresh abort was not delivered')), 2000);
++        \\        context.signal.addEventListener('abort', () => { clearTimeout(timer); reject(context.signal.reason); }, { once: true });
++        \\      });
++        \\      await context.publish({ persist: { models: [model('must-not-persist-183')] } });
++        \\      return [model('must-not-publish-183')];
++        \\    },
++        \\  });
++        \\}
++    ;
++    try tmp.dir.writeFile(io, .{ .sub_path = "abort-models.mjs", .data = source });
++    var root_buf: [std.fs.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &root_buf);
++    const root = root_buf[0..root_len];
++    const source_path = try std.fs.path.join(gpa, &.{ root, "abort-models.mjs" });
++    defer gpa.free(source_path);
++
++    var started = try js_runtime.Runtime.start(gpa, io, source_path, "node");
++    defer started.runtime.deinit();
++    defer gpa.free(started.manifest_json);
++    started.runtime.models_refresh_timeout_ms = 5000;
++    const config = try testProviderConfigFromManifest(gpa, started.manifest_json, "abort-models-183");
++    defer gpa.free(config);
++
++    var env = std.process.Environ.Map.init(gpa);
++    defer env.deinit();
++    var registry = provider_registry.Registry.init(gpa, io, &env, root, &.{}, &.{});
++    defer registry.deinit();
++    try registry.registerJsonWithRuntime("abort-models-183", config, started.runtime);
++    var oauth = provider_oauth.Runtime.init(gpa, io, root, &registry);
++    var runtime = try Runtime.init(gpa, io, root, &registry, &oauth);
++    defer runtime.deinit();
++
++    const AbortTask = struct {
++        fn run(task_io: Io, flag: *bool) Io.Cancelable!void {
++            const pause: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(100), .clock = .awake } };
++            try pause.sleep(task_io);
++            @atomicStore(bool, flag, true, .release);
++        }
++    };
++    var abort_flag = false;
++    var group: Io.Group = .init;
++    group.async(io, AbortTask.run, .{ io, &abort_flag });
++    const only = [_][]const u8{"abort-models-183"};
++    var result = try runtime.refresh(.{ .allow_network = true, .providers = &only, .abort_flag = &abort_flag });
++    defer result.deinit();
++    try group.await(io);
++    try std.testing.expect(result.aborted);
++    try std.testing.expectEqual(@as(usize, 0), result.errors.len);
++    try std.testing.expect(testCatalogModel(&registry, "abort-models-183", "initial-183") != null);
++
++    var cache = try models_store.Store.init(gpa, io, root);
++    defer cache.deinit();
++    try std.testing.expect((try cache.read("abort-models-183")) == null);
++    try std.testing.expect(runtime.lastError("abort-models-183") == null or
++        std.mem.indexOf(u8, runtime.lastError("abort-models-183").?, "Operation aborted") != null);
++
++    // Cancellation must not poison the persistent worker or provider owner.
++    @atomicStore(bool, &abort_flag, false, .release);
++    var reused = try runtime.refresh(.{ .allow_network = false, .providers = &only, .abort_flag = &abort_flag });
++    defer reused.deinit();
++    try std.testing.expect(!reused.aborted);
++    try std.testing.expectEqual(@as(usize, 0), reused.errors.len);
++    try std.testing.expect(testCatalogModel(&registry, "abort-models-183", "initial-183") != null);
++}
+diff --git a/src/extensions/provider_oauth.zig b/src/extensions/provider_oauth.zig
+index 627b442..7cbba84 100644
+--- a/src/extensions/provider_oauth.zig
++++ b/src/extensions/provider_oauth.zig
+@@ -148,6 +148,62 @@ pub const Runtime = struct {
+         return .{ .api_key = owned_key, .expires_ms = expires_ms };
+     }
+ 
++    /// Resolve the complete credential object passed to extension
++    /// `refreshModels(context)`. Offline phases never refresh OAuth. Online
++    /// phases serialize refresh under the canonical auth lock and preserve all
++    /// provider-defined fields. Configured API keys are used when no stored
++    /// credential exists.
++    pub fn credentialForModelRefresh(
++        self: *Runtime,
++        allocator: std.mem.Allocator,
++        provider_id: []const u8,
++        now_ms: i64,
++        allow_network: bool,
++        abort_flag: ?*bool,
++    ) !?[]u8 {
++        try ensureOperationActive(abort_flag);
++        var credential: ?[]u8 = null;
++        if (self.agent_dir) |agent_dir| {
++            var store = try auth_storage.AuthStorage.init(self.gpa, self.io, agent_dir);
++            defer store.deinit();
++            credential = try store.readCredentialJson(provider_id);
++            if (credential) |current| {
++                var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, current, .{});
++                defer parsed.deinit();
++                const type_value = if (parsed.value == .object) parsed.value.object.get("type") else null;
++                const is_oauth = type_value != null and type_value.? == .string and std.mem.eql(u8, type_value.?.string, "oauth");
++                if (allow_network and is_oauth) {
++                    self.gpa.free(current);
++                    credential = null;
++                    var refresh_context = RefreshContext{
++                        .runtime = self,
++                        .provider_id = provider_id,
++                        .now_ms = now_ms,
++                        .abort_flag = abort_flag,
++                    };
++                    credential = try store.modifyOAuthJsonAbortable(provider_id, &refresh_context, refreshUnderLock, abort_flag);
++                }
++            }
++        }
++        if (credential == null) credential = try self.registry.configuredApiKeyCredentialJson(provider_id);
++        const value = credential orelse return null;
++        defer self.gpa.free(value);
++        try ensureOperationActive(abort_flag);
++        return @as(?[]u8, try allocator.dupe(u8, value));
++    }
++
++    /// Apply legacy credential-dependent model projection after a dynamic model
++    /// list has committed. This remains a compatibility layer above the
++    /// extension-owned refresh result.
++    pub fn applyModelsForCredential(
++        self: *Runtime,
++        provider_id: []const u8,
++        credential_json: []const u8,
++        abort_flag: ?*const bool,
++    ) !void {
++        return self.applyCredentialModels(provider_id, credential_json, abort_flag);
++    }
++
+     fn applyCredentialModels(
+         self: *Runtime,
+         provider_id: []const u8,
+diff --git a/src/extensions/provider_registry.zig b/src/extensions/provider_registry.zig
+index 2f46bd5..a23f2f2 100644
+--- a/src/extensions/provider_registry.zig
++++ b/src/extensions/provider_registry.zig
+@@ -339,6 +339,67 @@ pub const Registry = struct {
+         return result;
+     }
+ 
++    /// Invoke extension-defined dynamic model discovery on the callback's
++    /// owning persistent worker. `refresh_context_json` is the host-owned
++    /// credential/store/network/generation snapshot. `context.publish()` calls
++    /// are routed through `bridge` before the final model array is returned.
++    pub fn refreshModels(
++        self: *Registry,
++        name: []const u8,
++        refresh_context_json: []const u8,
++        abort_flag: ?*bool,
++        bridge: js_runtime.UiBridge,
++    ) ![]u8 {
++        const index = self.findIndex(name) orelse return error.ExtensionProviderNotRegistered;
++        const registration = &self.registrations.items[index];
++        var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, registration.config_json, .{});
++        defer parsed.deinit();
++        const descriptor_value = try valueAtProviderPath(parsed.value, "refreshModels");
++        const method = try provider_method_ref.ProviderMethodRef.fromJson(descriptor_value);
++        if (!std.mem.eql(u8, method.path, "refreshModels")) return error.ProviderMethodPathMismatch;
++        const runtime = registration.callbackRuntime(method.callback_id, method.path) orelse return error.ProviderMethodRuntimeMissing;
++        const envelope = try runtime.invokeProviderRefreshModels(method.callback_id, name, refresh_context_json, abort_flag, bridge);
++        defer self.gpa.free(envelope);
++        return unwrapRefreshModels(self.gpa, envelope);
++    }
++
++    /// Owned names for dynamic extension providers. Refresh publication can
++    /// transactionally replace a registration while the caller is iterating,
++    /// so borrowing `Registration.name` here would leave the active provider ID
++    /// dangling after the first catalog commit. The caller owns every string and
++    /// the outer slice.
++    pub fn refreshProviderNames(self: *const Registry, gpa: std.mem.Allocator) ![][]u8 {
++        var names: std.ArrayList([]u8) = .empty;
++        errdefer {
++            for (names.items) |name| gpa.free(name);
++            names.deinit(gpa);
++        }
++        for (self.registrations.items) |registration| {
++            if (self.hasProviderMethod(registration.name, "refreshModels")) {
++                try names.append(gpa, try gpa.dupe(u8, registration.name));
++            }
++        }
++        return names.toOwnedSlice(gpa);
++    }
++
++    /// Return the effective configured API key as a canonical credential object
++    /// for `RefreshModelsContext.credential`. Runtime resolution has already
++    /// expanded environment references and command substitutions.
++    pub fn configuredApiKeyCredentialJson(self: *const Registry, name: []const u8) !?[]u8 {
++        const index = self.findIndex(name) orelse return null;
++        const registration = &self.registrations.items[index];
++        for (registration.runtime_configs) |runtime| {
++            const key = runtime.api_key orelse continue;
++            var out: std.Io.Writer.Allocating = .init(self.gpa);
++            errdefer out.deinit();
++            try out.writer.writeAll("{\"type\":\"api_key\",\"key\":");
++            try std.json.Stringify.value(key, .{}, &out.writer);
++            try out.writer.writeByte('}');
++            return @as(?[]u8, try out.toOwnedSlice());
++        }
++        return null;
++    }
++
+     /// Return the most recent JavaScript error for a provider callback. The
+     /// slice remains owned by the persistent worker and is invalidated by its
+     /// next invocation.
+@@ -400,10 +461,37 @@ pub const Registry = struct {
+         return out.toOwnedSlice();
+     }
+ 
+-    /// Publish credential-dependent model projection through the same
+-    /// transactional registration path as JavaScript re-registration. Callback
+-    /// descriptors and their owning worker survive because this patch is data-only.
+-    pub fn applyOAuthModels(self: *Registry, name: []const u8, models_json: []const u8) !void {
++    /// Validate a prospective dynamic model array against the complete effective
++    /// provider configuration without mutating registrations or published snapshots.
++    pub fn validateDynamicModels(self: *Registry, name: []const u8, models_json: []const u8) !void {
++        try validateArrayJson(self.gpa, models_json);
++        const index = self.findIndex(name) orelse return error.ExtensionProviderNotRegistered;
++        var patch: std.Io.Writer.Allocating = .init(self.gpa);
++        defer patch.deinit();
++        try patch.writer.writeAll("{\"models\":");
++        try patch.writer.writeAll(models_json);
++        try patch.writer.writeByte('}');
++        const effective = try mergeObjects(self.gpa, self.registrations.items[index].config_json, patch.written());
++        defer self.gpa.free(effective);
++        var candidate = try Registration.init(
++            self.gpa,
++            self.io,
++            self.environ,
++            self.agent_dir,
++            self.baseline_catalog,
++            name,
++            patch.written(),
++            effective,
++            null,
++            &self.registrations.items[index],
++        );
++        candidate.deinit();
++    }
++
++    /// Publish a validated dynamic model array through the same transactional
++    /// registration path used by extension re-registration. Callback ownership
++    /// survives because this patch contains only the `models` field.
++    pub fn applyDynamicModels(self: *Registry, name: []const u8, models_json: []const u8) !void {
+         try validateArrayJson(self.gpa, models_json);
+         var patch: std.Io.Writer.Allocating = .init(self.gpa);
+         defer patch.deinit();
+@@ -413,6 +501,13 @@ pub const Registry = struct {
+         try self.registerJson(name, patch.written());
+     }
+ 
++    /// Publish credential-dependent model projection through the same
++    /// transactional registration path as JavaScript re-registration. Callback
++    /// descriptors and their owning worker survive because this patch is data-only.
++    pub fn applyOAuthModels(self: *Registry, name: []const u8, models_json: []const u8) !void {
++        return self.applyDynamicModels(name, models_json);
++    }
++
+     /// OAuth refreshToken receives `(credential, signal)` in the upstream API.
+     pub fn refreshOAuth(
+         self: *Registry,
+@@ -654,6 +749,18 @@ fn unwrapProviderMethodValue(gpa: std.mem.Allocator, envelope: []const u8) ![]u8
+     return out.toOwnedSlice();
+ }
+ 
++fn unwrapRefreshModels(gpa: std.mem.Allocator, envelope: []const u8) ![]u8 {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, envelope, .{});
++    defer parsed.deinit();
++    if (parsed.value != .object) return error.InvalidProviderRefreshResult;
++    const models = parsed.value.object.get("models") orelse return error.InvalidProviderRefreshResult;
++    if (models != .array) return error.InvalidProviderRefreshResult;
++    var out: std.Io.Writer.Allocating = .init(gpa);
++    errdefer out.deinit();
++    try std.json.Stringify.value(models, .{}, &out.writer);
++    return out.toOwnedSlice();
++}
++
+ fn validateOAuthCredentialJson(gpa: std.mem.Allocator, raw: []const u8) !void {
+     var parsed = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
+     defer parsed.deinit();
+diff --git a/src/extensions/root.zig b/src/extensions/root.zig
+index 55199f4..339f8ab 100644
+--- a/src/extensions/root.zig
++++ b/src/extensions/root.zig
+@@ -12,3 +12,6 @@ test {
+ }
+ pub const provider_registry = @import("provider_registry.zig");
+ pub const provider_oauth = @import("provider_oauth.zig");
++
++pub const models_store = @import("models_store.zig");
++pub const provider_models = @import("provider_models.zig");
+diff --git a/src/main.zig b/src/main.zig
+index e2dcd8b..4aad96b 100644
+--- a/src/main.zig
++++ b/src/main.zig
+@@ -130,9 +130,21 @@ const ModelTargetPromptContext = struct {
+     reader: *Io.File.Reader,
+     already_fullscreen: bool,
+     live: *coding.live_state.LiveState,
++    provider_models: *extensions.provider_models.Runtime,
++    abort_flag: *bool,
+ 
+     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator, initial_search: ?[]const u8) anyerror!coding.slash.ModelTargetChoice {
+         const self: *@This() = @ptrCast(@alignCast(raw.?));
++        var refresh_result = try self.provider_models.refresh(.{
++            .allow_network = true,
++            .abort_flag = self.abort_flag,
++        });
++        defer refresh_result.deinit();
++        for (refresh_result.errors) |entry| {
++            var warning_buffer: [768]u8 = undefined;
++            const warning = std.fmt.bufPrint(&warning_buffer, "warning: provider {s} model refresh failed: {s}", .{ entry.provider_id, entry.message }) catch continue;
++            tui.render.printLine(self.io, warning) catch {};
++        }
+         const catalog = if (self.live.model_catalog.len > 0) self.live.model_catalog else &ai.providers.known_models;
+         const current_provider = if (self.live.provider_name) |provider_ptr|
+             provider_ptr.* orelse if (self.live.client_pool) |pool| pool.active_provider_id else ""
+@@ -771,6 +783,7 @@ const ExtensionActionRuntime = struct {
+     host: *extensions.Host,
+     bridge: *extensions.integration.Bridge,
+     provider_registry: *extensions.provider_registry.Registry,
++    provider_models: *extensions.provider_models.Runtime,
+     active_filter: *agent.tools.ToolFilter,
+     owned_active_tools: *?[]const []const u8,
+     extension_schemas: *[]u8,
+@@ -1027,12 +1040,15 @@ const ExtensionActionRuntime = struct {
+             const config_json = try stringifyActionValue(gpa, config_value);
+             defer gpa.free(config_json);
+             try self.provider_registry.registerJsonWithRuntime(name, config_json, self.host.scriptRuntimeForExtension(record.extension_name));
++            var refresh_result = try self.provider_models.registerProvider(name, run_config.abort_flag);
++            defer refresh_result.deinit();
++            self.reportProviderRefreshErrors(refresh_result.errors);
+             try self.publishProviderRegistry(run_config, active_client);
+             return;
+         }
+         if (std.mem.eql(u8, record.kind, "unregister_provider")) {
+             const name = try requiredActionString(object, "name");
+-            _ = try self.provider_registry.unregister(name);
++            if (try self.provider_registry.unregister(name)) try self.provider_models.unregisterProvider(name);
+             try self.publishProviderRegistry(run_config, active_client);
+             return;
+         }
+@@ -1046,6 +1062,15 @@ const ExtensionActionRuntime = struct {
+         return error.UnknownExtensionAction;
+     }
+ 
++    fn reportProviderRefreshErrors(self: *ExtensionActionRuntime, errors: []const extensions.provider_models.RefreshError) void {
++        if (!self.render_output) return;
++        for (errors) |entry| {
++            var buffer: [768]u8 = undefined;
++            const warning = std.fmt.bufPrint(&buffer, "warning: extension provider {s} model refresh failed: {s}", .{ entry.provider_id, entry.message }) catch continue;
++            tui.render.printLine(self.live.io, warning) catch {};
++        }
++    }
++
+     fn publishProviderRegistry(self: *ExtensionActionRuntime, run_config: *agent.AgentConfig, active_client: *ai.ModelClient) !void {
+         self.live.model_catalog = self.provider_registry.catalog();
+         if (self.live.client_pool) |pool| {
+@@ -1817,6 +1842,7 @@ const RuntimeResourceReloadContext = struct {
+     bridge: *extensions.integration.Bridge,
+     provider_registry: *extensions.provider_registry.Registry,
+     extension_oauth: *extensions.provider_oauth.Runtime,
++    provider_models: *extensions.provider_models.Runtime,
+     schemas: *[]u8,
+     prompt_templates: *[]coding.prompts.PromptTemplate,
+     command_names: *std.ArrayList([]const u8),
+@@ -2042,6 +2068,8 @@ const RuntimeResourceReloadContext = struct {
+         for (new_host.extensions.items) |extension| {
+             for (extension.providers) |registration| try new_provider_registry.registerJsonWithRuntime(registration.name, registration.config_json, extension.script_runtime);
+         }
++        var provider_models_preparation = try self.provider_models.prepareRegistry(&new_provider_registry);
++        defer provider_models_preparation.deinit();
+ 
+         var new_owned_active_tools: ?[]const []const u8 = null;
+         errdefer if (new_owned_active_tools) |names| freeOwnedToolNames(gpa, names);
+@@ -2100,8 +2128,12 @@ const RuntimeResourceReloadContext = struct {
+             null;
+         defer if (client_backup) |*backup| backup.deinit();
+ 
+-        // All replacement resources are valid. Give the old workers their
+-        // lifecycle boundary before touching any of their owned memory.
++        // All replacement resources are valid. Supersede dynamic model
++        // generations before any callback owner or worker can be replaced.
++        self.provider_models.supersedeAll();
++
++        // Give the old workers their lifecycle boundary before touching any of
++        // their owned memory.
+         if (self.host.extensions.items.len > 0) {
+             self.bridge.sessionShutdown(gpa, self.cwd, self.session.id, "reload") catch |err| {
+                 var buffer: [256]u8 = undefined;
+@@ -2183,6 +2215,20 @@ const RuntimeResourceReloadContext = struct {
+         self.bridge.host = self.host;
+         self.provider_registry.* = new_provider_registry;
+         self.extension_oauth.registry = self.provider_registry;
++        self.provider_models.commitPreparedRegistry(self.provider_registry, &provider_models_preparation);
++        var provider_refresh: ?extensions.provider_models.RefreshResult = self.provider_models.refresh(.{
++            .allow_network = false,
++            .abort_flag = self.shared_abort,
++        }) catch |err| blk: {
++            if (self.action_runtime.render_output) {
++                var warning_buffer: [512]u8 = undefined;
++                const warning = std.fmt.bufPrint(&warning_buffer, "warning: cached extension model restore after reload failed: {s}", .{@errorName(err)}) catch null;
++                if (warning) |message| tui.render.printLine(self.io, message) catch {};
++            }
++            break :blk null;
++        };
++        defer if (provider_refresh) |*result| result.deinit();
++        if (provider_refresh) |result| self.action_runtime.reportProviderRefreshErrors(result.errors);
+         oauth_registry_committed = true;
+         self.theme_registry.* = new_themes;
+         self.prompt_templates.* = new_prompts;
+@@ -2242,6 +2288,7 @@ const RuntimeResourceReloadContext = struct {
+         self.action_runtime.host = self.host;
+         self.action_runtime.bridge = self.bridge;
+         self.action_runtime.provider_registry = self.provider_registry;
++        self.action_runtime.provider_models = self.provider_models;
+         self.action_runtime.active_filter = self.active_filter;
+         self.action_runtime.owned_active_tools = self.owned_active_tools;
+         self.action_runtime.extension_schemas = self.schemas;
+@@ -3637,6 +3684,21 @@ pub fn main(init: std.process.Init) !void {
+         agent_dir,
+         &extension_provider_registry,
+     );
++    var extension_models_runtime = try extensions.provider_models.Runtime.init(
++        gpa,
++        io,
++        agent_dir,
++        &extension_provider_registry,
++        &extension_oauth_runtime,
++    );
++    defer extension_models_runtime.deinit();
++    var initial_extension_models = try extension_models_runtime.refresh(.{ .allow_network = false });
++    defer initial_extension_models.deinit();
++    for (initial_extension_models.errors) |entry| {
++        var warning_buffer: [768]u8 = undefined;
++        const warning = std.fmt.bufPrint(&warning_buffer, "warning: extension provider {s} cached model restore failed: {s}", .{ entry.provider_id, entry.message }) catch continue;
++        try tui.render.printLine(io, warning);
++    }
+ 
+     if (model_scope_storage == null or model_scope_storage.?.scoped_models.len == 0)
+         cycling_model_catalog = extension_provider_registry.catalog();
+@@ -3650,6 +3712,7 @@ pub fn main(init: std.process.Init) !void {
+     };
+     defer client_pool.deinit();
+     extension_oauth_runtime.bindClientPool(&client_pool);
++    extension_models_runtime.bindClientPool(&client_pool);
+     client_pool.setExtensionOAuthBridge(extension_oauth_runtime.bridge());
+     var active_model_field: ?*[]const u8 = null;
+     var model_display_owned: bool = false;
+@@ -3793,6 +3856,7 @@ pub fn main(init: std.process.Init) !void {
+     };
+     _ = &live;
+     extension_oauth_runtime.bindLiveState(&live);
++    extension_models_runtime.bindLiveState(&live);
+     defer live.deinitDynamicCatalog();
+ 
+     var extension_command_steering: std.ArrayList([]const u8) = .empty;
+@@ -3813,6 +3877,7 @@ pub fn main(init: std.process.Init) !void {
+         .host = &extension_host,
+         .bridge = &extension_bridge,
+         .provider_registry = &extension_provider_registry,
++        .provider_models = &extension_models_runtime,
+         .active_filter = &active_tool_filter,
+         .owned_active_tools = &extension_active_tools_owned,
+         .extension_schemas = &extension_tool_schemas,
+@@ -3851,6 +3916,7 @@ pub fn main(init: std.process.Init) !void {
+         .bridge = &extension_bridge,
+         .provider_registry = &extension_provider_registry,
+         .extension_oauth = &extension_oauth_runtime,
++        .provider_models = &extension_models_runtime,
+         .schemas = &extension_tool_schemas,
+         .prompt_templates = &prompt_templates,
+         .command_names = &extension_command_names,
+@@ -4096,6 +4162,8 @@ pub fn main(init: std.process.Init) !void {
+         .reader = &extension_stdin_reader,
+         .already_fullscreen = fullscreen_active,
+         .live = &live,
++        .provider_models = &extension_models_runtime,
++        .abort_flag = &shared_abort,
+     };
+     var settings_target_prompt_context: ?SettingsTargetPromptContext = if (agent_dir) |ad| .{
+         .io = io,

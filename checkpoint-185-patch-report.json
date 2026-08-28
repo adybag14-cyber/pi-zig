@@ -1,0 +1,81 @@
+{
+  "base_checkpoint": 183,
+  "deletions": 294,
+  "files": [
+    {
+      "deletions": 0,
+      "insertions": 19,
+      "path": "CHECKPOINT-184-CORRECTION.md"
+    },
+    {
+      "deletions": 0,
+      "insertions": 90,
+      "path": "CHECKPOINT-185.md"
+    },
+    {
+      "deletions": 24,
+      "insertions": 15,
+      "path": "CONTINUATION.md"
+    },
+    {
+      "deletions": 263,
+      "insertions": 17,
+      "path": "README.md"
+    },
+    {
+      "deletions": 0,
+      "insertions": 13,
+      "path": "TREE-LAYOUT.md"
+    },
+    {
+      "deletions": 0,
+      "insertions": 26,
+      "path": "checkpoint-tests/check-provider-stream-production-integration.py"
+    },
+    {
+      "deletions": 0,
+      "insertions": 232,
+      "path": "checkpoint-tests/provider-stream-simple-bridge.mjs"
+    },
+    {
+      "deletions": 0,
+      "insertions": 155,
+      "path": "src/coding_agent/live_state.zig"
+    },
+    {
+      "deletions": 2,
+      "insertions": 309,
+      "path": "src/extensions/js_bridge.mjs"
+    },
+    {
+      "deletions": 2,
+      "insertions": 240,
+      "path": "src/extensions/js_runtime.zig"
+    },
+    {
+      "deletions": 0,
+      "insertions": 142,
+      "path": "src/extensions/provider_registry.zig"
+    },
+    {
+      "deletions": 0,
+      "insertions": 1221,
+      "path": "src/extensions/provider_stream.zig"
+    },
+    {
+      "deletions": 0,
+      "insertions": 1,
+      "path": "src/extensions/root.zig"
+    },
+    {
+      "deletions": 3,
+      "insertions": 15,
+      "path": "src/main.zig"
+    }
+  ],
+  "files_changed": 14,
+  "insertions": 2495,
+  "patch_bytes": 169885,
+  "patch_sha256": "c2b164e97620041eda5330dcc9dd4c698d3996ab45ab2456a4a14f249c1d2ce7",
+  "target_checkpoint": 185
+}

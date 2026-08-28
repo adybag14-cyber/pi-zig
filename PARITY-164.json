@@ -1,0 +1,82 @@
+{
+  "checkpoint": 164,
+  "original": "Pi coding-agent 0.84.1",
+  "zig": "0.16.0",
+  "focus": "compaction and session-tree extension lifecycle parity",
+  "closed": [
+    "session_before_compact across automatic slash and RPC paths",
+    "session_compact after saved boundary",
+    "extension compaction cancellation and replacement",
+    "durable compaction details usage cost and fromHook",
+    "session_before_tree cancellation replacement instructions and labels",
+    "session_tree after-navigation event",
+    "user and custom message parent/editor navigation semantics",
+    "immediate ordered hook action application",
+    "nonfatal RPC compaction cancellation",
+    "persistent RPC plus real pseudo-terminal lifecycle E2E"
+  ],
+  "completedValidation": {
+    "directRoot": {
+      "passed": 889,
+      "skipped": 0,
+      "failed": 0
+    },
+    "moduleProcess": {
+      "passed": 882,
+      "isolated": 7,
+      "failed": 0
+    },
+    "sqliteRepository": {
+      "passed": 11,
+      "failed": 0
+    },
+    "sqliteCli": {
+      "passed": 8,
+      "isolated": 6,
+      "failed": 0
+    },
+    "mainExecutable": {
+      "passed": 9,
+      "failed": 0
+    },
+    "sqlitePersistence": {
+      "passed": 5,
+      "failed": 0
+    },
+    "sqliteEnabledExecutable": {
+      "passed": 9,
+      "failed": 0
+    },
+    "buildSteps": {
+      "passed": 13,
+      "failed": 0
+    },
+    "sessionHookE2e": {
+      "rpcPrompts": 4,
+      "compactionReplacement": true,
+      "compactionCancellation": true,
+      "immediateActions": true,
+      "treeReplacement": true,
+      "treeLabel": "tree-label-164",
+      "stderrBytes": 0
+    },
+    "format": true,
+    "sourceAudit": true,
+    "syntheticSourceFiles": 0,
+    "allExecutableBuilds": true
+  },
+  "remaining": [
+    "token-budget cut points split-turn prefixes and reserve-token settings",
+    "complete compaction and branch prompts plus file-operation extraction",
+    "full compaction tree progress cancellation and fullscreen UI",
+    "OAuth cloud catalog and updater retry propagation",
+    "remaining fullscreen managers",
+    "complete package-manager platform behavior",
+    "arbitrary asynchronously invalidated extension components",
+    "function-valued providers and extension OAuth",
+    "server TLS and mTLS",
+    "automatic image transforms",
+    "enterprise credential telemetry retry and interoperability breadth"
+  ],
+  "aggregateQualification": "Direct root closure completed 889/889. The normal module process passed 882 cases and its seven intentional SQLite isolates all passed in dedicated linked processes."
+}

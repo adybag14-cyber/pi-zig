@@ -1,0 +1,78 @@
+PI ZIG CHECKPOINT 172 — SOURCE VALIDATION RECORD
+================================================
+
+Evidence
+--------
+Original source: uploaded Pi 0.84.1 archive dated 2026-08-20
+Baseline: uploaded pi-zig checkpoint 171
+Compiler: supplied Zig 0.16.0 Linux x86-64 archive
+
+Source measurements
+-------------------
+Native Zig files under src/: 186
+Native Zig logical lines under src/: 109715
+Tracked Zig files across repository: 187
+Named Zig test declarations across tracked Zig files: 940
+Synthetic/generated source files: 0
+
+Checkpoint implementation
+-------------------------
+Production Zig files changed: 7
+New executable Python E2E fixtures: 1
+Implementation additions/deletions before reports: +473 / -37
+New named regression tests: 6
+
+Static gates
+------------
+Whole-tree `zig fmt --check`: PASS
+Python E2E fixture `py_compile`: PASS
+Git diff whitespace/error validation: PASS
+Real-source audit: PASS
+Synthetic source audit: 0 detected
+
+Changed-area closure
+--------------------
+Agent/AI import graph: 333/333 PASS
+Settings/slash/completion/project-environment/TUI graph: 649/649 PASS
+Focused blockImages tests: PASS
+Focused settings parse/merge/persistence test: PASS
+Focused settings selector persistence test: PASS
+Focused disabled skill command test: PASS
+Focused disabled skill completion test: PASS
+
+Production test processes
+-------------------------
+SQLite repository process: 11/11 PASS
+SQLite CLI/schema process: 8 PASS / 6 intentional repository isolates / 0 FAIL
+Ordinary executable process: 10/10 PASS
+
+The six CLI-process isolates execute in the dedicated linked SQLite repository
+process. They are not omitted behavior.
+
+Builds
+------
+Static pi Linux x86-64 Debug ELF: PASS
+pi-sqlite Linux x86-64 Debug ELF linked to sqlite3/libc: PASS
+
+A cold monolithic `src/root.zig` closure and the complete `pi-sqlite-live`
+companion were attempted repeatedly. Zig 0.16.0 compilation exceeded the
+individual command deadlines without a compiler diagnostic or failing test.
+No aggregate pass is claimed and no older SQLite-live binary is relabeled as
+checkpoint 172.
+
+Media/privacy/skill executable E2E
+----------------------------------
+MEDIA_SKILL_SETTINGS_E2E_172=PASS
+Blocked provider received image: no
+Blocked provider received original placeholder: yes
+Blocked session retained exact image: yes
+Allowed provider received image: yes
+Allowed session retained exact image: yes
+Skill hidden while disabled in RPC get_commands: yes
+Skill visible immediately after atomic setting update + reload: yes
+RPC reload response: success
+Combined child-process stderr: 0 bytes
+
+This source-stage record is intentionally free of circular archive hashes. The
+published release copy appends exact source ZIP, patch reconstruction, artifact
+hashes, transfer stability, and final-path executable results.

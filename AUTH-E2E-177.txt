@@ -1,0 +1,28 @@
+Pi Zig checkpoint 177 authentication end-to-end validation
+==========================================================
+
+AUTH_SCREEN_E2E_177=PASS
+loginFullscreen=True
+maskedSecret=True
+apiKeyStored=True
+authPermissionsPrivate=True
+logoutFullscreen=True
+storedStatusVisible=True
+credentialRemoved=True
+secretAbsentFromTerminal=True
+terminalRestored=True
+exit=0
+stderrBytes=0
+
+AUTH_LIVE_E2E_177=PASS
+activeProvider=corp177/fast
+interactiveKeyStored=True
+loginReboundActiveClient=True
+firstAuthorization=interactive key
+logoutRemovedStoredCredential=True
+logoutReloadedConfiguredCredential=True
+secondAuthorization=models.json key
+providerRequests=2
+secretAbsentFromTerminal=True
+exit=0
+stderrBytes=0

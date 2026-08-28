@@ -1,0 +1,18 @@
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 extensions.provider_stream.test.extension stream adapter selects a live ModelClient and defers terminal delivery...OK
+17/17 storage.sqlite.test_0...OK
+All 17 tests passed.

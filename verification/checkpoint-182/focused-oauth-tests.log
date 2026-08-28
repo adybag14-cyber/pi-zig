@@ -1,0 +1,229 @@
+===== FILTER: extension OAuth login refresh key derivation =====
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 extensions.provider_oauth.test.extension OAuth login refresh key derivation and model projection are end to end...OK
+17/17 storage.sqlite.test_0...OK
+All 17 tests passed.
+===== FILTER: extension OAuth login cancellation =====
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 extensions.provider_oauth.test.extension OAuth login cancellation aborts the callback without persisting partial credentials...OK
+17/17 storage.sqlite.test_0...OK
+All 17 tests passed.
+===== FILTER: late noncooperative login result =====
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 extensions.provider_oauth.test.extension OAuth ignores a late noncooperative login result after native cancellation...OK
+17/17 storage.sqlite.test_0...OK
+All 17 tests passed.
+===== FILTER: extension OAuth reload routing =====
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 extensions.provider_oauth.test.extension OAuth reload routing follows the replacement registry and unregister removes ownership...OK
+17/17 storage.sqlite.test_0...OK
+All 17 tests passed.
+===== FILTER: extension OAuth invalidation scrubs =====
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 storage.sqlite.test_0...OK
+17/17 coding_agent.live_state.test.extension OAuth invalidation scrubs the active transport before releasing its key...OK
+All 17 tests passed.
+===== FILTER: slash login executes extension OAuth =====
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 storage.sqlite.test_0...OK
+17/17 coding_agent.slash.test.slash login executes extension OAuth and persists complete credentials...OK
+All 17 tests passed.
+===== FILTER: auth selector exposes extension OAuth =====
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 storage.sqlite.test_0...OK
+17/17 coding_agent.auth_tui.test.auth selector exposes extension OAuth providers without catalog models...OK
+All 17 tests passed.
+===== FILTER: extension OAuth JSON transactions =====
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 auth.storage.test.extension OAuth JSON transactions preserve arbitrary fields and rollback invalid replacements...OK
+17/17 storage.sqlite.test_0...OK
+All 17 tests passed.
+===== FILTER: extension OAuth abort-aware transactions =====
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 auth.storage.test.extension OAuth abort-aware transactions reject late replacements without changing storage...OK
+17/17 storage.sqlite.test_0...OK
+All 17 tests passed.
+===== FILTER: provider OAuth login uses a human interaction timeout =====
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 extensions.js_runtime.test.provider OAuth login uses a human interaction timeout distinct from ordinary callbacks...OK
+17/17 storage.sqlite.test_0...OK
+All 17 tests passed.
+===== FILTER: provider registry invokes OAuth methods =====
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 extensions.provider_registry.test.provider registry invokes OAuth methods through the owning persistent worker...OK
+17/17 storage.sqlite.test_0...OK
+All 17 tests passed.
+===== FILTER: provider callback ownership remains distinct =====
+1/17 root.test_0...OK
+2/17 ai.root.test_0...OK
+3/17 agent.root.test_0...OK
+4/17 tui.root.test_0...OK
+5/17 coding_agent.root.test_0...OK
+6/17 mcp.root.test_0...OK
+7/17 server.root.test_0...OK
+8/17 storage.root.test_0...OK
+9/17 auth.root.test_0...OK
+10/17 extensions.root.test_0...OK
+11/17 themes.root.test_0...OK
+12/17 evals.root.test_0...OK
+13/17 protocol.root.test_0...OK
+14/17 telemetry.root.test_0...OK
+15/17 client.root.test_0...OK
+16/17 extensions.provider_registry.test.provider callback ownership remains distinct when separate workers emit colliding IDs...OK
+17/17 storage.sqlite.test_0...OK
+All 17 tests passed.
+focused_oauth_filters_passed=12

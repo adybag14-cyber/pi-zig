@@ -1,0 +1,60 @@
+Pi Zig checkpoint 163 provider retry executable E2E
+===================================================
+
+Executable under test
+---------------------
+Development-tree zig-out/bin/pi built with supplied Zig 0.16.0.
+All requests were delivered to isolated loopback HTTP servers.
+Outer assistant retry was disabled so each observation measures the provider-internal policy.
+
+Observed result
+---------------
+PROVIDER_RETRY_E2E_163=PASS
+
+retry-after-ms
+  Requests:                                  2
+  Second response:                           success
+  Observed elapsed:                          approximately 151-176 ms
+  Required server delay:                     50 ms
+
+x-should-retry:true over HTTP 400
+  Requests:                                  2
+  Second response:                           success
+  Observed elapsed:                          approximately 568-585 ms
+
+x-should-retry:false over HTTP 503
+  Requests:                                  1
+  Terminal error retained:                   yes
+
+Server delay above maxRetryDelayMs
+  Requests:                                  1
+  Error:                                     ProviderRetryDelayExceeded
+  Second request made:                       no
+
+Explicit provider timeout
+  Timeout:                                   50 ms
+  Retry budget:                              1
+  Requests:                                  2
+  Terminal error:                            ProviderRequestTimeout
+
+Inherited provider timeout
+  retry.provider.timeoutMs:                  absent
+  httpIdleTimeoutMs:                         50 ms
+  Requests:                                  1
+  Terminal error:                            ProviderRequestTimeout
+
+Persistent RPC live reload
+  Before reload maxRetries:                  0
+  Requests before reload:                    1
+  settings.json replacement:                 passed
+  RPC reload:                                success
+  After reload maxRetries:                   1
+  Requests after reload:                     2
+  Header delay after reload:                 observed
+  Final provider response:                   success
+  Process exit:                              0
+  Process stderr bytes:                      0
+
+Final repeated run report
+-------------------------
+{"delayCap":{"elapsedMs":99,"requests":1},"deniedRetry":{"elapsedMs":111,"requests":1},"forcedRetry":{"elapsedMs":568,"requests":2},"inheritedTimeout":{"elapsedMs":144,"requests":1},"liveReload":{"requestsAfter":2,"requestsBefore":1,"stderrBytes":0},"retryAfterMs":{"elapsedMs":176,"requests":2},"timeout":{"elapsedMs":581,"requests":2}}

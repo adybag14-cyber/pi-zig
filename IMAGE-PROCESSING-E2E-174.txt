@@ -1,0 +1,53 @@
+PI ZIG CHECKPOINT 174 — IMAGE PROCESSING EXECUTABLE E2E
+======================================================
+
+Status: IMAGE_PROCESSING_E2E_174=PASS
+
+Runtime
+-------
+Static Linux x86-64 Debug Pi executable
+ImageMagick 7.1.2-1 process-isolated conversion backend
+All child-process stderr: 0 bytes
+
+Startup with images.autoResize=true
+----------------------------------
+Oversized PNG input: 3000x1000
+Result: image/png, 2000x667
+Coordinate mapping hint: present
+
+BMP input: 32x16
+Result: image/png, 32x16
+Conversion hint: present
+
+JPEG EXIF orientation=6 input: 2400x1000 stored dimensions
+Result: image/png, 833x2000
+Orientation normalized during required resize: passed
+
+100x100 valid PNG with a large ignored ancillary chunk
+Result: image/png, 100x100
+Re-encoded base64 length: 140 bytes
+4.5 MiB provider payload limit: passed
+
+Startup with images.autoResize=false
+-----------------------------------
+Oversized provider-native PNG: exact base64 preservation
+BMP: still converted to PNG
+Persisted images: 2
+
+Built-in read
+-------------
+Input: image/png, 3200x1600
+Result: image/png, 2000x1000
+Structured tool image content: passed
+Durable JSONL persistence: passed
+
+Post-hook extension tool result
+-------------------------------
+TypeScript extension hook replacement input: image/png, 3600x900
+Result after tool_result/after_tool boundary: image/png, 2000x500
+Post-hook enforcement: passed
+Durable JSONL persistence: passed
+
+Machine-readable source record
+------------------------------
+logs/image-processing-e2e-final-174.json in the validation workspace

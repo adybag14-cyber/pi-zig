@@ -1,0 +1,59 @@
+Pi Zig checkpoint 159 live reload end-to-end record
+=====================================================
+
+Toolchain
+---------
+Zig:                                      0.16.0
+Node runtime used by TypeScript fixtures: 22.16.0
+
+Persistent replacement, rollback, and RPC gate
+----------------------------------------------
+Initial commands:                         old-command, old-template, reload-runtime
+Malformed replacement:                    invalid TypeScript
+Rollback status:                          runtime resources unchanged
+Reported native error:                    JavaScriptExtensionReadFailed
+Expected Node diagnostic:                 ERR_INVALID_TYPESCRIPT_SYNTAX
+Old worker retained after failure:         yes
+Unexpected panic/allocator diagnostic:     none
+
+Successful initiator:                     old TypeScript command calling await ctx.reload()
+Post-reload commands:                     new-command, new-template
+Stale old commands/templates:             absent
+Replacement prompt expansion:             NEW TEMPLATE Bob
+Replacement tool result:                  fresh:Bob:v2:fresh-call-159
+Assistant completion:                     after-reload-complete-159
+
+Second initiator:                         {"id":"rr","type":"reload"}
+Second post-reload commands:              rpc-command, rpc-template
+Second stale commands/templates:          absent
+RPC summary:                              Reloaded: 0 context file(s), 0 skill(s), 1 extension(s), 1 command(s), 1 prompt template(s), 1 theme(s)
+Process exit:                             0
+Result:                                   PASS
+
+Extension-provider/client reconstruction gate
+---------------------------------------------
+Provider/model identity:                  hot159/fast
+First request authorization:              Bearer extension-secret-v1
+Reloaded request authorization:           Bearer extension-secret-v2
+Real local OpenAI-compatible SSE requests: 2
+Active model preserved:                   yes
+Process exit:                             0
+Process stderr:                           0 bytes
+Result:                                   PASS
+
+Focused native gates
+--------------------
+Command and shortcut ctx.reload action:    passed
+UI reset/editor binding preservation:     passed
+Reload count/status formatting:           passed
+Rollback-status formatting:               passed
+Top-level skill reload:                   passed
+Custom prompt preservation:               passed
+
+Complete test closure
+---------------------
+Direct root tests:                        841/841 passed
+Build-test graph:                         13/13 steps succeeded
+Build-test module process:                834 passed, 7 deliberate SQLite isolates, 0 failed
+
+Overall result:                           PASS

@@ -1,0 +1,44 @@
+{
+  "checkpoint": 152,
+  "reference": "Pi 0.84.1 supplied source archive",
+  "toolchain": "Zig 0.16.0",
+  "status": "substantial native port; complete monorepo equivalence not claimed",
+  "closed": [
+    "exact provider tool-call identity in JavaScript and TypeScript extension tools",
+    "live AbortSignal propagation into pending script tool promises",
+    "lifecycle-context abort propagation and post-abort worker reuse",
+    "tool-local usage and cost ownership across updates, hooks, JSON and sessions",
+    "addedToolNames preservation across extension and durable session boundaries",
+    "package.json pi.extensions exact resource loading",
+    "package.json pi.skills exact file and directory loading",
+    "package.json pi.prompts exact resource loading",
+    "package.json pi.themes exact resource loading",
+    "conventional package resource fallback when no Pi manifest exists",
+    "package resources in startup reload RPC command discovery and project environments"
+  ],
+  "measurements": {
+    "zig_files": 170,
+    "zig_lines": 87103,
+    "javascript_bridge_lines": 906,
+    "source_test_declarations": 793,
+    "root_graph_cases": 782,
+    "root_passed": 775,
+    "root_isolated": 7,
+    "root_failed": 0,
+    "implementation_files_changed": 14,
+    "implementation_additions": 1456,
+    "implementation_deletions": 109,
+    "synthetic_feature_shards": 0
+  },
+  "partial": [
+    "package manifest glob and override-filter evaluation",
+    "npm and git package installation update and project-scope lifecycle",
+    "multiple-image extension and provider fidelity",
+    "arbitrary extension component trees and asynchronous invalidation",
+    "function-valued extension provider transports and OAuth",
+    "complete original fullscreen screen wiring",
+    "native server TLS and mutual TLS",
+    "automatic image resizing and transcoding",
+    "remaining enterprise credential retry and interoperability matrix"
+  ]
+}

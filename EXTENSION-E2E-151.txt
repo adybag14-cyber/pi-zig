@@ -1,0 +1,58 @@
+Pi Zig checkpoint 151 live-update E2E
+========================================
+
+Reference behavior
+------------------
+Original Pi 0.84.1 invokes tool onUpdate callbacks while execution is active and emits tool_execution_update before the terminal tool event. Its core bash tool similarly reports accumulated output while the child process remains active.
+
+JavaScript/TypeScript extension gate
+------------------------------------
+LIVE_EXTENSION_E2E=PASS
+EVENT_ORDER=tool_execution_start -> tool_execution_update -> tool_execution_end
+PRIMARY_UPDATE_BEFORE_RESOLUTION=true
+OBSERVER_REPLAY_AFTER_WORKER_RELEASE=true
+DUPLICATE_UPDATES=0
+STDERR_BYTES=0
+
+Fixture behavior:
+- onUpdate emitted text partial:checkpoint151 and details {"phase":1}
+- extension then slept for 350 ms
+- completion marker was absent when the native primary event arrived
+- extension created the marker before resolving its promise
+- final result retained complete:checkpoint151 and details {"phase":2}
+- lifecycle tool_execution_update hook ran after the worker released
+
+Verified extension log:
+execute:onUpdate-returned
+execute:resolved
+hook:update:marker=true:text=partial:checkpoint151
+
+Native bash gate
+----------------
+LIVE_BASH_E2E=PASS
+UPDATES=2
+FIRST_UPDATE_BEFORE_COMPLETION_MARKER=true
+ACCUMULATED_SNAPSHOT=true
+FINAL_SNAPSHOT=firstsecond
+STDERR_BYTES=0
+
+Fixture command:
+printf first; sleep 0.35; : > live.marker; printf second
+
+Verified behavior:
+- first progress snapshot arrived while live.marker was absent
+- final accumulated snapshot was exactly firstsecond
+- update details were {"kind":"output","mode":"snapshot"}
+- progress preceded tool_execution_end
+- final assistant turn completed
+
+Unit/concurrency closure
+------------------------
+Runtime update before promise resolution: PASS
+Host update forwarding and observer retention: PASS
+Agent update before execute return: PASS
+Parallel per-tool update-before-end ordering: PASS
+Deadlock-safe primary/observer split: PASS
+Native bash delayed-process streaming: PASS
+Native progress 100 ms throttling: PASS
+Native progress 128 KiB tail bound: PASS

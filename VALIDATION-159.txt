@@ -1,0 +1,96 @@
+Pi Zig checkpoint 159 validation record
+=========================================
+
+Inputs
+------
+Baseline source archive:                  pi-zig-v8-checkpoint-158(1).zip
+Original parity reference:                pi-main (3)(20260817-153323).zip
+Compiler archive:                         zig-x86_64-linux-0.16.0.tar.xz
+Zig version:                              0.16.0
+
+Source integrity
+----------------
+Native Zig source files:                  175
+Native Zig logical lines:                 95,532
+Embedded JavaScript bridge lines:         941
+Source-level Zig test declarations:       835
+Synthetic/generated feature shards:       0
+Whole-tree zig fmt --check:               PASS
+Node bridge syntax check:                 PASS
+Real-source audit:                        PASS
+Git diff whitespace validation:           PASS
+
+Complete test closure
+---------------------
+Command:
+  PI_SQLITE_CLI_TESTS=1 zig test src/root.zig -fno-llvm -lsqlite3 -lc
+
+Result:                                   841/841 PASS
+Skipped:                                  0
+Failed:                                   0
+
+Normal build-test graph
+-----------------------
+Result:                                   13/13 steps PASS
+Module process:                           834 passed, 7 deliberate SQLite isolates, 0 failed
+Dedicated SQLite repository:              11/11 PASS
+Dedicated SQLite CLI/schema:              8 passed, 6 intentional isolates, 0 failed
+Ordinary executable tests:                5/5 PASS
+SQLite live-persistence tests:            5/5 PASS
+SQLite-enabled executable tests:          5/5 PASS
+
+The seven aggregate-process isolates are all exercised successfully in the separately linked SQLite processes.
+
+Focused changed-area tests
+--------------------------
+Command/shortcut ctx.reload bridge:        1/1 PASS
+UI reload reset/import graph:              17/17 PASS
+Runtime reload status/import graph:        18/18 PASS
+Combined reload-focused graph:             11/11 PASS
+
+Debug builds
+------------
+Static pi:                                PASS
+pi-sqlite:                                PASS
+pi-sqlite-live:                           PASS
+
+Executable end-to-end gates
+---------------------------
+Malformed TypeScript rollback:             PASS
+Old worker retained after failure:         PASS
+Extension-command ctx.reload:              PASS
+Replacement prompt expansion:             PASS
+Replacement extension tool dispatch:      PASS
+Strict RPC reload:                        PASS
+RPC command inventory replacement:         PASS
+Declarative provider reconstruction:       PASS
+Active client-pool provider rebinding:     PASS
+Credential v1 -> v2 request transition:   PASS
+Unexpected panic/allocator diagnostics:    none
+
+Exact source archive
+--------------------
+Single archive root:                       PASS
+Forbidden cache/build entries:             0
+ZIP structural integrity:                  PASS
+Frozen/extracted source equivalence:       278/278 byte-for-byte
+Exact-extraction formatting/audit:          PASS
+Exact-extraction root closure:              841/841 PASS
+Exact-extraction build-test graph:          13/13 PASS
+Exact-extraction Debug builds:              3/3 PASS
+Exact-extraction reload E2Es:               PASS
+
+Patch reconstruction
+--------------------
+git apply --check:                         PASS
+Patch application:                         PASS
+Reconstructed source files:                278
+Missing/extra/changed files:                0 / 0 / 0
+Byte-for-byte source equivalence:           PASS
+Reconstructed root closure:                841/841 PASS
+Reconstructed build-test graph:            13/13 PASS
+Reconstructed Debug builds:                3/3 PASS
+
+Qualification
+-------------
+The ordinary LLVM-backed monolithic compilation was also attempted during development and exceeded one command deadline before producing its aggregate executable. The complete 841-case root closure was therefore rerun with Zig's non-LLVM backend and explicit sqlite3/libc linkage, where every case executed and passed. The normal multi-process zig build test graph separately completed 13/13 steps.

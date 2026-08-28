@@ -1,0 +1,97 @@
+Pi Zig checkpoint 148 validation
+================================
+
+Reference source: uploaded Pi 0.84.1 archive pi-main (3)(8).zip
+Reference SHA-256: 42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a
+Exact patch baseline: uploaded pi-zig-v8-checkpoint-147(1).zip
+Baseline SHA-256: 9bcda8ba99c60a623b76cb6fdacf2f2447243a6f749a60eb7bffa348becd511b
+Toolchain: supplied Zig 0.16.0 Linux x86-64
+Toolchain SHA-256: 70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+Script runtime used for compatibility tests: Node.js 22.16.0
+
+Source measurements
+-------------------
+Native Zig files under src/: 170
+Native Zig logical lines under src/: 82,525
+Embedded JavaScript bridge lines: 670
+Zig test declarations (named + anonymous): 765
+Synthetic/generated feature files: 0
+Checkpoint-147 to checkpoint-148 implementation diff: 9 source files
+Implementation diff additions/deletions: +1,609 / -63
+
+Worktree implementation gates
+-----------------------------
+Whole-tree Zig formatting: PASS
+Node bridge syntax check: PASS
+Real-source audit: PASS
+All-package root graph: 748 passed, 7 isolated, 0 failed (755 declarations)
+Dedicated SQLite repository: 11/11 passed
+Dedicated live SQLite persistence: 5/5 passed
+SQLite CLI/ABI/schema process: 8 passed, 6 isolated, 0 failed
+Ordinary executable/main suite: 4/4 passed
+SQLite-enabled executable/main suite: 4/4 passed
+All 765 unique Zig test declarations executed at least once: PASS
+Debug build of ordinary pi: PASS
+Debug build of optional pi-sqlite: PASS
+Debug build of optional pi-sqlite-live: PASS
+Ordinary pi executable: static Linux x86-64 ELF with Debug information
+Ordinary pi dynamic Node/SQLite library dependency: NONE
+pi-sqlite and pi-sqlite-live: explicitly linked to sqlite3/libc
+
+Ordered extension action gates
+------------------------------
+Canonical allocator-owned action parsing: PASS
+Monotonic mutex-protected FIFO: PASS
+Lifecycle callback action ordering: PASS
+Parallel extension-tool action ownership: PASS
+Safe-point runtime application: PASS
+Immediate active-tool schema rebuilding: PASS
+Model/thinking/session/label mutation: PASS
+Steering and follow-up delivery: PASS
+agent_end queued continuation: PASS
+session_shutdown final drain and save: PASS
+Authoritative shouldStopAfterTurn ordering: PASS
+Malformed/unknown action isolation: PASS
+
+Declarative extension provider gates
+------------------------------------
+Manifest provider retention: PASS
+models.json parser reuse: PASS
+Runtime resolver/API-key reuse: PASS
+Custom model injection: PASS
+Transactional re-registration: PASS
+Shallow config merge: PASS
+Unregister baseline restoration: PASS
+Live model-catalog replacement: PASS
+Live ClientPool runtime replacement: PASS
+Same-batch registerProvider -> setModel: PASS
+Real OpenAI-compatible SSE request: PASS
+Scoped Authorization bearer key: PASS
+Durable provider/model session identity: PASS
+
+End-to-end executable gates
+---------------------------
+Lifecycle queue and agent_end continuation: PASS
+Tool execute -> tool_result callback ordering: PASS
+Dynamic provider registration and SSE transport: PASS
+Observed provider path: /v1/chat/completions
+Observed provider authorization: Bearer extension-secret
+Observed provider model: fast
+
+Isolation qualification
+-----------------------
+The seven all-package root skips are the SQLite CLI live integration case and
+six C-backed repository cases. The CLI case passes in the linked SQLite CLI
+process; all six repository cases pass in the dedicated 11-test repository
+process. No behavior is counted as passed solely because it was skipped in the
+self-contained root process.
+
+Packaging qualification
+------------------------
+The final source archive and checkpoint patch are validated after this report is
+written. The published archive must contain one pi-zig-v8-checkpoint-148 root,
+exclude .git/.zig-cache/zig-out/__pycache__, and reproduce this source tree.
+The patch must apply to a pristine extraction of the exact uploaded checkpoint
+147 and reconstruct checkpoint 148 byte-for-byte. Final artifact hashes and
+transfer verification are recorded in the published checksum manifest and the
+assistant's delivery report.

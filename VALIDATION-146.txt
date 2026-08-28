@@ -1,0 +1,87 @@
+Pi Zig checkpoint 146 validation
+================================
+
+Reference source: uploaded Pi 0.84.1 archive pi-main (3)(6).zip
+Reference SHA-256: 42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a
+Exact patch baseline: uploaded pi-zig-v8-checkpoint-145(1).zip
+Baseline SHA-256: 82bc500a436d009647ba6e965260f79d4512f22246c2def62ca2b3ba1294572f
+Toolchain: supplied Zig 0.16.0 Linux x86-64
+Toolchain SHA-256: 70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+Script runtime used for compatibility tests: Node.js 22.16.0
+
+Source measurements
+-------------------
+Native Zig files under src/: 167
+Native Zig logical lines under src/: 79,230
+Embedded JavaScript bridge lines: 358
+Zig test declarations (named + anonymous): 754
+Synthetic/generated feature files: 0
+Checkpoint-145 to checkpoint-146 implementation diff: 10 source files
+Implementation diff additions/deletions: +2,201 / -123
+
+Fresh-cache implementation gates
+--------------------------------
+Whole-tree Zig formatting: PASS
+Node bridge syntax check: PASS
+Real-source audit: PASS
+All-package root graph: 737 passed, 7 isolated, 0 failed
+Dedicated SQLite repository: 11/11 passed
+Dedicated live SQLite persistence: 5/5 passed
+SQLite CLI/ABI/schema process: 8 passed, 6 isolated, 0 failed
+Executable/main suite: 4/4 passed
+Clean Debug build of ordinary pi: PASS
+Clean Debug build of optional pi-sqlite: PASS
+Clean Debug build of optional pi-sqlite-live: PASS
+Ordinary pi executable: static Linux x86-64 ELF with Debug information
+Ordinary pi dynamic Node/SQLite library dependency: NONE
+pi-sqlite and pi-sqlite-live: explicitly linked to sqlite3/libc
+
+Extension-runtime gates
+-----------------------
+Direct .ts/.js/.mts/.cts/.mjs/.cjs path recognition: PASS
+Persistent TypeScript worker and retained closure state: PASS
+Node TypeScript enum/type transformation: PASS
+TypeBox-shaped tool schema conversion: PASS
+Current and legacy Pi package compatibility imports: PASS
+Real dependency resolution before compatibility fallback: PASS
+package.json pi.extensions multi-entry discovery: PASS
+index.ts/index.js and trusted one-level discovery: PASS
+Native extension.json precedence: PASS
+Hooks, tools, commands, flags and shortcuts: PASS
+Ordinary stdout isolation from protocol records: PASS
+Response/discard bounds and invocation timeout termination: PASS
+Canonical lifecycle event forwarding without alias duplication: PASS
+before_prompt/input transformation: PASS
+before_agent_start system-prompt replacement: PASS
+before_agent_start durable custom context injection: PASS
+Per-provider context filtering/reordering/injection: PASS
+Native assistant/tool/thinking/image metadata preservation: PASS
+Editor-first extension shortcut dispatch: PASS
+Original supplied extension corpus registration: 74/78
+Qualified absent external npm dependencies: 4
+Bridge/parser/import compatibility failures after qualification: 0
+
+SQLite isolation qualification
+------------------------------
+The seven all-package root skips are the SQLite CLI live integration case and
+six C-backed repository cases. The CLI case passes in the linked SQLite CLI
+process; all six repository cases pass in the dedicated 11-test repository
+process. No behavior is counted as passed solely because it was skipped in the
+self-contained root process.
+
+Archive, patch and transfer gates
+---------------------------------
+The published source ZIP is required to have one checkpoint-146 root and no
+.git, .zig-cache or zig-out entries. Its exact extracted bytes are validated
+with formatting, source audit, Node syntax, the complete test graph, all three
+Debug builds and executable smokes.
+
+The checkpoint-145 to checkpoint-146 patch is applied to a pristine extraction
+of the uploaded baseline. The reconstruction is required to match the packaged
+checkpoint-146 source byte-for-byte and pass the same source/build gates.
+
+Every published artifact is copied in forced 1 MiB chunks to its final
+/mnt/data path, flushed and fsynced, read completely, compared byte-for-byte,
+independently SHA-256 hashed, checked through three stable size/mtime/hash
+snapshots and verified against the final checksum manifest before the response
+containing the download links is sent.

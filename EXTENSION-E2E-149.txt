@@ -1,0 +1,34 @@
+Pi Zig checkpoint 149 extension/rendering end-to-end validation
+===============================================================
+
+Executable under test: worktree Debug zig-out/bin/pi
+Node runtime: v22.16.0
+Reference extension source: supplied Pi 0.84.1 tree
+
+Print startup action ordering: PASS
+  session name: ordered-session-149
+  durable order: card-149 -> notice-149 -> user -> assistant
+  user prompt occurrences: 1
+  assistant response occurrences: 1
+
+Interactive custom rendering: PASS
+  durable entry renderer: CARD:first
+  custom message renderer: NOTICE:visible
+  Markdown transformer: TRANSFORMED:assistant 149
+
+Stateful tool rendering: PASS
+  renderCall: CALL149:blue:state=1
+  renderResult: RESULT149:painted:blue:state=1
+  renderer call count: 1
+  renderer result count: 1
+  native session toolResult persisted: painted:blue
+
+Original built-in renderer compatibility: PASS
+  extension: packages/coding-agent/examples/extensions/built-in-tool-renderer.ts
+  source modifications: none
+  tool implementation: native Zig read
+  custom call renderer: PASS
+  custom result renderer: PASS
+  native tool result persistence: PASS
+
+Overall: PASS

@@ -1,0 +1,63 @@
+{
+  "checkpoint": 167,
+  "upstream": {
+    "project": "earendil-works/pi",
+    "version": "0.84.1"
+  },
+  "toolchain": {
+    "zig": "0.16.0",
+    "target": "x86_64-linux"
+  },
+  "measurements": {
+    "zigFiles": 180,
+    "zigLines": 103345,
+    "zigTestDeclarations": 919,
+    "directRootCases": 904,
+    "syntheticFiles": 0
+  },
+  "closed": [
+    "request-local model completion options",
+    "branch-summary 2048-token output ceiling",
+    "compaction 80-percent reserve output budget",
+    "split-turn prefix 50-percent reserve output budget",
+    "isolated summary cache retention and session affinity",
+    "provider-wide request-local output cap propagation",
+    "fullscreen searchable and filterable session-tree selector",
+    "branch folding and active-branch/tip visualization",
+    "real PTY tree target selection"
+  ],
+  "validation": {
+    "directRoot": { "passed": 904, "skipped": 0, "failed": 0 },
+    "moduleProcess": { "passed": 897, "isolated": 7, "failed": 0 },
+    "sqliteRepository": { "passed": 11, "failed": 0 },
+    "sqliteCli": { "passed": 8, "isolated": 6, "failed": 0 },
+    "ordinaryExecutable": { "passed": 9, "failed": 0 },
+    "sqlitePersistence": { "passed": 5, "failed": 0 },
+    "sqliteExecutable": { "passed": 9, "failed": 0 },
+    "buildSteps": { "passed": 13, "total": 13 },
+    "summaryRequestE2E": {
+      "passed": true,
+      "normalRequests": 3,
+      "summaryRequests": 1,
+      "summaryMaxTokens": 2048,
+      "summaryAffinityHeaders": [],
+      "summaryPromptCacheKey": null,
+      "summaryPromptCacheRetention": null,
+      "fullscreenTreeSelector": true,
+      "searchSelected": "assistant-167-1",
+      "stderrBytes": 0
+    }
+  },
+  "remaining": [
+    "exact upstream token estimation and prompt clamping nuances",
+    "complete original tree visualization and action UX",
+    "function-valued extension providers and OAuth callbacks",
+    "remaining fullscreen package model login settings and session managers",
+    "complete npm pnpm and bun platform lifecycle behavior",
+    "arbitrary asynchronously invalidated extension component trees",
+    "native server TLS and mutual TLS",
+    "automatic image normalization resizing and transcoding",
+    "bootstrap retry propagation",
+    "enterprise credential telemetry and interoperability coverage"
+  ]
+}

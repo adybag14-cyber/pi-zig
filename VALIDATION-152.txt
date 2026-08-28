@@ -1,0 +1,146 @@
+Pi Zig checkpoint 152 validation
+================================
+
+Reference inputs
+----------------
+Original source:       supplied pi-main 0.84.1 snapshot
+Rewrite baseline:      exact uploaded checkpoint 151 archive
+Compiler/toolchain:    supplied Zig 0.16.0 Linux x86-64 archive
+Node compatibility:   Node.js 22.16.0
+SQLite runtime:        SQLite 3.46.1
+
+Frozen source measurements
+--------------------------
+Native Zig files under src/:              170
+Native Zig logical lines under src/:      87,103
+Embedded JavaScript bridge lines:            906
+Source-level Zig test declarations:          793
+All-package root graph:                      782 cases
+Implementation source files changed:          14
+Implementation additions/deletions:       +1,456 / -109
+Synthetic/generated feature shards:            0
+
+Primary complete test topology
+------------------------------
+Command: zig build test -Doptimize=Debug -j1
+
+All-package root graph:                    775 passed
+Intentional root SQLite isolates:            7
+Root failures:                               0
+Root graph total:                          782
+
+Dedicated SQLite repository:              11/11 passed
+Dedicated SQLite CLI/ABI/schema:           8 passed, 6 isolated, 0 failed
+Dedicated SQLite live persistence:         5/5 passed
+Ordinary executable suite:                 5/5 passed
+SQLite-enabled executable suite:           5/5 passed
+Build graph:                               13/13 steps succeeded
+
+The seven root-process isolates are deliberate process boundaries, not missing
+coverage. Six C-backed repository declarations execute in the dedicated
+11-test SQLite repository process. The SQLite CLI integration declaration
+executes in its dedicated linked process. All 793 source-level declarations
+execute through the complete topology.
+
+Focused changed-surface validation
+----------------------------------
+PASS  exact provider toolCallId reaches script tool.execute()
+PASS  execute signal and ctx.signal are one live AbortSignal
+PASS  native abort interrupts a pending script promise
+PASS  cancellation works without a visible renderer/event sink
+PASS  late updates after abort are suppressed
+PASS  cooperatively aborted worker remains reusable
+PASS  lifecycle hook contexts receive live abort state
+PASS  extension-host rich usage and addedToolNames parsing
+PASS  tool_result hook replacement of usage and addedToolNames
+PASS  sequential and parallel ownership-safe metadata cloning
+PASS  JSON progress/final metadata projection
+PASS  protocol-v1 usage projection and strict decoding
+PASS  JSONL save/load/fork/statistics metadata preservation
+PASS  package Pi manifest resolves extension/skill/prompt/theme paths
+PASS  authoritative manifest suppresses unlisted conventional fallback
+PASS  no-manifest package uses all four conventional resource directories
+PASS  project environment accepts a manifest-selected SKILL.md path
+PASS  whole-tree zig fmt --check
+PASS  git diff --check
+PASS  node --check src/extensions/js_bridge.mjs
+
+Real executable extension/package gate
+--------------------------------------
+PACKAGE_EXTENSION_METADATA_E2E:           PASS
+Pi manifest extension:                    PASS
+Pi manifest exact SKILL.md:               PASS
+Pi manifest prompt template:              PASS
+Pi manifest theme:                        PASS, no diagnostics
+Expanded prompt:                          CHECKPOINT152_PACKAGE_PROMPT:friend
+Provider-issued tool call ID:              provider-call-152
+Exact call-ID assertion:                   PASS
+Tool usage/cost projection:                PASS
+addedToolNames projection:                 PASS
+Durable package-resource custom entry:     PASS
+Durable expanded user prompt:              PASS
+Durable tool metadata:                     PASS
+Final assistant response:                  package-e2e-complete
+Process stderr:                            0 bytes
+
+Fresh Debug builds
+------------------
+pi:                                       PASS
+pi-sqlite:                                PASS
+pi-sqlite-live:                           PASS
+pi executable:                            static Linux x86-64 ELF
+pi SQLite dependency:                     none
+pi-sqlite executable:                     Linux x86-64 ELF linked to sqlite3/libc
+pi-sqlite-live executable:                Linux x86-64 ELF linked to sqlite3/libc
+pi --version:                             pi (pi-zig) coding agent 0.3.0
+All executable help smokes:                PASS
+
+Frozen source archive
+---------------------
+Single pi-zig-v8-checkpoint-152/ root:     PASS
+ZIP structural integrity:                 PASS
+.git exclusion:                           PASS
+.zig-cache* exclusion:                    PASS
+.zig-global-cache* exclusion:             PASS
+zig-out exclusion:                        PASS
+__pycache__ exclusion:                    PASS
+Staged/extracted source equivalence:       byte-for-byte PASS
+Exact-ZIP whole-tree formatting:           PASS
+Exact-ZIP Node bridge syntax:              PASS
+Exact-ZIP real-source audit:               PASS
+Exact-ZIP complete test topology:          PASS
+Exact-ZIP all three Debug builds:          PASS
+Exact-ZIP package/metadata E2E:             PASS
+
+Checkpoint patch reconstruction
+-------------------------------
+Baseline: exact uploaded checkpoint 151 source
+Binary-safe git apply --check:             PASS
+Patch application:                        PASS
+Reconstructed/frozen source equivalence:   byte-for-byte PASS
+Reconstructed whole-tree formatting:       PASS
+Reconstructed Node bridge syntax:          PASS
+Reconstructed real-source audit:           PASS
+Reconstructed complete test topology:      PASS
+Reconstructed all three Debug builds:      PASS
+
+Final publication/transfer verification
+---------------------------------------
+Each artifact copied in explicit 1 MiB chunks
+Each temporary destination flushed and fsync'd
+Each final filename installed by atomic replacement
+Each final-path file read completely
+Each staging/final pair compared byte-for-byte
+Each artifact independently SHA-256 hashed
+Three stable size/mtime/hash snapshots per artifact
+Checksum manifest verified from final published paths
+Published ZIP integrity rechecked
+Published executable version/help smokes passed
+Fresh published-path SQLite init/integrity smoke passed
+Post-smoke artifact hashes remained unchanged
+Temporary transfer files remaining:        0
+
+Result
+------
+Checkpoint 152 source, patch, executables, reports and checksums are validated
+and reproducible from both the frozen source ZIP and the checkpoint-151 patch.

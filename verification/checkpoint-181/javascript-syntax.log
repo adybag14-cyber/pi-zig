@@ -1,0 +1,2 @@
+node --check src/extensions/js_bridge.mjs
+status: 0 (passed)

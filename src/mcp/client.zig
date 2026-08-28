@@ -167,20 +167,15 @@ pub fn parseToolsListJson(gpa: std.mem.Allocator, line: []const u8) ![]McpTool {
     return try client.tools.toOwnedSlice(gpa);
 }
 
-/// Product path: validate method name against **all** monorepo MCP method shards.
+/// Validate a method against the real MCP method vocabulary used by this client.
 pub fn isKnownMcpMethod(method: []const u8) bool {
-    return @import("methods_all.zig").isKnownMethod(method);
+    return @import("methods.zig").isKnown(method);
 }
 
-/// Build a tools/list request (validates method is known via product MCP shards).
+/// Build a tools/list request.
 pub fn buildToolsListRequest(gpa: std.mem.Allocator, id: u64) ![]u8 {
     if (!isKnownMcpMethod("tools/list")) return error.UnknownMethod;
     return try std.fmt.allocPrint(gpa, "{{\"jsonrpc\":\"2.0\",\"id\":{d},\"method\":\"tools/list\"}}", .{id});
-}
-
-/// Build an extended MCP request for any ext/method_* across all shards.
-pub fn buildExtMethodRequest(gpa: std.mem.Allocator, method: []const u8, id: u64, params: []const u8) !?[]u8 {
-    return try @import("methods_all.zig").buildExtRequest(gpa, method, id, params);
 }
 
 test "parse MCP tools/list response" {
@@ -195,15 +190,12 @@ test "parse MCP tools/list response" {
     try std.testing.expectEqualStrings("search", client.tools.items[0].name);
 }
 
-test "MCP method shards known to product isKnownMcpMethod ALL shards" {
+test "MCP method registry rejects synthetic methods" {
     try std.testing.expect(isKnownMcpMethod("tools/list"));
     try std.testing.expect(isKnownMcpMethod("initialize"));
-    try std.testing.expect(isKnownMcpMethod("ext/method_0_0"));
-    try std.testing.expect(isKnownMcpMethod("ext/method_14_0"));
-    try std.testing.expect(isKnownMcpMethod("ext/method_14_49"));
+    try std.testing.expect(!isKnownMcpMethod("ext/method_14_0"));
     const gpa = std.testing.allocator;
-    const req = try buildExtMethodRequest(gpa, "ext/method_14_0", 7, "{}");
-    try std.testing.expect(req != null);
-    defer gpa.free(req.?);
-    try std.testing.expect(std.mem.indexOf(u8, req.?, "ext/method_14_0") != null);
+    const req = try buildToolsListRequest(gpa, 7);
+    defer gpa.free(req);
+    try std.testing.expect(std.mem.indexOf(u8, req, "tools/list") != null);
 }

@@ -1,0 +1,63 @@
+{
+  "checkpoint": 165,
+  "original": "Pi coding-agent 0.84.1",
+  "zig": "0.16.0",
+  "focus": "token-budget compaction, split-turn preparation, active-model thresholds, and durable settings persistence",
+  "closed": [
+    "active model context-window compaction thresholds",
+    "reserveTokens and keepRecentTokens settings with original defaults",
+    "turn-aware token-budget cut selection",
+    "tool-result-safe retained boundaries",
+    "split-turn prefix summarization",
+    "previous-summary integration",
+    "read write and edit operation extraction",
+    "real session_before_compact preparation projections",
+    "stale pre-compaction usage rejection by durable sequence",
+    "atomic RPC set_auto_compaction persistence",
+    "append-only durable history with compaction-aware active projection",
+    "persistent RPC compaction-policy E2E"
+  ],
+  "completedValidation": {
+    "directRoot": {"passed": 894, "skipped": 0, "failed": 0},
+    "moduleProcess": {"passed": 888, "isolated": 6, "failed": 0},
+    "sqliteRepository": {"passed": 11, "failed": 0},
+    "sqliteCli": {"passed": 8, "isolated": 6, "failed": 0},
+    "mainExecutable": {"passed": 9, "failed": 0},
+    "sqlitePersistence": {"passed": 5, "failed": 0},
+    "sqliteEnabledExecutable": {"passed": 9, "failed": 0},
+    "buildSteps": {"passed": 13, "failed": 0},
+    "compactionPolicyE2e": {
+      "settingsPersistence": true,
+      "reserveTokens": 123,
+      "keepRecentTokens": 20,
+      "splitTurn": true,
+      "messagesToSummarize": 4,
+      "turnPrefixMessages": 1,
+      "firstKeptRole": "assistant",
+      "durableMessagesBefore": 6,
+      "durableMessagesAfter": 6,
+      "activeContextStartsWith": "compactionSummary",
+      "stderrBytes": 0
+    },
+    "format": true,
+    "nodeBridgeSyntax": true,
+    "pythonFixtures": true,
+    "sourceAudit": true,
+    "syntheticSourceFiles": 0,
+    "allExecutableBuilds": true
+  },
+  "remaining": [
+    "exact prompt length clamping and every token estimation nuance",
+    "branch summary reserve-token and skip-prompt settings",
+    "full compaction and tree progress cancellation selector and fullscreen UI",
+    "OAuth cloud catalog and updater retry propagation",
+    "remaining fullscreen managers",
+    "complete package-manager platform behavior",
+    "arbitrary asynchronously invalidated extension components",
+    "function-valued providers and extension OAuth",
+    "server TLS and mTLS",
+    "automatic image transforms",
+    "enterprise credential telemetry retry and interoperability breadth"
+  ],
+  "aggregateQualification": "Direct root closure completed 894/894. The normal module process passed 888 cases and its six intentional SQLite repository isolates all passed in the dedicated linked 11-test process."
+}

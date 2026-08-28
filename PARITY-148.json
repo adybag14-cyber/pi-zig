@@ -1,0 +1,74 @@
+{
+  "checkpoint": 148,
+  "reference": "Pi 0.84.1 supplied source",
+  "toolchain": "Zig 0.16.0",
+  "measurements": {
+    "zigFiles": 170,
+    "zigLines": 82525,
+    "embeddedJsBridgeLines": 670,
+    "zigTestDeclarations": 765,
+    "syntheticFeatureFiles": 0
+  },
+  "validation": {
+    "format": "pass",
+    "nodeSyntax": "pass",
+    "sourceAudit": "pass",
+    "root": {
+      "declared": 755,
+      "passed": 748,
+      "isolated": 7,
+      "failed": 0
+    },
+    "sqliteRepository": {
+      "passed": 11,
+      "failed": 0
+    },
+    "sqliteCli": {
+      "passed": 8,
+      "isolated": 6,
+      "failed": 0
+    },
+    "sqlitePersistence": {
+      "passed": 5,
+      "failed": 0
+    },
+    "ordinaryExecutable": {
+      "passed": 4,
+      "failed": 0
+    },
+    "sqliteExecutable": {
+      "passed": 4,
+      "failed": 0
+    },
+    "allUniqueDeclarationsExecuted": true,
+    "builds": [
+      "pi",
+      "pi-sqlite",
+      "pi-sqlite-live"
+    ],
+    "lifecycleActionE2e": "pass",
+    "toolActionE2e": "pass",
+    "dynamicProviderE2e": "pass"
+  },
+  "implementedThisCheckpoint": [
+    "allocator-owned canonical extension action records",
+    "thread-safe monotonic FIFO for lifecycle and tool callback side effects",
+    "agent-thread safe-point application of session model tool message and stop actions",
+    "agent_end queued continuation and durable session_shutdown actions",
+    "authoritative shouldStopAfterTurn ordering",
+    "declarative extension provider register unregister and transactional replacement",
+    "custom extension model injection through models.json validation and runtime resolution",
+    "live client pool and model catalog replacement",
+    "real OpenAI-compatible SSE provider registration end-to-end validation"
+  ],
+  "remaining": [
+    "arbitrary extension component and renderer equivalence",
+    "strict ordered legacy command and shortcut return semantics",
+    "function-valued provider and extension OAuth callbacks",
+    "automatic extension dependency installation",
+    "complete original coding-agent screen wiring",
+    "server TLS and mutual TLS",
+    "automatic image resizing and transcoding",
+    "remaining enterprise credential retry and interoperability matrix"
+  ]
+}

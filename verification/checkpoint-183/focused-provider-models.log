@@ -1,0 +1,9 @@
+command: zig test src/_checkpoint183_test_root.zig -lc -lsqlite3 --test-filter "extension provider model"
+1/7 _checkpoint183_test_root.test_0...OK
+2/7 extensions.root.test_0...OK
+3/7 extensions.provider_models.test.extension provider models restore cache refresh credentials persist and survive reload...OK
+4/7 extensions.provider_models.test.extension provider models reject stale publication generations transactionally...OK
+5/7 extensions.provider_models.test.extension provider model refresh abort leaves catalog and persistence unchanged...OK
+6/7 auth.root.test_0...OK
+7/7 ai.root.test_0...OK
+All 7 tests passed.

@@ -1,0 +1,57 @@
+{
+  "checkpoint": 179,
+  "closed": [
+    "retained provider-owned login dialog",
+    "OSC 8 authorization links",
+    "browser callback progress",
+    "device-code display",
+    "manual Codex/Anthropic redirect input on callback bind failure",
+    "cooperative provider cancellation",
+    "terminal lifecycle restoration"
+  ],
+  "originalVersion": "0.84.1",
+  "providers": {
+    "anthropic": [
+      "browser"
+    ],
+    "github-copilot": [
+      "device-code"
+    ],
+    "kimi-coding": [
+      "device-code"
+    ],
+    "openai-codex": [
+      "browser",
+      "device-code"
+    ],
+    "openrouter": [
+      "browser"
+    ],
+    "radius": [
+      "browser",
+      "device-code"
+    ],
+    "xai": [
+      "device-code"
+    ]
+  },
+  "remaining": [
+    "function-valued extension OAuth",
+    "generic provider auth interaction events",
+    "fullscreen package/account managers",
+    "package-manager platform matrix",
+    "async extension component invalidation",
+    "server TLS/mTLS",
+    "embedded image transformation"
+  ],
+  "validation": {
+    "authGraph": "102/102",
+    "e2e": "pass",
+    "executable": "10/10",
+    "loginGraph": "19/19",
+    "sqliteCli": "8 pass, 6 isolated, 0 fail",
+    "sqliteRepository": "11/11",
+    "stderrBytes": 0
+  },
+  "zigVersion": "0.16.0"
+}

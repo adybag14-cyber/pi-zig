@@ -1,0 +1,88 @@
+Pi Zig checkpoint 145 validation
+================================
+
+Reference source: uploaded Pi 0.84.1 archive pi-main (3)(5).zip
+Reference SHA-256: 42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a
+Exact patch baseline: uploaded pi-zig-v8-checkpoint-144(1).zip
+Baseline SHA-256: 933583d44190be32caf0b958de947fd798bb2faf23402ded2767a7c6f6da1e4e
+Toolchain: supplied Zig 0.16.0 Linux x86-64 archive
+Toolchain SHA-256: 70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+
+Source measurements
+-------------------
+Zig source files under src/: 166
+Native Zig source lines under src/: 77,510
+Gain over uploaded checkpoint 144: 7 files and 3,269 lines
+Unique declared tests: 740
+Gain over uploaded checkpoint 144: 26 tests
+Synthetic/generated feature shards: 0
+Implementation diff: 32 files, +3,529 / -193 lines
+
+Final worktree gates
+--------------------
+Whole-tree zig fmt --check: PASS
+Real-source audit: PASS (166 files, 77,510 lines, zero synthetic files)
+Complete `zig build test -Doptimize=Debug`: PASS
+  ordinary/main suite: 4/4
+  canonical SQLite repository suite: 11/11
+  live SQLite persistence suite: 5/5
+  SQLite CLI/ABI/schema process: 8 active passed, 6 intentionally isolated, 0 failed
+  all-package root: 723 passed, 7 intentionally isolated, 0 failed
+  second executable/main suite: 4/4
+All 740 unique source test declarations executed successfully: PASS
+Focused secure client/protocol closure: 39/39
+Focused server/provider/session closure: 460/460
+Focused startup migration closure: 4/4
+Clean Debug build of ordinary pi: PASS
+Clean Debug build of optional pi-sqlite: PASS
+Clean Debug build of optional pi-sqlite-live: PASS
+Ordinary pi executable: static Linux x86-64 ELF with Debug information
+Ordinary pi dynamic SQLite dependency: NONE
+pi-sqlite and pi-sqlite-live: explicitly linked to sqlite3/libc
+
+Isolation qualification
+-----------------------
+The seven all-package root skips are the SQLite CLI live integration case and
+six C-backed repository cases. The CLI case passes in the linked SQLite CLI
+process; all six repository cases pass in the dedicated 11-test repository
+process. No declared behavior is represented as passed solely because it was
+skipped in the self-contained root process.
+
+Live executable gates
+---------------------
+Provider HTTP proxy lower-case precedence: PASS
+Provider HTTP NO_PROXY bypass: PASS
+Global settings.json httpProxy routing: PASS
+Raw Pi remote list through HTTP CONNECT: PASS
+Raw Pi remote create through HTTP CONNECT: PASS
+Startup credential migration and 0600 auth mode: PASS
+Startup settings/keybinding/prompt/binary migration: PASS
+Misplaced and pre-145 hashed session recovery: PASS
+Second startup migration idempotence: PASS
+Session migration dry-run and atomic application: PASS
+Session statistics/tree/rename/delete guard/delete: PASS
+SQLite live create and persisted transcript: PASS
+SQLite server stop/restart restore: PASS
+Post-restart SQLite doctor/integrity: PASS
+
+Final archive and patch gates
+-----------------------------
+Cache-free single-root ZIP integrity: PASS
+ZIP package/extraction content equivalence: byte-for-byte PASS
+Forbidden .git/.zig-cache/zig-out archive entries: NONE
+Source audit and formatting from exact ZIP extraction: PASS
+Complete test graph from exact ZIP extraction: PASS
+All three Debug builds from exact ZIP extraction: PASS
+Checkpoint-144 patch check/application: PASS
+Patch reconstruction equivalence to checkpoint 145: byte-for-byte PASS
+Reconstructed source audit and formatting: PASS
+Complete test graph from patch reconstruction: PASS
+All three Debug builds from patch reconstruction: PASS
+Executable version/help smokes from both reconstructions: PASS
+
+Transfer-completion protocol
+----------------------------
+After reports are frozen, every downloadable artifact is copied to its published
+/mnt/data path in forced 1 MiB chunks, flushed and fsynced, read completely,
+compared byte-for-byte, independently SHA-256 hashed, checked through three
+stable size/mtime/hash snapshots, and verified against the final manifest.

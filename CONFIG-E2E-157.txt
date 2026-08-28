@@ -1,0 +1,54 @@
+Pi Zig checkpoint 157 configuration and coordination E2E
+========================================================
+
+Toolchain
+---------
+Zig 0.16.0 from the supplied archive
+Baseline: uploaded checkpoint 156
+Reference: newly supplied original Pi 0.84.1 source
+
+CLI resource configuration
+--------------------------
+Local package install: PASS
+Global JSON inventory includes enabled extension: PASS
+Global exact unload persists: PASS
+Project exact unload persists: PASS
+Project return to inheritance: PASS
+Empty project delta pruned to empty registry: PASS
+Non-mutating repair health check: PASS
+Result: CONFIG_CLI_E2E_157=PASS
+
+Fullscreen selector through a real PTY
+--------------------------------------
+TTY capability detection: PASS
+DEC alternate-screen entry observed: PASS
+Global resource row rendered: PASS
+Space toggle handled: PASS
+Exact -extensions/demo.ts selector persisted: PASS
+Escape closed selector with process exit 0: PASS
+Result: CONFIG_TUI_E2E_157=PASS
+
+Operation ownership
+-------------------
+External process acquired exclusive .packages.lock: PASS
+Synchronized owner JSON read while locked: PASS
+operationActive=true: PASS
+operation=configure: PASS
+operationPid matched owner: PASS
+Unlocked non-empty payload classified stale: PASS
+Result: PACKAGE_LOCK_E2E_157=PASS
+
+Concurrent configuration transaction
+------------------------------------
+Fixture package resources: extensions/a.ts, extensions/b.ts
+Processes per round: 2
+Rounds: 12
+Both exact unload selectors retained each round: PASS
+PackageOperationLocked failures: 0
+Lost updates: 0
+Result: CONCURRENT_CONFIG_E2E_157=PASS
+
+Publication qualification
+-------------------------
+These gates are repeated against the exact frozen source extraction and the
+final published pi executable before the checkpoint response is completed.

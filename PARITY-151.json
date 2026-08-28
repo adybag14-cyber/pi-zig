@@ -1,0 +1,51 @@
+{
+  "checkpoint": 151,
+  "reference": {
+    "project": "earendil-works/pi",
+    "version": "0.84.1",
+    "source_archive_sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a"
+  },
+  "baseline": {
+    "checkpoint": 150,
+    "archive_sha256": "97925af0f511385f82b2f50b87a959db3ef3f5af01b9731092d5c1c88a2e336f"
+  },
+  "measurements": {
+    "zig_files": 170,
+    "zig_lines": 85795,
+    "javascript_bridge_lines": 867,
+    "source_test_declarations": 785,
+    "root_graph_cases": 774,
+    "root_passed": 767,
+    "root_isolated": 7,
+    "root_failed": 0,
+    "synthetic_feature_files": 0
+  },
+  "closed_in_checkpoint": [
+    "true cross-process JavaScript and TypeScript extension tool progress",
+    "primary live delivery with deadlock-safe deferred lifecycle-observer replay",
+    "bounded agent-thread event delivery for parallel streaming tools",
+    "native bash accumulated progress snapshots during process execution",
+    "100 ms native progress throttling and 128 KiB tail bounding",
+    "worker closure after streaming protocol or callback failure"
+  ],
+  "validation": {
+    "full_test_topology": "pass",
+    "extension_live_timing_e2e": "pass",
+    "native_bash_live_timing_e2e": "pass",
+    "zig_format": "pass",
+    "node_syntax": "pass",
+    "real_source_audit": "pass",
+    "debug_builds": ["pi", "pi-sqlite", "pi-sqlite-live"]
+  },
+  "remaining": [
+    "live AbortSignal propagation to JavaScript and TypeScript tool promises",
+    "multiple-image fidelity through all extension provider session and renderer paths",
+    "arbitrary extension component trees and asynchronous invalidation",
+    "function-valued provider transports and extension-owned OAuth callbacks",
+    "automatic extension npm dependency lifecycle management",
+    "complete original coding-agent fullscreen screen wiring",
+    "native server TLS and mutual TLS",
+    "automatic image resize and transcoding",
+    "remaining enterprise credential retry and interoperability matrix"
+  ]
+}

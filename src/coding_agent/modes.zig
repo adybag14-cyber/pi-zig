@@ -98,6 +98,20 @@ pub const JsonEmitter = struct {
                 }
                 aw.writer.writeAll("}\n") catch return;
             },
+            .tool_execution_update => {
+                aw.writer.writeAll("{\"type\":\"tool_execution_update\",\"toolCallId\":") catch return;
+                std.json.Stringify.value(event.id, .{}, &aw.writer) catch return;
+                aw.writer.writeAll(",\"toolName\":") catch return;
+                std.json.Stringify.value(event.name, .{}, &aw.writer) catch return;
+                aw.writer.writeAll(",\"args\":") catch return;
+                if (event.args_json.len > 0 and event.args_json[0] == '{')
+                    aw.writer.writeAll(event.args_json) catch return
+                else
+                    aw.writer.writeAll("{}") catch return;
+                aw.writer.writeAll(",\"partialResult\":") catch return;
+                writeToolResultObject(&aw.writer, event) catch return;
+                aw.writer.writeAll("}\n") catch return;
+            },
             .tool_execution_end => {
                 aw.writer.writeAll("{\"type\":\"tool_execution_end\",\"toolCallId\":") catch return;
                 std.json.Stringify.value(event.id, .{}, &aw.writer) catch return;
@@ -105,9 +119,50 @@ pub const JsonEmitter = struct {
                 std.json.Stringify.value(event.name, .{}, &aw.writer) catch return;
                 aw.writer.writeAll(",\"isError\":") catch return;
                 aw.writer.writeAll(if (event.is_error) "true" else "false") catch return;
-                aw.writer.writeAll(",\"result\":{\"content\":[{\"type\":\"text\",\"text\":") catch return;
-                std.json.Stringify.value(event.text, .{}, &aw.writer) catch return;
-                aw.writer.writeAll("}]}}\n") catch return;
+                aw.writer.writeAll(",\"result\":") catch return;
+                writeToolResultObject(&aw.writer, event) catch return;
+                aw.writer.writeAll("}\n") catch return;
+            },
+            .auto_retry_start => {
+                aw.writer.print("{{\"type\":\"auto_retry_start\",\"attempt\":{d},\"maxAttempts\":{d},\"delayMs\":{d},\"errorMessage\":", .{
+                    event.attempt,
+                    event.max_attempts,
+                    event.delay_ms,
+                }) catch return;
+                std.json.Stringify.value(event.error_message orelse event.text, .{}, &aw.writer) catch return;
+                aw.writer.writeAll("}\n") catch return;
+            },
+            .auto_retry_end => {
+                aw.writer.print("{{\"type\":\"auto_retry_end\",\"success\":{s},\"attempt\":{d}", .{
+                    if (event.success) "true" else "false",
+                    event.attempt,
+                }) catch return;
+                if (event.final_error) |final_error| {
+                    aw.writer.writeAll(",\"finalError\":") catch return;
+                    std.json.Stringify.value(final_error, .{}, &aw.writer) catch return;
+                }
+                aw.writer.writeAll("}\n") catch return;
+            },
+            .summarization_retry_scheduled => {
+                aw.writer.print("{{\"type\":\"summarization_retry_scheduled\",\"attempt\":{d},\"maxAttempts\":{d},\"delayMs\":{d},\"errorMessage\":", .{
+                    event.attempt,
+                    event.max_attempts,
+                    event.delay_ms,
+                }) catch return;
+                std.json.Stringify.value(event.error_message orelse event.text, .{}, &aw.writer) catch return;
+                aw.writer.writeAll("}\n") catch return;
+            },
+            .summarization_retry_attempt_start => {
+                aw.writer.writeAll("{\"type\":\"summarization_retry_attempt_start\",\"source\":") catch return;
+                std.json.Stringify.value(event.source, .{}, &aw.writer) catch return;
+                if (std.mem.eql(u8, event.source, "compaction")) {
+                    aw.writer.writeAll(",\"reason\":") catch return;
+                    std.json.Stringify.value(event.reason, .{}, &aw.writer) catch return;
+                }
+                aw.writer.writeAll("}\n") catch return;
+            },
+            .summarization_retry_finished => {
+                aw.writer.writeAll("{\"type\":\"summarization_retry_finished\"}\n") catch return;
             },
             // Legacy aliases: loop already emits agent_end; skip .done to avoid duplicate agent_end.
             .done, .user, .assistant, .tool_call, .tool_result, .turn_limit => return,
@@ -132,13 +187,120 @@ pub const PrintEmitter = struct {
             .tool_execution_start, .tool_call => {
                 if (self.verbose) tui_render.renderToolCall(self.io, event.name, event.text) catch {};
             },
-            .tool_execution_end, .tool_result => {
+            .tool_execution_update, .tool_execution_end, .tool_result => {
                 if (self.verbose) tui_render.renderToolResult(self.io, event.name, event.text, event.is_error) catch {};
             },
+            .auto_retry_start => if (self.verbose) {
+                var buf: [256]u8 = undefined;
+                const line = std.fmt.bufPrint(&buf, "retry {d}/{d} in {d}ms: {s}", .{
+                    event.attempt,
+                    event.max_attempts,
+                    event.delay_ms,
+                    event.error_message orelse event.text,
+                }) catch return;
+                tui_render.printLine(self.io, line) catch {};
+            },
+            .auto_retry_end => if (self.verbose) {
+                var buf: [192]u8 = undefined;
+                const line = if (event.success)
+                    std.fmt.bufPrint(&buf, "retry succeeded after attempt {d}", .{event.attempt}) catch return
+                else
+                    std.fmt.bufPrint(&buf, "retry ended after attempt {d}: {s}", .{ event.attempt, event.final_error orelse event.text }) catch return;
+                tui_render.printLine(self.io, line) catch {};
+            },
+            .summarization_retry_scheduled => if (self.verbose) {
+                var buf: [320]u8 = undefined;
+                const line = std.fmt.bufPrint(&buf, "summary retry {d}/{d} in {d}ms: {s}", .{
+                    event.attempt,
+                    event.max_attempts,
+                    event.delay_ms,
+                    event.error_message orelse event.text,
+                }) catch return;
+                tui_render.printLine(self.io, line) catch {};
+            },
+            .summarization_retry_attempt_start => if (self.verbose) {
+                var buf: [160]u8 = undefined;
+                const line = if (std.mem.eql(u8, event.source, "branchSummary"))
+                    std.fmt.bufPrint(&buf, "retrying branch summary", .{}) catch return
+                else
+                    std.fmt.bufPrint(&buf, "retrying {s} compaction", .{event.reason}) catch return;
+                tui_render.printLine(self.io, line) catch {};
+            },
+            .summarization_retry_finished => {},
             else => {},
         }
     }
 };
+
+fn writeToolResultObject(writer: *std.Io.Writer, event: agent_loop.AgentEvent) !void {
+    try writer.writeAll("{\"content\":[");
+    var wrote = false;
+    if (event.text.len > 0 or (event.image_b64 == null and event.images.len == 0)) {
+        try writer.writeAll("{\"type\":\"text\",\"text\":");
+        try std.json.Stringify.value(event.text, .{}, writer);
+        try writer.writeByte('}');
+        wrote = true;
+    }
+    if (event.image_b64) |image| {
+        if (wrote) try writer.writeByte(',');
+        try writer.writeAll("{\"type\":\"image\",\"data\":");
+        try std.json.Stringify.value(image, .{}, writer);
+        try writer.writeAll(",\"mimeType\":");
+        try std.json.Stringify.value(event.image_mime orelse "image/png", .{}, writer);
+        try writer.writeByte('}');
+        wrote = true;
+    }
+    for (event.images) |image| {
+        if (wrote) try writer.writeByte(',');
+        try writer.writeAll("{\"type\":\"image\",\"data\":");
+        try std.json.Stringify.value(image.data_b64, .{}, writer);
+        try writer.writeAll(",\"mimeType\":");
+        try std.json.Stringify.value(image.mime_type, .{}, writer);
+        try writer.writeByte('}');
+        wrote = true;
+    }
+    try writer.writeAll("],\"details\":");
+    if (event.details_json) |details|
+        try writer.writeAll(details)
+    else
+        try writer.writeAll("null");
+    try writer.writeAll(",\"isError\":");
+    try writer.writeAll(if (event.is_error) "true" else "false");
+    if (event.usage) |usage| {
+        try writer.writeAll(",\"usage\":");
+        try writeUsageObject(writer, usage, true);
+    }
+    if (event.added_tool_names.len > 0) {
+        try writer.writeAll(",\"addedToolNames\":[");
+        for (event.added_tool_names, 0..) |name, index| {
+            if (index > 0) try writer.writeByte(',');
+            try std.json.Stringify.value(name, .{}, writer);
+        }
+        try writer.writeByte(']');
+    }
+    try writer.writeByte('}');
+}
+
+fn writeUsageObject(writer: *std.Io.Writer, usage: anytype, include_cache_write_1h: bool) !void {
+    try writer.print("{{\"input\":{d},\"output\":{d},\"cacheRead\":{d},\"cacheWrite\":{d}", .{
+        usage.input,
+        usage.output,
+        usage.cache_read,
+        usage.cache_write,
+    });
+    if (include_cache_write_1h) {
+        if (usage.cache_write_1h) |tokens| try writer.print(",\"cacheWrite1h\":{d}", .{tokens});
+    }
+    if (usage.reasoning) |tokens| try writer.print(",\"reasoning\":{d}", .{tokens});
+    try writer.print(",\"totalTokens\":{d},\"cost\":{{\"input\":{d},\"output\":{d},\"cacheRead\":{d},\"cacheWrite\":{d},\"total\":{d}}}}}", .{
+        usage.total(),
+        usage.cost.input,
+        usage.cost.output,
+        usage.cost.cache_read,
+        usage.cost.cache_write,
+        usage.cost.total,
+    });
+}
 
 pub const RpcRequest = struct {
     id: []const u8,
@@ -150,6 +312,20 @@ pub const RpcRequest = struct {
     model_id: ?[]const u8 = null,
     /// set_thinking_level
     thinking_level: ?[]const u8 = null,
+    /// Queue-mode commands.
+    mode: ?[]const u8 = null,
+    /// Direct bash command.
+    shell_command: ?[]const u8 = null,
+    custom_instructions: ?[]const u8 = null,
+    output_path: ?[]const u8 = null,
+    session_path: ?[]const u8 = null,
+    entry_id: ?[]const u8 = null,
+    since: ?[]const u8 = null,
+    name: ?[]const u8 = null,
+    parent_session: ?[]const u8 = null,
+    streaming_behavior: ?[]const u8 = null,
+    enabled: ?bool = null,
+    exclude_from_context: ?bool = null,
 };
 
 fn dupeOptString(gpa: std.mem.Allocator, obj: std.json.ObjectMap, key: []const u8) !?[]const u8 {
@@ -158,33 +334,53 @@ fn dupeOptString(gpa: std.mem.Allocator, obj: std.json.ObjectMap, key: []const u
     return try gpa.dupe(u8, v.string);
 }
 
-fn extractRpcExtras(gpa: std.mem.Allocator, obj: std.json.ObjectMap, req: *RpcRequest) !void {
-    // Top-level fields (upstream rpc.md)
-    if (try dupeOptString(gpa, obj, "message")) |m| {
-        if (req.params_prompt == null) req.params_prompt = m else gpa.free(m);
-    }
-    if (try dupeOptString(gpa, obj, "provider")) |p| req.provider = p;
-    if (try dupeOptString(gpa, obj, "modelId") orelse try dupeOptString(gpa, obj, "model")) |m| req.model_id = m;
-    if (try dupeOptString(gpa, obj, "thinkingLevel") orelse try dupeOptString(gpa, obj, "level")) |t| req.thinking_level = t;
+fn optBool(obj: std.json.ObjectMap, key: []const u8) ?bool {
+    const v = obj.get(key) orelse return null;
+    if (v != .bool) return null;
+    return v.bool;
+}
 
-    // Nested params object (legacy + some clients)
+fn setStringIfMissing(
+    gpa: std.mem.Allocator,
+    field: *?[]const u8,
+    value: ?[]const u8,
+) void {
+    if (value) |owned| {
+        if (field.* == null) field.* = owned else gpa.free(owned);
+    }
+}
+
+fn extractRpcObject(gpa: std.mem.Allocator, obj: std.json.ObjectMap, req: *RpcRequest) !void {
+    setStringIfMissing(gpa, &req.params_prompt, try dupeOptString(gpa, obj, "message"));
+    setStringIfMissing(gpa, &req.params_prompt, try dupeOptString(gpa, obj, "prompt"));
+    setStringIfMissing(gpa, &req.params_prompt, try dupeOptString(gpa, obj, "text"));
+    setStringIfMissing(gpa, &req.provider, try dupeOptString(gpa, obj, "provider"));
+    setStringIfMissing(gpa, &req.model_id, try dupeOptString(gpa, obj, "modelId"));
+    setStringIfMissing(gpa, &req.model_id, try dupeOptString(gpa, obj, "model"));
+    setStringIfMissing(gpa, &req.thinking_level, try dupeOptString(gpa, obj, "thinkingLevel"));
+    setStringIfMissing(gpa, &req.thinking_level, try dupeOptString(gpa, obj, "level"));
+    setStringIfMissing(gpa, &req.mode, try dupeOptString(gpa, obj, "mode"));
+    setStringIfMissing(gpa, &req.shell_command, try dupeOptString(gpa, obj, "command"));
+    setStringIfMissing(gpa, &req.custom_instructions, try dupeOptString(gpa, obj, "customInstructions"));
+    setStringIfMissing(gpa, &req.output_path, try dupeOptString(gpa, obj, "outputPath"));
+    setStringIfMissing(gpa, &req.session_path, try dupeOptString(gpa, obj, "sessionPath"));
+    setStringIfMissing(gpa, &req.entry_id, try dupeOptString(gpa, obj, "entryId"));
+    setStringIfMissing(gpa, &req.since, try dupeOptString(gpa, obj, "since"));
+    setStringIfMissing(gpa, &req.name, try dupeOptString(gpa, obj, "name"));
+    setStringIfMissing(gpa, &req.parent_session, try dupeOptString(gpa, obj, "parentSession"));
+    setStringIfMissing(gpa, &req.streaming_behavior, try dupeOptString(gpa, obj, "streamingBehavior"));
+    if (req.enabled == null) req.enabled = optBool(obj, "enabled");
+    if (req.exclude_from_context == null) req.exclude_from_context = optBool(obj, "excludeFromContext");
+}
+
+fn extractRpcExtras(gpa: std.mem.Allocator, obj: std.json.ObjectMap, req: *RpcRequest) !void {
+    // Current upstream commands place parameters at the top level.
+    try extractRpcObject(gpa, obj, req);
+
+    // Legacy clients place the same fields under `params`.
     if (obj.get("params")) |params| {
         if (params == .object) {
-            if (try dupeOptString(gpa, params.object, "prompt") orelse
-                try dupeOptString(gpa, params.object, "text") orelse
-                try dupeOptString(gpa, params.object, "message")) |p|
-            {
-                if (req.params_prompt == null) req.params_prompt = p else gpa.free(p);
-            }
-            if (req.provider == null) {
-                if (try dupeOptString(gpa, params.object, "provider")) |p| req.provider = p;
-            }
-            if (req.model_id == null) {
-                if (try dupeOptString(gpa, params.object, "modelId") orelse try dupeOptString(gpa, params.object, "model")) |m| req.model_id = m;
-            }
-            if (req.thinking_level == null) {
-                if (try dupeOptString(gpa, params.object, "thinkingLevel") orelse try dupeOptString(gpa, params.object, "level")) |t| req.thinking_level = t;
-            }
+            try extractRpcObject(gpa, params.object, req);
         } else if (params == .string and req.params_prompt == null) {
             req.params_prompt = try gpa.dupe(u8, params.string);
         }
@@ -199,36 +395,24 @@ pub fn parseRpcLine(gpa: std.mem.Allocator, line: []const u8) !RpcRequest {
     defer parsed.deinit();
     if (parsed.value != .object) return error.InvalidRpc;
 
-    var id_owned: []u8 = undefined;
-    if (parsed.value.object.get("id")) |id_v| {
-        id_owned = switch (id_v) {
-            .string => |s| try gpa.dupe(u8, s),
-            .integer => |i| try std.fmt.allocPrint(gpa, "{d}", .{i}),
-            else => try gpa.dupe(u8, ""),
-        };
-    } else {
-        id_owned = try gpa.dupe(u8, "");
-    }
-    errdefer gpa.free(id_owned);
+    var req: RpcRequest = blk: {
+        const id_owned: []u8 = if (parsed.value.object.get("id")) |id_v|
+            switch (id_v) {
+                .string => |value| try gpa.dupe(u8, value),
+                .integer => |value| try std.fmt.allocPrint(gpa, "{d}", .{value}),
+                else => try gpa.dupe(u8, ""),
+            }
+        else
+            try gpa.dupe(u8, "");
+        errdefer gpa.free(id_owned);
 
-    var req: RpcRequest = .{
-        .id = id_owned,
-        .method = undefined,
+        const method_value = parsed.value.object.get("type") orelse parsed.value.object.get("method") orelse return error.InvalidRpc;
+        if (method_value != .string) return error.InvalidRpc;
+        const method_owned = try gpa.dupe(u8, method_value.string);
+        errdefer gpa.free(method_owned);
+        break :blk .{ .id = id_owned, .method = method_owned };
     };
-
-    // Upstream style: type field is the command
-    if (parsed.value.object.get("type")) |tv| {
-        if (tv == .string) {
-            req.method = try gpa.dupe(u8, tv.string);
-            try extractRpcExtras(gpa, parsed.value.object, &req);
-            return req;
-        }
-    }
-
-    // Legacy method style
-    const method_v = parsed.value.object.get("method") orelse return error.InvalidRpc;
-    if (method_v != .string) return error.InvalidRpc;
-    req.method = try gpa.dupe(u8, method_v.string);
+    errdefer freeRpcRequest(gpa, &req);
     try extractRpcExtras(gpa, parsed.value.object, &req);
     return req;
 }
@@ -236,10 +420,20 @@ pub fn parseRpcLine(gpa: std.mem.Allocator, line: []const u8) !RpcRequest {
 pub fn freeRpcRequest(gpa: std.mem.Allocator, req: *RpcRequest) void {
     gpa.free(req.id);
     gpa.free(req.method);
-    if (req.params_prompt) |p| gpa.free(p);
-    if (req.provider) |p| gpa.free(p);
-    if (req.model_id) |m| gpa.free(m);
-    if (req.thinking_level) |t| gpa.free(t);
+    if (req.params_prompt) |value| gpa.free(value);
+    if (req.provider) |value| gpa.free(value);
+    if (req.model_id) |value| gpa.free(value);
+    if (req.thinking_level) |value| gpa.free(value);
+    if (req.mode) |value| gpa.free(value);
+    if (req.shell_command) |value| gpa.free(value);
+    if (req.custom_instructions) |value| gpa.free(value);
+    if (req.output_path) |value| gpa.free(value);
+    if (req.session_path) |value| gpa.free(value);
+    if (req.entry_id) |value| gpa.free(value);
+    if (req.since) |value| gpa.free(value);
+    if (req.name) |value| gpa.free(value);
+    if (req.parent_session) |value| gpa.free(value);
+    if (req.streaming_behavior) |value| gpa.free(value);
     req.* = undefined;
 }
 
@@ -259,6 +453,20 @@ pub fn writeRpcResponse(io: Io, id: []const u8, command: []const u8, success: bo
         try aw.writer.writeAll(",\"data\":");
         try aw.writer.writeAll(d);
     }
+    try aw.writer.writeAll("}\n");
+    try tui_render.writeAll(io, aw.written());
+}
+
+pub fn writeBashExecutionUpdate(io: Io, id: []const u8, delta: []const u8) !void {
+    var aw: std.Io.Writer.Allocating = .init(std.heap.page_allocator);
+    defer aw.deinit();
+    try aw.writer.writeAll("{\"type\":\"bash_execution_update\"");
+    if (id.len > 0) {
+        try aw.writer.writeAll(",\"id\":");
+        try std.json.Stringify.value(id, .{}, &aw.writer);
+    }
+    try aw.writer.writeAll(",\"delta\":");
+    try std.json.Stringify.value(delta, .{}, &aw.writer);
     try aw.writer.writeAll("}\n");
     try tui_render.writeAll(io, aw.written());
 }
@@ -298,6 +506,41 @@ pub const RpcEventEmitter = struct {
     }
 };
 
+test "tool result JSON preserves usage and added tool names" {
+    const gpa = std.testing.allocator;
+    var out: std.Io.Writer.Allocating = .init(gpa);
+    defer out.deinit();
+    try writeToolResultObject(&out.writer, .{
+        .kind = .tool_execution_end,
+        .text = "done",
+        .image_b64 = "AA==",
+        .image_mime = "image/png",
+        .images = &.{.{ .data_b64 = @constCast("AQ=="), .mime_type = @constCast("image/jpeg") }},
+        .usage = .{
+            .input = 4,
+            .output = 3,
+            .cache_read = 2,
+            .cache_write = 1,
+            .cache_write_1h = 1,
+            .reasoning = 2,
+            .total_tokens = 10,
+            .cost = .{ .input = 0.1, .output = 0.2, .cache_read = 0.3, .cache_write = 0.4, .total = 1.0 },
+        },
+        .added_tool_names = &.{ "alpha", "beta" },
+    });
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, out.written(), .{});
+    defer parsed.deinit();
+    const content = parsed.value.object.get("content").?.array.items;
+    try std.testing.expectEqual(@as(usize, 3), content.len);
+    try std.testing.expectEqualStrings("AA==", content[1].object.get("data").?.string);
+    try std.testing.expectEqualStrings("AQ==", content[2].object.get("data").?.string);
+    const usage = parsed.value.object.get("usage").?;
+    try std.testing.expectEqual(@as(i64, 10), usage.object.get("totalTokens").?.integer);
+    try std.testing.expectEqual(@as(i64, 1), usage.object.get("cacheWrite1h").?.integer);
+    try std.testing.expectEqual(@as(usize, 2), parsed.value.object.get("addedToolNames").?.array.items.len);
+    try std.testing.expectEqualStrings("beta", parsed.value.object.get("addedToolNames").?.array.items[1].string);
+}
+
 test "parse rpc prompt upstream type field" {
     const gpa = std.testing.allocator;
     var req = try parseRpcLine(gpa,
@@ -336,4 +579,23 @@ test "parse rpc set_model and set_thinking_level fields" {
     defer freeRpcRequest(gpa, &r2);
     try std.testing.expectEqualStrings("set_thinking_level", r2.method);
     try std.testing.expectEqualStrings("high", r2.thinking_level.?);
+}
+
+test "parse rpc command-specific top-level and nested parameters" {
+    const gpa = std.testing.allocator;
+    var current = try parseRpcLine(gpa,
+        \\{"id":9,"type":"bash","command":"pwd","excludeFromContext":true}
+    );
+    defer freeRpcRequest(gpa, &current);
+    try std.testing.expectEqualStrings("9", current.id);
+    try std.testing.expectEqualStrings("pwd", current.shell_command.?);
+    try std.testing.expectEqual(true, current.exclude_from_context.?);
+
+    var legacy = try parseRpcLine(gpa,
+        \\{"method":"get_entries","params":{"since":"m4","enabled":false,"mode":"all"}}
+    );
+    defer freeRpcRequest(gpa, &legacy);
+    try std.testing.expectEqualStrings("m4", legacy.since.?);
+    try std.testing.expectEqual(false, legacy.enabled.?);
+    try std.testing.expectEqualStrings("all", legacy.mode.?);
 }

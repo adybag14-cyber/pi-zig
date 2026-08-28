@@ -1,0 +1,67 @@
+Pi Zig checkpoint 143 validation
+================================
+
+Reference source: uploaded Pi 0.84.1 archive pi-main (3)(3).zip
+Reference SHA-256: 42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a
+Baseline source: checkpoint 142 archive pi-zig-v8-checkpoint-142(1).zip
+Baseline SHA-256: a73dfe8ffe0802a07a3f292f1d972a086b5dfdfcef939881cbc82e2b0d261f26
+Toolchain: supplied Zig 0.16.0 Linux x86-64 archive
+Toolchain SHA-256: 70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+
+Source measurements
+-------------------
+Zig source files under src/: 154
+Native Zig source lines under src/: 71,677
+Gain over checkpoint 142: 6 files and 3,728 lines
+Unique declared tests: 696
+Gain over checkpoint 142: 26 tests
+Synthetic/generated feature shards: 0
+
+Worktree gates
+--------------
+Whole-tree zig fmt --check: PASS
+Real-source audit: PASS (154 files, 71,677 lines, zero synthetic files)
+All-package root suite: PASS (689 pass, 6 isolated SQLite cases, 0 fail; 695 declared)
+Dedicated native SQLite suite: PASS (11/11, including every isolated case)
+Executable suite: PASS (1/1)
+All unique declared tests validated: 696
+Debug executable build: PASS
+Executable --version/help/protocol/eval smokes: PASS
+Unix remote live integration: PASS
+  - handshake, empty list, create, two streamed chunks, persisted list, reopen, detach
+TCP remote live integration: PASS
+  - literal IPv4 handshake, empty list, create, two streamed chunks, persisted list, reopen, detach
+Normal executable hard SQLite dependency: NONE
+Linux executable type: statically linked x86-64 ELF with Debug information
+
+Clean source-copy gates
+-----------------------
+Cache/build-directory exclusion: PASS
+Source audit: PASS
+Whole-tree formatting check: PASS
+Complete test topology: PASS
+Debug build: PASS
+Version/protocol/remote-help/eval smokes: PASS
+
+Checkpoint patch reconstruction gates
+-------------------------------------
+Exact checkpoint 142 -> 143 patch creation: PASS
+Patch applies cleanly with patch -p2: PASS
+Reconstructed source tree equivalence: byte-for-byte PASS
+Reconstructed source audit: PASS
+Reconstructed formatting check: PASS
+Reconstructed complete test topology: PASS
+Reconstructed Debug build: PASS
+Reconstructed version/protocol/remote-help/eval smokes: PASS
+
+Final archive and transfer protocol
+-----------------------------------
+The final source archive is produced only from a cache-free source tree with a
+single pi-zig-v8-checkpoint-143/ root. After this report is frozen, the final ZIP,
+patch, executable, reports and checksum manifest are each read completely,
+copied in forced 1 MiB chunks with flush/fsync, compared byte-for-byte, hashed
+independently and polled for stable size/mtime/hash. The final source ZIP is also
+extracted again, and both that extraction and a final patch reconstruction repeat
+the complete source/test/build/smoke gates. Final artifact hashes live in the
+external checksum manifest so this source report does not require a recursive
+self-hash.

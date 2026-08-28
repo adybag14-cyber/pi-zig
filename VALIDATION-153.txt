@@ -1,0 +1,75 @@
+Pi Zig checkpoint 153 validation
+=================================
+
+Toolchain
+---------
+Zig: 0.16.0 supplied archive
+Node bridge syntax runtime: Node available and syntax check passed
+
+Source metrics
+--------------
+Native Zig files: 170
+Native Zig logical lines: 87,813
+Embedded JavaScript bridge lines: 915
+Source-level Zig test declarations: 800
+Synthetic/generated feature shards: 0
+Implementation diff from checkpoint 152: 20 files, +905 / -186 before reports
+
+Worktree gates
+--------------
+zig fmt --check: PASS
+node --check src/extensions/js_bridge.mjs: PASS
+scripts/audit_real_source.py: PASS
+zig build test -Doptimize=Debug -j1: PASS
+
+Root graph: 782 passed / 7 intentional SQLite isolates / 0 failed / 789 total
+SQLite persistence: 5/5 passed
+SQLite repository: 11/11 passed
+SQLite CLI/ABI/schema: 8 passed / 6 intentional isolates / 0 failed
+Ordinary executable suite: 5/5 passed
+SQLite-enabled executable suite: 5/5 passed
+
+Build gates
+-----------
+zig build -Doptimize=Debug -j1: PASS
+zig build sqlite -Doptimize=Debug -j1: PASS
+pi: PASS
+pi-sqlite: PASS
+pi-sqlite-live: PASS
+
+Multi-image executable E2E
+--------------------------
+Trusted TypeScript extension loaded: PASS
+Tool partial event order: PASS
+Partial images: 2, ordered PNG then WebP
+Final images: 3, ordered JPEG then PNG then GIF
+JSON event projection: PASS
+Durable JSONL projection: PASS
+Final assistant completion: PASS
+stderr bytes: 0
+
+Coverage specific to checkpoint 153
+-----------------------------------
+Owned image-array clone/deinit: PASS
+Single canonical multi-image user message: PASS
+Tool-result save/load/fork: PASS
+Sequential live update propagation: PASS
+Parallel queue and public event propagation: PASS
+Extension onUpdate and final output parsing: PASS
+Tool-result hook replacement: PASS
+Extension custom renderer content arrays: PASS
+JSON mode running/final events: PASS
+Protocol-v1 running/final events: PASS
+OpenAI Chat serialization: PASS
+OpenAI Responses serialization: PASS
+Anthropic serialization: PASS
+Google serialization: PASS
+Mistral serialization: PASS
+Bedrock serialization: PASS
+Pi Messages serialization: PASS
+Context estimation and vision capability: PASS
+Unsupported-image transcript repair: PASS
+
+Archive/reconstruction gates
+----------------------------
+Recorded after final packaging in the external checksum manifest and final response.

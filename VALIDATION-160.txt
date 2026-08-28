@@ -1,0 +1,95 @@
+Pi Zig checkpoint 160 validation record
+=======================================
+
+Reference and toolchain
+-----------------------
+Original source reference:                 Pi 0.84.1
+Baseline checkpoint:                       159
+Supplied Zig compiler:                     0.16.0
+
+Source measurements
+-------------------
+Native Zig source files:                   175
+Native Zig logical lines:                  96,019
+Embedded JavaScript bridge lines:          984
+Named Zig test declarations:               839
+Synthetic/generated feature shards:        0
+
+Worktree tests
+--------------
+Direct root command:
+  PI_SQLITE_CLI_TESTS=1 PI_SQLITE_REPOSITORY_TESTS=1
+  zig test src/root.zig -fno-llvm -lsqlite3 -lc
+Result:                                    844/844 passed
+Skipped:                                   0
+Failed:                                    0
+
+Normal build-test graph:
+  zig build test -Doptimize=Debug -j2 --summary all
+Module process:                            837 passed, 7 isolated, 0 failed
+Build steps:                               13/13 succeeded
+Ordinary executable process:               6/6 passed
+SQLite repository process:                11/11 passed
+SQLite CLI/schema process:                 8 passed, 6 isolated, 0 failed
+SQLite live persistence process:           5/5 passed
+SQLite-enabled executable process:         6/6 passed
+
+Static gates
+------------
+Whole-tree Zig format check:               passed
+Node bridge syntax check:                  passed
+Real-source audit:                         passed
+Synthetic-source count:                    0
+
+Builds
+------
+Static Linux x86-64 Debug pi:              passed
+Linux x86-64 Debug pi-sqlite:              passed
+Linux x86-64 Debug pi-sqlite-live:         passed
+
+Behavioral gates
+----------------
+Stale ctx after await ctx.reload:           passed
+Terminal native reload action barrier:     passed
+models.json endpoint hot replacement:      passed
+auth.json key hot replacement:             passed
+settings tool-schema hot replacement:      passed
+RPC model catalog replacement:             passed
+Two real local SSE completions:             passed
+RPC quit and clean allocator shutdown:     passed
+E2E stderr bytes:                          0
+
+Exact source archive
+--------------------
+Single archive root:                       pi-zig-v8-checkpoint-160/
+Frozen source/report files:                283
+ZIP entries including directories:         303
+Forbidden cache/build entries:             0
+Frozen/extracted equivalence:               283/283 byte-for-byte
+Extracted direct root tests:                844/844 passed
+Extracted build-test graph:                 13/13 steps succeeded
+Extracted Debug builds:                     3/3 passed
+Extracted persistent reload E2E:            passed
+Extracted E2E stderr bytes:                 0
+
+Patch reconstruction
+--------------------
+git apply --check:                         passed
+Patch application:                        passed
+Reconstructed source/report files:         283
+Missing files:                              0
+Extra files:                                0
+Changed files:                              0
+Byte-for-byte source equivalence:          passed
+Reconstructed direct root tests:           844/844 passed
+Reconstructed build-test graph:            13/13 steps succeeded
+Reconstructed Debug builds:                3/3 passed
+Reconstructed persistent reload E2E:       passed
+Reconstructed E2E stderr bytes:             0
+
+Publication
+-----------
+The checksum manifest, final-path transfer, fsync, complete rereads, stable
+SHA-256 snapshots, ZIP integrity, executable smokes, and live SQLite smoke are
+performed after the final artifacts are frozen. Links are emitted only after
+those final publication gates succeed.

@@ -1,0 +1,9 @@
+pi-zig V8 checkpoint 138 validation
+Zig compiler: supplied zig-x86_64-linux-0.16.0.tar.xz
+zig build test --summary all: PASS, 487/487
+zig build --summary all: PASS (Debug executable)
+JSONL RPC smoke: PASS (session header, full model catalog/state, quit)
+scripts/audit_real_source.py: zig_files=112, zig_loc=47389, synthetic_files=0
+ReleaseSafe: attempted after test pass; command deadline reached before completion, not claimed
+Original pi-main (2)(1).zip: referenced by user but absent from /mnt/data in this run
+Comparison basis for current parity work: canonical upstream earendil-works/pi v0.84.1

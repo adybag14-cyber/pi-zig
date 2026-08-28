@@ -1,0 +1,2717 @@
+--- /dev/null
++++ pi-zig-v8-checkpoint-182/checkpoint-tests/check-provider-oauth-production-integration.py
+@@ -0,0 +1,62 @@
++from pathlib import Path
++
++bridge = Path("src/extensions/js_bridge.mjs").read_text(encoding="utf-8")
++runtime = Path("src/extensions/js_runtime.zig").read_text(encoding="utf-8")
++registry = Path("src/extensions/provider_registry.zig").read_text(encoding="utf-8")
++lifecycle = Path("src/extensions/provider_oauth.zig").read_text(encoding="utf-8")
++storage = Path("src/auth/storage.zig").read_text(encoding="utf-8")
++slash = Path("src/coding_agent/slash.zig").read_text(encoding="utf-8")
++auth_tui = Path("src/coding_agent/auth_tui.zig").read_text(encoding="utf-8")
++live = Path("src/coding_agent/live_state.zig").read_text(encoding="utf-8")
++main = Path("src/main.zig").read_text(encoding="utf-8")
++google = Path("src/ai/google.zig").read_text(encoding="utf-8")
++mistral = Path("src/ai/mistral.zig").read_text(encoding="utf-8")
++bedrock = Path("src/ai/bedrock.zig").read_text(encoding="utf-8")
++
++login_start = bridge.index("async function invokeProviderOAuthLogin")
++login_end = bridge.index("const toolRendererContext", login_start)
++login_body = bridge[login_start:login_end]
++request_start = bridge.index("const requestHost =")
++request_end = bridge.index("globalThis.__piCompat.copyToClipboard", request_start)
++request_body = bridge[request_start:request_end]
++login_persist_start = lifecycle.index("    pub fn loginAndPersist(")
++login_persist_end = lifecycle.index("    pub fn resolve(", login_persist_start)
++login_persist_body = lifecycle[login_persist_start:login_persist_end]
++resolve_start = lifecycle.index("    pub fn resolve(")
++resolve_end = lifecycle.index("    fn applyCredentialModels", resolve_start)
++resolve_body = lifecycle[resolve_start:resolve_end]
++
++checks = {
++    "production bridge dispatches OAuth login callbacks": "invokeProviderOAuthLogin(request.callbackId" in bridge,
++    "OAuth callback receives the invocation AbortSignal": "signal," in login_body and "return await callback(callbacks)" in login_body,
++    "all canonical OAuth interaction callbacks are exposed": all(marker in login_body for marker in (
++        "onAuth(info", "onDeviceCode(info", "onPrompt(prompt", "onProgress(message", "onManualCodeInput()", "onSelect(prompt",
++    )),
++    "blocking OAuth host requests are signal-aware": all(marker in login_body for marker in (
++        "requestHost('oauth_prompt'", "requestHost('oauth_manual_code'", "requestHost('oauth_select'",
++    )) and login_body.count(", signal);\n") >= 3,
++    "aborting a host request removes its pending promise": "pendingUi.delete(id)" in request_body and "signal?.addEventListener('abort'" in request_body,
++    "OAuth login has a human-scale timeout": "oauth_login_timeout_ms: u64 = 15 * 60 * 1000" in runtime,
++    "ordinary callback timeout is restored after OAuth login": "defer self.timeout_ms = previous_timeout" in runtime,
++    "native runtime owns the OAuth UI bridge only during login": "pub fn invokeProviderOAuthLogin(" in runtime and "defer self.ui_bridge = previous_bridge" in runtime,
++    "registry validates and unwraps OAuth login credentials": "pub fn loginOAuth(" in registry and "validateOAuthCredentialJson" in registry,
++    "login persists through the abort-aware canonical store": "setOAuthJsonAbortable" in login_persist_body,
++    "late canceled login results map to LoginCancelled": "abortRequested(abort_flag)" in login_persist_body and "error.LoginCancelled" in login_persist_body,
++    "refresh is a serialized abort-aware credential transaction": "modifyOAuthJsonAbortable" in resolve_body,
++    "request keys are derived after credential resolution": "oauthApiKey(provider_id, credential)" in resolve_body,
++    "credential-dependent models are projected after resolution": "applyCredentialModels(provider_id, credential, abort_flag)" in resolve_body,
++    "storage checks cancellation immediately before credential writes": storage.count("ensureOAuthCommitNotAborted(abort_flag)") >= 4,
++    "slash login executes the extension OAuth lifecycle": "runtime.loginAndPersist(" in slash and "extensionOAuthAbortFlag(ctx)" in slash,
++    "auth selector receives extension OAuth provider IDs": "runWithOAuthProviders" in auth_tui,
++    "client pool exposes the cycle-free extension OAuth bridge": "pub const ExtensionOAuthBridge" in live and "resolveExtensionOAuth" in live,
++    "OpenAI-compatible transports refresh through extension OAuth": all(marker in live for marker in (
++        "refreshExtensionOpenAI", "refreshExtensionResponses", "refreshExtensionAnthropic", "refreshExtensionPiMessages",
++    )),
++    "Google Mistral and Bedrock expose refresh callbacks": "token_refresh_fn" in google and "token_refresh_fn" in mistral and "credential_refresh_fn" in bedrock,
++    "main binds OAuth runtime to client pool and live catalog": "extension_oauth_runtime.bindClientPool(&client_pool)" in main and "extension_oauth_runtime.bindLiveState(&live)" in main,
++    "reload routes OAuth through the replacement registry transactionally": "self.extension_oauth.registry = &new_provider_registry" in main and "self.extension_oauth.registry = self.provider_registry" in main,
++}
++missing = [name for name, ok in checks.items() if not ok]
++if missing:
++    raise SystemExit("production provider OAuth integration checks failed: " + "; ".join(missing))
++print(f"production provider OAuth integration: {len(checks)}/{len(checks)} checks passed")
+--- /dev/null
++++ pi-zig-v8-checkpoint-182/checkpoint-tests/provider-oauth-login-bridge.mjs
+@@ -0,0 +1,196 @@
++import assert from "node:assert/strict";
++import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
++import { tmpdir } from "node:os";
++import path from "node:path";
++import { spawn } from "node:child_process";
++import readline from "node:readline";
++import { fileURLToPath } from "node:url";
++
++const here = path.dirname(fileURLToPath(import.meta.url));
++const root = path.resolve(here, "..");
++const bridgeSource = readFileSync(path.join(root, "src/extensions/js_bridge.mjs"), "utf8");
++const temp = mkdtempSync(path.join(tmpdir(), "pi-provider-oauth-182-"));
++const extensionPath = path.join(temp, "oauth-login-e2e.mjs");
++
++writeFileSync(extensionPath, String.raw`
++export default function (pi) {
++  let attempt = 0;
++  pi.registerProvider("oauth-production-e2e", {
++    name: "OAuth Production E2E",
++    baseUrl: "https://oauth.invalid/v1",
++    api: "openai-completions",
++    apiKey: "unused",
++    models: [{ id: "oauth-e2e", name: "OAuth E2E", reasoning: false, input: ["text"], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
++    oauth: {
++      async login(callbacks) {
++        attempt += 1;
++        if (!(callbacks.signal instanceof AbortSignal)) throw new Error("OAuth AbortSignal missing");
++        if (attempt === 1) {
++          callbacks.onAuth({ url: "https://login.invalid/start", instructions: "Open the browser" });
++          callbacks.onDeviceCode({ verificationUri: "https://device.invalid", userCode: "DEVICE-182", intervalSeconds: 7, expiresInSeconds: 600, instructions: "Enter the code" });
++          callbacks.onProgress("waiting-for-user");
++          const prompt = await callbacks.onPrompt({ message: "Tenant?", placeholder: "tenant", secret: true });
++          const manual = await callbacks.onManualCodeInput();
++          const team = await callbacks.onSelect({ message: "Team?", options: [{ id: "team-a", label: "Team A" }, { value: "team-b", label: "Team B", description: "Preferred" }] });
++          return {
++            refresh: "refresh-182",
++            access: "access-182",
++            expires: 9999999999999,
++            tenant: { prompt, manual, team },
++            arbitrary: { retained: true, generation: attempt },
++          };
++        }
++        if (attempt === 2) {
++          const answer = await callbacks.onPrompt({ message: "This request will be aborted" });
++          return { refresh: "must-not-persist", access: String(answer), expires: 9999999999999 };
++        }
++        if (attempt === 3) {
++          return { refresh: "reuse-refresh", access: "worker-reused-after-abort", expires: 9999999999999 };
++        }
++        throw new Error("oauth-login-exploded-182");
++      },
++      getApiKey(credentials) { return "derived:" + credentials.access; },
++    },
++  });
++  pi.registerCommand("oauth-unregister", { handler: async () => pi.unregisterProvider("oauth-production-e2e") });
++}
++`);
++
++const child = spawn(process.execPath, [
++  "--no-warnings",
++  "--experimental-strip-types",
++  "--experimental-transform-types",
++  "--input-type=module",
++  "-e",
++  bridgeSource,
++  extensionPath,
++], { stdio: ["pipe", "pipe", "pipe"] });
++let stderr = "";
++child.stderr.setEncoding("utf8");
++child.stderr.on("data", (chunk) => { stderr += chunk; });
++const lines = readline.createInterface({ input: child.stdout, crlfDelay: Infinity })[Symbol.asyncIterator]();
++
++async function record() {
++  for (;;) {
++    const next = await lines.next();
++    if (next.done) throw new Error(`bridge closed before a protocol record; stderr=${stderr}`);
++    const marker = next.value.indexOf("\x1e");
++    if (marker < 0) continue;
++    return JSON.parse(next.value.slice(marker + 1));
++  }
++}
++function send(value) {
++  child.stdin.write(JSON.stringify(value) + "\n");
++}
++function loginDescriptor(config) {
++  const descriptor = config.oauth.login;
++  assert.equal(descriptor.__pi_callback_kind, "provider_method");
++  assert.equal(descriptor.__pi_callback_path, "oauth.login");
++  assert.equal(typeof descriptor.__pi_callback_id, "string");
++  assert.ok(descriptor.__pi_callback_id.length > 0);
++  return descriptor;
++}
++function startLogin(callbackId, invocationId) {
++  send({
++    kind: "provider_oauth_login",
++    callbackId,
++    abortable: true,
++    invocationId,
++    context: { mode: "interactive", hasUI: true },
++  });
++}
++async function command(name, invocationId) {
++  send({ kind: "command", name, rawArguments: "", flags: {}, invocationId, context: { mode: "print", hasUI: false } });
++  return record();
++}
++
++try {
++  const ready = await record();
++  assert.equal(ready.type, "ready");
++  const registration = ready.manifest.providers.find((entry) => entry.name === "oauth-production-e2e");
++  assert.ok(registration, "OAuth provider missing from production startup manifest");
++  const login = loginDescriptor(registration.config);
++  assert.ok(!JSON.stringify(registration.config).includes("oauth-login-exploded-182"), "function source leaked into manifest");
++
++  const actions = [];
++  const requests = [];
++  const replies = {
++    oauth_prompt: "tenant-answer",
++    oauth_manual_code: "manual-code-182",
++    oauth_select: "team-b",
++  };
++  startLogin(login.__pi_callback_id, "oauth-login-1");
++  let firstResult;
++  while (!firstResult) {
++    const next = await record();
++    if (next.type === "ui_action") {
++      actions.push(next);
++      continue;
++    }
++    if (next.type === "ui_request") {
++      requests.push(next);
++      assert.ok(Object.hasOwn(replies, next.method), `unexpected OAuth UI request: ${next.method}`);
++      send({ kind: "ui_response", id: next.id, ok: true, result: replies[next.method] });
++      continue;
++    }
++    firstResult = next;
++  }
++  assert.equal(firstResult.ok, true);
++  assert.deepEqual(firstResult.result.value, {
++    refresh: "refresh-182",
++    access: "access-182",
++    expires: 9999999999999,
++    tenant: { prompt: "tenant-answer", manual: "manual-code-182", team: "team-b" },
++    arbitrary: { retained: true, generation: 1 },
++  });
++  assert.deepEqual(actions.map((entry) => entry.method), ["oauth_auth", "oauth_device_code", "oauth_progress"]);
++  assert.equal(actions[0].args.url, "https://login.invalid/start");
++  assert.equal(actions[1].args.userCode, "DEVICE-182");
++  assert.equal(actions[1].args.intervalSeconds, 7);
++  assert.equal(actions[1].args.expiresInSeconds, 600);
++  assert.deepEqual(requests.map((entry) => entry.method), ["oauth_prompt", "oauth_manual_code", "oauth_select"]);
++  assert.equal(requests[0].args.secret, true);
++  assert.equal(requests[2].args.options[1].description, "Preferred");
++
++  // Abort while the callback is awaiting a host prompt. No ui_response is sent:
++  // the AbortSignal must remove and reject the pending promise itself.
++  startLogin(login.__pi_callback_id, "oauth-login-abort");
++  const pendingPrompt = await record();
++  assert.equal(pendingPrompt.type, "ui_request");
++  assert.equal(pendingPrompt.method, "oauth_prompt");
++  send({ kind: "abort_current", invocationId: "oauth-login-abort", reason: "Operation aborted" });
++  const aborted = await record();
++  assert.equal(aborted.ok, false);
++  assert.match(aborted.error, /Operation aborted/);
++
++  // The worker and callback registry must remain usable with no stale prompt.
++  startLogin(login.__pi_callback_id, "oauth-login-reuse");
++  const reused = await record();
++  assert.equal(reused.ok, true);
++  assert.equal(reused.result.value.access, "worker-reused-after-abort");
++
++  startLogin(login.__pi_callback_id, "oauth-login-reject");
++  const rejected = await record();
++  assert.equal(rejected.ok, false);
++  assert.match(rejected.error, /oauth-login-exploded-182/);
++  assert.match(rejected.error, /login/);
++
++  const removed = await command("oauth-unregister", "oauth-unregister");
++  assert.equal(removed.ok, true);
++  assert.ok(removed.result.providers.some((entry) => entry.action === "unregister" && entry.name === "oauth-production-e2e"));
++  startLogin(login.__pi_callback_id, "oauth-login-removed");
++  const unavailable = await record();
++  assert.equal(unavailable.ok, false);
++  assert.match(unavailable.error, /unknown or unloaded provider callback/);
++
++  send({ kind: "shutdown" });
++  const shutdown = await record();
++  assert.equal(shutdown.ok, true);
++  child.stdin.end();
++  const exitCode = await new Promise((resolve) => child.once("close", resolve));
++  assert.equal(exitCode, 0, stderr);
++  console.log("production provider OAuth login bridge e2e: ok");
++} finally {
++  if (child.exitCode === null) child.kill("SIGKILL");
++  rmSync(temp, { recursive: true, force: true });
++}
+--- pi-zig-v8-checkpoint-181/src/ai/bedrock.zig
++++ pi-zig-v8-checkpoint-182/src/ai/bedrock.zig
+@@ -243,8 +243,10 @@
+     ) !ai.ModelResponse {
+         const now_unix = Io.Clock.real.now(self.io).toSeconds();
+         if (self.credential_refresh_fn) |refresh| {
+-            const should_refresh = self.aws_credentials == null or
+-                (if (self.credential_expiration_unix) |expires| expires <= now_unix + 60 else false);
++            const should_refresh = if (self.api_key.len > 0)
++                (if (self.credential_expiration_unix) |expires| expires <= now_unix + 60 else true)
++            else
++                self.aws_credentials == null or (if (self.credential_expiration_unix) |expires| expires <= now_unix + 60 else false);
+             if (should_refresh) try refresh(self.credential_refresh_ctx orelse return error.InvalidCredentialRefreshContext, self, now_unix);
+         }
+         if (self.api_key.len == 0 and self.aws_credentials == null and !self.skip_auth) return error.MissingBedrockCredentials;
+--- pi-zig-v8-checkpoint-181/src/ai/google.zig
++++ pi-zig-v8-checkpoint-182/src/ai/google.zig
+@@ -14,6 +14,7 @@
+ pub const AuthMode = enum { query_key, bearer };
+ 
+ pub const BearerRefreshFn = *const fn (ctx: *anyopaque, client: *GoogleClient, now_unix: i64) anyerror!void;
++pub const TokenRefreshFn = *const fn (ctx: *anyopaque, client: *GoogleClient, now_ms: i64) anyerror!void;
+ 
+ pub const GoogleClient = struct {
+     gpa: std.mem.Allocator,
+@@ -38,6 +39,11 @@
+     input_image: bool = false,
+     model_cost: providers.ModelCost = .{},
+     abort_flag: ?*bool = null,
++    /// Provider-defined OAuth refresh that may update either a query API key
++    /// or bearer token before every Google request.
++    token_expiration_ms: ?i64 = null,
++    token_refresh_ctx: ?*anyopaque = null,
++    token_refresh_fn: ?TokenRefreshFn = null,
+     bearer_refresh_ctx: ?*anyopaque = null,
+     bearer_refresh_fn: ?BearerRefreshFn = null,
+     bearer_expiration_unix: ?i64 = null,
+@@ -91,6 +97,11 @@
+         on_delta: ?ai.StreamHandler,
+         delta_ctx: ?*anyopaque,
+     ) !ai.ModelResponse {
++        if (self.token_refresh_fn) |refresh| {
++            const now_ms = Io.Clock.real.now(self.io).toMilliseconds();
++            const should_refresh = self.api_key.len == 0 or (if (self.token_expiration_ms) |expires| expires <= now_ms + 60_000 else true);
++            if (should_refresh) try refresh(self.token_refresh_ctx orelse return error.InvalidTokenRefreshContext, self, now_ms);
++        }
+         if (self.auth_mode == .bearer and self.bearer_refresh_fn != null) {
+             const now_unix = Io.Clock.real.now(self.io).toSeconds();
+             const should_refresh = self.api_key.len == 0 or (if (self.bearer_expiration_unix) |expires| expires <= now_unix + 60 else true);
+--- pi-zig-v8-checkpoint-181/src/ai/mistral.zig
++++ pi-zig-v8-checkpoint-182/src/ai/mistral.zig
+@@ -18,6 +18,8 @@
+ const cost_mod = @import("cost.zig");
+ 
+ const TOOL_ID_LEN = 9;
++
++pub const TokenRefreshFn = *const fn (ctx: *anyopaque, client: *MistralClient, now_ms: i64) anyerror!void;
+ 
+ pub const MistralClient = struct {
+     gpa: std.mem.Allocator,
+@@ -41,6 +43,9 @@
+     input_image: bool = false,
+     model_cost: providers.ModelCost = .{},
+     abort_flag: ?*bool = null,
++    token_expiration_ms: ?i64 = null,
++    token_refresh_ctx: ?*anyopaque = null,
++    token_refresh_fn: ?TokenRefreshFn = null,
+ 
+     pub fn client(self: *MistralClient) ai.ModelClient {
+         return .{ .ptr = self, .completeFn = completeImpl, .completeOptionsFn = completeOptionsImpl, .streamFn = streamImpl };
+@@ -69,6 +74,11 @@
+     }
+ 
+     fn request(self: *MistralClient, gpa: std.mem.Allocator, messages: []const ai.ChatMessage, tools_json: []const u8, request_options: ai.CompletionOptions, streaming: bool, on_delta: ?ai.StreamHandler, delta_ctx: ?*anyopaque) !ai.ModelResponse {
++        if (self.token_refresh_fn) |refresh| {
++            const now_ms = Io.Clock.real.now(self.io).toMilliseconds();
++            const should_refresh = self.api_key.len == 0 or (if (self.token_expiration_ms) |expires| expires <= now_ms + 60_000 else true);
++            if (should_refresh) try refresh(self.token_refresh_ctx orelse return error.InvalidTokenRefreshContext, self, now_ms);
++        }
+         var prepared = try transcript_repair.prepare(gpa, messages, .{ .supports_images = self.input_image, .target_provider = self.provider_id, .target_api = self.api_id, .target_model = self.model });
+         defer prepared.deinit();
+         const effective_messages = prepared.messages.items;
+--- pi-zig-v8-checkpoint-181/src/auth/storage.zig
++++ pi-zig-v8-checkpoint-182/src/auth/storage.zig
+@@ -99,6 +99,19 @@
+         }
+     }
+ };
++
++/// Callback used by `modifyOAuthJson`. `current_json` is the complete current
++/// OAuth credential (including extension-defined fields), or null when absent.
++/// A returned owned JSON object replaces the credential; null leaves it unchanged.
++pub const ModifyOAuthJsonFn = *const fn (
++    ?*anyopaque,
++    std.mem.Allocator,
++    ?[]const u8,
++) anyerror!?[]u8;
++
++fn ensureOAuthCommitNotAborted(abort_flag: ?*const bool) !void {
++    if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) return error.Canceled;
++}
+ 
+ pub const CredentialInfo = struct {
+     provider_id: []u8,
+@@ -310,6 +323,135 @@
+         try self.writeParsed(file, parsed.value);
+     }
+ 
++    fn validateOAuthValue(value: std.json.Value) !void {
++        if (value != .object) return error.InvalidOAuthCredential;
++        if (value.object.get("type")) |type_value| {
++            if (type_value != .string or !std.mem.eql(u8, type_value.string, "oauth")) return error.InvalidOAuthCredential;
++        }
++        const refresh = value.object.get("refresh") orelse return error.InvalidOAuthCredential;
++        const access = value.object.get("access") orelse return error.InvalidOAuthCredential;
++        const expires = value.object.get("expires") orelse return error.InvalidOAuthCredential;
++        if (refresh != .string or access != .string or expires != .integer) return error.InvalidOAuthCredential;
++    }
++
++    fn parseOAuthIntoArena(arena: std.mem.Allocator, raw: []const u8) !std.json.Value {
++        var value = std.json.parseFromSliceLeaky(std.json.Value, arena, raw, .{}) catch return error.InvalidOAuthCredential;
++        try validateOAuthValue(value);
++        try value.object.put(arena, "type", .{ .string = "oauth" });
++        return value;
++    }
++
++    /// Return the complete persisted OAuth object without dropping
++    /// extension-specific credential fields. The caller owns the JSON slice.
++    pub fn readOAuthJson(self: *const AuthStorage, provider_id: []const u8) !?[]u8 {
++        const file = try self.openLocked(.shared);
++        defer file.close(self.io);
++        const raw = try self.readLockedAlloc(file);
++        defer self.gpa.free(raw);
++        var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, raw, .{}) catch return error.InvalidAuthJson;
++        defer parsed.deinit();
++        if (parsed.value != .object) return error.InvalidAuthJson;
++        const value = parsed.value.object.get(provider_id) orelse return null;
++        try validateOAuthValue(value);
++        const type_value = value.object.get("type") orelse return error.InvalidOAuthCredential;
++        if (type_value != .string or !std.mem.eql(u8, type_value.string, "oauth")) return error.InvalidOAuthCredential;
++        var out: std.Io.Writer.Allocating = .init(self.gpa);
++        errdefer out.deinit();
++        try std.json.Stringify.value(value, .{}, &out.writer);
++        return @as(?[]u8, try out.toOwnedSlice());
++    }
++
++    /// Persist a complete extension OAuth credential atomically. Unknown
++    /// fields are retained and `type` is normalized to the upstream value.
++    pub fn setOAuthJson(self: *const AuthStorage, provider_id: []const u8, credential_json: []const u8) !void {
++        return self.setOAuthJsonAbortable(provider_id, credential_json, null);
++    }
++
++    /// Abort-aware variant used by extension OAuth login. Cancellation is
++    /// checked once before acquiring the credential lock and again immediately
++    /// before the write, mirroring upstream CredentialStore.modify semantics.
++    pub fn setOAuthJsonAbortable(
++        self: *const AuthStorage,
++        provider_id: []const u8,
++        credential_json: []const u8,
++        abort_flag: ?*const bool,
++    ) !void {
++        try ensureOAuthCommitNotAborted(abort_flag);
++        const file = try self.openLocked(.exclusive);
++        defer file.close(self.io);
++        const raw = try self.readLockedAlloc(file);
++        defer self.gpa.free(raw);
++        var parsed = try self.parseRootForWrite(raw);
++        defer parsed.deinit();
++        const a = parsed.arena.allocator();
++        const credential_value = try parseOAuthIntoArena(a, credential_json);
++        try parsed.value.object.put(a, try a.dupe(u8, provider_id), credential_value);
++        try ensureOAuthCommitNotAborted(abort_flag);
++        try self.writeParsed(file, parsed.value);
++    }
++
++    /// Run a serialized read/modify/write transaction while retaining the full
++    /// OAuth object. The callback executes under the exclusive auth-file lock,
++    /// matching upstream CredentialStore.modify semantics and preventing two
++    /// refreshers from overwriting each other. The returned slice is the final
++    /// credential state and is owned by the caller.
++    pub fn modifyOAuthJson(
++        self: *const AuthStorage,
++        provider_id: []const u8,
++        context: ?*anyopaque,
++        callback: ModifyOAuthJsonFn,
++    ) !?[]u8 {
++        return self.modifyOAuthJsonAbortable(provider_id, context, callback, null);
++    }
++
++    /// Abort-aware serialized credential transaction. A refresh callback may
++    /// finish after its signal is cancelled; the second guard prevents that
++    /// late result from replacing the last valid credential.
++    pub fn modifyOAuthJsonAbortable(
++        self: *const AuthStorage,
++        provider_id: []const u8,
++        context: ?*anyopaque,
++        callback: ModifyOAuthJsonFn,
++        abort_flag: ?*const bool,
++    ) !?[]u8 {
++        try ensureOAuthCommitNotAborted(abort_flag);
++        const file = try self.openLocked(.exclusive);
++        defer file.close(self.io);
++        const raw = try self.readLockedAlloc(file);
++        defer self.gpa.free(raw);
++        var parsed = try self.parseRootForWrite(raw);
++        defer parsed.deinit();
++
++        var current_json: ?[]u8 = null;
++        if (parsed.value.object.get(provider_id)) |current| {
++            try validateOAuthValue(current);
++            const type_value = current.object.get("type") orelse return error.InvalidOAuthCredential;
++            if (type_value != .string or !std.mem.eql(u8, type_value.string, "oauth")) return error.InvalidOAuthCredential;
++            var encoded: std.Io.Writer.Allocating = .init(self.gpa);
++            errdefer encoded.deinit();
++            try std.json.Stringify.value(current, .{}, &encoded.writer);
++            current_json = try encoded.toOwnedSlice();
++        }
++        defer if (current_json) |value| self.gpa.free(value);
++
++        const replacement_json = try callback(context, self.gpa, current_json);
++        defer if (replacement_json) |value| self.gpa.free(value);
++        try ensureOAuthCommitNotAborted(abort_flag);
++        if (replacement_json) |replacement| {
++            const a = parsed.arena.allocator();
++            const credential_value = try parseOAuthIntoArena(a, replacement);
++            try parsed.value.object.put(a, try a.dupe(u8, provider_id), credential_value);
++            try self.writeParsed(file, parsed.value);
++
++            var encoded: std.Io.Writer.Allocating = .init(self.gpa);
++            errdefer encoded.deinit();
++            try std.json.Stringify.value(credential_value, .{}, &encoded.writer);
++            return @as(?[]u8, try encoded.toOwnedSlice());
++        }
++        if (current_json) |current| return @as(?[]u8, try self.gpa.dupe(u8, current));
++        return null;
++    }
++
+     pub fn setOAuth(self: *const AuthStorage, provider_id: []const u8, credential: OAuthCredential) !void {
+         const file = try self.openLocked(.exclusive);
+         defer file.close(self.io);
+@@ -474,6 +616,110 @@
+     defer gpa.free(raw);
+     try std.testing.expect(std.mem.indexOf(u8, raw, "accountId") != null);
+     try std.testing.expect(std.mem.indexOf(u8, raw, "keep-me") != null);
++}
++
++test "extension OAuth JSON transactions preserve arbitrary fields and rollback invalid replacements" {
++    const gpa = std.testing.allocator;
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    var store = AuthStorage.initPath(gpa, std.testing.io, try tempAuthPath(gpa, &tmp));
++    defer store.deinit();
++
++    try store.setOAuthJson("extension", "{\"refresh\":\"r1\",\"access\":\"a1\",\"expires\":10,\"tenant\":{\"id\":7},\"flags\":[\"x\",\"y\"]}");
++    const initial = (try store.readOAuthJson("extension")).?;
++    defer gpa.free(initial);
++    try std.testing.expect(std.mem.indexOf(u8, initial, "\"type\":\"oauth\"") != null);
++    try std.testing.expect(std.mem.indexOf(u8, initial, "\"tenant\":{\"id\":7}") != null);
++
++    const Modifier = struct {
++        calls: usize = 0,
++
++        fn update(raw: ?*anyopaque, allocator: std.mem.Allocator, current_json: ?[]const u8) anyerror!?[]u8 {
++            const self: *@This() = @ptrCast(@alignCast(raw.?));
++            self.calls += 1;
++            const current = current_json orelse return error.MissingCurrentOAuthCredential;
++            var parsed = try std.json.parseFromSlice(std.json.Value, allocator, current, .{});
++            defer parsed.deinit();
++            try std.testing.expect(parsed.value == .object);
++            try std.testing.expect(parsed.value.object.get("tenant") != null);
++            try parsed.value.object.put(allocator, "access", .{ .string = "a2" });
++            try parsed.value.object.put(allocator, "expires", .{ .integer = 999 });
++            var out: std.Io.Writer.Allocating = .init(allocator);
++            errdefer out.deinit();
++            try std.json.Stringify.value(parsed.value, .{}, &out.writer);
++            return @as(?[]u8, try out.toOwnedSlice());
++        }
++
++        fn keep(_: ?*anyopaque, _: std.mem.Allocator, current_json: ?[]const u8) anyerror!?[]u8 {
++            try std.testing.expect(current_json != null);
++            return null;
++        }
++
++        fn invalid(_: ?*anyopaque, allocator: std.mem.Allocator, _: ?[]const u8) anyerror!?[]u8 {
++            return @as(?[]u8, try allocator.dupe(u8, "{\"refresh\":\"missing-required-fields\"}"));
++        }
++    };
++
++    var modifier = Modifier{};
++    const updated = (try store.modifyOAuthJson("extension", &modifier, Modifier.update)).?;
++    defer gpa.free(updated);
++    try std.testing.expectEqual(@as(usize, 1), modifier.calls);
++    try std.testing.expect(std.mem.indexOf(u8, updated, "\"access\":\"a2\"") != null);
++    try std.testing.expect(std.mem.indexOf(u8, updated, "\"tenant\":{\"id\":7}") != null);
++    const kept = (try store.modifyOAuthJson("extension", null, Modifier.keep)).?;
++    defer gpa.free(kept);
++    try std.testing.expectEqualStrings(updated, kept);
++
++    try std.testing.expectError(error.InvalidOAuthCredential, store.modifyOAuthJson("extension", null, Modifier.invalid));
++    const after_invalid = (try store.readOAuthJson("extension")).?;
++    defer gpa.free(after_invalid);
++    try std.testing.expectEqualStrings(updated, after_invalid);
++}
++
++test "extension OAuth abort-aware transactions reject late replacements without changing storage" {
++    const gpa = std.testing.allocator;
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    var store = AuthStorage.initPath(gpa, std.testing.io, try tempAuthPath(gpa, &tmp));
++    defer store.deinit();
++
++    const initial_json = "{\"refresh\":\"stable-refresh\",\"access\":\"stable-access\",\"expires\":100,\"custom\":{\"keep\":true}}";
++    try store.setOAuthJson("extension-abort", initial_json);
++
++    const LateModifier = struct {
++        abort_flag: *bool,
++
++        fn replace(raw: ?*anyopaque, allocator: std.mem.Allocator, current_json: ?[]const u8) anyerror!?[]u8 {
++            const self: *@This() = @ptrCast(@alignCast(raw.?));
++            try std.testing.expect(current_json != null);
++            @atomicStore(bool, self.abort_flag, true, .release);
++            return @as(?[]u8, try allocator.dupe(u8, "{\"refresh\":\"late-refresh\",\"access\":\"late-access\",\"expires\":999}"));
++        }
++    };
++
++    var aborted = false;
++    var modifier = LateModifier{ .abort_flag = &aborted };
++    try std.testing.expectError(
++        error.Canceled,
++        store.modifyOAuthJsonAbortable("extension-abort", &modifier, LateModifier.replace, &aborted),
++    );
++    const after_late_refresh = (try store.readOAuthJson("extension-abort")).?;
++    defer gpa.free(after_late_refresh);
++    try std.testing.expect(std.mem.indexOf(u8, after_late_refresh, "\"access\":\"stable-access\"") != null);
++    try std.testing.expect(std.mem.indexOf(u8, after_late_refresh, "\"keep\":true") != null);
++    try std.testing.expect(std.mem.indexOf(u8, after_late_refresh, "late-access") == null);
++
++    try std.testing.expectError(
++        error.Canceled,
++        store.setOAuthJsonAbortable(
++            "extension-abort",
++            "{\"refresh\":\"blocked-refresh\",\"access\":\"blocked-access\",\"expires\":1000}",
++            &aborted,
++        ),
++    );
++    const after_blocked_login = (try store.readOAuthJson("extension-abort")).?;
++    defer gpa.free(after_blocked_login);
++    try std.testing.expectEqualStrings(after_late_refresh, after_blocked_login);
+ }
+ 
+ test "runtime credentials override persistent values without writing them" {
+--- pi-zig-v8-checkpoint-181/src/coding_agent/auth_flow_tui.zig
++++ pi-zig-v8-checkpoint-182/src/coding_agent/auth_flow_tui.zig
+@@ -28,6 +28,7 @@
+ pub const DeviceCode = struct {
+     verification_uri: []const u8,
+     user_code: []const u8,
++    instructions: ?[]const u8 = null,
+     interval_seconds: ?u64 = null,
+     expires_in_seconds: ?u64 = null,
+ };
+@@ -532,8 +533,13 @@
+         var detail: ?[]u8 = null;
+         defer if (detail) |value| self.gpa.free(value);
+         if (info.interval_seconds != null or info.expires_in_seconds != null) {
+-            detail = try std.fmt.allocPrint(self.gpa, "Polling every {d}s · expires in {d}s", .{ info.interval_seconds orelse 0, info.expires_in_seconds orelse 0 });
++            detail = if (info.instructions) |instructions|
++                try std.fmt.allocPrint(self.gpa, "{s} · polling every {d}s · expires in {d}s", .{ instructions, info.interval_seconds orelse 0, info.expires_in_seconds orelse 0 })
++            else
++                try std.fmt.allocPrint(self.gpa, "Polling every {d}s · expires in {d}s", .{ info.interval_seconds orelse 0, info.expires_in_seconds orelse 0 });
+             try state.replace(&state.instructions, detail);
++        } else {
++            try state.replace(&state.instructions, info.instructions);
+         }
+         try state.paintLocked();
+     }
+--- pi-zig-v8-checkpoint-181/src/coding_agent/auth_tui.zig
++++ pi-zig-v8-checkpoint-182/src/coding_agent/auth_tui.zig
+@@ -104,9 +104,22 @@
+         catalog: []const providers.ModelInfo,
+         initial_query: ?[]const u8,
+     ) !Selector {
++        return initWithOAuthProviders(gpa, io, environ, mode, agent_dir, catalog, initial_query, &.{});
++    }
++
++    fn initWithOAuthProviders(
++        gpa: std.mem.Allocator,
++        io: Io,
++        environ: *const std.process.Environ.Map,
++        mode: Mode,
++        agent_dir: []const u8,
++        catalog: []const providers.ModelInfo,
++        initial_query: ?[]const u8,
++        oauth_provider_ids: []const []const u8,
++    ) !Selector {
+         var self: Selector = .{ .gpa = gpa, .io = io, .environ = environ, .mode = mode };
+         errdefer self.deinit();
+-        try self.buildEntries(agent_dir, catalog);
++        try self.buildEntries(agent_dir, catalog, oauth_provider_ids);
+         if (mode == .logout) {
+             self.phase = .provider;
+             if (initial_query) |value| try self.query.appendSlice(gpa, value);
+@@ -286,7 +299,19 @@
+         });
+     }
+ 
+-    fn buildEntries(self: *Selector, agent_dir: []const u8, catalog: []const providers.ModelInfo) !void {
++    fn isOAuthProvider(provider_id: []const u8, oauth_provider_ids: []const []const u8) bool {
++        for (oauth_provider_ids) |candidate| {
++            if (std.ascii.eqlIgnoreCase(provider_id, candidate)) return true;
++        }
++        return false;
++    }
++
++    fn buildEntries(
++        self: *Selector,
++        agent_dir: []const u8,
++        catalog: []const providers.ModelInfo,
++        oauth_provider_ids: []const []const u8,
++    ) !void {
+         var store = try auth_storage.AuthStorage.init(self.gpa, self.io, agent_dir);
+         defer store.deinit();
+         const infos = try store.list();
+@@ -310,13 +335,25 @@
+             for (catalog) |model| {
+                 const id = model.providerName();
+                 const status = self.configuredStatus(id, infos, &models_file);
+-                if (defaultOAuthMethod(id)) |method| try self.appendEntry(id, friendlyName(id), method, status);
++                if (defaultOAuthMethod(id)) |method| {
++                    try self.appendEntry(id, friendlyName(id), method, status);
++                } else if (isOAuthProvider(id, oauth_provider_ids)) {
++                    try self.appendEntry(id, friendlyName(id), .browser, status);
++                }
+                 if (supportsApiKey(id)) try self.appendEntry(id, friendlyName(id), .api_key, status);
+             }
+             for (models_file.providers) |provider| {
+                 const status = self.configuredStatus(provider.id, infos, &models_file);
+-                if (provider.oauth != null) try self.appendEntry(provider.id, provider.name, .browser, status);
++                if (provider.oauth != null or isOAuthProvider(provider.id, oauth_provider_ids))
++                    try self.appendEntry(provider.id, provider.name, .browser, status);
+                 if (provider.api_key != null or provider.oauth == null) try self.appendEntry(provider.id, provider.name, .api_key, status);
++            }
++            // An extension may register OAuth before publishing any models. Keep
++            // its account flow reachable instead of requiring a catalog entry.
++            for (oauth_provider_ids) |provider_id| {
++                const status = self.configuredStatus(provider_id, infos, &models_file);
++                const display = if (models_file.findProvider(provider_id)) |provider| provider.name else friendlyName(provider_id);
++                try self.appendEntry(provider_id, display, .browser, status);
+             }
+         }
+ 
+@@ -903,8 +940,34 @@
+     initial_query: ?[]const u8,
+     already_fullscreen: bool,
+ ) !Selection {
++    return runWithOAuthProviders(
++        gpa,
++        io,
++        environ,
++        reader,
++        agent_dir,
++        catalog,
++        &.{},
++        mode,
++        initial_query,
++        already_fullscreen,
++    );
++}
++
++pub fn runWithOAuthProviders(
++    gpa: std.mem.Allocator,
++    io: Io,
++    environ: *const std.process.Environ.Map,
++    reader: ?*Io.File.Reader,
++    agent_dir: []const u8,
++    catalog: []const providers.ModelInfo,
++    oauth_provider_ids: []const []const u8,
++    mode: Mode,
++    initial_query: ?[]const u8,
++    already_fullscreen: bool,
++) !Selection {
+     if (!terminal.supportsFullscreen(io)) return error.UnsupportedTerminal;
+-    var selector = try Selector.init(gpa, io, environ, mode, agent_dir, catalog, initial_query);
++    var selector = try Selector.initWithOAuthProviders(gpa, io, environ, mode, agent_dir, catalog, initial_query, oauth_provider_ids);
+     defer selector.deinit();
+     var app = application.Application.init(gpa, selector.component());
+     defer app.deinit();
+@@ -985,6 +1048,24 @@
+     try std.testing.expectEqual(LoginMethod.api_key, matched.method);
+ }
+ 
++test "auth selector exposes extension OAuth providers without catalog models" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    var env = std.process.Environ.Map.init(gpa);
++    defer env.deinit();
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    const dir = try createAgentDir(gpa, io, &tmp);
++    defer gpa.free(dir);
++    const catalog = testCatalog();
++    const oauth_providers = [_][]const u8{ "extension-account", "anthropic" };
++    var selector = try Selector.initWithOAuthProviders(gpa, io, &env, .login, dir, &catalog, null, &oauth_providers);
++    defer selector.deinit();
++    try std.testing.expect(selector.containsEntry("extension-account", .browser));
++    try std.testing.expect(selector.containsEntry("anthropic", .browser));
++    try std.testing.expect(!selector.containsEntry("extension-account", .device_code));
++}
++
+ test "auth selector masks API key and returns owned choice" {
+     const gpa = std.testing.allocator;
+     const io = std.testing.io;
+--- pi-zig-v8-checkpoint-181/src/coding_agent/live_state.zig
++++ pi-zig-v8-checkpoint-182/src/coding_agent/live_state.zig
+@@ -288,6 +288,34 @@
+         if (self.provider_id) |provider_id| self.gpa.free(provider_id);
+         self.* = undefined;
+     }
++};
++
++/// Provider-agnostic OAuth material resolved by the extension layer. The key
++/// is owned by the caller and may be derived from arbitrary credential fields.
++pub const ExtensionOAuthResolution = struct {
++    api_key: []u8,
++    expires_ms: i64,
++
++    pub fn deinit(self: *ExtensionOAuthResolution, gpa: std.mem.Allocator) void {
++        gpa.free(self.api_key);
++        self.* = undefined;
++    }
++};
++
++/// Cycle-free callback surface implemented by `extensions/provider_oauth.zig`.
++/// Keeping this interface in live_state lets ClientPool resolve extension OAuth
++/// without importing the provider registry back into its own dependency graph.
++pub const ExtensionOAuthBridge = struct {
++    context: ?*anyopaque = null,
++    supports_fn: *const fn (?*anyopaque, []const u8) bool,
++    resolve_fn: *const fn (
++        ?*anyopaque,
++        std.mem.Allocator,
++        []const u8,
++        i64,
++        ?*bool,
++        bool,
++    ) anyerror!?ExtensionOAuthResolution,
+ };
+ 
+ pub const ClientPool = struct {
+@@ -379,7 +407,15 @@
+     active_api: @import("../ai/api.zig").Api = .openai_completions,
+     /// Resolved models.json runtime endpoints/credentials. Borrowed for process lifetime.
+     runtime_providers: []const RuntimeProviderConfig = &.{},
+-    /// Owned model id string used by the active storage.
++    /// Extension-defined OAuth resolver and currently derived request key.
++    extension_oauth_bridge: ?ExtensionOAuthBridge = null,
++    extension_oauth_provider: ?[]u8 = null,
++    extension_oauth_key: ?[]u8 = null,
++    extension_oauth_expires_ms: ?i64 = null,
++    /// Owned public provider and model IDs used by the active storage. Provider
++    /// ownership prevents credential-dependent model projection from invalidating
++    /// client identity slices while switchToIdentity is still executing.
++    provider_owned: ?[]u8 = null,
+     model_owned: ?[]u8 = null,
+     /// Provider API thinking budgets (wired into OpenAI/Anthropic request bodies).
+     thinking: @import("../ai/root.zig").ThinkingLevel = .off,
+@@ -401,7 +437,9 @@
+ 
+     pub fn deinit(self: *ClientPool) void {
+         if (self.responses) |*client| client.deinit();
++        if (self.provider_owned) |provider_id| self.gpa.free(provider_id);
+         if (self.model_owned) |m| self.gpa.free(m);
++        self.clearExtensionOAuthState();
+         if (self.google_adc_credential) |*credential| credential.deinit(self.gpa);
+         if (self.google_access_token) |*token| token.deinit(self.gpa);
+         if (self.aws_profile) |*profile| profile.deinit(self.gpa);
+@@ -765,6 +803,105 @@
+         self.runtime_providers = configs;
+     }
+ 
++    pub fn setExtensionOAuthBridge(self: *ClientPool, bridge: ?ExtensionOAuthBridge) void {
++        self.extension_oauth_bridge = bridge;
++        if (bridge == null) self.invalidateExtensionOAuth();
++    }
++
++    /// Detach every concrete client from the derived extension key before its
++    /// backing allocation is released. Provider unregister/reload may leave the
++    /// current model absent from the replacement catalog, so merely clearing the
++    /// pool cache would otherwise leave a stale (and dangling) request key in
++    /// the active client.
++    pub fn invalidateExtensionOAuth(self: *ClientPool) void {
++        const provider_id = self.extension_oauth_provider orelse return;
++        if (self.openai) |*client| if (std.ascii.eqlIgnoreCase(client.provider_id, provider_id)) {
++            client.api_key = "";
++            client.token_expiration_ms = null;
++            client.token_refresh_ctx = null;
++            client.token_refresh_fn = null;
++        };
++        if (self.responses) |*client| if (std.ascii.eqlIgnoreCase(client.provider_id, provider_id)) {
++            client.api_key = "";
++            client.token_expiration_ms = null;
++            client.token_refresh_ctx = null;
++            client.token_refresh_fn = null;
++        };
++        if (self.anthropic) |*client| if (std.ascii.eqlIgnoreCase(client.provider_id, provider_id)) {
++            client.api_key = "";
++            client.token_expiration_ms = null;
++            client.token_refresh_ctx = null;
++            client.token_refresh_fn = null;
++        };
++        if (self.pi_messages) |*client| if (std.ascii.eqlIgnoreCase(client.provider_id, provider_id)) {
++            client.api_key = "";
++            client.token_expiration_ms = null;
++            client.token_refresh_ctx = null;
++            client.token_refresh_fn = null;
++        };
++        if (self.google) |*client| if (std.ascii.eqlIgnoreCase(client.provider_id, provider_id)) {
++            client.api_key = "";
++            client.token_expiration_ms = null;
++            client.token_refresh_ctx = null;
++            client.token_refresh_fn = null;
++            client.bearer_expiration_unix = null;
++        };
++        if (self.mistral) |*client| if (std.ascii.eqlIgnoreCase(client.provider_id, provider_id)) {
++            client.api_key = "";
++            client.token_expiration_ms = null;
++            client.token_refresh_ctx = null;
++            client.token_refresh_fn = null;
++        };
++        if (self.bedrock) |*client| if (std.ascii.eqlIgnoreCase(client.provider_id, provider_id)) {
++            client.api_key = "";
++            client.credential_expiration_unix = null;
++            client.credential_refresh_ctx = null;
++            client.credential_refresh_fn = null;
++        };
++        self.clearExtensionOAuthState();
++    }
++
++    fn clearExtensionOAuthState(self: *ClientPool) void {
++        if (self.extension_oauth_provider) |provider_id| self.gpa.free(provider_id);
++        if (self.extension_oauth_key) |key| self.gpa.free(key);
++        self.extension_oauth_provider = null;
++        self.extension_oauth_key = null;
++        self.extension_oauth_expires_ms = null;
++    }
++
++    fn hasExtensionOAuth(self: *const ClientPool, provider_id: []const u8) bool {
++        const current = self.extension_oauth_provider orelse return false;
++        return std.ascii.eqlIgnoreCase(current, provider_id) and self.extension_oauth_key != null;
++    }
++
++    fn resolveExtensionOAuth(self: *ClientPool, provider_id: []const u8, now_ms: i64, apply_models: bool) !bool {
++        const bridge = self.extension_oauth_bridge orelse {
++            self.invalidateExtensionOAuth();
++            return false;
++        };
++        if (!bridge.supports_fn(bridge.context, provider_id)) {
++            self.invalidateExtensionOAuth();
++            return false;
++        }
++        const maybe_resolution = try bridge.resolve_fn(bridge.context, self.gpa, provider_id, now_ms, self.abort_flag, apply_models);
++        var resolution = maybe_resolution orelse {
++            self.invalidateExtensionOAuth();
++            return false;
++        };
++        errdefer resolution.deinit(self.gpa);
++        const owned_provider = try self.gpa.dupe(u8, provider_id);
++        self.invalidateExtensionOAuth();
++        self.extension_oauth_provider = owned_provider;
++        self.extension_oauth_key = resolution.api_key;
++        self.extension_oauth_expires_ms = resolution.expires_ms;
++        resolution.api_key = &.{};
++        return true;
++    }
++
++    fn refreshExtensionOAuthState(self: *ClientPool, provider_id: []const u8, now_ms: i64) !void {
++        if (!try self.resolveExtensionOAuth(provider_id, now_ms, false)) return error.MissingExtensionOAuthCredential;
++    }
++
+     fn runtimeProvider(self: *const ClientPool, provider_id: []const u8, model_id: []const u8) ?RuntimeProviderConfig {
+         var provider_fallback: ?RuntimeProviderConfig = null;
+         for (self.runtime_providers) |config| {
+@@ -1036,6 +1173,56 @@
+         }
+     }
+ 
++    fn refreshExtensionOpenAI(ctx: *anyopaque, client: *@import("../ai/openai.zig").OpenAIClient, now_ms: i64) anyerror!void {
++        const self: *ClientPool = @ptrCast(@alignCast(ctx));
++        try self.refreshExtensionOAuthState(client.provider_id, now_ms);
++        client.api_key = self.extension_oauth_key orelse return error.MissingExtensionOAuthCredential;
++        client.token_expiration_ms = self.extension_oauth_expires_ms;
++    }
++
++    fn refreshExtensionResponses(ctx: *anyopaque, client: *@import("../ai/openai_responses.zig").ResponsesClient, now_ms: i64) anyerror!void {
++        const self: *ClientPool = @ptrCast(@alignCast(ctx));
++        try self.refreshExtensionOAuthState(client.provider_id, now_ms);
++        client.api_key = self.extension_oauth_key orelse return error.MissingExtensionOAuthCredential;
++        client.token_expiration_ms = self.extension_oauth_expires_ms;
++    }
++
++    fn refreshExtensionAnthropic(ctx: *anyopaque, client: *@import("../ai/anthropic.zig").AnthropicClient, now_ms: i64) anyerror!void {
++        const self: *ClientPool = @ptrCast(@alignCast(ctx));
++        try self.refreshExtensionOAuthState(client.provider_id, now_ms);
++        client.api_key = self.extension_oauth_key orelse return error.MissingExtensionOAuthCredential;
++        client.token_expiration_ms = self.extension_oauth_expires_ms;
++    }
++
++    fn refreshExtensionPiMessages(ctx: *anyopaque, client: *@import("../ai/pi_messages.zig").PiMessagesClient, now_ms: i64) anyerror!void {
++        const self: *ClientPool = @ptrCast(@alignCast(ctx));
++        try self.refreshExtensionOAuthState(client.provider_id, now_ms);
++        client.api_key = self.extension_oauth_key orelse return error.MissingExtensionOAuthCredential;
++        client.token_expiration_ms = self.extension_oauth_expires_ms;
++    }
++
++    fn refreshExtensionGoogle(ctx: *anyopaque, client: *@import("../ai/google.zig").GoogleClient, now_ms: i64) anyerror!void {
++        const self: *ClientPool = @ptrCast(@alignCast(ctx));
++        try self.refreshExtensionOAuthState(client.provider_id, now_ms);
++        client.api_key = self.extension_oauth_key orelse return error.MissingExtensionOAuthCredential;
++        client.token_expiration_ms = self.extension_oauth_expires_ms;
++        if (client.auth_mode == .bearer) client.bearer_expiration_unix = if (self.extension_oauth_expires_ms) |expires| @divFloor(expires, 1000) else null;
++    }
++
++    fn refreshExtensionMistral(ctx: *anyopaque, client: *@import("../ai/mistral.zig").MistralClient, now_ms: i64) anyerror!void {
++        const self: *ClientPool = @ptrCast(@alignCast(ctx));
++        try self.refreshExtensionOAuthState(client.provider_id, now_ms);
++        client.api_key = self.extension_oauth_key orelse return error.MissingExtensionOAuthCredential;
++        client.token_expiration_ms = self.extension_oauth_expires_ms;
++    }
++
++    fn refreshExtensionBedrock(ctx: *anyopaque, client: *@import("../ai/bedrock.zig").BedrockClient, now_unix: i64) anyerror!void {
++        const self: *ClientPool = @ptrCast(@alignCast(ctx));
++        try self.refreshExtensionOAuthState(client.provider_id, now_unix * 1000);
++        client.api_key = self.extension_oauth_key orelse return error.MissingExtensionOAuthCredential;
++        client.credential_expiration_unix = if (self.extension_oauth_expires_ms) |expires| @divFloor(expires, 1000) else null;
++    }
++
+     fn anthropicAuthMode(self: *ClientPool, provider_id: []const u8, model_id: []const u8, key: []const u8) @import("../ai/anthropic.zig").AuthMode {
+         const oauth = self.oauthForIdentity(provider_id, model_id);
+         if (std.ascii.eqlIgnoreCase(provider_id, "kimi-coding")) return if (oauth.refresh != null) .bearer else .api_key;
+@@ -1049,6 +1236,7 @@
+     }
+ 
+     fn keyForIdentity(self: *ClientPool, provider_id: []const u8, provider: providers.Provider, model_id: []const u8) ?[]const u8 {
++        if (self.hasExtensionOAuth(provider_id)) return self.extension_oauth_key;
+         if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot")) if (self.copilot_oauth_credential) |*credential| return credential.access;
+         if (self.liveCredentialForIdentity(provider_id)) |credential| {
+             switch (credential.*) {
+@@ -1371,15 +1559,46 @@
+     /// Switch a public provider identity to the native transport backing it.
+     /// This is what keeps arbitrary models.json IDs (for example `corp`) from
+     /// collapsing into the built-in `openai` identity during live `/model` use.
+-    pub fn switchToIdentity(self: *ClientPool, provider_id: []const u8, provider: providers.Provider, model_id: []const u8) !void {
++    pub fn switchToIdentity(self: *ClientPool, requested_provider_id: []const u8, provider: providers.Provider, requested_model_id: []const u8) !void {
++        return self.switchToIdentityWithOAuthProjection(requested_provider_id, provider, requested_model_id, true);
++    }
++
++    /// Rebuild the active client after login has already published its
++    /// credential-dependent model projection. This prevents non-idempotent
++    /// extension `modifyModels` callbacks from being applied twice.
++    pub fn switchToIdentityAfterOAuthUpdate(self: *ClientPool, requested_provider_id: []const u8, provider: providers.Provider, requested_model_id: []const u8) !void {
++        return self.switchToIdentityWithOAuthProjection(requested_provider_id, provider, requested_model_id, false);
++    }
++
++    fn switchToIdentityWithOAuthProjection(
++        self: *ClientPool,
++        requested_provider_id: []const u8,
++        provider: providers.Provider,
++        requested_model_id: []const u8,
++        apply_oauth_models: bool,
++    ) !void {
++        var next_provider: ?[]u8 = try self.gpa.dupe(u8, requested_provider_id);
++        errdefer if (next_provider) |value| self.gpa.free(value);
++        var next_model: ?[]u8 = try self.gpa.dupe(u8, requested_model_id);
++        errdefer if (next_model) |value| self.gpa.free(value);
++
++        _ = try self.resolveExtensionOAuth(next_provider.?, std.Io.Clock.real.now(self.io).toMilliseconds(), apply_oauth_models);
++
+         if (self.responses) |*client| client.deinit();
+         self.responses = null;
+-        if (self.model_owned) |m| self.gpa.free(m);
+-        self.model_owned = try self.gpa.dupe(u8, model_id);
+-        const mid = self.model_owned.?;
++        if (self.provider_owned) |value| self.gpa.free(value);
++        if (self.model_owned) |value| self.gpa.free(value);
++        self.provider_owned = next_provider.?;
++        next_provider = null;
++        self.model_owned = next_model.?;
++        next_model = null;
++        const provider_id = self.provider_owned.?;
++        const model_id = self.model_owned.?;
++        const mid = model_id;
+         try self.configureCopilotOAuth(provider_id, model_id);
+         const base_url = self.baseUrlForIdentity(provider_id, provider, model_id);
+         const request_metadata = self.requestMetadataForIdentity(provider_id, model_id);
++        const extension_oauth_active = self.hasExtensionOAuth(provider_id);
+ 
+         const transport = provider.transport();
+         switch (request_metadata.api) {
+@@ -1410,9 +1629,9 @@
+                     .context_window = request_metadata.context_window,
+                     .input_image = request_metadata.input_image,
+                     .model_cost = request_metadata.model_cost,
+-                    .token_expiration_ms = if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot") or std.ascii.eqlIgnoreCase(provider_id, "xai")) self.oauthForIdentity(provider_id, model_id).expires_ms else null,
+-                    .token_refresh_ctx = if ((std.ascii.eqlIgnoreCase(provider_id, "github-copilot") or std.ascii.eqlIgnoreCase(provider_id, "xai")) and self.oauthForIdentity(provider_id, model_id).refresh != null) @ptrCast(self) else null,
+-                    .token_refresh_fn = if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot") and self.oauthForIdentity(provider_id, model_id).refresh != null) refreshCopilotOpenAI else if (std.ascii.eqlIgnoreCase(provider_id, "xai") and self.oauthForIdentity(provider_id, model_id).refresh != null) refreshXaiOpenAI else null,
++                    .token_expiration_ms = if (extension_oauth_active) self.extension_oauth_expires_ms else if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot") or std.ascii.eqlIgnoreCase(provider_id, "xai")) self.oauthForIdentity(provider_id, model_id).expires_ms else null,
++                    .token_refresh_ctx = if (extension_oauth_active) @ptrCast(self) else if ((std.ascii.eqlIgnoreCase(provider_id, "github-copilot") or std.ascii.eqlIgnoreCase(provider_id, "xai")) and self.oauthForIdentity(provider_id, model_id).refresh != null) @ptrCast(self) else null,
++                    .token_refresh_fn = if (extension_oauth_active) refreshExtensionOpenAI else if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot") and self.oauthForIdentity(provider_id, model_id).refresh != null) refreshCopilotOpenAI else if (std.ascii.eqlIgnoreCase(provider_id, "xai") and self.oauthForIdentity(provider_id, model_id).refresh != null) refreshXaiOpenAI else null,
+                 };
+                 self.client = self.openai.?.client();
+             },
+@@ -1449,9 +1668,9 @@
+                     .transport = self.codex_transport,
+                     .http_idle_timeout_ms = self.codex_http_idle_timeout_ms,
+                     .websocket_connect_timeout_ms = self.codex_websocket_connect_timeout_ms,
+-                    .token_expiration_ms = if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot")) self.oauthForIdentity(provider_id, model_id).expires_ms else codex_oauth_meta.expires_ms,
+-                    .token_refresh_ctx = if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot") and self.oauthForIdentity(provider_id, model_id).refresh != null) @ptrCast(self) else if (codex_oauth_meta.refresh != null) @ptrCast(self) else null,
+-                    .token_refresh_fn = if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot") and self.oauthForIdentity(provider_id, model_id).refresh != null) refreshCopilotResponses else if (codex_oauth_meta.refresh != null) refreshCodexOAuth else null,
++                    .token_expiration_ms = if (extension_oauth_active) self.extension_oauth_expires_ms else if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot")) self.oauthForIdentity(provider_id, model_id).expires_ms else codex_oauth_meta.expires_ms,
++                    .token_refresh_ctx = if (extension_oauth_active) @ptrCast(self) else if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot") and self.oauthForIdentity(provider_id, model_id).refresh != null) @ptrCast(self) else if (codex_oauth_meta.refresh != null) @ptrCast(self) else null,
++                    .token_refresh_fn = if (extension_oauth_active) refreshExtensionResponses else if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot") and self.oauthForIdentity(provider_id, model_id).refresh != null) refreshCopilotResponses else if (codex_oauth_meta.refresh != null) refreshCodexOAuth else null,
+                     .ws_fallback_flag = &self.codex_ws_fallback_active,
+                 };
+                 self.client = self.responses.?.client();
+@@ -1484,6 +1703,9 @@
+                     .model_cost = request_metadata.model_cost,
+                     .auth_mode = .azure_api_key,
+                     .api_version = "v1",
++                    .token_expiration_ms = if (extension_oauth_active) self.extension_oauth_expires_ms else null,
++                    .token_refresh_ctx = if (extension_oauth_active) @ptrCast(self) else null,
++                    .token_refresh_fn = if (extension_oauth_active) refreshExtensionResponses else null,
+                 };
+                 self.client = self.responses.?.client();
+             },
+@@ -1512,9 +1734,9 @@
+                     .context_window = request_metadata.context_window,
+                     .input_image = request_metadata.input_image,
+                     .model_cost = request_metadata.model_cost,
+-                    .token_expiration_ms = if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot") or std.ascii.eqlIgnoreCase(provider_id, "anthropic") or std.ascii.eqlIgnoreCase(provider_id, "kimi-coding")) self.oauthForIdentity(provider_id, model_id).expires_ms else null,
+-                    .token_refresh_ctx = if ((std.ascii.eqlIgnoreCase(provider_id, "github-copilot") or std.ascii.eqlIgnoreCase(provider_id, "anthropic") or std.ascii.eqlIgnoreCase(provider_id, "kimi-coding")) and self.oauthForIdentity(provider_id, model_id).refresh != null) @ptrCast(self) else null,
+-                    .token_refresh_fn = if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot") and self.oauthForIdentity(provider_id, model_id).refresh != null) refreshCopilotAnthropic else if (std.ascii.eqlIgnoreCase(provider_id, "anthropic") and self.oauthForIdentity(provider_id, model_id).refresh != null) refreshAnthropicOAuth else if (std.ascii.eqlIgnoreCase(provider_id, "kimi-coding") and self.oauthForIdentity(provider_id, model_id).refresh != null) refreshKimiOAuth else null,
++                    .token_expiration_ms = if (extension_oauth_active) self.extension_oauth_expires_ms else if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot") or std.ascii.eqlIgnoreCase(provider_id, "anthropic") or std.ascii.eqlIgnoreCase(provider_id, "kimi-coding")) self.oauthForIdentity(provider_id, model_id).expires_ms else null,
++                    .token_refresh_ctx = if (extension_oauth_active) @ptrCast(self) else if ((std.ascii.eqlIgnoreCase(provider_id, "github-copilot") or std.ascii.eqlIgnoreCase(provider_id, "anthropic") or std.ascii.eqlIgnoreCase(provider_id, "kimi-coding")) and self.oauthForIdentity(provider_id, model_id).refresh != null) @ptrCast(self) else null,
++                    .token_refresh_fn = if (extension_oauth_active) refreshExtensionAnthropic else if (std.ascii.eqlIgnoreCase(provider_id, "github-copilot") and self.oauthForIdentity(provider_id, model_id).refresh != null) refreshCopilotAnthropic else if (std.ascii.eqlIgnoreCase(provider_id, "anthropic") and self.oauthForIdentity(provider_id, model_id).refresh != null) refreshAnthropicOAuth else if (std.ascii.eqlIgnoreCase(provider_id, "kimi-coding") and self.oauthForIdentity(provider_id, model_id).refresh != null) refreshKimiOAuth else null,
+                     .auth_mode = self.anthropicAuthMode(provider_id, model_id, key),
+                 };
+                 self.client = self.anthropic.?.client();
+@@ -1541,13 +1763,16 @@
+                     .input_image = request_metadata.input_image,
+                     .model_cost = request_metadata.model_cost,
+                     .abort_flag = self.abort_flag,
++                    .token_expiration_ms = if (extension_oauth_active) self.extension_oauth_expires_ms else null,
++                    .token_refresh_ctx = if (extension_oauth_active) @ptrCast(self) else null,
++                    .token_refresh_fn = if (extension_oauth_active) refreshExtensionGoogle else null,
+                 };
+                 self.client = self.google.?.client();
+             },
+             .google_vertex => {
+                 if (transport != .google) return error.UnsupportedApiTransport;
+                 const resolved_key = self.keyForIdentity(provider_id, provider, model_id);
+-                const use_adc = resolved_key == null or google_adc.isAuthMarker(resolved_key.?);
++                const use_adc = !extension_oauth_active and (resolved_key == null or google_adc.isAuthMarker(resolved_key.?));
+                 if (self.google_access_token) |*token| {
+                     token.deinit(self.gpa);
+                     self.google_access_token = null;
+@@ -1559,7 +1784,7 @@
+                 var quota_project: ?[]const u8 = null;
+                 var refresh_fn: ?@import("../ai/google.zig").BearerRefreshFn = null;
+                 var key: []const u8 = resolved_key orelse "";
+-                var auth_mode: @import("../ai/google.zig").AuthMode = .query_key;
++                var auth_mode: @import("../ai/google.zig").AuthMode = if (extension_oauth_active) .bearer else .query_key;
+                 if (use_adc) {
+                     const env = self.environ orelse return error.MissingGoogleEnvironment;
+                     self.google_adc_credential = (try google_adc.load(self.gpa, self.io, env)) orelse return error.MissingGoogleAdcCredential;
+@@ -1589,8 +1814,12 @@
+                     .input_image = request_metadata.input_image,
+                     .model_cost = request_metadata.model_cost,
+                     .abort_flag = self.abort_flag,
++                    .token_expiration_ms = if (extension_oauth_active) self.extension_oauth_expires_ms else null,
++                    .token_refresh_ctx = if (extension_oauth_active) @ptrCast(self) else null,
++                    .token_refresh_fn = if (extension_oauth_active) refreshExtensionGoogle else null,
+                     .bearer_refresh_ctx = if (refresh_fn != null) @ptrCast(self) else null,
+                     .bearer_refresh_fn = refresh_fn,
++                    .bearer_expiration_unix = if (extension_oauth_active) if (self.extension_oauth_expires_ms) |expires| @divFloor(expires, 1000) else null else null,
+                     .quota_project_id = quota_project,
+                 };
+                 self.client = self.google.?.client();
+@@ -1617,6 +1846,9 @@
+                     .context_window = request_metadata.context_window,
+                     .input_image = request_metadata.input_image,
+                     .model_cost = request_metadata.model_cost,
++                    .token_expiration_ms = if (extension_oauth_active) self.extension_oauth_expires_ms else null,
++                    .token_refresh_ctx = if (extension_oauth_active) @ptrCast(self) else null,
++                    .token_refresh_fn = if (extension_oauth_active) refreshExtensionMistral else null,
+                 };
+                 self.client = self.mistral.?.client();
+             },
+@@ -1686,7 +1918,22 @@
+                 const has_web_identity = if (self.environ) |env| aws_web_identity.resolveConfig(env, profile_ptr) != null else false;
+                 const has_container = if (self.environ) |env| env.get("AWS_CONTAINER_CREDENTIALS_RELATIVE_URI") != null or env.get("AWS_CONTAINER_CREDENTIALS_FULL_URI") != null else false;
+                 const has_imds = if (self.environ) |env| !aws_imds.metadataDisabled(env) else false;
+-                const refresh_fn: ?@import("../ai/bedrock.zig").CredentialRefreshFn = if (resolved_aws_credentials != null) null else if (has_assume_role) refreshBedrockAssumeRole else if (has_process) refreshBedrockProcess else if (has_web_identity) refreshBedrockWebIdentity else if (has_container) refreshBedrockContainer else if (has_imds) refreshBedrockImds else null;
++                const refresh_fn: ?@import("../ai/bedrock.zig").CredentialRefreshFn = if (extension_oauth_active)
++                    refreshExtensionBedrock
++                else if (resolved_aws_credentials != null)
++                    null
++                else if (has_assume_role)
++                    refreshBedrockAssumeRole
++                else if (has_process)
++                    refreshBedrockProcess
++                else if (has_web_identity)
++                    refreshBedrockWebIdentity
++                else if (has_container)
++                    refreshBedrockContainer
++                else if (has_imds)
++                    refreshBedrockImds
++                else
++                    null;
+                 if (key == null and resolved_aws_credentials == null and refresh_fn == null and !skip_auth) return error.MissingApiKey;
+                 self.bedrock = .{
+                     .gpa = self.gpa,
+@@ -1698,6 +1945,7 @@
+                     .aws_credentials = resolved_aws_credentials,
+                     .credential_refresh_ctx = if (refresh_fn != null) @ptrCast(self) else null,
+                     .credential_refresh_fn = refresh_fn,
++                    .credential_expiration_unix = if (extension_oauth_active) if (self.extension_oauth_expires_ms) |expires| @divFloor(expires, 1000) else null else null,
+                     .region = region,
+                     .skip_auth = skip_auth,
+                     .base_url = base_url,
+@@ -1743,9 +1991,9 @@
+                     .max_tokens = request_metadata.max_tokens,
+                     .context_window = request_metadata.context_window,
+                     .input_image = request_metadata.input_image,
+-                    .token_expiration_ms = oauth.expires_ms,
+-                    .token_refresh_ctx = if (oauth.refresh != null) @ptrCast(self) else null,
+-                    .token_refresh_fn = if (oauth.refresh != null) refreshRadiusOAuth else null,
++                    .token_expiration_ms = if (extension_oauth_active) self.extension_oauth_expires_ms else oauth.expires_ms,
++                    .token_refresh_ctx = if (extension_oauth_active) @ptrCast(self) else if (oauth.refresh != null) @ptrCast(self) else null,
++                    .token_refresh_fn = if (extension_oauth_active) refreshExtensionPiMessages else if (oauth.refresh != null) refreshRadiusOAuth else null,
+                 };
+                 self.client = self.pi_messages.?.client();
+             },
+@@ -3419,3 +3667,36 @@
+         status,
+     );
+ }
++
++test "extension OAuth invalidation scrubs the active transport before releasing its key" {
++    const gpa = std.testing.allocator;
++    var pool: ClientPool = .{ .gpa = gpa, .io = std.testing.io };
++    defer pool.deinit();
++
++    pool.provider_owned = try gpa.dupe(u8, "removed-oauth");
++    pool.model_owned = try gpa.dupe(u8, "removed-model");
++    pool.extension_oauth_provider = try gpa.dupe(u8, "removed-oauth");
++    pool.extension_oauth_key = try gpa.dupe(u8, "stale-secret");
++    pool.extension_oauth_expires_ms = 9999999999999;
++    pool.openai = .{
++        .gpa = gpa,
++        .io = std.testing.io,
++        .api_key = pool.extension_oauth_key.?,
++        .base_url = "https://removed.invalid/v1",
++        .model = pool.model_owned.?,
++        .provider_id = pool.provider_owned.?,
++        .token_expiration_ms = pool.extension_oauth_expires_ms,
++        .token_refresh_ctx = @ptrCast(&pool),
++        .token_refresh_fn = ClientPool.refreshExtensionOpenAI,
++    };
++    pool.client = pool.openai.?.client();
++
++    pool.invalidateExtensionOAuth();
++    try std.testing.expect(pool.extension_oauth_provider == null);
++    try std.testing.expect(pool.extension_oauth_key == null);
++    try std.testing.expect(pool.extension_oauth_expires_ms == null);
++    try std.testing.expectEqualStrings("", pool.openai.?.api_key);
++    try std.testing.expect(pool.openai.?.token_expiration_ms == null);
++    try std.testing.expect(pool.openai.?.token_refresh_ctx == null);
++    try std.testing.expect(pool.openai.?.token_refresh_fn == null);
++}
+--- pi-zig-v8-checkpoint-181/src/coding_agent/slash.zig
++++ pi-zig-v8-checkpoint-182/src/coding_agent/slash.zig
+@@ -30,6 +30,8 @@
+ const update_mod = @import("update.zig");
+ const clipboard_mod = @import("clipboard.zig");
+ const auth_flow_tui = @import("auth_flow_tui.zig");
++const provider_oauth = @import("../extensions/provider_oauth.zig");
++const js_runtime = @import("../extensions/js_runtime.zig");
+ 
+ pub const LiveState = live_state.LiveState;
+ 
+@@ -212,6 +214,8 @@
+     /// Optional fullscreen provider-owned login dialog. Explicit noninteractive
+     /// commands omit this and retain plain text instructions.
+     auth_flow_ui: ?*auth_flow_tui.Controller = null,
++    /// Extension-defined provider OAuth lifecycle and callback owner.
++    extension_oauth: ?*provider_oauth.Runtime = null,
+     resume_path_out: ?*?[]u8 = null,
+ };
+ 
+@@ -531,9 +535,13 @@
+     }
+ }
+ 
++fn authDialogPromptWithSecret(ctx: SlashContext, active: bool, message: []const u8, placeholder: ?[]const u8, secret: bool) ![]u8 {
++    if (active) return ctx.auth_flow_ui.?.prompt(message, placeholder, secret);
++    return error.InteractiveAuthenticationDialogUnavailable;
++}
++
+ fn authDialogPrompt(ctx: SlashContext, active: bool, message: []const u8, placeholder: ?[]const u8) ![]u8 {
+-    if (active) return ctx.auth_flow_ui.?.prompt(message, placeholder, false);
+-    return error.InteractiveAuthenticationDialogUnavailable;
++    return authDialogPromptWithSecret(ctx, active, message, placeholder, false);
+ }
+ 
+ fn authDialogFinish(ctx: SlashContext, active: bool, ok: bool, message: []const u8) void {
+@@ -556,6 +564,149 @@
+     const message = try std.fmt.allocPrint(ctx.gpa, "{s} login failed: {s}", .{ provider_id, @errorName(err) });
+     defer ctx.gpa.free(message);
+     try authDialogFailMessage(ctx, active, message);
++}
++
++const ExtensionOAuthUiContext = struct {
++    slash: SlashContext,
++    dialog_active: bool,
++};
++
++fn oauthJsonString(allocator: std.mem.Allocator, value: []const u8) ![]u8 {
++    var out: std.Io.Writer.Allocating = .init(allocator);
++    errdefer out.deinit();
++    try std.json.Stringify.value(value, .{}, &out.writer);
++    return out.toOwnedSlice();
++}
++
++fn oauthStringField(object: *const std.json.ObjectMap, key: []const u8, fallback: []const u8) ![]const u8 {
++    const value = object.get(key) orelse return fallback;
++    if (value != .string) return error.InvalidExtensionOAuthUiPayload;
++    return value.string;
++}
++
++fn oauthOptionalStringField(object: *const std.json.ObjectMap, key: []const u8) !?[]const u8 {
++    const value = object.get(key) orelse return null;
++    if (value == .null) return null;
++    if (value != .string) return error.InvalidExtensionOAuthUiPayload;
++    return value.string;
++}
++
++fn oauthOptionalU64Field(object: *const std.json.ObjectMap, key: []const u8) !?u64 {
++    const value = object.get(key) orelse return null;
++    if (value == .null) return null;
++    if (value != .integer or value.integer < 0) return error.InvalidExtensionOAuthUiPayload;
++    return std.math.cast(u64, value.integer) orelse error.InvalidExtensionOAuthUiPayload;
++}
++
++fn extensionOAuthUiRequest(
++    raw: ?*anyopaque,
++    allocator: std.mem.Allocator,
++    method: []const u8,
++    args_json: []const u8,
++) ![]u8 {
++    const state: *ExtensionOAuthUiContext = @ptrCast(@alignCast(raw orelse return error.MissingExtensionOAuthUiContext));
++    var parsed = try std.json.parseFromSlice(std.json.Value, allocator, args_json, .{});
++    defer parsed.deinit();
++    if (parsed.value != .object) return error.InvalidExtensionOAuthUiPayload;
++    const object = &parsed.value.object;
++
++    if (std.mem.eql(u8, method, "oauth_prompt") or std.mem.eql(u8, method, "oauth_manual_code")) {
++        const default_message = if (std.mem.eql(u8, method, "oauth_manual_code")) "Paste the authorization code" else "Enter authentication value";
++        const message = try oauthStringField(object, "message", default_message);
++        const placeholder = try oauthOptionalStringField(object, "placeholder");
++        const secret = if (object.get("secret")) |value| blk: {
++            if (value != .bool) return error.InvalidExtensionOAuthUiPayload;
++            break :blk value.bool;
++        } else false;
++        const answer = try authDialogPromptWithSecret(state.slash, state.dialog_active, message, placeholder, secret);
++        defer state.slash.gpa.free(answer);
++        return oauthJsonString(allocator, answer);
++    }
++
++    if (std.mem.eql(u8, method, "oauth_select")) {
++        const message = try oauthStringField(object, "message", "Select an authentication option");
++        const options_value = object.get("options") orelse return error.InvalidExtensionOAuthUiPayload;
++        if (options_value != .array or options_value.array.items.len == 0) return error.InvalidExtensionOAuthUiPayload;
++
++        var prompt: std.Io.Writer.Allocating = .init(state.slash.gpa);
++        defer prompt.deinit();
++        try prompt.writer.writeAll(message);
++        for (options_value.array.items, 0..) |option, index| {
++            if (option != .object) return error.InvalidExtensionOAuthUiPayload;
++            const label = try oauthStringField(&option.object, "label", "");
++            const value = try oauthStringField(&option.object, "value", "");
++            if (value.len == 0) return error.InvalidExtensionOAuthUiPayload;
++            try prompt.writer.print("\n  {d}. {s}", .{ index + 1, if (label.len > 0) label else value });
++            if (try oauthOptionalStringField(&option.object, "description")) |description| {
++                if (description.len > 0) try prompt.writer.print(" — {s}", .{description});
++            }
++        }
++        const answer = try authDialogPrompt(state.slash, state.dialog_active, prompt.written(), "Enter a number or value");
++        defer state.slash.gpa.free(answer);
++        const trimmed = std.mem.trim(u8, answer, " \t\r\n");
++        const numeric = std.fmt.parseInt(usize, trimmed, 10) catch 0;
++        for (options_value.array.items, 0..) |option, index| {
++            const value = (option.object.get("value") orelse unreachable).string;
++            const label_value = option.object.get("label");
++            const label = if (label_value != null and label_value.? == .string) label_value.?.string else value;
++            if ((numeric == index + 1 and numeric != 0) or std.mem.eql(u8, trimmed, value) or std.mem.eql(u8, trimmed, label))
++                return oauthJsonString(allocator, value);
++        }
++        return error.InvalidExtensionOAuthSelection;
++    }
++
++    return error.UnsupportedExtensionOAuthUiRequest;
++}
++
++fn extensionOAuthUiAction(
++    raw: ?*anyopaque,
++    allocator: std.mem.Allocator,
++    method: []const u8,
++    args_json: []const u8,
++) !void {
++    const state: *ExtensionOAuthUiContext = @ptrCast(@alignCast(raw orelse return error.MissingExtensionOAuthUiContext));
++    var parsed = try std.json.parseFromSlice(std.json.Value, allocator, args_json, .{});
++    defer parsed.deinit();
++    if (parsed.value != .object) return error.InvalidExtensionOAuthUiPayload;
++    const object = &parsed.value.object;
++
++    if (std.mem.eql(u8, method, "oauth_auth")) {
++        const url = try oauthStringField(object, "url", "");
++        if (url.len == 0) return error.InvalidExtensionOAuthUiPayload;
++        return authDialogShowAuth(state.slash, state.dialog_active, url, try oauthOptionalStringField(object, "instructions"));
++    }
++    if (std.mem.eql(u8, method, "oauth_device_code")) {
++        const verification_uri = try oauthStringField(object, "verificationUri", "");
++        const user_code = try oauthStringField(object, "userCode", "");
++        if (verification_uri.len == 0 or user_code.len == 0) return error.InvalidExtensionOAuthUiPayload;
++        const instructions = try oauthOptionalStringField(object, "instructions");
++        const interval_seconds = try oauthOptionalU64Field(object, "intervalSeconds");
++        const expires_in_seconds = try oauthOptionalU64Field(object, "expiresInSeconds");
++        if (state.dialog_active) {
++            try state.slash.auth_flow_ui.?.showDeviceCode(.{
++                .verification_uri = verification_uri,
++                .user_code = user_code,
++                .instructions = instructions,
++                .interval_seconds = interval_seconds,
++                .expires_in_seconds = expires_in_seconds,
++            });
++        } else {
++            const line = try std.fmt.allocPrint(state.slash.gpa, "Open {s} and enter code {s}.", .{ verification_uri, user_code });
++            defer state.slash.gpa.free(line);
++            try tui_render.printLine(state.slash.io, line);
++            if (instructions) |text| try tui_render.printLine(state.slash.io, text);
++        }
++        return;
++    }
++    if (std.mem.eql(u8, method, "oauth_progress")) {
++        return authDialogProgress(state.slash, state.dialog_active, try oauthStringField(object, "message", "Working…"));
++    }
++    return error.UnsupportedExtensionOAuthUiAction;
++}
++
++fn extensionOAuthAbortFlag(ctx: SlashContext) ?*bool {
++    const flag = authDialogAbortFlag(ctx) orelse return null;
++    return @constCast(flag);
+ }
+ 
+ const TreeArgs = struct {
+@@ -1067,6 +1218,7 @@
+             prov = explicit_provider.?;
+         }
+         const method_or_key: []const u8 = supplied_method_or_key orelse blk: {
++            if (ctx.extension_oauth) |runtime| if (runtime.canLogin(prov)) break :blk "browser";
+             if (isOpenAICodexProvider(prov) or isAnthropicProvider(prov) or isOpenRouterProvider(prov)) break :blk "browser";
+             if (isGitHubCopilotProvider(prov) or isKimiCodingProvider(prov) or isXaiProvider(prov)) break :blk "device-code";
+             const maybe_gateway = try radiusLoginGateway(ctx.gpa, ctx.io, ctx.agent_dir, prov);
+@@ -1280,6 +1432,53 @@
+         if (std.mem.eql(u8, method_or_key, "browser")) {
+             const ad = ctx.agent_dir orelse {
+                 try tui_render.printLine(ctx.io, "No agent dir; cannot store credentials.");
++                return .handled;
++            };
++            if (ctx.extension_oauth) |runtime| if (runtime.canLogin(prov)) {
++                const dialog_active = authDialogBegin(ctx, prov);
++                defer if (dialog_active) authDialogClose(ctx);
++                var ui_context = ExtensionOAuthUiContext{
++                    .slash = ctx,
++                    .dialog_active = dialog_active,
++                };
++                const persisted = runtime.loginAndPersist(
++                    prov,
++                    extensionOAuthAbortFlag(ctx),
++                    .{
++                        .context = &ui_context,
++                        .request_fn = extensionOAuthUiRequest,
++                        .action_fn = extensionOAuthUiAction,
++                    },
++                ) catch |err| {
++                    if (dialog_active and ctx.auth_flow_ui.?.cancelled()) {
++                        try authDialogFailure(ctx, dialog_active, prov, error.LoginCancelled);
++                    } else if (runtime.lastLoginError(prov)) |details| {
++                        const message = try std.fmt.allocPrint(ctx.gpa, "{s} login failed:\n{s}", .{ prov, details });
++                        defer ctx.gpa.free(message);
++                        try authDialogFailMessage(ctx, dialog_active, message);
++                    } else {
++                        try authDialogFailure(ctx, dialog_active, prov, err);
++                    }
++                    return .handled;
++                };
++                defer ctx.gpa.free(persisted);
++
++                if (ctx.live) |live| if (live.client_pool) |pool| {
++                    if (std.ascii.eqlIgnoreCase(pool.active_provider_id, prov)) {
++                        const active_model = pool.modelPtr().*;
++                        const model_copy = try ctx.gpa.dupe(u8, active_model);
++                        defer ctx.gpa.free(model_copy);
++                        pool.switchToIdentityAfterOAuthUpdate(prov, pool.active_provider, model_copy) catch |err| {
++                            const message = try std.fmt.allocPrint(ctx.gpa, "{s} credential was stored, but the active client could not be rebuilt: {s}", .{ prov, @errorName(err) });
++                            defer ctx.gpa.free(message);
++                            try authDialogFailMessage(ctx, dialog_active, message);
++                            return .handled;
++                        };
++                        live.active_model = pool.modelPtr();
++                    }
++                };
++                authDialogFinish(ctx, dialog_active, true, "Extension OAuth authentication complete.");
++                try tui_render.printLine(ctx.io, "Extension OAuth credential stored in auth.json and activated for this process.");
+                 return .handled;
+             };
+             if (isOpenAICodexProvider(prov)) {
+@@ -2210,6 +2409,105 @@
+     try std.testing.expect(std.mem.indexOf(u8, cfg.context_prompt, "reload-v2-APPLIED") != null);
+ }
+ 
++fn testExtensionProviderConfigFromManifest(
++    gpa: std.mem.Allocator,
++    manifest_json: []const u8,
++    provider_name: []const u8,
++) ![]u8 {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, manifest_json, .{});
++    defer parsed.deinit();
++    if (parsed.value != .object) return error.TestProviderNotFound;
++    const providers_value = parsed.value.object.get("providers") orelse return error.TestProviderNotFound;
++    if (providers_value != .array) return error.TestProviderNotFound;
++    for (providers_value.array.items) |entry| {
++        if (entry != .object) continue;
++        const name = entry.object.get("name") orelse continue;
++        const config = entry.object.get("config") orelse continue;
++        if (name != .string or !std.mem.eql(u8, name.string, provider_name) or config != .object) continue;
++        var out: std.Io.Writer.Allocating = .init(gpa);
++        errdefer out.deinit();
++        try std.json.Stringify.value(config, .{}, &out.writer);
++        return out.toOwnedSlice();
++    }
++    return error.TestProviderNotFound;
++}
++
++test "slash login executes extension OAuth and persists complete credentials" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
++    tui_render.setSilent(true);
++    defer tui_render.setSilent(false);
++
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    const source =
++        \\export default function(pi) {
++        \\  const common = { name: 'Slash OAuth', baseUrl: 'https://slash.invalid/v1', api: 'openai-completions', apiKey: 'unused', models: [{ id: 'slash-model', name: 'Slash Model', reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }] };
++        \\  pi.registerProvider('slash-oauth', { ...common, oauth: {
++        \\    async login(callbacks) { if (!(callbacks.signal instanceof AbortSignal)) throw new Error('missing signal'); return { refresh: 'slash-refresh', access: 'slash-access', expires: 9999999999999, tenant: { id: 42 }, preserved: true }; },
++        \\    getApiKey(credentials) { return `derived:${credentials.access}`; },
++        \\  }});
++        \\  pi.registerProvider('slash-oauth-broken', { ...common, oauth: {
++        \\    async login() { throw new Error('slash OAuth rejection sentinel'); },
++        \\    getApiKey(credentials) { return credentials.access; },
++        \\  }});
++        \\}
++    ;
++    try tmp.dir.writeFile(io, .{ .sub_path = "slash-oauth.mjs", .data = source });
++    var root_buf: [std.fs.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &root_buf);
++    const root = root_buf[0..root_len];
++    const source_path = try std.fs.path.join(gpa, &.{ root, "slash-oauth.mjs" });
++    defer gpa.free(source_path);
++
++    var started = try js_runtime.Runtime.start(gpa, io, source_path, "node");
++    defer started.runtime.deinit();
++    defer gpa.free(started.manifest_json);
++    const ProviderRegistry = @import("../extensions/provider_registry.zig").Registry;
++    var env = std.process.Environ.Map.init(gpa);
++    defer env.deinit();
++    var registry = ProviderRegistry.init(gpa, io, &env, root, &.{}, &.{});
++    defer registry.deinit();
++    inline for (.{ "slash-oauth", "slash-oauth-broken" }) |provider_name| {
++        const config_json = try testExtensionProviderConfigFromManifest(gpa, started.manifest_json, provider_name);
++        defer gpa.free(config_json);
++        try registry.registerJsonWithRuntime(provider_name, config_json, started.runtime);
++    }
++    var oauth_runtime = provider_oauth.Runtime.init(gpa, io, root, &registry);
++
++    var sess = try session_mod.Session.init(gpa, "slash-oauth-182", root);
++    defer sess.deinit();
++    var model: ?[]const u8 = null;
++    var provider: ?[]const u8 = null;
++    const ctx = SlashContext{
++        .gpa = gpa,
++        .io = io,
++        .cwd = root,
++        .sess = &sess,
++        .session_path = null,
++        .session_dir = null,
++        .agent_dir = root,
++        .model = &model,
++        .provider = &provider,
++        .settings_text = "",
++        .extension_oauth = &oauth_runtime,
++    };
++
++    try std.testing.expectEqual(SlashResult.handled, try handle(ctx, "/login slash-oauth"));
++    var store = try auth_storage.AuthStorage.init(gpa, io, root);
++    defer store.deinit();
++    const persisted = (try store.readOAuthJson("slash-oauth")).?;
++    defer gpa.free(persisted);
++    try std.testing.expect(std.mem.indexOf(u8, persisted, "\"preserved\":true") != null);
++    try std.testing.expect(std.mem.indexOf(u8, persisted, "\"tenant\":{\"id\":42}") != null);
++
++    try std.testing.expectEqual(SlashResult.handled, try handle(ctx, "/login slash-oauth-broken browser"));
++    try std.testing.expect((try store.readOAuthJson("slash-oauth-broken")) == null);
++    const rejection = oauth_runtime.lastLoginError("slash-oauth-broken") orelse return error.MissingJavaScriptRejection;
++    try std.testing.expect(std.mem.indexOf(u8, rejection, "slash OAuth rejection sentinel") != null);
++}
++
+ test "Radius login gateway resolves custom OAuth provider and builtin default" {
+     const gpa = std.testing.allocator;
+     const io = std.testing.io;
+--- pi-zig-v8-checkpoint-181/src/extensions/js_bridge.mjs
++++ pi-zig-v8-checkpoint-182/src/extensions/js_bridge.mjs
+@@ -350,10 +350,24 @@
+   writeResponse({ type: 'ui_request', id, method, args });
+   return new Promise((resolve, reject) => pendingUi.set(id, { resolve, reject }));
+ };
+-const requestHost = (method, args = {}) => {
++const requestHost = (method, args = {}, signal = undefined) => {
++  if (signal?.aborted) return Promise.reject(signal.reason ?? new Error('Operation aborted'));
+   const id = nextUiRequestId++;
+-  writeResponse({ type: 'ui_request', id, method, args });
+-  return new Promise((resolve, reject) => pendingUi.set(id, { resolve, reject }));
++  return new Promise((resolve, reject) => {
++    let onAbort;
++    const cleanup = () => { if (onAbort) signal?.removeEventListener('abort', onAbort); };
++    const pending = {
++      resolve(value) { cleanup(); resolve(value); },
++      reject(error) { cleanup(); reject(error); },
++    };
++    onAbort = () => {
++      if (!pendingUi.delete(id)) return;
++      pending.reject(signal.reason ?? new Error('Operation aborted'));
++    };
++    pendingUi.set(id, pending);
++    signal?.addEventListener('abort', onAbort, { once: true });
++    writeResponse({ type: 'ui_request', id, method, args });
++  });
+ };
+ globalThis.__piCompat.copyToClipboard = async (text) => {
+   const copied = await requestHost('copyToClipboard', { text: String(text) });
+@@ -924,6 +938,58 @@
+   const invokeArgs = appendSignal ? [...args, signal] : args;
+   return await callback(...invokeArgs);
+ }
++async function invokeProviderOAuthLogin(callbackId, signal) {
++  const callback = providerCallbacks.get(String(callbackId));
++  if (typeof callback !== 'function') throw new Error(`unknown or unloaded provider callback: ${callbackId}`);
++  const text = (value) => value == null ? '' : String(value);
++  const optionalText = (value) => value == null ? undefined : String(value);
++  const callbacks = {
++    onAuth(info = {}) {
++      emitUiAction('oauth_auth', {
++        url: text(info.url),
++        instructions: optionalText(info.instructions),
++      });
++    },
++    onDeviceCode(info = {}) {
++      emitUiAction('oauth_device_code', {
++        verificationUri: text(info.verificationUri ?? info.verification_uri ?? info.url),
++        userCode: text(info.userCode ?? info.user_code ?? info.code),
++        intervalSeconds: info.intervalSeconds ?? info.interval_seconds,
++        expiresInSeconds: info.expiresInSeconds ?? info.expires_in_seconds,
++        instructions: optionalText(info.instructions),
++      });
++    },
++    onPrompt(prompt = {}) {
++      return requestHost('oauth_prompt', {
++        message: text(prompt.message ?? prompt.title),
++        placeholder: optionalText(prompt.placeholder),
++        secret: !!prompt.secret,
++      }, signal);
++    },
++    onProgress(message) {
++      emitUiAction('oauth_progress', { message: text(message) });
++    },
++    onManualCodeInput() {
++      return requestHost('oauth_manual_code', { message: 'Paste the authorization code' }, signal);
++    },
++    onSelect(prompt = {}) {
++      const options = Array.isArray(prompt.options) ? prompt.options.map((option) =>
++        option && typeof option === 'object'
++          ? {
++              value: text(option.id ?? option.value),
++              label: text(option.label ?? option.id ?? option.value),
++              description: optionalText(option.description),
++            }
++          : { value: text(option), label: text(option) }) : [];
++      return requestHost('oauth_select', {
++        message: text(prompt.message ?? prompt.title),
++        options,
++      }, signal);
++    },
++    signal,
++  };
++  return await callback(callbacks);
++}
+ const toolRendererContext = (name, payload, state, slot) => ({
+   args: state.args,
+   toolCallId: state.toolCallId,
+@@ -1020,6 +1086,11 @@
+       writeResponse({ ok: true, result: { value: result === undefined ? null : result } });
+       return;
+     }
++    else if (request.kind === 'provider_oauth_login') {
++      result = await invokeProviderOAuthLogin(request.callbackId, abortController?.signal);
++      writeResponse({ ok: true, result: { value: result === undefined ? null : result } });
++      return;
++    }
+     else if (request.kind === 'command') result = await invokeCommand(request.name, request.rawArguments ?? '', actions);
+     else if (request.kind === 'shortcut') result = await invokeShortcut(request.name, actions);
+     else if (request.kind.startsWith('render_') || request.kind === 'transform_markdown' || request.kind === 'prepare_tool_arguments') {
+--- pi-zig-v8-checkpoint-181/src/extensions/js_runtime.zig
++++ pi-zig-v8-checkpoint-182/src/extensions/js_runtime.zig
+@@ -37,6 +37,9 @@
+     max_line_bytes: usize = 4 * 1024 * 1024,
+     max_discard_bytes: usize = 1024 * 1024,
+     timeout_ms: u64 = 15_000,
++    /// OAuth login includes human browser/device interaction and must not inherit
++    /// the short ordinary extension callback deadline. Zero disables this bound.
++    oauth_login_timeout_ms: u64 = 15 * 60 * 1000,
+     closed: bool = false,
+     last_error: ?[]u8 = null,
+     ui_bridge: ?UiBridge = null,
+@@ -291,6 +294,44 @@
+         if (self.next_invocation_id == 0) self.next_invocation_id = 1;
+         try request.writer.print(",\"invocationId\":\"{d}\"", .{invocation_id});
+         if (append_signal or abort_flag != null) try request.writer.writeAll(",\"abortable\":true");
++        if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire))
++            try request.writer.writeAll(",\"aborted\":true");
++        try request.writer.writeAll(",\"context\":");
++        try self.writeContext(&request.writer);
++        try request.writer.writeByte('}');
++        return self.exchangeWithUpdatesUnlocked(request.written(), invocation_id, abort_flag, null, null);
++    }
++
++    /// Invoke an extension-defined `oauth.login(callbacks)` method. The
++    /// dedicated bridge remains installed only for this invocation, so auth UI
++    /// requests cannot leak into later extension calls or survive cancellation.
++    pub fn invokeProviderOAuthLogin(
++        self: *Runtime,
++        callback_id: []const u8,
++        abort_flag: ?*bool,
++        bridge: ?UiBridge,
++    ) ![]u8 {
++        if (callback_id.len == 0 or callback_id.len > 4096) return error.InvalidProviderCallbackId;
++
++        self.mutex.lockUncancelable(self.io);
++        defer self.mutex.unlock(self.io);
++        if (self.closed) return error.JavaScriptExtensionClosed;
++        const previous_bridge = self.ui_bridge;
++        self.ui_bridge = bridge;
++        defer self.ui_bridge = previous_bridge;
++        const previous_timeout = self.timeout_ms;
++        self.timeout_ms = self.oauth_login_timeout_ms;
++        defer self.timeout_ms = previous_timeout;
++
++        var request: std.Io.Writer.Allocating = .init(self.gpa);
++        defer request.deinit();
++        try request.writer.writeAll("{\"kind\":\"provider_oauth_login\",\"callbackId\":");
++        try std.json.Stringify.value(callback_id, .{}, &request.writer);
++
++        const invocation_id = self.next_invocation_id;
++        self.next_invocation_id +%= 1;
++        if (self.next_invocation_id == 0) self.next_invocation_id = 1;
++        try request.writer.print(",\"invocationId\":\"{d}\",\"abortable\":true", .{invocation_id});
+         if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire))
+             try request.writer.writeAll(",\"aborted\":true");
+         try request.writer.writeAll(",\"context\":");
+@@ -991,6 +1032,48 @@
+     try std.testing.expect(std.mem.indexOf(u8, ping, "provider-worker-reused") != null);
+ }
+ 
++test "provider OAuth login uses a human interaction timeout distinct from ordinary callbacks" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
++
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    const source =
++        \\export default function(pi) {
++        \\  pi.registerProvider('timeout-oauth', {
++        \\    name: 'Timeout OAuth', baseUrl: 'https://timeout.invalid/v1', api: 'openai-completions', apiKey: 'unused',
++        \\    models: [{ id: 'timeout-model', name: 'Timeout Model', reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
++        \\    oauth: {
++        \\      async login(callbacks) {
++        \\        if (!(callbacks.signal instanceof AbortSignal)) throw new Error('missing OAuth signal');
++        \\        await new Promise((resolve) => setTimeout(resolve, 80));
++        \\        return { refresh: 'timeout-refresh', access: 'timeout-access', expires: 9999999999999 };
++        \\      },
++        \\    },
++        \\  });
++        \\}
++    ;
++    try tmp.dir.writeFile(io, .{ .sub_path = "timeout-oauth.mjs", .data = source });
++    var path_buf: [std.fs.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &path_buf);
++    const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "timeout-oauth.mjs" });
++    defer gpa.free(path);
++
++    var started = try Runtime.start(gpa, io, path, "node");
++    defer started.runtime.deinit();
++    defer gpa.free(started.manifest_json);
++    started.runtime.timeout_ms = 10;
++    started.runtime.oauth_login_timeout_ms = 1000;
++    const login_id = try providerManifestCallbackId(gpa, started.manifest_json, "timeout-oauth", "oauth.login");
++    defer gpa.free(login_id);
++
++    const result = try started.runtime.invokeProviderOAuthLogin(login_id, null, null);
++    defer gpa.free(result);
++    try std.testing.expect(std.mem.indexOf(u8, result, "timeout-access") != null);
++    try std.testing.expectEqual(@as(u64, 10), started.runtime.timeout_ms);
++}
++
+ test "command and shortcut contexts expose reload as an ordered native action" {
+     const gpa = std.testing.allocator;
+     const io = std.testing.io;
+--- /dev/null
++++ pi-zig-v8-checkpoint-182/src/extensions/provider_oauth.zig
+@@ -0,0 +1,601 @@
++//! End-to-end lifecycle for OAuth providers registered by JavaScript extensions.
++//!
++//! The provider registry owns callback descriptors and workers; AuthStorage owns
++//! serialized credential transactions; ClientPool consumes only the cycle-free
++//! bridge declared by live_state. This keeps arbitrary extension credential
++//! fields intact without introducing a provider-registry/live-state import loop.
++const std = @import("std");
++const Io = std.Io;
++const auth_storage = @import("../auth/storage.zig");
++const live_state = @import("../coding_agent/live_state.zig");
++const js_runtime = @import("js_runtime.zig");
++const provider_registry = @import("provider_registry.zig");
++
++fn abortRequested(abort_flag: ?*const bool) bool {
++    return if (abort_flag) |flag| @atomicLoad(bool, flag, .acquire) else false;
++}
++
++fn ensureLoginActive(abort_flag: ?*const bool) !void {
++    if (abortRequested(abort_flag)) return error.LoginCancelled;
++}
++
++fn ensureOperationActive(abort_flag: ?*const bool) !void {
++    if (abortRequested(abort_flag)) return error.Canceled;
++}
++
++pub const Runtime = struct {
++    gpa: std.mem.Allocator,
++    io: Io,
++    agent_dir: ?[]const u8,
++    registry: *provider_registry.Registry,
++    client_pool: ?*live_state.ClientPool = null,
++    live: ?*live_state.LiveState = null,
++
++    pub fn init(
++        gpa: std.mem.Allocator,
++        io: Io,
++        agent_dir: ?[]const u8,
++        registry: *provider_registry.Registry,
++    ) Runtime {
++        return .{
++            .gpa = gpa,
++            .io = io,
++            .agent_dir = agent_dir,
++            .registry = registry,
++        };
++    }
++
++    pub fn bindClientPool(self: *Runtime, pool: *live_state.ClientPool) void {
++        self.client_pool = pool;
++    }
++
++    pub fn bindLiveState(self: *Runtime, live: *live_state.LiveState) void {
++        self.live = live;
++    }
++
++    pub fn bridge(self: *Runtime) live_state.ExtensionOAuthBridge {
++        return .{
++            .context = self,
++            .supports_fn = supportsThunk,
++            .resolve_fn = resolveThunk,
++        };
++    }
++
++    pub fn supports(self: *const Runtime, provider_id: []const u8) bool {
++        return self.registry.hasProviderMethod(provider_id, "oauth.getApiKey");
++    }
++
++    pub fn canLogin(self: *const Runtime, provider_id: []const u8) bool {
++        return self.supports(provider_id) and self.registry.hasProviderMethod(provider_id, "oauth.login");
++    }
++
++    pub fn loginProviderNames(self: *const Runtime, allocator: std.mem.Allocator) ![][]const u8 {
++        return self.registry.oauthProviderNames(allocator);
++    }
++
++    pub fn lastLoginError(self: *const Runtime, provider_id: []const u8) ?[]const u8 {
++        return self.registry.providerMethodLastError(provider_id, "oauth.login");
++    }
++
++    /// Execute the interactive extension callback, validate and atomically
++    /// persist its complete credential object, then publish credential-specific
++    /// models. No auth file is modified until the callback has completed.
++    pub fn loginAndPersist(
++        self: *Runtime,
++        provider_id: []const u8,
++        abort_flag: ?*bool,
++        ui_bridge: ?js_runtime.UiBridge,
++    ) ![]u8 {
++        const agent_dir = self.agent_dir orelse return error.MissingAgentDir;
++        try ensureLoginActive(abort_flag);
++        const credential = self.registry.loginOAuth(provider_id, abort_flag, ui_bridge) catch |err| {
++            if (abortRequested(abort_flag)) return error.LoginCancelled;
++            return err;
++        };
++        defer self.gpa.free(credential);
++        try ensureLoginActive(abort_flag);
++
++        var store = try auth_storage.AuthStorage.init(self.gpa, self.io, agent_dir);
++        defer store.deinit();
++        store.setOAuthJsonAbortable(provider_id, credential, abort_flag) catch |err| switch (err) {
++            error.Canceled => return error.LoginCancelled,
++            else => return err,
++        };
++        const persisted = (try store.readOAuthJson(provider_id)) orelse return error.MissingExtensionOAuthCredential;
++        errdefer self.gpa.free(persisted);
++        // Once the atomic credential write has committed, complete publication
++        // without reinterpreting a later UI abort as a failed login.
++        try self.applyCredentialModels(provider_id, persisted, null);
++        return persisted;
++    }
++
++    pub fn resolve(
++        self: *Runtime,
++        allocator: std.mem.Allocator,
++        provider_id: []const u8,
++        now_ms: i64,
++        abort_flag: ?*bool,
++        apply_models: bool,
++    ) !?live_state.ExtensionOAuthResolution {
++        if (!self.supports(provider_id)) return null;
++        const agent_dir = self.agent_dir orelse return null;
++        var store = try auth_storage.AuthStorage.init(self.gpa, self.io, agent_dir);
++        defer store.deinit();
++
++        var refresh_context = RefreshContext{
++            .runtime = self,
++            .provider_id = provider_id,
++            .now_ms = now_ms,
++            .abort_flag = abort_flag,
++        };
++        const credential = (try store.modifyOAuthJsonAbortable(provider_id, &refresh_context, refreshUnderLock, abort_flag)) orelse return null;
++        defer self.gpa.free(credential);
++
++        try ensureOperationActive(abort_flag);
++        const api_key = try self.registry.oauthApiKey(provider_id, credential);
++        errdefer self.gpa.free(api_key);
++        try ensureOperationActive(abort_flag);
++        const expires_ms = try credentialExpiration(self.gpa, credential);
++        if (apply_models) try self.applyCredentialModels(provider_id, credential, abort_flag);
++
++        const owned_key = if (allocator.ptr == self.gpa.ptr and allocator.vtable == self.gpa.vtable)
++            api_key
++        else blk: {
++            const copy = try allocator.dupe(u8, api_key);
++            self.gpa.free(api_key);
++            break :blk copy;
++        };
++        return .{ .api_key = owned_key, .expires_ms = expires_ms };
++    }
++
++    fn applyCredentialModels(
++        self: *Runtime,
++        provider_id: []const u8,
++        credential_json: []const u8,
++        abort_flag: ?*const bool,
++    ) !void {
++        if (!self.registry.hasProviderMethod(provider_id, "oauth.modifyModels")) return;
++        try ensureOperationActive(abort_flag);
++        const current_models = try self.registry.providerModelsJson(provider_id);
++        defer self.gpa.free(current_models);
++        const projected = try self.registry.modifyOAuthModels(provider_id, current_models, credential_json);
++        defer self.gpa.free(projected);
++        try ensureOperationActive(abort_flag);
++        try self.registry.applyOAuthModels(provider_id, projected);
++
++        // Registry publication replaces borrowed snapshots. Repoint every live
++        // consumer before subsequent client/model resolution can observe them.
++        if (self.client_pool) |pool| pool.setRuntimeProviders(self.registry.runtimes());
++        if (self.live) |state| state.model_catalog = self.registry.catalog();
++    }
++
++    fn supportsThunk(raw: ?*anyopaque, provider_id: []const u8) bool {
++        const self: *Runtime = @ptrCast(@alignCast(raw orelse return false));
++        return self.supports(provider_id);
++    }
++
++    fn resolveThunk(
++        raw: ?*anyopaque,
++        allocator: std.mem.Allocator,
++        provider_id: []const u8,
++        now_ms: i64,
++        abort_flag: ?*bool,
++        apply_models: bool,
++    ) anyerror!?live_state.ExtensionOAuthResolution {
++        const self: *Runtime = @ptrCast(@alignCast(raw orelse return null));
++        return self.resolve(allocator, provider_id, now_ms, abort_flag, apply_models);
++    }
++};
++
++const RefreshContext = struct {
++    runtime: *Runtime,
++    provider_id: []const u8,
++    now_ms: i64,
++    abort_flag: ?*bool,
++};
++
++fn refreshUnderLock(
++    raw: ?*anyopaque,
++    allocator: std.mem.Allocator,
++    current_json: ?[]const u8,
++) anyerror!?[]u8 {
++    const context: *RefreshContext = @ptrCast(@alignCast(raw orelse return null));
++    const current = current_json orelse return null;
++    const expires_ms = try credentialExpiration(context.runtime.gpa, current);
++    // Match the concrete clients' one-minute early-refresh window. Rechecking
++    // while the exclusive auth lock is held collapses concurrent refreshes.
++    if (expires_ms > context.now_ms + 60_000) return null;
++    if (!context.runtime.registry.hasProviderMethod(context.provider_id, "oauth.refreshToken")) {
++        return error.ExtensionOAuthCredentialExpired;
++    }
++    try ensureOperationActive(context.abort_flag);
++    const refreshed = context.runtime.registry.refreshOAuth(context.provider_id, current, context.abort_flag) catch |err| {
++        if (abortRequested(context.abort_flag)) return error.Canceled;
++        return err;
++    };
++    defer context.runtime.gpa.free(refreshed);
++    try ensureOperationActive(context.abort_flag);
++    return @as(?[]u8, try allocator.dupe(u8, refreshed));
++}
++
++fn credentialExpiration(gpa: std.mem.Allocator, credential_json: []const u8) !i64 {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, credential_json, .{});
++    defer parsed.deinit();
++    if (parsed.value != .object) return error.InvalidExtensionProviderCredential;
++    const expires = parsed.value.object.get("expires") orelse return error.InvalidExtensionProviderCredential;
++    if (expires != .integer) return error.InvalidExtensionProviderCredential;
++    return expires.integer;
++}
++
++test "extension OAuth login refresh key derivation and model projection are end to end" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
++
++    const FakeUi = struct {
++        auth_actions: usize = 0,
++        device_actions: usize = 0,
++        progress_actions: usize = 0,
++        prompt_requests: usize = 0,
++        select_requests: usize = 0,
++
++        fn request(raw: ?*anyopaque, allocator: std.mem.Allocator, method: []const u8, args_json: []const u8) ![]u8 {
++            const self: *@This() = @ptrCast(@alignCast(raw.?));
++            var parsed = try std.json.parseFromSlice(std.json.Value, allocator, args_json, .{});
++            defer parsed.deinit();
++            try std.testing.expect(parsed.value == .object);
++            if (std.mem.eql(u8, method, "oauth_prompt")) {
++                self.prompt_requests += 1;
++                return allocator.dupe(u8, "\"prompt-answer\"");
++            }
++            if (std.mem.eql(u8, method, "oauth_manual_code")) return allocator.dupe(u8, "\"manual-code\"");
++            if (std.mem.eql(u8, method, "oauth_select")) {
++                self.select_requests += 1;
++                return allocator.dupe(u8, "\"team-b\"");
++            }
++            return error.UnexpectedOAuthUiRequest;
++        }
++
++        fn action(raw: ?*anyopaque, allocator: std.mem.Allocator, method: []const u8, args_json: []const u8) !void {
++            const self: *@This() = @ptrCast(@alignCast(raw.?));
++            var parsed = try std.json.parseFromSlice(std.json.Value, allocator, args_json, .{});
++            defer parsed.deinit();
++            try std.testing.expect(parsed.value == .object);
++            if (std.mem.eql(u8, method, "oauth_auth")) self.auth_actions += 1;
++            if (std.mem.eql(u8, method, "oauth_device_code")) {
++                self.device_actions += 1;
++                try std.testing.expectEqual(@as(i64, 7), parsed.value.object.get("intervalSeconds").?.integer);
++                try std.testing.expectEqual(@as(i64, 600), parsed.value.object.get("expiresInSeconds").?.integer);
++            }
++            if (std.mem.eql(u8, method, "oauth_progress")) self.progress_actions += 1;
++        }
++    };
++
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    const source =
++        \\export default function(pi) {
++        \\  const closure = 'oauth-182';
++        \\  pi.registerProvider('extension-oauth', {
++        \\    name: 'Extension OAuth', baseUrl: 'https://oauth.invalid/v1', api: 'openai-completions', apiKey: 'unused',
++        \\    models: [{ id: 'oauth-model', name: 'Before Login', reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
++        \\    oauth: {
++        \\      async login(callbacks) {
++        \\        callbacks.onAuth({ url: 'https://login.invalid', instructions: 'Open it' });
++        \\        callbacks.onDeviceCode({ verificationUri: 'https://device.invalid', userCode: 'DEVICE-182', intervalSeconds: 7, expiresInSeconds: 600, instructions: 'Enter the code' });
++        \\        callbacks.onProgress('working');
++        \\        const prompt = await callbacks.onPrompt({ message: 'Tenant?' });
++        \\        const manual = await callbacks.onManualCodeInput();
++        \\        const team = await callbacks.onSelect({ message: 'Team?', options: [{ value: 'team-a', label: 'A' }, { value: 'team-b', label: 'B' }] });
++        \\        if (!(callbacks.signal instanceof AbortSignal)) throw new Error('missing login signal');
++        \\        return { refresh: 'refresh-login', access: 'access-login', expires: 9999999999999, tenant: { prompt, manual, team }, closure };
++        \\      },
++        \\      async refreshToken(credentials, signal) {
++        \\        if (!(signal instanceof AbortSignal)) throw new Error('missing refresh signal');
++        \\        return { ...credentials, access: `refreshed:${credentials.refresh}`, expires: 9999999999999, refreshCount: (credentials.refreshCount ?? 0) + 1 };
++        \\      },
++        \\      getApiKey(credentials) { return `key:${credentials.access}:${credentials.tenant.team}`; },
++        \\      modifyModels(models, credentials) { return models.map((model) => ({ ...model, name: `${model.name}:${credentials.access}` })); },
++        \\    },
++        \\  });
++        \\  pi.registerProvider('incomplete-oauth', {
++        \\    name: 'Incomplete OAuth', baseUrl: 'https://incomplete.invalid/v1', api: 'openai-completions', apiKey: 'unused',
++        \\    models: [{ id: 'incomplete-model', name: 'Incomplete Model', reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
++        \\    oauth: {
++        \\      async login() { return { refresh: 'r', access: 'a', expires: 9999999999999 }; },
++        \\    },
++        \\  });
++        \\}
++    ;
++    try tmp.dir.writeFile(io, .{ .sub_path = "oauth.mjs", .data = source });
++    var root_buf: [std.fs.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &root_buf);
++    const source_path = try std.fs.path.join(gpa, &.{ root_buf[0..root_len], "oauth.mjs" });
++    defer gpa.free(source_path);
++
++    var started = try js_runtime.Runtime.start(gpa, io, source_path, "node");
++    defer started.runtime.deinit();
++    defer gpa.free(started.manifest_json);
++    const config_json = try providerConfigFromManifest(gpa, started.manifest_json, "extension-oauth");
++    defer gpa.free(config_json);
++    const incomplete_config_json = try providerConfigFromManifest(gpa, started.manifest_json, "incomplete-oauth");
++    defer gpa.free(incomplete_config_json);
++
++    var env = std.process.Environ.Map.init(gpa);
++    defer env.deinit();
++    var registry = provider_registry.Registry.init(gpa, io, &env, root_buf[0..root_len], &.{}, &.{});
++    defer registry.deinit();
++    try registry.registerJsonWithRuntime("extension-oauth", config_json, started.runtime);
++    try registry.registerJsonWithRuntime("incomplete-oauth", incomplete_config_json, started.runtime);
++
++    var lifecycle = Runtime.init(gpa, io, root_buf[0..root_len], &registry);
++    const login_names = try lifecycle.loginProviderNames(gpa);
++    defer if (login_names.len > 0) gpa.free(login_names);
++    try std.testing.expectEqual(@as(usize, 1), login_names.len);
++    try std.testing.expectEqualStrings("extension-oauth", login_names[0]);
++    var fake = FakeUi{};
++    const persisted = try lifecycle.loginAndPersist("extension-oauth", null, .{
++        .context = &fake,
++        .request_fn = FakeUi.request,
++        .action_fn = FakeUi.action,
++    });
++    defer gpa.free(persisted);
++    try std.testing.expectEqual(@as(usize, 1), fake.auth_actions);
++    try std.testing.expectEqual(@as(usize, 1), fake.device_actions);
++    try std.testing.expectEqual(@as(usize, 1), fake.progress_actions);
++    try std.testing.expectEqual(@as(usize, 1), fake.prompt_requests);
++    try std.testing.expectEqual(@as(usize, 1), fake.select_requests);
++    try std.testing.expect(std.mem.indexOf(u8, persisted, "prompt-answer") != null);
++    try std.testing.expect(std.mem.indexOf(u8, persisted, "manual-code") != null);
++    try std.testing.expect(std.mem.indexOf(u8, persisted, "team-b") != null);
++    try std.testing.expect(std.mem.indexOf(u8, registry.catalog()[0].display, "access-login") != null);
++
++    var store = try auth_storage.AuthStorage.init(gpa, io, root_buf[0..root_len]);
++    defer store.deinit();
++    try store.setOAuthJson("extension-oauth", "{\"refresh\":\"refresh-expired\",\"access\":\"old\",\"expires\":1,\"tenant\":{\"team\":\"team-b\"},\"custom\":{\"keep\":true}}");
++    const resolved = (try lifecycle.resolve(gpa, "extension-oauth", 1_000_000, null, true)).?;
++    defer {
++        var owned = resolved;
++        owned.deinit(gpa);
++    }
++    try std.testing.expectEqualStrings("key:refreshed:refresh-expired:team-b", resolved.api_key);
++    const refreshed = (try store.readOAuthJson("extension-oauth")).?;
++    defer gpa.free(refreshed);
++    try std.testing.expect(std.mem.indexOf(u8, refreshed, "\"keep\":true") != null);
++    try std.testing.expect(std.mem.indexOf(u8, refreshed, "\"refreshCount\":1") != null);
++}
++
++test "extension OAuth login cancellation aborts the callback without persisting partial credentials" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
++
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    const source =
++        \\export default function(pi) {
++        \\  pi.registerProvider('cancel-oauth', {
++        \\    name: 'Cancel OAuth', baseUrl: 'https://cancel.invalid/v1', api: 'openai-completions', apiKey: 'unused',
++        \\    models: [{ id: 'cancel-model', name: 'Cancel Model', reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
++        \\    oauth: {
++        \\      async login(callbacks) {
++        \\        await new Promise((resolve, reject) => {
++        \\          if (callbacks.signal.aborted) { reject(callbacks.signal.reason); return; }
++        \\          const timer = setTimeout(() => reject(new Error('oauth login abort was not delivered')), 1500);
++        \\          callbacks.signal.addEventListener('abort', () => { clearTimeout(timer); reject(callbacks.signal.reason); }, { once: true });
++        \\        });
++        \\        return { refresh: 'must-not-persist', access: 'must-not-persist', expires: 9999999999999 };
++        \\      },
++        \\      getApiKey(credentials) { return `worker-reused:${credentials.access}`; },
++        \\    },
++        \\  });
++        \\}
++    ;
++    try tmp.dir.writeFile(io, .{ .sub_path = "cancel-oauth.mjs", .data = source });
++    var root_buf: [std.fs.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &root_buf);
++    const source_path = try std.fs.path.join(gpa, &.{ root_buf[0..root_len], "cancel-oauth.mjs" });
++    defer gpa.free(source_path);
++
++    var started = try js_runtime.Runtime.start(gpa, io, source_path, "node");
++    defer started.runtime.deinit();
++    defer gpa.free(started.manifest_json);
++    started.runtime.timeout_ms = 5000;
++    const config_json = try providerConfigFromManifest(gpa, started.manifest_json, "cancel-oauth");
++    defer gpa.free(config_json);
++
++    var env = std.process.Environ.Map.init(gpa);
++    defer env.deinit();
++    var registry = provider_registry.Registry.init(gpa, io, &env, root_buf[0..root_len], &.{}, &.{});
++    defer registry.deinit();
++    try registry.registerJsonWithRuntime("cancel-oauth", config_json, started.runtime);
++
++    var lifecycle = Runtime.init(gpa, io, root_buf[0..root_len], &registry);
++    const AbortTask = struct {
++        fn run(task_io: Io, flag: *bool) Io.Cancelable!void {
++            const pause: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(40), .clock = .awake } };
++            try pause.sleep(task_io);
++            @atomicStore(bool, flag, true, .release);
++        }
++    };
++    var aborted = false;
++    var group: Io.Group = .init;
++    group.async(io, AbortTask.run, .{ io, &aborted });
++    try std.testing.expectError(
++        error.LoginCancelled,
++        lifecycle.loginAndPersist("cancel-oauth", &aborted, null),
++    );
++    try group.await(io);
++    try std.testing.expect(lifecycle.lastLoginError("cancel-oauth") != null);
++    try std.testing.expect(std.mem.indexOf(u8, lifecycle.lastLoginError("cancel-oauth").?, "Operation aborted") != null);
++
++    var store = try auth_storage.AuthStorage.init(gpa, io, root_buf[0..root_len]);
++    defer store.deinit();
++    const persisted = try store.readOAuthJson("cancel-oauth");
++    defer if (persisted) |value| gpa.free(value);
++    try std.testing.expect(persisted == null);
++
++    // The aborted invocation must not poison or replace the persistent worker.
++    const key = try registry.oauthApiKey("cancel-oauth", "{\"refresh\":\"r\",\"access\":\"after-abort\",\"expires\":9999999999999}");
++    defer gpa.free(key);
++    try std.testing.expectEqualStrings("worker-reused:after-abort", key);
++}
++
++test "extension OAuth ignores a late noncooperative login result after native cancellation" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
++
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    const source =
++        \\export default function(pi) {
++        \\  pi.registerProvider('late-oauth', {
++        \\    name: 'Late OAuth', baseUrl: 'https://late.invalid/v1', api: 'openai-completions', apiKey: 'unused',
++        \\    models: [{ id: 'late-model', name: 'Late Model', reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
++        \\    oauth: {
++        \\      async login(_callbacks) {
++        \\        await new Promise((resolve) => setTimeout(resolve, 90));
++        \\        return { refresh: 'late-refresh', access: 'late-access', expires: 9999999999999, shouldNeverPersist: true };
++        \\      },
++        \\      getApiKey(credentials) { return `late-worker:${credentials.access}`; },
++        \\    },
++        \\  });
++        \\}
++    ;
++    try tmp.dir.writeFile(io, .{ .sub_path = "late-oauth.mjs", .data = source });
++    var root_buf: [std.fs.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &root_buf);
++    const root = root_buf[0..root_len];
++    const source_path = try std.fs.path.join(gpa, &.{ root, "late-oauth.mjs" });
++    defer gpa.free(source_path);
++
++    var started = try js_runtime.Runtime.start(gpa, io, source_path, "node");
++    defer started.runtime.deinit();
++    defer gpa.free(started.manifest_json);
++    started.runtime.oauth_login_timeout_ms = 5000;
++    const config_json = try providerConfigFromManifest(gpa, started.manifest_json, "late-oauth");
++    defer gpa.free(config_json);
++
++    var env = std.process.Environ.Map.init(gpa);
++    defer env.deinit();
++    var registry = provider_registry.Registry.init(gpa, io, &env, root, &.{}, &.{});
++    defer registry.deinit();
++    try registry.registerJsonWithRuntime("late-oauth", config_json, started.runtime);
++
++    var lifecycle = Runtime.init(gpa, io, root, &registry);
++    const AbortTask = struct {
++        fn run(task_io: Io, flag: *bool) Io.Cancelable!void {
++            const pause: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(20), .clock = .awake } };
++            try pause.sleep(task_io);
++            @atomicStore(bool, flag, true, .release);
++        }
++    };
++    var aborted = false;
++    var group: Io.Group = .init;
++    group.async(io, AbortTask.run, .{ io, &aborted });
++    try std.testing.expectError(error.LoginCancelled, lifecycle.loginAndPersist("late-oauth", &aborted, null));
++    try group.await(io);
++
++    var store = try auth_storage.AuthStorage.init(gpa, io, root);
++    defer store.deinit();
++    const persisted = try store.readOAuthJson("late-oauth");
++    defer if (persisted) |value| gpa.free(value);
++    try std.testing.expect(persisted == null);
++
++    const key = try registry.oauthApiKey("late-oauth", "{\"refresh\":\"r\",\"access\":\"after-late-abort\",\"expires\":9999999999999}");
++    defer gpa.free(key);
++    try std.testing.expectEqualStrings("late-worker:after-late-abort", key);
++}
++
++fn providerConfigFromManifest(gpa: std.mem.Allocator, manifest_json: []const u8, name: []const u8) ![]u8 {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, manifest_json, .{});
++    defer parsed.deinit();
++    const registrations = parsed.value.object.get("providers") orelse return error.TestProviderNotFound;
++    if (registrations != .array) return error.TestProviderNotFound;
++    for (registrations.array.items) |entry| {
++        if (entry != .object) continue;
++        const provider_name = entry.object.get("name") orelse continue;
++        const config = entry.object.get("config") orelse continue;
++        if (provider_name != .string or !std.mem.eql(u8, provider_name.string, name)) continue;
++        var out: std.Io.Writer.Allocating = .init(gpa);
++        errdefer out.deinit();
++        try std.json.Stringify.value(config, .{}, &out.writer);
++        return out.toOwnedSlice();
++    }
++    return error.TestProviderNotFound;
++}
++
++test "extension OAuth reload routing follows the replacement registry and unregister removes ownership" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
++
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    const source_a =
++        \\export default function(pi) {
++        \\  pi.registerProvider('swap-oauth', {
++        \\    name: 'Swap OAuth A', baseUrl: 'https://swap.invalid/v1', api: 'openai-completions', apiKey: 'unused',
++        \\    models: [{ id: 'swap-model', name: 'Swap Model', reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
++        \\    oauth: { getApiKey(credentials) { return `worker-a:${credentials.access}`; } },
++        \\  });
++        \\}
++    ;
++    const source_b =
++        \\export default function(pi) {
++        \\  pi.registerProvider('swap-oauth', {
++        \\    name: 'Swap OAuth B', baseUrl: 'https://swap.invalid/v1', api: 'openai-completions', apiKey: 'unused',
++        \\    models: [{ id: 'swap-model', name: 'Swap Model', reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
++        \\    oauth: { getApiKey(credentials) { return `worker-b:${credentials.access}`; } },
++        \\  });
++        \\}
++    ;
++    try tmp.dir.writeFile(io, .{ .sub_path = "swap-a.mjs", .data = source_a });
++    try tmp.dir.writeFile(io, .{ .sub_path = "swap-b.mjs", .data = source_b });
++    var root_buf: [std.fs.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &root_buf);
++    const root = root_buf[0..root_len];
++    const path_a = try std.fs.path.join(gpa, &.{ root, "swap-a.mjs" });
++    defer gpa.free(path_a);
++    const path_b = try std.fs.path.join(gpa, &.{ root, "swap-b.mjs" });
++    defer gpa.free(path_b);
++
++    var started_a = try js_runtime.Runtime.start(gpa, io, path_a, "node");
++    defer started_a.runtime.deinit();
++    defer gpa.free(started_a.manifest_json);
++    var started_b = try js_runtime.Runtime.start(gpa, io, path_b, "node");
++    defer started_b.runtime.deinit();
++    defer gpa.free(started_b.manifest_json);
++    const config_a = try providerConfigFromManifest(gpa, started_a.manifest_json, "swap-oauth");
++    defer gpa.free(config_a);
++    const config_b = try providerConfigFromManifest(gpa, started_b.manifest_json, "swap-oauth");
++    defer gpa.free(config_b);
++
++    var env = std.process.Environ.Map.init(gpa);
++    defer env.deinit();
++    var registry_a = provider_registry.Registry.init(gpa, io, &env, root, &.{}, &.{});
++    defer registry_a.deinit();
++    var registry_b = provider_registry.Registry.init(gpa, io, &env, root, &.{}, &.{});
++    defer registry_b.deinit();
++    try registry_a.registerJsonWithRuntime("swap-oauth", config_a, started_a.runtime);
++    try registry_b.registerJsonWithRuntime("swap-oauth", config_b, started_b.runtime);
++
++    var store = try auth_storage.AuthStorage.init(gpa, io, root);
++    defer store.deinit();
++    try store.setOAuthJson("swap-oauth", "{\"refresh\":\"refresh\",\"access\":\"access\",\"expires\":9999999999999}");
++
++    var lifecycle = Runtime.init(gpa, io, root, &registry_a);
++    var from_a = (try lifecycle.resolve(gpa, "swap-oauth", 1, null, false)).?;
++    defer from_a.deinit(gpa);
++    try std.testing.expectEqualStrings("worker-a:access", from_a.api_key);
++
++    lifecycle.registry = &registry_b;
++    var from_b = (try lifecycle.resolve(gpa, "swap-oauth", 1, null, false)).?;
++    defer from_b.deinit(gpa);
++    try std.testing.expectEqualStrings("worker-b:access", from_b.api_key);
++
++    try std.testing.expect(try registry_b.unregister("swap-oauth"));
++    try std.testing.expect(!lifecycle.supports("swap-oauth"));
++    try std.testing.expect((try lifecycle.resolve(gpa, "swap-oauth", 1, null, false)) == null);
++}
+--- pi-zig-v8-checkpoint-181/src/extensions/provider_registry.zig
++++ pi-zig-v8-checkpoint-182/src/extensions/provider_registry.zig
+@@ -312,6 +312,105 @@
+         const descriptor_value = valueAtProviderPath(parsed.value, path) catch return false;
+         const method = provider_method_ref.ProviderMethodRef.fromJson(descriptor_value) catch return false;
+         return std.mem.eql(u8, method.path, path) and registration.callbackRuntime(method.callback_id, method.path) != null;
++    }
++
++    /// Invoke extension-defined OAuth login with the native interaction bridge
++    /// installed only for the lifetime of this call. The returned object is the
++    /// credential value itself; persistence is intentionally owned by auth storage.
++    pub fn loginOAuth(
++        self: *Registry,
++        name: []const u8,
++        abort_flag: ?*bool,
++        bridge: ?js_runtime.UiBridge,
++    ) ![]u8 {
++        const index = self.findIndex(name) orelse return error.ExtensionProviderNotRegistered;
++        const registration = &self.registrations.items[index];
++        var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, registration.config_json, .{});
++        defer parsed.deinit();
++        const descriptor_value = try valueAtProviderPath(parsed.value, "oauth.login");
++        const method = try provider_method_ref.ProviderMethodRef.fromJson(descriptor_value);
++        if (!std.mem.eql(u8, method.path, "oauth.login")) return error.ProviderMethodPathMismatch;
++        const runtime = registration.callbackRuntime(method.callback_id, method.path) orelse return error.ProviderMethodRuntimeMissing;
++        const envelope = try runtime.invokeProviderOAuthLogin(method.callback_id, abort_flag, bridge);
++        defer self.gpa.free(envelope);
++        const result = try unwrapProviderMethodValue(self.gpa, envelope);
++        errdefer self.gpa.free(result);
++        try validateOAuthCredentialJson(self.gpa, result);
++        return result;
++    }
++
++    /// Return the most recent JavaScript error for a provider callback. The
++    /// slice remains owned by the persistent worker and is invalidated by its
++    /// next invocation.
++    pub fn providerMethodLastError(self: *const Registry, name: []const u8, path: []const u8) ?[]const u8 {
++        const index = self.findIndex(name) orelse return null;
++        const registration = &self.registrations.items[index];
++        var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, registration.config_json, .{}) catch return null;
++        defer parsed.deinit();
++        const descriptor_value = valueAtProviderPath(parsed.value, path) catch return null;
++        const method = provider_method_ref.ProviderMethodRef.fromJson(descriptor_value) catch return null;
++        if (!std.mem.eql(u8, method.path, path)) return null;
++        const runtime = registration.callbackRuntime(method.callback_id, method.path) orelse return null;
++        return runtime.lastError();
++    }
++
++    /// Return borrowed names for extension providers that expose a usable
++    /// legacy OAuth login surface. A login callback without `getApiKey` cannot
++    /// produce request authentication, so it must not appear as a selectable
++    /// `/login` target. The caller owns only the outer slice.
++    pub fn oauthProviderNames(self: *const Registry, gpa: std.mem.Allocator) ![][]const u8 {
++        var names: std.ArrayList([]const u8) = .empty;
++        errdefer names.deinit(gpa);
++        for (self.registrations.items) |registration| {
++            if (self.hasProviderMethod(registration.name, "oauth.login") and
++                self.hasProviderMethod(registration.name, "oauth.getApiKey"))
++            {
++                try names.append(gpa, registration.name);
++            }
++        }
++        return names.toOwnedSlice(gpa);
++    }
++
++    /// Serialize the provider's current model array in the extension-facing
++    /// shape consumed by `oauth.modifyModels`.
++    pub fn providerModelsJson(self: *const Registry, name: []const u8) ![]u8 {
++        const index = self.findIndex(name) orelse return error.ExtensionProviderNotRegistered;
++        const registration = &self.registrations.items[index];
++        var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, registration.config_json, .{});
++        defer parsed.deinit();
++        if (parsed.value.object.get("models")) |models| {
++            if (models != .array) return error.InvalidExtensionProviderModels;
++            var out: std.Io.Writer.Allocating = .init(self.gpa);
++            errdefer out.deinit();
++            try std.json.Stringify.value(models, .{}, &out.writer);
++            return out.toOwnedSlice();
++        }
++
++        var out: std.Io.Writer.Allocating = .init(self.gpa);
++        errdefer out.deinit();
++        try out.writer.writeByte('[');
++        var wrote = false;
++        for (self.catalog_snapshot) |model| {
++            if (!std.ascii.eqlIgnoreCase(model.providerName(), name)) continue;
++            if (wrote) try out.writer.writeByte(',');
++            wrote = true;
++            try writeProviderModelJson(&out.writer, model);
++        }
++        try out.writer.writeByte(']');
++        return out.toOwnedSlice();
++    }
++
++    /// Publish credential-dependent model projection through the same
++    /// transactional registration path as JavaScript re-registration. Callback
++    /// descriptors and their owning worker survive because this patch is data-only.
++    pub fn applyOAuthModels(self: *Registry, name: []const u8, models_json: []const u8) !void {
++        try validateArrayJson(self.gpa, models_json);
++        var patch: std.Io.Writer.Allocating = .init(self.gpa);
++        defer patch.deinit();
++        try patch.writer.writeAll("{\"models\":");
++        try patch.writer.writeAll(models_json);
++        try patch.writer.writeByte('}');
++        try self.registerJson(name, patch.written());
+     }
+ 
+     /// OAuth refreshToken receives `(credential, signal)` in the upstream API.
+@@ -555,6 +654,39 @@
+     return out.toOwnedSlice();
+ }
+ 
++fn validateOAuthCredentialJson(gpa: std.mem.Allocator, raw: []const u8) !void {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
++    defer parsed.deinit();
++    if (parsed.value != .object) return error.InvalidExtensionProviderCredential;
++    const refresh = parsed.value.object.get("refresh") orelse return error.InvalidExtensionProviderCredential;
++    const access = parsed.value.object.get("access") orelse return error.InvalidExtensionProviderCredential;
++    const expires = parsed.value.object.get("expires") orelse return error.InvalidExtensionProviderCredential;
++    if (refresh != .string or access != .string or expires != .integer) return error.InvalidExtensionProviderCredential;
++    if (parsed.value.object.get("type")) |kind| {
++        if (kind != .string or !std.mem.eql(u8, kind.string, "oauth")) return error.InvalidExtensionProviderCredential;
++    }
++}
++
++fn writeProviderModelJson(writer: *std.Io.Writer, model: providers.ModelInfo) !void {
++    try writer.writeAll("{\"id\":");
++    try std.json.Stringify.value(model.id, .{}, writer);
++    try writer.writeAll(",\"name\":");
++    try std.json.Stringify.value(model.display, .{}, writer);
++    try writer.print(",\"reasoning\":{},\"input\":[\"text\"", .{model.reasoning});
++    if (model.input_image) try writer.writeAll(",\"image\"");
++    try writer.writeAll("],\"cost\":{");
++    try writer.print("\"input\":{d},\"output\":{d},\"cacheRead\":{d},\"cacheWrite\":{d}", .{
++        model.cost.input, model.cost.output, model.cost.cache_read, model.cost.cache_write,
++    });
++    try writer.writeByte('}');
++    try writer.print(",\"contextWindow\":{d},\"maxTokens\":{d}", .{ model.context_window, model.max_tokens });
++    if (model.api) |api| {
++        try writer.writeAll(",\"api\":");
++        try std.json.Stringify.value(api.name(), .{}, writer);
++    }
++    try writer.writeByte('}');
++}
++
+ fn validateObjectJson(gpa: std.mem.Allocator, raw: []const u8) !void {
+     var parsed = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
+     defer parsed.deinit();
+--- pi-zig-v8-checkpoint-181/src/extensions/root.zig
++++ pi-zig-v8-checkpoint-182/src/extensions/root.zig
+@@ -11,3 +11,4 @@
+     std.testing.refAllDecls(@This());
+ }
+ pub const provider_registry = @import("provider_registry.zig");
++pub const provider_oauth = @import("provider_oauth.zig");
+--- pi-zig-v8-checkpoint-181/src/main.zig
++++ pi-zig-v8-checkpoint-182/src/main.zig
+@@ -195,6 +195,7 @@
+     already_fullscreen: bool,
+     agent_dir: []const u8,
+     live: *coding.live_state.LiveState,
++    extension_oauth: *extensions.provider_oauth.Runtime,
+ 
+     fn prompt(
+         raw: ?*anyopaque,
+@@ -204,13 +205,16 @@
+     ) anyerror!coding.slash.AuthTargetChoice {
+         const self: *@This() = @ptrCast(@alignCast(raw.?));
+         const catalog = if (self.live.model_catalog.len > 0) self.live.model_catalog else &ai.providers.known_models;
+-        var selection = try coding.auth_tui.run(
++        const oauth_provider_ids = try self.extension_oauth.loginProviderNames(gpa);
++        defer if (oauth_provider_ids.len > 0) gpa.free(oauth_provider_ids);
++        var selection = try coding.auth_tui.runWithOAuthProviders(
+             gpa,
+             self.io,
+             self.environ,
+             self.reader,
+             self.agent_dir,
+             catalog,
++            oauth_provider_ids,
+             switch (mode) {
+                 .login => .login,
+                 .logout => .logout,
+@@ -1045,6 +1049,7 @@
+     fn publishProviderRegistry(self: *ExtensionActionRuntime, run_config: *agent.AgentConfig, active_client: *ai.ModelClient) !void {
+         self.live.model_catalog = self.provider_registry.catalog();
+         if (self.live.client_pool) |pool| {
++            pool.invalidateExtensionOAuth();
+             pool.setRuntimeProviders(self.provider_registry.runtimes());
+             if (self.live.provider_name) |provider_ptr| if (provider_ptr.*) |provider_id| {
+                 if (self.live.model_display.*) |model_id| {
+@@ -1811,6 +1816,7 @@
+     host: *extensions.Host,
+     bridge: *extensions.integration.Bridge,
+     provider_registry: *extensions.provider_registry.Registry,
++    extension_oauth: *extensions.provider_oauth.Runtime,
+     schemas: *[]u8,
+     prompt_templates: *[]coding.prompts.PromptTemplate,
+     command_names: *std.ArrayList([]const u8),
+@@ -2105,10 +2111,21 @@
+             self.flushLifecycleActions();
+         }
+ 
++        // Route OAuth callbacks to the replacement workers while validating
++        // the replacement client. The stable runtime pointer is restored on
++        // every rollback path and rebound to the committed stack object below.
++        const old_oauth_registry = self.extension_oauth.registry;
++        var oauth_registry_committed = false;
++        self.extension_oauth.registry = &new_provider_registry;
++        defer {
++            if (!oauth_registry_committed) self.extension_oauth.registry = old_oauth_registry;
++        }
++
+         // Rebind any active transport to the replacement provider snapshot
+         // before the old provider registry is destroyed.
+         if (self.live.client_pool) |pool| {
+             const old_runtimes = self.provider_registry.runtimes();
++            pool.invalidateExtensionOAuth();
+             pool.setRuntimeProviders(new_provider_registry.runtimes());
+             // Make the freshly loaded auth.json/models.json snapshot
+             // authoritative for the replacement. A deep copy in
+@@ -2116,6 +2133,7 @@
+             // subsequent rebind step fails.
+             pool.clearLiveCredentialForReload();
+             applyReloadClientSettings(pool, &fresh_credentials, &fresh_settings) catch |err| {
++                self.extension_oauth.registry = old_oauth_registry;
+                 pool.setRuntimeProviders(old_runtimes);
+                 if (client_backup) |*backup| backup.restore(pool) catch return error.ReloadRollbackFailed;
+                 if (active_provider != null and active_model != null) {
+@@ -2134,6 +2152,7 @@
+                 }
+                 if (candidate) |model| {
+                     pool.switchToIdentity(model.providerName(), model.provider, model.id) catch |err| {
++                        self.extension_oauth.registry = old_oauth_registry;
+                         pool.setRuntimeProviders(old_runtimes);
+                         if (client_backup) |*backup| backup.restore(pool) catch return error.ReloadRollbackFailed;
+                         pool.switchToIdentity(active_provider.?, client_backup.?.active_provider, active_model.?) catch return error.ReloadRollbackFailed;
+@@ -2163,6 +2182,8 @@
+         self.bridge.* = new_bridge;
+         self.bridge.host = self.host;
+         self.provider_registry.* = new_provider_registry;
++        self.extension_oauth.registry = self.provider_registry;
++        oauth_registry_committed = true;
+         self.theme_registry.* = new_themes;
+         self.prompt_templates.* = new_prompts;
+         self.schemas.* = new_schemas;
+@@ -3610,6 +3631,13 @@
+             };
+         }
+     }
++    var extension_oauth_runtime = extensions.provider_oauth.Runtime.init(
++        gpa,
++        io,
++        agent_dir,
++        &extension_provider_registry,
++    );
++
+     if (model_scope_storage == null or model_scope_storage.?.scoped_models.len == 0)
+         cycling_model_catalog = extension_provider_registry.catalog();
+ 
+@@ -3621,6 +3649,8 @@
+         .io = io,
+     };
+     defer client_pool.deinit();
++    extension_oauth_runtime.bindClientPool(&client_pool);
++    client_pool.setExtensionOAuthBridge(extension_oauth_runtime.bridge());
+     var active_model_field: ?*[]const u8 = null;
+     var model_display_owned: bool = false;
+     defer if (model_display_owned) if (model) |owned_model_display| gpa.free(owned_model_display);
+@@ -3762,6 +3792,7 @@
+         .model_scope = if (model_scope_storage) |scope| scope.scoped_models else &.{},
+     };
+     _ = &live;
++    extension_oauth_runtime.bindLiveState(&live);
+     defer live.deinitDynamicCatalog();
+ 
+     var extension_command_steering: std.ArrayList([]const u8) = .empty;
+@@ -3819,6 +3850,7 @@
+         .host = &extension_host,
+         .bridge = &extension_bridge,
+         .provider_registry = &extension_provider_registry,
++        .extension_oauth = &extension_oauth_runtime,
+         .schemas = &extension_tool_schemas,
+         .prompt_templates = &prompt_templates,
+         .command_names = &extension_command_names,
+@@ -4082,6 +4114,7 @@
+         .already_fullscreen = fullscreen_active,
+         .agent_dir = ad,
+         .live = &live,
++        .extension_oauth = &extension_oauth_runtime,
+     } else null;
+     var auth_flow_controller = coding.auth_flow_tui.Controller.init(
+         gpa,
+@@ -4257,6 +4290,7 @@
+                     .auth_target_prompt_ctx = if (auth_target_prompt_available) &auth_target_prompt_context.? else null,
+                     .auth_target_prompt_fn = if (auth_target_prompt_available) AuthTargetPromptContext.prompt else null,
+                     .auth_flow_ui = if (auth_target_prompt_available) &auth_flow_controller else null,
++                    .extension_oauth = &extension_oauth_runtime,
+                     .tree_summary_prompt_ctx = &tree_summary_prompt_context,
+                     .tree_summary_prompt_fn = TreeSummaryPromptContext.prompt,
+                     .tree_target_prompt_ctx = if (tree_target_prompt_available) &tree_target_prompt_context else null,
+@@ -4398,6 +4432,7 @@
+                     .auth_target_prompt_ctx = if (auth_target_prompt_available) &auth_target_prompt_context.? else null,
+                     .auth_target_prompt_fn = if (auth_target_prompt_available) AuthTargetPromptContext.prompt else null,
+                     .auth_flow_ui = if (auth_target_prompt_available) &auth_flow_controller else null,
++                    .extension_oauth = &extension_oauth_runtime,
+                     .tree_summary_prompt_ctx = &tree_summary_prompt_context,
+                     .tree_summary_prompt_fn = TreeSummaryPromptContext.prompt,
+                     .tree_target_prompt_ctx = if (tree_target_prompt_available) &tree_target_prompt_context else null,

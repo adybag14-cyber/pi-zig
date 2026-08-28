@@ -36,8 +36,24 @@ jobs:
       - name: Build
         run: zig build -Doptimize=ReleaseSafe
 
+      - name: Setup SQLite development library (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $vcpkg = Join-Path $env:VCPKG_INSTALLATION_ROOT "vcpkg.exe"
+          & $vcpkg install sqlite3:x64-windows
+          $installed = Join-Path $env:VCPKG_INSTALLATION_ROOT "installed\x64-windows"
+          "PI_SQLITE_LIB_DIR=$(Join-Path $installed 'lib')" >> $env:GITHUB_ENV
+          (Join-Path $installed "bin") >> $env:GITHUB_PATH
+
       - name: Test
-        run: zig build test --summary all
+        shell: bash
+        run: |
+          if [[ -n "${PI_SQLITE_LIB_DIR:-}" ]]; then
+            zig build test --summary all -Dsqlite-lib-dir="$PI_SQLITE_LIB_DIR"
+          else
+            zig build test --summary all
+          fi
 
       - name: Smoke --version
         shell: bash

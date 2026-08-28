@@ -1,0 +1,108 @@
+Pi Zig checkpoint 151 validation
+================================
+
+Reference source: uploaded Pi 0.84.1 archive pi-main (3)(20260815-153146).zip
+Reference SHA-256: 42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a
+Exact patch baseline: uploaded pi-zig-v8-checkpoint-150(1).zip
+Baseline SHA-256: 97925af0f511385f82b2f50b87a959db3ef3f5af01b9731092d5c1c88a2e336f
+Toolchain: supplied Zig 0.16.0 Linux x86-64
+Toolchain SHA-256: 70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+Script runtime used for compatibility tests: Node.js 22.16.0
+
+Source measurements
+-------------------
+Native Zig files under src/: 170
+Native Zig logical lines under src/: 85,795
+Embedded JavaScript bridge lines: 867
+Source-level test declarations: 785
+All-package root graph declarations: 774
+Synthetic/generated feature files: 0
+Checkpoint-150 to checkpoint-151 implementation source diff: 7 files
+Implementation source additions/deletions: +1,112 / -50
+
+Worktree gates
+--------------
+Whole-tree Zig formatting: PASS
+Node bridge syntax check: PASS
+Real-source audit: PASS (170 Zig files, 85,795 lines, 0 synthetic files)
+All-package root graph: 767 passed, 7 isolated, 0 failed (774 cases)
+Dedicated SQLite repository: 11/11 passed
+Dedicated live SQLite persistence: 5/5 passed
+SQLite CLI/ABI/schema process: 8 passed, 6 isolated, 0 failed
+Ordinary executable/main suite: 5/5 passed
+SQLite-enabled executable/main suite: 5/5 passed
+All 785 source-level declarations execute through the complete topology: PASS
+Debug build of ordinary pi: PASS
+Debug build of optional pi-sqlite: PASS
+Debug build of optional pi-sqlite-live: PASS
+Ordinary pi executable: static Linux x86-64 ELF with Debug information
+Ordinary pi dynamic Node/SQLite library dependency: NONE
+pi-sqlite and pi-sqlite-live: explicitly linked to sqlite3/libc
+
+Live extension progress gates
+-----------------------------
+Worker emits framed tool_update before final response: PASS
+Runtime consumes update while promise remains unresolved: PASS
+Host transfers owned rich update: PASS
+Primary sink sees update before completion marker: PASS
+Exactly one primary update emitted: PASS
+Lifecycle observer replay occurs after worker release: PASS
+Worker protocol/callback failure invalidates stream: PASS
+Parallel tools retain per-tool update-before-end ordering: PASS
+
+Native bash progress gates
+--------------------------
+Pipe-draining execution selected when progress is requested: PASS
+First snapshot emitted before delayed command completion marker: PASS
+Accumulated replacement snapshot reaches firstsecond: PASS
+100 ms update throttling: PASS
+Dirty final snapshot flush: PASS
+128 KiB progress tail bound: PASS
+stdout/stderr drain callback serialization: PASS
+Snapshot details JSON: PASS
+Sequential callbacks remain on agent thread: PASS
+Parallel callbacks use bounded event queue: PASS
+
+Executable E2E
+--------------
+TypeScript live-update fixture: PASS
+Canonical start -> update -> end event order: PASS
+Primary update before promise resolution: PASS
+Deferred lifecycle observer after worker release: PASS
+Duplicate update suppression: PASS
+Native delayed-bash fixture: PASS
+First output before marker: PASS
+Accumulated final progress snapshot: PASS
+Final assistant turns: PASS
+E2E stderr bytes: 0
+
+SQLite isolation qualification
+------------------------------
+The seven root-process isolates are one linked SQLite CLI integration case and six C-backed repository cases. The CLI case passes in the dedicated SQLite CLI process. All six repository cases pass in the dedicated 11-test repository process. They are not omitted behavior.
+
+Frozen source and reconstruction
+--------------------------------
+Final source ZIP integrity: PASS
+Single-root archive structure: PASS
+Cache/build/VCS directory exclusion: PASS
+Packaged/extracted source equivalence: byte-for-byte PASS
+Exact ZIP extraction formatting/source audit: PASS
+Exact ZIP extraction complete test topology: PASS
+Exact ZIP extraction all three Debug builds: PASS
+Exact ZIP extraction live extension and bash E2Es: PASS
+Checkpoint-150 patch dry-run/application: PASS
+Patch-reconstructed source equivalence: byte-for-byte PASS
+Patch reconstruction complete test topology: PASS
+Patch reconstruction all three Debug builds: PASS
+
+Publication transfer integrity
+------------------------------
+Explicit chunked copies to final paths: PASS
+Flush and fsync before atomic replacement: PASS
+Complete final-path re-read: PASS
+Independent SHA-256 verification: PASS
+Staging/final byte comparison: PASS
+Three stable size/mtime/hash snapshots: PASS
+Published checksum-manifest verification: PASS
+Post-publication executable and SQLite smokes: PASS
+Temporary transfer files remaining: 0

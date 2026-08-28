@@ -1,0 +1,125 @@
+Pi Zig checkpoint 161 validation record
+=======================================
+
+Reference and toolchain
+-----------------------
+Original source reference:                 Pi coding-agent 0.84.1
+Original source archive SHA-256:           42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a
+Baseline checkpoint:                       160
+Baseline archive SHA-256:                  fc945dea05665725c4e58fa16eea485c1b7c780f178051646daa86e25f689a74
+Supplied Zig archive SHA-256:               70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+Supplied Zig compiler:                     0.16.0
+
+Source measurements
+-------------------
+Native Zig source files:                   176
+Native Zig logical lines:                  96,798
+Embedded JavaScript bridge lines:          984
+Named Zig test declarations:               850
+Synthetic/generated feature shards:        0
+Implementation files changed/added:         7
+Implementation additions/deletions:        +793 / -14
+
+Direct root closure
+-------------------
+Command:
+  PI_SQLITE_CLI_TESTS=1 PI_SQLITE_REPOSITORY_TESTS=1
+  zig test src/root.zig -fno-llvm -lsqlite3 -lc
+Result:                                    855/855 passed
+Skipped:                                   0
+Failed:                                    0
+
+Normal build-test graph
+-----------------------
+Command:
+  PI_SQLITE_CLI_TESTS=1
+  zig build test -Doptimize=Debug -j4 --summary all
+Module process:                            849 passed, 6 isolated, 0 failed
+Ordinary executable process:               6/6 passed
+SQLite repository process:                11/11 passed
+SQLite CLI/schema process:                 8 passed, 6 isolated, 0 failed
+SQLite live-persistence process:           5/5 passed
+SQLite-enabled executable process:         6/6 passed
+Build steps:                               13/13 succeeded
+
+The six module isolates are the C-backed SQLite repository declarations and
+all execute successfully in the separately linked 11-test repository process.
+The direct root command links sqlite3/libc and executes all 855 cases.
+
+Focused retry and settings closure
+----------------------------------
+Agent/transport import graph:              279/279 passed
+Settings import graph:                     18/18 passed
+Retry classifier fixtures:                 passed
+Quota/billing fail-fast:                   passed
+Thrown Zig transport recovery:             passed
+Retry-only cancellation:                   passed
+Exhausted retry budget:                    passed
+Nested retry settings merge:               passed
+Compaction enabled setting:                passed
+
+Static gates
+------------
+Whole-tree Zig format check:               passed
+Node bridge syntax check:                  passed
+Git diff validation:                       passed
+Real-source audit:                         passed
+Synthetic-source count:                    0
+
+Builds
+------
+Static Linux x86-64 Debug pi:              passed
+Linux x86-64 Debug pi-sqlite:              passed
+Linux x86-64 Debug pi-sqlite-live:         passed
+
+Real executable RPC gates
+-------------------------
+Transient retry to success:                passed
+Exact auto_retry_start event:              passed
+Exact auto_retry_end success event:        passed
+Concurrent abort_retry:                    passed
+Cancelled retry finalError:                Retry cancelled
+Next mock response preserved after abort:  passed
+Initial retry-disabled behavior:            passed
+Runtime set_auto_retry enablement:          passed
+Settings replacement plus reload disable:  passed
+get_state retry synchronization:            passed
+Process exits:                             0
+Combined stderr bytes:                     0
+
+Exact source archive
+--------------------
+Single archive root:                       pi-zig-v8-checkpoint-161/
+Frozen source/report files:                289
+ZIP entries including directories:         309
+Forbidden cache/build entries:             0
+Frozen/extracted equivalence:               289/289 byte-for-byte
+Extracted direct root tests:                855/855 passed
+Extracted build-test graph:                 13/13 steps succeeded
+Extracted Debug builds:                     3/3 passed
+Extracted retry success/abort E2E:           passed
+Extracted retry toggle/reload E2E:           passed
+Extracted E2E stderr bytes:                 0
+
+Patch reconstruction
+--------------------
+git apply --check:                         passed
+Patch application:                        passed
+Reconstructed source/report files:         289
+Missing files:                              0
+Extra files:                                0
+Changed files:                              0
+Byte-for-byte source equivalence:          passed
+Reconstructed direct root tests:           855/855 passed
+Reconstructed build-test graph:            13/13 steps succeeded
+Reconstructed Debug builds:                3/3 passed
+Reconstructed retry success/abort E2E:      passed
+Reconstructed retry toggle/reload E2E:      passed
+Reconstructed E2E stderr bytes:             0
+
+Publication
+-----------
+The checksum manifest, chunked final-path transfer, fsync, complete rereads,
+stable SHA-256 snapshots, ZIP integrity, executable smokes, retry RPC smokes,
+and live SQLite smoke are performed after the artifacts are frozen. Download
+links are emitted only after those final publication gates succeed.

@@ -5,6 +5,7 @@ const ai = @import("root.zig");
 
 pub const StreamDeltaKind = enum {
     text_delta,
+    thinking_delta,
     tool_call_delta, // partial tool call (id/name/args fragments)
     done,
     err,
@@ -13,6 +14,7 @@ pub const StreamDeltaKind = enum {
 pub const StreamDelta = struct {
     kind: StreamDeltaKind,
     text: []const u8 = "",
+    thinking: []const u8 = "",
     /// tool call id (owned by caller context, not this delta)
     tool_call_id: []const u8 = "",
     tool_name: []const u8 = "",
@@ -26,6 +28,7 @@ pub const StreamHandler = *const fn (ctx: ?*anyopaque, delta: StreamDelta) void;
 pub const Accumulator = struct {
     gpa: std.mem.Allocator,
     text: std.ArrayList(u8) = .empty,
+    thinking: std.ArrayList(u8) = .empty,
     /// tool_call_id -> building ToolCall
     tool_ids: std.ArrayList([]const u8) = .empty,
     tool_names: std.ArrayList([]const u8) = .empty,
@@ -37,6 +40,7 @@ pub const Accumulator = struct {
 
     pub fn deinit(self: *Accumulator) void {
         self.text.deinit(self.gpa);
+        self.thinking.deinit(self.gpa);
         for (self.tool_ids.items) |id| self.gpa.free(id);
         self.tool_ids.deinit(self.gpa);
         for (self.tool_names.items) |n| self.gpa.free(n);
@@ -49,6 +53,7 @@ pub const Accumulator = struct {
     pub fn onDelta(self: *Accumulator, delta: StreamDelta) !void {
         switch (delta.kind) {
             .text_delta => try self.text.appendSlice(self.gpa, delta.text),
+            .thinking_delta => try self.thinking.appendSlice(self.gpa, delta.thinking),
             .tool_call_delta => {
                 // Find or create tool call by id. Empty id continues the last open tool
                 // (Anthropic input_json_delta streams without repeating id/name).
@@ -94,6 +99,7 @@ pub const Accumulator = struct {
         }
         return .{
             .content = try self.gpa.dupe(u8, self.text.items),
+            .thinking = if (self.thinking.items.len > 0) try self.gpa.dupe(u8, self.thinking.items) else "",
             .tool_calls = tcs,
         };
     }
@@ -124,6 +130,11 @@ pub fn parseOpenAISseData(gpa: std.mem.Allocator, data: []const u8) !?StreamDelt
                 return StreamDelta{ .kind = .text_delta, .text = try gpa.dupe(u8, c.string) };
             }
         }
+        if (delta.object.get("reasoning_content") orelse delta.object.get("reasoning")) |r| {
+            if (r == .string and r.string.len > 0) {
+                return StreamDelta{ .kind = .thinking_delta, .thinking = try gpa.dupe(u8, r.string) };
+            }
+        }
         if (delta.object.get("tool_calls")) |tcs| {
             if (tcs == .array and tcs.array.items.len > 0) {
                 const tc = tcs.array.items[0];
@@ -140,6 +151,15 @@ pub fn parseOpenAISseData(gpa: std.mem.Allocator, data: []const u8) !?StreamDelt
                                 if (n == .string) name = n.string;
                             }
                             if (fn_obj.object.get("arguments")) |a| {
+                                if (a == .string) args = a.string;
+                            }
+                        }
+                    } else if (tc.object.get("custom")) |custom_obj| {
+                        if (custom_obj == .object) {
+                            if (custom_obj.object.get("name")) |n| {
+                                if (n == .string) name = n.string;
+                            }
+                            if (custom_obj.object.get("input")) |a| {
                                 if (a == .string) args = a.string;
                             }
                         }
@@ -169,6 +189,9 @@ pub fn freeDelta(gpa: std.mem.Allocator, delta: StreamDelta) void {
     switch (delta.kind) {
         .text_delta => {
             if (delta.text.len > 0) gpa.free(delta.text);
+        },
+        .thinking_delta => {
+            if (delta.thinking.len > 0) gpa.free(delta.thinking);
         },
         .tool_call_delta => {
             if (delta.tool_call_id.len > 0) gpa.free(delta.tool_call_id);
@@ -202,6 +225,13 @@ pub fn parseAnthropicEvent(gpa: std.mem.Allocator, event_name: []const u8, data:
                         if (d.object.get("text")) |tx| {
                             if (tx == .string) {
                                 return StreamDelta{ .kind = .text_delta, .text = try gpa.dupe(u8, tx.string) };
+                            }
+                        }
+                    }
+                    if (t == .string and std.mem.eql(u8, t.string, "thinking_delta")) {
+                        if (d.object.get("thinking")) |tx| {
+                            if (tx == .string) {
+                                return StreamDelta{ .kind = .thinking_delta, .thinking = try gpa.dupe(u8, tx.string) };
                             }
                         }
                     }
@@ -328,4 +358,35 @@ test "Anthropic stream fixture accumulates text and tool_use" {
     try std.testing.expectEqual(@as(usize, 1), resp.tool_calls.len);
     try std.testing.expectEqualStrings("bash", resp.tool_calls[0].name);
     try std.testing.expect(std.mem.indexOf(u8, resp.tool_calls[0].arguments, "echo hi") != null);
+}
+
+test "OpenAI and Anthropic stream parsers retain thinking deltas" {
+    const gpa = std.testing.allocator;
+    const openai_fixture =
+        \\data: {"choices":[{"delta":{"reasoning_content":"plan "}}]}
+        \\data: {"choices":[{"delta":{"reasoning":"step"}}]}
+        \\data: {"choices":[{"delta":{"content":"answer"},"finish_reason":"stop"}]}
+        \\data: [DONE]
+        \\
+    ;
+    var oa = try consumeOpenAISseFixture(gpa, openai_fixture);
+    defer oa.deinit(gpa);
+    try std.testing.expectEqualStrings("plan step", oa.thinking);
+    try std.testing.expectEqualStrings("answer", oa.content);
+
+    const anthropic_fixture =
+        \\event: content_block_delta
+        \\data: {"delta":{"type":"thinking_delta","thinking":"consider "}}
+        \\event: content_block_delta
+        \\data: {"delta":{"type":"thinking_delta","thinking":"this"}}
+        \\event: content_block_delta
+        \\data: {"delta":{"type":"text_delta","text":"done"}}
+        \\event: message_stop
+        \\data: {}
+        \\
+    ;
+    var an = try consumeAnthropicSseFixture(gpa, anthropic_fixture);
+    defer an.deinit(gpa);
+    try std.testing.expectEqualStrings("consider this", an.thinking);
+    try std.testing.expectEqualStrings("done", an.content);
 }

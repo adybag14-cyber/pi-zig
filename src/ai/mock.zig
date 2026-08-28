@@ -11,11 +11,13 @@ pub const MockResponse = struct {
 pub const MockModel = struct {
     responses: []MockResponse,
     index: usize = 0,
+    last_completion_options: ai.CompletionOptions = .{},
 
     pub fn client(self: *MockModel) ai.ModelClient {
         return .{
             .ptr = self,
             .completeFn = completeImpl,
+            .completeOptionsFn = completeOptionsImpl,
             .streamFn = streamImpl,
         };
     }
@@ -61,9 +63,14 @@ pub const MockModel = struct {
     }
 
     fn completeImpl(ptr: *anyopaque, gpa: std.mem.Allocator, messages: []const ai.ChatMessage, tools_json: []const u8) anyerror!ai.ModelResponse {
+        return completeOptionsImpl(ptr, gpa, messages, tools_json, .{});
+    }
+
+    fn completeOptionsImpl(ptr: *anyopaque, gpa: std.mem.Allocator, messages: []const ai.ChatMessage, tools_json: []const u8, options: ai.CompletionOptions) anyerror!ai.ModelResponse {
         _ = messages;
         _ = tools_json;
         const self: *MockModel = @ptrCast(@alignCast(ptr));
+        self.last_completion_options = options;
         return self.takeNext(gpa);
     }
 
@@ -177,10 +184,16 @@ pub const MockModel = struct {
                 }
             }
 
+            const stop_reason: []const u8 = if (item.object.get("stop_reason")) |sr|
+                if (sr == .string) sr.string else ""
+            else
+                "";
+
             try list.append(gpa, .{
                 .response = .{
                     .content = try gpa.dupe(u8, content_v.string),
                     .tool_calls = try tcs.toOwnedSlice(gpa),
+                    .stop_reason = if (stop_reason.len > 0) try gpa.dupe(u8, stop_reason) else "",
                 },
                 .stream_chunks = try chunks.toOwnedSlice(gpa),
             });

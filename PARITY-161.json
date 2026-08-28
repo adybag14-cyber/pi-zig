@@ -1,0 +1,71 @@
+{
+  "checkpoint": 161,
+  "reference": "Pi coding-agent 0.84.1",
+  "baseline": 160,
+  "closed": [
+    "settings-driven outer assistant retry",
+    "field-preserving nested retry settings merge",
+    "compaction enabled setting",
+    "original transient retry classifier with quota and billing exclusions",
+    "retry classification of thrown Zig transport failures",
+    "saturating exponential backoff",
+    "whole-run and retry-only abortable backoff",
+    "auto_retry_start and auto_retry_end JSON RPC events",
+    "print and interactive retry status",
+    "functional set_auto_retry and concurrent abort_retry RPC controls",
+    "retry state synchronization after transactional reload",
+    "real RPC retry success cancellation toggle and reload validation"
+  ],
+  "validation": {
+    "zig_version": "0.16.0",
+    "native_zig_files": 176,
+    "native_zig_lines": 96798,
+    "javascript_bridge_lines": 984,
+    "named_source_test_declarations": 850,
+    "synthetic_files": 0,
+    "implementation": {
+      "files_changed_or_added": 7,
+      "additions": 793,
+      "deletions": 14
+    },
+    "direct_root": {
+      "passed": 855,
+      "skipped": 0,
+      "failed": 0,
+      "total": 855,
+      "backend": "non-LLVM with sqlite3/libc linkage"
+    },
+    "build_test_graph": {
+      "passed": 849,
+      "isolated": 6,
+      "failed": 0,
+      "steps_passed": 13,
+      "steps_total": 13
+    },
+    "sqlite_repository": { "passed": 11, "failed": 0 },
+    "sqlite_cli": { "passed": 8, "isolated": 6, "failed": 0 },
+    "ordinary_executable": { "passed": 6, "failed": 0 },
+    "sqlite_persistence": { "passed": 5, "failed": 0 },
+    "sqlite_executable": { "passed": 6, "failed": 0 },
+    "debug_builds": 3,
+    "rpc_retry_success": "passed",
+    "rpc_retry_abort": "passed",
+    "rpc_runtime_toggle": "passed",
+    "rpc_reload_sync": "passed",
+    "rpc_stderr_bytes": 0
+  },
+  "remaining": [
+    "summarization retry policy and events",
+    "persistent RPC retry setting mutation",
+    "provider retry subsettings across transports",
+    "durable intermediate failed-attempt history outside active context",
+    "complete package and remaining fullscreen screens",
+    "complete npm pnpm bun platform behavior",
+    "asynchronously invalidated extension component trees",
+    "function-valued providers and extension OAuth",
+    "server TLS and mutual TLS",
+    "automatic image transformation",
+    "enterprise credential telemetry retry and interoperability matrix"
+  ],
+  "complete_equivalence_claimed": false
+}

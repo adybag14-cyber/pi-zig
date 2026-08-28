@@ -1,0 +1,38 @@
+{
+  "base_checkpoint": 183,
+  "checkpoint": 185,
+  "checkpoint_184_audit": "verification/checkpoint-185/checkpoint-184-artifact-audit.json",
+  "checks": {
+    "build_steps": {
+      "succeeded": 13,
+      "total": 13
+    },
+    "default_build_steps": {
+      "succeeded": 3,
+      "total": 3
+    },
+    "focused_stream_log_sha256": "81b934d9035ec2d05259dcf33c6cdf8b39796a7bac8207e8cd97a11042fcf99c",
+    "full_test_log_sha256": "7a0fa10275dd5d047a59a95fe5d6c66266f68ae6257c6cfe9be50669b83f28a8",
+    "module_tests": {
+      "failed": 0,
+      "passed": 1000,
+      "skipped": 7
+    },
+    "patch_replay_byte_identical": true,
+    "provider_gates_log_sha256": "34f73257b6dd4479481c46ebb231c8ca8752852f54537d7a15a7218d168e524c",
+    "provider_method_checks": 13,
+    "provider_models_checks": 32,
+    "provider_oauth_checks": 22,
+    "provider_stream_checks": 18,
+    "synthetic_source_files": 0,
+    "toolchain": "0.16.0-dev.3127+9f848dc30",
+    "upstream_tree_complete": true,
+    "zig_source_files": 196,
+    "zig_source_lines": 121515
+  },
+  "generated_at_utc": "2026-08-23T20:42:17.625117+00:00",
+  "internal_logs": "verification/checkpoint-185",
+  "patch_replay": "verification/checkpoint-185/patch-replay.json",
+  "status": "source-tree verified; final archive verification is recorded in external sidecars",
+  "upstream_audit": "verification/checkpoint-185/upstream-tree-audit.json"
+}

@@ -1,0 +1,108 @@
+{
+  "from_checkpoint": 181,
+  "to_checkpoint": 182,
+  "files_changed": 16,
+  "insertions": 2150,
+  "deletions": 34,
+  "patch_lines": 2717,
+  "patch_bytes": 145063,
+  "sha256": "df5ccc29d2a8def20562867c00fba71de417e787e4399d721cb13dfabd55f2f3",
+  "files": [
+    {
+      "path": "checkpoint-tests/check-provider-oauth-production-integration.py",
+      "status": "added",
+      "insertions": 62,
+      "deletions": 0
+    },
+    {
+      "path": "checkpoint-tests/provider-oauth-login-bridge.mjs",
+      "status": "added",
+      "insertions": 196,
+      "deletions": 0
+    },
+    {
+      "path": "src/ai/bedrock.zig",
+      "status": "modified",
+      "insertions": 4,
+      "deletions": 2
+    },
+    {
+      "path": "src/ai/google.zig",
+      "status": "modified",
+      "insertions": 11,
+      "deletions": 0
+    },
+    {
+      "path": "src/ai/mistral.zig",
+      "status": "modified",
+      "insertions": 10,
+      "deletions": 0
+    },
+    {
+      "path": "src/auth/storage.zig",
+      "status": "modified",
+      "insertions": 246,
+      "deletions": 0
+    },
+    {
+      "path": "src/coding_agent/auth_flow_tui.zig",
+      "status": "modified",
+      "insertions": 7,
+      "deletions": 1
+    },
+    {
+      "path": "src/coding_agent/auth_tui.zig",
+      "status": "modified",
+      "insertions": 86,
+      "deletions": 5
+    },
+    {
+      "path": "src/coding_agent/live_state.zig",
+      "status": "modified",
+      "insertions": 301,
+      "deletions": 20
+    },
+    {
+      "path": "src/coding_agent/slash.zig",
+      "status": "modified",
+      "insertions": 300,
+      "deletions": 2
+    },
+    {
+      "path": "src/extensions/js_bridge.mjs",
+      "status": "modified",
+      "insertions": 74,
+      "deletions": 3
+    },
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "status": "modified",
+      "insertions": 83,
+      "deletions": 0
+    },
+    {
+      "path": "src/extensions/provider_oauth.zig",
+      "status": "added",
+      "insertions": 601,
+      "deletions": 0
+    },
+    {
+      "path": "src/extensions/provider_registry.zig",
+      "status": "modified",
+      "insertions": 132,
+      "deletions": 0
+    },
+    {
+      "path": "src/extensions/root.zig",
+      "status": "modified",
+      "insertions": 1,
+      "deletions": 0
+    },
+    {
+      "path": "src/main.zig",
+      "status": "modified",
+      "insertions": 36,
+      "deletions": 1
+    }
+  ]
+}

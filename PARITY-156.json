@@ -1,0 +1,49 @@
+{
+  "checkpoint": 156,
+  "toolchain": "Zig 0.16.0",
+  "reference": "supplied Pi 0.84.1 source",
+  "baseline": "uploaded checkpoint 155",
+  "measurements": {
+    "zig_files": 172,
+    "zig_lines": 91776,
+    "javascript_bridge_lines": 937,
+    "source_test_declarations": 816,
+    "synthetic_files": 0
+  },
+  "validation": {
+    "root_cases": 822,
+    "root_passed": 815,
+    "root_skipped": 7,
+    "root_failed": 0,
+    "build_steps_succeeded": 13,
+    "build_steps_total": 13,
+    "packages_tests": "32/32",
+    "args_tests": "7/7",
+    "js_runtime_tests": "10/10",
+    "sqlite_repository": "11/11",
+    "sqlite_cli": "8 passed, 6 isolated, 0 failed",
+    "sqlite_persistence": "5/5",
+    "ordinary_executable": "5/5",
+    "sqlite_executable": "5/5"
+  },
+  "new_native_areas": [
+    "durable managed-Git update journals",
+    "path-confined prepared-checkout commit and backup restoration",
+    "target recovery before subsequent Git package mutations",
+    "pi repair user/project/JSON command surface",
+    "verified atomic migration from settings.json.packages",
+    "preservation of unrelated settings during legacy cleanup"
+  ],
+  "remaining_priorities": [
+    "package selector/configuration TUI and resource-origin editing",
+    "richer cross-process package owner diagnostics and startup presentation",
+    "complete npm/pnpm/Bun platform and lockfile parity",
+    "asynchronously invalidated extension component trees",
+    "function-valued providers and extension OAuth",
+    "complete fullscreen screens",
+    "native server TLS and mTLS",
+    "automatic image normalization and transcoding",
+    "enterprise credential retry and interoperability breadth"
+  ],
+  "complete_monorepo_equivalence_claimed": false
+}

@@ -1,0 +1,2 @@
+command: find src -name *.zig -print0 | sort -z | xargs -0 zig fmt --check
+zig format: ok

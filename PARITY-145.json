@@ -1,0 +1,84 @@
+{
+  "checkpoint": 145,
+  "reference": {
+    "project": "Pi",
+    "version": "0.84.1",
+    "archive": "pi-main (3)(5).zip",
+    "sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a"
+  },
+  "baseline": {
+    "checkpoint": 144,
+    "archive": "pi-zig-v8-checkpoint-144(1).zip",
+    "sha256": "933583d44190be32caf0b958de947fd798bb2faf23402ded2767a7c6f6da1e4e"
+  },
+  "toolchain": {
+    "version": "0.16.0",
+    "sha256": "70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00"
+  },
+  "measurements": {
+    "zigFiles": 166,
+    "zigLines": 77510,
+    "declaredTests": 740,
+    "syntheticFiles": 0,
+    "filesGained": 7,
+    "linesGained": 3269
+  },
+  "added": [
+    "upstream JSONL v1/v2 to v3 migration",
+    "atomic session saves with stable creation and fork provenance",
+    "session stats/tree/rename/guarded delete/migrate commands",
+    "canonical cwd session directories and pre-145 hash recovery",
+    "original startup auth/settings/keybinding/prompt/binary/session migrations",
+    "target-aware HTTP proxying across primary provider transports",
+    "persistent Codex WebSocket proxying",
+    "certificate-verified remote TLS and HTTP/HTTPS CONNECT",
+    "open-stream short-read correction",
+    "optional live SQLite-backed protocol server"
+  ],
+  "validated": {
+    "format": true,
+    "sourceAudit": true,
+    "mainDebugBuild": true,
+    "sqliteCompanionBuild": true,
+    "sqliteLiveBuild": true,
+    "root": {
+      "passed": 723,
+      "isolated": 7,
+      "failed": 0
+    },
+    "sqliteRepository": {
+      "passed": 11,
+      "failed": 0
+    },
+    "sqliteLivePersistence": {
+      "passed": 5,
+      "failed": 0
+    },
+    "sqliteCli": {
+      "passed": 8,
+      "isolated": 6,
+      "failed": 0
+    },
+    "main": {
+      "passed": 4,
+      "failed": 0
+    },
+    "allUniqueDeclarationsExecuted": 740,
+    "live": {
+      "providerProxy": true,
+      "remoteConnectProxy": true,
+      "startupMigrations": true,
+      "sessionAdministration": true,
+      "sqliteRestartPersistence": true
+    }
+  },
+  "remaining": [
+    "arbitrary JavaScript/TypeScript extension execution",
+    "complete coding-agent fullscreen screen wiring",
+    "server-side TLS and mTLS",
+    "OAuth and cloud-credential proxy propagation",
+    "automatic image resizing and complete multimodal limits",
+    "complete enterprise auth and retry matrix",
+    "remaining remote adapters and broader interoperability fixtures"
+  ]
+}

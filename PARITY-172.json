@@ -1,0 +1,48 @@
+{
+  "checkpoint": 172,
+  "original": "Pi 0.84.1",
+  "compiler": "Zig 0.16.0",
+  "closed": [
+    "terminal.showImages parse, merge, persistence, fullscreen editing, reload and rendering",
+    "terminal.imageWidthCells parse, persistence and native rendering width",
+    "images.blockImages provider-boundary privacy filtering after extension transforms",
+    "durable image retention while provider payloads are blocked",
+    "enableSkillCommands slash, help, completion and RPC command gating",
+    "legacy skill/media setting aliases and canonical persistence"
+  ],
+  "defaults": {
+    "terminal.showImages": true,
+    "terminal.imageWidthCells": 60,
+    "images.blockImages": false,
+    "enableSkillCommands": true
+  },
+  "validation": {
+    "agent_ai_tests": {"passed": 333, "failed": 0},
+    "changed_coding_tests": {"passed": 649, "failed": 0},
+    "sqlite_repository": {"passed": 11, "failed": 0},
+    "sqlite_cli_schema": {"passed": 8, "isolated": 6, "failed": 0},
+    "ordinary_executable": {"passed": 10, "failed": 0},
+    "media_skill_e2e": "passed",
+    "e2e_stderr_bytes": 0,
+    "static_pi_build": "passed",
+    "pi_sqlite_build": "passed",
+    "aggregate_root": "compile deadline exceeded; no failure emitted and no pass claimed",
+    "pi_sqlite_live_build": "compile deadline exceeded; no checkpoint-172 binary published"
+  },
+  "source": {
+    "src_zig_files": 186,
+    "src_zig_lines": 109715,
+    "named_test_declarations": 940,
+    "synthetic_files": 0
+  },
+  "remaining": [
+    "remaining original settings and project override UI",
+    "automatic image resize, EXIF normalization and transcoding",
+    "fullscreen package and account management",
+    "complete npm, pnpm, Yarn and Bun behavior",
+    "asynchronously invalidated extension component trees",
+    "function-valued providers and extension-owned OAuth",
+    "native server TLS and mutual TLS",
+    "enterprise credential, telemetry, update, retry and interoperability breadth"
+  ]
+}

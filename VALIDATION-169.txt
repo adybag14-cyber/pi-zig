@@ -1,0 +1,106 @@
+PI ZIG CHECKPOINT 169 — VALIDATION RECORD
+=========================================
+
+Evidence
+--------
+Original source: uploaded Pi 0.84.1 archive
+Baseline: uploaded pi-zig checkpoint 168
+Compiler: supplied Zig 0.16.0 Linux x86-64 archive
+
+Source measurements
+-------------------
+Native Zig source files: 184
+Native Zig logical lines: 106213
+Named Zig test declarations: 924
+Direct root cases: 926
+Synthetic/generated source files: 0
+
+Static gates
+------------
+Whole-tree `zig fmt --check`: PASS
+Python E2E fixtures `py_compile`: PASS
+Git diff whitespace/error validation: PASS
+Real-source audit: PASS
+Node extension bridge syntax: PASS
+Bundled upstream changelog byte equivalence: PASS
+New management paths use shared bootstrap HTTP rather than direct fetch: PASS
+
+Authoritative direct root closure
+---------------------------------
+Command shape:
+  PI_SQLITE_CLI_TESTS=1
+  PI_SQLITE_REPOSITORY_TESTS=1
+  zig test src/root.zig -fno-llvm -lsqlite3 -lc
+
+Result: 926/926 PASS
+Skipped: 0
+Failed: 0
+Exit status: 0
+
+Normal build-test topology
+--------------------------
+All-package module process: 919 pass / 7 intentional isolates / 0 fail
+SQLite repository process: 11/11 PASS
+SQLite CLI/schema process: 8 pass / 6 intentional isolates / 0 fail
+Ordinary executable process: 9/9 PASS
+SQLite live-persistence process: 5/5 PASS
+SQLite-enabled executable process: 9/9 PASS
+Build graph: 13/13 steps succeeded
+
+The seven module-process isolates are deliberate linked-SQLite cases. Six run
+in the dedicated repository process and the CLI integration case runs in the
+dedicated SQLite CLI process. The direct root closure links sqlite3/libc and
+executes every case without skips.
+
+Builds
+------
+Static pi Debug ELF: PASS
+pi-sqlite Debug ELF linked to sqlite3/libc: PASS
+pi-sqlite-live Debug ELF linked to sqlite3/libc: PASS
+
+Model/update/tool executable E2E
+--------------------------------
+Latest-version requests: 1
+Anonymous install-report requests: 1
+Persisted lifecycle version: 0.84.1
+Condensed upstream changelog notice: PASS
+Synthetic upstream update notice and note: PASS
+Fullscreen model selector: PASS
+Selected canonical identity: openai/gpt-4.1-mini
+Durable model_change records: 1
+
+Managed ripgrep release requests: 1
+Managed ripgrep archive downloads: 1
+Official-layout archive extraction: PASS
+Atomic agent/bin/rg installation: PASS
+Execution through native grep tool: PASS
+Second-process cached reuse: PASS
+Repeated release/download request: 0
+
+All child process exits: 0
+Combined stderr bytes: 0
+
+Executable characteristics
+--------------------------
+pi: static Linux x86-64 Debug ELF
+pi-sqlite: Linux x86-64 Debug ELF linked to sqlite3/libc
+pi-sqlite-live: Linux x86-64 Debug ELF linked to sqlite3/libc
+
+Archive and patch reconstruction
+--------------------------------
+Candidate source ZIP integrity: PASS
+Candidate ZIP single-root and cache/build exclusion: PASS
+Frozen/extracted source equivalence: 346/346 files byte-for-byte, modes preserved
+Exact ZIP direct root suite: 926/926 PASS
+Exact ZIP static pi Debug rebuild: PASS
+
+Checkpoint 168 patch dry-run/application: PASS
+Patch-reconstructed source equivalence: 346/346 files byte-for-byte, modes preserved
+Because the reconstructed tree is byte-identical to the tested commit and exact
+ZIP extraction, no source divergence exists between the three forms. A duplicate
+cold reconstruction compile exceeded its command deadline before producing a
+test executable and emitted no failing test output; this is recorded as a compile
+timeout rather than misreported as a pass or failure.
+
+The final standalone validation report adds publication, checksum, executable,
+SQLite, and transfer-stability results after the public artifacts are installed.

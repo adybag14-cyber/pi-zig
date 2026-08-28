@@ -1,0 +1,113 @@
+{
+  "checkpoint": 168,
+  "upstream": {
+    "project": "earendil-works/pi",
+    "version": "0.84.1"
+  },
+  "toolchain": {
+    "zig": "0.16.0",
+    "target": "x86_64-linux"
+  },
+  "measurements": {
+    "zigFiles": 181,
+    "zigLines": 104197,
+    "zigTestDeclarations": 911,
+    "directRootCases": 913,
+    "syntheticFiles": 0
+  },
+  "closed": [
+    "shared bounded bootstrap HTTP policy",
+    "OAuth retry timeout cancellation and proxy propagation",
+    "Radius and GitHub Copilot dynamic catalog propagation",
+    "Google ADC bootstrap policy propagation",
+    "AWS web identity STS container and IMDS policy propagation",
+    "metadata credential proxy suppression",
+    "noninteractive auth check refresh policy",
+    "canonical compact tool JSON token estimation",
+    "shared transport-wrapper-free tool call estimation",
+    "tree wrapped movement and search escape behavior",
+    "tree direct and reverse filter controls",
+    "tree label editing and timestamps",
+    "tree OSC52 copy",
+    "tree mouse selection and scrolling"
+  ],
+  "validation": {
+    "directRoot": {
+      "passed": 913,
+      "skipped": 0,
+      "failed": 0
+    },
+    "moduleProcess": {
+      "passed": 906,
+      "isolated": 7,
+      "failed": 0
+    },
+    "sqliteRepository": {
+      "passed": 11,
+      "failed": 0
+    },
+    "sqliteCli": {
+      "passed": 8,
+      "isolated": 6,
+      "failed": 0
+    },
+    "ordinaryExecutable": {
+      "passed": 9,
+      "failed": 0
+    },
+    "sqlitePersistence": {
+      "passed": 5,
+      "failed": 0
+    },
+    "sqliteExecutable": {
+      "passed": 9,
+      "failed": 0
+    },
+    "buildSteps": {
+      "passed": 13,
+      "total": 13
+    },
+    "bootstrapNetworkE2E": {
+      "passed": true,
+      "retryRequests": 2,
+      "retryDeniedRequests": 1,
+      "timeoutPreempted": true,
+      "settingsProxy": true,
+      "noProxyBypass": true,
+      "credentialPersistence": true,
+      "stderrBytes": 0
+    },
+    "fullscreenTreeE2E": {
+      "passed": true,
+      "searchSelected": "assistant-167-1",
+      "summaryPersisted": true,
+      "rpcExit": 0,
+      "ptyExit": 0,
+      "stderrBytes": 0
+    },
+    "treeControlsE2E": {
+      "passed": true,
+      "searchSelected": "tree-answer-168-1",
+      "durableLabel": "checkpoint-168",
+      "labelTarget": "m2",
+      "osc52Payload": "tree-answer-168-1",
+      "labelTimestamps": true,
+      "labeledOnlyFilter": true,
+      "rpcExit": 0,
+      "ptyExit": 0,
+      "stderrBytes": 0
+    }
+  },
+  "remaining": [
+    "remaining update install report and download management HTTP paths",
+    "provider-specific enterprise OAuth cloud and catalog edge cases",
+    "complete original tree visualization mouse progress cancellation and help UX",
+    "remaining fullscreen package model login settings and session managers",
+    "complete npm pnpm and bun platform lifecycle behavior",
+    "arbitrary asynchronously invalidated extension component trees",
+    "function-valued extension providers and OAuth callbacks",
+    "native server TLS and mutual TLS",
+    "automatic image normalization resizing and transcoding",
+    "enterprise credential telemetry retry update and interoperability coverage"
+  ]
+}

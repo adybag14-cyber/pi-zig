@@ -1,0 +1,69 @@
+Pi Zig checkpoint 152 extension/package metadata E2E
+====================================================
+
+Reference behavior
+------------------
+Original Pi supplies the provider-issued tool call ID and a live AbortSignal to extension tools, preserves tool-local usage and addedToolNames, and resolves extensions, skills, prompts and themes from package.json Pi manifests.
+
+Exact-ID and cancellation closure
+---------------------------------
+SCRIPT_TOOL_CALL_ID_TEST=PASS
+SCRIPT_TOOL_ABORT_SIGNAL_TEST=PASS
+SIGNAL_IDENTITY_THIRD_ARGUMENT_EQUALS_CTX_SIGNAL=PASS
+ABORT_WHILE_PROMISE_PENDING=PASS
+HEADLESS_NO_EVENT_SINK_ABORT=PASS
+LATE_UPDATE_SUPPRESSION=PASS
+WORKER_REUSE_AFTER_ABORT=PASS
+LIFECYCLE_CONTEXT_SIGNAL_TEST=PASS
+
+These timing-sensitive checks execute the persistent Node worker through Zig. The script receives the literal provider-issued call ID, observes abort before its pending promise settles, and successfully handles a later invocation.
+
+Installed package executable gate
+---------------------------------
+PACKAGE_EXTENSION_METADATA_E2E=PASS
+PROMPT_MANIFEST=PASS
+SKILL_MANIFEST_HOOK=PASS
+THEME_MANIFEST=PASS_NO_DIAGNOSTICS
+EXACT_TOOL_CALL_ID=provider-call-152
+TOOL_USAGE_AND_ADDED_NAMES=PASS
+FINAL_ASSISTANT=package-e2e-complete
+STDERR_BYTES=0
+
+The package manifest selected:
+- extension.ts
+- skills/pkg-skill/SKILL.md
+- prompts/package-prompt.md
+- themes/package-night.json
+
+The real executable expanded:
+/package-prompt friend
+
+to:
+CHECKPOINT152_PACKAGE_PROMPT:friend
+
+The package skill marker was present in before_agent_start. The hook persisted a package-resource-check custom entry.
+
+Tool metadata retained in JSON output and JSONL
+-----------------------------------------------
+usage.input=11
+usage.output=12
+usage.cacheRead=13
+usage.cacheWrite=14
+usage.cacheWrite1h=15
+usage.reasoning=16
+usage.totalTokens=81
+usage.cost.input=0.1
+usage.cost.output=0.2
+usage.cost.cacheRead=0.03
+usage.cost.cacheWrite=0.04
+usage.cost.total=0.37
+addedToolNames=["package-added"]
+
+Durability checks
+-----------------
+EXPANDED_PROMPT_PERSISTED=PASS
+PACKAGE_RESOURCE_CUSTOM_ENTRY_PERSISTED=PASS
+EXACT_TOOL_CALL_ID_PERSISTED=PASS
+TOOL_USAGE_PERSISTED=PASS
+ADDED_TOOL_NAMES_PERSISTED=PASS
+SESSION_RELOAD_FORK_STATS_UNIT_CLOSURE=PASS

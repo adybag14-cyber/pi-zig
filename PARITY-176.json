@@ -1,0 +1,40 @@
+{
+  "checkpoint": 176,
+  "originalPiVersion": "0.84.1",
+  "zigVersion": "0.16.0",
+  "focus": "native clipboard output, bounded OSC 52, /copy, extension copy, and Windows right-click paste boundary",
+  "closed": [
+    "functional /copy using the latest assistant text",
+    "Wayland wl-copy output",
+    "X11 xclip and xsel output",
+    "Termux clipboard output",
+    "macOS pbcopy output",
+    "Windows clip and PowerShell output",
+    "WSL clipboard output",
+    "remote native plus OSC 52 copying",
+    "100000-byte encoded OSC 52 ceiling",
+    "hung clipboard writer termination",
+    "tree-selector shared clipboard path",
+    "JavaScript and TypeScript copyToClipboard export",
+    "machine-readable OSC 52 suppression",
+    "Windows right-click non-submitting paste callback"
+  ],
+  "qualified": [
+    "platform GUI integrations were not all live-tested in the Linux container",
+    "Windows right-click behavior is source and unit tested rather than desktop E2E tested"
+  ],
+  "validation": {
+    "nativeZigFiles": 189,
+    "nativeZigLines": 113190,
+    "namedZigTests": 970,
+    "changedImportGraph": { "passed": 692, "failed": 0 },
+    "allPackageModule": { "passed": 964, "isolated": 7, "failed": 0 },
+    "buildGraph": { "passedSteps": 13, "totalSteps": 13 },
+    "staticPiBuild": true,
+    "sqliteAdministrationBuild": true,
+    "sqliteLiveBuild": true,
+    "clipboardProcessE2E": true,
+    "stderrBytes": 0,
+    "syntheticFeatureShards": 0
+  }
+}

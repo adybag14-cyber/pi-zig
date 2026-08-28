@@ -1,0 +1,129 @@
+Pi Zig checkpoint 150 validation
+================================
+
+Reference source: uploaded Pi 0.84.1 archive pi-main (3)(10).zip
+Reference SHA-256: 42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a
+Exact patch baseline: uploaded pi-zig-v8-checkpoint-149(1).zip
+Baseline SHA-256: 0b76d41be0a3a6fb17607fb0a0ae727a718384220fa6d18d3e9f19b2e540a842
+Toolchain: supplied Zig 0.16.0 Linux x86-64
+Toolchain SHA-256: 70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+Script runtime used for compatibility tests: Node.js 22.16.0
+
+Source measurements
+-------------------
+Native Zig files under src/: 170
+Native Zig logical lines under src/: 84,735
+Embedded JavaScript bridge lines: 865
+Source-level test declarations: 778
+All-package root graph declarations: 767
+Synthetic/generated feature files: 0
+Checkpoint-149 to checkpoint-150 implementation source diff: 9 files
+Implementation source additions/deletions: +1,476 / -103
+
+Worktree implementation gates
+-----------------------------
+Whole-tree Zig formatting: PASS
+Node bridge syntax check: PASS
+Real-source audit: PASS (170 Zig files, 84,735 lines, 0 synthetic files)
+All-package root graph: 760 passed, 7 isolated, 0 failed (767 declarations)
+Dedicated SQLite repository: 11/11 passed
+Dedicated live SQLite persistence: 5/5 passed
+SQLite CLI/ABI/schema process: 8 passed, 6 isolated, 0 failed
+Ordinary executable/main suite: 5/5 passed
+SQLite-enabled executable/main suite: 5/5 passed
+All 778 source-level declarations executed through complete topology: PASS
+Affected extension filter: 60/60 passed
+Affected agent filter: 273/273 passed
+Affected server filter: 31/31 passed
+Affected coding-agent filter: 189/189 passed
+Debug build of ordinary pi: PASS
+Debug build of optional pi-sqlite: PASS
+Debug build of optional pi-sqlite-live: PASS
+Ordinary pi executable: static Linux x86-64 ELF with Debug information
+Ordinary pi dynamic Node/SQLite library dependency: NONE
+pi-sqlite and pi-sqlite-live: explicitly linked to sqlite3/libc
+
+Built-in replacement gates
+--------------------------
+Extension schema replaces same-name built-in schema: PASS
+Extension implementation executes before native built-in: PASS
+Active-tool/no-tool filtering remains enforced: PASS
+Explicit native delegation sentinel falls back to Zig: PASS
+createReadTool/createWriteTool/createEditTool/createBashTool compatibility: PASS
+createGrepTool/createFindTool/createLsTool compatibility: PASS
+Unchanged original tool-override.ts E2E: PASS
+Unchanged original built-in-tool-renderer.ts delegation E2E: PASS
+
+Argument preparation gates
+--------------------------
+Manifest exposes hasPrepareArguments: PASS
+prepareArguments runs before schema validation: PASS
+Prepared object reaches extension execution: PASS
+Malformed/throwing prepareArguments becomes isolated tool error: PASS
+Native built-in preparation remains available: PASS
+
+Rich result/update gates
+------------------------
+Ordered partial update ownership transfer: PASS
+Partial text propagation: PASS
+Partial image base64/MIME propagation: PASS
+Partial structured details propagation: PASS
+Late update suppression after promise resolution: PASS
+Final text/image/details/error propagation: PASS
+Original tool_result hook receives rich content/details: PASS
+Original tool_result hook rich replacement: PASS
+Final image JSONL persistence: PASS
+JSON mode partialResult and final result: PASS
+Print-mode partial/final output: PASS
+Interactive renderer partial/image/details context: PASS
+Protocol-v1 item_updated/item_finished rich payloads: PASS
+Strict protocol parser acceptance: PASS
+
+Script-worker teardown
+----------------------
+Runtime deadline termination: PASS
+Ordinary stdout isolation: PASS
+SIGTERM-ignoring Node child force-reap: PASS
+
+Executable E2E
+--------------
+Original tool-override.ts blocked .env: PASS
+Structured blocked details retained: PASS
+Audit log written: PASS
+Secret not exposed: PASS
+Original built-in-tool-renderer.ts native read delegation: PASS
+Rich prepareArguments transformation raw -> BLUE: PASS
+Canonical start -> update -> end event order: PASS
+Partial image/details retained: PASS
+Final tool_result hook image/details retained: PASS
+
+SQLite isolation qualification
+------------------------------
+The seven root-process isolates are one linked SQLite CLI integration case and six C-backed repository cases. The CLI case passes in the dedicated SQLite CLI process. All six repository cases pass in the dedicated 11-test repository process. They are not omitted behavior.
+
+Frozen source and reconstruction
+--------------------------------
+Final source ZIP integrity: PASS
+Single-root archive structure: PASS
+Cache/build/VCS directory exclusion: PASS
+Packaged/extracted source equivalence: byte-for-byte PASS
+Exact ZIP extraction formatting/source audit: PASS
+Exact ZIP extraction complete test topology: PASS
+Exact ZIP extraction all three Debug builds: PASS
+Exact ZIP extension E2E gates: PASS
+Checkpoint-149 patch dry-run/application: PASS
+Patch-reconstructed source equivalence: byte-for-byte PASS
+Patch reconstruction complete test topology: PASS
+Patch reconstruction all three Debug builds: PASS
+
+Publication transfer integrity
+------------------------------
+Explicit chunked copies to final paths: PASS
+Flush and fsync before atomic replacement: PASS
+Complete final-path re-read: PASS
+Independent SHA-256 verification: PASS
+Staging/final byte comparison: PASS
+Three stable size/mtime/hash snapshots: PASS
+Published checksum-manifest verification: PASS
+Post-publication executable and SQLite smokes: PASS
+Temporary transfer files remaining: 0

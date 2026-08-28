@@ -1,0 +1,26 @@
+{
+  "checkpoint": 186,
+  "release_version": "1.0.0",
+  "complete_inventory": "FILES.sha256",
+  "continuation": "CONTINUATION.md",
+  "excluded_generated_paths": [
+    ".git",
+    ".zig-cache",
+    "zig-out",
+    "node_modules",
+    "__pycache__"
+  ],
+  "file_count_excluding_FILES_sha256": 1919,
+  "root": "pi-zig",
+  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 33730765,
+  "upstream_reference": {
+    "files": 1366,
+    "path": "upstream/pi-main",
+    "source_archive": "upstream/source-archive/pi-main-20260823-194058.zip"
+  },
+  "verification": "verification/checkpoint-186/verification-summary.json",
+  "zig_source": {
+    "files": 197,
+    "lines": 122487
+  }
+}

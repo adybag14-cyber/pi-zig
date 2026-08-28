@@ -1,0 +1,22 @@
+AUTH_DIALOG_E2E_179=PASS
+
+browserDialog=true
+osc8Hyperlink=true
+callbackCompletion=true
+authorizationCodeExchange=true
+credentialPersisted=true
+deviceCodeDialog=true
+deviceUserCode=CODE-179
+cooperativeCancellation=true
+terminalRestored=true
+exit=0
+stderrBytes=0
+
+Regression gates:
+AUTH_FLOW_E2E_178=PASS
+AUTH_LIVE_E2E_177=PASS
+
+Validated provider path:
+custom Radius provider from models.json
+browser discovery -> authorization URL -> local callback -> token exchange
+second device-code flow -> pending poll -> Escape cancellation

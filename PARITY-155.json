@@ -1,0 +1,44 @@
+{
+  "checkpoint": 155,
+  "reference": "supplied Pi 0.84.1 source",
+  "toolchain": "Zig 0.16.0",
+  "measurements": {
+    "zig_files": 172,
+    "zig_lines": 91221,
+    "javascript_bridge_lines": 937,
+    "zig_test_declarations": 811,
+    "synthetic_files": 0
+  },
+  "advanced": [
+    "user/project/temporary package scopes",
+    "project trust enforcement for package storage",
+    "project-over-user package identity precedence",
+    "autoload-false project resource deltas and tombstones",
+    "legacy settings.json package arrays",
+    "bounded package operation locking",
+    "argv-style npmCommand with npm/pnpm/bun behavior",
+    "temporary local/npm/Git --extension sources",
+    "TypeScript extension transformation below node_modules"
+  ],
+  "validation": {
+    "packages": "28/28 passed",
+    "javascript_runtime": "10/10 passed",
+    "args": "6/6 passed",
+    "settings_wrapper": "16/16 passed",
+    "trust_wrapper": "22/22 passed",
+    "debug_builds": ["pi", "pi-sqlite", "pi-sqlite-live"],
+    "package_e2e": "passed",
+    "monolithic_root": "compile deadline exceeded; no aggregate result claimed"
+  },
+  "remaining": [
+    "package selector and configuration TUI",
+    "durable package repair markers and richer concurrent coordination",
+    "legacy settings cleanup migration",
+    "arbitrary asynchronous extension components",
+    "function-valued providers and extension OAuth",
+    "remaining fullscreen screens",
+    "native server TLS and mTLS",
+    "automatic image preprocessing",
+    "enterprise credential retry and interoperability matrix"
+  ]
+}

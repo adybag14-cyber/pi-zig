@@ -1,0 +1,43 @@
+{
+  "checkpoint": 185,
+  "created_at_utc": "2026-08-23T20:39:50.551600+00:00",
+  "inputs": {
+    "checkpoint_183": {
+      "path": "pi-zig-v8-checkpoint-183-FINAL(2).zip",
+      "sha256": "7f728114de2bb15500672009fb5289a5ce9772988f5ba991bb36aa07a7b1f2cb",
+      "size": 2026684
+    },
+    "failed_checkpoint_184": {
+      "path": "pi-zig-v8-checkpoint-184-FINAL(1).zip",
+      "sha256": "605d4b850dd5a4090a88c2f6295db4625f730f6692cd82282e62dd4d062b2297",
+      "size": 148
+    },
+    "upstream_pi_main": {
+      "path": "pi-main (3)(20260823-194058).zip",
+      "sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a",
+      "size": 6854955
+    },
+    "zig_toolchain": {
+      "path": "zig-x86_64-linux-0.16.0.tar.xz",
+      "sha256": "70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00",
+      "size": 55478392
+    }
+  },
+  "packaging_repair": {
+    "failed_checkpoint_184_directory_entries": 1,
+    "failed_checkpoint_184_file_entries": 0,
+    "failed_checkpoint_184_size": 148,
+    "superseded": true
+  },
+  "reconstruction_base": "checkpoint 183 because the supplied checkpoint 184 archive contained no source files",
+  "toolchain": {
+    "archive": "zig-x86_64-linux-0.16.0.tar.xz",
+    "version": "0.16.0-dev.3127+9f848dc30"
+  },
+  "upstream_snapshot": {
+    "archive_sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a",
+    "embedded_archive": "upstream/source-archive/pi-main-20260823-194058.zip",
+    "expected_files": 1366,
+    "extracted_path": "upstream/pi-main"
+  }
+}

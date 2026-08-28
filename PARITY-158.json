@@ -1,0 +1,49 @@
+{
+  "checkpoint": 158,
+  "reference": "supplied original Pi 0.84.1 source tree",
+  "baseline": "uploaded checkpoint 157",
+  "toolchain": "Zig 0.16.0",
+  "source": {
+    "zig_files": 175,
+    "zig_lines": 94809,
+    "javascript_bridge_lines": 937,
+    "zig_test_declarations": 831,
+    "synthetic_feature_files": 0
+  },
+  "validation": {
+    "root_passed": 830,
+    "root_skipped_sqlite_isolates": 7,
+    "root_failed": 0,
+    "sqlite_repository_passed": 11,
+    "sqlite_cli_passed": 8,
+    "sqlite_cli_isolated": 6,
+    "ordinary_executable_passed": 5,
+    "sqlite_persistence_passed": 5,
+    "sqlite_executable_passed": 5,
+    "concurrent_resource_rounds_passed": 12,
+    "lost_updates": 0
+  },
+  "newly_closed": [
+    "top-level extension skill prompt and theme inventory",
+    "automatic and explicit top-level resource editing",
+    "trusted project inherit load unload semantics",
+    "runtime exact filtered resource loading",
+    "filtered project-environment and reload skills",
+    "lock-safe atomic settings transactions",
+    "malformed settings preservation",
+    "real extension and prompt behavior gates",
+    "two-process top-level configuration stress coverage"
+  ],
+  "remaining_priorities": [
+    "complete package source fullscreen manager",
+    "full live reload of extension prompt and theme subsystems",
+    "complete npm pnpm Bun platform and lockfile parity",
+    "asynchronously invalidated extension component trees",
+    "function-valued providers and extension OAuth",
+    "remaining fullscreen screens",
+    "native server TLS and mTLS",
+    "automatic image normalization and transcoding",
+    "enterprise credential retry telemetry and interoperability breadth"
+  ],
+  "complete_monorepo_equivalence_claimed": false
+}

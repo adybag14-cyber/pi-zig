@@ -1,0 +1,51 @@
+{
+  "checkpoint": 144,
+  "reference": {
+    "project": "Pi",
+    "version": "0.84.1",
+    "archive": "pi-main (3)(4).zip",
+    "sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a"
+  },
+  "baseline": {
+    "checkpoint": 143,
+    "sha256": "b42337ef2cbc859de2f91683235a3fed0b560c7698f3d4c3f8b24cf274e363f3"
+  },
+  "measurements": {
+    "zigFiles": 159,
+    "zigLines": 74241,
+    "declaredTests": 714,
+    "syntheticFiles": 0
+  },
+  "added": [
+    "branch-aware JSONL session search",
+    "pi sessions list/search/show/doctor",
+    "protocol snapshot search",
+    "pi remote search",
+    "TCP DNS hostname resolution",
+    "IPv6 server bind parsing",
+    "strict HTTP bearer authentication",
+    "unambiguous bounded HTTP body framing",
+    "optional pi-sqlite production CLI"
+  ],
+  "validated": {
+    "format": true,
+    "sourceAudit": true,
+    "mainDebugBuild": true,
+    "sqliteCompanionBuild": true,
+    "sqliteRepositoryTests": { "passed": 11, "failed": 0 },
+    "sqliteCliActiveTests": { "passed": 8, "isolated": 6, "failed": 0 },
+    "httpAndLocalSessionClosure": { "passed": 449, "failed": 0 },
+    "remoteClientClosure": { "passed": 88, "failed": 0 },
+    "aggregateRoot": "cold compilation timed out without a reported test failure"
+  },
+  "remaining": [
+    "arbitrary JavaScript/TypeScript extension execution",
+    "complete coding-agent fullscreen screen wiring",
+    "live SQLite store selection in agent/server paths",
+    "remaining remote repository adapters",
+    "TLS and proxy transports",
+    "automatic image resizing",
+    "complete enterprise auth/proxy/retry matrix",
+    "broader auxiliary/evaluation interoperability"
+  ]
+}

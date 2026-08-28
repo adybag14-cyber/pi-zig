@@ -1,0 +1,87 @@
+Pi Zig checkpoint 178 validation summary
+========================================
+
+Source baseline
+---------------
+Original Pi source:                  0.84.1
+Supplied Zig compiler:               0.16.0
+Checkpoint baseline:                177
+Implementation commit:              2712c149c87e02a064450c359cced3a5f45103c9
+Native Zig files under src/:         190
+Native Zig logical lines:            114,787
+Tracked Zig files repository-wide:   191
+Named Zig test declarations:         981
+Synthetic/generated source files:    0
+
+Implementation delta
+--------------------
+Files changed:                       6
+Insertions:                          796
+Deletions:                           88
+
+Completed native test gates
+---------------------------
+Auth-filtered source graph:          100/100 passed
+Auth selector focused graph:         20/20 passed
+Explicit-provider focused graph:     19/19 passed
+Anthropic env classification:        passed
+Canonical executable process:        10/10 passed before broader graph timeout
+
+Static and production gates
+---------------------------
+Whole-tree Zig formatting:           PASS
+Python E2E fixture compilation:      PASS
+Embedded Node bridge syntax:         PASS
+Real-source audit:                   PASS
+Static self-hosted Debug Pi build:   PASS
+SQLite administration build:        PASS
+SQLite 3.46.1 fresh DB integrity:    PASS
+
+Real executable gates
+---------------------
+Staged authentication PTY:           PASS
+Source-aware provider labels:        PASS
+Provider-scoped /login anthropic:    PASS
+Standalone Escape handling:          PASS
+Masked login/logout regression:      PASS
+Live custom-provider key rebind:     PASS
+Logout fallback to models.json:      PASS
+All process exit codes:              0
+Combined child-process stderr:       0 bytes
+
+Qualified attempts
+------------------
+The canonical `zig build test -Duse-llvm=false -Doptimize=Debug -j2` graph
+was attempted. The ordinary executable process completed 10/10 tests, but
+compilation of the remaining cold aggregate artifacts exceeded the command
+deadline. No complete all-package pass or failure is claimed.
+
+The optional SQLite live-server build was attempted. Compilation exceeded its
+command deadline before a complete executable was produced. It is not
+published, and no older live-server executable is reused or relabeled.
+
+Archive and patch reproduction
+------------------------------
+Uploaded checkpoint-177 files:       405
+Baseline missing/extra/changed/mode:  0 / 0 / 0 / 0
+Final tracked files:                  412
+Exact ZIP files:                      412
+Patch reconstruction files:          412
+ZIP missing/extra/changed/mode:       0 / 0 / 0 / 0
+Patch missing/extra/changed/mode:     0 / 0 / 0 / 0
+ZIP compressed-data integrity:        PASS
+git apply --check/application:        PASS
+
+Exact ZIP independent gates
+---------------------------
+Auth-filtered graph:                  100/100 passed
+Self-hosted Debug Pi build:           PASS
+Staged authentication PTY:            PASS
+Process exit/stderr:                  0 / 0 bytes
+
+Patch reconstruction gates
+--------------------------
+Auth-filtered graph:                  100/100 passed
+Self-hosted Debug Pi build:           PASS
+Staged authentication PTY:            PASS
+Process exit/stderr:                  0 / 0 bytes

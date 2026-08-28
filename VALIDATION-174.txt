@@ -1,0 +1,138 @@
+PI ZIG CHECKPOINT 174 — SOURCE VALIDATION RECORD
+================================================
+
+Evidence
+--------
+Original source: uploaded Pi 0.84.1 archive dated 2026-08-20
+Baseline: uploaded pi-zig checkpoint 173
+Compiler: supplied Zig 0.16.0 Linux x86-64 archive
+Conversion backend used by E2E: ImageMagick 7.1.2-1
+
+Source measurements before release reports
+------------------------------------------
+Tracked/native Zig files across repository: 187
+Native Zig logical lines: 111830
+Synthetic/generated source files: 0
+
+Checkpoint implementation
+-------------------------
+New native image-processing module: 1
+New executable image-processing fixture: 1
+Existing production Zig files changed: 7
+Build-system files changed: 1
+
+Closed runtime paths
+--------------------
+Startup CLI @file images: PASS
+Interactive @file images: PASS
+Project-environment propagation: PASS
+Transactional live reload: PASS
+Built-in read structured images: PASS
+Sequential final tool results: PASS
+Parallel final tool results: PASS
+Post-extension-hook enforcement: PASS
+Legacy and ordered image fields: PASS
+Append-only JSONL persistence: PASS
+
+Image policy
+------------
+PNG/JPEG/GIF/WebP/BMP inspection: PASS
+JPEG/WebP EXIF-orientation parsing: PASS
+Safe provider-native byte preservation: PASS
+Safe EXIF JPEG byte preservation: PASS
+2000x2000 provider dimensions: PASS
+4.5 MiB base64 payload limit: PASS
+BMP to PNG conversion: PASS
+Auto-resize disabled exact preservation: PASS
+Auto-resize disabled BMP conversion: PASS
+Progressive PNG/JPEG encoding attempts: PASS
+Conversion and coordinate hints: PASS
+Magic bytes override declared extension MIME: PASS
+Invalid arbitrary tool image preservation: PASS
+
+Process isolation
+-----------------
+No shell execution: PASS
+Private temporary directory: PASS
+First-frame animated input selection: PASS
+EXIF auto-orientation on transformed images: PASS
+Metadata stripping: PASS
+Memory/map/disk/area/time limits: PASS
+Bounded stdout/stderr: PASS
+Subprocess timeout: PASS
+Temporary-file cleanup: PASS
+
+Focused test closure
+--------------------
+Native image-processing suite: 11/11 PASS
+Root @file/import filter: 19/19 PASS
+Root read-image/import filter: 17/17 PASS
+Root tool-result/import filter: 18/18 PASS
+
+Observed production test processes
+----------------------------------
+Ordinary executable process: 10/10 PASS
+SQLite repository process: 11/11 PASS
+SQLite CLI/schema process: 8 PASS / 6 intentional repository isolates / 0 FAIL
+
+The six SQLite CLI isolates execute in the separately linked 11-test repository
+process and are not omitted behavior.
+
+Static gates
+------------
+Whole-tree `zig fmt --check`: PASS
+Python fixture `py_compile`: PASS
+Embedded Node bridge syntax: PASS
+Git diff whitespace/error validation: PASS
+Real-source audit: PASS
+Synthetic source audit: 0 detected
+
+Builds
+------
+Static pi Linux x86-64 LLVM Debug ELF: PASS
+Static pi Linux x86-64 self-hosted Debug ELF (`-Duse-llvm=false`): PASS
+pi-sqlite Linux x86-64 LLVM Debug ELF linked to sqlite3/libc: PASS
+
+The build option `-Duse-llvm=false` is applied consistently to executable and
+test artifacts while leaving the default backend unchanged.
+
+Aggregate qualification
+-----------------------
+A cold direct `src/root.zig` test exceeded its 600-second compilation deadline
+without emitting a compiler diagnostic or test failure.
+
+`zig build test` with both the default LLVM backend and `-Duse-llvm=false`
+exceeded their 600-second deadlines after completing the executable 10/10,
+SQLite repository 11/11, and SQLite CLI/schema 8-pass/6-isolate processes.
+The monolithic module and remaining aggregate artifacts did not complete.
+
+No aggregate pass or failure is claimed.
+
+Optional SQLite live server
+---------------------------
+LLVM, self-hosted, and direct `pi-sqlite-live` builds were attempted. They
+exceeded their command deadlines. One interrupted output failed ELF
+identification and was deleted. No checkpoint-174 `pi-sqlite-live` artifact is
+published and no older companion is relabeled.
+
+Real executable E2E
+-------------------
+Status: IMAGE_PROCESSING_E2E_174=PASS
+Oversized startup PNG: 3000x1000 -> 2000x667
+BMP startup attachment: image/bmp -> image/png, 32x16
+EXIF orientation 6 JPEG: 2400x1000 -> 833x2000
+Oversized encoded PNG: re-encoded below 4.5 MiB
+Auto-resize disabled supported PNG: exact preservation
+Auto-resize disabled BMP: converted to PNG
+Built-in read image: 3200x1600 -> 2000x1000
+Post-hook TypeScript extension image: 3600x900 -> 2000x500
+Durable session checks: PASS
+All child-process stderr: 0 bytes
+
+Dependency qualification
+------------------------
+Safe PNG/JPEG/GIF/WebP images do not require ImageMagick and remain exact.
+Resizing, EXIF pixel normalization, encoded-size reduction, and BMP conversion
+require an available `magick` or `convert` executable, or PI_IMAGE_CONVERTER.
+Pi has no hard image-library dependency and never invokes the converter through
+a shell.

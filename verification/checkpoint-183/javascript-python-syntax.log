@@ -1,0 +1,6 @@
+command: node --check src/extensions/js_bridge.mjs
+command: node --check checkpoint-tests/provider-method-manifest-bridge.mjs
+command: node --check checkpoint-tests/provider-oauth-login-bridge.mjs
+command: node --check checkpoint-tests/provider-refresh-models-bridge.mjs
+command: python -B -m py_compile production checkers
+syntax: ok

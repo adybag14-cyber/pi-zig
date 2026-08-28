@@ -1,0 +1,40 @@
+Pi Zig checkpoint 150 extension/tool end-to-end validation
+==========================================================
+
+Executable under test: Debug pi rebuilt from the exact frozen source ZIP
+Node runtime: v22.16.0
+Reference extension source: supplied Pi 0.84.1 tree
+
+Original executable built-in replacement: PASS
+  extension: packages/coding-agent/examples/extensions/tool-override.ts
+  source modifications: none
+  replacement tool: read
+  blocked path: .env
+  returned details: {"blocked":true}
+  audit log: BLOCKED entry written
+  secret content exposed: no
+
+Original native delegation compatibility: PASS
+  extension: packages/coding-agent/examples/extensions/built-in-tool-renderer.ts
+  source modifications: none
+  compatibility factory: createReadTool()
+  execution implementation: native Zig read
+  exact allowed file content returned: yes
+
+Rich extension tool pipeline: PASS
+  prepareArguments input: {"raw":"blue"}
+  prepared execution value: BLUE
+  canonical event order: tool_execution_start -> tool_execution_update -> tool_execution_end
+  partial text: partial:BLUE
+  partial image MIME: image/png
+  partial details: {"phase":1,"prepared":"BLUE"}
+  tool_result hook text: hook:BLUE
+  final image MIME: image/png
+  final details: {"phase":3,"hooked":true,"prior":2}
+  final assistant response: rich-complete-150
+
+Worker shutdown hardening: PASS
+  fixture installs a SIGTERM handler
+  Zig runtime force-reaps the child without hanging
+
+Overall: PASS

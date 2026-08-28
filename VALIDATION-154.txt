@@ -1,0 +1,87 @@
+Pi Zig checkpoint 154 validation
+=================================
+
+Toolchain
+---------
+Zig: 0.16.0 supplied archive
+Original comparison source: supplied Pi 0.84.1 tree
+
+Source metrics
+--------------
+Native Zig files: 172
+Native Zig logical lines: 90,091
+Embedded JavaScript bridge lines: 915
+Source-level Zig test declarations: 801
+Synthetic/generated feature shards: 0
+
+Worktree gates
+--------------
+zig fmt --check: PASS
+git diff --check: PASS
+node --check src/extensions/js_bridge.mjs: PASS
+scripts/audit_real_source.py: PASS
+zig build test -Doptimize=Debug -j1: PASS
+
+Root graph: 800 passed / 7 intentional SQLite isolates / 0 failed / 807 total
+SQLite persistence: 5/5 passed
+SQLite repository: 11/11 passed
+SQLite CLI/ABI/schema: 8 passed / 6 intentional isolates / 0 failed
+Ordinary executable suite: 5/5 passed
+SQLite-enabled executable suite: 5/5 passed
+Focused package/source/resource tests: 21/21 passed
+
+Build gates
+-----------
+zig build -Doptimize=Debug -j1: PASS
+zig build sqlite -Doptimize=Debug -j1: PASS
+pi: PASS
+pi-sqlite: PASS
+pi-sqlite-live: PASS
+
+Checkpoint 154 package coverage
+-------------------------------
+Pi manifest concrete paths: PASS
+Pi manifest glob expansion: PASS
+Conventional package resources: PASS
+Ordered !/+/- selectors: PASS
+Autoload false with exact positive opt-in: PASS
+Nested ignore files and negation: PASS
+Concrete manifest path bypass of broad ignore: PASS
+Resource-type-aware extension discovery: PASS
+Symlink cycle protection and traversal bounds: PASS
+Local, npm, scoped npm, alias npm source parsing: PASS
+Git URL and historical shorthand parsing: PASS
+Encoded traversal and unsafe-reference rejection: PASS
+Atomic package registry writes: PASS
+Filter-preserving reinstall/update: PASS
+Offline package behavior: PASS
+Managed path confinement: PASS
+
+Executable package E2Es
+-----------------------
+Local package lifecycle: PASS
+Direct TypeScript extension lifecycle: PASS
+Isolated npm registry lifecycle: PASS (1.0.0 -> 1.0.1 -> removed)
+Local Git daemon lifecycle: PASS (1.0.0 -> 1.1.0 -> removed)
+
+Archive/reconstruction gates
+----------------------------
+Source ZIP structural integrity: PASS
+Source ZIP single-root layout: PASS
+Cache/build-directory exclusion: PASS
+Frozen/extracted source equivalence: PASS (250 files, content and executable bits)
+Exact ZIP formatting/source audit: PASS
+Exact ZIP complete test topology: PASS
+Exact ZIP all three Debug builds: PASS
+Checkpoint 153 -> 154 patch dry-run/application: PASS
+Patch reconstruction equivalence: PASS (250 files, content and executable bits)
+Patch reconstruction complete test topology: PASS
+Patch reconstruction all three Debug builds: PASS
+
+Exact ZIP package E2Es
+----------------------
+Local directory lifecycle: PASS
+Direct TypeScript lifecycle: PASS
+Managed npm lifecycle: PASS (1.0.0 -> 1.0.1 -> removed)
+Managed Git lifecycle: PASS (1.0.0 -> 1.1.0 -> removed)
+All fixture services bound only to loopback.

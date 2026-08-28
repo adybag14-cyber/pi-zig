@@ -1,0 +1,123 @@
+{
+  "checkpoint": 182,
+  "generated_utc": "2026-08-22T21:30:10Z",
+  "toolchain": {
+    "zig": "0.16.0",
+    "node": "v22.16.0",
+    "python": "3.13.5"
+  },
+  "inputs": {
+    "checkpoint_181_sha256": "f817d01d158a1c6a61769a20658cef21965897961a4c0c2c5f02bcef138e5675",
+    "typescript_reference_sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a",
+    "zig_toolchain_sha256": "70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00"
+  },
+  "working_tree_gates": [
+    {
+      "name": "toolchain",
+      "exit": 0,
+      "log": "verification/checkpoint-182/toolchain.log"
+    },
+    {
+      "name": "javascript_python_syntax",
+      "command": "node --check src/extensions/js_bridge.mjs; node --check checkpoint-tests/provider-oauth-login-bridge.mjs; python3 -m py_compile checkpoint-tests/check-provider-method-production-integration.py checkpoint-tests/check-provider-oauth-production-integration.py",
+      "exit": 0,
+      "log": "verification/checkpoint-182/javascript-syntax.log"
+    },
+    {
+      "name": "production_provider_method_bridge_e2e",
+      "command": "node checkpoint-tests/provider-method-manifest-bridge.mjs",
+      "exit": 0,
+      "log": "verification/checkpoint-182/production-provider-method-e2e.log"
+    },
+    {
+      "name": "production_provider_method_integration",
+      "command": "python3 checkpoint-tests/check-provider-method-production-integration.py",
+      "exit": 0,
+      "checks_passed": 13,
+      "checks_total": 13,
+      "log": "verification/checkpoint-182/production-provider-method-check.log"
+    },
+    {
+      "name": "production_provider_oauth_bridge_e2e",
+      "command": "node checkpoint-tests/provider-oauth-login-bridge.mjs",
+      "exit": 0,
+      "log": "verification/checkpoint-182/production-oauth-bridge-e2e.log"
+    },
+    {
+      "name": "production_provider_oauth_integration",
+      "command": "python3 checkpoint-tests/check-provider-oauth-production-integration.py",
+      "exit": 0,
+      "checks_passed": 22,
+      "checks_total": 22,
+      "log": "verification/checkpoint-182/production-oauth-integration-check.log"
+    },
+    {
+      "name": "focused_oauth_lifecycle",
+      "command": "zig test src/root.zig -lc -lsqlite3 --test-filter <12 production-path filters>",
+      "exit": 0,
+      "filters_passed": 12,
+      "filters_total": 12,
+      "tests_passed_per_filter": 17,
+      "filters": [
+        "extension OAuth login refresh key derivation",
+        "extension OAuth login cancellation",
+        "late noncooperative login result",
+        "extension OAuth reload routing",
+        "extension OAuth invalidation scrubs",
+        "slash login executes extension OAuth",
+        "auth selector exposes extension OAuth",
+        "extension OAuth JSON transactions",
+        "extension OAuth abort-aware transactions",
+        "provider OAuth login uses a human interaction timeout",
+        "provider registry invokes OAuth methods",
+        "provider callback ownership remains distinct"
+      ],
+      "log": "verification/checkpoint-182/focused-oauth-tests.log"
+    },
+    {
+      "name": "zig_format",
+      "command": "zig fmt --check <all changed Zig files>",
+      "exit": 0,
+      "log": "verification/checkpoint-182/zig-format.log"
+    },
+    {
+      "name": "source_audit",
+      "command": "python3 scripts/audit_real_source.py plus independent source count",
+      "exit": 0,
+      "zig_files": 193,
+      "zig_loc": 118181,
+      "synthetic_files": 0,
+      "log": "verification/checkpoint-182/source-audit.log"
+    },
+    {
+      "name": "default_build",
+      "command": "zig build -Duse-llvm=false --summary all",
+      "exit": 0,
+      "build_steps_passed": 3,
+      "build_steps_total": 3,
+      "log": "verification/checkpoint-182/default-build.log"
+    },
+    {
+      "name": "complete_test_matrix",
+      "command": "zig build test -Duse-llvm=false --summary all",
+      "exit": 0,
+      "tests_passed": 992,
+      "tests_skipped": 7,
+      "tests_failed": 0,
+      "test_count": 999,
+      "build_steps_passed": 13,
+      "build_steps_total": 13,
+      "log": "verification/checkpoint-182/full-test.log"
+    }
+  ],
+  "source_delta": {
+    "files_changed": 16,
+    "insertions": 2150,
+    "deletions": 34,
+    "patch": "CHECKPOINT-181-to-182.patch",
+    "patch_sha256": "df5ccc29d2a8def20562867c00fba71de417e787e4399d721cb13dfabd55f2f3"
+  },
+  "required_ok": true,
+  "correction_notice": "CHECKPOINT-180-CORRECTION.md",
+  "final_archive_policy": "All required gates are repeated from a fresh extraction of the exact final ZIP and recorded in the external FINAL.verification.json and transfer-verification.json sidecars."
+}

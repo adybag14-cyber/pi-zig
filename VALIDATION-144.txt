@@ -1,0 +1,75 @@
+Pi Zig checkpoint 144 validation
+================================
+
+Reference source: uploaded Pi 0.84.1 archive pi-main (3)(4).zip
+Reference SHA-256: 42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a
+Baseline source: checkpoint 143 archive pi-zig-v8-checkpoint-143(1).zip
+Baseline SHA-256: b42337ef2cbc859de2f91683235a3fed0b560c7698f3d4c3f8b24cf274e363f3
+Toolchain: supplied Zig 0.16.0 Linux x86-64 archive
+Toolchain SHA-256: 70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+
+Source measurements
+-------------------
+Zig source files under src/: 159
+Native Zig source lines under src/: 74,241
+Gain over checkpoint 143: 5 files and 2,564 lines
+Unique declared tests: 714
+Gain over checkpoint 143: 18 tests
+Synthetic/generated feature shards: 0
+
+Worktree gates
+--------------
+Whole-tree zig fmt --check: PASS
+Real-source audit: PASS (159 files, 74,241 lines, zero synthetic files)
+Dependency-complete HTTP/local-session closure: PASS (449/449)
+Remote/client/TCP/search closure: PASS (88/88)
+Dedicated native SQLite repository suite: PASS (11/11)
+SQLite CLI/ABI/schema suite: PASS (8 active, 6 intentionally isolated, 0 failed)
+Executable suite: PASS (1/1)
+Clean Debug build of ordinary pi: PASS
+Clean Debug build of optional pi-sqlite: PASS
+Ordinary pi --version/sessions-help/remote-help smokes: PASS
+SQLite live init/doctor smoke: PASS (SQLite 3.46.1)
+Ordinary pi hard SQLite dependency: NONE
+Ordinary pi executable type: statically linked Linux x86-64 ELF with Debug information
+pi-sqlite executable type: Linux x86-64 ELF linked explicitly to sqlite3 and libc
+
+Aggregate-suite qualification
+-----------------------------
+The cold monolithic src/root.zig Debug test artifact was attempted repeatedly but
+did not finish compiling within the command deadline. No failing test was emitted.
+Checkpoint 144 therefore does not claim an unearned 714/714 aggregate result.
+The dependency-complete changed-surface suites and dedicated C-backed SQLite
+processes above are the tests that completed and are reported exactly.
+
+Final archive gates
+-------------------
+Final cache-free ZIP structural integrity: PASS
+Single pi-zig-v8-checkpoint-144/ archive root: PASS
+Cache/build-directory exclusion: PASS
+Packaged-versus-extracted source equivalence: byte-for-byte PASS
+Extracted real-source audit and whole-tree formatting: PASS
+Extracted clean Debug builds of pi and pi-sqlite: PASS
+Extracted executable help/version and live SQLite smokes: PASS
+Extracted HTTP/local-session closure: PASS (449/449)
+Extracted remote/client/TCP/search closure: PASS (88/88)
+Extracted SQLite repository suite: PASS (11/11)
+Extracted SQLite CLI/ABI/schema suite: PASS (8 active, 6 isolated, 0 failed)
+Extracted executable suite: PASS (1/1)
+
+Checkpoint patch gates
+----------------------
+Exact checkpoint 143 -> 144 patch creation: PASS
+Patch check and application to pristine uploaded checkpoint 143: PASS
+Reconstructed-versus-packaged source equivalence: byte-for-byte PASS
+Reconstructed real-source audit and whole-tree formatting: PASS
+Reconstructed clean Debug builds of pi and pi-sqlite: PASS
+Reconstructed executable help/version and live SQLite smokes: PASS
+
+Transfer-completion protocol
+----------------------------
+After all reports are frozen, every linked artifact is read completely, copied in
+forced 1 MiB chunks with flush/fsync, compared byte-for-byte, independently
+SHA-256 hashed, and polled through three stable size/mtime/hash snapshots. The
+checksum manifest is then verified. Final hashes live in the external manifest so
+this source report does not require a recursive self-hash.

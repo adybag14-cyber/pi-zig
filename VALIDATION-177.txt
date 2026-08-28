@@ -1,0 +1,54 @@
+Pi Zig checkpoint 177 validation summary
+========================================
+
+Source baseline
+---------------
+Original Pi source:                  0.84.1
+Supplied Zig compiler:               0.16.0
+Checkpoint baseline:                176
+Native Zig files under src/:         190
+Native Zig logical lines:            114,308
+Named Zig test declarations:         994
+Synthetic/generated source files:    0
+
+Completed native test gates
+---------------------------
+Auth selector/import graph:          107/107 passed
+Credential-focused graph:            29/29 passed
+Login-focused graph:                 6/6 passed
+Executable/main process:             10/10 passed
+SQLite repository process:           11/11 passed
+SQLite CLI/schema process:           8 passed, 6 intentional isolates, 0 failed
+
+Static and production gates
+---------------------------
+Whole-tree Zig formatting:           PASS
+Python E2E fixture compilation:      PASS
+Embedded Node bridge syntax:         PASS
+Git diff validation:                 PASS
+Real-source audit:                   PASS
+Static Debug Pi build:               PASS
+SQLite administration build:        PASS
+
+Real executable gates
+---------------------
+Fullscreen login/logout PTY:         PASS
+Masked secret entry:                 PASS
+Private auth.json persistence:       PASS
+Stored credential removal:           PASS
+Terminal restoration:               PASS
+Live custom-provider login rebind:   PASS
+Live logout fallback to models.json: PASS
+Combined child-process stderr:       0 bytes
+
+Qualified attempts
+------------------
+The cold all-package module process was attempted after the dedicated test
+processes completed. Compilation exceeded the command deadline without a
+compiler diagnostic or failing test result. No aggregate pass or failure is
+claimed.
+
+The SQLite live-server build was attempted with both the normal SQLite build
+step and the dedicated sqlite-server step. Both exceeded their command
+limits before a complete executable was produced. No older executable is
+reused or relabeled.

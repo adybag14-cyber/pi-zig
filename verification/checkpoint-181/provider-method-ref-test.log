@@ -1,0 +1,2 @@
+1/1 provider_method_ref.test.provider method callback descriptor round-trips through JSON...OK
+All 1 tests passed.

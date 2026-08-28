@@ -1,0 +1,79 @@
+{
+  "checkpoint": 159,
+  "reference": "Pi 0.84.1",
+  "baseline": 158,
+  "closed": [
+    "transactional live native and script extension reconstruction",
+    "extension command and shortcut ctx.reload ordered action",
+    "reload re-entry guard",
+    "rollback-safe invalid resource reload",
+    "reload shutdown start lifecycle",
+    "live prompt template command completion and theme replacement",
+    "extension UI stale-state cleanup",
+    "extension tool schema and dispatch replacement",
+    "declarative extension provider reconstruction",
+    "active client-pool provider rebinding",
+    "settings display replacement",
+    "interactive keybinding replacement with fallback",
+    "strict JSONL RPC reload"
+  ],
+  "validation": {
+    "zig_version": "0.16.0",
+    "native_zig_files": 175,
+    "native_zig_lines": 95532,
+    "javascript_bridge_lines": 941,
+    "source_test_declarations": 835,
+    "synthetic_files": 0,
+    "direct_root": {
+      "passed": 841,
+      "skipped": 0,
+      "failed": 0,
+      "total": 841,
+      "backend": "non-LLVM with sqlite3/libc linkage"
+    },
+    "build_test_graph": {
+      "passed": 834,
+      "isolated": 7,
+      "failed": 0,
+      "steps_passed": 13,
+      "steps_total": 13
+    },
+    "sqlite_repository": {
+      "passed": 11,
+      "failed": 0
+    },
+    "sqlite_cli": {
+      "passed": 8,
+      "isolated": 6,
+      "failed": 0
+    },
+    "ordinary_executable": {
+      "passed": 5,
+      "failed": 0
+    },
+    "sqlite_persistence": {
+      "passed": 5,
+      "failed": 0
+    },
+    "sqlite_executable": {
+      "passed": 5,
+      "failed": 0
+    },
+    "debug_builds": 3,
+    "replacement_rollback_rpc_e2e": "passed",
+    "provider_client_rebind_e2e": "passed"
+  },
+  "remaining": [
+    "stale action rejection after ctx.reload in one old invocation",
+    "complete mutable settings and external model auth reload",
+    "package source fullscreen manager",
+    "complete npm pnpm bun platform behavior",
+    "asynchronously invalidated extension component trees",
+    "function-valued providers and extension OAuth",
+    "remaining fullscreen screens",
+    "server TLS and mutual TLS",
+    "automatic image transformation",
+    "enterprise credential retry telemetry and interoperability matrix"
+  ],
+  "complete_equivalence_claimed": false
+}

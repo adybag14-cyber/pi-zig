@@ -1,0 +1,45 @@
+{
+  "checkpoint": 162,
+  "upstreamCodingAgentVersion": "0.84.1",
+  "zigVersion": "0.16.0",
+  "newlyClosed": [
+    "shared summarization retry for compaction and branch summaries",
+    "canonical summarization retry events",
+    "transactional model-assisted compaction",
+    "append-only compaction boundaries and durable ancestry",
+    "compaction-aware active context reconstruction",
+    "canonical summary projection",
+    "durable failed assistant attempts excluded only from immediate retry context",
+    "atomic persistent RPC set_auto_retry",
+    "compaction-aware RPC get_messages with complete get_entries history",
+    "native summarized session-tree navigation",
+    "branch_summary JSONL round trip"
+  ],
+  "validation": {
+    "directRoot": {"passed": 877, "failed": 0, "skipped": 0},
+    "normalModule": {"passed": 871, "failed": 0, "isolated": 6},
+    "sqliteRepository": {"passed": 11, "failed": 0},
+    "ordinaryExecutable": {"passed": 7, "failed": 0},
+    "sqliteLivePersistence": {"passed": 5, "failed": 0},
+    "sqliteEnabledExecutable": {"passed": 7, "failed": 0},
+    "syntheticSourceFiles": 0,
+    "rpcRetryPersistence": true,
+    "durableRetryHistory": true,
+    "rpcCompactionRetry": true,
+    "appendOnlyCompaction": true,
+    "compactionAwareGetMessages": true,
+    "combinedE2eStderrBytes": 0
+  },
+  "remaining": [
+    "provider internal timeout retry and max retry delay settings across every transport",
+    "token budget and split turn compaction with full prompt file operation and extension override behavior",
+    "full branch summary settings extension hooks labels and fullscreen tree workflow",
+    "complete fullscreen package model login settings and session screens",
+    "complete npm pnpm bun workspace and lifecycle behavior",
+    "arbitrary asynchronously invalidated extension components",
+    "function valued provider transports and extension owned OAuth",
+    "server TLS and mutual TLS",
+    "automatic image resizing orientation normalization and transcoding",
+    "remaining enterprise credential telemetry retry and interoperability coverage"
+  ]
+}

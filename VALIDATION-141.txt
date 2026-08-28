@@ -1,0 +1,29 @@
+Pi Zig checkpoint 141 validation
+================================
+
+Reference source: uploaded Pi 0.84.1 archive
+Toolchain: supplied Zig 0.16.0 Linux x86-64 archive
+
+Source measurements
+-------------------
+Zig source files under src/: 139
+Native Zig source lines under src/: 63,091
+
+Worktree gates
+--------------
+Whole-tree zig fmt --check: PASS
+Full Debug test target: PASS (644/644)
+Debug executable build: PASS
+
+Preliminary clean-archive gates
+-------------------------------
+ZIP integrity: PASS
+Cache/build-directory exclusion: PASS
+Fresh extraction: PASS
+Fresh-extraction full Debug tests: PASS (644/644)
+Fresh-extraction Debug executable build: PASS
+Fresh-extraction executable --help smoke: PASS
+Debug executable size: 75,341,261 bytes
+
+Final artifact gates are appended only after the final ZIP, patch, executable and
+checksum manifest have been written and verified.

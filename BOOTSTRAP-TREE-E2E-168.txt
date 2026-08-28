@@ -1,0 +1,67 @@
+CHECKPOINT_168_EXECUTABLE_E2E=PASS
+
+=== Shared bootstrap HTTP / auth refresh ===
+BOOTSTRAP_NETWORK_E2E_168=PASS
+{"noProxyBypass": {"elapsedMs": 23, "proxyRequests": 0, "targetRequests": 1}, "retryAndPersistence": {"elapsedMs": 51, "requests": 2}, "retryDenied": {"elapsedMs": 24, "requests": 1}, "settingsProxy": {"absoluteUri": "http://radius-bootstrap.invalid:8123/v1/oauth/token", "elapsedMs": 31, "requests": 1}, "timeout": {"elapsedMs": 71, "requests": 1}}
+
+=== Fullscreen tree controls ===
+TREE_CONTROLS_E2E_168=PASS
+FULLSCREEN_SELECTOR=PASS
+SEARCH_SELECTION=tree-answer-168-1
+DURABLE_LABEL=checkpoint-168
+OSC52_PAYLOAD=tree-answer-168-1
+LABEL_TIMESTAMPS=PASS
+LABELED_ONLY_FILTER=PASS
+RPC_EXIT=0
+PTY_EXIT=0
+STDERR_BYTES=0
+
+{
+  "durableLabel": "checkpoint-168",
+  "fullscreenTreeSelector": true,
+  "labelTarget": "m2",
+  "labelTimestamps": true,
+  "labeledOnlyFilter": true,
+  "osc52Payload": "tree-answer-168-1",
+  "ptyExit": 0,
+  "rpcExit": 0,
+  "searchSelected": "tree-answer-168-1",
+  "stderrBytes": 0
+}
+
+=== Provider-backed fullscreen tree / summary regression ===
+SUMMARY_REQUEST_OPTIONS_E2E_167=PASS
+NORMAL_REQUESTS=3
+SUMMARY_REQUESTS=1
+SUMMARY_MAX_TOKENS=2048
+NORMAL_AFFINITY_HEADERS=session_id,x-client-request-id
+SUMMARY_AFFINITY_HEADERS=none
+SUMMARY_PROMPT_CACHE_KEY=absent
+SUMMARY_PROMPT_CACHE_RETENTION=absent
+FULLSCREEN_TREE_SELECTOR=PASS
+TREE_SEARCH_SELECTION=assistant-167-1
+SUMMARY_PERSISTED=PASS
+RPC_EXIT=0
+PTY_EXIT=0
+STDERR_BYTES=0
+
+{
+  "fullscreenTreeSelector": true,
+  "normalAffinityHeaders": [
+    "session_id",
+    "x-client-request-id"
+  ],
+  "normalRequests": 3,
+  "ptyExit": 0,
+  "rpcExit": 0,
+  "searchSelected": "assistant-167-1",
+  "stderrBytes": 0,
+  "summaryAffinityHeaders": [],
+  "summaryMaxTokens": 2048,
+  "summaryPersisted": true,
+  "summaryPromptCacheKey": null,
+  "summaryPromptCacheRetention": null,
+  "summaryRequests": 1
+}
+
+Combined process stderr bytes: 0

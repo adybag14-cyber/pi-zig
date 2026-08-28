@@ -1,0 +1,69 @@
+Pi Zig checkpoint 155 validation record
+=======================================
+
+Toolchain
+---------
+Zig: 0.16.0 from supplied archive
+Node: 22.16.0
+Reference source: supplied Pi 0.84.1 tree
+Baseline: uploaded checkpoint 154
+
+Source measurements
+-------------------
+Native Zig files: 172
+Native Zig lines: 91,221
+Embedded JavaScript bridge lines: 937
+Source-level Zig test declarations: 811
+Synthetic/generated feature files: 0
+Implementation diff before reports: 10 files, +1,267 / -115
+
+Static checks
+-------------
+zig fmt --check build.zig src: PASS
+node --check src/extensions/js_bridge.mjs: PASS
+python3 scripts/audit_real_source.py: PASS
+  zig_files=172
+  zig_loc=91221
+  synthetic_files=0
+git diff --check: PASS
+
+Focused test suites
+-------------------
+src/coding_agent/packages.zig: 28/28 PASS
+src/extensions/js_runtime.zig: 10/10 PASS
+src/coding_agent/args.zig: 6/6 PASS
+settings wrapper/import graph: 16/16 PASS
+trust wrapper/import graph: 22/22 PASS
+ordinary executable tests observed during build-test attempt: 5/5 PASS
+SQLite repository tests observed during build-test attempt: 11/11 PASS
+
+Builds
+------
+zig build -Doptimize=Debug: PASS
+zig build sqlite -Doptimize=Debug:
+  pi-sqlite: PASS
+  pi-sqlite-live: PASS
+Executable types:
+  pi: static Linux x86-64 Debug ELF
+  pi-sqlite: Linux x86-64 Debug ELF linked to sqlite3/libc
+  pi-sqlite-live: Linux x86-64 Debug ELF linked to sqlite3/libc
+
+End-to-end gates
+----------------
+Direct local temporary TypeScript extension: PASS
+Configured pnpm user lifecycle: PASS
+Trusted project package lifecycle: PASS
+Temporary npm TypeScript extension under node_modules: PASS
+Temporary package registry pollution checks: PASS
+
+Aggregate qualification
+-----------------------
+The all-package build graph and direct src/root.zig test artifact were attempted.
+Compilation exceeded the command deadline before the aggregate test executable
+was produced. No failed test output was emitted. Checkpoint 155 does not claim
+an aggregate root result that was not observed.
+
+Archive/patch/publication
+-------------------------
+Final exact-ZIP, patch reconstruction, checksum, and transfer checks are recorded
+in the published artifact manifest and were completed after freezing this report.

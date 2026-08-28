@@ -1,0 +1,33 @@
+PI ZIG CHECKPOINT 172 — MEDIA PRIVACY AND SKILL COMMAND E2E
+===========================================================
+
+Executable: checkpoint 172 static Linux x86-64 Debug pi
+Provider: loopback OpenAI-compatible endpoint
+Image fixture: tiny valid BMP uploaded under a non-image filename
+RPC fixture: persistent JSONL process with one discovered skill
+
+MEDIA_SKILL_SETTINGS_E2E_172=PASS
+
+Blocked mode
+------------
+Provider request contained image payload: no
+Provider request contained `Image reading is disabled.`: yes
+Durable JSONL retained exact image payload and MIME: yes
+
+Allowed mode
+------------
+Provider request contained image payload: yes
+Durable JSONL retained exact image payload and MIME: yes
+Blocked placeholder absent: yes
+
+Skill command mode
+------------------
+enableSkillCommands=false hid skill from RPC get_commands: yes
+Atomic settings replacement: passed
+Transactional runtime reload: passed
+enableSkillCommands=true exposed skill without restart: yes
+
+Process results
+---------------
+All child exits: 0
+Combined stderr bytes: 0

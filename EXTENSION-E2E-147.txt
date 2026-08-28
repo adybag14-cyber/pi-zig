@@ -1,0 +1,59 @@
+Pi Zig checkpoint 147 extension end-to-end validation
+====================================================
+
+Runtime: Node.js 22.16.0 through the embedded persistent compatibility bridge
+Host: final checkpoint-147 worktree Debug executable
+Terminal harness: pexpect, xterm-256color
+
+1. Bidirectional native UI
+--------------------------
+A direct TypeScript extension invoked, awaited and resumed after:
+- select: green
+- confirm: true
+- input: Ada
+- prefilled multiline editor: edited text
+- custom request: custom result
+
+The same handler synchronously applied and the native shell rendered:
+- notification: native notification
+- above-editor widget: widget above
+- status: mode=native-ui
+- working indicator: extension working
+- hidden-thinking label: Reasoning hidden
+- below-editor widget: widget below
+- custom footer
+- custom header and terminal title
+- pending editor mutation
+
+Result: PASS (`E2E_OK`)
+
+2. Runtime actions and compatibility session manager
+----------------------------------------------------
+A TypeScript command applied:
+- model: mock/mock
+- thinking: off
+- active tools: read, customtool
+- session name: action-session
+- durable custom entry and label
+
+A second command observed the live native state and a third inspected the
+compatibility session manager. Verified output included:
+
+INSPECT tools=read,customtool model=mock/mock thinking=off name=action-session
+SESSION_MANAGER ok=true entries=6 branch=6 leaf=m6
+
+The session manager verified entry/branch/leaf lookup, labels, header, tree,
+session file and session directory.
+
+Result: PASS (`ACTIONS_E2E_OK`)
+
+3. Execution-time active-tool enforcement
+------------------------------------------
+After setActiveTools(["read", "customtool"]):
+- built-in `write` was omitted from the provider schema;
+- a forced write call was rejected and created no file;
+- extension `customtool` executed;
+- `custom-ok` was persisted in session JSONL;
+- the process terminated without a Zig DebugAllocator leak report.
+
+Result: PASS (`ACTIVE_TOOL_E2E_OK`)

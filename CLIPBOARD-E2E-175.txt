@@ -1,0 +1,44 @@
+Checkpoint 175 clipboard paste end-to-end validation
+====================================================
+
+Executable profile
+------------------
+Linux x86-64 Debug ELF, statically linked
+Supplied Zig compiler: 0.16.0
+Real pseudo-terminal input
+Fake Wayland clipboard command exposed through PATH
+
+Image phase
+-----------
+Ctrl+V key:                         handled without ending editor read
+Advertised targets:                 text/plain, image/png
+Selected target:                    image/png
+Fixture:                            structurally valid 3x2 RGBA PNG
+Fixture bytes:                      92
+Persisted user image blocks:        1
+Persisted MIME:                     image/png
+Persisted bytes:                    exact
+Assistant completion:               clipboard-image-ok-175
+
+Text phase, same process
+------------------------
+Clipboard image target removed:     yes
+Ctrl+V fallback:                    text
+Input contained:                    CRLF, tab, Ctrl-A
+Persisted normalized text:          clipboard\ntext    175
+CRLF normalization:                 passed
+Tab expansion:                      passed
+Unsafe control removal:             passed
+Assistant completion:               clipboard-text-ok-175
+
+Shutdown and ownership
+----------------------
+Durable user messages:              2
+Temporary clipboard files left:     0
+Process exit:                       0
+Process stderr bytes:               0
+
+Build repetition
+----------------
+Self-hosted non-LLVM Debug binary:  PASS
+LLVM Debug binary:                  PASS

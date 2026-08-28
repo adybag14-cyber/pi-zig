@@ -1,0 +1,78 @@
+{
+  "from_checkpoint": 182,
+  "to_checkpoint": 183,
+  "files_changed": 11,
+  "insertions": 2113,
+  "deletions": 7,
+  "patch_lines": 2387,
+  "patch_bytes": 117290,
+  "sha256": "20484afdbefd71359699ef000b0d59f26a51638831b0d7981fa6c160294f1a44",
+  "files": [
+    {
+      "path": "checkpoint-tests/check-provider-models-production-integration.py",
+      "status": "added",
+      "insertions": 182,
+      "deletions": 0
+    },
+    {
+      "path": "checkpoint-tests/provider-refresh-models-bridge.mjs",
+      "status": "added",
+      "insertions": 232,
+      "deletions": 0
+    },
+    {
+      "path": "src/auth/storage.zig",
+      "status": "modified",
+      "insertions": 27,
+      "deletions": 0
+    },
+    {
+      "path": "src/extensions/js_bridge.mjs",
+      "status": "modified",
+      "insertions": 127,
+      "deletions": 0
+    },
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "status": "modified",
+      "insertions": 50,
+      "deletions": 0
+    },
+    {
+      "path": "src/extensions/models_store.zig",
+      "status": "added",
+      "insertions": 262,
+      "deletions": 0
+    },
+    {
+      "path": "src/extensions/provider_models.zig",
+      "status": "added",
+      "insertions": 992,
+      "deletions": 0
+    },
+    {
+      "path": "src/extensions/provider_oauth.zig",
+      "status": "modified",
+      "insertions": 56,
+      "deletions": 0
+    },
+    {
+      "path": "src/extensions/provider_registry.zig",
+      "status": "modified",
+      "insertions": 111,
+      "deletions": 4
+    },
+    {
+      "path": "src/extensions/root.zig",
+      "status": "modified",
+      "insertions": 3,
+      "deletions": 0
+    },
+    {
+      "path": "src/main.zig",
+      "status": "modified",
+      "insertions": 71,
+      "deletions": 3
+    }
+  ]
+}

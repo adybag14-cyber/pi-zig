@@ -1,0 +1,99 @@
+Pi Zig checkpoint 146 original-extension corpus registration probe
+==================================================================
+
+Reference: supplied Pi 0.84.1 packages/coding-agent/examples/extensions corpus
+Runtime: Node.js 22.16.0 through the checkpoint 146 persistent compatibility worker
+Scope: module import, extension factory execution, and registration handshake
+
+Total original example entries: 78
+Loaded and registered: 74
+Qualified missing-dependency failures: 4
+Bridge/parser/import failures after qualification: 0
+
+Qualified failures:
+- custom-provider-anthropic/index.ts: requires @anthropic-ai/sdk
+- gondolin/index.ts: requires @earendil-works/gondolin
+- sandbox/index.ts: requires @anthropic-ai/sandbox-runtime and its package dependencies
+- with-deps/index.ts: requires ms and the example-local dependencies normally installed beside the example
+
+The compatibility resolver tries real extension-local packages before embedded Pi
+compatibility modules. Missing third-party packages are reported rather than replaced
+with fabricated implementations.
+
+Successfully registered entries:
+- auto-commit-on-exit.ts
+- bash-spawn-hook.ts
+- bookmark.ts
+- border-status-editor.ts
+- built-in-tool-renderer.ts
+- claude-rules.ts
+- commands.ts
+- confirm-destructive.ts
+- custom-compaction.ts
+- custom-footer.ts
+- custom-header.ts
+- custom-provider-gitlab-duo/index.ts
+- dirty-repo-guard.ts
+- doom-overlay/index.ts
+- dynamic-resources/index.ts
+- dynamic-tools.ts
+- entry-renderer.ts
+- event-bus.ts
+- file-trigger.ts
+- git-checkpoint.ts
+- git-merge-and-resolve.ts
+- github-issue-autocomplete.ts
+- handoff.ts
+- hello.ts
+- hidden-thinking-label.ts
+- inline-bash.ts
+- input-transform-streaming.ts
+- input-transform.ts
+- interactive-shell.ts
+- kimi-deferred-tools.ts
+- mac-system-theme.ts
+- message-renderer.ts
+- minimal-mode.ts
+- modal-editor.ts
+- model-status.ts
+- notify.ts
+- overlay-qa-tests.ts
+- overlay-test.ts
+- permission-gate.ts
+- pirate.ts
+- plan-mode/index.ts
+- preset.ts
+- project-trust.ts
+- prompt-customizer.ts
+- protected-paths.ts
+- provider-payload.ts
+- qna.ts
+- question.ts
+- questionnaire.ts
+- rainbow-editor.ts
+- reload-runtime.ts
+- rpc-demo.ts
+- send-user-message.ts
+- session-name.ts
+- shutdown-command.ts
+- snake.ts
+- space-invaders.ts
+- ssh.ts
+- status-line.ts
+- structured-output.ts
+- subagent/index.ts
+- summarize.ts
+- system-prompt-header.ts
+- tic-tac-toe.ts
+- timed-confirm.ts
+- titlebar-spinner.ts
+- todo.ts
+- tool-override.ts
+- tools.ts
+- trigger-compact.ts
+- truncated-tool.ts
+- widget-placement.ts
+- working-indicator.ts
+- working-message-test.ts
+
+Final result: 74/78 registered; four failures are absent external dependencies.

@@ -1,0 +1,51 @@
+Pi Zig checkpoint 161 retry end-to-end record
+=============================================
+
+Executable under test
+---------------------
+Static Linux x86-64 Debug pi built by supplied Zig 0.16.0.
+Mode: persistent JSONL RPC with native deterministic mock provider.
+
+Case 1: transient retry to success
+----------------------------------
+Initial response:                           HTTP 503 Service Unavailable
+Retry settings:                            enabled=true, maxRetries=2, baseDelayMs=0
+Observed auto_retry_start:                 1
+Observed maxAttempts:                      2
+Observed auto_retry_end:                   success=true
+Terminal assistant response:               rpc recovered
+Process exit:                              0
+
+Case 2: concurrent retry-only cancellation
+------------------------------------------
+Initial response:                           network error: connection lost
+Retry settings:                            enabled=true, maxRetries=3, baseDelayMs=2000
+abort_retry sent while agent busy:          yes
+Observed auto_retry_start:                 1
+Observed auto_retry_end:                   success=false
+Observed finalError:                       Retry cancelled
+Next scripted response consumed:           no
+Process exit:                              0
+
+Case 3: runtime enablement and live reload
+------------------------------------------
+Initial settings:                           retry.enabled=false
+First retry events:                        0
+set_auto_retry enabled=true:               passed
+Second prompt retry/recovery:              passed
+settings.json replaced with enabled=false: yes
+RPC reload:                                passed
+get_state autoRetryEnabled=false:          passed
+Third retry events:                        0
+Next scripted response consumed:           no
+Process exit:                              0
+
+Wire/result summary
+-------------------
+RPC_RETRY_SUCCESS=PASS
+RPC_RETRY_ABORT=PASS
+RPC_RETRY_DISABLED_INITIAL=PASS
+RPC_RETRY_RUNTIME_ENABLE=PASS
+RPC_RETRY_RELOAD_DISABLE=PASS
+RPC_RETRY_STATE_SYNC=PASS
+Combined stderr bytes:                     0

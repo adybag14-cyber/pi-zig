@@ -1,0 +1,9 @@
+{
+  "runtime_file": "src/extensions/js_bridge.mjs",
+  "module_file": "src/provider_method_ref.zig",
+  "config_parameter": "name",
+  "provider_name_expression": "\"provider\"",
+  "callback_map": "handlers",
+  "callback_helper_candidate": null,
+  "candidate_score": 425
+}

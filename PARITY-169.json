@@ -1,0 +1,96 @@
+{
+  "checkpoint": 169,
+  "upstream": {
+    "project": "earendil-works/pi",
+    "version": "0.84.1"
+  },
+  "toolchain": {
+    "zig": "0.16.0",
+    "target": "x86_64-linux"
+  },
+  "measurements": {
+    "zigFiles": 184,
+    "zigLines": 106213,
+    "zigTestDeclarations": 924,
+    "directRootCases": 926,
+    "syntheticFiles": 0
+  },
+  "closed": [
+    "retained fullscreen model selector",
+    "scoped and all model views",
+    "configured-provider model filtering",
+    "canonical provider and model fuzzy search",
+    "model metadata keyboard and mouse selection",
+    "durable model and thinking changes",
+    "canonical no-client-pool model switching",
+    "exact bundled upstream changelog",
+    "atomic changelog lifecycle acknowledgement",
+    "bounded latest-version check",
+    "anonymous install report controls",
+    "managed fd and ripgrep discovery",
+    "bounded proxy-aware tool acquisition",
+    "atomic extracted-tool installation",
+    "offline Termux and native Zig fallbacks"
+  ],
+  "validation": {
+    "directRoot": {
+      "passed": 926,
+      "skipped": 0,
+      "failed": 0
+    },
+    "moduleProcess": {
+      "passed": 919,
+      "isolated": 7,
+      "failed": 0
+    },
+    "sqliteRepository": {
+      "passed": 11,
+      "failed": 0
+    },
+    "sqliteCli": {
+      "passed": 8,
+      "isolated": 6,
+      "failed": 0
+    },
+    "ordinaryExecutable": {
+      "passed": 9,
+      "failed": 0
+    },
+    "sqlitePersistence": {
+      "passed": 5,
+      "failed": 0
+    },
+    "sqliteExecutable": {
+      "passed": 9,
+      "failed": 0
+    },
+    "buildSteps": {
+      "passed": 13,
+      "total": 13
+    },
+    "modelUpdateToolE2E": {
+      "passed": true,
+      "latestRequests": 1,
+      "installReportRequests": 1,
+      "lifecycleVersion": "0.84.1",
+      "fullscreenModelSelector": true,
+      "selectedModel": "openai/gpt-4.1-mini",
+      "modelChangeEntries": 1,
+      "managedRipgrepReleaseRequests": 1,
+      "managedRipgrepDownloadRequests": 1,
+      "managedRipgrepCacheReuse": true,
+      "stderrBytes": 0
+    }
+  },
+  "remaining": [
+    "complete model selector keybinding action OAuth and visual breadth",
+    "complete fullscreen package login settings and session managers",
+    "native Zig self-update and richer update UI",
+    "complete npm pnpm and bun platform lifecycle behavior",
+    "arbitrary asynchronously invalidated extension component trees",
+    "function-valued extension providers and OAuth callbacks",
+    "native server TLS and mutual TLS",
+    "automatic image normalization resizing and transcoding",
+    "enterprise credential telemetry update retry and interoperability coverage"
+  ]
+}

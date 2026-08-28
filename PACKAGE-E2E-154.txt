@@ -1,0 +1,74 @@
+Pi Zig checkpoint 154 package end-to-end validation
+===================================================
+
+Toolchain and executable
+------------------------
+Zig: 0.16.0 supplied archive
+Executable: native Debug pi built from the exact frozen checkpoint 154 source ZIP
+Network fixtures: loopback-only isolated npm registry and local Git daemon
+
+Local package lifecycle
+-----------------------
+Install directory package: PASS
+Name from package.json: local-e2e
+Canonical source recorded: path:/mnt/data/pi-port-work-154/e2e-local/pkg
+List package: PASS
+Offline update classification: matched=1, updated=0, skippedLocal=1
+Remove by name: PASS
+User source directory retained: PASS
+LOCAL_PACKAGE_CLI_E2E=PASS
+
+Direct TypeScript extension lifecycle
+-------------------------------------
+Install direct .ts path: PASS
+Stable file-based package identity: direct-extension.ts
+List package: PASS
+Remove by resolved path: PASS
+Final package list empty: PASS
+Source file retained: PASS
+DIRECT_SCRIPT_PACKAGE_E2E=PASS
+
+Managed npm lifecycle
+---------------------
+Install npm:pi-e2e-managed: PASS
+Managed root: agent/npm/node_modules/pi-e2e-managed
+Initial version: 1.0.0
+Update matched: 1
+Update completed: 1
+Updated version: 1.0.1
+Remove by name: PASS
+Final package list empty: PASS
+NPM_PACKAGE_LIFECYCLE_E2E=PASS
+
+Managed Git lifecycle
+---------------------
+Source: git://127.0.0.1:<ephemeral-port>/owner/repo.git
+Clone into agent-private host/repository tree: PASS
+Initial version: 1.0.0
+Remote update committed and served: PASS
+Update matched: 1
+Update completed: 1
+Updated version: 1.1.0
+Remove by name: PASS
+Managed checkout removed: PASS
+Empty managed parents pruned: PASS
+Final package list empty: PASS
+GIT_PACKAGE_LIFECYCLE_E2E=PASS
+
+Safety checks
+-------------
+Offline npm/Git network gate: PASS
+Exact npm pin classification: PASS
+Local update skip: PASS
+Tampered managed-path removal confinement: PASS
+Percent-decoded traversal rejection: PASS
+Git reference validation: PASS
+Atomic packages.json replacement: PASS
+Filter preservation across reinstall/update: PASS
+
+Frozen-artifact qualification
+-----------------------------
+Source ZIP executable used: PASS
+Source ZIP tree equivalence before build: PASS (250 files)
+All fixture endpoints: loopback only
+Exact ZIP package E2E aggregate: PASS

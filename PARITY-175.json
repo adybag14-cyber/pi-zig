@@ -1,0 +1,49 @@
+{
+  "checkpoint": 175,
+  "originalVersion": "0.84.1",
+  "zigVersion": "0.16.0",
+  "focus": "native clipboard image ingestion and text fallback",
+  "measurements": {
+    "nativeZigFiles": 188,
+    "nativeZigLogicalLines": 112569,
+    "namedZigTestDeclarations": 961,
+    "syntheticSourceFiles": 0
+  },
+  "validation": {
+    "clipboardFilter": {"passed": 22, "failed": 0},
+    "lineEditorFilter": {"passed": 23, "failed": 0},
+    "keybindingFilter": {"passed": 18, "failed": 0},
+    "wholeTreeFormatting": "passed",
+    "realSourceAudit": "passed",
+    "selfHostedDebugBuild": "passed",
+    "llvmDebugBuild": "passed",
+    "clipboardPtyE2E": "passed",
+    "sqliteAdministrationBuild": "passed",
+    "sqliteIntegrity": "ok",
+    "aggregateRoot": "compile deadline exceeded before test artifact; no pass or failure claimed"
+  },
+  "closed": [
+    "configurable clipboard image-paste action",
+    "Wayland image and text clipboard reads",
+    "X11 image and text clipboard reads",
+    "WSL PowerShell image extraction",
+    "macOS image and text clipboard reads",
+    "Windows PowerShell image and text reads",
+    "Termux text fallback",
+    "image attachment persistence and cleanup",
+    "clipboard text normalization",
+    "noninterrupting editor shortcut mutation"
+  ],
+  "remaining": [
+    "native clipboard writes and bounded OSC 52 /copy fallback",
+    "right-click clipboard text paste",
+    "additional platform-native image formats",
+    "embedded image transformations",
+    "remaining fullscreen managers",
+    "complete package-manager platform behavior",
+    "async extension component invalidation",
+    "function-valued providers and extension OAuth",
+    "server TLS and mutual TLS",
+    "enterprise interoperability breadth"
+  ]
+}

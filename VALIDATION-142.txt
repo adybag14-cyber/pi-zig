@@ -1,0 +1,56 @@
+Pi Zig checkpoint 142 validation
+================================
+
+Reference source: uploaded Pi 0.84.1 archive pi-main (3)(2).zip
+Reference SHA-256: 42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a
+Baseline source: checkpoint 141 archive
+Baseline SHA-256: 1d7fcb7410bbfafee1e4b41a45dbf1fc318184bdea8a206c8b8c9c0159944215
+Toolchain: supplied Zig 0.16.0 Linux x86-64 archive
+Toolchain SHA-256: 70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00
+
+Source measurements
+-------------------
+Zig source files under src/: 148
+Native Zig source lines under src/: 67,949
+Gain over checkpoint 141: 4,858 lines
+Synthetic/generated feature shards: 0
+
+Worktree gates
+--------------
+Whole-tree zig fmt --check: PASS
+Real-source audit: PASS (148 files, 67,949 lines, zero synthetic files)
+All-package root suite: PASS (663 pass, 6 isolated SQLite cases, 0 fail; 669 declared)
+Dedicated native SQLite suite: PASS (11/11, including every isolated case)
+Executable suite: PASS (1/1)
+All unique declared tests validated: 670
+Debug executable build: PASS
+Executable --version smoke: PASS
+Executable eval/mock smoke: PASS (checkpoint-142-smoke)
+Normal executable hard SQLite dependency: NONE (static Linux Debug artifact)
+
+Clean archive reconstruction gates
+----------------------------------
+Cache/build-directory exclusion: PASS
+Prevalidation ZIP integrity: PASS
+Fresh extraction: PASS
+Fresh-extraction source audit: PASS
+Fresh-extraction complete test topology: PASS
+Fresh-extraction Debug build: PASS
+Fresh-extraction --version smoke: PASS
+Fresh-extraction eval/mock smoke: PASS
+
+Checkpoint patch reconstruction gates
+-------------------------------------
+Exact checkpoint 141 -> 142 patch creation: PASS
+Patch applies cleanly with patch -p1: PASS
+Reconstructed source tree equivalence: byte-for-byte PASS
+Patch-reconstructed source audit: PASS
+Patch-reconstructed complete test topology: PASS
+Patch-reconstructed Debug build: PASS
+Patch-reconstructed --version smoke: PASS
+Patch-reconstructed eval/mock smoke: PASS
+
+The final source ZIP, exact patch, executable, reports and checksum manifest are
+verified after their final bytes have been written. Their final hashes are kept
+in the external checksum manifest so the source archive does not need to contain
+its own recursively changing hash.

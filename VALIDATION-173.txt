@@ -1,0 +1,91 @@
+PI ZIG CHECKPOINT 173 — SOURCE VALIDATION RECORD
+================================================
+
+Evidence
+--------
+Original source: uploaded Pi 0.84.1 archive dated 2026-08-20
+Baseline: uploaded pi-zig checkpoint 172
+Compiler: supplied Zig 0.16.0 Linux x86-64 archive
+
+Source measurements
+-------------------
+Native Zig files under src/: 186
+Native Zig logical lines under src/: 110741
+Tracked Zig files across repository: 187
+Named Zig test declarations: 942
+Synthetic/generated source files: 0
+
+Checkpoint implementation before reports
+----------------------------------------
+Production Zig files changed: 4
+Updated executable PTY fixtures: 1
+New executable PTY fixtures: 1
+Implementation additions/deletions before reports: +1103 / -77
+New named native regression tests: 2
+
+Static gates
+------------
+Whole-tree `zig fmt --check`: PASS
+Python fixture `py_compile`: PASS
+Git diff whitespace/error validation: PASS
+Real-source audit: PASS
+Synthetic source audit: 0 detected
+
+Changed-area closure
+--------------------
+Settings/TUI/render import graph: 165/165 PASS
+
+This graph includes parsing, deep merge, canonical persistence, global/project
+scope mutation, trusted-project override clearing, selector behavior, Markdown
+padding, terminal primitives, themes, package locking and related imported tests.
+
+Observed production test processes
+----------------------------------
+Ordinary executable process: 10/10 PASS
+SQLite repository process: 11/11 PASS
+SQLite CLI/schema process: 8 PASS / 6 intentional repository isolates / 0 FAIL
+
+The six SQLite CLI isolates execute in the separately linked 11-test repository
+process and are not omitted behavior.
+
+Aggregate qualification
+-----------------------
+A cold direct `src/root.zig` test and the all-package module artifact from
+`zig build test` were both attempted. Zig 0.16.0 compilation exceeded the
+individual command deadlines before an aggregate executable/result was
+produced. The dedicated executable, repository and CLI/schema processes above
+completed successfully. No aggregate pass is claimed and no compile timeout is
+misreported as a failing source test.
+
+Builds
+------
+Static pi Linux x86-64 Debug ELF: PASS
+pi-sqlite Linux x86-64 Debug ELF linked to sqlite3/libc: PASS
+
+The optional pi-sqlite-live non-LLVM build was attempted. The command deadline
+interrupted output creation; the incomplete file failed ELF identification and
+was deleted/rejected. No older companion is relabeled as checkpoint 173.
+
+Real pseudo-terminal E2E
+------------------------
+Legacy global settings workflow: PASS
+Project/global scope workflow: PASS
+Project override clear and reapply: PASS
+Explicit project maxTurns=16 over global maxTurns=32: PASS
+Live terminal progress start/clear: PASS
+Live editor padding: 1
+Live output padding: 0
+Fresh-process project fullscreen mode: PASS
+Terminal restoration: PASS
+Combined child-process stderr: 0 bytes
+
+SQLite smoke
+------------
+SQLite version: 3.46.1
+Fresh database initialization: PASS
+Missing canonical tables: 0
+Integrity result: ok
+
+This source-stage record is intentionally free of circular release hashes. The
+published copy will add exact ZIP/patch/executable hashes, extraction and patch
+reconstruction equivalence, and final-path transfer verification.

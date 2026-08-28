@@ -1,0 +1,19 @@
+Pi Zig checkpoint 148 extension end-to-end validation
+=================================================
+
+Executable: /mnt/data/pi-port-work-148/src/pi-zig-v8-checkpoint-147/zig-out/bin/pi
+Node runtime: v22.16.0
+
+Lifecycle queue: PASS
+  11 ordered hook actions; agent_end continuation; shutdown persisted
+Tool callback queue: PASS
+  execute action precedes tool_result action; no allocator leak
+Dynamic provider: PASS
+  register -> model switch -> real SSE request with scoped bearer key
+
+Observed provider request:
+  path=/v1/chat/completions
+  authorization=Bearer extension-secret
+  model=fast
+
+Overall: PASS

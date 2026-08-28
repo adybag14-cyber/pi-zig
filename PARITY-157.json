@@ -1,0 +1,51 @@
+{
+  "checkpoint": 157,
+  "toolchain": "Zig 0.16.0",
+  "reference": "newly supplied Pi 0.84.1 source",
+  "baseline": "uploaded checkpoint 156",
+  "measurements": {
+    "zig_files": 174,
+    "zig_lines": 93386,
+    "javascript_bridge_lines": 937,
+    "source_test_declarations": 824,
+    "synthetic_files": 0
+  },
+  "validation": {
+    "root_cases": 830,
+    "root_passed": 823,
+    "root_skipped": 7,
+    "root_failed": 0,
+    "packages_tests": "34/34",
+    "package_config_graph": "37/37",
+    "args_tests": "9/9",
+    "sqlite_repository": "11/11",
+    "sqlite_cli": "8 passed, 6 isolated, 0 failed",
+    "sqlite_persistence": "5/5",
+    "ordinary_executable": "5/5",
+    "sqlite_executable": "5/5"
+  },
+  "new_native_areas": [
+    "allocator-owned package resource inventory retaining disabled candidates",
+    "fullscreen pi config package selector with search and scope switching",
+    "global exact resource toggles",
+    "trusted project inherit/load/unload resource deltas",
+    "JSON inventory and deterministic config --set automation",
+    "locked registry read-modify-write configuration transactions",
+    "package lock PID operation timestamp and registry metadata",
+    "non-mutating repair --check health surface",
+    "interactive package health warnings",
+    "real PTY lock-owner and concurrent-process E2E coverage"
+  ],
+  "remaining_priorities": [
+    "top-level auto and explicit resource-origin editing",
+    "complete package source manager screen",
+    "complete npm pnpm Bun platform and lockfile parity",
+    "asynchronously invalidated extension component trees",
+    "function-valued providers and extension OAuth",
+    "remaining fullscreen screens",
+    "native server TLS and mTLS",
+    "automatic image normalization and transcoding",
+    "enterprise credential retry telemetry and interoperability breadth"
+  ],
+  "complete_monorepo_equivalence_claimed": false
+}

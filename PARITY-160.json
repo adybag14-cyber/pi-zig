@@ -1,0 +1,60 @@
+{
+  "checkpoint": 160,
+  "reference": "Pi 0.84.1",
+  "baseline": 159,
+  "closed": [
+    "stale JavaScript and TypeScript command context after ctx.reload",
+    "terminal native reload action barrier",
+    "fresh models.json and dynamic auth catalog reconstruction",
+    "removed disk provider eviction",
+    "fresh auth.json and built-in credential reconstruction",
+    "client-owned reload credentials and proxy",
+    "live proxy transport and timeout reload",
+    "live tool max-turn and compaction-retention settings reload",
+    "complete client setting rollback during provider rebind",
+    "RPC detached stdin DebugAllocator ownership correction",
+    "persistent disk model auth settings reload end-to-end validation"
+  ],
+  "validation": {
+    "zig_version": "0.16.0",
+    "native_zig_files": 175,
+    "native_zig_lines": 96019,
+    "javascript_bridge_lines": 984,
+    "named_source_test_declarations": 839,
+    "synthetic_files": 0,
+    "direct_root": {
+      "passed": 844,
+      "skipped": 0,
+      "failed": 0,
+      "total": 844,
+      "backend": "non-LLVM with sqlite3/libc linkage"
+    },
+    "build_test_graph": {
+      "passed": 837,
+      "isolated": 7,
+      "failed": 0,
+      "steps_passed": 13,
+      "steps_total": 13
+    },
+    "sqlite_repository": { "passed": 11, "failed": 0 },
+    "sqlite_cli": { "passed": 8, "isolated": 6, "failed": 0 },
+    "ordinary_executable": { "passed": 6, "failed": 0 },
+    "sqlite_persistence": { "passed": 5, "failed": 0 },
+    "sqlite_executable": { "passed": 6, "failed": 0 },
+    "debug_builds": 3,
+    "disk_reload_e2e": "passed",
+    "rpc_allocator_stderr_bytes": 0
+  },
+  "remaining": [
+    "remaining mutable retry compaction UI and OAuth reload state",
+    "package source fullscreen manager",
+    "complete npm pnpm bun platform behavior",
+    "asynchronously invalidated extension component trees",
+    "function-valued providers and extension OAuth",
+    "remaining fullscreen screens",
+    "server TLS and mutual TLS",
+    "automatic image transformation",
+    "enterprise credential retry telemetry and interoperability matrix"
+  ],
+  "complete_equivalence_claimed": false
+}

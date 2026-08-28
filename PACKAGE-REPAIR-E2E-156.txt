@@ -1,0 +1,43 @@
+Pi Zig checkpoint 156 package-repair executable E2E
+===================================================
+
+Executable
+----------
+zig-out/bin/pi (Debug, static Linux x86-64 ELF)
+
+Initial state
+-------------
+- isolated PI_AGENT_DIR
+- no packages.json
+- settings.json contained:
+    theme = night
+    one legacy npm package @scope/legacy156@1.2.3
+    autoload = false
+    explicit empty skills filter
+- managed Git target absent
+- prepared sibling repo.tmp-e2e contained version.txt = prepared-156
+- backup sibling repo.old-e2e contained version.txt = backup-155
+- .repo.pi-update-incomplete recorded target/prepared/backup absolute paths
+
+Command
+-------
+pi repair --json
+
+Observed JSON
+-------------
+{"scope":"user","markersFound":1,"committedPreparedUpdates":1,"restoredBackups":0,"cleanedArtifacts":1,"removedMarkers":1,"migratedLegacyPackages":1,"cleanedLegacySettings":true}
+
+Assertions
+----------
+REPAIR_E2E_156=PASS
+canonical target exists: PASS
+canonical target contains prepared-156: PASS
+prepared sibling remains: false
+backup sibling remains: false
+repair marker remains: false
+packages.json contains @scope/legacy156: PASS
+autoload=false preserved: PASS
+empty skills filter preserved: PASS
+settings.json packages field remains: false
+settings.json theme=night preserved: PASS
+process exit: 0

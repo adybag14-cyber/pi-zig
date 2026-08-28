@@ -1,0 +1,3 @@
+command: git diff --check over checkpoint-183 source delta
+command: git apply --check CHECKPOINT-182-to-183.patch against checkpoint 182
+patch check: ok

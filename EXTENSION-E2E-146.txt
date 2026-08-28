@@ -1,0 +1,31 @@
+Pi Zig checkpoint 146 extension end-to-end smoke
+=================================================
+
+Runtime: Node.js 22.16.0 persistent TypeScript worker
+Agent backend: deterministic native mock provider
+Input path: ordinary pi CLI with stdin closed
+
+Validated sequence:
+- loaded a direct TypeScript extension;
+- registered and invoked /ext-smoke;
+- emitted an immediate notification;
+- handed a new user prompt to the native agent;
+- persisted pi.setSessionName("js-runtime-smoke");
+- persisted pi.appendEntry("extension-smoke", {args, durable:true});
+- ran before_agent_start;
+- replaced the assembled system prompt for the turn;
+- appended a hidden durable custom context message;
+- completed the deterministic assistant response.
+
+Observed CLI output:
+extension command ran
+mock answer
+
+Observed durable JSONL order:
+1. session metadata with name js-runtime-smoke
+2. custom extension-smoke entry
+3. extension-supplied user prompt
+4. hidden extension-context custom message
+5. assistant message containing mock answer
+
+Result: PASS

@@ -1,0 +1,58 @@
+{
+  "checkpoint": 174,
+  "original_version": "0.84.1",
+  "zig_version": "0.16.0",
+  "closed": [
+    "runtime images.autoResize for startup and interactive file attachments",
+    "runtime images.autoResize for built-in read",
+    "post-hook normalization for sequential and parallel tool images",
+    "PNG JPEG GIF WebP and BMP magic-byte inspection",
+    "JPEG and WebP EXIF-aware provider limit decisions",
+    "2000x2000 and 4.5 MiB base64 provider limits",
+    "byte-for-byte preservation of safe provider-native images",
+    "BMP to PNG conversion even with auto resize disabled",
+    "progressive PNG and JPEG encoded-size fallback",
+    "durable conversion and coordinate hints",
+    "live settings reload propagation",
+    "optional self-hosted build backend through -Duse-llvm=false"
+  ],
+  "validation": {
+    "native_image_processing": "11/11 passed",
+    "root_file_processing_filter": "19/19 passed",
+    "root_read_image_filter": "17/17 passed",
+    "root_tool_result_image_filter": "18/18 passed",
+    "ordinary_executable_tests": "10/10 passed",
+    "sqlite_repository": "11/11 passed",
+    "sqlite_cli_schema": "8 passed, 6 intentional isolates, 0 failed",
+    "static_pi_llvm_build": "passed",
+    "static_pi_self_hosted_build": "passed",
+    "pi_sqlite_build": "passed",
+    "image_processing_e2e": "passed; stderr 0",
+    "aggregate_root": "compile deadline exceeded; no diagnostic and no pass or failure claimed",
+    "aggregate_build_default": "compile deadline exceeded after dedicated processes passed",
+    "aggregate_build_self_hosted": "compile deadline exceeded after dedicated processes passed",
+    "pi_sqlite_live": "compile deadline exceeded; incomplete output rejected and not published"
+  },
+  "source": {
+    "zig_files": 187,
+    "zig_lines": 111830,
+    "synthetic_files": 0
+  },
+  "dependency_boundary": {
+    "safe_supported_images": "no external converter required",
+    "transformations": "optional ImageMagick magick/convert or PI_IMAGE_CONVERTER required",
+    "hard_image_library_dependency": false,
+    "shell_execution": false
+  },
+  "remaining": [
+    "embedded Photon-equivalent decoder and encoder",
+    "clipboard image ingestion",
+    "complete structural decode validation for untouched safe images",
+    "fullscreen package and account management",
+    "complete cross-platform package manager behavior",
+    "asynchronously invalidated extension component trees",
+    "function-valued providers and extension-owned OAuth",
+    "native server TLS and mutual TLS",
+    "enterprise credential telemetry update retry and interoperability breadth"
+  ]
+}

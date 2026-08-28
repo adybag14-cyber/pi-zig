@@ -1,0 +1,71 @@
+Pi Zig checkpoint 162 retry, summarization, and compaction E2E record
+====================================================================
+
+Executable under test
+---------------------
+Static Linux x86-64 Debug pi built by the supplied Zig 0.16.0 toolchain.
+Mode: persistent JSONL RPC with the native deterministic mock provider.
+
+Case 1: RPC retry configuration persistence
+-------------------------------------------
+set_auto_retry enabled=false:               passed
+Atomic settings.json creation:              passed
+Persisted retry.enabled=false:              passed
+get_state autoRetryEnabled=false:            passed
+Nested/unrelated setting preservation:      covered by native regression tests
+Malformed retry object no-replace behavior: covered by native regression tests
+Process exit:                               0
+Stderr bytes:                               0
+
+Case 2: durable assistant retry history
+---------------------------------------
+Initial assistant result:                    HTTP 503 persisted failure
+Initial stopReason:                          error
+Retry request retained user context:         passed
+Retry request excluded failed assistant:     passed
+Terminal assistant result:                   persisted recovery
+Terminal stopReason:                         stop
+Failed assistant entries persisted:          1
+Successful assistant entries persisted:      1
+JSONL reloadable session written:             passed
+Process exit:                               0
+Stderr bytes:                               0
+
+Case 3: model-assisted RPC compaction retry
+-------------------------------------------
+Conversation message entries before compact: 8
+First summary result:                        HTTP 503 summary stream ended
+Second summary result:                       checkpoint 162 model summary
+summarization_retry_scheduled events:         1
+summarization_retry_attempt_start events:     1
+summarization_retry_finished events:          1
+Attempt source:                              compaction
+Attempt reason:                              manual
+RPC compact success:                         passed
+Process exit:                               0
+Stderr bytes:                               0
+
+Case 4: append-only compaction and RPC projection
+-------------------------------------------------
+Durable entries after compact:               9
+Compaction entries:                          1
+Boundary parent:                             original assistant tip
+firstKeptEntryId:                            m3
+Nonzero tokensBefore:                        passed
+Oldest durable user entry retained:          passed
+Active get_messages records:                 7
+First active record:                         compactionSummary
+Retained tail begins with:                   user-2
+Pre-boundary user-1 omitted from context:     passed
+get_entries complete history:                passed
+get_messages compaction-aware:               passed
+
+Result summary
+--------------
+RPC_RETRY_PERSISTENCE=PASS
+DURABLE_RETRY_HISTORY=PASS
+RPC_COMPACTION_RETRY=PASS
+CANONICAL_SUMMARY_RETRY_EVENTS=PASS
+APPEND_ONLY_HISTORY=PASS
+COMPACTION_AWARE_GET_MESSAGES=PASS
+COMBINED_STDERR_BYTES=0

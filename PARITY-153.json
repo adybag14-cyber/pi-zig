@@ -1,0 +1,54 @@
+{
+  "checkpoint": 153,
+  "upstream": "Pi 0.84.1 supplied source",
+  "toolchain": "Zig 0.16.0",
+  "closed": [
+    "ordered multi-image user messages",
+    "ordered multi-image tool updates and results",
+    "multi-image extension hooks and renderers",
+    "multi-image sequential and parallel execution",
+    "multi-image JSON and protocol-v1 events",
+    "multi-image JSONL save load and fork",
+    "multi-image OpenAI Chat transport",
+    "multi-image OpenAI Responses transport",
+    "multi-image Anthropic transport",
+    "multi-image Google transport",
+    "multi-image Mistral transport",
+    "multi-image Bedrock transport",
+    "multi-image Pi Messages transport",
+    "image-aware context estimation capability checks and transcript repair"
+  ],
+  "compatibility": {
+    "legacy_first_image_fields": true,
+    "old_jsonl_sessions": true,
+    "canonical_content_arrays": true
+  },
+  "validation": {
+    "zig_files": 170,
+    "zig_lines": 87813,
+    "javascript_bridge_lines": 915,
+    "source_test_declarations": 800,
+    "root_passed": 782,
+    "root_isolated": 7,
+    "root_failed": 0,
+    "sqlite_repository": "11/11",
+    "sqlite_persistence": "5/5",
+    "debug_executables": 3,
+    "multi_image_executable_e2e": true,
+    "partial_images": 2,
+    "final_images": 3,
+    "persisted_images": 3,
+    "stderr_bytes": 0
+  },
+  "remaining": [
+    "package manifest glob and filter semantics",
+    "managed npm and git dependency lifecycle",
+    "arbitrary asynchronous extension component trees",
+    "function-valued provider transports and extension OAuth",
+    "complete fullscreen screen wiring",
+    "native server TLS and mutual TLS",
+    "automatic image resize rotation normalization and transcoding",
+    "enterprise credential retry and interoperability matrix"
+  ],
+  "complete_upstream_equivalence_claimed": false
+}

@@ -1,0 +1,30 @@
+Pi Zig checkpoint 176 clipboard-output E2E
+
+CLIPBOARD_COPY_E2E_176=PASS
+
+Local /copy:
+  Native clipboard calls:                  1
+  OSC 52 emitted:                          false
+  Assistant answer occurrences:            1
+  Assistant answer reprints:               0
+  Exit status:                             0
+  Stderr bytes:                            0
+
+Remote SSH-marked /copy:
+  Native clipboard calls:                  1
+  OSC 52 emitted:                          true
+  Assistant answer occurrences:            1
+  Assistant answer reprints:               0
+  Exit status:                             0
+  Stderr bytes:                            0
+
+Original JavaScript/TypeScript compatibility export:
+  Imported copyToClipboard:                true
+  Native clipboard write observed:         true
+  Exit status:                             0
+  Stderr bytes:                            0
+
+Fixture:
+  scripts/clipboard_copy_e2e.py
+  Final development report:
+  /mnt/data/pi-zig-work-176/logs/clipboard-copy-e2e-final.json

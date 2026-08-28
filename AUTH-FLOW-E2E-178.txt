@@ -1,0 +1,49 @@
+Pi Zig checkpoint 178 authentication E2E
+=========================================
+
+Staged selector workflow
+------------------------
+AUTH_FLOW_E2E_178=PASS
+stagedAuthenticationType=true
+subscriptionProviderStage=true
+apiKeyProviderStage=true
+storedTypeMismatchVisible=true
+environmentSourceVisible=OPENAI_API_KEY
+configuredSourceVisible=configured API key
+explicitProviderScopedStage=anthropic
+corpCredentialStored=true
+anthropicCredentialReplaced=true
+secretsAbsentFromTerminal=true
+terminalRestored=true
+exit=0
+stderrBytes=0
+
+Checkpoint-177 login/logout regression
+--------------------------------------
+AUTH_SCREEN_E2E_177=PASS
+loginFullscreen=true
+logoutFullscreen=true
+maskedSecret=true
+apiKeyStored=true
+authPermissionsPrivate=true
+storedStatusVisible=true
+credentialRemoved=true
+secretAbsentFromTerminal=true
+terminalRestored=true
+exit=0
+stderrBytes=0
+
+Checkpoint-177 live credential regression
+-----------------------------------------
+AUTH_LIVE_E2E_177=PASS
+activeProvider=corp177/fast
+interactiveKeyStored=true
+loginReboundActiveClient=true
+firstAuthorization=interactive key
+logoutRemovedStoredCredential=true
+logoutReloadedConfiguredCredential=true
+secondAuthorization=models.json key
+providerRequests=2
+secretAbsentFromTerminal=true
+exit=0
+stderrBytes=0

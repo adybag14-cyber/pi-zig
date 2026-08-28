@@ -1,0 +1,1725 @@
+diff -ruN pi-zig-v8-checkpoint-180/CHECKPOINT-180-CORRECTION.md pi-zig-v8-checkpoint-181/CHECKPOINT-180-CORRECTION.md
+--- pi-zig-v8-checkpoint-180/CHECKPOINT-180-CORRECTION.md	1970-01-01 00:00:00.000000000 +0000
++++ pi-zig-v8-checkpoint-181/CHECKPOINT-180-CORRECTION.md	2026-08-22 18:57:54.871865976 +0000
+@@ -0,0 +1,33 @@
++# Checkpoint 180 correction notice
++
++Checkpoint 180's claimed production integration was not valid. This checkpoint preserves that historical artifact for provenance but explicitly supersedes its provider-method implementation and verification claims.
++
++## Defect found
++
++The provider callback encoder had been inserted into `pi.unregisterProvider(name)` instead of `pi.registerProvider(...)`. It therefore traversed and replaced the provider **name**, not the provider configuration. The production registration path still placed the unencoded object directly into the manifest/action payload, where `JSON.stringify` silently discarded function-valued members.
++
++The misplaced encoder also reused the general extension `handlers` map rather than a provider-specific callback registry. Even if reached with a configuration object, native code had no provider-method invocation protocol or callback-owner association.
++
++## Why checkpoint 180's tests passed
++
++Two tests were false positives:
++
++- `checkpoint-tests/provider-method-manifest-bridge.mjs` implemented and exercised a separate in-test encoder instead of launching `src/extensions/js_bridge.mjs`.
++- `checkpoint-tests/check-provider-method-production-integration.py` checked only for marker strings anywhere in the bridge source. The markers were present inside the wrong function, so the check passed.
++
++Checkpoint 180 also did not run the complete build and test matrix recorded as required by its own continuation handoff.
++
++## Correction in checkpoint 181
++
++Checkpoint 181:
++
++- moves encoding into the real registration path;
++- retains callbacks in a dedicated provider callback map;
++- adds the native-to-JavaScript invocation protocol;
++- associates descriptors with the persistent extension worker that owns them;
++- validates callback id **and descriptor path** before dispatch;
++- replaces both false-positive tests with production-source tests;
++- runs the default executable build and the complete test matrix;
++- repeats all required gates from a fresh extraction of the final archive.
++
++Any statement in `CHECKPOINT-180.md`, `CHECKPOINT-180-VERIFICATION.json`, or the checkpoint-180 final response claiming that production provider methods were preserved should be read as corrected by this notice and `CHECKPOINT-181.md`.
+diff -ruN pi-zig-v8-checkpoint-180/CHECKPOINT-181-VERIFICATION.json pi-zig-v8-checkpoint-181/CHECKPOINT-181-VERIFICATION.json
+--- pi-zig-v8-checkpoint-180/CHECKPOINT-181-VERIFICATION.json	1970-01-01 00:00:00.000000000 +0000
++++ pi-zig-v8-checkpoint-181/CHECKPOINT-181-VERIFICATION.json	2026-08-22 18:59:04.043865517 +0000
+@@ -0,0 +1,105 @@
++{
++  "checkpoint": 181,
++  "generated_utc": "2026-08-22T18:58:00Z",
++  "toolchain": {
++    "zig": "0.16.0",
++    "node": "v22.16.0",
++    "python": "3.13.5"
++  },
++  "inputs": {
++    "checkpoint_180_sha256": "35871efa1dc29e63b2bc3e2e51a7d127b8e0d1ad1c1e550cc8e5888559676f09",
++    "typescript_reference_sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a",
++    "zig_toolchain_sha256": "70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00"
++  },
++  "working_tree_gates": [
++    {
++      "name": "javascript_syntax",
++      "command": "node --check src/extensions/js_bridge.mjs",
++      "exit": 0,
++      "log": "verification/checkpoint-181/javascript-syntax.log"
++    },
++    {
++      "name": "production_bridge_e2e",
++      "command": "node checkpoint-tests/provider-method-manifest-bridge.mjs",
++      "exit": 0,
++      "log": "verification/checkpoint-181/production-bridge-e2e.log"
++    },
++    {
++      "name": "production_integration_check",
++      "command": "python3 checkpoint-tests/check-provider-method-production-integration.py",
++      "exit": 0,
++      "checks_passed": 13,
++      "checks_total": 13,
++      "log": "verification/checkpoint-181/production-integration-check.log"
++    },
++    {
++      "name": "provider_method_descriptor",
++      "command": "zig test src/provider_method_ref.zig --test-filter 'provider method'",
++      "exit": 0,
++      "tests_passed": 1,
++      "tests_failed": 0,
++      "log": "verification/checkpoint-181/provider-method-ref-test.log"
++    },
++    {
++      "name": "provider_runtime_focused",
++      "command": "zig test src/root.zig -lc -lsqlite3 --test-filter 'provider methods use the production manifest bridge'",
++      "exit": 0,
++      "tests_passed": 17,
++      "tests_failed": 0,
++      "log": "verification/checkpoint-181/provider-runtime-test.log"
++    },
++    {
++      "name": "provider_registry_oauth_focused",
++      "command": "zig test src/root.zig -lc -lsqlite3 --test-filter 'provider registry invokes OAuth methods'",
++      "exit": 0,
++      "tests_passed": 17,
++      "tests_failed": 0,
++      "log": "verification/checkpoint-181/provider-registry-oauth-test.log"
++    },
++    {
++      "name": "provider_registry_collision_focused",
++      "command": "zig test src/root.zig -lc -lsqlite3 --test-filter 'provider callback ownership remains distinct'",
++      "exit": 0,
++      "tests_passed": 17,
++      "tests_failed": 0,
++      "log": "verification/checkpoint-181/provider-registry-collision-test.log"
++    },
++    {
++      "name": "zig_format",
++      "command": "zig fmt --check src/extensions/host.zig src/extensions/js_runtime.zig src/extensions/provider_registry.zig src/main.zig",
++      "exit": 0,
++      "log": "verification/checkpoint-181/zig-format.log"
++    },
++    {
++      "name": "source_audit",
++      "command": "python3 scripts/audit_real_source.py",
++      "exit": 0,
++      "zig_files": 192,
++      "zig_loc": 116394,
++      "synthetic_files": 0,
++      "log": "verification/checkpoint-181/source-audit.log"
++    },
++    {
++      "name": "default_build",
++      "command": "zig build -Duse-llvm=false",
++      "exit": 0,
++      "build_steps_passed": 3,
++      "build_steps_total": 3,
++      "log": "verification/checkpoint-181/default-build.log"
++    },
++    {
++      "name": "complete_test_matrix",
++      "command": "zig build test -Duse-llvm=false",
++      "exit": 0,
++      "tests_passed": 982,
++      "tests_skipped": 7,
++      "tests_failed": 0,
++      "build_steps_passed": 13,
++      "build_steps_total": 13,
++      "log": "verification/checkpoint-181/full-test.log"
++    }
++  ],
++  "required_ok": true,
++  "correction_notice": "CHECKPOINT-180-CORRECTION.md",
++  "final_archive_policy": "All required gates are repeated from a fresh extraction of the final ZIP and recorded in the external FINAL.verification.json and transfer-verification.json sidecars."
++}
+diff -ruN pi-zig-v8-checkpoint-180/CHECKPOINT-181-VERIFIED pi-zig-v8-checkpoint-181/CHECKPOINT-181-VERIFIED
+--- pi-zig-v8-checkpoint-180/CHECKPOINT-181-VERIFIED	1970-01-01 00:00:00.000000000 +0000
++++ pi-zig-v8-checkpoint-181/CHECKPOINT-181-VERIFIED	2026-08-22 18:58:33.751865718 +0000
+@@ -0,0 +1 @@
++Checkpoint 181 required working-tree gates passed on 2026-08-22; see CHECKPOINT-181-VERIFICATION.json and verification/checkpoint-181/.
+diff -ruN pi-zig-v8-checkpoint-180/CHECKPOINT-181.md pi-zig-v8-checkpoint-181/CHECKPOINT-181.md
+--- pi-zig-v8-checkpoint-180/CHECKPOINT-181.md	1970-01-01 00:00:00.000000000 +0000
++++ pi-zig-v8-checkpoint-181/CHECKPOINT-181.md	2026-08-22 18:57:54.875865976 +0000
+@@ -0,0 +1,143 @@
++# Checkpoint 181 — production provider callback invocation and OAuth adapters
++
++Checkpoint 181 repairs checkpoint 180's misplaced provider encoder and carries provider method descriptors through a real JavaScript-worker-to-Zig invocation path. The result is a tested callback transport with persistent worker ownership, asynchronous error propagation, cancellation, re-registration semantics, and native OAuth refresh/key/model-projection adapters.
++
++## Implemented
++
++### Production JavaScript bridge
++
++`src/extensions/js_bridge.mjs` now:
++
++- encodes function-valued provider members in the actual `pi.registerProvider(...)` path;
++- recursively preserves nested object methods and callable array entries;
++- binds each function to its original owning object so `this` semantics survive;
++- keeps closures and function source inside the extension worker rather than serializing them;
++- emits JSON descriptors with `__pi_callback_id`, `__pi_callback_kind`, and `__pi_callback_path`;
++- rejects cyclic and non-JSON provider registrations before mutating the live provider snapshot;
++- implements upstream-style named re-registration as a shallow, defined-value merge;
++- keeps the previous registration callable across the deferred native-action handoff;
++- removes all retained callbacks on explicit provider unregister;
++- dispatches `provider_method` protocol requests and awaits synchronous or asynchronous callbacks;
++- delivers a live `AbortSignal` where the native caller requests it;
++- returns JavaScript exception stacks and promise-rejection stacks to Zig.
++
++### Native runtime protocol
++
++`src/extensions/js_runtime.zig` now exposes `Runtime.invokeProviderMethod(...)`. It validates JSON argument arrays, writes a provider-method request to the persistent worker, reuses the existing invocation/abort watcher, and returns an owned JSON value envelope.
++
++The production-runtime regression exercises:
++
++- closure retention;
++- receiver binding;
++- nested array methods;
++- asynchronous success and rejection;
++- JavaScript stack propagation;
++- live native abort delivery;
++- old/new callback generations during re-registration;
++- transactional cyclic-registration rejection;
++- unregister cleanup and subsequent worker reuse.
++
++### Descriptor ownership in the provider registry
++
++`src/extensions/provider_registry.zig` now:
++
++- recursively validates every callback descriptor in incoming and effective provider JSON;
++- rejects descriptor paths that do not match their actual configuration location;
++- associates each descriptor with the persistent JavaScript runtime that registered it;
++- preserves callback owners when a later data-only registration shallow-merges omitted methods;
++- routes ownership by callback id **plus path**, avoiding misrouting when different workers independently generate the same callback id;
++- performs replacement transactionally so a failed parse, ownership check, runtime resolution, or registry rebuild leaves the previous provider intact;
++- fixes a replacement failure-path double-free inherited from the prior registry implementation;
++- exposes generic `invokeProviderMethod(...)` and `hasProviderMethod(...)` operations;
++- adds typed adapters for `oauth.refreshToken`, `oauth.getApiKey`, and `oauth.modifyModels` with JSON shape validation.
++
++### Runtime-owner integration
++
++`src/extensions/host.zig` and `src/main.zig` now preserve the worker owner at all existing provider registration entry points:
++
++- startup manifest registrations;
++- registrations emitted during a later extension action;
++- full extension reload reconstruction.
++
++Unregister and reload teardown continue to remove the native registrations before their owning workers are discarded.
++
++### Verification hardening
++
++The checkpoint-180 copied helper was replaced by a standalone Node E2E test that launches the **actual** `src/extensions/js_bridge.mjs`. The marker-only production check was replaced by 13 structural integration checks spanning the bridge, runtime, registry, host, and three live registration call sites.
++
++## Descriptor and invocation contract
++
++Manifest descriptor:
++
++```json
++{
++  "__pi_callback_id": "provider:<encoded-provider-name>:<ordinal>",
++  "__pi_callback_kind": "provider_method",
++  "__pi_callback_path": "oauth.refreshToken"
++}
++```
++
++Native request:
++
++```json
++{
++  "kind": "provider_method",
++  "callbackId": "provider:demo:1",
++  "args": [{ "refresh": "..." }],
++  "appendSignal": true,
++  "abortable": true,
++  "invocationId": "..."
++}
++```
++
++Successful worker response:
++
++```json
++{
++  "ok": true,
++  "result": { "value": { "access": "..." } }
++}
++```
++
++## Source delta from checkpoint 180
++
++Seven production/test files changed before checkpoint metadata was added:
++
++- 1,052 inserted lines and 97 deleted lines;
++- `src/extensions/js_runtime.zig`: +266/-1;
++- `src/extensions/provider_registry.zig`: +491/-4;
++- `src/extensions/js_bridge.mjs`: +96/-10;
++- `src/extensions/host.zig`: +9;
++- `src/main.zig`: three registration call sites changed;
++- production E2E/checker tests: +187/-79.
++
++The final real-source audit reports 192 Zig files, 116,394 Zig LOC, and zero synthetic source files.
++
++## Verification
++
++Using the uploaded Zig 0.16.0 toolchain:
++
++- JavaScript production bridge syntax: passed;
++- production bridge E2E: passed;
++- production integration checker: 13/13 passed;
++- standalone `ProviderMethodRef` test: 1/1 passed;
++- focused production runtime test root: 17/17 passed;
++- focused OAuth owner test root: 17/17 passed;
++- focused callback-id collision test root: 17/17 passed;
++- Zig formatting checks: passed;
++- default `zig build -Duse-llvm=false`: 3/3 build steps passed;
++- complete `zig build test -Duse-llvm=false`: 982 passed, 7 intentional skips, 0 failed; 13/13 build steps passed.
++
++The same required gates are repeated from a fresh extraction of the final ZIP. `CHECKPOINT-181-VERIFICATION.json`, the packaged logs, the SHA-256 file inventory, and the external transfer-verification record contain the machine-readable evidence.
++
++## Remaining parity work
++
++This checkpoint establishes the generic callback transport and three callable OAuth adapters, but it does **not** claim full TypeScript provider parity. The next work remains:
++
++1. integrate extension OAuth `login(callbacks)` with the live `/login` UI interaction protocol and credential storage;
++2. persist refreshed OAuth credentials and invoke the new refresh/key adapters from every live auth-resolution path;
++3. bridge `refreshModels(context)` including credential, stored catalog, network policy, generation-checked `publish`, and cancellation;
++4. bridge `streamSimple(model, context, options)` as an event stream rather than a one-shot JSON result;
++5. support complete object-form native `Provider` registration semantics, including auth/filter/stream methods;
++6. retire obsolete JavaScript callback generations after native acknowledgement instead of retaining them until unregister/process shutdown;
++7. add end-to-end login, model refresh, streaming, reload, and unload tests at the actual CLI call sites.
+diff -ruN pi-zig-v8-checkpoint-180/CONTINUATION.md pi-zig-v8-checkpoint-181/CONTINUATION.md
+--- pi-zig-v8-checkpoint-180/CONTINUATION.md	2026-08-22 15:58:29.000000000 +0000
++++ pi-zig-v8-checkpoint-181/CONTINUATION.md	2026-08-22 18:57:54.883174405 +0000
+@@ -1,5 +1,21 @@
+-# Continuation from checkpoint 180
++# Continuation from checkpoint 181
+ 
+-Start from the verified provider callback descriptor contract introduced in this checkpoint. The next high-priority parity lane is to route every provider call site through `ProviderMethodRef` descriptors end-to-end, beginning with OAuth login/refresh/getApiKey and then custom request/response transforms. Preserve cancellation, JavaScript exception stacks, async promise rejection, credential persistence, and reload/unload cleanup. Do not replace callback references with function source serialization.
++Checkpoint 181 provides a corrected production provider callback transport and native adapters for OAuth refresh, API-key extraction, and credential-dependent model projection. It also records and repairs checkpoint 180's false-positive integration.
+ 
+-Before producing checkpoint 181, run the focused provider bridge tests, the standalone Zig descriptor tests, the complete `zig build test`, and the default `zig build`, then repeat those gates from the extracted archive.
++## Single next target: live extension OAuth login and credential lifecycle
++
++Implement extension-defined `oauth.login(callbacks)` end-to-end through the existing `/login` command and auth storage, without serializing callback source.
++
++Required slice:
++
++1. define a native interaction protocol for `onAuth`, `onPrompt`, `onProgress`, and cancellation;
++2. invoke `oauth.login` on the owning persistent extension worker;
++3. validate returned OAuth credentials and write them through the canonical auth storage path;
++4. route expired credentials through `oauth.refreshToken`, persist the replacement transactionally, and derive request keys through `oauth.getApiKey`;
++5. apply `oauth.modifyModels` after credentials resolve;
++6. ensure reload/unload/cancel cannot leave stale UI requests, workers, descriptors, or partially written credentials;
++7. add headed/non-headed login E2E, refresh persistence, rejection stack, abort, reload, and unregister regressions.
++
++After that, implement `refreshModels(context)` publication/persistence and then the event-stream bridge needed by `streamSimple`.
++
++Before checkpoint 182, run focused auth/provider tests, the production bridge E2E, formatting/source audits, the default build, the complete test matrix, and repeat all required gates from a fresh extraction of the final archive.
+diff -ruN pi-zig-v8-checkpoint-180/INPUT-PROVENANCE.json pi-zig-v8-checkpoint-181/INPUT-PROVENANCE.json
+--- pi-zig-v8-checkpoint-180/INPUT-PROVENANCE.json	2026-08-22 15:58:29.000000000 +0000
++++ pi-zig-v8-checkpoint-181/INPUT-PROVENANCE.json	2026-08-22 18:58:20.056758030 +0000
+@@ -1,15 +1,18 @@
+ [
+   {
+-    "file": "pi-zig-v8-checkpoint-179(2).zip",
+-    "bytes": 1721777,
+-    "sha256": "5ba3d4df9829f98c3cd567d59afc1636d898ce06d0c44c9f0bb5d0279e9cc1b7"
++    "role": "continuation_checkpoint",
++    "file": "pi-zig-v8-checkpoint-180-FINAL(1).zip",
++    "bytes": 1790709,
++    "sha256": "35871efa1dc29e63b2bc3e2e51a7d127b8e0d1ad1c1e550cc8e5888559676f09"
+   },
+   {
+-    "file": "pi-main (3)(20260822-125319).zip",
++    "role": "typescript_reference",
++    "file": "pi-main (3)(20260822-181934).zip",
+     "bytes": 6854955,
+     "sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a"
+   },
+   {
++    "role": "compiler_toolchain",
+     "file": "zig-x86_64-linux-0.16.0.tar.xz",
+     "bytes": 55478392,
+     "sha256": "70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00"
+diff -ruN pi-zig-v8-checkpoint-180/checkpoint-tests/check-provider-method-production-integration.py pi-zig-v8-checkpoint-181/checkpoint-tests/check-provider-method-production-integration.py
+--- pi-zig-v8-checkpoint-180/checkpoint-tests/check-provider-method-production-integration.py	2026-08-22 15:46:38.000000000 +0000
++++ pi-zig-v8-checkpoint-181/checkpoint-tests/check-provider-method-production-integration.py	2026-08-22 18:49:41.590958501 +0000
+@@ -1,7 +1,33 @@
+ from pathlib import Path
+-p=Path('src/extensions/js_bridge.mjs')
+-t=p.read_text(encoding="utf-8")
+-required=["checkpoint-180-provider-method-codec","__pi_callback_id","__pi_callback_kind","provider_method","__pi_callback_path"]
+-missing=[x for x in required if x not in t]
+-if missing: raise SystemExit("missing production markers: "+repr(missing))
+-print("production provider-method codec markers: ok")
++
++bridge = Path("src/extensions/js_bridge.mjs").read_text(encoding="utf-8")
++registry = Path("src/extensions/provider_registry.zig").read_text(encoding="utf-8")
++runtime = Path("src/extensions/js_runtime.zig").read_text(encoding="utf-8")
++main = Path("src/main.zig").read_text(encoding="utf-8")
++host = Path("src/extensions/host.zig").read_text(encoding="utf-8")
++
++register_start = bridge.index("  registerProvider(nameOrProvider, config) {")
++unregister_start = bridge.index("  unregisterProvider(rawName) {", register_start)
++register_body = bridge[register_start:unregister_start]
++unregister_end = bridge.index("  events,", unregister_start)
++unregister_body = bridge[unregister_start:unregister_end]
++
++checks = {
++    "production registerProvider calls the real codec": "installProvider(name, value, !named)" in register_body,
++    "checkpoint-180 codec is absent from unregisterProvider": "checkpoint-180-provider-method-codec" not in unregister_body,
++    "callbacks have a dedicated runtime map": "const providerCallbacks = new Map()" in bridge,
++    "provider method requests dispatch through retained callbacks": "invokeProviderMethod(request.callbackId" in bridge,
++    "unregister removes retained callbacks": "removeProviderCallbacks(name)" in unregister_body,
++    "native runtime exposes provider invocation": "pub fn invokeProviderMethod(" in runtime,
++    "native registry validates descriptor ownership": "callbackRuntime(method.callback_id, method.path)" in registry,
++    "OAuth refresh adapter exists": "pub fn refreshOAuth(" in registry,
++    "OAuth key adapter exists": "pub fn oauthApiKey(" in registry,
++    "OAuth model projection adapter exists": "pub fn modifyOAuthModels(" in registry,
++    "startup associates provider with owning worker": "registerJsonWithRuntime(registration.name, registration.config_json, extension.script_runtime)" in main,
++    "dynamic actions resolve extension worker": "scriptRuntimeForExtension(record.extension_name)" in main,
++    "host exposes worker ownership lookup": "pub fn scriptRuntimeForExtension(" in host,
++}
++missing = [name for name, ok in checks.items() if not ok]
++if missing:
++    raise SystemExit("production provider-method integration checks failed: " + "; ".join(missing))
++print(f"production provider-method integration: {len(checks)}/{len(checks)} checks passed")
+diff -ruN pi-zig-v8-checkpoint-180/checkpoint-tests/provider-method-manifest-bridge.mjs pi-zig-v8-checkpoint-181/checkpoint-tests/provider-method-manifest-bridge.mjs
+--- pi-zig-v8-checkpoint-180/checkpoint-tests/provider-method-manifest-bridge.mjs	2026-08-22 15:49:24.000000000 +0000
++++ pi-zig-v8-checkpoint-181/checkpoint-tests/provider-method-manifest-bridge.mjs	2026-08-22 18:49:41.586469649 +0000
+@@ -1,78 +1,160 @@
+ import assert from "node:assert/strict";
++import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
++import { tmpdir } from "node:os";
++import path from "node:path";
++import { spawn } from "node:child_process";
++import readline from "node:readline";
++import { fileURLToPath } from "node:url";
+ 
+-const callbacks = new Map();
+-function encodeProvider(name, config) {
+-  return ((root) => {
+-    const seen = new WeakMap();
+-    const walk = (value, path, owner) => {
+-      if (typeof value === "function") {
+-        const callable = owner == null ? value : value.bind(owner);
+-        let ordinal = callbacks.size;
+-        let callbackId;
+-        do {
+-          callbackId = "provider:" + String(name) + ":" + path.join(".") + ":" + String(ordinal);
+-          ordinal += 1;
+-        } while (callbacks.has(callbackId));
+-        callbacks.set(callbackId, callable);
+-        return {
+-          __pi_callback_id: String(callbackId),
+-          __pi_callback_kind: "provider_method",
+-          __pi_callback_path: path.join("."),
+-        };
+-      }
+-      if (Array.isArray(value)) return value.map((item, index) => walk(item, path.concat(String(index)), value));
+-      if (value && typeof value === "object") {
+-        if (seen.has(value)) return seen.get(value);
+-        const copy = {};
+-        seen.set(value, copy);
+-        for (const key of Object.keys(value)) copy[key] = walk(value[key], path.concat(key), value);
+-        return copy;
+-      }
+-      return value;
+-    };
+-    return walk(root, [], null);
+-  })(config);
+-}
+-
+-const secret = "closure-preserved";
+-const provider = {
+-  baseUrl: "https://example.invalid/v1",
+-  api: "openai-completions",
+-  oauth: {
+-    login: async (callbacksArg) => ({ token: `${secret}:${callbacksArg.code}` }),
+-    refreshToken: async (credentials) => ({ ...credentials, refreshed: true }),
+-    getApiKey(credentials) { return `${this.prefix}:${credentials.token}`; },
+-    prefix: "bound",
+-  },
+-  transforms: [
+-    (request) => ({ ...request, transformed: true }),
+-  ],
+-};
+-
+-const encoded = encodeProvider("demo", provider);
+-const wire = JSON.stringify(encoded);
+-assert.ok(!wire.includes("closure-preserved"), "function bodies must not leak into the manifest");
+-const manifest = JSON.parse(wire);
+-assert.equal(manifest.baseUrl, provider.baseUrl);
+-assert.deepEqual(manifest.oauth.login, {
+-  __pi_callback_id: "provider:demo:oauth.login:0",
+-  __pi_callback_kind: "provider_method",
+-  __pi_callback_path: "oauth.login",
+-});
+-assert.equal(manifest.oauth.refreshToken.__pi_callback_path, "oauth.refreshToken");
+-assert.equal(manifest.oauth.getApiKey.__pi_callback_path, "oauth.getApiKey");
+-assert.equal(manifest.transforms[0].__pi_callback_path, "transforms.0");
+-assert.equal(callbacks.size, 4);
+-assert.deepEqual(await callbacks.get(manifest.oauth.login.__pi_callback_id)({ code: "abc" }), {
+-  token: "closure-preserved:abc",
+-});
+-assert.deepEqual(await callbacks.get(manifest.oauth.refreshToken.__pi_callback_id)({ token: "t" }), {
+-  token: "t",
+-  refreshed: true,
+-});
+-assert.equal(callbacks.get(manifest.oauth.getApiKey.__pi_callback_id)({ token: "key" }), "bound:key");
+-assert.deepEqual(callbacks.get(manifest.transforms[0].__pi_callback_id)({ prompt: "p" }), {
+-  prompt: "p",
+-  transformed: true,
+-});
+-console.log("provider method manifest bridge: ok");
++const here = path.dirname(fileURLToPath(import.meta.url));
++const root = path.resolve(here, "..");
++const bridgeSource = readFileSync(path.join(root, "src/extensions/js_bridge.mjs"), "utf8");
++const temp = mkdtempSync(path.join(tmpdir(), "pi-provider-method-181-"));
++const extensionPath = path.join(temp, "provider-e2e.mjs");
++
++writeFileSync(extensionPath, String.raw`
++export default function (pi) {
++  const closure = "production-bridge-181";
++  const config = {
++    name: "Provider E2E",
++    baseUrl: "https://provider.invalid/v1",
++    api: "openai-completions",
++    apiKey: "unused",
++    models: [{ id: "e2e", name: "E2E", reasoning: false, input: ["text"], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
++    oauth: {
++      owner: "oauth-owner",
++      async refreshToken(credentials, signal) {
++        assertSignal(signal);
++        if (this.owner !== "oauth-owner") throw new Error("provider receiver was not retained");
++        return { ...credentials, access: closure + ":" + credentials.refresh };
++      },
++      getApiKey(credentials) {
++        if (this.owner !== "oauth-owner") throw new Error("provider key receiver was not retained");
++        return closure + ":" + credentials.access;
++      },
++      async waitForAbort(_credentials, signal) {
++        assertSignal(signal);
++        await new Promise((resolve, reject) => {
++          if (signal.aborted) return reject(signal.reason);
++          const timer = setTimeout(() => reject(new Error("abort not delivered")), 1500);
++          signal.addEventListener("abort", () => { clearTimeout(timer); reject(signal.reason); }, { once: true });
++        });
++      },
++    },
++    nested: { methods: [function (value) { return this.length + ":" + closure + ":" + value; }] },
++  };
++  function assertSignal(signal) {
++    if (!(signal instanceof AbortSignal)) throw new Error("provider signal missing");
++  }
++  pi.registerProvider("production-e2e", config);
++  pi.registerCommand("provider-replace", { handler: async () => pi.registerProvider("production-e2e", { name: "Provider E2E Renamed" }) });
++  pi.registerCommand("provider-cycle", { handler: async () => { const cyclic = {}; cyclic.self = cyclic; try { pi.registerProvider("production-e2e", { cyclic }); } catch {} } });
++  pi.registerCommand("provider-unregister", { handler: async () => pi.unregisterProvider("production-e2e") });
++  pi.registerCommand("provider-ping", { handler: async (_args, ctx) => ctx.ui.notify("worker-reused") });
++}
++`);
++
++const child = spawn(process.execPath, [
++  "--no-warnings",
++  "--experimental-strip-types",
++  "--experimental-transform-types",
++  "--input-type=module",
++  "-e",
++  bridgeSource,
++  extensionPath,
++], { stdio: ["pipe", "pipe", "pipe"] });
++let stderr = "";
++child.stderr.setEncoding("utf8");
++child.stderr.on("data", (chunk) => { stderr += chunk; });
++const lines = readline.createInterface({ input: child.stdout, crlfDelay: Infinity })[Symbol.asyncIterator]();
++
++async function record() {
++  for (;;) {
++    const next = await lines.next();
++    if (next.done) throw new Error(`bridge closed before a protocol record; stderr=${stderr}`);
++    const marker = next.value.indexOf("\x1e");
++    if (marker < 0) continue;
++    return JSON.parse(next.value.slice(marker + 1));
++  }
++}
++function send(value) {
++  child.stdin.write(JSON.stringify(value) + "\n");
++}
++function descriptorAt(rootValue, dottedPath) {
++  let value = rootValue;
++  for (const segment of dottedPath.split(".")) value = value[segment];
++  assert.equal(value.__pi_callback_kind, "provider_method");
++  assert.equal(value.__pi_callback_path, dottedPath);
++  assert.equal(typeof value.__pi_callback_id, "string");
++  assert.ok(value.__pi_callback_id.length > 0);
++  return value;
++}
++async function invoke(callbackId, args, appendSignal = false, invocationId = "provider") {
++  send({ kind: "provider_method", callbackId, args, appendSignal, abortable: appendSignal, invocationId, context: { mode: "print", hasUI: false } });
++  return record();
++}
++async function command(name, invocationId) {
++  send({ kind: "command", name, rawArguments: "", flags: {}, invocationId, context: { mode: "print", hasUI: false } });
++  return record();
++}
++
++try {
++  const ready = await record();
++  assert.equal(ready.type, "ready");
++  const registration = ready.manifest.providers.find((entry) => entry.name === "production-e2e");
++  assert.ok(registration, "production provider missing from startup manifest");
++  const refresh = descriptorAt(registration.config, "oauth.refreshToken");
++  const key = descriptorAt(registration.config, "oauth.getApiKey");
++  const wait = descriptorAt(registration.config, "oauth.waitForAbort");
++  const nested = descriptorAt(registration.config, "nested.methods.0");
++  assert.ok(!JSON.stringify(registration.config).includes("production-bridge-181"), "function source/closure leaked into manifest");
++
++  const refreshed = await invoke(refresh.__pi_callback_id, [{ refresh: "r181" }], true, "refresh");
++  assert.equal(refreshed.ok, true);
++  assert.equal(refreshed.result.value.access, "production-bridge-181:r181");
++  const apiKey = await invoke(key.__pi_callback_id, [{ access: "a181" }], false, "key");
++  assert.deepEqual(apiKey, { ok: true, result: { value: "production-bridge-181:a181" } });
++  const nestedResult = await invoke(nested.__pi_callback_id, ["array"], false, "nested");
++  assert.equal(nestedResult.result.value, "1:production-bridge-181:array");
++
++  send({ kind: "provider_method", callbackId: wait.__pi_callback_id, args: [{}], appendSignal: true, abortable: true, invocationId: "abort-181", context: { mode: "print", hasUI: false } });
++  setTimeout(() => send({ kind: "abort_current", invocationId: "abort-181", reason: "Operation aborted" }), 30);
++  const aborted = await record();
++  assert.equal(aborted.ok, false);
++  assert.match(aborted.error, /Operation aborted/);
++
++  const replaced = await command("provider-replace", "replace");
++  assert.equal(replaced.ok, true);
++  const action = replaced.result.providers.find((entry) => entry.action === "register" && entry.name === "production-e2e");
++  assert.ok(action, "dynamic provider action missing");
++  assert.equal(action.config.name, "Provider E2E Renamed");
++  const replacementRefresh = descriptorAt(action.config, "oauth.refreshToken");
++  assert.notEqual(replacementRefresh.__pi_callback_id, refresh.__pi_callback_id);
++  assert.equal((await invoke(refresh.__pi_callback_id, [{ refresh: "old" }], true, "old-generation")).result.value.access, "production-bridge-181:old");
++  assert.equal((await invoke(replacementRefresh.__pi_callback_id, [{ refresh: "new" }], true, "new-generation")).result.value.access, "production-bridge-181:new");
++
++  const cycle = await command("provider-cycle", "cycle");
++  assert.equal(cycle.ok, true);
++  assert.equal((await invoke(replacementRefresh.__pi_callback_id, [{ refresh: "after-cycle" }], true, "after-cycle")).result.value.access, "production-bridge-181:after-cycle");
++
++  const removed = await command("provider-unregister", "unregister");
++  assert.equal(removed.ok, true);
++  assert.ok(removed.result.providers.some((entry) => entry.action === "unregister" && entry.name === "production-e2e"));
++  const unavailable = await invoke(replacementRefresh.__pi_callback_id, [{}], true, "removed");
++  assert.equal(unavailable.ok, false);
++  assert.match(unavailable.error, /unknown or unloaded provider callback/);
++  const ping = await command("provider-ping", "ping");
++  assert.equal(ping.ok, true);
++  assert.match(ping.result.message, /worker-reused/);
++
++  send({ kind: "shutdown" });
++  const shutdown = await record();
++  assert.equal(shutdown.ok, true);
++  child.stdin.end();
++  const exitCode = await new Promise((resolve) => child.once("close", resolve));
++  assert.equal(exitCode, 0, stderr);
++  console.log("production provider-method bridge e2e: ok");
++} finally {
++  if (child.exitCode === null) child.kill("SIGKILL");
++  rmSync(temp, { recursive: true, force: true });
++}
+diff -ruN pi-zig-v8-checkpoint-180/src/extensions/host.zig pi-zig-v8-checkpoint-181/src/extensions/host.zig
+--- pi-zig-v8-checkpoint-180/src/extensions/host.zig	2026-08-22 10:18:03.000000000 +0000
++++ pi-zig-v8-checkpoint-181/src/extensions/host.zig	2026-08-22 18:37:48.800006768 +0000
+@@ -406,6 +406,15 @@
+         for (self.extensions.items) |*extension| if (extension.script_runtime) |runtime| runtime.setUiBridge(bridge);
+     }
+ 
++    /// Return the persistent JavaScript worker that owns an extension action.
++    /// Native manifest extensions intentionally return null.
++    pub fn scriptRuntimeForExtension(self: *Host, extension_name: []const u8) ?*js_runtime.Runtime {
++        for (self.extensions.items) |*extension| {
++            if (std.mem.eql(u8, extension.name, extension_name)) return extension.script_runtime;
++        }
++        return null;
++    }
++
+     /// Replace the ExtensionContext snapshot supplied to every later script
+     /// hook/tool/command invocation. Native extensions are unaffected.
+     pub fn setScriptContextJson(self: *Host, raw: []const u8) !void {
+diff -ruN pi-zig-v8-checkpoint-180/src/extensions/js_bridge.mjs pi-zig-v8-checkpoint-181/src/extensions/js_bridge.mjs
+--- pi-zig-v8-checkpoint-180/src/extensions/js_bridge.mjs	2026-08-22 15:49:24.000000000 +0000
++++ pi-zig-v8-checkpoint-181/src/extensions/js_bridge.mjs	2026-08-22 18:54:42.004893554 +0000
+@@ -320,6 +320,10 @@
+ const flagValues = new Map();
+ const eventHandlers = new Map();
+ const providers = new Map();
++const providerSourceConfigs = new Map();
++const providerCallbacks = new Map();
++const providerCallbackIds = new Map();
++let nextProviderCallbackOrdinal = 1;
+ const messageRenderers = new Map();
+ const entryRenderers = new Map();
+ let markdownTransformer;
+@@ -391,6 +395,70 @@
+   child.on('close', (code, signal) => resolve({ stdout: Buffer.concat(stdout).toString(), stderr: Buffer.concat(stderr).toString(), code: code ?? -1, killed: signal !== null }));
+ });
+ const events = { emit(channel, data) { for (const handler of eventHandlers.get(channel) ?? []) Promise.resolve(handler(data)).catch(stderrWrite); }, on(channel, handler) { const list = eventHandlers.get(channel) ?? []; list.push(handler); eventHandlers.set(channel, list); return () => { const i = list.indexOf(handler); if (i >= 0) list.splice(i, 1); }; } };
++const providerPathText = (path) => path.join('.');
++const removeProviderCallbacks = (name) => {
++  const ids = providerCallbackIds.get(name);
++  if (ids) for (const id of ids) providerCallbacks.delete(id);
++  providerCallbackIds.delete(name);
++};
++const encodeProviderConfig = (name, root) => {
++  const pending = new Map();
++  const active = new WeakSet();
++  const walk = (value, path, owner) => {
++    if (typeof value === 'function') {
++      const callbackId = `provider:${encodeURIComponent(name)}:${nextProviderCallbackOrdinal++}`;
++      pending.set(callbackId, owner == null ? value : value.bind(owner));
++      return {
++        __pi_callback_id: callbackId,
++        __pi_callback_kind: 'provider_method',
++        __pi_callback_path: providerPathText(path),
++      };
++    }
++    if (!value || typeof value !== 'object') return value;
++    if (active.has(value)) {
++      const location = providerPathText(path) || '<root>';
++      throw new TypeError(`provider ${name} configuration contains a cycle at ${location}`);
++    }
++    active.add(value);
++    try {
++      if (Array.isArray(value)) return value.map((item, index) => walk(item, path.concat(String(index)), value));
++      const copy = Object.create(null);
++      for (const key of Object.keys(value)) copy[key] = walk(value[key], path.concat(key), value);
++      return copy;
++    } finally {
++      active.delete(value);
++    }
++  };
++  return { config: walk(root ?? {}, [], null), pending };
++};
++const installProvider = (rawName, rawConfig, replace = false) => {
++  const name = String(rawName);
++  if (!rawConfig || typeof rawConfig !== 'object' || Array.isArray(rawConfig)) {
++    throw new TypeError(`provider ${name} configuration must be an object`);
++  }
++  // Named re-registration follows upstream's shallow, defined-value merge.
++  // Re-encode the complete effective object so callbacks retained from the
++  // previous registration receive live IDs instead of dangling descriptors.
++  const effective = replace ? {} : { ...(providerSourceConfigs.get(name) ?? {}) };
++  for (const [key, value] of Object.entries(rawConfig)) if (value !== undefined) effective[key] = value;
++  const encoded = encodeProviderConfig(name, effective);
++  // Fail before changing the live registration when any retained non-function
++  // value cannot cross the JSON protocol (for example BigInt).
++  JSON.stringify(encoded.config);
++  // Encoding is complete before anything live changes. Retain prior callback
++  // IDs until explicit unregister/runtime shutdown: native provider actions are
++  // applied at a deterministic safe point after the JavaScript call returns,
++  // so the old native snapshot must remain callable during that handoff window.
++  const retainedIds = providerCallbackIds.get(name) ?? new Set();
++  for (const [id, callback] of encoded.pending) {
++    providerCallbacks.set(id, callback);
++    retainedIds.add(id);
++  }
++  providerCallbackIds.set(name, retainedIds);
++  providerSourceConfigs.set(name, effective);
++  providers.set(name, encoded.config);
++  return encoded.config;
++};
+ const pi = {
+   on(event, handler) { const list = handlers.get(event) ?? []; list.push(handler); handlers.set(event, list); },
+   registerTool(tool) { if (tool?.name) tools.set(tool.name, tool); },
+@@ -487,18 +555,24 @@
+   },
+   registerProvider(nameOrProvider, config) {
+     assertCurrentActionContext();
+-    const name = typeof nameOrProvider === 'string' ? nameOrProvider : nameOrProvider?.id ?? nameOrProvider?.name;
+-    const value = typeof nameOrProvider === 'string' ? config : nameOrProvider;
+-    if (name) providers.set(String(name), value ?? {});
+-    if (currentActions && name) currentActions.providers.push({ action: 'register', name: String(name), config: value ?? {} });
+-    if (name) recordAction('register_provider', { name: String(name), config: value ?? {} });
++    const rawName = typeof nameOrProvider === 'string' ? nameOrProvider : nameOrProvider?.id ?? nameOrProvider?.name;
++    if (rawName == null || String(rawName).length === 0) throw new Error('provider registration requires a non-empty name or id');
++    const name = String(rawName);
++    const named = typeof nameOrProvider === 'string';
++    if (named && config == null) throw new Error('provider config is required when registering by name');
++    const value = named ? config : nameOrProvider;
++    const encoded = installProvider(name, value, !named);
++    if (currentActions) currentActions.providers.push({ action: 'register', name, config: encoded });
++    recordAction('register_provider', { name, config: encoded });
+   },
+-  unregisterProvider(name) {
+-    name = ((root) => { const seen = new WeakMap(); const walk = (value, path, owner) => { if (typeof value === "function") { const callable = owner == null ? value : value.bind(owner); let ordinal = handlers.size; let callbackId; do { callbackId = "provider:" + String("provider") + ":" + path.join(".") + ":" + String(ordinal); ordinal += 1; } while (handlers.has(callbackId)); handlers.set(callbackId, callable); return { __pi_callback_id: String(callbackId), __pi_callback_kind: "provider_method", __pi_callback_path: path.join(".") }; } if (Array.isArray(value)) return value.map((item, index) => walk(item, path.concat(String(index)), value)); if (value && typeof value === "object") { if (seen.has(value)) return seen.get(value); const copy = {}; seen.set(value, copy); for (const key of Object.keys(value)) copy[key] = walk(value[key], path.concat(key), value); return copy; } return value; }; return walk(root, [], null); })(name); // checkpoint-180-provider-method-codec
++  unregisterProvider(rawName) {
+     assertCurrentActionContext();
+-    providers.delete(String(name));
+-    if (currentActions) currentActions.providers.push({ action: 'unregister', name: String(name) });
+-    recordAction('unregister_provider', { name: String(name) });
++    const name = String(rawName);
++    providers.delete(name);
++    providerSourceConfigs.delete(name);
++    removeProviderCallbacks(name);
++    if (currentActions) currentActions.providers.push({ action: 'unregister', name });
++    recordAction('unregister_provider', { name });
+   },
+   events,
+ };
+@@ -843,6 +917,13 @@
+   const returned = await shortcut.handler(createContext(actions, { canReload: true }));
+   return returned && typeof returned === 'object' ? returned : {};
+ }
++async function invokeProviderMethod(callbackId, args, signal = undefined, appendSignal = false) {
++  const callback = providerCallbacks.get(String(callbackId));
++  if (typeof callback !== 'function') throw new Error(`unknown or unloaded provider callback: ${callbackId}`);
++  if (!Array.isArray(args)) throw new TypeError('provider method arguments must be a JSON array');
++  const invokeArgs = appendSignal ? [...args, signal] : args;
++  return await callback(...invokeArgs);
++}
+ const toolRendererContext = (name, payload, state, slot) => ({
+   args: state.args,
+   toolCallId: state.toolCallId,
+@@ -934,6 +1015,11 @@
+     let result;
+     if (request.kind === 'hook') result = await invokeHook(request.name, request.payload ?? {}, actions, abortController?.signal);
+     else if (request.kind === 'tool') result = await invokeTool(request.name, request.payload ?? {}, actions, !!request.streamUpdates, abortController.signal, request.toolCallId);
++    else if (request.kind === 'provider_method') {
++      result = await invokeProviderMethod(request.callbackId, request.args ?? [], abortController?.signal, !!request.appendSignal);
++      writeResponse({ ok: true, result: { value: result === undefined ? null : result } });
++      return;
++    }
+     else if (request.kind === 'command') result = await invokeCommand(request.name, request.rawArguments ?? '', actions);
+     else if (request.kind === 'shortcut') result = await invokeShortcut(request.name, actions);
+     else if (request.kind.startsWith('render_') || request.kind === 'transform_markdown' || request.kind === 'prepare_tool_arguments') {
+diff -ruN pi-zig-v8-checkpoint-180/src/extensions/js_runtime.zig pi-zig-v8-checkpoint-181/src/extensions/js_runtime.zig
+--- pi-zig-v8-checkpoint-180/src/extensions/js_runtime.zig	2026-08-22 10:18:03.000000000 +0000
++++ pi-zig-v8-checkpoint-181/src/extensions/js_runtime.zig	2026-08-22 18:45:59.386959580 +0000
+@@ -260,6 +260,45 @@
+         return self.exchangeUnlocked(request.written());
+     }
+ 
++    /// Invoke one function retained from an extension-owned provider config.
++    /// `args_json` must be a JSON array and the returned owned object has the
++    /// shape `{"value": <callback result>}`. When `append_signal` is true the
++    /// worker appends an invocation-scoped AbortSignal after the supplied args.
++    pub fn invokeProviderMethod(
++        self: *Runtime,
++        callback_id: []const u8,
++        args_json: []const u8,
++        append_signal: bool,
++        abort_flag: ?*bool,
++    ) ![]u8 {
++        if (callback_id.len == 0 or callback_id.len > 4096) return error.InvalidProviderCallbackId;
++        try validateArrayJson(self.gpa, args_json);
++
++        self.mutex.lockUncancelable(self.io);
++        defer self.mutex.unlock(self.io);
++        if (self.closed) return error.JavaScriptExtensionClosed;
++
++        var request: std.Io.Writer.Allocating = .init(self.gpa);
++        defer request.deinit();
++        try request.writer.writeAll("{\"kind\":\"provider_method\",\"callbackId\":");
++        try std.json.Stringify.value(callback_id, .{}, &request.writer);
++        try request.writer.writeAll(",\"args\":");
++        try request.writer.writeAll(args_json);
++        if (append_signal) try request.writer.writeAll(",\"appendSignal\":true");
++
++        const invocation_id = self.next_invocation_id;
++        self.next_invocation_id +%= 1;
++        if (self.next_invocation_id == 0) self.next_invocation_id = 1;
++        try request.writer.print(",\"invocationId\":\"{d}\"", .{invocation_id});
++        if (append_signal or abort_flag != null) try request.writer.writeAll(",\"abortable\":true");
++        if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire))
++            try request.writer.writeAll(",\"aborted\":true");
++        try request.writer.writeAll(",\"context\":");
++        try self.writeContext(&request.writer);
++        try request.writer.writeByte('}');
++        return self.exchangeWithUpdatesUnlocked(request.written(), invocation_id, abort_flag, null, null);
++    }
++
+     /// Invoke a pure extension renderer or markdown transformer. The bridge
+     /// returns an owned object such as `{"found":true,"lines":[...]}`.
+     /// Renderer calls share the persistent worker, so tool renderer state and
+@@ -644,6 +683,12 @@
+     defer parsed.deinit();
+ }
+ 
++fn validateArrayJson(gpa: std.mem.Allocator, raw: []const u8) !void {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
++    defer parsed.deinit();
++    if (parsed.value != .array) return error.InvalidJavaScriptExtensionRequest;
++}
++
+ pub fn isScriptPath(path: []const u8) bool {
+     const extensions = [_][]const u8{ ".js", ".mjs", ".cjs", ".ts", ".mts", ".cts" };
+     for (extensions) |extension| {
+@@ -652,7 +697,84 @@
+     return false;
+ }
+ 
+-fn nodeAvailable(gpa: std.mem.Allocator, io: Io) bool {
++fn valueAtTestPath(root: std.json.Value, path: []const u8) !std.json.Value {
++    var current = root;
++    var segments = std.mem.splitScalar(u8, path, '.');
++    while (segments.next()) |segment| {
++        if (segment.len == 0) return error.InvalidTestPath;
++        current = switch (current) {
++            .object => |object| object.get(segment) orelse return error.TestPathNotFound,
++            .array => |array| blk: {
++                const index = std.fmt.parseInt(usize, segment, 10) catch return error.InvalidTestPath;
++                if (index >= array.items.len) return error.TestPathNotFound;
++                break :blk array.items[index];
++            },
++            else => return error.TestPathNotFound,
++        };
++    }
++    return current;
++}
++
++fn callbackIdAtTestValue(gpa: std.mem.Allocator, root: std.json.Value, path: []const u8) ![]u8 {
++    const descriptor = try valueAtTestPath(root, path);
++    if (descriptor != .object) return error.InvalidTestCallbackDescriptor;
++    const kind = descriptor.object.get("__pi_callback_kind") orelse return error.InvalidTestCallbackDescriptor;
++    const callback_id = descriptor.object.get("__pi_callback_id") orelse return error.InvalidTestCallbackDescriptor;
++    const descriptor_path = descriptor.object.get("__pi_callback_path") orelse return error.InvalidTestCallbackDescriptor;
++    if (kind != .string or !std.mem.eql(u8, kind.string, "provider_method")) return error.InvalidTestCallbackDescriptor;
++    if (callback_id != .string or callback_id.string.len == 0) return error.InvalidTestCallbackDescriptor;
++    if (descriptor_path != .string or !std.mem.eql(u8, descriptor_path.string, path)) return error.InvalidTestCallbackDescriptor;
++    return gpa.dupe(u8, callback_id.string);
++}
++
++fn providerManifestCallbackId(
++    gpa: std.mem.Allocator,
++    manifest_json: []const u8,
++    provider_name: []const u8,
++    path: []const u8,
++) ![]u8 {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, manifest_json, .{});
++    defer parsed.deinit();
++    if (parsed.value != .object) return error.InvalidTestManifest;
++    const providers = parsed.value.object.get("providers") orelse return error.InvalidTestManifest;
++    if (providers != .array) return error.InvalidTestManifest;
++    for (providers.array.items) |entry| {
++        if (entry != .object) continue;
++        const name = entry.object.get("name") orelse continue;
++        const config = entry.object.get("config") orelse continue;
++        if (name == .string and std.mem.eql(u8, name.string, provider_name)) {
++            return callbackIdAtTestValue(gpa, config, path);
++        }
++    }
++    return error.TestProviderNotFound;
++}
++
++fn providerActionCallbackId(
++    gpa: std.mem.Allocator,
++    result_json: []const u8,
++    provider_name: []const u8,
++    path: []const u8,
++) ![]u8 {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, result_json, .{});
++    defer parsed.deinit();
++    if (parsed.value != .object) return error.InvalidTestAction;
++    const providers = parsed.value.object.get("providers") orelse return error.InvalidTestAction;
++    if (providers != .array) return error.InvalidTestAction;
++    for (providers.array.items) |entry| {
++        if (entry != .object) continue;
++        const action = entry.object.get("action") orelse continue;
++        const name = entry.object.get("name") orelse continue;
++        const config = entry.object.get("config") orelse continue;
++        if (action == .string and std.mem.eql(u8, action.string, "register") and
++            name == .string and std.mem.eql(u8, name.string, provider_name))
++        {
++            return callbackIdAtTestValue(gpa, config, path);
++        }
++    }
++    return error.TestProviderActionNotFound;
++}
++
++pub fn nodeAvailable(gpa: std.mem.Allocator, io: Io) bool {
+     const result = std.process.run(gpa, io, .{
+         .argv = &.{ "node", "--version" },
+         .stdout_limit = .limited(4096),
+@@ -726,6 +848,149 @@
+     try std.testing.expect(std.mem.indexOf(u8, tool, "Hello Ada 12") != null);
+ }
+ 
++test "provider methods use the production manifest bridge with ownership re-registration errors cancellation and cleanup" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
++
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    const source =
++        \\export default function(pi) {
++        \\  const captured = 'closure-181';
++        \\  const provider = {
++        \\    name: 'Bridge Provider',
++        \\    baseUrl: 'https://provider.invalid/v1',
++        \\    api: 'openai-completions',
++        \\    apiKey: 'unused',
++        \\    models: [{ id: 'bridge-model', name: 'Bridge Model', reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
++        \\    oauth: {
++        \\      owner: 'oauth-owner',
++        \\      async refreshToken(credentials, signal) {
++        \\        if (this.owner !== 'oauth-owner') throw new Error('refresh receiver lost');
++        \\        if (!(signal instanceof AbortSignal)) throw new Error('refresh signal missing');
++        \\        return { ...credentials, access: `${captured}:${this.owner}:${credentials.refresh}`, expires: 181 };
++        \\      },
++        \\      getApiKey(credentials) {
++        \\        if (this.owner !== 'oauth-owner') throw new Error('key receiver lost');
++        \\        return `${captured}:${credentials.access}`;
++        \\      },
++        \\      async rejectRefresh() { throw new Error('provider-refresh-exploded-181'); },
++        \\      async waitForAbort(_credentials, signal) {
++        \\        await new Promise((resolve, reject) => {
++        \\          if (signal.aborted) { reject(signal.reason); return; }
++        \\          const timer = setTimeout(() => reject(new Error('provider abort was not delivered')), 1500);
++        \\          signal.addEventListener('abort', () => { clearTimeout(timer); reject(signal.reason); }, { once: true });
++        \\        });
++        \\      },
++        \\    },
++        \\    nested: { methods: [function(value) { return `${this.length}:${captured}:${value}`; }] },
++        \\  };
++        \\  pi.registerProvider('bridge-demo', provider);
++        \\  pi.registerCommand('replace-provider', { handler: async () => { pi.registerProvider('bridge-demo', { name: 'Renamed Bridge Provider' }); } });
++        \\  pi.registerCommand('cycle-provider', { handler: async (_args, ctx) => { const cyclic = {}; cyclic.self = cyclic; try { pi.registerProvider('bridge-demo', { cyclic }); } catch (error) { ctx.ui.notify(error.message); } } });
++        \\  pi.registerCommand('unregister-provider', { handler: async () => { pi.unregisterProvider('bridge-demo'); } });
++        \\  pi.registerCommand('provider-ping', { handler: async (_args, ctx) => { ctx.ui.notify('provider-worker-reused'); } });
++        \\}
++    ;
++    try tmp.dir.writeFile(io, .{ .sub_path = "provider-methods.mjs", .data = source });
++    var path_buf: [std.fs.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &path_buf);
++    const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "provider-methods.mjs" });
++    defer gpa.free(path);
++
++    var started = try Runtime.start(gpa, io, path, "node");
++    defer started.runtime.deinit();
++    defer gpa.free(started.manifest_json);
++    started.runtime.timeout_ms = 5000;
++
++    const refresh_id = try providerManifestCallbackId(gpa, started.manifest_json, "bridge-demo", "oauth.refreshToken");
++    defer gpa.free(refresh_id);
++    const key_id = try providerManifestCallbackId(gpa, started.manifest_json, "bridge-demo", "oauth.getApiKey");
++    defer gpa.free(key_id);
++    const nested_id = try providerManifestCallbackId(gpa, started.manifest_json, "bridge-demo", "nested.methods.0");
++    defer gpa.free(nested_id);
++    const reject_id = try providerManifestCallbackId(gpa, started.manifest_json, "bridge-demo", "oauth.rejectRefresh");
++    defer gpa.free(reject_id);
++    const abort_id = try providerManifestCallbackId(gpa, started.manifest_json, "bridge-demo", "oauth.waitForAbort");
++    defer gpa.free(abort_id);
++
++    const refreshed = try started.runtime.invokeProviderMethod(refresh_id, "[{\"refresh\":\"refresh-value\"}]", true, null);
++    defer gpa.free(refreshed);
++    try std.testing.expect(std.mem.indexOf(u8, refreshed, "closure-181:oauth-owner:refresh-value") != null);
++    try std.testing.expect(std.mem.indexOf(u8, refreshed, "\"expires\":181") != null);
++
++    const key = try started.runtime.invokeProviderMethod(key_id, "[{\"access\":\"access-value\"}]", false, null);
++    defer gpa.free(key);
++    try std.testing.expectEqualStrings("{\"value\":\"closure-181:access-value\"}", key);
++
++    const nested = try started.runtime.invokeProviderMethod(nested_id, "[\"array-value\"]", false, null);
++    defer gpa.free(nested);
++    try std.testing.expectEqualStrings("{\"value\":\"1:closure-181:array-value\"}", nested);
++
++    try std.testing.expectError(
++        error.JavaScriptExtensionExecutionFailed,
++        started.runtime.invokeProviderMethod(reject_id, "[]", false, null),
++    );
++    try std.testing.expect(started.runtime.lastError() != null);
++    try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "provider-refresh-exploded-181") != null);
++    try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "rejectRefresh") != null);
++
++    const AbortTask = struct {
++        fn run(task_io: Io, flag: *bool) Io.Cancelable!void {
++            const pause: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(40), .clock = .awake } };
++            try pause.sleep(task_io);
++            @atomicStore(bool, flag, true, .release);
++        }
++    };
++    var aborted = false;
++    var group: Io.Group = .init;
++    group.async(io, AbortTask.run, .{ io, &aborted });
++    try std.testing.expectError(
++        error.JavaScriptExtensionExecutionFailed,
++        started.runtime.invokeProviderMethod(abort_id, "[{}]", true, &aborted),
++    );
++    try group.await(io);
++    try std.testing.expect(started.runtime.lastError() != null);
++    try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "Operation aborted") != null);
++
++    const replacement = try started.runtime.invokeCommand("replace-provider", "", "{}");
++    defer gpa.free(replacement);
++    const replacement_refresh_id = try providerActionCallbackId(gpa, replacement, "bridge-demo", "oauth.refreshToken");
++    defer gpa.free(replacement_refresh_id);
++    try std.testing.expect(!std.mem.eql(u8, refresh_id, replacement_refresh_id));
++    try std.testing.expect(std.mem.indexOf(u8, replacement, "Renamed Bridge Provider") != null);
++
++    // Both generations remain live through the native action handoff window.
++    const old_generation = try started.runtime.invokeProviderMethod(refresh_id, "[{\"refresh\":\"old-generation\"}]", true, null);
++    defer gpa.free(old_generation);
++    try std.testing.expect(std.mem.indexOf(u8, old_generation, "old-generation") != null);
++    const new_generation = try started.runtime.invokeProviderMethod(replacement_refresh_id, "[{\"refresh\":\"new-generation\"}]", true, null);
++    defer gpa.free(new_generation);
++    try std.testing.expect(std.mem.indexOf(u8, new_generation, "new-generation") != null);
++
++    const rejected_registration = try started.runtime.invokeCommand("cycle-provider", "", "{}");
++    defer gpa.free(rejected_registration);
++    try std.testing.expect(std.mem.indexOf(u8, rejected_registration, "contains a cycle") != null);
++    const after_rejection = try started.runtime.invokeProviderMethod(replacement_refresh_id, "[{\"refresh\":\"after-rejection\"}]", true, null);
++    defer gpa.free(after_rejection);
++    try std.testing.expect(std.mem.indexOf(u8, after_rejection, "after-rejection") != null);
++
++    const unregistered = try started.runtime.invokeCommand("unregister-provider", "", "{}");
++    defer gpa.free(unregistered);
++    try std.testing.expect(std.mem.indexOf(u8, unregistered, "unregister") != null);
++    try std.testing.expectError(
++        error.JavaScriptExtensionExecutionFailed,
++        started.runtime.invokeProviderMethod(refresh_id, "[{}]", true, null),
++    );
++    try std.testing.expect(started.runtime.lastError() != null);
++    try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "unknown or unloaded provider callback") != null);
++
++    const ping = try started.runtime.invokeCommand("provider-ping", "", "{}");
++    defer gpa.free(ping);
++    try std.testing.expect(std.mem.indexOf(u8, ping, "provider-worker-reused") != null);
++}
++
+ test "command and shortcut contexts expose reload as an ordered native action" {
+     const gpa = std.testing.allocator;
+     const io = std.testing.io;
+diff -ruN pi-zig-v8-checkpoint-180/src/extensions/provider_registry.zig pi-zig-v8-checkpoint-181/src/extensions/provider_registry.zig
+--- pi-zig-v8-checkpoint-180/src/extensions/provider_registry.zig	2026-08-22 10:18:03.000000000 +0000
++++ pi-zig-v8-checkpoint-181/src/extensions/provider_registry.zig	2026-08-22 18:45:59.555870723 +0000
+@@ -11,6 +11,31 @@
+ const models_file_mod = @import("../coding_agent/models_file.zig");
+ const runtime_config = @import("../coding_agent/runtime_config.zig");
+ const live_state = @import("../coding_agent/live_state.zig");
++const js_runtime = @import("js_runtime.zig");
++const provider_method_ref = @import("../provider_method_ref.zig");
++
++const CallbackOwner = struct {
++    callback_id: []u8,
++    path: []u8,
++    runtime: *js_runtime.Runtime,
++
++    fn deinit(self: *CallbackOwner, gpa: std.mem.Allocator) void {
++        gpa.free(self.callback_id);
++        gpa.free(self.path);
++        self.* = undefined;
++    }
++};
++
++const CollectedMethodRef = struct {
++    callback_id: []u8,
++    path: []u8,
++
++    fn deinit(self: *CollectedMethodRef, gpa: std.mem.Allocator) void {
++        gpa.free(self.callback_id);
++        gpa.free(self.path);
++        self.* = undefined;
++    }
++};
+ 
+ const Registration = struct {
+     gpa: std.mem.Allocator,
+@@ -20,6 +45,7 @@
+     replaces_models: bool,
+     resolved: []runtime_config.ResolvedRuntime,
+     runtime_configs: []live_state.RuntimeProviderConfig,
++    callback_owners: []CallbackOwner,
+ 
+     fn init(
+         gpa: std.mem.Allocator,
+@@ -28,13 +54,37 @@
+         agent_dir: ?[]const u8,
+         baseline_catalog: []const providers.ModelInfo,
+         name: []const u8,
++        incoming_json: []const u8,
+         config_json: []const u8,
++        incoming_runtime: ?*js_runtime.Runtime,
++        previous: ?*const Registration,
+     ) !Registration {
+         var config = try std.json.parseFromSlice(std.json.Value, gpa, config_json, .{});
+         defer config.deinit();
+         if (config.value != .object) return error.InvalidExtensionProviderConfig;
+         const replaces_models = config.value.object.get("models") != null;
+ 
++        var incoming = try std.json.parseFromSlice(std.json.Value, gpa, incoming_json, .{});
++        defer incoming.deinit();
++        if (incoming.value != .object) return error.InvalidExtensionProviderConfig;
++        var incoming_refs: std.ArrayList(CollectedMethodRef) = .empty;
++        defer deinitCollectedRefs(gpa, &incoming_refs);
++        var incoming_path: std.ArrayList(u8) = .empty;
++        defer incoming_path.deinit(gpa);
++        try collectMethodRefs(gpa, incoming.value, &incoming_path, &incoming_refs);
++
++        var effective_refs: std.ArrayList(CollectedMethodRef) = .empty;
++        defer deinitCollectedRefs(gpa, &effective_refs);
++        var effective_path: std.ArrayList(u8) = .empty;
++        defer effective_path.deinit(gpa);
++        try collectMethodRefs(gpa, config.value, &effective_path, &effective_refs);
++
++        const callback_owners = try buildCallbackOwners(gpa, effective_refs.items, incoming_refs.items, incoming_runtime, previous);
++        errdefer {
++            for (callback_owners) |*owner| owner.deinit(gpa);
++            if (callback_owners.len > 0) gpa.free(callback_owners);
++        }
++
+         const document = try providerDocument(gpa, name, config.value);
+         defer gpa.free(document);
+         var models_file = try models_file_mod.parseFromSlice(gpa, document);
+@@ -86,6 +136,7 @@
+             .replaces_models = replaces_models,
+             .resolved = resolved,
+             .runtime_configs = configs,
++            .callback_owners = callback_owners,
+         };
+     }
+ 
+@@ -93,11 +144,20 @@
+         for (self.resolved) |*runtime| runtime.deinit();
+         if (self.resolved.len > 0) self.gpa.free(self.resolved);
+         if (self.runtime_configs.len > 0) self.gpa.free(self.runtime_configs);
++        for (self.callback_owners) |*owner| owner.deinit(self.gpa);
++        if (self.callback_owners.len > 0) self.gpa.free(self.callback_owners);
+         self.models_file.deinit();
+         self.gpa.free(self.name);
+         self.gpa.free(self.config_json);
+         self.* = undefined;
+     }
++
++    fn callbackRuntime(self: *const Registration, callback_id: []const u8, path: []const u8) ?*js_runtime.Runtime {
++        for (self.callback_owners) |owner| {
++            if (std.mem.eql(u8, owner.callback_id, callback_id) and std.mem.eql(u8, owner.path, path)) return owner.runtime;
++        }
++        return null;
++    }
+ };
+ 
+ pub const Registry = struct {
+@@ -158,9 +218,22 @@
+         return self.findIndex(name) != null;
+     }
+ 
+-    /// Register or shallow-merge a provider. A failed re-registration leaves the
+-    /// previous provider and both published snapshots untouched.
++    /// Register a provider without JavaScript callback ownership. This remains
++    /// the entry point for native manifests and tests containing only data.
+     pub fn registerJson(self: *Registry, name: []const u8, config_json: []const u8) !void {
++        return self.registerJsonWithRuntime(name, config_json, null);
++    }
++
++    /// Register or shallow-merge a provider and associate callback descriptors
++    /// introduced by this registration with their persistent extension worker.
++    /// A failed re-registration leaves the previous registration and snapshots
++    /// untouched.
++    pub fn registerJsonWithRuntime(
++        self: *Registry,
++        name: []const u8,
++        config_json: []const u8,
++        runtime: ?*js_runtime.Runtime,
++    ) !void {
+         if (name.len == 0) return error.InvalidExtensionProviderName;
+         var incoming = try std.json.parseFromSlice(std.json.Value, self.gpa, config_json, .{});
+         defer incoming.deinit();
+@@ -180,20 +253,26 @@
+             self.agent_dir,
+             self.baseline_catalog,
+             name,
++            config_json,
+             effective_json,
++            runtime,
++            if (existing_index) |index| &self.registrations.items[index] else null,
+         );
+-        errdefer replacement.deinit();
+ 
+         if (existing_index) |index| {
+             var old = self.registrations.items[index];
+             self.registrations.items[index] = replacement;
+             self.rebuild() catch |err| {
+                 self.registrations.items[index] = old;
++                replacement.deinit();
+                 return err;
+             };
+             old.deinit();
+         } else {
+-            try self.registrations.append(self.gpa, replacement);
++            self.registrations.append(self.gpa, replacement) catch |err| {
++                replacement.deinit();
++                return err;
++            };
+             self.rebuild() catch |err| {
+                 var removed = self.registrations.pop().?;
+                 removed.deinit();
+@@ -202,6 +281,86 @@
+         }
+     }
+ 
++    /// Invoke a JSON-safe provider callback by its descriptor path. The returned
++    /// slice is the callback value itself as JSON, not the worker envelope.
++    pub fn invokeProviderMethod(
++        self: *Registry,
++        name: []const u8,
++        path: []const u8,
++        args_json: []const u8,
++        append_signal: bool,
++        abort_flag: ?*bool,
++    ) ![]u8 {
++        const index = self.findIndex(name) orelse return error.ExtensionProviderNotRegistered;
++        const registration = &self.registrations.items[index];
++        var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, registration.config_json, .{});
++        defer parsed.deinit();
++        const descriptor_value = try valueAtProviderPath(parsed.value, path);
++        const method = try provider_method_ref.ProviderMethodRef.fromJson(descriptor_value);
++        if (!std.mem.eql(u8, method.path, path)) return error.ProviderMethodPathMismatch;
++        const runtime = registration.callbackRuntime(method.callback_id, method.path) orelse return error.ProviderMethodRuntimeMissing;
++        const envelope = try runtime.invokeProviderMethod(method.callback_id, args_json, append_signal, abort_flag);
++        defer self.gpa.free(envelope);
++        return unwrapProviderMethodValue(self.gpa, envelope);
++    }
++
++    pub fn hasProviderMethod(self: *const Registry, name: []const u8, path: []const u8) bool {
++        const index = self.findIndex(name) orelse return false;
++        const registration = &self.registrations.items[index];
++        var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, registration.config_json, .{}) catch return false;
++        defer parsed.deinit();
++        const descriptor_value = valueAtProviderPath(parsed.value, path) catch return false;
++        const method = provider_method_ref.ProviderMethodRef.fromJson(descriptor_value) catch return false;
++        return std.mem.eql(u8, method.path, path) and registration.callbackRuntime(method.callback_id, method.path) != null;
++    }
++
++    /// OAuth refreshToken receives `(credential, signal)` in the upstream API.
++    pub fn refreshOAuth(
++        self: *Registry,
++        name: []const u8,
++        credential_json: []const u8,
++        abort_flag: ?*bool,
++    ) ![]u8 {
++        try validateObjectJson(self.gpa, credential_json);
++        const args = try singleJsonArgument(self.gpa, credential_json);
++        defer self.gpa.free(args);
++        const result = try self.invokeProviderMethod(name, "oauth.refreshToken", args, true, abort_flag);
++        errdefer self.gpa.free(result);
++        try validateObjectJson(self.gpa, result);
++        return result;
++    }
++
++    /// OAuth getApiKey receives one credential and must return a non-empty key.
++    pub fn oauthApiKey(self: *Registry, name: []const u8, credential_json: []const u8) ![]u8 {
++        try validateObjectJson(self.gpa, credential_json);
++        const args = try singleJsonArgument(self.gpa, credential_json);
++        defer self.gpa.free(args);
++        const result = try self.invokeProviderMethod(name, "oauth.getApiKey", args, false, null);
++        defer self.gpa.free(result);
++        var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, result, .{});
++        defer parsed.deinit();
++        if (parsed.value != .string or parsed.value.string.len == 0) return error.InvalidProviderApiKey;
++        return self.gpa.dupe(u8, parsed.value.string);
++    }
++
++    /// OAuth modifyModels receives the current JSON model array and credential
++    /// and must synchronously or asynchronously return the replacement array.
++    pub fn modifyOAuthModels(
++        self: *Registry,
++        name: []const u8,
++        models_json: []const u8,
++        credential_json: []const u8,
++    ) ![]u8 {
++        try validateArrayJson(self.gpa, models_json);
++        try validateObjectJson(self.gpa, credential_json);
++        const args = try twoJsonArguments(self.gpa, models_json, credential_json);
++        defer self.gpa.free(args);
++        const result = try self.invokeProviderMethod(name, "oauth.modifyModels", args, false, null);
++        errdefer self.gpa.free(result);
++        try validateArrayJson(self.gpa, result);
++        return result;
++    }
++
+     pub fn unregister(self: *Registry, name: []const u8) !bool {
+         const index = self.findIndex(name) orelse return false;
+         var removed = self.registrations.orderedRemove(index);
+@@ -269,6 +428,165 @@
+     }
+ };
+ 
++fn deinitCollectedRefs(gpa: std.mem.Allocator, refs: *std.ArrayList(CollectedMethodRef)) void {
++    for (refs.items) |*ref| ref.deinit(gpa);
++    refs.deinit(gpa);
++}
++
++fn appendPathSegment(gpa: std.mem.Allocator, path: *std.ArrayList(u8), segment: []const u8) !usize {
++    const previous_len = path.items.len;
++    if (previous_len > 0) try path.append(gpa, '.');
++    try path.appendSlice(gpa, segment);
++    return previous_len;
++}
++
++fn collectMethodRefs(
++    gpa: std.mem.Allocator,
++    value: std.json.Value,
++    path: *std.ArrayList(u8),
++    out: *std.ArrayList(CollectedMethodRef),
++) !void {
++    switch (value) {
++        .object => |object| {
++            const has_marker = object.get(provider_method_ref.callback_id_field) != null or
++                object.get(provider_method_ref.callback_kind_field) != null or
++                object.get(provider_method_ref.callback_path_field) != null;
++            if (has_marker) {
++                const ref = try provider_method_ref.ProviderMethodRef.fromJson(value);
++                if (!std.mem.eql(u8, ref.path, path.items)) return error.ProviderMethodPathMismatch;
++                const callback_id = try gpa.dupe(u8, ref.callback_id);
++                errdefer gpa.free(callback_id);
++                const owned_path = try gpa.dupe(u8, ref.path);
++                errdefer gpa.free(owned_path);
++                try out.append(gpa, .{
++                    .callback_id = callback_id,
++                    .path = owned_path,
++                });
++                return;
++            }
++            var it = object.iterator();
++            while (it.next()) |entry| {
++                const previous_len = try appendPathSegment(gpa, path, entry.key_ptr.*);
++                defer path.shrinkRetainingCapacity(previous_len);
++                try collectMethodRefs(gpa, entry.value_ptr.*, path, out);
++            }
++        },
++        .array => |array| for (array.items, 0..) |item, index| {
++            var index_buffer: [32]u8 = undefined;
++            const segment = try std.fmt.bufPrint(&index_buffer, "{d}", .{index});
++            const previous_len = try appendPathSegment(gpa, path, segment);
++            defer path.shrinkRetainingCapacity(previous_len);
++            try collectMethodRefs(gpa, item, path, out);
++        },
++        else => {},
++    }
++}
++
++fn findCollected(refs: []const CollectedMethodRef, callback_id: []const u8, path: []const u8) bool {
++    for (refs) |ref| {
++        if (std.mem.eql(u8, ref.callback_id, callback_id) and std.mem.eql(u8, ref.path, path)) return true;
++    }
++    return false;
++}
++
++fn buildCallbackOwners(
++    gpa: std.mem.Allocator,
++    effective_refs: []const CollectedMethodRef,
++    incoming_refs: []const CollectedMethodRef,
++    incoming_runtime: ?*js_runtime.Runtime,
++    previous: ?*const Registration,
++) ![]CallbackOwner {
++    if (effective_refs.len == 0) return &.{};
++    const owners = try gpa.alloc(CallbackOwner, effective_refs.len);
++    var initialized: usize = 0;
++    errdefer {
++        for (owners[0..initialized]) |*owner| owner.deinit(gpa);
++        gpa.free(owners);
++    }
++    for (effective_refs, 0..) |ref, index| {
++        const runtime = if (findCollected(incoming_refs, ref.callback_id, ref.path))
++            incoming_runtime orelse if (previous) |old| old.callbackRuntime(ref.callback_id, ref.path) else null
++        else if (previous) |old|
++            old.callbackRuntime(ref.callback_id, ref.path)
++        else
++            null;
++        const resolved_runtime = runtime orelse return error.ProviderMethodRuntimeMissing;
++        const callback_id = try gpa.dupe(u8, ref.callback_id);
++        errdefer gpa.free(callback_id);
++        const owned_path = try gpa.dupe(u8, ref.path);
++        errdefer gpa.free(owned_path);
++        owners[index] = .{
++            .callback_id = callback_id,
++            .path = owned_path,
++            .runtime = resolved_runtime,
++        };
++        initialized += 1;
++    }
++    return owners;
++}
++
++fn valueAtProviderPath(root: std.json.Value, path: []const u8) !std.json.Value {
++    if (path.len == 0) return error.InvalidProviderMethodPath;
++    var current = root;
++    var segments = std.mem.splitScalar(u8, path, '.');
++    while (segments.next()) |segment| {
++        if (segment.len == 0) return error.InvalidProviderMethodPath;
++        current = switch (current) {
++            .object => |object| object.get(segment) orelse return error.ProviderMethodNotRegistered,
++            .array => |array| blk: {
++                const index = std.fmt.parseInt(usize, segment, 10) catch return error.InvalidProviderMethodPath;
++                if (index >= array.items.len) return error.ProviderMethodNotRegistered;
++                break :blk array.items[index];
++            },
++            else => return error.ProviderMethodNotRegistered,
++        };
++    }
++    return current;
++}
++
++fn unwrapProviderMethodValue(gpa: std.mem.Allocator, envelope: []const u8) ![]u8 {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, envelope, .{});
++    defer parsed.deinit();
++    if (parsed.value != .object) return error.InvalidProviderMethodResponse;
++    const value = parsed.value.object.get("value") orelse return error.InvalidProviderMethodResponse;
++    var out: std.Io.Writer.Allocating = .init(gpa);
++    errdefer out.deinit();
++    try std.json.Stringify.value(value, .{}, &out.writer);
++    return out.toOwnedSlice();
++}
++
++fn validateObjectJson(gpa: std.mem.Allocator, raw: []const u8) !void {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
++    defer parsed.deinit();
++    if (parsed.value != .object) return error.InvalidExtensionProviderCredential;
++}
++
++fn validateArrayJson(gpa: std.mem.Allocator, raw: []const u8) !void {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
++    defer parsed.deinit();
++    if (parsed.value != .array) return error.InvalidExtensionProviderModels;
++}
++
++fn twoJsonArguments(gpa: std.mem.Allocator, first_json: []const u8, second_json: []const u8) ![]u8 {
++    var out: std.Io.Writer.Allocating = .init(gpa);
++    errdefer out.deinit();
++    try out.writer.writeByte('[');
++    try out.writer.writeAll(first_json);
++    try out.writer.writeByte(',');
++    try out.writer.writeAll(second_json);
++    try out.writer.writeByte(']');
++    return out.toOwnedSlice();
++}
++
++fn singleJsonArgument(gpa: std.mem.Allocator, value_json: []const u8) ![]u8 {
++    var out: std.Io.Writer.Allocating = .init(gpa);
++    errdefer out.deinit();
++    try out.writer.writeByte('[');
++    try out.writer.writeAll(value_json);
++    try out.writer.writeByte(']');
++    return out.toOwnedSlice();
++}
++
+ fn runtimeConfig(runtime: *const runtime_config.ResolvedRuntime) live_state.RuntimeProviderConfig {
+     return .{
+         .id = runtime.provider_id,
+@@ -337,6 +655,29 @@
+     return try out.toOwnedSlice();
+ }
+ 
++fn testManifestProviderConfig(
++    gpa: std.mem.Allocator,
++    manifest_json: []const u8,
++    provider_name: []const u8,
++) ![]u8 {
++    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, manifest_json, .{});
++    defer parsed.deinit();
++    if (parsed.value != .object) return error.InvalidTestManifest;
++    const providers_value = parsed.value.object.get("providers") orelse return error.InvalidTestManifest;
++    if (providers_value != .array) return error.InvalidTestManifest;
++    for (providers_value.array.items) |entry| {
++        if (entry != .object) continue;
++        const name = entry.object.get("name") orelse continue;
++        const config = entry.object.get("config") orelse continue;
++        if (name != .string or !std.mem.eql(u8, name.string, provider_name)) continue;
++        var out: std.Io.Writer.Allocating = .init(gpa);
++        errdefer out.deinit();
++        try std.json.Stringify.value(config, .{}, &out.writer);
++        return out.toOwnedSlice();
++    }
++    return error.TestProviderNotFound;
++}
++
+ test "extension provider registration replaces models and resolves runtime metadata" {
+     const gpa = std.testing.allocator;
+     const io = std.testing.io;
+@@ -381,3 +722,149 @@
+     try std.testing.expectEqual(@as(usize, 0), registry.runtimes().len);
+     try std.testing.expect(!try registry.unregister("missing"));
+ }
++
++test "provider registry invokes OAuth methods through the owning persistent worker" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
++
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    const source =
++        \\export default function(pi) {
++        \\  const closure = 'registry-181';
++        \\  pi.registerProvider('oauth-worker', {
++        \\    name: 'OAuth Worker', baseUrl: 'https://oauth.invalid/v1', api: 'openai-completions', apiKey: 'unused',
++        \\    models: [{ id: 'oauth-model', name: 'OAuth Model', reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
++        \\    oauth: {
++        \\      owner: 'registry-owner',
++        \\      async refreshToken(credentials, signal) { if (!signal || this.owner !== 'registry-owner') throw new Error('bad registry invocation'); return { ...credentials, access: `${closure}:${credentials.refresh}`, expires: 181181 }; },
++        \\      getApiKey(credentials) { return `${this.owner}:${credentials.access}`; },
++        \\      modifyModels(models, credentials) { return models.map((model) => ({ ...model, name: `${model.name}:${credentials.access}:${closure}` })); },
++        \\    },
++        \\  });
++        \\}
++    ;
++    try tmp.dir.writeFile(io, .{ .sub_path = "oauth-worker.mjs", .data = source });
++    var path_buf: [std.fs.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &path_buf);
++    const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "oauth-worker.mjs" });
++    defer gpa.free(path);
++
++    var started = try js_runtime.Runtime.start(gpa, io, path, "node");
++    defer started.runtime.deinit();
++    defer gpa.free(started.manifest_json);
++    const config_json = try testManifestProviderConfig(gpa, started.manifest_json, "oauth-worker");
++    defer gpa.free(config_json);
++
++    var env = std.process.Environ.Map.init(gpa);
++    defer env.deinit();
++    var registry = Registry.init(gpa, io, &env, null, &.{}, &.{});
++    defer registry.deinit();
++    try registry.registerJsonWithRuntime("oauth-worker", config_json, started.runtime);
++    try std.testing.expect(registry.hasProviderMethod("oauth-worker", "oauth.refreshToken"));
++    try std.testing.expect(registry.hasProviderMethod("oauth-worker", "oauth.getApiKey"));
++    try std.testing.expect(registry.hasProviderMethod("oauth-worker", "oauth.modifyModels"));
++
++    const refreshed = try registry.refreshOAuth("oauth-worker", "{\"refresh\":\"refresh-181\",\"access\":\"old\"}", null);
++    defer gpa.free(refreshed);
++    try std.testing.expect(std.mem.indexOf(u8, refreshed, "registry-181:refresh-181") != null);
++    try std.testing.expect(std.mem.indexOf(u8, refreshed, "181181") != null);
++
++    const api_key = try registry.oauthApiKey("oauth-worker", "{\"refresh\":\"refresh-181\",\"access\":\"fresh-access\"}");
++    defer gpa.free(api_key);
++    try std.testing.expectEqualStrings("registry-owner:fresh-access", api_key);
++
++    const projected = try registry.modifyOAuthModels(
++        "oauth-worker",
++        "[{\"id\":\"one\",\"name\":\"One\"}]",
++        "{\"access\":\"credential-access\"}",
++    );
++    defer gpa.free(projected);
++    try std.testing.expect(std.mem.indexOf(u8, projected, "One:credential-access:registry-181") != null);
++
++    // A data-only shallow merge must preserve the callback owner and descriptors.
++    try registry.registerJson("oauth-worker", "{\"name\":\"Renamed OAuth Worker\"}");
++    const after_merge = try registry.oauthApiKey("oauth-worker", "{\"access\":\"after-merge\"}");
++    defer gpa.free(after_merge);
++    try std.testing.expectEqualStrings("registry-owner:after-merge", after_merge);
++
++    const before_count = registry.count();
++    try std.testing.expectError(
++        error.ProviderMethodRuntimeMissing,
++        registry.registerJson("missing-owner", "{\"oauth\":{\"getApiKey\":{\"__pi_callback_id\":\"provider:missing-owner:1\",\"__pi_callback_kind\":\"provider_method\",\"__pi_callback_path\":\"oauth.getApiKey\"}}}"),
++    );
++    try std.testing.expectEqual(before_count, registry.count());
++    try std.testing.expectError(
++        error.ProviderMethodPathMismatch,
++        registry.registerJsonWithRuntime("wrong-path", "{\"oauth\":{\"getApiKey\":{\"__pi_callback_id\":\"provider:wrong-path:1\",\"__pi_callback_kind\":\"provider_method\",\"__pi_callback_path\":\"oauth.refreshToken\"}}}", started.runtime),
++    );
++    try std.testing.expectEqual(before_count, registry.count());
++}
++
++test "provider callback ownership remains distinct when separate workers emit colliding IDs" {
++    const gpa = std.testing.allocator;
++    const io = std.testing.io;
++    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
++
++    var tmp = std.testing.tmpDir(.{});
++    defer tmp.cleanup();
++    const base =
++        \\export default function(pi) {
++        \\  pi.registerProvider('collision-provider', {
++        \\    name: 'Collision Provider', baseUrl: 'https://collision.invalid/v1', api: 'openai-completions', apiKey: 'unused',
++        \\    models: [{ id: 'collision-model', name: 'Collision Model', reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
++        \\    streamSimple(value) { return `worker-one:${value}`; },
++        \\  });
++        \\}
++    ;
++    const overlay =
++        \\export default function(pi) {
++        \\  pi.registerProvider('collision-provider', {
++        \\    refreshModels(value) { return `worker-two:${value}`; },
++        \\  });
++        \\}
++    ;
++    try tmp.dir.writeFile(io, .{ .sub_path = "worker-one.mjs", .data = base });
++    try tmp.dir.writeFile(io, .{ .sub_path = "worker-two.mjs", .data = overlay });
++    var path_buf: [std.fs.max_path_bytes]u8 = undefined;
++    const root_len = try tmp.dir.realPath(io, &path_buf);
++    const path_one = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "worker-one.mjs" });
++    defer gpa.free(path_one);
++    const path_two = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "worker-two.mjs" });
++    defer gpa.free(path_two);
++
++    var first = try js_runtime.Runtime.start(gpa, io, path_one, "node");
++    defer first.runtime.deinit();
++    defer gpa.free(first.manifest_json);
++    var second = try js_runtime.Runtime.start(gpa, io, path_two, "node");
++    defer second.runtime.deinit();
++    defer gpa.free(second.manifest_json);
++    const first_config = try testManifestProviderConfig(gpa, first.manifest_json, "collision-provider");
++    defer gpa.free(first_config);
++    const second_config = try testManifestProviderConfig(gpa, second.manifest_json, "collision-provider");
++    defer gpa.free(second_config);
++
++    var first_parsed = try std.json.parseFromSlice(std.json.Value, gpa, first_config, .{});
++    defer first_parsed.deinit();
++    var second_parsed = try std.json.parseFromSlice(std.json.Value, gpa, second_config, .{});
++    defer second_parsed.deinit();
++    const first_ref = try provider_method_ref.ProviderMethodRef.fromJson(first_parsed.value.object.get("streamSimple").?);
++    const second_ref = try provider_method_ref.ProviderMethodRef.fromJson(second_parsed.value.object.get("refreshModels").?);
++    try std.testing.expectEqualStrings(first_ref.callback_id, second_ref.callback_id);
++    try std.testing.expect(!std.mem.eql(u8, first_ref.path, second_ref.path));
++
++    var env = std.process.Environ.Map.init(gpa);
++    defer env.deinit();
++    var registry = Registry.init(gpa, io, &env, null, &.{}, &.{});
++    defer registry.deinit();
++    try registry.registerJsonWithRuntime("collision-provider", first_config, first.runtime);
++    try registry.registerJsonWithRuntime("collision-provider", second_config, second.runtime);
++
++    const from_first = try registry.invokeProviderMethod("collision-provider", "streamSimple", "[\"alpha\"]", false, null);
++    defer gpa.free(from_first);
++    try std.testing.expectEqualStrings("\"worker-one:alpha\"", from_first);
++    const from_second = try registry.invokeProviderMethod("collision-provider", "refreshModels", "[\"beta\"]", false, null);
++    defer gpa.free(from_second);
++    try std.testing.expectEqualStrings("\"worker-two:beta\"", from_second);
++}
+diff -ruN pi-zig-v8-checkpoint-180/src/main.zig pi-zig-v8-checkpoint-181/src/main.zig
+--- pi-zig-v8-checkpoint-180/src/main.zig	2026-08-22 10:18:03.000000000 +0000
++++ pi-zig-v8-checkpoint-181/src/main.zig	2026-08-22 18:37:48.807025121 +0000
+@@ -1022,7 +1022,7 @@
+             if (config_value != .object) return error.InvalidExtensionAction;
+             const config_json = try stringifyActionValue(gpa, config_value);
+             defer gpa.free(config_json);
+-            try self.provider_registry.registerJson(name, config_json);
++            try self.provider_registry.registerJsonWithRuntime(name, config_json, self.host.scriptRuntimeForExtension(record.extension_name));
+             try self.publishProviderRegistry(run_config, active_client);
+             return;
+         }
+@@ -2034,7 +2034,7 @@
+         );
+         errdefer new_provider_registry.deinit();
+         for (new_host.extensions.items) |extension| {
+-            for (extension.providers) |registration| try new_provider_registry.registerJson(registration.name, registration.config_json);
++            for (extension.providers) |registration| try new_provider_registry.registerJsonWithRuntime(registration.name, registration.config_json, extension.script_runtime);
+         }
+ 
+         var new_owned_active_tools: ?[]const []const u8 = null;
+@@ -3599,7 +3599,7 @@
+     defer extension_provider_registry.deinit();
+     for (extension_host.extensions.items) |extension| {
+         for (extension.providers) |registration| {
+-            extension_provider_registry.registerJson(registration.name, registration.config_json) catch |err| {
++            extension_provider_registry.registerJsonWithRuntime(registration.name, registration.config_json, extension.script_runtime) catch |err| {
+                 var warning_buffer: [512]u8 = undefined;
+                 const warning = std.fmt.bufPrint(&warning_buffer, "warning: extension {s} provider {s} was not registered: {s}", .{
+                     extension.name,

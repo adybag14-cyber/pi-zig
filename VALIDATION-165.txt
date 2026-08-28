@@ -1,0 +1,110 @@
+PI ZIG CHECKPOINT 165 VALIDATION
+================================
+
+Evidence
+--------
+Original source:                            Pi coding-agent 0.84.1 upload
+Baseline source:                            uploaded checkpoint 164
+Compiler:                                   supplied Zig 0.16.0
+Primary focus:                              token-budget compaction parity
+
+Source metrics
+--------------
+Native Zig source files:                    179
+Native Zig source lines:                    101,890
+Named Zig test declarations:                892
+Synthetic/generated feature shards:         0
+Implementation files changed/added:          10
+Implementation additions/deletions:         +1,427 / -198
+
+Static gates
+------------
+Whole-tree Zig formatting:                  PASS
+Embedded Node bridge syntax:                PASS
+Python fixture bytecode compilation:        PASS
+Git diff validation:                       PASS
+Real-source audit:                         PASS
+Synthetic-source audit:                     0 detected
+
+Direct all-package closure
+--------------------------
+Command topology:                           root linked with sqlite3 and libc
+Tests passed:                              894/894
+Tests skipped:                               0
+Tests failed:                                0
+
+Normal production test topology
+-------------------------------
+All-package module process:                888 passed, 6 isolated, 0 failed
+SQLite repository process:                 11/11 passed
+SQLite CLI/schema process:                  8 passed, 6 isolated, 0 failed
+Ordinary executable process:                9/9 passed
+SQLite live-persistence process:            5/5 passed
+SQLite-enabled executable process:          9/9 passed
+Build-test graph:                          13/13 steps succeeded
+
+The six module-process isolates are the C-linked SQLite repository cases.
+Every one executes successfully in the dedicated 11-test repository process.
+
+Executable builds
+-----------------
+Static pi Linux x86-64 Debug build:         PASS
+pi-sqlite Linux x86-64 Debug build:         PASS
+pi-sqlite-live Linux x86-64 Debug build:    PASS
+
+Compaction policy E2E
+---------------------
+Persistent JSONL RPC process:               PASS
+Atomic set_auto_compaction persistence:     PASS
+reserveTokens preserved:                   123
+keepRecentTokens preserved:                20
+Unrelated settings preserved:              PASS
+Split-turn preparation:                    PASS
+Messages summarized by hook:               4
+Turn-prefix messages supplied:              1
+First retained role:                       assistant
+Durable messages before/after:              6 / 6
+Before-hook action immediate:               PASS
+After-hook action immediate:                PASS
+Active context starts with summary:         PASS
+Old summarized history excluded:            PASS
+Process exit:                               0
+Process stderr:                             0 bytes
+
+Exact source-ZIP requirements
+-----------------------------
+Single checkpoint-165 root:                 REQUIRED/PASS
+.git and Zig cache/build exclusion:          REQUIRED/PASS
+Compressed-data integrity:                 REQUIRED/PASS
+Frozen/extracted equivalence:               REQUIRED/PASS
+Direct 894-test closure from extraction:    REQUIRED/PASS
+13-step build-test graph from extraction:   REQUIRED/PASS
+All three Debug rebuilds:                   REQUIRED/PASS
+Compaction policy E2E from extraction:      REQUIRED/PASS
+
+Binary patch reconstruction requirements
+----------------------------------------
+git apply --check:                          REQUIRED/PASS
+Patch application to checkpoint 164:       REQUIRED/PASS
+Frozen/reconstructed equivalence:           REQUIRED/PASS
+Direct 894-test closure:                    REQUIRED/PASS
+13-step build-test graph:                   REQUIRED/PASS
+All three Debug rebuilds:                   REQUIRED/PASS
+Compaction policy E2E:                      REQUIRED/PASS
+
+Publication and transfer requirements
+-------------------------------------
+Chunked 1 MiB writes:                       REQUIRED/PASS
+Per-file flush and fsync:                   REQUIRED/PASS
+Atomic final-path replacement:              REQUIRED/PASS
+Destination-directory fsync:               REQUIRED/PASS
+Complete final-path rereads:                REQUIRED/PASS
+Staging/final byte comparison:              REQUIRED/PASS
+Independent SHA-256 verification:           REQUIRED/PASS
+Checksum-manifest verification:             REQUIRED/PASS
+Stable pre/post-smoke snapshots:            REQUIRED/PASS
+Published ZIP integrity:                   REQUIRED/PASS
+Published executable smokes:                REQUIRED/PASS
+Published E2E:                              REQUIRED/PASS
+Fresh SQLite integrity smoke:               REQUIRED/PASS
+Incomplete transfer files:                  0

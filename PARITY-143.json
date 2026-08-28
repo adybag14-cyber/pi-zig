@@ -1,0 +1,63 @@
+{
+  "checkpoint": 143,
+  "reference": {
+    "project": "earendil-works/pi",
+    "version": "0.84.1",
+    "archive": "pi-main (3)(3).zip",
+    "archive_sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a"
+  },
+  "baseline": {
+    "checkpoint": 142,
+    "archive_sha256": "a73dfe8ffe0802a07a3f292f1d972a086b5dfdfcef939881cbc82e2b0d261f26"
+  },
+  "toolchain": {
+    "version": "zig 0.16.0",
+    "archive_sha256": "70e49664a74374b48b51e6f3fdfbf437f6395d42509050588bd49abe52ba3d00"
+  },
+  "measurements": {
+    "zig_source_files": 154,
+    "zig_source_lines": 71677,
+    "source_file_gain_from_142": 6,
+    "source_line_gain_from_142": 3728,
+    "unique_declared_tests_validated": 696,
+    "test_gain_from_142": 26,
+    "root_suite": {
+      "declared": 695,
+      "passed": 689,
+      "isolated_sqlite_cases": 6,
+      "failed": 0
+    },
+    "sqlite_suite": {
+      "passed": 11,
+      "total": 11,
+      "covers_all_isolated_cases": true
+    },
+    "executable_suite": {
+      "passed": 1,
+      "total": 1
+    },
+    "synthetic_source_files": 0
+  },
+  "gains": [
+    "owned deep cloning for retained protocol values",
+    "remote transcript projection and bounded compaction",
+    "exclusive RemoteSession lifecycle with reconnect and rollback",
+    "lease-safe session handles and attach acquire create workflows",
+    "native pi remote CLI with text and JSON rendering",
+    "Unix-domain and literal IP TCP client transports",
+    "live Unix and TCP server integration",
+    "short-frame socket receive deadlock correction",
+    "Zig 0.16 TCP timeout panic avoidance"
+  ],
+  "remaining_major": [
+    "arbitrary JavaScript/TypeScript extension compatibility",
+    "wiring every original coding-agent interactive screen to the retained shell",
+    "production selection of SQLite across CLI and server paths",
+    "remote repository and search adapters beyond live sessions",
+    "DNS TLS and proxy transports for remote protocol clients",
+    "complete enterprise provider auth proxy retry behavior",
+    "automatic image resizing and exhaustive provider multimodal limits",
+    "full auxiliary eval server and cross-language interoperability breadth"
+  ],
+  "complete_parity_claimed": false
+}

@@ -1,0 +1,71 @@
+Pi Zig checkpoint 175 validation
+================================
+
+Inputs
+------
+Baseline source: pi-zig-v8-checkpoint-174(1).zip
+Original source: pi-main (3)(20260821-125742).zip
+Compiler: zig-x86_64-linux-0.16.0.tar.xz
+Original Pi version: 0.84.1
+
+Source measurements
+-------------------
+Native Zig files under src/:       188
+Native Zig logical lines:          112,569
+Repository Zig files:              189
+Named Zig test declarations:       961
+Synthetic/generated feature files: 0
+
+Focused tests
+-------------
+Clipboard/import filter:           22/22 passed
+Line-editor/import filter:         23/23 passed
+Keybinding/import filter:          18/18 passed
+Paste normalization regression:    passed
+
+Static checks
+-------------
+Whole-tree Zig fmt --check:        passed (188 files + build.zig)
+Modified-source fmt --check:       passed
+Python E2E syntax:                 passed
+Git diff check:                    passed
+Real-source audit:                 passed
+  zig_files=188
+  zig_loc=112569
+  synthetic_files=0
+
+Builds
+------
+Self-hosted Debug pi:              passed
+LLVM Debug pi:                     passed
+LLVM executable type:              static Linux x86-64 ELF, Debug, unstripped
+SQLite administration Debug:       passed
+SQLite type:                       Linux x86-64 ELF, sqlite3/libc, Debug
+
+Real executable tests
+---------------------
+Wayland clipboard image paste:     passed
+Durable exact image bytes/MIME:    passed
+Same-process text fallback:        passed
+CRLF/tab/control hygiene:          passed
+Temporary-file cleanup:            passed
+Self-hosted E2E stderr:            0 bytes
+LLVM E2E stderr:                   0 bytes
+
+SQLite smoke
+------------
+SQLite version:                    3.46.1
+Fresh initialization:             passed
+Missing canonical tables:         0
+Integrity result:                 ok
+
+Aggregate qualification
+-----------------------
+A cold direct root test artifact was invoked with:
+
+  PI_SQLITE_CLI_TESTS=1 PI_SQLITE_REPOSITORY_TESTS=1 \
+    zig test src/root.zig -fno-llvm -lsqlite3 -lc
+
+Zig 0.16.0 exceeded the 30-minute compilation deadline before producing the
+aggregate test executable. The command emitted no compiler diagnostic and no
+failing test result. No aggregate pass or aggregate failure is claimed.
