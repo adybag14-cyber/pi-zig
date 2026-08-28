@@ -14,6 +14,13 @@ All notable changes to `pi-zig` are documented in this file.
 - Deterministic catalog source/generator checks that reject unknown or dropped
   model fields and run on every CI platform.
 
+### Removed
+
+- The embedded 1,366-file Pi 0.84.1 TypeScript/JavaScript reference snapshot,
+  its source ZIP, and reference-only integrity manifests after the complete
+  local and three-platform retirement gates passed. Historical hashes and the
+  language-neutral model catalog projection remain recorded.
+
 ### Fixed
 
 - Windows OAuth browser callbacks now read accepted TCP streams correctly,
@@ -30,6 +37,8 @@ All notable changes to `pi-zig` are documented in this file.
   `thinking_token_budget` behavior, including models.json compatibility flags.
 - Daily free-tier quota responses fail fast instead of consuming the retry
   budget on deterministic OpenRouter 429 errors.
+- CI now rebuilds target artifacts without restoring stale Zig executables,
+  preventing architecture-incompatible cached tests on hosted macOS ARM64.
 
 ## [1.0.0] - 2026-08-28
 

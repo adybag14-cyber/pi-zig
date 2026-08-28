@@ -5,11 +5,12 @@ preserves Pi's provider, model, session, extension, tool, RPC, TUI, storage,
 authentication, and protocol behavior while keeping the default executable
 self-contained.
 
-The behavioral reference for this tree is the complete Pi 0.84.1 source
-snapshot under `upstream/pi-main/`. The untouched reference archive and its
-per-file integrity manifests are retained under `upstream/source-archive/` and
-at the repository root. The reference is included for comparison and testing;
-`pi-zig` is an independent rewrite and is not an official upstream release.
+The behavioral baseline was Pi 0.84.1. After the native implementation passed
+the complete local and three-platform parity gates, its TypeScript/JavaScript
+reference snapshot was retired in checkpoint 187. The exact 0.84.1 model data
+needed at runtime remains as the language-neutral `src/ai/catalog_source.json`
+input to the deterministic Zig catalog generator. `pi-zig` is an independent
+rewrite and is not an official upstream release.
 
 ## Highlights
 
@@ -76,11 +77,9 @@ zig test src/extensions/js_runtime.zig
 - `src/` — native Zig implementation and JavaScript extension bridge;
 - `checkpoint-tests/` — production/custom-provider integration fixtures;
 - `scripts/` — source, packaging, and parity audits;
-- `upstream/pi-main/` — complete reference source snapshot;
 - `verification/` — retained checkpoint evidence;
 - `CHECKPOINT-*.md` and `GAP_AUDIT.md` — implementation history and audit trail.
 
 ## License
 
-The `pi-zig` rewrite is released under the [MIT License](LICENSE). The embedded
-upstream reference carries its own license at `upstream/pi-main/LICENSE`.
+The `pi-zig` rewrite is released under the [MIT License](LICENSE).

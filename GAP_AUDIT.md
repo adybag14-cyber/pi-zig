@@ -1,3 +1,22 @@
+# Checkpoint 187 — complete catalog parity and reference retirement
+
+- Imported the exact Pi AI 0.84.1 published model data into a reviewed,
+  language-neutral source and deterministically generated 1,258 Zig model rows
+  across all 39 providers.
+- Preserved model-specific APIs, base URLs, static headers, sampling defaults,
+  pricing tiers, reasoning maps, compatibility controls, and current default
+  model resolution through runtime hot switching.
+- Closed remaining OpenAI Responses additional-tool and vLLM thinking-budget
+  controls and made exhausted OpenRouter daily free quotas fail without retry.
+- Re-ran the reference TypeScript suites in an isolated Node 24 environment.
+  Their remaining failures were verified as internal source/catalog or
+  platform-test drift, not missing Zig behaviors; the corresponding Zig paths
+  pass native coverage.
+- Passed the complete Zig 0.16.0 local suite, ReleaseSafe builds, OpenRouter
+  provider reachability, and uncached Windows, Ubuntu, and ARM64 macOS CI.
+- Removed the 1,366 tracked reference files, the embedded reference archive,
+  and obsolete reference-only manifests only after those gates passed.
+
 # Checkpoint 186 — provider lifecycle closure and 1.0.0 release
 
 - Added explicit per-worker callback generations to every provider method

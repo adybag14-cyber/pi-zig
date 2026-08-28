@@ -1,5 +1,5 @@
 {
-  "checkpoint": 186,
+  "checkpoint": 187,
   "release_version": "1.0.0",
   "complete_inventory": "FILES.sha256",
   "continuation": "CONTINUATION.md",
@@ -10,17 +10,24 @@
     "node_modules",
     "__pycache__"
   ],
-  "file_count_excluding_FILES_sha256": 1919,
+  "file_count_excluding_FILES_sha256": 555,
   "root": "pi-zig",
-  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 33732984,
-  "upstream_reference": {
-    "files": 1366,
-    "path": "upstream/pi-main",
-    "source_archive": "upstream/source-archive/pi-main-20260823-194058.zip"
+  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 10085896,
+  "generated_catalog": {
+    "generated": "src/ai/catalog_generated.zig",
+    "models": 1258,
+    "providers": 39,
+    "source": "src/ai/catalog_source.json",
+    "source_sha256": "0c3347c3bcf0d71a3d2b8b6bf9d8aee899cab258abc50a63a57db1282729ef2f"
   },
-  "verification": "verification/checkpoint-186/verification-summary.json",
+  "retired_reference": {
+    "archive_sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a",
+    "files_removed": 1366,
+    "removed_at_checkpoint": 187
+  },
+  "verification": "verification/checkpoint-187/verification-summary.json",
   "zig_source": {
-    "files": 197,
-    "lines": 122521
+    "files": 198,
+    "lines": 124015
   }
 }

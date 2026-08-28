@@ -1,0 +1,66 @@
+{
+  "checkpoint": 187,
+  "created_at_utc": "2026-08-28T19:22:05.9133231Z",
+  "reference": {
+    "archive_sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a",
+    "tracked_files_removed": 1366,
+    "source_archive_removed": true,
+    "reference_tree_removed": true,
+    "recoverable_from_git_history": true
+  },
+  "catalog": {
+    "models": 1258,
+    "providers": 39,
+    "source": "src/ai/catalog_source.json",
+    "source_sha256": "0c3347c3bcf0d71a3d2b8b6bf9d8aee899cab258abc50a63a57db1282729ef2f",
+    "generated": "src/ai/catalog_generated.zig",
+    "generator_check": "passed"
+  },
+  "typescript_authority": {
+    "node": "24.14.0",
+    "server": { "passed": 50, "failed": 0 },
+    "ai_constrained": { "total": 1725, "passed": 888, "skipped": 832, "reference_drift_failures": 5 },
+    "coding_agent_constrained": { "total": 1955, "passed": 1901, "skipped": 49, "reference_drift_failures": 5 },
+    "failure_classification": "reference source, catalog, environment, and timing drift; no missing Zig behavior"
+  },
+  "pre_retirement_ci": {
+    "run_id": 33201106025,
+    "url": "https://github.com/adybag14-cyber/pi-zig/actions/runs/33201106025",
+    "cache_restored": false,
+    "ubuntu": "passed",
+    "windows": "passed",
+    "macos_arm64": "passed"
+  },
+  "post_retirement_windows": {
+    "zig": "0.16.0",
+    "zig_archive_sha256": "68659eb5f1e4eb1437a722f1dd889c5a322c9954607f5edcf337bc3684a75a7e",
+    "sqlite": "3.53.4 x64",
+    "sqlite_archive_sha3_256": "deddee963c810d1eeac3ce5e15c7c41da21a1c54d7a39cf54fbf577d2f50de3a",
+    "module": { "passed": 990, "skipped": 27, "failed": 0 },
+    "sqlite_repository": { "passed": 11, "failed": 0 },
+    "sqlite_cli": { "passed": 11, "skipped": 6, "failed": 0 },
+    "sqlite_live_persistence": { "passed": 5, "failed": 0 },
+    "ordinary_executable": { "passed": 10, "failed": 0 },
+    "sqlite_executable": { "passed": 10, "failed": 0 },
+    "build_steps": { "passed": 13, "failed": 0 },
+    "release_safe": {
+      "pi.exe": "2ad333c2ec5dc6ae431d0ac42cd898ce97e3e53374c9a5fde7699a6a74d781bb",
+      "pi-sqlite.exe": "85052793021cbf3e56914a9bfdc961760b281f3e93a99ab5d3942f616d8e8662",
+      "pi-sqlite-live.exe": "3e698b5e7b398f4db247eab10b90458032d8d83a1fa7ee7d5c7668bec7ac0d22"
+    }
+  },
+  "openrouter": {
+    "credential_committed": false,
+    "credential_stored": true,
+    "free_completion_and_tool_loop": "passed before daily quota exhaustion",
+    "final_provider_reachability": "real HTTP 429 daily free quota",
+    "retry_start_events": 0,
+    "retry_end_events": 0,
+    "paid_traffic_used": false
+  },
+  "source_audit": {
+    "zig_files": 198,
+    "zig_lines": 124015,
+    "synthetic_files": 0
+  }
+}
