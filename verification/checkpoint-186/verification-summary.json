@@ -20,7 +20,7 @@
   },
   "source": {
     "zig_files": 197,
-    "zig_lines": 122512,
+    "zig_lines": 122521,
     "synthetic_files": 0
   },
   "debug_test_graph": {
@@ -41,17 +41,17 @@
   "release_safe": {
     "default_build_steps": "3/3",
     "sqlite_build_steps": "5/5",
-    "pi_sha256": "355749220705dac4175f6443964178f0ff6027cf7e565f5f2e036e1f5e9b8315",
+    "pi_sha256": "7826ab303e21b556b3e90310ce2ffc41483b900d9b10760081aadf4b8ddbdd24",
     "pi_sqlite_sha256": "85052793021cbf3e56914a9bfdc961760b281f3e93a99ab5d3942f616d8e8662",
-    "pi_sqlite_live_sha256": "649147bba73dcabc345a9bbaadd77297e55035485dea8f629306c753b9d0404e",
+    "pi_sqlite_live_sha256": "df665c58b1da9d0cd99dda774551b0afed81bfa7ea2a782926a3d728656d3613",
     "version_help_smoke": "passed"
   },
   "logs": {
-    "full_test_sha256": "832c9af27125b1caa696a0018bf47f460e172508a7213327ee180d7f8becbb0c",
-    "release_safe_build_sha256": "7108ba304fa7b640304b7771626b8e87fe4fe1bcc1988cd27cc9f8f6b2a1c568",
-    "sqlite_release_safe_build_sha256": "bc7696aa99b7b510a25ba7628a8b63643fbc9ddc51b53539a063999e11da3bd6",
-    "source_audit_sha256": "bc35159c932225e167456446fb4b445687e93c32a32d9444b66af1488d72c21c",
-    "smoke_sha256": "675bc9a98485ed1fc79b6a08596166442bc8a8b0cea0d03e1f5098f09f76f9ae",
+    "full_test_sha256": "016003bbe4bbe9598ccccb4ab9ee0e3747f2faaa7dff4d5003507a3ab8195d83",
+    "release_safe_build_sha256": "3151e4655636b44882f9c87c5c6cd3594804d265dba72a9220aaf841c922a6c5",
+    "sqlite_release_safe_build_sha256": "bcfb8abb9cc8328fe812f5b65dc941871d1b0b983b2c0df0c58cc4eb0ed69415",
+    "source_audit_sha256": "5b7aca7d91c29826a6e6dc34f719e73b8e23659642d2f7e30b426e3e87fb3658",
+    "smoke_sha256": "8768469547c8d687f9fc06be649095354562d8c9d84be7ad8d7764181216c051",
     "git_diff_check_sha256": "e297411e20e6284d0f6494dfac71af10de9caa96c0507b7c1ab19391f6a33b89"
   },
   "status": "verified on final Zig 0.16.0 for Windows x86_64"

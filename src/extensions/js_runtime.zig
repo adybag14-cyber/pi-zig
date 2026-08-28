@@ -1699,7 +1699,6 @@ test "script tool receives exact call ID and live AbortSignal" {
     started.runtime.timeout_ms = 5000;
 
     const Probe = struct {
-        abort_flag: *bool,
         count: usize = 0,
         saw_exact_id: bool = false,
         saw_same_signal: bool = false,
@@ -1710,12 +1709,24 @@ test "script tool receives exact call ID and live AbortSignal" {
             self.saw_exact_id = std.mem.indexOf(u8, raw, "call-exact-152") != null;
             self.saw_same_signal = std.mem.indexOf(u8, raw, "same=true") != null and
                 std.mem.indexOf(u8, raw, "aborted=false") != null;
-            @atomicStore(bool, self.abort_flag, true, .release);
         }
     };
 
+    const AbortTask = struct {
+        fn run(task_io: Io, flag: *bool) Io.Cancelable!void {
+            // Leave enough time for the immediate onUpdate callback to prove
+            // the shared signal starts live, then cancel from an independent
+            // task. This avoids coupling cancellation delivery to the native
+            // stdout callback scheduler on constrained macOS runners.
+            const pause: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(200), .clock = .awake } };
+            try pause.sleep(task_io);
+            @atomicStore(bool, flag, true, .release);
+        }
+    };
     var aborted = false;
-    var probe = Probe{ .abort_flag = &aborted };
+    var probe = Probe{};
+    var abort_group: Io.Group = .init;
+    abort_group.async(io, AbortTask.run, .{ io, &aborted });
     const result = try started.runtime.invokeToolCallStreaming(
         "call-exact-152",
         "abort-aware",
@@ -1726,6 +1737,7 @@ test "script tool receives exact call ID and live AbortSignal" {
         &probe,
     );
     defer gpa.free(result);
+    try abort_group.await(io);
 
     try std.testing.expectEqual(@as(usize, 1), probe.count);
     try std.testing.expect(probe.saw_exact_id);

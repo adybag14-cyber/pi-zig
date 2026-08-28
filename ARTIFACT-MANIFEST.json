@@ -12,7 +12,7 @@
   ],
   "file_count_excluding_FILES_sha256": 1919,
   "root": "pi-zig",
-  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 33732386,
+  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 33732940,
   "upstream_reference": {
     "files": 1366,
     "path": "upstream/pi-main",
@@ -21,6 +21,6 @@
   "verification": "verification/checkpoint-186/verification-summary.json",
   "zig_source": {
     "files": 197,
-    "lines": 122512
+    "lines": 122521
   }
 }

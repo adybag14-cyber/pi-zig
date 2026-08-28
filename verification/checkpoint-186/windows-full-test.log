@@ -20,24 +20,6 @@ All 10 tests passed.
 9/10 main.test.identity stable...OK
 10/10 main.test.settings delivery and tree filter mapping...OK
 All 10 tests passed.
-1/5 sqlite_server_persistence.test.SQLite server persistence round-trips complete native sessions...OK
-2/5 sqlite_server_persistence.test.SQLite server persistence fences concurrent writers...OK
-3/5 sqlite_server_persistence.test.SQLite server persistence ignores ordinary and corrupt repository sessions...OK
-4/5 sqlite_server_persistence.test.SQLite server persistence imports JSON sessions idempotently...OK
-5/5 sqlite_server_persistence.test.SQLite snapshot decoder releases partially decoded transcript ownership...OK
-All 5 tests passed.
-1/11 repository.test.SQLite repository sessions facts stats and durable reopen...OK
-2/11 repository.test.SQLite repository branch queries lanes custom types and cache repair...OK
-3/11 repository.test.SQLite writer leases fence expired owners transactionally...OK
-4/11 repository.test.SQLite records track open operations usage and merged log order...OK
-5/11 repository.test.SQLite FTS search indexes existing and newly inserted entries...OK
-6/11 repository.test.SQLite branch and tree forks preserve canonical scope facts and lanes...OK
-7/11 ffi.test.SQLite ABI wrapper executes parameterized statements...OK
-8/11 ffi.test.SQLite wrapper reports transactions and rollbacks...OK
-9/11 schema.test.SQLite schema applies idempotently and exposes canonical tables...OK
-10/11 schema.test.SQLite search schema creates triggers and indexes existing entries...OK
-11/11 types.test.entry type wire names round-trip...OK
-All 11 tests passed.
 1/17 sqlite_main.test_0...OK
 2/17 storage.sqlite_cli.test.SQLite CLI parses global options around actions...OK
 3/17 storage.sqlite_cli.test.SQLite CLI exposes standard help and version without a database...OK
@@ -56,6 +38,24 @@ All 11 tests passed.
 16/17 storage.sqlite.schema.test.SQLite schema applies idempotently and exposes canonical tables...OK
 17/17 storage.sqlite.schema.test.SQLite search schema creates triggers and indexes existing entries...OK
 11 passed; 6 skipped; 0 failed.
+1/5 sqlite_server_persistence.test.SQLite server persistence round-trips complete native sessions...OK
+2/5 sqlite_server_persistence.test.SQLite server persistence fences concurrent writers...OK
+3/5 sqlite_server_persistence.test.SQLite server persistence ignores ordinary and corrupt repository sessions...OK
+4/5 sqlite_server_persistence.test.SQLite server persistence imports JSON sessions idempotently...OK
+5/5 sqlite_server_persistence.test.SQLite snapshot decoder releases partially decoded transcript ownership...OK
+All 5 tests passed.
+1/11 repository.test.SQLite repository sessions facts stats and durable reopen...OK
+2/11 repository.test.SQLite repository branch queries lanes custom types and cache repair...OK
+3/11 repository.test.SQLite writer leases fence expired owners transactionally...OK
+4/11 repository.test.SQLite records track open operations usage and merged log order...OK
+5/11 repository.test.SQLite FTS search indexes existing and newly inserted entries...OK
+6/11 repository.test.SQLite branch and tree forks preserve canonical scope facts and lanes...OK
+7/11 ffi.test.SQLite ABI wrapper executes parameterized statements...OK
+8/11 ffi.test.SQLite wrapper reports transactions and rollbacks...OK
+9/11 schema.test.SQLite schema applies idempotently and exposes canonical tables...OK
+10/11 schema.test.SQLite search schema creates triggers and indexes existing entries...OK
+11/11 types.test.entry type wire names round-trip...OK
+All 11 tests passed.
 1/1011 root.test_0...OK
 2/1011 config.test.identity contains version...OK
 3/1011 config.test.session directory leaf matches upstream and retains legacy hash helper...OK
@@ -1071,16 +1071,16 @@ Skill commands are disabled by enableSkillCommands=false.
 984 passed; 27 skipped; 0 failed.
 Build Summary: 13/13 steps succeeded
 test success
-+- run module tests success 11s
-|  +- compile test Debug native success 31s MaxRSS:1G
-+- run SQLite repository integration tests success 116ms
-|  +- compile test Debug native cached 31s MaxRSS:34M
-+- run SQLite CLI integration tests success 113ms
-|  +- compile test Debug native cached 31s MaxRSS:34M
-+- run executable tests success 25ms
-|  +- compile test Debug native success 6s MaxRSS:383M
-+- run SQLite live-persistence tests success 106ms
-|  +- compile test Debug native success 31s MaxRSS:367M
-+- run SQLite-enabled executable tests success 35ms
-   +- compile test Debug native success 31s MaxRSS:688M
++- run module tests success 9s
+|  +- compile test Debug native success 24s MaxRSS:1G
++- run SQLite repository integration tests success 87ms
+|  +- compile test Debug native cached 24s MaxRSS:34M
++- run SQLite CLI integration tests success 74ms
+|  +- compile test Debug native cached 24s MaxRSS:34M
++- run executable tests success 20ms
+|  +- compile test Debug native success 4s MaxRSS:384M
++- run SQLite live-persistence tests success 79ms
+|  +- compile test Debug native success 24s MaxRSS:366M
++- run SQLite-enabled executable tests success 15ms
+   +- compile test Debug native success 24s MaxRSS:687M
 
