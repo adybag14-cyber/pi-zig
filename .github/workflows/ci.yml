@@ -48,11 +48,12 @@ jobs:
 
       - name: Test
         shell: bash
+        timeout-minutes: 20
         run: |
           if [[ -n "${PI_SQLITE_LIB_DIR:-}" ]]; then
-            zig build test --summary all -Dsqlite-lib-dir="$PI_SQLITE_LIB_DIR"
+            zig build test -j2 --summary all -Dsqlite-lib-dir="$PI_SQLITE_LIB_DIR"
           else
-            zig build test --summary all
+            zig build test -j2 --summary all
           fi
 
       - name: Smoke --version

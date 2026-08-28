@@ -12,7 +12,7 @@
   ],
   "file_count_excluding_FILES_sha256": 1919,
   "root": "pi-zig",
-  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 33732940,
+  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 33732976,
   "upstream_reference": {
     "files": 1366,
     "path": "upstream/pi-main",
