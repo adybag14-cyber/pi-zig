@@ -1,7 +1,7 @@
 305a65c6a49606f6f4e24ad07d5128d41c856e77c671886ff31eeb2e3b02ba8e  ./.github/workflows/ci.yml
 af6a7f2f4aa5793158af333cc7354ac5446c80b8a4cd71133b89e7a15a76b3ce  ./.github/workflows/release.yml
 d88eb16a7c09168aa173028415d8e109a059e2909547a48beec5993bae1ca146  ./.gitignore
-b81c903fee7cc3d27f75c9da40abe2e0837e719d10296863bc09900a4190be6c  ./ARTIFACT-MANIFEST.json
+ffc74850826f67a8fe9f8fa928e40f1099954decb885f96b601073b75a27040c  ./ARTIFACT-MANIFEST.json
 478f6df9f7f13d5a42b5125eace556fb1542f2e1029d817d621e92ac8b10de34  ./AUTH-DIALOG-E2E-179.txt
 f3b5cc37e6c5a20ec48fca038935eeb2b794d80b54cedfc2a24fb31571b3ee64  ./AUTH-E2E-177.txt
 29ff7df8799c72fa04856ab9e4d6f7f5e4af8b91610cb99924b854e46adfed75  ./AUTH-FLOW-E2E-178.txt
@@ -310,7 +310,7 @@ d3931aa4dfbf38c571fd9496c34272ae2bd4d6e22f25c7f2f62c0390abd7b08d  ./src/coding_a
 d5383ad14a1f607af94d168be0401c75447b21bff167d082a9fe9f2dfaa5a639  ./src/coding_agent/initial_message.zig
 0b0b95b6f779485f240a23e634e413287add5ab7bc86c640f77cc55f0d0be0f6  ./src/coding_agent/inline_files.zig
 8e638e3a2cbd6b80a30f49ce7c5a94c1bfae04db0e3d7471cc66d9d6350dbe76  ./src/coding_agent/live_state.zig
-e8c9ebbd8832cab058c7ccf9ad7d04cb8f35df86b86ff3a4fe8205a181f7192b  ./src/coding_agent/migrations.zig
+074624d5aca18a59a1eb3545cd8be2c81e60cc2b2c372f7bcc280bb5ecf76e95  ./src/coding_agent/migrations.zig
 77d018b8b46f8e3f340d7e0f611e5d946401c459d4243f16b99afbab7a581fdf  ./src/coding_agent/model_resolver.zig
 68061b747739ae4a76fbe4c0c329475b96eb471369b755aed8dafbc2a3d97d2d  ./src/coding_agent/model_tui.zig
 d67631a0d4d37c239ed46998ecccd4d9f9f52a9d04d49c7f6c40045231b7f0e8  ./src/coding_agent/models_file.zig
@@ -319,7 +319,7 @@ d67631a0d4d37c239ed46998ecccd4d9f9f52a9d04d49c7f6c40045231b7f0e8  ./src/coding_a
 0a4b2412b797c70fe6bfb841978848ffdc8ee0f6d8988c226ee781b9ee74dd25  ./src/coding_agent/package_config.zig
 cee1aaee9fead55ee971b9f58b9e47bc03671fccecf1306da9fccaa887a4eaa1  ./src/coding_agent/package_resources.zig
 86006d8b8c5463d9cf0fda9748161ba98332e31f0fe5dd55a8708c27f3c3eefc  ./src/coding_agent/package_source.zig
-c84b9b5fd82b64428bd0a878be396b7152d5236fb4906b48525a30859dd60a0a  ./src/coding_agent/packages.zig
+43db442e0cd7b9528b98c95e95908e718527c268a401c40f1e4de9901c9cd6ce  ./src/coding_agent/packages.zig
 202ef3f62575e880a0789cbd78360f3bec29c2b8e7322a7b9fc356189bec8a65  ./src/coding_agent/path_utils.zig
 a561959a6ff94572850ee310cf2c4654fa611f2c8fe185717043ee50bcce2ffd  ./src/coding_agent/project_environment.zig
 f12b3c7e6968ca23a9d41ce454f25c39d7486f56b2fd47d561e51f2e06a7a8f6  ./src/coding_agent/prompts.zig
@@ -354,7 +354,7 @@ d147d28fc74345f05d8cc0ac232e3d6ab9c754b10d05b6bc3da81e0454dc29a4  ./src/evals/ro
 6a4be105f3ebf74a19f56a0954b554d78a7d091d878fdb2c56341d1ad1ad9e5e  ./src/extensions/host.zig
 4892dad67bcdf0e50b0781d375802424d3ea8db8781ffe67fb967e814bcf3ccf  ./src/extensions/integration.zig
 46f6fe006d595e17ce444b1e4be2c71a57c518ce84ddf56d351d74627813e05c  ./src/extensions/js_bridge.mjs
-5e1bcec12668ae95fd3a48bb64889c99bc309ea8860d2eedc3cedc897d7ad59e  ./src/extensions/js_runtime.zig
+c60a42c5cbed825c3b9941c4c37033431cf5138a3fdda9b6b2fbbf55d933b2e0  ./src/extensions/js_runtime.zig
 bb1865825dd1fa7e21c107f9112c615065bffaab7d893cbcf9f786a99a0c601a  ./src/extensions/models_store.zig
 8491dcedb721fd92a92ad298e75249034e94db8fab9414d1b1e6225e79a55947  ./src/extensions/provider_models.zig
 21a444f94acdcd58a788d0ef3af1863a2eccc99beade5cef249abb0f954d7abb  ./src/extensions/provider_oauth.zig
@@ -1892,15 +1892,15 @@ aa037454b5e8320521a32b278a3f4aff05fc79009ab5503f5d4a1b9a33b38c47  ./verification
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./verification/checkpoint-185/zig-format.log
 e297411e20e6284d0f6494dfac71af10de9caa96c0507b7c1ab19391f6a33b89  ./verification/checkpoint-186/git-diff-check.log
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./verification/checkpoint-186/node-syntax.log
-67a2e33f8df892dc461656fef078f26b4aad17d590a32d6f98773c9b59771a32  ./verification/checkpoint-186/source-audit.log
+bc35159c932225e167456446fb4b445687e93c32a32d9444b66af1488d72c21c  ./verification/checkpoint-186/source-audit.log
 bf224a7b3c3aa9dfef8ebe3367598871ad331dcfa3b4d0072add3a0c5f21f4ca  ./verification/checkpoint-186/toolchain.log
-f85105538b417d9d8441a3760131d4148ab3cd8961152a3573d1945e2e8c555a  ./verification/checkpoint-186/verification-summary.json
-b6bd6d603d852bcf8d0f1bceaee6efa7a6f04872a27655c77268f7fa96d05c49  ./verification/checkpoint-186/windows-full-test.log
+7b7f193c951e25084965a1bc81e56817196e9812e18032b3d358e51b473bf458  ./verification/checkpoint-186/verification-summary.json
+832c9af27125b1caa696a0018bf47f460e172508a7213327ee180d7f8becbb0c  ./verification/checkpoint-186/windows-full-test.log
 4238faef046f4d7218d147a9695304212ef56558ae2109535e313af0a9c7753e  ./verification/checkpoint-186/windows-module-test-attempt.log
 5e25b3edb2912f0e8c7f4e92c59fa5674e9413496869a42075dae9af15937a34  ./verification/checkpoint-186/windows-module-test.log
-29eba3ed3661957ec4f772afff92d37fa22f420e78b354e70b904505374b8bc3  ./verification/checkpoint-186/windows-release-safe-build.log
-e835ed66f6a8d02be2e4483c9987c7266562c27bc1a6e2714462ae0e3042daba  ./verification/checkpoint-186/windows-smoke.log
-4b19b7e4543ad0c450d9d66d287211df4801636c1cea43c6fe2e6c7d99a8c62e  ./verification/checkpoint-186/windows-sqlite-release-safe-build.log
+7108ba304fa7b640304b7771626b8e87fe4fe1bcc1988cd27cc9f8f6b2a1c568  ./verification/checkpoint-186/windows-release-safe-build.log
+675bc9a98485ed1fc79b6a08596166442bc8a8b0cea0d03e1f5098f09f76f9ae  ./verification/checkpoint-186/windows-smoke.log
+bc7696aa99b7b510a25ba7628a8b63643fbc9ddc51b53539a063999e11da3bd6  ./verification/checkpoint-186/windows-sqlite-release-safe-build.log
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./verification/checkpoint-186/zig-format.log
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./verification/logs/cp180-final-codec_syntax.log
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./verification/logs/cp180-final-fmt_module.log

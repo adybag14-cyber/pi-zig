@@ -9,12 +9,6 @@
 9/10 main.test.identity stable...OK
 10/10 main.test.settings delivery and tree filter mapping...OK
 All 10 tests passed.
-1/5 sqlite_server_persistence.test.SQLite server persistence round-trips complete native sessions...OK
-2/5 sqlite_server_persistence.test.SQLite server persistence fences concurrent writers...OK
-3/5 sqlite_server_persistence.test.SQLite server persistence ignores ordinary and corrupt repository sessions...OK
-4/5 sqlite_server_persistence.test.SQLite server persistence imports JSON sessions idempotently...OK
-5/5 sqlite_server_persistence.test.SQLite snapshot decoder releases partially decoded transcript ownership...OK
-All 5 tests passed.
 1/10 main.test.SQLite session command flags normalize without changing operands...OK
 2/10 main.test.serve options parse SQLite production backend and equals forms...OK
 3/10 main.test.serve options reject ambiguous persistence and unsafe numeric values...OK
@@ -26,6 +20,12 @@ All 5 tests passed.
 9/10 main.test.identity stable...OK
 10/10 main.test.settings delivery and tree filter mapping...OK
 All 10 tests passed.
+1/5 sqlite_server_persistence.test.SQLite server persistence round-trips complete native sessions...OK
+2/5 sqlite_server_persistence.test.SQLite server persistence fences concurrent writers...OK
+3/5 sqlite_server_persistence.test.SQLite server persistence ignores ordinary and corrupt repository sessions...OK
+4/5 sqlite_server_persistence.test.SQLite server persistence imports JSON sessions idempotently...OK
+5/5 sqlite_server_persistence.test.SQLite snapshot decoder releases partially decoded transcript ownership...OK
+All 5 tests passed.
 1/11 repository.test.SQLite repository sessions facts stats and durable reopen...OK
 2/11 repository.test.SQLite repository branch queries lanes custom types and cache repair...OK
 3/11 repository.test.SQLite writer leases fence expired owners transactionally...OK
@@ -1071,16 +1071,16 @@ Skill commands are disabled by enableSkillCommands=false.
 984 passed; 27 skipped; 0 failed.
 Build Summary: 13/13 steps succeeded
 test success
-+- run module tests success 8s
-|  +- compile test Debug native success 24s MaxRSS:1G
-+- run SQLite repository integration tests success 69ms
-|  +- compile test Debug native cached 24s MaxRSS:34M
-+- run SQLite CLI integration tests success 69ms
-|  +- compile test Debug native success 24s MaxRSS:345M
-+- run executable tests success 21ms
-|  +- compile test Debug native success 5s MaxRSS:384M
-+- run SQLite live-persistence tests success 70ms
-|  +- compile test Debug native success 24s MaxRSS:367M
-+- run SQLite-enabled executable tests success 14ms
-   +- compile test Debug native success 24s MaxRSS:688M
++- run module tests success 11s
+|  +- compile test Debug native success 31s MaxRSS:1G
++- run SQLite repository integration tests success 116ms
+|  +- compile test Debug native cached 31s MaxRSS:34M
++- run SQLite CLI integration tests success 113ms
+|  +- compile test Debug native cached 31s MaxRSS:34M
++- run executable tests success 25ms
+|  +- compile test Debug native success 6s MaxRSS:383M
++- run SQLite live-persistence tests success 106ms
+|  +- compile test Debug native success 31s MaxRSS:367M
++- run SQLite-enabled executable tests success 35ms
+   +- compile test Debug native success 31s MaxRSS:688M
 

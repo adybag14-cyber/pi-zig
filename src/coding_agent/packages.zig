@@ -447,6 +447,7 @@ fn currentProcessId() u32 {
     return switch (builtin.os.tag) {
         .linux => @intCast(std.os.linux.getpid()),
         .windows => std.os.windows.GetCurrentProcessId(),
+        .macos, .ios, .tvos, .watchos, .visionos => @intCast(std.posix.system.getpid()),
         .plan9 => std.os.plan9.getpid(),
         else => 0,
     };
@@ -2998,14 +2999,16 @@ test "package operation inspection reports active owner and clean release" {
     const root_len = try tmp.dir.realPath(io, &root_buffer);
     const root = root_buffer[0..root_len];
 
-    var held = try OperationLock.acquire(gpa, io, root, .configure);
-    var active = try inspectOperation(gpa, io, root, ".", .user, true);
-    try std.testing.expect(active.active);
-    try std.testing.expect(active.metadata_present);
-    try std.testing.expectEqualStrings("configure", active.operation);
-    try std.testing.expect(active.pid != 0);
-    active.deinit();
-    held.deinit();
+    {
+        var held = try OperationLock.acquire(gpa, io, root, .configure);
+        defer held.deinit();
+        var active = try inspectOperation(gpa, io, root, ".", .user, true);
+        defer active.deinit();
+        try std.testing.expect(active.active);
+        try std.testing.expect(active.metadata_present);
+        try std.testing.expectEqualStrings("configure", active.operation);
+        try std.testing.expect(active.pid != 0);
+    }
 
     var released = try inspectOperation(gpa, io, root, ".", .user, true);
     defer released.deinit();

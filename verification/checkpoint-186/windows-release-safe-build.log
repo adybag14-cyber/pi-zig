@@ -1,5 +1,5 @@
 Build Summary: 3/3 steps succeeded
 install success
 +- install pi success
-   +- compile exe pi ReleaseSafe native success 1m MaxRSS:906M
+   +- compile exe pi ReleaseSafe native success 2m MaxRSS:901M
 

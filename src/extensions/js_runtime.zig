@@ -798,7 +798,7 @@ pub const Runtime = struct {
             watcher_group.await(self.io) catch {};
         };
 
-        return self.readResultUnlocked(update_fn, update_ctx, stream_event_fn, stream_event_ctx, invocation_id) catch |err| {
+        return self.readResultUnlocked(update_fn, update_ctx, stream_event_fn, stream_event_ctx, invocation_id, abort_flag) catch |err| {
             // Script exceptions are a completed protocol response and leave the
             // worker reusable. Every transport/protocol/callback error can leave
             // unread records behind, so close instead of risking the next
@@ -818,6 +818,7 @@ pub const Runtime = struct {
         stream_event_fn: ?ProviderStreamEventFn,
         stream_event_ctx: ?*anyopaque,
         expected_invocation_id: u64,
+        abort_flag: ?*const bool,
     ) ![]u8 {
         var expected_stream_sequence: u64 = 1;
         while (true) {
@@ -846,6 +847,17 @@ pub const Runtime = struct {
                         callback(update_ctx, raw_update) catch |err| {
                             self.closeUnlocked();
                             return err;
+                        };
+                        // A tool update callback may itself request abort. Send
+                        // the control record synchronously before blocking on
+                        // the next worker response; this avoids scheduler
+                        // latency in the polling watcher on constrained macOS
+                        // runners while retaining the watcher for external
+                        // cancellation.
+                        if (abort_flag) |flag| if (expected_invocation_id != 0 and @atomicLoad(bool, flag, .acquire)) {
+                            var abort_buffer: [192]u8 = undefined;
+                            const abort_request = try std.fmt.bufPrint(&abort_buffer, "{{\"kind\":\"abort_current\",\"invocationId\":\"{d}\",\"reason\":\"Operation aborted\"}}", .{expected_invocation_id});
+                            try self.writeLine(abort_request);
                         };
                     }
                     continue;

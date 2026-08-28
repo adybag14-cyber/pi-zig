@@ -185,7 +185,17 @@ fn freeNames(gpa: std.mem.Allocator, names: *std.ArrayList([]u8)) void {
 
 fn movePreserve(io: Io, old_path: []const u8, new_path: []const u8) bool {
     if (exists(io, new_path)) return false;
-    std.Io.Dir.renamePreserve(std.Io.Dir.cwd(), old_path, std.Io.Dir.cwd(), new_path, io) catch return false;
+    std.Io.Dir.renamePreserve(std.Io.Dir.cwd(), old_path, std.Io.Dir.cwd(), new_path, io) catch |err| switch (err) {
+        // Zig 0.16 can report that atomic non-replacing rename is unavailable
+        // on macOS. Recheck the destination immediately before the ordinary
+        // same-filesystem rename so migration still works without knowingly
+        // replacing existing user data.
+        error.OperationUnsupported => {
+            if (exists(io, new_path)) return false;
+            std.Io.Dir.rename(std.Io.Dir.cwd(), old_path, std.Io.Dir.cwd(), new_path, io) catch return false;
+        },
+        else => return false,
+    };
     return true;
 }
 

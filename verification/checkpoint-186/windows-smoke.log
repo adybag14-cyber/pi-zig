@@ -1,6 +1,6 @@
 binary=pi.exe
-size=7711744
-sha256=507e58e1a55b66affaaeacaf876497f3bc1a642c9e0d58ebb99121050a9ca419
+size=7712256
+sha256=355749220705dac4175f6443964178f0ff6027cf7e565f5f2e036e1f5e9b8315
 version=pi (pi-zig) coding agent 1.0.0
 help_first_line=pi - AI coding assistant (Zig rewrite of earendil-works/pi)
 binary=pi-sqlite.exe
@@ -10,6 +10,6 @@ version=pi-sqlite 1.0.0
 help_first_line=Usage:
 binary=pi-sqlite-live.exe
 size=7838720
-sha256=de230e260e5fb0ef82d41a02203524a14bfd7150c7ca9c7e8dac210504a6a5d4
+sha256=649147bba73dcabc345a9bbaadd77297e55035485dea8f629306c753b9d0404e
 version=pi (pi-zig) coding agent 1.0.0
 help_first_line=pi - AI coding assistant (Zig rewrite of earendil-works/pi)
