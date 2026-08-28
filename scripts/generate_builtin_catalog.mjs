@@ -238,9 +238,13 @@ function renderModel(sourceModel) {
   return `        .{ ${fields.join(", ")} },`;
 }
 
-const sourceBytes = readFileSync(sourcePath);
-const sourceHash = createHash("sha256").update(sourceBytes).digest("hex");
-const source = JSON.parse(sourceBytes);
+function normalizeLineEndings(value) {
+  return value.replaceAll("\r\n", "\n");
+}
+
+const sourceText = normalizeLineEndings(readFileSync(sourcePath, "utf8"));
+const sourceHash = createHash("sha256").update(sourceText).digest("hex");
+const source = JSON.parse(sourceText);
 if (source.schemaVersion !== 1) fail("unsupported catalog source schema");
 if (source.upstreamPackage !== "@earendil-works/pi-ai" || source.upstreamVersion !== "0.84.1") fail("unexpected upstream catalog provenance");
 if (!Array.isArray(source.models) || source.models.length !== source.modelCount || source.modelCount !== 1258) fail("catalog must contain exactly 1258 models");
@@ -268,9 +272,9 @@ if (process.argv.includes("--check")) {
   const temporaryPath = `${outputPath}.tmp.zig`;
   writeFileSync(temporaryPath, output);
   formatZig(temporaryPath);
-  const expected = readFileSync(temporaryPath, "utf8");
+  const expected = normalizeLineEndings(readFileSync(temporaryPath, "utf8"));
   unlinkSync(temporaryPath);
-  const current = readFileSync(outputPath, "utf8");
+  const current = normalizeLineEndings(readFileSync(outputPath, "utf8"));
   if (current !== expected) fail(`${outputPath} is stale; run scripts/generate_builtin_catalog.mjs`);
 } else {
   writeFileSync(outputPath, output);
