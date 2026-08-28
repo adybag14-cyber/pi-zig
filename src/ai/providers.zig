@@ -326,6 +326,10 @@ pub const known_models = [_]ModelInfo{
     .{ .provider = .nvidia, .id = "meta/llama-3.1-70b-instruct", .display = "NVIDIA Llama 3.1 70B" },
 
     // OpenRouter IDs can legitimately contain slashes/colon suffixes.
+    // `openrouter/free` is the live zero-cost capability router. OpenRouter
+    // currently advertises text/image input, a 200k context window, and
+    // capability-aware routing for tool calling and structured output.
+    .{ .provider = .openrouter, .id = "openrouter/free", .display = "OpenRouter Free Models Router", .reasoning = true, .thinking_level_map = .{ .off = .unsupported }, .input_image = true, .context_window = 200_000 },
     .{ .provider = .openrouter, .id = "openrouter/auto", .display = "OpenRouter Auto" },
     .{ .provider = .openrouter, .id = "anthropic/claude-sonnet-4", .display = "OpenRouter Claude Sonnet 4" },
 
@@ -591,6 +595,26 @@ test "catalog has distinct gateway provider ids" {
         saw_openrouter = saw_openrouter or m.provider == .openrouter;
     }
     try std.testing.expect(saw_groq and saw_openrouter);
+}
+
+test "catalog exposes the current OpenRouter free capability router" {
+    var found: ?ModelInfo = null;
+    for (known_models) |model| {
+        if (model.provider == .openrouter and std.mem.eql(u8, model.id, "openrouter/free")) {
+            found = model;
+            break;
+        }
+    }
+    const model = found orelse return error.TestExpectedEqual;
+    try std.testing.expectEqualStrings("OpenRouter Free Models Router", model.display);
+    try std.testing.expect(model.reasoning);
+    try std.testing.expect(model.thinking_level_map.?.off == .unsupported);
+    try std.testing.expect(model.clampThinkingLevel(.off) == .minimal);
+    try std.testing.expect(model.input_text);
+    try std.testing.expect(model.input_image);
+    try std.testing.expectEqual(@as(u64, 200_000), model.context_window);
+    try std.testing.expectEqual(@as(f64, 0), model.cost.input);
+    try std.testing.expectEqual(@as(f64, 0), model.cost.output);
 }
 
 test "Bedrock ambient AWS access keys count as usable credentials" {

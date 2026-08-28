@@ -2,6 +2,23 @@
 
 All notable changes to `pi-zig` are documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- Current zero-cost `openrouter/free` capability-router catalog entry with
+  reasoning, image-input, context-window, and no-spend metadata.
+
+### Fixed
+
+- Windows OAuth browser callbacks now read accepted TCP streams correctly,
+  consume complete HTTP headers, and avoid nested timeout-concurrency failures
+  across OpenRouter, Anthropic, OpenAI Codex, and Radius providers.
+- Piped stdin now starts in streaming mode on Windows, preventing spurious
+  `INVALID_INFO_CLASS` diagnostics in one-shot and JSON output.
+- OpenRouter free-router requests no longer send a forbidden explicit
+  `reasoning.effort: "none"` value when thinking is left at its default.
+
 ## [1.0.0] - 2026-08-28
 
 ### Added

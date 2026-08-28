@@ -313,21 +313,31 @@ pub const CallbackServer = struct {
     /// code claims this server so subsequent callbacks receive HTTP 409.
     pub fn waitCode(self: *CallbackServer, abort_flag: ?*const bool) !CallbackResult {
         const deadline_ms = self.started_ms + @as(i64, @intCast(LOGIN_TIMEOUT_MS));
-        while (true) {
+        callback_loop: while (true) {
             const now_ms = std.Io.Clock.real.now(self.io).toMilliseconds();
             if (now_ms >= deadline_ms) return error.OpenRouterOAuthLoginTimeout;
             const remaining_ms: u64 = @intCast(deadline_ms - now_ms);
             var stream = try acceptCallback(&self.listener, self.io, abort_flag, remaining_ms);
             defer stream.close(self.io);
             var raw: [8192]u8 = undefined;
-            const deadline: std.Io.Timeout = .{ .deadline = .fromNow(self.io, .{ .raw = .fromSeconds(10), .clock = .awake }) };
-            const message = stream.socket.receiveTimeout(self.io, &raw, deadline) catch {
+            var reader = stream.reader(self.io, &raw);
+            const request_line = reader.interface.takeDelimiterInclusive('\n') catch {
                 writeCallbackHttp(self.io, &stream, 400, "Invalid OAuth callback request.") catch {};
-                continue;
+                continue :callback_loop;
             };
-            const target = callbackTargetFromRequest(message.data) catch {
+            // Consume the bounded request headers before closing the Windows
+            // TCP stream. Leaving unread request bytes can turn an otherwise
+            // successful HTTP response into an abortive connection reset.
+            while (true) {
+                const header_line = reader.interface.takeDelimiterInclusive('\n') catch {
+                    writeCallbackHttp(self.io, &stream, 400, "Invalid OAuth callback request.") catch {};
+                    continue :callback_loop;
+                };
+                if (std.mem.eql(u8, header_line, "\r\n") or std.mem.eql(u8, header_line, "\n")) break;
+            }
+            const target = callbackTargetFromRequest(request_line) catch {
                 writeCallbackHttp(self.io, &stream, 400, "Invalid OAuth callback request.") catch {};
-                continue;
+                continue :callback_loop;
             };
             if (self.claimed) {
                 try writeCallbackHttp(self.io, &stream, 409, "This OAuth callback has already been used.");
@@ -462,6 +472,10 @@ test "OpenRouter OAuth callback path is UUIDv4 and callback parsing validates ro
     var denied = try parseCallbackTarget(gpa, "/oauth/callback/test?error=access_denied&error_description=No%20thanks", "/oauth/callback/test");
     defer denied.deinit(gpa);
     try std.testing.expectEqualStrings("No thanks", denied.oauth_error);
+    try std.testing.expectEqualStrings(
+        "/oauth/callback/test?code=a%2Fb",
+        try callbackTargetFromRequest("GET /oauth/callback/test?code=a%2Fb HTTP/1.1\r\nHost: 127.0.0.1\r\n\r\n"),
+    );
 }
 
 test "OpenRouter OAuth callback host defaults and honors override" {

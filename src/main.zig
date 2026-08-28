@@ -7440,7 +7440,11 @@ fn joinMessages(arena: std.mem.Allocator, msgs: []const []const u8) ![]const u8 
 
 fn readPipedStdin(gpa: std.mem.Allocator, io: Io, max_bytes: usize) ![]u8 {
     var buffer: [8192]u8 = undefined;
-    var reader: Io.File.Reader = .init(.stdin(), io, &buffer);
+    // stdin may be an anonymous Windows pipe. Starting in positional mode
+    // probes file metadata first, which produces INVALID_INFO_CLASS before the
+    // standard library falls back. Pipes are streams by definition, so select
+    // that mode up front and keep one-shot output free of spurious diagnostics.
+    var reader: Io.File.Reader = .initStreaming(.stdin(), io, &buffer);
     return reader.interface.allocRemaining(gpa, .limited(max_bytes));
 }
 

@@ -392,18 +392,25 @@ pub const CallbackServer = struct {
     }
 
     pub fn wait(self: *CallbackServer, gpa: std.mem.Allocator, expected_state: []const u8, abort_flag: ?*const bool) !CallbackResult {
-        while (true) {
+        callback_loop: while (true) {
             var stream = try acceptCallback(&self.listener, self.io, abort_flag);
             defer stream.close(self.io);
             var raw: [8192]u8 = undefined;
-            const deadline: std.Io.Timeout = .{ .deadline = .fromNow(self.io, .{ .raw = .fromSeconds(10), .clock = .awake }) };
-            const message = stream.socket.receiveTimeout(self.io, &raw, deadline) catch {
+            var reader = stream.reader(self.io, &raw);
+            const request_line = reader.interface.takeDelimiterInclusive('\n') catch {
                 writeCallbackHttp(self.io, &stream, 400, "Invalid OAuth callback request.") catch {};
-                continue;
+                continue :callback_loop;
             };
-            const target = callbackTargetFromRequest(message.data) catch {
+            while (true) {
+                const header_line = reader.interface.takeDelimiterInclusive('\n') catch {
+                    writeCallbackHttp(self.io, &stream, 400, "Invalid OAuth callback request.") catch {};
+                    continue :callback_loop;
+                };
+                if (std.mem.eql(u8, header_line, "\r\n") or std.mem.eql(u8, header_line, "\n")) break;
+            }
+            const target = callbackTargetFromRequest(request_line) catch {
                 writeCallbackHttp(self.io, &stream, 400, "Invalid OAuth callback request.") catch {};
-                continue;
+                continue :callback_loop;
             };
             const result = parseCallbackTarget(gpa, target, expected_state) catch |err| switch (err) {
                 error.RadiusOAuthCallbackRouteNotFound => {
