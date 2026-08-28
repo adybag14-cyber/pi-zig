@@ -41,7 +41,7 @@ jobs:
         shell: pwsh
         run: |
           $vcpkg = Join-Path $env:VCPKG_INSTALLATION_ROOT "vcpkg.exe"
-          & $vcpkg install sqlite3:x64-windows
+          & $vcpkg install "sqlite3[fts5]:x64-windows"
           $installed = Join-Path $env:VCPKG_INSTALLATION_ROOT "installed\x64-windows"
           "PI_SQLITE_LIB_DIR=$(Join-Path $installed 'lib')" >> $env:GITHUB_ENV
           (Join-Path $installed "bin") >> $env:GITHUB_PATH
