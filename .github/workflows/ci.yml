@@ -29,6 +29,10 @@ jobs:
         uses: mlugg/setup-zig@v2
         with:
           version: 0.16.0
+          # A restored Zig cache produced an InvalidExe test artifact after
+          # GitHub moved macos-latest to ARM64. Rebuild every matrix entry from
+          # the checked-out source so CI proves the current target binaries.
+          use-cache: false
 
       - name: Zig version
         run: zig version
