@@ -1,0 +1,33 @@
+SUMMARY_REQUEST_OPTIONS_E2E_188=PASS
+NORMAL_REQUESTS=3
+SUMMARY_REQUESTS=1
+SUMMARY_MAX_TOKENS=2048
+NORMAL_AFFINITY_HEADERS=session_id,x-client-request-id
+SUMMARY_AFFINITY_HEADERS=none
+SUMMARY_PROMPT_CACHE_KEY=absent
+SUMMARY_PROMPT_CACHE_RETENTION=absent
+FULLSCREEN_TREE_SELECTOR=PASS
+TREE_SEARCH_SELECTION=assistant-188-1
+SUMMARY_PERSISTED=PASS
+RPC_EXIT=0
+PTY_EXIT=0
+STDERR_BYTES=0
+
+{
+  "fullscreenTreeSelector": true,
+  "normalAffinityHeaders": [
+    "session_id",
+    "x-client-request-id"
+  ],
+  "normalRequests": 3,
+  "ptyExit": 0,
+  "rpcExit": 0,
+  "searchSelected": "assistant-188-1",
+  "stderrBytes": 0,
+  "summaryAffinityHeaders": [],
+  "summaryMaxTokens": 2048,
+  "summaryPersisted": true,
+  "summaryPromptCacheKey": null,
+  "summaryPromptCacheRetention": null,
+  "summaryRequests": 1
+}

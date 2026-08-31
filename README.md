@@ -5,12 +5,19 @@ preserves Pi's provider, model, session, extension, tool, RPC, TUI, storage,
 authentication, and protocol behavior while keeping the default executable
 self-contained.
 
-The behavioral baseline was Pi 0.84.1. After the native implementation passed
-the complete local and three-platform parity gates, its TypeScript/JavaScript
-reference snapshot was retired in checkpoint 187. The exact 0.84.1 model data
-needed at runtime remains as the language-neutral `src/ai/catalog_source.json`
-input to the deterministic Zig catalog generator. `pi-zig` is an independent
-rewrite and is not an official upstream release.
+The current behavioral baseline is Pi 0.84.4 at authoritative upstream main
+commit `853a80d26c90a14c1886f0ebb8ffaae133ca2185`. The earlier embedded
+TypeScript/JavaScript reference was retired in checkpoint 187 after the native
+0.84.1 implementation passed its local and three-platform parity gates. Newer
+work is audited in an isolated upstream checkout and projected into reviewed
+native code and language-neutral data; the reference source is not restored to
+this repository. `pi-zig` is an independent rewrite and is not an official Pi
+release.
+
+The deterministic catalog input now contains the exact verified Pi AI 0.84.4
+release data: 1,290 models across 39 providers. Its generator records the
+upstream release, commit, archive digest, structure digest, and source digest in
+the generated Zig module and rejects unknown or unprojected fields.
 
 ## Highlights
 
@@ -26,6 +33,9 @@ rewrite and is not an official upstream release.
 - retained fullscreen terminal application, Markdown/LaTeX rendering, terminal
   images, model/session/settings/auth/package selectors, mouse input, clipboard,
   completion, and configurable keybindings;
+- session-scoped searchable model/thinking selectors with explicit Ctrl+S
+  defaults, recursive file completion, terminal capability overrides, native
+  PowerShell, Radius/private-gist session sharing, and RPC queue clearing;
 - optional SQLite repository and live-server companions, remote protocol
   clients, TLS/proxy support, MCP, telemetry, image normalization, and package
   management;

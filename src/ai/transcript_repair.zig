@@ -178,8 +178,10 @@ fn downgradeCrossModelAssistant(result: *RepairedTranscript, msg: *ai.ChatMessag
         }
         msg.thinking = null;
         msg.thinking_signature = null;
+        msg.thinking_redacted = false;
     } else if (msg.thinking_signature != null) {
         msg.thinking_signature = null;
+        msg.thinking_redacted = false;
     }
     if (msg.tool_calls_json) |raw| msg.tool_calls_json = try stripToolThoughtSignatures(result, raw);
 }

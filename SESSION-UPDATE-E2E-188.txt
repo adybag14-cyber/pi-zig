@@ -1,0 +1,13 @@
+SESSION_UPDATE_E2E_188=PASS
+STARTUP_RESUME=PASS
+STARTUP_RENAME_PERSISTENCE=PASS
+LIVE_RESUME=PASS
+SOURCE_TARGET_ISOLATION=PASS
+SELF_UPDATE_CHECK_PLAN=PASS
+UNSAFE_SOURCE_INSTALL_REJECTED=PASS
+SELF_UPDATE_PACKAGE_MIGRATION=PASS
+LATEST_REQUESTS=3
+MANAGER_STEPS=2
+STDERR_BYTES=0
+
+{"latestRequests": 3, "liveResume": true, "managerSteps": 2, "selfUpdateCheckPlan": true, "selfUpdateMigration": true, "sourceTargetIsolation": true, "startupRenamePersistence": true, "startupResume": true, "stderrBytes": 0, "unsafeSourceRejected": true}

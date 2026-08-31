@@ -176,7 +176,7 @@ def main() -> int:
     ap.add_argument("--report", type=Path)
     ns = ap.parse_args()
     result = run(ns.binary.resolve(), ns.report.resolve() if ns.report else None)
-    print("PROJECT_SETTINGS_E2E_173=PASS")
+    print("PROJECT_SETTINGS_E2E_188=PASS")
     for key, value in result.items(): print(f"{key}={value}")
     return 0
 

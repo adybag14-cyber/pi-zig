@@ -99,6 +99,9 @@ test "SGR mouse reports buttons drag modifiers release and wheels" {
     try std.testing.expect(drag.modifiers.shift and drag.modifiers.ctrl);
 
     try std.testing.expectEqual(Kind.release, parse("\x1b[<0;4;3m").?.kind);
+    const generic_release = parse("\x1b[<3;4;3M").?;
+    try std.testing.expectEqual(Kind.release, generic_release.kind);
+    try std.testing.expectEqual(Button.none, generic_release.button);
     try std.testing.expectEqual(Button.wheel_down, parse("\x1b[<65;1;1M").?.button);
 }
 

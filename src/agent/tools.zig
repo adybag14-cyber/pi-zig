@@ -168,6 +168,7 @@ pub const ToolName = enum {
     write,
     edit,
     bash,
+    powershell,
     grep,
     find,
     ls,
@@ -184,7 +185,8 @@ pub const ToolName = enum {
     }
 };
 
-pub const all_tool_names = [_][]const u8{ "read", "write", "edit", "bash", "grep", "find", "ls" };
+pub const default_tool_names = [_][]const u8{ "read", "write", "edit", "bash", "grep", "find", "ls" };
+pub const all_tool_names = default_tool_names ++ [_][]const u8{"powershell"};
 
 pub fn isBuiltin(name: []const u8) bool {
     for (all_tool_names) |candidate| if (std.mem.eql(u8, candidate, name)) return true;
@@ -194,6 +196,9 @@ pub fn isBuiltin(name: []const u8) bool {
 pub const ToolFilter = struct {
     /// If non-null, only these tools are enabled.
     allow: ?[]const []const u8 = null,
+    /// Settings-level defaultTools selects native built-ins only. Extension and
+    /// SDK tools stay enabled unless an explicit `allow` list is supplied.
+    builtin_allow: ?[]const []const u8 = &default_tool_names,
     /// Tools to exclude (applied after allow).
     exclude: ?[]const []const u8 = null,
     no_tools: bool = false,
@@ -209,6 +214,15 @@ pub const ToolFilter = struct {
                 }
             }
             if (!found) return false;
+        } else if (isBuiltin(name)) {
+            if (self.builtin_allow) |a| {
+                var found = false;
+                for (a) |t| if (std.mem.eql(u8, t, name)) {
+                    found = true;
+                    break;
+                };
+                if (!found) return false;
+            }
         }
         if (self.exclude) |ex| {
             for (ex) |t| {
@@ -241,6 +255,9 @@ const schema_edit =
 const schema_bash =
     \\{"type":"function","function":{"name":"bash","description":"Run a shell command and return stdout, stderr, and exit code. Optional timeout in seconds.","parameters":{"type":"object","properties":{"command":{"type":"string"},"timeout":{"type":"number","description":"Timeout in seconds (default 120)"}},"required":["command"]}}}
 ;
+const schema_powershell =
+    \\{"type":"function","function":{"name":"powershell","description":"Execute PowerShell commands and return stdout, stderr, and exit code. Optional timeout in seconds.","parameters":{"type":"object","properties":{"command":{"type":"string"},"timeout":{"type":"number","description":"Timeout in seconds (default 120)"}},"required":["command"]}}}
+;
 const schema_grep =
     \\{"type":"function","function":{"name":"grep","description":"Search files for a pattern. Uses regex when possible (rg if available); set literal=true for substring match.","parameters":{"type":"object","properties":{"pattern":{"type":"string"},"path":{"type":"string"},"glob":{"type":"string"},"ignoreCase":{"type":"boolean"},"literal":{"type":"boolean"},"limit":{"type":"number"},"context":{"type":"number","description":"Lines of context before/after match"}},"required":["pattern"]}}}
 ;
@@ -256,14 +273,22 @@ fn schemaFor(name: []const u8) ?[]const u8 {
     if (std.mem.eql(u8, name, "write")) return schema_write;
     if (std.mem.eql(u8, name, "edit")) return schema_edit;
     if (std.mem.eql(u8, name, "bash")) return schema_bash;
+    if (std.mem.eql(u8, name, "powershell")) return schema_powershell;
     if (std.mem.eql(u8, name, "grep")) return schema_grep;
     if (std.mem.eql(u8, name, "find")) return schema_find;
     if (std.mem.eql(u8, name, "ls")) return schema_ls;
     return null;
 }
 
+pub const ToolSchemaOptions = struct {
+    /// Upstream exposes strict JSON-schema preference for the four default
+    /// coding tools only when PI_EXPERIMENTAL=1. Providers that advertise
+    /// strict-tool support consume this metadata; others safely omit it.
+    experimental_strict: bool = false,
+};
+
 /// OpenAI-compatible tools array for enabled native tools (caller frees).
-pub fn toolSchemasJson(gpa: std.mem.Allocator, filter: ToolFilter) ![]u8 {
+pub fn toolSchemasJsonWithOptions(gpa: std.mem.Allocator, filter: ToolFilter, options: ToolSchemaOptions) ![]u8 {
     var out: std.ArrayList(u8) = .empty;
     errdefer out.deinit(gpa);
     try out.appendSlice(gpa, "[");
@@ -273,10 +298,22 @@ pub fn toolSchemasJson(gpa: std.mem.Allocator, filter: ToolFilter) ![]u8 {
         const schema = schemaFor(n) orelse continue;
         if (!first) try out.append(gpa, ',');
         first = false;
-        try out.appendSlice(gpa, schema);
+        const strict_default = options.experimental_strict and
+            (std.mem.eql(u8, n, "read") or std.mem.eql(u8, n, "write") or std.mem.eql(u8, n, "edit") or std.mem.eql(u8, n, "bash"));
+        if (strict_default) {
+            std.debug.assert(schema.len > 0 and schema[schema.len - 1] == '}');
+            try out.appendSlice(gpa, schema[0 .. schema.len - 1]);
+            try out.appendSlice(gpa, ",\"constrainedSampling\":{\"type\":\"json_schema\",\"strict\":\"prefer\"}}");
+        } else {
+            try out.appendSlice(gpa, schema);
+        }
     }
     try out.appendSlice(gpa, "]");
     return try out.toOwnedSlice(gpa);
+}
+
+pub fn toolSchemasJson(gpa: std.mem.Allocator, filter: ToolFilter) ![]u8 {
+    return toolSchemasJsonWithOptions(gpa, filter, .{});
 }
 
 /// Default full schema JSON (all tools) as a static string for simple cases.
@@ -656,6 +693,7 @@ pub fn execute(ctx: ToolContext, name: []const u8, arguments_json: []const u8) !
     if (std.mem.eql(u8, name, "write")) return executeWrite(ctx, arguments_json);
     if (std.mem.eql(u8, name, "edit")) return executeEdit(ctx, arguments_json);
     if (std.mem.eql(u8, name, "bash")) return executeBash(ctx, arguments_json);
+    if (std.mem.eql(u8, name, "powershell")) return executePowerShell(ctx, arguments_json);
     if (std.mem.eql(u8, name, "grep")) return executeGrep(ctx, arguments_json);
     if (std.mem.eql(u8, name, "find")) return executeFind(ctx, arguments_json);
     if (std.mem.eql(u8, name, "ls")) return executeLs(ctx, arguments_json);
@@ -1065,8 +1103,31 @@ fn executeBash(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
         &[_][]const u8{ "sh", "-c", command };
 
     // Mid-process kill: spawn Child, poll abort_flag, kill on abort or timeout.
-    return executeBashKillable(ctx, argv, timeout_sec);
+    return executeProcessTool(ctx, "bash", argv, timeout_sec);
 }
+
+fn executePowerShell(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
+    const command = try parseStringField(ctx.gpa, arguments_json, "command") orelse
+        return try errMsg(ctx.gpa, "powershell: missing command", .{});
+    defer ctx.gpa.free(command);
+    if (builtin.os.tag != .windows) return try errMsg(ctx.gpa, "powershell: only available on Windows", .{});
+    if (ctx.abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire))
+        return try errMsg(ctx.gpa, "powershell: aborted before start", .{});
+    const timeout_sec: i64 = @intCast(@max(1, parseIntField(ctx.gpa, arguments_json, "timeout", 120)));
+    const utf8_command = try std.fmt.allocPrint(ctx.gpa, "try {{ [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 }} catch {{}}\n{s}", .{command});
+    defer ctx.gpa.free(utf8_command);
+    const argv = powershell_command_prefix ++ [_][]const u8{utf8_command};
+    return executeProcessTool(ctx, "powershell", &argv, timeout_sec);
+}
+
+const powershell_command_prefix = [_][]const u8{
+    "powershell.exe",
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-Command",
+};
 
 fn buildBashEnvironment(ctx: ToolContext) !?std.process.Environ.Map {
     const parent = ctx.environ orelse return null;
@@ -1084,7 +1145,7 @@ fn buildBashEnvironment(ctx: ToolContext) !?std.process.Environ.Map {
     return child;
 }
 
-fn executeBashKillable(ctx: ToolContext, argv: []const []const u8, timeout_sec: i64) !ToolResult {
+fn executeProcessTool(ctx: ToolContext, tool_label: []const u8, argv: []const []const u8, timeout_sec: i64) !ToolResult {
     var child_environment = try buildBashEnvironment(ctx);
     defer if (child_environment) |*environment| environment.deinit();
     const child_environment_ptr: ?*const std.process.Environ.Map = if (child_environment) |*environment| environment else null;
@@ -1101,8 +1162,8 @@ fn executeBashKillable(ctx: ToolContext, argv: []const []const u8, timeout_sec: 
             .stderr_limit = .limited(1024 * 1024),
             .timeout = .{ .duration = .{ .raw = .fromSeconds(timeout_sec), .clock = .real } },
         }) catch |err| {
-            if (err == error.Timeout) return try errMsg(ctx.gpa, "bash: timed out after {d}s", .{timeout_sec});
-            return try errMsg(ctx.gpa, "bash spawn failed: {s}", .{@errorName(err)});
+            if (err == error.Timeout) return try errMsg(ctx.gpa, "{s}: timed out after {d}s", .{ tool_label, timeout_sec });
+            return try errMsg(ctx.gpa, "{s} spawn failed: {s}", .{ tool_label, @errorName(err) });
         };
         defer ctx.gpa.free(run_result.stdout);
         defer ctx.gpa.free(run_result.stderr);
@@ -1133,7 +1194,7 @@ fn executeBashKillable(ctx: ToolContext, argv: []const []const u8, timeout_sec: 
         .stdin = .ignore,
         .pgid = if (builtin.os.tag == .windows) null else 0,
     }) catch |err| {
-        return try errMsg(ctx.gpa, "bash spawn failed: {s}", .{@errorName(err)});
+        return try errMsg(ctx.gpa, "{s} spawn failed: {s}", .{ tool_label, @errorName(err) });
     };
 
     const WaitState = struct {
@@ -1220,8 +1281,8 @@ fn executeBashKillable(ctx: ToolContext, argv: []const []const u8, timeout_sec: 
     defer if (state.stdout.len > 0) ctx.gpa.free(state.stdout);
     defer if (state.stderr.len > 0) ctx.gpa.free(state.stderr);
 
-    if (killed_for_abort) return try errMsg(ctx.gpa, "bash: aborted (process killed)", .{});
-    if (killed_for_timeout) return try errMsg(ctx.gpa, "bash: timed out after {d}s (process killed)", .{timeout_sec});
+    if (killed_for_abort) return try errMsg(ctx.gpa, "{s}: aborted (process killed)", .{tool_label});
+    if (killed_for_timeout) return try errMsg(ctx.gpa, "{s}: timed out after {d}s (process killed)", .{ tool_label, timeout_sec });
 
     const code: i32 = if (state.term) |t| switch (t) {
         .exited => |c| @intCast(c),
@@ -1832,6 +1893,48 @@ test "tool filter allowlist" {
     defer gpa.free(json);
     try std.testing.expect(std.mem.indexOf(u8, json, "\"read\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, json, "\"bash\"") == null);
+}
+
+test "experimental default tools prefer strict JSON schema without affecting optional tools" {
+    const gpa = std.testing.allocator;
+    const json = try toolSchemasJsonWithOptions(gpa, .{ .allow = &.{ "read", "grep" } }, .{ .experimental_strict = true });
+    defer gpa.free(json);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, json, .{});
+    defer parsed.deinit();
+    try std.testing.expectEqual(@as(usize, 2), parsed.value.array.items.len);
+    const read = parsed.value.array.items[0].object;
+    const grep = parsed.value.array.items[1].object;
+    try std.testing.expect(read.get("constrainedSampling") != null);
+    try std.testing.expect(grep.get("constrainedSampling") == null);
+    try std.testing.expectEqualStrings("prefer", read.get("constrainedSampling").?.object.get("strict").?.string);
+}
+
+test "default built-in selection keeps custom tools and leaves PowerShell opt-in" {
+    const defaults = ToolFilter{ .builtin_allow = &.{ "read", "bash" } };
+    try std.testing.expect(defaults.isEnabled("read"));
+    try std.testing.expect(!defaults.isEnabled("write"));
+    try std.testing.expect(!defaults.isEnabled("powershell"));
+    try std.testing.expect(defaults.isEnabled("extension_tool"));
+
+    const explicit = ToolFilter{ .allow = &.{"read"} };
+    try std.testing.expect(explicit.isEnabled("read"));
+    try std.testing.expect(!explicit.isEnabled("extension_tool"));
+    const powershell = ToolFilter{ .allow = &.{"powershell"} };
+    try std.testing.expect(powershell.isEnabled("powershell"));
+}
+
+test "PowerShell tool uses process-local bypass and UTF-8 output on Windows" {
+    if (builtin.os.tag != .windows) return error.SkipZigTest;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const n = try tmp.dir.realPath(std.testing.io, &path_buf);
+    const ctx = ToolContext{ .gpa = std.testing.allocator, .io = std.testing.io, .cwd = path_buf[0..n] };
+    try std.testing.expectEqualSlices([]const u8, &.{ "powershell.exe", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command" }, &powershell_command_prefix);
+    var result = try execute(ctx, "powershell", "{\"command\":\"Write-Output 'héllo €'\"}");
+    defer result.deinit(std.testing.allocator);
+    try std.testing.expect(!result.is_error);
+    try std.testing.expect(std.mem.indexOf(u8, result.content, "héllo €") != null);
 }
 
 test "matchGlob basics" {

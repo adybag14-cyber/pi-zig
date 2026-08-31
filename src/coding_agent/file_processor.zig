@@ -46,6 +46,19 @@ pub const ProcessedFiles = struct {
     }
 };
 
+/// Public file-magic MIME detector matching the current coding-agent export.
+/// The returned MIME slice is static; null means the file is not one of the
+/// supported inline image formats.
+pub fn detectSupportedImageMimeTypeFromFile(gpa: std.mem.Allocator, io: Io, path: []const u8) !?[]const u8 {
+    const data = std.Io.Dir.cwd().readFileAlloc(io, path, gpa, .limited(32 * 1024 * 1024)) catch |err| switch (err) {
+        error.StreamTooLong => return error.FileTooLarge,
+        else => return err,
+    };
+    defer gpa.free(data);
+    const inspection = image_process.inspect(data) orelse return null;
+    return inspection.mime_type;
+}
+
 pub fn processFileArguments(
     gpa: std.mem.Allocator,
     io: Io,
@@ -157,6 +170,10 @@ test "process file arguments separates text, images, and unsupported binary" {
     var path_buf: [std.fs.max_path_bytes]u8 = undefined;
     const n = try tmp.dir.realPath(io, &path_buf);
     const root = path_buf[0..n];
+
+    const renamed_path = try std.fs.path.join(gpa, &.{ root, "renamed.bin" });
+    defer gpa.free(renamed_path);
+    try std.testing.expectEqualStrings("image/png", (try detectSupportedImageMimeTypeFromFile(gpa, io, renamed_path)).?);
 
     const args = [_][]const u8{ "notes with space.txt", "renamed.bin", "blob.bin" };
     var result = try processFileArguments(gpa, io, &env, root, &args, .{});

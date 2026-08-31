@@ -42,10 +42,12 @@ pub const ProjectEnvironment = struct {
     context_count: usize,
     skills_count: usize,
     owned_allow: ?[]const []const u8 = null,
+    owned_builtin_allow: ?[]const []const u8 = null,
     owned_exclude: ?[]const []const u8 = null,
 
     pub fn deinit(self: *ProjectEnvironment) void {
         if (self.owned_allow) |items| freeStringSlice(self.gpa, items);
+        if (self.owned_builtin_allow) |items| freeStringSlice(self.gpa, items);
         if (self.owned_exclude) |items| freeStringSlice(self.gpa, items);
         self.gpa.free(self.system_prompt);
         self.gpa.free(self.context_prompt);
@@ -164,9 +166,10 @@ pub fn load(
         system_prompt = assembled;
     }
 
-    const chosen_allow = opts.tool_allow orelse settings.tools;
-    const owned_allow = if (chosen_allow) |items| try dupeStringSlice(gpa, items) else null;
+    const owned_allow = if (opts.tool_allow) |items| try dupeStringSlice(gpa, items) else null;
     errdefer if (owned_allow) |items| freeStringSlice(gpa, items);
+    const owned_builtin_allow = if (opts.tool_allow == null) try dupeStringSlice(gpa, settings.tools orelse &agent.tools.default_tool_names) else null;
+    errdefer if (owned_builtin_allow) |items| freeStringSlice(gpa, items);
     const owned_exclude = if (opts.tool_exclude) |items| try dupeStringSlice(gpa, items) else null;
     errdefer if (owned_exclude) |items| freeStringSlice(gpa, items);
 
@@ -177,6 +180,7 @@ pub fn load(
         .context_prompt = context_prompt,
         .tool_filter = .{
             .allow = owned_allow,
+            .builtin_allow = owned_builtin_allow,
             .exclude = owned_exclude,
             .no_tools = opts.no_tools,
         },
@@ -192,6 +196,7 @@ pub fn load(
         .context_count = context_count,
         .skills_count = skills_count,
         .owned_allow = owned_allow,
+        .owned_builtin_allow = owned_builtin_allow,
         .owned_exclude = owned_exclude,
     };
 }

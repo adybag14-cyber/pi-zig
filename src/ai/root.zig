@@ -24,6 +24,7 @@ pub const thinking = @import("thinking.zig");
 pub const catalog = @import("catalog.zig");
 pub const request_metadata = @import("request_metadata.zig");
 pub const retry = @import("retry.zig");
+pub const pi_user_agent = @import("pi_user_agent.zig");
 pub const github_copilot = @import("github_copilot.zig");
 pub const tool_arguments = @import("tool_arguments.zig");
 pub const cost = @import("cost.zig");
@@ -60,6 +61,9 @@ pub const ModelResponse = struct {
     thinking: []const u8 = "",
     /// Opaque provider signature for thinking continuity (Anthropic/redacted blocks).
     thinking_signature: []const u8 = "",
+    /// The opaque thinking signature is encrypted/redacted reasoning rather
+    /// than a signature for visible reasoning text.
+    thinking_redacted: bool = false,
     tool_calls: []ToolCall,
     provider: []const u8 = "",
     /// API protocol identity used to produce this assistant response.
@@ -75,6 +79,8 @@ pub const ModelResponse = struct {
     error_message: []const u8 = "",
     /// Provider-native terminal reason preserved alongside normalized stop_reason.
     raw_stop_reason: []const u8 = "",
+    /// OpenAI Codex terminal `end_turn` diagnostic when the provider supplies it.
+    end_turn: ?bool = null,
     stop_reason: []const u8 = "",
     usage: Usage = .{},
     /// Request-local HTTP metadata used only by the provider retry wrapper.
@@ -152,9 +158,11 @@ pub const ChatMessage = struct {
     response_id: ?[]const u8 = null,
     response_model: ?[]const u8 = null,
     raw_stop_reason: ?[]const u8 = null,
+    end_turn: ?bool = null,
     /// Replayed assistant thinking/reasoning text, when the provider exposed it.
     thinking: ?[]const u8 = null,
     thinking_signature: ?[]const u8 = null,
+    thinking_redacted: bool = false,
     tool_call_id: ?[]const u8 = null,
     tool_calls_json: ?[]const u8 = null,
     tool_name: ?[]const u8 = null,
@@ -200,12 +208,39 @@ pub const ChatMessage = struct {
 
 pub const ThinkingLevel = thinking.ThinkingLevel;
 
+pub const ToolChoice = enum {
+    auto,
+    none,
+
+    pub fn jsonName(self: ToolChoice) []const u8 {
+        return @tagName(self);
+    }
+};
+
+pub const ProviderResponse = struct {
+    status: u16,
+    /// Borrowed raw response headers. Valid only for the callback invocation.
+    headers: []const request_metadata.Header,
+};
+
+pub const ProviderResponseHandler = *const fn (?*anyopaque, ProviderResponse) anyerror!void;
+
 pub const CompletionOptions = struct {
     /// Request-local output cap. Zero preserves the model/provider default.
     max_tokens: u64 = 0,
     /// Detached one-shot work such as compaction and branch summaries must not
     /// reuse the live conversation prompt cache or session-affinity identity.
     isolate_cache: bool = false,
+    /// Provider-neutral tool selection for one request. Null preserves the
+    /// adapter's normal behavior.
+    tool_choice: ?ToolChoice = null,
+    /// Optional routing identity for detached summaries. This can retain a
+    /// provider route while `isolate_cache` still suppresses prompt-cache data.
+    routing_session_id: ?[]const u8 = null,
+    /// Optional raw HTTP response observer. Bedrock uses this to preserve
+    /// gateway-specific Smithy headers before its event stream is consumed.
+    on_response: ?ProviderResponseHandler = null,
+    on_response_ctx: ?*anyopaque = null,
 };
 
 pub fn resolveMaxTokens(configured: u64, requested: u64) u64 {
@@ -219,6 +254,7 @@ pub fn resolveCacheRetention(configured: request_metadata.CacheRetention, option
 }
 
 pub fn resolveSessionAffinity(configured: ?[]const u8, options: CompletionOptions) ?[]const u8 {
+    if (options.routing_session_id) |value| return value;
     return if (options.isolate_cache) null else configured;
 }
 
@@ -290,6 +326,10 @@ test "request-local output caps respect configured model limits" {
     try std.testing.expect(resolveCacheRetention(.long, isolated) == .none);
     try std.testing.expectEqualStrings("session", resolveSessionAffinity("session", live).?);
     try std.testing.expect(resolveSessionAffinity("session", isolated) == null);
+    try std.testing.expectEqualStrings("summary-route", resolveSessionAffinity("session", .{
+        .isolate_cache = true,
+        .routing_session_id = "summary-route",
+    }).?);
 }
 
 test "chat messages expose legacy and ordered image arrays" {

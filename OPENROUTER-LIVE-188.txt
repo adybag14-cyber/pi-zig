@@ -1,0 +1,24 @@
+OPENROUTER_LIVE_188=REACHABLE_QUOTA_BLOCKED
+DATE_UTC=2026-08-31T11:13:24Z
+PROVIDER=openrouter
+MODEL=openrouter/free
+AUTH_STATUS=ready
+AUTH_TYPE=oauth
+PAID_TRAFFIC_USED=false
+COMPLETION_HTTP_STATUS=429
+LIMIT_SOURCE=openrouter_free_tier_daily
+LIMIT=50
+REMAINING=0
+RESET_UTC=2026-09-01T00:00:00Z
+TOOL_PATH_HTTP_429_EVENTS=3
+TOOL_PATH_AUTO_RETRY_START=0
+TOOL_PATH_AUTO_RETRY_END=0
+TOOL_PATH_TOOL_EXECUTION_START=0
+TOOL_PATH_AGENT_END=1
+
+The three HTTP 429 text occurrences are projections of the single terminal
+provider failure through JSON event/output fields, not three paid or retried
+requests. The absence of automatic retry events and the single agent_end prove
+that deterministic free-tier exhaustion failed fast. A successful completion
+or tool invocation cannot be claimed until the external account quota resets.
+No credential or user identifier is included in this report.

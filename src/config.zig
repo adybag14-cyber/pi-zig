@@ -6,9 +6,10 @@ const builtin = @import("builtin");
 pub const APP_NAME = "pi";
 pub const CONFIG_DIR_NAME = ".pi";
 pub const AGENT_DIR_NAME = "agent";
-pub const version = "1.0.0";
+pub const version = "1.1.0";
 /// Upstream Pi release whose public behavior this checkpoint targets.
-pub const upstream_version = "0.84.1";
+pub const upstream_version = "0.84.4";
+pub const upstream_commit = "853a80d26c90a14c1886f0ebb8ffaae133ca2185";
 pub const upstream_package_name = "@earendil-works/pi-coding-agent";
 pub const identity = "pi (pi-zig) coding agent " ++ version;
 

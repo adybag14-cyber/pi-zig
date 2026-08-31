@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Real PTY session-resume and managed self-update validation for checkpoint 170."""
+"""Real PTY session-resume and managed self-update validation for checkpoint 188."""
 from __future__ import annotations
 
 import argparse
@@ -301,7 +301,7 @@ def run(binary: Path, report: Path | None) -> dict:
             "stderrBytes": len(startup_stderr.encode()) + len(live_stderr.encode()) + len(update.stderr.encode()),
         }
         text = "\n".join([
-            "SESSION_UPDATE_E2E_170=PASS",
+            "SESSION_UPDATE_E2E_188=PASS",
             "STARTUP_RESUME=PASS",
             "STARTUP_RENAME_PERSISTENCE=PASS",
             "LIVE_RESUME=PASS",

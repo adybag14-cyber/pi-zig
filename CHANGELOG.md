@@ -4,41 +4,44 @@ All notable changes to `pi-zig` are documented in this file.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-31
+
 ### Added
 
-- Current zero-cost `openrouter/free` capability-router catalog entry with
-  reasoning, image-input, context-window, and no-spend metadata.
-- Exact generated Pi AI 0.84.1 catalog coverage: 1,258 models across 39
-  providers, including per-model APIs, endpoints, headers, pricing tiers,
-  reasoning maps, and compatibility metadata.
-- Deterministic catalog source/generator checks that reject unknown or dropped
-  model fields and run on every CI platform.
-
-### Removed
-
-- The embedded 1,366-file Pi 0.84.1 TypeScript/JavaScript reference snapshot,
-  its source ZIP, and reference-only integrity manifests after the complete
-  local and three-platform retirement gates passed. Historical hashes and the
-  language-neutral model catalog projection remain recorded.
+- Exact reproducible Pi 0.84.4 catalog projection: 1,290 models across 39
+  providers, pinned to upstream main commit
+  `853a80d26c90a14c1886f0ebb8ffaae133ca2185` and the verified release archive.
+- Provider-neutral tool choice, compaction routing sessions, three compatible
+  thinking-budget fields, Pi user-agent headers, Anthropic server-side
+  fallbacks, OpenAI reasoning-detail replay, Bedrock redacted reasoning,
+  Codex `end_turn`, Google thinking maps, and fragmented Mistral tool calls.
+- Optional native PowerShell tool, terminal capability overrides, RPC queue
+  clearing, extension UI prompt events, `/thinking`, `/share`, Ctrl+S model and
+  thinking defaults, recursive `@file` completion, and public image MIME
+  detection by file magic.
+- Current Copilot account-catalog policy discovery with bounded 429 retries and
+  sequential enablement of known tool-capable models only.
+- Searchable session-only model/thinking selectors, persistent
+  `enabledModels`, organization-visible Radius JSONL sharing, and private-gist
+  fallback links.
 
 ### Fixed
 
-- Windows OAuth browser callbacks now read accepted TCP streams correctly,
-  consume complete HTTP headers, and avoid nested timeout-concurrency failures
-  across OpenRouter, Anthropic, OpenAI Codex, and Radius providers.
-- Piped stdin now starts in streaming mode on Windows, preventing spurious
-  `INVALID_INFO_CLASS` diagnostics in one-shot and JSON output.
-- OpenRouter free-router requests no longer send a forbidden explicit
-  `reasoning.effort: "none"` value when thinking is left at its default.
-- Native hot switching now retains generated per-model endpoints, headers,
-  credentials, API protocols, pricing, and compatibility metadata for mixed
-  providers such as GitHub Copilot, Cloudflare, Fireworks, and OpenCode.
-- Added OpenAI Responses `additional_tools` replay and vLLM
-  `thinking_token_budget` behavior, including models.json compatibility flags.
-- Daily free-tier quota responses fail fast instead of consuming the retry
-  budget on deterministic OpenRouter 429 errors.
-- CI now rebuilds target artifacts without restoring stale Zig executables,
-  preventing architecture-incompatible cached tests on hosted macOS ARM64.
+- Final turns no longer invoke prepare-next-turn hooks, and extension messages
+  emitted during tools are appended only after their corresponding results.
+- Malformed JSONL lines are skipped, valid unterminated sessions are repaired,
+  and failed compactions emit the complete `session_compact_failed` event.
+- Failed extension factories leave no tool/provider/flag state and early worker
+  exits no longer write into closing Windows pipes.
+- Npm updates install only a strictly newer semantic version, preventing stale
+  registries from downgrading locally newer packages.
+- Fullscreen selection treats `/` and `-` as word joiners, generic SGR releases
+  complete selections, and VS Code no longer receives duplicate Windows
+  right-click paste.
+- Settings, models, prompt templates, and skills accept UTF-8 BOMs; invalid
+  settings identify their exact path while valid scopes remain active.
+- OpenRouter reasoning-mandatory free routing, Google tool-call stop reasons,
+  Kimi cached tokens, and model-specific fallback pricing match Pi 0.84.4.
 
 ## [1.0.0] - 2026-08-28
 

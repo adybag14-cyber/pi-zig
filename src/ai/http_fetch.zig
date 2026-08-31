@@ -8,9 +8,14 @@ pub const Result = struct {
     provider: retry.ProviderResponseMeta,
 };
 
+pub const HeadObserver = struct {
+    context: ?*anyopaque = null,
+    callback: *const fn (?*anyopaque, std.http.Client.Response.Head) anyerror!void,
+};
+
 /// Equivalent to `std.http.Client.fetch` for the options used by Pi's native
 /// transports, with retry metadata captured from the response head.
-pub fn fetch(client: *std.http.Client, options: std.http.Client.FetchOptions) !Result {
+pub fn fetchObserved(client: *std.http.Client, options: std.http.Client.FetchOptions, observer: ?HeadObserver) !Result {
     const uri = switch (options.location) {
         .url => |value| try std.Uri.parse(value),
         .uri => |value| value,
@@ -47,6 +52,7 @@ pub fn fetch(client: *std.http.Client, options: std.http.Client.FetchOptions) !R
     var response = try req.receiveHead(redirect_buffer);
     const provider = retry.providerMetaFromHead(response.head, std.Io.Clock.real.now(client.io).toMilliseconds());
     const status: u16 = @intCast(@intFromEnum(response.head.status));
+    if (observer) |value| try value.callback(value.context, response.head);
 
     const response_writer = options.response_writer orelse {
         const reader = response.reader(&.{});
@@ -75,8 +81,12 @@ pub fn fetch(client: *std.http.Client, options: std.http.Client.FetchOptions) !R
     return .{ .status = status, .provider = provider };
 }
 
-fn fetchTask(client: *std.http.Client, options: std.http.Client.FetchOptions) anyerror!Result {
-    return fetch(client, options);
+pub fn fetch(client: *std.http.Client, options: std.http.Client.FetchOptions) !Result {
+    return fetchObserved(client, options, null);
+}
+
+fn fetchTask(client: *std.http.Client, options: std.http.Client.FetchOptions, observer: ?HeadObserver) anyerror!Result {
+    return fetchObserved(client, options, observer);
 }
 
 fn timeoutTask(io: std.Io, timeout_ms: u64) bool {
@@ -97,14 +107,15 @@ fn abortTask(io: std.Io, flag: *bool) bool {
 /// abort signal. Select cancellation waits for the underlying request task to
 /// release its request/connection state before the caller can destroy either
 /// the client or response writer.
-pub fn fetchControlled(
+pub fn fetchControlledObserved(
     client: *std.http.Client,
     options: std.http.Client.FetchOptions,
     timeout_ms: ?u64,
     abort_flag: ?*bool,
+    observer: ?HeadObserver,
 ) !Result {
     if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) return error.ProviderRequestAborted;
-    if (timeout_ms == null and abort_flag == null) return fetch(client, options);
+    if (timeout_ms == null and abort_flag == null) return fetchObserved(client, options, observer);
     if (timeout_ms == 0) return error.ProviderRequestTimeout;
 
     const Race = union(enum) {
@@ -114,7 +125,7 @@ pub fn fetchControlled(
     };
     var queue: [3]Race = undefined;
     var select = std.Io.Select(Race).init(client.io, &queue);
-    select.async(.request, fetchTask, .{ client, options });
+    select.async(.request, fetchTask, .{ client, options, observer });
     if (timeout_ms) |millis| select.async(.timeout, timeoutTask, .{ client.io, millis });
     if (abort_flag) |flag| select.async(.aborted, abortTask, .{ client.io, flag });
 
@@ -135,6 +146,15 @@ pub fn fetchControlled(
             return error.Canceled;
         },
     }
+}
+
+pub fn fetchControlled(
+    client: *std.http.Client,
+    options: std.http.Client.FetchOptions,
+    timeout_ms: ?u64,
+    abort_flag: ?*bool,
+) !Result {
+    return fetchControlledObserved(client, options, timeout_ms, abort_flag, null);
 }
 
 test "fetch captures standard provider retry headers" {

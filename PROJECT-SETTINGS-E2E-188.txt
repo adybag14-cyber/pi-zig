@@ -1,0 +1,12 @@
+{
+  "editorPadding": 1,
+  "globalEdit": true,
+  "maxTurnsProjectDefaultOverride": 16,
+  "outputPad": 0,
+  "projectClearAndRestore": true,
+  "projectScope": true,
+  "settingsDrivenFullscreen": true,
+  "stderrBytes": 0,
+  "terminalProgress": true,
+  "terminalRestored": true
+}

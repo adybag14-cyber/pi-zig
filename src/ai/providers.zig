@@ -317,7 +317,7 @@ const qwen_effort_compat = metadata.Compat{
     .thinking_format = .qwen,
 };
 
-/// Exact built-in pi-ai 0.84.1 catalog plus native-only local/runtime entries.
+/// Exact built-in pi-ai 0.84.4 catalog plus native-only local/runtime entries.
 /// The generated rows retain provider identity while selecting a native API transport per model.
 const native_extra_models = [_]ModelInfo{
     .{ .provider = .radius, .api = .pi_messages, .id = "auto", .display = "Radius Auto", .base_url = "https://radius.pi.dev", .context_window = 128_000, .max_tokens = 16_384 },
@@ -425,44 +425,42 @@ pub fn resolveProvider(explicit: ?[]const u8, environ: *const std.process.Enviro
 
 pub fn defaultModel(provider: Provider) []const u8 {
     return switch (provider) {
-        .openai => "gpt-4o-mini",
-        .anthropic => "claude-sonnet-4-6",
-        .google => "gemini-2.5-flash",
+        .openai => "gpt-5.5",
+        .anthropic => "claude-opus-4-8",
+        .google => "gemini-3.1-pro-preview",
         .mock => "mock",
-        .groq => "llama-3.3-70b-versatile",
-        .together => "meta-llama/Llama-3.3-70B-Instruct-Turbo",
-        .deepseek => "deepseek-v4-flash",
+        .groq => "openai/gpt-oss-120b",
+        .together => "moonshotai/Kimi-K2.6",
+        .deepseek => "deepseek-v4-pro",
         .ollama => "llama3.2",
-        .openrouter => "openrouter/auto",
-        .xai => "grok-4.5",
-        .mistral => "mistral-large-latest",
-        .fireworks => "accounts/fireworks/models/glm-5p2",
+        .openrouter => "moonshotai/kimi-k2.6",
+        .xai => "grok-4.6",
+        .mistral => "devstral-medium-latest",
+        .fireworks => "accounts/fireworks/models/kimi-k2p6",
         .cerebras => "gpt-oss-120b",
         .lmstudio, .vllm => "local-model",
         .perplexity => "sonar",
-        .nvidia => "deepseek-ai/deepseek-v4-pro-0813",
+        .nvidia => "nvidia/nemotron-3-super-120b-a12b",
         .radius => "auto",
-        .cloudflare_workers_ai => "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-        .cloudflare_ai_gateway => "claude-sonnet-4.6",
-        .amazon_bedrock => "anthropic.claude-sonnet-4-6",
-        .github_copilot => "gpt-5-mini",
+        .cloudflare_workers_ai => "@cf/moonshotai/kimi-k2.6",
+        .cloudflare_ai_gateway => "workers-ai/@cf/moonshotai/kimi-k2.6",
+        .amazon_bedrock => "us.anthropic.claude-opus-4-6-v1",
+        .github_copilot => "gpt-5.4",
         .kimi_coding => "kimi-for-coding",
         .baseten => "zai-org/GLM-5.2",
         .qwen_token_plan, .qwen_token_plan_cn => "qwen3.7-max",
         .qwen_token_plan_individual => "qwen3.8-max",
-        .ant_ling => "Ling-2.6-flash",
-        .azure_openai_responses => "gpt-5.2",
-        .google_vertex => "gemini-2.5-pro",
-        .huggingface => "deepseek-ai/DeepSeek-V3",
+        .ant_ling => "Ring-2.6-1T",
+        .azure_openai_responses => "gpt-5.4",
+        .google_vertex => "gemini-3.1-pro-preview",
+        .huggingface => "moonshotai/Kimi-K2.6",
         .minimax, .minimax_cn => "MiniMax-M2.7",
-        .moonshotai, .moonshotai_cn => "kimi-k2.5",
-        .opencode => "big-pickle",
-        .opencode_go => "glm-5.2",
-        .openai_codex => "gpt-5.6-sol",
-        .vercel_ai_gateway => "anthropic/claude-sonnet-4.6",
-        .xiaomi => "mimo-v2-flash",
-        .xiaomi_token_plan_ams, .xiaomi_token_plan_cn, .xiaomi_token_plan_sgp => "mimo-v2.5",
-        .zai, .zai_coding_cn => "glm-5.2",
+        .moonshotai, .moonshotai_cn => "kimi-k2.6",
+        .opencode, .opencode_go => "kimi-k2.6",
+        .openai_codex => "gpt-5.5",
+        .vercel_ai_gateway => "zai/glm-5.1",
+        .xiaomi, .xiaomi_token_plan_ams, .xiaomi_token_plan_cn, .xiaomi_token_plan_sgp => "mimo-v2.5-pro",
+        .zai, .zai_coding_cn => "glm-5.3",
     };
 }
 
@@ -559,11 +557,12 @@ test "catalog has distinct gateway provider ids" {
 }
 
 test "generated catalog preserves exact upstream identity cardinality" {
-    try std.testing.expectEqual(@as(usize, 1258), catalog_generated.model_count);
+    try std.testing.expectEqual(@as(usize, 1290), catalog_generated.model_count);
     try std.testing.expectEqual(@as(usize, 39), catalog_generated.provider_count);
-    try std.testing.expectEqual(@as(usize, 1264), known_models.len);
-    try std.testing.expectEqualStrings("0.84.1", catalog_generated.upstream_version);
-    try std.testing.expectEqualStrings("0c3347c3bcf0d71a3d2b8b6bf9d8aee899cab258abc50a63a57db1282729ef2f", catalog_generated.source_sha256);
+    try std.testing.expectEqual(@as(usize, 1296), known_models.len);
+    try std.testing.expectEqualStrings("0.84.4", catalog_generated.upstream_version);
+    try std.testing.expectEqualStrings("853a80d26c90a14c1886f0ebb8ffaae133ca2185", catalog_generated.upstream_commit);
+    try std.testing.expectEqualStrings("cbb8df101cdeb3751d3a094a64c9214a4a7a72175bf187a039a02ee9724cb6af", catalog_generated.source_sha256);
 
     var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
     defer arena.deinit();
@@ -603,6 +602,24 @@ test "catalog exposes the current OpenRouter free capability router" {
     try std.testing.expectEqual(@as(u64, 200_000), model.context_window);
     try std.testing.expectEqual(@as(f64, 0), model.cost.input);
     try std.testing.expectEqual(@as(f64, 0), model.cost.output);
+}
+
+test "0.84.4 catalog carries vision xAI and Anthropic fallback metadata" {
+    var deepseek_vision: ?ModelInfo = null;
+    var grok46: ?ModelInfo = null;
+    var fable: ?ModelInfo = null;
+    for (known_models) |model| {
+        if (std.mem.eql(u8, model.providerName(), "deepseek") and std.mem.eql(u8, model.id, "deepseek-v4-flash-vision-exp")) deepseek_vision = model;
+        if (std.mem.eql(u8, model.providerName(), "xai") and std.mem.eql(u8, model.id, "grok-4.6")) grok46 = model;
+        if (std.mem.eql(u8, model.providerName(), "anthropic") and std.mem.eql(u8, model.id, "claude-fable-5")) fable = model;
+    }
+    try std.testing.expect(deepseek_vision != null and deepseek_vision.?.input_image);
+    try std.testing.expect(grok46 != null and grok46.?.apiKind() == .openai_responses);
+    try std.testing.expect(grok46.?.thinking_level_map.?.off == .unsupported);
+    try std.testing.expect(fable != null);
+    const fallbacks = fable.?.compat.allowed_fallback_models.?;
+    try std.testing.expectEqual(@as(usize, 2), fallbacks.len);
+    try std.testing.expectEqualStrings("claude-opus-4-8", fallbacks[0].model);
 }
 
 test "Bedrock ambient AWS access keys count as usable credentials" {
@@ -755,7 +772,7 @@ test "generated Baseten and Qwen catalogs preserve capability metadata" {
     }
     try std.testing.expectEqual(@as(usize, 18), broad_count);
     try std.testing.expectEqual(@as(usize, 18), cn_count);
-    try std.testing.expectEqual(@as(usize, 7), individual_count);
+    try std.testing.expectEqual(@as(usize, 8), individual_count);
     try std.testing.expect(baseten_glm != null and qwen38 != null);
     try std.testing.expect(baseten_glm.?.compat.thinking_format.? == .baseten);
     try std.testing.expectEqual(true, baseten_glm.?.compat.supports_reasoning_effort.?);

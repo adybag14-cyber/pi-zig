@@ -2352,6 +2352,75 @@ test "JavaScript package manifest declares multiple extension entries ahead of i
     try std.testing.expectEqualStrings("two", output.message.?);
 }
 
+test "failed JavaScript extension factory leaves no tool provider or host residue" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    if (!jsRuntimeAvailable(gpa, io)) return error.SkipZigTest;
+
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    try tmp.dir.writeFile(io, .{ .sub_path = "working.ts", .data =
+        \\export default function(pi) {
+        \\  pi.registerTool({ name: 'working_tool', description: 'kept', parameters: { type: 'object', properties: {} }, execute: async () => ({ content: [{ type: 'text', text: 'ok' }] }) });
+        \\  pi.registerProvider('working-provider', { baseUrl: 'https://working.invalid/v1', apiKey: 'working' });
+        \\}
+    });
+    try tmp.dir.writeFile(io, .{ .sub_path = "failing.ts", .data =
+        \\export default function(pi) {
+        \\  pi.registerTool({ name: 'failed_tool', description: 'must roll back', parameters: { type: 'object', properties: {} }, execute: async () => ({ content: [{ type: 'text', text: 'bad' }] }) });
+        \\  pi.registerProvider('failed-provider', { baseUrl: 'https://failed.invalid/v1', apiKey: 'failed' });
+        \\  throw new Error('factory failed after registration');
+        \\}
+    });
+    const working_path = try tmp.dir.realPathFileAlloc(io, "working.ts", gpa);
+    defer gpa.free(working_path);
+    const failing_path = try tmp.dir.realPathFileAlloc(io, "failing.ts", gpa);
+    defer gpa.free(failing_path);
+
+    var host = Host{ .gpa = gpa, .io = io };
+    defer host.deinit();
+    try host.loadPath(working_path);
+    try std.testing.expectEqual(@as(usize, 1), host.extensions.items.len);
+    try std.testing.expect(host.hasTool("working_tool"));
+
+    var failed = false;
+    host.loadPath(failing_path) catch {
+        failed = true;
+    };
+    try std.testing.expect(failed);
+    try std.testing.expectEqual(@as(usize, 1), host.extensions.items.len);
+    try std.testing.expect(host.hasTool("working_tool"));
+    try std.testing.expect(!host.hasTool("failed_tool"));
+    try std.testing.expectEqual(@as(usize, 1), host.extensions.items[0].providers.len);
+    try std.testing.expectEqualStrings("working-provider", host.extensions.items[0].providers[0].name);
+}
+
+test "JavaScript registerFlag rejects a mismatched default inside the factory" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    if (!jsRuntimeAvailable(gpa, io)) return error.SkipZigTest;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    try tmp.dir.writeFile(io, .{ .sub_path = "flags.ts", .data =
+        \\export default function(pi) {
+        \\  let message = '';
+        \\  try { pi.registerFlag('bad', { type: 'boolean', default: 'yes' }); } catch (error) { message = error.message; }
+        \\  pi.registerFlag('good', { type: 'boolean', default: true });
+        \\  pi.registerCommand('flag_validation', { handler: async () => ({ message }) });
+        \\}
+    });
+    const path = try tmp.dir.realPathFileAlloc(io, "flags.ts", gpa);
+    defer gpa.free(path);
+    var host = Host{ .gpa = gpa, .io = io };
+    defer host.deinit();
+    try host.loadPath(path);
+    try std.testing.expectEqual(@as(usize, 1), host.extensions.items[0].flags.len);
+    try std.testing.expectEqualStrings("good", host.extensions.items[0].flags[0].name);
+    var output = (try host.executeCommand("flag_validation", "")).?;
+    defer output.deinit(gpa);
+    try std.testing.expect(std.mem.indexOf(u8, output.message.?, "expected boolean, got string") != null);
+}
+
 test "explicit extension directory scans direct scripts and one-level packages" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;

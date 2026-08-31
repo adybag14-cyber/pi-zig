@@ -41,6 +41,13 @@ pub const MessageQueue = struct {
         self.items.clearRetainingCapacity();
     }
 
+    /// Atomically transfer every queued message to the caller in FIFO order.
+    pub fn drain(self: *MessageQueue) ![][]u8 {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        return self.items.toOwnedSlice(self.gpa);
+    }
+
     /// AgentConfig callback. The returned slice is owned by the allocator that
     /// owns this queue and is transferred to the agent loop for eventual free.
     pub fn take(ctx: ?*anyopaque, _: std.mem.Allocator) anyerror!?[]u8 {
@@ -64,5 +71,21 @@ test "RPC message queue transfers owned messages in FIFO order" {
     try std.testing.expectEqualStrings("first", first);
     try std.testing.expectEqual(@as(usize, 1), queue.count());
     queue.clear();
+    try std.testing.expectEqual(@as(usize, 0), queue.count());
+}
+
+test "RPC message queue drain returns and clears every message" {
+    const gpa = std.testing.allocator;
+    var queue = MessageQueue.init(gpa, std.testing.io);
+    defer queue.deinit();
+    try queue.push("first");
+    try queue.push("second");
+    const drained = try queue.drain();
+    defer {
+        for (drained) |message| gpa.free(message);
+        gpa.free(drained);
+    }
+    try std.testing.expectEqual(@as(usize, 2), drained.len);
+    try std.testing.expectEqualStrings("first", drained[0]);
     try std.testing.expectEqual(@as(usize, 0), queue.count());
 }

@@ -137,22 +137,23 @@ fn loadFile(gpa: std.mem.Allocator, io: Io, path: []const u8, out: *std.ArrayLis
 }
 
 fn parseDocument(raw: []const u8) ParsedDocument {
-    var result = ParsedDocument{ .body = raw };
-    var lines = std.mem.splitScalar(u8, raw, '\n');
+    const content = if (std.mem.startsWith(u8, raw, "\xEF\xBB\xBF")) raw[3..] else raw;
+    var result = ParsedDocument{ .body = content };
+    var lines = std.mem.splitScalar(u8, content, '\n');
     const first_raw = lines.next() orelse return result;
     if (!std.mem.eql(u8, std.mem.trim(u8, first_raw, " \t\r"), "---")) return result;
 
     // Offset immediately after the first line, including its newline when present.
     var offset: usize = first_raw.len;
-    if (offset < raw.len and raw[offset] == '\n') offset += 1;
+    if (offset < content.len and content[offset] == '\n') offset += 1;
     var found_end = false;
     while (lines.next()) |line_raw| {
         const line_start = offset;
         offset += line_raw.len;
-        if (offset < raw.len and raw[offset] == '\n') offset += 1;
+        if (offset < content.len and content[offset] == '\n') offset += 1;
         const line = std.mem.trim(u8, line_raw, " \t\r");
         if (std.mem.eql(u8, line, "---")) {
-            result.body = raw[offset..];
+            result.body = content[offset..];
             found_end = true;
             break;
         }
@@ -166,7 +167,7 @@ fn parseDocument(raw: []const u8) ParsedDocument {
         if (std.mem.eql(u8, key, "description")) result.description = value;
         if (std.mem.eql(u8, key, "argument-hint")) result.argument_hint = value;
     }
-    if (!found_end) return .{ .body = raw };
+    if (!found_end) return .{ .body = content };
     return result;
 }
 
@@ -422,7 +423,7 @@ test "replacement text is not recursively substituted" {
 }
 
 test "frontmatter is stripped and exposed as metadata" {
-    const document = parseDocument("---\ndescription: 'Review code'\nargument-hint: <path>\n---\nCheck $1\n");
+    const document = parseDocument("\xEF\xBB\xBF---\ndescription: 'Review code'\nargument-hint: <path>\n---\nCheck $1\n");
     try std.testing.expectEqualStrings("Review code", document.description);
     try std.testing.expectEqualStrings("<path>", document.argument_hint.?);
     try std.testing.expectEqualStrings("Check $1\n", document.body);

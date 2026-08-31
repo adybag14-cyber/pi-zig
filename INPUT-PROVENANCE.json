@@ -1,5 +1,5 @@
 {
-  "checkpoint": 187,
+  "checkpoint": 188,
   "created_at_utc": "2026-08-23T20:39:50.551600+00:00",
   "inputs": {
     "checkpoint_183": {
@@ -45,5 +45,31 @@
     ],
     "retained_catalog_projection": "src/ai/catalog_source.json",
     "retained_catalog_sha256": "0c3347c3bcf0d71a3d2b8b6bf9d8aee899cab258abc50a63a57db1282729ef2f"
+  },
+  "upstream_0_84_4": {
+    "authoritative_repository": "https://github.com/earendil-works/pi.git",
+    "main_commit": "853a80d26c90a14c1886f0ebb8ffaae133ca2185",
+    "release_tag": "v0.84.4",
+    "release_archive": {
+      "name": "pi-0.84.4-source.tar.gz",
+      "sha256": "ca3958559b60f87ee44c84d94df8c3ee0b7eda575370402abb2d0ad9155cde4a",
+      "size": 6260662
+    },
+    "published_model_structure_sha256": "456b83c08bed3255d7e399d7927c6743e7f3568435691b3d38cc3666ffa70479",
+    "retained_catalog_projection": {
+      "path": "src/ai/catalog_source.json",
+      "sha256": "cbb8df101cdeb3751d3a094a64c9214a4a7a72175bf187a039a02ee9724cb6af"
+    },
+    "retained_changelog_projection": {
+      "path": "src/coding_agent/assets/UPSTREAM-CHANGELOG.md",
+      "sha256": "469ee5caa136ec101a560ea5b61e42195a1a7265e18b561cb1f03d20d9e6b418",
+      "size": 544681
+    },
+    "comparison_checkout_retained_outside_repository": "C:/Users/adyba/pi-upstream-audit-853a80d",
+    "typescript_reference_restored": false,
+    "zig_toolchain": {
+      "path": "C:/Users/adyba/zig-x86_64-windows-0.16.0/zig.exe",
+      "version": "0.16.0"
+    }
   }
 }

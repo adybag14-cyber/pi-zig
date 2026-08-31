@@ -40,6 +40,7 @@ pub const Scope = enum {
 pub const Selection = struct {
     reference: ?[]u8 = null,
     cancelled: bool = true,
+    persist_default: bool = false,
 
     pub fn deinit(self: *Selection, gpa: std.mem.Allocator) void {
         if (self.reference) |value| gpa.free(value);
@@ -74,6 +75,7 @@ const Selector = struct {
     scope: Scope = .all,
     done: bool = false,
     cancelled: bool = true,
+    persist_default: bool = false,
     result: ?[]u8 = null,
     status: ?[]u8 = null,
     rendered_start: usize = 0,
@@ -347,6 +349,11 @@ const Selector = struct {
     }
 
     fn handleInput(self: *Selector, data: []const u8) !void {
+        if (std.mem.eql(u8, data, "\x13")) {
+            self.persist_default = true;
+            try self.selectCurrent();
+            return;
+        }
         if (std.mem.eql(u8, data, "\x1b[5~")) {
             self.selected -|= @min(self.selected, self.pageSize());
             return;
@@ -424,8 +431,8 @@ const Selector = struct {
             lines.deinit(gpa);
         }
 
-        try appendClipped(gpa, &lines, width, try std.fmt.allocPrint(gpa, "{s}Select Model{s}  {s}Enter{s} select  {s}Tab{s} scope  {s}Esc{s} clear/cancel", .{
-            bold, reset, dim, reset, dim, reset, dim, reset,
+        try appendClipped(gpa, &lines, width, try std.fmt.allocPrint(gpa, "{s}Select Model{s}  {s}Enter{s} select  {s}Ctrl+S{s} default  {s}Tab{s} scope  {s}Esc{s} clear/cancel", .{
+            bold, reset, dim, reset, dim, reset, dim, reset, dim, reset,
         }));
         if (self.scoped_models.len > 0) {
             try appendClipped(gpa, &lines, width, try std.fmt.allocPrint(gpa, "Scope: {s}{s}{s}  Search: {s}{s}_{s}", .{
@@ -569,6 +576,7 @@ pub fn run(
     return .{
         .reference = if (selector.result) |value| try gpa.dupe(u8, value) else null,
         .cancelled = selector.cancelled,
+        .persist_default = selector.persist_default,
     };
 }
 
@@ -612,6 +620,17 @@ test "model selector selection returns canonical provider and id" {
     defer selector.deinit();
     try selector.selectCurrent();
     try std.testing.expect(!selector.cancelled);
+    try std.testing.expectEqualStrings("google/gemini-c", selector.result.?);
+}
+
+test "model selector Ctrl+S selects and marks the global default request" {
+    const gpa = std.testing.allocator;
+    const models = testModels();
+    var selector = try Selector.init(gpa, std.testing.io, &models, &.{}, &.{}, "openai", "gpt-a", "gemini");
+    defer selector.deinit();
+    try selector.handleInput("\x13");
+    try std.testing.expect(selector.done);
+    try std.testing.expect(selector.persist_default);
     try std.testing.expectEqualStrings("google/gemini-c", selector.result.?);
 }
 

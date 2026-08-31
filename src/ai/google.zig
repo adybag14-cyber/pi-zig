@@ -34,6 +34,7 @@ pub const GoogleClient = struct {
     custom_headers: []const metadata.Header = &.{},
     sampling_params: []const metadata.SamplingParam = &.{},
     thinking: ai.ThinkingLevel = .off,
+    thinking_level_map: ?@import("thinking.zig").ThinkingLevelMap = null,
     max_tokens: u64 = 0,
     context_window: u64 = 0,
     input_image: bool = false,
@@ -114,7 +115,9 @@ pub const GoogleClient = struct {
         const payload = try buildRequestBodyConfigured(gpa, effective_messages, tools_json, self.provider_id, self.model, .{
             .max_tokens = effective_max_tokens,
             .thinking = self.thinking,
+            .thinking_level_map = self.thinking_level_map,
             .sampling_params = self.sampling_params,
+            .tool_choice = request_options.tool_choice,
         });
         defer gpa.free(payload);
 
@@ -143,6 +146,7 @@ pub const GoogleClient = struct {
         var headers: std.ArrayList(std.http.Header) = .empty;
         defer headers.deinit(gpa);
         try putHttpHeader(gpa, &headers, "content-type", "application/json");
+        try putHttpHeader(gpa, &headers, "User-Agent", ai.pi_user_agent.value);
         const bearer = if (self.auth_mode == .bearer) try std.fmt.allocPrint(gpa, "Bearer {s}", .{self.api_key}) else null;
         defer if (bearer) |value| gpa.free(value);
         if (bearer) |value| try putHttpHeader(gpa, &headers, "authorization", value);
@@ -226,6 +230,7 @@ pub const GoogleClient = struct {
             defer headers.deinit(gpa);
             try putHttpHeader(gpa, &headers, "content-type", "application/json");
             try putHttpHeader(gpa, &headers, "accept", "text/event-stream");
+            try putHttpHeader(gpa, &headers, "User-Agent", ai.pi_user_agent.value);
             const bearer = if (self.auth_mode == .bearer) try std.fmt.allocPrint(gpa, "Bearer {s}", .{self.api_key}) else null;
             defer if (bearer) |value| gpa.free(value);
             if (bearer) |value| try putHttpHeader(gpa, &headers, "authorization", value);
@@ -397,6 +402,8 @@ pub const GoogleRequestOptions = struct {
     max_tokens: u64 = 0,
     thinking: ai.ThinkingLevel = .off,
     sampling_params: []const metadata.SamplingParam = &.{},
+    thinking_level_map: ?@import("thinking.zig").ThinkingLevelMap = null,
+    tool_choice: ?ai.ToolChoice = null,
 };
 
 pub fn buildRequestBody(
@@ -526,6 +533,11 @@ pub fn buildRequestBodyConfigured(
             try w.writeAll(decls);
             try w.writeAll("}]");
         }
+        if (options.tool_choice) |choice| {
+            try w.writeAll(",\"toolConfig\":{\"functionCallingConfig\":{\"mode\":");
+            try std.json.Stringify.value(if (choice == .none) "NONE" else "AUTO", .{}, w);
+            try w.writeAll("}}");
+        }
     }
     if (options.max_tokens > 0 or options.thinking != .off or options.sampling_params.len > 0) {
         try w.writeAll(",\"generationConfig\":{");
@@ -539,7 +551,7 @@ pub fn buildRequestBodyConfigured(
             if (!first_config) try w.writeAll(",");
             first_config = false;
             try w.writeAll("\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingLevel\":");
-            try std.json.Stringify.value(googleThinkingLevel(options.thinking), .{}, w);
+            try std.json.Stringify.value(googleThinkingLevelMapped(options.thinking, options.thinking_level_map), .{}, w);
             try w.writeAll("}");
         }
         for (options.sampling_params) |param| {
@@ -562,6 +574,14 @@ fn googleThinkingLevel(level: ai.ThinkingLevel) []const u8 {
         .medium => "MEDIUM",
         .high, .xhigh, .max => "HIGH",
     };
+}
+
+fn googleThinkingLevelMapped(level: ai.ThinkingLevel, map: ?@import("thinking.zig").ThinkingLevelMap) []const u8 {
+    if (map) |mapping| switch (mapping.entry(level)) {
+        .mapped => |value| return value,
+        else => {},
+    };
+    return googleThinkingLevel(level);
 }
 
 fn isValidGoogleThoughtSignature(signature: []const u8) bool {
@@ -790,7 +810,14 @@ const GoogleLiveSseWriter = struct {
             };
             copied += 1;
         }
-        const stop = if (calls.len > 0) "toolUse" else if (self.stop_reason.len > 0) self.stop_reason else "stop";
+        const stop = if (self.stop_reason.len > 0 and !std.mem.eql(u8, self.stop_reason, "stop"))
+            self.stop_reason
+        else if (calls.len > 0)
+            "toolUse"
+        else if (self.stop_reason.len > 0)
+            self.stop_reason
+        else
+            "stop";
         return .{
             .content = try gpa.dupe(u8, self.text.items),
             .thinking = if (self.thinking.items.len > 0) try gpa.dupe(u8, self.thinking.items) else "",
@@ -1040,7 +1067,8 @@ pub fn parseGoogleResponse(gpa: std.mem.Allocator, response_json: []const u8) !a
     if (first.object.get("finishReason")) |finish| {
         if (finish == .string and finish.string.len > 0) {
             raw_stop_reason = try gpa.dupe(u8, finish.string);
-            if (call_i == 0) normalized_stop = mapGoogleStopReason(finish.string);
+            const mapped = mapGoogleStopReason(finish.string);
+            if (call_i == 0 or !std.mem.eql(u8, mapped, "stop")) normalized_stop = mapped;
         }
     }
 
@@ -1081,6 +1109,37 @@ test "parseGoogleResponse extracts functionCall tools" {
     try std.testing.expectEqualStrings("read", resp.tool_calls[0].name);
     try std.testing.expect(std.mem.indexOf(u8, resp.tool_calls[0].arguments, "a.txt") != null);
     try std.testing.expectEqualStrings("toolUse", resp.stop_reason);
+}
+
+test "Google tool-call stop reasons preserve length and normal tool use" {
+    const gpa = std.testing.allocator;
+    const prefix = "{\"candidates\":[{\"content\":{\"parts\":[{\"functionCall\":{\"name\":\"read\",\"args\":{}}}]},\"finishReason\":\"";
+    const suffix = "\"}]}";
+    const length_json = try std.fmt.allocPrint(gpa, "{s}MAX_TOKENS{s}", .{ prefix, suffix });
+    defer gpa.free(length_json);
+    var length = try parseGoogleResponse(gpa, length_json);
+    defer length.deinit(gpa);
+    try std.testing.expectEqualStrings("length", length.stop_reason);
+
+    const stop_json = try std.fmt.allocPrint(gpa, "{s}STOP{s}", .{ prefix, suffix });
+    defer gpa.free(stop_json);
+    var stopped = try parseGoogleResponse(gpa, stop_json);
+    defer stopped.deinit(gpa);
+    try std.testing.expectEqualStrings("toolUse", stopped.stop_reason);
+}
+
+test "Google request honors mapped thinking levels and provider-neutral tool choice" {
+    const gpa = std.testing.allocator;
+    const msgs = [_]ai.ChatMessage{.{ .role = "user", .content = "hi" }};
+    const tools = "[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"parameters\":{\"type\":\"object\"}}}]";
+    const body = try buildRequestBodyConfigured(gpa, &msgs, tools, "google", "gemini-test", .{
+        .thinking = .xhigh,
+        .thinking_level_map = .{ .xhigh = .{ .mapped = "HIGH" } },
+        .tool_choice = .none,
+    });
+    defer gpa.free(body);
+    try std.testing.expect(std.mem.indexOf(u8, body, "\"thinkingLevel\":\"HIGH\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "\"functionCallingConfig\":{\"mode\":\"NONE\"}") != null);
 }
 
 test "convertToolsToGoogle maps functionDeclarations" {

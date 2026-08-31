@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Real PTY and loopback HTTP validation for checkpoint 169 model/update parity."""
+"""Real PTY and loopback HTTP validation for checkpoint 188 model/update parity."""
 from __future__ import annotations
 
 import argparse
@@ -36,7 +36,7 @@ class State:
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "PiCheckpoint169/1"
+    server_version = "PiCheckpoint188/1"
 
     def do_GET(self) -> None:  # noqa: N802
         state: State = self.server.state  # type: ignore[attr-defined]
@@ -46,7 +46,7 @@ class Handler(BaseHTTPRequestHandler):
             body = json.dumps({
                 "version": "0.85.0",
                 "packageName": "@earendil-works/pi-coding-agent",
-                "note": "checkpoint-169-update-note",
+                "note": "checkpoint-188-update-note",
             }).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -126,9 +126,12 @@ def run_pty(command: list[str], env: dict[str, str], cwd: Path) -> tuple[int, by
     try:
         pos = wait(b"Type a prompt")
         pos = wait(b"> ", pos)
-        os.write(master, b"/model gpt-4.1-mini\r")
+        # The 0.84.4 catalog contains this bare model ID under several
+        # providers. Use the canonical identity so the gate tests selection,
+        # not provider sort order.
+        os.write(master, b"/model openai/gpt-4.1-mini\r")
         pos = wait(b"Select Model", pos)
-        pos = wait(b"gpt-4.1-mini", pos)
+        pos = wait(b"openai/gpt-4.1-mini", pos)
         os.write(master, b"\r")
         pos = wait(b"Model switched to openai/gpt-4.1-mini.", pos)
         # Give the intentionally detached anonymous install ping time to reach
@@ -155,7 +158,7 @@ def run_pty(command: list[str], env: dict[str, str], cwd: Path) -> tuple[int, by
 
 
 def make_rg_archive() -> bytes:
-    script = b'#!/bin/sh\nprintf \'managed-rg-169:%s\\n\' "$*"\n'
+    script = b'#!/bin/sh\nprintf \'managed-rg-188:%s\\n\' "$*"\n'
     stream = io.BytesIO()
     with tarfile.open(fileobj=stream, mode="w:gz") as archive:
         info = tarfile.TarInfo("ripgrep-14.1.1-x86_64-unknown-linux-musl/rg")
@@ -212,18 +215,18 @@ def run_managed_rg(
 
     workspace = root / "tool-workspace"
     workspace.mkdir(exist_ok=True)
-    (workspace / "fixture.txt").write_text("needle-169\n", encoding="utf-8")
+    (workspace / "fixture.txt").write_text("needle-188\n", encoding="utf-8")
     script_path = root / "managed-rg-mock.json"
     script_path.write_text(json.dumps([
         {
             "content": "running managed grep",
             "tool_calls": [{
-                "id": "managed-rg-call-169",
+                "id": "managed-rg-call-188",
                 "name": "grep",
-                "arguments": json.dumps({"pattern": "needle-169", "path": "."}),
+                "arguments": json.dumps({"pattern": "needle-188", "path": "."}),
             }],
         },
-        {"content": "managed-tool-complete-169", "tool_calls": []},
+        {"content": "managed-tool-complete-188", "tool_calls": []},
     ]), encoding="utf-8")
 
     env = os.environ.copy()
@@ -248,8 +251,8 @@ def run_managed_rg(
     first = run_captured(command, workspace, env, root, "managed-rg-first")
     require(first.returncode == 0, f"first managed rg exit {first.returncode}: {first.stderr}")
     require(first.stderr == "", f"first managed rg stderr: {first.stderr}")
-    require("managed-rg-169:" in first.stdout, f"managed rg output missing: {first.stdout[-4000:]}")
-    require("managed-tool-complete-169" in first.stdout, "managed rg final response missing")
+    require("managed-rg-188:" in first.stdout, f"managed rg output missing: {first.stdout[-4000:]}")
+    require("managed-tool-complete-188" in first.stdout, "managed rg final response missing")
     installed = agent_dir / "bin" / "rg"
     require(installed.is_file(), f"managed rg not installed: {installed}")
     require(os.access(installed, os.X_OK), "managed rg is not executable")
@@ -263,7 +266,7 @@ def run_managed_rg(
     second = run_captured(command, workspace, env, root, "managed-rg-second")
     require(second.returncode == 0, f"second managed rg exit {second.returncode}: {second.stderr}")
     require(second.stderr == "", f"second managed rg stderr: {second.stderr}")
-    require("managed-rg-169:" in second.stdout, "cached managed rg did not execute")
+    require("managed-rg-188:" in second.stdout, "cached managed rg did not execute")
     with state.lock:
         release_final = state.rg_release
         download_final = state.rg_download
@@ -277,14 +280,14 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
 
 
 def run(binary: Path, report: Path | None) -> dict[str, Any]:
-    with tempfile.TemporaryDirectory(prefix="pi-model-update-169-") as raw:
+    with tempfile.TemporaryDirectory(prefix="pi-model-update-188-") as raw:
         root = Path(raw)
         agent_dir = root / "agent"
         session_dir = root / "sessions"
         agent_dir.mkdir()
         session_dir.mkdir()
         mock = root / "mock.json"
-        mock.write_text(json.dumps([{"content": "unused-169"}]), encoding="utf-8")
+        mock.write_text(json.dumps([{"content": "unused-188"}]), encoding="utf-8")
         (agent_dir / "settings.json").write_text(json.dumps({
             "lastChangelogVersion": "0.84.0",
             "collapseChangelog": True,
@@ -305,7 +308,7 @@ def run(binary: Path, report: Path | None) -> dict[str, Any]:
             "PI_AGENT_DIR": str(agent_dir),
             "PI_LATEST_VERSION_URL": f"http://127.0.0.1:{port}/latest",
             "PI_REPORT_INSTALL_URL": f"http://127.0.0.1:{port}/report",
-            "OPENAI_API_KEY": "checkpoint-169-test-key",
+            "OPENAI_API_KEY": "checkpoint-188-test-key",
             "TERM": "xterm-256color",
             "NO_COLOR": "1",
         })
@@ -329,9 +332,9 @@ def run(binary: Path, report: Path | None) -> dict[str, Any]:
         text = raw_output.decode("utf-8", errors="replace")
         require(code == 0, f"process exit {code}")
         require(stderr == "", f"stderr not empty: {stderr}")
-        require("Updated to upstream Pi v0.84.1" in text, "condensed changelog notice missing")
+        require("Updated to upstream Pi v0.84.4" in text, "condensed changelog notice missing")
         require("Upstream Pi update available: v0.85.0" in text, "latest release notice missing")
-        require("checkpoint-169-update-note" in text, "release note missing")
+        require("checkpoint-188-update-note" in text, "release note missing")
         require("Select Model" in text, "fullscreen model selector missing")
         require("Model switched to openai/gpt-4.1-mini." in text, "model switch acknowledgement missing")
 
@@ -341,10 +344,10 @@ def run(binary: Path, report: Path | None) -> dict[str, Any]:
             report_query = state.report_query
         require(latest_requests == 1, f"latest request count {latest_requests}")
         require(report_requests == 1, f"report request count {report_requests}")
-        require("version=0.84.1" in report_query, f"report version missing: {report_query}")
+        require("version=0.84.4" in report_query, f"report version missing: {report_query}")
 
         settings = json.loads((agent_dir / "settings.json").read_text(encoding="utf-8"))
-        require(settings.get("lastChangelogVersion") == "0.84.1", f"lifecycle version not persisted: {settings}")
+        require(settings.get("lastChangelogVersion") == "0.84.4", f"lifecycle version not persisted: {settings}")
         require(settings.get("collapseChangelog") is True, "unrelated lifecycle setting changed")
 
         session_files = sorted(session_dir.rglob("*.jsonl"))
@@ -369,10 +372,10 @@ def run(binary: Path, report: Path | None) -> dict[str, Any]:
             "stderrBytes": len(stderr.encode()),
         }
         text_report = "\n".join([
-            "MODEL_UPDATE_E2E_169=PASS",
+            "MODEL_UPDATE_E2E_188=PASS",
             f"LATEST_REQUESTS={latest_requests}",
             f"REPORT_REQUESTS={report_requests}",
-            "LIFECYCLE_VERSION=0.84.1",
+            "LIFECYCLE_VERSION=0.84.4",
             "FULLSCREEN_MODEL_SELECTOR=PASS",
             "SELECTED_MODEL=openai/gpt-4.1-mini",
             f"MODEL_CHANGE_ENTRIES={len(changes)}",

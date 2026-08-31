@@ -7,6 +7,7 @@ const branch_summary = @import("../agent/branch_summary.zig");
 const summarization = @import("../agent/summarization.zig");
 const ai = @import("../ai/root.zig");
 const export_html = @import("export_html.zig");
+const session_share = @import("session_share.zig");
 const settings_mod = @import("settings.zig");
 const context_mod = @import("context.zig");
 const skills_mod = @import("skills.zig");
@@ -77,6 +78,7 @@ pub const TreeTargetPromptFn = *const fn (
 pub const ModelTargetChoice = struct {
     reference: ?[]u8 = null,
     cancelled: bool = true,
+    persist_default: bool = false,
 
     pub fn deinit(self: *ModelTargetChoice, gpa: std.mem.Allocator) void {
         if (self.reference) |value| gpa.free(value);
@@ -89,6 +91,18 @@ pub const ModelTargetPromptFn = *const fn (
     gpa: std.mem.Allocator,
     initial_search: ?[]const u8,
 ) anyerror!ModelTargetChoice;
+
+pub const ThinkingTargetChoice = struct {
+    level: ?ai.thinking.ThinkingLevel = null,
+    cancelled: bool = true,
+    persist_default: bool = false,
+};
+
+pub const ThinkingTargetPromptFn = *const fn (
+    context: ?*anyopaque,
+    gpa: std.mem.Allocator,
+    initial_search: ?[]const u8,
+) anyerror!ThinkingTargetChoice;
 
 pub const SessionTargetChoice = struct {
     path: ?[]u8 = null,
@@ -175,6 +189,7 @@ pub const SlashContext = struct {
     agent_dir: ?[]const u8,
     model: *?[]const u8,
     provider: *?[]const u8,
+    thinking: ?*?[]const u8 = null,
     settings_text: []const u8,
     clipboard_options: clipboard_mod.Options = .{},
     trust_project: bool = true,
@@ -193,6 +208,8 @@ pub const SlashContext = struct {
     /// callers omit it and retain direct textual model switching.
     model_target_prompt_ctx: ?*anyopaque = null,
     model_target_prompt_fn: ?ModelTargetPromptFn = null,
+    thinking_target_prompt_ctx: ?*anyopaque = null,
+    thinking_target_prompt_fn: ?ThinkingTargetPromptFn = null,
     /// Optional retained selector for interactive `/settings`. The selector
     /// persists global settings atomically; this handler then performs one
     /// transactional live reload before returning to the editor.
@@ -435,15 +452,6 @@ fn finishGitHubCopilotOAuthLogin(ctx: SlashContext, agent_dir: []const u8, token
 
 fn isGitHubCopilotProvider(provider_id: []const u8) bool {
     return std.ascii.eqlIgnoreCase(provider_id, "github-copilot");
-}
-
-fn knownGitHubCopilotModelIds(gpa: std.mem.Allocator) ![]const []const u8 {
-    var ids: std.ArrayList([]const u8) = .empty;
-    errdefer ids.deinit(gpa);
-    for (providers_mod.known_models) |model| {
-        if (std.ascii.eqlIgnoreCase(model.providerName(), "github-copilot")) try ids.append(gpa, model.id);
-    }
-    return try ids.toOwnedSlice(gpa);
 }
 
 fn isOpenAICodexProvider(provider_id: []const u8) bool {
@@ -753,6 +761,51 @@ fn parseTreeArgs(arg: []const u8) !TreeArgs {
     };
 }
 
+fn radiusShareToken(ctx: SlashContext) !?[]u8 {
+    const agent_dir = ctx.agent_dir orelse return null;
+    var store = try auth_storage.AuthStorage.init(ctx.gpa, ctx.io, agent_dir);
+    defer store.deinit();
+    var credential = (try store.read("radius")) orelse return null;
+    defer credential.deinit(ctx.gpa);
+    switch (credential) {
+        .api_key => return null,
+        .oauth => |oauth| {
+            const now_ms = std.Io.Clock.real.now(ctx.io).toMilliseconds();
+            if (oauth.access.len > 0 and oauth.expires >= now_ms + 5 * 60_000) return try ctx.gpa.dupe(u8, oauth.access);
+            if (oauth.refresh.len == 0) return null;
+            var token = radius_oauth.refreshWithOptions(ctx.gpa, ctx.io, radius_config.DEFAULT_GATEWAY, oauth.refresh, bootstrapOptions(ctx)) catch return null;
+            defer token.deinit(ctx.gpa);
+            try radius_oauth.persistToken(ctx.gpa, ctx.io, agent_dir, "radius", &token);
+            return try ctx.gpa.dupe(u8, token.access);
+        },
+    }
+}
+
+fn shareTempHtmlPath(ctx: SlashContext) ![]u8 {
+    const root = ctx.agent_dir orelse ctx.cwd;
+    const directory = try std.fs.path.join(ctx.gpa, &.{ root, "tmp" });
+    defer ctx.gpa.free(directory);
+    try std.Io.Dir.cwd().createDirPath(ctx.io, directory);
+    var random: [8]u8 = undefined;
+    try ctx.io.randomSecure(&random);
+    const suffix = std.fmt.bytesToHex(random, .lower);
+    return std.fmt.allocPrint(ctx.gpa, "{s}{c}session-share-{s}.html", .{ directory, std.fs.path.sep, suffix });
+}
+
+fn effectiveShareSystemPrompt(ctx: SlashContext) ![]u8 {
+    if (ctx.live) |live| {
+        const config = live.agent_cfg;
+        if (config.context_prompt.len > 0) return std.fmt.allocPrint(ctx.gpa, "{s}\n\n{s}", .{ config.system_prompt, config.context_prompt });
+        return ctx.gpa.dupe(u8, config.system_prompt);
+    }
+    return ctx.gpa.dupe(u8, @import("../agent/loop.zig").default_system_prompt);
+}
+
+fn shareOffline(ctx: SlashContext) bool {
+    if (ctx.live) |live| if (live.client_pool) |pool| if (pool.environ) |environ| return update_mod.offline(environ);
+    return false;
+}
+
 pub fn isBuiltinCommand(line: []const u8) bool {
     if (line.len < 2 or line[0] != '/') return false;
     const rest = line[1..];
@@ -760,9 +813,9 @@ pub fn isBuiltinCommand(line: []const u8) bool {
     const command = rest[0..end];
     if (std.mem.startsWith(u8, command, "skill:")) return true;
     const builtin = [_][]const u8{
-        "help",    "?",      "skill",  "quit",     "exit",   "session", "new",    "name",    "model",
-        "compact", "export", "import", "fork",     "clone",  "tree",    "reload", "hotkeys", "changelog",
-        "copy",    "login",  "logout", "settings", "resume",
+        "help",    "?",      "skill",  "quit",     "exit",   "session", "new",      "name",    "model",
+        "compact", "export", "import", "fork",     "clone",  "tree",    "reload",   "hotkeys", "changelog",
+        "copy",    "login",  "logout", "settings", "resume", "share",   "thinking",
     };
     for (builtin) |candidate| if (std.mem.eql(u8, command, candidate)) return true;
     return false;
@@ -780,16 +833,16 @@ pub fn handle(ctx: SlashContext, line: []const u8) !SlashResult {
         if (skillCommandsEnabled(ctx)) {
             try tui_render.printLine(ctx.io,
                 \\Slash commands:
-                \\  /help /quit /exit /session /new /name <n> /model <id>
-                \\  /compact /export [path] /import <path> /fork /clone
+                \\  /help /quit /exit /session /new /name <n> /model <id> /thinking [level]
+                \\  /compact /export [path] /share /import <path> /fork /clone
                 \\  /tree [entryId] [--summary [focus]] /skill:<name> /reload /hotkeys /changelog /copy
                 \\  /login [provider] [key|browser|device-code] /logout [provider] /settings /resume
             );
         } else {
             try tui_render.printLine(ctx.io,
                 \\Slash commands:
-                \\  /help /quit /exit /session /new /name <n> /model <id>
-                \\  /compact /export [path] /import <path> /fork /clone
+                \\  /help /quit /exit /session /new /name <n> /model <id> /thinking [level]
+                \\  /compact /export [path] /share /import <path> /fork /clone
                 \\  /tree [entryId] [--summary [focus]] /reload /hotkeys /changelog /copy
                 \\  /login [provider] [key|browser|device-code] /logout [provider] /settings /resume
             );
@@ -921,6 +974,20 @@ pub fn handle(ctx: SlashContext, line: []const u8) !SlashResult {
                 const msg = try std.fmt.allocPrint(ctx.gpa, "Model switched to {s}/{s}.", .{ selected.providerName(), selected.id });
                 defer ctx.gpa.free(msg);
                 try tui_render.printLine(ctx.io, msg);
+                if (target_choice != null and target_choice.?.persist_default) {
+                    const agent_dir = ctx.agent_dir orelse {
+                        try tui_render.printLine(ctx.io, "Could not save default model: agent directory is unavailable.");
+                        return .handled;
+                    };
+                    settings_mod.setDefaultModel(ctx.gpa, ctx.io, agent_dir, selected.providerName(), selected.id) catch |err| {
+                        const warning = try std.fmt.allocPrint(ctx.gpa, "Could not save default model: {s}", .{@errorName(err)});
+                        defer ctx.gpa.free(warning);
+                        try tui_render.printLine(ctx.io, warning);
+                        return .handled;
+                    };
+                    try live_state.addPersistedDefaultToScope(live, selected);
+                    try tui_render.printLine(ctx.io, "Saved as the global default model.");
+                }
             } else {
                 const p = ctx.provider.* orelse "";
                 const m = ctx.model.* orelse requested;
@@ -931,6 +998,53 @@ pub fn handle(ctx: SlashContext, line: []const u8) !SlashResult {
             // Fallback when no live client is wired (should not happen in main REPL).
             ctx.model.* = try ctx.gpa.dupe(u8, requested);
             try tui_render.printLine(ctx.io, "Model updated for subsequent turns.");
+        }
+        return .handled;
+    }
+    if (std.mem.eql(u8, cmd, "thinking")) {
+        var target_choice: ?ThinkingTargetChoice = null;
+        var parsed: ai.thinking.ThinkingLevel = undefined;
+        if (ctx.thinking_target_prompt_fn) |prompt_fn| {
+            target_choice = try prompt_fn(ctx.thinking_target_prompt_ctx, ctx.gpa, if (arg.len > 0) arg else null);
+            if (target_choice.?.cancelled or target_choice.?.level == null) return .handled;
+            parsed = target_choice.?.level.?;
+        } else if (arg.len == 0) {
+            const current = if (ctx.live) |live| live.thinking orelse "off" else if (ctx.thinking) |value| value.* orelse "off" else "off";
+            const message = try std.fmt.allocPrint(ctx.gpa, "thinking={s}", .{current});
+            defer ctx.gpa.free(message);
+            try tui_render.printLine(ctx.io, message);
+            return .handled;
+        } else {
+            parsed = ai.thinking.ThinkingLevel.parse(arg) orelse {
+                try tui_render.printLine(ctx.io, "usage: /thinking off|minimal|low|medium|high|xhigh|max");
+                return .handled;
+            };
+        }
+        var effective = parsed;
+        if (ctx.live) |live| {
+            if (live_state.activeModelInfo(live)) |model| effective = model.clampThinkingLevel(parsed);
+            try live_state.applyThinking(live, @tagName(effective));
+        }
+        _ = try ctx.sess.appendThinkingLevelChange(@tagName(effective));
+        if (ctx.thinking) |value| {
+            if (value.*) |old| ctx.gpa.free(old);
+            value.* = try ctx.gpa.dupe(u8, @tagName(effective));
+        }
+        const message = try std.fmt.allocPrint(ctx.gpa, "Thinking level set to {s} for this session.", .{@tagName(effective)});
+        defer ctx.gpa.free(message);
+        try tui_render.printLine(ctx.io, message);
+        if (target_choice != null and target_choice.?.persist_default) {
+            const agent_dir = ctx.agent_dir orelse {
+                try tui_render.printLine(ctx.io, "Could not save default thinking level: agent directory is unavailable.");
+                return .handled;
+            };
+            settings_mod.setEditableScoped(ctx.gpa, ctx.io, agent_dir, ctx.cwd, ctx.trust_project, .global, .thinking_level, .{ .string = @tagName(effective) }) catch |err| {
+                const warning = try std.fmt.allocPrint(ctx.gpa, "Could not save default thinking level: {s}", .{@errorName(err)});
+                defer ctx.gpa.free(warning);
+                try tui_render.printLine(ctx.io, warning);
+                return .handled;
+            };
+            try tui_render.printLine(ctx.io, "Saved as the global default thinking level.");
         }
         return .handled;
     }
@@ -985,6 +1099,78 @@ pub fn handle(ctx: SlashContext, line: []const u8) !SlashResult {
         const msg = try std.fmt.allocPrint(ctx.gpa, "Exported to {s}", .{path});
         defer ctx.gpa.free(msg);
         try tui_render.printLine(ctx.io, msg);
+        return .handled;
+    }
+    if (std.mem.eql(u8, cmd, "share")) {
+        if (arg.len > 0) {
+            try tui_render.printLine(ctx.io, "usage: /share");
+            return .handled;
+        }
+        if (shareOffline(ctx)) {
+            try tui_render.printLine(ctx.io, "Session sharing is unavailable while PI_OFFLINE is set.");
+            return .handled;
+        }
+        const system_prompt = try effectiveShareSystemPrompt(ctx);
+        defer ctx.gpa.free(system_prompt);
+        const filter = if (ctx.live) |live| live.agent_cfg.tool_filter else @import("../agent/tools.zig").ToolFilter{};
+        const extras = if (ctx.live) |live| live.agent_cfg.extra_tools_json else "[]";
+        const jsonl = session_share.exportForShare(ctx.gpa, ctx.io, ctx.sess, system_prompt, filter, extras) catch |err| {
+            const message = try std.fmt.allocPrint(ctx.gpa, "Failed to export session for sharing: {s}", .{@errorName(err)});
+            defer ctx.gpa.free(message);
+            try tui_render.printLine(ctx.io, message);
+            return .handled;
+        };
+        defer ctx.gpa.free(jsonl);
+
+        const radius_token = radiusShareToken(ctx) catch null;
+        defer if (radius_token) |token| {
+            @memset(token, 0);
+            ctx.gpa.free(token);
+        };
+        if (radius_token) |token| {
+            const url = session_share.uploadRadius(ctx.gpa, ctx.io, token, radius_config.DEFAULT_GATEWAY, jsonl, bootstrapOptions(ctx)) catch |err| {
+                const message = try std.fmt.allocPrint(ctx.gpa, "Failed to upload Radius artifact: {s}", .{@errorName(err)});
+                defer ctx.gpa.free(message);
+                try tui_render.printLine(ctx.io, message);
+                return .handled;
+            };
+            defer ctx.gpa.free(url);
+            const message = try std.fmt.allocPrint(ctx.gpa, "Share URL: {s}", .{url});
+            defer ctx.gpa.free(message);
+            try tui_render.printLine(ctx.io, message);
+            return .handled;
+        }
+
+        const html = try export_html.exportHtml(ctx.gpa, ctx.sess);
+        defer ctx.gpa.free(html);
+        const temp_path = try shareTempHtmlPath(ctx);
+        defer ctx.gpa.free(temp_path);
+        try std.Io.Dir.cwd().writeFile(ctx.io, .{ .sub_path = temp_path, .data = html });
+        defer std.Io.Dir.cwd().deleteFile(ctx.io, temp_path) catch {};
+        const gist_url = session_share.createPrivateGist(ctx.gpa, ctx.io, ctx.cwd, temp_path) catch |err| {
+            const guidance: []const u8 = switch (err) {
+                error.GitHubCliNotInstalled => "GitHub CLI is not installed. Install it from https://cli.github.com/",
+                error.GitHubCliFailed => "GitHub CLI is not logged in or gist creation failed. Run `gh auth login` first.",
+                else => @errorName(err),
+            };
+            const message = try std.fmt.allocPrint(ctx.gpa, "Failed to create private gist: {s}", .{guidance});
+            defer ctx.gpa.free(message);
+            try tui_render.printLine(ctx.io, message);
+            return .handled;
+        };
+        defer ctx.gpa.free(gist_url);
+        const environ = if (ctx.live) |live| if (live.client_pool) |pool| pool.environ else null else null;
+        if (environ) |env| {
+            const preview = try session_share.viewerUrl(ctx.gpa, env, gist_url);
+            defer ctx.gpa.free(preview);
+            const message = try std.fmt.allocPrint(ctx.gpa, "Share URL: {s}\nGist: {s}", .{ preview, gist_url });
+            defer ctx.gpa.free(message);
+            try tui_render.printLine(ctx.io, message);
+        } else {
+            const message = try std.fmt.allocPrint(ctx.gpa, "Gist: {s}", .{gist_url});
+            defer ctx.gpa.free(message);
+            try tui_render.printLine(ctx.io, message);
+        }
         return .handled;
     }
     if (std.mem.eql(u8, cmd, "import")) {
@@ -1873,11 +2059,8 @@ pub fn handle(ctx: SlashContext, line: []const u8) !SlashResult {
                     return .handled;
                 };
                 defer credential.deinit(ctx.gpa);
-                const known_ids = try knownGitHubCopilotModelIds(ctx.gpa);
-                defer if (known_ids.len > 0) ctx.gpa.free(known_ids);
                 try authDialogProgress(ctx, dialog_active, "Discovering available Copilot models…");
-                copilot_oauth.enableModelsWithOptions(ctx.gpa, ctx.io, credential.access, enterprise_domain, known_ids, bootstrapOptions(ctx)) catch {};
-                credential.available_model_ids = copilot_oauth.fetchAvailableModelIdsWithOptions(ctx.gpa, ctx.io, credential.access, enterprise_domain, bootstrapOptions(ctx)) catch |err| {
+                credential.available_model_ids = copilot_oauth.discoverAndEnableAvailableModelIdsWithOptions(ctx.gpa, ctx.io, credential.access, enterprise_domain, bootstrapOptions(ctx)) catch |err| {
                     try authDialogFailure(ctx, dialog_active, prov, err);
                     return .handled;
                 };
@@ -2198,6 +2381,8 @@ test "slash session new model quit drive real session state" {
     try std.testing.expect((try handle(ctx, "/model gpt-test")) == .handled);
     try std.testing.expectEqualStrings("gpt-test", model.?);
     try std.testing.expectEqualStrings("gpt-test", client_model);
+    try std.testing.expect((try handle(ctx, "/thinking high")) == .handled);
+    try std.testing.expectEqualStrings("high", live.thinking.?);
     try std.testing.expect((try handle(ctx, "/name my-sess")) == .handled);
     try std.testing.expectEqualStrings("my-sess", sess.name);
     try std.testing.expect((try handle(ctx, "/compact")) == .handled);
@@ -2206,6 +2391,8 @@ test "slash session new model quit drive real session state" {
     try std.testing.expect((try handle(ctx, "/quit")) == .quit);
     try std.testing.expect((try handle(ctx, "not a slash")) == .not_command);
     try std.testing.expect(isBuiltinCommand("/model anthropic/test"));
+    try std.testing.expect(isBuiltinCommand("/thinking high"));
+    try std.testing.expect(isBuiltinCommand("/share"));
     try std.testing.expect(isBuiltinCommand("/skill:review"));
     try std.testing.expect(!isBuiltinCommand("/extension-command arg"));
 }

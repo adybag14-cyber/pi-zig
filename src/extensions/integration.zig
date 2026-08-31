@@ -11,6 +11,7 @@ const branch_summary_mod = @import("../agent/branch_summary.zig");
 const summarization_mod = @import("../agent/summarization.zig");
 const ai = @import("../ai/root.zig");
 const file_permissions = @import("../file_permissions.zig");
+const ui = @import("ui.zig");
 
 pub const Bridge = struct {
     host: *host_mod.Host,
@@ -27,6 +28,20 @@ pub const Bridge = struct {
 
     fn executeHook(self: *Bridge, hook: []const u8, payload: []const u8) !host_mod.EmitResult {
         return self.host.executeHookWithAbort(hook, payload, self.abort_flag);
+    }
+
+    pub fn uiPromptEvent(self: *Bridge, event: ui.PromptEvent, method: []const u8) void {
+        const hook = if (event == .start) "ui_prompt_start" else "ui_prompt_end";
+        if (!self.host.hasHook(hook)) return;
+        var payload: std.Io.Writer.Allocating = .init(self.host.gpa);
+        defer payload.deinit();
+        payload.writer.writeAll("{\"type\":") catch return;
+        std.json.Stringify.value(hook, .{}, &payload.writer) catch return;
+        payload.writer.writeAll(",\"method\":") catch return;
+        std.json.Stringify.value(method, .{}, &payload.writer) catch return;
+        payload.writer.writeAll("}") catch return;
+        var emitted = self.executeHook(hook, payload.written()) catch return;
+        emitted.deinit(self.host.gpa);
     }
 
     pub fn deinit(self: *Bridge) void {
@@ -793,6 +808,7 @@ fn eventHookName(kind: agent_loop.EventKind) ?[]const u8 {
         .tool_execution_start => "tool_execution_start",
         .tool_execution_update => "tool_execution_update",
         .tool_execution_end => "tool_execution_end",
+        .session_compact_failed => "session_compact_failed",
         .auto_retry_start, .auto_retry_end, .summarization_retry_scheduled, .summarization_retry_attempt_start, .summarization_retry_finished => null,
         // The native loop emits these compatibility aliases in addition to the
         // canonical events above; forwarding them would invoke extensions twice.
@@ -864,6 +880,16 @@ fn eventPayload(gpa: std.mem.Allocator, event: agent_loop.AgentEvent, hook: []co
             try std.json.Stringify.value(event.text, .{}, &out.writer);
         },
         .agent_start, .turn_start => {},
+        .session_compact_failed => {
+            try out.writer.writeAll(",\"source\":");
+            try std.json.Stringify.value(event.source, .{}, &out.writer);
+            try out.writer.writeAll(",\"reason\":");
+            try std.json.Stringify.value(event.reason, .{}, &out.writer);
+            try out.writer.writeAll(",\"willRetry\":");
+            try out.writer.writeAll(if (event.will_retry) "true" else "false");
+            try out.writer.writeAll(",\"error\":");
+            try std.json.Stringify.value(event.error_message orelse event.text, .{}, &out.writer);
+        },
         .auto_retry_start, .auto_retry_end, .summarization_retry_scheduled, .summarization_retry_attempt_start, .summarization_retry_finished => unreachable,
         .user, .assistant, .tool_call, .tool_result, .done, .turn_limit => unreachable,
     }

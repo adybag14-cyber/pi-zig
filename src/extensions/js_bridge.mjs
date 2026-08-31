@@ -607,7 +607,16 @@ const pi = {
   registerEntryRenderer(customType, renderer) {
     if (String(customType).length && typeof renderer === 'function') entryRenderers.set(String(customType), renderer);
   },
-  registerFlag(name, options = {}) { flags.set(name, { name, ...options }); if (options.default !== undefined && !flagValues.has(name)) flagValues.set(name, options.default); },
+  registerFlag(name, options = {}) {
+    if (options.type !== 'boolean' && options.type !== 'string') {
+      throw new Error(`Invalid flag type for "${name}": expected boolean or string`);
+    }
+    if (options.default !== undefined && typeof options.default !== options.type) {
+      throw new Error(`Invalid default for flag "${name}": expected ${options.type}, got ${typeof options.default}`);
+    }
+    flags.set(name, { name, ...options });
+    if (options.default !== undefined && !flagValues.has(name)) flagValues.set(name, options.default);
+  },
   getFlag(name) { return Object.prototype.hasOwnProperty.call(currentFlags, name) ? currentFlags[name] : flagValues.get(name); },
   sendMessage(message, options = {}) {
     assertCurrentActionContext();

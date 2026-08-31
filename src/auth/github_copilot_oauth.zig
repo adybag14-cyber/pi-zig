@@ -1,6 +1,8 @@
 //! Native GitHub Copilot OAuth/device-flow protocol and token routing helpers.
 const std = @import("std");
 const bootstrap_http = @import("../ai/bootstrap_http.zig");
+const providers = @import("../ai/providers.zig");
+const retry = @import("../ai/retry.zig");
 
 pub const CLIENT_ID = "Iv1.b507a08c87ecfe98";
 pub const DEFAULT_DOMAIN = "github.com";
@@ -259,12 +261,7 @@ fn asObject(value: std.json.Value) ?std.json.ObjectMap {
     return if (value == .object) value.object else null;
 }
 
-fn selectableModel(obj: std.json.ObjectMap) bool {
-    const picker = obj.get("model_picker_enabled") orelse return false;
-    if (picker != .bool or !picker.bool) return false;
-    if (obj.get("policy")) |policy_value| if (asObject(policy_value)) |policy| {
-        if (policy.get("state")) |state| if (state == .string and std.mem.eql(u8, state.string, "disabled")) return false;
-    };
+fn modelSupportsTools(obj: std.json.ObjectMap) bool {
     if (obj.get("capabilities")) |caps_value| if (asObject(caps_value)) |caps| {
         if (caps.get("supports")) |supports_value| if (asObject(supports_value)) |supports| {
             if (supports.get("tool_calls")) |tools| if (tools == .bool and !tools.bool) return false;
@@ -273,33 +270,104 @@ fn selectableModel(obj: std.json.ObjectMap) bool {
     return true;
 }
 
-pub fn parseAvailableModelIds(gpa: std.mem.Allocator, raw: []const u8) ![][]u8 {
+fn pickerEnabled(obj: std.json.ObjectMap) bool {
+    const value = obj.get("model_picker_enabled") orelse return false;
+    return value == .bool and value.bool;
+}
+
+fn policyState(obj: std.json.ObjectMap) ?[]const u8 {
+    const policy_value = obj.get("policy") orelse return null;
+    const policy = asObject(policy_value) orelse return null;
+    const state = policy.get("state") orelse return null;
+    return if (state == .string) state.string else null;
+}
+
+fn knownCopilotModel(model_id: []const u8) bool {
+    for (providers.known_models) |model| {
+        if (std.ascii.eqlIgnoreCase(model.providerName(), "github-copilot") and std.mem.eql(u8, model.id, model_id)) return true;
+    }
+    return false;
+}
+
+fn freeModelIds(gpa: std.mem.Allocator, ids: [][]u8) void {
+    for (ids) |id| gpa.free(id);
+    if (ids.len > 0) gpa.free(ids);
+}
+
+pub const CopilotModelCatalog = struct {
+    available_model_ids: [][]u8 = &.{},
+    policy_model_ids: [][]u8 = &.{},
+
+    pub fn deinit(self: *CopilotModelCatalog, gpa: std.mem.Allocator) void {
+        freeModelIds(gpa, self.available_model_ids);
+        freeModelIds(gpa, self.policy_model_ids);
+        self.* = undefined;
+    }
+};
+
+/// Parse the account-specific Copilot model catalog using the exact upstream
+/// picker, tool-capability, and policy rules. Only the Individual endpoint is
+/// allowed to fall back to explicit enabled policies when every picker flag is
+/// false; enterprise/business accounts retain strict picker semantics.
+pub fn parseCopilotModelCatalog(gpa: std.mem.Allocator, raw: []const u8, allow_policy_fallback: bool) !CopilotModelCatalog {
     var parsed = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
     defer parsed.deinit();
     if (parsed.value != .object) return error.InvalidCopilotModelsResponse;
     const data = parsed.value.object.get("data") orelse return error.InvalidCopilotModelsResponse;
     if (data != .array) return error.InvalidCopilotModelsResponse;
-    var ids: std.ArrayList([]u8) = .empty;
-    errdefer {
-        for (ids.items) |id| gpa.free(id);
-        ids.deinit(gpa);
-    }
+
+    var picker_count: usize = 0;
     for (data.array.items) |item| {
-        if (item != .object or !selectableModel(item.object)) continue;
+        if (item != .object or !modelSupportsTools(item.object)) continue;
         const id = item.object.get("id") orelse continue;
         if (id != .string or id.string.len == 0) continue;
-        try ids.append(gpa, try gpa.dupe(u8, id.string));
+        const state = policyState(item.object);
+        if (pickerEnabled(item.object) and (state == null or !std.mem.eql(u8, state.?, "disabled"))) picker_count += 1;
     }
-    if (ids.items.len == 0) {
-        ids.deinit(gpa);
-        return &.{};
+    const use_policy_fallback = allow_policy_fallback and picker_count == 0;
+
+    var available: std.ArrayList([]u8) = .empty;
+    var policies: std.ArrayList([]u8) = .empty;
+    errdefer {
+        for (available.items) |id| gpa.free(id);
+        available.deinit(gpa);
+        for (policies.items) |id| gpa.free(id);
+        policies.deinit(gpa);
     }
-    return ids.toOwnedSlice(gpa);
+    for (data.array.items) |item| {
+        if (item != .object or !modelSupportsTools(item.object)) continue;
+        const id = item.object.get("id") orelse continue;
+        if (id != .string or id.string.len == 0) continue;
+        const picker = pickerEnabled(item.object);
+        const state = policyState(item.object);
+        const selectable = picker and (state == null or !std.mem.eql(u8, state.?, "disabled"));
+        const fallback_enabled = use_policy_fallback and state != null and std.mem.eql(u8, state.?, "enabled");
+        if (selectable or fallback_enabled) try available.append(gpa, try gpa.dupe(u8, id.string));
+        const needs_policy = state != null and std.mem.eql(u8, state.?, "unconfigured") and knownCopilotModel(id.string) and (picker or use_policy_fallback);
+        if (needs_policy) try policies.append(gpa, try gpa.dupe(u8, id.string));
+    }
+    return .{
+        .available_model_ids = if (available.items.len > 0) try available.toOwnedSlice(gpa) else blk: {
+            available.deinit(gpa);
+            break :blk &.{};
+        },
+        .policy_model_ids = if (policies.items.len > 0) try policies.toOwnedSlice(gpa) else blk: {
+            policies.deinit(gpa);
+            break :blk &.{};
+        },
+    };
+}
+
+pub fn parseAvailableModelIds(gpa: std.mem.Allocator, raw: []const u8) ![][]u8 {
+    const catalog = try parseCopilotModelCatalog(gpa, raw, false);
+    freeModelIds(gpa, catalog.policy_model_ids);
+    return catalog.available_model_ids;
 }
 
 const HttpResponse = struct {
     status: u16,
     body: []u8,
+    provider: retry.ProviderResponseMeta,
 };
 
 fn httpRequestWithOptions(
@@ -322,11 +390,66 @@ fn httpRequestWithOptions(
     return .{
         .status = response.status,
         .body = response.body,
+        .provider = response.provider,
     };
 }
 
 fn requireOk(response: HttpResponse) !void {
     if (response.status < 200 or response.status >= 300) return error.GitHubCopilotHttpError;
+}
+
+fn boundedCopilotOptions(options: bootstrap_http.Options, remaining_ms: ?u64) bootstrap_http.Options {
+    var bounded = options;
+    // The Copilot login transport gives each discovery/policy request a five
+    // second ceiling. Retries are managed here so only HTTP 429 is repeated.
+    bounded.policy.max_retries = 0;
+    const request_ceiling = if (remaining_ms) |remaining| @min(@as(u64, 5_000), remaining) else 5_000;
+    bounded.policy.timeout_ms = if (bounded.policy.timeout_ms) |configured|
+        @min(configured, request_ceiling)
+    else
+        request_ceiling;
+    bounded.policy.max_retry_delay_ms = @min(bounded.policy.max_retry_delay_ms, 5_000);
+    return bounded;
+}
+
+/// Copilot's account model endpoints have a deliberately smaller retry budget
+/// than ordinary model traffic: retry only 429 responses, at most twice, and
+/// never wait past the five-second login budget. The normal refresh path calls
+/// this with zero retries and therefore performs exactly one bounded request.
+fn copilotRequestWithRateLimitRetry(
+    gpa: std.mem.Allocator,
+    io: std.Io,
+    url: []const u8,
+    method: std.http.Method,
+    payload: ?[]const u8,
+    headers: []const std.http.Header,
+    options: bootstrap_http.Options,
+    max_retries: usize,
+    max_elapsed_ms: u64,
+) !HttpResponse {
+    const started = std.Io.Clock.real.now(io).toMilliseconds();
+    var retry_index: usize = 0;
+    while (true) {
+        const now = std.Io.Clock.real.now(io).toMilliseconds();
+        const elapsed: u64 = @intCast(@max(@as(i64, 0), now - started));
+        const remaining = if (max_elapsed_ms > 0) max_elapsed_ms -| elapsed else null;
+        if (remaining != null and remaining.? == 0) return error.ProviderRequestTimeout;
+        const response = try httpRequestWithOptions(gpa, io, url, method, payload, headers, boundedCopilotOptions(options, remaining));
+        if (response.status != 429 or retry_index >= max_retries) return response;
+
+        var policy = options.policy;
+        policy.max_retry_delay_ms = @min(policy.max_retry_delay_ms, 5_000);
+        const delay_ms = retry.providerDelayMs(io, policy, retry_index, response.provider.retry_after_ms) catch return response;
+        if (max_elapsed_ms > 0) {
+            const after_request = std.Io.Clock.real.now(io).toMilliseconds();
+            const consumed: u64 = @intCast(@max(@as(i64, 0), after_request - started));
+            const budget_left = max_elapsed_ms -| consumed;
+            if (delay_ms >= budget_left) return response;
+        }
+        gpa.free(response.body);
+        if (!retry.waitProvider(io, delay_ms, options.abort_flag)) return error.ProviderRequestAborted;
+        retry_index += 1;
+    }
 }
 
 pub fn requestDeviceCode(gpa: std.mem.Allocator, io: std.Io, enterprise_domain: ?[]const u8) !DeviceCode {
@@ -501,6 +624,20 @@ pub fn fetchAvailableModelIdsWithOptions(
     enterprise_domain: ?[]const u8,
     options: bootstrap_http.Options,
 ) ![][]u8 {
+    const catalog = try fetchModelCatalogWithOptions(gpa, io, copilot_token, enterprise_domain, options, 0, 0);
+    freeModelIds(gpa, catalog.policy_model_ids);
+    return catalog.available_model_ids;
+}
+
+fn fetchModelCatalogWithOptions(
+    gpa: std.mem.Allocator,
+    io: std.Io,
+    copilot_token: []const u8,
+    enterprise_domain: ?[]const u8,
+    options: bootstrap_http.Options,
+    max_retries: usize,
+    max_elapsed_ms: u64,
+) !CopilotModelCatalog {
     const base = try getBaseUrl(gpa, copilot_token, enterprise_domain);
     defer gpa.free(base);
     const url = try std.fmt.allocPrint(gpa, "{s}/models", .{std.mem.trimEnd(u8, base, "/")});
@@ -508,10 +645,11 @@ pub fn fetchAvailableModelIdsWithOptions(
     const authorization = try std.fmt.allocPrint(gpa, "Bearer {s}", .{copilot_token});
     defer gpa.free(authorization);
     const headers = copilotHeaders(authorization, true);
-    const response = try httpRequestWithOptions(gpa, io, url, .GET, null, &headers, options);
+    const response = try copilotRequestWithRateLimitRetry(gpa, io, url, .GET, null, &headers, options, max_retries, max_elapsed_ms);
     defer gpa.free(response.body);
     try requireOk(response);
-    return parseAvailableModelIds(gpa, response.body);
+    const allow_policy_fallback = std.mem.eql(u8, std.mem.trimEnd(u8, base, "/"), "https://api.individual.githubcopilot.com");
+    return parseCopilotModelCatalog(gpa, response.body, allow_policy_fallback);
 }
 
 pub fn enableModel(
@@ -548,8 +686,12 @@ pub fn enableModelWithOptions(
         .{ .name = "openai-intent", .value = "chat-policy" },
         .{ .name = "x-interaction-type", .value = "chat-policy" },
     };
-    const response = httpRequestWithOptions(gpa, io, url, .POST, "{\"state\":\"enabled\"}", &headers, options) catch return false;
+    const response = copilotRequestWithRateLimitRetry(gpa, io, url, .POST, "{\"state\":\"enabled\"}", &headers, options, 2, 5_000) catch |err| switch (err) {
+        error.ProviderRequestAborted, error.ProviderRequestTimeout => return err,
+        else => return false,
+    };
     defer gpa.free(response.body);
+    if (response.status == 429) return error.CopilotPolicyRateLimited;
     return response.status >= 200 and response.status < 300;
 }
 
@@ -571,7 +713,52 @@ pub fn enableModelsWithOptions(
     model_ids: []const []const u8,
     options: bootstrap_http.Options,
 ) !void {
-    for (model_ids) |model_id| _ = try enableModelWithOptions(gpa, io, copilot_token, enterprise_domain, model_id, options);
+    for (model_ids) |model_id| {
+        _ = enableModelWithOptions(gpa, io, copilot_token, enterprise_domain, model_id, options) catch |err| switch (err) {
+            error.CopilotPolicyRateLimited => break,
+            error.ProviderRequestAborted, error.ProviderRequestTimeout => return err,
+            else => continue,
+        };
+    }
+}
+
+fn containsModelId(ids: []const []u8, wanted: []const u8) bool {
+    for (ids) |id| if (std.mem.eql(u8, id, wanted)) return true;
+    return false;
+}
+
+/// Discover the account catalog before enabling policies, then enable only
+/// known tool-capable models whose account state is `unconfigured`. Successful
+/// policy updates are folded into the original available list without a second
+/// discovery request, matching the current upstream login behavior.
+pub fn discoverAndEnableAvailableModelIdsWithOptions(
+    gpa: std.mem.Allocator,
+    io: std.Io,
+    copilot_token: []const u8,
+    enterprise_domain: ?[]const u8,
+    options: bootstrap_http.Options,
+) ![][]u8 {
+    var catalog = try fetchModelCatalogWithOptions(gpa, io, copilot_token, enterprise_domain, options, 2, 5_000);
+    defer catalog.deinit(gpa);
+    var result: std.ArrayList([]u8) = .empty;
+    errdefer {
+        for (result.items) |id| gpa.free(id);
+        result.deinit(gpa);
+    }
+    for (catalog.available_model_ids) |id| try result.append(gpa, try gpa.dupe(u8, id));
+    for (catalog.policy_model_ids) |model_id| {
+        const enabled = enableModelWithOptions(gpa, io, copilot_token, enterprise_domain, model_id, options) catch |err| switch (err) {
+            error.CopilotPolicyRateLimited => break,
+            error.ProviderRequestAborted, error.ProviderRequestTimeout => return err,
+            else => false,
+        };
+        if (enabled and !containsModelId(result.items, model_id)) try result.append(gpa, try gpa.dupe(u8, model_id));
+    }
+    if (result.items.len == 0) {
+        result.deinit(gpa);
+        return &.{};
+    }
+    return result.toOwnedSlice(gpa);
 }
 
 pub fn refreshCredential(
@@ -614,6 +801,10 @@ pub fn loginWithOptions(
     models_to_enable: []const []const u8,
     options_in: bootstrap_http.Options,
 ) !LoginResult {
+    // Retained for source compatibility with the 0.84.1 Zig API. Current
+    // upstream derives the safe policy list from the authenticated account
+    // catalog instead of enabling a caller-supplied list eagerly.
+    _ = models_to_enable;
     var options = options_in;
     if (options.abort_flag == null) {
         if (abort_flag) |flag| {
@@ -626,8 +817,7 @@ pub fn loginWithOptions(
     defer gpa.free(github_access);
     var credential = try refreshAccessTokenWithOptions(gpa, io, github_access, enterprise_domain, options);
     errdefer credential.deinit(gpa);
-    try enableModelsWithOptions(gpa, io, credential.access, enterprise_domain, models_to_enable, options);
-    credential.available_model_ids = try fetchAvailableModelIdsWithOptions(gpa, io, credential.access, enterprise_domain, options);
+    credential.available_model_ids = try discoverAndEnableAvailableModelIdsWithOptions(gpa, io, credential.access, enterprise_domain, options);
     return .{ .device = device, .credential = credential };
 }
 
@@ -712,4 +902,45 @@ test "GitHub Copilot model availability filters disabled picker and no-tool mode
     }
     try std.testing.expectEqual(@as(usize, 1), ids.len);
     try std.testing.expectEqualStrings("good", ids[0]);
+}
+
+test "GitHub Copilot account catalog selects only safe unconfigured known policies" {
+    const gpa = std.testing.allocator;
+    const raw =
+        "{\"data\":[" ++
+        "{\"id\":\"gpt-5.4\",\"model_picker_enabled\":true,\"policy\":{\"state\":\"unconfigured\"},\"capabilities\":{\"supports\":{\"tool_calls\":true}}}," ++
+        "{\"id\":\"already\",\"model_picker_enabled\":true,\"policy\":{\"state\":\"enabled\"}}," ++
+        "{\"id\":\"unknown-future\",\"model_picker_enabled\":true,\"policy\":{\"state\":\"unconfigured\"}}," ++
+        "{\"id\":\"disabled\",\"model_picker_enabled\":true,\"policy\":{\"state\":\"disabled\"}}," ++
+        "{\"id\":\"no-tools\",\"model_picker_enabled\":true,\"policy\":{\"state\":\"unconfigured\"},\"capabilities\":{\"supports\":{\"tool_calls\":false}}}" ++
+        "]}";
+    var catalog = try parseCopilotModelCatalog(gpa, raw, false);
+    defer catalog.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 3), catalog.available_model_ids.len);
+    try std.testing.expectEqualStrings("gpt-5.4", catalog.available_model_ids[0]);
+    try std.testing.expectEqualStrings("already", catalog.available_model_ids[1]);
+    try std.testing.expectEqualStrings("unknown-future", catalog.available_model_ids[2]);
+    try std.testing.expectEqual(@as(usize, 1), catalog.policy_model_ids.len);
+    try std.testing.expectEqualStrings("gpt-5.4", catalog.policy_model_ids[0]);
+}
+
+test "GitHub Copilot Individual fallback honors enabled and known policy models" {
+    const gpa = std.testing.allocator;
+    const raw =
+        "{\"data\":[" ++
+        "{\"id\":\"enabled-account\",\"model_picker_enabled\":false,\"policy\":{\"state\":\"enabled\"}}," ++
+        "{\"id\":\"grok-4.6\",\"model_picker_enabled\":false,\"policy\":{\"state\":\"unconfigured\"}}," ++
+        "{\"id\":\"unknown\",\"model_picker_enabled\":false,\"policy\":{\"state\":\"unconfigured\"}}" ++
+        "]}";
+    var strict = try parseCopilotModelCatalog(gpa, raw, false);
+    defer strict.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 0), strict.available_model_ids.len);
+    try std.testing.expectEqual(@as(usize, 0), strict.policy_model_ids.len);
+
+    var individual = try parseCopilotModelCatalog(gpa, raw, true);
+    defer individual.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 1), individual.available_model_ids.len);
+    try std.testing.expectEqualStrings("enabled-account", individual.available_model_ids[0]);
+    try std.testing.expectEqual(@as(usize, 1), individual.policy_model_ids.len);
+    try std.testing.expectEqualStrings("grok-4.6", individual.policy_model_ids[0]);
 }

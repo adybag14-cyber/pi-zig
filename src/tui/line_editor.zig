@@ -16,6 +16,12 @@ pub fn available(io: Io) bool {
     return Io.File.stdin().isTty(io) catch false;
 }
 
+pub fn windowsRightClickPasteEnabled(term_program: ?[]const u8) bool {
+    if (builtin.os.tag != .windows) return false;
+    const program = term_program orelse return true;
+    return !std.ascii.eqlIgnoreCase(std.mem.trim(u8, program, " \t\r\n"), "vscode");
+}
+
 pub const RawMode = struct {
     original: std.posix.termios,
 
@@ -165,6 +171,7 @@ pub const ShortcutHandler = struct {
     context: *anyopaque,
     handle_fn: *const fn (*anyopaque, std.mem.Allocator, []const u8) anyerror!ShortcutResult,
     clipboard_paste_fn: ?*const fn (*anyopaque, std.mem.Allocator) anyerror!ShortcutResult = null,
+    right_click_paste_enabled: bool = builtin.os.tag == .windows,
 
     pub fn handle(self: ShortcutHandler, gpa: std.mem.Allocator, key_id: []const u8) !ShortcutResult {
         return self.handle_fn(self.context, gpa, key_id);
@@ -342,7 +349,7 @@ fn dispatchTerminalSequence(
     sequence: []const u8,
     shortcut: ?ShortcutHandler,
 ) !Disposition {
-    if (mouse.parse(sequence)) |event| return dispatchMouseShortcut(gpa, event, shortcut, builtin.os.tag == .windows);
+    if (mouse.parse(sequence)) |event| return dispatchMouseShortcut(gpa, event, shortcut, if (shortcut) |handler| handler.right_click_paste_enabled else false);
     if (rich_keys.isKeyRelease(sequence)) return .keep_editing;
 
     // Plain and Shift-only CSI-u/modifyOtherKeys events are text input. Use
@@ -702,4 +709,9 @@ test "Windows right click requests non-interrupting clipboard paste" {
 
     try std.testing.expectEqual(Disposition.keep_editing, try dispatchMouseShortcut(std.testing.allocator, right, handler, false));
     try std.testing.expectEqual(@as(usize, 1), probe.calls);
+    if (builtin.os.tag == .windows) {
+        try std.testing.expect(windowsRightClickPasteEnabled(null));
+        try std.testing.expect(!windowsRightClickPasteEnabled("vscode"));
+        try std.testing.expect(!windowsRightClickPasteEnabled(" VSCode \r\n"));
+    }
 }

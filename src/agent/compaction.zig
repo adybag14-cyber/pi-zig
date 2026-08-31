@@ -911,6 +911,7 @@ fn responseMeta(gpa: std.mem.Allocator, response: ai.ModelResponse) !session_mod
     return .{
         .thinking = if (response.thinking.len > 0) try gpa.dupe(u8, response.thinking) else "",
         .thinking_signature = if (response.thinking_signature.len > 0) try gpa.dupe(u8, response.thinking_signature) else "",
+        .thinking_redacted = response.thinking_redacted,
         .provider = if (response.provider.len > 0) try gpa.dupe(u8, response.provider) else "",
         .api = if (response.api.len > 0) try gpa.dupe(u8, response.api) else "",
         .model = if (response.model.len > 0) try gpa.dupe(u8, response.model) else "",

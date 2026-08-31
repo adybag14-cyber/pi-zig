@@ -88,6 +88,7 @@ pub const MistralClient = struct {
             .thinking = self.thinking,
             .max_tokens = effective_max_tokens,
             .sampling_params = self.sampling_params,
+            .tool_choice = request_options.tool_choice,
         });
         defer gpa.free(payload);
         const url = try std.fmt.allocPrint(gpa, "{s}/chat/completions", .{self.base_url});
@@ -135,6 +136,7 @@ pub const MistralClient = struct {
         var headers: std.ArrayList(std.http.Header) = .empty;
         defer headers.deinit(gpa);
         try putHeader(gpa, &headers, "content-type", "application/json");
+        try putHeader(gpa, &headers, "User-Agent", ai.pi_user_agent.value);
         try putHeader(gpa, &headers, "authorization", auth);
         try putHeader(gpa, &headers, "accept", if (streaming) "text/event-stream" else "application/json");
         for (self.custom_headers) |header| try putHeader(gpa, &headers, header.name, header.value);
@@ -194,6 +196,7 @@ pub const RequestOptions = struct {
     thinking: ai.ThinkingLevel = .off,
     max_tokens: u64 = 0,
     sampling_params: []const metadata.SamplingParam = &.{},
+    tool_choice: ?ai.ToolChoice = null,
 };
 
 const IdEntry = struct { raw: []u8, normalized: [TOOL_ID_LEN]u8 };
@@ -371,6 +374,10 @@ pub fn buildRequestBody(gpa: std.mem.Allocator, model: []const u8, messages: []c
         try w.writeAll(",\"tools\":");
         try w.writeAll(tools_json);
     }
+    if (options.tool_choice) |choice| {
+        try w.writeAll(",\"tool_choice\":");
+        try std.json.Stringify.value(choice.jsonName(), .{}, w);
+    }
     for (options.sampling_params) |param| {
         try w.writeAll(",");
         try std.json.Stringify.value(param.name, .{}, w);
@@ -425,7 +432,7 @@ fn cachedTokens(object: std.json.ObjectMap, prompt: u64) u64 {
         raw = intAny(v.object, &.{ "cached_tokens", "cachedTokens" });
         if (raw > 0) break;
     };
-    if (raw == 0) raw = intAny(object, &.{ "num_cached_tokens", "numCachedTokens" });
+    if (raw == 0) raw = intAny(object, &.{ "cached_tokens", "cachedTokens", "num_cached_tokens", "numCachedTokens" });
     return @min(raw, prompt);
 }
 
@@ -541,10 +548,11 @@ const LiveWriter = struct {
     response_id: []u8 = &.{},
     response_model: []u8 = &.{},
     raw_stop_reason: []u8 = &.{},
+    tool_ids: std.AutoHashMap(usize, []u8),
 
     const vtable: std.Io.Writer.VTable = .{ .drain = drain, .flush = std.Io.Writer.noopFlush };
     fn init(gpa: std.mem.Allocator, on_delta: ?ai.StreamHandler, delta_ctx: ?*anyopaque, streaming: bool, abort_flag: ?*bool) LiveWriter {
-        return .{ .gpa = gpa, .writer = .{ .vtable = &vtable, .buffer = &.{}, .end = 0 }, .acc = .init(gpa), .on_delta = on_delta, .delta_ctx = delta_ctx, .streaming = streaming, .abort_flag = abort_flag };
+        return .{ .gpa = gpa, .writer = .{ .vtable = &vtable, .buffer = &.{}, .end = 0 }, .acc = .init(gpa), .on_delta = on_delta, .delta_ctx = delta_ctx, .streaming = streaming, .abort_flag = abort_flag, .tool_ids = .init(gpa) };
     }
     fn attachBuffer(self: *LiveWriter) void {
         self.writer.buffer = &self.buf;
@@ -557,6 +565,9 @@ const LiveWriter = struct {
         if (self.response_id.len > 0) self.gpa.free(self.response_id);
         if (self.response_model.len > 0) self.gpa.free(self.response_model);
         if (self.raw_stop_reason.len > 0) self.gpa.free(self.raw_stop_reason);
+        var id_it = self.tool_ids.valueIterator();
+        while (id_it.next()) |id| self.gpa.free(id.*);
+        self.tool_ids.deinit();
     }
     fn drain(w: *std.Io.Writer, data: []const []const u8, splat: usize) std.Io.Writer.Error!usize {
         _ = splat;
@@ -633,17 +644,26 @@ const LiveWriter = struct {
         if (text.items.len > 0) try self.emit(.{ .kind = .text_delta, .text = text.items });
         if (thinking.items.len > 0) try self.emit(.{ .kind = .thinking_delta, .thinking = thinking.items });
         if (delta_v.object.get("tool_calls") orelse delta_v.object.get("toolCalls")) |tcv| if (tcv == .array) {
-            for (tcv.array.items, 0..) |item, index| {
+            for (tcv.array.items, 0..) |item, array_index| {
                 if (item != .object) continue;
-                var id: []const u8 = "";
+                const call_index: usize = if (item.object.get("index")) |value|
+                    if (value == .integer and value.integer >= 0) @intCast(value.integer) else array_index
+                else
+                    array_index;
+                var explicit_id: []const u8 = "";
                 if (item.object.get("id")) |v| {
-                    if (v == .string and !std.mem.eql(u8, v.string, "null")) id = v.string;
+                    if (v == .string and !std.mem.eql(u8, v.string, "null")) explicit_id = v.string;
                 }
-                var synthetic: [TOOL_ID_LEN]u8 = undefined;
-                if (id.len == 0) {
-                    synthetic = deriveToolId("toolcall", @intCast(index));
-                    id = &synthetic;
+                const slot = try self.tool_ids.getOrPut(call_index);
+                if (!slot.found_existing) {
+                    var synthetic: [TOOL_ID_LEN]u8 = undefined;
+                    const id = if (explicit_id.len > 0) explicit_id else blk: {
+                        synthetic = deriveToolId("toolcall", @intCast(call_index));
+                        break :blk synthetic[0..];
+                    };
+                    slot.value_ptr.* = try self.gpa.dupe(u8, id);
                 }
+                const id = slot.value_ptr.*;
                 const fnv = item.object.get("function") orelse continue;
                 if (fnv != .object) continue;
                 var name: []const u8 = "";
@@ -766,4 +786,38 @@ test "Mistral small uses reasoning_effort and cached usage is separated" {
     try std.testing.expectEqual(@as(u64, 20), parsed_resp.usage.output);
     try std.testing.expectEqualStrings("mresp_1", parsed_resp.response_id);
     try std.testing.expectEqualStrings("stop", parsed_resp.raw_stop_reason);
+
+    var top_level_doc = try std.json.parseFromSlice(std.json.Value, gpa, "{\"prompt_tokens\":100,\"cached_tokens\":25,\"completion_tokens\":5}", .{});
+    defer top_level_doc.deinit();
+    const top_level_usage = parseUsage(top_level_doc.value);
+    try std.testing.expectEqual(@as(u64, 75), top_level_usage.input);
+    try std.testing.expectEqual(@as(u64, 25), top_level_usage.cache_read);
+}
+
+test "Mistral fragmented tool calls retain the first non-empty id" {
+    const gpa = std.testing.allocator;
+    var live = LiveWriter.init(gpa, null, null, true, null);
+    defer live.deinit();
+    try live.processData(
+        \\{"choices":[{"delta":{"tool_calls":[{"index":0,"id":"abcdefghi","function":{"name":"read","arguments":"{"}}]}}]}
+    );
+    try live.processData(
+        \\{"choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\"x\":1}"}}]}}]}
+    );
+    try live.processData(
+        \\{"choices":[{"delta":{},"finish_reason":"tool_calls"}]}
+    );
+    var response = try live.acc.finish();
+    defer response.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 1), response.tool_calls.len);
+    try std.testing.expectEqualStrings("abcdefghi", response.tool_calls[0].id);
+    try std.testing.expectEqualStrings("read", response.tool_calls[0].name);
+    try std.testing.expectEqualStrings("{\"x\":1}", response.tool_calls[0].arguments);
+}
+
+test "Mistral provider-neutral tool choice is serialized" {
+    const gpa = std.testing.allocator;
+    const body = try buildRequestBody(gpa, "m", &.{.{ .role = "user", .content = "x" }}, "[]", .{ .tool_choice = .none });
+    defer gpa.free(body);
+    try std.testing.expect(std.mem.indexOf(u8, body, "\"tool_choice\":\"none\"") != null);
 }

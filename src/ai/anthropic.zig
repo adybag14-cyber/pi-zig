@@ -113,7 +113,7 @@ pub const AnthropicClient = struct {
         const effective_max_tokens = context_estimate.clampMaxTokens(self.context_window, ai.resolveMaxTokens(self.max_tokens, request_options.max_tokens), effective_messages, tools_json);
         const effective_cache_retention: metadata.CacheRetention = ai.resolveCacheRetention(self.cache_retention, request_options);
         const effective_session_id: ?[]const u8 = ai.resolveSessionAffinity(self.session_id, request_options);
-        const payload = try buildRequestBodyConfiguredCompatCachedSampling(gpa, self.model, effective_messages, tools_json, streaming, self.thinking, effective_max_tokens, self.compat, effective_cache_retention, self.sampling_params);
+        const payload = try buildRequestBodyConfiguredCompatCachedSamplingOptions(gpa, self.model, effective_messages, tools_json, streaming, self.thinking, effective_max_tokens, self.compat, effective_cache_retention, self.sampling_params, request_options.tool_choice);
         defer gpa.free(payload);
 
         const url = try std.fmt.allocPrint(gpa, "{s}/v1/messages", .{self.base_url});
@@ -170,6 +170,7 @@ pub const AnthropicClient = struct {
         var headers: std.ArrayList(std.http.Header) = .empty;
         defer headers.deinit(gpa);
         try putHttpHeader(gpa, &headers, "content-type", "application/json");
+        try putHttpHeader(gpa, &headers, "User-Agent", ai.pi_user_agent.value);
         const oauth_mode = self.auth_mode == .oauth or anthropic_oauth.isOAuthAccessToken(self.api_key);
         var owned_bearer: ?[]u8 = null;
         defer if (owned_bearer) |value| gpa.free(value);
@@ -188,21 +189,22 @@ pub const AnthropicClient = struct {
         if (!oauth_mode) if (session_id) |sid| if (cache_retention != .none and self.compat.send_session_affinity_headers == true)
             try putHttpHeader(gpa, &headers, "x-session-affinity", sid);
         const needs_fine_grained = std.mem.indexOf(u8, payload, "\"tools\":[") != null and self.compat.supports_eager_tool_input_streaming == false;
+        const has_fallbacks = compatHasFallbacks(self.compat);
         var owned_beta: ?[]u8 = null;
         defer if (owned_beta) |value| gpa.free(value);
         if (oauth_mode) {
-            owned_beta = if (needs_fine_grained)
-                try gpa.dupe(u8, "claude-code-20250219,oauth-2025-04-20,fine-grained-tool-streaming-2025-05-14")
-            else
-                try gpa.dupe(u8, "claude-code-20250219,oauth-2025-04-20");
+            const fine = if (needs_fine_grained) ",fine-grained-tool-streaming-2025-05-14" else "";
+            const fallback = if (has_fallbacks) ",server-side-fallback-2026-07-01" else "";
+            owned_beta = try std.fmt.allocPrint(gpa, "claude-code-20250219,oauth-2025-04-20{s}{s}", .{ fine, fallback });
             try putHttpHeader(gpa, &headers, "anthropic-beta", owned_beta.?);
             try putHttpHeader(gpa, &headers, "user-agent", "claude-cli/2.1.75");
             try putHttpHeader(gpa, &headers, "x-app", "cli");
-        } else if (needs_fine_grained) {
-            try putHttpHeader(gpa, &headers, "anthropic-beta", "fine-grained-tool-streaming-2025-05-14");
-        }
-        if (std.ascii.eqlIgnoreCase(self.provider_id, "kimi-coding")) {
-            try putHttpHeader(gpa, &headers, "User-Agent", "KimiCLI/1.5");
+        } else if (needs_fine_grained or has_fallbacks) {
+            const fine = if (needs_fine_grained) "fine-grained-tool-streaming-2025-05-14" else "";
+            const separator = if (needs_fine_grained and has_fallbacks) "," else "";
+            const fallback = if (has_fallbacks) "server-side-fallback-2026-07-01" else "";
+            owned_beta = try std.fmt.allocPrint(gpa, "{s}{s}{s}", .{ fine, separator, fallback });
+            try putHttpHeader(gpa, &headers, "anthropic-beta", owned_beta.?);
         }
         if (copilot.isCopilot(self.provider_id)) {
             try putHttpHeader(gpa, &headers, "User-Agent", copilot.USER_AGENT);
@@ -277,7 +279,7 @@ pub const AnthropicClient = struct {
             if (live.response_model.len > 0 and !std.mem.eql(u8, live.response_model, self.model)) resp.response_model = try gpa.dupe(u8, live.response_model);
             if (live.raw_stop_reason.len > 0) resp.raw_stop_reason = try gpa.dupe(u8, live.raw_stop_reason);
             resp.usage = live.usage;
-            _ = cost_mod.calculate(self.model_cost, &resp.usage);
+            _ = cost_mod.calculate(fallbackCost(self.compat, live.response_model) orelse self.model_cost, &resp.usage);
             if (live.stop_reason.len > 0) {
                 if (resp.stop_reason.len > 0) gpa.free(resp.stop_reason);
                 resp.stop_reason = try gpa.dupe(u8, live.stop_reason);
@@ -290,11 +292,51 @@ pub const AnthropicClient = struct {
         var resp = try parseAnthropicResponse(gpa, response_json);
         try normalizeRequestedModel(gpa, &resp, self.model);
         if (resp.provider.len == 0) resp.provider = try gpa.dupe(u8, self.provider_id);
-        _ = cost_mod.calculate(self.model_cost, &resp.usage);
+        _ = cost_mod.calculate(fallbackCost(self.compat, resp.response_model) orelse self.model_cost, &resp.usage);
         try resp.ensureStopReason(gpa);
         return resp;
     }
 };
+
+fn compatHasFallbacks(compat: metadata.Compat) bool {
+    if (compat.allowed_fallback_models) |items| if (items.len > 0) return true;
+    if (compat.allowed_fallback_models_json) |items| if (items.items.len > 0) return true;
+    return false;
+}
+
+fn jsonNumber(value: std.json.Value) ?f64 {
+    return switch (value) {
+        .integer => |number| @floatFromInt(number),
+        .float => |number| number,
+        else => null,
+    };
+}
+
+fn fallbackCost(compat: metadata.Compat, response_model: []const u8) ?providers.ModelCost {
+    if (response_model.len == 0) return null;
+    if (compat.allowed_fallback_models) |items| for (items) |fallback| {
+        if (!std.mem.eql(u8, fallback.model, response_model)) continue;
+        return .{
+            .input = fallback.cost.input,
+            .output = fallback.cost.output,
+            .cache_read = fallback.cost.cache_read,
+            .cache_write = fallback.cost.cache_write,
+        };
+    };
+    if (compat.allowed_fallback_models_json) |items| for (items.items) |item| {
+        if (item != .object) continue;
+        const model = item.object.get("model") orelse continue;
+        const cost = item.object.get("cost") orelse continue;
+        if (model != .string or !std.mem.eql(u8, model.string, response_model) or cost != .object) continue;
+        return .{
+            .input = jsonNumber(cost.object.get("input") orelse continue) orelse continue,
+            .output = jsonNumber(cost.object.get("output") orelse continue) orelse continue,
+            .cache_read = jsonNumber(cost.object.get("cacheRead") orelse continue) orelse continue,
+            .cache_write = jsonNumber(cost.object.get("cacheWrite") orelse continue) orelse continue,
+        };
+    };
+    return null;
+}
 
 fn abortedResponse(gpa: std.mem.Allocator, provider: []const u8, model: []const u8) !ai.ModelResponse {
     return .{
@@ -1021,6 +1063,22 @@ pub fn buildRequestBodyConfiguredCompatCachedSampling(
     cache_retention: metadata.CacheRetention,
     sampling_params: []const metadata.SamplingParam,
 ) ![]u8 {
+    return buildRequestBodyConfiguredCompatCachedSamplingOptions(gpa, model, messages, tools_json, stream, thinking, max_tokens, compat, cache_retention, sampling_params, null);
+}
+
+fn buildRequestBodyConfiguredCompatCachedSamplingOptions(
+    gpa: std.mem.Allocator,
+    model: []const u8,
+    messages: []const ai.ChatMessage,
+    tools_json: []const u8,
+    stream: bool,
+    thinking: ai.ThinkingLevel,
+    max_tokens: u64,
+    compat: metadata.Compat,
+    cache_retention: metadata.CacheRetention,
+    sampling_params: []const metadata.SamplingParam,
+    tool_choice: ?ai.ToolChoice,
+) ![]u8 {
     var body: std.Io.Writer.Allocating = .init(gpa);
     errdefer body.deinit();
     const w = &body.writer;
@@ -1194,6 +1252,30 @@ pub fn buildRequestBodyConfiguredCompatCachedSampling(
         try w.writeAll(",\"tools\":");
         try w.writeAll(anthropic_tools);
     }
+    if (tool_choice) |choice| {
+        try w.writeAll(",\"tool_choice\":{\"type\":");
+        try std.json.Stringify.value(choice.jsonName(), .{}, w);
+        try w.writeAll("}");
+    }
+    if (compat.allowed_fallback_models) |fallbacks| if (fallbacks.len > 0) {
+        try w.writeAll(",\"fallbacks\":[");
+        for (fallbacks, 0..) |fallback, index| {
+            if (index > 0) try w.writeAll(",");
+            try w.writeAll("{\"model\":");
+            try std.json.Stringify.value(fallback.model, .{}, w);
+            try w.writeAll("}");
+        }
+        try w.writeAll("]");
+    } else if (compat.allowed_fallback_models_json) |json_fallbacks| if (json_fallbacks.items.len > 0) {
+        try w.writeAll(",\"fallbacks\":[");
+        for (json_fallbacks.items, 0..) |fallback, index| {
+            if (index > 0) try w.writeAll(",");
+            try w.writeAll("{\"model\":");
+            try std.json.Stringify.value(fallback.object.get("model").?.string, .{}, w);
+            try w.writeAll("}");
+        }
+        try w.writeAll("]");
+    };
     for (sampling_params) |param| {
         const reserved = std.mem.eql(u8, param.name, "model") or std.mem.eql(u8, param.name, "messages") or
             std.mem.eql(u8, param.name, "tools") or std.mem.eql(u8, param.name, "stream") or
@@ -1491,6 +1573,37 @@ test "Anthropic serializes user and tool images as base64 blocks" {
     try std.testing.expect(std.mem.indexOf(u8, body, "\"media_type\":\"image/gif\"") != null);
     try std.testing.expectEqual(@as(usize, 4), std.mem.count(u8, body, "\"type\":\"image\""));
     try std.testing.expect(std.mem.indexOf(u8, body, "\"type\":\"tool_result\"") != null);
+}
+
+test "Anthropic server-side fallbacks include beta payload and returned-model pricing" {
+    const gpa = std.testing.allocator;
+    const fallbacks = [_]metadata.AnthropicAllowedFallbackModel{.{
+        .provider = "anthropic",
+        .model = "claude-opus-4-8",
+        .cost = .{ .input = 5, .output = 25, .cache_read = 0.5, .cache_write = 6.25 },
+    }};
+    const compat: metadata.Compat = .{ .allowed_fallback_models = &fallbacks };
+    const msgs = [_]ai.ChatMessage{.{ .role = "user", .content = "hello" }};
+    const body = try buildRequestBodyConfiguredCompatCachedSamplingOptions(
+        gpa,
+        "claude-fable-5",
+        &msgs,
+        "[]",
+        false,
+        .off,
+        4096,
+        compat,
+        .none,
+        &.{},
+        .none,
+    );
+    defer gpa.free(body);
+    try std.testing.expect(std.mem.indexOf(u8, body, "\"fallbacks\":[{\"model\":\"claude-opus-4-8\"}]") != null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "\"tool_choice\":{\"type\":\"none\"}") != null);
+    const priced = fallbackCost(compat, "claude-opus-4-8").?;
+    try std.testing.expectApproxEqAbs(@as(f64, 5), priced.input, 0.0001);
+    try std.testing.expectApproxEqAbs(@as(f64, 25), priced.output, 0.0001);
+    try std.testing.expect(compatHasFallbacks(compat));
 }
 
 test "Kimi Anthropic request uses adaptive summarized thinking and preserves empty signature" {

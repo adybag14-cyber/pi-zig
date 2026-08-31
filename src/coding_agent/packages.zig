@@ -3,6 +3,7 @@ const std = @import("std");
 const Io = std.Io;
 const package_resources = @import("package_resources.zig");
 const package_source = @import("package_source.zig");
+const versioning = @import("update.zig");
 
 /// Package configuration/install scope. User and project packages are
 /// persistent. Temporary sources are resolved for one process and live below
@@ -1445,6 +1446,119 @@ fn runNpmExternal(
     try runExternal(gpa, io, argv, cwd);
 }
 
+fn runNpmExternalCapture(
+    gpa: std.mem.Allocator,
+    io: Io,
+    command: ?[]const []const u8,
+    args: []const []const u8,
+    cwd: []const u8,
+) ![]u8 {
+    const default_command = [_][]const u8{"npm"};
+    const prefix: []const []const u8 = command orelse default_command[0..];
+    if (prefix.len == 0 or prefix[0].len == 0) return error.InvalidNpmCommand;
+    const argv = try gpa.alloc([]const u8, prefix.len + args.len);
+    defer gpa.free(argv);
+    @memcpy(argv[0..prefix.len], prefix);
+    @memcpy(argv[prefix.len..], args);
+    const result = std.process.run(gpa, io, .{
+        .argv = argv,
+        .cwd = .{ .path = cwd },
+        .stdout_limit = .limited(2 * 1024 * 1024),
+        .stderr_limit = .limited(2 * 1024 * 1024),
+        .timeout = .{ .duration = .{ .raw = .fromSeconds(command_timeout_seconds), .clock = .real } },
+    }) catch |err| switch (err) {
+        error.Timeout => return error.PackageCommandTimedOut,
+        else => return error.PackageCommandFailed,
+    };
+    defer gpa.free(result.stderr);
+    const succeeded = switch (result.term) {
+        .exited => |code| code == 0,
+        else => false,
+    };
+    if (!succeeded) {
+        gpa.free(result.stdout);
+        return error.PackageCommandFailed;
+    }
+    return result.stdout;
+}
+
+fn packageVersionAtPath(gpa: std.mem.Allocator, io: Io, path: []const u8) !?[]u8 {
+    const package_json = try std.fs.path.join(gpa, &.{ path, "package.json" });
+    defer gpa.free(package_json);
+    const raw = std.Io.Dir.cwd().readFileAlloc(io, package_json, gpa, .limited(1024 * 1024)) catch return null;
+    defer gpa.free(raw);
+    const normalized = if (std.mem.startsWith(u8, raw, "\xEF\xBB\xBF")) raw[3..] else raw;
+    var parsed = std.json.parseFromSlice(std.json.Value, gpa, normalized, .{}) catch return null;
+    defer parsed.deinit();
+    if (parsed.value != .object) return null;
+    const version = parsed.value.object.get("version") orelse return null;
+    if (version != .string or version.string.len == 0) return null;
+    return try gpa.dupe(u8, version.string);
+}
+
+fn latestVersionFromNpmView(gpa: std.mem.Allocator, raw: []const u8) ![]u8 {
+    const trimmed = std.mem.trim(u8, raw, " \t\r\n");
+    if (trimmed.len == 0) return error.InvalidNpmVersionResponse;
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, trimmed, .{});
+    defer parsed.deinit();
+    if (parsed.value == .string and parsed.value.string.len > 0) return try gpa.dupe(u8, parsed.value.string);
+    if (parsed.value != .array) return error.InvalidNpmVersionResponse;
+    var best: ?[]const u8 = null;
+    for (parsed.value.array.items) |item| {
+        if (item != .string or item.string.len == 0) continue;
+        if (versioning.comparePackageVersions(item.string, item.string) == null) continue;
+        if (best == null or versioning.comparePackageVersions(item.string, best.?) == .gt) best = item.string;
+    }
+    return try gpa.dupe(u8, best orelse return error.InvalidNpmVersionResponse);
+}
+
+fn latestNpmVersion(
+    gpa: std.mem.Allocator,
+    io: Io,
+    cwd: []const u8,
+    parsed: package_source.Source,
+    options: RuntimeOptions,
+) ![]u8 {
+    const manager = try packageManagerKind(options.npm_command);
+    const raw = switch (manager) {
+        .bun => blk: {
+            const args = [_][]const u8{ "pm", "view", parsed.spec, "version", "--json" };
+            break :blk try runNpmExternalCapture(gpa, io, options.npm_command, &args, cwd);
+        },
+        else => blk: {
+            const args = [_][]const u8{ "view", parsed.spec, "version", "--json" };
+            break :blk try runNpmExternalCapture(gpa, io, options.npm_command, &args, cwd);
+        },
+    };
+    defer gpa.free(raw);
+    return latestVersionFromNpmView(gpa, raw);
+}
+
+fn npmVersionRequiresUpdate(candidate: []const u8, current: []const u8) ?bool {
+    const order = versioning.comparePackageVersions(candidate, current) orelse return null;
+    return order == .gt;
+}
+
+/// Lookup failure intentionally preserves the historical reinstall behavior;
+/// a valid registry response only authorizes installation when it is strictly
+/// newer than the installed semantic version. This prevents registry rollback
+/// or stale mirrors from downgrading a locally newer package.
+fn npmShouldUpdate(
+    gpa: std.mem.Allocator,
+    io: Io,
+    cwd: []const u8,
+    installed_path: []const u8,
+    parsed: package_source.Source,
+    options: RuntimeOptions,
+) bool {
+    const installed = packageVersionAtPath(gpa, io, installed_path) catch return true;
+    defer if (installed) |value| gpa.free(value);
+    const current = installed orelse return true;
+    const target = latestNpmVersion(gpa, io, cwd, parsed, options) catch return true;
+    defer gpa.free(target);
+    return npmVersionRequiresUpdate(target, current) orelse true;
+}
+
 fn runExternal(
     gpa: std.mem.Allocator,
     io: Io,
@@ -1906,7 +2020,9 @@ pub fn updateScopedWithOptions(
             .npm => if (parsed.pinned) {
                 result.skipped_pinned += 1;
             } else if (!options.offline) {
-                try sources.append(gpa, try gpa.dupe(u8, source));
+                if (npmShouldUpdate(gpa, io, cwd, package.path, parsed, options)) {
+                    try sources.append(gpa, try gpa.dupe(u8, source));
+                }
             },
             .git => if (!options.offline) try sources.append(gpa, try gpa.dupe(u8, source)),
         }
@@ -2413,6 +2529,17 @@ test "offline package update classifies local pinned and managed sources" {
     try std.testing.expectEqual(@as(usize, 1), result.skipped_local);
     try std.testing.expectEqual(@as(usize, 1), result.skipped_pinned);
     try std.testing.expectError(error.PackageNotFound, update(gpa, io, agent_dir, "absent", root, true));
+}
+
+test "npm update version selection never authorizes a downgrade" {
+    const gpa = std.testing.allocator;
+    const latest = try latestVersionFromNpmView(gpa, "[\"1.9.0\",\"2.0.0-beta.1\",\"1.10.0\"]\n");
+    defer gpa.free(latest);
+    try std.testing.expectEqualStrings("2.0.0-beta.1", latest);
+    try std.testing.expectEqual(false, npmVersionRequiresUpdate("1.9.0", "2.0.0").?);
+    try std.testing.expectEqual(false, npmVersionRequiresUpdate("2.0.0", "2.0.0").?);
+    try std.testing.expectEqual(true, npmVersionRequiresUpdate("2.0.1", "2.0.0").?);
+    try std.testing.expect(npmVersionRequiresUpdate("latest", "2.0.0") == null);
 }
 
 test "managed Git removal is root confined and prunes empty parents" {

@@ -61,6 +61,7 @@ const compatFields = {
   supportsStrictTools: "supports_strict_tools",
   supportsTemperature: "supports_temperature",
   supportsThinkingTokenBudget: "supports_thinking_token_budget",
+  thinkingTokenBudgetField: "thinking_token_budget_field",
   supportsToolReferences: "supports_tool_references",
   supportsToolSearch: "supports_tool_search",
   supportsUsageInStreaming: "supports_usage_in_streaming",
@@ -92,6 +93,11 @@ const enumCompatValues = {
     "string-thinking": "string_thinking",
     together: "together",
     zai: "zai",
+  },
+  thinkingTokenBudgetField: {
+    thinking_token_budget: "thinking_token_budget",
+    thinking_budget: "thinking_budget",
+    thinking_budget_tokens: "thinking_budget_tokens",
   },
 };
 
@@ -171,6 +177,16 @@ function renderCompat(compat, identity) {
   if (!compat || typeof compat !== "object" || Array.isArray(compat)) fail(`${identity}: compat must be an object`);
   const fields = [];
   for (const [sourceName, value] of Object.entries(compat)) {
+    if (sourceName === "allowedFallbackModels") {
+      if (!Array.isArray(value)) fail(`${identity}: allowedFallbackModels must be an array`);
+      const fallbacks = value.map((fallback, index) => {
+        if (!fallback || typeof fallback !== "object" || Array.isArray(fallback)) fail(`${identity}: invalid fallback ${index}`);
+        if (typeof fallback.provider !== "string" || typeof fallback.model !== "string") fail(`${identity}: incomplete fallback ${index}`);
+        return `.{ .provider = ${zigString(fallback.provider)}, .model = ${zigString(fallback.model)}, .cost = ${renderCost(fallback.cost, `${identity}.allowedFallbackModels[${index}]`)} }`;
+      });
+      fields.push(`.allowed_fallback_models = &.{ ${fallbacks.join(", ")} }`);
+      continue;
+    }
     if (sourceName === "chatTemplateArgs") {
       const expected = JSON.stringify({ enable_thinking: { $var: "thinking.enabled" } });
       if (JSON.stringify(value) !== expected) fail(`${identity}: unsupported chatTemplateArgs shape`);
@@ -246,8 +262,12 @@ const sourceText = normalizeLineEndings(readFileSync(sourcePath, "utf8"));
 const sourceHash = createHash("sha256").update(sourceText).digest("hex");
 const source = JSON.parse(sourceText);
 if (source.schemaVersion !== 1) fail("unsupported catalog source schema");
-if (source.upstreamPackage !== "@earendil-works/pi-ai" || source.upstreamVersion !== "0.84.1") fail("unexpected upstream catalog provenance");
-if (!Array.isArray(source.models) || source.models.length !== source.modelCount || source.modelCount !== 1258) fail("catalog must contain exactly 1258 models");
+if (source.upstreamPackage !== "@earendil-works/pi-ai" || typeof source.upstreamVersion !== "string") fail("unexpected upstream catalog provenance");
+if (!/^[0-9a-f]{40}$/.test(source.upstreamCommit)) fail("catalog provenance must include a full upstream Git SHA");
+if (!/^[0-9a-f]{64}$/.test(source.upstreamReleaseArchiveSha256)) fail("catalog provenance must include the release archive SHA-256");
+if (!/^[0-9a-f]{64}$/.test(source.upstreamModelDataStructureHash)) fail("catalog provenance must include the model-data structure hash");
+if (!Array.isArray(source.models) || source.models.length !== source.modelCount || source.modelCount < 1) fail("catalog model count does not match its rows");
+if (!Number.isSafeInteger(source.providerCount) || source.providerCount < 1) fail("catalog provider count is invalid");
 
 const seen = new Set();
 const providers = new Set();
@@ -257,9 +277,9 @@ for (const model of source.models) {
   seen.add(key);
   providers.add(model.provider);
 }
-if (providers.size !== 39) fail(`expected 39 providers, found ${providers.size}`);
+if (providers.size !== source.providerCount) fail(`expected ${source.providerCount} providers, found ${providers.size}`);
 
-const output = `//! Generated from catalog_source.json. Do not edit manually.\n//! Source SHA-256: ${sourceHash}\n\npub const source_sha256 = ${zigString(sourceHash)};\npub const upstream_version = ${zigString(source.upstreamVersion)};\npub const model_count: usize = ${source.models.length};\npub const provider_count: usize = ${providers.size};\n\npub fn rows(comptime ModelInfo: type) [model_count]ModelInfo {\n    return .{\n${source.models.map(renderModel).join("\n")}\n    };\n}\n`;
+const output = `//! Generated from catalog_source.json. Do not edit manually.\n//! Source SHA-256: ${sourceHash}\n\npub const source_sha256 = ${zigString(sourceHash)};\npub const upstream_version = ${zigString(source.upstreamVersion)};\npub const upstream_commit = ${zigString(source.upstreamCommit)};\npub const upstream_release_archive_sha256 = ${zigString(source.upstreamReleaseArchiveSha256)};\npub const upstream_model_data_structure_hash = ${zigString(source.upstreamModelDataStructureHash)};\npub const model_count: usize = ${source.models.length};\npub const provider_count: usize = ${providers.size};\n\npub fn rows(comptime ModelInfo: type) [model_count]ModelInfo {\n    return .{\n${source.models.map(renderModel).join("\n")}\n    };\n}\n`;
 
 function formatZig(path) {
   const zig = process.env.ZIG_EXE ?? process.env.ZIG ?? "zig";

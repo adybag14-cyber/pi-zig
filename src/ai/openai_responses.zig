@@ -571,6 +571,7 @@ pub const ResponsesClient = struct {
                 .cache_retention = effective_cache_retention,
                 .provider_id = self.provider_id,
                 .api_id = protocolApiName(self.protocol_mode),
+                .tool_choice = request_options.tool_choice,
             })
         else
             try buildRequestBody(gpa, self.model, messages, tools_json, .{
@@ -586,6 +587,7 @@ pub const ResponsesClient = struct {
                 .cache_retention = effective_cache_retention,
                 .provider_id = self.provider_id,
                 .api_id = protocolApiName(self.protocol_mode),
+                .tool_choice = request_options.tool_choice,
             });
         defer gpa.free(payload);
         const url = if (self.protocol_mode == .codex)
@@ -626,6 +628,7 @@ pub const ResponsesClient = struct {
                 try putHeader(gpa, &headers, "x-client-request-id", sid);
             }
         } else {
+            try putHeader(gpa, &headers, "User-Agent", ai.pi_user_agent.value);
             if (self.auth_mode == .azure_api_key) {
                 try putHeader(gpa, &headers, "api-key", self.api_key);
             } else if (cloudflare.isAIGateway(self.provider_id)) {
@@ -1297,6 +1300,7 @@ pub const RequestOptions = struct {
     cache_retention: metadata.CacheRetention = .short,
     provider_id: []const u8 = "openai",
     api_id: []const u8 = "openai-responses",
+    tool_choice: ?ai.ToolChoice = null,
 };
 
 fn mappedThinkingLevel(map: ?thinking_mod.ThinkingLevelMap, level: ai.ThinkingLevel, fallback: []const u8) ?[]const u8 {
@@ -1743,6 +1747,10 @@ pub fn buildRequestBody(
             try w.writeAll(tools);
         }
     }
+    if (options.tool_choice) |choice| if (!hasSampling(options.sampling_params, "tool_choice")) {
+        try w.writeAll(",\"tool_choice\":");
+        try std.json.Stringify.value(choice.jsonName(), .{}, w);
+    };
     // Deliberately last: matches upstream samplingParams override semantics.
     for (options.sampling_params) |param| {
         try w.writeAll(",");
@@ -1788,7 +1796,11 @@ pub fn buildCodexRequestBody(
         try w.writeAll(",\"prompt_cache_key\":");
         try std.json.Stringify.value(sid[0..@min(sid.len, 64)], .{}, w);
     }
-    if (!hasSampling(options.sampling_params, "tool_choice")) try w.writeAll(",\"tool_choice\":\"auto\"");
+    if (!hasSampling(options.sampling_params, "tool_choice")) {
+        const choice = options.tool_choice orelse .auto;
+        try w.writeAll(",\"tool_choice\":");
+        try std.json.Stringify.value(choice.jsonName(), .{}, w);
+    }
     if (!hasSampling(options.sampling_params, "parallel_tool_calls")) try w.writeAll(",\"parallel_tool_calls\":true");
     if (!hasSampling(options.sampling_params, "reasoning")) if (requestedThinkingEffort(options)) |effort| {
         try w.writeAll(",\"reasoning\":{\"effort\":");
@@ -1985,6 +1997,7 @@ fn parseResponseConfigured(gpa: std.mem.Allocator, raw: []const u8, provider_id:
         .response_id = response_id,
         .response_model = response_model,
         .raw_stop_reason = raw_stop_reason,
+        .end_turn = if (parsed.value.object.get("end_turn")) |value| if (value == .bool) value.bool else null else null,
         .stop_reason = try gpa.dupe(u8, stop),
         .usage = usage,
     };
@@ -2017,6 +2030,7 @@ const ResponsesLive = struct {
     raw_stop_reason: []u8 = &.{},
     reasoning_signature: []u8 = &.{},
     reasoning_id: []u8 = &.{},
+    end_turn: ?bool = null,
     on_delta: ?ai.StreamHandler,
     delta_ctx: ?*anyopaque,
     streaming: bool,
@@ -2080,6 +2094,7 @@ const ResponsesLive = struct {
         self.raw_stop_reason = &.{};
         self.reasoning_signature = &.{};
         self.reasoning_id = &.{};
+        self.end_turn = null;
         self.aborted = false;
         self.terminal = false;
         self.writer.end = 0;
@@ -2307,6 +2322,9 @@ const ResponsesLive = struct {
         const tier = responseServiceTier(response);
         if (tier != .unknown) self.service_tier = tier;
         if (response.object.get("usage")) |u| self.usage = parseUsage(u);
+        if (response.object.get("end_turn")) |value| if (value == .bool) {
+            self.end_turn = value.bool;
+        };
         const status = response.object.get("status") orelse return;
         if (status != .string) return;
         var incomplete_reason: []const u8 = "";
@@ -2445,6 +2463,7 @@ const ResponsesLive = struct {
             .diagnostics_json = if (self.diagnostics_json.len > 0) try self.gpa.dupe(u8, self.diagnostics_json) else "",
             .error_message = if (self.error_message.len > 0) try self.gpa.dupe(u8, self.error_message) else "",
             .raw_stop_reason = if (self.raw_stop_reason.len > 0) try self.gpa.dupe(u8, self.raw_stop_reason) else "",
+            .end_turn = self.end_turn,
             .stop_reason = try self.gpa.dupe(u8, if (self.stop_reason.len > 0) self.stop_reason else if (calls.len > 0) "toolUse" else "stop"),
             .usage = self.usage,
         };
@@ -3028,6 +3047,14 @@ test "Codex cache session affinity clamps to 64 and disables with retention none
     try std.testing.expect(codexCacheSessionId(null, .short) == null);
 }
 
+test "Responses provider-neutral tool choice is emitted without tools" {
+    const gpa = std.testing.allocator;
+    const msgs = [_]ai.ChatMessage{.{ .role = "user", .content = "hi" }};
+    const body = try buildRequestBody(gpa, "m", &msgs, "[]", .{ .tool_choice = .none });
+    defer gpa.free(body);
+    try std.testing.expect(std.mem.indexOf(u8, body, "\"tool_choice\":\"none\"") != null);
+}
+
 test "Codex sampling tool choice overrides default without duplicate keys" {
     const gpa = std.testing.allocator;
     const msgs = [_]ai.ChatMessage{.{ .role = "user", .content = "use tool" }};
@@ -3055,6 +3082,20 @@ test "Codex SSE terminal event becomes visible before EOF" {
     try live.flushWriterBuffer();
     try std.testing.expect(live.terminal);
     try std.testing.expectEqualStrings("resp_terminal", live.response_id);
+}
+
+test "Codex terminal end_turn survives streaming and non-streaming responses" {
+    const gpa = std.testing.allocator;
+    var live = ResponsesLive.init(gpa, null, null, true, null);
+    defer live.deinit();
+    try live.handleEventJson("{\"type\":\"response.completed\",\"response\":{\"id\":\"resp_end\",\"status\":\"completed\",\"end_turn\":true,\"output\":[]}}");
+    var streamed = try live.finish("openai-codex", "gpt-5");
+    defer streamed.deinit(gpa);
+    try std.testing.expectEqual(true, streamed.end_turn.?);
+
+    var parsed = try parseResponse(gpa, "{\"id\":\"resp_end\",\"status\":\"completed\",\"end_turn\":false,\"output\":[]}", "openai-codex", "gpt-5");
+    defer parsed.deinit(gpa);
+    try std.testing.expectEqual(false, parsed.end_turn.?);
 }
 
 test "Codex SSE nonterminal delta does not stop body pump" {

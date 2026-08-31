@@ -1,3 +1,28 @@
+# Checkpoint 188 — Pi 0.84.4 / upstream-main parity
+
+- Pinned authoritative upstream main at
+  `853a80d26c90a14c1886f0ebb8ffaae133ca2185` and proved the retired reference
+  lineage corresponds to `2e4d23959485279aa2da1a45103de2ea22d46395`.
+- Reproducibly imported the verified 0.84.4 release catalog (1,290 models, 39
+  providers) and exact coding-agent changelog without restoring reference code.
+- Ported the 174-commit delta across provider reasoning/fallback/request
+  metadata, Copilot account policies, agent/session ordering, PowerShell,
+  selectors/defaults, session sharing, settings/skills, RPC/UI events, TUI
+  regressions, package safety, and raw Bedrock response callbacks.
+- Classified Cloudflare Worker binding injection and V8 maximum-string
+  chunking as JavaScript-runtime-specific; native configured HTTP and byte-slice
+  rendering provide the corresponding Zig boundaries.
+- Final Windows gate: 13/13 aggregate steps, 1,035 module passes, 27 intentional
+  skips, zero failures, plus 11/11 SQLite repository, 11 SQLite CLI, 5/5 live
+  persistence and 12/12 for both executable roots.
+- Five real WSL PTY/loopback gates passed with zero stderr. ReleaseSafe 1.1.0
+  artifacts and hashes are recorded in `CHECKPOINT-188.md` and
+  `verification/checkpoint-188/verification-summary.json`.
+- OpenRouter OAuth and `openrouter/free` reachability passed, but the external
+  account was at its 50-request daily free limit. The real 429 failed fast with
+  no retries or paid traffic; successful live completion/tool execution is not
+  claimed until the provider resets the quota.
+
 # Checkpoint 187 — complete catalog parity and reference retirement
 
 - Imported the exact Pi AI 0.84.1 published model data into a reviewed,

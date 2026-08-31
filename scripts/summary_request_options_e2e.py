@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Real provider-body validation for checkpoint 167 summary request options."""
+"""Real provider-body validation for checkpoint 188 summary request options."""
 from __future__ import annotations
 
 import argparse
@@ -50,7 +50,7 @@ class CaptureHandler(http.server.BaseHTTPRequestHandler):
             server.requests.append({"path": self.path, "headers": headers, "body": payload})
 
         if payload.get("stream"):
-            content = f"assistant-167-{index}"
+            content = f"assistant-188-{index}"
             body = (
                 f'data: {{"id":"chatcmpl-167-{index}","choices":[{{"delta":{{"content":{json.dumps(content)}}}}}]}}\n\n'
                 'data: {"choices":[{"delta":{},"finish_reason":"stop"}],'
@@ -190,7 +190,7 @@ def run_pty(command: list[str], env: dict[str, str], cwd: Path) -> tuple[int, st
         pos = wait(b"> ")
         os.write(master, b"/tree\r")
         pos = wait(b"Session Tree", pos)
-        os.write(master, b"assistant-167-1")
+        os.write(master, b"assistant-188-1")
         time.sleep(0.15)
         read_available(0.15)
         os.write(master, b"\r")
@@ -333,14 +333,14 @@ def run(binary: Path, report: Path | None) -> dict[str, Any]:
             "summaryPromptCacheKey": summary["body"].get("prompt_cache_key"),
             "summaryPromptCacheRetention": summary["body"].get("prompt_cache_retention"),
             "fullscreenTreeSelector": True,
-            "searchSelected": "assistant-167-1",
+            "searchSelected": "assistant-188-1",
             "summaryPersisted": True,
             "rpcExit": rpc_code,
             "ptyExit": pty_code,
             "stderrBytes": len(rpc_stderr.encode()) + len(pty_stderr.encode()),
         }
         text = "\n".join([
-            "SUMMARY_REQUEST_OPTIONS_E2E_167=PASS",
+            "SUMMARY_REQUEST_OPTIONS_E2E_188=PASS",
             "NORMAL_REQUESTS=3",
             "SUMMARY_REQUESTS=1",
             "SUMMARY_MAX_TOKENS=2048",
@@ -349,7 +349,7 @@ def run(binary: Path, report: Path | None) -> dict[str, Any]:
             "SUMMARY_PROMPT_CACHE_KEY=absent",
             "SUMMARY_PROMPT_CACHE_RETENTION=absent",
             "FULLSCREEN_TREE_SELECTOR=PASS",
-            "TREE_SEARCH_SELECTION=assistant-167-1",
+            "TREE_SEARCH_SELECTION=assistant-188-1",
             "SUMMARY_PERSISTED=PASS",
             "RPC_EXIT=0",
             "PTY_EXIT=0",

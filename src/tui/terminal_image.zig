@@ -18,6 +18,12 @@ pub const TerminalCapabilities = struct {
     hyperlinks: bool = false,
 };
 
+pub const CapabilityOverrides = struct {
+    images: ??ImageProtocol = null,
+    true_color: ?bool = null,
+    hyperlinks: ?bool = null,
+};
+
 pub const CellDimensions = struct {
     width_px: u32 = 9,
     height_px: u32 = 18,
@@ -55,6 +61,9 @@ pub const Environment = struct {
     warp_terminal_session_uuid: ?[]const u8 = null,
     iterm_session_id: ?[]const u8 = null,
     wt_session: ?[]const u8 = null,
+    pi_hyperlinks: ?[]const u8 = null,
+    pi_image_protocol: ?[]const u8 = null,
+    pi_true_color: ?[]const u8 = null,
 };
 
 /// Snapshot the terminal-identifying process variables without allocating.
@@ -72,6 +81,9 @@ pub fn environmentFromMap(environ: *const std.process.Environ.Map) Environment {
         .warp_terminal_session_uuid = environ.get("WARP_IS_LOCAL_SHELL_SESSION"),
         .iterm_session_id = environ.get("ITERM_SESSION_ID"),
         .wt_session = environ.get("WT_SESSION"),
+        .pi_hyperlinks = environ.get("PI_HYPERLINKS"),
+        .pi_image_protocol = environ.get("PI_IMAGE_PROTOCOL"),
+        .pi_true_color = environ.get("PI_TRUE_COLOR"),
     };
 }
 
@@ -102,7 +114,7 @@ fn present(value: ?[]const u8) bool {
 /// Detect terminal capabilities using the same positive-identification policy as
 /// Pi's TypeScript TUI. Image protocols are intentionally disabled in tmux and
 /// screen because their passthrough behavior is not reliable enough for redraws.
-pub fn detectCapabilities(env: Environment, is_windows_console: bool, tmux_forwards_hyperlinks: bool) TerminalCapabilities {
+fn detectCapabilitiesBase(env: Environment, is_windows_console: bool, tmux_forwards_hyperlinks: bool) TerminalCapabilities {
     const has_true_color_hint = eqlLower(env.color_term, "truecolor") or eqlLower(env.color_term, "24bit");
 
     if (present(env.tmux) or startsLower(env.term, "tmux")) {
@@ -138,13 +150,45 @@ pub fn detectCapabilities(env: Environment, is_windows_console: bool, tmux_forwa
     return .{ .images = null, .true_color = has_true_color_hint, .hyperlinks = false };
 }
 
+fn booleanOverride(value: ?[]const u8) ?bool {
+    const text = value orelse return null;
+    if (std.mem.eql(u8, text, "1")) return true;
+    if (std.mem.eql(u8, text, "0")) return false;
+    return null;
+}
+
+pub fn environmentOverrides(env: Environment) CapabilityOverrides {
+    const protocol: ??ImageProtocol = if (env.pi_image_protocol) |value|
+        if (std.ascii.eqlIgnoreCase(value, "kitty")) @as(?ImageProtocol, .kitty) else if (std.ascii.eqlIgnoreCase(value, "iterm2")) @as(?ImageProtocol, .iterm2) else if (std.ascii.eqlIgnoreCase(value, "none") or std.mem.eql(u8, value, "0")) @as(?ImageProtocol, null) else null
+    else
+        null;
+    return .{
+        .images = protocol,
+        .true_color = booleanOverride(env.pi_true_color),
+        .hyperlinks = booleanOverride(env.pi_hyperlinks),
+    };
+}
+
+pub fn applyOverrides(base: TerminalCapabilities, overrides: CapabilityOverrides) TerminalCapabilities {
+    return .{
+        .images = if (overrides.images) |value| value else base.images,
+        .true_color = overrides.true_color orelse base.true_color,
+        .hyperlinks = overrides.hyperlinks orelse base.hyperlinks,
+    };
+}
+
+pub fn detectCapabilities(env: Environment, is_windows_console: bool, tmux_forwards_hyperlinks: bool) TerminalCapabilities {
+    return applyOverrides(detectCapabilitiesBase(env, is_windows_console, tmux_forwards_hyperlinks), environmentOverrides(env));
+}
+
 /// Explicit cache object avoids hidden process-global state and permits separate
 /// capability views for embedded clients and extension hosts.
 pub const CapabilityCache = struct {
     value: ?TerminalCapabilities = null,
+    overrides: CapabilityOverrides = .{},
 
     pub fn get(self: *CapabilityCache, env: Environment, is_windows_console: bool, tmux_forwards_hyperlinks: bool) TerminalCapabilities {
-        if (self.value == null) self.value = detectCapabilities(env, is_windows_console, tmux_forwards_hyperlinks);
+        if (self.value == null) self.value = applyOverrides(detectCapabilities(env, is_windows_console, tmux_forwards_hyperlinks), self.overrides);
         return self.value.?;
     }
 
@@ -154,6 +198,11 @@ pub const CapabilityCache = struct {
 
     pub fn set(self: *CapabilityCache, value: TerminalCapabilities) void {
         self.value = value;
+    }
+
+    pub fn setOverrides(self: *CapabilityCache, overrides: CapabilityOverrides) void {
+        self.overrides = overrides;
+        self.reset();
     }
 };
 
@@ -882,6 +931,24 @@ test "capability and cell dimension state are overrideable" {
     cells.set(.{ .width_px = 0, .height_px = 0 });
     try std.testing.expectEqual(@as(u32, 1), cells.get().width_px);
     try std.testing.expectEqual(@as(u32, 1), cells.get().height_px);
+}
+
+test "environment and programmatic terminal capability overrides are layered" {
+    const env_caps = detectCapabilities(.{
+        .term_program = "kitty",
+        .pi_hyperlinks = "0",
+        .pi_image_protocol = "none",
+        .pi_true_color = "0",
+    }, false, false);
+    try std.testing.expect(env_caps.images == null);
+    try std.testing.expect(!env_caps.true_color);
+    try std.testing.expect(!env_caps.hyperlinks);
+
+    var cache: CapabilityCache = .{};
+    cache.setOverrides(.{ .images = @as(?ImageProtocol, .iterm2), .hyperlinks = true });
+    const overridden = cache.get(.{ .term_program = "kitty" }, false, false);
+    try std.testing.expect(overridden.images.? == .iterm2);
+    try std.testing.expect(overridden.hyperlinks);
 }
 
 test "Kitty encoding uses direct and chunked transmission forms" {

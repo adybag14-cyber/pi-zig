@@ -119,15 +119,26 @@ fn scanSkillsDir(gpa: std.mem.Allocator, io: Io, dir_path: []const u8, out: *std
     var it = dir.iterate();
     while (try it.next(io)) |entry| {
         if (entry.kind != .directory) continue;
-        const skill_path = try std.fs.path.join(gpa, &.{ dir_path, entry.name, "SKILL.md" });
+        const child_dir = try std.fs.path.join(gpa, &.{ dir_path, entry.name });
+        defer gpa.free(child_dir);
+        const skill_path = try std.fs.path.join(gpa, &.{ child_dir, "SKILL.md" });
         defer gpa.free(skill_path);
-        try loadSkillFile(gpa, io, skill_path, entry.name, out);
+        const stat = std.Io.Dir.cwd().statFile(io, skill_path, .{}) catch {
+            try scanSkillsDir(gpa, io, child_dir, out);
+            continue;
+        };
+        if (stat.kind == .file) try loadSkillFile(gpa, io, skill_path, entry.name, out);
     }
 }
 
 fn loadSkillFile(gpa: std.mem.Allocator, io: Io, skill_path: []const u8, fallback_name: []const u8, out: *std.ArrayList(Skill)) !void {
-    const content = std.Io.Dir.cwd().readFileAlloc(io, skill_path, gpa, .limited(512 * 1024)) catch return;
+    var content = std.Io.Dir.cwd().readFileAlloc(io, skill_path, gpa, .limited(512 * 1024)) catch return;
     errdefer gpa.free(content);
+    if (std.mem.startsWith(u8, content, "\xEF\xBB\xBF")) {
+        const stripped = try gpa.dupe(u8, content[3..]);
+        gpa.free(content);
+        content = stripped;
+    }
     const fm = parseFrontmatter(content);
     const description = fm.description orelse {
         gpa.free(content);
@@ -339,4 +350,32 @@ test "skill without description is not loaded" {
     const found = try discoverTrusted(gpa, io, root, null, &.{}, true);
     defer gpa.free(found);
     try std.testing.expectEqual(@as(usize, 0), found.len);
+}
+
+test "nested grouping directories discover BOM skills and ignore root markdown docs" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const root = path_buf[0..try tmp.dir.realPath(io, &path_buf)];
+    const skills_root = try std.fs.path.join(gpa, &.{ root, ".agents", "skills" });
+    defer gpa.free(skills_root);
+    const nested = try std.fs.path.join(gpa, &.{ skills_root, "group", "nested-skill" });
+    defer gpa.free(nested);
+    try std.Io.Dir.cwd().createDirPath(io, nested);
+    const readme = try std.fs.path.join(gpa, &.{ skills_root, "README.md" });
+    defer gpa.free(readme);
+    try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = readme, .data = "not a skill" });
+    const skill_file = try std.fs.path.join(gpa, &.{ nested, "SKILL.md" });
+    defer gpa.free(skill_file);
+    try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = skill_file, .data = "\xEF\xBB\xBF---\nname: nested\ndescription: Nested skill\n---\nbody\n" });
+    const found = try discoverTrusted(gpa, io, root, null, &.{}, true);
+    defer {
+        for (found) |*skill| skill.deinit(gpa);
+        gpa.free(found);
+    }
+    try std.testing.expectEqual(@as(usize, 1), found.len);
+    try std.testing.expectEqualStrings("nested", found[0].name);
+    try std.testing.expect(!std.mem.startsWith(u8, found[0].content, "\xEF\xBB\xBF"));
 }

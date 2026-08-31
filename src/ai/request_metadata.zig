@@ -105,6 +105,23 @@ pub const MaxTokensField = enum {
     }
 };
 
+pub const ThinkingTokenBudgetField = enum {
+    thinking_token_budget,
+    thinking_budget,
+    thinking_budget_tokens,
+
+    pub fn parse(value: []const u8) ?ThinkingTokenBudgetField {
+        inline for (std.meta.fields(ThinkingTokenBudgetField)) |field| {
+            if (std.mem.eql(u8, value, field.name)) return @enumFromInt(field.value);
+        }
+        return null;
+    }
+
+    pub fn jsonName(self: ThinkingTokenBudgetField) []const u8 {
+        return @tagName(self);
+    }
+};
+
 pub const ThinkingFormat = enum {
     openai,
     openrouter,
@@ -143,6 +160,28 @@ pub const DeferredToolsMode = enum {
     }
 };
 
+pub const FallbackCostTier = struct {
+    input_tokens_above: u64,
+    input: f64,
+    output: f64,
+    cache_read: f64,
+    cache_write: f64,
+};
+
+pub const FallbackCost = struct {
+    input: f64 = 0,
+    output: f64 = 0,
+    cache_read: f64 = 0,
+    cache_write: f64 = 0,
+    tiers: []const FallbackCostTier = &.{},
+};
+
+pub const AnthropicAllowedFallbackModel = struct {
+    provider: []const u8,
+    model: []const u8,
+    cost: FallbackCost,
+};
+
 /// OpenAI-Completions compatibility subset that has native behavior in pi-zig.
 /// Optional booleans preserve the semantic difference between omitted and false.
 pub const Compat = struct {
@@ -168,6 +207,9 @@ pub const Compat = struct {
     supports_temperature: ?bool = null,
     /// vLLM-compatible top-level reasoning token reservation.
     supports_thinking_token_budget: ?bool = null,
+    /// Exact top-level field for reasoning token reservation. The legacy
+    /// boolean above aliases `thinking_token_budget`.
+    thinking_token_budget_field: ?ThinkingTokenBudgetField = null,
     force_adaptive_thinking: ?bool = null,
     supports_strict_tools: ?bool = null,
     /// Kimi/OpenAI-completions transcript-driven deferred tool injection.
@@ -179,6 +221,14 @@ pub const Compat = struct {
     requires_reasoning_content_on_assistant_messages: ?bool = null,
     /// Anthropic-compatible providers may accept thinking blocks with signature:"".
     allow_empty_signature: ?bool = null,
+    /// First-party Anthropic server-side refusal fallback targets and their
+    /// local pricing metadata. An omitted or empty list must not emit the
+    /// provider's `fallbacks` request field.
+    allowed_fallback_models: ?[]const AnthropicAllowedFallbackModel = null,
+    /// Borrowed custom-model representation from models.json. Built-in
+    /// generated catalogs use the typed field above; keeping this borrowed
+    /// avoids per-model ownership duplication during provider-level merges.
+    allowed_fallback_models_json: ?std.json.Array = null,
     /// Prompt-cache/session-affinity controls from upstream Pi.
     supports_long_cache_retention: ?bool = null,
     supports_explicit_prompt_cache_mode: ?bool = null,

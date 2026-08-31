@@ -164,6 +164,17 @@ pub const JsonEmitter = struct {
             .summarization_retry_finished => {
                 aw.writer.writeAll("{\"type\":\"summarization_retry_finished\"}\n") catch return;
             },
+            .session_compact_failed => {
+                aw.writer.writeAll("{\"type\":\"session_compact_failed\",\"source\":") catch return;
+                std.json.Stringify.value(event.source, .{}, &aw.writer) catch return;
+                aw.writer.writeAll(",\"reason\":") catch return;
+                std.json.Stringify.value(event.reason, .{}, &aw.writer) catch return;
+                aw.writer.writeAll(",\"willRetry\":") catch return;
+                aw.writer.writeAll(if (event.will_retry) "true" else "false") catch return;
+                aw.writer.writeAll(",\"error\":") catch return;
+                std.json.Stringify.value(event.error_message orelse event.text, .{}, &aw.writer) catch return;
+                aw.writer.writeAll("}\n") catch return;
+            },
             // Legacy aliases: loop already emits agent_end; skip .done to avoid duplicate agent_end.
             .done, .user, .assistant, .tool_call, .tool_result, .turn_limit => return,
         }
@@ -227,6 +238,11 @@ pub const PrintEmitter = struct {
                 tui_render.printLine(self.io, line) catch {};
             },
             .summarization_retry_finished => {},
+            .session_compact_failed => if (self.verbose) {
+                var buf: [256]u8 = undefined;
+                const line = std.fmt.bufPrint(&buf, "{s} compaction failed: {s}", .{ event.reason, event.error_message orelse event.text }) catch return;
+                tui_render.printLine(self.io, line) catch {};
+            },
             else => {},
         }
     }

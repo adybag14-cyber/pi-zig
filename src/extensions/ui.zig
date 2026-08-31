@@ -18,6 +18,8 @@ const Keybindings = @import("../tui/keybindings.zig").Manager;
 
 pub const NotificationKind = enum { info, warning, error_message };
 pub const WidgetPlacement = enum { above_editor, below_editor };
+pub const PromptEvent = enum { start, end };
+pub const PromptEventFn = *const fn (?*anyopaque, PromptEvent, []const u8) void;
 
 pub const Notification = struct {
     message: []u8,
@@ -88,6 +90,8 @@ pub const Controller = struct {
     width: usize = 80,
     reader: ?*Io.File.Reader = null,
     clipboard_options: coding_clipboard.Options = .{},
+    prompt_event_fn: ?PromptEventFn = null,
+    prompt_event_ctx: ?*anyopaque = null,
 
     state_mutex: Io.Mutex = .init,
     dialog_mutex: Io.Mutex = .init,
@@ -143,6 +147,11 @@ pub const Controller = struct {
         self.gpa.free(self.editor_snapshot);
         if (self.pending_editor_text) |value| self.gpa.free(value);
         self.* = undefined;
+    }
+
+    pub fn bindPromptEvents(self: *Controller, callback: ?PromptEventFn, context: ?*anyopaque) void {
+        self.prompt_event_fn = callback;
+        self.prompt_event_ctx = context;
     }
 
     /// Drop all state owned by the previous extension runtime while preserving
@@ -502,6 +511,8 @@ pub const Controller = struct {
         const reader = self.reader;
         self.state_mutex.unlock(self.io);
         if (!ui_available) return allocator.dupe(u8, if (std.mem.eql(u8, method, "confirm")) "false" else "null");
+        if (self.prompt_event_fn) |callback| callback(self.prompt_event_ctx, .start, method);
+        defer if (self.prompt_event_fn) |callback| callback(self.prompt_event_ctx, .end, method);
 
         if (std.mem.eql(u8, method, "select")) return self.requestSelect(allocator, reader.?, &parsed.value.object);
         if (std.mem.eql(u8, method, "confirm")) return self.requestConfirm(allocator, reader.?, &parsed.value.object);

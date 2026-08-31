@@ -106,6 +106,7 @@ pub const PiMessagesClient = struct {
             .max_tokens = effective_max_tokens,
             .session_id = ai.resolveSessionAffinity(self.session_id, request_options),
             .cache_retention = ai.resolveCacheRetention(self.cache_retention, request_options),
+            .tool_choice = request_options.tool_choice,
         });
         defer gpa.free(payload);
 
@@ -189,6 +190,7 @@ pub const BuildOptions = struct {
     max_tokens: u64 = 0,
     session_id: ?[]const u8 = null,
     cache_retention: metadata.CacheRetention = .short,
+    tool_choice: ?ai.ToolChoice = null,
 };
 
 pub fn buildRequestBody(
@@ -272,6 +274,12 @@ pub fn buildRequestBody(
         if (!first_option) try w.writeByte(',');
         try w.writeAll("\"sessionId\":");
         try std.json.Stringify.value(session_id, .{}, w);
+        first_option = false;
+    }
+    if (options.tool_choice) |choice| {
+        if (!first_option) try w.writeByte(',');
+        try w.writeAll("\"toolChoice\":");
+        try std.json.Stringify.value(choice.jsonName(), .{}, w);
     }
     try w.writeAll("}}");
     return out.toOwnedSlice();

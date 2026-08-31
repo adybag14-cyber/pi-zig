@@ -179,6 +179,8 @@ pub const View = struct {
     height: usize,
 };
 
+pub const CopySelectionFn = *const fn (?*anyopaque, []const u8) bool;
+
 pub const Application = struct {
     gpa: std.mem.Allocator,
     root: layout.Component,
@@ -192,7 +194,15 @@ pub const Application = struct {
     painted_height: usize = 0,
     next_overlay_id: u64 = 1,
     started: bool = false,
+    clock_io: ?Io = null,
     selection: ?Selection = null,
+    copy_on_select: bool = true,
+    copy_selection_fn: ?CopySelectionFn = null,
+    copy_selection_ctx: ?*anyopaque = null,
+    last_copy_succeeded: ?bool = null,
+    last_click_ms: i64 = 0,
+    last_click_point: ?Point = null,
+    click_count: u8 = 0,
     search: SearchState,
     composition: CompositionState,
     full_redraw_count: usize = 0,
@@ -221,6 +231,7 @@ pub const Application = struct {
     pub fn start(self: *Application, io: Io) !void {
         if (self.started) return;
         try writeAll(io, enter_sequence);
+        self.clock_io = io;
         self.started = true;
     }
 
@@ -326,7 +337,11 @@ pub const Application = struct {
 
     pub fn handleInput(self: *Application, data: []const u8) !void {
         if (mouse.parse(data)) |event| {
-            try self.handleMouse(event);
+            if (self.clock_io) |io| {
+                try self.handleMouseAt(event, std.Io.Clock.real.now(io).toMilliseconds());
+            } else {
+                try self.handleMouse(event);
+            }
             return;
         }
         if (self.inputTarget()) |target| try target.handleInput(data);
@@ -341,6 +356,14 @@ pub const Application = struct {
     }
 
     pub fn handleMouse(self: *Application, event: mouse.Event) !void {
+        return self.handleMouseInternal(event, null);
+    }
+
+    pub fn handleMouseAt(self: *Application, event: mouse.Event, now_ms: i64) !void {
+        return self.handleMouseInternal(event, now_ms);
+    }
+
+    fn handleMouseInternal(self: *Application, event: mouse.Event, now_ms: ?i64) !void {
         if (event.kind == .scroll) {
             const delta: isize = switch (event.button) {
                 .wheel_up => -3,
@@ -374,9 +397,13 @@ pub const Application = struct {
                         return;
                     }
                 }
+                const point = Point{ .row = event.y, .column = event.x };
+                const clicks = self.registerClick(point, now_ms);
+                if (clicks == 2 and try self.selectWordAt(point)) return;
+                if (clicks >= 3 and try self.selectLineAt(point)) return;
                 self.selection = .{
-                    .anchor = .{ .row = event.y, .column = event.x },
-                    .focus = .{ .row = event.y, .column = event.x },
+                    .anchor = point,
+                    .focus = point,
                     .dragging = true,
                 };
             },
@@ -384,11 +411,90 @@ pub const Application = struct {
                 selection.focus = .{ .row = event.y, .column = event.x };
             },
             .release => if (self.selection) |*selection| {
-                selection.focus = .{ .row = event.y, .column = event.x };
-                selection.dragging = false;
+                if (selection.dragging) {
+                    selection.focus = .{ .row = event.y, .column = event.x };
+                    selection.dragging = false;
+                }
+                if (self.copy_on_select and self.copy_selection_fn != null) self.last_copy_succeeded = try self.copySelection();
             },
             .scroll => unreachable,
         }
+    }
+
+    fn registerClick(self: *Application, point: Point, now_ms: ?i64) u8 {
+        const timestamp = now_ms orelse {
+            self.click_count = 1;
+            self.last_click_point = point;
+            return 1;
+        };
+        const same_point = if (self.last_click_point) |last| last.row == point.row and last.column == point.column else false;
+        const elapsed = timestamp - self.last_click_ms;
+        if (same_point and elapsed >= 0 and elapsed <= 500) {
+            self.click_count = @min(@as(u8, 3), self.click_count +| 1);
+        } else {
+            self.click_count = 1;
+        }
+        self.last_click_ms = timestamp;
+        self.last_click_point = point;
+        return self.click_count;
+    }
+
+    const WordSegment = struct { start: usize, end: usize, selectable: bool };
+
+    fn selectWordAt(self: *Application, point: Point) !bool {
+        const frame = self.current_frame orelse return false;
+        if (point.row >= frame.lines.items.len) return false;
+        const plain_raw = try terminal_text.stripAlloc(self.gpa, frame.lines.items[point.row]);
+        defer self.gpa.free(plain_raw);
+        const plain = std.mem.trimEnd(u8, plain_raw, " \t");
+        if (plain.len == 0) return false;
+
+        var segments: std.ArrayList(WordSegment) = .empty;
+        defer segments.deinit(self.gpa);
+        var byte_index: usize = 0;
+        var column: usize = 0;
+        while (byte_index < plain.len) {
+            const sequence_len = @min(std.unicode.utf8ByteSequenceLength(plain[byte_index]) catch 1, plain.len - byte_index);
+            const scalar = plain[byte_index .. byte_index + sequence_len];
+            const cell_width = terminal_text.visibleWidth(scalar);
+            const ascii = if (sequence_len == 1) scalar[0] else 0;
+            const selectable = sequence_len > 1 or std.ascii.isAlphanumeric(ascii) or ascii == '_' or ascii == '/' or ascii == '-';
+            if (cell_width > 0) {
+                if (segments.items.len > 0 and selectable and segments.items[segments.items.len - 1].selectable) {
+                    segments.items[segments.items.len - 1].end = column + cell_width;
+                } else {
+                    try segments.append(self.gpa, .{ .start = column, .end = column + cell_width, .selectable = selectable });
+                }
+                column += cell_width;
+            }
+            byte_index += sequence_len;
+        }
+        for (segments.items) |segment| {
+            if (point.column < segment.start or point.column >= segment.end) continue;
+            self.selection = .{
+                .anchor = .{ .row = point.row, .column = segment.start },
+                .focus = .{ .row = point.row, .column = segment.end },
+                .dragging = false,
+            };
+            return true;
+        }
+        return false;
+    }
+
+    fn selectLineAt(self: *Application, point: Point) !bool {
+        const frame = self.current_frame orelse return false;
+        if (point.row >= frame.lines.items.len) return false;
+        const plain_raw = try terminal_text.stripAlloc(self.gpa, frame.lines.items[point.row]);
+        defer self.gpa.free(plain_raw);
+        const plain = std.mem.trimEnd(u8, plain_raw, " \t");
+        const width = terminal_text.visibleWidth(plain);
+        if (width == 0) return false;
+        self.selection = .{
+            .anchor = .{ .row = point.row, .column = 0 },
+            .focus = .{ .row = point.row, .column = width },
+            .dragging = false,
+        };
+        return true;
     }
 
     pub fn clearSelection(self: *Application) void {
@@ -424,6 +530,21 @@ pub const Application = struct {
         const selected = try self.selectedTextAlloc() orelse return null;
         defer self.gpa.free(selected);
         return osc52.sequenceAlloc(self.gpa, selected);
+    }
+
+    pub fn configureSelectionCopy(self: *Application, copy_on_select: bool, callback: ?CopySelectionFn, context: ?*anyopaque) void {
+        self.copy_on_select = copy_on_select;
+        self.copy_selection_fn = callback;
+        self.copy_selection_ctx = context;
+        self.last_copy_succeeded = null;
+    }
+
+    pub fn copySelection(self: *const Application) !bool {
+        const callback = self.copy_selection_fn orelse return false;
+        const selected = try self.selectedTextAlloc() orelse return false;
+        defer self.gpa.free(selected);
+        if (selected.len == 0) return false;
+        return callback(self.copy_selection_ctx, selected);
     }
 
     fn clearCurrentFrames(self: *Application) void {
@@ -811,6 +932,52 @@ test "mouse hit testing drives selectors while drag selection extracts cells" {
     const osc = (try selection_app.osc52SelectionAlloc()).?;
     defer gpa.free(osc);
     try std.testing.expect(std.mem.startsWith(u8, osc, "\x1b]52;c;"));
+}
+
+test "selection copy can stay highlighted or use an injected host clipboard" {
+    const gpa = std.testing.allocator;
+    var text = layout.StaticLines{ .lines = &.{"abcdef"} };
+    var app = Application.init(gpa, text.component());
+    defer app.deinit();
+    _ = try app.render(10, 2);
+    const Capture = struct {
+        calls: usize = 0,
+        matched: bool = false,
+        fn copy(raw: ?*anyopaque, selected: []const u8) bool {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.calls += 1;
+            self.matched = std.mem.eql(u8, selected, "bcd");
+            return true;
+        }
+    };
+    var capture = Capture{};
+    app.configureSelectionCopy(false, Capture.copy, &capture);
+    try app.handleMouse(.{ .kind = .press, .button = .left, .x = 1, .y = 0 });
+    try app.handleMouse(.{ .kind = .release, .button = .left, .x = 4, .y = 0 });
+    try std.testing.expectEqual(@as(usize, 0), capture.calls);
+    try std.testing.expect(try app.copySelection());
+    try std.testing.expectEqual(@as(usize, 1), capture.calls);
+    try std.testing.expect(capture.matched);
+
+    app.configureSelectionCopy(true, Capture.copy, &capture);
+    try app.handleMouse(.{ .kind = .release, .button = .left, .x = 5, .y = 0 });
+    try std.testing.expectEqual(@as(usize, 2), capture.calls);
+    try std.testing.expectEqual(true, app.last_copy_succeeded.?);
+}
+
+test "fullscreen double click keeps slash paths and kebab case together" {
+    const gpa = std.testing.allocator;
+    var text = layout.StaticLines{ .lines = &.{"open src/coding-agent/foo-bar.zig now"} };
+    var app = Application.init(gpa, text.component());
+    defer app.deinit();
+    _ = try app.render(50, 2);
+    try app.handleMouseAt(.{ .kind = .press, .button = .left, .x = 18, .y = 0 }, 1_000);
+    try app.handleMouse(.{ .kind = .release, .button = .left, .x = 18, .y = 0 });
+    try app.handleMouseAt(.{ .kind = .press, .button = .left, .x = 18, .y = 0 }, 1_250);
+    try app.handleMouse(.{ .kind = .release, .button = .left, .x = 18, .y = 0 });
+    const selected = (try app.selectedTextAlloc()).?;
+    defer gpa.free(selected);
+    try std.testing.expectEqualStrings("src/coding-agent/foo-bar", selected);
 }
 
 test "search highlights matches and cycles while IME commits atomically" {

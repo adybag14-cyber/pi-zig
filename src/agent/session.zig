@@ -10,6 +10,7 @@ pub const AssistantMeta = struct {
     /// Provider-returned thinking/reasoning text retained for later replay.
     thinking: []const u8 = "",
     thinking_signature: []const u8 = "",
+    thinking_redacted: bool = false,
     provider: []const u8 = "",
     api: []const u8 = "",
     model: []const u8 = "",
@@ -19,6 +20,7 @@ pub const AssistantMeta = struct {
     diagnostics_json: []const u8 = "",
     error_message: []const u8 = "",
     raw_stop_reason: []const u8 = "",
+    end_turn: ?bool = null,
     stop_reason: []const u8 = "",
     usage_input: u64 = 0,
     usage_output: u64 = 0,
@@ -52,6 +54,7 @@ pub const AssistantMeta = struct {
         return .{
             .thinking = if (self.thinking.len > 0) try gpa.dupe(u8, self.thinking) else "",
             .thinking_signature = if (self.thinking_signature.len > 0) try gpa.dupe(u8, self.thinking_signature) else "",
+            .thinking_redacted = self.thinking_redacted,
             .provider = if (self.provider.len > 0) try gpa.dupe(u8, self.provider) else "",
             .api = if (self.api.len > 0) try gpa.dupe(u8, self.api) else "",
             .model = if (self.model.len > 0) try gpa.dupe(u8, self.model) else "",
@@ -60,6 +63,7 @@ pub const AssistantMeta = struct {
             .diagnostics_json = if (self.diagnostics_json.len > 0) try gpa.dupe(u8, self.diagnostics_json) else "",
             .error_message = if (self.error_message.len > 0) try gpa.dupe(u8, self.error_message) else "",
             .raw_stop_reason = if (self.raw_stop_reason.len > 0) try gpa.dupe(u8, self.raw_stop_reason) else "",
+            .end_turn = self.end_turn,
             .stop_reason = if (self.stop_reason.len > 0) try gpa.dupe(u8, self.stop_reason) else "",
             .usage_input = self.usage_input,
             .usage_output = self.usage_output,
@@ -1069,6 +1073,7 @@ pub const Session = struct {
                         try line.writer.writeAll(",\"thinkingSignature\":");
                         try std.json.Stringify.value(e.meta.thinking_signature, .{}, &line.writer);
                     }
+                    if (e.meta.thinking_redacted) try line.writer.writeAll(",\"redacted\":true");
                     try line.writer.writeAll("}");
                     first_content = false;
                 }
@@ -1115,6 +1120,10 @@ pub const Session = struct {
                 if (e.meta.raw_stop_reason.len > 0) {
                     try line.writer.writeAll(",\"rawStopReason\":");
                     try std.json.Stringify.value(e.meta.raw_stop_reason, .{}, &line.writer);
+                }
+                if (e.meta.end_turn) |value| {
+                    try line.writer.writeAll(",\"endTurn\":");
+                    try line.writer.writeAll(if (value) "true" else "false");
                 }
                 const sr: []const u8 = if (e.meta.stop_reason.len > 0)
                     e.meta.stop_reason
@@ -1283,6 +1292,20 @@ pub const Session = struct {
         const raw = try std.Io.Dir.cwd().readFileAlloc(io, path, gpa, .limited(32 * 1024 * 1024));
         defer gpa.free(raw);
 
+        if (raw.len > 0 and raw[raw.len - 1] != '\n') {
+            // Match upstream append safety: only repair a file whose parsed
+            // entries establish a real session header. The final fragment may
+            // itself be malformed; separating it prevents the next record from
+            // being concatenated into the same physical line.
+            var probe = parseJsonl(gpa, raw) catch null;
+            if (probe) |*valid_session| {
+                defer valid_session.deinit();
+                var file = try std.Io.Dir.cwd().openFile(io, path, .{ .mode = .write_only });
+                defer file.close(io);
+                try file.writePositionalAll(io, "\n", raw.len);
+            }
+        }
+
         var migrated = session_migration.migrateJsonl(gpa, raw) catch |err| switch (err) {
             // Preserve support for the pre-upstream Pi-Zig flat `header` format.
             session_migration.Error.InvalidSession => return try parseJsonl(gpa, raw),
@@ -1347,7 +1370,7 @@ pub const Session = struct {
         while (it.next()) |line_raw| {
             const line = std.mem.trim(u8, line_raw, " \t\r");
             if (line.len == 0) continue;
-            var parsed = try std.json.parseFromSlice(std.json.Value, gpa, line, .{});
+            var parsed = std.json.parseFromSlice(std.json.Value, gpa, line, .{}) catch continue;
             defer parsed.deinit();
             if (parsed.value != .object) return error.InvalidSession;
 
@@ -1556,6 +1579,7 @@ pub const Session = struct {
                 var tool_calls_json: ?[]u8 = null;
                 var meta_thinking: ?[]u8 = null;
                 var meta_thinking_signature: ?[]u8 = null;
+                var meta_thinking_redacted = false;
                 var image_b64_owned: ?[]u8 = null;
                 var image_mime_owned: ?[]u8 = null;
                 var extra_images_owned: []SessionImage = &.{};
@@ -1612,6 +1636,7 @@ pub const Session = struct {
                     if (std.mem.eql(u8, role_str, "assistant")) {
                         meta_thinking = try extractMessageThinking(gpa, msg);
                         meta_thinking_signature = try extractMessageThinkingSignature(gpa, msg);
+                        meta_thinking_redacted = extractMessageThinkingRedacted(msg);
                     }
                     if (msg.object.get("toolCallId")) |t| {
                         if (t == .string) tool_call_id = t.string;
@@ -1705,6 +1730,7 @@ pub const Session = struct {
                 var meta: AssistantMeta = .{};
                 if (meta_thinking) |t| meta.thinking = try gpa.dupe(u8, t);
                 if (meta_thinking_signature) |t| meta.thinking_signature = try gpa.dupe(u8, t);
+                meta.thinking_redacted = meta_thinking_redacted;
                 // Nested message object carries assistant metadata
                 if (parsed.value.object.get("message")) |msg| {
                     if (msg == .object) {
@@ -1736,6 +1762,9 @@ pub const Session = struct {
                         }
                         if (msg.object.get("rawStopReason")) |rv| {
                             if (rv == .string) meta.raw_stop_reason = try gpa.dupe(u8, rv.string);
+                        }
+                        if (msg.object.get("endTurn") orelse msg.object.get("end_turn")) |value| {
+                            if (value == .bool) meta.end_turn = value.bool;
                         }
                         if (msg.object.get("stopReason")) |sr| {
                             if (sr == .string) meta.stop_reason = try gpa.dupe(u8, sr.string);
@@ -2054,16 +2083,30 @@ fn extractMessageThinking(gpa: std.mem.Allocator, msg: std.json.Value) !?[]u8 {
         if (block != .object) continue;
         const typ = block.object.get("type") orelse continue;
         if (typ != .string or !std.mem.eql(u8, typ.string, "thinking")) continue;
-        const value = block.object.get("thinking") orelse block.object.get("text") orelse continue;
-        if (value != .string or value.string.len == 0) continue;
+        const value = block.object.get("thinking") orelse block.object.get("text");
+        const redacted = if (block.object.get("redacted")) |item| item == .bool and item.bool else false;
+        const text = if (value) |item| if (item == .string) item.string else "" else "";
+        if (text.len == 0 and !redacted) continue;
         if (out.items.len > 0) try out.appendSlice(gpa, "\n\n");
-        try out.appendSlice(gpa, value.string);
+        try out.appendSlice(gpa, if (redacted and text.len == 0) "[Reasoning redacted]" else text);
     }
     if (out.items.len == 0) {
         out.deinit(gpa);
         return null;
     }
     return try out.toOwnedSlice(gpa);
+}
+
+fn extractMessageThinkingRedacted(msg: std.json.Value) bool {
+    const content = msg.object.get("content") orelse return false;
+    if (content != .array) return false;
+    for (content.array.items) |block| {
+        if (block != .object) continue;
+        const typ = block.object.get("type") orelse continue;
+        if (typ != .string or !std.mem.eql(u8, typ.string, "thinking")) continue;
+        if (block.object.get("redacted")) |value| if (value == .bool and value.bool) return true;
+    }
+    return false;
 }
 
 fn extractMessageThinkingSignature(gpa: std.mem.Allocator, msg: std.json.Value) !?[]u8 {
@@ -2708,6 +2751,7 @@ test "assistant metadata round-trip provider model stopReason usage" {
         .response_id = "resp_tool_1",
         .response_model = "routed/model",
         .raw_stop_reason = "tool_calls",
+        .end_turn = true,
         .stop_reason = "toolUse",
         .usage_input = 12,
         .usage_output = 4,
@@ -2737,6 +2781,7 @@ test "assistant metadata round-trip provider model stopReason usage" {
     try std.testing.expectEqualStrings("resp_tool_1", a1.meta.response_id);
     try std.testing.expectEqualStrings("routed/model", a1.meta.response_model);
     try std.testing.expectEqualStrings("tool_calls", a1.meta.raw_stop_reason);
+    try std.testing.expectEqual(true, a1.meta.end_turn.?);
     try std.testing.expectEqual(@as(u64, 12), a1.meta.usage_input);
     try std.testing.expectEqual(@as(u64, 16), a1.meta.usage_total);
     const a2 = loaded.entries.items[2];
@@ -2752,6 +2797,7 @@ test "assistant metadata round-trip provider model stopReason usage" {
     try std.testing.expect(std.mem.indexOf(u8, raw, "\"responseId\":\"resp_tool_1\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, raw, "\"responseModel\":\"routed/model\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, raw, "\"rawStopReason\":\"tool_calls\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, raw, "\"endTurn\":true") != null);
     try std.testing.expect(std.mem.indexOf(u8, raw, "\"totalTokens\":16") != null);
 }
 
@@ -2838,6 +2884,43 @@ test "listSessions and mostRecentSessionPath" {
     try std.testing.expect(std.mem.indexOf(u8, recent.?, "list-me") != null);
 }
 
+test "session load repairs unterminated valid and malformed tails only after a valid header" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var root_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const root = root_buf[0..try tmp.dir.realPath(io, &root_buf)];
+    const header = "{\"type\":\"session\",\"version\":3,\"id\":\"tail\",\"timestamp\":\"2026-01-01T00:00:00Z\",\"cwd\":\"/tmp\"}";
+    const message = "{\"type\":\"message\",\"id\":\"m1\",\"parentId\":null,\"timestamp\":\"2026-01-01T00:00:01Z\",\"message\":{\"role\":\"user\",\"content\":\"hi\"}}";
+    const cases = [_]struct { name: []const u8, tail: []const u8, entries: usize }{
+        .{ .name = "valid.jsonl", .tail = message, .entries = 1 },
+        .{ .name = "malformed.jsonl", .tail = "{\"type\":\"message\"", .entries = 0 },
+    };
+    for (cases) |case| {
+        const path = try std.fs.path.join(gpa, &.{ root, case.name });
+        defer gpa.free(path);
+        const content = try std.fmt.allocPrint(gpa, "{s}\n{s}", .{ header, case.tail });
+        defer gpa.free(content);
+        try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = path, .data = content });
+        var loaded = try Session.load(gpa, io, path);
+        defer loaded.deinit();
+        try std.testing.expectEqual(case.entries, loaded.entries.items.len);
+        const repaired = try std.Io.Dir.cwd().readFileAlloc(io, path, gpa, .limited(4096));
+        defer gpa.free(repaired);
+        try std.testing.expect(repaired.len > 0 and repaired[repaired.len - 1] == '\n');
+    }
+
+    const invalid_path = try std.fs.path.join(gpa, &.{ root, "not-session.jsonl" });
+    defer gpa.free(invalid_path);
+    const invalid = "{\"type\":\"message\",\"id\":\"m1\"}";
+    try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = invalid_path, .data = invalid });
+    try std.testing.expectError(error.InvalidSession, Session.load(gpa, io, invalid_path));
+    const unchanged = try std.Io.Dir.cwd().readFileAlloc(io, invalid_path, gpa, .limited(4096));
+    defer gpa.free(unchanged);
+    try std.testing.expectEqualStrings(invalid, unchanged);
+}
+
 test "assistant thinking survives JSONL round trip" {
     const gpa = std.testing.allocator;
     var session = try Session.init(gpa, "thinking-session", "/tmp");
@@ -2857,6 +2940,28 @@ test "assistant thinking survives JSONL round trip" {
     defer loaded.deinit();
     try std.testing.expectEqualStrings("private reasoning summary", loaded.entries.items[0].meta.thinking);
     try std.testing.expectEqualStrings("opaque-signature-123", loaded.entries.items[0].meta.thinking_signature);
+}
+
+test "redacted reasoning marker survives upstream content-block JSONL" {
+    const gpa = std.testing.allocator;
+    var session = try Session.init(gpa, "redacted-session", "/tmp");
+    defer session.deinit();
+    _ = try session.appendMessageMeta(null, "assistant", "answer", null, null, null, .{
+        .thinking = "[Reasoning redacted]",
+        .thinking_signature = "aGVsbG8=",
+        .thinking_redacted = true,
+        .provider = "amazon-bedrock",
+        .api = "bedrock-converse-stream",
+        .model = "global.openai.gpt-5.6-terra",
+        .stop_reason = "stop",
+    });
+    const jsonl = try session.toJsonl(gpa);
+    defer gpa.free(jsonl);
+    try std.testing.expect(std.mem.indexOf(u8, jsonl, "\"redacted\":true") != null);
+    var loaded = try Session.parseJsonl(gpa, jsonl);
+    defer loaded.deinit();
+    try std.testing.expect(loaded.entries.items[0].meta.thinking_redacted);
+    try std.testing.expectEqualStrings("aGVsbG8=", loaded.entries.items[0].meta.thinking_signature);
 }
 
 test "tool result addedToolNames survive JSONL and fork" {

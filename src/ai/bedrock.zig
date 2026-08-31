@@ -164,6 +164,24 @@ fn formatAwsDate(unix_seconds: i64, amz_date: *[16]u8, short_date: *[8]u8) !void
 
 pub const CredentialRefreshFn = *const fn (ctx: *anyopaque, client: *BedrockClient, now_unix: i64) anyerror!void;
 
+const ResponseObserverContext = struct {
+    gpa: std.mem.Allocator,
+    callback: ai.ProviderResponseHandler,
+    callback_ctx: ?*anyopaque,
+
+    fn observe(raw: ?*anyopaque, head: std.http.Client.Response.Head) anyerror!void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        var headers: std.ArrayList(metadata.Header) = .empty;
+        defer headers.deinit(self.gpa);
+        var iterator = head.iterateHeaders();
+        while (iterator.next()) |header| try headers.append(self.gpa, .{ .name = header.name, .value = header.value });
+        try self.callback(self.callback_ctx, .{
+            .status = @intCast(@intFromEnum(head.status)),
+            .headers = headers.items,
+        });
+    }
+};
+
 pub const BedrockClient = struct {
     gpa: std.mem.Allocator,
     io: Io,
@@ -258,6 +276,7 @@ pub const BedrockClient = struct {
             .thinking = self.thinking,
             .max_tokens = effective_max_tokens,
             .cache_retention = ai.resolveCacheRetention(self.cache_retention, request_options),
+            .tool_choice = request_options.tool_choice,
         });
         defer gpa.free(payload);
         const effective_region = inferBedrockRegion(self.model, self.base_url, self.region);
@@ -308,19 +327,27 @@ pub const BedrockClient = struct {
         }
 
         var retry_index: usize = 0;
+        var response_observer: ?ResponseObserverContext = if (request_options.on_response) |callback| .{
+            .gpa = gpa,
+            .callback = callback,
+            .callback_ctx = request_options.on_response_ctx,
+        } else null;
         while (true) {
             var live = BedrockLive.init(gpa, self.provider_id, self.model, self.model_cost, on_delta, delta_ctx, self.abort_flag);
             live.attachBuffer();
             defer live.deinit();
 
-            const fetch_result = http_fetch.fetchControlled(&http_client, .{
+            const fetch_result = http_fetch.fetchControlledObserved(&http_client, .{
                 .location = .{ .url = url },
                 .method = .POST,
                 .payload = payload,
                 .keep_alive = false,
                 .extra_headers = headers.items,
                 .response_writer = &live.writer,
-            }, self.provider_retry.timeout_ms, self.abort_flag) catch |err| {
+            }, self.provider_retry.timeout_ms, self.abort_flag, if (response_observer) |*observer| .{
+                .context = observer,
+                .callback = ResponseObserverContext.observe,
+            } else null) catch |err| {
                 if (self.abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) return abortedResponse(gpa, self.provider_id, self.model);
                 if (live.body.items.len > 0 or retry_index >= self.provider_retry.max_retries) return err;
                 const delay_ms = try retry_mod.providerDelayMs(self.io, self.provider_retry, retry_index, null);
@@ -356,6 +383,7 @@ pub const BuildOptions = struct {
     thinking: ai.ThinkingLevel = .off,
     max_tokens: u64 = 0,
     cache_retention: metadata.CacheRetention = .short,
+    tool_choice: ?ai.ToolChoice = null,
 };
 
 pub fn inferBedrockRegion(model: []const u8, base_url: []const u8, configured_region: ?[]const u8) []const u8 {
@@ -491,7 +519,7 @@ pub fn buildRequestBody(
             try w.writeAll("},\"anthropic_beta\":[\"interleaved-thinking-2025-05-14\"]}");
         }
     }
-    if (try writeTools(gpa, w, tools_json)) {}
+    if (try writeTools(gpa, w, tools_json, options.tool_choice)) {}
     try w.writeByte('}');
     return out.toOwnedSlice();
 }
@@ -553,7 +581,11 @@ fn writeMessages(
             if (msg.thinking) |thinking| if (std.mem.trim(u8, thinking, " \t\r\n").len > 0) {
                 if (!first_block) try w.writeByte(',');
                 first_block = false;
-                if (claude_thinking_signature) {
+                if (msg.thinking_redacted and msg.thinking_signature != null and msg.thinking_signature.?.len > 0) {
+                    try w.writeAll("{\"reasoningContent\":{\"redactedContent\":");
+                    try std.json.Stringify.value(msg.thinking_signature.?, .{}, w);
+                    try w.writeAll("}}");
+                } else if (claude_thinking_signature) {
                     if (msg.thinking_signature != null and std.mem.trim(u8, msg.thinking_signature.?, " \t\r\n").len > 0) {
                         try w.writeAll("{\"reasoningContent\":{\"reasoningText\":{\"text\":");
                         try std.json.Stringify.value(thinking, .{}, w);
@@ -650,7 +682,8 @@ fn appendToolUses(gpa: std.mem.Allocator, w: *std.Io.Writer, raw: []const u8, fi
     }
 }
 
-fn writeTools(gpa: std.mem.Allocator, w: *std.Io.Writer, tools_json: []const u8) !bool {
+fn writeTools(gpa: std.mem.Allocator, w: *std.Io.Writer, tools_json: []const u8, tool_choice: ?ai.ToolChoice) !bool {
+    if (tool_choice == .none) return false;
     var parsed = std.json.parseFromSlice(std.json.Value, gpa, tools_json, .{}) catch return false;
     defer parsed.deinit();
     if (parsed.value != .array) return false;
@@ -804,6 +837,8 @@ const BedrockLive = struct {
     raw_stop_reason: []u8 = &.{},
     error_message: []u8 = &.{},
     thinking_signature: std.ArrayList(u8) = .empty,
+    redacted_bytes: std.ArrayList(u8) = .empty,
+    redacted_announced: bool = false,
     usage: ai.Usage = .{},
     active_tool_id: []u8 = &.{},
     active_tool_name: []u8 = &.{},
@@ -834,6 +869,7 @@ const BedrockLive = struct {
         self.pending.deinit(self.gpa);
         self.acc.deinit();
         self.thinking_signature.deinit(self.gpa);
+        self.redacted_bytes.deinit(self.gpa);
         if (self.stop_reason.len > 0) self.gpa.free(self.stop_reason);
         if (self.raw_stop_reason.len > 0) self.gpa.free(self.raw_stop_reason);
         if (self.error_message.len > 0) self.gpa.free(self.error_message);
@@ -928,6 +964,7 @@ const BedrockLive = struct {
             if (delta.object.get("reasoningContent")) |reasoning| if (reasoning == .object) {
                 if (stringField(reasoning.object, "text")) |text| if (text.len > 0) try self.push(.{ .kind = .thinking_delta, .thinking = text });
                 if (stringField(reasoning.object, "signature")) |sig| if (sig.len > 0) try self.thinking_signature.appendSlice(self.gpa, sig);
+                if (reasoning.object.get("redactedContent")) |redacted| try self.appendRedacted(redacted);
                 return;
             };
             return;
@@ -973,6 +1010,27 @@ const BedrockLive = struct {
         self.stop_reason = try self.gpa.dupe(u8, reason);
     }
 
+    fn appendRedacted(self: *BedrockLive, value: std.json.Value) !void {
+        switch (value) {
+            .string => |encoded| {
+                const decoded_len = std.base64.standard.Decoder.calcSizeForSlice(encoded) catch return error.InvalidBedrockRedactedReasoning;
+                const decoded = try self.gpa.alloc(u8, decoded_len);
+                defer self.gpa.free(decoded);
+                std.base64.standard.Decoder.decode(decoded, encoded) catch return error.InvalidBedrockRedactedReasoning;
+                try self.redacted_bytes.appendSlice(self.gpa, decoded);
+            },
+            .array => |array| for (array.items) |item| {
+                if (item != .integer or item.integer < 0 or item.integer > 255) return error.InvalidBedrockRedactedReasoning;
+                try self.redacted_bytes.append(self.gpa, @intCast(item.integer));
+            },
+            else => return error.InvalidBedrockRedactedReasoning,
+        }
+        if (!self.redacted_announced) {
+            self.redacted_announced = true;
+            try self.push(.{ .kind = .thinking_delta, .thinking = "[Reasoning redacted]" });
+        }
+    }
+
     fn setError(self: *BedrockLive, typ: []const u8, payload: []const u8) !void {
         self.terminal = true;
         self.terminal_error = true;
@@ -1002,7 +1060,15 @@ const BedrockLive = struct {
         response.provider = try self.gpa.dupe(u8, self.provider);
         response.model = try self.gpa.dupe(u8, self.model);
         response.usage = self.usage;
-        if (self.thinking_signature.items.len > 0) response.thinking_signature = try self.gpa.dupe(u8, self.thinking_signature.items);
+        if (self.redacted_bytes.items.len > 0) {
+            const encoded_len = std.base64.standard.Encoder.calcSize(self.redacted_bytes.items.len);
+            const encoded = try self.gpa.alloc(u8, encoded_len);
+            _ = std.base64.standard.Encoder.encode(encoded, self.redacted_bytes.items);
+            response.thinking_signature = encoded;
+            response.thinking_redacted = true;
+        } else if (self.thinking_signature.items.len > 0) {
+            response.thinking_signature = try self.gpa.dupe(u8, self.thinking_signature.items);
+        }
         const reason = if (self.stop_reason.len > 0) self.stop_reason else if (response.tool_calls.len > 0) "toolUse" else "stop";
         response.stop_reason = try self.gpa.dupe(u8, reason);
         if (self.raw_stop_reason.len > 0) response.raw_stop_reason = try self.gpa.dupe(u8, self.raw_stop_reason);
@@ -1305,6 +1371,39 @@ test "Bedrock URL percent encodes model path label" {
     try std.testing.expectEqualStrings("https://bedrock-runtime.us-east-1.amazonaws.com/model/arn%3Aaws%3Abedrock%3Aus-east-1%3A123%3Ainference-profile%2Fa/converse-stream", url);
 }
 
+test "Bedrock response observer forwards raw gateway headers before streaming" {
+    const head = try std.http.Client.Response.Head.parse(
+        "HTTP/1.1 200 OK\r\n" ++
+            "content-type: application/vnd.amazon.eventstream\r\n" ++
+            "x-amzn-requestid: req-123\r\n" ++
+            "x-bifrost-provider: bedrock\r\n" ++
+            "x-bifrost-resolved-model: model-raw\r\n\r\n",
+    );
+    const Probe = struct {
+        calls: usize = 0,
+        status: u16 = 0,
+        request_id: bool = false,
+        provider: bool = false,
+        model: bool = false,
+        fn callback(raw: ?*anyopaque, response: ai.ProviderResponse) anyerror!void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.calls += 1;
+            self.status = response.status;
+            for (response.headers) |header| {
+                if (std.ascii.eqlIgnoreCase(header.name, "x-amzn-requestid") and std.mem.eql(u8, header.value, "req-123")) self.request_id = true;
+                if (std.ascii.eqlIgnoreCase(header.name, "x-bifrost-provider") and std.mem.eql(u8, header.value, "bedrock")) self.provider = true;
+                if (std.ascii.eqlIgnoreCase(header.name, "x-bifrost-resolved-model") and std.mem.eql(u8, header.value, "model-raw")) self.model = true;
+            }
+        }
+    };
+    var probe = Probe{};
+    var observer = ResponseObserverContext{ .gpa = std.testing.allocator, .callback = Probe.callback, .callback_ctx = &probe };
+    try ResponseObserverContext.observe(&observer, head);
+    try std.testing.expectEqual(@as(usize, 1), probe.calls);
+    try std.testing.expectEqual(@as(u16, 200), probe.status);
+    try std.testing.expect(probe.request_id and probe.provider and probe.model);
+}
+
 test "Bedrock AWS EventStream accumulates text thinking tools usage and stop reason" {
     const gpa = std.testing.allocator;
     var live = BedrockLive.init(gpa, "amazon-bedrock", "anthropic.claude-test", .{ .input = 1, .output = 2, .cache_read = 0.1, .cache_write = 1.25 }, null, null, null);
@@ -1343,6 +1442,41 @@ test "Bedrock AWS EventStream accumulates text thinking tools usage and stop rea
     try std.testing.expectEqual(@as(u64, 100), response.usage.input);
     try std.testing.expectEqual(@as(u64, 10), response.usage.cache_read);
     try std.testing.expect(response.usage.cost.total > 0);
+}
+
+test "Bedrock preserves and replays split redacted reasoning" {
+    const gpa = std.testing.allocator;
+    var live = BedrockLive.init(gpa, "amazon-bedrock", "global.openai.gpt-5.6-terra", .{}, null, null, null);
+    defer live.deinit();
+    try live.handleEvent("contentBlockDelta", "{\"delta\":{\"reasoningContent\":{\"redactedContent\":\"aGU=\"}}}");
+    try live.handleEvent("contentBlockDelta", "{\"delta\":{\"reasoningContent\":{\"redactedContent\":\"bGxv\"}}}");
+    try live.handleEvent("messageStop", "{\"stopReason\":\"end_turn\"}");
+    var response = try live.finish();
+    defer response.deinit(gpa);
+    try std.testing.expect(response.thinking_redacted);
+    try std.testing.expectEqualStrings("[Reasoning redacted]", response.thinking);
+    try std.testing.expectEqualStrings("aGVsbG8=", response.thinking_signature);
+
+    const messages = [_]ai.ChatMessage{.{
+        .role = "assistant",
+        .content = "done",
+        .thinking = "[Reasoning redacted]",
+        .thinking_signature = "aGVsbG8=",
+        .thinking_redacted = true,
+    }};
+    const body = try buildRequestBody(gpa, "global.openai.gpt-5.6-terra", &messages, "[]", .{});
+    defer gpa.free(body);
+    const redacted_at = std.mem.indexOf(u8, body, "\"redactedContent\":\"aGVsbG8=\"") orelse return error.TestUnexpectedResult;
+    const text_at = std.mem.indexOf(u8, body, "\"text\":\"done\"") orelse return error.TestUnexpectedResult;
+    try std.testing.expect(redacted_at < text_at);
+}
+
+test "Bedrock tool choice none suppresses the tool configuration" {
+    const gpa = std.testing.allocator;
+    const tools = "[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"parameters\":{\"type\":\"object\"}}}]";
+    const body = try buildRequestBody(gpa, "amazon.nova-pro-v1:0", &.{.{ .role = "user", .content = "hi" }}, tools, .{ .tool_choice = .none });
+    defer gpa.free(body);
+    try std.testing.expect(std.mem.indexOf(u8, body, "toolConfig") == null);
 }
 
 test "Bedrock event stream validates CRC and surfaces exceptions" {

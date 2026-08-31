@@ -97,6 +97,7 @@ pub const LiveState = struct {
     model_catalog: []const providers.ModelInfo = &.{},
     /// Ordered `--models` scope, retaining optional per-model thinking levels.
     model_scope: []const model_resolver.ScopedModel = &.{},
+    owned_model_scope: ?[]model_resolver.ScopedModel = null,
     /// Provider IDs that currently have usable credentials/runtime access.
     configured_providers: []const []const u8 = &.{},
     /// Owned replacement catalog/runtime snapshot installed by an interactive
@@ -113,6 +114,8 @@ pub const LiveState = struct {
     pub fn deinitDynamicCatalog(self: *LiveState) void {
         if (self.dynamic_catalog_snapshot) |*snapshot| snapshot.deinit();
         self.dynamic_catalog_snapshot = null;
+        if (self.owned_model_scope) |scope| self.gpa.free(scope);
+        self.owned_model_scope = null;
     }
 };
 
@@ -1998,6 +2001,7 @@ pub const ClientPool = struct {
                     .custom_headers = request_metadata.headers,
                     .sampling_params = request_metadata.sampling_params,
                     .thinking = self.thinking,
+                    .thinking_level_map = request_metadata.thinking_level_map,
                     .max_tokens = request_metadata.max_tokens,
                     .context_window = request_metadata.context_window,
                     .input_image = request_metadata.input_image,
@@ -2049,6 +2053,7 @@ pub const ClientPool = struct {
                     .custom_headers = request_metadata.headers,
                     .sampling_params = request_metadata.sampling_params,
                     .thinking = self.thinking,
+                    .thinking_level_map = request_metadata.thinking_level_map,
                     .max_tokens = request_metadata.max_tokens,
                     .context_window = request_metadata.context_window,
                     .input_image = request_metadata.input_image,
@@ -2431,6 +2436,22 @@ pub fn scopedThinkingForModel(state: *const LiveState, model: providers.ModelInf
     return null;
 }
 
+/// Keep a Ctrl+S default reachable from a non-empty persistent/CLI model scope
+/// for the rest of the process. Settings persistence separately appends the
+/// canonical provider/model reference to enabledModels when applicable.
+pub fn addPersistedDefaultToScope(state: *LiveState, model: providers.ModelInfo) !void {
+    if (state.model_scope.len == 0) return;
+    for (state.model_scope) |scoped| {
+        if (std.mem.eql(u8, scoped.model.id, model.id) and std.ascii.eqlIgnoreCase(scoped.model.providerName(), model.providerName())) return;
+    }
+    const next = try state.gpa.alloc(model_resolver.ScopedModel, state.model_scope.len + 1);
+    @memcpy(next[0..state.model_scope.len], state.model_scope);
+    next[state.model_scope.len] = .{ .model = model };
+    if (state.owned_model_scope) |old| state.gpa.free(old);
+    state.owned_model_scope = next;
+    state.model_scope = next;
+}
+
 /// Clamp the current or explicitly scoped thinking level to the newly selected
 /// model. Returns true only when the effective session level changed.
 pub fn applyThinkingForModelSwitch(
@@ -2691,6 +2712,40 @@ test "applyModel mutates active client model field" {
     try std.testing.expectEqualStrings("new-model-id", client_model);
     // Same pointer so OpenAI/Anthropic client.model field sees the change
     try std.testing.expect(display.?.ptr == client_model.ptr);
+}
+
+test "persisted default joins a non-empty model scope once" {
+    const gpa = std.testing.allocator;
+    var display: ?[]const u8 = "gpt-a";
+    var display_owned = false;
+    var cfg = agent_loop.AgentConfig{};
+    var owned_sys: ?[]u8 = null;
+    var owned_ctx: ?[]u8 = null;
+    var owned_skills: ?[]u8 = null;
+    const models = [_]providers.ModelInfo{
+        .{ .provider = .openai, .id = "gpt-a", .display = "GPT A" },
+        .{ .provider = .anthropic, .id = "claude-b", .display = "Claude B" },
+    };
+    const initial = [_]model_resolver.ScopedModel{.{ .model = models[0] }};
+    var state = LiveState{
+        .gpa = gpa,
+        .io = std.testing.io,
+        .cwd = ".",
+        .agent_dir = null,
+        .agent_cfg = &cfg,
+        .owned_system = &owned_sys,
+        .owned_context = &owned_ctx,
+        .owned_skills_summary = &owned_skills,
+        .model_display = &display,
+        .model_display_owned = &display_owned,
+        .model_scope = &initial,
+    };
+    defer state.deinitDynamicCatalog();
+    try addPersistedDefaultToScope(&state, models[1]);
+    try std.testing.expectEqual(@as(usize, 2), state.model_scope.len);
+    try std.testing.expectEqualStrings("claude-b", state.model_scope[1].model.id);
+    try addPersistedDefaultToScope(&state, models[1]);
+    try std.testing.expectEqual(@as(usize, 2), state.model_scope.len);
 }
 
 test "applyModel without client pool resolves canonical provider identity" {

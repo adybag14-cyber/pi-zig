@@ -191,6 +191,7 @@ pub const AgentConfig = struct {
     system_prompt: []const u8 = default_system_prompt,
     context_prompt: []const u8 = "",
     tool_filter: tools.ToolFilter = .{},
+    experimental_strict_tools: bool = false,
     verbose: bool = false,
     /// Environment and live identity exposed only to built-in bash children.
     process_environ: ?*const std.process.Environ.Map = null,
@@ -310,6 +311,7 @@ pub const EventKind = enum {
     summarization_retry_scheduled,
     summarization_retry_attempt_start,
     summarization_retry_finished,
+    session_compact_failed,
     // Legacy simplified names (still emitted for compatibility)
     user,
     assistant,
@@ -352,6 +354,7 @@ pub const AgentEvent = struct {
     /// `branchSummary`; compaction attempts also carry manual/threshold/overflow.
     source: []const u8 = "",
     reason: []const u8 = "",
+    will_retry: bool = false,
     /// Internal fan-out control. Live script updates must reach the UI/client
     /// immediately but cannot recursively invoke hooks on the same locked
     /// JavaScript worker. Their observer copy is replayed after tool completion.
@@ -449,6 +452,7 @@ fn appendAssistantAttempt(
     return try sess.appendMessageMeta(sess.lastEntryId(), "assistant", response.content, null, tool_calls_json, null, .{
         .thinking = response.thinking,
         .thinking_signature = response.thinking_signature,
+        .thinking_redacted = response.thinking_redacted,
         .provider = response.provider,
         .api = response.api,
         .model = response.model,
@@ -457,6 +461,7 @@ fn appendAssistantAttempt(
         .diagnostics_json = response.diagnostics_json,
         .error_message = response.error_message,
         .raw_stop_reason = response.raw_stop_reason,
+        .end_turn = response.end_turn,
         .stop_reason = normalizedStopReason(response),
         .usage_input = response.usage.input,
         .usage_output = response.usage.output,
@@ -677,7 +682,7 @@ pub fn runWithImages(
         const builtin_schemas = if (config.disable_builtin_tools)
             try gpa.dupe(u8, "[]")
         else
-            try tools.toolSchemasJson(gpa, config.tool_filter);
+            try tools.toolSchemasJsonWithOptions(gpa, config.tool_filter, .{ .experimental_strict = config.experimental_strict_tools });
         defer gpa.free(builtin_schemas);
         const schemas = try mergeToolSchemaArrays(gpa, builtin_schemas, config.extra_tools_json);
         defer gpa.free(schemas);
@@ -824,18 +829,23 @@ pub fn runWithImages(
             emit(on_event, event_ctx, .{ .kind = .message_end, .text = last_text, .name = "assistant" });
             emit(on_event, event_ctx, .{ .kind = .assistant, .text = last_text });
         }
-        try flushRuntimeActions(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested);
+        // Actions emitted while an assistant tool call is streaming must not be
+        // persisted between that call and its tool result. Each terminal branch
+        // below flushes after either confirming there is no tool batch or after
+        // all tool-result entries have been appended.
 
         if (std.mem.eql(u8, stop_reason, "error") or std.mem.eql(u8, stop_reason, "aborted")) {
             emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
-            if (try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, true)) continue;
+            if (try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, true)) {
+                applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, 0);
+                continue;
+            }
             return .{ .final_text = last_text, .turns = turns + 1, .hit_turn_limit = false, .text_deltas = total_deltas };
         }
 
         if (response.tool_calls.len == 0) {
             emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
             try flushRuntimeActions(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested);
-            applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, 0);
             if (shouldStopAfterTurn(config, last_text, stop_reason, 0)) {
                 // A user stop policy is authoritative. Emit/flush agent_end so
                 // extension cleanup remains durable, but do not consume queued
@@ -849,12 +859,21 @@ pub fn runWithImages(
                 };
             }
             try collectSteeringMessages(gpa, &config, &pending_messages);
-            if (pending_messages.items.len > 0) continue;
+            if (pending_messages.items.len > 0) {
+                applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, 0);
+                continue;
+            }
             try collectExtensionFollowUps(gpa, &extension_followups, &pending_messages);
             try collectFollowUpMessages(gpa, &config, &pending_messages);
-            if (pending_messages.items.len > 0) continue;
+            if (pending_messages.items.len > 0) {
+                applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, 0);
+                continue;
+            }
             emit(on_event, event_ctx, .{ .kind = .done, .text = last_text });
-            if (try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, true)) continue;
+            if (try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, true)) {
+                applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, 0);
+                continue;
+            }
             return .{
                 .final_text = last_text,
                 .turns = turns + 1,
@@ -896,12 +915,12 @@ pub fn runWithImages(
             }
             emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
             try flushRuntimeActions(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested);
-            applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, response.tool_calls.len);
             if (shouldStopAfterTurn(config, last_text, stop_reason, response.tool_calls.len)) {
                 _ = try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, false);
                 return .{ .final_text = last_text, .turns = turns + 1, .hit_turn_limit = false, .text_deltas = total_deltas };
             }
             try collectSteeringMessages(gpa, &config, &pending_messages);
+            applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, response.tool_calls.len);
             continue;
         }
 
@@ -912,21 +931,29 @@ pub fn runWithImages(
             try executeToolBatchParallel(gpa, io, cwd, &config, schemas, sess, response.tool_calls, on_event, event_ctx);
         emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
         try flushRuntimeActions(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested);
-        applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, response.tool_calls.len);
         if (shouldStopAfterTurn(config, last_text, stop_reason, response.tool_calls.len)) {
             _ = try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, false);
             return .{ .final_text = last_text, .turns = turns + 1, .hit_turn_limit = false, .text_deltas = total_deltas };
         }
         try collectSteeringMessages(gpa, &config, &pending_messages);
-        if (!terminate_batch or pending_messages.items.len > 0) continue;
+        if (!terminate_batch or pending_messages.items.len > 0) {
+            applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, response.tool_calls.len);
+            continue;
+        }
 
         // A terminating tool batch stops only automatic tool continuation. Steering
         // still wins, and follow-ups are allowed once the agent would otherwise idle.
         try collectExtensionFollowUps(gpa, &extension_followups, &pending_messages);
         try collectFollowUpMessages(gpa, &config, &pending_messages);
-        if (pending_messages.items.len > 0) continue;
+        if (pending_messages.items.len > 0) {
+            applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, response.tool_calls.len);
+            continue;
+        }
         emit(on_event, event_ctx, .{ .kind = .done, .text = last_text });
-        if (try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, true)) continue;
+        if (try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, true)) {
+            applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, response.tool_calls.len);
+            continue;
+        }
         return .{
             .final_text = last_text,
             .turns = turns + 1,
@@ -2119,7 +2146,7 @@ fn compactSession(
     event_ctx: ?*anyopaque,
 ) !void {
     var retry_events: SummaryRetryEventContext = .{ .on_event = on_event, .event_ctx = event_ctx };
-    try compaction.compact(sess, .{
+    compaction.compact(sess, .{
         .io = io,
         .settings = .{
             .enabled = true,
@@ -2139,7 +2166,18 @@ fn compactSession(
         .before_hook_fn = config.before_compact_fn,
         .after_hook_fn = config.after_compact_fn,
         .will_retry = reason == .overflow,
-    });
+    }) catch |err| {
+        emit(on_event, event_ctx, .{
+            .kind = .session_compact_failed,
+            .source = "compaction",
+            .reason = reason.wireName(),
+            .will_retry = reason == .overflow,
+            .error_message = @errorName(err),
+            .text = @errorName(err),
+            .is_error = true,
+        });
+        return err;
+    };
 }
 
 fn emit(handler: ?EventHandler, ctx: ?*anyopaque, event: AgentEvent) void {
@@ -2285,8 +2323,10 @@ fn buildChatMessagesWithOptions(
                     .response_id = if (e.meta.response_id.len > 0) e.meta.response_id else null,
                     .response_model = if (e.meta.response_model.len > 0) e.meta.response_model else null,
                     .raw_stop_reason = if (e.meta.raw_stop_reason.len > 0) e.meta.raw_stop_reason else null,
+                    .end_turn = e.meta.end_turn,
                     .thinking = if (e.meta.thinking.len > 0) e.meta.thinking else null,
                     .thinking_signature = if (e.meta.thinking_signature.len > 0) e.meta.thinking_signature else null,
+                    .thinking_redacted = e.meta.thinking_redacted,
                     .tool_call_id = e.tool_call_id,
                     .tool_calls_json = e.tool_calls_json,
                     .tool_name = e.tool_name,
@@ -2346,8 +2386,10 @@ fn buildChatMessagesWithOptions(
                     .response_id = if (e.meta.response_id.len > 0) e.meta.response_id else null,
                     .response_model = if (e.meta.response_model.len > 0) e.meta.response_model else null,
                     .raw_stop_reason = if (e.meta.raw_stop_reason.len > 0) e.meta.raw_stop_reason else null,
+                    .end_turn = e.meta.end_turn,
                     .thinking = if (e.meta.thinking.len > 0) e.meta.thinking else null,
                     .thinking_signature = if (e.meta.thinking_signature.len > 0) e.meta.thinking_signature else null,
+                    .thinking_redacted = e.meta.thinking_redacted,
                     .tool_call_id = e.tool_call_id,
                     .tool_calls_json = e.tool_calls_json,
                     .tool_name = e.tool_name,
@@ -2424,6 +2466,50 @@ test "tool call serialization preserves provider thought signature" {
     const json = try serializeToolCallsOpenAI(gpa, &calls);
     defer gpa.free(json);
     try std.testing.expect(std.mem.indexOf(u8, json, "\"thoughtSignature\":\"opaque-google-tool-sig\"") != null);
+}
+
+test "failed overflow compaction emits session_compact_failed with retry intent" {
+    const gpa = std.testing.allocator;
+    const mock = @import("../ai/mock.zig");
+    var model = try mock.MockModel.loadFromJson(gpa,
+        \\[{"content":"429 insufficient_quota billing exhausted","stop_reason":"error","tool_calls":[]}]
+    );
+    defer model.deinit(gpa);
+    var sess = try session_mod.Session.init(gpa, "compact-failed-event", "/tmp");
+    defer sess.deinit();
+    var parent: ?[]const u8 = null;
+    for (0..6) |index| {
+        const content = try std.fmt.allocPrint(gpa, "event-message-{d}", .{index});
+        defer gpa.free(content);
+        parent = try sess.appendMessage(parent, if (index % 2 == 0) "user" else "assistant", content, null, null);
+    }
+
+    const Probe = struct {
+        count: usize = 0,
+        source: []const u8 = "",
+        reason: []const u8 = "",
+        will_retry: bool = false,
+        error_message: ?[]const u8 = null,
+        fn onEvent(raw: ?*anyopaque, event: AgentEvent) void {
+            if (event.kind != .session_compact_failed) return;
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.count += 1;
+            self.source = event.source;
+            self.reason = event.reason;
+            self.will_retry = event.will_retry;
+            self.error_message = event.error_message;
+        }
+    };
+    var probe = Probe{};
+    try std.testing.expectError(error.SummarizationFailed, compactSession(std.testing.io, &sess, model.client(), .{
+        .compaction_keep_recent_tokens = 4,
+        .retry_enabled = false,
+    }, .overflow, Probe.onEvent, &probe));
+    try std.testing.expectEqual(@as(usize, 1), probe.count);
+    try std.testing.expectEqualStrings("compaction", probe.source);
+    try std.testing.expectEqualStrings("overflow", probe.reason);
+    try std.testing.expect(probe.will_retry);
+    try std.testing.expectEqualStrings("SummarizationFailed", probe.error_message.?);
 }
 
 test "agent loop executes tool then finishes with mock model" {
@@ -2550,6 +2636,75 @@ test "agent_end runtime actions can queue a durable continuation" {
         }
     }
     try std.testing.expect(queued_user_seen);
+}
+
+const DeferredCustomMessageProbe = struct {
+    pending: bool = false,
+    injected: bool = false,
+
+    fn onEvent(raw: ?*anyopaque, event: AgentEvent) void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        if (event.kind == .message_end and std.mem.eql(u8, event.name, "assistant") and !self.injected) self.pending = true;
+    }
+
+    fn flush(
+        raw: ?*anyopaque,
+        _: std.mem.Allocator,
+        session: *session_mod.Session,
+        _: *AgentConfig,
+        _: *ai.ModelClient,
+        _: *std.ArrayList([]u8),
+        _: *std.ArrayList([]u8),
+        _: *bool,
+    ) anyerror!void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        if (!self.pending) return;
+        self.pending = false;
+        self.injected = true;
+        _ = try session.appendCustomMessage("notice", "runtime note", true);
+    }
+
+    fn tool(_: ?*anyopaque, allocator: std.mem.Allocator, name: []const u8, _: []const u8) anyerror!?tools.ToolResult {
+        if (!std.mem.eql(u8, name, "ordering_probe")) return null;
+        return .{ .content = try allocator.dupe(u8, "tool complete"), .is_error = false };
+    }
+};
+
+test "runtime custom messages append after an assistant tool-call result" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    const mock = @import("../ai/mock.zig");
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const n = try tmp.dir.realPath(io, &path_buf);
+    var model = try mock.MockModel.loadFromJson(gpa,
+        \\[
+        \\ {"content":"calling","tool_calls":[{"id":"order-1","name":"ordering_probe","arguments":"{}"}]},
+        \\ {"content":"done","tool_calls":[]}
+        \\]
+    );
+    defer model.deinit(gpa);
+    var session = try session_mod.Session.init(gpa, "custom-order", path_buf[0..n]);
+    defer session.deinit();
+    var probe = DeferredCustomMessageProbe{};
+    var result = try run(gpa, io, path_buf[0..n], model.client(), &session, "go", .{
+        .extra_tools_json = "[{\"type\":\"function\",\"function\":{\"name\":\"ordering_probe\",\"parameters\":{\"type\":\"object\"}}}]",
+        .external_tool_fn = DeferredCustomMessageProbe.tool,
+        .event_observer_fn = DeferredCustomMessageProbe.onEvent,
+        .event_observer_ctx = &probe,
+        .flush_runtime_actions_fn = DeferredCustomMessageProbe.flush,
+        .flush_runtime_actions_ctx = &probe,
+    }, null, null);
+    defer result.deinit(gpa);
+    var tool_index: ?usize = null;
+    var custom_index: ?usize = null;
+    for (session.entries.items, 0..) |entry, index| {
+        if (std.mem.eql(u8, entry.role, "tool") and std.mem.eql(u8, entry.tool_call_id orelse "", "order-1")) tool_index = index;
+        if (entry.entry_type == .custom_message and std.mem.eql(u8, entry.content, "runtime note")) custom_index = index;
+    }
+    try std.testing.expect(tool_index != null and custom_index != null);
+    try std.testing.expect(tool_index.? < custom_index.?);
 }
 
 const ImageRecorder = struct {
@@ -3711,6 +3866,35 @@ test "prepare next turn can replace client and system prompt before continuation
     try std.testing.expectEqual(@as(usize, 1), capture.calls);
     try std.testing.expect(capture.saw_second_prompt);
     try std.testing.expectEqualStrings("switched client", result.final_text);
+}
+
+test "prepare next turn is not called after a final assistant turn" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    const mock = @import("../ai/mock.zig");
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const n = try tmp.dir.realPath(io, &path_buf);
+    var model = try mock.MockModel.loadFromJson(gpa, "[{\"content\":\"done\",\"tool_calls\":[]}]");
+    defer model.deinit(gpa);
+    var session = try session_mod.Session.init(gpa, "prepare-final", path_buf[0..n]);
+    defer session.deinit();
+    const State = struct {
+        calls: usize = 0,
+        fn prepare(ctx: ?*anyopaque, _: TurnSummary) ?PrepareNextTurnResult {
+            const self: *@This() = @ptrCast(@alignCast(ctx.?));
+            self.calls += 1;
+            return null;
+        }
+    };
+    var state = State{};
+    var result = try run(gpa, io, path_buf[0..n], model.client(), &session, "go", .{
+        .prepare_next_turn_fn = State.prepare,
+        .hook_ctx = &state,
+    }, null, null);
+    defer result.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 0), state.calls);
 }
 
 test "tool-result image normalization trusts bytes over extension MIME" {

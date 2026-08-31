@@ -135,10 +135,17 @@ pub const MermaidMode = enum {
     }
 };
 
+pub const TerminalImageProtocol = enum { kitty, iterm2, none };
+
 pub const Settings = struct {
     model: ?[]const u8 = null,
     provider: ?[]const u8 = null,
+    /// Initial native built-in selection. Extension and SDK tools are not
+    /// filtered by this list.
     tools: ?[]const []const u8 = null,
+    /// Persistent model-cycle scope. CLI --models overrides this list for one
+    /// run; Ctrl+S appends a newly persisted default when the scope is non-empty.
+    enabled_models: ?[]const []const u8 = null,
     max_turns: usize = 16,
     /// Tracks whether maxTurns was present so a project can explicitly override
     /// a non-default global value back to the upstream default of 16.
@@ -172,6 +179,10 @@ pub const Settings = struct {
     show_images: ?bool = null,
     /// Preferred inline image width in terminal cells. Defaults to 60.
     image_width_cells: ?u64 = null,
+    /// Advanced terminal capability overrides. Null preserves auto-detection.
+    terminal_hyperlinks: ?bool = null,
+    terminal_image_protocol: ?TerminalImageProtocol = null,
+    terminal_true_color: ?bool = null,
     /// Clear stale terminal rows when retained output shrinks.
     clear_on_shrink: ?bool = null,
     /// Emit OSC 9;4 progress while an agent request is active.
@@ -198,6 +209,7 @@ pub const Settings = struct {
     tui_mode: ?TuiMode = null,
     fullscreen_exit_output: ?FullscreenExitOutput = null,
     fullscreen_scrollbar: ?FullscreenScrollbar = null,
+    fullscreen_copy_on_select: ?bool = null,
     /// Anonymous install/update ping. Environment PI_TELEMETRY remains authoritative.
     enable_install_telemetry: ?bool = null,
     /// Command used for npm-compatible package operations. The first element
@@ -245,6 +257,33 @@ pub const Settings = struct {
             for (t) |x| gpa.free(x);
             gpa.free(t);
         }
+        if (self.enabled_models) |models| {
+            for (models) |model| gpa.free(model);
+            gpa.free(models);
+        }
+        self.* = undefined;
+    }
+};
+
+pub const Diagnostic = struct {
+    path: []u8,
+    message: []u8,
+
+    pub fn deinit(self: *Diagnostic, gpa: std.mem.Allocator) void {
+        gpa.free(self.path);
+        gpa.free(self.message);
+        self.* = undefined;
+    }
+};
+
+pub const DiagnosedSettings = struct {
+    settings: Settings = .{},
+    diagnostics: []Diagnostic = &.{},
+
+    pub fn deinit(self: *DiagnosedSettings, gpa: std.mem.Allocator) void {
+        self.settings.deinit(gpa);
+        for (self.diagnostics) |*diagnostic| diagnostic.deinit(gpa);
+        if (self.diagnostics.len > 0) gpa.free(self.diagnostics);
         self.* = undefined;
     }
 };
@@ -329,6 +368,90 @@ pub fn setRetryEnabled(
         true,
         RetryEnabledMutation{ .enabled = enabled },
         persistRetryEnabledLocked,
+    );
+}
+
+const DefaultModelMutation = struct {
+    provider: []const u8,
+    model: []const u8,
+};
+
+fn persistDefaultModelLocked(
+    gpa: std.mem.Allocator,
+    io: Io,
+    registry_dir: []const u8,
+    mutation: DefaultModelMutation,
+) !void {
+    const settings_path = try std.fs.path.join(gpa, &.{ registry_dir, "settings.json" });
+    defer gpa.free(settings_path);
+    const raw = std.Io.Dir.cwd().readFileAlloc(io, settings_path, gpa, .limited(8 * 1024 * 1024)) catch |err| switch (err) {
+        error.FileNotFound => try gpa.dupe(u8, "{}"),
+        else => return err,
+    };
+    defer gpa.free(raw);
+    const normalized = if (std.mem.startsWith(u8, raw, "\xEF\xBB\xBF")) raw[3..] else raw;
+
+    var arena_state: std.heap.ArenaAllocator = .init(gpa);
+    defer arena_state.deinit();
+    const arena = arena_state.allocator();
+    var parsed = std.json.parseFromSlice(std.json.Value, arena, normalized, .{}) catch return error.InvalidSettingsJson;
+    defer parsed.deinit();
+    if (parsed.value != .object) return error.InvalidSettingsJson;
+    try parsed.value.object.put(arena, "defaultProvider", .{ .string = try arena.dupe(u8, mutation.provider) });
+    try parsed.value.object.put(arena, "defaultModel", .{ .string = try arena.dupe(u8, mutation.model) });
+    _ = parsed.value.object.orderedRemove("provider");
+    _ = parsed.value.object.orderedRemove("default_provider");
+    _ = parsed.value.object.orderedRemove("model");
+    _ = parsed.value.object.orderedRemove("default_model");
+    const scope_value = parsed.value.object.getPtr("enabledModels") orelse parsed.value.object.getPtr("enabled_models");
+    if (scope_value) |scope| {
+        if (scope.* != .array) return error.InvalidSettingsShape;
+        if (scope.array.items.len > 0) {
+            const reference = try std.fmt.allocPrint(arena, "{s}/{s}", .{ mutation.provider, mutation.model });
+            var found = false;
+            for (scope.array.items) |item| {
+                if (item == .string and std.ascii.eqlIgnoreCase(item.string, reference)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) try scope.array.append(.{ .string = reference });
+            if (parsed.value.object.get("enabledModels") == null) {
+                try parsed.value.object.put(arena, "enabledModels", scope.*);
+                _ = parsed.value.object.orderedRemove("enabled_models");
+            }
+        }
+    }
+
+    var out: std.Io.Writer.Allocating = .init(gpa);
+    defer out.deinit();
+    try std.json.Stringify.value(parsed.value, .{ .whitespace = .indent_2 }, &out.writer);
+    try out.writer.writeByte('\n');
+    var atomic = try std.Io.Dir.cwd().createFileAtomic(io, settings_path, .{ .replace = true, .make_path = true, .permissions = .default_file });
+    defer atomic.deinit(io);
+    try atomic.file.writePositionalAll(io, out.written(), 0);
+    try atomic.file.sync(io);
+    try atomic.replace(io);
+
+    var verified = try loadFile(gpa, io, settings_path);
+    defer verified.deinit(gpa);
+    if (verified.provider == null or verified.model == null or
+        !std.mem.eql(u8, verified.provider.?, mutation.provider) or !std.mem.eql(u8, verified.model.?, mutation.model))
+        return error.SettingsVerificationFailed;
+}
+
+/// Persist a model selector's Ctrl+S choice atomically as the global default.
+pub fn setDefaultModel(gpa: std.mem.Allocator, io: Io, agent_dir: []const u8, provider: []const u8, model: []const u8) !void {
+    if (provider.len == 0 or model.len == 0) return error.InvalidDefaultModel;
+    try packages.withScopeConfigurationLock(
+        gpa,
+        io,
+        agent_dir,
+        ".",
+        .user,
+        true,
+        DefaultModelMutation{ .provider = provider, .model = model },
+        persistDefaultModelLocked,
     );
 }
 
@@ -1307,7 +1430,8 @@ pub fn loadFile(gpa: std.mem.Allocator, io: Io, path: []const u8) !Settings {
 }
 
 pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
-    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
+    const content = if (std.mem.startsWith(u8, raw, "\xEF\xBB\xBF")) raw[3..] else raw;
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, content, .{});
     defer parsed.deinit();
     if (parsed.value != .object) return .{};
 
@@ -1320,6 +1444,21 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
     }
     if (parsed.value.object.get("provider") orelse parsed.value.object.get("defaultProvider") orelse parsed.value.object.get("default_provider")) |v| {
         if (v == .string) s.provider = try gpa.dupe(u8, v.string);
+    }
+    if (parsed.value.object.get("enabledModels") orelse parsed.value.object.get("enabled_models")) |v| {
+        if (v == .array) {
+            var models: std.ArrayList([]const u8) = .empty;
+            errdefer {
+                for (models.items) |model| gpa.free(model);
+                models.deinit(gpa);
+            }
+            for (v.array.items) |item| {
+                if (item != .string) continue;
+                const value = std.mem.trim(u8, item.string, " \t\r\n");
+                if (value.len > 0) try models.append(gpa, try gpa.dupe(u8, value));
+            }
+            s.enabled_models = try models.toOwnedSlice(gpa);
+        }
     }
     if (parsed.value.object.get("max_turns") orelse parsed.value.object.get("maxTurns")) |v| {
         if (v == .integer and v.integer >= 0) {
@@ -1372,6 +1511,9 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
     if (parsed.value.object.get("treeFilterMode") orelse parsed.value.object.get("tree_filter_mode")) |v| {
         if (v == .string) s.tree_filter_mode = TreeFilterMode.parse(v.string);
     }
+    if (parsed.value.object.get("fullscreenCopyOnSelect") orelse parsed.value.object.get("fullscreen_copy_on_select")) |v| {
+        if (v == .bool) s.fullscreen_copy_on_select = v.bool;
+    }
     if (parsed.value.object.get("terminal")) |v| {
         if (v == .object) {
             if (v.object.get("showImages") orelse v.object.get("show_images")) |show| {
@@ -1380,6 +1522,25 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
             if (v.object.get("imageWidthCells") orelse v.object.get("image_width_cells")) |width| {
                 if (width == .integer and width.integer >= 1) s.image_width_cells = @intCast(width.integer);
             }
+            if (v.object.get("hyperlinks")) |value| switch (value) {
+                .bool => |enabled| s.terminal_hyperlinks = enabled,
+                .string => {}, // "auto" leaves detection unchanged.
+                else => {},
+            };
+            if (v.object.get("images")) |value| switch (value) {
+                .bool => |enabled| if (!enabled) {
+                    s.terminal_image_protocol = .none;
+                },
+                .string => |name| {
+                    if (std.ascii.eqlIgnoreCase(name, "kitty")) s.terminal_image_protocol = .kitty else if (std.ascii.eqlIgnoreCase(name, "iterm2")) s.terminal_image_protocol = .iterm2;
+                },
+                else => {},
+            };
+            if (v.object.get("trueColor") orelse v.object.get("true_color")) |value| switch (value) {
+                .bool => |enabled| s.terminal_true_color = enabled,
+                .string => {}, // "auto"
+                else => {},
+            };
             if (v.object.get("clearOnShrink") orelse v.object.get("clear_on_shrink")) |clear| {
                 if (clear == .bool) s.clear_on_shrink = clear.bool;
             }
@@ -1556,7 +1717,7 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
             if (std.mem.eql(u8, v.string, "always")) s.default_project_trust = .always else if (std.mem.eql(u8, v.string, "never")) s.default_project_trust = .never else if (std.mem.eql(u8, v.string, "ask")) s.default_project_trust = .ask;
         }
     }
-    if (parsed.value.object.get("tools")) |v| {
+    if (parsed.value.object.get("defaultTools") orelse parsed.value.object.get("tools")) |v| {
         if (v == .array) {
             var list: std.ArrayList([]const u8) = .empty;
             errdefer {
@@ -1614,6 +1775,58 @@ pub fn loadMergeTrusted(
     return result;
 }
 
+/// Tolerant settings load for interactive startup/reload. Invalid scopes are
+/// reported with their concrete file path while valid scopes remain usable.
+pub fn loadMergeTrustedDiagnosed(
+    gpa: std.mem.Allocator,
+    io: Io,
+    agent_dir: ?[]const u8,
+    cwd: []const u8,
+    trust_project: bool,
+) !DiagnosedSettings {
+    var result: DiagnosedSettings = .{};
+    errdefer result.deinit(gpa);
+    var diagnostics: std.ArrayList(Diagnostic) = .empty;
+    errdefer {
+        for (diagnostics.items) |*diagnostic| diagnostic.deinit(gpa);
+        diagnostics.deinit(gpa);
+    }
+
+    const Scope = struct {
+        fn load(
+            allocator: std.mem.Allocator,
+            filesystem: Io,
+            output: *Settings,
+            list: *std.ArrayList(Diagnostic),
+            path: []const u8,
+            include_global_only: bool,
+        ) !void {
+            var loaded = loadFile(allocator, filesystem, path) catch |err| {
+                const message = try std.fmt.allocPrint(allocator, "settings could not be loaded: {s}", .{@errorName(err)});
+                errdefer allocator.free(message);
+                try list.append(allocator, .{ .path = try allocator.dupe(u8, path), .message = message });
+                return;
+            };
+            defer loaded.deinit(allocator);
+            try mergeIntoScoped(allocator, output, loaded, include_global_only);
+            if (include_global_only) output.default_project_trust = loaded.default_project_trust;
+        }
+    };
+
+    if (agent_dir) |directory| {
+        const path = try std.fs.path.join(gpa, &.{ directory, "settings.json" });
+        defer gpa.free(path);
+        try Scope.load(gpa, io, &result.settings, &diagnostics, path, true);
+    }
+    if (trust_project) {
+        const path = try std.fs.path.join(gpa, &.{ cwd, ".pi", "settings.json" });
+        defer gpa.free(path);
+        try Scope.load(gpa, io, &result.settings, &diagnostics, path, false);
+    }
+    result.diagnostics = try diagnostics.toOwnedSlice(gpa);
+    return result;
+}
+
 fn mergeInto(gpa: std.mem.Allocator, dst: *Settings, src: Settings) !void {
     return mergeIntoScoped(gpa, dst, src, true);
 }
@@ -1626,6 +1839,23 @@ fn mergeIntoScoped(gpa: std.mem.Allocator, dst: *Settings, src: Settings, includ
     if (src.provider) |p| {
         if (dst.provider) |old| gpa.free(old);
         dst.provider = try gpa.dupe(u8, p);
+    }
+    if (src.enabled_models) |models| {
+        if (dst.enabled_models) |old| {
+            for (old) |model| gpa.free(model);
+            gpa.free(old);
+        }
+        const copied = try gpa.alloc([]const u8, models.len);
+        var initialized: usize = 0;
+        errdefer {
+            for (copied[0..initialized]) |model| gpa.free(model);
+            gpa.free(copied);
+        }
+        for (models, 0..) |model, index| {
+            copied[index] = try gpa.dupe(u8, model);
+            initialized += 1;
+        }
+        dst.enabled_models = copied;
     }
     if (src.thinking_level) |t| {
         if (dst.thinking_level) |old| gpa.free(old);
@@ -1654,6 +1884,9 @@ fn mergeIntoScoped(gpa: std.mem.Allocator, dst: *Settings, src: Settings, includ
     if (src.tree_filter_mode) |mode| dst.tree_filter_mode = mode;
     if (src.show_images) |show| dst.show_images = show;
     if (src.image_width_cells) |width| dst.image_width_cells = width;
+    if (src.terminal_hyperlinks) |enabled| dst.terminal_hyperlinks = enabled;
+    if (src.terminal_image_protocol) |protocol| dst.terminal_image_protocol = protocol;
+    if (src.terminal_true_color) |enabled| dst.terminal_true_color = enabled;
     if (src.clear_on_shrink) |clear| dst.clear_on_shrink = clear;
     if (src.show_terminal_progress) |show| dst.show_terminal_progress = show;
     if (src.auto_resize_images) |resize| dst.auto_resize_images = resize;
@@ -1668,6 +1901,7 @@ fn mergeIntoScoped(gpa: std.mem.Allocator, dst: *Settings, src: Settings, includ
     if (src.tui_mode) |mode| dst.tui_mode = mode;
     if (src.fullscreen_exit_output) |mode| dst.fullscreen_exit_output = mode;
     if (src.fullscreen_scrollbar) |mode| dst.fullscreen_scrollbar = mode;
+    if (src.fullscreen_copy_on_select) |enabled| dst.fullscreen_copy_on_select = enabled;
     if (include_global_only) {
         if (src.enable_install_telemetry) |enabled| dst.enable_install_telemetry = enabled;
     }
@@ -2043,6 +2277,34 @@ test "loadMergeTrusted skips project when untrusted" {
     try std.testing.expectEqual(@as(usize, 3), trusted.max_turns);
 }
 
+test "diagnosed settings retain valid scope and report invalid file path" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const root = path_buf[0..try tmp.dir.realPath(io, &path_buf)];
+    const agent_dir = try std.fs.path.join(gpa, &.{ root, "agent" });
+    defer gpa.free(agent_dir);
+    try std.Io.Dir.cwd().createDirPath(io, agent_dir);
+    const global_path = try std.fs.path.join(gpa, &.{ agent_dir, "settings.json" });
+    defer gpa.free(global_path);
+    try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = global_path, .data = "{\"defaultModel\":\"valid-global\"}" });
+    const project_dir = try std.fs.path.join(gpa, &.{ root, ".pi" });
+    defer gpa.free(project_dir);
+    try std.Io.Dir.cwd().createDirPath(io, project_dir);
+    const project_path = try std.fs.path.join(gpa, &.{ project_dir, "settings.json" });
+    defer gpa.free(project_path);
+    try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = project_path, .data = "{invalid" });
+
+    var loaded = try loadMergeTrustedDiagnosed(gpa, io, agent_dir, root, true);
+    defer loaded.deinit(gpa);
+    try std.testing.expectEqualStrings("valid-global", loaded.settings.model.?);
+    try std.testing.expectEqual(@as(usize, 1), loaded.diagnostics.len);
+    try std.testing.expectEqualStrings(project_path, loaded.diagnostics[0].path);
+    try std.testing.expect(std.mem.indexOf(u8, loaded.diagnostics[0].message, "settings could not be loaded") != null);
+}
+
 test "parse and merge settings" {
     const gpa = std.testing.allocator;
     var s = try parse(gpa,
@@ -2052,6 +2314,22 @@ test "parse and merge settings" {
     try std.testing.expectEqualStrings("gpt-4o", s.model.?);
     try std.testing.expectEqual(@as(usize, 8), s.max_turns);
     try std.testing.expectEqual(@as(usize, 2), s.tools.?.len);
+}
+
+test "defaultTools replaces inherited built-in defaults and preserves an empty list" {
+    const gpa = std.testing.allocator;
+    var global = try parse(gpa, "{\"defaultTools\":[\"read\",\"bash\"]}");
+    defer global.deinit(gpa);
+    var project = try parse(gpa, "{\"defaultTools\":[\"powershell\"]}");
+    defer project.deinit(gpa);
+    try mergeInto(gpa, &global, project);
+    try std.testing.expectEqual(@as(usize, 1), global.tools.?.len);
+    try std.testing.expectEqualStrings("powershell", global.tools.?[0]);
+
+    var empty = try parse(gpa, "{\"defaultTools\":[]}");
+    defer empty.deinit(gpa);
+    try mergeInto(gpa, &global, empty);
+    try std.testing.expectEqual(@as(usize, 0), global.tools.?.len);
 }
 
 test "parse accepts upstream defaultModel defaultProvider thinkingLevel keys" {
@@ -2067,6 +2345,46 @@ test "parse accepts upstream defaultModel defaultProvider thinkingLevel keys" {
     try std.testing.expectEqual(@as(?u64, 24_000), s.compaction_keep_recent_tokens);
     try std.testing.expectEqual(@as(?u64, 9_000), s.branch_summary_reserve_tokens);
     try std.testing.expectEqual(@as(?bool, true), s.branch_summary_skip_prompt);
+}
+
+test "model selector default persistence updates provider and model atomically" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var root_buf: [std.fs.max_path_bytes]u8 = undefined;
+    const root = root_buf[0..try tmp.dir.realPath(io, &root_buf)];
+    try tmp.dir.writeFile(io, .{ .sub_path = "settings.json", .data = "\xEF\xBB\xBF{\"theme\":\"dark\",\"model\":\"old\",\"provider\":\"old-provider\",\"enabledModels\":[\"openai/gpt-old\"]}" });
+    try setDefaultModel(gpa, io, root, "anthropic", "claude-opus-4-8");
+    const settings_path = try std.fs.path.join(gpa, &.{ root, "settings.json" });
+    defer gpa.free(settings_path);
+    var loaded = try loadFile(gpa, io, settings_path);
+    defer loaded.deinit(gpa);
+    try std.testing.expectEqualStrings("anthropic", loaded.provider.?);
+    try std.testing.expectEqualStrings("claude-opus-4-8", loaded.model.?);
+    try std.testing.expectEqualStrings("dark", loaded.theme.?);
+    try std.testing.expectEqual(@as(usize, 2), loaded.enabled_models.?.len);
+    try std.testing.expectEqualStrings("anthropic/claude-opus-4-8", loaded.enabled_models.?[1]);
+}
+
+test "settings JSON accepts a UTF-8 BOM" {
+    var settings = try parse(std.testing.allocator, "\xEF\xBB\xBF{\"defaultModel\":\"bom-model\"}");
+    defer settings.deinit(std.testing.allocator);
+    try std.testing.expectEqualStrings("bom-model", settings.model.?);
+}
+
+test "terminal capability settings map explicit values and preserve auto" {
+    var explicit = try parse(std.testing.allocator, "{\"terminal\":{\"hyperlinks\":false,\"images\":\"kitty\",\"trueColor\":true}}");
+    defer explicit.deinit(std.testing.allocator);
+    try std.testing.expectEqual(false, explicit.terminal_hyperlinks.?);
+    try std.testing.expect(explicit.terminal_image_protocol.? == .kitty);
+    try std.testing.expectEqual(true, explicit.terminal_true_color.?);
+
+    var automatic = try parse(std.testing.allocator, "{\"terminal\":{\"hyperlinks\":\"auto\",\"images\":\"auto\",\"trueColor\":\"auto\"}}");
+    defer automatic.deinit(std.testing.allocator);
+    try std.testing.expect(automatic.terminal_hyperlinks == null);
+    try std.testing.expect(automatic.terminal_image_protocol == null);
+    try std.testing.expect(automatic.terminal_true_color == null);
 }
 
 test "branch summary settings deep merge independently" {

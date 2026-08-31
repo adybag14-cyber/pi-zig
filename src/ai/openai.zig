@@ -122,6 +122,7 @@ pub const OpenAIClient = struct {
             .max_tokens = effective_max_tokens,
             .sampling_params = self.sampling_params,
             .compat = self.compat,
+            .tool_choice = request_options.tool_choice,
             .session_id = if (effective_cache_retention != .none and effective_session_id != null and
                 (std.mem.indexOf(u8, self.base_url, "api.openai.com") != null or
                     (effective_cache_retention == .long and self.compat.supports_long_cache_retention == true))) effective_session_id else null,
@@ -189,6 +190,7 @@ pub const OpenAIClient = struct {
         var headers: std.ArrayList(std.http.Header) = .empty;
         defer headers.deinit(gpa);
         try putHttpHeader(gpa, &headers, "content-type", "application/json");
+        try putHttpHeader(gpa, &headers, "User-Agent", ai.pi_user_agent.value);
         if (cloudflare.isAIGateway(self.provider_id)) {
             try putHttpHeader(gpa, &headers, "cf-aig-authorization", authorization);
         } else {
@@ -263,6 +265,9 @@ pub const OpenAIClient = struct {
                     gpa.free(tool_call.arguments);
                     tool_call.arguments = normalized;
                 }
+            }
+            if (live.reasoning_details.items.len > 0) {
+                resp.thinking_signature = try serializeReasoningDetails(gpa, live.reasoning_details.items);
             }
             for (resp.tool_calls) |*tool_call| {
                 for (live.reasoning_details.items) |detail| {
@@ -346,15 +351,57 @@ fn appendSessionAffinityHeaders(
 }
 
 const ReasoningDetail = struct {
+    typ: []const u8,
     id: []const u8,
+    index: ?i64,
     json: []const u8,
 
     fn deinit(self: *ReasoningDetail, gpa: std.mem.Allocator) void {
+        gpa.free(self.typ);
         gpa.free(self.id);
         gpa.free(self.json);
         self.* = undefined;
     }
 };
+
+fn reasoningDetailIndex(value: std.json.Value) ?i64 {
+    if (value != .object) return null;
+    const index = value.object.get("index") orelse return null;
+    return if (index == .integer) index.integer else null;
+}
+
+fn mergeReasoningDetailJson(gpa: std.mem.Allocator, previous: []const u8, next: std.json.Value, text_field: []const u8) ![]u8 {
+    var old_doc = try std.json.parseFromSlice(std.json.Value, gpa, previous, .{});
+    defer old_doc.deinit();
+    if (old_doc.value != .object or next != .object) return serializeReasoningDetail(gpa, next);
+    var merged: std.json.ObjectMap = .empty;
+    defer merged.deinit(gpa);
+    var old_it = old_doc.value.object.iterator();
+    while (old_it.next()) |entry| try merged.put(gpa, entry.key_ptr.*, entry.value_ptr.*);
+    var next_it = next.object.iterator();
+    while (next_it.next()) |entry| {
+        if (std.mem.eql(u8, entry.key_ptr.*, text_field)) continue;
+        try merged.put(gpa, entry.key_ptr.*, entry.value_ptr.*);
+    }
+    const old_text = if (old_doc.value.object.get(text_field)) |value| if (value == .string) value.string else "" else "";
+    const next_text = if (next.object.get(text_field)) |value| if (value == .string) value.string else "" else "";
+    const joined = try std.fmt.allocPrint(gpa, "{s}{s}", .{ old_text, next_text });
+    defer gpa.free(joined);
+    try merged.put(gpa, text_field, .{ .string = joined });
+    return serializeReasoningDetail(gpa, .{ .object = merged });
+}
+
+fn serializeReasoningDetails(gpa: std.mem.Allocator, details: []const ReasoningDetail) ![]u8 {
+    var out: std.Io.Writer.Allocating = .init(gpa);
+    errdefer out.deinit();
+    try out.writer.writeAll("[");
+    for (details, 0..) |detail, index| {
+        if (index > 0) try out.writer.writeAll(",");
+        try out.writer.writeAll(detail.json);
+    }
+    try out.writer.writeAll("]");
+    return out.toOwnedSlice();
+}
 
 fn isEncryptedReasoningDetail(value: std.json.Value) bool {
     if (value != .object) return false;
@@ -516,19 +563,36 @@ const LiveSseWriter = struct {
         const details = delta.object.get("reasoning_details") orelse return;
         if (details != .array) return;
         for (details.array.items) |detail| {
-            if (!isEncryptedReasoningDetail(detail)) continue;
-            const id_value = detail.object.get("id").?;
-            var replaced = false;
-            for (self.reasoning_details.items) |*existing| {
-                if (std.mem.eql(u8, existing.id, id_value.string)) {
-                    self.gpa.free(existing.json);
-                    existing.json = try serializeReasoningDetail(self.gpa, detail);
-                    replaced = true;
-                    break;
+            if (detail != .object) continue;
+            const typ_value = detail.object.get("type") orelse continue;
+            if (typ_value != .string or typ_value.string.len == 0) continue;
+            const id = if (detail.object.get("id")) |value| if (value == .string) value.string else "" else "";
+            const index = reasoningDetailIndex(detail);
+            if (isEncryptedReasoningDetail(detail)) {
+                var replaced = false;
+                for (self.reasoning_details.items) |*existing| {
+                    if (id.len > 0 and std.mem.eql(u8, existing.id, id)) {
+                        self.gpa.free(existing.json);
+                        existing.json = try serializeReasoningDetail(self.gpa, detail);
+                        replaced = true;
+                        break;
+                    }
+                }
+                if (replaced) continue;
+            } else if ((std.mem.eql(u8, typ_value.string, "reasoning.text") or std.mem.eql(u8, typ_value.string, "reasoning.summary")) and self.reasoning_details.items.len > 0) {
+                const previous = &self.reasoning_details.items[self.reasoning_details.items.len - 1];
+                if (std.mem.eql(u8, previous.typ, typ_value.string) and previous.index == index) {
+                    const field = if (std.mem.eql(u8, typ_value.string, "reasoning.text")) "text" else "summary";
+                    const merged = try mergeReasoningDetailJson(self.gpa, previous.json, detail, field);
+                    self.gpa.free(previous.json);
+                    previous.json = merged;
+                    continue;
                 }
             }
-            if (!replaced) try self.reasoning_details.append(self.gpa, .{
-                .id = try self.gpa.dupe(u8, id_value.string),
+            try self.reasoning_details.append(self.gpa, .{
+                .typ = try self.gpa.dupe(u8, typ_value.string),
+                .id = try self.gpa.dupe(u8, id),
+                .index = index,
                 .json = try serializeReasoningDetail(self.gpa, detail),
             });
         }
@@ -693,6 +757,11 @@ fn parseOpenAIResponseConfigured(gpa: std.mem.Allocator, response_json: []const 
     } else "";
     const thinking_v = message.object.get("reasoning_content") orelse message.object.get("reasoning");
     const thinking_text: []const u8 = if (thinking_v) |tv| if (tv == .string) tv.string else "" else "";
+    var reasoning_signature: []const u8 = "";
+    errdefer if (reasoning_signature.len > 0) gpa.free(reasoning_signature);
+    if (message.object.get("reasoning_details")) |details| {
+        if (details == .array and details.array.items.len > 0) reasoning_signature = try serializeReasoningDetail(gpa, details);
+    }
 
     var tcs: std.ArrayList(ai.ToolCall) = .empty;
     errdefer {
@@ -782,6 +851,7 @@ fn parseOpenAIResponseConfigured(gpa: std.mem.Allocator, response_json: []const 
     var resp: ai.ModelResponse = .{
         .content = try gpa.dupe(u8, content),
         .thinking = if (thinking_text.len > 0) try gpa.dupe(u8, thinking_text) else "",
+        .thinking_signature = reasoning_signature,
         .tool_calls = try tcs.toOwnedSlice(gpa),
         .provider = try gpa.dupe(u8, "openai"),
         .model = model_out,
@@ -790,6 +860,7 @@ fn parseOpenAIResponseConfigured(gpa: std.mem.Allocator, response_json: []const 
         .stop_reason = stop_reason,
         .usage = usage,
     };
+    reasoning_signature = "";
     try resp.ensureStopReason(gpa);
     return resp;
 }
@@ -804,6 +875,7 @@ pub const RequestOptions = struct {
     compat: metadata.Compat = .{},
     session_id: ?[]const u8 = null,
     cache_retention: metadata.CacheRetention = .short,
+    tool_choice: ?ai.ToolChoice = null,
 };
 
 fn hasSampling(params: []const metadata.SamplingParam, name: []const u8) bool {
@@ -847,8 +919,10 @@ fn templateValueResolves(value: std.json.Value, options: RequestOptions) bool {
     const enabled = options.thinking != .off;
     if (!enabled and omit_when_off) return false;
     if (std.mem.eql(u8, variable.string, "thinking.enabled")) return true;
-    if (!std.mem.eql(u8, variable.string, "thinking.effort")) return false;
-    return mappedThinkingValue(options.thinking_level_map, options.thinking, options.thinking.openaiEffort()) != null;
+    if (std.mem.eql(u8, variable.string, "thinking.effort"))
+        return mappedThinkingValue(options.thinking_level_map, options.thinking, options.thinking.openaiEffort()) != null;
+    if (std.mem.eql(u8, variable.string, "thinking.budget")) return resolveThinkingBudget(options) != null;
+    return false;
 }
 
 fn writeTemplateValue(w: anytype, value: std.json.Value, options: RequestOptions) !bool {
@@ -870,10 +944,17 @@ fn writeTemplateValue(w: anytype, value: std.json.Value, options: RequestOptions
         try w.writeAll(if (enabled) "true" else "false");
         return true;
     }
-    if (!std.mem.eql(u8, variable.string, "thinking.effort")) return false;
-    const resolved = mappedThinkingValue(options.thinking_level_map, options.thinking, options.thinking.openaiEffort()) orelse return false;
-    try std.json.Stringify.value(resolved, .{}, w);
-    return true;
+    if (std.mem.eql(u8, variable.string, "thinking.effort")) {
+        const resolved = mappedThinkingValue(options.thinking_level_map, options.thinking, options.thinking.openaiEffort()) orelse return false;
+        try std.json.Stringify.value(resolved, .{}, w);
+        return true;
+    }
+    if (std.mem.eql(u8, variable.string, "thinking.budget")) {
+        const budget = resolveThinkingBudget(options) orelse return false;
+        try w.print("{d}", .{budget});
+        return true;
+    }
+    return false;
 }
 
 fn writeChatTemplateObject(w: anytype, field_name: []const u8, values: ?std.json.ObjectMap, options: RequestOptions) !void {
@@ -1025,9 +1106,8 @@ fn writeThinkingFields(w: anytype, options: RequestOptions) !void {
     }
 }
 
-fn writeThinkingTokenBudget(w: anytype, options: RequestOptions) !void {
-    if (options.compat.supports_thinking_token_budget != true or !options.reasoning or options.thinking == .off) return;
-    if (options.max_tokens <= 1024 or hasSampling(options.sampling_params, "thinking_token_budget")) return;
+fn resolveThinkingBudget(options: RequestOptions) ?u64 {
+    if (!options.reasoning or options.thinking == .off or options.max_tokens <= 1024) return null;
     const requested: u64 = switch (options.thinking) {
         .minimal => 1024,
         .low => 2048,
@@ -1036,7 +1116,17 @@ fn writeThinkingTokenBudget(w: anytype, options: RequestOptions) !void {
         .off => unreachable,
     };
     const budget = @min(requested, options.max_tokens - 1024);
-    if (budget > 0) try w.print(",\"thinking_token_budget\":{d}", .{budget});
+    return if (budget > 0) budget else null;
+}
+
+fn writeThinkingTokenBudget(w: anytype, options: RequestOptions) !void {
+    const field = options.compat.thinking_token_budget_field orelse
+        if (options.compat.supports_thinking_token_budget == true) metadata.ThinkingTokenBudgetField.thinking_token_budget else return;
+    if (hasSampling(options.sampling_params, field.jsonName())) return;
+    const budget = resolveThinkingBudget(options) orelse return;
+    try w.writeAll(",\"");
+    try w.writeAll(field.jsonName());
+    try w.print("\":{d}", .{budget});
 }
 
 fn isToolIdChar(c: u8) bool {
@@ -1096,6 +1186,20 @@ fn writeReasoningDetailsFromToolCalls(gpa: std.mem.Allocator, w: anytype, raw: [
     if (first) return false;
     try w.writeAll(",\"reasoning_details\":");
     try w.writeAll(out.written());
+    return true;
+}
+
+fn writeReasoningDetailsSignature(gpa: std.mem.Allocator, w: anytype, raw: []const u8) !bool {
+    var parsed = std.json.parseFromSlice(std.json.Value, gpa, raw, .{}) catch return false;
+    defer parsed.deinit();
+    if (parsed.value != .array or parsed.value.array.items.len == 0) return false;
+    for (parsed.value.array.items) |detail| {
+        if (detail != .object) return false;
+        const typ = detail.object.get("type") orelse return false;
+        if (typ != .string or !std.mem.startsWith(u8, typ.string, "reasoning.")) return false;
+    }
+    try w.writeAll(",\"reasoning_details\":");
+    try std.json.Stringify.value(parsed.value, .{}, w);
     return true;
 }
 
@@ -1521,8 +1625,14 @@ pub fn buildRequestBodyConfigured(
         if (msg.tool_calls_json) |tcj| {
             try w.writeAll(",\"tool_calls\":");
             try writeNormalizedToolCalls(gpa, w, tcj, tools_json, options.compat.supports_openai_grammar_tools == true);
-            _ = try writeReasoningDetailsFromToolCalls(gpa, w, tcj);
         }
+        var wrote_reasoning_details = false;
+        if (std.mem.eql(u8, msg.role, "assistant")) if (msg.thinking_signature) |signature| {
+            if (signature.len > 0) wrote_reasoning_details = try writeReasoningDetailsSignature(gpa, w, signature);
+        };
+        if (!wrote_reasoning_details) if (msg.tool_calls_json) |tcj| {
+            _ = try writeReasoningDetailsFromToolCalls(gpa, w, tcj);
+        };
         if (std.mem.eql(u8, msg.role, "assistant") and options.compat.requires_thinking_as_text != true) {
             const needs_reasoning_content = options.compat.requires_reasoning_content_on_assistant_messages == true or options.compat.thinking_format == .deepseek;
             if (needs_reasoning_content) {
@@ -1565,6 +1675,10 @@ pub fn buildRequestBodyConfigured(
             try w.writeAll(",\"tool_stream\":true");
         }
     }
+    if (options.tool_choice) |choice| if (!hasSampling(options.sampling_params, "tool_choice")) {
+        try w.writeAll(",\"tool_choice\":");
+        try std.json.Stringify.value(choice.jsonName(), .{}, w);
+    };
     if (options.compat.openrouter_routing) |routing| if (!hasSampling(options.sampling_params, "provider")) {
         try w.writeAll(",\"provider\":");
         try writeOpenRouterRouting(w, routing);
@@ -1915,6 +2029,37 @@ test "OpenAI encrypted reasoning detail round-trips with tool call" {
     try std.testing.expect(std.mem.indexOf(u8, body, "opaque-data") != null);
 }
 
+test "OpenAI reasoning detail deltas merge in sequence and replay from thinking signature" {
+    const gpa = std.testing.allocator;
+    var live = LiveSseWriter.init(gpa, null, null, true, null);
+    live.attachBuffer();
+    defer live.deinit();
+    const chunks = [_][]const u8{
+        "data: {\"choices\":[{\"delta\":{\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"The\",\"index\":0}]}}]}\n\n",
+        "data: {\"choices\":[{\"delta\":{\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\" answer\",\"signature\":\"sig\",\"index\":0}]}}]}\n\n",
+        "data: {\"choices\":[{\"delta\":{\"reasoning_details\":[{\"type\":\"reasoning.summary\",\"summary\":\"Looked\",\"index\":0}]}}]}\n\n",
+        "data: {\"choices\":[{\"delta\":{\"reasoning_details\":[{\"type\":\"reasoning.summary\",\"summary\":\" up\",\"format\":\"v1\",\"index\":0}]}}]}\n\n",
+        "data: {\"choices\":[{\"delta\":{\"reasoning_details\":[{\"type\":\"reasoning.encrypted\",\"id\":\"call_1\",\"data\":\"cipher\"}]}}]}\n\n",
+        "data: {\"choices\":[{\"delta\":{\"reasoning_details\":[{\"type\":\"reasoning.summary\",\"summary\":\"After\",\"index\":0}]}}]}\n\n",
+    };
+    for (chunks) |chunk| try live.feed(chunk);
+    const signature = try serializeReasoningDetails(gpa, live.reasoning_details.items);
+    defer gpa.free(signature);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, signature, .{});
+    defer parsed.deinit();
+    const details = parsed.value.array.items;
+    try std.testing.expectEqual(@as(usize, 4), details.len);
+    try std.testing.expectEqualStrings("The answer", details[0].object.get("text").?.string);
+    try std.testing.expectEqualStrings("Looked up", details[1].object.get("summary").?.string);
+    try std.testing.expectEqualStrings("reasoning.encrypted", details[2].object.get("type").?.string);
+    try std.testing.expectEqualStrings("After", details[3].object.get("summary").?.string);
+
+    const messages = [_]ai.ChatMessage{.{ .role = "assistant", .content = "done", .thinking_signature = signature }};
+    const body = try buildRequestBodyConfigured(gpa, "m", &messages, "[]", .{});
+    defer gpa.free(body);
+    try std.testing.expect(std.mem.indexOf(u8, body, "\"reasoning_details\":[{\"type\":\"reasoning.text\"") != null);
+}
+
 test "OpenAI streaming reasoning detail attaches even when it arrives before tool call" {
     const gpa = std.testing.allocator;
     var live = LiveSseWriter.init(gpa, null, null, true, null);
@@ -2179,6 +2324,44 @@ test "vLLM thinking token budget reserves answer space" {
     defer gpa.free(overridden);
     try std.testing.expect(std.mem.indexOf(u8, overridden, "\"thinking_token_budget\":123") != null);
     try std.testing.expect(std.mem.indexOf(u8, overridden, "\"thinking_token_budget\":976") == null);
+}
+
+test "OpenAI thinking budget field and template variable match endpoint dialects" {
+    const gpa = std.testing.allocator;
+    const msgs = [_]ai.ChatMessage{.{ .role = "user", .content = "hi" }};
+    const qwen = try buildRequestBodyConfigured(gpa, "m", &msgs, "[]", .{
+        .thinking = .high,
+        .reasoning = true,
+        .max_tokens = 2_000,
+        .compat = .{
+            .supports_thinking_token_budget = true,
+            .thinking_token_budget_field = .thinking_budget,
+        },
+    });
+    defer gpa.free(qwen);
+    try std.testing.expect(std.mem.indexOf(u8, qwen, "\"thinking_budget\":976") != null);
+    try std.testing.expect(std.mem.indexOf(u8, qwen, "\"thinking_token_budget\"") == null);
+
+    var template_doc = try std.json.parseFromSlice(std.json.Value, gpa,
+        \\{"budget":{"$var":"thinking.budget"}}
+    , .{});
+    defer template_doc.deinit();
+    const templated = try buildRequestBodyConfigured(gpa, "m", &msgs, "[]", .{
+        .thinking = .high,
+        .reasoning = true,
+        .max_tokens = 2_000,
+        .compat = .{ .thinking_format = .chat_template, .chat_template_kwargs = template_doc.value.object },
+    });
+    defer gpa.free(templated);
+    try std.testing.expect(std.mem.indexOf(u8, templated, "\"chat_template_kwargs\":{\"budget\":976}") != null);
+}
+
+test "OpenAI provider-neutral tool choice is sent even without tools" {
+    const gpa = std.testing.allocator;
+    const msgs = [_]ai.ChatMessage{.{ .role = "user", .content = "hi" }};
+    const body = try buildRequestBodyConfigured(gpa, "m", &msgs, "[]", .{ .tool_choice = .none });
+    defer gpa.free(body);
+    try std.testing.expect(std.mem.indexOf(u8, body, "\"tool_choice\":\"none\"") != null);
 }
 
 test "thinking dialects respect mapped and explicitly unsupported levels" {

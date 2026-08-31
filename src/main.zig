@@ -166,7 +166,41 @@ const ModelTargetPromptContext = struct {
             initial_search,
             self.already_fullscreen,
         );
-        return .{ .reference = selection.reference, .cancelled = selection.cancelled };
+        return .{ .reference = selection.reference, .cancelled = selection.cancelled, .persist_default = selection.persist_default };
+    }
+};
+
+const ThinkingTargetPromptContext = struct {
+    io: Io,
+    environ: *const std.process.Environ.Map,
+    reader: *Io.File.Reader,
+    already_fullscreen: bool,
+    live: *coding.live_state.LiveState,
+    default_level: *?[]const u8,
+
+    fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator, initial_search: ?[]const u8) anyerror!coding.slash.ThinkingTargetChoice {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        var levels_buf: [7]ai.thinking.ThinkingLevel = undefined;
+        const levels = if (coding.live_state.activeModelInfo(self.live)) |model|
+            model.supportedThinkingLevels(&levels_buf)
+        else blk: {
+            @memcpy(&levels_buf, &ai.thinking.extended_levels);
+            break :blk levels_buf[0..];
+        };
+        const current = ai.thinking.ThinkingLevel.parse(self.live.thinking orelse "off") orelse .off;
+        const default = if (self.default_level.*) |value| ai.thinking.ThinkingLevel.parse(value) else null;
+        const selection = try coding.thinking_tui.run(
+            gpa,
+            self.io,
+            self.environ,
+            self.reader,
+            levels,
+            current,
+            default,
+            initial_search,
+            self.already_fullscreen,
+        );
+        return .{ .level = selection.level, .cancelled = selection.cancelled, .persist_default = selection.persist_default };
     }
 };
 
@@ -405,6 +439,37 @@ fn parseSlashInvocation(line: []const u8) ?SlashInvocation {
     var arg_start = end;
     while (arg_start < rest.len and std.ascii.isWhitespace(rest[arg_start])) : (arg_start += 1) {}
     return .{ .name = rest[0..end], .arguments = rest[arg_start..] };
+}
+
+fn resolveThemeSelection(selection: []const u8, environ: *const std.process.Environ.Map) []const u8 {
+    const slash = std.mem.indexOfScalar(u8, selection, '/') orelse return selection;
+    if (slash == 0 or slash + 1 >= selection.len) return selection;
+    const color_fgbg = environ.get("COLORFGBG") orelse return selection[0..slash];
+    const last_separator = std.mem.lastIndexOfScalar(u8, color_fgbg, ';');
+    const background_start = if (last_separator) |index| index + 1 else 0;
+    const background = std.fmt.parseInt(u8, color_fgbg[background_start..], 10) catch return selection[0..slash];
+    return if (background >= 7) selection[slash + 1 ..] else selection[0..slash];
+}
+
+fn printSettingsDiagnostics(io: Io, diagnostics: []const coding.settings.Diagnostic) void {
+    for (diagnostics) |diagnostic| {
+        var buffer: [1024]u8 = undefined;
+        const message = std.fmt.bufPrint(&buffer, "warning: {s}: {s}", .{ diagnostic.path, diagnostic.message }) catch "warning: invalid settings file";
+        tui.render.printLine(io, message) catch {};
+    }
+}
+
+fn terminalCapabilityOverrides(settings: *const coding.settings.Settings) tui.terminal_image.CapabilityOverrides {
+    const images: ??tui.terminal_image.ImageProtocol = if (settings.terminal_image_protocol) |protocol| switch (protocol) {
+        .kitty => @as(?tui.terminal_image.ImageProtocol, .kitty),
+        .iterm2 => @as(?tui.terminal_image.ImageProtocol, .iterm2),
+        .none => @as(?tui.terminal_image.ImageProtocol, null),
+    } else null;
+    return .{
+        .images = images,
+        .true_color = settings.terminal_true_color,
+        .hyperlinks = settings.terminal_hyperlinks,
+    };
 }
 
 fn executeExtensionInvocation(host: *extensions.Host, line: []const u8) !?extensions.host.CommandOutput {
@@ -787,9 +852,50 @@ const ExtensionActionRuntime = struct {
     active_filter: *agent.tools.ToolFilter,
     owned_active_tools: *?[]const []const u8,
     extension_schemas: *[]u8,
+    prompt_templates: *const []coding.prompts.PromptTemplate,
+    cwd: []const u8,
+    agent_dir: ?[]const u8,
+    trust_project: bool,
     mock_client: ?ai.ModelClient = null,
     render_output: bool = false,
     render_width: usize = 100,
+
+    fn expandSkillCommand(self: *ExtensionActionRuntime, gpa: std.mem.Allocator, content: []const u8) !?[]u8 {
+        if (content.len < 2 or content[0] != '/') return null;
+        const rest = content[1..];
+        const end = std.mem.indexOfAny(u8, rest, " \t") orelse rest.len;
+        const command = rest[0..end];
+        var skill_name: []const u8 = "";
+        var arguments: []const u8 = "";
+        if (std.mem.startsWith(u8, command, "skill:")) {
+            skill_name = command["skill:".len..];
+            arguments = std.mem.trim(u8, rest[end..], " \t");
+        } else if (std.mem.eql(u8, command, "skill")) {
+            const tail = std.mem.trim(u8, rest[end..], " \t");
+            const name_end = std.mem.indexOfAny(u8, tail, " \t") orelse tail.len;
+            skill_name = tail[0..name_end];
+            arguments = std.mem.trim(u8, tail[name_end..], " \t");
+        } else return null;
+        if (skill_name.len == 0) return null;
+        const discovered = try coding.skills.discoverTrusted(gpa, self.live.io, self.cwd, self.agent_dir, &.{}, self.trust_project);
+        defer {
+            for (discovered) |*skill| skill.deinit(gpa);
+            gpa.free(discovered);
+        }
+        for (discovered) |skill| {
+            if (!std.mem.eql(u8, skill.name, skill_name)) continue;
+            return if (arguments.len > 0)
+                try std.fmt.allocPrint(gpa, "[skill:{s}]\n{s}\n\nUser request: {s}", .{ skill_name, skill.content, arguments })
+            else
+                try std.fmt.allocPrint(gpa, "[skill:{s}]\n{s}", .{ skill_name, skill.content });
+        }
+        return null;
+    }
+
+    fn expandUserMessage(self: *ExtensionActionRuntime, gpa: std.mem.Allocator, content: []const u8) !?[]u8 {
+        if (try self.expandSkillCommand(gpa, content)) |expanded| return expanded;
+        return coding.prompts.expandInvocation(gpa, content, self.prompt_templates.*);
+    }
 
     fn flush(
         raw: ?*anyopaque,
@@ -831,7 +937,7 @@ const ExtensionActionRuntime = struct {
         followups: *std.ArrayList([]u8),
         stop_requested: *bool,
         record: extensions.actions.Record,
-    ) !void {
+    ) anyerror!void {
         var parsed = try std.json.parseFromSlice(std.json.Value, gpa, record.json, .{});
         defer parsed.deinit();
         if (parsed.value != .object) return error.InvalidExtensionAction;
@@ -938,9 +1044,10 @@ const ExtensionActionRuntime = struct {
         }
         if (std.mem.eql(u8, record.kind, "send_user_message")) {
             const content_value = object.get("content") orelse return error.InvalidExtensionAction;
-            const content = try extensionActionContent(gpa, content_value);
+            var content = try extensionActionContent(gpa, content_value);
             defer gpa.free(content);
             var delivery: ?[]const u8 = null;
+            var expand_prompt_templates = false;
             if (object.get("options")) |options| {
                 if (options != .object) return error.InvalidExtensionAction;
                 if (options.object.get("deliverAs")) |value| switch (value) {
@@ -948,6 +1055,43 @@ const ExtensionActionRuntime = struct {
                     .string => |text| delivery = text,
                     else => return error.InvalidExtensionAction,
                 };
+                if (options.object.get("expandPromptTemplates")) |value| {
+                    if (value != .bool) return error.InvalidExtensionAction;
+                    expand_prompt_templates = value.bool;
+                }
+            }
+            if (expand_prompt_templates) {
+                if (try executeExtensionInvocation(self.host, content)) |command_value| {
+                    var command_output = command_value;
+                    defer command_output.deinit(self.host.gpa);
+                    var nested_steering: std.ArrayList([]const u8) = .empty;
+                    defer freeConstMessages(gpa, &nested_steering);
+                    var nested_followups: std.ArrayList([]const u8) = .empty;
+                    defer freeConstMessages(gpa, &nested_followups);
+                    var applied = try applyExtensionCommandOutput(
+                        gpa,
+                        self.live.io,
+                        self,
+                        sess,
+                        &command_output,
+                        run_config,
+                        active_client,
+                        &nested_steering,
+                        &nested_followups,
+                    );
+                    defer applied.deinit(gpa);
+                    try moveConstMessagesToMutable(gpa, &nested_steering, steering);
+                    try moveConstMessagesToMutable(gpa, &nested_followups, followups);
+                    stop_requested.* = stop_requested.* or applied.terminate;
+                    const command_prompt = applied.prompt orelse return;
+                    const owned_prompt = try gpa.dupe(u8, command_prompt);
+                    gpa.free(content);
+                    content = owned_prompt;
+                }
+                if (try self.expandUserMessage(gpa, content)) |expanded| {
+                    gpa.free(content);
+                    content = expanded;
+                }
             }
             if (delivery) |mode| {
                 if (std.ascii.eqlIgnoreCase(mode, "followUp") or std.ascii.eqlIgnoreCase(mode, "follow_up"))
@@ -1119,6 +1263,21 @@ const AppliedExtensionCommand = struct {
 fn freeMutableMessages(gpa: std.mem.Allocator, messages: *std.ArrayList([]u8)) void {
     for (messages.items) |message| gpa.free(message);
     messages.deinit(gpa);
+}
+
+fn freeConstMessages(gpa: std.mem.Allocator, messages: *std.ArrayList([]const u8)) void {
+    for (messages.items) |message| gpa.free(message);
+    messages.deinit(gpa);
+}
+
+fn moveConstMessagesToMutable(
+    gpa: std.mem.Allocator,
+    source: *std.ArrayList([]const u8),
+    destination: *std.ArrayList([]u8),
+) !void {
+    try destination.ensureUnusedCapacity(gpa, source.items.len);
+    for (source.items) |message| destination.appendAssumeCapacity(@constCast(message));
+    source.clearRetainingCapacity();
 }
 
 fn moveMutableMessages(
@@ -1941,7 +2100,14 @@ const RuntimeResourceReloadContext = struct {
         defer self.in_progress = false;
         const gpa = self.gpa;
 
-        var fresh_settings = try coding.settings.loadMergeTrusted(gpa, self.io, self.agent_dir, self.cwd, self.trust_project);
+        var diagnosed_settings = try coding.settings.loadMergeTrustedDiagnosed(gpa, self.io, self.agent_dir, self.cwd, self.trust_project);
+        defer diagnosed_settings.deinit(gpa);
+        if (diagnosed_settings.diagnostics.len > 0) {
+            printSettingsDiagnostics(self.io, diagnosed_settings.diagnostics);
+            return error.InvalidSettingsReload;
+        }
+        var fresh_settings = diagnosed_settings.settings;
+        diagnosed_settings.settings = .{};
         defer fresh_settings.deinit(gpa);
         var fresh_credentials = try loadReloadCredentialSet(gpa, self.io, self.environ, self.agent_dir, self.cli);
         defer fresh_credentials.deinit();
@@ -2078,13 +2244,10 @@ const RuntimeResourceReloadContext = struct {
         if (self.owned_active_tools.*) |old_names| {
             new_owned_active_tools = try buildActiveToolSelection(gpa, &new_host, old_names);
             new_filter.allow = new_owned_active_tools.?;
+            new_filter.builtin_allow = null;
         } else if (self.cli.tools == null) {
-            if (fresh_settings.tools) |configured_tools| {
-                new_owned_active_tools = try buildActiveToolSelection(gpa, &new_host, configured_tools);
-                new_filter.allow = new_owned_active_tools.?;
-            } else {
-                new_filter.allow = null;
-            }
+            new_filter.allow = null;
+            new_filter.builtin_allow = fresh_settings.tools orelse &agent.tools.default_tool_names;
         }
 
         var new_bridge = extensions.integration.Bridge.init(&new_host);
@@ -2284,12 +2447,18 @@ const RuntimeResourceReloadContext = struct {
         self.live.agent_cfg.follow_up_mode = queueModeFromSettings(fresh_settings.follow_up_mode);
         self.tree_filter_mode.* = treeFilterFromSettings(fresh_settings.tree_filter_mode);
         if (self.render_options) |options| {
+            options.capabilities = tui.terminal_image.applyOverrides(
+                tui.terminal_image.detectCapabilities(tui.terminal_image.environmentFromMap(self.environ), build_options.os.tag == .windows, false),
+                terminalCapabilityOverrides(&fresh_settings),
+            );
             options.show_images = fresh_settings.show_images orelse true;
             options.image_width_cells = @intCast(@min(fresh_settings.image_width_cells orelse 60, std.math.maxInt(u32)));
             options.show_terminal_progress = fresh_settings.show_terminal_progress orelse false;
+            options.show_cache_miss_notices = fresh_settings.show_cache_miss_notices orelse false;
             options.output_pad = @intCast(@min(fresh_settings.output_pad orelse 1, 1));
             options.editor_padding_x = @intCast(@min(fresh_settings.editor_padding_x orelse 0, 3));
             options.show_hardware_cursor = fresh_settings.show_hardware_cursor orelse false;
+            options.fullscreen_copy_on_select = fresh_settings.fullscreen_copy_on_select orelse true;
         }
         configureExtensionCallbacks(
             self.live.agent_cfg,
@@ -2332,7 +2501,8 @@ const RuntimeResourceReloadContext = struct {
         if (old_owned_active_tools) |names| freeOwnedToolNames(gpa, names);
         if (old_dynamic_catalog) |*snapshot| snapshot.deinit();
 
-        if (fresh_settings.theme) |theme_name| {
+        if (self.cli.use_theme orelse fresh_settings.theme) |selection| {
+            const theme_name = resolveThemeSelection(selection, self.environ);
             if (self.theme_registry.find(theme_name)) |theme| tui.render.setTheme(theme);
         }
 
@@ -2670,12 +2840,19 @@ pub fn main(init: std.process.Init) !void {
 
     // Resolve project trust before loading any project-local executable/config resource.
     // Only global settings may choose the default trust policy.
-    var startup_settings = try coding.settings.loadMergeTrusted(gpa, io, agent_dir, cwd, false);
+    var startup_diagnosed = try coding.settings.loadMergeTrustedDiagnosed(gpa, io, agent_dir, cwd, false);
+    defer startup_diagnosed.deinit(gpa);
+    var startup_settings = startup_diagnosed.settings;
+    startup_diagnosed.settings = .{};
     defer startup_settings.deinit(gpa);
     const trust_project = try resolveStartupProjectTrust(gpa, io, environ, agent_dir, cwd, cli.approve, startup_settings.default_project_trust, !cli.print and cli.mode == .text);
 
     // Settings
-    var settings = try coding.settings.loadMergeTrusted(gpa, io, agent_dir, cwd, trust_project);
+    var diagnosed_settings = try coding.settings.loadMergeTrustedDiagnosed(gpa, io, agent_dir, cwd, trust_project);
+    defer diagnosed_settings.deinit(gpa);
+    printSettingsDiagnostics(io, diagnosed_settings.diagnostics);
+    var settings = diagnosed_settings.settings;
+    diagnosed_settings.settings = .{};
     defer settings.deinit(gpa);
 
     // Resolve installed package resources once for the whole startup. Package
@@ -2762,11 +2939,12 @@ pub fn main(init: std.process.Init) !void {
         const message = try std.fmt.allocPrint(arena, "warning: {s}: {s}", .{ diagnostic.path, diagnostic.message });
         try tui.render.printLine(io, message);
     }
-    if (settings.theme) |theme_name| {
+    if (cli.use_theme orelse settings.theme) |selection| {
+        const theme_name = resolveThemeSelection(selection, environ);
         if (theme_registry.find(theme_name)) |active_theme| {
             tui.render.setTheme(active_theme);
         } else if (!std.mem.eql(u8, theme_name, "default") and !std.mem.eql(u8, theme_name, "dark") and std.mem.indexOfScalar(u8, theme_name, '/') == null) {
-            const message = try std.fmt.allocPrint(arena, "warning: configured theme was not found: {s}", .{theme_name});
+            const message = try std.fmt.allocPrint(arena, "warning: selected theme was not found: {s}", .{theme_name});
             try tui.render.printLine(io, message);
         }
     }
@@ -2802,13 +2980,14 @@ pub fn main(init: std.process.Init) !void {
     var cycling_model_catalog: []const ai.providers.ModelInfo = model_catalog;
     var model_scope_storage: ?coding.model_resolver.ScopeResult = null;
     defer if (model_scope_storage) |*scope| scope.deinit(gpa);
-    if (cli.models) |patterns| {
+    const effective_model_patterns = cli.models orelse settings.enabled_models;
+    if (effective_model_patterns) |patterns| {
         model_scope_storage = try coding.model_resolver.resolveModelScopeFromModels(gpa, patterns, model_catalog);
         const scope = &model_scope_storage.?;
         for (scope.diagnostics) |diagnostic| {
             const warning = switch (diagnostic.code) {
-                .no_match => try std.fmt.allocPrint(arena, "warning: --models pattern matched no model: {s}", .{diagnostic.pattern}),
-                .invalid_thinking_level => try std.fmt.allocPrint(arena, "warning: invalid thinking suffix in --models pattern: {s}", .{diagnostic.pattern}),
+                .no_match => try std.fmt.allocPrint(arena, "warning: model-scope pattern matched no model: {s}", .{diagnostic.pattern}),
+                .invalid_thinking_level => try std.fmt.allocPrint(arena, "warning: invalid thinking suffix in model-scope pattern: {s}", .{diagnostic.pattern}),
             };
             try tui.render.printLine(io, warning);
         }
@@ -3389,11 +3568,18 @@ pub fn main(init: std.process.Init) !void {
 
     var extension_bridge = extensions.integration.Bridge.init(&extension_host);
     defer extension_bridge.deinit();
+    extension_ui.bindPromptEvents(struct {
+        fn emit(raw: ?*anyopaque, event: extensions.ui.PromptEvent, method: []const u8) void {
+            const bridge: *extensions.integration.Bridge = @ptrCast(@alignCast(raw.?));
+            bridge.uiPromptEvent(event, method);
+        }
+    }.emit, &extension_bridge);
     const extensions_active = extension_host.extensions.items.len > 0;
     // This filter is mutable because script extensions may change the active
     // tool set between turns through pi.setActiveTools().
     var active_tool_filter = agent.tools.ToolFilter{
-        .allow = cli.tools orelse settings.tools,
+        .allow = cli.tools,
+        .builtin_allow = if (cli.tools == null) (settings.tools orelse &agent.tools.default_tool_names) else null,
         .exclude = cli.exclude_tools,
         .no_tools = cli.no_tools,
     };
@@ -3801,6 +3987,7 @@ pub fn main(init: std.process.Init) !void {
         .system_prompt = system_body,
         .context_prompt = context_prompt,
         .tool_filter = active_tool_filter,
+        .experimental_strict_tools = coding.update.truthyEnv(environ.get("PI_EXPERIMENTAL")),
         .verbose = cli.verbose,
         .auto_compaction_enabled = settings.compaction_enabled orelse true,
         .compaction_context_window = primary_runtime.context_window,
@@ -3900,6 +4087,10 @@ pub fn main(init: std.process.Init) !void {
         .active_filter = &active_tool_filter,
         .owned_active_tools = &extension_active_tools_owned,
         .extension_schemas = &extension_tool_schemas,
+        .prompt_templates = &prompt_templates,
+        .cwd = cwd,
+        .agent_dir = agent_dir,
+        .trust_project = trust_project,
         .mock_client = if (mock_storage) |*mock| mock.client() else null,
         .render_output = std.mem.eql(u8, extension_mode, "tui"),
         .render_width = tui.terminal.columnsFromEnvironment(environ, 100),
@@ -4115,17 +4306,22 @@ pub fn main(init: std.process.Init) !void {
 
     var interactive_render = InteractiveRenderOptions{
         .width = tui.terminal.columnsFromEnvironment(environ, 100),
-        .capabilities = tui.terminal_image.detectCapabilities(
-            tui.terminal_image.environmentFromMap(environ),
-            build_options.os.tag == .windows,
-            false,
+        .capabilities = tui.terminal_image.applyOverrides(
+            tui.terminal_image.detectCapabilities(
+                tui.terminal_image.environmentFromMap(environ),
+                build_options.os.tag == .windows,
+                false,
+            ),
+            terminalCapabilityOverrides(&settings),
         ),
         .show_images = settings.show_images orelse true,
         .image_width_cells = @intCast(@min(settings.image_width_cells orelse 60, std.math.maxInt(u32))),
         .show_terminal_progress = settings.show_terminal_progress orelse false,
+        .show_cache_miss_notices = settings.show_cache_miss_notices orelse false,
         .output_pad = @intCast(@min(settings.output_pad orelse 1, 1)),
         .editor_padding_x = @intCast(@min(settings.editor_padding_x orelse 0, 3)),
         .show_hardware_cursor = settings.show_hardware_cursor orelse false,
+        .fullscreen_copy_on_select = settings.fullscreen_copy_on_select orelse true,
     };
     runtime_reload_context.render_options = &interactive_render;
 
@@ -4185,6 +4381,14 @@ pub fn main(init: std.process.Init) !void {
         .provider_models = &extension_models_runtime,
         .abort_flag = &shared_abort,
     };
+    var thinking_target_prompt_context = ThinkingTargetPromptContext{
+        .io = io,
+        .environ = environ,
+        .reader = &extension_stdin_reader,
+        .already_fullscreen = fullscreen_active,
+        .live = &live,
+        .default_level = &settings.thinking_level,
+    };
     var settings_target_prompt_context: ?SettingsTargetPromptContext = if (agent_dir) |ad| .{
         .io = io,
         .environ = environ,
@@ -4230,6 +4434,7 @@ pub fn main(init: std.process.Init) !void {
     };
     const tree_target_prompt_available = tui.terminal.supportsFullscreen(io);
     const model_target_prompt_available = tui.terminal.supportsFullscreen(io);
+    const thinking_target_prompt_available = tui.terminal.supportsFullscreen(io);
     const settings_target_prompt_available = settings_target_prompt_context != null and tui.terminal.supportsFullscreen(io);
     const auth_target_prompt_available = auth_target_prompt_context != null and tui.terminal.supportsFullscreen(io);
     const session_target_prompt_available = tui.terminal.supportsFullscreen(io);
@@ -4273,6 +4478,7 @@ pub fn main(init: std.process.Init) !void {
         .context = &extension_shortcut_context,
         .handle_fn = ExtensionShortcutContext.handle,
         .clipboard_paste_fn = ExtensionShortcutContext.pasteClipboard,
+        .right_click_paste_enabled = tui.line_editor.windowsRightClickPasteEnabled(environ.get("TERM_PROGRAM")),
     };
     while (true) {
         extension_shortcut_context.model_catalog = live.model_catalog;
@@ -4373,6 +4579,8 @@ pub fn main(init: std.process.Init) !void {
                     .client = getClient(if (mock_storage) |*m| m else null, &client_pool, use_mock),
                     .model_target_prompt_ctx = if (model_target_prompt_available) &model_target_prompt_context else null,
                     .model_target_prompt_fn = if (model_target_prompt_available) ModelTargetPromptContext.prompt else null,
+                    .thinking_target_prompt_ctx = if (thinking_target_prompt_available) &thinking_target_prompt_context else null,
+                    .thinking_target_prompt_fn = if (thinking_target_prompt_available) ThinkingTargetPromptContext.prompt else null,
                     .settings_target_prompt_ctx = if (settings_target_prompt_available) &settings_target_prompt_context.? else null,
                     .settings_target_prompt_fn = if (settings_target_prompt_available) SettingsTargetPromptContext.prompt else null,
                     .auth_target_prompt_ctx = if (auth_target_prompt_available) &auth_target_prompt_context.? else null,
@@ -4515,6 +4723,8 @@ pub fn main(init: std.process.Init) !void {
                     .client = getClient(if (mock_storage) |*m| m else null, &client_pool, use_mock),
                     .model_target_prompt_ctx = if (model_target_prompt_available) &model_target_prompt_context else null,
                     .model_target_prompt_fn = if (model_target_prompt_available) ModelTargetPromptContext.prompt else null,
+                    .thinking_target_prompt_ctx = if (thinking_target_prompt_available) &thinking_target_prompt_context else null,
+                    .thinking_target_prompt_fn = if (thinking_target_prompt_available) ThinkingTargetPromptContext.prompt else null,
                     .settings_target_prompt_ctx = if (settings_target_prompt_available) &settings_target_prompt_context.? else null,
                     .settings_target_prompt_fn = if (settings_target_prompt_available) SettingsTargetPromptContext.prompt else null,
                     .auth_target_prompt_ctx = if (auth_target_prompt_available) &auth_target_prompt_context.? else null,
@@ -4596,9 +4806,11 @@ const InteractiveRenderOptions = struct {
     show_images: bool = true,
     image_width_cells: u32 = 60,
     show_terminal_progress: bool = false,
+    show_cache_miss_notices: bool = false,
     output_pad: u8 = 1,
     editor_padding_x: u8 = 0,
     show_hardware_cursor: bool = false,
+    fullscreen_copy_on_select: bool = true,
 };
 
 fn writeExtensionRendered(io: Io, rendered: []const u8) !void {
@@ -4776,11 +4988,108 @@ const ExtensionPrintEmitter = struct {
                 tui.render.printLine(self.io, line) catch {};
             },
             .summarization_retry_finished => {},
+            .session_compact_failed => {
+                var buf: [256]u8 = undefined;
+                const line = std.fmt.bufPrint(&buf, "{s} compaction failed: {s}", .{ event.reason, event.error_message orelse event.text }) catch return;
+                tui.render.printLine(self.io, line) catch {};
+            },
             .tool_call, .tool_result => {},
             else => {},
         }
     }
 };
+
+fn formatNoticeTokens(gpa: std.mem.Allocator, tokens: u64) ![]u8 {
+    if (tokens >= 1_000_000) return std.fmt.allocPrint(gpa, "{d}.{d}M", .{ tokens / 1_000_000, (tokens % 1_000_000) / 100_000 });
+    if (tokens >= 1_000) return std.fmt.allocPrint(gpa, "{d}.{d}K", .{ tokens / 1_000, (tokens % 1_000) / 100 });
+    return std.fmt.allocPrint(gpa, "{d}", .{tokens});
+}
+
+fn cacheReadRate(provider: []const u8, model_id: []const u8) f64 {
+    for (ai.providers.known_models) |model| {
+        if (std.ascii.eqlIgnoreCase(model.providerName(), provider) and std.mem.eql(u8, model.id, model_id)) return model.cost.cache_read / 1_000_000.0;
+    }
+    return 0;
+}
+
+/// Render notices derived from durable usage; no extra session entries are
+/// created. This keeps resumed transcripts and live turns consistent with the
+/// upstream `showCacheMissNotices` setting.
+fn renderUsageNotices(gpa: std.mem.Allocator, io: Io, sess: *const agent.session.Session, start_index: usize) !void {
+    if (start_index >= sess.entries.items.len) return;
+    for (sess.entries.items[start_index..]) |entry| {
+        if (entry.entry_type != .compaction and entry.entry_type != .branch_summary) continue;
+        const tokens = entry.meta.usage_input +| entry.meta.usage_output +| entry.meta.usage_cache_read +| entry.meta.usage_cache_write;
+        if (tokens == 0) continue;
+        const formatted = try formatNoticeTokens(gpa, tokens);
+        defer gpa.free(formatted);
+        const label = if (entry.entry_type == .compaction) "Compaction" else "Branch summary";
+        const line = if (entry.meta.cost_total >= 0.01)
+            try std.fmt.allocPrint(gpa, "{s}: {s} tokens billed (~${d:.2})", .{ label, formatted, entry.meta.cost_total })
+        else
+            try std.fmt.allocPrint(gpa, "{s}: {s} tokens billed", .{ label, formatted });
+        defer gpa.free(line);
+        try tui.render.printLine(io, line);
+    }
+
+    var latest_assistant: ?usize = null;
+    var index = sess.entries.items.len;
+    while (index > start_index) {
+        index -= 1;
+        const entry = sess.entries.items[index];
+        if (entry.entry_type == .message and std.mem.eql(u8, entry.role, "assistant")) {
+            latest_assistant = index;
+            break;
+        }
+    }
+    const target_index = latest_assistant orelse return;
+    const Previous = struct {
+        prompt_tokens: u64,
+        provider: []const u8,
+        model: []const u8,
+        reported_cache: bool,
+    };
+    var previous: ?Previous = null;
+    for (sess.entries.items[0 .. target_index + 1], 0..) |entry, current_index| {
+        if (entry.entry_type == .compaction or entry.entry_type == .branch_summary) {
+            previous = null;
+            continue;
+        }
+        if (entry.entry_type != .message or !std.mem.eql(u8, entry.role, "assistant")) continue;
+        const prompt_tokens = entry.meta.usage_input +| entry.meta.usage_cache_read +| entry.meta.usage_cache_write;
+        if (current_index == target_index) {
+            const prev = previous orelse return;
+            if (prompt_tokens == 0 or (entry.meta.usage_cache_read +| entry.meta.usage_cache_write == 0 and !prev.reported_cache)) return;
+            const missed_tokens = @min(prev.prompt_tokens, prompt_tokens) -| entry.meta.usage_cache_read;
+            if (missed_tokens <= 1_024) return;
+            const paid_tokens = entry.meta.usage_input +| entry.meta.usage_cache_write;
+            const paid_rate = if (paid_tokens > 0) (entry.meta.cost_input + entry.meta.cost_cache_write) / @as(f64, @floatFromInt(paid_tokens)) else 0;
+            const read_rate = if (entry.meta.usage_cache_read > 0)
+                entry.meta.cost_cache_read / @as(f64, @floatFromInt(entry.meta.usage_cache_read))
+            else
+                cacheReadRate(entry.meta.provider, entry.meta.model);
+            const missed_cost = @as(f64, @floatFromInt(missed_tokens)) * @max(@as(f64, 0), paid_rate - read_rate);
+            if (missed_tokens < 20_000 and missed_cost < 0.1) return;
+            const formatted = try formatNoticeTokens(gpa, missed_tokens);
+            defer gpa.free(formatted);
+            const model_changed = !std.ascii.eqlIgnoreCase(prev.provider, entry.meta.provider) or !std.mem.eql(u8, prev.model, entry.meta.model);
+            const label = if (model_changed) "Cache miss after model switch" else "Cache miss";
+            const line = if (missed_cost >= 0.01)
+                try std.fmt.allocPrint(gpa, "{s}: {s} tokens re-billed (~${d:.2})", .{ label, formatted, missed_cost })
+            else
+                try std.fmt.allocPrint(gpa, "{s}: {s} tokens re-billed", .{ label, formatted });
+            defer gpa.free(line);
+            try tui.render.printLine(io, line);
+            return;
+        }
+        if (prompt_tokens > 0) previous = .{
+            .prompt_tokens = prompt_tokens,
+            .provider = entry.meta.provider,
+            .model = entry.meta.model,
+            .reported_cache = (if (previous) |prev| prev.reported_cache else false) or (entry.meta.usage_cache_read +| entry.meta.usage_cache_write > 0),
+        };
+    }
+}
 
 fn runOneWithImages(
     gpa: std.mem.Allocator,
@@ -4795,6 +5104,7 @@ fn runOneWithImages(
     render_options: InteractiveRenderOptions,
     extension_host: *extensions.Host,
 ) !void {
+    const entry_count_before = sess.entries.items.len;
     var emitter = ExtensionPrintEmitter{
         .io = io,
         .verbose = verbose,
@@ -4813,6 +5123,7 @@ fn runOneWithImages(
         defer gpa.free(transformed);
         try tui.render.renderAssistantMarkdownPadded(gpa, io, transformed, render_options.width, render_options.capabilities, render_options.output_pad);
     }
+    if (render_options.show_cache_miss_notices) try renderUsageNotices(gpa, io, sess, entry_count_before);
 }
 
 fn runOne(
@@ -4827,6 +5138,7 @@ fn runOne(
     render_options: InteractiveRenderOptions,
     extension_host: *extensions.Host,
 ) !void {
+    const entry_count_before = sess.entries.items.len;
     var emitter = ExtensionPrintEmitter{
         .io = io,
         .verbose = verbose,
@@ -4845,6 +5157,7 @@ fn runOne(
         defer gpa.free(transformed);
         try tui.render.renderAssistantMarkdownPadded(gpa, io, transformed, render_options.width, render_options.capabilities, render_options.output_pad);
     }
+    if (render_options.show_cache_miss_notices) try renderUsageNotices(gpa, io, sess, entry_count_before);
 }
 
 const RpcSummarizationEmitter = struct {
@@ -4913,6 +5226,37 @@ fn flushRpcHookActions(
     for (steering.items) |message| try steering_queue.push(message);
     for (followups.items) |message| try follow_up_queue.push(message);
     return stop_requested;
+}
+
+fn clearRpcQueuesJson(
+    gpa: std.mem.Allocator,
+    steering_queue: *coding.rpc_queue.MessageQueue,
+    follow_up_queue: *coding.rpc_queue.MessageQueue,
+) ![]u8 {
+    const steering = try steering_queue.drain();
+    defer {
+        for (steering) |message| gpa.free(message);
+        gpa.free(steering);
+    }
+    const follow_up = try follow_up_queue.drain();
+    defer {
+        for (follow_up) |message| gpa.free(message);
+        gpa.free(follow_up);
+    }
+    var out: std.Io.Writer.Allocating = .init(gpa);
+    errdefer out.deinit();
+    try out.writer.writeAll("{\"steering\":[");
+    for (steering, 0..) |message, index| {
+        if (index > 0) try out.writer.writeByte(',');
+        try std.json.Stringify.value(message, .{}, &out.writer);
+    }
+    try out.writer.writeAll("],\"followUp\":[");
+    for (follow_up, 0..) |message, index| {
+        if (index > 0) try out.writer.writeByte(',');
+        try std.json.Stringify.value(message, .{}, &out.writer);
+    }
+    try out.writer.writeAll("]}");
+    return out.toOwnedSlice();
 }
 
 fn runRpcMode(
@@ -5102,6 +5446,12 @@ fn runRpcMode(
             const p = req.params_prompt orelse "";
             try follow_up_queue.push(p);
             try coding.modes.writeRpcResponse(io, req.id, "follow_up", true, null);
+            continue;
+        }
+        if (std.mem.eql(u8, req.method, "clear_queue")) {
+            const data = try clearRpcQueuesJson(gpa, &steer_queue, &follow_up_queue);
+            defer gpa.free(data);
+            try coding.modes.writeRpcResponse(io, req.id, "clear_queue", true, data);
             continue;
         }
         if (std.mem.eql(u8, req.method, "ping")) {
@@ -5939,6 +6289,13 @@ fn runRpcMode(
                                 coding.modes.writeRpcResponse(io, concurrent_req.id, "follow_up", true, null) catch {};
                             } else |_| {
                                 coding.modes.writeRpcResponse(io, concurrent_req.id, "follow_up", false, "{\"error\":\"could not queue message\"}") catch {};
+                            }
+                        } else if (std.mem.eql(u8, concurrent_req.method, "clear_queue")) {
+                            if (clearRpcQueuesJson(gpa, &steer_queue, &follow_up_queue)) |data| {
+                                defer gpa.free(data);
+                                coding.modes.writeRpcResponse(io, concurrent_req.id, "clear_queue", true, data) catch {};
+                            } else |_| {
+                                coding.modes.writeRpcResponse(io, concurrent_req.id, "clear_queue", false, "{\"error\":\"could not clear queues\"}") catch {};
                             }
                         } else if (std.mem.eql(u8, concurrent_req.method, "prompt")) {
                             const behavior = concurrent_req.streaming_behavior;
@@ -7628,9 +7985,37 @@ test "identity stable" {
     try std.testing.expect(std.mem.indexOf(u8, pi_zig.identity, "pi") != null);
 }
 
+test "per-run theme pairs select from terminal background without persistence" {
+    var env = std.process.Environ.Map.init(std.testing.allocator);
+    defer env.deinit();
+    try env.put("COLORFGBG", "15;0");
+    try std.testing.expectEqualStrings("night", resolveThemeSelection("night/day", &env));
+    try env.put("COLORFGBG", "0;15");
+    try std.testing.expectEqualStrings("day", resolveThemeSelection("night/day", &env));
+    try std.testing.expectEqualStrings("single", resolveThemeSelection("single", &env));
+}
+
 test "settings delivery and tree filter mapping" {
     try std.testing.expectEqual(agent.loop.QueueMode.one_at_a_time, queueModeFromSettings(null));
     try std.testing.expectEqual(agent.loop.QueueMode.all, queueModeFromSettings(.all));
     try std.testing.expectEqual(coding.tree_tui.FilterMode.default, treeFilterFromSettings(null));
     try std.testing.expectEqual(coding.tree_tui.FilterMode.labeled_only, treeFilterFromSettings(.labeled_only));
+}
+
+test "RPC clear_queue returns steering and follow-up messages atomically" {
+    const gpa = std.testing.allocator;
+    var steering = coding.rpc_queue.MessageQueue.init(gpa, std.testing.io);
+    defer steering.deinit();
+    var follow_up = coding.rpc_queue.MessageQueue.init(gpa, std.testing.io);
+    defer follow_up.deinit();
+    try steering.push("change direction");
+    try follow_up.push("summarize later");
+    const data = try clearRpcQueuesJson(gpa, &steering, &follow_up);
+    defer gpa.free(data);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, data, .{});
+    defer parsed.deinit();
+    try std.testing.expectEqualStrings("change direction", parsed.value.object.get("steering").?.array.items[0].string);
+    try std.testing.expectEqualStrings("summarize later", parsed.value.object.get("followUp").?.array.items[0].string);
+    try std.testing.expectEqual(@as(usize, 0), steering.count());
+    try std.testing.expectEqual(@as(usize, 0), follow_up.count());
 }

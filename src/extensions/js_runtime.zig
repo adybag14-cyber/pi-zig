@@ -117,7 +117,14 @@ pub const Runtime = struct {
         const runtime = try spawnRuntime(gpa, io, source_path, node_program);
         errdefer runtime.deinit();
 
-        const ready_line = try runtime.readRecordUnlocked();
+        const ready_line = runtime.readRecordUnlocked() catch |err| {
+            // A factory can throw before the bridge publishes its ready
+            // manifest. Mark the worker closed before errdefer cleanup so the
+            // host never writes a shutdown record into an already-closing
+            // Windows pipe, while still reaping this exact child process.
+            runtime.closeUnlocked();
+            return err;
+        };
         defer gpa.free(ready_line);
         var parsed = try std.json.parseFromSlice(std.json.Value, gpa, ready_line, .{});
         defer parsed.deinit();

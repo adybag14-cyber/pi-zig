@@ -8,10 +8,10 @@ const path_utils = @import("path_utils.zig");
 const prompts = @import("prompts.zig");
 
 pub const command_names = [_][]const u8{
-    "?",     "changelog", "clone",   "compact", "copy",   "exit",    "export",
-    "fork",  "help",      "hotkeys", "import",  "login",  "logout",  "model",
-    "name",  "new",       "quit",    "reload",  "resume", "session", "settings",
-    "skill", "tree",
+    "?",     "changelog", "clone",    "compact", "copy",   "exit",    "export",
+    "fork",  "help",      "hotkeys",  "import",  "login",  "logout",  "model",
+    "name",  "new",       "quit",     "reload",  "resume", "session", "settings",
+    "share", "skill",     "thinking", "tree",
 };
 
 pub const Result = struct {
@@ -214,7 +214,50 @@ fn decodeToken(gpa: std.mem.Allocator, raw: []const u8) ![]u8 {
     return try out.toOwnedSlice(gpa);
 }
 
-const PathMatch = struct { name: []u8, kind: std.Io.File.Kind };
+const PathMatch = struct { name: []u8, kind: std.Io.File.Kind, depth: usize = 0 };
+
+fn collectRecursivePathMatches(
+    gpa: std.mem.Allocator,
+    io: Io,
+    root: []const u8,
+    relative: []const u8,
+    prefix: []const u8,
+    depth: usize,
+    matches: *std.ArrayList(PathMatch),
+) !void {
+    if (depth > 8 or matches.items.len >= 512) return;
+    const directory_path = if (relative.len == 0) try gpa.dupe(u8, root) else try std.fs.path.join(gpa, &.{ root, relative });
+    defer gpa.free(directory_path);
+    var dir = std.Io.Dir.cwd().openDir(io, directory_path, .{ .iterate = true }) catch return;
+    defer dir.close(io);
+    var children: std.ArrayList([]u8) = .empty;
+    defer {
+        for (children.items) |child| gpa.free(child);
+        children.deinit(gpa);
+    }
+    var iterator = dir.iterate();
+    while (try iterator.next(io)) |entry| {
+        if (std.mem.eql(u8, entry.name, ".git") or std.mem.eql(u8, entry.name, "node_modules") or std.mem.eql(u8, entry.name, ".zig-cache")) continue;
+        const candidate = if (relative.len == 0) try gpa.dupe(u8, entry.name) else try std.fs.path.join(gpa, &.{ relative, entry.name });
+        errdefer gpa.free(candidate);
+        if (prefix.len <= entry.name.len and std.ascii.startsWithIgnoreCase(entry.name, prefix)) {
+            try matches.append(gpa, .{ .name = candidate, .kind = entry.kind, .depth = depth });
+        } else {
+            gpa.free(candidate);
+        }
+        if (entry.kind == .directory) {
+            const child = if (relative.len == 0) try gpa.dupe(u8, entry.name) else try std.fs.path.join(gpa, &.{ relative, entry.name });
+            try children.append(gpa, child);
+        }
+        if (matches.items.len >= 512) break;
+    }
+    std.mem.sort([]u8, children.items, {}, struct {
+        fn lessThan(_: void, lhs: []u8, rhs: []u8) bool {
+            return std.mem.lessThan(u8, lhs, rhs);
+        }
+    }.lessThan);
+    for (children.items) |child| try collectRecursivePathMatches(gpa, io, root, child, prefix, depth + 1, matches);
+}
 
 fn completePath(
     gpa: std.mem.Allocator,
@@ -249,35 +292,43 @@ fn completePath(
     const scan_dir = path_utils.resolvePath(gpa, environ, scan_input, cwd, .{ .normalize_unicode_spaces = true }) catch return null;
     defer gpa.free(scan_dir);
 
-    var dir = std.Io.Dir.cwd().openDir(io, scan_dir, .{ .iterate = true }) catch return null;
-    defer dir.close(io);
     var matches: std.ArrayList(PathMatch) = .empty;
     defer {
         for (matches.items) |match| gpa.free(match.name);
         matches.deinit(gpa);
     }
-    var iterator = dir.iterate();
-    while (try iterator.next(io)) |entry| {
-        if (basename.len > entry.name.len or !std.mem.startsWith(u8, entry.name, basename)) continue;
-        try matches.append(gpa, .{ .name = try gpa.dupe(u8, entry.name), .kind = entry.kind });
+    if (has_at and typed_dir.len == 0) {
+        try collectRecursivePathMatches(gpa, io, scan_dir, "", basename, 0, &matches);
+    } else {
+        var dir = std.Io.Dir.cwd().openDir(io, scan_dir, .{ .iterate = true }) catch return null;
+        defer dir.close(io);
+        var iterator = dir.iterate();
+        while (try iterator.next(io)) |entry| {
+            if (basename.len > entry.name.len or !std.ascii.startsWithIgnoreCase(entry.name, basename)) continue;
+            try matches.append(gpa, .{ .name = try gpa.dupe(u8, entry.name), .kind = entry.kind });
+        }
     }
     if (matches.items.len == 0) return null;
     std.mem.sort(PathMatch, matches.items, {}, struct {
         fn lessThan(_: void, lhs: PathMatch, rhs: PathMatch) bool {
+            if (lhs.depth != rhs.depth) return lhs.depth < rhs.depth;
             return std.mem.lessThan(u8, lhs.name, rhs.name);
         }
     }.lessThan);
 
-    const names = try gpa.alloc([]const u8, matches.items.len);
+    var preferred_count: usize = 1;
+    while (preferred_count < matches.items.len and matches.items[preferred_count].depth == matches.items[0].depth) : (preferred_count += 1) {}
+    const names = try gpa.alloc([]const u8, preferred_count);
     defer gpa.free(names);
-    for (matches.items, 0..) |match, index| names[index] = match.name;
-    const prefix_len = commonPrefixLen(names);
+    for (matches.items[0..preferred_count], 0..) |match, index| names[index] = match.name;
+    var prefix_len = commonPrefixLen(names);
+    if (has_at and prefix_len <= basename.len) prefix_len = matches.items[0].name.len;
 
     var completed_path: std.ArrayList(u8) = .empty;
     defer completed_path.deinit(gpa);
     try completed_path.appendSlice(gpa, typed_dir);
     try completed_path.appendSlice(gpa, matches.items[0].name[0..prefix_len]);
-    const unique = matches.items.len == 1;
+    const unique = preferred_count == 1;
     const is_directory = unique and matches.items[0].kind == .directory;
     if (is_directory and (completed_path.items.len == 0 or (completed_path.items[completed_path.items.len - 1] != '/' and completed_path.items[completed_path.items.len - 1] != '\\'))) {
         try completed_path.append(gpa, std.fs.path.sep);
@@ -395,4 +446,30 @@ test "completion quotes file paths and descends directories" {
     var folder = (try complete(gpa, io, &env, root, "@fol", 4, &.{}, &.{}, &.{}, &session, true)).?;
     defer folder.deinit(gpa);
     try std.testing.expect(std.mem.startsWith(u8, folder.text, "@\"folder one"));
+}
+
+test "recursive at completion prefers shallower matches and reaches nested files" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var env = std.process.Environ.Map.init(gpa);
+    defer env.deinit();
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    try tmp.dir.writeFile(io, .{ .sub_path = "target.txt", .data = "root" });
+    try tmp.dir.createDirPath(io, "deep");
+    try tmp.dir.writeFile(io, .{ .sub_path = "deep/target.txt", .data = "deep" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "deep/needle.txt", .data = "needle" });
+    var root_buf: [std.fs.max_path_bytes]u8 = undefined;
+    const root = root_buf[0..try tmp.dir.realPath(io, &root_buf)];
+    var session = try session_mod.Session.init(gpa, "completion-recursive", root);
+    defer session.deinit();
+
+    var shallow = (try complete(gpa, io, &env, root, "@tar", 4, &.{}, &.{}, &.{}, &session, true)).?;
+    defer shallow.deinit(gpa);
+    try std.testing.expectEqualStrings("@target.txt ", shallow.text);
+
+    var nested = (try complete(gpa, io, &env, root, "@nee", 4, &.{}, &.{}, &.{}, &session, true)).?;
+    defer nested.deinit(gpa);
+    try std.testing.expect(std.mem.indexOf(u8, nested.text, "needle.txt") != null);
+    try std.testing.expect(std.mem.indexOf(u8, nested.text, "deep") != null);
 }

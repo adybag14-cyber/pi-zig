@@ -168,7 +168,9 @@ fn optionalChatTemplateValues(object: std.json.ObjectMap, name: []const u8) !?st
             .object => {
                 const variable = item.object.get("$var") orelse return error.InvalidModelConfig;
                 if (variable != .string or
-                    (!std.mem.eql(u8, variable.string, "thinking.enabled") and !std.mem.eql(u8, variable.string, "thinking.effort")))
+                    (!std.mem.eql(u8, variable.string, "thinking.enabled") and
+                        !std.mem.eql(u8, variable.string, "thinking.effort") and
+                        !std.mem.eql(u8, variable.string, "thinking.budget")))
                     return error.InvalidModelConfig;
                 if (item.object.get("omitWhenOff")) |omit| if (omit != .bool) return error.InvalidModelConfig;
             },
@@ -307,11 +309,29 @@ fn parseCompat(object: std.json.ObjectMap) !metadata.Compat {
         .openrouter_routing = try parseOpenRouterRouting(compat),
         .vercel_gateway_routing = try parseVercelGatewayRouting(compat),
     };
+    if (compat.get("allowedFallbackModels")) |fallbacks| {
+        if (fallbacks != .array) return error.InvalidModelConfig;
+        for (fallbacks.array.items) |fallback| {
+            if (fallback != .object) return error.InvalidModelConfig;
+            const provider = fallback.object.get("provider") orelse return error.InvalidModelConfig;
+            const model = fallback.object.get("model") orelse return error.InvalidModelConfig;
+            const cost = fallback.object.get("cost") orelse return error.InvalidModelConfig;
+            if (provider != .string or model != .string or cost != .object) return error.InvalidModelConfig;
+            inline for (.{ "input", "output", "cacheRead", "cacheWrite" }) |name| {
+                const amount = cost.object.get(name) orelse return error.InvalidModelConfig;
+                if (numberValue(amount) == null) return error.InvalidModelConfig;
+            }
+        }
+        out.allowed_fallback_models_json = fallbacks.array;
+    }
     if (stringField(compat, "deferredToolsMode")) |mode| {
         out.deferred_tools_mode = metadata.DeferredToolsMode.parse(mode) orelse return error.InvalidModelConfig;
     }
     if (stringField(compat, "maxTokensField")) |field| {
         out.max_tokens_field = metadata.MaxTokensField.parse(field) orelse return error.InvalidModelConfig;
+    }
+    if (stringField(compat, "thinkingTokenBudgetField")) |field| {
+        out.thinking_token_budget_field = metadata.ThinkingTokenBudgetField.parse(field) orelse return error.InvalidModelConfig;
     }
     if (stringField(compat, "thinkingFormat")) |format| {
         out.thinking_format = metadata.ThinkingFormat.parse(format) orelse return error.InvalidModelConfig;
@@ -467,7 +487,8 @@ pub fn load(gpa: std.mem.Allocator, io: Io, agent_dir: []const u8) !ModelsFile {
 /// provider registration uses the same validator and runtime metadata path as
 /// the on-disk file, avoiding a weaker second provider dialect.
 pub fn parseFromSlice(gpa: std.mem.Allocator, raw: []const u8) !ModelsFile {
-    var parsed = std.json.parseFromSlice(std.json.Value, gpa, raw, .{ .allocate = .alloc_always }) catch return error.InvalidModelsJson;
+    const content = if (std.mem.startsWith(u8, raw, "\xEF\xBB\xBF")) raw[3..] else raw;
+    var parsed = std.json.parseFromSlice(std.json.Value, gpa, content, .{ .allocate = .alloc_always }) catch return error.InvalidModelsJson;
     errdefer parsed.deinit();
     if (parsed.value != .object) return error.InvalidModelsJson;
     const providers_value = parsed.value.object.get("providers") orelse return .{ .gpa = gpa, .parsed = parsed };
@@ -791,7 +812,7 @@ test "models.json parses request metadata and applies upstream custom-model defa
     const path = try std.fs.path.join(gpa, &.{ agent_dir, "models.json" });
     defer gpa.free(path);
     try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = path, .data =
-        \\{"providers":{"corp":{"baseUrl":"https://example.test/v1","api":"openai-completions","headers":{"X-Provider":"$P_HEADER"},"compat":{"supportsDeveloperRole":true,"supportsUsageInStreaming":true},"models":[{"id":"m","headers":{"X-Model":"literal"},"samplingParams":{"temperature":0.2,"top_p":0.9},"compat":{"supportsDeveloperRole":false,"supportsAdditionalTools":true,"supportsThinkingTokenBudget":true,"maxTokensField":"max_tokens","thinkingFormat":"qwen"}}],"modelOverrides":{"m":{"headers":{"X-Override":"$O_HEADER"},"samplingParams":{"top_p":0.5},"compat":{"supportsReasoningEffort":false}}}}}}
+        \\{"providers":{"corp":{"baseUrl":"https://example.test/v1","api":"openai-completions","headers":{"X-Provider":"$P_HEADER"},"compat":{"supportsDeveloperRole":true,"supportsUsageInStreaming":true},"models":[{"id":"m","headers":{"X-Model":"literal"},"samplingParams":{"temperature":0.2,"top_p":0.9},"compat":{"supportsDeveloperRole":false,"supportsAdditionalTools":true,"supportsThinkingTokenBudget":true,"thinkingTokenBudgetField":"thinking_budget","allowedFallbackModels":[{"provider":"corp","model":"backup","cost":{"input":1,"output":2,"cacheRead":0.1,"cacheWrite":0.2}}],"maxTokensField":"max_tokens","thinkingFormat":"qwen"}}],"modelOverrides":{"m":{"headers":{"X-Override":"$O_HEADER"},"samplingParams":{"top_p":0.5},"compat":{"supportsReasoningEffort":false}}}}}}
     });
     var file = try load(gpa, io, agent_dir);
     defer file.deinit();
@@ -808,6 +829,8 @@ test "models.json parses request metadata and applies upstream custom-model defa
     try std.testing.expectEqual(true, model.compat.supports_usage_in_streaming.?);
     try std.testing.expectEqual(true, model.compat.supports_additional_tools.?);
     try std.testing.expectEqual(true, model.compat.supports_thinking_token_budget.?);
+    try std.testing.expect(model.compat.thinking_token_budget_field.? == .thinking_budget);
+    try std.testing.expectEqual(@as(usize, 1), model.compat.allowed_fallback_models_json.?.items.len);
     try std.testing.expect(model.compat.max_tokens_field.? == .max_tokens);
     try std.testing.expect(model.compat.thinking_format.? == .qwen);
     try std.testing.expectEqual(false, override.compat.supports_reasoning_effort.?);
@@ -847,7 +870,7 @@ test "models.json parses chat-template compat variables" {
     const path = try std.fs.path.join(gpa, &.{ root, "models.json" });
     defer gpa.free(path);
     try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = path, .data =
-        \\{"providers":{"corp":{"baseUrl":"https://example.test/v1","api":"openai-completions","models":[{"id":"r","reasoning":true,"thinkingLevelMap":{"high":"very_high"},"compat":{"thinkingFormat":"chat-template","chatTemplateKwargs":{"enable":{"$var":"thinking.enabled"},"effort":{"$var":"thinking.effort","omitWhenOff":true},"constant":7}}}]}}}
+        \\{"providers":{"corp":{"baseUrl":"https://example.test/v1","api":"openai-completions","models":[{"id":"r","reasoning":true,"thinkingLevelMap":{"high":"very_high"},"compat":{"thinkingFormat":"chat-template","chatTemplateKwargs":{"enable":{"$var":"thinking.enabled"},"effort":{"$var":"thinking.effort","omitWhenOff":true},"budget":{"$var":"thinking.budget"},"constant":7}}}]}}}
     });
     var file = try load(gpa, io, root);
     defer file.deinit();
@@ -856,6 +879,7 @@ test "models.json parses chat-template compat variables" {
     const kwargs = model.compat.chat_template_kwargs.?;
     try std.testing.expect(kwargs.get("enable").? == .object);
     try std.testing.expectEqual(@as(i64, 7), kwargs.get("constant").?.integer);
+    try std.testing.expectEqualStrings("thinking.budget", kwargs.get("budget").?.object.get("$var").?.string);
 }
 
 test "models.json merges OpenRouter and Vercel routing compat by field" {

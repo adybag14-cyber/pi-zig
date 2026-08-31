@@ -1,0 +1,14 @@
+MODEL_UPDATE_E2E_188=PASS
+LATEST_REQUESTS=1
+REPORT_REQUESTS=1
+LIFECYCLE_VERSION=0.84.4
+FULLSCREEN_MODEL_SELECTOR=PASS
+SELECTED_MODEL=openai/gpt-4.1-mini
+MODEL_CHANGE_ENTRIES=1
+MANAGED_RG_INSTALL=PASS
+MANAGED_RG_RELEASE_REQUESTS=1
+MANAGED_RG_DOWNLOAD_REQUESTS=1
+MANAGED_RG_CACHE_REUSE=PASS
+STDERR_BYTES=0
+
+{"exit": 0, "fullscreenModelSelector": true, "latestRequests": 1, "lifecycleVersion": "0.84.4", "managedRgDownloadRequests": 1, "managedRgPath": "agent/bin/rg", "managedRgReleaseRequests": 1, "modelChangeEntries": 1, "reportRequests": 1, "selectedModel": "openai/gpt-4.1-mini", "stderrBytes": 0}

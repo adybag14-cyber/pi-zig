@@ -1,0 +1,80 @@
+{
+  "checkpoint": 188,
+  "release_version": "1.1.0",
+  "upstream": {
+    "repository": "https://github.com/earendil-works/pi.git",
+    "main_commit": "853a80d26c90a14c1886f0ebb8ffaae133ca2185",
+    "release": "0.84.4",
+    "release_archive_sha256": "ca3958559b60f87ee44c84d94df8c3ee0b7eda575370402abb2d0ad9155cde4a",
+    "catalog_source_sha256": "cbb8df101cdeb3751d3a094a64c9214a4a7a72175bf187a039a02ee9724cb6af",
+    "changelog_sha256": "469ee5caa136ec101a560ea5b61e42195a1a7265e18b561cb1f03d20d9e6b418",
+    "models": 1290,
+    "providers": 39
+  },
+  "toolchains": {
+    "zig_windows": "0.16.0",
+    "zig_linux": "0.16.0",
+    "node_windows": "24.14.0",
+    "python_windows": "3.14",
+    "python_wsl": "3.10.12",
+    "sqlite_windows": "3.53.4"
+  },
+  "windows_full_graph": {
+    "aggregate_steps_passed": 13,
+    "aggregate_steps_total": 13,
+    "module_passed": 1035,
+    "module_skipped": 27,
+    "module_failed": 0,
+    "sqlite_repository_passed": 11,
+    "sqlite_cli_passed": 11,
+    "sqlite_cli_skipped": 6,
+    "sqlite_live_persistence_passed": 5,
+    "ordinary_executable_passed": 12,
+    "sqlite_executable_passed": 12
+  },
+  "release_safe_windows": {
+    "pi.exe": {
+      "bytes": 9042944,
+      "sha256": "fc73f94c1555de4d70aa72ba1664a9f05ec99a8bdcfd613d9771933f06af4cb4",
+      "version_output": "pi (pi-zig) coding agent 1.1.0"
+    },
+    "pi-sqlite.exe": {
+      "bytes": 809472,
+      "sha256": "3026d87872e4446c63e0fc1e30c84fab54370cba1f03c6e7d569225a5da8bb82",
+      "version_output": "pi-sqlite 1.1.0"
+    },
+    "pi-sqlite-live.exe": {
+      "bytes": 9168384,
+      "sha256": "4004867186e5fe575682800fa4249c4e3156b3abea718aad852258b1eba96caf",
+      "version_output": "pi (pi-zig) coding agent 1.1.0"
+    }
+  },
+  "wsl_executable_gates": {
+    "model_update": "pass",
+    "summary_request_options": "pass",
+    "session_update": "pass",
+    "project_settings": "pass",
+    "settings_screen": "pass",
+    "stderr_bytes": 0
+  },
+  "source_audit": {
+    "zig_files": 201,
+    "zig_lines": 127642,
+    "synthetic_files": 0
+  },
+  "openrouter_live": {
+    "credential": "ready oauth",
+    "model": "openrouter/free",
+    "reachable": true,
+    "paid_traffic_used": false,
+    "successful_completion": false,
+    "successful_tool_loop": false,
+    "terminal_status": 429,
+    "limit_source": "openrouter_free_tier_daily",
+    "remaining": 0,
+    "reset_utc": "2026-09-01T00:00:00Z",
+    "auto_retry_start_events": 0,
+    "auto_retry_end_events": 0,
+    "agent_end_events": 1
+  }
+}

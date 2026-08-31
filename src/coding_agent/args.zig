@@ -42,6 +42,7 @@ pub const Args = struct {
     prompt_templates: std.ArrayList([]const u8) = .empty,
     no_prompt_templates: bool = false,
     themes: std.ArrayList([]const u8) = .empty,
+    use_theme: ?[]const u8 = null,
     no_themes: bool = false,
     no_context_files: bool = false,
     list_models: bool = false,
@@ -63,6 +64,7 @@ pub fn parseArgs(arena: std.mem.Allocator, raw_args: []const []const u8) !Args {
     var result: Args = .{};
     // skip argv[0]
     var i: usize = if (raw_args.len > 0) 1 else 0;
+    var options_ended = false;
 
     // Detect package / monorepo C subcommands early
     if (i < raw_args.len) {
@@ -89,7 +91,22 @@ pub fn parseArgs(arena: std.mem.Allocator, raw_args: []const []const u8) !Args {
     while (i < raw_args.len) : (i += 1) {
         const arg = raw_args[i];
 
-        if (std.mem.eql(u8, arg, "--help") or std.mem.eql(u8, arg, "-h")) {
+        if (options_ended) {
+            if (std.mem.startsWith(u8, arg, "@@")) {
+                try result.messages.append(arena, arg[1..]);
+            } else if (std.mem.eql(u8, arg, "@")) {
+                try result.messages.append(arena, arg);
+            } else if (std.mem.startsWith(u8, arg, "@")) {
+                try result.file_args.append(arena, arg[1..]);
+            } else {
+                try result.messages.append(arena, arg);
+            }
+            continue;
+        }
+
+        if (std.mem.eql(u8, arg, "--")) {
+            options_ended = true;
+        } else if (std.mem.eql(u8, arg, "--help") or std.mem.eql(u8, arg, "-h")) {
             result.help = true;
         } else if (std.mem.eql(u8, arg, "--version") or std.mem.eql(u8, arg, "-v")) {
             result.version = true;
@@ -199,6 +216,10 @@ pub fn parseArgs(arena: std.mem.Allocator, raw_args: []const []const u8) !Args {
             i += 1;
             if (i >= raw_args.len) return error.MissingArg;
             try result.themes.append(arena, raw_args[i]);
+        } else if (std.mem.eql(u8, arg, "--use-theme")) {
+            i += 1;
+            if (i >= raw_args.len) return error.MissingArg;
+            result.use_theme = raw_args[i];
         } else if (std.mem.eql(u8, arg, "--no-themes")) {
             result.no_themes = true;
         } else if (std.mem.eql(u8, arg, "--no-skills") or std.mem.eql(u8, arg, "-ns")) {
@@ -329,6 +350,7 @@ pub fn printHelp(writer: anytype) !void {
         \\  --no-skills                Disable skill discovery
         \\  --prompt-template <path>   Load prompt template file/directory (repeatable)
         \\  --no-prompt-templates      Disable prompt templates
+        \\  --use-theme <name[/name]> Select an initial theme for this run only
         \\  -e, --extension <source>   Load extension from path, npm, or Git (repeatable)
         \\  -ne, --no-extensions       Disable automatic extension discovery
         \\  -nc, --no-context-files    Skip AGENTS.md / CLAUDE.md
@@ -346,7 +368,7 @@ pub fn printHelp(writer: anytype) !void {
         \\  PI_AGENT_DIR, PI_SESSION_DIR, GROQ_API_KEY, OPENROUTER_API_KEY, XAI_API_KEY
         \\
         \\Interactive slash commands:
-        \\  /help /quit /exit /session /new /name /model /compact /export
+        \\  /help /quit /exit /session /new /name /model /thinking /compact /export /share
         \\  /import /fork /clone /tree /reload /hotkeys /changelog /copy
         \\  /login /logout /settings /resume and loaded prompt/skill commands
         \\
@@ -385,9 +407,9 @@ test "parse original resource session model and tui options" {
     var arena_impl: std.heap.ArenaAllocator = .init(std.testing.allocator);
     defer arena_impl.deinit();
     const raw = [_][]const u8{
-        "pi",          "--session-id", "build.42",       "--models", "anthropic/*,*sonnet*:high",
-        "-ne",         "-e",           "./explicit-ext", "--theme",  "dark.json",
-        "--no-themes", "--tui-mode",   "fullscreen",
+        "pi",          "--session-id", "build.42",       "--models",   "anthropic/*,*sonnet*:high",
+        "-ne",         "-e",           "./explicit-ext", "--theme",    "dark.json",
+        "--no-themes", "--use-theme",  "dark/light",     "--tui-mode", "fullscreen",
     };
     const args = try parseArgs(arena_impl.allocator(), &raw);
     try std.testing.expectEqualStrings("build.42", args.session_id.?);
@@ -396,6 +418,7 @@ test "parse original resource session model and tui options" {
     try std.testing.expectEqualStrings("./explicit-ext", args.extensions.items[0]);
     try std.testing.expectEqualStrings("dark.json", args.themes.items[0]);
     try std.testing.expect(args.no_themes);
+    try std.testing.expectEqualStrings("dark/light", args.use_theme.?);
     try std.testing.expectEqual(TuiMode.fullscreen, args.tui_mode.?);
 }
 
@@ -418,11 +441,23 @@ test "extension long flags preserve values and triple-dash print messages" {
     try std.testing.expectEqualStrings("---literal", args.messages.items[0]);
 }
 
+test "end-of-options preserves dash prompts and at-file handling" {
+    var arena_impl: std.heap.ArenaAllocator = .init(std.testing.allocator);
+    defer arena_impl.deinit();
+    const args = try parseArgs(arena_impl.allocator(), &.{ "pi", "--", "--answer briefly", "@README.md", "- summarize" });
+    try std.testing.expectEqual(@as(usize, 1), args.file_args.items.len);
+    try std.testing.expectEqualStrings("README.md", args.file_args.items[0]);
+    try std.testing.expectEqual(@as(usize, 2), args.messages.items.len);
+    try std.testing.expectEqualStrings("--answer briefly", args.messages.items[0]);
+    try std.testing.expectEqualStrings("- summarize", args.messages.items[1]);
+}
+
 test "invalid tui mode and unknown short option are errors" {
     var arena_impl: std.heap.ArenaAllocator = .init(std.testing.allocator);
     defer arena_impl.deinit();
     try std.testing.expectError(error.InvalidTuiMode, parseArgs(arena_impl.allocator(), &.{ "pi", "--tui-mode", "floating" }));
     try std.testing.expectError(error.UnknownOption, parseArgs(arena_impl.allocator(), &.{ "pi", "-z" }));
+    try std.testing.expectError(error.MissingArg, parseArgs(arena_impl.allocator(), &.{ "pi", "--use-theme" }));
 }
 
 test "repair package command preserves scope and output arguments" {

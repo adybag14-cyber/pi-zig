@@ -1,0 +1,16 @@
+{
+  "exit": 0,
+  "followUpMode": "all",
+  "fullscreen": true,
+  "liveReload": true,
+  "liveTreeFilter": true,
+  "nestedProviderPreserved": true,
+  "quietStartup": true,
+  "retryEnabled": false,
+  "retryMaxRetries": 5,
+  "stderrBytes": 0,
+  "steeringMode": "all",
+  "terminalRestored": true,
+  "treeFilterMode": "no-tools",
+  "unrelatedSettingPreserved": true
+}

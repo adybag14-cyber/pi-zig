@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Real pseudo-terminal validation for the native checkpoint 171 settings screen."""
+"""Real pseudo-terminal validation for the native checkpoint 188 settings screen."""
 from __future__ import annotations
 
 import argparse
@@ -221,7 +221,7 @@ def main() -> int:
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
     result = run(args.binary.resolve(), args.report.resolve() if args.report else None)
-    print("SETTINGS_SCREEN_E2E_171=PASS")
+    print("SETTINGS_SCREEN_E2E_188=PASS")
     for key, value in result.items():
         print(f"{key}={value}")
     return 0
