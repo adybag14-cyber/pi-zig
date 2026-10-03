@@ -35,6 +35,7 @@ pub const McpClient = struct {
     protocol_version: ?[]u8 = null,
     notification_count: usize = 0,
     unknown_response_count: usize = 0,
+    request_timeout_ms: u32 = 30_000,
 
     pub fn deinit(self: *McpClient) void {
         for (self.tools.items) |*t| t.deinit(self.gpa);
@@ -51,6 +52,10 @@ pub const McpClient = struct {
     /// Spawn MCP server: command is argv for the server process.
     pub fn connect(self: *McpClient, argv: []const []const u8) !void {
         if (self.child != null) return error.AlreadyConnected;
+        self.input.bytes.clearRetainingCapacity();
+        if (self.protocol_version) |version| self.gpa.free(version);
+        self.protocol_version = null;
+        self.next_id = 1;
         self.child = try std.process.spawn(self.io, .{
             .argv = argv,
             .stdin = .pipe,
@@ -68,8 +73,7 @@ pub const McpClient = struct {
         const init_req =
             \\{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"pi-zig","version":"1.1.0"}}}
         ;
-        try self.writeLine(init_req);
-        const init_line = try self.readResponse(1);
+        const init_line = try self.exchange(init_req, 1);
         defer self.gpa.free(init_line);
         const parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, init_line, .{});
         defer parsed.deinit();
@@ -108,6 +112,7 @@ pub const McpClient = struct {
         var staged = McpClient{ .gpa = self.gpa, .io = self.io };
         defer staged.deinit();
         for (0..1000) |_| {
+            if (self.next_id > 9_007_199_254_740_991) return error.McpRequestIdExhausted;
             const id = self.next_id;
             self.next_id += 1;
             var request: std.Io.Writer.Allocating = .init(allocator);
@@ -118,8 +123,7 @@ pub const McpClient = struct {
                 try request.writer.writeByte('}');
             }
             try request.writer.writeByte('}');
-            try self.writeLine(request.written());
-            const line = try self.readResponse(id);
+            const line = try self.exchange(request.written(), id);
             defer self.gpa.free(line);
             try staged.parseToolsList(line);
             const parsed = try std.json.parseFromSlice(std.json.Value, allocator, line, .{ .allocate = .alloc_always });
@@ -141,6 +145,7 @@ pub const McpClient = struct {
     }
 
     pub fn callTool(self: *McpClient, name: []const u8, args_json: []const u8) ![]u8 {
+        if (self.next_id > 9_007_199_254_740_991) return error.McpRequestIdExhausted;
         const arguments = try std.json.parseFromSlice(std.json.Value, self.gpa, if (args_json.len > 0) args_json else "{}", .{});
         defer arguments.deinit();
         if (arguments.value != .object) return error.InvalidMcpArguments;
@@ -157,8 +162,7 @@ pub const McpClient = struct {
             if (args_json.len > 0) args_json else "{}",
         });
         defer self.gpa.free(req);
-        try self.writeLine(req);
-        return try self.readResponse(id); // caller frees
+        return try self.exchange(req, id); // caller frees
     }
 
     fn parseToolsList(self: *McpClient, line: []const u8) !void {
@@ -203,6 +207,52 @@ pub const McpClient = struct {
         try w.interface.writeAll(line);
         try w.interface.writeAll("\n");
         try w.interface.flush();
+    }
+
+    fn exchangeBlocking(self: *McpClient, request: []const u8, expected_id: u64) anyerror![]u8 {
+        try self.writeLine(request);
+        return self.readResponse(expected_id);
+    }
+
+    fn deadline(io: Io, milliseconds: u32) Io.Cancelable!void {
+        try io.sleep(.fromMilliseconds(milliseconds), .awake);
+    }
+
+    fn exchange(self: *McpClient, request: []const u8, expected_id: u64) ![]u8 {
+        if (self.child == null) return self.exchangeBlocking(request, expected_id);
+        const Outcome = union(enum) { response: anyerror![]u8, deadline: Io.Cancelable!void };
+        var outcomes: [2]Outcome = undefined;
+        var select = Io.Select(Outcome).init(self.io, &outcomes);
+        // Drain raced successful reads, rather than discarding owned allocations.
+        defer while (select.cancel()) |remaining| switch (remaining) {
+            .response => |result| if (result) |bytes| self.gpa.free(bytes) else |_| {},
+            .deadline => {},
+        };
+        try select.concurrent(.response, exchangeBlocking, .{ self, request, expected_id });
+        try select.concurrent(.deadline, deadline, .{ self.io, self.request_timeout_ms });
+        const completed = select.await() catch |err| {
+            // Join outstanding I/O before releasing any process handles it uses.
+            while (select.cancel()) |remaining| switch (remaining) {
+                .response => |result| if (result) |bytes| self.gpa.free(bytes) else |_| {},
+                .deadline => {},
+            };
+            if (self.child) |*child| child.kill(self.io);
+            self.child = null;
+            return err;
+        };
+        switch (completed) {
+            .response => |result| return result,
+            .deadline => |result| {
+                try result;
+                while (select.cancel()) |remaining| switch (remaining) {
+                    .response => |response| if (response) |bytes| self.gpa.free(bytes) else |_| {},
+                    .deadline => {},
+                };
+                if (self.child) |*child| child.kill(self.io);
+                self.child = null;
+                return error.McpTimeout;
+            },
+        }
     }
 
     fn readResponse(self: *McpClient, expected_id: u64) ![]u8 {
@@ -284,6 +334,7 @@ pub const McpClient = struct {
                     try self.input.finish();
                     return error.McpConnectionClosed;
                 },
+                error.Canceled => return error.Canceled,
                 else => return error.ReadFailed,
             };
             try self.input.append(self.gpa, buffer[0..size]);

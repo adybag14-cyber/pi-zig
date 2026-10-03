@@ -333,6 +333,7 @@ pub fn render(gpa: std.mem.Allocator, source: []const u8) ![]u8 {
 }
 
 pub fn importTyped(gpa: std.mem.Allocator, raw_catalog: []const u8, version: []const u8, commit: []const u8, archive_digest: []const u8, revision: []const u8) ![]u8 {
+    _ = std.SemanticVersion.parse(version) catch return error.InvalidUpstreamVersion;
     if (commit.len != 40 or archive_digest.len != 64) return error.InvalidCatalogProvenance;
     for (commit) |byte| if (!std.ascii.isHex(byte)) return error.InvalidCatalogProvenance;
     for (archive_digest) |byte| if (!std.ascii.isHex(byte)) return error.InvalidCatalogProvenance;

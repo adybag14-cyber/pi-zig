@@ -28,6 +28,14 @@ fn writeRecord(writer: *std.Io.Writer, value: std.json.Value) !void {
     try writer.flush();
 }
 
+fn writeFailure(gpa: std.mem.Allocator, writer: *std.Io.Writer, message: []const u8) !void {
+    var failure: std.json.ObjectMap = .empty;
+    defer failure.deinit(gpa);
+    try failure.put(gpa, "ok", .{ .bool = false });
+    try failure.put(gpa, "error", .{ .string = message });
+    try writeRecord(writer, .{ .object = failure });
+}
+
 fn requiredText(object: std.json.ObjectMap, name: []const u8) ![]const u8 {
     const value = object.get(name) orelse return error.MissingWorkerField;
     if (value != .string) return error.InvalidWorkerField;
@@ -110,6 +118,9 @@ pub fn normalizeToolResult(gpa: std.mem.Allocator, raw: []const u8, tool_name: [
 
 fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, object: std.json.ObjectMap) ![]u8 {
     const kind = try requiredText(object, "kind");
+    const snapshot = try encoded(gpa, object.get("context") orelse std.json.Value{ .object = .empty });
+    defer gpa.free(snapshot);
+    try bindings.setContext(snapshot);
     if (object.get("flags")) |flags| {
         const source = try encoded(gpa, flags);
         defer gpa.free(source);
@@ -180,7 +191,10 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
         defer line.deinit(gpa);
         while (true) {
             const byte = input.interface.takeByte() catch |err| switch (err) {
-                error.EndOfStream => return,
+                error.EndOfStream => {
+                    if (std.mem.trim(u8, line.items, " \t\r").len != 0) return error.IncompleteNativeWorkerRequest;
+                    return;
+                },
                 else => return err,
             };
             if (byte == '\n') break;
@@ -191,9 +205,18 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
         var arena: std.heap.ArenaAllocator = .init(gpa);
         defer arena.deinit();
         const allocator = arena.allocator();
-        const request = try std.json.parseFromSliceLeaky(std.json.Value, allocator, line.items, .{});
-        if (request != .object) return error.InvalidWorkerRequest;
-        const kind = try requiredText(request.object, "kind");
+        const request = std.json.parseFromSliceLeaky(std.json.Value, allocator, line.items, .{}) catch |err| {
+            try writeFailure(allocator, writer, @errorName(err));
+            continue;
+        };
+        if (request != .object) {
+            try writeFailure(allocator, writer, "InvalidWorkerRequest");
+            continue;
+        }
+        const kind = requiredText(request.object, "kind") catch |err| {
+            try writeFailure(allocator, writer, @errorName(err));
+            continue;
+        };
         if (std.mem.eql(u8, kind, "shutdown")) {
             try writer.writeAll("\x1e{\"ok\":true,\"result\":{}}\n");
             try writer.flush();
@@ -201,10 +224,7 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
         }
         engine.beginInvocation();
         const result = invoke(gpa, bindings, request.object) catch |err| {
-            var failure: std.json.ObjectMap = .empty;
-            try failure.put(allocator, "ok", .{ .bool = false });
-            try failure.put(allocator, "error", .{ .string = engine.last_error orelse @errorName(err) });
-            try writeRecord(writer, .{ .object = failure });
+            try writeFailure(allocator, writer, engine.last_error orelse @errorName(err));
             continue;
         };
         defer gpa.free(result);

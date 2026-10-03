@@ -2,6 +2,11 @@
 const std = @import("std");
 
 pub fn main(init: std.process.Init) !void {
+    const args = try init.minimal.args.toSlice(init.arena.allocator());
+    if (args.len == 2 and std.mem.eql(u8, args[1], "--stall")) {
+        try init.io.sleep(.fromSeconds(3600), .awake);
+        return;
+    }
     var read_buffer: [4096]u8 = undefined;
     var input = std.Io.File.stdin().readerStreaming(init.io, &read_buffer);
     var write_buffer: [4096]u8 = undefined;

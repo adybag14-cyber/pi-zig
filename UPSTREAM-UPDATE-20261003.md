@@ -98,6 +98,29 @@ Completed evidence:
   confirmation of the new commit remains required.
 - The current full Windows regression graph passes all 38 aggregate steps,
   including the real MCP fixture, generated catalog and linked native worker.
+- MCP request deadlines now bound pipe writes/reads, cancel and join outstanding
+  I/O, and close only the client-owned server on timeout. A real stalled-server
+  fixture verifies handshake timeout and cleanup. Reconnection clears old input
+  and protocol state; generated request IDs stay in JavaScript's exact range.
+- Native filesystem promises provide actual C-engine Promise values, ordinary
+  asynchronous settlement and catchable failures. Exclusive writes are retained;
+  unsupported encodings/write flags fail before changing existing files.
+- Native read-only extension context fields/methods project cloned session/model
+  snapshots. Invocation tokens guard retained property getters and callbacks;
+  expired contexts and later invocations cannot reuse old capabilities. The
+  self-process fixture also verifies malformed-request recovery and context data.
+- Replaced the upstream catalog/changelog import scripts with native commands.
+  Changelog import reads immutable Git objects and accepts future major and
+  prerelease package versions, instead of reading modified checkout files.
+- Replaced the Python artifact inventory generator with native generation and
+  verification. Independent SHA-256 checks match all 700 current source files;
+  deliberate inventory tampering is rejected. The manifest records in-progress
+  parity explicitly and distinguishes catalog/source-archive provenance.
+- Hosted Windows, Linux and macOS CI pass commit `f3137b9` (typed catalog and
+  base MCP contracts). The subsequent native host/tooling Windows graph passes
+  all 38 steps. Additional host/tooling changes still require hosted checks.
+- Vendor verification rejects entries outside each pinned digest inventory as
+  well as changed/malformed digests. A deliberate extra C source file is rejected.
 
 Required outstanding work:
 

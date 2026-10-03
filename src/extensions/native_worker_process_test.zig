@@ -12,7 +12,7 @@ test "native extension process loads TypeScript imports and exchanges real proto
         .sub_path = "extension.ts",
         .data = "import { Type } from 'typebox'; import { marker } from './marker.ts'; " ++
             "export default (pi: any) => { pi.on('input', async (event: any) => ({action:'transform',text:event.text+':'+marker})); " ++
-            "pi.registerTool({name:'echo', parameters:Type.Object({text:Type.String()}), async execute(id:string,args:any) {return {content:[{type:'text',text:id+':'+args.text}],details:{marker}};}}); };",
+            "pi.registerTool({name:'echo', parameters:Type.Object({text:Type.String()}), async execute(id:string,args:any,signal:any,update:any,ctx:any) {return {content:[{type:'text',text:id+':'+args.text}],details:{marker,session:ctx.sessionManager.getSessionId(),trusted:ctx.isProjectTrusted()}};}}); };",
     });
     var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
     const length = try tmp.dir.realPath(io, &path_buffer);
@@ -39,8 +39,9 @@ test "native extension process loads TypeScript imports and exchanges real proto
     var write_buffer: [2048]u8 = undefined;
     var stdin = child.stdin.?.writerStreaming(io, &write_buffer);
     try stdin.interface.writeAll(
-        "{\"kind\":\"hook\",\"name\":\"before_prompt\",\"payload\":{\"prompt\":\"hello\"}}\n" ++
-            "{\"kind\":\"tool\",\"name\":\"echo\",\"toolCallId\":\"call-real\",\"payload\":{\"text\":\"pi\"}}\n" ++
+        "{\n[]\n{\"kind\":\"unsupported\"}\n" ++
+            "{\"kind\":\"hook\",\"name\":\"before_prompt\",\"payload\":{\"prompt\":\"hello\"}}\n" ++
+            "{\"kind\":\"tool\",\"name\":\"echo\",\"toolCallId\":\"call-real\",\"payload\":{\"text\":\"pi\"},\"context\":{\"sessionId\":\"worker-session\",\"projectTrusted\":true}}\n" ++
             "{\"kind\":\"shutdown\"}\n",
     );
     try stdin.interface.flush();
@@ -64,9 +65,12 @@ test "native extension process loads TypeScript imports and exchanges real proto
     try std.testing.expect(std.mem.indexOf(u8, output, "\"type\":\"ready\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, output, "hello:native-worker") != null);
     try std.testing.expect(std.mem.indexOf(u8, output, "\"content\":\"call-real:pi\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, output, "\"session\":\"worker-session\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, output, "\"trusted\":true") != null);
+    try std.testing.expectEqual(@as(usize, 3), std.mem.count(u8, output, "\"ok\":false"));
     var records: usize = 0;
     for (output) |byte| if (byte == 0x1e) {
         records += 1;
     };
-    try std.testing.expectEqual(@as(usize, 4), records);
+    try std.testing.expectEqual(@as(usize, 7), records);
 }

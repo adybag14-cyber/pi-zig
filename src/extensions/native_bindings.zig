@@ -4,6 +4,30 @@ const engine_mod = @import("engine.zig");
 const typebox = @import("typebox.zig");
 const c = engine_mod.c;
 const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel };
+const ContextMethod = enum(c_int) {
+    mode,
+    hasUI,
+    cwd,
+    model,
+    scopedModels,
+    thinkingLevel,
+    sessionManager,
+    isIdle,
+    isProjectTrusted,
+    hasPendingMessages,
+    getContextUsage,
+    getSystemPrompt,
+    getCwd,
+    getSessionDir,
+    getSessionId,
+    getSessionFile,
+    getSessionName,
+    getLeafId,
+    getEntries,
+    getBranch,
+    buildContextEntries,
+    getHeader,
+};
 
 pub const Bindings = struct {
     gpa: std.mem.Allocator,
@@ -16,6 +40,8 @@ pub const Bindings = struct {
     flag_overrides: std.StringHashMapUnmanaged(c.JSValue) = .empty,
     actions: std.ArrayList(c.JSValue) = .empty,
     invocation_active: bool = false,
+    invocation_generation: u32 = 0,
+    context_snapshot: ?c.JSValue = null,
 
     pub fn init(gpa: std.mem.Allocator, engine: *engine_mod.Engine) !*Bindings {
         if (engine.host_data != null) return error.EngineHostAlreadyAttached;
@@ -49,6 +75,7 @@ pub const Bindings = struct {
         for (self.actions.items) |action| self.engine.freeValue(action);
         self.actions.deinit(self.gpa);
         self.engine.freeValue(self.api);
+        if (self.context_snapshot) |snapshot| self.engine.freeValue(snapshot);
         const gpa = self.gpa;
         gpa.destroy(self);
     }
@@ -170,6 +197,8 @@ pub const Bindings = struct {
 
     fn beginActions(self: *Bindings) !void {
         if (self.invocation_active) return error.ExtensionInvocationBusy;
+        if (self.invocation_generation == std.math.maxInt(u32)) return error.ExtensionInvocationGenerationExhausted;
+        self.invocation_generation += 1;
         for (self.actions.items) |action| self.engine.freeValue(action);
         self.actions.clearRetainingCapacity();
         self.invocation_active = true;
@@ -228,6 +257,134 @@ pub const Bindings = struct {
         return self.engine.checked(c.JS_ParseJSON(self.engine.context, terminated.ptr, source.len, filename));
     }
 
+    pub fn setContext(self: *Bindings, source: []const u8) !void {
+        if (self.invocation_active) return error.ExtensionInvocationBusy;
+        const snapshot = try self.parseJson(source, "extension-context");
+        errdefer self.engine.freeValue(snapshot);
+        if (!c.JS_IsObject(snapshot) or c.JS_IsArray(snapshot)) return error.InvalidExtensionContext;
+        inline for (.{ "hasUI", "idle", "projectTrusted", "hasPendingMessages" }) |name| {
+            const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, name));
+            defer self.engine.freeValue(value);
+            if (!c.JS_IsUndefined(value) and !c.JS_IsBool(value)) return error.InvalidExtensionContext;
+        }
+        inline for (.{ "mode", "cwd", "thinkingLevel", "systemPrompt", "sessionId" }) |name| {
+            const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, name));
+            defer self.engine.freeValue(value);
+            if (!c.JS_IsUndefined(value) and !c.JS_IsString(value)) return error.InvalidExtensionContext;
+        }
+        inline for (.{ "sessionDir", "sessionFile", "sessionName", "sessionLeafId" }) |name| {
+            const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, name));
+            defer self.engine.freeValue(value);
+            if (!c.JS_IsUndefined(value) and !c.JS_IsNull(value) and !c.JS_IsString(value)) return error.InvalidExtensionContext;
+        }
+        inline for (.{ "scopedModels", "sessionEntries", "sessionBranch" }) |name| {
+            const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, name));
+            defer self.engine.freeValue(value);
+            if (!c.JS_IsUndefined(value) and !c.JS_IsArray(value)) return error.InvalidExtensionContext;
+        }
+        if (self.context_snapshot) |old| self.engine.freeValue(old);
+        self.context_snapshot = snapshot;
+    }
+
+    fn contextFunction(self: *Bindings, name: [:0]const u8, kind: ContextMethod, snapshot: c.JSValue, generation: u32) !c.JSValue {
+        const token = c.JS_NewInt64(self.engine.context, generation);
+        defer self.engine.freeValue(token);
+        var data = [_]c.JSValue{ token, snapshot };
+        return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), data.len, &data));
+    }
+
+    fn createContext(self: *Bindings) !c.JSValue {
+        const snapshot = if (self.context_snapshot) |value| c.JS_DupValue(self.engine.context, value) else try self.engine.checked(c.JS_NewObject(self.engine.context));
+        defer self.engine.freeValue(snapshot);
+        const context = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        errdefer self.engine.freeValue(context);
+        inline for (std.meta.fields(ContextMethod)) |field| {
+            const kind: ContextMethod = @enumFromInt(field.value);
+            if (@intFromEnum(kind) <= @intFromEnum(ContextMethod.getSystemPrompt)) {
+                const name: [:0]const u8 = field.name;
+                const function = try self.contextFunction(name, kind, snapshot, self.invocation_generation);
+                const status = if (@intFromEnum(kind) <= @intFromEnum(ContextMethod.sessionManager)) property: {
+                    const atom = c.JS_NewAtom(self.engine.context, name.ptr);
+                    defer c.JS_FreeAtom(self.engine.context, atom);
+                    break :property c.JS_DefinePropertyGetSet(self.engine.context, context, atom, function, c.pi_js_undefined(), c.JS_PROP_ENUMERABLE);
+                } else c.JS_DefinePropertyValueStr(self.engine.context, context, name.ptr, function, c.JS_PROP_C_W_E);
+                if (status < 0) return error.JavaScriptException;
+            }
+        }
+        return context;
+    }
+
+    fn contextCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return c.JS_ThrowTypeError(context, "Native extension context is detached")));
+        var generation: i64 = 0;
+        if (c.JS_ToInt64(context, &generation, data[0]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+        if (!self.invocation_active or generation != self.invocation_generation) return c.JS_ThrowTypeError(context, "Stale native extension context");
+        const arguments: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
+        return self.contextValue(@enumFromInt(magic), data[1], arguments) catch |err| c.JS_ThrowTypeError(context, "Native extension context failed: %s", @as([*:0]const u8, @errorName(err)));
+    }
+
+    fn contextValue(self: *Bindings, kind: ContextMethod, snapshot: c.JSValue, _: []c.JSValue) !c.JSValue {
+        if (kind == .sessionManager) {
+            const manager = try self.engine.checked(c.JS_NewObject(self.engine.context));
+            errdefer self.engine.freeValue(manager);
+            inline for (std.meta.fields(ContextMethod)) |field| {
+                if (field.value >= @intFromEnum(ContextMethod.getCwd)) {
+                    const name: [:0]const u8 = field.name;
+                    const function = try self.contextFunction(name, @enumFromInt(field.value), snapshot, self.invocation_generation);
+                    if (c.JS_DefinePropertyValueStr(self.engine.context, manager, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+                }
+            }
+            return manager;
+        }
+        const key: [*:0]const u8 = switch (kind) {
+            .mode => "mode",
+            .hasUI => "hasUI",
+            .cwd, .getCwd => "cwd",
+            .model => "model",
+            .scopedModels => "scopedModels",
+            .thinkingLevel => "thinkingLevel",
+            .isIdle => "idle",
+            .isProjectTrusted => "projectTrusted",
+            .hasPendingMessages => "hasPendingMessages",
+            .getContextUsage => "contextUsage",
+            .getSystemPrompt => "systemPrompt",
+            .getSessionDir => "sessionDir",
+            .getSessionId => "sessionId",
+            .getSessionFile => "sessionFile",
+            .getSessionName => "sessionName",
+            .getLeafId => "sessionLeafId",
+            .getEntries => "sessionEntries",
+            .getBranch, .buildContextEntries => "sessionBranch",
+            .getHeader => "sessionHeader",
+            .sessionManager => unreachable,
+        };
+        const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, key));
+        defer self.engine.freeValue(value);
+        switch (kind) {
+            .isIdle => return c.pi_js_bool(self.engine.context, @intFromBool(!c.JS_IsBool(value) or c.JS_ToBool(self.engine.context, value) == 1)),
+            .hasUI, .isProjectTrusted, .hasPendingMessages => return c.pi_js_bool(self.engine.context, c.JS_ToBool(self.engine.context, value)),
+            .mode => if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewString(self.engine.context, "print")),
+            .thinkingLevel => if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewString(self.engine.context, "off")),
+            .getSystemPrompt => if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewString(self.engine.context, "")),
+            .cwd, .getCwd => if (c.JS_IsUndefined(value)) {
+                const io = self.engine.native_io orelse return error.NativeContextCwdUnavailable;
+                var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+                const length = try std.Io.Dir.cwd().realPath(io, &buffer);
+                return self.engine.checked(c.JS_NewStringLen(self.engine.context, &buffer, length));
+            },
+            .scopedModels, .getEntries, .getBranch, .buildContextEntries => if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewArray(self.engine.context)),
+            .getSessionDir, .getSessionFile, .getSessionName, .getLeafId, .getHeader => if (c.JS_IsNull(value)) return c.pi_js_undefined(),
+            else => {},
+        }
+        if (c.JS_IsObject(value)) {
+            const encoded = try self.engine.stringify(value);
+            defer self.gpa.free(encoded);
+            return self.parseJson(encoded, "extension-context-snapshot");
+        }
+        return c.JS_DupValue(self.engine.context, value);
+    }
+
     pub fn setFlags(self: *Bindings, source: []const u8) !void {
         const overrides = try self.parseJson(source, "extension-flags");
         defer self.engine.freeValue(overrides);
@@ -273,7 +430,7 @@ pub const Bindings = struct {
         defer self.invocation_active = false;
         const event = try self.parseJson(payload_json, "extension-hook");
         defer self.engine.freeValue(event);
-        const context = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        const context = try self.createContext();
         defer self.engine.freeValue(context);
         const result = try self.engine.checked(c.JS_NewObject(self.engine.context));
         defer self.engine.freeValue(result);
@@ -314,7 +471,7 @@ pub const Bindings = struct {
         if (!c.JS_IsFunction(self.engine.context, handler)) return error.InvalidExtensionCommand;
         const arguments = try self.engine.checked(c.JS_NewStringLen(self.engine.context, raw.ptr, raw.len));
         defer self.engine.freeValue(arguments);
-        const context = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        const context = try self.createContext();
         defer self.engine.freeValue(context);
         var args = [_]c.JSValue{ arguments, context };
         const promise = try self.engine.checked(c.JS_Call(self.engine.context, handler, options, args.len, &args));
@@ -437,7 +594,7 @@ pub const Bindings = struct {
         defer self.engine.freeValue(args);
         const call = try self.engine.checked(c.JS_NewStringLen(self.engine.context, call_id.ptr, call_id.len));
         defer self.engine.freeValue(call);
-        const context = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        const context = try self.createContext();
         defer self.engine.freeValue(context);
         var parameters = [_]c.JSValue{ call, args, c.pi_js_undefined(), c.pi_js_undefined(), context };
         const promise = try self.engine.checked(c.JS_Call(self.engine.context, execute, tool, parameters.len, &parameters));
@@ -448,6 +605,28 @@ pub const Bindings = struct {
         return self.engine.stringify(result);
     }
 };
+
+test "native contexts clone snapshots and reject retained getters across invocation generations" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(std.testing.allocator, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory("export default pi => { let previous; pi.registerTool({name:'context',execute(id,args,signal,update,ctx) { let stale=false; if(previous) {try { previous.cwd; } catch {stale=true;}} const copy=ctx.sessionManager.getEntries(); copy[0].data.value='mutated'; const pristine=ctx.sessionManager.getEntries()[0].data.value; previous=ctx; globalThis.retainedContext=ctx; return {details:{cwd:ctx.cwd,session:ctx.sessionManager.getSessionId(),model:ctx.model.id,trusted:ctx.isProjectTrusted(),idle:ctx.isIdle(),prompt:ctx.getSystemPrompt(),pristine,stale}}; }}); };", "context-fixture.js");
+    try bindings.setContext("{\"cwd\":\"first\",\"sessionId\":\"session-one\",\"model\":{\"id\":\"fixture\"},\"projectTrusted\":true,\"idle\":false,\"systemPrompt\":\"native-prompt\",\"sessionEntries\":[{\"id\":\"entry\",\"data\":{\"value\":\"original\"}}]}");
+    const first = try bindings.invokeTool("context", "call-one", "{}");
+    defer std.testing.allocator.free(first);
+    try std.testing.expect(std.mem.indexOf(u8, first, "\"pristine\":\"original\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, first, "\"trusted\":true") != null);
+    try std.testing.expect(std.mem.indexOf(u8, first, "\"idle\":false") != null);
+    try std.testing.expectError(error.JavaScriptException, engine.eval("retainedContext.cwd", "expired-context.js", c.JS_EVAL_TYPE_GLOBAL));
+    engine.beginInvocation();
+    try std.testing.expectError(error.InvalidExtensionContext, bindings.setContext("{\"projectTrusted\":\"true\"}"));
+    const second = try bindings.invokeTool("context", "call-two", "{}");
+    defer std.testing.allocator.free(second);
+    try std.testing.expect(std.mem.indexOf(u8, second, "\"stale\":true") != null);
+    try std.testing.expect(std.mem.indexOf(u8, second, "\"cwd\":\"first\"") != null);
+    try std.testing.expectError(error.JavaScriptException, engine.eval("retainedContext.sessionManager.getEntries()", "expired-session.js", c.JS_EVAL_TYPE_GLOBAL));
+}
 
 test "native Pi factory registers typed tools commands flags and hooks then executes an async tool" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});

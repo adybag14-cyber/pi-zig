@@ -1,8 +1,30 @@
 {
-  "checkpoint": 188,
+  "schema_version": 2,
+  "checkpoint": 189,
+  "status": "in_progress",
+  "parity_certified": false,
   "release_version": "1.1.0",
+  "root": "pi-zig",
   "complete_inventory": "FILES.sha256",
-  "continuation": "CONTINUATION.md",
+  "continuation": "UPSTREAM-UPDATE-20261003.md",
+  "file_count_excluding_FILES_sha256": 701,
+  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 27070990,
+  "generated_catalog": {
+    "models": 1601,
+    "providers": 42,
+    "upstream_commit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+    "upstream_version": "1.0.1",
+    "upstream_source_archive_sha256": "ab8904d35c27cf58df3a79e6fcdcc3208a6237c50e5db6206d4359ef638c787b",
+    "catalog_revision": "sha256-d28b6de6985826060b6e2ccf589d16800d9fdbc40681ae4c698421c92d2ff86f",
+    "catalog_sha256": "d28b6de6985826060b6e2ccf589d16800d9fdbc40681ae4c698421c92d2ff86f",
+    "source": "src/ai/catalog_source.json",
+    "generated": "src/ai/catalog_generated.zig",
+    "source_sha256": "ebd17a7b7768932af525f1ab67c8663cf098a199122687ddea5ffeca8a4ce30e"
+  },
+  "zig_source": {
+    "files": 215,
+    "lines": 133179
+  },
   "excluded_generated_paths": [
     ".git",
     ".zig-cache",
@@ -10,29 +32,10 @@
     "node_modules",
     "__pycache__"
   ],
-  "file_count_excluding_FILES_sha256": 570,
-  "root": "pi-zig",
-  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 10416400,
-  "generated_catalog": {
-    "generated": "src/ai/catalog_generated.zig",
-    "models": 1290,
-    "providers": 39,
-    "source": "src/ai/catalog_source.json",
-    "source_sha256": "cbb8df101cdeb3751d3a094a64c9214a4a7a72175bf187a039a02ee9724cb6af",
-    "upstream_commit": "853a80d26c90a14c1886f0ebb8ffaae133ca2185",
-    "upstream_release": "0.84.4",
-    "upstream_release_archive_sha256": "ca3958559b60f87ee44c84d94df8c3ee0b7eda575370402abb2d0ad9155cde4a",
-    "upstream_structure_sha256": "456b83c08bed3255d7e399d7927c6743e7f3568435691b3d38cc3666ffa70479"
-  },
   "retired_reference": {
     "archive_sha256": "42162e1ea09cfaf78ec737862255b919789eef7defd73f413dbb58c8dee0aa1a",
     "files_removed": 1366,
     "removed_at_checkpoint": 187,
     "restored": false
-  },
-  "verification": "verification/checkpoint-188/verification-summary.json",
-  "zig_source": {
-    "files": 201,
-    "lines": 127642
   }
 }

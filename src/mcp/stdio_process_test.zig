@@ -25,3 +25,14 @@ test "native MCP stdio preserves buffered notifications through handshake pagina
     client.child = null;
     try std.testing.expect(status == .exited and status.exited == 0);
 }
+
+test "native MCP handshake timeout cancels pipe IO and reaps only its owned server" {
+    const gpa = std.testing.allocator;
+    const executable = try std.fs.path.resolve(gpa, &.{ "zig-out", "bin", if (builtin.os.tag == .windows) "pi-mcp-fixture.exe" else "pi-mcp-fixture" });
+    defer gpa.free(executable);
+    var client = client_mod.McpClient{ .gpa = gpa, .io = std.testing.io, .request_timeout_ms = 100 };
+    defer client.deinit();
+    try std.testing.expectError(error.McpTimeout, client.connect(&.{ executable, "--stall" }));
+    try std.testing.expect(client.child == null);
+    try std.testing.expect(client.protocol_version == null);
+}
