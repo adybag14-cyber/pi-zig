@@ -9,11 +9,51 @@ pub fn build(b: *std.Build) void {
     const use_llvm = b.option(bool, "use-llvm", "Use LLVM for executables and test artifacts");
     const sqlite_lib_dir = b.option([]const u8, "sqlite-lib-dir", "Directory containing a linkable sqlite3 library");
 
+    // The extension language is evaluated by a pinned C engine through Zig's
+    // C ABI. Host behavior and bindings remain native Zig.
+    const quickjs = b.addLibrary(.{
+        .name = "pi-quickjs",
+        .linkage = .static,
+        .root_module = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libc = true,
+        }),
+    });
+    quickjs.root_module.addIncludePath(b.path("vendor/quickjs"));
+    quickjs.root_module.addCSourceFiles(.{
+        .root = b.path("vendor/quickjs"),
+        .files = &.{ "dtoa.c", "libregexp.c", "libunicode.c", "quickjs.c" },
+        .flags = &.{ "-std=gnu11", "-D_GNU_SOURCE", "-DQUICKJS_NG_BUILD", "-funsigned-char", "-fno-strict-aliasing" },
+    });
+    quickjs.root_module.addCSourceFile(.{
+        .file = b.path("src/extensions/engine_abi.c"),
+        .flags = &.{"-std=gnu11"},
+    });
+    const typescript_parser = b.addLibrary(.{
+        .name = "pi-typescript-parser",
+        .linkage = .static,
+        .root_module = b.createModule(.{ .target = target, .optimize = optimize, .link_libc = true }),
+    });
+    typescript_parser.root_module.addIncludePath(b.path("vendor/tree-sitter/lib/include"));
+    typescript_parser.root_module.addIncludePath(b.path("vendor/tree-sitter/lib/src"));
+    typescript_parser.root_module.addIncludePath(b.path("vendor/typescript-parser/typescript/src"));
+    typescript_parser.root_module.addCSourceFiles(.{
+        .files = &.{
+            "vendor/tree-sitter/lib/src/lib.c",
+            "vendor/typescript-parser/typescript/src/parser.c",
+            "vendor/typescript-parser/typescript/src/scanner.c",
+        },
+        .flags = &.{ "-std=gnu11", "-D_POSIX_C_SOURCE=200809L", "-D_DEFAULT_SOURCE", "-fno-strict-aliasing" },
+    });
+
     const mod = b.addModule("pi_zig", .{
         .root_source_file = b.path("src/root.zig"),
         .target = target,
         .optimize = optimize,
     });
+    linkQuickJs(b, mod, quickjs);
+    linkTypeScriptParser(b, mod, typescript_parser);
     const sqlite_persistence_mod = b.createModule(.{
         .root_source_file = b.path("src/sqlite_server_persistence.zig"),
         .target = target,
@@ -113,6 +153,8 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+    linkQuickJs(b, test_mod, quickjs);
+    linkTypeScriptParser(b, test_mod, typescript_parser);
     linkSqlite(test_mod, sqlite_lib_dir);
     const mod_tests = b.addTest(.{
         .root_module = test_mod,
@@ -188,6 +230,66 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_exe_tests.step);
     test_step.dependOn(&run_sqlite_persistence_tests.step);
     test_step.dependOn(&run_sqlite_live_tests.step);
+
+    const engine_tests = b.addTest(.{
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/extensions/engine.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, engine_tests.root_module, quickjs);
+    const run_engine_tests = b.addRunArtifact(engine_tests);
+    const engine_test_step = b.step("test-extension-engine", "Test the directly linked extension-language engine");
+    engine_test_step.dependOn(&run_engine_tests.step);
+    test_step.dependOn(&run_engine_tests.step);
+    const typescript_tests = b.addTest(.{
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/extensions/typescript.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, typescript_tests.root_module, quickjs);
+    linkTypeScriptParser(b, typescript_tests.root_module, typescript_parser);
+    const run_typescript_tests = b.addRunArtifact(typescript_tests);
+    const typescript_test_step = b.step("test-extension-typescript", "Test native extension input transformation");
+    typescript_test_step.dependOn(&run_typescript_tests.step);
+    test_step.dependOn(&run_typescript_tests.step);
+
+    const maintenance = b.addExecutable(.{
+        .name = "pi-maintenance",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("tools/maintenance.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+        .use_llvm = use_llvm,
+    });
+    const run_maintenance = b.addRunArtifact(maintenance);
+    if (b.args) |args| run_maintenance.addArgs(args);
+    const maintenance_step = b.step("maintenance", "Run native repository maintenance commands");
+    maintenance_step.dependOn(&run_maintenance.step);
+    const maintenance_tests = b.addTest(.{ .root_module = maintenance.root_module, .use_llvm = use_llvm });
+    const run_maintenance_tests = b.addRunArtifact(maintenance_tests);
+    const maintenance_test_step = b.step("test-maintenance", "Test native repository maintenance");
+    maintenance_test_step.dependOn(&run_maintenance_tests.step);
+    test_step.dependOn(&run_maintenance_tests.step);
+}
+
+fn linkTypeScriptParser(b: *std.Build, module: *std.Build.Module, library: *std.Build.Step.Compile) void {
+    module.addIncludePath(b.path("vendor/tree-sitter/lib/include"));
+    module.linkLibrary(library);
+    module.link_libc = true;
+}
+
+fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Step.Compile) void {
+    module.addIncludePath(b.path("vendor/quickjs"));
+    module.addIncludePath(b.path("src/extensions"));
+    module.linkLibrary(library);
+    module.link_libc = true;
 }
 
 fn linkSqlite(module: *std.Build.Module, library_dir: ?[]const u8) void {

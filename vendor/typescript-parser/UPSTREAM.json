@@ -1,0 +1,15 @@
+{
+  "repository": "https://github.com/tree-sitter/tree-sitter-typescript",
+  "tag": "v0.23.2",
+  "commit": "f975a621f4e7f532fe322e13c4f79495e0a7b2e7",
+  "files": {
+    "common/scanner.h": "da66ef2bd14a3f7ea743e25ba068c6c9aae2c3509db200ff80c4a0e6116e564c",
+    "LICENSE": "49bf33cf78ef5897e4e161ce1517df7de1ae5042a65b6bcfd44401e0fc606559",
+    "typescript/src/node-types.json": "c790a733fc756b54d4e54dceeb7d2d51e40d8b57136e70277753a75804cce3e3",
+    "typescript/src/parser.c": "74fe453edd70f4eae9af0a1050cbd7943d8971d59165b6aaebbaa0a0b716d1aa",
+    "typescript/src/scanner.c": "9125013b42cb888379d9be909f1d73dfb75a37626c2cdbf4122718a2b431a6d3",
+    "typescript/src/tree_sitter/alloc.h": "b29c1c9fb7cc82f58c84b376df1297d6e2737a1d655fd356db0859e3c29c2fea",
+    "typescript/src/tree_sitter/array.h": "4ff743903dc46f5db6aa54f31c6b4d160a8a9779e5b2ab1ee59ae7ebcd850ea1",
+    "typescript/src/tree_sitter/parser.h": "a1f6ef161fbaf48a0e10fca90ef5290a062462b307b3898aa562993853b9f80a"
+  }
+}
