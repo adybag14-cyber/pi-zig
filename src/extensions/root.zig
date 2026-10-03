@@ -4,6 +4,7 @@ pub const actions = @import("actions.zig");
 pub const host = @import("host.zig");
 pub const integration = @import("integration.zig");
 pub const js_runtime = @import("js_runtime.zig");
+pub const native_worker = @import("native_worker.zig");
 pub const ui = @import("ui.zig");
 pub const Host = host.Host;
 pub const ExtensionManifest = host.ExtensionManifest;

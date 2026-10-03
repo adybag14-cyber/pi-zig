@@ -52,6 +52,8 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+    const catalog_tool = b.createModule(.{ .root_source_file = b.path("tools/catalog.zig"), .target = target, .optimize = optimize });
+    mod.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, mod, quickjs);
     linkTypeScriptParser(b, mod, typescript_parser);
     const sqlite_persistence_mod = b.createModule(.{
@@ -153,6 +155,7 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+    test_mod.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, test_mod, quickjs);
     linkTypeScriptParser(b, test_mod, typescript_parser);
     linkSqlite(test_mod, sqlite_lib_dir);
@@ -244,6 +247,42 @@ pub fn build(b: *std.Build) void {
     const engine_test_step = b.step("test-extension-engine", "Test the directly linked extension-language engine");
     engine_test_step.dependOn(&run_engine_tests.step);
     test_step.dependOn(&run_engine_tests.step);
+    const schema_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/typebox.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, schema_tests.root_module, quickjs);
+    const run_schema_tests = b.addRunArtifact(schema_tests);
+    const schema_test_step = b.step("test-extension-schemas", "Test native extension schema bindings");
+    schema_test_step.dependOn(&run_schema_tests.step);
+    test_step.dependOn(&run_schema_tests.step);
+    const binding_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/native_bindings.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, binding_tests.root_module, quickjs);
+    const run_binding_tests = b.addRunArtifact(binding_tests);
+    const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
+    binding_test_step.dependOn(&run_binding_tests.step);
+    test_step.dependOn(&run_binding_tests.step);
+    const filesystem_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_fs.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, filesystem_tests.root_module, quickjs);
+    const run_filesystem_tests = b.addRunArtifact(filesystem_tests);
+    const filesystem_test_step = b.step("test-extension-filesystem", "Test native extension filesystem APIs");
+    filesystem_test_step.dependOn(&run_filesystem_tests.step);
+    test_step.dependOn(&run_filesystem_tests.step);
+    const worker_process_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/native_worker_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_worker_process_tests = b.addRunArtifact(worker_process_tests);
+    run_worker_process_tests.step.dependOn(b.getInstallStep());
+    const worker_process_step = b.step("test-native-worker", "Exercise a real native extension process without Node on PATH");
+    worker_process_step.dependOn(&run_worker_process_tests.step);
+    test_step.dependOn(&run_worker_process_tests.step);
     const typescript_tests = b.addTest(.{
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/extensions/typescript.zig"),
@@ -286,6 +325,14 @@ pub fn build(b: *std.Build) void {
     const run_classifier_tests = b.addRunArtifact(classifier_tests);
     const classifier_test_step = b.step("test-classifier", "Test native classifier contracts");
     classifier_test_step.dependOn(&run_classifier_tests.step);
+    const catalog_projection_tests = b.addTest(.{
+        .root_module = test_mod,
+        .filters = &.{"native catalog projection"},
+        .use_llvm = use_llvm,
+    });
+    const run_catalog_projection_tests = b.addRunArtifact(catalog_projection_tests);
+    const catalog_projection_step = b.step("test-catalog-projection", "Check native catalog projection against the prior generator");
+    catalog_projection_step.dependOn(&run_catalog_projection_tests.step);
 }
 
 fn linkTypeScriptParser(b: *std.Build, module: *std.Build.Module, library: *std.Build.Step.Compile) void {

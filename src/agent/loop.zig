@@ -154,6 +154,15 @@ pub const PrepareNextTurnResult = struct {
 
 pub const PrepareNextTurnFn = *const fn (?*anyopaque, TurnSummary) ?PrepareNextTurnResult;
 pub const ShouldStopAfterTurnFn = *const fn (?*anyopaque, TurnSummary) bool;
+pub const FinishTurnDecision = enum { end, continue_turn };
+pub const FinishTurnFn = *const fn (?*anyopaque, std.mem.Allocator, *const session_mod.Session, TurnSummary) anyerror!?FinishTurnDecision;
+pub const PrepareRequestResult = struct {
+    client: ?ai.ModelClient = null,
+    /// Borrowed canonical request messages; arena allocations remain alive
+    /// through the provider call and are released at that request boundary.
+    messages: ?[]const ai.ChatMessage = null,
+};
+pub const PrepareRequestFn = *const fn (?*anyopaque, std.mem.Allocator, *const session_mod.Session, []const ai.ChatMessage) anyerror!?PrepareRequestResult;
 /// Drain extension/runtime side effects on the agent thread. The callback may
 /// mutate the live run configuration and client, append owned steering/follow-up
 /// text, persist session entries, or request a graceful stop.
@@ -265,6 +274,12 @@ pub const AgentConfig = struct {
     /// any tool batch have fully finalized. It runs before steering/follow-up
     /// queues are polled, matching upstream shouldStopAfterTurn ordering.
     should_stop_after_turn_fn: ?ShouldStopAfterTurnFn = null,
+    /// Current Pi hook runs after assistant/tool finalization and before turn_end.
+    /// Decisions never reopen error/aborted responses.
+    finish_turn_fn: ?FinishTurnFn = null,
+    /// Applied before context transformation on every request, including first
+    /// request and native overflow/transient retry requests.
+    prepare_request_fn: ?PrepareRequestFn = null,
     /// Next-turn snapshot hook, applied after turn_end and before should-stop / queues.
     prepare_next_turn_fn: ?PrepareNextTurnFn = null,
     /// Ordered extension side effects are captured from arbitrary callbacks and
@@ -670,7 +685,8 @@ pub fn runWithImages(
         defer freeChatMessages(gpa, chat);
         var transform_arena: std.heap.ArenaAllocator = .init(gpa);
         defer transform_arena.deinit();
-        const request_chat = try transformChatContext(&config, transform_arena.allocator(), chat);
+        const prepared_chat = try prepareRequest(&config, transform_arena.allocator(), sess, &active_client, chat);
+        const request_chat = try transformChatContext(&config, transform_arena.allocator(), prepared_chat);
         try flushRuntimeActions(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested);
         if (extension_stop_requested) {
             _ = try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, false);
@@ -729,7 +745,8 @@ pub fn runWithImages(
                 defer freeChatMessages(gpa, chat2);
                 var retry_arena: std.heap.ArenaAllocator = .init(gpa);
                 defer retry_arena.deinit();
-                const request_chat2 = try transformChatContext(&config, retry_arena.allocator(), chat2);
+                const prepared_chat2 = try prepareRequest(&config, retry_arena.allocator(), sess, &active_client, chat2);
+                const request_chat2 = try transformChatContext(&config, retry_arena.allocator(), prepared_chat2);
                 emit(on_event, event_ctx, .{ .kind = .message_start, .name = "assistant" });
                 break :retry_call try completeAssistant(gpa, active_client, request_chat2, schemas, StreamCtx.onDelta, &sctx);
             };
@@ -779,7 +796,8 @@ pub fn runWithImages(
                 defer freeChatMessages(gpa, retry_chat);
                 var retry_arena: std.heap.ArenaAllocator = .init(gpa);
                 defer retry_arena.deinit();
-                const retry_request = try transformChatContext(&config, retry_arena.allocator(), retry_chat);
+                const prepared_retry = try prepareRequest(&config, retry_arena.allocator(), sess, &active_client, retry_chat);
+                const retry_request = try transformChatContext(&config, retry_arena.allocator(), prepared_retry);
                 emit(on_event, event_ctx, .{ .kind = .message_start, .name = "assistant" });
                 break :retry_call try completeAssistant(gpa, active_client, retry_request, schemas, StreamCtx.onDelta, &sctx);
             };
@@ -808,15 +826,8 @@ pub fn runWithImages(
 
         if (config.abort_flag) |f| {
             if (@atomicLoad(bool, f, .acquire)) {
-                gpa.free(last_text);
-                last_text = try gpa.dupe(u8, response.content);
-                _ = try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, false);
-                return .{
-                    .final_text = last_text,
-                    .turns = turns + 1,
-                    .hit_turn_limit = false,
-                    .text_deltas = total_deltas,
-                };
+                if (response.stop_reason.len > 0) gpa.free(response.stop_reason);
+                response.stop_reason = try gpa.dupe(u8, "aborted");
             }
         }
 
@@ -835,18 +846,17 @@ pub fn runWithImages(
         // all tool-result entries have been appended.
 
         if (std.mem.eql(u8, stop_reason, "error") or std.mem.eql(u8, stop_reason, "aborted")) {
+            _ = try finishTurn(config, gpa, sess, last_text, stop_reason, 0);
             emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
-            if (try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, true)) {
-                applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, 0);
-                continue;
-            }
+            _ = try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, false);
             return .{ .final_text = last_text, .turns = turns + 1, .hit_turn_limit = false, .text_deltas = total_deltas };
         }
 
         if (response.tool_calls.len == 0) {
+            const decision = try finishTurn(config, gpa, sess, last_text, stop_reason, 0);
             emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
             try flushRuntimeActions(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested);
-            if (shouldStopAfterTurn(config, last_text, stop_reason, 0)) {
+            if (decision == .end or (config.finish_turn_fn == null and shouldStopAfterTurn(config, last_text, stop_reason, 0))) {
                 // A user stop policy is authoritative. Emit/flush agent_end so
                 // extension cleanup remains durable, but do not consume queued
                 // steering or follow-up messages after the stop decision.
@@ -866,6 +876,10 @@ pub fn runWithImages(
             try collectExtensionFollowUps(gpa, &extension_followups, &pending_messages);
             try collectFollowUpMessages(gpa, &config, &pending_messages);
             if (pending_messages.items.len > 0) {
+                applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, 0);
+                continue;
+            }
+            if (decision == .continue_turn) {
                 applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, 0);
                 continue;
             }
@@ -913,9 +927,10 @@ pub fn runWithImages(
                 const p = sess.lastEntryId();
                 _ = try sess.appendToolResultStatusWithMedia(p, result_content, tc.id, tc.name, true, &.{}, null, null);
             }
+            const decision = try finishTurn(config, gpa, sess, last_text, stop_reason, response.tool_calls.len);
             emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
             try flushRuntimeActions(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested);
-            if (shouldStopAfterTurn(config, last_text, stop_reason, response.tool_calls.len)) {
+            if (decision == .end or (config.finish_turn_fn == null and shouldStopAfterTurn(config, last_text, stop_reason, response.tool_calls.len))) {
                 _ = try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, false);
                 return .{ .final_text = last_text, .turns = turns + 1, .hit_turn_limit = false, .text_deltas = total_deltas };
             }
@@ -929,9 +944,10 @@ pub fn runWithImages(
             try executeToolBatchSequential(gpa, io, cwd, &config, schemas, sess, response.tool_calls, on_event, event_ctx)
         else
             try executeToolBatchParallel(gpa, io, cwd, &config, schemas, sess, response.tool_calls, on_event, event_ctx);
+        const decision = try finishTurn(config, gpa, sess, last_text, stop_reason, response.tool_calls.len);
         emit(on_event, event_ctx, .{ .kind = .turn_end, .text = last_text });
         try flushRuntimeActions(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested);
-        if (shouldStopAfterTurn(config, last_text, stop_reason, response.tool_calls.len)) {
+        if (decision == .end or (config.finish_turn_fn == null and shouldStopAfterTurn(config, last_text, stop_reason, response.tool_calls.len))) {
             _ = try finishAgentCycle(&config, gpa, sess, &active_client, &pending_messages, &extension_followups, &extension_stop_requested, on_event, event_ctx, last_text, false);
             return .{ .final_text = last_text, .turns = turns + 1, .hit_turn_limit = false, .text_deltas = total_deltas };
         }
@@ -946,6 +962,10 @@ pub fn runWithImages(
         try collectExtensionFollowUps(gpa, &extension_followups, &pending_messages);
         try collectFollowUpMessages(gpa, &config, &pending_messages);
         if (pending_messages.items.len > 0) {
+            applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, response.tool_calls.len);
+            continue;
+        }
+        if (decision == .continue_turn) {
             applyPrepareNextTurn(&config, &active_client, last_text, stop_reason, response.tool_calls.len);
             continue;
         }
@@ -1159,6 +1179,141 @@ fn shouldStopAfterTurn(config: AgentConfig, assistant_text: []const u8, stop_rea
         .stop_reason = stop_reason,
         .tool_results = tool_results,
     });
+}
+
+fn finishTurn(config: AgentConfig, gpa: std.mem.Allocator, sess: *const session_mod.Session, assistant_text: []const u8, stop_reason: []const u8, tool_results: usize) !?FinishTurnDecision {
+    const callback = config.finish_turn_fn orelse return null;
+    return callback(config.hook_ctx, gpa, sess, .{ .assistant_text = assistant_text, .stop_reason = stop_reason, .tool_results = tool_results });
+}
+
+fn prepareRequest(config: *const AgentConfig, allocator: std.mem.Allocator, sess: *const session_mod.Session, client: *ai.ModelClient, messages: []const ai.ChatMessage) ![]const ai.ChatMessage {
+    const callback = config.prepare_request_fn orelse return messages;
+    const update = (try callback(config.hook_ctx, allocator, sess, messages)) orelse return messages;
+    if (update.client) |replacement| client.* = replacement;
+    return update.messages orelse messages;
+}
+
+test "finish turn runs before turn_end and end preserves follow-up queue" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var session = try session_mod.Session.init(gpa, "finish-end", ".");
+    defer session.deinit();
+    var model = try ai.mock.MockModel.loadFromJson(gpa, "[{\"content\":\"first\"},{\"content\":\"never\"}]");
+    defer model.deinit(gpa);
+    var queue: std.ArrayList([]const u8) = .empty;
+    defer {
+        for (queue.items) |message| gpa.free(message);
+        queue.deinit(gpa);
+    }
+    try queue.append(gpa, try gpa.dupe(u8, "keep queued"));
+    const State = struct {
+        finished: bool = false,
+        turn_ends: usize = 0,
+        wrong_order: bool = false,
+        fn finish(context: ?*anyopaque, _: std.mem.Allocator, sess: *const session_mod.Session, summary: TurnSummary) anyerror!?FinishTurnDecision {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            try std.testing.expectEqualStrings("first", summary.assistant_text);
+            try std.testing.expectEqualStrings("assistant", sess.entries.items[sess.entries.items.len - 1].role);
+            self.finished = true;
+            return .end;
+        }
+        fn event(context: ?*anyopaque, value: AgentEvent) void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            if (value.kind == .turn_end) {
+                self.turn_ends += 1;
+                if (!self.finished) self.wrong_order = true;
+            }
+        }
+    };
+    var state: State = .{};
+    var result = try run(gpa, io, ".", model.client(), &session, "go", .{ .hook_ctx = &state, .finish_turn_fn = State.finish, .follow_up_queue = &queue }, State.event, &state);
+    defer result.deinit(gpa);
+    try std.testing.expect(!state.wrong_order);
+    try std.testing.expectEqual(@as(usize, 1), state.turn_ends);
+    try std.testing.expectEqual(@as(usize, 1), model.index);
+    try std.testing.expectEqual(@as(usize, 1), queue.items.len);
+}
+
+test "finish continue requests one context-only turn and prepare request includes first turn" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var session = try session_mod.Session.init(gpa, "finish-continue", ".");
+    defer session.deinit();
+    var model = try ai.mock.MockModel.loadFromJson(gpa, "[{\"content\":\"first\"},{\"content\":\"second\"},{\"content\":\"never\"}]");
+    defer model.deinit(gpa);
+    const State = struct {
+        finishes: usize = 0,
+        preparations: usize = 0,
+        fn finish(context: ?*anyopaque, _: std.mem.Allocator, _: *const session_mod.Session, _: TurnSummary) anyerror!?FinishTurnDecision {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.finishes += 1;
+            return if (self.finishes == 1) .continue_turn else null;
+        }
+        fn prepare(context: ?*anyopaque, _: std.mem.Allocator, _: *const session_mod.Session, messages: []const ai.ChatMessage) anyerror!?PrepareRequestResult {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.preparations += 1;
+            try std.testing.expect(messages.len > 0);
+            return null;
+        }
+    };
+    var state: State = .{};
+    var result = try run(gpa, io, ".", model.client(), &session, "go", .{ .hook_ctx = &state, .finish_turn_fn = State.finish, .prepare_request_fn = State.prepare }, null, null);
+    defer result.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 2), model.index);
+    try std.testing.expectEqual(@as(usize, 2), state.preparations);
+    try std.testing.expectEqual(@as(usize, 2), state.finishes);
+    try std.testing.expectEqualStrings("second", result.final_text);
+}
+
+test "finish continue does not double a naturally selected follow-up request" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var session = try session_mod.Session.init(gpa, "finish-natural", ".");
+    defer session.deinit();
+    var model = try ai.mock.MockModel.loadFromJson(gpa, "[{\"content\":\"first\"},{\"content\":\"second\"},{\"content\":\"never\"}]");
+    defer model.deinit(gpa);
+    var queue: std.ArrayList([]const u8) = .empty;
+    defer {
+        for (queue.items) |message| gpa.free(message);
+        queue.deinit(gpa);
+    }
+    try queue.append(gpa, try gpa.dupe(u8, "follow-up"));
+    const State = struct {
+        calls: usize = 0,
+        fn finish(context: ?*anyopaque, _: std.mem.Allocator, _: *const session_mod.Session, _: TurnSummary) anyerror!?FinishTurnDecision {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.calls += 1;
+            return if (self.calls == 1) .continue_turn else null;
+        }
+    };
+    var state: State = .{};
+    var result = try run(gpa, io, ".", model.client(), &session, "go", .{ .hook_ctx = &state, .finish_turn_fn = State.finish, .follow_up_queue = &queue }, null, null);
+    defer result.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 2), model.index);
+    try std.testing.expectEqual(@as(usize, 0), queue.items.len);
+}
+
+test "finish turn observes hard errors but cannot continue them" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var session = try session_mod.Session.init(gpa, "finish-hard-error", ".");
+    defer session.deinit();
+    var model = try ai.mock.MockModel.loadFromJson(gpa, "[{\"content\":\"bad request\",\"stop_reason\":\"error\"},{\"content\":\"never\"}]");
+    defer model.deinit(gpa);
+    const State = struct {
+        calls: usize = 0,
+        fn finish(context: ?*anyopaque, _: std.mem.Allocator, _: *const session_mod.Session, summary: TurnSummary) anyerror!?FinishTurnDecision {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.calls += 1;
+            try std.testing.expectEqualStrings("error", summary.stop_reason);
+            return .continue_turn;
+        }
+    };
+    var state: State = .{};
+    var result = try run(gpa, io, ".", model.client(), &session, "go", .{ .hook_ctx = &state, .finish_turn_fn = State.finish, .retry_enabled = false }, null, null);
+    defer result.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 1), state.calls);
+    try std.testing.expectEqual(@as(usize, 1), model.index);
 }
 
 fn batchRequiresSequential(config: AgentConfig, calls: []const ai.ToolCall) bool {

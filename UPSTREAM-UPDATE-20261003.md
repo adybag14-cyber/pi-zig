@@ -57,6 +57,23 @@ Completed evidence:
 - Ported Pi 1's fullscreen default (explicit regular mode retained), leading
   whitespace slash completion and explicit-provider/model validation.
 - The latest Windows regression graph passes after these operation/CLI changes.
+- Ported prepareRequest/finishTurn hooks with event ordering, explicit end/one
+  continuation, natural-queue deduplication and hard-error termination tests.
+- Native module object exports, common schema constructors, tool/command/flag
+  and hook registration/invocation, ordered action capture and stale-context
+  rejection are implemented in Zig. More extension APIs remain to port.
+- Native worker candidate runs inside the self-contained Pi executable. Its
+  real process fixture loads typed sibling imports and exchanges ready, hook,
+  tool and shutdown records with Node absent from PATH and zero stderr.
+- Added native filesystem read/write/existence/directory/delete functions,
+  typed-array views and non-destructive invalid-data checks. Additional Node
+  compatibility APIs remain outstanding.
+- Retired the JavaScript catalog generator after all 1,290 existing records
+  compared equal and the native generator reproduced the existing file byte
+  for byte. CI now uses the Zig generator and native vendor verification.
+- The latest complete Windows regression graph passes with the native worker,
+  schemas, filesystem and tooling artifacts included. Production extension
+  discovery still uses the old bridge pending complete compatibility gates.
 
 Required outstanding work:
 

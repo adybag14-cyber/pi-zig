@@ -2783,6 +2783,9 @@ pub fn main(init: std.process.Init) !void {
     const environ: *const std.process.Environ.Map = init.environ_map;
 
     const raw_args = try init.minimal.args.toSlice(arena);
+    if (raw_args.len == 3 and std.mem.eql(u8, raw_args[1], "--internal-native-extension-worker")) {
+        return extensions.native_worker.run(gpa, io, raw_args[2]);
+    }
     var cli = coding.args.parseArgs(arena, raw_args) catch |err| {
         const message = switch (err) {
             error.MissingArg => "error: an option is missing its required value",

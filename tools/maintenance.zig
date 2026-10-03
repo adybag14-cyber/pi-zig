@@ -1,5 +1,6 @@
 //! Native repository maintenance entry point; no Python/Node tool dependency.
 const std = @import("std");
+const catalog = @import("catalog.zig");
 
 const forbidden_names = [_][]const u8{
     "generated_root.zig", "tools_extended.zig", "tools_dispatch.zig",
@@ -88,6 +89,27 @@ pub fn main(init: std.process.Init) !void {
     var buffer: [4096]u8 = undefined;
     var stdout = std.Io.File.stdout().writer(init.io, &buffer);
     const writer = &stdout.interface;
+    if (args.len >= 2 and std.mem.eql(u8, args[1], "catalog")) {
+        const source = try std.Io.Dir.cwd().readFileAlloc(init.io, "src/ai/catalog_source.json", init.gpa, .limited(16 * 1024 * 1024));
+        defer init.gpa.free(source);
+        const rendered = try catalog.render(init.gpa, source);
+        defer init.gpa.free(rendered);
+        if (args.len == 3 and std.mem.eql(u8, args[2], "--check")) {
+            const current = try std.Io.Dir.cwd().readFileAlloc(init.io, "src/ai/catalog_generated.zig", init.gpa, .limited(16 * 1024 * 1024));
+            defer init.gpa.free(current);
+            if (!std.mem.eql(u8, current, rendered)) return error.StaleGeneratedCatalog;
+            try writer.writeAll("Native generated catalog check passed.\n");
+            try writer.flush();
+            return;
+        }
+        const destination = if (args.len == 4 and std.mem.eql(u8, args[2], "--output")) args[3] else "src/ai/catalog_generated.zig";
+        const file = try std.Io.Dir.cwd().createFile(init.io, destination, .{});
+        defer file.close(init.io);
+        try file.writePositionalAll(init.io, rendered, 0);
+        try writer.print("Generated native catalog: {s}\n", .{destination});
+        try writer.flush();
+        return;
+    }
     if (args.len == 2 and std.mem.eql(u8, args[1], "audit-source")) {
         const passed = try auditSource(init.gpa, init.io, writer);
         const vendors_passed = try verifyVendors(init.gpa, init.io, writer);
@@ -101,7 +123,7 @@ pub fn main(init: std.process.Init) !void {
         if (!passed) std.process.exit(1);
         return;
     }
-    try writer.writeAll("usage: pi-maintenance audit-source | verify-vendors\n");
+    try writer.writeAll("usage: pi-maintenance audit-source | verify-vendors | catalog [--output <path>]\n");
     try writer.flush();
     if (args.len > 1) std.process.exit(2);
 }

@@ -31,6 +31,7 @@ pub const cost = @import("cost.zig");
 pub const api = @import("api.zig");
 pub const classifier = @import("classifier.zig");
 pub const model_types = @import("model_types.zig");
+const catalog_projection_test = @import("catalog_projection_test.zig");
 
 pub const Provider = providers.Provider;
 pub const resolveApiKey = providers.resolveApiKey;
@@ -312,6 +313,7 @@ pub const ModelClient = struct {
 };
 
 test {
+    _ = catalog_projection_test;
     std.testing.refAllDecls(@This());
 }
 

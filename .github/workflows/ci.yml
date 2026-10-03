@@ -43,10 +43,13 @@ jobs:
           node-version: 24
 
       - name: Verify generated model catalog
-        run: node scripts/generate_builtin_catalog.mjs --check
+        run: zig build maintenance -- catalog --check
+
+      - name: Verify native C dependency provenance
+        run: zig build maintenance -- verify-vendors
 
       - name: Check Zig formatting
-        run: zig fmt --check build.zig src
+        run: zig fmt --check build.zig src tools
 
       - name: Audit native source
         run: python scripts/audit_real_source.py
