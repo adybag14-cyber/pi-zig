@@ -227,6 +227,21 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    const mcp_fixture = b.addExecutable(.{
+        .name = "pi-mcp-fixture",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp/stdio_fixture.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const install_mcp_fixture = b.addInstallArtifact(mcp_fixture, .{});
+    const mcp_process_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp/stdio_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_mcp_process_tests = b.addRunArtifact(mcp_process_tests);
+    run_mcp_process_tests.step.dependOn(&install_mcp_fixture.step);
+    const mcp_test_step = b.step("test-mcp-stdio", "Exercise real native MCP pipe framing and protocol negotiation");
+    mcp_test_step.dependOn(&run_mcp_process_tests.step);
+    test_step.dependOn(&run_mcp_process_tests.step);
     test_step.dependOn(&run_mod_tests.step);
     test_step.dependOn(&run_sqlite_tests.step);
     test_step.dependOn(&run_sqlite_cli_tests.step);

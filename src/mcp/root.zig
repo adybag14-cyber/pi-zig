@@ -2,6 +2,7 @@
 const std = @import("std");
 pub const client = @import("client.zig");
 pub const methods = @import("methods.zig");
+pub const oauth = @import("oauth.zig");
 pub const McpClient = client.McpClient;
 pub const McpTool = client.McpTool;
 test {

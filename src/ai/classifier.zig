@@ -35,6 +35,12 @@ pub const Model = struct {
     base_url: []const u8,
     cost: providers.ModelCost = .{},
     headers: []const metadata.Header = &.{},
+
+    pub fn fromInfo(info: providers.ModelInfo) !Model {
+        if (info.kind != .classifier) return error.NotClassifierModel;
+        const api = Api.parse(info.operation_api orelse return error.MissingClassifierApi) orelse return error.UnsupportedClassifierApi;
+        return .{ .api = api, .provider = info.providerName(), .id = info.id, .base_url = info.base_url orelse return error.MissingClassifierBaseUrl, .cost = info.cost, .headers = info.headers };
+    }
 };
 
 pub const Header = struct { name: []const u8, value: ?[]const u8 };
@@ -465,4 +471,17 @@ test "classifier provider retry honors status overrides and arbitrary fetch fail
     defer failed.deinit(std.testing.allocator);
     try std.testing.expectEqual(.err, failed.stop_reason);
     try std.testing.expectEqual(@as(usize, 1), fixture.calls);
+}
+
+test "generated typed classifier models route separately from chat models" {
+    var count: usize = 0;
+    for (providers.all_models) |info| {
+        if (info.kind != .classifier) continue;
+        count += 1;
+        const model = try Model.fromInfo(info);
+        try std.testing.expectEqualStrings(info.apiName(), model.api.name());
+        try std.testing.expectEqualStrings(info.providerName(), model.provider);
+    }
+    try std.testing.expectEqual(@as(usize, 15), count);
+    try std.testing.expectError(error.NotClassifierModel, Model.fromInfo(providers.known_models[0]));
 }

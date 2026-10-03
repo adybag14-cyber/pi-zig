@@ -123,7 +123,8 @@ const compat_fields = [_][]const u8{
     "supportsStore",               "supportsStrictMode",               "supportsStrictTools",                         "supportsTemperature",
     "supportsThinkingTokenBudget", "thinkingTokenBudgetField",         "supportsToolReferences",                      "supportsToolSearch",
     "supportsUsageInStreaming",    "thinkingFormat",                   "zaiToolStream",                               "allowedFallbackModels",
-    "chatTemplateArgs",
+    "chatTemplateArgs",            "supportsMidConvoEffort",           "supportsMidConvoSystemMessages",              "supportsMidConvoToolAdditions",
+    "supportsMidConvoToolChanges",
 };
 
 fn renderCompat(writer: *std.Io.Writer, compat: std.json.Value) !void {
@@ -154,11 +155,14 @@ fn renderCompat(writer: *std.Io.Writer, compat: std.json.Value) !void {
     try writer.writeAll(" }");
 }
 
-fn renderModel(writer: *std.Io.Writer, model: std.json.ObjectMap) !void {
-    const allowed = [_][]const u8{ "api", "baseUrl", "compat", "contextWindow", "cost", "headers", "id", "input", "maxTokens", "name", "provider", "reasoning", "samplingParams", "thinkingLevelMap" };
+fn renderModel(writer: *std.Io.Writer, model: std.json.ObjectMap, typed: bool) !void {
+    const allowed = [_][]const u8{ "api", "baseUrl", "compat", "contextWindow", "cost", "headers", "id", "input", "maxTokens", "name", "provider", "reasoning", "samplingParams", "thinkingLevelMap", "type", "output", "inputLimits", "promptCache", "lab", "enabled", "providers" };
     for (model.keys()) |key| if (!contains(&allowed, key)) return error.UnknownCatalogModelField;
     const api = try getString(model, "api");
-    try writer.print("        .{{ .provider = .{s}, .provider_id = ", .{try transport(api)});
+    const kind = if (model.get("type")) |item| if (item == .string) item.string else return error.InvalidCatalogModelType else "chat";
+    if (!contains(&.{ "chat", "image", "classifier" }, kind)) return error.UnknownCatalogModelType;
+    const native_transport = if (std.mem.eql(u8, kind, "chat")) try transport(api) else if (std.mem.eql(u8, kind, "image")) "openrouter" else "openai";
+    try writer.print("        .{{ .provider = .{s}, .provider_id = ", .{native_transport});
     try zigString(writer, try getString(model, "provider"));
     for ([_][2][]const u8{ .{ "id", "id" }, .{ "name", "display" }, .{ "baseUrl", "base_url" } }) |pair| {
         try writer.print(", .{s} = ", .{pair[1]});
@@ -179,10 +183,23 @@ fn renderModel(writer: *std.Io.Writer, model: std.json.ObjectMap) !void {
     try writer.print(", .input_image = {s}", .{if (image) "true" else "false"});
     for ([_][2][]const u8{ .{ "contextWindow", "context_window" }, .{ "maxTokens", "max_tokens" }, .{ "cost", "cost" } }) |pair| {
         try writer.print(", .{s} = ", .{pair[1]});
-        try renderValue(writer, try field(model, pair[0]));
+        const item = model.get(pair[0]) orelse if (!std.mem.eql(u8, kind, "chat") and !std.mem.eql(u8, pair[0], "cost")) std.json.Value{ .integer = 0 } else return error.MissingCatalogField;
+        try renderValue(writer, item);
     }
-    try writer.writeAll(", .api = .");
-    try snake(writer, api);
+    if (std.mem.eql(u8, kind, "chat")) {
+        try writer.writeAll(", .api = .");
+        try snake(writer, api);
+    } else {
+        try writer.print(", .kind = .{s}, .operation_api = ", .{kind});
+        try zigString(writer, api);
+    }
+    if (typed) {
+        var metadata: std.Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer metadata.deinit();
+        try std.json.Stringify.value(std.json.Value{ .object = model }, .{}, &metadata.writer);
+        try writer.writeAll(", .source_metadata_json = ");
+        try zigString(writer, metadata.written());
+    }
     const free_model = std.mem.eql(u8, try getString(model, "provider"), "openrouter") and std.mem.eql(u8, try getString(model, "id"), "openrouter/free");
     if (model.get("thinkingLevelMap")) |thinking| {
         try writer.writeAll(", .thinking_level_map = ");
@@ -236,7 +253,8 @@ pub fn render(gpa: std.mem.Allocator, source: []const u8) ![]u8 {
     if (parsed.value != .object) return error.InvalidCatalogSource;
     const root = parsed.value.object;
     const schema = try field(root, "schemaVersion");
-    if (schema != .integer or schema.integer != 1) return error.UnsupportedCatalogSourceSchema;
+    if (schema != .integer or (schema.integer != 1 and schema.integer != 2)) return error.UnsupportedCatalogSourceSchema;
+    const typed = schema.integer == 2;
     if (!std.mem.eql(u8, try getString(root, "upstreamPackage"), "@earendil-works/pi-ai")) return error.InvalidCatalogProvenance;
     const models = try field(root, "models");
     if (models != .array) return error.InvalidCatalogSource;
@@ -254,7 +272,8 @@ pub fn render(gpa: std.mem.Allocator, source: []const u8) ![]u8 {
         if (model != .object) return error.InvalidCatalogModel;
         const provider = try getString(model.object, "provider");
         const id = try getString(model.object, "id");
-        const identity = try std.fmt.allocPrint(gpa, "{s}\x00{s}", .{ provider, id });
+        const kind = if (typed) try getString(model.object, "type") else "chat";
+        const identity = try std.fmt.allocPrint(gpa, "{s}\x00{s}\x00{s}", .{ provider, kind, id });
         if (identities.contains(identity)) {
             gpa.free(identity);
             return error.DuplicateCatalogIdentity;
@@ -274,28 +293,85 @@ pub fn render(gpa: std.mem.Allocator, source: []const u8) ![]u8 {
     std.crypto.hash.sha2.Sha256.hash(source, &digest, .{});
     const hex = std.fmt.bytesToHex(digest, .lower);
     try writer.print("//! Generated from catalog_source.json. Do not edit manually.\n//! Source SHA-256: {s}\n\npub const source_sha256 = \"{s}\";\n", .{ hex, hex });
-    for ([_][2][]const u8{
+    const provenance = if (typed) &[_][2][]const u8{
+        .{ "upstreamVersion", "upstream_version" },                           .{ "upstreamCommit", "upstream_commit" },
+        .{ "upstreamSourceArchiveSha256", "upstream_source_archive_sha256" }, .{ "catalogRevision", "catalog_revision" },
+        .{ "catalogSha256", "catalog_sha256" },
+    } else &[_][2][]const u8{
         .{ "upstreamVersion", "upstream_version" },                             .{ "upstreamCommit", "upstream_commit" },
         .{ "upstreamReleaseArchiveSha256", "upstream_release_archive_sha256" }, .{ "upstreamModelDataStructureHash", "upstream_model_data_structure_hash" },
-    }) |pair| {
+    };
+    for (provenance) |pair| {
         try writer.print("pub const {s} = ", .{pair[1]});
         try zigString(writer, try getString(root, pair[0]));
         try writer.writeAll(";\n");
     }
-    try writer.print("pub const model_count: usize = {d};\npub const provider_count: usize = ", .{models.array.items.len});
+    var chat_count: usize = 0;
+    for (models.array.items) |model| {
+        if (!typed or std.mem.eql(u8, try getString(model.object, "type"), "chat")) chat_count += 1;
+    }
+    try writer.print("pub const model_count: usize = {d};\npub const provider_count: usize = ", .{chat_count});
     try renderValue(writer, try field(root, "providerCount"));
     try writer.writeAll(";\n\npub fn rows(comptime ModelInfo: type) [model_count]ModelInfo {\n    return .{\n");
     for (models.array.items) |model| {
         if (model != .object) return error.InvalidCatalogModel;
-        try renderModel(writer, model.object);
+        if (typed and !std.mem.eql(u8, try getString(model.object, "type"), "chat")) continue;
+        try renderModel(writer, model.object, typed);
     }
     try writer.writeAll("    };\n}\n");
+    if (typed) {
+        try writer.print("\npub const all_model_count: usize = {d};\npub fn allRows(comptime ModelInfo: type) [all_model_count]ModelInfo {{\n    return .{{\n", .{models.array.items.len});
+        for (models.array.items) |model| try renderModel(writer, model.object, true);
+        try writer.writeAll("    };\n}\n");
+    }
     const terminated = try gpa.dupeZ(u8, output.written());
     defer gpa.free(terminated);
     var tree = try std.zig.Ast.parse(gpa, terminated, .zig);
     defer tree.deinit(gpa);
     if (tree.errors.len > 0) return error.InvalidGeneratedCatalog;
     return tree.renderAlloc(gpa);
+}
+
+pub fn importTyped(gpa: std.mem.Allocator, raw_catalog: []const u8, version: []const u8, commit: []const u8, archive_digest: []const u8, revision: []const u8) ![]u8 {
+    if (commit.len != 40 or archive_digest.len != 64) return error.InvalidCatalogProvenance;
+    for (commit) |byte| if (!std.ascii.isHex(byte)) return error.InvalidCatalogProvenance;
+    for (archive_digest) |byte| if (!std.ascii.isHex(byte)) return error.InvalidCatalogProvenance;
+    var digest: [32]u8 = undefined;
+    std.crypto.hash.sha2.Sha256.hash(raw_catalog, &digest, .{});
+    const hex = std.fmt.bytesToHex(digest, .lower);
+    if (!std.mem.startsWith(u8, revision, "sha256-") or !std.mem.eql(u8, revision[7..], &hex)) return error.CatalogRevisionDigestMismatch;
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const allocator = arena.allocator();
+    const catalog = try std.json.parseFromSliceLeaky(std.json.Value, allocator, raw_catalog, .{});
+    if (catalog != .object) return error.InvalidCatalogSource;
+    var models: std.json.Array = .init(allocator);
+    var providers_iterator = catalog.object.iterator();
+    while (providers_iterator.next()) |provider| {
+        if (provider.value_ptr.* != .array or provider.value_ptr.array.items.len == 0) return error.InvalidCatalogProvider;
+        for (provider.value_ptr.array.items) |model| {
+            if (model != .object or !std.mem.eql(u8, try getString(model.object, "provider"), provider.key_ptr.*)) return error.InvalidCatalogProvider;
+            const kind = try getString(model.object, "type");
+            if (!contains(&.{ "chat", "image", "classifier" }, kind)) return error.UnknownCatalogModelType;
+            try models.append(model);
+        }
+    }
+    var source: std.json.ObjectMap = .empty;
+    try source.put(allocator, "schemaVersion", .{ .integer = 2 });
+    try source.put(allocator, "upstreamPackage", .{ .string = "@earendil-works/pi-ai" });
+    try source.put(allocator, "upstreamVersion", .{ .string = version });
+    try source.put(allocator, "upstreamCommit", .{ .string = commit });
+    try source.put(allocator, "upstreamSourceArchiveSha256", .{ .string = archive_digest });
+    try source.put(allocator, "catalogRevision", .{ .string = revision });
+    try source.put(allocator, "catalogSha256", .{ .string = &hex });
+    try source.put(allocator, "modelCount", .{ .integer = @intCast(models.items.len) });
+    try source.put(allocator, "providerCount", .{ .integer = @intCast(catalog.object.count()) });
+    try source.put(allocator, "models", .{ .array = models });
+    var output: std.Io.Writer.Allocating = .init(gpa);
+    defer output.deinit();
+    try std.json.Stringify.value(std.json.Value{ .object = source }, .{ .whitespace = .indent_2 }, &output.writer);
+    try output.writer.writeByte('\n');
+    return output.toOwnedSlice();
 }
 
 test "Zig source strings escape control bytes without JavaScript Unicode escapes" {

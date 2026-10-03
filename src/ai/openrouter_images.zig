@@ -88,6 +88,12 @@ pub const Client = struct {
     model_cost: providers.ModelCost = .{},
     abort_flag: ?*bool = null,
 
+    pub fn fromModel(io: Io, model: providers.ModelInfo, api_key: []const u8) !Client {
+        if (model.kind != .image) return error.NotImageModel;
+        if (!std.mem.eql(u8, model.operation_api orelse return error.MissingImageApi, "openrouter-images")) return error.UnsupportedImageApi;
+        return .{ .gpa = std.heap.page_allocator, .io = io, .api_key = api_key, .base_url = model.base_url orelse "https://openrouter.ai/api/v1", .provider_id = model.providerName(), .model = model.id, .custom_headers = model.headers, .model_cost = model.cost };
+    }
+
     pub fn generate(self: *Client, gpa: std.mem.Allocator, input: []const Input) !Response {
         if (self.abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) return abortedResponse(gpa, self.provider_id, self.model);
         const payload = try buildRequestBody(gpa, self.model, input, self.output_text);

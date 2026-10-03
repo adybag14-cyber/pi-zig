@@ -51,8 +51,8 @@ jobs:
       - name: Check Zig formatting
         run: zig fmt --check build.zig src tools
 
-      - name: Audit native source
-        run: python scripts/audit_real_source.py
+      - name: Reject synthetic source surfaces
+        run: zig build maintenance -- audit-structure
 
       - name: Build
         run: zig build -Doptimize=ReleaseSafe

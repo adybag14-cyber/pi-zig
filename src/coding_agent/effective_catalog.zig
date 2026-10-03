@@ -52,7 +52,8 @@ fn compose(gpa: std.mem.Allocator, models_file: *const models_file_mod.ModelsFil
     var out: std.ArrayList(providers.ModelInfo) = .empty;
     errdefer out.deinit(gpa);
 
-    for (providers.known_models) |known| {
+    const builtins = if (include_non_chat) &providers.all_models else &providers.known_models;
+    for (builtins) |known| {
         if (!include_non_chat and known.kind != .chat) continue;
         if (staticHasIdentity(models_file, known) or hasIdentity(extras, known)) continue;
         try out.append(gpa, applyOverride(known, models_file.findProvider(known.providerName())));
@@ -60,7 +61,7 @@ fn compose(gpa: std.mem.Allocator, models_file: *const models_file_mod.ModelsFil
 
     for (extras) |extra| {
         if (!include_non_chat and extra.kind != .chat) continue;
-        if (!extra.apiKind().runtimeSupported()) continue;
+        if (extra.kind == .chat and !extra.apiKind().runtimeSupported()) continue;
         if (staticHasIdentity(models_file, extra)) continue;
         // Deduplicate malformed/repeated stores by first identity, just like a provider map.
         if (hasIdentity(out.items, extra)) continue;

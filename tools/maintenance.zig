@@ -3,8 +3,13 @@ const std = @import("std");
 const catalog = @import("catalog.zig");
 
 const forbidden_names = [_][]const u8{
-    "generated_root.zig", "tools_extended.zig", "tools_dispatch.zig",
-    "catalog_index.zig",  "routes_all.zig",     "methods_all.zig",
+    "gen_surface.py",
+    "generated_root.zig",
+    "tools_extended.zig",
+    "tools_dispatch.zig",
+    "catalog_index.zig",
+    "routes_all.zig",
+    "methods_all.zig",
 };
 
 pub fn forbiddenImplementation(path: []const u8) bool {
@@ -52,7 +57,7 @@ fn verifyVendors(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer) !bo
     return failures == 0;
 }
 
-fn auditSource(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer) !bool {
+fn auditSource(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer, enforce_languages: bool) !bool {
     var files: usize = 0;
     var failures: usize = 0;
     for ([_][]const u8{ "src", "tools", "scripts", "checkpoint-tests" }) |root| {
@@ -66,7 +71,12 @@ fn auditSource(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer) !bool
         while (try walker.next(io)) |entry| {
             if (entry.kind != .file) continue;
             files += 1;
-            if (forbiddenImplementation(entry.path)) {
+            const synthetic = blk: {
+                const basename = std.fs.path.basename(entry.path);
+                for (forbidden_names) |name| if (std.mem.eql(u8, name, basename)) break :blk true;
+                break :blk std.mem.indexOf(u8, basename, "_shard_") != null;
+            };
+            if (synthetic or (enforce_languages and forbiddenImplementation(entry.path))) {
                 failures += 1;
                 try writer.print("forbidden implementation: {s}/{s}\n", .{ root, entry.path });
             }
@@ -89,6 +99,27 @@ pub fn main(init: std.process.Init) !void {
     var buffer: [4096]u8 = undefined;
     var stdout = std.Io.File.stdout().writer(init.io, &buffer);
     const writer = &stdout.interface;
+    if (args.len == 8 and std.mem.eql(u8, args[1], "import-catalog")) {
+        // Explicit immutable inputs: catalog, version, commit, source archive,
+        // revision and destination. No upstream program is executed.
+        const bytes = try std.Io.Dir.cwd().readFileAlloc(init.io, args[2], init.gpa, .limited(32 * 1024 * 1024));
+        defer init.gpa.free(bytes);
+        const archive = try std.Io.Dir.cwd().readFileAlloc(init.io, args[5], init.gpa, .limited(256 * 1024 * 1024));
+        defer init.gpa.free(archive);
+        var digest: [32]u8 = undefined;
+        std.crypto.hash.sha2.Sha256.hash(archive, &digest, .{});
+        const hex = std.fmt.bytesToHex(digest, .lower);
+        const source = try catalog.importTyped(init.gpa, bytes, args[3], args[4], &hex, args[6]);
+        defer init.gpa.free(source);
+        const validation = try catalog.render(init.gpa, source);
+        defer init.gpa.free(validation);
+        const file = try std.Io.Dir.cwd().createFile(init.io, args[7], .{});
+        defer file.close(init.io);
+        try file.writePositionalAll(init.io, source, 0);
+        try writer.print("Imported reviewed typed catalog: {s}\n", .{args[7]});
+        try writer.flush();
+        return;
+    }
     if (args.len >= 2 and std.mem.eql(u8, args[1], "catalog")) {
         const source = try std.Io.Dir.cwd().readFileAlloc(init.io, "src/ai/catalog_source.json", init.gpa, .limited(16 * 1024 * 1024));
         defer init.gpa.free(source);
@@ -110,8 +141,9 @@ pub fn main(init: std.process.Init) !void {
         try writer.flush();
         return;
     }
-    if (args.len == 2 and std.mem.eql(u8, args[1], "audit-source")) {
-        const passed = try auditSource(init.gpa, init.io, writer);
+    if (args.len == 2 and (std.mem.eql(u8, args[1], "audit-source") or std.mem.eql(u8, args[1], "audit-structure"))) {
+        const enforce_languages = std.mem.eql(u8, args[1], "audit-source");
+        const passed = try auditSource(init.gpa, init.io, writer, enforce_languages);
         const vendors_passed = try verifyVendors(init.gpa, init.io, writer);
         try writer.flush();
         if (!passed or !vendors_passed) std.process.exit(1);
@@ -123,7 +155,7 @@ pub fn main(init: std.process.Init) !void {
         if (!passed) std.process.exit(1);
         return;
     }
-    try writer.writeAll("usage: pi-maintenance audit-source | verify-vendors | catalog [--output <path>]\n");
+    try writer.writeAll("usage: pi-maintenance audit-source | audit-structure | verify-vendors | catalog [--output <path>]\n");
     try writer.flush();
     if (args.len > 1) std.process.exit(2);
 }

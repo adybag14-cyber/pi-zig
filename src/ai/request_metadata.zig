@@ -205,6 +205,10 @@ pub const Compat = struct {
     supports_eager_tool_input_streaming: ?bool = null,
     supports_cache_control_on_tools: ?bool = null,
     supports_temperature: ?bool = null,
+    supports_mid_convo_effort: ?bool = null,
+    supports_mid_convo_system_messages: ?bool = null,
+    supports_mid_convo_tool_additions: ?bool = null,
+    supports_mid_convo_tool_changes: ?bool = null,
     /// vLLM-compatible top-level reasoning token reservation.
     supports_thinking_token_budget: ?bool = null,
     /// Exact top-level field for reasoning token reservation. The legacy

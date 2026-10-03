@@ -74,6 +74,30 @@ Completed evidence:
 - The latest complete Windows regression graph passes with the native worker,
   schemas, filesystem and tooling artifacts included. Production extension
   discovery still uses the old bridge pending complete compatibility gates.
+- Imported the exact pinned typed catalog with the native tool and recorded
+  the exact upstream source archive digest (not a fabricated release digest).
+  Native generated data includes 1,529 chat, 57 image and 15 classifier models.
+  Legacy chat selectors and operation-specific lookup/routing stay separate.
+- Updated current provider defaults including Meta, Codex GPT-6.1 Sol, Nemotron
+  3 Ultra, Kimi K3 and Radius Balanced. Full current-catalog Windows regression
+  graph and byte-exact native regeneration check pass.
+- Ported MCP protocol negotiation (latest 2025-11-25 and supported older
+  versions), persistent newline framing, numeric response correlation,
+  notification separation and unsupported server-request replies. Paginated
+  tool refreshes reject duplicate cursors and preserve prior tools on failure.
+  The real native server/pipe fixture and ten structural/framing tests pass.
+  Closure and truncated records produce errors instead of invented responses.
+- Added native MCP OAuth token parsing, issuer validation and step-up scope
+  retention. Credential key construction matches upstream's namespace plus
+  canonical URL; full discovery, browser callback and storage remain to port.
+- Retired the Python structural source audit while retaining its forbidden
+  generated surface checks in Zig. The separate strict implementation-language
+  audit still fails on remaining legacy Python/JavaScript files by design.
+- Fixed the hosted Windows ReleaseSafe MinGW header translation issue at the
+  C declaration import boundary. Local ReleaseSafe build passes; hosted
+  confirmation of the new commit remains required.
+- The current full Windows regression graph passes all 38 aggregate steps,
+  including the real MCP fixture, generated catalog and linked native worker.
 
 Required outstanding work:
 

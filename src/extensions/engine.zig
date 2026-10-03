@@ -1,6 +1,12 @@
 //! Direct C ABI for the extension language. No Node process or bridge source.
 const std = @import("std");
 pub const c = @cImport({
+    // Zig 0.16 translate-c emits invalid unused declarations for MinGW's
+    // fortified wide-string inline wrappers in ReleaseSafe. This affects
+    // declaration import only; the separately compiled C library keeps its
+    // normal compiler safety flags and does not use these inline wrappers.
+    @cUndef("_FORTIFY_SOURCE");
+    @cDefine("_FORTIFY_SOURCE", "0");
     @cInclude("engine_abi.h");
 });
 
