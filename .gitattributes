@@ -3,5 +3,7 @@
 scripts/generate_builtin_catalog.mjs text eol=lf
 src/ai/catalog_source.json text eol=lf
 vendor/** text eol=lf
+# Preserve pinned upstream source bytes; vendor hashes govern these files.
+vendor/** -whitespace
 src/extensions/*.c text eol=lf
 src/extensions/*.h text eol=lf
