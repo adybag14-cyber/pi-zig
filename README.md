@@ -1,11 +1,19 @@
 # pi-zig
 
+The Pi 1.x update is in progress on this branch, targeting upstream commit
+`83692682f095528f8b71652ddacff7075e36e893` (package version 1.0.1).
+See [the active update record](UPSTREAM-UPDATE-20261003.md) for completed gates
+and remaining ports. Final Zig 0.16.0 stays pinned. The linked C extension
+engine and Zig host are being validated before replacing production discovery's
+legacy Node bridge; remaining Python/JavaScript fixtures are also being ported.
+This branch does not yet certify complete Pi 1.x parity or an all-Zig/C tree.
+
 `pi-zig` is a native Zig 0.16 rewrite of the Pi coding-agent and AI runtime. It
 preserves Pi's provider, model, session, extension, tool, RPC, TUI, storage,
 authentication, and protocol behavior while keeping the default executable
 self-contained.
 
-The current behavioral baseline is Pi 0.84.4 at authoritative upstream main
+The previously certified behavioral baseline is Pi 0.84.4 at authoritative upstream main
 commit `853a80d26c90a14c1886f0ebb8ffaae133ca2185`. The earlier embedded
 TypeScript/JavaScript reference was retired in checkpoint 187 after the native
 0.84.1 implementation passed its local and three-platform parity gates. Newer
@@ -14,10 +22,11 @@ native code and language-neutral data; the reference source is not restored to
 this repository. `pi-zig` is an independent rewrite and is not an official Pi
 release.
 
-The deterministic catalog input now contains the exact verified Pi AI 0.84.4
-release data: 1,290 models across 39 providers. Its generator records the
-upstream release, commit, archive digest, structure digest, and source digest in
-the generated Zig module and rejects unknown or unprojected fields.
+The current immutable typed catalog contains 1,601 models across 42 providers:
+1,529 chat, 57 image and 15 classifier models. Its native Zig generator records
+the upstream package version/commit, source-archive digest and separate catalog
+revision/digest. Imported Git tar metadata and package version must match the
+supplied provenance. Unknown or unprojected fields fail explicitly.
 
 ## Highlights
 

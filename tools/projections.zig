@@ -15,14 +15,81 @@ fn git(gpa: std.mem.Allocator, io: std.Io, argv: []const []const u8, limit: usiz
 }
 
 pub fn validatePackage(gpa: std.mem.Allocator, bytes: []const u8) ![]u8 {
+    return validateNamedPackage(gpa, bytes, "@earendil-works/pi-coding-agent");
+}
+
+pub fn validateNamedPackage(gpa: std.mem.Allocator, bytes: []const u8, expected_name: []const u8) ![]u8 {
     const parsed = try std.json.parseFromSlice(std.json.Value, gpa, bytes, .{});
     defer parsed.deinit();
     if (parsed.value != .object) return error.InvalidUpstreamPackage;
     const name = parsed.value.object.get("name") orelse return error.InvalidUpstreamPackage;
     const version = parsed.value.object.get("version") orelse return error.InvalidUpstreamPackage;
-    if (name != .string or version != .string or !std.mem.eql(u8, name.string, "@earendil-works/pi-coding-agent")) return error.InvalidUpstreamPackage;
+    if (name != .string or version != .string or !std.mem.eql(u8, name.string, expected_name)) return error.InvalidUpstreamPackage;
     _ = std.SemanticVersion.parse(version.string) catch return error.InvalidUpstreamVersion;
     return gpa.dupe(u8, version.string);
+}
+
+fn tarSize(header: []const u8) !usize {
+    if (header.len != 512) return error.InvalidSourceArchive;
+    return std.fmt.parseInt(usize, std.mem.trim(u8, header[124..136], "\x00 "), 8) catch return error.UnsupportedSourceArchive;
+}
+
+/// Git's uncompressed tar carries its immutable commit in the global PAX
+/// comment. Other archive formats fail explicitly instead of being mislabeled.
+pub fn archiveCommit(bytes: []const u8) ![]const u8 {
+    if (bytes.len < 1024 or bytes[156] != 'g') return error.UnsupportedSourceArchive;
+    const size = try tarSize(bytes[0..512]);
+    if (size > bytes.len - 512) return error.InvalidSourceArchive;
+    const payload = bytes[512 .. 512 + size];
+    var offset: usize = 0;
+    var commit: ?[]const u8 = null;
+    while (offset < payload.len) {
+        const separator = std.mem.indexOfScalarPos(u8, payload, offset, ' ') orelse return error.InvalidSourceArchive;
+        const length = std.fmt.parseInt(usize, payload[offset..separator], 10) catch return error.InvalidSourceArchive;
+        if (length <= separator - offset + 1 or length > payload.len - offset) return error.InvalidSourceArchive;
+        const end = offset + length;
+        if (payload[end - 1] != '\n') return error.InvalidSourceArchive;
+        const record = payload[separator + 1 .. end - 1];
+        if (std.mem.startsWith(u8, record, "comment=")) {
+            if (commit != null or record.len != 48) return error.InvalidSourceArchive;
+            for (record[8..]) |byte| if (!std.ascii.isHex(byte)) return error.InvalidSourceArchive;
+            commit = record[8..];
+        }
+        offset = end;
+    }
+    return commit orelse error.MissingSourceArchiveCommit;
+}
+
+pub fn archiveFile(bytes: []const u8, requested_path: []const u8) ![]const u8 {
+    var offset: usize = 0;
+    while (offset <= bytes.len and bytes.len - offset >= 512) {
+        const header = bytes[offset .. offset + 512];
+        if (header[0] == 0) return error.SourceArchiveFileMissing;
+        const size = try tarSize(header);
+        const begin = offset + 512;
+        if (size > bytes.len - begin) return error.InvalidSourceArchive;
+        const name = std.mem.trimEnd(u8, header[0..100], "\x00");
+        const prefix = std.mem.trimEnd(u8, header[345..500], "\x00");
+        if (prefix.len == 0 and std.mem.eql(u8, name, requested_path)) {
+            if (header[156] != '0' and header[156] != 0) return error.InvalidSourceArchive;
+            return bytes[begin .. begin + size];
+        }
+        const padded = std.math.add(usize, size, 511) catch return error.InvalidSourceArchive;
+        const advance = std.math.mul(usize, padded / 512, 512) catch return error.InvalidSourceArchive;
+        offset = std.math.add(usize, begin, advance) catch return error.InvalidSourceArchive;
+    }
+    return error.SourceArchiveFileMissing;
+}
+
+test "source archive provenance rejects unsupported containers and malformed PAX records" {
+    try std.testing.expectError(error.UnsupportedSourceArchive, archiveCommit("not a Git tar"));
+    var bytes = [_]u8{0} ** 1024;
+    bytes[156] = 'g';
+    @memcpy(bytes[124..135], "00000000064");
+    @memcpy(bytes[512..564], "52 comment=83692682f095528f8b71652ddacff7075e36e893\n");
+    try std.testing.expectEqualStrings("83692682f095528f8b71652ddacff7075e36e893", try archiveCommit(&bytes));
+    bytes[512] = '0';
+    try std.testing.expectError(error.InvalidSourceArchive, archiveCommit(&bytes));
 }
 
 pub fn changelog(gpa: std.mem.Allocator, io: std.Io, upstream_root: []const u8, expected_commit: []const u8) ![]u8 {

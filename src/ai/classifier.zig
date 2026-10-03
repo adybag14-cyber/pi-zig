@@ -6,6 +6,7 @@ const metadata = @import("request_metadata.zig");
 const http_fetch = @import("http_fetch.zig");
 const http_proxy = @import("http_proxy.zig");
 const retry = @import("retry.zig");
+const llama = @import("llama_classifier.zig");
 
 pub const Api = enum {
     typesafe_system_one,
@@ -66,10 +67,12 @@ pub const Client = struct {
     provider_retry: retry.ProviderPolicy = .{ .max_retries = 2 },
     fetch_override: ?FetchOverride = null,
     response_observer: ?http_fetch.HeadObserver = null,
+    temperature: f64 = 1,
 
     pub fn classify(self: *Client, gpa: std.mem.Allocator, context_json: []const u8) !Result {
         const timestamp = std.Io.Clock.real.now(self.io).toMilliseconds();
         if (self.aborted()) return errorResult(gpa, self.model, timestamp, "Request aborted", true);
+        if (self.model.api == .llama_cpp_classify) return self.classifyLocal(gpa, context_json, timestamp) catch |err| errorResult(gpa, self.model, timestamp, @errorName(err), self.aborted());
         if (self.api_key.len == 0) return errorResult(gpa, self.model, timestamp, "No API key for classifier provider", false);
         const payload = buildPayload(gpa, self.model, context_json) catch |err| return errorResult(gpa, self.model, timestamp, @errorName(err), false);
         defer gpa.free(payload);
@@ -131,6 +134,55 @@ pub const Client = struct {
             .response_writer = &body.writer,
         }, self.timeout_ms, self.abort_flag, self.response_observer);
         return .{ .status = result.status, .body = try body.toOwnedSlice(), .retry_meta = result.provider };
+    }
+
+    fn classifyLocal(self: *Client, gpa: std.mem.Allocator, context_json: []const u8, timestamp: i64) !Result {
+        const backing = try gpa.create(std.heap.ArenaAllocator);
+        backing.* = .init(gpa);
+        errdefer {
+            backing.deinit();
+            gpa.destroy(backing);
+        }
+        const allocator = backing.allocator();
+        const answers = try llama.run(allocator, .{ .context = self, .call = localPost }, self.model.id, context_json, self.temperature);
+        return .{ .backing = backing, .api = self.model.api, .provider = try allocator.dupe(u8, self.model.provider), .model = try allocator.dupe(u8, self.model.id), .answers = answers, .timestamp_ms = timestamp };
+    }
+
+    fn localPost(context: ?*anyopaque, gpa: std.mem.Allocator, path: []const u8, value: std.json.Value, observe: bool) anyerror!std.json.Value {
+        const self: *Client = @ptrCast(@alignCast(context.?));
+        const url = try std.fmt.allocPrint(gpa, "{s}{s}", .{ llama.serverRoot(self.model.base_url), path });
+        defer gpa.free(url);
+        var payload: std.Io.Writer.Allocating = .init(gpa);
+        defer payload.deinit();
+        try std.json.Stringify.value(value, .{}, &payload.writer);
+        var headers: std.ArrayList(std.http.Header) = .empty;
+        defer headers.deinit(gpa);
+        try putHeader(gpa, &headers, "content-type", "application/json");
+        const authorization = if (self.api_key.len > 0) try std.fmt.allocPrint(gpa, "Bearer {s}", .{self.api_key}) else null;
+        defer if (authorization) |owned| gpa.free(owned);
+        if (authorization) |text_value| try putHeader(gpa, &headers, "authorization", text_value);
+        for (self.model.headers) |header| try putHeader(gpa, &headers, header.name, header.value);
+        for (self.headers) |header| try putHeader(gpa, &headers, header.name, header.value);
+        var transport = self.*;
+        if (!observe) transport.response_observer = null;
+        var retries: u32 = 0;
+        while (true) {
+            if (self.aborted()) return error.RequestAborted;
+            var response = transport.requestOnce(gpa, url, headers.items, payload.written()) catch |err| {
+                if (err != error.ProviderRequestTimeout or retries >= self.provider_retry.max_retries) return err;
+                const delay = try retry.providerDelayMs(self.io, self.provider_retry, retries, null);
+                retries += 1;
+                if (!retry.waitProvider(self.io, delay, self.abort_flag)) return error.RequestAborted;
+                continue;
+            };
+            defer gpa.free(response.body);
+            if (response.status >= 200 and response.status < 300) return std.json.parseFromSliceLeaky(std.json.Value, gpa, response.body, .{ .allocate = .alloc_always });
+            response.retry_meta.status = response.status;
+            if (retries >= self.provider_retry.max_retries or !retry.isRetryableProviderResponse(response.retry_meta)) return error.ClassifierHttpFailure;
+            const delay = try retry.providerDelayMs(self.io, self.provider_retry, retries, response.retry_meta.retry_after_ms);
+            retries += 1;
+            if (!retry.waitProvider(self.io, delay, self.abort_flag)) return error.RequestAborted;
+        }
     }
 
     fn aborted(self: *const Client) bool {
@@ -484,4 +536,157 @@ test "generated typed classifier models route separately from chat models" {
     }
     try std.testing.expectEqual(@as(usize, 15), count);
     try std.testing.expectError(error.NotClassifierModel, Model.fromInfo(providers.known_models[0]));
+}
+
+test "llama classifier routes local endpoints without credentials and escalates missing labels" {
+    const Fixture = struct {
+        calls: usize = 0,
+        completions: usize = 0,
+        missing_all: bool = false,
+        duplicate_labels: bool = false,
+        fn fetch(context: ?*anyopaque, gpa: std.mem.Allocator, url: []const u8, headers: []const std.http.Header, payload: []const u8) anyerror!HttpResult {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.calls += 1;
+            for (headers) |header| try std.testing.expect(!std.ascii.eqlIgnoreCase(header.name, "authorization"));
+            const parsed = try std.json.parseFromSlice(std.json.Value, gpa, payload, .{});
+            defer parsed.deinit();
+            const fields = parsed.value.object;
+            try std.testing.expectEqualStrings("local-model", fields.get("model").?.string);
+            if (std.mem.endsWith(u8, url, "/tokenize")) {
+                try std.testing.expectEqualStrings("http://fixture/tokenize", url);
+                try std.testing.expect(!fields.get("add_special").?.bool and !fields.get("parse_special").?.bool);
+                const content = fields.get("content").?.string;
+                const body = if (std.mem.eql(u8, content, "\n")) "{\"tokens\":[1]}" else if (std.mem.eql(u8, content, "\nYes") or self.duplicate_labels) "{\"tokens\":[{\"id\":1},{\"id\":7}]}" else "{\"tokens\":[1,8]}";
+                return .{ .status = 200, .body = try gpa.dupe(u8, body) };
+            }
+            if (std.mem.endsWith(u8, url, "/apply-template")) {
+                try std.testing.expect(!fields.get("chat_template_kwargs").?.object.get("enable_thinking").?.bool);
+                try std.testing.expect(std.mem.indexOf(u8, fields.get("messages").?.array.items[1].object.get("content").?.string, "Answer Yes or No.") != null);
+                return .{ .status = 200, .body = try gpa.dupe(u8, "{\"prompt\":\"model-template<think>\"}") };
+            }
+            try std.testing.expectEqualStrings("http://fixture/completion", url);
+            self.completions += 1;
+            try std.testing.expectEqualStrings("model-template<think></think>", fields.get("prompt").?.string);
+            try std.testing.expectEqual(@as(i64, 1), fields.get("n_predict").?.integer);
+            try std.testing.expect(fields.get("cache_prompt").?.bool and !fields.get("post_sampling_probs").?.bool);
+            const depth = fields.get("n_probs").?.integer;
+            try std.testing.expectEqual(([_]i64{ 256, 4096, 32768 })[self.completions - 1], depth);
+            const body = if (self.missing_all) "{\"completion_probabilities\":[{\"top_logprobs\":[]}]}" else if (depth == 256) "{\"completion_probabilities\":[{\"top_logprobs\":[{\"id\":7,\"logprob\":-0.2}]}]}" else "{\"completion_probabilities\":[{\"top_logprobs\":[{\"id\":7,\"logprob\":-0.2},{\"id\":8,\"logprob\":-2.0}]}]}";
+            return .{ .status = 200, .body = try gpa.dupe(u8, body) };
+        }
+    };
+    const context_json = "{\"state\":{\"value\":42},\"questions\":{\"decision\":{\"type\":\"bool\",\"instructions\":\"Accept?\",\"criteria\":{\"true\":\"accepted\",\"false\":\"rejected\"}}}}";
+    var fixture: Fixture = .{};
+    var client: Client = .{ .io = std.testing.io, .model = .{ .api = .llama_cpp_classify, .provider = "llama-cpp", .id = "local-model", .base_url = "http://fixture/v1/" }, .api_key = "", .fetch_override = .{ .context = &fixture, .call = Fixture.fetch } };
+    var result = try client.classify(std.testing.allocator, context_json);
+    defer result.deinit(std.testing.allocator);
+    try std.testing.expectEqual(.stop, result.stop_reason);
+    try std.testing.expect(result.usage == null);
+    try std.testing.expectEqual(@as(usize, 2), fixture.completions);
+    try std.testing.expectApproxEqAbs(@as(f64, 0.8581489351), result.answers.get("decision").?.object.get("probability").?.float, 1e-9);
+    fixture = .{ .missing_all = true };
+    var missing = try client.classify(std.testing.allocator, context_json);
+    defer missing.deinit(std.testing.allocator);
+    try std.testing.expectEqual(.err, missing.stop_reason);
+    try std.testing.expectEqual(@as(usize, 0), missing.answers.count());
+    try std.testing.expectEqual(@as(usize, 3), fixture.completions);
+    fixture = .{ .duplicate_labels = true };
+    var duplicate = try client.classify(std.testing.allocator, context_json);
+    defer duplicate.deinit(std.testing.allocator);
+    try std.testing.expectEqual(.err, duplicate.stop_reason);
+    try std.testing.expectEqual(@as(usize, 0), fixture.completions);
+    fixture = .{};
+    client.temperature = 0;
+    var invalid = try client.classify(std.testing.allocator, context_json);
+    defer invalid.deinit(std.testing.allocator);
+    try std.testing.expectEqual(.err, invalid.stop_reason);
+    try std.testing.expectEqual(@as(usize, 0), fixture.calls);
+}
+
+test "llama classifier native HTTP exchanges all endpoint records and observes only completions" {
+    const fixture = @import("http_fixture.zig");
+    const gpa = std.testing.allocator;
+    const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{
+        .{ .path = "/tokenize", .body = "{\"tokens\":[1]}" },
+        .{ .path = "/tokenize", .body = "{\"tokens\":[1,7]}" },
+        .{ .path = "/tokenize", .body = "{\"tokens\":[1]}" },
+        .{ .path = "/tokenize", .body = "{\"tokens\":[1,8]}" },
+        .{ .path = "/apply-template", .body = "{\"prompt\":\"actual-template<think>\"}", .payload_contains = "\"enable_thinking\":false" },
+        .{ .path = "/completion", .body = "{\"completion_probabilities\":[{\"top_logprobs\":[{\"id\":7,\"logprob\":-0.2}]}]}", .payload_contains = "\"n_probs\":256" },
+        .{ .path = "/completion", .body = "{\"completion_probabilities\":[{\"top_logprobs\":[{\"id\":7,\"logprob\":-0.2},{\"id\":8,\"logprob\":-2.0}]}]}", .payload_contains = "\"n_probs\":4096" },
+    });
+    defer server.deinit();
+    const base_url = try server.url(gpa, "/v1/");
+    defer gpa.free(base_url);
+    const Observer = struct {
+        count: usize = 0,
+        fn observe(context: ?*anyopaque, head: std.http.Client.Response.Head) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            try std.testing.expectEqual(std.http.Status.ok, head.status);
+            self.count += 1;
+        }
+    };
+    var observer: Observer = .{};
+    var environment: std.process.Environ.Map = .init(gpa);
+    defer environment.deinit();
+    var client: Client = .{ .io = std.testing.io, .model = .{ .api = .llama_cpp_classify, .provider = "llama.cpp", .id = "local", .base_url = base_url }, .api_key = "", .environ = &environment, .timeout_ms = 3000, .response_observer = .{ .context = &observer, .callback = Observer.observe } };
+    var result = try client.classify(gpa, "{\"state\":{\"value\":42},\"questions\":{\"answer\":{\"type\":\"bool\",\"instructions\":\"Accept?\",\"criteria\":{\"true\":\"yes\",\"false\":\"no\"}}}}");
+    defer result.deinit(gpa);
+    if (result.stop_reason != .stop) std.debug.print("Native llama HTTP fixture: {s}\n", .{result.error_message orelse "unknown"});
+    try std.testing.expectEqual(.stop, result.stop_reason);
+    try server.finish();
+    try std.testing.expectEqual(@as(usize, 7), server.captured.items.len);
+    try std.testing.expectEqual(@as(usize, 2), observer.count);
+    try std.testing.expect(result.usage == null);
+}
+
+test "classifier native HTTP retry headers and local timeout preserve empty error answers" {
+    const fixture = @import("http_fixture.zig");
+    const gpa = std.testing.allocator;
+    var environment: std.process.Environ.Map = .init(gpa);
+    defer environment.deinit();
+    const retried_server = try fixture.PlanServer.init(gpa, std.testing.io, &.{
+        .{ .path = "/systemone", .body = "temporarily unavailable", .status = .service_unavailable, .headers = &.{.{ .name = "retry-after", .value = "0" }} },
+        .{ .path = "/systemone", .body = fixture_output },
+    });
+    defer retried_server.deinit();
+    const retry_url = try retried_server.url(gpa, "");
+    defer gpa.free(retry_url);
+    var retry_model = fixture_model;
+    retry_model.base_url = retry_url;
+    var client: Client = .{ .io = std.testing.io, .model = retry_model, .api_key = "offline-fixture", .environ = &environment, .timeout_ms = 3000 };
+    var retried = try client.classify(gpa, fixture_context);
+    defer retried.deinit(gpa);
+    try std.testing.expectEqual(.stop, retried.stop_reason);
+    try retried_server.finish();
+    try std.testing.expectEqual(@as(usize, 2), retried_server.captured.items.len);
+    const refused_server = try fixture.PlanServer.init(gpa, std.testing.io, &.{
+        .{ .path = "/systemone", .body = "do not retry", .status = .service_unavailable, .headers = &.{.{ .name = "x-should-retry", .value = "false" }} },
+    });
+    defer refused_server.deinit();
+    const refused_url = try refused_server.url(gpa, "");
+    defer gpa.free(refused_url);
+    client.model.base_url = refused_url;
+    var refused = try client.classify(gpa, fixture_context);
+    defer refused.deinit(gpa);
+    try std.testing.expectEqual(.err, refused.stop_reason);
+    try refused_server.finish();
+    try std.testing.expectEqual(@as(usize, 1), refused_server.captured.items.len);
+    const stalled_server = try fixture.PlanServer.init(gpa, std.testing.io, &.{
+        .{ .path = "/tokenize", .body = "{\"tokens\":[1]}", .delay_ms = 1000 },
+    });
+    defer stalled_server.deinit();
+    const local_url = try stalled_server.url(gpa, "/v1");
+    defer gpa.free(local_url);
+    client.model.api = .llama_cpp_classify;
+    client.model.base_url = local_url;
+    client.api_key = "";
+    client.timeout_ms = 25;
+    client.provider_retry.max_retries = 0;
+    var timed_out = try client.classify(gpa, "{\"state\":{},\"questions\":{\"decision\":{\"type\":\"bool\",\"instructions\":\"Accept?\",\"criteria\":{\"true\":\"yes\",\"false\":\"no\"}}}}");
+    defer timed_out.deinit(gpa);
+    try std.testing.expectEqual(.err, timed_out.stop_reason);
+    try std.testing.expectEqualStrings("ProviderRequestTimeout", timed_out.error_message.?);
+    try std.testing.expectEqual(@as(usize, 0), timed_out.answers.count());
+    try std.testing.expect(timed_out.usage == null);
 }

@@ -1,7 +1,7 @@
 # Native repository tree
 
 The active update targets upstream Pi commit
-`4c6fb7cfe8c538a668726f6f8b3554098c39faee` (package version 1.0.1).
+`83692682f095528f8b71652ddacff7075e36e893` (package version 1.0.1).
 Complete behavioral parity remains in progress; see
 `UPSTREAM-UPDATE-20261003.md` for the completed gates and outstanding work.
 
@@ -18,8 +18,9 @@ Complete behavioral parity remains in progress; see
   `src/ai/catalog_generated.zig`; `zig build maintenance -- catalog --check`
   verifies byte-exact regeneration.
 - `zig build maintenance -- import-catalog <json> <version> <commit>
-  <source-archive> <revision> <destination>` validates catalog revision digests
-  before recording the language-neutral input. It executes no upstream code.
+  <source-archive> <revision> <destination>` validates catalog revision digests,
+  the Git tar's embedded commit and the committed AI package version before
+  recording the language-neutral input. It executes no upstream code.
 - `zig build maintenance -- import-changelog <upstream-checkout>
   <expected-commit>` reads committed package/changelog Git objects and imports
   the text into `src/coding_agent/assets/UPSTREAM-CHANGELOG.md`.

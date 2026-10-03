@@ -6,11 +6,15 @@ Status: in progress. This file does not certify parity or a release.
   `012e80ced763e8d8ac7e01f7331d32dad3ab468b`.
 - Previous Pi baseline: `853a80d26c90a14c1886f0ebb8ffaae133ca2185`, version 0.84.4.
 - Selected authority: earendil-works/pi main
-  `4c6fb7cfe8c538a668726f6f8b3554098c39faee`, package version 1.0.1.
+  `83692682f095528f8b71652ddacff7075e36e893`, package version 1.0.1.
   It descends from and is newer than published GitHub release v1.0.0.
-- Delta: 882 commits, including new model types/classifiers, codemode, MCP
+- Delta: 883 commits, including new model types/classifiers, codemode, MCP
   configuration/OAuth, providers/auth, agent-loop hooks, terminal behavior,
   and extraction of durable harness APIs into pi-durable.
+  The refresh from initial target `4c6fb7cf` adds exactly one Nix workflow
+  history-fetch fix and changes no runtime/package/catalog sources.
+- Current upstream source tar SHA-256:
+  `bfb52243c704f88a88ada70b73e0d229b25fe0d7aca0a2c69110673065c0d00f`.
 - User-required toolchain: final Zig 0.16.0. No implicit upgrade.
 - User-required implementation: Zig; direct C interoperability allowed.
   Retain upstream user-authored JavaScript/TypeScript extension compatibility
@@ -121,6 +125,21 @@ Completed evidence:
   all 38 steps. Additional host/tooling changes still require hosted checks.
 - Vendor verification rejects entries outside each pinned digest inventory as
   well as changed/malformed digests. A deliberate extra C source file is rejected.
+- Hosted Windows, Linux and macOS CI pass native host/tooling commit `0baa60e`.
+  Build-only release workflow 37154545313 also passes all six x64/ARM64 targets
+  on Windows, Linux and macOS. Six downloaded binary digests verify and the
+  Windows x64 version smoke passes. These are candidates, not a parity release.
+- Ported the llama.cpp classifier's labeled prompts, tokenization/template/
+  completion endpoints, depth escalation, duplicate/split/missing-label errors,
+  softmax, confidence and typed answers. Local endpoints accept omitted API
+  credentials; outputs have no fabricated usage. JSON numeric-key order and
+  very small positive temperatures are covered. Token reuse is currently scoped
+  to a request; persistent cross-request label caching remains to integrate.
+- Native loopback classifier tests exercise all seven HTTP records, real retry
+  headers, timeout cleanup and completion-only response observation. The full
+  Windows regression graph passes after these classifier changes.
+- Native catalog import now requires the Git tar's embedded PAX commit and
+  committed AI package version to match provenance before writing output.
 
 Required outstanding work:
 

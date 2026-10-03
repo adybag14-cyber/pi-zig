@@ -149,6 +149,10 @@ pub fn main(init: std.process.Init) !void {
         defer init.gpa.free(bytes);
         const archive = try std.Io.Dir.cwd().readFileAlloc(init.io, args[5], init.gpa, .limited(256 * 1024 * 1024));
         defer init.gpa.free(archive);
+        if (!std.ascii.eqlIgnoreCase(try projections.archiveCommit(archive), args[4])) return error.SourceArchiveCommitMismatch;
+        const archive_version = try projections.validateNamedPackage(init.gpa, try projections.archiveFile(archive, "packages/ai/package.json"), "@earendil-works/pi-ai");
+        defer init.gpa.free(archive_version);
+        if (!std.mem.eql(u8, archive_version, args[3])) return error.SourceArchiveVersionMismatch;
         var digest: [32]u8 = undefined;
         std.crypto.hash.sha2.Sha256.hash(archive, &digest, .{});
         const hex = std.fmt.bytesToHex(digest, .lower);
