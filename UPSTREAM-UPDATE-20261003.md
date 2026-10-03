@@ -46,6 +46,17 @@ Completed evidence:
   synthetic surfaces. Native vendor verification checks 107 pinned files with
   zero digest failures. The language audit remains expected to fail until the
   old bridge and scripts have been ported; no exemption hides those files.
+- Native-foundation draft PR #1 passes hosted Windows, Ubuntu and macOS CI.
+- Added model operation types with omitted-type chat compatibility, explicit
+  unknown-type rejection, per-operation identity and chat-only legacy selectors.
+- Added native System One request/answer projection and HTTP client: bool/noul,
+  choice/score, direct and Completed Cloudflare envelopes, priced usage retained
+  on malformed answers, owned response strings, case-insensitive header
+  overrides/null suppression, aborts and provider retry policy. This does not
+  yet certify classifier integration into the full model registry/codemode.
+- Ported Pi 1's fullscreen default (explicit regular mode retained), leading
+  whitespace slash completion and explicit-provider/model validation.
+- The latest Windows regression graph passes after these operation/CLI changes.
 
 Required outstanding work:
 

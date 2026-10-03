@@ -1,0 +1,73 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "upstreamCommit": "4c6fb7cfe8c538a668726f6f8b3554098c39faee",
+  "nativeFoundationCiRun": 37135964070,
+  "jobs": {
+    "classifier-contract-tests": {
+      "name": "classifier-contract-tests",
+      "pid": 26264,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-classifier -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-03T16:38:36.6848880Z",
+      "launched_utc": "2026-10-03T16:38:36.6817027+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T16:38:46.9722366+00:00"
+    },
+    "model-type-tests": {
+      "name": "model-type-tests",
+      "pid": 45560,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/ai/model_types.zig",
+      "created_utc": "2026-10-03T16:23:53.7652210Z",
+      "launched_utc": "2026-10-03T16:23:53.7622022+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T16:23:55.9389190+00:00"
+    },
+    "typed-catalog-regressions": {
+      "name": "typed-catalog-regressions",
+      "pid": 43508,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-03T16:26:50.5817580Z",
+      "launched_utc": "2026-10-03T16:26:50.5786892+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T16:27:40.7318306+00:00"
+    },
+    "latest-cli-regressions": {
+      "name": "latest-cli-regressions",
+      "pid": 9448,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-03T16:33:28.1418810Z",
+      "launched_utc": "2026-10-03T16:33:28.1388342+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T16:34:12.7091162+00:00"
+    },
+    "operation-cli-regressions": {
+      "name": "operation-cli-regressions",
+      "pid": 56272,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-03T16:43:36.5292160Z",
+      "launched_utc": "2026-10-03T16:43:36.5260748+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-03T16:44:19.6212743+00:00"
+    }
+  }
+}

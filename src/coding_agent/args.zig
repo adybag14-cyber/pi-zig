@@ -287,6 +287,21 @@ pub fn parseArgs(arena: std.mem.Allocator, raw_args: []const []const u8) !Args {
     return result;
 }
 
+pub fn validateModelSelection(args: Args) !void {
+    if (args.help or args.version or args.command != null) return;
+    if (args.provider) |provider| {
+        if (provider.len > 0 and (args.model == null or args.model.?.len == 0)) return error.ProviderRequiresModel;
+    }
+}
+
+test "explicit provider requires an explicit model while help and version remain available" {
+    try std.testing.expectError(error.ProviderRequiresModel, validateModelSelection(.{ .provider = "anthropic" }));
+    try std.testing.expectError(error.ProviderRequiresModel, validateModelSelection(.{ .provider = "anthropic", .model = "" }));
+    try validateModelSelection(.{ .provider = "anthropic", .model = "claude-sonnet" });
+    try validateModelSelection(.{ .provider = "anthropic", .help = true });
+    try validateModelSelection(.{ .provider = "anthropic", .version = true });
+}
+
 fn splitCsv(arena: std.mem.Allocator, s: []const u8) ![]const []const u8 {
     var list: std.ArrayList([]const u8) = .empty;
     var it = std.mem.splitScalar(u8, s, ',');

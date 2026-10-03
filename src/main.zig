@@ -2814,6 +2814,11 @@ pub fn main(init: std.process.Init) !void {
         try tui.render.printLine(io, config.identity);
         return;
     }
+    coding.args.validateModelSelection(cli) catch {
+        const message = try std.fmt.allocPrint(arena, "--provider requires --model (for example: --provider {s} --model <pattern>)", .{cli.provider orelse "<provider>"});
+        try tui.render.printLine(io, message);
+        std.process.exit(2);
+    };
 
     // Run the original one-time compatibility migrations before any command
     // reads settings, sessions or credentials. They are deliberately silent
@@ -4295,7 +4300,7 @@ pub fn main(init: std.process.Init) !void {
     const effective_tui_mode: coding.settings.TuiMode = if (cli.tui_mode) |mode| switch (mode) {
         .regular => .regular,
         .fullscreen => .fullscreen,
-    } else settings.tui_mode orelse .regular;
+    } else settings.effectiveTuiMode();
     var fullscreen_active = false;
     if (effective_tui_mode == .fullscreen and tui.terminal.supportsFullscreen(io)) {
         try tui.terminal.enterAlternateScreen(io);

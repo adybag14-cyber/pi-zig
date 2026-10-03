@@ -29,6 +29,8 @@ pub const github_copilot = @import("github_copilot.zig");
 pub const tool_arguments = @import("tool_arguments.zig");
 pub const cost = @import("cost.zig");
 pub const api = @import("api.zig");
+pub const classifier = @import("classifier.zig");
+pub const model_types = @import("model_types.zig");
 
 pub const Provider = providers.Provider;
 pub const resolveApiKey = providers.resolveApiKey;

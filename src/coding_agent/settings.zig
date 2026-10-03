@@ -138,6 +138,10 @@ pub const MermaidMode = enum {
 pub const TerminalImageProtocol = enum { kitty, iterm2, none };
 
 pub const Settings = struct {
+    pub fn effectiveTuiMode(self: Settings) TuiMode {
+        return self.tui_mode orelse .fullscreen;
+    }
+
     model: ?[]const u8 = null,
     provider: ?[]const u8 = null,
     /// Initial native built-in selection. Extension and SDK tools are not
@@ -264,6 +268,13 @@ pub const Settings = struct {
         self.* = undefined;
     }
 };
+
+test "Pi 1 fullscreen default preserves explicit regular mode" {
+    const defaults: Settings = .{};
+    try std.testing.expectEqual(TuiMode.fullscreen, defaults.effectiveTuiMode());
+    const regular: Settings = .{ .tui_mode = .regular };
+    try std.testing.expectEqual(TuiMode.regular, regular.effectiveTuiMode());
+}
 
 pub const Diagnostic = struct {
     path: []u8,
@@ -2035,7 +2046,7 @@ pub fn formatSettings(gpa: std.mem.Allocator, s: Settings) ![]u8 {
         if (s.show_hardware_cursor orelse false) "true" else "false",
         if (s.mermaid_mode) |mode| mode.wireName() else "streaming",
         if (s.warning_anthropic_extra_usage orelse true) "true" else "false",
-        if (s.tui_mode) |mode| mode.wireName() else "regular",
+        s.effectiveTuiMode().wireName(),
         if (s.fullscreen_exit_output) |mode| mode.wireName() else "transcript",
         if (s.fullscreen_scrollbar) |mode| mode.wireName() else "auto",
     });

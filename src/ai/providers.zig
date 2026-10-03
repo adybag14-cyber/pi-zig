@@ -9,6 +9,7 @@ const thinking = @import("thinking.zig");
 const api_mod = @import("api.zig");
 const metadata = @import("request_metadata.zig");
 const catalog_generated = @import("catalog_generated.zig");
+pub const ModelType = @import("model_types.zig").ModelType;
 
 pub const Provider = enum {
     openai,
@@ -154,6 +155,7 @@ pub const ModelCost = struct {
 };
 
 pub const ModelInfo = struct {
+    kind: ModelType = .chat,
     /// Native request transport/provider implementation.
     provider: Provider,
     /// Public provider identity. Null means `provider.name()` for built-ins.

@@ -6,7 +6,7 @@ const providers = @import("../ai/providers.zig");
 const models_file_mod = @import("models_file.zig");
 
 fn sameIdentity(a: providers.ModelInfo, b: providers.ModelInfo) bool {
-    return std.ascii.eqlIgnoreCase(a.providerName(), b.providerName()) and std.mem.eql(u8, a.id, b.id);
+    return a.kind == b.kind and std.ascii.eqlIgnoreCase(a.providerName(), b.providerName()) and std.mem.eql(u8, a.id, b.id);
 }
 
 fn hasIdentity(list: []const providers.ModelInfo, target: providers.ModelInfo) bool {
@@ -33,7 +33,7 @@ fn applyOverride(model: providers.ModelInfo, provider_config: ?*const models_fil
 
 fn staticHasIdentity(models_file: *const models_file_mod.ModelsFile, target: providers.ModelInfo) bool {
     const provider = models_file.findProvider(target.providerName()) orelse return false;
-    for (provider.models) |configured| if (std.mem.eql(u8, configured.info.id, target.id)) return true;
+    for (provider.models) |configured| if (sameIdentity(configured.info, target)) return true;
     return false;
 }
 
@@ -41,15 +41,25 @@ fn staticHasIdentity(models_file: *const models_file_mod.ModelsFile, target: pro
 /// Static definitions win identity collisions; dynamic Radius entries replace built-ins and
 /// still receive modelOverrides from models.json.
 pub fn buildWithExtras(gpa: std.mem.Allocator, models_file: *const models_file_mod.ModelsFile, extras: []const providers.ModelInfo) ![]providers.ModelInfo {
+    return compose(gpa, models_file, extras, false);
+}
+
+pub fn buildAllWithExtras(gpa: std.mem.Allocator, models_file: *const models_file_mod.ModelsFile, extras: []const providers.ModelInfo) ![]providers.ModelInfo {
+    return compose(gpa, models_file, extras, true);
+}
+
+fn compose(gpa: std.mem.Allocator, models_file: *const models_file_mod.ModelsFile, extras: []const providers.ModelInfo, include_non_chat: bool) ![]providers.ModelInfo {
     var out: std.ArrayList(providers.ModelInfo) = .empty;
     errdefer out.deinit(gpa);
 
     for (providers.known_models) |known| {
+        if (!include_non_chat and known.kind != .chat) continue;
         if (staticHasIdentity(models_file, known) or hasIdentity(extras, known)) continue;
         try out.append(gpa, applyOverride(known, models_file.findProvider(known.providerName())));
     }
 
     for (extras) |extra| {
+        if (!include_non_chat and extra.kind != .chat) continue;
         if (!extra.apiKind().runtimeSupported()) continue;
         if (staticHasIdentity(models_file, extra)) continue;
         // Deduplicate malformed/repeated stores by first identity, just like a provider map.
@@ -59,11 +69,32 @@ pub fn buildWithExtras(gpa: std.mem.Allocator, models_file: *const models_file_m
 
     for (models_file.providers) |provider_config| {
         for (provider_config.models) |configured_model| {
+            if (!include_non_chat and configured_model.info.kind != .chat) continue;
             if (!configured_model.api.runtimeSupported()) continue;
             try out.append(gpa, configured_model.info);
         }
     }
     return try out.toOwnedSlice(gpa);
+}
+
+test "typed catalog keeps operation identities while legacy selectors remain chat only" {
+    const gpa = std.testing.allocator;
+    const file: models_file_mod.ModelsFile = .{ .gpa = gpa };
+    const extras = [_]providers.ModelInfo{
+        .{ .kind = .chat, .provider = .openrouter, .provider_id = "mixed", .id = "same", .display = "Chat" },
+        .{ .kind = .image, .provider = .openrouter, .provider_id = "mixed", .id = "same", .display = "Image" },
+        .{ .kind = .classifier, .provider = .openrouter, .provider_id = "mixed", .id = "same", .display = "Classifier" },
+    };
+    const all = try buildAllWithExtras(gpa, &file, &extras);
+    defer gpa.free(all);
+    var found: [3]bool = .{ false, false, false };
+    for (all) |model| {
+        if (std.mem.eql(u8, model.providerName(), "mixed")) found[@intFromEnum(model.kind)] = true;
+    }
+    try std.testing.expect(found[0] and found[1] and found[2]);
+    const legacy = try buildWithExtras(gpa, &file, &extras);
+    defer gpa.free(legacy);
+    for (legacy) |model| try std.testing.expectEqual(providers.ModelType.chat, model.kind);
 }
 
 pub fn build(gpa: std.mem.Allocator, models_file: *const models_file_mod.ModelsFile) ![]providers.ModelInfo {

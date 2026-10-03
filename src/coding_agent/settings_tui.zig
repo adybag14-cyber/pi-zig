@@ -423,7 +423,7 @@ const Selector = struct {
             .show_hardware_cursor => .{ .boolean = source.show_hardware_cursor orelse false },
             .mermaid_mode => .{ .string = if (source.mermaid_mode) |mode| mode.wireName() else "streaming" },
             .warning_anthropic_extra_usage => .{ .boolean = source.warning_anthropic_extra_usage orelse true },
-            .tui_mode => .{ .string = if (source.tui_mode) |mode| mode.wireName() else "regular" },
+            .tui_mode => .{ .string = source.effectiveTuiMode().wireName() },
             .fullscreen_exit_output => .{ .string = if (source.fullscreen_exit_output) |mode| mode.wireName() else "transcript" },
             .fullscreen_scrollbar => .{ .string = if (source.fullscreen_scrollbar) |mode| mode.wireName() else "auto" },
             .enable_install_telemetry => .{ .boolean = source.enable_install_telemetry orelse true },

@@ -277,6 +277,15 @@ pub fn build(b: *std.Build) void {
     const maintenance_test_step = b.step("test-maintenance", "Test native repository maintenance");
     maintenance_test_step.dependOn(&run_maintenance_tests.step);
     test_step.dependOn(&run_maintenance_tests.step);
+
+    const classifier_tests = b.addTest(.{
+        .root_module = test_mod,
+        .use_llvm = use_llvm,
+        .filters = &.{"classifier"},
+    });
+    const run_classifier_tests = b.addRunArtifact(classifier_tests);
+    const classifier_test_step = b.step("test-classifier", "Test native classifier contracts");
+    classifier_test_step.dependOn(&run_classifier_tests.step);
 }
 
 fn linkTypeScriptParser(b: *std.Build, module: *std.Build.Module, library: *std.Build.Step.Compile) void {
