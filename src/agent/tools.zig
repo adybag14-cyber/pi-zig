@@ -5,6 +5,7 @@ const Io = std.Io;
 const builtin = @import("builtin");
 const truncate_mod = @import("truncate.zig");
 const image_process = @import("../ai/image_process.zig");
+const schema_regexp = @import("../extensions/regexp.zig");
 
 pub const ToolCost = struct {
     input: f64 = 0,
@@ -384,7 +385,8 @@ fn validateSchemaValue(
     schema: std.json.Value,
     value: std.json.Value,
     path: []const u8,
-) !?[]u8 {
+) anyerror!?[]u8 {
+    if (schema == .bool) return if (schema.bool) null else try std.fmt.allocPrint(gpa, "{s}: false schema rejects this value", .{path});
     if (schema != .object) return null;
     const object = schema.object;
 
@@ -460,27 +462,36 @@ fn validateSchemaValue(
                         if (try validateSchemaValue(gpa, entry.value_ptr.*, child_value, child)) |err| return err;
                     }
                 }
-                if (object.get("additionalProperties")) |additional| {
-                    if (additional == .bool and !additional.bool) {
-                        var actual = value.object.iterator();
-                        while (actual.next()) |entry| {
-                            if (!properties.object.contains(entry.key_ptr.*)) {
-                                const child = try childPath(gpa, path, entry.key_ptr.*);
-                                defer gpa.free(child);
-                                return try std.fmt.allocPrint(gpa, "{s}: additional property is not allowed", .{child});
-                            }
-                        }
-                    } else if (additional == .object) {
-                        var actual = value.object.iterator();
-                        while (actual.next()) |entry| {
-                            if (properties.object.contains(entry.key_ptr.*)) continue;
-                            const child = try childPath(gpa, path, entry.key_ptr.*);
-                            defer gpa.free(child);
-                            if (try validateSchemaValue(gpa, additional, entry.value_ptr.*, child)) |err| return err;
+            }
+        }
+        if (object.get("minProperties")) |minimum| if (jsonNonNegativeUsize(minimum)) |count| {
+            if (value.object.count() < count) return try std.fmt.allocPrint(gpa, "{s}: expected at least {d} properties", .{ path, count });
+        };
+        if (object.get("maxProperties")) |maximum| if (jsonNonNegativeUsize(maximum)) |count| {
+            if (value.object.count() > count) return try std.fmt.allocPrint(gpa, "{s}: expected at most {d} properties", .{ path, count });
+        };
+        var actual = value.object.iterator();
+        while (actual.next()) |entry| {
+            const child = try childPath(gpa, path, entry.key_ptr.*);
+            defer gpa.free(child);
+            const properties = object.get("properties");
+            var covered = properties != null and properties.? == .object and properties.?.object.contains(entry.key_ptr.*);
+            if (object.get("propertyNames")) |name_schema| if (try validateSchemaValue(gpa, name_schema, .{ .string = entry.key_ptr.* }, child)) |err| return err;
+            if (object.get("patternProperties")) |patterns| {
+                if (patterns == .object) {
+                    var iterator = patterns.object.iterator();
+                    while (iterator.next()) |pattern| {
+                        if (try schema_regexp.matches(gpa, pattern.key_ptr.*, entry.key_ptr.*)) {
+                            covered = true;
+                            if (try validateSchemaValue(gpa, pattern.value_ptr.*, entry.value_ptr.*, child)) |err| return err;
                         }
                     }
                 }
             }
+            if (!covered) if (object.get("additionalProperties")) |additional| {
+                if (additional == .bool and !additional.bool) return try std.fmt.allocPrint(gpa, "{s}: additional property is not allowed", .{child});
+                if (try validateSchemaValue(gpa, additional, entry.value_ptr.*, child)) |err| return err;
+            };
         }
     }
 
@@ -491,16 +502,25 @@ fn validateSchemaValue(
         if (object.get("maxItems")) |maximum| if (jsonNonNegativeUsize(maximum)) |n| {
             if (value.array.items.len > n) return try std.fmt.allocPrint(gpa, "{s}: expected at most {d} items", .{ path, n });
         };
-        if (object.get("items")) |item_schema| {
-            for (value.array.items, 0..) |item, index| {
-                const child = try std.fmt.allocPrint(gpa, "{s}[{d}]", .{ path, index });
-                defer gpa.free(child);
-                if (try validateSchemaValue(gpa, item_schema, item, child)) |err| return err;
+        const items = object.get("items");
+        const prefix = object.get("prefixItems");
+        const tuple = if (prefix != null and prefix.? == .array) prefix else if (items != null and items.? == .array) items else null;
+        for (value.array.items, 0..) |item, index| {
+            const child = try std.fmt.allocPrint(gpa, "{s}[{d}]", .{ path, index });
+            defer gpa.free(child);
+            if (tuple) |entries| {
+                if (index < entries.array.items.len) {
+                    if (try validateSchemaValue(gpa, entries.array.items[index], item, child)) |err| return err;
+                    continue;
+                }
             }
+            const remainder = if (items != null and items.? == .array) object.get("additionalItems") else items;
+            if (remainder) |item_schema| if (try validateSchemaValue(gpa, item_schema, item, child)) |err| return err;
         }
     }
 
     if (value == .string) {
+        if (object.get("pattern")) |pattern| if (pattern == .string and !try schema_regexp.matches(gpa, pattern.string, value.string)) return try std.fmt.allocPrint(gpa, "{s}: string does not match pattern", .{path});
         if (object.get("minLength")) |minimum| if (jsonNonNegativeUsize(minimum)) |n| {
             const length = std.unicode.utf8CountCodepoints(value.string) catch value.string.len;
             if (length < n) {
@@ -533,6 +553,29 @@ fn validateSchemaValue(
     return null;
 }
 
+test "tool schema validation enforces real TypeBox records tuples patterns and boolean schemas" {
+    const gpa = std.testing.allocator;
+    const schemas = "[{\"type\":\"function\",\"function\":{\"name\":\"typed\",\"parameters\":{\"type\":\"object\",\"properties\":{\"pair\":{\"type\":\"array\",\"items\":[{\"type\":\"string\"},{\"type\":\"integer\"}],\"minItems\":2,\"additionalItems\":false},\"record\":{\"type\":\"object\",\"patternProperties\":{\"^value_[0-9]+$\":{\"type\":\"integer\"}},\"additionalProperties\":false},\"code\":{\"type\":\"string\",\"pattern\":\"^.$\"}},\"required\":[\"pair\",\"record\",\"code\"],\"additionalProperties\":false}}}]";
+    try std.testing.expect((try validateArgumentsAgainstToolSchemas(gpa, schemas, "typed", "{\"pair\":[\"ok\",1.0],\"record\":{\"value_42\":2},\"code\":\"🌍\"}")) == null);
+    for ([_][]const u8{
+        "{\"pair\":[\"ok\",\"wrong\"],\"record\":{},\"code\":\"a\"}",
+        "{\"pair\":[\"ok\",1,2],\"record\":{},\"code\":\"a\"}",
+        "{\"pair\":[\"ok\",1],\"record\":{\"value_42\":\"wrong\"},\"code\":\"a\"}",
+        "{\"pair\":[\"ok\",1],\"record\":{\"other\":2},\"code\":\"a\"}",
+        "{\"pair\":[\"ok\",1],\"record\":{},\"code\":\"ab\"}",
+    }) |arguments| {
+        const invalid = (try validateArgumentsAgainstToolSchemas(gpa, schemas, "typed", arguments)) orelse return error.ExpectedInvalidToolArguments;
+        defer gpa.free(invalid);
+    }
+    const modern = "[{\"type\":\"function\",\"function\":{\"name\":\"modern\",\"parameters\":{\"type\":\"array\",\"prefixItems\":[{\"type\":\"string\"}],\"items\":false}}}]";
+    try std.testing.expect((try validateArgumentsAgainstToolSchemas(gpa, modern, "modern", "[\"ok\"]")) == null);
+    const extra = (try validateArgumentsAgainstToolSchemas(gpa, modern, "modern", "[\"ok\",1]")) orelse return error.ExpectedInvalidToolArguments;
+    defer gpa.free(extra);
+    const closed = "[{\"type\":\"function\",\"function\":{\"name\":\"closed\",\"parameters\":{\"type\":\"object\",\"additionalProperties\":false}}}]";
+    const unknown = (try validateArgumentsAgainstToolSchemas(gpa, closed, "closed", "{\"unknown\":true}")) orelse return error.ExpectedInvalidToolArguments;
+    defer gpa.free(unknown);
+}
+
 fn childPath(gpa: std.mem.Allocator, parent: []const u8, child: []const u8) ![]u8 {
     if (std.mem.eql(u8, parent, "root")) return try gpa.dupe(u8, child);
     return try std.fmt.allocPrint(gpa, "{s}.{s}", .{ parent, child });
@@ -559,7 +602,7 @@ fn jsonValueMatchesType(value: std.json.Value, expected: []const u8) bool {
     if (std.mem.eql(u8, expected, "array")) return value == .array;
     if (std.mem.eql(u8, expected, "string")) return value == .string;
     if (std.mem.eql(u8, expected, "number")) return value == .integer or value == .float or value == .number_string;
-    if (std.mem.eql(u8, expected, "integer")) return value == .integer;
+    if (std.mem.eql(u8, expected, "integer")) return value == .integer or (value == .float and std.math.isFinite(value.float) and @trunc(value.float) == value.float);
     if (std.mem.eql(u8, expected, "boolean")) return value == .bool;
     if (std.mem.eql(u8, expected, "null")) return value == .null;
     return true;

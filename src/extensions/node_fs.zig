@@ -21,13 +21,11 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
         const function = try engine.checked(c.pi_js_function_magic(engine.context, invokePromise, name.ptr, 2, @intCast(field.value)));
         if (c.JS_DefinePropertyValueStr(engine.context, promises, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
-    if (c.JS_DefinePropertyValueStr(engine.context, promises, "default", c.JS_DupValue(engine.context, promises), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     if (c.JS_DefinePropertyValueStr(engine.context, exports, "promises", c.JS_DupValue(engine.context, promises), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
-    if (c.JS_DefinePropertyValueStr(engine.context, exports, "default", c.JS_DupValue(engine.context, exports), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
-    try engine.registerValueModule("node:fs", exports);
-    try engine.registerValueModule("fs", exports);
-    try engine.registerValueModule("node:fs/promises", promises);
-    try engine.registerValueModule("fs/promises", promises);
+    try engine.registerDefaultModule("node:fs", exports);
+    try engine.registerDefaultModule("fs", exports);
+    try engine.registerDefaultModule("node:fs/promises", promises);
+    try engine.registerDefaultModule("fs/promises", promises);
 }
 
 fn invokePromise(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
@@ -89,7 +87,7 @@ test "native filesystem promises settle asynchronous reads writes access and fai
     defer source.deinit();
     try source.writer.writeAll("import fs from 'node:fs'; import fsp, {writeFile,readFile,access,unlink} from 'node:fs/promises'; const path=");
     try std.json.Stringify.value(path, .{}, &source.writer);
-    try source.writer.writeAll("; const order=[]; const writing=writeFile(path,'async-native'); if (!(writing instanceof Promise)) throw Error('not a Promise'); writing.then(()=>order.push('settled')); order.push('sync'); await writing; export const text=await readFile(path,'utf8'); await access(path); export const shared=fs.promises===fsp; await unlink(path); export let failure=''; try {await readFile(path,'utf8');} catch(error) {if (!(error instanceof Error)) throw Error('not an Error'); failure=error.message;} export const observed=order;");
+    try source.writer.writeAll("; const order=[]; const writing=writeFile(path,'async-native'); if (!(writing instanceof Promise)) throw Error('not a Promise'); writing.then(()=>order.push('settled')); order.push('sync'); await writing; export const text=await readFile(path,'utf8'); await access(path); export const shared=fs.promises===fsp; if (JSON.stringify(fs)!=='{\"promises\":{}}' || 'default' in fsp) throw Error('cyclic builtin default'); await unlink(path); export let failure=''; try {await readFile(path,'utf8');} catch(error) {if (!(error instanceof Error)) throw Error('not an Error'); failure=error.message;} export const observed=order;");
     const namespace = engine.evalModule(source.written(), "native-fs-promises.js") catch |err| {
         std.debug.print("Native filesystem promise fixture: {s}\n", .{engine.last_error orelse @errorName(err)});
         return err;
@@ -167,6 +165,7 @@ fn call(engine: *engine_mod.Engine, method: Method, args: []c.JSValue) !c.JSValu
     const io = engine.native_io orelse return error.NativeIoUnavailable;
     const path = try engine.toString(args[0]);
     defer engine.gpa.free(path);
+    if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidNativeFilesystemPath;
     switch (method) {
         .readFileSync => {
             const bytes = try std.Io.Dir.cwd().readFileAlloc(io, path, engine.gpa, .limited(64 * 1024 * 1024));
@@ -212,12 +211,13 @@ fn call(engine: *engine_mod.Engine, method: Method, args: []c.JSValue) !c.JSValu
                 const backing = if (c.JS_IsArrayBuffer(args[1])) c.JS_DupValue(engine.context, args[1]) else try engine.checked(c.JS_GetTypedArrayBuffer(engine.context, args[1], &offset, &length, &element_bytes));
                 defer engine.freeValue(backing);
                 const bytes = c.JS_GetArrayBuffer(engine.context, &backing_length, backing);
-                if (bytes == null) return error.UnsupportedNativeFilesystemData;
+                if (bytes == null and (backing_length != 0 or c.JS_HasException(engine.context))) return error.UnsupportedNativeFilesystemData;
                 if (c.JS_IsArrayBuffer(args[1])) length = backing_length;
                 if (offset > backing_length or length > backing_length - offset) return error.InvalidNativeBufferRange;
                 const file = try std.Io.Dir.cwd().createFile(io, path, options);
                 defer file.close(io);
-                try file.writePositionalAll(io, bytes[offset .. offset + length], 0);
+                const content: []const u8 = if (length == 0) &.{} else bytes[offset .. offset + length];
+                try file.writePositionalAll(io, content, 0);
             }
             return c.pi_js_undefined();
         },
@@ -260,7 +260,7 @@ test "native filesystem preserves existing content on invalid writes and support
     defer source.deinit();
     try source.writer.writeAll("import {writeFileSync,readFileSync} from 'node:fs'; const path=");
     try std.json.Stringify.value(path, .{}, &source.writer);
-    try source.writer.writeAll("; writeFileSync(path,'preserve'); export let rejected=0; for (const perform of [()=>writeFileSync(path,{}),()=>writeFileSync(path,'overwrite',{flag:'wx'}),()=>writeFileSync(path,'overwrite',{flag:'a'}),()=>writeFileSync(path,'overwrite','hex')]) {try {perform();} catch {rejected++;}} export const retained=readFileSync(path,'utf8'); writeFileSync(path,new Uint8Array([1,2,3,4]).subarray(1,3)); export const bytes=Array.from(readFileSync(path));");
+    try source.writer.writeAll("; writeFileSync(path,'preserve'); export let rejected=0; for (const perform of [()=>writeFileSync(path,{}),()=>writeFileSync(path,'overwrite',{flag:'wx'}),()=>writeFileSync(path,'overwrite',{flag:'a'}),()=>writeFileSync(path,'overwrite','hex'),()=>writeFileSync(path+'\\0suffix','overwrite')]) {try {perform();} catch {rejected++;}} export const retained=readFileSync(path,'utf8'); writeFileSync(path,new Uint8Array([1,2,3,4]).subarray(1,3)); export const bytes=Array.from(readFileSync(path)); writeFileSync(path,new ArrayBuffer(0)); if(readFileSync(path).length!==0) throw Error('empty ArrayBuffer'); writeFileSync(path,new Uint8Array(0)); if(readFileSync(path).length!==0) throw Error('empty typed array');");
     const namespace = try engine.evalModule(source.written(), "filesystem-views.js");
     defer engine.freeValue(namespace);
     const retained = c.JS_GetPropertyStr(engine.context, namespace, "retained");
@@ -272,7 +272,7 @@ test "native filesystem preserves existing content on invalid writes and support
     defer engine.freeValue(rejected);
     var rejected_count: i32 = 0;
     try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(engine.context, &rejected_count, rejected));
-    try std.testing.expectEqual(@as(i32, 4), rejected_count);
+    try std.testing.expectEqual(@as(i32, 5), rejected_count);
     const bytes = c.JS_GetPropertyStr(engine.context, namespace, "bytes");
     defer engine.freeValue(bytes);
     const encoded = try engine.stringify(bytes);

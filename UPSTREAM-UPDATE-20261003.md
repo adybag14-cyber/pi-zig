@@ -140,6 +140,24 @@ Completed evidence:
   Windows regression graph passes after these classifier changes.
 - Native catalog import now requires the Git tar's embedded PAX commit and
   committed AI package version to match provenance before writing output.
+- Native console logs stay on stderr outside the worker record stream. ESM
+  default exports no longer add cyclic properties to builtin objects. Module
+  registration allocation failures leave no hidden C module, and retry works.
+- Native ESM dependency resolution handles nearest node_modules packages,
+  extensionless typed input, directory entries, explicit/conditional exports,
+  null blocks and wildcard specificity. A real worker loads a package and its
+  relative imports with Node absent from PATH. CommonJS, file URLs, import-map
+  aliases, encoded paths and some other loader cases remain to implement.
+- Native TextEncoder handles UTF-8, unpaired surrogate replacement, typed-array
+  views, complete-codepoint partial writes and receiver validation. The exact
+  TypeBox 1.3.27 package from upstream's lockfile loads as external extension
+  input through the C engine; its SHA-512 integrity matches. No library JS is
+  added to repository implementation or distribution sources.
+- Native schema validation now enforces real TypeBox tuple/record patterns,
+  modern prefixItems, additionalProperties without a properties list, property
+  names/counts, Unicode patterns and boolean schemas. The pinned C regexp
+  interpreter has memory/interrupt bounds and receives terminated patterns.
+  Broader schema/reference/format compatibility still needs review.
 
 Required outstanding work:
 

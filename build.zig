@@ -289,6 +289,32 @@ pub fn build(b: *std.Build) void {
     const filesystem_test_step = b.step("test-extension-filesystem", "Test native extension filesystem APIs");
     filesystem_test_step.dependOn(&run_filesystem_tests.step);
     test_step.dependOn(&run_filesystem_tests.step);
+    const console_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/console.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, console_tests.root_module, quickjs);
+    const run_console_tests = b.addRunArtifact(console_tests);
+    const console_test_step = b.step("test-extension-console", "Test native console formatting and builtin module identity");
+    console_test_step.dependOn(&run_console_tests.step);
+    test_step.dependOn(&run_console_tests.step);
+    const resolver_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/module_resolver.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_resolver_tests = b.addRunArtifact(resolver_tests);
+    const resolver_test_step = b.step("test-extension-resolver", "Test native extension package and file resolution");
+    resolver_test_step.dependOn(&run_resolver_tests.step);
+    test_step.dependOn(&run_resolver_tests.step);
+    const encoding_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/text_encoding.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, encoding_tests.root_module, quickjs);
+    const run_encoding_tests = b.addRunArtifact(encoding_tests);
+    const encoding_test_step = b.step("test-extension-encoding", "Test native text encoding host APIs");
+    encoding_test_step.dependOn(&run_encoding_tests.step);
+    test_step.dependOn(&run_encoding_tests.step);
     const worker_process_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/native_worker_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
@@ -340,6 +366,14 @@ pub fn build(b: *std.Build) void {
     const run_classifier_tests = b.addRunArtifact(classifier_tests);
     const classifier_test_step = b.step("test-classifier", "Test native classifier contracts");
     classifier_test_step.dependOn(&run_classifier_tests.step);
+    const tool_schema_tests = b.addTest(.{
+        .root_module = test_mod,
+        .use_llvm = use_llvm,
+        .filters = &.{ "tool schema", "native Unicode schema regexp" },
+    });
+    const run_tool_schema_tests = b.addRunArtifact(tool_schema_tests);
+    const tool_schema_step = b.step("test-tool-schemas", "Verify native tool schemas against real tuple and record shapes");
+    tool_schema_step.dependOn(&run_tool_schema_tests.step);
     const catalog_projection_tests = b.addTest(.{
         .root_module = test_mod,
         .filters = &.{"native catalog projection"},

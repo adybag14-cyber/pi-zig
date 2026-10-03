@@ -8,6 +8,7 @@ pub const c = @cImport({
     @cUndef("_FORTIFY_SOURCE");
     @cDefine("_FORTIFY_SOURCE", "0");
     @cInclude("engine_abi.h");
+    @cInclude("libregexp.h");
 });
 
 pub const Options = struct {
@@ -20,6 +21,7 @@ pub const Options = struct {
 pub const SourceLoader = struct {
     context: ?*anyopaque = null,
     load: *const fn (?*anyopaque, std.mem.Allocator, []const u8) anyerror![]u8,
+    normalize: ?*const fn (?*anyopaque, std.mem.Allocator, []const u8, []const u8) anyerror![]u8 = null,
 };
 
 pub const Engine = struct {
@@ -32,6 +34,7 @@ pub const Engine = struct {
     last_error: ?[]u8 = null,
     host_data: ?*anyopaque = null,
     native_io: ?std.Io = null,
+    text_encoder_class: c.JSClassID = 0,
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
     native_module_names: std.StringHashMapUnmanaged(void) = .empty,
     source_loader: ?SourceLoader = null,
@@ -86,6 +89,7 @@ pub const Engine = struct {
 
     /// Register native-loader input; source is extension input, not host code.
     pub fn registerModule(self: *Engine, name: []const u8, source: []const u8) !void {
+        if (name.len == 0 or std.mem.indexOfScalar(u8, name, 0) != null) return error.InvalidNativeModuleName;
         if (self.modules.contains(name) or self.native_module_names.contains(name)) return error.DuplicateExtensionModule;
         const key = try self.gpa.dupe(u8, name);
         errdefer self.gpa.free(key);
@@ -94,13 +98,57 @@ pub const Engine = struct {
         try self.modules.put(self.gpa, key, terminated);
     }
 
+    pub fn setSourceLoader(self: *Engine, loader: SourceLoader) void {
+        self.source_loader = loader;
+        const normalizer: ?*const c.JSModuleNormalizeFunc = if (loader.normalize != null) normalizeModule else null;
+        c.JS_SetModuleLoaderFunc(self.runtime, normalizer, moduleLoader, self);
+    }
+
+    fn normalizeModule(context: ?*c.JSContext, base: [*c]const u8, name: [*c]const u8, context_data: ?*anyopaque) callconv(.c) [*c]u8 {
+        const self: *Engine = @ptrCast(@alignCast(context_data.?));
+        const specifier = std.mem.span(name);
+        const registered = self.native_module_names.contains(specifier);
+        // Node builtins always use native host bindings. Schema packages may
+        // instead come from an extension project's user-installed ESM input.
+        const schema_package = std.mem.eql(u8, specifier, "typebox") or std.mem.eql(u8, specifier, "@sinclair/typebox");
+        var resolved: ?[]u8 = null;
+        defer if (resolved) |owned| self.gpa.free(owned);
+        if (!(registered and !schema_package) and !self.modules.contains(specifier)) {
+            const loader = self.source_loader.?;
+            resolved = loader.normalize.?(loader.context, self.gpa, std.mem.span(base), specifier) catch |err| fallback: {
+                if (err == error.ExtensionModuleNotFound and registered) break :fallback null;
+                _ = c.JS_ThrowReferenceError(context, "Native extension resolution failed: %s", @as([*:0]const u8, @errorName(err)));
+                return null;
+            };
+        }
+        const bytes = resolved orelse specifier;
+        const allocation = c.js_malloc(context, bytes.len + 1) orelse return null;
+        const output: [*]u8 = @ptrCast(allocation);
+        @memcpy(output[0..bytes.len], bytes);
+        output[bytes.len] = 0;
+        return output;
+    }
+
     /// Export a native object as an ES module without generating bridge code.
     /// The engine duplicates exports; the caller retains its original value.
     pub fn registerValueModule(self: *Engine, name: []const u8, exports: c.JSValue) !void {
+        if (name.len == 0 or std.mem.indexOfScalar(u8, name, 0) != null) return error.InvalidNativeModuleName;
         if (self.modules.contains(name) or self.native_module_names.contains(name)) return error.DuplicateExtensionModule;
         const terminated = try self.gpa.dupeZ(u8, name);
         defer self.gpa.free(terminated);
+        // Finish host allocations before installing an immutable C module.
+        const owned_name = try self.gpa.dupe(u8, name);
+        var reserved = false;
+        var module_created = false;
+        errdefer if (!module_created) {
+            if (reserved) _ = self.native_module_names.remove(name);
+            self.gpa.free(owned_name);
+        };
+        try self.native_module_names.put(self.gpa, owned_name, {});
+        reserved = true;
         const module = c.JS_NewCModule(self.context, terminated.ptr, initializeValueModule) orelse return error.OutOfMemory;
+        // A failed C registration remains reserved until engine teardown.
+        module_created = true;
         if (c.JS_SetModulePrivateValue(self.context, module, c.JS_DupValue(self.context, exports)) < 0) {
             self.captureException(self.context);
             return error.JavaScriptException;
@@ -118,9 +166,23 @@ pub const Engine = struct {
             defer c.JS_FreeCString(self.context, property);
             if (c.JS_AddModuleExport(self.context, module, property) < 0) return error.InvalidNativeModuleExport;
         }
-        const owned_name = try self.gpa.dupe(u8, name);
-        errdefer self.gpa.free(owned_name);
-        try self.native_module_names.put(self.gpa, owned_name, {});
+    }
+
+    /// ESM namespaces expose a default binding without putting a cyclic
+    /// `.default` property on the underlying builtin object.
+    pub fn registerDefaultModule(self: *Engine, name: []const u8, object: c.JSValue) !void {
+        const exports = try self.checked(c.JS_NewObject(self.context));
+        defer self.freeValue(exports);
+        var properties: [*c]c.JSPropertyEnum = null;
+        var count: u32 = 0;
+        if (c.JS_GetOwnPropertyNames(self.context, &properties, &count, object, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+        defer c.JS_FreePropertyEnum(self.context, properties, count);
+        for (0..count) |index| {
+            const value = try self.checked(c.JS_GetProperty(self.context, object, properties[index].atom));
+            if (c.JS_DefinePropertyValue(self.context, exports, properties[index].atom, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+        }
+        if (c.JS_DefinePropertyValueStr(self.context, exports, "default", c.JS_DupValue(self.context, object), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+        try self.registerValueModule(name, exports);
     }
 
     fn initializeValueModule(context: ?*c.JSContext, module: ?*c.JSModuleDef) callconv(.c) c_int {
@@ -276,6 +338,31 @@ pub const Engine = struct {
         return if (self.interrupts > self.options.interrupt_budget) 1 else 0;
     }
 };
+
+test "native module allocation failures do not install hidden modules before retry" {
+    for (0..3) |failure_offset| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+        const engine = try Engine.init(failing.allocator(), .{});
+        defer engine.deinit();
+        const exports = try engine.checked(c.JS_NewObject(engine.context));
+        defer engine.freeValue(exports);
+        try std.testing.expect(c.JS_DefinePropertyValueStr(engine.context, exports, "value", c.pi_js_int32(engine.context, 42), c.JS_PROP_C_W_E) >= 0);
+        failing.fail_index = failing.alloc_index + failure_offset;
+        try std.testing.expectError(error.OutOfMemory, engine.registerValueModule("native:retry", exports));
+        failing.fail_index = std.math.maxInt(usize);
+        try std.testing.expectError(error.JavaScriptException, engine.evalModule("import {value} from 'native:retry'; export const answer=value;", "missing-module-probe.js"));
+        engine.beginInvocation();
+        try engine.registerValueModule("native:retry", exports);
+        const namespace = try engine.evalModule("import {value} from 'native:retry'; export const answer=value;", "healthy-module-probe.js");
+        defer engine.freeValue(namespace);
+        const answer = try engine.checked(c.JS_GetPropertyStr(engine.context, namespace, "answer"));
+        defer engine.freeValue(answer);
+        var number: i32 = 0;
+        try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(engine.context, &number, answer));
+        try std.testing.expectEqual(@as(i32, 42), number);
+        try std.testing.expectError(error.InvalidNativeModuleName, engine.registerValueModule("invalid\x00name", exports));
+    }
+}
 
 test "linked C engine executes modern extension language without Node" {
     const engine = try Engine.init(std.testing.allocator, .{});

@@ -7,12 +7,16 @@ test "native extension process loads TypeScript imports and exchanges real proto
     const io = std.testing.io;
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
+    try tmp.dir.createDirPath(io, "node_modules/native-fixture/lib");
+    try tmp.dir.writeFile(io, .{ .sub_path = "node_modules/native-fixture/package.json", .data = "{\"type\":\"module\",\"exports\":{\".\":{\"import\":\"./lib/index.js\"}}}" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "node_modules/native-fixture/lib/value.js", .data = "export const dependency='esm-dependency';" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "node_modules/native-fixture/lib/index.js", .data = "export {dependency} from './value.js';" });
     try tmp.dir.writeFile(io, .{ .sub_path = "marker.ts", .data = "export const marker: string = 'native-worker';" });
     try tmp.dir.writeFile(io, .{
         .sub_path = "extension.ts",
-        .data = "import { Type } from 'typebox'; import { marker } from './marker.ts'; " ++
-            "export default (pi: any) => { pi.on('input', async (event: any) => ({action:'transform',text:event.text+':'+marker})); " ++
-            "pi.registerTool({name:'echo', parameters:Type.Object({text:Type.String()}), async execute(id:string,args:any,signal:any,update:any,ctx:any) {return {content:[{type:'text',text:id+':'+args.text}],details:{marker,session:ctx.sessionManager.getSessionId(),trusted:ctx.isProjectTrusted()}};}}); };",
+        .data = "import { Type } from 'typebox'; import { marker } from './marker'; import {dependency} from 'native-fixture'; " ++
+            "export default (pi: any) => { console.log('native-console',{safe:true}); pi.on('input', async (event: any) => ({action:'transform',text:event.text+':'+marker})); " ++
+            "pi.registerTool({name:'echo', parameters:Type.Object({text:Type.String()}), async execute(id:string,args:any,signal:any,update:any,ctx:any) {return {content:[{type:'text',text:id+':'+args.text}],details:{marker,dependency,session:ctx.sessionManager.getSessionId(),trusted:ctx.isProjectTrusted()}};}}); };",
     });
     var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
     const length = try tmp.dir.realPath(io, &path_buffer);
@@ -61,12 +65,14 @@ test "native extension process loads TypeScript imports and exchanges real proto
         std.debug.print("Native worker failed: {s}\n", .{errors});
         return error.NativeWorkerFailed;
     }
-    try std.testing.expectEqual(@as(usize, 0), errors.len);
+    try std.testing.expectEqualStrings("native-console {\"safe\":true}\n", errors);
+    try std.testing.expect(std.mem.indexOf(u8, output, "native-console") == null);
     try std.testing.expect(std.mem.indexOf(u8, output, "\"type\":\"ready\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, output, "hello:native-worker") != null);
     try std.testing.expect(std.mem.indexOf(u8, output, "\"content\":\"call-real:pi\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, output, "\"session\":\"worker-session\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, output, "\"trusted\":true") != null);
+    try std.testing.expect(std.mem.indexOf(u8, output, "\"dependency\":\"esm-dependency\"") != null);
     try std.testing.expectEqual(@as(usize, 3), std.mem.count(u8, output, "\"ok\":false"));
     var records: usize = 0;
     for (output) |byte| if (byte == 0x1e) {

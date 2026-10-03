@@ -5,9 +5,19 @@ const engine_mod = @import("engine.zig");
 const bindings_mod = @import("native_bindings.zig");
 const typescript = @import("typescript.zig");
 const node_fs = @import("node_fs.zig");
+const console = @import("console.zig");
+const module_resolver = @import("module_resolver.zig");
+const text_encoding = @import("text_encoding.zig");
 
 const Loader = struct {
     io: std.Io,
+    fn normalize(context: ?*anyopaque, gpa: std.mem.Allocator, base: []const u8, specifier: []const u8) anyerror![]u8 {
+        const self: *@This() = @ptrCast(@alignCast(context.?));
+        var arena = std.heap.ArenaAllocator.init(gpa);
+        defer arena.deinit();
+        var resolver: module_resolver.Resolver = .{ .io = self.io };
+        return gpa.dupe(u8, try resolver.resolve(arena.allocator(), base, specifier));
+    }
     fn source(context: ?*anyopaque, gpa: std.mem.Allocator, name: []const u8) anyerror![]u8 {
         const self: *@This() = @ptrCast(@alignCast(context.?));
         const bytes = try std.Io.Dir.cwd().readFileAlloc(self.io, name, gpa, .limited(16 * 1024 * 1024));
@@ -160,12 +170,14 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();
     var loader: Loader = .{ .io = io };
-    engine.source_loader = .{ .context = &loader, .load = Loader.source };
+    engine.setSourceLoader(.{ .context = &loader, .load = Loader.source, .normalize = Loader.normalize });
     const bindings = try bindings_mod.Bindings.init(gpa, engine);
     defer bindings.deinit();
     try bindings.installSchemas();
     try node_fs.install(engine, io);
-    const absolute = try std.fs.path.resolve(gpa, &.{extension_path});
+    try console.install(engine, io);
+    try text_encoding.install(engine);
+    const absolute = try std.Io.Dir.cwd().realPathFileAlloc(io, extension_path, gpa);
     defer gpa.free(absolute);
     const filename = try gpa.dupeZ(u8, absolute);
     defer gpa.free(filename);
@@ -174,7 +186,15 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
     };
     const source = try Loader.source(&loader, gpa, filename);
     defer gpa.free(source);
-    try bindings.loadFactory(source, filename);
+    bindings.loadFactory(source, filename) catch |err| {
+        if (engine.last_error) |message| {
+            var error_buffer: [4096]u8 = undefined;
+            var stderr = std.Io.File.stderr().writerStreaming(io, &error_buffer);
+            try stderr.interface.print("Native extension load failed: {s}\n", .{message});
+            try stderr.interface.flush();
+        }
+        return err;
+    };
     var output_buffer: [8192]u8 = undefined;
     var output = std.Io.File.stdout().writerStreaming(io, &output_buffer);
     const writer = &output.interface;
