@@ -7,6 +7,11 @@ pub const Resolver = struct {
     io: std.Io,
     alias_depth: usize = 0,
     native_modules: ?*const std.StringHashMapUnmanaged(void) = null,
+    require_mode: bool = false,
+
+    pub fn preferExternal(specifier: []const u8) bool {
+        return std.mem.eql(u8, specifier, "typebox") or std.mem.startsWith(u8, specifier, "typebox/") or std.mem.eql(u8, specifier, "@sinclair/typebox") or std.mem.startsWith(u8, specifier, "@sinclair/typebox/");
+    }
 
     fn file(self: *Resolver, gpa: std.mem.Allocator, path: []const u8) !?[]u8 {
         const stat = std.Io.Dir.cwd().statFile(self.io, path, .{}) catch |err| switch (err) {
@@ -38,7 +43,8 @@ pub const Resolver = struct {
     fn local(self: *Resolver, gpa: std.mem.Allocator, path: []const u8, allow_directory: bool) anyerror![]u8 {
         if (try self.file(gpa, path)) |resolved| return resolved;
         if (std.fs.path.extension(path).len == 0) {
-            for ([_][]const u8{ ".js", ".ts", ".mjs", ".mts", ".cts", ".cjs" }) |extension| {
+            const extensions: []const []const u8 = if (self.require_mode) &.{ ".js", ".json", ".ts", ".cts", ".cjs" } else &.{ ".js", ".ts", ".mjs", ".mts", ".cts", ".cjs" };
+            for (extensions) |extension| {
                 const candidate = try std.fmt.allocPrint(gpa, "{s}{s}", .{ path, extension });
                 defer gpa.free(candidate);
                 if (try self.file(gpa, candidate)) |resolved| return resolved;
@@ -46,14 +52,16 @@ pub const Resolver = struct {
         }
         if (allow_directory) {
             if (try self.packageJson(gpa, path)) |package| {
-                for ([_][]const u8{ "module", "main" }) |field| if (package.object.get(field)) |entry| {
+                const fields: []const []const u8 = if (self.require_mode) &.{"main"} else &.{ "module", "main" };
+                for (fields) |field| if (package.object.get(field)) |entry| {
                     if (entry != .string) return error.InvalidExtensionPackage;
                     const candidate = try std.fs.path.resolve(gpa, &.{ path, entry.string });
                     defer gpa.free(candidate);
                     return self.local(gpa, candidate, false);
                 };
             }
-            for ([_][]const u8{ "index.js", "index.ts", "index.mjs", "index.mts" }) |index| {
+            const indices: []const []const u8 = if (self.require_mode) &.{ "index.js", "index.json", "index.ts" } else &.{ "index.js", "index.ts", "index.mjs", "index.mts" };
+            for (indices) |index| {
                 const candidate = try std.fs.path.join(gpa, &.{ path, index });
                 defer gpa.free(candidate);
                 if (try self.file(gpa, candidate)) |resolved| return resolved;
@@ -78,15 +86,11 @@ pub const Resolver = struct {
         }
     }
 
-    fn conditionalTarget(gpa: std.mem.Allocator, value: std.json.Value) anyerror!Target {
-        return conditionalTargetMode(gpa, value, false);
+    fn conditionalTargetMode(gpa: std.mem.Allocator, value: std.json.Value, allow_external: bool, require_mode: bool) anyerror!Target {
+        return conditionalTargetDepth(gpa, value, allow_external, require_mode, 0);
     }
 
-    fn conditionalTargetMode(gpa: std.mem.Allocator, value: std.json.Value, allow_external: bool) anyerror!Target {
-        return conditionalTargetDepth(gpa, value, allow_external, 0);
-    }
-
-    fn conditionalTargetDepth(gpa: std.mem.Allocator, value: std.json.Value, allow_external: bool, depth: usize) anyerror!Target {
+    fn conditionalTargetDepth(gpa: std.mem.Allocator, value: std.json.Value, allow_external: bool, require_mode: bool, depth: usize) anyerror!Target {
         if (depth >= 32) return error.ExtensionPackageConditionDepth;
         switch (value) {
             .null => return .blocked,
@@ -106,8 +110,8 @@ pub const Resolver = struct {
                     };
                     const index = if (decimal) std.fmt.parseInt(u32, key, 10) catch null else null;
                     if (index != null and index.? != std.math.maxInt(u32) and (key.len == 1 or key[0] != '0')) return error.InvalidExtensionPackageExports;
-                    if (std.mem.eql(u8, key, "import") or std.mem.eql(u8, key, "node") or std.mem.eql(u8, key, "default")) {
-                        const resolved = try conditionalTargetDepth(gpa, entry.value_ptr.*, allow_external, depth + 1);
+                    if (std.mem.eql(u8, key, if (require_mode) "require" else "import") or std.mem.eql(u8, key, "node") or std.mem.eql(u8, key, "default")) {
+                        const resolved = try conditionalTargetDepth(gpa, entry.value_ptr.*, allow_external, require_mode, depth + 1);
                         if (resolved != .missing) return resolved;
                     }
                 }
@@ -116,7 +120,7 @@ pub const Resolver = struct {
             .array => |items| {
                 var last_error: ?anyerror = null;
                 for (items.items) |item| {
-                    const target = conditionalTargetDepth(gpa, item, allow_external, depth + 1) catch |err| {
+                    const target = conditionalTargetDepth(gpa, item, allow_external, require_mode, depth + 1) catch |err| {
                         if (err != error.InvalidExtensionPackageTarget) return err;
                         last_error = err;
                         continue;
@@ -156,6 +160,10 @@ pub const Resolver = struct {
     }
 
     fn exportedTarget(gpa: std.mem.Allocator, exports: std.json.Value, key: []const u8) ![]const u8 {
+        return exportedTargetMode(gpa, exports, key, false);
+    }
+
+    fn exportedTargetMode(gpa: std.mem.Allocator, exports: std.json.Value, key: []const u8, require_mode: bool) ![]const u8 {
         var selected = exports;
         var capture: ?[]const u8 = null;
         if (exports == .object) {
@@ -175,7 +183,7 @@ pub const Resolver = struct {
                 capture = match.capture;
             } else if (!std.mem.eql(u8, key, ".")) return error.ExtensionSubpathNotExported;
         } else if (!std.mem.eql(u8, key, ".")) return error.ExtensionSubpathNotExported;
-        const resolved = try conditionalTarget(gpa, selected);
+        const resolved = try conditionalTargetMode(gpa, selected, false, require_mode);
         if (resolved != .path) return error.ExtensionSubpathNotExported;
         if (capture) |matched| {
             const replaced = try std.mem.replaceOwned(u8, gpa, resolved.path, "*", matched);
@@ -194,7 +202,7 @@ pub const Resolver = struct {
         if (package.object.get("exports")) |exports| {
             const key = if (subpath.len == 0) try gpa.dupe(u8, ".") else try std.fmt.allocPrint(gpa, "./{s}", .{subpath});
             defer gpa.free(key);
-            const target = try exportedTarget(gpa, exports, key);
+            const target = try exportedTargetMode(gpa, exports, key, self.require_mode);
             const decoded = try file_urls.decodePath(gpa, target);
             defer gpa.free(decoded);
             const path = try std.fs.path.resolve(gpa, &.{ directory, decoded });
@@ -220,7 +228,7 @@ pub const Resolver = struct {
                 if (imports != .object) return error.InvalidExtensionPackageImports;
                 for (imports.object.keys()) |key| if (key.len < 2 or key[0] != '#' or key[1] == '/') return error.InvalidExtensionPackageImports;
                 const match = patternMatch(imports.object, specifier) orelse return error.ExtensionImportAliasMissing;
-                var target = try conditionalTargetMode(gpa, match.value, true);
+                var target = try conditionalTargetMode(gpa, match.value, true, self.require_mode);
                 if (target != .path) return error.ExtensionImportAliasMissing;
                 if (match.capture) |capture| {
                     target = .{ .path = try std.mem.replaceOwned(u8, gpa, target.path, "*", capture) };
@@ -248,9 +256,10 @@ pub const Resolver = struct {
     /// The caller uses a temporary arena, and owns the final canonical path.
     pub fn resolve(self: *Resolver, gpa: std.mem.Allocator, importer: []const u8, specifier: []const u8) ![]u8 {
         if (specifier.len == 0 or std.mem.indexOfScalar(u8, specifier, 0) != null) return error.InvalidExtensionModuleSpecifier;
-        if (self.native_modules) |modules| if (modules.contains(specifier)) return gpa.dupe(u8, specifier);
+        if (self.native_modules) |modules| if (modules.contains(specifier) and !preferExternal(specifier)) return gpa.dupe(u8, specifier);
         if (specifier[0] == '#') return self.importAlias(gpa, importer, specifier);
         if (std.ascii.startsWithIgnoreCase(specifier, "file:")) {
+            if (self.require_mode) return error.UnsupportedNativeRequireUrl;
             const uri = try std.Uri.parse(specifier);
             if (uri.query != null or uri.fragment != null) return error.UnsupportedExtensionModuleQuery;
             const path = try file_urls.toPath(gpa, specifier, builtin.os.tag == .windows);
@@ -260,7 +269,7 @@ pub const Resolver = struct {
         if (std.mem.indexOfAny(u8, specifier, "?#") != null) return error.UnsupportedExtensionModuleQuery;
         const directory = std.fs.path.dirname(importer) orelse ".";
         if (std.fs.path.isAbsolute(specifier) or std.mem.startsWith(u8, specifier, "./") or std.mem.startsWith(u8, specifier, "../")) {
-            const decoded = try file_urls.decodePath(gpa, specifier);
+            const decoded = if (self.require_mode) try gpa.dupe(u8, specifier) else try file_urls.decodePath(gpa, specifier);
             defer gpa.free(decoded);
             const path = try std.fs.path.resolve(gpa, &.{ directory, decoded });
             defer gpa.free(path);
@@ -304,6 +313,7 @@ pub const Resolver = struct {
             if (std.mem.eql(u8, parent, ancestor)) break;
             ancestor = parent;
         }
+        if (self.native_modules) |modules| if (modules.contains(specifier)) return gpa.dupe(u8, specifier);
         return error.ExtensionModuleNotFound;
     }
 };
@@ -391,6 +401,16 @@ test "native package imports and self references stay within the nearest package
     try modules.put(allocator, "node:fs", {});
     resolver.native_modules = &modules;
     try std.testing.expectEqualStrings("node:fs", try resolver.resolve(allocator, importer, "#fs"));
+    try modules.put(allocator, "typebox", {});
+    try std.testing.expectEqualStrings("typebox", try resolver.resolve(allocator, importer, "typebox"));
+    try tmp.dir.createDirPath(io, "project/node_modules/typebox");
+    try tmp.dir.writeFile(io, .{ .sub_path = "project/node_modules/typebox/package.json", .data = "{\"type\":\"module\",\"exports\":{\"import\":\"./module.js\",\"require\":\"./common.cjs\"}}" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "project/node_modules/typebox/module.js", .data = "export const native='external';" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "project/node_modules/typebox/common.cjs", .data = "exports.native='external';" });
+    try std.testing.expect(std.mem.endsWith(u8, try resolver.resolve(allocator, importer, "typebox"), "/typebox/module.js"));
+    resolver.require_mode = true;
+    try std.testing.expect(std.mem.endsWith(u8, try resolver.resolve(allocator, importer, "typebox"), "/typebox/common.cjs"));
+    resolver.require_mode = false;
     try tmp.dir.createDirPath(io, "project/subscope");
     try tmp.dir.writeFile(io, .{ .sub_path = "project/subscope/package.json", .data = "{}" });
     try tmp.dir.writeFile(io, .{ .sub_path = "project/subscope/extension.js", .data = "export default()=>{};" });

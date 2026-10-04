@@ -10,15 +10,22 @@ const module_resolver = @import("module_resolver.zig");
 const text_encoding = @import("text_encoding.zig");
 const node_path = @import("node_path.zig");
 const node_url = @import("node_url.zig");
+const commonjs = @import("commonjs.zig");
 
 const Loader = struct {
     io: std.Io,
     engine: *engine_mod.Engine,
     fn normalize(context: ?*anyopaque, gpa: std.mem.Allocator, base: []const u8, specifier: []const u8) anyerror![]u8 {
+        return normalizeMode(context, gpa, base, specifier, false);
+    }
+    fn normalizeRequire(context: ?*anyopaque, gpa: std.mem.Allocator, base: []const u8, specifier: []const u8) anyerror![]u8 {
+        return normalizeMode(context, gpa, base, specifier, true);
+    }
+    fn normalizeMode(context: ?*anyopaque, gpa: std.mem.Allocator, base: []const u8, specifier: []const u8, require_mode: bool) anyerror![]u8 {
         const self: *@This() = @ptrCast(@alignCast(context.?));
         var arena = std.heap.ArenaAllocator.init(gpa);
         defer arena.deinit();
-        var resolver: module_resolver.Resolver = .{ .io = self.io, .native_modules = &self.engine.native_module_names };
+        var resolver: module_resolver.Resolver = .{ .io = self.io, .native_modules = &self.engine.native_module_names, .require_mode = require_mode };
         return gpa.dupe(u8, try resolver.resolve(arena.allocator(), base, specifier));
     }
     fn source(context: ?*anyopaque, gpa: std.mem.Allocator, name: []const u8) anyerror![]u8 {
@@ -31,6 +38,49 @@ const Loader = struct {
             return transformed;
         }
         return bytes;
+    }
+
+    fn input(context: ?*anyopaque, engine: *engine_mod.Engine, name: []const u8) anyerror!engine_mod.ModuleInput {
+        const self: *@This() = @ptrCast(@alignCast(context.?));
+        const bytes = try source(context, engine.gpa, name);
+        errdefer engine.gpa.free(bytes);
+        var is_commonjs = std.mem.endsWith(u8, name, ".cjs") or std.mem.endsWith(u8, name, ".cts");
+        const json = std.mem.endsWith(u8, name, ".json");
+        if (!is_commonjs and !json and std.mem.endsWith(u8, name, ".js")) {
+            var directory = std.fs.path.dirname(name) orelse ".";
+            var package_type: ?[]u8 = null;
+            defer if (package_type) |owned| engine.gpa.free(owned);
+            while (true) {
+                const path = try std.fs.path.join(engine.gpa, &.{ directory, "package.json" });
+                defer engine.gpa.free(path);
+                const package_bytes = std.Io.Dir.cwd().readFileAlloc(self.io, path, engine.gpa, .limited(1024 * 1024)) catch |err| switch (err) {
+                    error.FileNotFound, error.NotDir => null,
+                    else => return err,
+                };
+                if (package_bytes) |content| {
+                    defer engine.gpa.free(content);
+                    var parsed = try std.json.parseFromSlice(std.json.Value, engine.gpa, content, .{});
+                    defer parsed.deinit();
+                    if (parsed.value != .object) return error.InvalidExtensionPackage;
+                    if (parsed.value.object.get("type")) |value| {
+                        if (value != .string) return error.InvalidExtensionPackage;
+                        package_type = try engine.gpa.dupe(u8, value.string);
+                    }
+                    break;
+                }
+                if (std.mem.eql(u8, std.fs.path.basename(directory), "node_modules")) break;
+                const parent = std.fs.path.dirname(directory) orelse break;
+                if (std.mem.eql(u8, parent, directory)) break;
+                directory = parent;
+            }
+            is_commonjs = if (package_type) |kind| std.mem.eql(u8, kind, "commonjs") else !try typescript.hasModuleSyntax(bytes);
+        }
+        if (is_commonjs or json) {
+            const value = try commonjs.load(engine, bytes, name, json);
+            engine.gpa.free(bytes);
+            return .{ .exports = value };
+        }
+        return .{ .source = bytes };
     }
 };
 
@@ -173,13 +223,14 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();
     var loader: Loader = .{ .io = io, .engine = engine };
-    engine.setSourceLoader(.{ .context = &loader, .load = Loader.source, .normalize = Loader.normalize });
+    engine.setSourceLoader(.{ .context = &loader, .load = Loader.source, .normalize = Loader.normalize, .normalize_require = Loader.normalizeRequire, .input = Loader.input });
     const bindings = try bindings_mod.Bindings.init(gpa, engine);
     defer bindings.deinit();
     try bindings.installSchemas();
     try node_fs.install(engine, io);
     try node_path.install(engine, io);
     try node_url.install(engine);
+    try commonjs.install(engine);
     try console.install(engine, io);
     try text_encoding.install(engine);
     const absolute = try std.Io.Dir.cwd().realPathFileAlloc(io, extension_path, gpa);
@@ -189,9 +240,16 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
     for (filename) |*byte| if (byte.* == '\\') {
         byte.* = '/';
     };
-    const source = try Loader.source(&loader, gpa, filename);
-    defer gpa.free(source);
-    bindings.loadFactory(source, filename) catch |err| {
+    const input_module = try Loader.input(&loader, engine, filename);
+    defer switch (input_module) {
+        .source => |source| gpa.free(source),
+        .exports => |exports| engine.freeValue(exports),
+    };
+    const loaded_factory = switch (input_module) {
+        .source => |source| bindings.loadFactory(source, filename),
+        .exports => |exports| bindings.loadFactoryValue(exports),
+    };
+    loaded_factory catch |err| {
         if (engine.last_error) |message| {
             var error_buffer: [4096]u8 = undefined;
             var stderr = std.Io.File.stderr().writerStreaming(io, &error_buffer);

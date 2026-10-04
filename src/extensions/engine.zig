@@ -27,7 +27,12 @@ pub const SourceLoader = struct {
     context: ?*anyopaque = null,
     load: *const fn (?*anyopaque, std.mem.Allocator, []const u8) anyerror![]u8,
     normalize: ?*const fn (?*anyopaque, std.mem.Allocator, []const u8, []const u8) anyerror![]u8 = null,
+    normalize_require: ?*const fn (?*anyopaque, std.mem.Allocator, []const u8, []const u8) anyerror![]u8 = null,
+    input: ?*const fn (?*anyopaque, *Engine, []const u8) anyerror!ModuleInput = null,
 };
+
+/// Values and source returned by the loader are owned by its caller.
+pub const ModuleInput = union(enum) { source: []u8, exports: c.JSValue };
 
 pub const Engine = struct {
     gpa: std.mem.Allocator,
@@ -42,6 +47,8 @@ pub const Engine = struct {
     text_encoder_class: c.JSClassID = 0,
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
     native_module_names: std.StringHashMapUnmanaged(void) = .empty,
+    native_module_values: std.StringHashMapUnmanaged(c.JSValue) = .empty,
+    commonjs_cache: c.JSValue,
     source_loader: ?SourceLoader = null,
 
     pub fn init(gpa: std.mem.Allocator, options: Options) !*Engine {
@@ -52,7 +59,12 @@ pub const Engine = struct {
         c.JS_SetMemoryLimit(runtime, options.memory_limit);
         c.JS_SetMaxStackSize(runtime, options.stack_limit);
         const context = c.JS_NewContext(runtime) orelse return error.OutOfMemory;
-        self.* = .{ .gpa = gpa, .runtime = runtime, .context = context, .options = options };
+        const commonjs_cache = c.JS_NewObjectProto(context, c.pi_js_null());
+        if (c.JS_IsException(commonjs_cache)) {
+            c.JS_FreeContext(context);
+            return error.OutOfMemory;
+        }
+        self.* = .{ .gpa = gpa, .runtime = runtime, .context = context, .options = options, .commonjs_cache = commonjs_cache };
         c.JS_SetContextOpaque(context, self);
         c.JS_SetRuntimeOpaque(runtime, self);
         c.JS_SetInterruptHandler(runtime, interrupt, self);
@@ -61,6 +73,10 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        var values = self.native_module_values.valueIterator();
+        while (values.next()) |value| self.freeValue(value.*);
+        self.native_module_values.deinit(self.gpa);
+        self.freeValue(self.commonjs_cache);
         c.JS_FreeContext(self.context);
         c.JS_FreeRuntime(self.runtime);
         if (self.last_error) |message| self.gpa.free(message);
@@ -137,6 +153,10 @@ pub const Engine = struct {
     /// Export a native object as an ES module without generating bridge code.
     /// The engine duplicates exports; the caller retains its original value.
     pub fn registerValueModule(self: *Engine, name: []const u8, exports: c.JSValue) !void {
+        _ = try self.createValueModule(name, exports);
+    }
+
+    fn createValueModule(self: *Engine, name: []const u8, exports: c.JSValue) !*c.JSModuleDef {
         if (name.len == 0 or std.mem.indexOfScalar(u8, name, 0) != null) return error.InvalidNativeModuleName;
         if (self.modules.contains(name) or self.native_module_names.contains(name)) return error.DuplicateExtensionModule;
         const terminated = try self.gpa.dupeZ(u8, name);
@@ -149,11 +169,13 @@ pub const Engine = struct {
             if (reserved) _ = self.native_module_names.remove(name);
             self.gpa.free(owned_name);
         };
+        try self.native_module_values.ensureUnusedCapacity(self.gpa, 1);
         try self.native_module_names.put(self.gpa, owned_name, {});
         reserved = true;
         const module = c.JS_NewCModule(self.context, terminated.ptr, initializeValueModule) orelse return error.OutOfMemory;
         // A failed C registration remains reserved until engine teardown.
         module_created = true;
+        self.native_module_values.putAssumeCapacity(owned_name, c.JS_DupValue(self.context, exports));
         if (c.JS_SetModulePrivateValue(self.context, module, c.JS_DupValue(self.context, exports)) < 0) {
             self.captureException(self.context);
             return error.JavaScriptException;
@@ -171,23 +193,59 @@ pub const Engine = struct {
             defer c.JS_FreeCString(self.context, property);
             if (c.JS_AddModuleExport(self.context, module, property) < 0) return error.InvalidNativeModuleExport;
         }
+        return module;
     }
 
     /// ESM namespaces expose a default binding without putting a cyclic
     /// `.default` property on the underlying builtin object.
     pub fn registerDefaultModule(self: *Engine, name: []const u8, object: c.JSValue) !void {
-        const exports = try self.checked(c.JS_NewObject(self.context));
+        _ = try self.createDefaultModule(name, object);
+    }
+
+    fn createDefaultModule(self: *Engine, name: []const u8, object: c.JSValue) !*c.JSModuleDef {
+        const exports = try self.defaultExports(object);
         defer self.freeValue(exports);
+        return self.createValueModule(name, exports);
+    }
+
+    pub fn defaultExports(self: *Engine, object: c.JSValue) !c.JSValue {
+        const exports = try self.checked(c.JS_NewObject(self.context));
+        errdefer self.freeValue(exports);
         var properties: [*c]c.JSPropertyEnum = null;
         var count: u32 = 0;
-        if (c.JS_GetOwnPropertyNames(self.context, &properties, &count, object, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+        if (c.JS_IsObject(object)) {
+            if (c.JS_GetOwnPropertyNames(self.context, &properties, &count, object, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+        }
         defer c.JS_FreePropertyEnum(self.context, properties, count);
         for (0..count) |index| {
             const value = try self.checked(c.JS_GetProperty(self.context, object, properties[index].atom));
             if (c.JS_DefinePropertyValue(self.context, exports, properties[index].atom, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         }
         if (c.JS_DefinePropertyValueStr(self.context, exports, "default", c.JS_DupValue(self.context, object), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
-        try self.registerValueModule(name, exports);
+        return exports;
+    }
+
+    pub fn loadModuleInput(self: *Engine, name: []const u8) !ModuleInput {
+        const loader = self.source_loader orelse return error.NativeModuleLoaderUnavailable;
+        if (loader.input) |input| return input(loader.context, self, name);
+        return .{ .source = try loader.load(loader.context, self.gpa, name) };
+    }
+
+    pub fn normalizeRequire(self: *Engine, base: []const u8, name: []const u8) ![]u8 {
+        const schema_package = std.mem.eql(u8, name, "typebox") or std.mem.startsWith(u8, name, "typebox/") or std.mem.eql(u8, name, "@sinclair/typebox") or std.mem.startsWith(u8, name, "@sinclair/typebox/");
+        if (self.native_module_values.contains(name) and !schema_package) return self.gpa.dupe(u8, name);
+        const loader = self.source_loader orelse return error.NativeModuleLoaderUnavailable;
+        const normalize = loader.normalize_require orelse loader.normalize orelse return error.NativeModuleLoaderUnavailable;
+        return normalize(loader.context, self.gpa, base, name);
+    }
+
+    pub fn requireBuiltin(self: *Engine, name: []const u8) !?c.JSValue {
+        if (std.fs.path.isAbsolute(name)) return null;
+        const namespace = self.native_module_values.get(name) orelse return null;
+        const default = try self.checked(c.JS_GetPropertyStr(self.context, namespace, "default"));
+        if (!c.JS_IsUndefined(default)) return default;
+        self.freeValue(default);
+        return c.JS_DupValue(self.context, namespace);
     }
 
     fn initializeValueModule(context: ?*c.JSContext, module: ?*c.JSModuleDef) callconv(.c) c_int {
@@ -259,12 +317,20 @@ pub const Engine = struct {
                 _ = c.JS_ThrowReferenceError(context, "Native extension module not registered: %s", name);
                 return null;
             };
-            const input = loader.load(loader.context, self.gpa, module_name) catch |err| {
+            _ = loader;
+            const loaded = self.loadModuleInput(module_name) catch |err| {
                 _ = c.JS_ThrowReferenceError(context, "Native extension import failed: %s", @as([*:0]const u8, @errorName(err)));
                 return null;
             };
-            defer self.gpa.free(input);
-            self.registerModule(module_name, input) catch |err| {
+            if (loaded == .exports) {
+                defer self.freeValue(loaded.exports);
+                return self.createDefaultModule(module_name, loaded.exports) catch |err| {
+                    _ = c.JS_ThrowReferenceError(context, "Native extension value import failed: %s", @as([*:0]const u8, @errorName(err)));
+                    return null;
+                };
+            }
+            defer self.gpa.free(loaded.source);
+            self.registerModule(module_name, loaded.source) catch |err| {
                 _ = c.JS_ThrowReferenceError(context, "Native extension import registration failed: %s", @as([*:0]const u8, @errorName(err)));
                 return null;
             };
@@ -400,7 +466,7 @@ test "native import metadata distinguishes hosted modules from explicitly select
 }
 
 test "native module allocation failures do not install hidden modules before retry" {
-    for (0..3) |failure_offset| {
+    for (0..4) |failure_offset| {
         var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
         const engine = try Engine.init(failing.allocator(), .{});
         defer engine.deinit();

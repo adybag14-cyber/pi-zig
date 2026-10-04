@@ -260,8 +260,12 @@ fn argumentText(engine: *engine_mod.Engine, value: c.JSValue, allocator: std.mem
 
 fn currentDirectory(engine: *engine_mod.Engine, allocator: std.mem.Allocator, flavor: Flavor) ![]u8 {
     const io = engine.native_io orelse return error.NativeIoUnavailable;
+    // AT_FDCWD is a sentinel, not a descriptor accepted by macOS F_GETPATH
+    // or Linux /proc/self/fd. Resolve an owned real directory handle instead.
+    var directory = try std.Io.Dir.cwd().openDir(io, ".", .{});
+    defer directory.close(io);
     var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
-    const length = try std.Io.Dir.cwd().realPath(io, &buffer);
+    const length = try directory.realPath(io, &buffer);
     if (flavor == .posix and builtin.os.tag == .windows) {
         for (buffer[0..length]) |*byte| if (byte.* == '\\') {
             byte.* = '/';
@@ -448,4 +452,24 @@ test "native path contracts match independently captured Node oracle data" {
         std.debug.print("Native path oracle total mismatches: {d}\n", .{mismatches});
         return error.NativePathOracleMismatch;
     }
+}
+
+test "native path cwd resolution uses an owned descriptor rather than the cwd sentinel" {
+    const reject_cwd = struct {
+        fn realPath(userdata: ?*anyopaque, directory: std.Io.Dir, buffer: []u8) std.Io.Dir.RealPathError!usize {
+            if (directory.handle == std.Io.Dir.cwd().handle) return error.FileNotFound;
+            return std.testing.io.vtable.dirRealPath(userdata, directory, buffer);
+        }
+    };
+    var vtable = std.testing.io.vtable.*;
+    vtable.dirRealPath = reject_cwd.realPath;
+    const io: std.Io = .{ .userdata = std.testing.io.userdata, .vtable = &vtable };
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine, io);
+    const result = try call(engine, .resolve, native, &.{});
+    defer engine.freeValue(result);
+    const path = try engine.toString(result);
+    defer engine.gpa.free(path);
+    try std.testing.expect(root(path, native).absolute);
 }

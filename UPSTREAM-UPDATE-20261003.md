@@ -169,7 +169,7 @@ Completed evidence:
 - Native import metadata projects file URL, platform filename and directory;
   hosted extensions have `import.meta.main === false`, as imported plugins.
   Explicit standalone engine entrypoints can select true. Dependencies stay
-  false. `import.meta.resolve` and CommonJS interoperability remain to port.
+  false. `import.meta.resolve` and further loader interoperability remain to port.
 - Native `node:path` / `path` exports separate Windows/POSIX objects, normalize,
   join, resolve, relative, dirname, basename, extname, isAbsolute, parse, format
   and toNamespacedPath. 3,038 independently captured Node 24.14.0 results match,
@@ -182,6 +182,23 @@ Completed evidence:
   filenames, metadata and path/URL functions with Node absent from PATH. The
   complete Windows regression graph passes after these additions; see the
   retained native-module-path evidence for exact terminal jobs.
+- Hosted macOS exposed the raw cwd sentinel being passed to its F_GETPATH
+  lookup. Native path APIs now open/resolve/close a real owned directory handle.
+  A fault-injection test rejects direct sentinel lookups and passes the new
+  path. The failed 8b294bf CI checkpoint is retained; a new hosted run is required.
+- Native CommonJS input runs through the C engine with Zig-owned require,
+  conditional package exports, scoped filename/directory/module values and a
+  shared mutable cache. Circular dependencies expose partial exports; JSON
+  identity, module.exports replacement, deletion/reload and failed-load cleanup
+  are covered by real processes. Typed .cts roots and ESM-to-CommonJS imports
+  run with Node absent from PATH. `node:module.createRequire` accepts string
+  absolute file paths and file URLs. No upstream CommonJS host source is embedded.
+- CommonJS requiring ESM, full parent/children metadata, alternate resolution
+  roots/global paths, exact static named-export detection and additional
+  module APIs remain to implement. Unsupported require operations fail explicitly.
+- Installed schema input retains precedence over native fallback modules for
+  both import and require. Resolver fixtures verify both conditional branches;
+  the exact external TypeBox 1.3.27 ESM package probe passes after the changes.
 
 Required outstanding work:
 

@@ -304,6 +304,44 @@ pub fn transform(gpa: std.mem.Allocator, source: []const u8) TransformError![]u8
     return output;
 }
 
+fn esmSyntax(node: c.TSNode, source: []const u8, top_level: bool, depth: usize) TransformError!bool {
+    if (depth > 128) return error.TypeScriptNestingLimit;
+    const kind = nodeKind(node);
+    if (isAny(kind, &.{ "import_statement", "export_statement" })) return true;
+    if (std.mem.eql(u8, kind, "meta_property")) {
+        const range = nodeRange(node);
+        if (std.mem.eql(u8, source[range.start..range.end], "import.meta")) return true;
+    }
+    if (top_level and std.mem.eql(u8, kind, "await_expression")) return true;
+    const children_top_level = top_level and !isAny(kind, &.{ "function_declaration", "function_expression", "generator_function_declaration", "generator_function", "arrow_function", "method_definition" });
+    var index: u32 = 0;
+    while (index < c.ts_node_named_child_count(node)) : (index += 1) {
+        if (try esmSyntax(c.ts_node_named_child(node, index), source, children_top_level, depth + 1)) return true;
+    }
+    return false;
+}
+
+pub fn hasModuleSyntax(source: []const u8) TransformError!bool {
+    if (source.len > 16 * 1024 * 1024) return error.ExtensionSourceTooLarge;
+    const parser = c.ts_parser_new() orelse return error.OutOfMemory;
+    defer c.ts_parser_delete(parser);
+    if (!c.ts_parser_set_language(parser, tree_sitter_typescript())) return error.TypeScriptParserAbiMismatch;
+    const tree = c.ts_parser_parse_string(parser, null, source.ptr, @intCast(source.len)) orelse return error.TypeScriptParseFailed;
+    defer c.ts_tree_delete(tree);
+    const root = c.ts_tree_root_node(tree);
+    if (c.ts_node_has_error(root)) return error.InvalidTypeScriptInput;
+    return esmSyntax(root, source, true, 0);
+}
+
+test "native module syntax detection distinguishes imports meta and top-level await from CommonJS" {
+    try std.testing.expect(try hasModuleSyntax("export const answer=42;"));
+    try std.testing.expect(try hasModuleSyntax("const url=import.meta.url;"));
+    try std.testing.expect(try hasModuleSyntax("await Promise.resolve();"));
+    try std.testing.expect(try hasModuleSyntax("function nested(){return import.meta.url;}"));
+    try std.testing.expect(!try hasModuleSyntax("module.exports=async function(){await Promise.resolve();return 'export default';};"));
+    try std.testing.expect(!try hasModuleSyntax("const input=require('./data.json'); exports.value=input.value;"));
+}
+
 test "native input transform erases types without changing strings or object fields" {
     const source = "interface Message { value: number }\r\ntype Id = string;\r\nconst message: Message = {value: 42}; const text = 'as Message: number'; const obj = {as: text}; message.value satisfies number;\r\n";
     const output = try transform(std.testing.allocator, source);

@@ -237,12 +237,24 @@ pub const Bindings = struct {
     pub fn loadFactory(self: *Bindings, source: []const u8, filename: [:0]const u8) !void {
         const namespace = try self.engine.evalModule(source, filename);
         defer self.engine.freeValue(namespace);
-        var factory = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, namespace, "default"));
-        if (c.JS_IsUndefined(factory) or c.JS_IsNull(factory)) {
-            self.engine.freeValue(factory);
-            factory = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, namespace, "extension"));
-        }
+        try self.loadFactoryValue(namespace);
+    }
+
+    pub fn loadFactoryValue(self: *Bindings, namespace: c.JSValue) !void {
+        var factory = if (c.JS_IsFunction(self.engine.context, namespace)) c.JS_DupValue(self.engine.context, namespace) else if (c.JS_IsObject(namespace)) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, namespace, "default")) else c.pi_js_undefined();
         defer self.engine.freeValue(factory);
+        if (c.JS_IsObject(factory) and !c.JS_IsFunction(self.engine.context, factory)) {
+            const nested = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, factory, "default"));
+            if (c.JS_IsFunction(self.engine.context, nested)) {
+                self.engine.freeValue(factory);
+                factory = nested;
+            } else self.engine.freeValue(nested);
+        }
+        if (c.JS_IsUndefined(factory) or c.JS_IsNull(factory)) {
+            const fallback = if (c.JS_IsObject(namespace)) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, namespace, "extension")) else c.pi_js_undefined();
+            self.engine.freeValue(factory);
+            factory = fallback;
+        }
         if (!c.JS_IsFunction(self.engine.context, factory)) return error.InvalidExtensionFactory;
         var args = [_]c.JSValue{self.api};
         const promise = try self.engine.checked(c.JS_Call(self.engine.context, factory, c.pi_js_undefined(), 1, &args));
