@@ -219,6 +219,26 @@ Completed evidence:
   complete SharedArrayBuffer behavior, remaining buffer module/web APIs and
   broader JSON boundary handling of isolated surrogates remain to port. Unsafe
   allocation functions currently return zero-initialized native storage.
+- Hosted Windows, Linux and macOS CI pass Buffer checkpoint `893254e`
+  (run 37200468839), including filesystem and exception ownership changes.
+- Native event registration returns distinct, idempotent unsubscribe functions.
+  Dispatch owns a snapshot so additions/removals during a callback affect the
+  next event. Repeated registration of one function remains independently
+  removable, and allocation failures leave no hidden hook registration.
+- Read-only extension tool/command catalogs, effective settings, active tool
+  names, session name and thinking level are copied; local queued changes are
+  visible within the current callback. Tool overrides and source paths are
+  preserved. The native process exercises these accessors without Node.
+- Session-manager accessors add cloned leaf/entry/label lookup, explicit branch
+  traversal and the upstream compaction-aware entry view, including exclusion
+  of summarized system entries. Tree construction handles orphan/self roots,
+  current labels/timestamps and chronological children without recursive
+  construction. Cycles/duplicate IDs fail explicitly, and retained callbacks
+  keep invocation-generation checks. Context cwd fallback also uses a real
+  owned directory descriptor.
+- Session projection/context-edit handling, UI/model registry/host request
+  callbacks, provider/virtual-model/MCP registration and further SDK bindings
+  remain outstanding; these read-only additions do not switch production.
 
 Required outstanding work:
 

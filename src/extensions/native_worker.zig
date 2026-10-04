@@ -240,6 +240,7 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
     for (filename) |*byte| if (byte.* == '\\') {
         byte.* = '/';
     };
+    try bindings.setSourcePath(filename);
     const input_module = try Loader.input(&loader, engine, filename);
     defer switch (input_module) {
         .source => |source| gpa.free(source),

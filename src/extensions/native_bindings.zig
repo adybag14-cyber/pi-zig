@@ -2,8 +2,9 @@
 const std = @import("std");
 const engine_mod = @import("engine.zig");
 const typebox = @import("typebox.zig");
+const session_snapshot = @import("session_snapshot.zig");
 const c = engine_mod.c;
-const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel };
+const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, getActiveTools, getAllTools, getCommands, getSettings, getSessionName, getThinkingLevel, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel };
 const ContextMethod = enum(c_int) {
     mode,
     hasUI,
@@ -27,6 +28,10 @@ const ContextMethod = enum(c_int) {
     getBranch,
     buildContextEntries,
     getHeader,
+    getLeafEntry,
+    getEntry,
+    getLabel,
+    getTree,
 };
 
 pub const Bindings = struct {
@@ -42,6 +47,7 @@ pub const Bindings = struct {
     invocation_active: bool = false,
     invocation_generation: u32 = 0,
     context_snapshot: ?c.JSValue = null,
+    source_path: ?[]u8 = null,
 
     pub fn init(gpa: std.mem.Allocator, engine: *engine_mod.Engine) !*Bindings {
         if (engine.host_data != null) return error.EngineHostAlreadyAttached;
@@ -76,6 +82,7 @@ pub const Bindings = struct {
         self.actions.deinit(self.gpa);
         self.engine.freeValue(self.api);
         if (self.context_snapshot) |snapshot| self.engine.freeValue(snapshot);
+        if (self.source_path) |path| self.gpa.free(path);
         const gpa = self.gpa;
         gpa.destroy(self);
     }
@@ -103,6 +110,7 @@ pub const Bindings = struct {
     }
 
     fn registration(self: *Bindings, method: Method, args: []c.JSValue) !c.JSValue {
+        if (@intFromEnum(method) >= @intFromEnum(Method.getActiveTools) and @intFromEnum(method) <= @intFromEnum(Method.getThinkingLevel)) return self.readonlyApi(method);
         if (args.len == 0) return error.MissingExtensionArgument;
         if (@intFromEnum(method) >= @intFromEnum(Method.setSessionName)) {
             if (!self.invocation_active) return error.StaleExtensionActionContext;
@@ -130,6 +138,14 @@ pub const Bindings = struct {
         switch (method) {
             .on => {
                 if (!c.JS_IsFunction(self.engine.context, args[1])) return error.InvalidExtensionHandler;
+                var handler_data = [_]c.JSValue{args[1]};
+                const wrapper = try self.engine.checked(c.JS_NewCFunctionData(self.engine.context, forwardHandler, 2, 0, handler_data.len, &handler_data));
+                defer self.engine.freeValue(wrapper);
+                const event_name = try self.engine.checked(c.JS_NewStringLen(self.engine.context, name.ptr, name.len));
+                defer self.engine.freeValue(event_name);
+                var data = [_]c.JSValue{ event_name, wrapper };
+                const unsubscribe = try self.engine.checked(c.JS_NewCFunctionData(self.engine.context, unsubscribeHandler, 0, 0, data.len, &data));
+                errdefer self.engine.freeValue(unsubscribe);
                 const entry = try self.handlers.getOrPut(self.gpa, name);
                 if (!entry.found_existing) {
                     entry.key_ptr.* = self.gpa.dupe(u8, name) catch |err| {
@@ -138,9 +154,16 @@ pub const Bindings = struct {
                     };
                     entry.value_ptr.* = .empty;
                 }
-                const handler = c.JS_DupValue(self.engine.context, args[1]);
+                errdefer if (!entry.found_existing) {
+                    const removed = self.handlers.fetchRemove(name).?;
+                    var empty = removed.value;
+                    empty.deinit(self.gpa);
+                    self.gpa.free(removed.key);
+                };
+                const handler = c.JS_DupValue(self.engine.context, wrapper);
                 errdefer self.engine.freeValue(handler);
                 try entry.value_ptr.append(self.gpa, handler);
+                return unsubscribe;
             },
             .registerCommand => try self.store(&self.commands, name, args[1]),
             .registerFlag => {
@@ -156,6 +179,137 @@ pub const Bindings = struct {
                 try self.store(&self.flags, name, args[1]);
             },
             else => unreachable,
+        }
+        return c.pi_js_undefined();
+    }
+
+    fn cloneValue(self: *Bindings, value: c.JSValue) !c.JSValue {
+        if (!c.JS_IsObject(value)) return c.JS_DupValue(self.engine.context, value);
+        const json = try self.engine.stringify(value);
+        defer self.gpa.free(json);
+        return self.parseJson(json, "native-extension-copy");
+    }
+
+    fn readonlyApi(self: *Bindings, method: Method) !c.JSValue {
+        if (method == .getAllTools or method == .getCommands) return self.catalogApi(method);
+        const key: [*:0]const u8 = switch (method) {
+            .getActiveTools => "activeTools",
+            .getSettings => "settings",
+            .getSessionName => "sessionName",
+            .getThinkingLevel => "thinkingLevel",
+            else => unreachable,
+        };
+        if (self.invocation_active and method != .getSettings) {
+            const action_type: []const u8 = switch (method) {
+                .getActiveTools => "set_active_tools",
+                .getSessionName => "set_session_name",
+                .getThinkingLevel => "set_thinking_level",
+                else => unreachable,
+            };
+            var index = self.actions.items.len;
+            while (index > 0) {
+                index -= 1;
+                const action = self.actions.items[index];
+                const kind = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, action, "type"));
+                defer self.engine.freeValue(kind);
+                const name = try self.engine.toString(kind);
+                defer self.gpa.free(name);
+                if (!std.mem.eql(u8, name, action_type)) continue;
+                const field: [*:0]const u8 = switch (method) {
+                    .getActiveTools => "names",
+                    .getSessionName => "name",
+                    .getThinkingLevel => "level",
+                    else => unreachable,
+                };
+                const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, action, field));
+                defer self.engine.freeValue(value);
+                return self.cloneValue(value);
+            }
+        }
+        const value = if (self.context_snapshot) |snapshot| try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, key)) else c.pi_js_undefined();
+        defer self.engine.freeValue(value);
+        if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) return switch (method) {
+            .getActiveTools => self.engine.checked(c.JS_NewArray(self.engine.context)),
+            .getSettings => self.engine.checked(c.JS_NewObject(self.engine.context)),
+            .getThinkingLevel => self.engine.checked(c.JS_NewString(self.engine.context, "off")),
+            .getSessionName => c.pi_js_undefined(),
+            else => unreachable,
+        };
+        return self.cloneValue(value);
+    }
+
+    fn catalogApi(self: *Bindings, method: Method) !c.JSValue {
+        var arena = std.heap.ArenaAllocator.init(self.gpa);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        var values: std.json.Array = .init(allocator);
+        if (self.context_snapshot) |snapshot| {
+            const key: [*:0]const u8 = if (method == .getAllTools) "allTools" else "commands";
+            const current = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, key));
+            defer self.engine.freeValue(current);
+            if (c.JS_IsArray(current)) {
+                const projected = try self.projectValue(allocator, current);
+                for (projected.array.items) |item| try values.append(item);
+            }
+        }
+        var entries = (if (method == .getAllTools) &self.tools else &self.commands).iterator();
+        while (entries.next()) |entry| {
+            const raw = try self.projectValue(allocator, entry.value_ptr.*);
+            if (raw != .object) return error.InvalidNativeCatalogRegistration;
+            var object: std.json.ObjectMap = .empty;
+            try object.put(allocator, "name", .{ .string = entry.key_ptr.* });
+            try object.put(allocator, "description", raw.object.get("description") orelse raw.object.get("label") orelse std.json.Value{ .string = "" });
+            try object.put(allocator, "source", .{ .string = "extension" });
+            var source: std.json.ObjectMap = .empty;
+            try source.put(allocator, "path", .{ .string = self.source_path orelse "" });
+            try object.put(allocator, "sourceInfo", .{ .object = source });
+            if (method == .getAllTools) {
+                var schema = raw.object.get("parameters") orelse raw.object.get("inputSchema") orelse std.json.Value{ .object = .empty };
+                cleanSchema(&schema);
+                try object.put(allocator, "parameters", schema);
+                for ([_][]const u8{ "promptSnippet", "promptGuidelines", "exposure", "label" }) |field| if (raw.object.get(field)) |value| try object.put(allocator, field, value);
+            } else if (raw.object.get("argumentHint")) |hint| try object.put(allocator, "argumentHint", hint);
+            var replaced = false;
+            for (values.items) |*item| {
+                if (item.* != .object) return error.InvalidNativeCatalogSnapshot;
+                const name = item.object.get("name") orelse return error.InvalidNativeCatalogSnapshot;
+                if (name != .string) return error.InvalidNativeCatalogSnapshot;
+                if (std.mem.eql(u8, name.string, entry.key_ptr.*)) {
+                    item.* = .{ .object = object };
+                    replaced = true;
+                    break;
+                }
+            }
+            if (!replaced) try values.append(.{ .object = object });
+        }
+        const json = try std.json.Stringify.valueAlloc(allocator, std.json.Value{ .array = values }, .{});
+        return self.parseJson(json, "native-extension-catalog");
+    }
+
+    fn forwardHandler(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        return c.JS_Call(context, data[0], c.pi_js_undefined(), argc, argv);
+    }
+
+    fn unsubscribeHandler(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return c.pi_js_undefined()));
+        const name = engine.toString(data[0]) catch |err| {
+            if (err == error.JavaScriptException) return engine.throwCaptured();
+            return c.JS_ThrowOutOfMemory(context);
+        };
+        defer self.gpa.free(name);
+        const handlers = self.handlers.getPtr(name) orelse return c.pi_js_undefined();
+        for (handlers.items, 0..) |handler, index| {
+            if (c.JS_IsStrictEqual(context, handler, data[1])) {
+                engine.freeValue(handlers.orderedRemove(index));
+                if (handlers.items.len == 0) {
+                    const entry = self.handlers.fetchRemove(name).?;
+                    var empty = entry.value;
+                    empty.deinit(self.gpa);
+                    self.gpa.free(entry.key);
+                }
+                break;
+            }
         }
         return c.pi_js_undefined();
     }
@@ -221,7 +375,11 @@ pub const Bindings = struct {
     fn invokeRegistration(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return c.JS_ThrowInternalError(context, "Native extension host is detached")));
-        return self.registration(@enumFromInt(magic), argv[0..@intCast(argc)]) catch |err| c.JS_ThrowTypeError(context, "Native extension registration failed: %s", @as([*:0]const u8, @errorName(err)));
+        const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
+        return self.registration(@enumFromInt(magic), args) catch |err| {
+            if (err == error.JavaScriptException) return engine.throwCaptured();
+            return c.JS_ThrowTypeError(context, "Native extension registration failed: %s", @as([*:0]const u8, @errorName(err)));
+        };
     }
 
     pub fn installSchemas(self: *Bindings) !void {
@@ -235,9 +393,16 @@ pub const Bindings = struct {
     }
 
     pub fn loadFactory(self: *Bindings, source: []const u8, filename: [:0]const u8) !void {
+        try self.setSourcePath(filename);
         const namespace = try self.engine.evalModule(source, filename);
         defer self.engine.freeValue(namespace);
         try self.loadFactoryValue(namespace);
+    }
+
+    pub fn setSourcePath(self: *Bindings, path: []const u8) !void {
+        const owned = try self.gpa.dupe(u8, path);
+        if (self.source_path) |previous| self.gpa.free(previous);
+        self.source_path = owned;
     }
 
     pub fn loadFactoryValue(self: *Bindings, namespace: c.JSValue) !void {
@@ -289,11 +454,14 @@ pub const Bindings = struct {
             defer self.engine.freeValue(value);
             if (!c.JS_IsUndefined(value) and !c.JS_IsNull(value) and !c.JS_IsString(value)) return error.InvalidExtensionContext;
         }
-        inline for (.{ "scopedModels", "sessionEntries", "sessionBranch" }) |name| {
+        inline for (.{ "scopedModels", "sessionEntries", "sessionBranch", "activeTools", "allTools", "commands" }) |name| {
             const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, name));
             defer self.engine.freeValue(value);
             if (!c.JS_IsUndefined(value) and !c.JS_IsArray(value)) return error.InvalidExtensionContext;
         }
+        const settings = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "settings"));
+        defer self.engine.freeValue(settings);
+        if (!c.JS_IsUndefined(settings) and (!c.JS_IsObject(settings) or c.JS_IsArray(settings))) return error.InvalidExtensionContext;
         if (self.context_snapshot) |old| self.engine.freeValue(old);
         self.context_snapshot = snapshot;
     }
@@ -333,10 +501,14 @@ pub const Bindings = struct {
         if (c.JS_ToInt64(context, &generation, data[0]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
         if (!self.invocation_active or generation != self.invocation_generation) return c.JS_ThrowTypeError(context, "Stale native extension context");
         const arguments: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
-        return self.contextValue(@enumFromInt(magic), data[1], arguments) catch |err| c.JS_ThrowTypeError(context, "Native extension context failed: %s", @as([*:0]const u8, @errorName(err)));
+        return self.contextValue(@enumFromInt(magic), data[1], arguments) catch |err| {
+            if (err == error.JavaScriptException) return engine.throwCaptured();
+            return c.JS_ThrowTypeError(context, "Native extension context failed: %s", @as([*:0]const u8, @errorName(err)));
+        };
     }
 
-    fn contextValue(self: *Bindings, kind: ContextMethod, snapshot: c.JSValue, _: []c.JSValue) !c.JSValue {
+    fn contextValue(self: *Bindings, kind: ContextMethod, snapshot: c.JSValue, args: []c.JSValue) !c.JSValue {
+        if (kind == .getLeafEntry or kind == .getEntry or kind == .getLabel or kind == .getBranch or kind == .buildContextEntries or kind == .getTree) return self.sessionApi(kind, snapshot, args);
         if (kind == .sessionManager) {
             const manager = try self.engine.checked(c.JS_NewObject(self.engine.context));
             errdefer self.engine.freeValue(manager);
@@ -369,7 +541,7 @@ pub const Bindings = struct {
             .getEntries => "sessionEntries",
             .getBranch, .buildContextEntries => "sessionBranch",
             .getHeader => "sessionHeader",
-            .sessionManager => unreachable,
+            .sessionManager, .getLeafEntry, .getEntry, .getLabel, .getTree => unreachable,
         };
         const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, key));
         defer self.engine.freeValue(value);
@@ -381,8 +553,10 @@ pub const Bindings = struct {
             .getSystemPrompt => if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewString(self.engine.context, "")),
             .cwd, .getCwd => if (c.JS_IsUndefined(value)) {
                 const io = self.engine.native_io orelse return error.NativeContextCwdUnavailable;
+                var directory = try std.Io.Dir.cwd().openDir(io, ".", .{});
+                defer directory.close(io);
                 var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
-                const length = try std.Io.Dir.cwd().realPath(io, &buffer);
+                const length = try directory.realPath(io, &buffer);
                 return self.engine.checked(c.JS_NewStringLen(self.engine.context, &buffer, length));
             },
             .scopedModels, .getEntries, .getBranch, .buildContextEntries => if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewArray(self.engine.context)),
@@ -395,6 +569,104 @@ pub const Bindings = struct {
             return self.parseJson(encoded, "extension-context-snapshot");
         }
         return c.JS_DupValue(self.engine.context, value);
+    }
+
+    fn sessionApi(self: *Bindings, kind: ContextMethod, snapshot: c.JSValue, args: []c.JSValue) !c.JSValue {
+        var arena = std.heap.ArenaAllocator.init(self.gpa);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        const root = try self.projectValue(allocator, snapshot);
+        const session = try session_snapshot.Snapshot.init(allocator, root);
+        if (kind == .getTree) return self.sessionTree(allocator, &session);
+        var explicit_id: ?[]u8 = null;
+        defer if (explicit_id) |id| self.gpa.free(id);
+        if (args.len > 0 and c.JS_IsString(args[0])) explicit_id = try self.engine.toString(args[0]);
+        if (kind == .getLabel) {
+            const id = explicit_id orelse return c.pi_js_undefined();
+            const name = session.label(id) orelse return c.pi_js_undefined();
+            return self.engine.checked(c.JS_NewStringLen(self.engine.context, name.ptr, name.len));
+        }
+        const value = switch (kind) {
+            .getLeafEntry => session.entry(session.leaf),
+            .getEntry => session.entry(explicit_id),
+            .getBranch => branch: {
+                const id = if (args.len == 0 or c.JS_IsUndefined(args[0]) or c.JS_IsNull(args[0])) session.leaf else explicit_id;
+                break :branch try session.branch(id);
+            },
+            .buildContextEntries => try session.contextEntries(),
+            else => unreachable,
+        } orelse return c.pi_js_undefined();
+        const json = try std.json.Stringify.valueAlloc(allocator, value, .{});
+        return self.parseJson(json, "native-session-snapshot");
+    }
+
+    fn sessionTree(self: *Bindings, allocator: std.mem.Allocator, session: *const session_snapshot.Snapshot) !c.JSValue {
+        const parents = try session.parents();
+        const children = try allocator.alloc(std.ArrayList(usize), session.entries.len);
+        for (children) |*list| list.* = .empty;
+        for (parents, 0..) |parent, index| if (parent) |position| try children[position].append(allocator, index);
+        const times = try allocator.alloc(f64, session.entries.len);
+        const global = c.JS_GetGlobalObject(self.engine.context);
+        defer self.engine.freeValue(global);
+        const date = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, global, "Date"));
+        defer self.engine.freeValue(date);
+        const parse_date = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, date, "parse"));
+        defer self.engine.freeValue(parse_date);
+        for (session.entries, times) |entry, *time| {
+            const timestamp = session_snapshot.Snapshot.text(entry, "timestamp") orelse "";
+            var argument = [_]c.JSValue{try self.engine.checked(c.JS_NewStringLen(self.engine.context, timestamp.ptr, timestamp.len))};
+            defer self.engine.freeValue(argument[0]);
+            const result = try self.engine.checked(c.JS_Call(self.engine.context, parse_date, date, 1, &argument));
+            defer self.engine.freeValue(result);
+            if (c.JS_ToFloat64(self.engine.context, time, result) < 0) return error.JavaScriptException;
+        }
+        for (children) |*list| std.mem.sort(usize, list.items, times, struct {
+            fn lessThan(timestamps: []const f64, left: usize, right: usize) bool {
+                if (!std.math.isFinite(timestamps[left]) or !std.math.isFinite(timestamps[right])) return false;
+                return timestamps[left] < timestamps[right];
+            }
+        }.lessThan);
+        const nodes = try allocator.alloc(c.JSValue, session.entries.len);
+        var initialized: usize = 0;
+        defer for (nodes[0..initialized]) |node| self.engine.freeValue(node);
+        for (session.entries, nodes) |entry, *node| {
+            node.* = try self.engine.checked(c.JS_NewObject(self.engine.context));
+            initialized += 1;
+            const entry_json = try std.json.Stringify.valueAlloc(allocator, entry, .{});
+            const entry_copy = try self.parseJson(entry_json, "native-session-tree-entry");
+            if (c.JS_DefinePropertyValueStr(self.engine.context, node.*, "entry", entry_copy, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+            const descendants = try self.engine.checked(c.JS_NewArray(self.engine.context));
+            if (c.JS_DefinePropertyValueStr(self.engine.context, node.*, "children", descendants, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+            if (c.JS_DefinePropertyValueStr(self.engine.context, node.*, "label", c.pi_js_undefined(), c.JS_PROP_C_W_E) < 0 or c.JS_DefinePropertyValueStr(self.engine.context, node.*, "labelTimestamp", c.pi_js_undefined(), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+            const id = session_snapshot.Snapshot.text(entry, "id").?;
+            if (session.label(id)) |label| {
+                const text = try self.engine.checked(c.JS_NewStringLen(self.engine.context, label.ptr, label.len));
+                if (c.JS_DefinePropertyValueStr(self.engine.context, node.*, "label", text, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+                var timestamp: ?[]const u8 = null;
+                for (session.entries) |candidate| {
+                    const kind = session_snapshot.Snapshot.text(candidate, "type") orelse continue;
+                    const target = session_snapshot.Snapshot.text(candidate, "targetId") orelse continue;
+                    if (std.mem.eql(u8, kind, "label") and std.mem.eql(u8, id, target)) timestamp = session_snapshot.Snapshot.text(candidate, "timestamp");
+                }
+                if (timestamp) |value| {
+                    const string = try self.engine.checked(c.JS_NewStringLen(self.engine.context, value.ptr, value.len));
+                    if (c.JS_DefinePropertyValueStr(self.engine.context, node.*, "labelTimestamp", string, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+                }
+            }
+        }
+        const roots = try self.engine.checked(c.JS_NewArray(self.engine.context));
+        errdefer self.engine.freeValue(roots);
+        var root_index: u32 = 0;
+        for (nodes, parents, children) |node, parent, descendants| {
+            if (parent == null) {
+                if (c.JS_SetPropertyUint32(self.engine.context, roots, root_index, c.JS_DupValue(self.engine.context, node)) < 0) return error.JavaScriptException;
+                root_index += 1;
+            }
+            const list = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, node, "children"));
+            defer self.engine.freeValue(list);
+            for (descendants.items, 0..) |index, child_index| if (c.JS_SetPropertyUint32(self.engine.context, list, @intCast(child_index), c.JS_DupValue(self.engine.context, nodes[index])) < 0) return error.JavaScriptException;
+        }
+        return roots;
     }
 
     pub fn setFlags(self: *Bindings, source: []const u8) !void {
@@ -419,7 +691,11 @@ pub const Bindings = struct {
 
     fn invokeHandlers(self: *Bindings, name: []const u8, event: c.JSValue, context: c.JSValue, result: c.JSValue) !void {
         const handlers = self.handlers.get(name) orelse return;
-        for (handlers.items) |handler| {
+        const snapshot = try self.gpa.alloc(c.JSValue, handlers.items.len);
+        defer self.gpa.free(snapshot);
+        for (snapshot, handlers.items) |*slot, handler| slot.* = c.JS_DupValue(self.engine.context, handler);
+        defer for (snapshot) |handler| self.engine.freeValue(handler);
+        for (snapshot) |handler| {
             var args = [_]c.JSValue{ event, context };
             const promise = try self.engine.checked(c.JS_Call(self.engine.context, handler, c.pi_js_undefined(), args.len, &args));
             defer self.engine.freeValue(promise);
@@ -703,4 +979,155 @@ test "native extension actions are ordered and rejected outside their invocation
     try std.testing.expectEqualStrings("append_entry", queue.items[1].object.get("type").?.string);
     try std.testing.expectEqualStrings("send_user_message", queue.items[2].object.get("type").?.string);
     try std.testing.expectError(error.JavaScriptException, bindings.loadFactory("export default pi=>pi.setSessionName('stale');", "stale.js"));
+}
+
+test "native subscriptions return independent idempotent removers and dispatch snapshots" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(std.testing.allocator, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory(
+        "export default pi=>{let sharedCalls=0;const shared=()=>({calls:++sharedCalls});const removeOne=pi.on('shared',shared);const removeTwo=pi.on('shared',shared);if(typeof removeOne!=='function')throw Error('unsubscribe');removeOne();removeOne();" ++
+            "let calls=[],added=false,removeSecond;pi.on('mutate',()=>{calls=['first'];removeSecond();if(!added){added=true;pi.on('mutate',()=>{calls.push('late');return {order:calls.slice()};});}return {order:calls.slice()};});removeSecond=pi.on('mutate',()=>{calls.push('second');return {order:calls.slice()};});" ++
+            "pi.registerCommand('remove',{handler:()=>{removeTwo();removeTwo();return {};}});};",
+        "native-subscriptions.mjs",
+    );
+    const shared = try bindings.invokeHook("shared", "{}");
+    defer engine.gpa.free(shared);
+    try std.testing.expectEqualStrings("{\"calls\":1}", shared);
+    const first = try bindings.invokeHook("mutate", "{}");
+    defer engine.gpa.free(first);
+    try std.testing.expectEqualStrings("{\"order\":[\"first\",\"second\"]}", first);
+    const next = try bindings.invokeHook("mutate", "{}");
+    defer engine.gpa.free(next);
+    try std.testing.expectEqualStrings("{\"order\":[\"first\",\"late\"]}", next);
+    const removed = try bindings.invokeCommand("remove", "");
+    defer engine.gpa.free(removed);
+    try std.testing.expect(!bindings.handlers.contains("shared"));
+}
+
+test "native readonly API catalogs settings and action updates are copied without exposing registrations" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(std.testing.allocator, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory(
+        "export default pi=>{if(pi.getActiveTools().length||pi.getAllTools().length||pi.getCommands().length||pi.getThinkingLevel()!=='off')throw Error('initial API');" ++
+            "pi.registerTool({name:'read',description:'extension read',parameters:{type:'object',properties:{value:{type:'string',__piOptional:true}}},execute(){return {content:'read'}}});" ++
+            "pi.registerCommand('inspect',{description:'native inspection',handler:()=>{const tools=pi.getAllTools(),settings=pi.getSettings(),commands=pi.getCommands();const own=tools.find(t=>t.name==='read');if(own.description!=='extension read'||own.parameters.properties.value.__piOptional!==undefined||own.source!=='extension')throw Error('tool projection');own.parameters.type='changed';settings.nested.value=9;commands[0].name='changed';if(pi.getAllTools().find(t=>t.name==='read').parameters.type!=='object'||pi.getSettings().nested.value!==1||pi.getCommands().some(c=>c.name==='changed'))throw Error('snapshot mutation');" ++
+            "if(pi.getSessionName()!=='initial'||pi.getThinkingLevel()!=='low')throw Error('initial metadata');pi.setSessionName('updated');pi.setThinkingLevel('high');pi.setActiveTools([]);return {name:pi.getSessionName(),level:pi.getThinkingLevel(),active:pi.getActiveTools(),tools:pi.getAllTools().map(t=>t.name),path:pi.getCommands().find(c=>c.name==='inspect').sourceInfo.path};}});};",
+        "native-api-catalog.mjs",
+    );
+    try bindings.setContext("{\"activeTools\":[\"read\"],\"allTools\":[{\"name\":\"read\",\"description\":\"builtin read\"},{\"name\":\"builtin\"}],\"commands\":[{\"name\":\"builtin-command\"}],\"settings\":{\"nested\":{\"value\":1}},\"sessionName\":\"initial\",\"thinkingLevel\":\"low\"}");
+    const result = try bindings.invokeCommand("inspect", "");
+    defer engine.gpa.free(result);
+    var parsed = try std.json.parseFromSlice(std.json.Value, engine.gpa, result, .{});
+    defer parsed.deinit();
+    const object = parsed.value.object;
+    try std.testing.expectEqualStrings("updated", object.get("name").?.string);
+    try std.testing.expectEqualStrings("high", object.get("level").?.string);
+    try std.testing.expectEqual(@as(usize, 0), object.get("active").?.array.items.len);
+    try std.testing.expectEqual(@as(usize, 2), object.get("tools").?.array.items.len);
+    try std.testing.expectEqualStrings("native-api-catalog.mjs", object.get("path").?.string);
+}
+
+test "native context cwd fallback resolves a real directory and remains invocation guarded" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const bindings = try Bindings.init(std.testing.allocator, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory("export default pi=>pi.registerTool({name:'cwd',execute(id,args,signal,update,ctx){return {details:{cwd:ctx.cwd,again:ctx.sessionManager.getCwd()}};}});", "native-cwd.mjs");
+    const result = try bindings.invokeTool("cwd", "call", "{}");
+    defer engine.gpa.free(result);
+    var parsed = try std.json.parseFromSlice(std.json.Value, engine.gpa, result, .{});
+    defer parsed.deinit();
+    const cwd = parsed.value.object.get("details").?.object.get("cwd").?.string;
+    const again = parsed.value.object.get("details").?.object.get("again").?.string;
+    try std.testing.expect(std.fs.path.isAbsolute(cwd));
+    try std.testing.expectEqualStrings(cwd, again);
+}
+
+test "native session manager entry lookups explicit branches and compaction views retain context guards" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(std.testing.allocator, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory(
+        "export default pi=>pi.registerTool({name:'session',execute(id,args,signal,update,ctx){const manager=ctx.sessionManager;globalThis.retainedSession=manager;const entry=manager.getEntry('kept');entry.message.content='changed';if(manager.getEntry('kept').message.content!=='original'||manager.getEntry('absent')!==undefined)throw Error('entry lookup/copy');return {details:{leaf:manager.getLeafEntry().id,label:manager.getLabel('tail'),explicit:manager.getBranch('kept').map(e=>e.id),branch:manager.getBranch().map(e=>e.id),context:manager.buildContextEntries().map(e=>e.id)}};}});",
+        "native-session-api.mjs",
+    );
+    try bindings.setContext(
+        "{\"sessionLeafId\":\"tail\",\"sessionEntries\":[" ++
+            "{\"id\":\"old\",\"parentId\":null,\"type\":\"message\",\"message\":{\"role\":\"user\"}}," ++
+            "{\"id\":\"system\",\"parentId\":\"old\",\"type\":\"message\",\"message\":{\"role\":\"system\"}}," ++
+            "{\"id\":\"kept\",\"parentId\":\"system\",\"type\":\"message\",\"message\":{\"role\":\"assistant\",\"content\":\"original\"}}," ++
+            "{\"id\":\"compacted\",\"parentId\":\"kept\",\"type\":\"compaction\",\"firstKeptEntryId\":\"old\"}," ++
+            "{\"id\":\"tail\",\"parentId\":\"compacted\",\"type\":\"message\"}," ++
+            "{\"id\":\"label\",\"parentId\":\"tail\",\"type\":\"label\",\"targetId\":\"tail\",\"label\":\"bookmark\"}]}",
+    );
+    const result = try bindings.invokeTool("session", "call", "{}");
+    defer engine.gpa.free(result);
+    var parsed = try std.json.parseFromSlice(std.json.Value, engine.gpa, result, .{});
+    defer parsed.deinit();
+    const details = parsed.value.object.get("details").?.object;
+    try std.testing.expectEqualStrings("tail", details.get("leaf").?.string);
+    try std.testing.expectEqualStrings("bookmark", details.get("label").?.string);
+    try std.testing.expectEqual(@as(usize, 3), details.get("explicit").?.array.items.len);
+    try std.testing.expectEqual(@as(usize, 5), details.get("branch").?.array.items.len);
+    try std.testing.expectEqual(@as(usize, 4), details.get("context").?.array.items.len);
+    try std.testing.expectEqualStrings("compacted", details.get("context").?.array.items[0].string);
+    const guarded = try engine.eval("let blocked=false;try{retainedSession.getEntry('old')}catch{blocked=true}if(!blocked)throw Error('stale session manager');", "native-stale-session.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(guarded);
+}
+
+test "native session trees retain orphans self roots label timestamps and chronological children" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(std.testing.allocator, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory(
+        "export default pi=>pi.registerTool({name:'tree',execute(id,args,signal,update,ctx){const first=ctx.sessionManager.getTree();if(first.length!==3||first[0].children[0].entry.id!=='early'||first[0].children[1].entry.id!=='late'||first[0].children[1].label!=='bookmark'||first[0].children[1].labelTimestamp!=='2026-01-04T00:00:00Z')throw Error('tree structure/order/labels');first[0].entry.id='changed';if(ctx.sessionManager.getTree()[0].entry.id!=='root')throw Error('tree mutation');return {content:'native-tree'};}});",
+        "native-tree.mjs",
+    );
+    try bindings.setContext(
+        "{\"sessionEntries\":[" ++
+            "{\"id\":\"root\",\"parentId\":null,\"timestamp\":\"2026-01-01T00:00:00Z\"}," ++
+            "{\"id\":\"late\",\"parentId\":\"root\",\"timestamp\":\"2026-01-03T00:00:00Z\"}," ++
+            "{\"id\":\"early\",\"parentId\":\"root\",\"timestamp\":\"2026-01-02T00:00:00Z\"}," ++
+            "{\"id\":\"label\",\"parentId\":\"root\",\"type\":\"label\",\"targetId\":\"late\",\"label\":\"bookmark\",\"timestamp\":\"2026-01-04T00:00:00Z\"}," ++
+            "{\"id\":\"orphan\",\"parentId\":\"absent\"},{\"id\":\"self\",\"parentId\":\"self\"}]}",
+    );
+    const result = try bindings.invokeTool("tree", "call", "{}");
+    defer engine.gpa.free(result);
+    try std.testing.expect(std.mem.indexOf(u8, result, "native-tree") != null);
+    try bindings.setContext("{\"sessionEntries\":[{\"id\":\"a\",\"parentId\":\"b\"},{\"id\":\"b\",\"parentId\":\"a\"}]}");
+    try std.testing.expectError(error.JavaScriptException, bindings.invokeTool("tree", "call", "{}"));
+    try std.testing.expect(std.mem.indexOf(u8, engine.last_error.?, "SessionParentCycle") != null);
+}
+
+test "native failed subscription allocations do not leave a hidden event registration" {
+    var failed_count: usize = 0;
+    for (0..8) |offset| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+        const engine = try engine_mod.Engine.init(failing.allocator(), .{});
+        defer engine.deinit();
+        const bindings = try Bindings.init(failing.allocator(), engine);
+        defer bindings.deinit();
+        const event = try engine.checked(c.JS_NewString(engine.context, "allocation-event"));
+        defer engine.freeValue(event);
+        const callback = try engine.eval("(event)=>({})", "allocation-callback.js", c.JS_EVAL_TYPE_GLOBAL);
+        defer engine.freeValue(callback);
+        var args = [_]c.JSValue{ event, callback };
+        failing.fail_index = failing.alloc_index + offset;
+        const remove = bindings.registration(.on, &args) catch |err| {
+            try std.testing.expectEqual(error.OutOfMemory, err);
+            failed_count += 1;
+            try std.testing.expect(!bindings.handlers.contains("allocation-event"));
+            continue;
+        };
+        engine.freeValue(remove);
+        break;
+    }
+    try std.testing.expect(failed_count >= 4);
 }

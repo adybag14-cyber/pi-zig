@@ -21,7 +21,7 @@ test "native extension process loads TypeScript imports and exchanges real proto
             "if (fileURLToPath(import.meta.url)!==import.meta.filename || dirname(import.meta.filename)!==import.meta.dirname || relative(import.meta.dirname,join(import.meta.dirname,'marker.ts'))!=='marker.ts') throw Error('native paths'); " ++
             "const input=fs.readFileSync(import.meta.filename); if(!Buffer.isBuffer(input)||!input.toString('utf8').includes('native-worker'))throw Error('native binary filesystem'); " ++
             "export default (pi: any) => { console.log('native-console',{safe:true}); pi.on('input', async (event: any) => ({action:'transform',text:event.text+':'+marker})); " ++
-            "pi.registerTool({name:'echo', parameters:Type.Object({text:Type.String()}), async execute(id:string,args:any,signal:any,update:any,ctx:any) {return {content:[{type:'text',text:id+':'+args.text}],details:{marker,dependency,session:ctx.sessionManager.getSessionId(),trusted:ctx.isProjectTrusted()}};}}); };",
+            "pi.registerTool({name:'echo', parameters:Type.Object({text:Type.String()}), async execute(id:string,args:any,signal:any,update:any,ctx:any) {return {content:[{type:'text',text:id+':'+args.text}],details:{marker,dependency,session:ctx.sessionManager.getSessionId(),trusted:ctx.isProjectTrusted(),nativeTools:pi.getAllTools().map(tool=>tool.name),settings:pi.getSettings()}};}}); };",
     });
     var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
     const length = try tmp.dir.realPath(io, &path_buffer);
@@ -50,7 +50,7 @@ test "native extension process loads TypeScript imports and exchanges real proto
     try stdin.interface.writeAll(
         "{\n[]\n{\"kind\":\"unsupported\"}\n" ++
             "{\"kind\":\"hook\",\"name\":\"before_prompt\",\"payload\":{\"prompt\":\"hello\"}}\n" ++
-            "{\"kind\":\"tool\",\"name\":\"echo\",\"toolCallId\":\"call-real\",\"payload\":{\"text\":\"pi\"},\"context\":{\"sessionId\":\"worker-session\",\"projectTrusted\":true}}\n" ++
+            "{\"kind\":\"tool\",\"name\":\"echo\",\"toolCallId\":\"call-real\",\"payload\":{\"text\":\"pi\"},\"context\":{\"sessionId\":\"worker-session\",\"projectTrusted\":true,\"settings\":{\"mode\":\"native\"}}}\n" ++
             "{\"kind\":\"shutdown\"}\n",
     );
     try stdin.interface.flush();
@@ -78,6 +78,8 @@ test "native extension process loads TypeScript imports and exchanges real proto
     try std.testing.expect(std.mem.indexOf(u8, output, "\"session\":\"worker-session\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, output, "\"trusted\":true") != null);
     try std.testing.expect(std.mem.indexOf(u8, output, "\"dependency\":\"esm-dependency\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, output, "\"nativeTools\":[\"echo\"]") != null);
+    try std.testing.expect(std.mem.indexOf(u8, output, "\"settings\":{\"mode\":\"native\"}") != null);
     try std.testing.expectEqual(@as(usize, 3), std.mem.count(u8, output, "\"ok\":false"));
     var records: usize = 0;
     for (output) |byte| if (byte == 0x1e) {
