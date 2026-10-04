@@ -4,7 +4,63 @@ const engine_mod = @import("engine.zig");
 pub const encodings = @import("binary_encoding.zig");
 const c = engine_mod.c;
 const Static = enum(c_int) { from, alloc, allocUnsafe, allocUnsafeSlow, byteLength, isBuffer, isEncoding, concat, compare };
-const Method = enum(c_int) { toString, toJSON, slice, subarray, equals, compare, copy, fill };
+const Method = enum(c_int) {
+    toString,
+    toJSON,
+    slice,
+    subarray,
+    equals,
+    compare,
+    copy,
+    fill,
+    readUInt8,
+    readUInt16LE,
+    readUInt16BE,
+    readUInt32LE,
+    readUInt32BE,
+    readUIntLE,
+    readUIntBE,
+    readInt8,
+    readInt16LE,
+    readInt16BE,
+    readInt32LE,
+    readInt32BE,
+    readIntLE,
+    readIntBE,
+    readBigUInt64LE,
+    readBigUInt64BE,
+    readBigInt64LE,
+    readBigInt64BE,
+    readFloatLE,
+    readFloatBE,
+    readDoubleLE,
+    readDoubleBE,
+    writeUInt8,
+    writeUInt16LE,
+    writeUInt16BE,
+    writeUInt32LE,
+    writeUInt32BE,
+    writeUIntLE,
+    writeUIntBE,
+    writeInt8,
+    writeInt16LE,
+    writeInt16BE,
+    writeInt32LE,
+    writeInt32BE,
+    writeIntLE,
+    writeIntBE,
+    writeBigUInt64LE,
+    writeBigUInt64BE,
+    writeBigInt64LE,
+    writeBigInt64BE,
+    writeFloatLE,
+    writeFloatBE,
+    writeDoubleLE,
+    writeDoubleBE,
+    swap16,
+    swap32,
+    swap64,
+};
 
 const View = struct { backing: c.JSValue, bytes: []u8, offset: usize };
 
@@ -135,8 +191,10 @@ fn from(engine: *engine_mod.Engine, args: []c.JSValue, depth: usize) anyerror!c.
 fn failure(context: ?*c.JSContext, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine_mod.Engine.fromContext(context.?).throwCaptured();
     if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
-    const code: [*:0]const u8 = if (err == error.BufferRange) "ERR_OUT_OF_RANGE" else if (err == error.UnknownBufferEncoding) "ERR_UNKNOWN_ENCODING" else "ERR_INVALID_ARG_TYPE";
-    _ = if (err == error.BufferRange) c.JS_ThrowRangeError(context, "Native Buffer: %s", @as([*:0]const u8, @errorName(err))) else c.JS_ThrowTypeError(context, "Native Buffer: %s", @as([*:0]const u8, @errorName(err)));
+    if (err == error.MixingBigIntTypes) return c.JS_ThrowTypeError(context, "Cannot mix BigInt and other types");
+    const range = err == error.BufferRange or err == error.BufferBounds or err == error.InvalidBufferSize;
+    const code: [*:0]const u8 = if (err == error.BufferRange) "ERR_OUT_OF_RANGE" else if (err == error.BufferBounds) "ERR_BUFFER_OUT_OF_BOUNDS" else if (err == error.InvalidBufferSize) "ERR_INVALID_BUFFER_SIZE" else if (err == error.UnknownBufferEncoding) "ERR_UNKNOWN_ENCODING" else "ERR_INVALID_ARG_TYPE";
+    _ = if (range) c.JS_ThrowRangeError(context, "Native Buffer: %s", @as([*:0]const u8, @errorName(err))) else c.JS_ThrowTypeError(context, "Native Buffer: %s", @as([*:0]const u8, @errorName(err)));
     const exception = c.JS_GetException(context);
     if (c.JS_DefinePropertyValueStr(context, exception, "code", c.JS_NewString(context, code), c.JS_PROP_C_W_E) < 0) {
         c.JS_FreeValue(context, exception);
@@ -301,7 +359,116 @@ fn argumentIndex(engine: *engine_mod.Engine, args: []c.JSValue, position: usize,
     return @intFromFloat(@min(@as(f64, @floatFromInt(size)), @trunc(value)));
 }
 
+fn numericArgument(engine: *engine_mod.Engine, args: []c.JSValue, index: usize, default: ?f64) !f64 {
+    if (index >= args.len or c.JS_IsUndefined(args[index])) return default orelse error.InvalidBufferArgument;
+    if (!c.JS_IsNumber(args[index])) return error.InvalidBufferArgument;
+    var number: f64 = 0;
+    if (c.JS_ToFloat64(engine.context, &number, args[index]) < 0) return error.JavaScriptException;
+    return number;
+}
+
+fn numericView(engine: *engine_mod.Engine, value: c.JSValue) !View {
+    return view(engine, value) catch |err| {
+        // QuickJS rejects detached/OOB views through its intrinsic accessor;
+        // Node's numeric methods report buffer bounds. No user accessor runs here.
+        if (err == error.JavaScriptException and c.JS_GetTypedArrayType(value) == c.JS_TYPED_ARRAY_UINT8) {
+            if (engine.captured_exception) |exception| {
+                if (!c.JS_IsUncatchableError(exception)) {
+                    engine.freeValue(exception);
+                    engine.captured_exception = null;
+                    return error.BufferBounds;
+                }
+            }
+        }
+        return err;
+    };
+}
+
+fn numericCall(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args: []c.JSValue) !c.JSValue {
+    const name = @tagName(method);
+    if (std.mem.startsWith(u8, name, "swap")) {
+        const width: usize = if (method == .swap16) 2 else if (method == .swap32) 4 else 8;
+        const target = try view(engine, this);
+        defer engine.freeValue(target.backing);
+        if (target.bytes.len % width != 0) return error.InvalidBufferSize;
+        var start: usize = 0;
+        while (start < target.bytes.len) : (start += width) std.mem.reverse(u8, target.bytes[start .. start + width]);
+        return c.JS_DupValue(engine.context, this);
+    }
+    const write = std.mem.startsWith(u8, name, "write");
+    const operation = name[if (write) @as(usize, 5) else 4..];
+    const little = !std.mem.endsWith(u8, name, "BE");
+    const big = std.mem.startsWith(u8, operation, "Big");
+    const floating = std.mem.startsWith(u8, operation, "Float") or std.mem.startsWith(u8, operation, "Double");
+    const signed = std.mem.startsWith(u8, operation, "Int") or std.mem.startsWith(u8, operation, "BigInt");
+    const variable = std.mem.eql(u8, operation, "UIntLE") or std.mem.eql(u8, operation, "UIntBE") or std.mem.eql(u8, operation, "IntLE") or std.mem.eql(u8, operation, "IntBE");
+    // Variable-width reads require an explicit offset even if width is invalid.
+    if (variable and !write and (args.len == 0 or c.JS_IsUndefined(args[0]))) return error.InvalidBufferArgument;
+    const width: usize = if (variable) blk: {
+        const count = try numericArgument(engine, args, if (write) 2 else 1, null);
+        if (!std.math.isFinite(count) or count != @trunc(count) or count < 1 or count > 6) return error.BufferRange;
+        break :blk @intFromFloat(count);
+    } else if (big or std.mem.startsWith(u8, operation, "Double")) 8 else if (std.mem.indexOf(u8, operation, "32") != null or floating) 4 else if (std.mem.indexOf(u8, operation, "16") != null) 2 else 1;
+    var bits: u64 = 0;
+    var mixing_bigint_types = false;
+    if (write) {
+        const value = if (args.len > 0) args[0] else c.pi_js_undefined();
+        if (big) {
+            if (!c.JS_IsBigInt(value)) {
+                mixing_bigint_types = true;
+                var number: f64 = 0;
+                if (c.JS_ToFloat64(engine.context, &number, value) < 0) return error.JavaScriptException;
+                const limit: f64 = if (signed) 9_223_372_036_854_775_808 else 18_446_744_073_709_551_616;
+                if (number >= limit or number < (if (signed) -limit else @as(f64, 0))) return error.BufferRange;
+            } else {
+                const text = try engine.toString(value);
+                defer engine.gpa.free(text);
+                bits = if (signed)
+                    @bitCast(std.fmt.parseInt(i64, text, 10) catch return error.BufferRange)
+                else
+                    std.fmt.parseInt(u64, text, 10) catch return error.BufferRange;
+            }
+        } else {
+            var number: f64 = 0;
+            if (c.JS_ToFloat64(engine.context, &number, value) < 0) return error.JavaScriptException;
+            // Node's one-byte writer validates offset type before value range.
+            if (!floating and width == 1) _ = try numericArgument(engine, args, 1, if (variable) null else 0);
+            if (floating) {
+                bits = if (width == 4) @as(u32, @bitCast(@as(f32, @floatCast(number)))) else @as(u64, @bitCast(number));
+            } else {
+                const magnitude = @as(u64, 1) << @as(u6, @intCast(width * 8 - @intFromBool(signed)));
+                const maximum: f64 = @floatFromInt(magnitude - 1);
+                const minimum: f64 = if (signed) -@as(f64, @floatFromInt(magnitude)) else 0;
+                if (number > maximum or number < minimum) return error.BufferRange;
+                bits = if (std.math.isNan(number)) 0 else if (signed) @bitCast(@as(i64, @intFromFloat(@trunc(number)))) else @intFromFloat(@trunc(number));
+            }
+        }
+    }
+    // All possible user conversions happen before borrowing the backing store.
+    const raw_offset = try numericArgument(engine, args, if (write) 1 else 0, if (variable) null else 0);
+    if (std.math.isNan(raw_offset) or raw_offset != @trunc(raw_offset)) return error.BufferRange;
+    const target = try numericView(engine, this);
+    defer engine.freeValue(target.backing);
+    if (target.bytes.len < width) return error.BufferBounds;
+    if (raw_offset < 0 or raw_offset > @as(f64, @floatFromInt(target.bytes.len - width))) return error.BufferRange;
+    const offset: usize = @intFromFloat(raw_offset);
+    if (mixing_bigint_types) return error.MixingBigIntTypes;
+    if (write) {
+        for (0..width) |index| target.bytes[offset + index] = @truncate(bits >> @as(u6, @intCast((if (little) index else width - 1 - index) * 8)));
+        return c.JS_NewInt64(engine.context, @intCast(offset + width));
+    }
+    for (0..width) |index| bits |= @as(u64, target.bytes[offset + index]) << @as(u6, @intCast((if (little) index else width - 1 - index) * 8));
+    if (floating) return c.JS_NewFloat64(engine.context, if (width == 4) @as(f32, @bitCast(@as(u32, @truncate(bits)))) else @as(f64, @bitCast(bits)));
+    if (signed) {
+        if (width < 8 and bits & (@as(u64, 1) << @as(u6, @intCast(width * 8 - 1))) != 0) bits |= @as(u64, std.math.maxInt(u64)) << @as(u6, @intCast(width * 8));
+        const value: i64 = @bitCast(bits);
+        return if (big) c.JS_NewBigInt64(engine.context, value) else c.JS_NewInt64(engine.context, value);
+    }
+    return if (big) c.JS_NewBigUint64(engine.context, bits) else c.JS_NewFloat64(engine.context, @floatFromInt(bits));
+}
+
 fn methodCall(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args: []c.JSValue) anyerror!c.JSValue {
+    if (@intFromEnum(method) >= @intFromEnum(Method.readUInt8)) return numericCall(engine, method, this, args);
     if (method == .copy) return copyBuffer(engine, this, args);
     if (method == .fill) return fillBuffer(engine, this, args);
     if (method == .compare) return compareBuffer(engine, this, args);
@@ -342,7 +509,7 @@ fn methodCall(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args:
             const order = std.mem.order(u8, source.bytes, other.bytes);
             return c.pi_js_bool(engine.context, @intFromBool(order == .eq));
         },
-        .copy, .fill, .compare => unreachable,
+        else => unreachable,
     }
 }
 
@@ -469,7 +636,12 @@ pub fn install(engine: *engine_mod.Engine) !void {
     }
     inline for (std.meta.fields(Method)) |operation| {
         const name: [:0]const u8 = operation.name;
-        try property(engine, prototype, name, try engine.checked(c.pi_js_function_magic(engine.context, invokeMethod, name.ptr, 1, @intCast(operation.value))));
+        const function = try engine.checked(c.pi_js_function_magic(engine.context, invokeMethod, name.ptr, if (std.mem.startsWith(u8, name, "write")) 2 else 1, @intCast(operation.value)));
+        try property(engine, prototype, name, function);
+        if (comptime std.mem.indexOf(u8, operation.name, "UInt")) |index| {
+            const alias: [:0]const u8 = comptime std.fmt.comptimePrint("{s}Uint{s}", .{ operation.name[0..index], operation.name[index + 4 ..] });
+            try property(engine, prototype, alias, c.JS_DupValue(engine.context, function));
+        }
     }
     engine.buffer_prototype = c.JS_DupValue(engine.context, prototype);
     try property(engine, global, "Buffer", c.JS_DupValue(engine.context, constructor));
@@ -564,4 +736,121 @@ test "native Buffer registration allocation failures cannot make a later retry l
         break;
     }
     try std.testing.expect(failures >= 4);
+}
+
+fn numericFixtureArgument(engine: *engine_mod.Engine, value: std.json.Value) !c.JSValue {
+    const object = value.object;
+    const kind = object.get("kind").?.string;
+    if (std.mem.eql(u8, kind, "undefined")) return c.pi_js_undefined();
+    if (std.mem.eql(u8, kind, "json")) return engine.fromJsonValue(object.get("value").?);
+    const text = object.get("value").?.string;
+    if (std.mem.eql(u8, kind, "number")) {
+        return c.JS_NewFloat64(engine.context, if (std.mem.eql(u8, text, "NaN")) std.math.nan(f64) else if (std.mem.eql(u8, text, "Infinity")) std.math.inf(f64) else -std.math.inf(f64));
+    }
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const constructor = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "BigInt"));
+    defer engine.freeValue(constructor);
+    var args = [_]c.JSValue{try engine.fromJsonValue(.{ .string = text })};
+    defer engine.freeValue(args[0]);
+    return engine.checked(c.JS_Call(engine.context, constructor, c.pi_js_undefined(), 1, &args));
+}
+
+fn compareNumericFixture(engine: *engine_mod.Engine, row: std.json.ObjectMap) !void {
+    var bytes: [16]u8 = undefined;
+    const input = row.get("input").?.array.items;
+    for (input, 0..) |byte, index| bytes[index] = @intCast(byte.integer);
+    const buffer = try fromBytes(engine, bytes[0..input.len]);
+    defer engine.freeValue(buffer);
+    const method_name = try engine.gpa.dupeZ(u8, row.get("method").?.string);
+    defer engine.gpa.free(method_name);
+    const function = try engine.checked(c.JS_GetPropertyStr(engine.context, buffer, method_name));
+    defer engine.freeValue(function);
+    try std.testing.expect(c.JS_IsFunction(engine.context, function));
+    const raw_args = row.get("args").?.array.items;
+    var arguments: [3]c.JSValue = undefined;
+    var count: usize = 0;
+    defer for (arguments[0..count]) |argument| engine.freeValue(argument);
+    for (raw_args) |argument| {
+        arguments[count] = try numericFixtureArgument(engine, argument);
+        count += 1;
+    }
+    const result = c.JS_Call(engine.context, function, buffer, @intCast(count), &arguments);
+    defer engine.freeValue(result);
+    if (row.get("error")) |expected| {
+        try std.testing.expect(c.JS_IsException(result));
+        const exception = c.JS_GetException(engine.context);
+        defer engine.freeValue(exception);
+        const name = try engine.checked(c.JS_GetPropertyStr(engine.context, exception, "name"));
+        defer engine.freeValue(name);
+        const actual_name = try engine.toString(name);
+        defer engine.gpa.free(actual_name);
+        try std.testing.expectEqualStrings(expected.object.get("name").?.string, actual_name);
+        const code = try engine.checked(c.JS_GetPropertyStr(engine.context, exception, "code"));
+        defer engine.freeValue(code);
+        const expected_code = expected.object.get("code").?;
+        if (expected_code == .null) {
+            try std.testing.expect(c.JS_IsUndefined(code));
+        } else {
+            const actual_code = try engine.toString(code);
+            defer engine.gpa.free(actual_code);
+            try std.testing.expectEqualStrings(expected_code.string, actual_code);
+        }
+    } else {
+        _ = try engine.checked(result);
+        const expected = row.get("result").?.object;
+        if (std.mem.eql(u8, expected.get("kind").?.string, "bigint")) {
+            try std.testing.expect(c.JS_IsBigInt(result));
+            const text = try engine.toString(result);
+            defer engine.gpa.free(text);
+            try std.testing.expectEqualStrings(expected.get("value").?.string, text);
+        } else {
+            var actual: f64 = 0;
+            try std.testing.expect(c.JS_ToFloat64(engine.context, &actual, result) == 0);
+            const text = expected.get("value").?.string;
+            if (std.mem.eql(u8, text, "NaN")) {
+                try std.testing.expect(std.math.isNan(actual));
+            } else {
+                const wanted: f64 = if (std.mem.eql(u8, text, "Infinity")) std.math.inf(f64) else if (std.mem.eql(u8, text, "-Infinity")) -std.math.inf(f64) else try std.fmt.parseFloat(f64, text);
+                try std.testing.expectEqual(wanted, actual);
+                if (wanted == 0) try std.testing.expectEqual(expected.get("negativeZero").?.bool, std.math.signbit(actual));
+            }
+        }
+    }
+    const output = try view(engine, buffer);
+    defer engine.freeValue(output.backing);
+    for (row.get("bytes").?.array.items, 0..) |byte, index| try std.testing.expectEqual(@as(u8, @intCast(byte.integer)), output.bytes[index]);
+}
+
+test "native Buffer numeric methods match captured Node 24 offsets values ranges and bytes" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .interrupt_budget = 5_000_000 });
+    defer engine.deinit();
+    try install(engine);
+    var fixture = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, @embedFile("fixtures/buffer_numeric.json"), .{});
+    defer fixture.deinit();
+    const cases = fixture.value.object.get("cases").?.array.items;
+    try std.testing.expectEqual(@as(usize, 31_352), cases.len);
+    for (cases, 0..) |row, index| {
+        compareNumericFixture(engine, row.object) catch |err| {
+            std.debug.print("Buffer numeric oracle case {d} {s}: {s}\n", .{ index, row.object.get("method").?.string, @errorName(err) });
+            const diagnostic = try std.json.Stringify.valueAlloc(engine.gpa, row, .{});
+            defer engine.gpa.free(diagnostic);
+            std.debug.print("{s}\n", .{diagnostic});
+            return err;
+        };
+    }
+    const namespace = try engine.evalModule("if(Buffer.prototype.readUInt32LE!==Buffer.prototype.readUint32LE||Buffer.prototype.writeBigUInt64BE!==Buffer.prototype.writeBigUint64BE)throw Error('alias identity'); const b=Buffer.from([1,2,3,4,5,6,7,8]);if(b.swap16()!==b||b.toString('hex')!=='0201040306050807')throw Error('swap16');b.swap32();if(b.toString('hex')!=='0304010207080506')throw Error('swap32');b.swap64();if(b.toString('hex')!=='0605080702010403')throw Error('swap64');", "native-buffer-numeric-aliases.mjs");
+    defer engine.freeValue(namespace);
+}
+
+test "native numeric Buffer conversion preserves exceptions and detached storage bounds" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    const namespace = try engine.evalModule(
+        "if(typeof ArrayBuffer.prototype.transfer!=='function')throw Error('detachment unavailable');let conversions=0;for(const method of ['writeUInt16LE','writeFloatLE']){const storage=new ArrayBuffer(8), b=Buffer.from(storage);let caught=false;try{b[method]({valueOf(){conversions++;storage.transfer();return 1}},0)}catch(error){if(!(error instanceof RangeError)||error.code!=='ERR_BUFFER_OUT_OF_BOUNDS')throw error;caught=true}if(!caught||b.length!==0)throw Error('detached numeric write');}if(conversions!==2)throw Error('conversion count');" ++
+            "const original=new Error('original numeric conversion');const b=Buffer.alloc(8);for(const method of ['writeUInt32LE','writeDoubleBE']){let caught=false;try{b[method]({valueOf(){throw original}},0)}catch(error){if(error!==original)throw Error('numeric exception replaced');caught=true}if(!caught||b.toString('hex')!=='0000000000000000')throw Error('throwing write modified bytes');}b.writeDoubleLE(-0);if(!Object.is(b.readDoubleLE(),-0))throw Error('negative zero');b.writeDoubleBE(Infinity);if(b.readDoubleBE()!==Infinity)throw Error('infinity');b.writeFloatLE(NaN);if(!Number.isNaN(b.readFloatLE()))throw Error('nan');",
+        "native-buffer-numeric-detachment.mjs",
+    );
+    defer engine.freeValue(namespace);
 }

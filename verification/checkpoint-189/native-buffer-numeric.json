@@ -1,0 +1,103 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "productionNodeBridgeReplaced": false,
+  "upstreamCommit": "f5d20047b3ad43d068a8eb61bd4e1f193bedbce6",
+  "oracle": {
+    "runtime": "Node v24.14.0",
+    "methods": 62,
+    "cases": 31352,
+    "fixture": "src/extensions/fixtures/buffer_numeric.json",
+    "sha256": "67770824fbd8d88867b1035bcf5c27a131c98663a5a6b2f0a53af0752258b394"
+  },
+  "nativeApis": [
+    "fixed and variable-width signed and unsigned integer reads/writes",
+    "64-bit BigInt reads/writes",
+    "Float/Double endian reads/writes",
+    "Uint spelling aliases retain function identity",
+    "swap16/swap32/swap64",
+    "bounds and value/offset validation order",
+    "exception identity and detached numeric writes",
+    "NaN infinity and negative zero"
+  ],
+  "remaining": [
+    "non-primitive BigInt coercion behavior",
+    "additional string-to-BigInt comparison edge cases",
+    "Buffer.write and search APIs",
+    "broader Node/web extension APIs and async host protocol"
+  ],
+  "windowsRegression": {
+    "aggregateSteps": 52,
+    "aggregateTests": 224,
+    "modulePassed": 1099,
+    "moduleSkipped": 27,
+    "moduleFailed": 0
+  },
+  "jobs": {
+    "buffer-numeric-oracle-capture": {
+      "name": "buffer-numeric-oracle-capture",
+      "pid": 56256,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\capture-buffer-numeric.cjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\buffer_numeric.json",
+      "created_utc": "2026-10-04T20:26:54.2476830Z",
+      "launched_utc": "2026-10-04T20:26:54.2441560+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T20:26:54.6474245+00:00"
+    },
+    "buffer-numeric-focused-04": {
+      "name": "buffer-numeric-focused-04",
+      "pid": 40956,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-buffer -j2 --summary all",
+      "created_utc": "2026-10-04T20:37:48.9749650Z",
+      "launched_utc": "2026-10-04T20:37:48.9719083+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T20:37:53.4577061+00:00"
+    },
+    "buffer-numeric-detachment-regressions": {
+      "name": "buffer-numeric-detachment-regressions",
+      "pid": 53616,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-buffer -j2 --summary all",
+      "created_utc": "2026-10-04T20:40:52.0799930Z",
+      "launched_utc": "2026-10-04T20:40:52.0771197+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T20:40:56.5551787+00:00"
+    },
+    "buffer-numeric-full-regressions": {
+      "name": "buffer-numeric-full-regressions",
+      "pid": 18160,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-04T20:44:09.5178820Z",
+      "launched_utc": "2026-10-04T20:44:09.5146880+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T20:45:16.1874728+00:00"
+    },
+    "buffer-numeric-release-safe": {
+      "name": "buffer-numeric-release-safe",
+      "pid": 39104,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -j2 -Doptimize=ReleaseSafe --summary all",
+      "created_utc": "2026-10-04T20:44:09.5178800Z",
+      "launched_utc": "2026-10-04T20:44:09.5147300+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T20:45:39.5390459+00:00"
+    }
+  }
+}

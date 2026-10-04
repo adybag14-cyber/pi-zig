@@ -280,6 +280,16 @@ Completed evidence:
   52 steps, 1,099 module tests, 27 existing skips and zero failures; ReleaseSafe
   passes. Shared stored-refresh locking for every built-in adapter remains pending.
 
+- Native Buffer numeric reads/writes, 64-bit BigInt and Float/Double operations,
+  endian variants, identity-preserving Uint aliases and byte swaps now execute
+  through Zig/C. All 31,352 captured Node 24.14.0 cases across 62 numeric methods
+  pass. Tests compare result values, error classes/codes and mutated bytes, and
+  check actual detachment, exception identity, NaN, infinity and negative zero.
+  The full Windows graph passes 52 steps, 1,099 module tests, 27 existing skips,
+  and 224 dedicated tests; ReleaseSafe passes. Non-primitive BigInt coercion and
+  further string comparison edge cases, Buffer.write/search and broader APIs
+  remain outstanding.
+
 Required outstanding work:
 
 1. Native extension module loader and TypeScript input erasure, host bindings,

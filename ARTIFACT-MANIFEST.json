@@ -7,8 +7,8 @@
   "root": "pi-zig",
   "complete_inventory": "FILES.sha256",
   "continuation": "UPSTREAM-UPDATE-20261003.md",
-  "file_count_excluding_FILES_sha256": 728,
-  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 28169441,
+  "file_count_excluding_FILES_sha256": 730,
+  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 34949326,
   "generated_catalog": {
     "models": 1601,
     "providers": 42,
@@ -23,7 +23,7 @@
   },
   "zig_source": {
     "files": 230,
-    "lines": 138325
+    "lines": 138614
   },
   "excluded_generated_paths": [
     ".git",
