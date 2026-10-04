@@ -1,7 +1,7 @@
 # Native repository tree
 
 The active update targets upstream Pi commit
-`1b094148b91d737fb398bf1591604de58ec169e1` (package version 1.0.2).
+`1965a80693dd929d28dda72f1986056355fb167a` (package version 1.0.2).
 Complete behavioral parity remains in progress; see
 `UPSTREAM-UPDATE-20261003.md` for the completed gates and outstanding work.
 

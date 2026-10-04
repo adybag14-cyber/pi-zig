@@ -580,7 +580,7 @@ test "generated catalog preserves exact upstream identity cardinality" {
     try std.testing.expectEqual(@as(usize, 1535), known_models.len);
     try std.testing.expectEqual(@as(usize, 1607), all_models.len);
     try std.testing.expectEqualStrings("1.0.2", catalog_generated.upstream_version);
-    try std.testing.expectEqualStrings("1b094148b91d737fb398bf1591604de58ec169e1", catalog_generated.upstream_commit);
+    try std.testing.expectEqualStrings("1965a80693dd929d28dda72f1986056355fb167a", catalog_generated.upstream_commit);
     try std.testing.expectEqualStrings("d28b6de6985826060b6e2ccf589d16800d9fdbc40681ae4c698421c92d2ff86f", catalog_generated.catalog_sha256);
 
     var arena = std.heap.ArenaAllocator.init(std.testing.allocator);

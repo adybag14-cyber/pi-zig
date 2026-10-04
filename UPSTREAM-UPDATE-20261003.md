@@ -6,9 +6,9 @@ Status: in progress. This file does not certify parity or a release.
   `012e80ced763e8d8ac7e01f7331d32dad3ab468b`.
 - Previous Pi baseline: `853a80d26c90a14c1886f0ebb8ffaae133ca2185`, version 0.84.4.
 - Selected authority: earendil-works/pi main
-  `1b094148b91d737fb398bf1591604de58ec169e1`, package version 1.0.2.
+  `1965a80693dd929d28dda72f1986056355fb167a`, package version 1.0.2.
   It descends from and is newer than published GitHub release v1.0.0.
-- Delta: 894 commits, including new model types/classifiers, codemode, MCP
+- Delta: 903 commits, including new model types/classifiers, codemode, MCP
   configuration/OAuth, providers/auth, agent-loop hooks, terminal behavior,
   and extraction of durable harness APIs into pi-durable.
   The refresh from initial target `4c6fb7cf` adds exactly one Nix workflow
@@ -23,8 +23,12 @@ Status: in progress. This file does not certify parity or a release.
   These additional contracts remain tracked for native implementation.
 - The later refresh to `1b094148` adds codemode survival after an install is
   updated or removed. Native codemode integration remains an outstanding port.
+- The refresh to `1965a806` adds nine commits: durable filesystem watches,
+  Windows polling/rename behavior and macOS startup handling, line scanning,
+  windowed shell output with counted skips, progress intervals, and codemode
+  image output to temporary files. These new runtime contracts remain pending.
 - Current upstream source tar SHA-256:
-  `b22c5ef6db16e470b73fe7acc62f76c04d42ce23ae12ac62b71c03a6fdd43b18`.
+  `bca975ce44baabcfd58774b322d52c58fa79b2a2c1c3f5c926d24e04686de607`.
 - User-required toolchain: final Zig 0.16.0. No implicit upgrade.
 - User-required implementation: Zig; direct C interoperability allowed.
   Retain upstream user-authored JavaScript/TypeScript extension compatibility
@@ -321,6 +325,16 @@ Completed evidence:
   27 existing skips and 297 dedicated tests; ReleaseSafe passes. The native
   language audit correctly fails for 24 remaining files and verifies 107 vendor
   files with zero digest failures. Production discovery remains on the old bridge.
+
+- Native Node timer handles now retain identity and ref/unref/hasRef state,
+  support active refresh/close and numeric/string coercion, and are the callback
+  receiver. Timer module aliases expose the same C-runtime functions.
+  Promise timers preserve value identity and original cancellation causes for
+  pre-aborted/live signals. Cancelled and failed-setup timers retire callbacks.
+  Expired refresh, idle pumping and unref process liveness remain outstanding.
+  Exact `1965a806` source passes 55 steps, 1,100 module tests, 27 existing skips
+  and 300 dedicated tests; ReleaseSafe passes. Latest durable/watch/codemode
+  contracts remain explicitly pending native integration.
 
 Required outstanding work:
 
