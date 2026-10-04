@@ -336,6 +336,16 @@ Completed evidence:
   and 300 dedicated tests; ReleaseSafe passes. Latest durable/watch/codemode
   contracts remain explicitly pending native integration.
 
+- Native tool numeric parsing now checks finite i64 bounds before conversion
+  and rejects millisecond timeout overflow before launching a process. Real
+  read/shell regressions check extreme inputs and preserve file contents. The
+  full graph/provider suite passes 55 steps, 1,101 module tests, 27 existing skips
+  and 300 dedicated tests; ReleaseSafe passes.
+- Build-only checkpoint `c1bf824` passes all six Windows/Linux/macOS x64/ARM64
+  targets (run 37238345450). All downloaded SHA-256 digests and its Windows
+  version smoke pass. These are candidates from that checkpoint, not the newer
+  source head and not a published or parity-certified release.
+
 Required outstanding work:
 
 1. Native extension module loader and TypeScript input erasure, host bindings,

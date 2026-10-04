@@ -796,14 +796,22 @@ fn parseBoolField(gpa: std.mem.Allocator, arguments_json: []const u8, field: []c
     };
 }
 
-fn parseIntField(gpa: std.mem.Allocator, arguments_json: []const u8, field: []const u8, default: i64) i64 {
-    var parsed = std.json.parseFromSlice(std.json.Value, gpa, arguments_json, .{}) catch return default;
+fn parseIntField(gpa: std.mem.Allocator, arguments_json: []const u8, field: []const u8, default: i64) !i64 {
+    var parsed = std.json.parseFromSlice(std.json.Value, gpa, arguments_json, .{}) catch |err| switch (err) {
+        error.OutOfMemory => return err,
+        else => return default,
+    };
     defer parsed.deinit();
     if (parsed.value != .object) return default;
     const v = parsed.value.object.get(field) orelse return default;
     return switch (v) {
         .integer => |i| i,
-        .float => |f| @intFromFloat(f),
+        .float => |f| blk: {
+            // i64's positive endpoint rounds to 2^63 in f64, so the upper
+            // comparison must be exclusive before conversion.
+            if (!std.math.isFinite(f) or f < -9_223_372_036_854_775_808.0 or f >= 9_223_372_036_854_775_808.0) return error.InvalidToolInteger;
+            break :blk @intFromFloat(f);
+        },
         else => default,
     };
 }
@@ -813,8 +821,8 @@ fn executeRead(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
         return try errMsg(ctx.gpa, "read: missing path", .{});
     defer ctx.gpa.free(path_owned);
 
-    const offset_raw = parseIntField(ctx.gpa, arguments_json, "offset", 0); // 0 = unset; 1-indexed when set
-    const limit_raw = parseIntField(ctx.gpa, arguments_json, "limit", 0); // 0 = no limit
+    const offset_raw = try parseIntField(ctx.gpa, arguments_json, "offset", 0); // 0 = unset; 1-indexed when set
+    const limit_raw = try parseIntField(ctx.gpa, arguments_json, "limit", 0); // 0 = no limit
 
     const full = try resolvePath(ctx.gpa, ctx.cwd, path_owned);
     defer ctx.gpa.free(full);
@@ -1139,7 +1147,7 @@ fn executeBash(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
         if (@atomicLoad(bool, f, .acquire)) return try errMsg(ctx.gpa, "bash: aborted before start", .{});
     }
 
-    const timeout_sec: i64 = @intCast(@max(1, parseIntField(ctx.gpa, arguments_json, "timeout", 120)));
+    const timeout_sec: i64 = @intCast(@max(1, try parseIntField(ctx.gpa, arguments_json, "timeout", 120)));
     const argv: []const []const u8 = if (builtin.os.tag == .windows)
         &[_][]const u8{ "cmd.exe", "/C", command }
     else
@@ -1156,7 +1164,7 @@ fn executePowerShell(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     if (builtin.os.tag != .windows) return try errMsg(ctx.gpa, "powershell: only available on Windows", .{});
     if (ctx.abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire))
         return try errMsg(ctx.gpa, "powershell: aborted before start", .{});
-    const timeout_sec: i64 = @intCast(@max(1, parseIntField(ctx.gpa, arguments_json, "timeout", 120)));
+    const timeout_sec: i64 = @intCast(@max(1, try parseIntField(ctx.gpa, arguments_json, "timeout", 120)));
     const utf8_command = try std.fmt.allocPrint(ctx.gpa, "try {{ [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 }} catch {{}}\n{s}", .{command});
     defer ctx.gpa.free(utf8_command);
     const argv = powershell_command_prefix ++ [_][]const u8{utf8_command};
@@ -1189,6 +1197,7 @@ fn buildBashEnvironment(ctx: ToolContext) !?std.process.Environ.Map {
 }
 
 fn executeProcessTool(ctx: ToolContext, tool_label: []const u8, argv: []const []const u8, timeout_sec: i64) !ToolResult {
+    if (timeout_sec > @divTrunc(std.math.maxInt(i64), 1000)) return error.InvalidToolTimeout;
     var child_environment = try buildBashEnvironment(ctx);
     defer if (child_environment) |*environment| environment.deinit();
     const child_environment_ptr: ?*const std.process.Environ.Map = if (child_environment) |*environment| environment else null;
@@ -1487,8 +1496,8 @@ fn executeGrep(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     defer if (glob_opt) |g| ctx.gpa.free(g);
     const ignore_case = parseBoolField(ctx.gpa, arguments_json, "ignoreCase");
     const literal = parseBoolField(ctx.gpa, arguments_json, "literal");
-    const limit: usize = @intCast(@max(1, parseIntField(ctx.gpa, arguments_json, "limit", 100)));
-    const context_lines: usize = @intCast(@max(0, parseIntField(ctx.gpa, arguments_json, "context", 0)));
+    const limit: usize = @intCast(@max(1, try parseIntField(ctx.gpa, arguments_json, "limit", 100)));
+    const context_lines: usize = @intCast(@max(0, try parseIntField(ctx.gpa, arguments_json, "context", 0)));
 
     const search_root = try resolvePath(ctx.gpa, ctx.cwd, path_opt orelse ".");
     defer ctx.gpa.free(search_root);
@@ -1691,7 +1700,7 @@ fn executeFind(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     defer ctx.gpa.free(pattern);
     const path_opt = try parseStringField(ctx.gpa, arguments_json, "path");
     defer if (path_opt) |p| ctx.gpa.free(p);
-    const limit: usize = @intCast(@max(1, parseIntField(ctx.gpa, arguments_json, "limit", 1000)));
+    const limit: usize = @intCast(@max(1, try parseIntField(ctx.gpa, arguments_json, "limit", 1000)));
 
     const search_root = try resolvePath(ctx.gpa, ctx.cwd, path_opt orelse ".");
     defer ctx.gpa.free(search_root);
@@ -1729,7 +1738,7 @@ fn executeFind(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
 fn executeLs(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     const path_opt = try parseStringField(ctx.gpa, arguments_json, "path");
     defer if (path_opt) |p| ctx.gpa.free(p);
-    const limit: usize = @intCast(@max(1, parseIntField(ctx.gpa, arguments_json, "limit", 500)));
+    const limit: usize = @intCast(@max(1, try parseIntField(ctx.gpa, arguments_json, "limit", 500)));
 
     const full = try resolvePath(ctx.gpa, ctx.cwd, path_opt orelse ".");
     defer ctx.gpa.free(full);
@@ -2240,4 +2249,25 @@ test "tool image arrays deep clone and deinitialize" {
     try std.testing.expectEqual(@as(usize, 2), cloned.len);
     try std.testing.expectEqualStrings("AQ==", cloned[1].data_b64);
     try std.testing.expect(cloned[0].data_b64.ptr != input[0].data_b64.ptr);
+}
+
+test "native tool numeric input rejects extreme floats without process execution or file mutation" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try tmp.dir.realPath(io, &buffer);
+    const ctx: ToolContext = .{ .gpa = gpa, .io = io, .cwd = buffer[0..length] };
+    try tmp.dir.writeFile(io, .{ .sub_path = "safe.txt", .data = "unchanged\n" });
+    try std.testing.expectError(error.InvalidToolInteger, execute(ctx, "read", "{\"path\":\"safe.txt\",\"offset\":1e100}"));
+    try std.testing.expectError(error.InvalidToolInteger, execute(ctx, "read", "{\"path\":\"safe.txt\",\"limit\":-1e100}"));
+    try std.testing.expectError(error.InvalidToolInteger, execute(ctx, "bash", "{\"command\":\"echo must-not-start\",\"timeout\":1e100}"));
+    try std.testing.expectError(error.InvalidToolTimeout, execute(ctx, "bash", "{\"command\":\"echo must-not-start\",\"timeout\":9223372036854775807}"));
+    const bytes = try tmp.dir.readFileAlloc(io, "safe.txt", gpa, .limited(100));
+    defer gpa.free(bytes);
+    try std.testing.expectEqualStrings("unchanged\n", bytes);
+    try std.testing.expectEqual(@as(i64, 12), try parseIntField(gpa, "{\"limit\":12.5}", "limit", 0));
+    try std.testing.expectEqual(std.math.minInt(i64), try parseIntField(gpa, "{\"limit\":-9223372036854775808.0}", "limit", 0));
+    try std.testing.expectError(error.InvalidToolInteger, parseIntField(gpa, "{\"limit\":9223372036854775808.0}", "limit", 0));
 }
