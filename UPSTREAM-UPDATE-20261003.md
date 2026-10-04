@@ -236,9 +236,19 @@ Completed evidence:
   construction. Cycles/duplicate IDs fail explicitly, and retained callbacks
   keep invocation-generation checks. Context cwd fallback also uses a real
   owned directory descriptor.
-- Session projection/context-edit handling, UI/model registry/host request
+- Durable context-edit/provider transcript integration, UI/model registry/host request
   callbacks, provider/virtual-model/MCP registration and further SDK bindings
   remain outstanding; these read-only additions do not switch production.
+- Native session `buildSessionProjection` retains source-entry provenance,
+  applies the latest branch-local replacement/omission edits, normalizes missing
+  message content, and carries model/thinking-level replay state. Only the newest
+  retained compaction contributes its checkpoint/summary messages. Custom and
+  branch-summary messages preserve their role and timestamp projections. Source
+  entries and message metadata remain unchanged when content is replaced.
+- Host DTO construction uses native C values rather than generated bridge
+  source, preserves NaN timestamps and literal prototype/NUL property keys, and
+  rejects excessively deep values explicitly. Durable edit storage and provider
+  request replay still need integration before production uses the new path.
 
 Required outstanding work:
 

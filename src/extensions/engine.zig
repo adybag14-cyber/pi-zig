@@ -406,6 +406,46 @@ pub const Engine = struct {
         return self.toString(encoded);
     }
 
+    /// Construct host DTOs without evaluating generated bridge source. Numbers
+    /// retain NaN/Infinity when an upstream API returns them outside JSON.
+    pub fn fromJsonValue(self: *Engine, value: std.json.Value) !c.JSValue {
+        return self.fromJsonValueDepth(value, 0);
+    }
+
+    fn fromJsonValueDepth(self: *Engine, value: std.json.Value, depth: usize) anyerror!c.JSValue {
+        if (depth > 256) return error.NativeValueDepthLimit;
+        return switch (value) {
+            .null => c.pi_js_null(),
+            .bool => |boolean| c.pi_js_bool(self.context, @intFromBool(boolean)),
+            .integer => |integer| self.checked(c.JS_NewInt64(self.context, integer)),
+            .float => |number| self.checked(c.JS_NewFloat64(self.context, number)),
+            .number_string => |text| self.checked(c.JS_NewFloat64(self.context, try std.fmt.parseFloat(f64, text))),
+            .string => |text| self.checked(c.JS_NewStringLen(self.context, text.ptr, text.len)),
+            .array => |array| result: {
+                const object = try self.checked(c.JS_NewArray(self.context));
+                errdefer self.freeValue(object);
+                for (array.items, 0..) |item, index| {
+                    const child = try self.fromJsonValueDepth(item, depth + 1);
+                    if (c.JS_SetPropertyUint32(self.context, object, @intCast(index), child) < 0) return error.JavaScriptException;
+                }
+                break :result object;
+            },
+            .object => |map| result: {
+                const object = try self.checked(c.JS_NewObject(self.context));
+                errdefer self.freeValue(object);
+                var fields = map.iterator();
+                while (fields.next()) |field| {
+                    const key = c.JS_NewAtomLen(self.context, field.key_ptr.*.ptr, field.key_ptr.*.len);
+                    if (key == c.JS_ATOM_NULL) return error.OutOfMemory;
+                    defer c.JS_FreeAtom(self.context, key);
+                    const child = try self.fromJsonValueDepth(field.value_ptr.*, depth + 1);
+                    if (c.JS_DefinePropertyValue(self.context, object, key, child, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+                }
+                break :result object;
+            },
+        };
+    }
+
     pub fn toString(self: *Engine, value: c.JSValue) ![]u8 {
         var length: usize = 0;
         const bytes = c.JS_ToCStringLen(self.context, &length, value);
@@ -485,6 +525,25 @@ test "native rejected promises retain the original reason when diagnostic conver
     const thrown = c.JS_GetException(engine.context);
     defer engine.freeValue(thrown);
     try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, thrown));
+}
+
+test "native DTO construction preserves nonfinite numbers and literal prototype and NUL keys" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
+    defer arena.deinit();
+    const allocator = arena.allocator();
+    var object: std.json.ObjectMap = .empty;
+    try object.put(allocator, "nan", .{ .float = std.math.nan(f64) });
+    try object.put(allocator, "__proto__", .{ .bool = true });
+    try object.put(allocator, "nul\x00key", .{ .integer = 42 });
+    const value = try engine.fromJsonValue(.{ .object = object });
+    defer engine.freeValue(value);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try std.testing.expect(c.JS_DefinePropertyValueStr(engine.context, global, "nativeDto", c.JS_DupValue(engine.context, value), c.JS_PROP_C_W_E) >= 0);
+    const result = try engine.eval("if(!Number.isNaN(nativeDto.nan)||!Object.hasOwn(nativeDto,'__proto__')||Object.getPrototypeOf(nativeDto)!==Object.prototype||nativeDto['nul\\0key']!==42)throw Error('native DTO');", "native-dto.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
 }
 
 test "native import metadata distinguishes hosted modules from explicitly selected entrypoints" {

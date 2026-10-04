@@ -32,6 +32,7 @@ const ContextMethod = enum(c_int) {
     getEntry,
     getLabel,
     getTree,
+    buildSessionProjection,
 };
 
 pub const Bindings = struct {
@@ -508,7 +509,7 @@ pub const Bindings = struct {
     }
 
     fn contextValue(self: *Bindings, kind: ContextMethod, snapshot: c.JSValue, args: []c.JSValue) !c.JSValue {
-        if (kind == .getLeafEntry or kind == .getEntry or kind == .getLabel or kind == .getBranch or kind == .buildContextEntries or kind == .getTree) return self.sessionApi(kind, snapshot, args);
+        if (kind == .getLeafEntry or kind == .getEntry or kind == .getLabel or kind == .getBranch or kind == .buildContextEntries or kind == .getTree or kind == .buildSessionProjection) return self.sessionApi(kind, snapshot, args);
         if (kind == .sessionManager) {
             const manager = try self.engine.checked(c.JS_NewObject(self.engine.context));
             errdefer self.engine.freeValue(manager);
@@ -541,7 +542,7 @@ pub const Bindings = struct {
             .getEntries => "sessionEntries",
             .getBranch, .buildContextEntries => "sessionBranch",
             .getHeader => "sessionHeader",
-            .sessionManager, .getLeafEntry, .getEntry, .getLabel, .getTree => unreachable,
+            .sessionManager, .getLeafEntry, .getEntry, .getLabel, .getTree, .buildSessionProjection => unreachable,
         };
         const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, key));
         defer self.engine.freeValue(value);
@@ -578,6 +579,10 @@ pub const Bindings = struct {
         const root = try self.projectValue(allocator, snapshot);
         const session = try session_snapshot.Snapshot.init(allocator, root);
         if (kind == .getTree) return self.sessionTree(allocator, &session);
+        if (kind == .buildSessionProjection) {
+            const projection = try session.projection(.{ .context = self, .parse = parseSessionTime });
+            return self.engine.fromJsonValue(projection);
+        }
         var explicit_id: ?[]u8 = null;
         defer if (explicit_id) |id| self.gpa.free(id);
         if (args.len > 0 and c.JS_IsString(args[0])) explicit_id = try self.engine.toString(args[0]);
@@ -598,6 +603,23 @@ pub const Bindings = struct {
         } orelse return c.pi_js_undefined();
         const json = try std.json.Stringify.valueAlloc(allocator, value, .{});
         return self.parseJson(json, "native-session-snapshot");
+    }
+
+    fn parseSessionTime(context: ?*anyopaque, timestamp: []const u8) anyerror!f64 {
+        const self: *Bindings = @ptrCast(@alignCast(context.?));
+        const global = c.JS_GetGlobalObject(self.engine.context);
+        defer self.engine.freeValue(global);
+        const date = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, global, "Date"));
+        defer self.engine.freeValue(date);
+        const parse = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, date, "parse"));
+        defer self.engine.freeValue(parse);
+        var argument = [_]c.JSValue{try self.engine.checked(c.JS_NewStringLen(self.engine.context, timestamp.ptr, timestamp.len))};
+        defer self.engine.freeValue(argument[0]);
+        const value = try self.engine.checked(c.JS_Call(self.engine.context, parse, date, 1, &argument));
+        defer self.engine.freeValue(value);
+        var milliseconds: f64 = 0;
+        if (c.JS_ToFloat64(self.engine.context, &milliseconds, value) < 0) return error.JavaScriptException;
+        return milliseconds;
     }
 
     fn sessionTree(self: *Bindings, allocator: std.mem.Allocator, session: *const session_snapshot.Snapshot) !c.JSValue {
@@ -1130,4 +1152,31 @@ test "native failed subscription allocations do not leave a hidden event registr
         break;
     }
     try std.testing.expect(failed_count >= 4);
+}
+
+test "native session projections retain provenance checkpoints edits metadata and invalid timestamps" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(std.testing.allocator, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory(
+        "export default pi=>pi.registerTool({name:'projection',execute(id,args,signal,update,ctx){const projection=ctx.sessionManager.buildSessionProjection();if(projection.thinkingLevel!=='high'||projection.model.provider!=='p1'||projection.model.modelId!=='a1'||projection.messages.length!==4)throw Error('projection state');const roles=projection.messages.map(m=>m.role);if(roles.join(',')!=='system,compactionSummary,assistant,custom')throw Error('projection messages');const assistant=projection.messages[2];if(assistant.content[0].text!=='edited'||assistant.usage.input!==7||assistant.toolCalls[0].id!=='call')throw Error('metadata/edit');const source=projection.entries.find(e=>e.sourceEntry.id==='assistant').sourceEntry;if(source.message.content[0].text!=='original')throw Error('provenance mutated');if(projection.entries.find(e=>e.sourceEntry.id==='older-compaction').messages.length!==0||projection.entries.find(e=>e.sourceEntry.id==='tool').messages.length!==0)throw Error('old compaction/omission');if(!Number.isNaN(projection.messages[3].timestamp))throw Error('invalid timestamp replaced');assistant.usage.input=99;if(ctx.sessionManager.buildSessionProjection().messages[2].usage.input!==7)throw Error('projection mutable source');return {content:'native-projection'};}});",
+        "native-projection.mjs",
+    );
+    try bindings.setContext(
+        "{\"sessionLeafId\":\"edit-tool\",\"sessionEntries\":[" ++
+            "{\"id\":\"model\",\"parentId\":null,\"type\":\"model_change\",\"provider\":\"p0\",\"modelId\":\"m0\"}," ++
+            "{\"id\":\"thinking\",\"parentId\":\"model\",\"type\":\"thinking_level_change\",\"thinkingLevel\":\"high\"}," ++
+            "{\"id\":\"user\",\"parentId\":\"thinking\",\"type\":\"message\",\"message\":{\"role\":\"user\",\"content\":null}}," ++
+            "{\"id\":\"older-compaction\",\"parentId\":\"user\",\"type\":\"compaction\",\"firstKeptEntryId\":\"user\",\"summary\":\"old\"}," ++
+            "{\"id\":\"assistant\",\"parentId\":\"older-compaction\",\"type\":\"message\",\"message\":{\"role\":\"assistant\",\"provider\":\"p1\",\"model\":\"a1\",\"content\":[{\"type\":\"text\",\"text\":\"original\"}],\"usage\":{\"input\":7},\"toolCalls\":[{\"id\":\"call\"}]}}," ++
+            "{\"id\":\"tool\",\"parentId\":\"assistant\",\"type\":\"message\",\"message\":{\"role\":\"toolResult\",\"content\":[{\"type\":\"text\",\"text\":\"tool\"}]}}," ++
+            "{\"id\":\"custom\",\"parentId\":\"tool\",\"type\":\"custom_message\",\"customType\":\"fixture\",\"content\":\"custom\",\"display\":true,\"timestamp\":\"invalid\"}," ++
+            "{\"id\":\"new-compaction\",\"parentId\":\"custom\",\"type\":\"compaction\",\"firstKeptEntryId\":\"older-compaction\",\"summary\":\"new\",\"tokensBefore\":42,\"timestamp\":\"2026-01-01T00:00:00Z\",\"systemMessage\":{\"role\":\"system\",\"content\":\"checkpoint\"}}," ++
+            "{\"id\":\"edit-assistant\",\"parentId\":\"new-compaction\",\"type\":\"context_edit\",\"targetId\":\"assistant\",\"replacement\":{\"content\":\"edited\"}}," ++
+            "{\"id\":\"edit-tool\",\"parentId\":\"edit-assistant\",\"type\":\"context_edit\",\"targetId\":\"tool\",\"replacement\":null}]}",
+    );
+    const result = try bindings.invokeTool("projection", "call", "{}");
+    defer engine.gpa.free(result);
+    try std.testing.expect(std.mem.indexOf(u8, result, "native-projection") != null);
 }
