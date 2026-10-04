@@ -199,6 +199,26 @@ Completed evidence:
 - Installed schema input retains precedence over native fallback modules for
   both import and require. Resolver fixtures verify both conditional branches;
   the exact external TypeBox 1.3.27 ESM package probe passes after the changes.
+- Hosted Windows, Linux and macOS CI pass CommonJS/cwd checkpoint `3b17b97`
+  (run 37197899160). This confirms the earlier Linux/macOS path lookup repair.
+- Native Buffer values inherit Uint8Array, preserve shared ArrayBuffer slices,
+  copy array/view input, and expose from/alloc/byteLength/concat/compare plus
+  string/JSON/slice/copy/fill operations. UTF-8, UTF-16LE, Latin-1, ASCII, hex,
+  base64 and base64url match 747 captured Node 24.14.0 encoding results.
+  Captured strings use UTF-16 unit arrays to retain isolated surrogate cases.
+- Native callbacks retain the original thrown value and its identity, including
+  diagnostic conversion failures. Buffer mutations revalidate backing storage
+  after user conversions, with real detachment tests. Failed Buffer registration
+  cannot be silently treated as a completed install on retry.
+- Synchronous and Promise filesystem reads return Buffer values for binary
+  input and support the verified text/binary encodings. Write options are read
+  before opening/truncating files. Getter failures preserve the original thrown
+  value and existing file content. The real worker exercises Buffer reads with
+  Node absent from PATH.
+- Buffer numeric read/write/search APIs, Symbol.toPrimitive input conversion,
+  complete SharedArrayBuffer behavior, remaining buffer module/web APIs and
+  broader JSON boundary handling of isolated surrogates remain to port. Unsafe
+  allocation functions currently return zero-initialized native storage.
 
 Required outstanding work:
 

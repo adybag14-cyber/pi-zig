@@ -1,12 +1,14 @@
 //! Filesystem module functions implemented in Zig for trusted extension input.
 const std = @import("std");
 const engine_mod = @import("engine.zig");
+const node_buffer = @import("node_buffer.zig");
 const c = engine_mod.c;
 const Method = enum(c_int) { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync, accessSync };
 const PromiseMethod = enum(c_int) { readFile, writeFile, mkdir, unlink, access };
 
 pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
     engine.native_io = io;
+    try node_buffer.install(engine);
     const exports = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(exports);
     inline for (std.meta.fields(Method)) |field| {
@@ -46,6 +48,9 @@ fn invokePromise(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
     const value = call(engine, method, argv[0..@intCast(argc)]) catch |err| failure: {
         failed = true;
         if (c.JS_HasException(context)) break :failure c.JS_GetException(context);
+        if (err == error.JavaScriptException) {
+            if (engine.captured_exception) |exception| break :failure c.JS_DupValue(context, exception);
+        }
         const failure = c.JS_NewError(context);
         if (!c.JS_IsException(failure)) {
             const message = if (err == error.JavaScriptException) engine.last_error orelse @errorName(err) else @errorName(err);
@@ -115,7 +120,10 @@ test "native filesystem promises settle asynchronous reads writes access and fai
 
 fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    return call(engine, @enumFromInt(magic), argv[0..@intCast(argc)]) catch |err| c.JS_ThrowInternalError(context, "Native filesystem operation failed: %s", @as([*:0]const u8, @errorName(err)));
+    return call(engine, @enumFromInt(magic), argv[0..@intCast(argc)]) catch |err| {
+        if (err == error.JavaScriptException) return engine.throwCaptured();
+        return c.JS_ThrowInternalError(context, "Native filesystem operation failed: %s", @as([*:0]const u8, @errorName(err)));
+    };
 }
 
 fn optionBoolean(engine: *engine_mod.Engine, options: c.JSValue, key: [*:0]const u8) !bool {
@@ -124,32 +132,34 @@ fn optionBoolean(engine: *engine_mod.Engine, options: c.JSValue, key: [*:0]const
     return c.JS_ToBool(engine.context, value) == 1;
 }
 
-fn checkEncoding(engine: *engine_mod.Engine, value: c.JSValue) !void {
-    if (c.JS_IsNull(value) or c.JS_IsUndefined(value)) return;
+fn parseEncoding(engine: *engine_mod.Engine, value: c.JSValue) !node_buffer.encodings.Encoding {
+    if (c.JS_IsNull(value) or c.JS_IsUndefined(value)) return .utf8;
     if (!c.JS_IsString(value)) return error.InvalidNativeEncoding;
     const encoding = try engine.toString(value);
     defer engine.gpa.free(encoding);
-    if (!std.ascii.eqlIgnoreCase(encoding, "utf8") and !std.ascii.eqlIgnoreCase(encoding, "utf-8")) return error.UnsupportedNativeTextEncoding;
+    return node_buffer.encodings.parse(encoding) orelse error.UnsupportedNativeTextEncoding;
 }
 
-fn writeOptions(engine: *engine_mod.Engine, args: []c.JSValue) !std.Io.Dir.CreateFileOptions {
-    var options: std.Io.Dir.CreateFileOptions = .{};
+const WriteOptions = struct { file: std.Io.Dir.CreateFileOptions = .{}, encoding: node_buffer.encodings.Encoding = .utf8 };
+
+fn writeOptions(engine: *engine_mod.Engine, args: []c.JSValue) !WriteOptions {
+    var options: WriteOptions = .{};
     if (args.len < 3 or c.JS_IsUndefined(args[2]) or c.JS_IsNull(args[2])) return options;
     if (c.JS_IsString(args[2])) {
-        try checkEncoding(engine, args[2]);
+        options.encoding = try parseEncoding(engine, args[2]);
         return options;
     }
     if (!c.JS_IsObject(args[2])) return error.InvalidNativeFilesystemOptions;
     const encoding = try engine.checked(c.JS_GetPropertyStr(engine.context, args[2], "encoding"));
     defer engine.freeValue(encoding);
-    try checkEncoding(engine, encoding);
+    options.encoding = try parseEncoding(engine, encoding);
     const flag = try engine.checked(c.JS_GetPropertyStr(engine.context, args[2], "flag"));
     defer engine.freeValue(flag);
     if (!c.JS_IsUndefined(flag)) {
         if (!c.JS_IsString(flag)) return error.UnsupportedNativeWriteFlag;
         const name = try engine.toString(flag);
         defer engine.gpa.free(name);
-        if (std.mem.eql(u8, name, "wx")) options.exclusive = true else if (!std.mem.eql(u8, name, "w")) return error.UnsupportedNativeWriteFlag;
+        if (std.mem.eql(u8, name, "wx")) options.file.exclusive = true else if (!std.mem.eql(u8, name, "w")) return error.UnsupportedNativeWriteFlag;
     }
     const mode = try engine.checked(c.JS_GetPropertyStr(engine.context, args[2], "mode"));
     defer engine.freeValue(mode);
@@ -168,39 +178,36 @@ fn call(engine: *engine_mod.Engine, method: Method, args: []c.JSValue) !c.JSValu
     if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidNativeFilesystemPath;
     switch (method) {
         .readFileSync => {
-            const bytes = try std.Io.Dir.cwd().readFileAlloc(io, path, engine.gpa, .limited(64 * 1024 * 1024));
-            defer engine.gpa.free(bytes);
-            var text_encoding = false;
+            var text_encoding: ?node_buffer.encodings.Encoding = null;
             if (args.len > 1) {
                 if (c.JS_IsString(args[1])) {
-                    const encoding = try engine.toString(args[1]);
-                    defer engine.gpa.free(encoding);
-                    if (!std.ascii.eqlIgnoreCase(encoding, "utf8") and !std.ascii.eqlIgnoreCase(encoding, "utf-8")) return error.UnsupportedNativeTextEncoding;
-                    text_encoding = true;
+                    text_encoding = try parseEncoding(engine, args[1]);
                 } else if (c.JS_IsObject(args[1])) {
                     const value = try engine.checked(c.JS_GetPropertyStr(engine.context, args[1], "encoding"));
                     defer engine.freeValue(value);
                     if (!c.JS_IsNull(value) and !c.JS_IsUndefined(value)) {
-                        const encoding = try engine.toString(value);
-                        defer engine.gpa.free(encoding);
-                        if (!std.ascii.eqlIgnoreCase(encoding, "utf8") and !std.ascii.eqlIgnoreCase(encoding, "utf-8")) return error.UnsupportedNativeTextEncoding;
-                        text_encoding = true;
+                        text_encoding = try parseEncoding(engine, value);
                     }
                 }
             }
-            if (text_encoding) return engine.checked(c.JS_NewStringLen(engine.context, bytes.ptr, bytes.len));
-            const buffer = try engine.checked(c.JS_NewArrayBufferCopy(engine.context, bytes.ptr, bytes.len));
-            defer engine.freeValue(buffer);
-            var parameters = [_]c.JSValue{buffer};
-            return engine.checked(c.JS_NewTypedArray(engine.context, parameters.len, &parameters, c.JS_TYPED_ARRAY_UINT8));
+            const bytes = try std.Io.Dir.cwd().readFileAlloc(io, path, engine.gpa, .limited(64 * 1024 * 1024));
+            defer engine.gpa.free(bytes);
+            if (text_encoding) |codec| {
+                const text = try node_buffer.encodings.decode(engine.gpa, bytes, codec);
+                defer engine.gpa.free(text);
+                return engine.checked(c.JS_NewStringLen(engine.context, text.ptr, text.len));
+            }
+            return node_buffer.fromBytes(engine, bytes);
         },
         .writeFileSync => {
             if (args.len < 2) return error.MissingFilesystemData;
             const options = try writeOptions(engine, args);
             if (c.JS_IsString(args[1])) {
-                const bytes = try engine.toString(args[1]);
+                const text = try engine.toString(args[1]);
+                defer engine.gpa.free(text);
+                const bytes = try node_buffer.encodings.encode(engine.gpa, text, options.encoding);
                 defer engine.gpa.free(bytes);
-                const file = try std.Io.Dir.cwd().createFile(io, path, options);
+                const file = try std.Io.Dir.cwd().createFile(io, path, options.file);
                 defer file.close(io);
                 try file.writePositionalAll(io, bytes, 0);
             } else {
@@ -214,7 +221,7 @@ fn call(engine: *engine_mod.Engine, method: Method, args: []c.JSValue) !c.JSValu
                 if (bytes == null and (backing_length != 0 or c.JS_HasException(engine.context))) return error.UnsupportedNativeFilesystemData;
                 if (c.JS_IsArrayBuffer(args[1])) length = backing_length;
                 if (offset > backing_length or length > backing_length - offset) return error.InvalidNativeBufferRange;
-                const file = try std.Io.Dir.cwd().createFile(io, path, options);
+                const file = try std.Io.Dir.cwd().createFile(io, path, options.file);
                 defer file.close(io);
                 const content: []const u8 = if (length == 0) &.{} else bytes[offset .. offset + length];
                 try file.writePositionalAll(io, content, 0);
@@ -260,7 +267,7 @@ test "native filesystem preserves existing content on invalid writes and support
     defer source.deinit();
     try source.writer.writeAll("import {writeFileSync,readFileSync} from 'node:fs'; const path=");
     try std.json.Stringify.value(path, .{}, &source.writer);
-    try source.writer.writeAll("; writeFileSync(path,'preserve'); export let rejected=0; for (const perform of [()=>writeFileSync(path,{}),()=>writeFileSync(path,'overwrite',{flag:'wx'}),()=>writeFileSync(path,'overwrite',{flag:'a'}),()=>writeFileSync(path,'overwrite','hex'),()=>writeFileSync(path+'\\0suffix','overwrite')]) {try {perform();} catch {rejected++;}} export const retained=readFileSync(path,'utf8'); writeFileSync(path,new Uint8Array([1,2,3,4]).subarray(1,3)); export const bytes=Array.from(readFileSync(path)); writeFileSync(path,new ArrayBuffer(0)); if(readFileSync(path).length!==0) throw Error('empty ArrayBuffer'); writeFileSync(path,new Uint8Array(0)); if(readFileSync(path).length!==0) throw Error('empty typed array');");
+    try source.writer.writeAll("; writeFileSync(path,'preserve'); export let rejected=0; for (const perform of [()=>writeFileSync(path,{}),()=>writeFileSync(path,'overwrite',{flag:'wx'}),()=>writeFileSync(path,'overwrite',{flag:'a'}),()=>writeFileSync(path,'overwrite','unsupported-encoding'),()=>writeFileSync(path+'\\0suffix','overwrite')]) {try {perform();} catch {rejected++;}} export const retained=readFileSync(path,'utf8'); writeFileSync(path,new Uint8Array([1,2,3,4]).subarray(1,3)); export const bytes=Array.from(readFileSync(path)); writeFileSync(path,new ArrayBuffer(0)); if(readFileSync(path).length!==0) throw Error('empty ArrayBuffer'); writeFileSync(path,new Uint8Array(0)); if(readFileSync(path).length!==0) throw Error('empty typed array');");
     const namespace = try engine.evalModule(source.written(), "filesystem-views.js");
     defer engine.freeValue(namespace);
     const retained = c.JS_GetPropertyStr(engine.context, namespace, "retained");
@@ -305,4 +312,32 @@ test "trusted extension reads and writes through Zig filesystem bindings" {
     const removed = c.JS_GetPropertyStr(engine.context, namespace, "removed");
     defer engine.freeValue(removed);
     try std.testing.expectEqual(@as(c_int, 1), c.JS_ToBool(engine.context, removed));
+}
+
+test "native filesystem Buffer values preserve binary encodings promises and original getter failures" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine, std.testing.io);
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const size = try tmp.dir.realPath(std.testing.io, &buffer);
+    const path = try std.fs.path.join(engine.gpa, &.{ buffer[0..size], "binary-file" });
+    defer engine.gpa.free(path);
+    var source: std.Io.Writer.Allocating = .init(engine.gpa);
+    defer source.deinit();
+    try source.writer.writeAll("import fs from 'node:fs'; import fsp from 'node:fs/promises'; import {Buffer} from 'node:buffer'; const path=");
+    try std.json.Stringify.value(path, .{}, &source.writer);
+    try source.writer.writeAll(
+        "; fs.writeFileSync(path,'68656c6c6f','hex'); const binary=fs.readFileSync(path); if(!Buffer.isBuffer(binary)||binary.toString()!=='hello'||fs.readFileSync(path,'base64')!=='aGVsbG8=')throw Error('binary read');" ++
+            "const asyncBinary=await fsp.readFile(path);if(!Buffer.isBuffer(asyncBinary)||!asyncBinary.equals(binary))throw Error('promise binary read');" ++
+            "let reads=0;fs.writeFileSync(path,'é',{get encoding(){reads++;return 'latin1';}});if(reads!==1||fs.readFileSync(path).toString('hex')!=='e9'||fs.readFileSync(path,'latin1')!=='é')throw Error('single option snapshot');" ++
+            "fs.writeFileSync(path,new Uint8Array([239,187]));if(fs.readFileSync(path,'utf8')!=='�')throw Error('invalid UTF8');" ++
+            "fs.writeFileSync(path,'retained');const original=new RangeError('options getter');const bad={get encoding(){throw original;}};let failures=0;try{fs.writeFileSync(path,'changed',bad);}catch(error){if(error!==original)throw Error('sync getter exception replaced');failures++;}try{await fsp.writeFile(path,'changed',bad);}catch(error){if(error!==original)throw Error('promise getter exception replaced');failures++;}if(failures!==2||fs.readFileSync(path,'utf8')!=='retained')throw Error('preserved file');",
+    );
+    const namespace = engine.evalModule(source.written(), "native-binary-filesystem.mjs") catch |err| {
+        std.debug.print("Native binary filesystem fixture: {s}\n", .{engine.last_error orelse @errorName(err)});
+        return err;
+    };
+    defer engine.freeValue(namespace);
 }

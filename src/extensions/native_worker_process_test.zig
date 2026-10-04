@@ -19,6 +19,7 @@ test "native extension process loads TypeScript imports and exchanges real proto
             "import {dirname,join,relative} from 'node:path'; import {fileURLToPath} from 'node:url'; " ++
             "if (import.meta.main!==false || metadata.main!==false || !metadata.url.endsWith('/value%20file.js') || !metadata.filename.endsWith('value file.js') || !fs.existsSync(import.meta.filename)) throw Error('native metadata'); " ++
             "if (fileURLToPath(import.meta.url)!==import.meta.filename || dirname(import.meta.filename)!==import.meta.dirname || relative(import.meta.dirname,join(import.meta.dirname,'marker.ts'))!=='marker.ts') throw Error('native paths'); " ++
+            "const input=fs.readFileSync(import.meta.filename); if(!Buffer.isBuffer(input)||!input.toString('utf8').includes('native-worker'))throw Error('native binary filesystem'); " ++
             "export default (pi: any) => { console.log('native-console',{safe:true}); pi.on('input', async (event: any) => ({action:'transform',text:event.text+':'+marker})); " ++
             "pi.registerTool({name:'echo', parameters:Type.Object({text:Type.String()}), async execute(id:string,args:any,signal:any,update:any,ctx:any) {return {content:[{type:'text',text:id+':'+args.text}],details:{marker,dependency,session:ctx.sessionManager.getSessionId(),trusted:ctx.isProjectTrusted()}};}}); };",
     });

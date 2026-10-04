@@ -271,6 +271,15 @@ pub fn build(b: *std.Build) void {
     const commonjs_test_step = b.step("test-extension-commonjs", "Test native CommonJS cache and module ownership");
     commonjs_test_step.dependOn(&run_commonjs_tests.step);
     test_step.dependOn(&run_commonjs_tests.step);
+    const buffer_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_buffer.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, buffer_tests.root_module, quickjs);
+    const run_buffer_tests = b.addRunArtifact(buffer_tests);
+    const buffer_test_step = b.step("test-extension-buffer", "Test native extension Buffer views and encodings");
+    buffer_test_step.dependOn(&run_buffer_tests.step);
+    test_step.dependOn(&run_buffer_tests.step);
     const schema_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/typebox.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,

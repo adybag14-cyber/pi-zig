@@ -33,6 +33,9 @@ Complete behavioral parity remains in progress; see
   results, not executable host implementation. Native Zig tests consume the
   data without Node. The directly linked worker also tests real path/URL imports
   with an executable-only PATH.
+- `src/extensions/fixtures/buffer_encoding.json` captures byte results and
+  UTF-16 unit arrays from Node 24.14.0. This language-neutral data covers
+  malformed byte sequences and isolated surrogates without a Node test runtime.
 - `verification/` and historical checkpoint reports retain prior evidence.
   `zig build maintenance -- artifact-manifest 189` regenerates `FILES.sha256`
   and `ARTIFACT-MANIFEST.json` for the active checkpoint, without certifying

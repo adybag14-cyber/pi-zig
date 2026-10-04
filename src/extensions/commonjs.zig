@@ -77,6 +77,7 @@ fn createRequireCall(engine: *engine_mod.Engine, args: []c.JSValue) !c.JSValue {
 fn requireCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return requireCall(engine, data[0], argv[0..@intCast(argc)], magic != 0) catch |err| {
+        if (err == error.JavaScriptException) return engine.throwCaptured();
         const message = if (err == error.JavaScriptException) engine.last_error orelse @errorName(err) else @errorName(err);
         const terminated = engine.gpa.dupeZ(u8, message) catch return c.JS_ThrowOutOfMemory(context);
         defer engine.gpa.free(terminated);

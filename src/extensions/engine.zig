@@ -42,9 +42,12 @@ pub const Engine = struct {
     interrupts: u64 = 0,
     cancelled: std.atomic.Value(bool) = .init(false),
     last_error: ?[]u8 = null,
+    captured_exception: ?c.JSValue = null,
     host_data: ?*anyopaque = null,
     native_io: ?std.Io = null,
     text_encoder_class: c.JSClassID = 0,
+    buffer_prototype: ?c.JSValue = null,
+    buffer_ready: bool = false,
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
     native_module_names: std.StringHashMapUnmanaged(void) = .empty,
     native_module_values: std.StringHashMapUnmanaged(c.JSValue) = .empty,
@@ -73,6 +76,8 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        if (self.captured_exception) |exception| self.freeValue(exception);
+        if (self.buffer_prototype) |prototype| self.freeValue(prototype);
         var values = self.native_module_values.valueIterator();
         while (values.next()) |value| self.freeValue(value.*);
         self.native_module_values.deinit(self.gpa);
@@ -102,6 +107,8 @@ pub const Engine = struct {
         self.cancelled.store(false, .release);
         if (self.last_error) |message| self.gpa.free(message);
         self.last_error = null;
+        if (self.captured_exception) |exception| self.freeValue(exception);
+        self.captured_exception = null;
     }
 
     pub fn cancel(self: *Engine) void {
@@ -368,6 +375,13 @@ pub const Engine = struct {
         return value;
     }
 
+    /// Native callbacks preserve the user's exception object and identity.
+    pub fn throwCaptured(self: *Engine) c.JSValue {
+        if (c.JS_HasException(self.context)) return c.JS_Throw(self.context, c.JS_GetException(self.context));
+        if (self.captured_exception) |exception| return c.JS_Throw(self.context, c.JS_DupValue(self.context, exception));
+        return c.JS_ThrowInternalError(self.context, "Native callback failed without an exception value");
+    }
+
     pub fn freeValue(self: *Engine, value: c.JSValue) void {
         c.JS_FreeValue(self.context, value);
     }
@@ -421,8 +435,7 @@ pub const Engine = struct {
             c.JS_PROMISE_REJECTED => blk: {
                 const reason = c.JS_PromiseResult(self.context, value);
                 defer self.freeValue(reason);
-                if (self.last_error) |message| self.gpa.free(message);
-                self.last_error = self.toString(reason) catch null;
+                self.captureValue(self.context, reason);
                 break :blk error.JavaScriptException;
             },
             c.JS_PROMISE_FULFILLED => c.JS_PromiseResult(self.context, value),
@@ -433,10 +446,20 @@ pub const Engine = struct {
     fn captureException(self: *Engine, context: *c.JSContext) void {
         const exception = c.JS_GetException(context);
         defer c.JS_FreeValue(context, exception);
+        self.captureValue(context, exception);
+    }
+
+    fn captureValue(self: *Engine, context: *c.JSContext, exception: c.JSValue) void {
         const text = c.JS_ToCString(context, exception);
         defer if (text != null) c.JS_FreeCString(context, text);
+        const diagnostic_message = if (text == null) null else self.gpa.dupe(u8, std.mem.span(text)) catch null;
+        // String conversion can invoke user code and another native callback.
+        // Commit ownership only afterward, retaining the original thrown value.
         if (self.last_error) |message| self.gpa.free(message);
-        self.last_error = if (text == null) null else self.gpa.dupe(u8, std.mem.span(text)) catch null;
+        self.last_error = diagnostic_message;
+        if (self.captured_exception) |previous| self.freeValue(previous);
+        self.captured_exception = c.JS_DupValue(context, exception);
+        if (text == null and c.JS_HasException(context)) c.JS_FreeValue(context, c.JS_GetException(context));
     }
 
     fn interrupt(_: ?*c.JSRuntime, context_data: ?*anyopaque) callconv(.c) c_int {
@@ -446,6 +469,23 @@ pub const Engine = struct {
         return if (self.interrupts > self.options.interrupt_budget) 1 else 0;
     }
 };
+
+test "native rejected promises retain the original reason when diagnostic conversion throws" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const promise = try engine.eval("globalThis.rejectReason={toString(){throw Error('diagnostic conversion');}}; Promise.reject(rejectReason);", "native-rejection.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(promise);
+    try std.testing.expectError(error.JavaScriptException, engine.awaitValue(promise));
+    try std.testing.expect(!c.JS_HasException(engine.context));
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const original = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "rejectReason"));
+    defer engine.freeValue(original);
+    _ = engine.throwCaptured();
+    const thrown = c.JS_GetException(engine.context);
+    defer engine.freeValue(thrown);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, thrown));
+}
 
 test "native import metadata distinguishes hosted modules from explicitly selected entrypoints" {
     for ([_]bool{ false, true }) |main| {
