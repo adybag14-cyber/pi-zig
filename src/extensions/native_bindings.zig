@@ -3,8 +3,9 @@ const std = @import("std");
 const engine_mod = @import("engine.zig");
 const typebox = @import("typebox.zig");
 const session_snapshot = @import("session_snapshot.zig");
+const native_providers = @import("native_providers.zig");
 const c = engine_mod.c;
-const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, getActiveTools, getAllTools, getCommands, getSettings, getSessionName, getThinkingLevel, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel };
+const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, registerProvider, unregisterProvider, getActiveTools, getAllTools, getCommands, getSettings, getSessionName, getThinkingLevel, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel };
 const ContextMethod = enum(c_int) {
     mode,
     hasUI,
@@ -39,6 +40,8 @@ pub const Bindings = struct {
     gpa: std.mem.Allocator,
     engine: *engine_mod.Engine,
     api: c.JSValue,
+    providers: native_providers.Providers,
+    factory_active: bool = false,
     handlers: std.StringHashMapUnmanaged(std.ArrayList(c.JSValue)) = .empty,
     tools: std.StringHashMapUnmanaged(c.JSValue) = .empty,
     commands: std.StringHashMapUnmanaged(c.JSValue) = .empty,
@@ -61,13 +64,14 @@ pub const Bindings = struct {
             const function = try engine.checked(c.pi_js_function_magic(engine.context, invokeRegistration, name.ptr, 2, @intCast(field.value)));
             if (c.JS_DefinePropertyValueStr(engine.context, api, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         }
-        self.* = .{ .gpa = gpa, .engine = engine, .api = api };
+        self.* = .{ .gpa = gpa, .engine = engine, .api = api, .providers = native_providers.Providers.init(engine) };
         engine.host_data = self;
         return self;
     }
 
     pub fn deinit(self: *Bindings) void {
         self.engine.host_data = null;
+        self.providers.deinit();
         var handlers = self.handlers.iterator();
         while (handlers.next()) |entry| {
             for (entry.value_ptr.items) |value| self.engine.freeValue(value);
@@ -113,6 +117,7 @@ pub const Bindings = struct {
     fn registration(self: *Bindings, method: Method, args: []c.JSValue) !c.JSValue {
         if (@intFromEnum(method) >= @intFromEnum(Method.getActiveTools) and @intFromEnum(method) <= @intFromEnum(Method.getThinkingLevel)) return self.readonlyApi(method);
         if (args.len == 0) return error.MissingExtensionArgument;
+        if (method == .registerProvider or method == .unregisterProvider) return self.providerRegistration(method, args);
         if (@intFromEnum(method) >= @intFromEnum(Method.setSessionName)) {
             if (!self.invocation_active) return error.StaleExtensionActionContext;
             return self.recordAction(method, args);
@@ -182,6 +187,56 @@ pub const Bindings = struct {
             else => unreachable,
         }
         return c.pi_js_undefined();
+    }
+
+    fn providerRegistration(self: *Bindings, method: Method, args: []c.JSValue) !c.JSValue {
+        if (!self.invocation_active and !self.factory_active) return error.StaleExtensionActionContext;
+        const named = c.JS_IsString(args[0]);
+        const name_value = if (method == .unregisterProvider or named)
+            c.JS_DupValue(self.engine.context, args[0])
+        else blk: {
+            const id = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args[0], "id"));
+            if (!c.JS_IsNull(id) and !c.JS_IsUndefined(id)) break :blk id;
+            self.engine.freeValue(id);
+            break :blk try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args[0], "name"));
+        };
+        defer self.engine.freeValue(name_value);
+        if (c.JS_IsNull(name_value) or c.JS_IsUndefined(name_value)) return error.InvalidNativeProviderName;
+        const name = try self.engine.toString(name_value);
+        defer self.gpa.free(name);
+        if (name.len == 0) return error.InvalidNativeProviderName;
+        if (method == .registerProvider and named and args.len < 2) return error.MissingExtensionArgument;
+        const action = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        defer self.engine.freeValue(action);
+        const kind = if (method == .registerProvider) "register_provider" else "unregister_provider";
+        try self.actionProperty(action, "type", try self.engine.fromJsonValue(.{ .string = kind }));
+        try self.actionProperty(action, "name", try self.engine.fromJsonValue(.{ .string = name }));
+        // Reserve an owned queue slot before registration can invoke user getters.
+        // Remove the placeholder before publishing, preserving nested action order.
+        const reservation = if (self.invocation_active) self.actions.items.len else null;
+        if (reservation != null) {
+            const retained = c.JS_DupValue(self.engine.context, action);
+            errdefer self.engine.freeValue(retained);
+            try self.actions.append(self.gpa, retained);
+        }
+        var published = false;
+        defer if (!published) if (reservation) |index| self.engine.freeValue(self.actions.orderedRemove(index));
+        if (method == .registerProvider) try self.actionProperty(action, "config", c.pi_js_undefined());
+        if (method == .registerProvider) {
+            const config = if (named) args[1] else args[0];
+            const encoded = try self.providers.register(name, config, !named);
+            if (c.JS_SetPropertyStr(self.engine.context, action, "config", encoded) < 0) return error.JavaScriptException;
+        } else self.providers.unregister(name);
+        if (reservation) |index| {
+            const retained = self.actions.orderedRemove(index);
+            self.actions.appendAssumeCapacity(retained);
+        }
+        published = true;
+        return c.pi_js_undefined();
+    }
+
+    fn actionProperty(self: *Bindings, object: c.JSValue, key: [*:0]const u8, value: c.JSValue) !void {
+        if (c.JS_DefinePropertyValueStr(self.engine.context, object, key, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
 
     fn cloneValue(self: *Bindings, value: c.JSValue) !c.JSValue {
@@ -407,6 +462,9 @@ pub const Bindings = struct {
     }
 
     pub fn loadFactoryValue(self: *Bindings, namespace: c.JSValue) !void {
+        if (self.factory_active) return error.ExtensionInvocationBusy;
+        self.factory_active = true;
+        defer self.factory_active = false;
         var factory = if (c.JS_IsFunction(self.engine.context, namespace)) c.JS_DupValue(self.engine.context, namespace) else if (c.JS_IsObject(namespace)) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, namespace, "default")) else c.pi_js_undefined();
         defer self.engine.freeValue(factory);
         if (c.JS_IsObject(factory) and !c.JS_IsFunction(self.engine.context, factory)) {
@@ -885,10 +943,27 @@ pub const Bindings = struct {
             try flags.append(allocator, projected);
         }
         try manifest.put(allocator, "flags", .{ .array = flags.toManaged(allocator) });
+        const registered_providers = try self.providers.manifest();
+        defer self.engine.freeValue(registered_providers);
+        try manifest.put(allocator, "providers", try self.projectValue(allocator, registered_providers));
         var output: std.Io.Writer.Allocating = .init(self.gpa);
         defer output.deinit();
         try std.json.Stringify.value(std.json.Value{ .object = manifest }, .{}, &output.writer);
         return output.toOwnedSlice();
+    }
+
+    pub fn invokeProviderMethod(self: *Bindings, id: []const u8, args_json: []const u8) ![]u8 {
+        try self.beginActions();
+        defer self.invocation_active = false;
+        const args = try self.parseJson(args_json, "native-provider-arguments");
+        defer self.engine.freeValue(args);
+        const value = try self.providers.invoke(id, args);
+        defer self.engine.freeValue(value);
+        const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
+        defer self.engine.freeValue(result);
+        try self.actionProperty(result, "value", c.JS_DupValue(self.engine.context, value));
+        try self.mergeActions(result);
+        return self.engine.stringify(result);
     }
 
     pub fn invokeTool(self: *Bindings, name: []const u8, call_id: []const u8, args_json: []const u8) ![]u8 {
@@ -1179,4 +1254,92 @@ test "native session projections retain provenance checkpoints edits metadata an
     const result = try bindings.invokeTool("projection", "call", "{}");
     defer engine.gpa.free(result);
     try std.testing.expect(std.mem.indexOf(u8, result, "native-projection") != null);
+}
+
+test "native provider manifest retains callbacks receivers merging and unregister lifecycle" {
+    const gpa = std.testing.allocator;
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(gpa, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory(
+        "export default function(pi){const closure='native-closure';const cfg={name:'Original',baseUrl:'https://provider.invalid/v1',api:'openai-completions',models:[{id:'m',name:'M'}],oauth:{owner:'oauth-owner',async getApiKey(credentials){if(this.owner!=='oauth-owner')throw Error('receiver');return closure+':'+credentials.access}},nested:{methods:[function(value){return this.length+':'+value}]}};pi.registerProvider('demo',cfg);pi.registerProvider('demo',{name:'Renamed',baseUrl:undefined});pi.registerCommand('bad',{handler(){const cycle={};cycle.self=cycle;try{pi.registerProvider('demo',cycle)}catch{} }});pi.registerCommand('retire',{handler(){pi.unregisterProvider('demo')}});}",
+        "native-provider-registration.mjs",
+    );
+    const initial = try bindings.manifestJson("native-provider-registration.mjs");
+    defer gpa.free(initial);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, initial, .{});
+    defer parsed.deinit();
+    const providers = parsed.value.object.get("providers").?.array.items;
+    try std.testing.expectEqual(@as(usize, 1), providers.len);
+    const config = providers[0].object.get("config").?.object;
+    try std.testing.expectEqualStrings("Renamed", config.get("name").?.string);
+    try std.testing.expectEqualStrings("https://provider.invalid/v1", config.get("baseUrl").?.string);
+    const key_ref = try @import("provider_method_ref.zig").ProviderMethodRef.fromJson(config.get("oauth").?.object.get("getApiKey").?);
+    try std.testing.expectEqualStrings("oauth.getApiKey", key_ref.path);
+    const result = try bindings.invokeProviderMethod(key_ref.callback_id, "[{\"access\":\"token\"}]");
+    defer gpa.free(result);
+    try std.testing.expectEqualStrings("{\"value\":\"native-closure:token\"}", result);
+    const array_ref = try @import("provider_method_ref.zig").ProviderMethodRef.fromJson(config.get("nested").?.object.get("methods").?.array.items[0]);
+    try std.testing.expectEqualStrings("nested.methods.0", array_ref.path);
+    const array_result = try bindings.invokeProviderMethod(array_ref.callback_id, "[\"value\"]");
+    defer gpa.free(array_result);
+    try std.testing.expectEqualStrings("{\"value\":\"1:value\"}", array_result);
+    const rejected = try bindings.invokeCommand("bad", "");
+    defer gpa.free(rejected);
+    const after_bad = try bindings.manifestJson("native-provider-registration.mjs");
+    defer gpa.free(after_bad);
+    try std.testing.expectEqualStrings(initial, after_bad);
+    const retired = try bindings.invokeCommand("retire", "");
+    defer gpa.free(retired);
+    try std.testing.expect(std.mem.indexOf(u8, retired, "unregister_provider") != null);
+    try std.testing.expectError(error.UnknownNativeProviderCallback, bindings.invokeProviderMethod(key_ref.callback_id, "[]"));
+    const empty = try bindings.providers.manifest();
+    defer engine.freeValue(empty);
+    const empty_json = try engine.stringify(empty);
+    defer gpa.free(empty_json);
+    try std.testing.expectEqualStrings("[]", empty_json);
+}
+
+test "native provider callback can unregister itself without invalidating its receiver" {
+    const gpa = std.testing.allocator;
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(gpa, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory("export default function(pi){pi.registerProvider({id:'self-retire',name:'Self',nested:{owner:'retained',retire(){pi.unregisterProvider('self-retire');return this.owner}}})}", "native-provider-retire.mjs");
+    const manifest = try bindings.manifestJson("native-provider-retire.mjs");
+    defer gpa.free(manifest);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, manifest, .{});
+    defer parsed.deinit();
+    const nested = parsed.value.object.get("providers").?.array.items[0].object.get("config").?.object.get("nested").?.object;
+    const reference = try @import("provider_method_ref.zig").ProviderMethodRef.fromJson(nested.get("retire").?);
+    const result = try bindings.invokeProviderMethod(reference.callback_id, "[]");
+    defer gpa.free(result);
+    try std.testing.expect(std.mem.indexOf(u8, result, "\"value\":\"retained\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, result, "unregister_provider") != null);
+    try std.testing.expectError(error.UnknownNativeProviderCallback, bindings.invokeProviderMethod(reference.callback_id, "[]"));
+}
+
+test "native provider getters preserve exceptions and nested action order" {
+    const gpa = std.testing.allocator;
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(gpa, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory("export default function(pi){pi.registerProvider('demo',{name:'Stable'});pi.registerCommand('nested',{handler(){pi.registerProvider('demo',{get name(){pi.setSessionName('nested-first');return 'Changed'}})}});pi.registerCommand('throw',{handler(){const original=new Error('getter');let caught=false;try{pi.registerProvider('demo',{get name(){throw original}})}catch(error){if(error!==original)throw Error('exception replaced');caught=true}if(!caught)throw Error('getter not called')}})}", "native-provider-getters.mjs");
+    const result = try bindings.invokeCommand("nested", "");
+    defer gpa.free(result);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, result, .{});
+    defer parsed.deinit();
+    const queue = parsed.value.object.get("actionQueue").?.array.items;
+    try std.testing.expectEqual(@as(usize, 2), queue.len);
+    try std.testing.expectEqualStrings("set_session_name", queue[0].object.get("type").?.string);
+    try std.testing.expectEqualStrings("register_provider", queue[1].object.get("type").?.string);
+    const failed = try bindings.invokeCommand("throw", "");
+    defer gpa.free(failed);
+    try std.testing.expect(std.mem.indexOf(u8, failed, "register_provider") == null);
+    const manifest = try bindings.manifestJson("native-provider-getters.mjs");
+    defer gpa.free(manifest);
+    try std.testing.expect(std.mem.indexOf(u8, manifest, "Changed") != null);
 }

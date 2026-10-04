@@ -6,9 +6,9 @@ Status: in progress. This file does not certify parity or a release.
   `012e80ced763e8d8ac7e01f7331d32dad3ab468b`.
 - Previous Pi baseline: `853a80d26c90a14c1886f0ebb8ffaae133ca2185`, version 0.84.4.
 - Selected authority: earendil-works/pi main
-  `f5d20047b3ad43d068a8eb61bd4e1f193bedbce6`, package version 1.0.2.
+  `1b094148b91d737fb398bf1591604de58ec169e1`, package version 1.0.2.
   It descends from and is newer than published GitHub release v1.0.0.
-- Delta: 893 commits, including new model types/classifiers, codemode, MCP
+- Delta: 894 commits, including new model types/classifiers, codemode, MCP
   configuration/OAuth, providers/auth, agent-loop hooks, terminal behavior,
   and extraction of durable harness APIs into pi-durable.
   The refresh from initial target `4c6fb7cf` adds exactly one Nix workflow
@@ -21,8 +21,10 @@ Status: in progress. This file does not certify parity or a release.
   persistence of rotated OAuth tokens, Windows durable environment fixes, and
   bounded binary/directory readers and argv execution with stream information.
   These additional contracts remain tracked for native implementation.
+- The later refresh to `1b094148` adds codemode survival after an install is
+  updated or removed. Native codemode integration remains an outstanding port.
 - Current upstream source tar SHA-256:
-  `38a6ed7cbe08cbd4f101df62a884b1eeb5d859adf892bf03d33b937ce8443a9b`.
+  `b22c5ef6db16e470b73fe7acc62f76c04d42ce23ae12ac62b71c03a6fdd43b18`.
 - User-required toolchain: final Zig 0.16.0. No implicit upgrade.
 - User-required implementation: Zig; direct C interoperability allowed.
   Retain upstream user-authored JavaScript/TypeScript extension compatibility
@@ -289,6 +291,21 @@ Completed evidence:
   and 224 dedicated tests; ReleaseSafe passes. Non-primitive BigInt coercion and
   further string comparison edge cases, Buffer.write/search and broader APIs
   remain outstanding.
+
+- Native provider registration now encodes callable descriptors using the same
+  parser as production. Closures retain nested/array receivers, named updates
+  merge defined values, and object registrations replace the prior configuration.
+  Callback IDs remain valid across safe-point handoff and are removed on unregister.
+  Cycles, BigInt, throwing getters, allocation failures, inherited array indices,
+  holes, self-unregister and nested action ordering have native coverage. A real
+  TypeScript provider worker fixture exchanges nine records with Node absent.
+  Signal-bearing requests remain explicit errors pending the native async protocol.
+- Four Python source-text audits were retired in favor of
+  `zig build test-provider-contracts`, which runs production adapter behavior,
+  linked-C bindings and the real native process fixture. Nineteen Python PTY
+  scripts and five JavaScript implementation/harness files still need migration.
+  Full Windows Debug passes 52 steps, 1,100 module tests, 27 existing skips and
+  233 dedicated tests; ReleaseSafe and the named provider suite pass.
 
 Required outstanding work:
 

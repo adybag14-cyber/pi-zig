@@ -203,6 +203,13 @@ fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, object: std.
         const arguments = if (object.get("rawArguments")) |value| if (value == .string) value.string else "" else "";
         return bindings.invokeCommand(try requiredText(object, "name"), arguments);
     }
+    if (std.mem.eql(u8, kind, "provider_method")) {
+        if (object.get("appendSignal")) |signal| if (signal == .bool and signal.bool) return error.NativeProviderAbortSignalUnsupported;
+        if (object.get("aborted")) |aborted| if (aborted == .bool and aborted.bool) return error.NativeProviderRequestAborted;
+        const arguments = try encoded(gpa, object.get("args") orelse std.json.Value{ .array = std.json.Array.init(gpa) });
+        defer gpa.free(arguments);
+        return bindings.invokeProviderMethod(try requiredText(object, "callbackId"), arguments);
+    }
     return error.UnsupportedNativeWorkerRequest;
 }
 

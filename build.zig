@@ -402,6 +402,17 @@ pub fn build(b: *std.Build) void {
     const run_classifier_tests = b.addRunArtifact(classifier_tests);
     const classifier_test_step = b.step("test-classifier", "Test native classifier contracts");
     classifier_test_step.dependOn(&run_classifier_tests.step);
+    // Behavioral replacement for the retired Python source-text audits.
+    const provider_contract_tests = b.addTest(.{
+        .root_module = test_mod,
+        .use_llvm = use_llvm,
+        .filters = &.{ "extensions.provider_", "extensions.models_store", "auth.storage" },
+    });
+    const run_provider_contract_tests = b.addRunArtifact(provider_contract_tests);
+    const provider_contract_step = b.step("test-provider-contracts", "Exercise provider ownership OAuth refresh model publication and stream contracts");
+    provider_contract_step.dependOn(&run_provider_contract_tests.step);
+    provider_contract_step.dependOn(&run_binding_tests.step);
+    provider_contract_step.dependOn(&run_worker_process_tests.step);
     const tool_schema_tests = b.addTest(.{
         .root_module = test_mod,
         .use_llvm = use_llvm,

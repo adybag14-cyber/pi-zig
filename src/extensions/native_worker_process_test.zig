@@ -158,3 +158,66 @@ test "native worker loads CommonJS TypeScript JSON cycles and conditional requir
         try std.testing.expectEqual(@as(usize, 3), std.mem.count(u8, output, "\x1e"));
     }
 }
+
+test "native provider process retains callbacks across replacement with Node absent" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    try tmp.dir.writeFile(io, .{
+        .sub_path = "provider.ts",
+        .data = "export default function(pi:any){const closure='native-closure';pi.registerProvider('native provider',{name:'Native',key(value:string){return this.name+':'+closure+':'+value},nested:{owner:'nested',async key(credentials:any){return this.owner+':'+credentials.access}}});pi.registerCommand('rename',{handler(){pi.registerProvider('native provider',{name:'Renamed'})}});pi.registerCommand('retire',{handler(){pi.unregisterProvider('native provider')}})}",
+    });
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try tmp.dir.realPath(io, &buffer);
+    const source = try std.fs.path.join(gpa, &.{ buffer[0..length], "provider.ts" });
+    defer gpa.free(source);
+    const executable = try std.fs.path.resolve(gpa, &.{ "zig-out", "bin", if (builtin.os.tag == .windows) "pi.exe" else "pi" });
+    defer gpa.free(executable);
+    var environment: std.process.Environ.Map = .init(gpa);
+    defer environment.deinit();
+    try environment.put("PATH", std.fs.path.dirname(executable).?);
+    const stderr_file = try tmp.dir.createFile(io, "stderr.log", .{});
+    var closed = false;
+    defer if (!closed) stderr_file.close(io);
+    var child = try std.process.spawn(io, .{ .argv = &.{ executable, "--internal-native-extension-worker", source }, .environ_map = &environment, .stdin = .pipe, .stdout = .pipe, .stderr = .{ .file = stderr_file }, .create_no_window = true });
+    var reaped = false;
+    defer if (!reaped) child.kill(io);
+    var write_buffer: [2048]u8 = undefined;
+    var stdin = child.stdin.?.writerStreaming(io, &write_buffer);
+    try stdin.interface.writeAll(
+        "{\"kind\":\"provider_method\",\"callbackId\":\"provider:native%20provider:2\",\"args\":[{\"access\":\"token\"}]}\n" ++
+            "{\"kind\":\"command\",\"name\":\"rename\"}\n" ++
+            "{\"kind\":\"provider_method\",\"callbackId\":\"provider:native%20provider:1\",\"args\":[\"old\"]}\n" ++
+            "{\"kind\":\"provider_method\",\"callbackId\":\"provider:native%20provider:3\",\"args\":[\"new\"]}\n" ++
+            "{\"kind\":\"provider_method\",\"callbackId\":\"provider:native%20provider:3\",\"args\":[],\"appendSignal\":true}\n" ++
+            "{\"kind\":\"command\",\"name\":\"retire\"}\n" ++
+            "{\"kind\":\"provider_method\",\"callbackId\":\"provider:native%20provider:3\",\"args\":[]}\n" ++
+            "{\"kind\":\"shutdown\"}\n",
+    );
+    try stdin.interface.flush();
+    child.stdin.?.close(io);
+    child.stdin = null;
+    var read_buffer: [4096]u8 = undefined;
+    var stdout = child.stdout.?.readerStreaming(io, &read_buffer);
+    const output = try stdout.interface.allocRemaining(gpa, .limited(1024 * 1024));
+    defer gpa.free(output);
+    const status = try child.wait(io);
+    reaped = true;
+    stderr_file.close(io);
+    closed = true;
+    const errors = try tmp.dir.readFileAlloc(io, "stderr.log", gpa, .limited(1024 * 1024));
+    defer gpa.free(errors);
+    if (status != .exited or status.exited != 0) {
+        std.debug.print("Native provider worker failed: {s}\n", .{errors});
+        return error.NativeProviderWorkerFailed;
+    }
+    try std.testing.expectEqualStrings("", errors);
+    for ([_][]const u8{ "nested:token", "Native:native-closure:old", "Renamed:native-closure:new", "register_provider", "unregister_provider", "NativeProviderAbortSignalUnsupported", "UnknownNativeProviderCallback" }) |marker| {
+        if (std.mem.indexOf(u8, output, marker) == null) {
+            std.debug.print("Native provider process missing {s}: {s}\n", .{ marker, output });
+            return error.NativeProviderProtocolMismatch;
+        }
+    }
+    try std.testing.expectEqual(@as(usize, 9), std.mem.count(u8, output, "\x1e"));
+}

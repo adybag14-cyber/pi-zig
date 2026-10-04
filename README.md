@@ -1,7 +1,7 @@
 # pi-zig
 
 The Pi 1.x update is in progress on this branch, targeting upstream commit
-`f5d20047b3ad43d068a8eb61bd4e1f193bedbce6` (package version 1.0.2).
+`1b094148b91d737fb398bf1591604de58ec169e1` (package version 1.0.2).
 See [the active update record](UPSTREAM-UPDATE-20261003.md) for completed gates
 and remaining ports. Final Zig 0.16.0 stays pinned. The linked C extension
 engine and Zig host are being validated before replacing production discovery's
