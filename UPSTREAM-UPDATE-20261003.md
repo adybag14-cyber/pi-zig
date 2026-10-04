@@ -146,8 +146,8 @@ Completed evidence:
 - Native ESM dependency resolution handles nearest node_modules packages,
   extensionless typed input, directory entries, explicit/conditional exports,
   null blocks and wildcard specificity. A real worker loads a package and its
-  relative imports with Node absent from PATH. CommonJS, file URLs, import-map
-  aliases, encoded paths and some other loader cases remain to implement.
+  relative imports with Node absent from PATH. Additional loader compatibility
+  remains to implement before switching production discovery.
 - Native TextEncoder handles UTF-8, unpaired surrogate replacement, typed-array
   views, complete-codepoint partial writes and receiver validation. The exact
   TypeBox 1.3.27 package from upstream's lockfile loads as external extension
@@ -158,6 +158,30 @@ Completed evidence:
   names/counts, Unicode patterns and boolean schemas. The pinned C regexp
   interpreter has memory/interrupt bounds and receives terminated patterns.
   Broader schema/reference/format compatibility still needs review.
+- Native package import aliases now support conditional targets, external
+  dependencies, builtin modules, wildcard specificity and null blocks. Alias
+  cycles and deeply nested conditions have explicit finite limits. Package
+  self-references and aliases stop at the nearest package scope.
+- Native file URL imports and percent-encoded path segments resolve to the
+  same canonical file identity. Encoded separators and package target traversal
+  fail explicitly. File URLs preserve Unicode, reserved characters, Windows
+  drives and UNC paths. Search/fragment module identities remain unsupported.
+- Native import metadata projects file URL, platform filename and directory;
+  hosted extensions have `import.meta.main === false`, as imported plugins.
+  Explicit standalone engine entrypoints can select true. Dependencies stay
+  false. `import.meta.resolve` and CommonJS interoperability remain to port.
+- Native `node:path` / `path` exports separate Windows/POSIX objects, normalize,
+  join, resolve, relative, dirname, basename, extname, isAbsolute, parse, format
+  and toNamespacedPath. 3,038 independently captured Node 24.14.0 results match,
+  including device roots, UNC shares, drive-relative paths and colon prefixes.
+  Per-drive environment CWDs and matchesGlob remain to port.
+- Native `node:url` / `url` fileURLToPath handles string input, Unicode and
+  explicit platform overrides. URL objects, pathToFileURL and the remaining
+  general URL APIs are not yet implemented.
+- The real native worker fixture verifies package/builtin aliases, encoded
+  filenames, metadata and path/URL functions with Node absent from PATH. The
+  complete Windows regression graph passes after these additions; see the
+  retained native-module-path evidence for exact terminal jobs.
 
 Required outstanding work:
 

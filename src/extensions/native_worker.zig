@@ -8,14 +8,17 @@ const node_fs = @import("node_fs.zig");
 const console = @import("console.zig");
 const module_resolver = @import("module_resolver.zig");
 const text_encoding = @import("text_encoding.zig");
+const node_path = @import("node_path.zig");
+const node_url = @import("node_url.zig");
 
 const Loader = struct {
     io: std.Io,
+    engine: *engine_mod.Engine,
     fn normalize(context: ?*anyopaque, gpa: std.mem.Allocator, base: []const u8, specifier: []const u8) anyerror![]u8 {
         const self: *@This() = @ptrCast(@alignCast(context.?));
         var arena = std.heap.ArenaAllocator.init(gpa);
         defer arena.deinit();
-        var resolver: module_resolver.Resolver = .{ .io = self.io };
+        var resolver: module_resolver.Resolver = .{ .io = self.io, .native_modules = &self.engine.native_module_names };
         return gpa.dupe(u8, try resolver.resolve(arena.allocator(), base, specifier));
     }
     fn source(context: ?*anyopaque, gpa: std.mem.Allocator, name: []const u8) anyerror![]u8 {
@@ -169,12 +172,14 @@ test "native tool result projection preserves text images details and usage" {
 pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();
-    var loader: Loader = .{ .io = io };
+    var loader: Loader = .{ .io = io, .engine = engine };
     engine.setSourceLoader(.{ .context = &loader, .load = Loader.source, .normalize = Loader.normalize });
     const bindings = try bindings_mod.Bindings.init(gpa, engine);
     defer bindings.deinit();
     try bindings.installSchemas();
     try node_fs.install(engine, io);
+    try node_path.install(engine, io);
+    try node_url.install(engine);
     try console.install(engine, io);
     try text_encoding.install(engine);
     const absolute = try std.Io.Dir.cwd().realPathFileAlloc(io, extension_path, gpa);

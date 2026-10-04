@@ -8,13 +8,17 @@ test "native extension process loads TypeScript imports and exchanges real proto
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
     try tmp.dir.createDirPath(io, "node_modules/native-fixture/lib");
+    try tmp.dir.writeFile(io, .{ .sub_path = "package.json", .data = "{\"name\":\"native-project\",\"imports\":{\"#dep\":\"native-fixture\",\"#fs\":\"node:fs\"}}" });
     try tmp.dir.writeFile(io, .{ .sub_path = "node_modules/native-fixture/package.json", .data = "{\"type\":\"module\",\"exports\":{\".\":{\"import\":\"./lib/index.js\"}}}" });
-    try tmp.dir.writeFile(io, .{ .sub_path = "node_modules/native-fixture/lib/value.js", .data = "export const dependency='esm-dependency';" });
-    try tmp.dir.writeFile(io, .{ .sub_path = "node_modules/native-fixture/lib/index.js", .data = "export {dependency} from './value.js';" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "node_modules/native-fixture/lib/value file.js", .data = "export const dependency='esm-dependency'; export const metadata=import.meta;" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "node_modules/native-fixture/lib/index.js", .data = "export {dependency,metadata} from './value%20file.js';" });
     try tmp.dir.writeFile(io, .{ .sub_path = "marker.ts", .data = "export const marker: string = 'native-worker';" });
     try tmp.dir.writeFile(io, .{
         .sub_path = "extension.ts",
-        .data = "import { Type } from 'typebox'; import { marker } from './marker'; import {dependency} from 'native-fixture'; " ++
+        .data = "import { Type } from 'typebox'; import { marker } from './marker'; import {dependency,metadata} from '#dep'; import fs from '#fs'; " ++
+            "import {dirname,join,relative} from 'node:path'; import {fileURLToPath} from 'node:url'; " ++
+            "if (import.meta.main!==false || metadata.main!==false || !metadata.url.endsWith('/value%20file.js') || !metadata.filename.endsWith('value file.js') || !fs.existsSync(import.meta.filename)) throw Error('native metadata'); " ++
+            "if (fileURLToPath(import.meta.url)!==import.meta.filename || dirname(import.meta.filename)!==import.meta.dirname || relative(import.meta.dirname,join(import.meta.dirname,'marker.ts'))!=='marker.ts') throw Error('native paths'); " ++
             "export default (pi: any) => { console.log('native-console',{safe:true}); pi.on('input', async (event: any) => ({action:'transform',text:event.text+':'+marker})); " ++
             "pi.registerTool({name:'echo', parameters:Type.Object({text:Type.String()}), async execute(id:string,args:any,signal:any,update:any,ctx:any) {return {content:[{type:'text',text:id+':'+args.text}],details:{marker,dependency,session:ctx.sessionManager.getSessionId(),trusted:ctx.isProjectTrusted()}};}}); };",
     });

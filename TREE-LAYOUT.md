@@ -29,6 +29,10 @@ Complete behavioral parity remains in progress; see
   fails while remaining Python/JavaScript scripts are being ported.
 - `checkpoint-tests/` and `scripts/` contain remaining compatibility fixtures
   to port. Their behavior must remain covered before retirement.
+- `src/extensions/fixtures/node_path.json` contains captured Node 24.14.0 API
+  results, not executable host implementation. Native Zig tests consume the
+  data without Node. The directly linked worker also tests real path/URL imports
+  with an executable-only PATH.
 - `verification/` and historical checkpoint reports retain prior evidence.
   `zig build maintenance -- artifact-manifest 189` regenerates `FILES.sha256`
   and `ARTIFACT-MANIFEST.json` for the active checkpoint, without certifying

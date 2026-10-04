@@ -289,6 +289,24 @@ pub fn build(b: *std.Build) void {
     const filesystem_test_step = b.step("test-extension-filesystem", "Test native extension filesystem APIs");
     filesystem_test_step.dependOn(&run_filesystem_tests.step);
     test_step.dependOn(&run_filesystem_tests.step);
+    const path_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_path.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, path_tests.root_module, quickjs);
+    const run_path_tests = b.addRunArtifact(path_tests);
+    const path_test_step = b.step("test-extension-path", "Test native cross-platform extension path APIs");
+    path_test_step.dependOn(&run_path_tests.step);
+    test_step.dependOn(&run_path_tests.step);
+    const url_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_url.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, url_tests.root_module, quickjs);
+    const run_url_tests = b.addRunArtifact(url_tests);
+    const url_test_step = b.step("test-extension-url", "Test native file URL conversion for extensions");
+    url_test_step.dependOn(&run_url_tests.step);
+    test_step.dependOn(&run_url_tests.step);
     const console_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/console.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,

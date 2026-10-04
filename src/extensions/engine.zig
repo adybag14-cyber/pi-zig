@@ -1,5 +1,7 @@
 //! Direct C ABI for the extension language. No Node process or bridge source.
 const std = @import("std");
+const builtin = @import("builtin");
+const file_urls = @import("file_urls.zig");
 pub const c = @cImport({
     // Zig 0.16 translate-c emits invalid unused declarations for MinGW's
     // fortified wide-string inline wrappers in ReleaseSafe. This affects
@@ -16,6 +18,9 @@ pub const Options = struct {
     stack_limit: usize = 1024 * 1024,
     interrupt_budget: u64 = 10_000,
     job_budget: usize = 100_000,
+    // Hosted extensions are imported by Pi, rather than being JS entrypoints.
+    // Standalone embedders may explicitly designate their evaluated root.
+    main_module: bool = false,
 };
 
 pub const SourceLoader = struct {
@@ -210,12 +215,40 @@ pub const Engine = struct {
             self.freeValue(compiled);
             return error.InvalidExtensionModule;
         };
+        self.setImportMeta(module, filename, self.options.main_module) catch |err| {
+            self.freeValue(compiled);
+            return err;
+        };
         // JS_EvalFunction consumes the compiled module value even on failure.
         const evaluated = try self.checked(c.JS_EvalFunction(self.context, compiled));
         defer self.freeValue(evaluated);
         const settled = try self.awaitValue(evaluated);
         defer self.freeValue(settled);
         return self.checked(c.JS_GetModuleNamespace(self.context, module));
+    }
+
+    fn setImportMeta(self: *Engine, module: *c.JSModuleDef, filename: []const u8, main: bool) !void {
+        const meta = try self.checked(c.JS_GetImportMeta(self.context, module));
+        defer self.freeValue(meta);
+        if (c.JS_DefinePropertyValueStr(self.context, meta, "main", c.pi_js_bool(self.context, @intFromBool(main)), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+        if (!std.fs.path.isAbsolute(filename)) return;
+        const url = try file_urls.fromPath(self.gpa, filename, builtin.os.tag == .windows);
+        defer self.gpa.free(url);
+        const platform_path = try self.gpa.dupe(u8, filename);
+        defer self.gpa.free(platform_path);
+        if (builtin.os.tag == .windows) for (platform_path) |*byte| {
+            if (byte.* == '/') byte.* = '\\';
+        };
+        const directory = std.fs.path.dirname(platform_path) orelse platform_path;
+        const fields = [_]struct { name: [*:0]const u8, value: []const u8 }{
+            .{ .name = "url", .value = url },
+            .{ .name = "filename", .value = platform_path },
+            .{ .name = "dirname", .value = directory },
+        };
+        for (fields) |field| {
+            const value = try self.checked(c.JS_NewStringLen(self.context, field.value.ptr, field.value.len));
+            if (c.JS_DefinePropertyValueStr(self.context, meta, field.name, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+        }
     }
 
     fn moduleLoader(context: ?*c.JSContext, name: [*c]const u8, context_data: ?*anyopaque) callconv(.c) ?*c.JSModuleDef {
@@ -240,7 +273,16 @@ pub const Engine = struct {
         const compiled = c.JS_Eval(context, source.ptr, source.len, name, c.JS_EVAL_TYPE_MODULE | c.JS_EVAL_FLAG_COMPILE_ONLY);
         if (c.JS_IsException(compiled)) return null;
         // QuickJS keeps the compiled dependency in its module registry.
-        const module = c.pi_js_module(compiled);
+        const module = c.pi_js_module(compiled) orelse {
+            c.JS_FreeValue(context, compiled);
+            _ = c.JS_ThrowInternalError(context, "Invalid native extension module");
+            return null;
+        };
+        self.setImportMeta(module, module_name, false) catch |err| {
+            c.JS_FreeValue(context, compiled);
+            _ = c.JS_ThrowInternalError(context, "Native import metadata failed: %s", @as([*:0]const u8, @errorName(err)));
+            return null;
+        };
         c.JS_FreeValue(context, compiled);
         return module;
     }
@@ -338,6 +380,24 @@ pub const Engine = struct {
         return if (self.interrupts > self.options.interrupt_budget) 1 else 0;
     }
 };
+
+test "native import metadata distinguishes hosted modules from explicitly selected entrypoints" {
+    for ([_]bool{ false, true }) |main| {
+        const engine = try Engine.init(std.testing.allocator, .{ .main_module = main });
+        defer engine.deinit();
+        const filename = if (builtin.os.tag == .windows) "C:/native/input file.mjs" else "/native/input file.mjs";
+        const result = try engine.evalModule("export const main=import.meta.main; export const url=import.meta.url;", filename);
+        defer engine.freeValue(result);
+        const value = try engine.checked(c.JS_GetPropertyStr(engine.context, result, "main"));
+        defer engine.freeValue(value);
+        try std.testing.expectEqual(@as(c_int, @intFromBool(main)), c.JS_ToBool(engine.context, value));
+        const url_value = try engine.checked(c.JS_GetPropertyStr(engine.context, result, "url"));
+        defer engine.freeValue(url_value);
+        const url = try engine.toString(url_value);
+        defer engine.gpa.free(url);
+        try std.testing.expect(std.mem.endsWith(u8, url, "/native/input%20file.mjs"));
+    }
+}
 
 test "native module allocation failures do not install hidden modules before retry" {
     for (0..3) |failure_offset| {

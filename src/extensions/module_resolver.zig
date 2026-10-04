@@ -1,8 +1,12 @@
 //! Native resolution of extension files and user-installed ESM packages.
 const std = @import("std");
+const builtin = @import("builtin");
+const file_urls = @import("file_urls.zig");
 
 pub const Resolver = struct {
     io: std.Io,
+    alias_depth: usize = 0,
+    native_modules: ?*const std.StringHashMapUnmanaged(void) = null,
 
     fn file(self: *Resolver, gpa: std.mem.Allocator, path: []const u8) !?[]u8 {
         const stat = std.Io.Dir.cwd().statFile(self.io, path, .{}) catch |err| switch (err) {
@@ -60,22 +64,36 @@ pub const Resolver = struct {
 
     const Target = union(enum) { missing, blocked, path: []const u8 };
 
-    fn validateTarget(path: []const u8) !void {
+    fn validateTarget(gpa: std.mem.Allocator, path: []const u8) !void {
         if (!std.mem.startsWith(u8, path, "./")) return error.InvalidExtensionPackageTarget;
-        var parts = std.mem.splitAny(u8, path[2..], "/\\");
+        if (std.mem.indexOfAny(u8, path, "\\?#\x00") != null) return error.InvalidExtensionPackageTarget;
+        const decoded = file_urls.decodePath(gpa, path) catch |err| switch (err) {
+            error.OutOfMemory => return err,
+            else => return error.InvalidExtensionPackageTarget,
+        };
+        defer gpa.free(decoded);
+        var parts = std.mem.splitScalar(u8, decoded[2..], '/');
         while (parts.next()) |part| {
-            if (part.len == 0 or std.mem.eql(u8, part, ".") or std.mem.eql(u8, part, "..") or std.ascii.eqlIgnoreCase(part, "node_modules") or std.mem.indexOfAny(u8, part, "\x00?#") != null) return error.InvalidExtensionPackageTarget;
-            // Encoded target paths need URL decoding before filesystem lookup;
-            // never treat them as literal names or allow encoded traversal.
-            if (std.mem.indexOfScalar(u8, part, '%') != null) return error.UnsupportedExtensionPackageEncoding;
+            if (part.len == 0 or std.mem.eql(u8, part, ".") or std.mem.eql(u8, part, "..") or std.ascii.eqlIgnoreCase(part, "node_modules")) return error.InvalidExtensionPackageTarget;
         }
     }
 
-    fn conditionalTarget(value: std.json.Value) anyerror!Target {
+    fn conditionalTarget(gpa: std.mem.Allocator, value: std.json.Value) anyerror!Target {
+        return conditionalTargetMode(gpa, value, false);
+    }
+
+    fn conditionalTargetMode(gpa: std.mem.Allocator, value: std.json.Value, allow_external: bool) anyerror!Target {
+        return conditionalTargetDepth(gpa, value, allow_external, 0);
+    }
+
+    fn conditionalTargetDepth(gpa: std.mem.Allocator, value: std.json.Value, allow_external: bool, depth: usize) anyerror!Target {
+        if (depth >= 32) return error.ExtensionPackageConditionDepth;
         switch (value) {
             .null => return .blocked,
             .string => {
-                try validateTarget(value.string);
+                if (!allow_external or std.mem.startsWith(u8, value.string, "./")) {
+                    try validateTarget(gpa, value.string);
+                } else if (value.string.len == 0 or value.string[0] == '.' or value.string[0] == '/' or std.mem.indexOfAny(u8, value.string, "\\\x00") != null or (std.mem.indexOfScalar(u8, value.string, ':') != null and !std.mem.startsWith(u8, value.string, "node:"))) return error.InvalidExtensionPackageTarget;
                 return .{ .path = value.string };
             },
             .object => |fields| {
@@ -89,7 +107,7 @@ pub const Resolver = struct {
                     const index = if (decimal) std.fmt.parseInt(u32, key, 10) catch null else null;
                     if (index != null and index.? != std.math.maxInt(u32) and (key.len == 1 or key[0] != '0')) return error.InvalidExtensionPackageExports;
                     if (std.mem.eql(u8, key, "import") or std.mem.eql(u8, key, "node") or std.mem.eql(u8, key, "default")) {
-                        const resolved = try conditionalTarget(entry.value_ptr.*);
+                        const resolved = try conditionalTargetDepth(gpa, entry.value_ptr.*, allow_external, depth + 1);
                         if (resolved != .missing) return resolved;
                     }
                 }
@@ -98,7 +116,7 @@ pub const Resolver = struct {
             .array => |items| {
                 var last_error: ?anyerror = null;
                 for (items.items) |item| {
-                    const target = conditionalTarget(item) catch |err| {
+                    const target = conditionalTargetDepth(gpa, item, allow_external, depth + 1) catch |err| {
                         if (err != error.InvalidExtensionPackageTarget) return err;
                         last_error = err;
                         continue;
@@ -112,6 +130,31 @@ pub const Resolver = struct {
         }
     }
 
+    const Match = struct { value: std.json.Value, capture: ?[]const u8 = null };
+
+    fn patternMatch(map: std.json.ObjectMap, key: []const u8) ?Match {
+        if (std.mem.indexOfScalar(u8, key, '*') == null) {
+            if (map.get(key)) |exact| return .{ .value = exact };
+        }
+        var best: ?[]const u8 = null;
+        var match: ?Match = null;
+        var iterator = map.iterator();
+        while (iterator.next()) |entry| {
+            const pattern = entry.key_ptr.*;
+            const star = std.mem.indexOfScalar(u8, pattern, '*') orelse continue;
+            if (std.mem.indexOfScalarPos(u8, pattern, star + 1, '*') != null) continue;
+            const trailer = pattern[star + 1 ..];
+            if (key.len < pattern.len or !std.mem.startsWith(u8, key, pattern[0..star]) or !std.mem.endsWith(u8, key, trailer)) continue;
+            if (best) |previous| {
+                const previous_star = std.mem.indexOfScalar(u8, previous, '*').?;
+                if (star < previous_star or (star == previous_star and pattern.len <= previous.len)) continue;
+            }
+            best = pattern;
+            match = .{ .value = entry.value_ptr.*, .capture = key[star .. key.len - trailer.len] };
+        }
+        return match;
+    }
+
     fn exportedTarget(gpa: std.mem.Allocator, exports: std.json.Value, key: []const u8) ![]const u8 {
         var selected = exports;
         var capture: ?[]const u8 = null;
@@ -120,38 +163,23 @@ pub const Resolver = struct {
             var conditions = false;
             var iterator = exports.object.iterator();
             while (iterator.next()) |entry| {
-                if (std.mem.startsWith(u8, entry.key_ptr.*, ".")) subpaths = true else conditions = true;
+                if (std.mem.startsWith(u8, entry.key_ptr.*, ".")) {
+                    if (!std.mem.eql(u8, entry.key_ptr.*, ".") and !std.mem.startsWith(u8, entry.key_ptr.*, "./")) return error.InvalidExtensionPackageExports;
+                    subpaths = true;
+                } else conditions = true;
             }
             if (subpaths and conditions) return error.InvalidExtensionPackageExports;
             if (subpaths) {
-                if (exports.object.get(key)) |exact| {
-                    selected = exact;
-                } else {
-                    var best: ?[]const u8 = null;
-                    iterator = exports.object.iterator();
-                    while (iterator.next()) |entry| {
-                        const pattern = entry.key_ptr.*;
-                        const star = std.mem.indexOfScalar(u8, pattern, '*') orelse continue;
-                        if (std.mem.indexOfScalarPos(u8, pattern, star + 1, '*') != null) continue;
-                        const trailer = pattern[star + 1 ..];
-                        if (key.len < pattern.len or !std.mem.startsWith(u8, key, pattern[0..star]) or !std.mem.endsWith(u8, key, trailer)) continue;
-                        if (best) |previous| {
-                            const previous_star = std.mem.indexOfScalar(u8, previous, '*').?;
-                            if (star < previous_star or (star == previous_star and pattern.len <= previous.len)) continue;
-                        }
-                        best = pattern;
-                        selected = entry.value_ptr.*;
-                        capture = key[star .. key.len - trailer.len];
-                    }
-                    if (best == null) return error.ExtensionSubpathNotExported;
-                }
+                const match = patternMatch(exports.object, key) orelse return error.ExtensionSubpathNotExported;
+                selected = match.value;
+                capture = match.capture;
             } else if (!std.mem.eql(u8, key, ".")) return error.ExtensionSubpathNotExported;
         } else if (!std.mem.eql(u8, key, ".")) return error.ExtensionSubpathNotExported;
-        const resolved = try conditionalTarget(selected);
+        const resolved = try conditionalTarget(gpa, selected);
         if (resolved != .path) return error.ExtensionSubpathNotExported;
         if (capture) |matched| {
             const replaced = try std.mem.replaceOwned(u8, gpa, resolved.path, "*", matched);
-            try validateTarget(replaced);
+            try validateTarget(gpa, replaced);
             return replaced;
         }
         return resolved.path;
@@ -167,7 +195,9 @@ pub const Resolver = struct {
             const key = if (subpath.len == 0) try gpa.dupe(u8, ".") else try std.fmt.allocPrint(gpa, "./{s}", .{subpath});
             defer gpa.free(key);
             const target = try exportedTarget(gpa, exports, key);
-            const path = try std.fs.path.resolve(gpa, &.{ directory, target });
+            const decoded = try file_urls.decodePath(gpa, target);
+            defer gpa.free(decoded);
+            const path = try std.fs.path.resolve(gpa, &.{ directory, decoded });
             defer gpa.free(path);
             return try self.file(gpa, path) orelse error.ExtensionModuleNotFound;
         }
@@ -179,13 +209,60 @@ pub const Resolver = struct {
         return self.local(gpa, directory, true);
     }
 
+    fn importAlias(self: *Resolver, gpa: std.mem.Allocator, importer: []const u8, specifier: []const u8) anyerror![]u8 {
+        if (specifier.len < 2 or specifier[1] == '/' or self.alias_depth >= 32) return error.InvalidExtensionImportAlias;
+        self.alias_depth += 1;
+        defer self.alias_depth -= 1;
+        var directory = std.fs.path.dirname(importer) orelse ".";
+        while (true) {
+            if (try self.packageJson(gpa, directory)) |package| {
+                const imports = package.object.get("imports") orelse return error.ExtensionImportAliasMissing;
+                if (imports != .object) return error.InvalidExtensionPackageImports;
+                for (imports.object.keys()) |key| if (key.len < 2 or key[0] != '#' or key[1] == '/') return error.InvalidExtensionPackageImports;
+                const match = patternMatch(imports.object, specifier) orelse return error.ExtensionImportAliasMissing;
+                var target = try conditionalTargetMode(gpa, match.value, true);
+                if (target != .path) return error.ExtensionImportAliasMissing;
+                if (match.capture) |capture| {
+                    target = .{ .path = try std.mem.replaceOwned(u8, gpa, target.path, "*", capture) };
+                    if (std.mem.startsWith(u8, target.path, "./")) try validateTarget(gpa, target.path);
+                }
+                if (!std.mem.startsWith(u8, target.path, "./")) {
+                    const base = try std.fs.path.join(gpa, &.{ directory, "package.json" });
+                    defer gpa.free(base);
+                    return self.resolve(gpa, base, target.path);
+                }
+                const decoded = try file_urls.decodePath(gpa, target.path);
+                defer gpa.free(decoded);
+                const path = try std.fs.path.resolve(gpa, &.{ directory, decoded });
+                defer gpa.free(path);
+                return try self.file(gpa, path) orelse error.ExtensionModuleNotFound;
+            }
+            if (std.mem.eql(u8, std.fs.path.basename(directory), "node_modules")) break;
+            const parent = std.fs.path.dirname(directory) orelse break;
+            if (std.mem.eql(u8, parent, directory)) break;
+            directory = parent;
+        }
+        return error.ExtensionImportAliasMissing;
+    }
+
     /// The caller uses a temporary arena, and owns the final canonical path.
     pub fn resolve(self: *Resolver, gpa: std.mem.Allocator, importer: []const u8, specifier: []const u8) ![]u8 {
         if (specifier.len == 0 or std.mem.indexOfScalar(u8, specifier, 0) != null) return error.InvalidExtensionModuleSpecifier;
+        if (self.native_modules) |modules| if (modules.contains(specifier)) return gpa.dupe(u8, specifier);
+        if (specifier[0] == '#') return self.importAlias(gpa, importer, specifier);
+        if (std.ascii.startsWithIgnoreCase(specifier, "file:")) {
+            const uri = try std.Uri.parse(specifier);
+            if (uri.query != null or uri.fragment != null) return error.UnsupportedExtensionModuleQuery;
+            const path = try file_urls.toPath(gpa, specifier, builtin.os.tag == .windows);
+            defer gpa.free(path);
+            return try self.file(gpa, path) orelse error.ExtensionModuleNotFound;
+        }
         if (std.mem.indexOfAny(u8, specifier, "?#") != null) return error.UnsupportedExtensionModuleQuery;
         const directory = std.fs.path.dirname(importer) orelse ".";
         if (std.fs.path.isAbsolute(specifier) or std.mem.startsWith(u8, specifier, "./") or std.mem.startsWith(u8, specifier, "../")) {
-            const path = try std.fs.path.resolve(gpa, &.{ directory, specifier });
+            const decoded = try file_urls.decodePath(gpa, specifier);
+            defer gpa.free(decoded);
+            const path = try std.fs.path.resolve(gpa, &.{ directory, decoded });
             defer gpa.free(path);
             return self.local(gpa, path, true);
         }
@@ -201,6 +278,19 @@ pub const Resolver = struct {
         const subpath = if (split < specifier.len) specifier[split + 1 ..] else "";
         var parts = std.mem.splitScalar(u8, subpath, '/');
         while (parts.next()) |part| if (std.mem.eql(u8, part, "..") or std.mem.eql(u8, part, ".")) return error.InvalidExtensionPackageName;
+        var scope = directory;
+        while (true) {
+            if (try self.packageJson(gpa, scope)) |package| {
+                if (package.object.get("name")) |package_name| {
+                    if (package_name == .string and std.mem.eql(u8, package_name.string, name) and package.object.contains("exports")) return self.packageEntry(gpa, scope, subpath);
+                }
+                break; // Only the nearest package scope defines self-reference.
+            }
+            if (std.mem.eql(u8, std.fs.path.basename(scope), "node_modules")) break;
+            const parent = std.fs.path.dirname(scope) orelse break;
+            if (std.mem.eql(u8, parent, scope)) break;
+            scope = parent;
+        }
         var ancestor = directory;
         while (true) {
             const package_dir = try std.fs.path.join(gpa, &.{ ancestor, "node_modules", name });
@@ -264,4 +354,60 @@ test "native package exports honor nested fallback null blocks and wildcard spec
     try std.testing.expectEqualStrings("./valid.js", try Resolver.exportedTarget(allocator, fallback, "."));
     const mixed = try std.json.parseFromSliceLeaky(std.json.Value, allocator, "{\".\":\"./main.js\",\"import\":\"./other.js\"}", .{});
     try std.testing.expectError(error.InvalidExtensionPackageExports, Resolver.exportedTarget(allocator, mixed, "."));
+}
+
+test "native package imports and self references stay within the nearest package scope" {
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    try tmp.dir.createDirPath(io, "project/lib");
+    try tmp.dir.createDirPath(io, "project/node_modules/native-external");
+    try tmp.dir.writeFile(io, .{ .sub_path = "project/node_modules/native-external/package.json", .data = "{\"exports\":\"./index.js\"}" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "project/node_modules/native-external/index.js", .data = "export const marker='external';" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "project/package.json", .data = "{\"name\":\"native-project\",\"exports\":{\"./shared\":\"./lib/shared.js\",\"./space\":\"./lib/a%20b.js\",\"./encoded-traversal\":\"./%2e%2e/secret.js\"},\"imports\":{\"#shared\":{\"import\":\"./lib/shared.js\"},\"#*\":\"./wrong/*.js\",\"#lib/*\":\"./lib/*.js\",\"#blocked\":null,\"#external\":\"native-external\",\"#fs\":\"node:fs\",\"#cycle-one\":\"#cycle-two\",\"#cycle-two\":\"#cycle-one\"}}" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "project/extension.mjs", .data = "export default()=>{};" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "project/lib/shared.js", .data = "export const marker='scoped';" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "project/lib/a b.js", .data = "export const marker='encoded-space';" });
+    var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
+    defer arena.deinit();
+    const allocator = arena.allocator();
+    const importer = try tmp.dir.realPathFileAlloc(io, "project/extension.mjs", allocator);
+    var resolver: Resolver = .{ .io = io };
+    try std.testing.expectEqualStrings(try resolver.resolve(allocator, importer, "#shared"), try resolver.resolve(allocator, importer, "native-project/shared"));
+    try std.testing.expectError(error.ExtensionImportAliasMissing, resolver.resolve(allocator, importer, "#blocked"));
+    try std.testing.expectError(error.ExtensionSubpathNotExported, resolver.resolve(allocator, importer, "native-project/private"));
+    try std.testing.expectError(error.InvalidExtensionImportAlias, resolver.resolve(allocator, importer, "#"));
+    try std.testing.expect(std.mem.endsWith(u8, try resolver.resolve(allocator, importer, "#external"), "/native-external/index.js"));
+    try std.testing.expectError(error.InvalidExtensionImportAlias, resolver.resolve(allocator, importer, "#cycle-one"));
+    try std.testing.expectEqualStrings(try resolver.resolve(allocator, importer, "#shared"), try resolver.resolve(allocator, importer, "#lib/shared"));
+    const encoded = try resolver.resolve(allocator, importer, "native-project/space");
+    try std.testing.expect(std.mem.endsWith(u8, encoded, "/lib/a b.js"));
+    const url = try file_urls.fromPath(allocator, encoded, builtin.os.tag == .windows);
+    try std.testing.expectEqualStrings(encoded, try resolver.resolve(allocator, importer, url));
+    try std.testing.expectEqualStrings(encoded, try resolver.resolve(allocator, importer, "./lib/a%20b.js"));
+    try std.testing.expectError(error.InvalidExtensionPackageTarget, resolver.resolve(allocator, importer, "native-project/encoded-traversal"));
+    var modules: std.StringHashMapUnmanaged(void) = .empty;
+    defer modules.deinit(allocator);
+    try modules.put(allocator, "node:fs", {});
+    resolver.native_modules = &modules;
+    try std.testing.expectEqualStrings("node:fs", try resolver.resolve(allocator, importer, "#fs"));
+    try tmp.dir.createDirPath(io, "project/subscope");
+    try tmp.dir.writeFile(io, .{ .sub_path = "project/subscope/package.json", .data = "{}" });
+    try tmp.dir.writeFile(io, .{ .sub_path = "project/subscope/extension.js", .data = "export default()=>{};" });
+    const nested = try tmp.dir.realPathFileAlloc(io, "project/subscope/extension.js", allocator);
+    try std.testing.expectError(error.ExtensionImportAliasMissing, resolver.resolve(allocator, nested, "#shared"));
+    try std.testing.expectError(error.ExtensionModuleNotFound, resolver.resolve(allocator, nested, "native-project/shared"));
+}
+
+test "native package conditions have a finite recursion budget" {
+    var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
+    defer arena.deinit();
+    const allocator = arena.allocator();
+    var target: std.json.Value = .{ .string = "./valid.js" };
+    for (0..40) |_| {
+        var object: std.json.ObjectMap = .empty;
+        try object.put(allocator, "import", target);
+        target = .{ .object = object };
+    }
+    try std.testing.expectError(error.ExtensionPackageConditionDepth, Resolver.exportedTarget(allocator, target, "."));
 }
