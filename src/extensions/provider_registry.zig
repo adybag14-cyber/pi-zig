@@ -306,7 +306,10 @@ pub const Registry = struct {
         const method = try provider_method_ref.ProviderMethodRef.fromJson(descriptor_value);
         if (!std.mem.eql(u8, method.path, path)) return error.ProviderMethodPathMismatch;
         const runtime = registration.callbackRuntime(method.callback_id, method.path, method.generation) orelse return error.ProviderMethodRuntimeMissing;
-        const envelope = try runtime.invokeProviderMethod(method.callback_id, args_json, append_signal, abort_flag);
+        const envelope = if (std.mem.eql(u8, path, "oauth.refreshToken"))
+            try runtime.invokeProviderMethodWithTimeout(method.callback_id, args_json, append_signal, abort_flag, 15_000)
+        else
+            try runtime.invokeProviderMethod(method.callback_id, args_json, append_signal, abort_flag);
         defer self.gpa.free(envelope);
         return unwrapProviderMethodValue(self.gpa, envelope);
     }

@@ -128,7 +128,7 @@ pub const Runtime = struct {
             .now_ms = now_ms,
             .abort_flag = abort_flag,
         };
-        const credential = (try store.modifyOAuthJsonAbortable(provider_id, &refresh_context, refreshUnderLock, abort_flag)) orelse return null;
+        const credential = (try store.refreshOAuthJsonAbortable(provider_id, &refresh_context, refreshUnderLock, abort_flag)) orelse return null;
         defer self.gpa.free(credential);
 
         try ensureOperationActive(abort_flag);
@@ -181,7 +181,7 @@ pub const Runtime = struct {
                         .now_ms = now_ms,
                         .abort_flag = abort_flag,
                     };
-                    credential = try store.modifyOAuthJsonAbortable(provider_id, &refresh_context, refreshUnderLock, abort_flag);
+                    credential = try store.refreshOAuthJsonAbortable(provider_id, &refresh_context, refreshUnderLock, abort_flag);
                 }
             }
         }
@@ -275,12 +275,10 @@ fn refreshUnderLock(
         return error.ExtensionOAuthCredentialExpired;
     }
     try ensureOperationActive(context.abort_flag);
-    const refreshed = context.runtime.registry.refreshOAuth(context.provider_id, current, context.abort_flag) catch |err| {
-        if (abortRequested(context.abort_flag)) return error.Canceled;
-        return err;
-    };
+    // Once refresh starts, cancellation cannot discard a rotated token. The
+    // provider callback has its own 15-second deadline instead of the caller's signal.
+    const refreshed = try context.runtime.registry.refreshOAuth(context.provider_id, current, null);
     defer context.runtime.gpa.free(refreshed);
-    try ensureOperationActive(context.abort_flag);
     return @as(?[]u8, try allocator.dupe(u8, refreshed));
 }
 
@@ -664,4 +662,73 @@ test "extension OAuth reload routing follows the replacement registry and unregi
     try std.testing.expect(try registry_b.unregister("swap-oauth"));
     try std.testing.expect(!lifecycle.supports("swap-oauth"));
     try std.testing.expect((try lifecycle.resolve(gpa, "swap-oauth", 1, null, false)) == null);
+}
+
+test "cancelled extension refresh persists rotated tokens before returning to caller" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    const source =
+        \\export default function(pi) {
+        \\  pi.registerProvider('rotate-oauth', {
+        \\    baseUrl: 'https://rotate.invalid/v1', api: 'openai-completions', apiKey: 'unused',
+        \\    models: [{ id: 'm', name: 'M', contextWindow: 4096, maxTokens: 512 }],
+        \\    oauth: {
+        \\      async refreshToken(credentials, signal) {
+        \\        if (signal.aborted) throw new Error('caller signal reached refresh');
+        \\        await new Promise(resolve => setTimeout(resolve, 120));
+        \\        if (signal.aborted) throw new Error('caller cancelled rotated refresh');
+        \\        return { ...credentials, refresh: 'rotated-refresh', access: 'fresh-access', expires: 9999999999999, refreshCount: (credentials.refreshCount ?? 0) + 1 };
+        \\      },
+        \\      getApiKey(credentials) { return `fresh:${credentials.refreshCount}:${credentials.access}`; },
+        \\    },
+        \\  });
+        \\}
+    ;
+    try tmp.dir.writeFile(io, .{ .sub_path = "rotate.mjs", .data = source });
+    var root_buf: [std.fs.max_path_bytes]u8 = undefined;
+    const root_len = try tmp.dir.realPath(io, &root_buf);
+    const root = root_buf[0..root_len];
+    const path = try std.fs.path.join(gpa, &.{ root, "rotate.mjs" });
+    defer gpa.free(path);
+    var started = try js_runtime.Runtime.start(gpa, io, path, "node");
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const config_json = try providerConfigFromManifest(gpa, started.manifest_json, "rotate-oauth");
+    defer gpa.free(config_json);
+    var env: std.process.Environ.Map = .init(gpa);
+    defer env.deinit();
+    var registry = provider_registry.Registry.init(gpa, io, &env, root, &.{}, &.{});
+    defer registry.deinit();
+    try registry.registerJsonWithRuntime("rotate-oauth", config_json, started.runtime);
+    var store = try auth_storage.AuthStorage.init(gpa, io, root);
+    defer store.deinit();
+    try store.setOAuthJson("rotate-oauth", "{\"refresh\":\"old-refresh\",\"access\":\"old-access\",\"expires\":1,\"tenant\":{\"keep\":true}}");
+    var lifecycle = Runtime.init(gpa, io, root, &registry);
+    const Cancel = struct {
+        fn run(task_io: Io, flag: *bool) !void {
+            try task_io.sleep(.fromMilliseconds(40), .awake);
+            @atomicStore(bool, flag, true, .release);
+        }
+    };
+    var aborted = false;
+    var cancellation = try io.concurrent(Cancel.run, .{ io, &aborted });
+    defer cancellation.cancel(io) catch {};
+    // Refresh must use its own bounded deadline, and restore the ordinary one.
+    started.runtime.timeout_ms = 20;
+    try std.testing.expectError(error.Canceled, lifecycle.resolve(gpa, "rotate-oauth", 2, &aborted, false));
+    try cancellation.await(io);
+    try std.testing.expectEqual(@as(u64, 20), started.runtime.timeout_ms);
+    const stored = (try store.readOAuthJson("rotate-oauth")).?;
+    defer gpa.free(stored);
+    try std.testing.expect(std.mem.indexOf(u8, stored, "rotated-refresh") != null);
+    try std.testing.expect(std.mem.indexOf(u8, stored, "\"refreshCount\":1") != null);
+    try std.testing.expect(std.mem.indexOf(u8, stored, "\"tenant\":{\"keep\":true}") != null);
+    started.runtime.timeout_ms = 5000;
+    aborted = false;
+    var next = (try lifecycle.resolve(gpa, "rotate-oauth", 3, &aborted, false)).?;
+    defer next.deinit(gpa);
+    try std.testing.expectEqualStrings("fresh:1:fresh-access", next.api_key);
 }

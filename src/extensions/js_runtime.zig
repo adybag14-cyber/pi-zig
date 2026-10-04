@@ -344,12 +344,27 @@ pub const Runtime = struct {
         append_signal: bool,
         abort_flag: ?*bool,
     ) ![]u8 {
+        return self.invokeProviderMethodWithTimeout(callback_id, args_json, append_signal, abort_flag, null);
+    }
+
+    pub fn invokeProviderMethodWithTimeout(
+        self: *Runtime,
+        callback_id: []const u8,
+        args_json: []const u8,
+        append_signal: bool,
+        abort_flag: ?*bool,
+        timeout_ms: ?u64,
+    ) ![]u8 {
         if (callback_id.len == 0 or callback_id.len > 4096) return error.InvalidProviderCallbackId;
         try validateArrayJson(self.gpa, args_json);
 
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         if (self.closed) return error.JavaScriptExtensionClosed;
+
+        const previous_timeout = self.timeout_ms;
+        if (timeout_ms) |deadline| self.timeout_ms = deadline;
+        defer self.timeout_ms = previous_timeout;
 
         var request: std.Io.Writer.Allocating = .init(self.gpa);
         defer request.deinit();

@@ -169,6 +169,18 @@ pub const AuthStorage = struct {
         return file;
     }
 
+    fn openRefreshLocked(self: *const AuthStorage, abort_flag: ?*const bool) !std.Io.File {
+        try ensureOAuthCommitNotAborted(abort_flag);
+        const file = try self.openLocked(.none);
+        errdefer file.close(self.io);
+        while (true) {
+            try ensureOAuthCommitNotAborted(abort_flag);
+            if (try file.tryLock(self.io, .exclusive)) break;
+            try self.io.sleep(.fromMilliseconds(10), .awake);
+        }
+        return file;
+    }
+
     fn readLockedAlloc(self: *const AuthStorage, file: std.Io.File) ![]u8 {
         const file_len = try file.length(self.io);
         if (file_len > 4 * 1024 * 1024) return error.AuthFileTooLarge;
@@ -431,9 +443,8 @@ pub const AuthStorage = struct {
         return self.modifyOAuthJsonAbortable(provider_id, context, callback, null);
     }
 
-    /// Abort-aware serialized credential transaction. A refresh callback may
-    /// finish after its signal is cancelled; the second guard prevents that
-    /// late result from replacing the last valid credential.
+    /// Ordinary mutations remain cancelable until the replacement is written.
+    /// Token refresh uses the separate rotation-safe method below.
     pub fn modifyOAuthJsonAbortable(
         self: *const AuthStorage,
         provider_id: []const u8,
@@ -441,8 +452,33 @@ pub const AuthStorage = struct {
         callback: ModifyOAuthJsonFn,
         abort_flag: ?*const bool,
     ) !?[]u8 {
+        return self.modifyOAuthJsonWithPolicy(provider_id, context, callback, abort_flag, false);
+    }
+
+    /// Pi's refresh transaction stops honoring caller cancellation after the
+    /// callback starts: the provider may already have rotated its refresh token.
+    /// The callback must enforce its own provider deadline. Re-check freshness
+    /// inside the callback while this exclusive lock is held.
+    pub fn refreshOAuthJsonAbortable(
+        self: *const AuthStorage,
+        provider_id: []const u8,
+        context: ?*anyopaque,
+        callback: ModifyOAuthJsonFn,
+        abort_flag: ?*const bool,
+    ) !?[]u8 {
+        return self.modifyOAuthJsonWithPolicy(provider_id, context, callback, abort_flag, true);
+    }
+
+    fn modifyOAuthJsonWithPolicy(
+        self: *const AuthStorage,
+        provider_id: []const u8,
+        context: ?*anyopaque,
+        callback: ModifyOAuthJsonFn,
+        abort_flag: ?*const bool,
+        rotation_safe: bool,
+    ) !?[]u8 {
         try ensureOAuthCommitNotAborted(abort_flag);
-        const file = try self.openLocked(.exclusive);
+        const file = if (rotation_safe) try self.openRefreshLocked(abort_flag) else try self.openLocked(.exclusive);
         defer file.close(self.io);
         const raw = try self.readLockedAlloc(file);
         defer self.gpa.free(raw);
@@ -451,19 +487,28 @@ pub const AuthStorage = struct {
 
         var current_json: ?[]u8 = null;
         if (parsed.value.object.get(provider_id)) |current| {
+            if (rotation_safe and current == .object) {
+                if (current.object.get("type")) |kind| {
+                    if (kind == .string and std.mem.eql(u8, kind.string, "api_key")) return null;
+                }
+            }
             try validateOAuthValue(current);
             const type_value = current.object.get("type") orelse return error.InvalidOAuthCredential;
             if (type_value != .string or !std.mem.eql(u8, type_value.string, "oauth")) return error.InvalidOAuthCredential;
-            var encoded: std.Io.Writer.Allocating = .init(self.gpa);
-            errdefer encoded.deinit();
-            try std.json.Stringify.value(current, .{}, &encoded.writer);
-            current_json = try encoded.toOwnedSlice();
+            current_json = try std.json.Stringify.valueAlloc(self.gpa, current, .{});
         }
         defer if (current_json) |value| self.gpa.free(value);
 
+        if (rotation_safe and current_json == null) return null;
+
+        try ensureOAuthCommitNotAborted(abort_flag);
+        const previous_protection: ?Io.CancelProtection = if (rotation_safe) self.io.swapCancelProtection(.blocked) else null;
+        defer {
+            if (previous_protection) |protection| _ = self.io.swapCancelProtection(protection);
+        }
         const replacement_json = try callback(context, self.gpa, current_json);
         defer if (replacement_json) |value| self.gpa.free(value);
-        try ensureOAuthCommitNotAborted(abort_flag);
+        if (!rotation_safe) try ensureOAuthCommitNotAborted(abort_flag);
         if (replacement_json) |replacement| {
             const a = parsed.arena.allocator();
             const credential_value = try parseOAuthIntoArena(a, replacement);
@@ -841,4 +886,106 @@ test "credential clone owns complete OAuth state" {
     try std.testing.expectEqualStrings("model-b", cloned.oauth.available_model_ids[1]);
     try std.testing.expect(@intFromPtr(cloned.oauth.refresh.ptr) != @intFromPtr(source.oauth.refresh.ptr));
     try std.testing.expect(@intFromPtr(cloned.oauth.available_model_ids[0].ptr) != @intFromPtr(source.oauth.available_model_ids[0].ptr));
+}
+
+test "rotation-safe refresh persists replacement after caller cancellation" {
+    const gpa = std.testing.allocator;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var store = AuthStorage.initPath(gpa, std.testing.io, try tempAuthPath(gpa, &tmp));
+    defer store.deinit();
+    try store.setOAuthJson("rotation", "{\"refresh\":\"old\",\"access\":\"old\",\"expires\":1,\"tenant\":\"keep\"}");
+    const Refresh = struct {
+        aborted: *bool,
+        calls: usize = 0,
+        fn run(raw: ?*anyopaque, allocator: std.mem.Allocator, current: ?[]const u8) !?[]u8 {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.calls += 1;
+            try std.testing.expect(std.mem.indexOf(u8, current.?, "tenant") != null);
+            @atomicStore(bool, self.aborted, true, .release);
+            return try allocator.dupe(u8, "{\"refresh\":\"rotated\",\"access\":\"fresh\",\"expires\":999,\"tenant\":\"keep\"}");
+        }
+    };
+    var aborted = false;
+    var refresh: Refresh = .{ .aborted = &aborted };
+    const result = (try store.refreshOAuthJsonAbortable("rotation", &refresh, Refresh.run, &aborted)).?;
+    defer gpa.free(result);
+    try std.testing.expectEqual(@as(usize, 1), refresh.calls);
+    const persisted = (try store.readOAuthJson("rotation")).?;
+    defer gpa.free(persisted);
+    try std.testing.expectEqualStrings(result, persisted);
+    try std.testing.expect(std.mem.indexOf(u8, persisted, "rotated") != null);
+    try std.testing.expectError(error.Canceled, store.refreshOAuthJsonAbortable("rotation", &refresh, Refresh.run, &aborted));
+    try std.testing.expectEqual(@as(usize, 1), refresh.calls);
+    try store.setApiKey("rotation", "logged-out");
+    aborted = false;
+    try std.testing.expect(try store.refreshOAuthJsonAbortable("rotation", &refresh, Refresh.run, &aborted) == null);
+    try std.testing.expectEqual(@as(usize, 1), refresh.calls);
+}
+
+test "rotation-safe refresh cancels credential lock wait before calling provider" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var store = AuthStorage.initPath(gpa, io, try tempAuthPath(gpa, &tmp));
+    defer store.deinit();
+    try store.setOAuthJson("rotation", "{\"refresh\":\"old\",\"access\":\"old\",\"expires\":1}");
+    const Callback = struct {
+        fn run(_: ?*anyopaque, _: std.mem.Allocator, _: ?[]const u8) !?[]u8 {
+            return error.ProviderMustNotBeCalled;
+        }
+        fn cancel(task_io: Io, flag: *bool) !void {
+            try task_io.sleep(.fromMilliseconds(40), .awake);
+            @atomicStore(bool, flag, true, .release);
+        }
+    };
+    var aborted = false;
+    {
+        const held = try store.openLocked(.exclusive);
+        defer held.close(io);
+        var task = try io.concurrent(Callback.cancel, .{ io, &aborted });
+        defer task.cancel(io) catch {};
+        try std.testing.expectError(error.Canceled, store.refreshOAuthJsonAbortable("rotation", null, Callback.run, &aborted));
+        try task.await(io);
+    }
+    const persisted = (try store.readOAuthJson("rotation")).?;
+    defer gpa.free(persisted);
+    try std.testing.expect(std.mem.indexOf(u8, persisted, "\"refresh\":\"old\"") != null);
+}
+
+test "serialized refresh rechecks current credential and never recreates logged-out OAuth" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var store = AuthStorage.initPath(gpa, io, try tempAuthPath(gpa, &tmp));
+    defer store.deinit();
+    try store.setOAuthJson("rotation", "{\"refresh\":\"old\",\"access\":\"old\",\"expires\":1}");
+    const Task = struct {
+        store: *AuthStorage,
+        refreshes: usize = 0,
+        fn update(raw: ?*anyopaque, allocator: std.mem.Allocator, current: ?[]const u8) !?[]u8 {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            if (std.mem.indexOf(u8, current.?, "\"access\":\"fresh\"") != null) return null;
+            _ = @atomicRmw(usize, &self.refreshes, .Add, 1, .seq_cst);
+            try self.store.io.sleep(.fromMilliseconds(40), .awake);
+            return try allocator.dupe(u8, "{\"refresh\":\"rotated\",\"access\":\"fresh\",\"expires\":999}");
+        }
+        fn run(self: *@This()) !void {
+            const result = (try self.store.refreshOAuthJsonAbortable("rotation", self, update, null)).?;
+            defer self.store.gpa.free(result);
+            try std.testing.expect(std.mem.indexOf(u8, result, "\"access\":\"fresh\"") != null);
+        }
+    };
+    var task: Task = .{ .store = &store };
+    var concurrent = try io.concurrent(Task.run, .{&task});
+    defer concurrent.cancel(io) catch {};
+    try task.run();
+    try concurrent.await(io);
+    try std.testing.expectEqual(@as(usize, 1), @atomicLoad(usize, &task.refreshes, .seq_cst));
+    try store.delete("rotation");
+    try std.testing.expect(try store.refreshOAuthJsonAbortable("rotation", &task, Task.update, null) == null);
+    try std.testing.expectEqual(@as(usize, 1), task.refreshes);
+    try std.testing.expect(try store.readOAuthJson("rotation") == null);
 }

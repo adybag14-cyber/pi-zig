@@ -268,6 +268,18 @@ Completed evidence:
   The full Windows graph passes 52 steps, 1,094 module tests, 27 existing skips,
   and zero failures. Production Node discovery and full Pi parity remain pending.
 
+- Stored extension OAuth refresh now has cancelable lock acquisition and
+  re-checks current credentials under the lock. Once started, refresh uses an
+  independent 15-second deadline and persists rotated credentials despite caller
+  cancellation. Logout and concurrent refresh checks pass. Login/ordinary mutation
+  cancellation behavior remains covered by its own regressions.
+- Built-in Codex, Copilot, xAI, Anthropic, Kimi and Radius refresh hooks also finish
+  independently of live request cancellation with a bounded HTTP attempt. A real
+  Radius loopback test checks rotated-token persistence; a real extension worker
+  checks late cancellation and subsequent reuse. The full Windows graph passes
+  52 steps, 1,099 module tests, 27 existing skips and zero failures; ReleaseSafe
+  passes. Shared stored-refresh locking for every built-in adapter remains pending.
+
 Required outstanding work:
 
 1. Native extension module loader and TypeScript input erasure, host bindings,

@@ -460,7 +460,6 @@ pub const ClientPool = struct {
     primary_headers: []const metadata.Header = &.{},
     primary_sampling_params: []const metadata.SamplingParam = &.{},
     primary_sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
-    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
     primary_compat: metadata.Compat = .{},
     primary_reasoning: bool = false,
     primary_input_image: bool = false,
@@ -1109,8 +1108,10 @@ pub const ClientPool = struct {
     fn refreshCodexOAuth(ctx: *anyopaque, client: *@import("../ai/openai_responses.zig").ResponsesClient, now_ms: i64) anyerror!void {
         _ = now_ms;
         const self: *ClientPool = @ptrCast(@alignCast(ctx));
+        const protection = try self.beginOAuthRefresh();
+        defer _ = self.io.swapCancelProtection(protection);
         const refresh_token: []const u8 = if (self.codex_oauth_token) |*token| token.refresh else self.codex_initial_refresh orelse return error.MissingOpenAICodexRefreshToken;
-        var fresh = try codex_oauth.refreshWithOptions(self.gpa, self.io, refresh_token, self.bootstrapHttpOptions());
+        var fresh = try codex_oauth.refreshWithOptions(self.gpa, self.io, refresh_token, self.oauthRefreshHttpOptions());
         errdefer fresh.deinit(self.gpa);
         if (self.codex_oauth_token) |*old| old.deinit(self.gpa);
         self.codex_oauth_token = fresh;
@@ -1160,8 +1161,10 @@ pub const ClientPool = struct {
     }
 
     fn refreshCopilotState(self: *ClientPool) !void {
+        const protection = try self.beginOAuthRefresh();
+        defer _ = self.io.swapCancelProtection(protection);
         const refresh: []const u8 = if (self.copilot_oauth_credential) |*credential| credential.refresh else self.copilot_initial_refresh orelse return error.MissingGitHubCopilotRefreshToken;
-        var fresh = try copilot_oauth.refreshCredentialWithOptions(self.gpa, self.io, refresh, self.copilot_enterprise_domain, self.bootstrapHttpOptions());
+        var fresh = try copilot_oauth.refreshCredentialWithOptions(self.gpa, self.io, refresh, self.copilot_enterprise_domain, self.oauthRefreshHttpOptions());
         errdefer fresh.deinit(self.gpa);
         const fresh_base = try copilot_oauth.getBaseUrl(self.gpa, fresh.access, fresh.enterprise_domain);
         errdefer self.gpa.free(fresh_base);
@@ -1187,9 +1190,11 @@ pub const ClientPool = struct {
     fn refreshXaiOpenAI(ctx: *anyopaque, client: *@import("../ai/openai.zig").OpenAIClient, now_ms: i64) anyerror!void {
         _ = now_ms;
         const self: *ClientPool = @ptrCast(@alignCast(ctx));
+        const protection = try self.beginOAuthRefresh();
+        defer _ = self.io.swapCancelProtection(protection);
         const oauth = self.oauthForIdentity("xai", client.model);
         const refresh_token = oauth.refresh orelse return error.MissingXaiRefreshToken;
-        var fresh = try xai_oauth.refreshWithOptions(self.gpa, self.io, refresh_token, self.bootstrapHttpOptions());
+        var fresh = try xai_oauth.refreshWithOptions(self.gpa, self.io, refresh_token, self.oauthRefreshHttpOptions());
         defer fresh.deinit(self.gpa);
         try self.installXaiOAuthCredential(&fresh);
         const live = self.liveCredentialForIdentity("xai") orelse return error.MissingXaiOAuthCredential;
@@ -1223,9 +1228,11 @@ pub const ClientPool = struct {
     fn refreshAnthropicOAuth(ctx: *anyopaque, client: *@import("../ai/anthropic.zig").AnthropicClient, now_ms: i64) anyerror!void {
         _ = now_ms;
         const self: *ClientPool = @ptrCast(@alignCast(ctx));
+        const protection = try self.beginOAuthRefresh();
+        defer _ = self.io.swapCancelProtection(protection);
         const oauth = self.oauthForIdentity("anthropic", client.model);
         const refresh_token = oauth.refresh orelse return error.MissingAnthropicRefreshToken;
-        var fresh = try anthropic_oauth.refreshWithOptions(self.gpa, self.io, refresh_token, self.bootstrapHttpOptions());
+        var fresh = try anthropic_oauth.refreshWithOptions(self.gpa, self.io, refresh_token, self.oauthRefreshHttpOptions());
         defer fresh.deinit(self.gpa);
         try self.installAnthropicOAuthCredential(&fresh);
         const live = self.liveCredentialForIdentity("anthropic") orelse return error.MissingAnthropicOAuthCredential;
@@ -1242,10 +1249,12 @@ pub const ClientPool = struct {
     fn refreshKimiOAuth(ctx: *anyopaque, client: *@import("../ai/anthropic.zig").AnthropicClient, now_ms: i64) anyerror!void {
         _ = now_ms;
         const self: *ClientPool = @ptrCast(@alignCast(ctx));
+        const protection = try self.beginOAuthRefresh();
+        defer _ = self.io.swapCancelProtection(protection);
         const oauth = self.oauthForIdentity("kimi-coding", client.model);
         const refresh_token = oauth.refresh orelse return error.MissingKimiRefreshToken;
         const host = kimi_oauth.oauthHost(self.environ);
-        var fresh = try kimi_oauth.refreshWithOptions(self.gpa, self.io, host, refresh_token, self.bootstrapHttpOptions());
+        var fresh = try kimi_oauth.refreshWithOptions(self.gpa, self.io, host, refresh_token, self.oauthRefreshHttpOptions());
         defer fresh.deinit(self.gpa);
         try self.installKimiOAuthCredential(&fresh);
         const live = self.liveCredentialForIdentity("kimi-coding") orelse return error.MissingKimiOAuthCredential;
@@ -1271,9 +1280,11 @@ pub const ClientPool = struct {
     fn refreshRadiusOAuth(ctx: *anyopaque, client: *@import("../ai/pi_messages.zig").PiMessagesClient, now_ms: i64) anyerror!void {
         _ = now_ms;
         const self: *ClientPool = @ptrCast(@alignCast(ctx));
+        const protection = try self.beginOAuthRefresh();
+        defer _ = self.io.swapCancelProtection(protection);
         const refresh_token: []const u8 = if (self.radius_oauth_token) |*token| token.refresh else self.radius_initial_refresh orelse return error.MissingRadiusRefreshToken;
         const gateway = self.radius_gateway orelse return error.MissingRadiusGateway;
-        var fresh = try radius_oauth.refreshWithOptions(self.gpa, self.io, gateway, refresh_token, self.bootstrapHttpOptions());
+        var fresh = try radius_oauth.refreshWithOptions(self.gpa, self.io, gateway, refresh_token, self.oauthRefreshHttpOptions());
         errdefer fresh.deinit(self.gpa);
         if (self.radius_oauth_token) |*old| old.deinit(self.gpa);
         self.radius_oauth_token = fresh;
@@ -1453,6 +1464,21 @@ pub const ClientPool = struct {
                 .setting = self.http_proxy_url,
             },
         };
+    }
+
+    fn beginOAuthRefresh(self: *const ClientPool) !Io.CancelProtection {
+        if (self.abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) return error.ProviderRequestAborted;
+        return self.io.swapCancelProtection(.blocked);
+    }
+
+    /// Token rotation must finish independently of live request cancellation.
+    /// Keep proxy selection but use one bounded refresh attempt, as upstream does.
+    pub fn oauthRefreshHttpOptions(self: *const ClientPool) bootstrap_http.Options {
+        var options = self.bootstrapHttpOptions();
+        options.abort_flag = null;
+        options.policy.timeout_ms = 15_000;
+        options.policy.max_retries = 0;
+        return options;
     }
 
     pub fn setThinkingFromString(self: *ClientPool, level: ?[]const u8) void {
@@ -4013,4 +4039,58 @@ test "extension OAuth invalidation scrubs the active transport before releasing 
     try std.testing.expect(pool.openai.?.token_expiration_ms == null);
     try std.testing.expect(pool.openai.?.token_refresh_ctx == null);
     try std.testing.expect(pool.openai.?.token_refresh_fn == null);
+}
+
+test "native Radius refresh survives caller cancellation and persists rotated credentials" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    const fixture = @import("../ai/http_fixture.zig");
+    const server = try fixture.PlanServer.init(gpa, io, &.{.{
+        .path = "/v1/oauth/token",
+        .body = "{\"access_token\":\"fresh-access\",\"refresh_token\":\"rotated-refresh\",\"expires_in\":3600,\"scope\":\"keep\"}",
+        .delay_ms = 120,
+        .payload_contains = "refresh_token=old-refresh",
+    }});
+    defer server.deinit();
+    const gateway = try server.url(gpa, "");
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const path_len = try tmp.dir.realPath(io, &path_buf);
+    const root = path_buf[0..path_len];
+    var env: std.process.Environ.Map = .init(gpa);
+    defer env.deinit();
+    var aborted = false;
+    var pool: ClientPool = .{
+        .gpa = gpa,
+        .io = io,
+        .environ = &env,
+        .abort_flag = &aborted,
+        .auth_agent_dir = root,
+        .radius_gateway = gateway,
+        .radius_initial_refresh = try gpa.dupe(u8, "old-refresh"),
+        // A short live request deadline must not cancel token rotation.
+        .provider_retry_policy = .{ .timeout_ms = 20, .max_retries = 4 },
+    };
+    defer pool.deinit();
+    var client: ai.pi_messages.PiMessagesClient = .{ .gpa = gpa, .io = io, .api_key = "old", .base_url = gateway, .model = "m", .provider_id = "radius-test" };
+    const Cancel = struct {
+        fn run(task_io: Io, flag: *bool) !void {
+            try task_io.sleep(.fromMilliseconds(40), .awake);
+            @atomicStore(bool, flag, true, .release);
+        }
+    };
+    var cancellation = try io.concurrent(Cancel.run, .{ io, &aborted });
+    defer cancellation.cancel(io) catch {};
+    try ClientPool.refreshRadiusOAuth(&pool, &client, 1);
+    try cancellation.await(io);
+    try server.finish();
+    try std.testing.expectEqualStrings("fresh-access", client.api_key);
+    var store = try auth_storage.AuthStorage.init(gpa, io, root);
+    defer store.deinit();
+    var persisted = (try store.read("radius-test")).?;
+    defer persisted.deinit(gpa);
+    try std.testing.expectEqualStrings("rotated-refresh", persisted.oauth.refresh);
+    try std.testing.expectEqualStrings("keep", persisted.oauth.scope.?);
+    try std.testing.expectError(error.ProviderRequestAborted, ClientPool.refreshRadiusOAuth(&pool, &client, 2));
 }
