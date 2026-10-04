@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "upstreamPackage": "@earendil-works/pi-ai",
-  "upstreamVersion": "1.0.1",
-  "upstreamCommit": "83692682f095528f8b71652ddacff7075e36e893",
-  "upstreamSourceArchiveSha256": "bfb52243c704f88a88ada70b73e0d229b25fe0d7aca0a2c69110673065c0d00f",
+  "upstreamVersion": "1.0.2",
+  "upstreamCommit": "200387122ca450d6387f033949423114a270b96c",
+  "upstreamSourceArchiveSha256": "e5f3ea2edbea9b1942b8be477b94a03020ebab5256f7dcc65866eb237011738b",
   "catalogRevision": "sha256-d28b6de6985826060b6e2ccf589d16800d9fdbc40681ae4c698421c92d2ff86f",
   "catalogSha256": "d28b6de6985826060b6e2ccf589d16800d9fdbc40681ae4c698421c92d2ff86f",
   "modelCount": 1601,

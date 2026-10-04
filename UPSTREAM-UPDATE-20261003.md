@@ -6,15 +6,19 @@ Status: in progress. This file does not certify parity or a release.
   `012e80ced763e8d8ac7e01f7331d32dad3ab468b`.
 - Previous Pi baseline: `853a80d26c90a14c1886f0ebb8ffaae133ca2185`, version 0.84.4.
 - Selected authority: earendil-works/pi main
-  `83692682f095528f8b71652ddacff7075e36e893`, package version 1.0.1.
+  `200387122ca450d6387f033949423114a270b96c`, package version 1.0.2.
   It descends from and is newer than published GitHub release v1.0.0.
-- Delta: 883 commits, including new model types/classifiers, codemode, MCP
+- Delta: 888 commits, including new model types/classifiers, codemode, MCP
   configuration/OAuth, providers/auth, agent-loop hooks, terminal behavior,
   and extraction of durable harness APIs into pi-durable.
   The refresh from initial target `4c6fb7cf` adds exactly one Nix workflow
   history-fetch fix and changes no runtime/package/catalog sources.
+- The October 4 refresh to `20038712` adds five commits and published v1.0.2.
+  Runtime changes are per-thinking-level sampling parameters and durable
+  provider-session identity persistence; release/package versions also advance.
+  Those runtime contracts are being reviewed and are not yet parity-certified.
 - Current upstream source tar SHA-256:
-  `bfb52243c704f88a88ada70b73e0d229b25fe0d7aca0a2c69110673065c0d00f`.
+  `e5f3ea2edbea9b1942b8be477b94a03020ebab5256f7dcc65866eb237011738b`.
 - User-required toolchain: final Zig 0.16.0. No implicit upgrade.
 - User-required implementation: Zig; direct C interoperability allowed.
   Retain upstream user-authored JavaScript/TypeScript extension compatibility
