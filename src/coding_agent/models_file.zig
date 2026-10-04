@@ -22,6 +22,7 @@ pub const ModelConfig = struct {
     context_window: ?u64 = null,
     max_tokens: ?u64 = null,
     sampling_params: []metadata.SamplingParam = &.{},
+    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
     headers: []metadata.Header = &.{},
     compat: metadata.Compat = .{},
 };
@@ -37,6 +38,7 @@ pub const ModelOverride = struct {
     context_window: ?u64 = null,
     max_tokens: ?u64 = null,
     sampling_params: []metadata.SamplingParam = &.{},
+    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
     headers: []metadata.Header = &.{},
     compat: metadata.Compat = .{},
 };
@@ -98,9 +100,13 @@ pub const ModelsFile = struct {
     }
 };
 
-fn deinitSampling(gpa: std.mem.Allocator, params: []metadata.SamplingParam) void {
+fn deinitSampling(gpa: std.mem.Allocator, params: []const metadata.SamplingParam) void {
     for (params) |param| gpa.free(param.value_json);
     if (params.len > 0) gpa.free(params);
+}
+
+fn deinitSamplingByLevel(gpa: std.mem.Allocator, params: metadata.SamplingParamsByThinkingLevel) void {
+    for (params.levels) |level| deinitSampling(gpa, level.base);
 }
 
 fn deinitCost(gpa: std.mem.Allocator, cost: providers.ModelCost) void {
@@ -109,12 +115,14 @@ fn deinitCost(gpa: std.mem.Allocator, cost: providers.ModelCost) void {
 
 fn deinitModelConfig(gpa: std.mem.Allocator, model: ModelConfig) void {
     deinitSampling(gpa, model.sampling_params);
+    deinitSamplingByLevel(gpa, model.sampling_params_by_thinking_level);
     if (model.headers.len > 0) gpa.free(model.headers);
     deinitCost(gpa, model.info.cost);
 }
 
 fn deinitModelOverride(gpa: std.mem.Allocator, override: ModelOverride) void {
     deinitSampling(gpa, override.sampling_params);
+    deinitSamplingByLevel(gpa, override.sampling_params_by_thinking_level);
     if (override.headers.len > 0) gpa.free(override.headers);
     if (override.cost) |cost| deinitCost(gpa, cost);
 }
@@ -135,20 +143,37 @@ fn parseHeaders(gpa: std.mem.Allocator, object: std.json.ObjectMap, field_name: 
 fn parseSamplingParams(gpa: std.mem.Allocator, object: std.json.ObjectMap) ![]metadata.SamplingParam {
     const value = object.get("samplingParams") orelse return &.{};
     if (value != .object) return error.InvalidModelConfig;
+    return parseSamplingObject(gpa, value.object);
+}
+
+fn parseSamplingObject(gpa: std.mem.Allocator, object: std.json.ObjectMap) ![]metadata.SamplingParam {
     var out: std.ArrayList(metadata.SamplingParam) = .empty;
     errdefer {
         for (out.items) |param| gpa.free(param.value_json);
         out.deinit(gpa);
     }
-    var it = value.object.iterator();
+    var it = object.iterator();
     while (it.next()) |entry| {
-        var buf: std.Io.Writer.Allocating = .init(gpa);
-        errdefer buf.deinit();
-        try std.json.Stringify.value(entry.value_ptr.*, .{}, &buf.writer);
-        const raw = try buf.toOwnedSlice();
+        const raw = try std.json.Stringify.valueAlloc(gpa, entry.value_ptr.*, .{});
+        errdefer gpa.free(raw);
         try out.append(gpa, .{ .name = entry.key_ptr.*, .value_json = raw });
     }
     return try out.toOwnedSlice(gpa);
+}
+
+fn parseSamplingByLevel(gpa: std.mem.Allocator, object: std.json.ObjectMap) !metadata.SamplingParamsByThinkingLevel {
+    const value = object.get("samplingParamsByThinkingLevel") orelse return .{};
+    if (value != .object) return error.InvalidModelConfig;
+    var out: metadata.SamplingParamsByThinkingLevel = .{};
+    errdefer deinitSamplingByLevel(gpa, out);
+    // Configuration keys use the upstream schema's exact names, not CLI aliases.
+    for (thinking.extended_levels) |level| {
+        if (value.object.get(@tagName(level))) |params| {
+            if (params != .object) return error.InvalidModelConfig;
+            out.levels[@intFromEnum(level)].base = try parseSamplingObject(gpa, params.object);
+        }
+    }
+    return out;
 }
 
 fn optionalCompatBool(object: std.json.ObjectMap, name: []const u8) !?bool {
@@ -488,7 +513,10 @@ pub fn load(gpa: std.mem.Allocator, io: Io, agent_dir: []const u8) !ModelsFile {
 /// the on-disk file, avoiding a weaker second provider dialect.
 pub fn parseFromSlice(gpa: std.mem.Allocator, raw: []const u8) !ModelsFile {
     const content = if (std.mem.startsWith(u8, raw, "\xEF\xBB\xBF")) raw[3..] else raw;
-    var parsed = std.json.parseFromSlice(std.json.Value, gpa, content, .{ .allocate = .alloc_always }) catch return error.InvalidModelsJson;
+    var parsed = std.json.parseFromSlice(std.json.Value, gpa, content, .{ .allocate = .alloc_always }) catch |err| switch (err) {
+        error.OutOfMemory => return err,
+        else => return error.InvalidModelsJson,
+    };
     errdefer parsed.deinit();
     if (parsed.value != .object) return error.InvalidModelsJson;
     const providers_value = parsed.value.object.get("providers") orelse return .{ .gpa = gpa, .parsed = parsed };
@@ -532,7 +560,10 @@ pub fn parseFromSlice(gpa: std.mem.Allocator, raw: []const u8) !ModelsFile {
         const provider_compat = try parseCompat(object);
 
         var model_list: std.ArrayList(ModelConfig) = .empty;
-        errdefer model_list.deinit(gpa);
+        errdefer {
+            for (model_list.items) |model| deinitModelConfig(gpa, model);
+            model_list.deinit(gpa);
+        }
         if (object.get("models")) |models_value| {
             if (models_value != .array) return error.InvalidProviderConfig;
             for (models_value.array.items) |model_value| {
@@ -555,6 +586,8 @@ pub fn parseFromSlice(gpa: std.mem.Allocator, raw: []const u8) !ModelsFile {
                 if (max_tokens != null and max_tokens.? == 0) return error.InvalidModelConfig;
                 const sampling_params = try parseSamplingParams(gpa, model_object);
                 errdefer deinitSampling(gpa, sampling_params);
+                const sampling_by_level = try parseSamplingByLevel(gpa, model_object);
+                errdefer deinitSamplingByLevel(gpa, sampling_by_level);
                 const model_headers = try parseHeaders(gpa, model_object, "headers");
                 errdefer if (model_headers.len > 0) gpa.free(model_headers);
                 const model_compat = metadata.Compat.merge(provider_compat, try parseCompat(model_object));
@@ -572,7 +605,11 @@ pub fn parseFromSlice(gpa: std.mem.Allocator, raw: []const u8) !ModelsFile {
                     .context_window = context_window orelse 128_000,
                     .max_tokens = max_tokens orelse 16_384,
                     .cost = (try parseCost(gpa, model_object)) orelse .{},
+                    .sampling_params = sampling_params,
+                    .sampling_params_by_thinking_level = sampling_by_level,
                 };
+                errdefer deinitCost(gpa, info.cost);
+                try all_models.append(gpa, info);
                 try model_list.append(gpa, .{
                     .info = info,
                     .api = model_api,
@@ -580,39 +617,52 @@ pub fn parseFromSlice(gpa: std.mem.Allocator, raw: []const u8) !ModelsFile {
                     .context_window = context_window,
                     .max_tokens = max_tokens,
                     .sampling_params = sampling_params,
+                    .sampling_params_by_thinking_level = sampling_by_level,
                     .headers = model_headers,
                     .compat = model_compat,
                 });
-                try all_models.append(gpa, info);
             }
         }
 
         var override_list: std.ArrayList(ModelOverride) = .empty;
-        errdefer override_list.deinit(gpa);
+        errdefer {
+            for (override_list.items) |override| deinitModelOverride(gpa, override);
+            override_list.deinit(gpa);
+        }
         if (object.get("modelOverrides")) |overrides_value| {
             if (overrides_value != .object) return error.InvalidProviderConfig;
             var override_it = overrides_value.object.iterator();
             while (override_it.next()) |override_entry| {
                 if (override_entry.value_ptr.* != .object) return error.InvalidModelConfig;
                 const override_object = override_entry.value_ptr.object;
-                try override_list.append(gpa, .{
+                var override: ModelOverride = .{
                     .id = override_entry.key_ptr.*,
                     .name = stringField(override_object, "name"),
                     .reasoning = optionalBoolField(override_object, "reasoning"),
                     .thinking_level_map = try parseThinkingMap(override_object, "thinkingLevelMap"),
                     .input_text = parseInput(override_object).text,
                     .input_image = parseInput(override_object).image,
-                    .cost = try parsePartialCost(gpa, override_object),
                     .context_window = intField(override_object, "contextWindow"),
                     .max_tokens = intField(override_object, "maxTokens"),
-                    .sampling_params = try parseSamplingParams(gpa, override_object),
-                    .headers = try parseHeaders(gpa, override_object, "headers"),
-                    .compat = try parseCompat(override_object),
-                });
+                };
+                errdefer deinitModelOverride(gpa, override);
+                override.cost = try parsePartialCost(gpa, override_object);
+                override.sampling_params = try parseSamplingParams(gpa, override_object);
+                override.sampling_params_by_thinking_level = try parseSamplingByLevel(gpa, override_object);
+                override.headers = try parseHeaders(gpa, override_object, "headers");
+                override.compat = try parseCompat(override_object);
+                try override_list.append(gpa, override);
             }
         }
 
-        try provider_list.append(gpa, .{
+        try provider_list.ensureUnusedCapacity(gpa, 1);
+        const owned_models = try model_list.toOwnedSlice(gpa);
+        errdefer {
+            for (owned_models) |model| deinitModelConfig(gpa, model);
+            gpa.free(owned_models);
+        }
+        const owned_overrides = try override_list.toOwnedSlice(gpa);
+        provider_list.appendAssumeCapacity(.{
             .id = provider_id,
             .name = provider_name,
             .base_url = base_url,
@@ -622,16 +672,18 @@ pub fn parseFromSlice(gpa: std.mem.Allocator, raw: []const u8) !ModelsFile {
             .auth_header = boolField(object, "authHeader", false),
             .headers = provider_headers,
             .compat = provider_compat,
-            .models = try model_list.toOwnedSlice(gpa),
-            .model_overrides = try override_list.toOwnedSlice(gpa),
+            .models = owned_models,
+            .model_overrides = owned_overrides,
         });
     }
 
+    const owned_infos = try all_models.toOwnedSlice(gpa);
+    errdefer gpa.free(owned_infos);
     return .{
         .gpa = gpa,
         .parsed = parsed,
         .providers = try provider_list.toOwnedSlice(gpa),
-        .model_infos = try all_models.toOwnedSlice(gpa),
+        .model_infos = owned_infos,
     };
 }
 
@@ -932,4 +984,34 @@ test "models.json accepts custom Radius OAuth provider without static models" {
         \\{"providers":{"radius-bad":{"oauth":"radius"}}}
     });
     try std.testing.expectError(error.MissingBaseUrl, load(gpa, io, root));
+}
+
+const thinking_sampling_fixture =
+    \\{"providers":{"corp":{"baseUrl":"http://127.0.0.1:9/v1","api":"openai-completions","models":[{"id":"m","reasoning":true,"samplingParams":{"temperature":1},"samplingParamsByThinkingLevel":{"off":{"temperature":0.1},"high":{"top_p":0.9,"vendor":{"a":[0,false,null]}}}}],"modelOverrides":{"m":{"samplingParamsByThinkingLevel":{"high":{"top_p":0.4},"max":{"top_k":64}}}}}}}
+;
+
+fn thinkingSamplingParserProbe(gpa: std.mem.Allocator) !void {
+    var file = try parseFromSlice(gpa, thinking_sampling_fixture);
+    defer file.deinit();
+    const model = file.findModel("corp", "m").?;
+    const high = model.sampling_params_by_thinking_level.at(.high).base;
+    try std.testing.expectEqual(@as(usize, 2), high.len);
+    try std.testing.expectEqualStrings("{\"a\":[0,false,null]}", high[1].value_json);
+    try std.testing.expectEqual(@as(usize, 1), file.findProvider("corp").?.findOverride("m").?.sampling_params_by_thinking_level.at(.max).base.len);
+}
+
+test "models schema retains Pi 1.0.2 thinking sampling and releases every allocation failure" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, thinkingSamplingParserProbe, .{});
+}
+
+test "invalid thinking sampling releases already parsed models and overrides" {
+    const invalid = [_][]const u8{
+        \\{"providers":{"corp":{"baseUrl":"http://127.0.0.1:9/v1","api":"openai-completions","models":[{"id":"a","samplingParamsByThinkingLevel":{"high":{"x":1}}},{"id":"b","samplingParamsByThinkingLevel":{"high":null}}]}}}
+        ,
+        \\{"providers":{"corp":{"baseUrl":"http://127.0.0.1:9/v1","api":"openai-completions","models":[{"id":"a","samplingParamsByThinkingLevel":[]} ]}}}
+        ,
+        \\{"providers":{"corp":{"baseUrl":"http://127.0.0.1:9/v1","api":"openai-completions","modelOverrides":{"a":{"samplingParams":{"x":1},"samplingParamsByThinkingLevel":{"low":{"x":2}}},"b":{"samplingParams":{"x":1},"samplingParamsByThinkingLevel":{"low":{"x":2},"high":true}}}}}}
+        ,
+    };
+    for (invalid) |raw| try std.testing.expectError(error.InvalidModelConfig, parseFromSlice(std.testing.allocator, raw));
 }

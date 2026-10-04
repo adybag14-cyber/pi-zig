@@ -3854,6 +3854,7 @@ pub fn main(init: std.process.Init) !void {
             .base_url = stored.base_url,
             .headers = stored.headers,
             .sampling_params = stored.sampling_params,
+            .sampling_params_by_thinking_level = stored.sampling_params_by_thinking_level,
             .compat = stored.compat,
             .reasoning = stored.reasoning,
             .input_image = stored.input_image,
@@ -3945,7 +3946,7 @@ pub fn main(init: std.process.Init) !void {
     client_pool.setHttpProxy(settings.http_proxy);
     client_pool.setAuthAgentDir(agent_dir);
     client_pool.setPrimaryOAuthMetadata(primary_runtime.oauth_refresh, primary_runtime.oauth_expires_ms, primary_runtime.oauth_enterprise_url);
-    client_pool.setPrimaryRequestMetadata(primary_runtime.headers, primary_runtime.sampling_params, primary_runtime.compat, primary_runtime.max_tokens, primary_runtime.context_window, primary_runtime.input_image);
+    client_pool.setPrimaryRequestMetadata(primary_runtime.headers, primary_runtime.sampling_params, primary_runtime.sampling_params_by_thinking_level, primary_runtime.compat, primary_runtime.max_tokens, primary_runtime.context_window, primary_runtime.input_image);
     client_pool.setPrimaryModelRuntime(primary_runtime.api, primary_runtime.model_cost);
     client_pool.setPrimaryThinkingMetadata(primary_runtime.reasoning, primary_runtime.thinking_level_map);
     client_pool.setModelCatalog(model_catalog);

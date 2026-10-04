@@ -229,6 +229,8 @@ pub const ProviderResponse = struct {
 pub const ProviderResponseHandler = *const fn (?*anyopaque, ProviderResponse) anyerror!void;
 
 pub const CompletionOptions = struct {
+    /// Provider-specific request values override model and thinking-level defaults.
+    sampling_params: []const request_metadata.SamplingParam = &.{},
     /// Request-local output cap. Zero preserves the model/provider default.
     max_tokens: u64 = 0,
     /// Detached one-shot work such as compaction and branch summaries must not
@@ -314,6 +316,7 @@ pub const ModelClient = struct {
 
 test {
     _ = catalog_projection_test;
+    _ = @import("sampling_transport_tests.zig");
     std.testing.refAllDecls(@This());
 }
 

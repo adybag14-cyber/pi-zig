@@ -37,6 +37,7 @@ pub const OpenAIClient = struct {
     thinking_level_map: ?thinking_mod.ThinkingLevelMap = null,
     custom_headers: []const metadata.Header = &.{},
     sampling_params: []const metadata.SamplingParam = &.{},
+    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
     compat: metadata.Compat = .{},
     max_tokens: u64 = 0,
     context_window: u64 = 0,
@@ -114,13 +115,15 @@ pub const OpenAIClient = struct {
         const effective_max_tokens = context_estimate.clampMaxTokens(self.context_window, ai.resolveMaxTokens(self.max_tokens, request_options.max_tokens), effective_messages, tools_json);
         const effective_cache_retention: metadata.CacheRetention = ai.resolveCacheRetention(self.cache_retention, request_options);
         const effective_session_id: ?[]const u8 = ai.resolveSessionAffinity(self.session_id, request_options);
+        const sampling = try metadata.resolveSamplingParams(gpa, self.sampling_params, self.sampling_params_by_thinking_level, self.reasoning, self.thinking_level_map, self.thinking, request_options.sampling_params);
+        defer gpa.free(sampling);
         const payload = try buildRequestBodyConfigured(gpa, self.model, effective_messages, tools_json, .{
             .stream = streaming,
             .thinking = self.thinking,
             .reasoning = self.reasoning,
             .thinking_level_map = self.thinking_level_map,
             .max_tokens = effective_max_tokens,
-            .sampling_params = self.sampling_params,
+            .sampling_params = sampling,
             .compat = self.compat,
             .tool_choice = request_options.tool_choice,
             .session_id = if (effective_cache_retention != .none and effective_session_id != null and

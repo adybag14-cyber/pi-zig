@@ -16,6 +16,102 @@ pub const SamplingParam = struct {
     value_json: []const u8,
 };
 
+/// Borrowed model configuration. Each level keeps the provider defaults and
+/// the model override separate so catalog composition needs no hidden owner.
+pub const SamplingParamsByThinkingLevel = struct {
+    const thinking = @import("thinking.zig");
+    pub const Level = struct {
+        base: []const SamplingParam = &.{},
+        overlay: []const SamplingParam = &.{},
+    };
+    levels: [7]Level = @splat(.{}),
+
+    pub fn at(self: SamplingParamsByThinkingLevel, level: thinking.ThinkingLevel) Level {
+        return self.levels[@intFromEnum(level)];
+    }
+
+    pub fn merge(base: SamplingParamsByThinkingLevel, overlay: SamplingParamsByThinkingLevel) SamplingParamsByThinkingLevel {
+        var out = base;
+        for (&out.levels, overlay.levels) |*target, source| {
+            if (source.base.len > 0) target.overlay = source.base;
+        }
+        return out;
+    }
+};
+
+/// Last assignment wins by key, matching object spread without duplicate JSON
+/// keys. Values and names remain borrowed; only the returned slice is owned.
+pub fn mergeSamplingParams(gpa: std.mem.Allocator, layers: []const []const SamplingParam) ![]SamplingParam {
+    var out: std.ArrayList(SamplingParam) = .empty;
+    errdefer out.deinit(gpa);
+    for (layers) |layer| for (layer) |param| {
+        for (out.items) |*existing| {
+            if (std.mem.eql(u8, existing.name, param.name)) {
+                existing.* = param;
+                break;
+            }
+        } else {
+            try out.append(gpa, param);
+        }
+    };
+    return out.toOwnedSlice(gpa);
+}
+
+pub fn resolveSamplingParams(
+    gpa: std.mem.Allocator,
+    base: []const SamplingParam,
+    by_level: SamplingParamsByThinkingLevel,
+    reasoning: bool,
+    map: ?@import("thinking.zig").ThinkingLevelMap,
+    requested_level: @import("thinking.zig").ThinkingLevel,
+    request: []const SamplingParam,
+) ![]SamplingParam {
+    const effective = @import("thinking.zig").clamp(reasoning, map, requested_level);
+    const level = by_level.at(effective);
+    return mergeSamplingParams(gpa, &.{ base, level.base, level.overlay, request });
+}
+
+test "Pi 1.0.2 sampling clamps before selecting defaults and request values win" {
+    const gpa = std.testing.allocator;
+    const Param = SamplingParam;
+    const base = [_]Param{
+        .{ .name = "temperature", .value_json = "0.9" },
+        .{ .name = "vendor", .value_json = "{\"keep\":true}" },
+    };
+    var levels: SamplingParamsByThinkingLevel = .{};
+    levels.levels[@intFromEnum(@import("thinking.zig").ThinkingLevel.high)].base = &.{
+        .{ .name = "temperature", .value_json = "0.6" },
+        .{ .name = "top_p", .value_json = "0.8" },
+    };
+    levels.levels[@intFromEnum(@import("thinking.zig").ThinkingLevel.high)].overlay = &.{
+        .{ .name = "top_p", .value_json = "0.4" },
+    };
+    levels.levels[0].base = &.{.{ .name = "temperature", .value_json = "0.1" }};
+    const params = try resolveSamplingParams(gpa, &base, levels, true, null, .max, &.{.{ .name = "temperature", .value_json = "null" }});
+    defer gpa.free(params);
+    try std.testing.expectEqual(@as(usize, 3), params.len);
+    try std.testing.expectEqualStrings("null", params[0].value_json);
+    try std.testing.expectEqualStrings("{\"keep\":true}", params[1].value_json);
+    try std.testing.expectEqualStrings("0.4", params[2].value_json);
+    const non_reasoning = try resolveSamplingParams(gpa, &base, levels, false, null, .high, &.{});
+    defer gpa.free(non_reasoning);
+    try std.testing.expectEqualStrings("0.1", non_reasoning[0].value_json);
+    try std.testing.expectEqual(@as(usize, 2), non_reasoning.len);
+}
+
+fn samplingAllocationProbe(gpa: std.mem.Allocator) !void {
+    const params = try mergeSamplingParams(gpa, &.{
+        &.{.{ .name = "x", .value_json = "1" }},
+        &.{ .{ .name = "x", .value_json = "2" }, .{ .name = "y", .value_json = "false" } },
+    });
+    defer gpa.free(params);
+    try std.testing.expectEqual(@as(usize, 2), params.len);
+}
+
+test "sampling merge releases partial allocations" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, samplingAllocationProbe, .{});
+}
+
 pub const CacheRetention = enum {
     none,
     short,

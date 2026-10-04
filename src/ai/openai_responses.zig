@@ -477,6 +477,7 @@ pub const ResponsesClient = struct {
     thinking_level_map: ?thinking_mod.ThinkingLevelMap = null,
     custom_headers: []const metadata.Header = &.{},
     sampling_params: []const metadata.SamplingParam = &.{},
+    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
     compat: metadata.Compat = .{},
     max_tokens: u64 = 0,
     context_window: u64 = 0,
@@ -557,6 +558,8 @@ pub const ResponsesClient = struct {
         const effective_max_tokens = context_estimate.clampMaxTokens(self.context_window, ai.resolveMaxTokens(self.max_tokens, request_options.max_tokens), messages, tools_json);
         const effective_cache_retention: metadata.CacheRetention = ai.resolveCacheRetention(self.cache_retention, request_options);
         const effective_session_id: ?[]const u8 = ai.resolveSessionAffinity(self.session_id, request_options);
+        const sampling = try metadata.resolveSamplingParams(gpa, self.sampling_params, self.sampling_params_by_thinking_level, self.reasoning, self.thinking_level_map, self.thinking, request_options.sampling_params);
+        defer gpa.free(sampling);
         const payload = if (self.protocol_mode == .codex)
             try buildCodexRequestBody(gpa, self.model, messages, tools_json, .{
                 .stream = streaming,
@@ -565,7 +568,7 @@ pub const ResponsesClient = struct {
                 .input_image = self.input_image,
                 .thinking_level_map = self.thinking_level_map,
                 .max_tokens = effective_max_tokens,
-                .sampling_params = self.sampling_params,
+                .sampling_params = sampling,
                 .compat = self.compat,
                 .session_id = codexCacheSessionId(effective_session_id, effective_cache_retention),
                 .cache_retention = effective_cache_retention,
@@ -581,7 +584,7 @@ pub const ResponsesClient = struct {
                 .input_image = self.input_image,
                 .thinking_level_map = self.thinking_level_map,
                 .max_tokens = effective_max_tokens,
-                .sampling_params = self.sampling_params,
+                .sampling_params = sampling,
                 .compat = self.compat,
                 .session_id = codexCacheSessionId(effective_session_id, effective_cache_retention),
                 .cache_retention = effective_cache_retention,
@@ -775,7 +778,7 @@ pub const ResponsesClient = struct {
         if (response.api.len > 0) gpa.free(response.api);
         response.api = try gpa.dupe(u8, protocolApiName(self.protocol_mode));
         _ = cost_mod.calculate(self.model_cost, &response.usage);
-        const request_tier = requestedServiceTier(self.sampling_params);
+        const request_tier = parseResponseServiceTier(gpa, payload);
         const response_tier = if (streaming) live.service_tier else parseResponseServiceTier(gpa, live.body.items);
         applyServiceTierCost(self.model, effectiveServiceTier(self.protocol_mode, response_tier, request_tier), &response.usage);
         try response.ensureStopReason(gpa);
@@ -796,7 +799,7 @@ pub const ResponsesClient = struct {
         if (response.api.len > 0) gpa.free(response.api);
         response.api = try gpa.dupe(u8, protocolApiName(self.protocol_mode));
         _ = cost_mod.calculate(self.model_cost, &response.usage);
-        const request_tier = requestedServiceTier(self.sampling_params);
+        const request_tier = parseResponseServiceTier(gpa, payload);
         applyServiceTierCost(self.model, effectiveServiceTier(self.protocol_mode, live.service_tier, request_tier), &response.usage);
         try response.ensureStopReason(gpa);
 

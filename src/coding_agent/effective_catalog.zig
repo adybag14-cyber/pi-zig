@@ -26,6 +26,7 @@ fn applyOverride(model: providers.ModelInfo, provider_config: ?*const models_fil
             if (model_override.cost) |value| merged.cost = value;
             if (model_override.context_window) |value| merged.context_window = value;
             if (model_override.max_tokens) |value| merged.max_tokens = value;
+            merged.sampling_params_by_thinking_level = @import("../ai/request_metadata.zig").SamplingParamsByThinkingLevel.merge(model.sampling_params_by_thinking_level, model_override.sampling_params_by_thinking_level);
         }
     }
     return merged;
@@ -72,7 +73,7 @@ fn compose(gpa: std.mem.Allocator, models_file: *const models_file_mod.ModelsFil
         for (provider_config.models) |configured_model| {
             if (!include_non_chat and configured_model.info.kind != .chat) continue;
             if (!configured_model.api.runtimeSupported()) continue;
-            try out.append(gpa, configured_model.info);
+            try out.append(gpa, applyOverride(configured_model.info, &provider_config));
         }
     }
     return try out.toOwnedSlice(gpa);

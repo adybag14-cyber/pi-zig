@@ -6,9 +6,9 @@ Status: in progress. This file does not certify parity or a release.
   `012e80ced763e8d8ac7e01f7331d32dad3ab468b`.
 - Previous Pi baseline: `853a80d26c90a14c1886f0ebb8ffaae133ca2185`, version 0.84.4.
 - Selected authority: earendil-works/pi main
-  `200387122ca450d6387f033949423114a270b96c`, package version 1.0.2.
+  `f5d20047b3ad43d068a8eb61bd4e1f193bedbce6`, package version 1.0.2.
   It descends from and is newer than published GitHub release v1.0.0.
-- Delta: 888 commits, including new model types/classifiers, codemode, MCP
+- Delta: 893 commits, including new model types/classifiers, codemode, MCP
   configuration/OAuth, providers/auth, agent-loop hooks, terminal behavior,
   and extraction of durable harness APIs into pi-durable.
   The refresh from initial target `4c6fb7cf` adds exactly one Nix workflow
@@ -17,8 +17,12 @@ Status: in progress. This file does not certify parity or a release.
   Runtime changes are per-thinking-level sampling parameters and durable
   provider-session identity persistence; release/package versions also advance.
   Those runtime contracts are being reviewed and are not yet parity-certified.
+- The evening refresh to `f5d20047` adds five more commits: cancellation-safe
+  persistence of rotated OAuth tokens, Windows durable environment fixes, and
+  bounded binary/directory readers and argv execution with stream information.
+  These additional contracts remain tracked for native implementation.
 - Current upstream source tar SHA-256:
-  `e5f3ea2edbea9b1942b8be477b94a03020ebab5256f7dcc65866eb237011738b`.
+  `38a6ed7cbe08cbd4f101df62a884b1eeb5d859adf892bf03d33b937ce8443a9b`.
 - User-required toolchain: final Zig 0.16.0. No implicit upgrade.
 - User-required implementation: Zig; direct C interoperability allowed.
   Retain upstream user-authored JavaScript/TypeScript extension compatibility
@@ -253,6 +257,16 @@ Completed evidence:
   source, preserves NaN timestamps and literal prototype/NUL property keys, and
   rejects excessively deep values explicitly. Durable edit storage and provider
   request replay still need integration before production uses the new path.
+
+- Pi 1.0.2 sampling defaults now resolve after thinking-level clamping.
+  Model defaults, per-level values, model overrides and request-local values
+  merge by key. CLI/server reloads own the merged metadata independently, and
+  extension providers receive effective stream options and per-level model data.
+  Native catalog generation recognizes this field and rejects invalid levels.
+  Real loopback HTTP tests inspect chat completions, Responses and Azure payloads;
+  allocator fault injection checks parsing, runtime ownership and merge cleanup.
+  The full Windows graph passes 52 steps, 1,094 module tests, 27 existing skips,
+  and zero failures. Production Node discovery and full Pi parity remain pending.
 
 Required outstanding work:
 

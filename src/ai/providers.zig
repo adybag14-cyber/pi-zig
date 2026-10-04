@@ -185,6 +185,7 @@ pub const ModelInfo = struct {
     /// Generated model-scoped request headers and sampling defaults.
     headers: []const metadata.Header = &.{},
     sampling_params: []const metadata.SamplingParam = &.{},
+    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
 
     pub fn apiKind(self: ModelInfo) api_mod.Api {
         std.debug.assert(self.kind == .chat);
@@ -579,7 +580,7 @@ test "generated catalog preserves exact upstream identity cardinality" {
     try std.testing.expectEqual(@as(usize, 1535), known_models.len);
     try std.testing.expectEqual(@as(usize, 1607), all_models.len);
     try std.testing.expectEqualStrings("1.0.2", catalog_generated.upstream_version);
-    try std.testing.expectEqualStrings("200387122ca450d6387f033949423114a270b96c", catalog_generated.upstream_commit);
+    try std.testing.expectEqualStrings("f5d20047b3ad43d068a8eb61bd4e1f193bedbce6", catalog_generated.upstream_commit);
     try std.testing.expectEqualStrings("d28b6de6985826060b6e2ccf589d16800d9fdbc40681ae4c698421c92d2ff86f", catalog_generated.catalog_sha256);
 
     var arena = std.heap.ArenaAllocator.init(std.testing.allocator);

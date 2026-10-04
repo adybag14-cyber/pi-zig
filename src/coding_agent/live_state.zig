@@ -135,6 +135,7 @@ pub const RuntimeProviderConfig = struct {
     base_url: ?[]const u8 = null,
     headers: []const metadata.Header = &.{},
     sampling_params: []const metadata.SamplingParam = &.{},
+    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
     compat: metadata.Compat = .{},
     reasoning: bool = false,
     input_image: bool = false,
@@ -242,6 +243,7 @@ pub fn loadDynamicAuthCatalogWithOptions(
             .base_url = stored.base_url,
             .headers = stored.headers,
             .sampling_params = stored.sampling_params,
+            .sampling_params_by_thinking_level = stored.sampling_params_by_thinking_level,
             .compat = stored.compat,
             .reasoning = stored.reasoning,
             .input_image = stored.input_image,
@@ -332,6 +334,8 @@ pub const ExtensionStreamRequest = struct {
     base_url: []const u8,
     headers: []const metadata.Header = &.{},
     sampling_params: []const metadata.SamplingParam = &.{},
+    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
+    request_sampling_params: []const metadata.SamplingParam = &.{},
     compat: metadata.Compat = .{},
     reasoning: bool = false,
     input_image: bool = false,
@@ -455,6 +459,8 @@ pub const ClientPool = struct {
     primary_base_url: ?[]const u8 = null,
     primary_headers: []const metadata.Header = &.{},
     primary_sampling_params: []const metadata.SamplingParam = &.{},
+    primary_sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
+    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
     primary_compat: metadata.Compat = .{},
     primary_reasoning: bool = false,
     primary_input_image: bool = false,
@@ -846,6 +852,7 @@ pub const ClientPool = struct {
         self: *ClientPool,
         headers: []const metadata.Header,
         sampling_params: []const metadata.SamplingParam,
+        sampling_by_level: metadata.SamplingParamsByThinkingLevel,
         compat: metadata.Compat,
         max_tokens: u64,
         context_window: u64,
@@ -853,6 +860,7 @@ pub const ClientPool = struct {
     ) void {
         self.primary_headers = headers;
         self.primary_sampling_params = sampling_params;
+        self.primary_sampling_params_by_thinking_level = sampling_by_level;
         self.primary_compat = compat;
         self.primary_max_tokens = max_tokens;
         self.primary_context_window = context_window;
@@ -1007,6 +1015,7 @@ pub const ClientPool = struct {
     const RequestMetadata = struct {
         headers: []const metadata.Header = &.{},
         sampling_params: []const metadata.SamplingParam = &.{},
+        sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
         compat: metadata.Compat = .{},
         reasoning: bool = false,
         input_image: bool = false,
@@ -1021,6 +1030,7 @@ pub const ClientPool = struct {
         var out: RequestMetadata = if (self.runtimeProvider(provider_id, model_id)) |runtime| .{
             .headers = runtime.headers,
             .sampling_params = runtime.sampling_params,
+            .sampling_params_by_thinking_level = runtime.sampling_params_by_thinking_level,
             .compat = runtime.compat,
             .reasoning = runtime.reasoning,
             .input_image = runtime.input_image,
@@ -1036,6 +1046,7 @@ pub const ClientPool = struct {
         } else if (std.ascii.eqlIgnoreCase(provider_id, self.primary_provider_id)) .{
             .headers = self.primary_headers,
             .sampling_params = self.primary_sampling_params,
+            .sampling_params_by_thinking_level = self.primary_sampling_params_by_thinking_level,
             .compat = self.primary_compat,
             .reasoning = self.primary_reasoning,
             .input_image = self.primary_input_image,
@@ -1047,6 +1058,7 @@ pub const ClientPool = struct {
         } else if (self.catalogModel(provider_id, model_id)) |model| .{
             .headers = model.headers,
             .sampling_params = model.sampling_params,
+            .sampling_params_by_thinking_level = model.sampling_params_by_thinking_level,
             .compat = model.compat,
             .reasoning = model.reasoning,
             .input_image = model.input_image,
@@ -1695,6 +1707,8 @@ pub const ClientPool = struct {
             .base_url = self.baseUrlForIdentity(provider_id, self.active_provider, model_id),
             .headers = request_metadata.headers,
             .sampling_params = request_metadata.sampling_params,
+            .sampling_params_by_thinking_level = request_metadata.sampling_params_by_thinking_level,
+            .request_sampling_params = completion_options.sampling_params,
             .compat = request_metadata.compat,
             .reasoning = request_metadata.reasoning,
             .input_image = request_metadata.input_image,
@@ -1867,6 +1881,7 @@ pub const ClientPool = struct {
                     .cache_retention = self.cache_retention,
                     .custom_headers = request_metadata.headers,
                     .sampling_params = request_metadata.sampling_params,
+                    .sampling_params_by_thinking_level = request_metadata.sampling_params_by_thinking_level,
                     .compat = request_metadata.compat,
                     .max_tokens = request_metadata.max_tokens,
                     .context_window = request_metadata.context_window,
@@ -1903,6 +1918,7 @@ pub const ClientPool = struct {
                     .cache_retention = self.cache_retention,
                     .custom_headers = request_metadata.headers,
                     .sampling_params = request_metadata.sampling_params,
+                    .sampling_params_by_thinking_level = request_metadata.sampling_params_by_thinking_level,
                     .compat = request_metadata.compat,
                     .max_tokens = request_metadata.max_tokens,
                     .context_window = request_metadata.context_window,
@@ -1940,6 +1956,7 @@ pub const ClientPool = struct {
                     .cache_retention = self.cache_retention,
                     .custom_headers = request_metadata.headers,
                     .sampling_params = request_metadata.sampling_params,
+                    .sampling_params_by_thinking_level = request_metadata.sampling_params_by_thinking_level,
                     .compat = request_metadata.compat,
                     .max_tokens = request_metadata.max_tokens,
                     .context_window = request_metadata.context_window,

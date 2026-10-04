@@ -155,8 +155,24 @@ fn renderCompat(writer: *std.Io.Writer, compat: std.json.Value) !void {
     try writer.writeAll(" }");
 }
 
+fn renderSamplingEntries(writer: *std.Io.Writer, sampling: std.json.ObjectMap) !void {
+    var entries = sampling.iterator();
+    var index: usize = 0;
+    while (entries.next()) |entry| : (index += 1) {
+        if (index > 0) try writer.writeAll(", ");
+        try writer.writeAll(".{ .name = ");
+        try zigString(writer, entry.key_ptr.*);
+        try writer.writeAll(", .value_json = ");
+        var encoded: std.Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer encoded.deinit();
+        try std.json.Stringify.value(entry.value_ptr.*, .{}, &encoded.writer);
+        try zigString(writer, encoded.written());
+        try writer.writeAll(" }");
+    }
+}
+
 fn renderModel(writer: *std.Io.Writer, model: std.json.ObjectMap, typed: bool) !void {
-    const allowed = [_][]const u8{ "api", "baseUrl", "compat", "contextWindow", "cost", "headers", "id", "input", "maxTokens", "name", "provider", "reasoning", "samplingParams", "thinkingLevelMap", "type", "output", "inputLimits", "promptCache", "lab", "enabled", "providers" };
+    const allowed = [_][]const u8{ "api", "baseUrl", "compat", "contextWindow", "cost", "headers", "id", "input", "maxTokens", "name", "provider", "reasoning", "samplingParams", "samplingParamsByThinkingLevel", "thinkingLevelMap", "type", "output", "inputLimits", "promptCache", "lab", "enabled", "providers" };
     for (model.keys()) |key| if (!contains(&allowed, key)) return error.UnknownCatalogModelField;
     const api = try getString(model, "api");
     const kind = if (model.get("type")) |item| if (item == .string) item.string else return error.InvalidCatalogModelType else "chat";
@@ -222,22 +238,31 @@ fn renderModel(writer: *std.Io.Writer, model: std.json.ObjectMap, typed: bool) !
         }
         try writer.writeAll(" }");
     }
+    if (model.get("samplingParamsByThinkingLevel")) |by_level| {
+        if (by_level != .object) return error.InvalidCatalogSampling;
+        const levels = [_][]const u8{ "off", "minimal", "low", "medium", "high", "xhigh", "max" };
+        var keys = by_level.object.iterator();
+        while (keys.next()) |entry| {
+            var valid = false;
+            for (levels) |level| if (std.mem.eql(u8, level, entry.key_ptr.*)) {
+                valid = true;
+                break;
+            };
+            if (!valid or entry.value_ptr.* != .object) return error.InvalidCatalogSampling;
+        }
+        try writer.writeAll(", .sampling_params_by_thinking_level = .{ .levels = .{ ");
+        for (levels, 0..) |level, index| {
+            if (index > 0) try writer.writeAll(", ");
+            try writer.writeAll(".{ .base = &.{ ");
+            if (by_level.object.get(level)) |sampling| try renderSamplingEntries(writer, sampling.object);
+            try writer.writeAll(" } }");
+        }
+        try writer.writeAll(" } }");
+    }
     if (model.get("samplingParams")) |sampling| {
         if (sampling != .object) return error.InvalidCatalogSampling;
         try writer.writeAll(", .sampling_params = &.{ ");
-        var entries = sampling.object.iterator();
-        var index: usize = 0;
-        while (entries.next()) |entry| : (index += 1) {
-            if (index > 0) try writer.writeAll(", ");
-            try writer.writeAll(".{ .name = ");
-            try zigString(writer, entry.key_ptr.*);
-            try writer.writeAll(", .value_json = ");
-            var encoded: std.Io.Writer.Allocating = .init(std.heap.page_allocator);
-            defer encoded.deinit();
-            try std.json.Stringify.value(entry.value_ptr.*, .{}, &encoded.writer);
-            try zigString(writer, encoded.written());
-            try writer.writeAll(" }");
-        }
+        try renderSamplingEntries(writer, sampling.object);
         try writer.writeAll(" }");
     }
     if (model.get("compat")) |compat| {
@@ -380,4 +405,23 @@ test "Zig source strings escape control bytes without JavaScript Unicode escapes
     defer output.deinit();
     try zigString(&output.writer, "hi\x00\n🌍\"\\");
     try std.testing.expectEqualStrings("\"hi\\x00\\n🌍\\\"\\\\\"", output.written());
+}
+
+test "catalog generator accepts Pi 1.0.2 per-thinking-level metadata and rejects invalid levels" {
+    const gpa = std.testing.allocator;
+    const raw =
+        \\{"api":"openai-completions","provider":"corp","id":"m","name":"M","baseUrl":"http://127.0.0.1:9","input":["text"],"contextWindow":4096,"maxTokens":512,"cost":{"input":0,"output":0,"cacheRead":0,"cacheWrite":0},"samplingParamsByThinkingLevel":{"off":{"temperature":0.1},"max":{"vendor":{"x":false}}}}
+    ;
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
+    defer parsed.deinit();
+    var output: std.Io.Writer.Allocating = .init(gpa);
+    defer output.deinit();
+    try renderModel(&output.writer, parsed.value.object, true);
+    try std.testing.expect(std.mem.indexOf(u8, output.written(), ".sampling_params_by_thinking_level = .{ .levels = .{") != null);
+    try std.testing.expectEqual(@as(usize, 7), std.mem.count(u8, output.written(), ".{ .base = &.{"));
+    try std.testing.expect(std.mem.indexOf(u8, output.written(), ".name = \"vendor\", .value_json = \"{\\\"x\\\":false}\"") != null);
+    var invalid = try std.json.parseFromSlice(std.json.Value, gpa, "{\"extra\":{}}", .{});
+    defer invalid.deinit();
+    try parsed.value.object.put("samplingParamsByThinkingLevel", invalid.value);
+    try std.testing.expectError(error.InvalidCatalogSampling, renderModel(&output.writer, parsed.value.object, true));
 }

@@ -598,7 +598,7 @@ pub const Server = struct {
             pool.setRuntimeConfig(environ, runtime.transport, runtime.provider_id, runtime.api_key, runtime.base_url);
             pool.setAuthAgentDir(self.config.agent_dir);
             pool.setPrimaryOAuthMetadata(runtime.oauth_refresh, runtime.oauth_expires_ms, runtime.oauth_enterprise_url);
-            pool.setPrimaryRequestMetadata(runtime.headers, runtime.sampling_params, runtime.compat, runtime.max_tokens, runtime.context_window, runtime.input_image);
+            pool.setPrimaryRequestMetadata(runtime.headers, runtime.sampling_params, runtime.sampling_params_by_thinking_level, runtime.compat, runtime.max_tokens, runtime.context_window, runtime.input_image);
             pool.setPrimaryModelRuntime(runtime.api, runtime.model_cost);
             const retention = if (environ.get("PI_CACHE_RETENTION")) |value|
                 (ai.request_metadata.CacheRetention.parse(value) orelse .short)

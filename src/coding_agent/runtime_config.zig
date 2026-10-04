@@ -42,6 +42,7 @@ pub const ResolvedRuntime = struct {
     base_url: []u8,
     headers: []metadata.Header = &.{},
     sampling_params: []metadata.SamplingParam = &.{},
+    sampling_params_by_thinking_level: metadata.SamplingParamsByThinkingLevel = .{},
     compat: metadata.Compat = .{},
     reasoning: bool = false,
     input_image: bool = false,
@@ -64,6 +65,7 @@ pub const ResolvedRuntime = struct {
             self.gpa.free(param.value_json);
         }
         if (self.sampling_params.len > 0) self.gpa.free(self.sampling_params);
+        deinitSamplingByLevel(self.gpa, self.sampling_params_by_thinking_level);
         self.* = undefined;
     }
 };
@@ -179,21 +181,61 @@ fn resolveHeaders(
 }
 
 fn putSampling(gpa: std.mem.Allocator, out: *std.ArrayList(metadata.SamplingParam), raw: metadata.SamplingParam) !void {
+    const name = try gpa.dupe(u8, raw.name);
+    errdefer gpa.free(name);
+    const value = try gpa.dupe(u8, raw.value_json);
+    errdefer gpa.free(value);
     for (out.items) |*existing| {
         if (std.mem.eql(u8, existing.name, raw.name)) {
             gpa.free(existing.name);
             gpa.free(existing.value_json);
-            existing.* = .{
-                .name = try gpa.dupe(u8, raw.name),
-                .value_json = try gpa.dupe(u8, raw.value_json),
-            };
+            existing.* = .{ .name = name, .value_json = value };
             return;
         }
     }
-    try out.append(gpa, .{
-        .name = try gpa.dupe(u8, raw.name),
-        .value_json = try gpa.dupe(u8, raw.value_json),
-    });
+    try out.append(gpa, .{ .name = name, .value_json = value });
+}
+
+fn deinitOwnedSampling(gpa: std.mem.Allocator, params: []const metadata.SamplingParam) void {
+    for (params) |param| {
+        gpa.free(param.name);
+        gpa.free(param.value_json);
+    }
+    if (params.len > 0) gpa.free(params);
+}
+
+fn deinitSamplingByLevel(gpa: std.mem.Allocator, params: metadata.SamplingParamsByThinkingLevel) void {
+    for (params.levels) |level| deinitOwnedSampling(gpa, level.base);
+}
+
+fn resolveSamplingByLevel(
+    gpa: std.mem.Allocator,
+    builtin: providers.ModelInfo,
+    model: ?*const models_file_mod.ModelConfig,
+    override: ?*const models_file_mod.ModelOverride,
+) !metadata.SamplingParamsByThinkingLevel {
+    var result: metadata.SamplingParamsByThinkingLevel = .{};
+    errdefer deinitSamplingByLevel(gpa, result);
+    for (&result.levels, 0..) |*destination, i| {
+        const base = builtin.sampling_params_by_thinking_level.levels[i];
+        const custom: metadata.SamplingParamsByThinkingLevel.Level = if (model) |cfg| cfg.sampling_params_by_thinking_level.levels[i] else .{};
+        const overrides: metadata.SamplingParamsByThinkingLevel.Level = if (override) |cfg| cfg.sampling_params_by_thinking_level.levels[i] else .{};
+        const merged = try metadata.mergeSamplingParams(gpa, &.{ base.base, base.overlay, custom.base, custom.overlay, overrides.base, overrides.overlay });
+        defer gpa.free(merged);
+        var owned: std.ArrayList(metadata.SamplingParam) = .empty;
+        errdefer {
+            for (owned.items) |param| {
+                gpa.free(param.name);
+                gpa.free(param.value_json);
+            }
+            owned.deinit(gpa);
+        }
+        // Reserve first so the final slice owns precisely its allocation.
+        try owned.ensureTotalCapacityPrecise(gpa, merged.len);
+        for (merged) |param| try putSampling(gpa, &owned, param);
+        destination.base = try owned.toOwnedSlice(gpa);
+    }
+    return result;
 }
 
 fn resolveSampling(
@@ -434,6 +476,8 @@ pub fn resolveForModel(
         }
         if (sampling_params.len > 0) gpa.free(sampling_params);
     }
+    const sampling_by_level = try resolveSamplingByLevel(gpa, model, configured_model, configured_override);
+    errdefer deinitSamplingByLevel(gpa, sampling_by_level);
     var compat: metadata.Compat = switch (effective_api) {
         .openai_completions => metadata.detectOpenAICompat(provider_id, owned_base, model.id),
         .openai_responses, .openai_codex_responses, .azure_openai_responses => metadata.detectOpenAIResponsesCompat(provider_id, owned_base, model.id),
@@ -461,6 +505,7 @@ pub fn resolveForModel(
         .base_url = owned_base,
         .headers = headers,
         .sampling_params = sampling_params,
+        .sampling_params_by_thinking_level = sampling_by_level,
         .compat = compat,
         .reasoning = model.reasoning,
         .input_image = model.input_image,
@@ -735,4 +780,33 @@ test "Radius runtime uses cached model API base instead of OAuth gateway root" {
     var runtime = try resolveForModel(gpa, io, &env, &file, model, .{ .agent_dir = root });
     defer runtime.deinit();
     try std.testing.expectEqualStrings("http://gateway:8788/v1", runtime.base_url);
+}
+
+fn thinkingSamplingRuntimeProbe(gpa: std.mem.Allocator) !void {
+    var base: metadata.SamplingParamsByThinkingLevel = .{};
+    base.levels[@intFromEnum(thinking.ThinkingLevel.high)].base = &.{
+        .{ .name = "temperature", .value_json = "1" },
+        .{ .name = "top_p", .value_json = "0.9" },
+    };
+    var custom: metadata.SamplingParamsByThinkingLevel = .{};
+    custom.levels[@intFromEnum(thinking.ThinkingLevel.high)].base = &.{.{ .name = "top_p", .value_json = "0.7" }};
+    var overlay: metadata.SamplingParamsByThinkingLevel = .{};
+    overlay.levels[@intFromEnum(thinking.ThinkingLevel.high)].base = &.{.{ .name = "temperature", .value_json = "0.3" }};
+    overlay.levels[0].base = &.{.{ .name = "temperature", .value_json = "0.2" }};
+    const builtin: providers.ModelInfo = .{ .provider = .openai, .id = "m", .display = "M", .sampling_params_by_thinking_level = base };
+    const model: models_file_mod.ModelConfig = .{ .info = builtin, .api = .openai_completions, .sampling_params_by_thinking_level = custom };
+    const override: models_file_mod.ModelOverride = .{ .id = "m", .sampling_params_by_thinking_level = overlay };
+    const resolved = try resolveSamplingByLevel(gpa, builtin, &model, &override);
+    defer deinitSamplingByLevel(gpa, resolved);
+    const high = resolved.at(.high).base;
+    try std.testing.expectEqual(@as(usize, 2), high.len);
+    try std.testing.expectEqualStrings("0.3", high[0].value_json);
+    try std.testing.expectEqualStrings("0.7", high[1].value_json);
+    try std.testing.expect(high[0].name.ptr != base.at(.high).base[0].name.ptr);
+    try std.testing.expect(high[0].value_json.ptr != overlay.at(.high).base[0].value_json.ptr);
+    try std.testing.expectEqualStrings("0.2", resolved.at(.off).base[0].value_json);
+}
+
+test "runtime thinking sampling merges per key and owns all configuration independently" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, thinkingSamplingRuntimeProbe, .{});
 }

@@ -1041,6 +1041,7 @@ fn runtimeConfig(runtime: *const runtime_config.ResolvedRuntime) live_state.Runt
         .base_url = runtime.base_url,
         .headers = runtime.headers,
         .sampling_params = runtime.sampling_params,
+        .sampling_params_by_thinking_level = runtime.sampling_params_by_thinking_level,
         .compat = runtime.compat,
         .reasoning = runtime.reasoning,
         .input_image = runtime.input_image,
