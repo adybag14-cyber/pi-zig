@@ -166,7 +166,7 @@ test "native provider process retains callbacks across replacement with Node abs
     defer tmp.cleanup();
     try tmp.dir.writeFile(io, .{
         .sub_path = "provider.ts",
-        .data = "export default function(pi:any){const closure='native-closure';pi.registerProvider('native provider',{name:'Native',key(value:string){return this.name+':'+closure+':'+value},nested:{owner:'nested',async key(credentials:any){return this.owner+':'+credentials.access}}});pi.registerCommand('rename',{handler(){pi.registerProvider('native provider',{name:'Renamed'})}});pi.registerCommand('retire',{handler(){pi.unregisterProvider('native provider')}})}",
+        .data = "export default function(pi:any){const closure='native-closure';pi.registerProvider('native provider',{name:'Native',key(value:string,signal:any){if(signal&&!(signal instanceof AbortSignal))throw Error('native signal brand');return this.name+':'+closure+':'+value+(signal?(signal.aborted?':aborted':':active'):'')},nested:{owner:'nested',async key(credentials:any){await new Promise(resolve=>setTimeout(resolve,2));return this.owner+':'+credentials.access}}});pi.registerCommand('rename',{handler(){pi.registerProvider('native provider',{name:'Renamed'})}});pi.registerCommand('retire',{handler(){pi.unregisterProvider('native provider')}})}",
     });
     var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
     const length = try tmp.dir.realPath(io, &buffer);
@@ -190,7 +190,7 @@ test "native provider process retains callbacks across replacement with Node abs
             "{\"kind\":\"command\",\"name\":\"rename\"}\n" ++
             "{\"kind\":\"provider_method\",\"callbackId\":\"provider:native%20provider:1\",\"args\":[\"old\"]}\n" ++
             "{\"kind\":\"provider_method\",\"callbackId\":\"provider:native%20provider:3\",\"args\":[\"new\"]}\n" ++
-            "{\"kind\":\"provider_method\",\"callbackId\":\"provider:native%20provider:3\",\"args\":[],\"appendSignal\":true}\n" ++
+            "{\"kind\":\"provider_method\",\"callbackId\":\"provider:native%20provider:3\",\"args\":[\"signal\"],\"appendSignal\":true}\n" ++
             "{\"kind\":\"command\",\"name\":\"retire\"}\n" ++
             "{\"kind\":\"provider_method\",\"callbackId\":\"provider:native%20provider:3\",\"args\":[]}\n" ++
             "{\"kind\":\"shutdown\"}\n",
@@ -213,7 +213,7 @@ test "native provider process retains callbacks across replacement with Node abs
         return error.NativeProviderWorkerFailed;
     }
     try std.testing.expectEqualStrings("", errors);
-    for ([_][]const u8{ "nested:token", "Native:native-closure:old", "Renamed:native-closure:new", "register_provider", "unregister_provider", "NativeProviderAbortSignalUnsupported", "UnknownNativeProviderCallback" }) |marker| {
+    for ([_][]const u8{ "nested:token", "Native:native-closure:old", "Renamed:native-closure:new", "register_provider", "unregister_provider", "Renamed:native-closure:signal:active", "UnknownNativeProviderCallback" }) |marker| {
         if (std.mem.indexOf(u8, output, marker) == null) {
             std.debug.print("Native provider process missing {s}: {s}\n", .{ marker, output });
             return error.NativeProviderProtocolMismatch;

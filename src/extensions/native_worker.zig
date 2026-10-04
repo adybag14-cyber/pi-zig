@@ -11,6 +11,7 @@ const text_encoding = @import("text_encoding.zig");
 const node_path = @import("node_path.zig");
 const node_url = @import("node_url.zig");
 const commonjs = @import("commonjs.zig");
+const timers = @import("timers.zig");
 
 const Loader = struct {
     io: std.Io,
@@ -204,11 +205,11 @@ fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, object: std.
         return bindings.invokeCommand(try requiredText(object, "name"), arguments);
     }
     if (std.mem.eql(u8, kind, "provider_method")) {
-        if (object.get("appendSignal")) |signal| if (signal == .bool and signal.bool) return error.NativeProviderAbortSignalUnsupported;
-        if (object.get("aborted")) |aborted| if (aborted == .bool and aborted.bool) return error.NativeProviderRequestAborted;
+        const append_signal = if (object.get("appendSignal")) |signal| signal == .bool and signal.bool else false;
+        const aborted = if (object.get("aborted")) |value| value == .bool and value.bool else false;
         const arguments = try encoded(gpa, object.get("args") orelse std.json.Value{ .array = std.json.Array.init(gpa) });
         defer gpa.free(arguments);
-        return bindings.invokeProviderMethod(try requiredText(object, "callbackId"), arguments);
+        return bindings.invokeProviderMethodWithSignal(try requiredText(object, "callbackId"), arguments, append_signal, aborted);
     }
     return error.UnsupportedNativeWorkerRequest;
 }
@@ -233,6 +234,7 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
     engine.setSourceLoader(.{ .context = &loader, .load = Loader.source, .normalize = Loader.normalize, .normalize_require = Loader.normalizeRequire, .input = Loader.input });
     const bindings = try bindings_mod.Bindings.init(gpa, engine);
     defer bindings.deinit();
+    try timers.install(engine, io);
     try bindings.installSchemas();
     try node_fs.install(engine, io);
     try node_path.install(engine, io);

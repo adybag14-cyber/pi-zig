@@ -307,6 +307,21 @@ Completed evidence:
   Full Windows Debug passes 52 steps, 1,100 module tests, 27 existing skips and
   233 dedicated tests; ReleaseSafe and the named provider suite pass.
 
+- Native AbortController/AbortSignal classes now retain reason identity, enforce
+  brands, manage once/capture/onabort listeners, and mark GC cycles. Listener
+  errors are reported through C runtime jobs after abort returns. Active and
+  pre-aborted signals now cross native provider request boundaries. Timeout and
+  any composition use real signals and deduplicate repeated sources.
+- Native timers, cleared intervals, callback arguments and microtasks now settle
+  delayed Promise callbacks in the real worker without Node. Host waits have a
+  configurable deadline. Allocation failures and callback errors have coverage.
+  EventTarget/DOMException, concurrent input cancellation, idle timer pumping,
+  Node timer handles and composed-signal weak cleanup remain outstanding.
+  Full Windows graph plus provider suite passes 55 steps, 1,100 module tests,
+  27 existing skips and 297 dedicated tests; ReleaseSafe passes. The native
+  language audit correctly fails for 24 remaining files and verifies 107 vendor
+  files with zero digest failures. Production discovery remains on the old bridge.
+
 Required outstanding work:
 
 1. Native extension module loader and TypeScript input erasure, host bindings,

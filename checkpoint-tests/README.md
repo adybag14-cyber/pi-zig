@@ -10,8 +10,8 @@ ownership, registration replacement, OAuth interaction and cancellation,
 rotated-token persistence, model publication and stale generations, atomic
 model storage, and provider streams. It also runs the linked C engine's provider
 binding tests and the real native worker protocol fixture with Node absent from
-the child process's PATH. Those native worker checks include explicit rejection
-of the signal surface that has not yet been implemented.
+the child process's PATH. Those native worker checks also pass real native signal objects to providers.
+Concurrent cancellation while an asynchronous request is pending remains a port.
 
 Production extension discovery still uses the legacy bridge. The four `.mjs`
 files in this directory retain additional raw-protocol, publication and stream

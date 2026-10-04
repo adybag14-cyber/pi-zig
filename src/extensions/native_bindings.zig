@@ -4,6 +4,7 @@ const engine_mod = @import("engine.zig");
 const typebox = @import("typebox.zig");
 const session_snapshot = @import("session_snapshot.zig");
 const native_providers = @import("native_providers.zig");
+const abort_signal = @import("abort_signal.zig");
 const c = engine_mod.c;
 const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, registerProvider, unregisterProvider, getActiveTools, getAllTools, getCommands, getSettings, getSessionName, getThinkingLevel, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel };
 const ContextMethod = enum(c_int) {
@@ -55,6 +56,7 @@ pub const Bindings = struct {
 
     pub fn init(gpa: std.mem.Allocator, engine: *engine_mod.Engine) !*Bindings {
         if (engine.host_data != null) return error.EngineHostAlreadyAttached;
+        if (!engine.abort_signals_ready) try abort_signal.install(engine);
         const self = try gpa.create(Bindings);
         errdefer gpa.destroy(self);
         const api = try engine.checked(c.JS_NewObject(engine.context));
@@ -953,10 +955,25 @@ pub const Bindings = struct {
     }
 
     pub fn invokeProviderMethod(self: *Bindings, id: []const u8, args_json: []const u8) ![]u8 {
+        return self.invokeProviderMethodWithSignal(id, args_json, false, false);
+    }
+
+    pub fn invokeProviderMethodWithSignal(self: *Bindings, id: []const u8, args_json: []const u8, append_signal: bool, aborted: bool) ![]u8 {
         try self.beginActions();
         defer self.invocation_active = false;
         const args = try self.parseJson(args_json, "native-provider-arguments");
         defer self.engine.freeValue(args);
+        if (append_signal) {
+            if (!c.JS_IsArray(args)) return error.InvalidNativeProviderArguments;
+            const length = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args, "length"));
+            defer self.engine.freeValue(length);
+            var count: u32 = 0;
+            if (c.JS_ToUint32(self.engine.context, &count, length) < 0) return error.JavaScriptException;
+            const signal = try abort_signal.create(self.engine);
+            defer self.engine.freeValue(signal);
+            if (aborted) try abort_signal.abort(self.engine, signal, c.pi_js_undefined());
+            if (c.JS_SetPropertyUint32(self.engine.context, args, count, c.JS_DupValue(self.engine.context, signal)) < 0) return error.JavaScriptException;
+        } else if (aborted) return error.NativeProviderRequestAborted;
         const value = try self.providers.invoke(id, args);
         defer self.engine.freeValue(value);
         const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
@@ -1342,4 +1359,31 @@ test "native provider getters preserve exceptions and nested action order" {
     const manifest = try bindings.manifestJson("native-provider-getters.mjs");
     defer gpa.free(manifest);
     try std.testing.expect(std.mem.indexOf(u8, manifest, "Changed") != null);
+}
+
+test {
+    _ = @import("abort_signal.zig");
+    _ = @import("timers.zig");
+}
+
+test "native provider invocations receive real active and pre-aborted signals" {
+    const gpa = std.testing.allocator;
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(gpa, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory("export default function(pi){pi.registerProvider('signal',{inspect(value,signal){if(!(signal instanceof AbortSignal))throw Error('signal brand');if(signal.aborted){let caught=false;try{signal.throwIfAborted()}catch(error){caught=error===signal.reason}if(!caught||signal.reason.name!=='AbortError')throw Error('abort reason')}return value+':'+signal.aborted}})}", "native-provider-signals.mjs");
+    const manifest = try bindings.manifestJson("native-provider-signals.mjs");
+    defer gpa.free(manifest);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, manifest, .{});
+    defer parsed.deinit();
+    const config = parsed.value.object.get("providers").?.array.items[0].object.get("config").?.object;
+    const reference = try @import("provider_method_ref.zig").ProviderMethodRef.fromJson(config.get("inspect").?);
+    const active = try bindings.invokeProviderMethodWithSignal(reference.callback_id, "[\"active\"]", true, false);
+    defer gpa.free(active);
+    try std.testing.expectEqualStrings("{\"value\":\"active:false\"}", active);
+    const aborted = try bindings.invokeProviderMethodWithSignal(reference.callback_id, "[\"pre-aborted\"]", true, true);
+    defer gpa.free(aborted);
+    try std.testing.expectEqualStrings("{\"value\":\"pre-aborted:true\"}", aborted);
+    try std.testing.expectError(error.NativeProviderRequestAborted, bindings.invokeProviderMethodWithSignal(reference.callback_id, "[]", false, true));
 }

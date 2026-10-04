@@ -18,6 +18,7 @@ pub const Options = struct {
     stack_limit: usize = 1024 * 1024,
     interrupt_budget: u64 = 10_000,
     job_budget: usize = 100_000,
+    host_await_timeout_ms: u64 = 15_000,
     // Hosted extensions are imported by Pi, rather than being JS entrypoints.
     // Standalone embedders may explicitly designate their evaluated root.
     main_module: bool = false,
@@ -48,6 +49,13 @@ pub const Engine = struct {
     text_encoder_class: c.JSClassID = 0,
     buffer_prototype: ?c.JSValue = null,
     buffer_ready: bool = false,
+    abort_signal_class: c.JSClassID = 0,
+    abort_controller_class: c.JSClassID = 0,
+    abort_signals_ready: bool = false,
+    host_scheduler: ?*anyopaque = null,
+    host_pump: ?*const fn (*Engine) anyerror!bool = null,
+    host_scheduler_deinit: ?*const fn (*Engine) void = null,
+    host_await_deadline_ms: ?i64 = null,
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
     native_module_names: std.StringHashMapUnmanaged(void) = .empty,
     native_module_values: std.StringHashMapUnmanaged(c.JSValue) = .empty,
@@ -76,6 +84,7 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        if (self.host_scheduler_deinit) |cleanup| cleanup(self);
         if (self.captured_exception) |exception| self.freeValue(exception);
         if (self.buffer_prototype) |prototype| self.freeValue(prototype);
         var values = self.native_module_values.valueIterator();
@@ -459,8 +468,13 @@ pub const Engine = struct {
 
     /// Return a new owned result without consuming the caller's promise/value.
     pub fn awaitValue(self: *Engine, value: c.JSValue) !c.JSValue {
+        const previous_deadline = self.host_await_deadline_ms;
+        defer self.host_await_deadline_ms = previous_deadline;
+        if (self.native_io) |io| {
+            if (self.options.host_await_timeout_ms > 0) self.host_await_deadline_ms = std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(self.options.host_await_timeout_ms, std.math.maxInt(i64))));
+        }
         var jobs: usize = 0;
-        while (c.JS_PromiseState(self.context, value) == c.JS_PROMISE_PENDING) {
+        while (c.JS_PromiseState(self.context, value) == c.JS_PROMISE_PENDING or c.JS_IsJobPending(self.runtime)) {
             if (jobs >= self.options.job_budget) return error.JavaScriptJobLimit;
             jobs += 1;
             var context: ?*c.JSContext = null;
@@ -469,7 +483,12 @@ pub const Engine = struct {
                 self.captureException(context orelse self.context);
                 return error.JavaScriptException;
             }
-            if (status == 0) return error.JavaScriptPromiseUnsettled;
+            if (status == 0) {
+                if (self.host_pump) |pump| {
+                    if (try pump(self)) continue;
+                }
+                return error.JavaScriptPromiseUnsettled;
+            }
         }
         return switch (c.JS_PromiseState(self.context, value)) {
             c.JS_PROMISE_REJECTED => blk: {

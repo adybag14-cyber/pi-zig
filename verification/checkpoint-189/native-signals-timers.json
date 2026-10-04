@@ -1,0 +1,158 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "productionNodeBridgeReplaced": false,
+  "upstreamCommit": "1b094148b91d737fb398bf1591604de58ec169e1",
+  "checks": [
+    "AbortController and AbortSignal have native C runtime classes and brand checks",
+    "reason identity once capture and onabort ordering survive listener mutation",
+    "listener errors are reported through native jobs after abort returns",
+    "GC marks callback cycles and allocator failure probes release ownership",
+    "active and pre-aborted signals cross real provider invocation boundaries",
+    "timeout and any composition use actual signals and deduplicate sources",
+    "timers settle delayed Promise callbacks without Node",
+    "microtasks drain in order and interval cancellation retires callbacks",
+    "host-backed waits are bounded by a configurable deadline"
+  ],
+  "remaining": [
+    "EventTarget DOMException and further web API compatibility",
+    "concurrent worker input cancellation while an async request is pending",
+    "idle timer pumping and Node timer handles",
+    "weak lifecycle cleanup of composed signals",
+    "provider stream OAuth UI and model publication on native worker",
+    "native codemode MCP and newer agent transcript contracts",
+    "19 Python PTY scripts and five JavaScript implementation/harness files"
+  ],
+  "windowsRegression": {
+    "aggregateSteps": 55,
+    "aggregateTests": 297,
+    "modulePassed": 1100,
+    "moduleSkipped": 27,
+    "moduleFailed": 0
+  },
+  "languageAudit": {
+    "expected": "failed until remaining implementation files are ported",
+    "implementationFailures": 24,
+    "vendorFiles": 107,
+    "vendorDigestFailures": 0,
+    "job": {
+      "name": "native-signal-language-audit",
+      "pid": 3984,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe build maintenance -- audit-source",
+      "created_utc": null,
+      "launched_utc": "2026-10-04T21:51:48.9861473+00:00",
+      "identity_captured": false,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "failed",
+      "exit_code": 1,
+      "completed_utc": "2026-10-04T21:51:49.3070421+00:00"
+    }
+  },
+  "jobs": {
+    "native-provider-signal-fixtures": {
+      "name": "native-provider-signal-fixtures",
+      "pid": 52136,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings test-native-worker -j2 --summary all",
+      "created_utc": "2026-10-04T21:31:24.9358300Z",
+      "launched_utc": "2026-10-04T21:31:24.9329951+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T21:31:41.4458055+00:00"
+    },
+    "native-abort-order-regressions": {
+      "name": "native-abort-order-regressions",
+      "pid": 38188,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings -j2 --summary all",
+      "created_utc": "2026-10-04T21:30:29.5188830Z",
+      "launched_utc": "2026-10-04T21:30:29.5159627+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T21:30:32.8070732+00:00"
+    },
+    "native-abort-report-regressions": {
+      "name": "native-abort-report-regressions",
+      "pid": 55972,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings -j2 --summary all",
+      "created_utc": "2026-10-04T21:46:20.4075480Z",
+      "launched_utc": "2026-10-04T21:46:20.4044154+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T21:46:24.5731909+00:00"
+    },
+    "native-signal-composition-regressions": {
+      "name": "native-signal-composition-regressions",
+      "pid": 7192,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings -j2 --summary all",
+      "created_utc": "2026-10-04T21:47:39.0760560Z",
+      "launched_utc": "2026-10-04T21:47:39.0727658+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T21:47:43.0312291+00:00"
+    },
+    "native-signal-duplicate-regressions": {
+      "name": "native-signal-duplicate-regressions",
+      "pid": 48004,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings -j2 --summary all",
+      "created_utc": "2026-10-04T21:48:32.8310530Z",
+      "launched_utc": "2026-10-04T21:48:32.8276602+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T21:48:36.6774699+00:00"
+    },
+    "native-signal-timer-allocation-regressions": {
+      "name": "native-signal-timer-allocation-regressions",
+      "pid": 35708,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings -j2 --summary all",
+      "created_utc": "2026-10-04T21:49:35.2185500Z",
+      "launched_utc": "2026-10-04T21:49:35.2155244+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T21:49:38.9918809+00:00"
+    },
+    "native-signal-timer-final-graph": {
+      "name": "native-signal-timer-final-graph",
+      "pid": 10052,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-04T21:50:08.7687110Z",
+      "launched_utc": "2026-10-04T21:50:08.7647692+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T21:51:38.4523681+00:00"
+    },
+    "native-signal-timer-final-release": {
+      "name": "native-signal-timer-final-release",
+      "pid": 55756,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -j2 -Doptimize=ReleaseSafe --summary all",
+      "created_utc": "2026-10-04T21:50:08.7687090Z",
+      "launched_utc": "2026-10-04T21:50:08.7647619+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-04T21:52:00.4682457+00:00"
+    }
+  }
+}
