@@ -2535,10 +2535,12 @@ test "provider stream generation retirement drains cooperative iterators and pre
         output: ?[]u8 = null,
         failure: ?anyerror = null,
         events: u64 = 0,
+        first_event: Io.Event = .unset,
 
         fn consume(raw: ?*anyopaque, _: u64, _: []const u8) !void {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
             self.events += 1;
+            self.first_event.set(self.runtime.io);
         }
 
         fn run(self: *@This()) void {
@@ -2562,17 +2564,14 @@ test "provider stream generation retirement drains cooperative iterators and pre
     var invocation = Invocation{ .runtime = started.runtime, .callback_id = stream_id };
     defer if (invocation.output) |output| gpa.free(output);
     var group: Io.Group = .init;
-    group.async(io, Invocation.run, .{&invocation});
-    var waited_ms: u64 = 0;
-    while (!@atomicLoad(bool, &started.runtime.active_provider_stream, .acquire) and waited_ms < 1_000) : (waited_ms += 5) {
-        const pause: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(5), .clock = .awake } };
-        try pause.sleep(io);
-    }
+    defer group.cancel(io);
+    try group.concurrent(io, Invocation.run, .{&invocation});
+    try invocation.first_event.waitTimeout(io, .{ .duration = .{ .raw = .fromMilliseconds(1000), .clock = .awake } });
     try std.testing.expect(@atomicLoad(bool, &started.runtime.active_provider_stream, .acquire));
     try std.testing.expect(started.runtime.retireProviderGeneration("retire-provider", 1, 1_000));
     try group.await(io);
     try std.testing.expectEqual(@as(u64, 1), invocation.events);
-    try std.testing.expectEqual(error.JavaScriptExtensionExecutionFailed, invocation.failure.?);
+    try std.testing.expectEqual(@as(?anyerror, error.JavaScriptExtensionExecutionFailed), invocation.failure);
 
     const ping = try started.runtime.invokeCommand("after-retire", "", "{}");
     defer gpa.free(ping);
@@ -2629,8 +2628,12 @@ test "provider stream retirement force-closes only the worker whose iterator ign
         runtime: *Runtime,
         callback_id: []const u8,
         failure: ?anyerror = null,
+        first_event: Io.Event = .unset,
 
-        fn consume(_: ?*anyopaque, _: u64, _: []const u8) !void {}
+        fn consume(raw: ?*anyopaque, _: u64, _: []const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.first_event.set(self.runtime.io);
+        }
 
         fn run(self: *@This()) void {
             const output = self.runtime.invokeProviderStreamSimple(
@@ -2642,7 +2645,7 @@ test "provider stream retirement force-closes only the worker whose iterator ign
                 "{}",
                 null,
                 consume,
-                null,
+                self,
             ) catch |err| {
                 self.failure = err;
                 return;
@@ -2653,16 +2656,13 @@ test "provider stream retirement force-closes only the worker whose iterator ign
 
     var invocation = Invocation{ .runtime = hostile.runtime, .callback_id = stream_id };
     var group: Io.Group = .init;
-    group.async(io, Invocation.run, .{&invocation});
-    var waited_ms: u64 = 0;
-    while (!@atomicLoad(bool, &hostile.runtime.active_provider_stream, .acquire) and waited_ms < 1_000) : (waited_ms += 5) {
-        const pause: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(5), .clock = .awake } };
-        try pause.sleep(io);
-    }
+    defer group.cancel(io);
+    try group.concurrent(io, Invocation.run, .{&invocation});
+    try invocation.first_event.waitTimeout(io, .{ .duration = .{ .raw = .fromMilliseconds(1000), .clock = .awake } });
     try std.testing.expect(@atomicLoad(bool, &hostile.runtime.active_provider_stream, .acquire));
     try std.testing.expect(hostile.runtime.retireProviderGeneration("hostile-provider", 1, 1_000));
     try group.await(io);
-    try std.testing.expectEqual(error.JavaScriptExtensionExecutionFailed, invocation.failure.?);
+    try std.testing.expectEqual(@as(?anyerror, error.JavaScriptExtensionExecutionFailed), invocation.failure);
     try std.testing.expect(hostile.runtime.closed);
     try std.testing.expect(hostile.runtime.lastError() != null);
     try std.testing.expect(std.mem.indexOf(u8, hostile.runtime.lastError().?, "PI_PROVIDER_STREAM_RETIRE_TIMEOUT") != null);

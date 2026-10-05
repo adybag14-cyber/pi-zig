@@ -108,7 +108,8 @@ fn auditSource(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer, enfor
             if (std.mem.eql(u8, root, "src") and (std.mem.eql(u8, extension, ".c") or std.mem.eql(u8, extension, ".h")) and
                 !std.mem.eql(u8, entry.path, "extensions/engine_abi.c") and !std.mem.eql(u8, entry.path, "extensions/engine_abi.h") and
                 !std.mem.eql(u8, entry.path, "extensions\\engine_abi.c") and !std.mem.eql(u8, entry.path, "extensions\\engine_abi.h") and
-                !std.mem.eql(u8, entry.path, "extensions/typescript_scanner_abi.h") and !std.mem.eql(u8, entry.path, "extensions\\typescript_scanner_abi.h"))
+                !std.mem.eql(u8, entry.path, "extensions/typescript_scanner_abi.h") and !std.mem.eql(u8, entry.path, "extensions\\typescript_scanner_abi.h") and
+                !std.mem.eql(u8, entry.path, "durable/process_probe.c") and !std.mem.eql(u8, entry.path, "durable\\process_probe.c"))
             {
                 failures += 1;
                 try writer.print("unreviewed C exception: {s}/{s}\n", .{ root, entry.path });

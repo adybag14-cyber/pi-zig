@@ -556,3 +556,21 @@ October 5 native provider raw protocol checkpoint:
   Optimized runtime plus both raw targets pass Windows25/six skips and Linux31/31 See exact evidence:
   verification/checkpoint-189/native-provider-raw-budget-20261005.json.
 - Three legacy JavaScript files remain; default-native and parity stay incomplete.
+
+October 5 durable integration checkpoint:
+
+- Native local ExecutionEnv/readers/filesystem/temp/shell/output-window/polling-watch
+  and structured read/write/edit/bash operations are integrated. CLI read now
+  selects bounded text ranges while preserving existing image handling.
+- Independent data captures cover386 reads,17 edits,240 display/patch cases,
+  plus decoder/scanner/output suites. Native Myers code retains its BSD notice.
+- Windows noFollow opens use a synchronous final-reparse handle, preserving
+  non-following regular-file checks and preventing Zig0.16 pending-read panics.
+- Complete Debug and ReleaseSafe graphs pass115/115 steps on both platforms:
+  Windows519 dedicated passes/35 skips and1184 module passes/30 skips;
+  Linux694 dedicated passes and1206 module passes/eight skips.
+- Watch support remains polling, reads use regular files, diff budgets are bounded,
+  and a global mutation lock serializes paths. Storage/Session/Harness, typed-tool
+  registration and language adapters remain separate work. Default-native and
+  final parity remain uncertified. Exact evidence is in
+  verification/checkpoint-189/durable-integration-native-20261005.json.

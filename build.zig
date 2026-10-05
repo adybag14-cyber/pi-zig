@@ -62,6 +62,7 @@ pub fn build(b: *std.Build) void {
     mod.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, mod, quickjs);
     linkTypeScriptParser(b, mod, typescript_parser);
+    linkDurable(b, mod);
     const sqlite_persistence_mod = b.createModule(.{
         .root_source_file = b.path("src/sqlite_server_persistence.zig"),
         .target = target,
@@ -165,6 +166,7 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, test_mod, quickjs);
     linkTypeScriptParser(b, test_mod, typescript_parser);
     linkSqlite(test_mod, sqlite_lib_dir);
+    linkDurable(b, test_mod);
     const mod_tests = b.addTest(.{
         .root_module = test_mod,
         .use_llvm = use_llvm,
@@ -233,6 +235,40 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    const durable_fixture = b.addExecutable(.{
+        .name = "pi-durable-fixture",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/durable/process_fixture.zig"), .target = target, .optimize = optimize, .link_libc = true }),
+        .use_llvm = use_llvm,
+    });
+    const install_durable_fixture = b.addInstallArtifact(durable_fixture, .{});
+    const durable_fixture_path = b.getInstallPath(.bin, b.fmt("pi-durable-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)}));
+    for ([_]*std.Build.Step.Run{ run_mod_tests, run_exe_tests, run_sqlite_persistence_tests, run_sqlite_live_tests }) |run_tests| {
+        run_tests.step.dependOn(&install_durable_fixture.step);
+        run_tests.setEnvironmentVariable("PI_DURABLE_FIXTURE", durable_fixture_path);
+    }
+    const durable_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkDurable(b, durable_tests.root_module);
+    linkQuickJs(b, durable_tests.root_module, quickjs);
+    const run_durable_tests = b.addRunArtifact(durable_tests);
+    run_durable_tests.step.dependOn(&install_durable_fixture.step);
+    run_durable_tests.setEnvironmentVariable("PI_DURABLE_FIXTURE", durable_fixture_path);
+    const durable_step = b.step("test-durable", "Exercise native durable readers output processes and polling watch contracts");
+    durable_step.dependOn(&run_durable_tests.step);
+    test_step.dependOn(&run_durable_tests.step);
+    const durable_tools_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_tools_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"read"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, durable_tools_tests.root_module, quickjs);
+    linkDurable(b, durable_tools_tests.root_module);
+    const run_durable_tools_tests = b.addRunArtifact(durable_tools_tests);
+    const durable_tools_step = b.step("test-durable-tools", "Exercise bounded durable reader integration with existing native CLI tools");
+    durable_tools_step.dependOn(&run_durable_tools_tests.step);
+    test_step.dependOn(&run_durable_tools_tests.step);
     const mcp_fixture = b.addExecutable(.{
         .name = "pi-mcp-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp/stdio_fixture.zig"), .target = target, .optimize = optimize }),
@@ -707,5 +743,9 @@ fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Ste
 fn linkSqlite(module: *std.Build.Module, library_dir: ?[]const u8) void {
     if (library_dir) |path| module.addLibraryPath(.{ .cwd_relative = path });
     module.linkSystemLibrary("sqlite3", .{});
+    module.link_libc = true;
+}
+fn linkDurable(b: *std.Build, module: *std.Build.Module) void {
+    module.addCSourceFile(.{ .file = b.path("src/durable/process_probe.c"), .flags = &.{"-std=gnu11"} });
     module.link_libc = true;
 }

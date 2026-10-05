@@ -1,0 +1,80 @@
+{
+  "upstream": "6100fe5a8358709a26050b8da97ccd188ae93101",
+  "node": "v24.14.0",
+  "args": {
+    "result": {
+      "exitCode": 0
+    },
+    "stdout": "[\"a b\",\"&|;<>$()\",\"quote\\\"slash\\\\\",\"\",\"é😀\"]",
+    "stderr": "",
+    "calls": 1
+  },
+  "streams": {
+    "result": {
+      "exitCode": 7
+    },
+    "stdout": "a😀\n",
+    "stderr": "e�﻿\n",
+    "calls": 4
+  },
+  "inherited": {
+    "result": {
+      "exitCode": 0
+    },
+    "stdout": "{\"parent\":\"parent\",\"base\":\"base\",\"request\":\"request\",\"shared\":\"request-shared\"}",
+    "stderr": "",
+    "calls": 1
+  },
+  "isolated": {
+    "result": {
+      "exitCode": 0
+    },
+    "stdout": "{\"parent\":null,\"base\":null,\"request\":\"request\",\"shared\":\"request-shared\"}",
+    "stderr": "",
+    "calls": 1
+  },
+  "fullExit": {
+    "result": {
+      "exitCode": 1000
+    },
+    "stdout": "",
+    "stderr": "",
+    "calls": 0
+  },
+  "timeout": {
+    "result": {
+      "code": "timeout",
+      "causeIdentity": true
+    },
+    "stdout": "tree-before\nbefore\n",
+    "stderr": "",
+    "calls": 2
+  },
+  "aborted": {
+    "result": {
+      "code": "aborted",
+      "causeIdentity": true
+    },
+    "stdout": "before\n",
+    "stderr": "",
+    "calls": 1
+  },
+  "callback": {
+    "result": {
+      "code": "callback_error",
+      "causeIdentity": true
+    },
+    "stdout": "before\n",
+    "stderr": "",
+    "calls": 1
+  },
+  "large": {
+    "result": {
+      "exitCode": 0
+    },
+    "calls": 76,
+    "stdoutBytes": 2097152,
+    "stderrBytes": 2097152
+  },
+  "spillSize": 4194304
+}

@@ -1,0 +1,39 @@
+{
+  "upstream": "6100fe5a8358709a26050b8da97ccd188ae93101",
+  "node": "v24.14.0",
+  "info": {
+    "name": "original.txt",
+    "kind": "file",
+    "size": 17
+  },
+  "read": "second\nlast",
+  "scan": {
+    "newlines": 2,
+    "start": 6,
+    "end": 12,
+    "firstLineEnd": 12,
+    "lastLineStart": 6,
+    "selectedBytes": 6,
+    "firstLineBytes": 6
+  },
+  "pastLength": 0,
+  "closed": "invalid",
+  "directory": "is_directory",
+  "missing": "not_found",
+  "lines": [
+    {
+      "length": 65534,
+      "bytes": 65538,
+      "terminated": true,
+      "sha256": "2075d43f6362eb8fd8a7a035d547a7f8a27741f10a822ab6baa43dca3b81ef61",
+      "tail": "aaaaaa�﻿"
+    },
+    {
+      "length": 5,
+      "bytes": 5,
+      "terminated": true,
+      "sha256": "5757d8f7a782e8ba4b0709517873038910bc69bd4b2f07f7697e684982edbfc0",
+      "tail": "last\r"
+    }
+  ]
+}

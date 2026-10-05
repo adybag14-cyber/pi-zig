@@ -1,0 +1,82 @@
+{
+  "upstream": "b78e6a9085343ec0f308c3d377da72528b4cf7ee",
+  "node": "v24.14.0",
+  "results": [
+    {
+      "mode": "args",
+      "output": "[]",
+      "outputBytes": 2,
+      "diagnostics": [],
+      "failedOutput": false
+    },
+    {
+      "mode": "streams",
+      "error": {
+        "message": "Command exited with code 7",
+        "causeIdentity": false
+      },
+      "output": "a😀\ne�﻿\n",
+      "outputBytes": 14,
+      "diagnostics": [],
+      "failedOutput": false
+    },
+    {
+      "mode": "large",
+      "outputBytes": 4194304,
+      "diagnostics": [
+        {
+          "severity": "info",
+          "code": "full_output",
+          "message": "Full output: <path>"
+        }
+      ],
+      "spillSize": 4194304,
+      "spillAllL": true,
+      "failedOutput": false
+    },
+    {
+      "mode": "timeout",
+      "error": {
+        "message": "Command timed out after 0.05 seconds",
+        "causeIdentity": false
+      },
+      "output": "before\n",
+      "outputBytes": 7,
+      "diagnostics": [],
+      "failedOutput": false
+    },
+    {
+      "mode": "bad_timeout",
+      "error": {
+        "message": "Invalid timeout: must be a finite number of seconds",
+        "causeIdentity": false
+      },
+      "output": "",
+      "outputBytes": 0,
+      "diagnostics": [],
+      "failedOutput": false
+    },
+    {
+      "mode": "maximum_timeout",
+      "error": {
+        "message": "Invalid timeout: maximum is 2147483.647 seconds",
+        "causeIdentity": false
+      },
+      "output": "",
+      "outputBytes": 0,
+      "diagnostics": [],
+      "failedOutput": false
+    },
+    {
+      "mode": "callback",
+      "error": {
+        "message": "original callback",
+        "causeIdentity": true
+      },
+      "output": "",
+      "outputBytes": 0,
+      "diagnostics": [],
+      "failedOutput": true
+    }
+  ]
+}

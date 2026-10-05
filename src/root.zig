@@ -17,6 +17,7 @@ pub const evals = @import("evals/root.zig");
 pub const protocol = @import("protocol/root.zig");
 pub const telemetry = @import("telemetry/root.zig");
 pub const client = @import("client/root.zig");
+pub const durable = @import("durable/root.zig");
 
 pub const version = config.version;
 pub const name = config.APP_NAME;

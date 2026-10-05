@@ -6,6 +6,10 @@ const builtin = @import("builtin");
 const truncate_mod = @import("truncate.zig");
 const image_process = @import("../ai/image_process.zig");
 const schema_regexp = @import("../extensions/regexp.zig");
+const durable_filesystem = @import("../durable/filesystem.zig");
+const durable_read = @import("../durable/read.zig");
+const durable_types = @import("../durable/types.zig");
+const image_magic = @import("../ai/images.zig");
 
 pub const ToolCost = struct {
     input: f64 = 0,
@@ -827,15 +831,45 @@ fn executeRead(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
     const full = try resolvePath(ctx.gpa, ctx.cwd, path_owned);
     defer ctx.gpa.free(full);
 
-    const data = std.Io.Dir.cwd().readFileAlloc(ctx.io, full, ctx.gpa, .limited(32 * 1024 * 1024)) catch |err| {
-        return try errMsg(ctx.gpa, "read failed: {s}", .{@errorName(err)});
-    };
+    var fs = try durable_filesystem.FileSystem.init(ctx.gpa, ctx.io, ctx.cwd, null);
+    defer fs.deinit();
+    const read_context: durable_types.Context = .{ .abort_flag = if (ctx.abort_flag) |flag| @ptrCast(flag) else null };
+    var opened = try fs.openBinaryReader(full, .{}, read_context);
+    if (opened == .failure) {
+        defer opened.failure.deinit(ctx.gpa);
+        return try errMsg(ctx.gpa, "read failed: {s}", .{opened.failure.message});
+    }
+    var reader = opened.value;
+    defer reader.deinit();
+    var header_result = try reader.read(0, image_magic.sniff_bytes, read_context);
+    if (header_result == .failure) {
+        defer header_result.failure.deinit(ctx.gpa);
+        return try errMsg(ctx.gpa, "read failed: {s}", .{header_result.failure.message});
+    }
+    const header = header_result.value;
+    defer ctx.gpa.free(header);
 
     // Images ignore line slicing and become structured tool content. Safe
     // provider-native payloads remain byte-for-byte; oversized, rotated and
     // BMP inputs are normalized according to `images.autoResize`.
-    if (image_process.inspect(data)) |inspection| {
+    if (image_magic.detectSupportedMime(header) != null) image: {
+        var metadata = try reader.info(read_context);
+        if (metadata == .failure) {
+            defer metadata.failure.deinit(ctx.gpa);
+            return try errMsg(ctx.gpa, "read failed: {s}", .{metadata.failure.message});
+        }
+        defer metadata.value.deinit(ctx.gpa);
+        // Image normalization needs the encoded payload. Text files use only
+        // the bounded header/scan/selection path below.
+        if (metadata.value.size > 32 * 1024 * 1024) return try errMsg(ctx.gpa, "read failed: StreamTooLong", .{});
+        var image_bytes = try reader.read(0, metadata.value.size, read_context);
+        if (image_bytes == .failure) {
+            defer image_bytes.failure.deinit(ctx.gpa);
+            return try errMsg(ctx.gpa, "read failed: {s}", .{image_bytes.failure.message});
+        }
+        const data = image_bytes.value;
         defer ctx.gpa.free(data);
+        const inspection = image_process.inspect(data) orelse break :image;
         var normalized = try image_process.processBytes(ctx.gpa, ctx.io, data, .{
             .auto_resize = ctx.auto_resize_images,
             .environ = ctx.environ,
@@ -864,30 +898,16 @@ fn executeRead(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
         return .{ .content = content, .is_error = false };
     }
 
-    // Apply line offset/limit when requested (upstream pi read tool)
-    if (offset_raw > 0 or limit_raw > 0) {
-        defer ctx.gpa.free(data);
-        const start_line: usize = if (offset_raw > 0) @intCast(offset_raw) else 1;
-        const max_lines: ?usize = if (limit_raw > 0) @intCast(limit_raw) else null;
-        var out: std.ArrayList(u8) = .empty;
-        errdefer out.deinit(ctx.gpa);
-        var line_no: usize = 1;
-        var kept: usize = 0;
-        var it = std.mem.splitScalar(u8, data, '\n');
-        while (it.next()) |line| {
-            defer line_no += 1;
-            if (line_no < start_line) continue;
-            if (max_lines) |ml| {
-                if (kept >= ml) break;
-            }
-            if (out.items.len > 0) try out.append(ctx.gpa, '\n');
-            try out.appendSlice(ctx.gpa, line);
-            kept += 1;
-        }
-        return try maybeTruncate(ctx.gpa, try out.toOwnedSlice(ctx.gpa), false);
+    const start_line: u64 = if (offset_raw > 0) @intCast(offset_raw - 1) else 0;
+    const end_line: ?u64 = if (limit_raw > 0) std.math.add(u64, start_line, @intCast(limit_raw)) catch return try errMsg(ctx.gpa, "read: invalid line range", .{}) else null;
+    var selected_result = try durable_read.selection(&reader, .{ .startLine = start_line, .endLine = end_line }, read_context);
+    if (selected_result == .failure) {
+        defer selected_result.failure.deinit(ctx.gpa);
+        return try errMsg(ctx.gpa, "read failed: {s}", .{selected_result.failure.message});
     }
-
-    return try maybeTruncate(ctx.gpa, data, false);
+    var selected = selected_result.value;
+    defer selected.deinit(ctx.gpa);
+    return ownedResult(try durable_read.legacyText(ctx.gpa, selected), false);
 }
 
 fn executeWrite(ctx: ToolContext, arguments_json: []const u8) !ToolResult {
@@ -2088,6 +2108,25 @@ test "read supports offset and limit lines" {
     defer r.deinit(gpa);
     try std.testing.expect(!r.is_error);
     try std.testing.expectEqualStrings("L2\nL3", r.content);
+}
+
+test "read tool selects a native bounded range from a file larger than 32 MiB" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var temporary = std.testing.tmpDir(.{});
+    defer temporary.cleanup();
+    const file = try temporary.dir.createFile(io, "large.txt", .{});
+    defer file.close(io);
+    const size = 33 * 1024 * 1024;
+    try file.setLength(io, size);
+    try file.writePositionalAll(io, "\ntail😀", size - 9);
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try temporary.dir.realPath(io, &path_buffer);
+    const context: ToolContext = .{ .gpa = gpa, .io = io, .cwd = path_buffer[0..length] };
+    var result = try execute(context, "read", "{\"path\":\"large.txt\",\"offset\":2}");
+    defer result.deinit(gpa);
+    try std.testing.expect(!result.is_error);
+    try std.testing.expectEqualStrings("tail😀", result.content);
 }
 
 test "read tool truncates oversized file output" {
