@@ -11,20 +11,14 @@ const output = @import("output_window.zig");
 // A single bounded lock also covers tools constructed separately for one env.
 // This preserves mutation ordering; independent paths currently serialize too.
 var file_mutations: std.Io.Mutex = .init;
-pub const BashInput = struct { command: []const u8, timeout: ?f64 = null };
-pub const BashExecution = struct { command: []const u8, cwd: []const u8, env: ?*const std.process.Environ.Map, inheritEnv: bool };
-pub const BashPrepare = *const fn (?*anyopaque, *BashExecution, types.Context) anyerror!void;
-pub const BashOptions = struct {
-    commandPrefix: ?[]const u8 = null,
-    cwd: ?[]const u8 = null,
-    env: ?*const std.process.Environ.Map = null,
-    inheritEnv: bool = true,
-    onOutput: ?shell.OutputFn = null,
-    output_context: ?*anyopaque = null,
-    outputWindow: ?output.ShellOutputWindow = null,
-    prepare: ?BashPrepare = null,
-    prepare_context: ?*anyopaque = null,
-};
+pub const bash_runner = @import("tool_bash.zig");
+pub const powershell_runner = @import("tool_powershell.zig");
+pub const BashInput = bash_runner.Input;
+pub const BashExecution = bash_runner.Execution;
+pub const BashPrepare = bash_runner.Prepare;
+pub const BashOptions = bash_runner.Options;
+pub const PowerShellInput = powershell_runner.Input;
+pub const PowerShellOptions = powershell_runner.Options;
 /// A capability owner shares this set between invocations. Mutations are
 /// serialized without retaining caller arguments or changing the environment.
 pub const ToolSet = struct {
@@ -85,58 +79,10 @@ pub const ToolSet = struct {
         return .{ .value = .{ .text = try std.fmt.allocPrint(self.gpa, "Successfully wrote to {s}", .{path}) } };
     }
     pub fn bash(self: *ToolSet, env: anytype, input: BashInput, options: BashOptions, context: types.Context) !values.Result {
-        if (input.timeout) |timeout| {
-            if (!std.math.isFinite(timeout) or timeout <= 0) return values.messageFailure(self.gpa, "Invalid timeout: must be a finite number of seconds", error.InvalidTimeout);
-            if (timeout > 2147483647.0 / 1000.0) return values.messageFailure(self.gpa, "Invalid timeout: maximum is 2147483.647 seconds", error.InvalidTimeout);
-        }
-        const prefixed = if (options.commandPrefix) |prefix| if (prefix.len != 0) try std.fmt.allocPrint(self.gpa, "{s}\n{s}", .{ prefix, input.command }) else null else null;
-        defer if (prefixed) |text| self.gpa.free(text);
-        var execution: BashExecution = .{ .command = prefixed orelse input.command, .cwd = options.cwd orelse env.cwd(), .env = options.env, .inheritEnv = options.inheritEnv };
-        if (options.prepare) |prepare| prepare(options.prepare_context, &execution, context) catch |err| {
-            if (err == error.OutOfMemory) return err;
-            return values.messageFailure(self.gpa, @errorName(err), err);
-        };
-        var executed = try env.exec(.{ .text = execution.command }, .{
-            .cwd = execution.cwd,
-            .env = execution.env,
-            .inheritEnv = execution.inheritEnv,
-            .timeout = input.timeout,
-            .onOutput = options.onOutput,
-            .output_context = options.output_context,
-            .spill = .{ .afterBytes = 50 * 1024, .afterLines = 2000 },
-            .window = options.outputWindow,
-        }, context);
-        var execution_transferred = false;
-        defer if (!execution_transferred) switch (executed) {
-            .value => |*done| done.deinit(self.gpa),
-            .failure => |*failed| failed.deinit(self.gpa),
-        };
-        var value: values.ToolResult = .{};
-        errdefer value.deinit(self.gpa);
-        const spill_path = switch (executed) {
-            .value => |done| done.spillPath,
-            .failure => |failed| failed.spillPath,
-        };
-        if (spill_path) |path| try value.diagnostic(self.gpa, .info, "full_output", try std.fmt.allocPrint(self.gpa, "Full output: {s}", .{path}));
-        if (executed == .failure) {
-            const failure = executed.failure;
-            const message = switch (failure.code) {
-                .timeout => try std.fmt.allocPrint(self.gpa, "Command timed out after {d} seconds", .{input.timeout.?}),
-                .aborted => try self.gpa.dupe(u8, if (context.aborted()) failure.message else "Command aborted"),
-                else => try self.gpa.dupe(u8, failure.message),
-            };
-            const diagnostics = value.diagnostics;
-            value.diagnostics = .empty;
-            execution_transferred = true;
-            return .{ .failure = .{ .message = message, .cause = failure.cause, .execution = failure, .diagnostics = diagnostics } };
-        }
-        if (executed.value.exitCode != 0) {
-            const message = try std.fmt.allocPrint(self.gpa, "Command exited with code {d}", .{executed.value.exitCode});
-            const diagnostics = value.diagnostics;
-            value.diagnostics = .empty;
-            return .{ .failure = .{ .message = message, .diagnostics = diagnostics } };
-        }
-        return .{ .value = value };
+        return bash_runner.execute(self.gpa, env, input, options, null, context);
+    }
+    pub fn powershell(self: *ToolSet, env: anytype, input: PowerShellInput, options: PowerShellOptions, context: types.Context) !values.Result {
+        return powershell_runner.execute(self.gpa, env, input, options, context);
     }
 };
 fn editAccessFailure(gpa: std.mem.Allocator, path: []const u8, failure: types.FileError) !values.Result {

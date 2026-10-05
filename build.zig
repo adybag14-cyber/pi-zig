@@ -309,6 +309,26 @@ pub fn build(b: *std.Build) void {
     const durable_scheduler_step = b.step("test-durable-scheduler", "Exercise native durable task recovery ownership cascades concurrent phases and late-write fences");
     durable_scheduler_step.dependOn(&run_durable_scheduler_tests.step);
     test_step.dependOn(&run_durable_scheduler_tests.step);
+    const durable_powershell_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_powershell_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"durable.powershell"},
+    });
+    linkSqlite(durable_powershell_tests.root_module, sqlite_lib_dir);
+    linkQuickJs(b, durable_powershell_tests.root_module, quickjs);
+    linkDurable(b, durable_powershell_tests.root_module);
+    const run_durable_powershell_tests = b.addRunArtifact(durable_powershell_tests);
+    const durable_command_fixture = b.addExecutable(.{
+        .name = "pi-durable-command-fixture",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/durable/command_fixture.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const install_durable_command_fixture = b.addInstallArtifact(durable_command_fixture, .{});
+    run_durable_powershell_tests.step.dependOn(&install_durable_command_fixture.step);
+    run_durable_powershell_tests.setEnvironmentVariable("PI_DURABLE_COMMAND_FIXTURE", b.getInstallPath(.bin, b.fmt("pi-durable-command-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    const durable_powershell_step = b.step("test-durable-powershell", "Exercise real native PowerShell argv startup fallback preparation and retained output");
+    durable_powershell_step.dependOn(&run_durable_powershell_tests.step);
+    test_step.dependOn(&run_durable_powershell_tests.step);
     const mcp_fixture = b.addExecutable(.{
         .name = "pi-mcp-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp/stdio_fixture.zig"), .target = target, .optimize = optimize }),
@@ -331,6 +351,14 @@ pub fn build(b: *std.Build) void {
     const mcp_oauth_step = b.step("test-mcp-oauth", "Exercise native MCP OAuth registration and issuer contracts");
     mcp_oauth_step.dependOn(&run_mcp_oauth_tests.step);
     test_step.dependOn(&run_mcp_oauth_tests.step);
+    const prompt_sections_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/prompt_sections_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_prompt_sections_tests = b.addRunArtifact(prompt_sections_tests);
+    const prompt_sections_step = b.step("test-prompt-sections", "Check native structured prompts against latest upstream captures");
+    prompt_sections_step.dependOn(&run_prompt_sections_tests.step);
+    test_step.dependOn(&run_prompt_sections_tests.step);
     mcp_test_step.dependOn(&run_mcp_process_tests.step);
     test_step.dependOn(&run_mcp_process_tests.step);
     test_step.dependOn(&run_mod_tests.step);

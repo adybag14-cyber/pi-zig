@@ -44,6 +44,76 @@ pub const Bindings = struct {
         try owner.install(.{ .name = "pi.tools", .tools = &self.tools });
     }
 };
+/// Explicit registration; the default four-tool Bindings set stays unchanged.
+/// prepare_context must outlive the registry snapshots/invocations holding this binding.
+pub const PowerShellBinding = struct {
+    gpa: std.mem.Allocator,
+    env: *execution_env.ExecutionEnv,
+    metadata: json.Owned,
+    options: tools.PowerShellOptions,
+    environment: ?std.process.Environ.Map = null,
+    tool: registry.Tool,
+    refs: std.atomic.Value(usize) = .init(1),
+    pub fn create(gpa: std.mem.Allocator, env: *execution_env.ExecutionEnv, options: tools.PowerShellOptions) !*PowerShellBinding {
+        const self = try gpa.create(PowerShellBinding);
+        errdefer gpa.destroy(self);
+        self.* = .{ .gpa = gpa, .env = env, .metadata = try json.Owned.empty(gpa), .options = options, .tool = undefined };
+        errdefer self.metadata.deinit();
+        const a = self.metadata.arena.allocator();
+        if (options.commandPrefix) |prefix| self.options.commandPrefix = try a.dupe(u8, prefix);
+        if (options.cwd) |cwd| self.options.cwd = try a.dupe(u8, cwd);
+        const programs = try a.alloc([]const u8, options.programs.len);
+        for (programs, options.programs) |*program, value| program.* = try a.dupe(u8, value);
+        self.options.programs = programs;
+        if (options.env) |environment| {
+            self.environment = try environment.clone(gpa);
+            self.options.env = &self.environment.?;
+        }
+        errdefer if (self.environment) |*environment| environment.deinit();
+        self.tool = .{
+            .name = "powershell",
+            .description = "Execute a PowerShell command in the current working directory. Returns combined stdout and stderr. Output is truncated to last 2000 lines or 50KB (whichever is hit first). If truncated, full output is saved to a temp file. Optionally provide a timeout in seconds.",
+            .parameters = try json.parseLeaky(a, "{\"type\":\"object\",\"properties\":{\"command\":{\"type\":\"string\",\"description\":\"PowerShell command to execute\"},\"timeout\":{\"type\":\"number\",\"description\":\"Timeout in seconds (optional, no default timeout)\"}},\"required\":[\"command\"]}"),
+            .execute = executePowerShell,
+            .resource = .{ .context = self, .retain = retainPowerShell, .release = releasePowerShell },
+            .limits = .{ .retain = .tail },
+        };
+        return self;
+    }
+    pub fn drop(self: *PowerShellBinding) void {
+        if (self.refs.fetchSub(1, .acq_rel) == 1) {
+            const gpa = self.gpa;
+            if (self.environment) |*environment| environment.deinit();
+            self.metadata.deinit();
+            gpa.destroy(self);
+        }
+    }
+    pub fn install(self: *PowerShellBinding, owner: *registry.Registry) !void {
+        try owner.install(.{ .name = "pi.tools.powershell", .tools = &.{self.tool} });
+    }
+};
+pub fn createPowerShellTool(gpa: std.mem.Allocator, env: *execution_env.ExecutionEnv, options: tools.PowerShellOptions) !*PowerShellBinding {
+    return PowerShellBinding.create(gpa, env, options);
+}
+fn retainPowerShell(raw: ?*anyopaque) void {
+    const binding: *PowerShellBinding = @ptrCast(@alignCast(raw.?));
+    _ = binding.refs.fetchAdd(1, .monotonic);
+}
+fn releasePowerShell(raw: ?*anyopaque) void {
+    const binding: *PowerShellBinding = @ptrCast(@alignCast(raw.?));
+    binding.drop();
+}
+fn executePowerShell(raw: ?*anyopaque, args: json.Value, opaque_api: *anyopaque, context: types.Context) !registry.Execution {
+    const binding: *PowerShellBinding = @ptrCast(@alignCast(raw.?));
+    const api: *invoke.Api = @ptrCast(@alignCast(opaque_api));
+    if (api.gpa.ptr != binding.env.fs.gpa.ptr or api.gpa.vtable != binding.env.fs.gpa.vtable) return error.IncompatibleEnvironmentAllocator;
+    var options = binding.options;
+    options.onOutput = onOutput;
+    options.output_context = api;
+    options.outputWindow = api.outputWindow();
+    const result = try tools.powershell_runner.execute(api.gpa, binding.env, .{ .command = try string(args, "command"), .timeout = try numeric(args, "timeout") }, options, context);
+    return .{ .result = result, .contentProvided = false };
+}
 fn retain(state: ?*anyopaque) void {
     const entry: *Entry = @ptrCast(@alignCast(state.?));
     _ = entry.owner.refs.fetchAdd(1, .monotonic);

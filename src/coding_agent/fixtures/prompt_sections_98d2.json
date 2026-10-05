@@ -1,0 +1,678 @@
+{
+  "upstream": "98d2e1947aa9c75dff4c20474d541873dadc1d05",
+  "cases": [
+    {
+      "input": {
+        "cwd": "C:\\owned\\project",
+        "selectedTools": [
+          "read",
+          "bash",
+          "edit",
+          "write",
+          "powershell",
+          "execute"
+        ],
+        "toolSnippets": {
+          "read": "Read files",
+          "bash": "Run bash",
+          "edit": "Edit files",
+          "write": "Write files",
+          "powershell": "Run PowerShell",
+          "execute": "Execute code"
+        },
+        "toolGuidelines": {
+          "read": [
+            " read rule ",
+            "shared"
+          ],
+          "bash": [
+            "bash rule"
+          ],
+          "powershell": [
+            "PowerShell rule"
+          ],
+          "execute": [
+            "execute rule",
+            "shared"
+          ]
+        },
+        "promptGuidelines": [
+          " shared ",
+          "global",
+          ""
+        ],
+        "skills": [
+          {
+            "name": "owner<&",
+            "description": "Use Ω 🦊",
+            "filePath": "C:\\owned\\SKILL.md",
+            "baseDir": "C:\\owned",
+            "source": "explicit",
+            "disableModelInvocation": false
+          }
+        ]
+      },
+      "sections": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n- read: Read files\n- bash: Run bash\n- edit: Edit files\n- write: Write files\n- powershell: Run PowerShell\n- execute: Execute code\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Use bash or PowerShell for file operations like listing, searching, and finding files\n- read rule\n- shared\n- bash rule\n- PowerShell rule\n- execute rule\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: README.md\n- Additional docs: docs\n- Examples: examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nUse the read tool to load a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+        "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+      },
+      "state": {
+        "content": "",
+        "sections": {
+          "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+          "tools": "<tools>\n- read: Read files\n- bash: Run bash\n- edit: Edit files\n- write: Write files\n- powershell: Run PowerShell\n- execute: Execute code\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+          "rules": "<rules>\n- Use bash or PowerShell for file operations like listing, searching, and finding files\n- read rule\n- shared\n- bash rule\n- PowerShell rule\n- execute rule\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+          "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\README.md\n- Additional docs: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\docs\n- Examples: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+          "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nUse the read tool to load a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+          "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+        }
+      }
+    },
+    {
+      "input": {
+        "cwd": "C:\\owned\\project",
+        "selectedTools": [
+          "read",
+          "bash",
+          "edit",
+          "write",
+          "powershell",
+          "execute"
+        ],
+        "toolSnippets": {
+          "read": "Read files",
+          "bash": "Run bash",
+          "edit": "Edit files",
+          "write": "Write files",
+          "powershell": "Run PowerShell",
+          "execute": "Execute code"
+        },
+        "toolGuidelines": {
+          "read": [
+            " read rule ",
+            "shared"
+          ],
+          "bash": [
+            "bash rule"
+          ],
+          "powershell": [
+            "PowerShell rule"
+          ],
+          "execute": [
+            "execute rule",
+            "shared"
+          ]
+        },
+        "promptGuidelines": [
+          " shared ",
+          "global",
+          ""
+        ],
+        "skills": [
+          {
+            "name": "owner<&",
+            "description": "Use Ω 🦊",
+            "filePath": "C:\\owned\\SKILL.md",
+            "baseDir": "C:\\owned",
+            "source": "explicit",
+            "disableModelInvocation": false
+          }
+        ],
+        "hiddenTools": [
+          "read",
+          "bash",
+          "edit",
+          "write",
+          "powershell"
+        ]
+      },
+      "sections": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n- execute: Execute code\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- execute rule\n- shared\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: README.md\n- Additional docs: docs\n- Examples: examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nLoad a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+        "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+      },
+      "state": {
+        "content": "",
+        "sections": {
+          "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+          "tools": "<tools>\n- execute: Execute code\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+          "rules": "<rules>\n- execute rule\n- shared\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+          "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\README.md\n- Additional docs: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\docs\n- Examples: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+          "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nLoad a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+          "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+        }
+      }
+    },
+    {
+      "input": {
+        "cwd": "C:\\owned\\project",
+        "selectedTools": [
+          "read"
+        ],
+        "toolSnippets": {
+          "read": "Read files",
+          "bash": "Run bash",
+          "edit": "Edit files",
+          "write": "Write files",
+          "powershell": "Run PowerShell",
+          "execute": "Execute code"
+        },
+        "toolGuidelines": {
+          "read": [
+            " read rule ",
+            "shared"
+          ],
+          "bash": [
+            "bash rule"
+          ],
+          "powershell": [
+            "PowerShell rule"
+          ],
+          "execute": [
+            "execute rule",
+            "shared"
+          ]
+        },
+        "promptGuidelines": [
+          " shared ",
+          "global",
+          ""
+        ],
+        "skills": [
+          {
+            "name": "owner<&",
+            "description": "Use Ω 🦊",
+            "filePath": "C:\\owned\\SKILL.md",
+            "baseDir": "C:\\owned",
+            "source": "explicit",
+            "disableModelInvocation": false
+          }
+        ],
+        "hiddenTools": [
+          "read"
+        ]
+      },
+      "sections": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n(none)\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- shared\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: README.md\n- Additional docs: docs\n- Examples: examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nLoad a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+        "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+      },
+      "state": {
+        "content": "",
+        "sections": {
+          "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+          "tools": "<tools>\n(none)\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+          "rules": "<rules>\n- shared\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+          "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\README.md\n- Additional docs: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\docs\n- Examples: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+          "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nLoad a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+          "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+        }
+      }
+    },
+    {
+      "input": {
+        "cwd": "C:\\owned\\project",
+        "selectedTools": [
+          "powershell"
+        ],
+        "toolSnippets": {
+          "read": "Read files",
+          "bash": "Run bash",
+          "edit": "Edit files",
+          "write": "Write files",
+          "powershell": "Run PowerShell",
+          "execute": "Execute code"
+        },
+        "toolGuidelines": {
+          "read": [
+            " read rule ",
+            "shared"
+          ],
+          "bash": [
+            "bash rule"
+          ],
+          "powershell": [
+            "PowerShell rule"
+          ],
+          "execute": [
+            "execute rule",
+            "shared"
+          ]
+        },
+        "promptGuidelines": [
+          " shared ",
+          "global",
+          ""
+        ],
+        "skills": [
+          {
+            "name": "owner<&",
+            "description": "Use Ω 🦊",
+            "filePath": "C:\\owned\\SKILL.md",
+            "baseDir": "C:\\owned",
+            "source": "explicit",
+            "disableModelInvocation": false
+          }
+        ]
+      },
+      "sections": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n- powershell: Run PowerShell\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Use PowerShell for file operations like listing, searching, and finding files\n- PowerShell rule\n- shared\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: README.md\n- Additional docs: docs\n- Examples: examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+      },
+      "state": {
+        "content": "",
+        "sections": {
+          "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+          "tools": "<tools>\n- powershell: Run PowerShell\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+          "rules": "<rules>\n- Use PowerShell for file operations like listing, searching, and finding files\n- PowerShell rule\n- shared\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+          "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\README.md\n- Additional docs: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\docs\n- Examples: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+          "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+        }
+      }
+    },
+    {
+      "input": {
+        "cwd": "C:\\owned\\project",
+        "selectedTools": [],
+        "toolSnippets": {
+          "read": "Read files",
+          "bash": "Run bash",
+          "edit": "Edit files",
+          "write": "Write files",
+          "powershell": "Run PowerShell",
+          "execute": "Execute code"
+        },
+        "toolGuidelines": {
+          "read": [
+            " read rule ",
+            "shared"
+          ],
+          "bash": [
+            "bash rule"
+          ],
+          "powershell": [
+            "PowerShell rule"
+          ],
+          "execute": [
+            "execute rule",
+            "shared"
+          ]
+        },
+        "promptGuidelines": [
+          " shared ",
+          "global",
+          ""
+        ],
+        "skills": [
+          {
+            "name": "owner<&",
+            "description": "Use Ω 🦊",
+            "filePath": "C:\\owned\\SKILL.md",
+            "baseDir": "C:\\owned",
+            "source": "explicit",
+            "disableModelInvocation": false
+          }
+        ]
+      },
+      "sections": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n(none)\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- shared\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: README.md\n- Additional docs: docs\n- Examples: examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+      },
+      "state": {
+        "content": "",
+        "sections": {
+          "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+          "tools": "<tools>\n(none)\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+          "rules": "<rules>\n- shared\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+          "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\README.md\n- Additional docs: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\docs\n- Examples: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+          "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+        }
+      }
+    },
+    {
+      "input": {
+        "cwd": "C:\\owned\\project",
+        "selectedTools": [
+          "read",
+          "bash",
+          "edit",
+          "write",
+          "powershell",
+          "execute"
+        ],
+        "toolSnippets": {
+          "read": "Read files",
+          "bash": "Run bash",
+          "edit": "Edit files",
+          "write": "Write files",
+          "powershell": "Run PowerShell",
+          "execute": "Execute code"
+        },
+        "toolGuidelines": {
+          "read": [
+            " read rule ",
+            "shared"
+          ],
+          "bash": [
+            "bash rule"
+          ],
+          "powershell": [
+            "PowerShell rule"
+          ],
+          "execute": [
+            "execute rule",
+            "shared"
+          ]
+        },
+        "promptGuidelines": [
+          " shared ",
+          "global",
+          ""
+        ],
+        "skills": [
+          {
+            "name": "owner<&",
+            "description": "Use Ω 🦊",
+            "filePath": "C:\\owned\\SKILL.md",
+            "baseDir": "C:\\owned",
+            "source": "explicit",
+            "disableModelInvocation": false
+          }
+        ],
+        "customPrompt": "CUSTOM",
+        "appendSystemPrompt": "ADD",
+        "sections": {
+          "rules": "replacement",
+          "extra": "value"
+        }
+      },
+      "sections": {
+        "preamble": "CUSTOM",
+        "addendum": "<addendum>\nADD\n</addendum>",
+        "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nUse the read tool to load a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+        "cwd": "<cwd>\nC:/owned/project\n</cwd>",
+        "rules": "<rules>\nreplacement\n</rules>",
+        "extra": "<extra>\nvalue\n</extra>"
+      },
+      "state": {
+        "content": "",
+        "sections": {
+          "preamble": "CUSTOM",
+          "addendum": "<addendum>\nADD\n</addendum>",
+          "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nUse the read tool to load a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+          "cwd": "<cwd>\nC:/owned/project\n</cwd>",
+          "rules": "<rules>\nreplacement\n</rules>",
+          "extra": "<extra>\nvalue\n</extra>"
+        }
+      }
+    },
+    {
+      "input": {
+        "cwd": "C:\\owned\\project",
+        "selectedTools": [
+          "read",
+          "bash",
+          "edit",
+          "write",
+          "powershell",
+          "execute"
+        ],
+        "toolSnippets": {
+          "read": "Read files",
+          "bash": "Run bash",
+          "edit": "Edit files",
+          "write": "Write files",
+          "powershell": "Run PowerShell",
+          "execute": "Execute code"
+        },
+        "toolGuidelines": {
+          "read": [
+            " read rule ",
+            "shared"
+          ],
+          "bash": [
+            "bash rule"
+          ],
+          "powershell": [
+            "PowerShell rule"
+          ],
+          "execute": [
+            "execute rule",
+            "shared"
+          ]
+        },
+        "promptGuidelines": [
+          " shared ",
+          "global",
+          ""
+        ],
+        "skills": [
+          {
+            "name": "owner<&",
+            "description": "Use Ω 🦊",
+            "filePath": "C:\\owned\\SKILL.md",
+            "baseDir": "C:\\owned",
+            "source": "explicit",
+            "disableModelInvocation": false
+          }
+        ],
+        "contextFiles": [
+          {
+            "path": "C:\\owned\\AGENTS.md",
+            "content": "instructions"
+          }
+        ]
+      },
+      "sections": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n- read: Read files\n- bash: Run bash\n- edit: Edit files\n- write: Write files\n- powershell: Run PowerShell\n- execute: Execute code\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Use bash or PowerShell for file operations like listing, searching, and finding files\n- read rule\n- shared\n- bash rule\n- PowerShell rule\n- execute rule\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: README.md\n- Additional docs: docs\n- Examples: examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "project_context": "<project_context>\nProject-specific instructions and guidelines:\n\n<project_instructions path=\"C:\\owned\\AGENTS.md\">\ninstructions\n</project_instructions>\n</project_context>",
+        "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nUse the read tool to load a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+        "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+      },
+      "state": {
+        "content": "",
+        "sections": {
+          "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+          "tools": "<tools>\n- read: Read files\n- bash: Run bash\n- edit: Edit files\n- write: Write files\n- powershell: Run PowerShell\n- execute: Execute code\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+          "rules": "<rules>\n- Use bash or PowerShell for file operations like listing, searching, and finding files\n- read rule\n- shared\n- bash rule\n- PowerShell rule\n- execute rule\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+          "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\README.md\n- Additional docs: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\docs\n- Examples: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+          "project_context": "<project_context>\nProject-specific instructions and guidelines:\n\n<project_instructions path=\"C:\\owned\\AGENTS.md\">\ninstructions\n</project_instructions>\n</project_context>",
+          "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nUse the read tool to load a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+          "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+        }
+      }
+    },
+    {
+      "input": {
+        "cwd": "C:\\owned\\project",
+        "selectedTools": [
+          "read",
+          "bash",
+          "edit",
+          "write",
+          "powershell",
+          "execute"
+        ],
+        "toolSnippets": {
+          "read": "Read files",
+          "bash": "Run bash",
+          "edit": "Edit files",
+          "write": "Write files",
+          "powershell": "Run PowerShell",
+          "execute": "Execute code"
+        },
+        "toolGuidelines": {
+          "read": [
+            " read rule ",
+            "shared"
+          ],
+          "bash": [
+            "bash rule"
+          ],
+          "powershell": [
+            "PowerShell rule"
+          ],
+          "execute": [
+            "execute rule",
+            "shared"
+          ]
+        },
+        "promptGuidelines": [
+          " shared ",
+          "global",
+          ""
+        ],
+        "skills": [
+          {
+            "name": "owner<&",
+            "description": "Use Ω 🦊",
+            "filePath": "C:\\owned\\SKILL.md",
+            "baseDir": "C:\\owned",
+            "source": "explicit",
+            "disableModelInvocation": true
+          }
+        ]
+      },
+      "sections": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n- read: Read files\n- bash: Run bash\n- edit: Edit files\n- write: Write files\n- powershell: Run PowerShell\n- execute: Execute code\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Use bash or PowerShell for file operations like listing, searching, and finding files\n- read rule\n- shared\n- bash rule\n- PowerShell rule\n- execute rule\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: README.md\n- Additional docs: docs\n- Examples: examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+      },
+      "state": {
+        "content": "",
+        "sections": {
+          "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+          "tools": "<tools>\n- read: Read files\n- bash: Run bash\n- edit: Edit files\n- write: Write files\n- powershell: Run PowerShell\n- execute: Execute code\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+          "rules": "<rules>\n- Use bash or PowerShell for file operations like listing, searching, and finding files\n- read rule\n- shared\n- bash rule\n- PowerShell rule\n- execute rule\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+          "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\README.md\n- Additional docs: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\docs\n- Examples: C:\\Users\\adyba\\pi-upstream-98d2e19-20261005\\packages\\coding-agent\\examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+          "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+        }
+      }
+    },
+    {
+      "input": {
+        "cwd": "C:\\owned\\project",
+        "selectedTools": [
+          "read",
+          "bash",
+          "edit",
+          "write",
+          "powershell",
+          "execute"
+        ],
+        "toolSnippets": {
+          "read": "Read files",
+          "bash": "Run bash",
+          "edit": "Edit files",
+          "write": "Write files",
+          "powershell": "Run PowerShell",
+          "execute": "Execute code"
+        },
+        "toolGuidelines": {
+          "read": [
+            " read rule ",
+            "shared"
+          ],
+          "bash": [
+            "bash rule"
+          ],
+          "powershell": [
+            "PowerShell rule"
+          ],
+          "execute": [
+            "execute rule",
+            "shared"
+          ]
+        },
+        "promptGuidelines": [
+          " shared ",
+          "global",
+          ""
+        ],
+        "skills": [
+          {
+            "name": "owner<&",
+            "description": "Use Ω 🦊",
+            "filePath": "C:\\owned\\SKILL.md",
+            "baseDir": "C:\\owned",
+            "source": "explicit",
+            "disableModelInvocation": false
+          }
+        ],
+        "forceSystemPrompt": ""
+      },
+      "sections": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n- read: Read files\n- bash: Run bash\n- edit: Edit files\n- write: Write files\n- powershell: Run PowerShell\n- execute: Execute code\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Use bash or PowerShell for file operations like listing, searching, and finding files\n- read rule\n- shared\n- bash rule\n- PowerShell rule\n- execute rule\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: README.md\n- Additional docs: docs\n- Examples: examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nUse the read tool to load a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+        "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+      },
+      "state": {
+        "content": ""
+      }
+    }
+  ],
+  "diffs": [
+    {
+      "previous": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n- read: Read files\n- bash: Run bash\n- edit: Edit files\n- write: Write files\n- powershell: Run PowerShell\n- execute: Execute code\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- Use bash or PowerShell for file operations like listing, searching, and finding files\n- read rule\n- shared\n- bash rule\n- PowerShell rule\n- execute rule\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: README.md\n- Additional docs: docs\n- Examples: examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nUse the read tool to load a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+        "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+      },
+      "current": {
+        "preamble": "You are an expert coding assistant operating inside pi, a coding agent harness. You help users by reading files, executing commands, editing code, and writing new files.",
+        "tools": "<tools>\n- execute: Execute code\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- execute rule\n- shared\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "docs": "<docs>\nPi documentation (read only when the user asks about pi itself, its SDK, extensions, themes, skills, or TUI):\n- Main documentation: README.md\n- Additional docs: docs\n- Examples: examples (extensions, custom tools, SDK)\n- When reading pi docs or examples, resolve docs/... under Additional docs and examples/... under Examples, not the current working directory\n- When asked about: extensions (docs/extensions.md, examples/extensions/), themes (docs/themes.md), skills (docs/skills.md), prompt templates (docs/prompt-templates.md), TUI components (docs/tui.md), keybindings (docs/keybindings.md), SDK integrations (docs/sdk.md), custom providers (docs/custom-provider.md), adding models (docs/models.md), pi packages (docs/packages.md), environment variables (docs/environment-variables.md), MCP servers (docs/mcp.md), codemode scripts and non-LLM models such as classifiers and image models (docs/codemode.md)\n- When working on pi topics, read the docs and examples, and follow .md cross-references before implementing\n- Always read pi .md files completely and follow links to related docs (e.g., tui.md for TUI API details)\n</docs>",
+        "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nLoad a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>",
+        "cwd": "<cwd>\nC:/owned/project\n</cwd>"
+      },
+      "patch": {
+        "tools": "<tools>\n- execute: Execute code\n\nIn addition to the tools above, you may have access to other custom tools depending on the project.\n</tools>",
+        "rules": "<rules>\n- execute rule\n- shared\n- global\n- Be concise in your responses\n- Show file paths clearly when working with files\n</rules>",
+        "skills": "<skills>\nThe following skills provide specialized instructions for specific tasks.\nLoad a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>owner&lt;&amp;</name>\n    <description>Use Ω 🦊</description>\n    <location>C:\\owned\\SKILL.md</location>\n  </skill>\n</available_skills>\n</skills>"
+      }
+    },
+    {
+      "previous": {
+        "preamble": "old",
+        "removed": "old"
+      },
+      "current": {
+        "preamble": "new",
+        "extra": "<extra>\nvalue\n</extra>"
+      },
+      "patch": {
+        "preamble": "new",
+        "extra": "<extra>\nvalue\n</extra>",
+        "removed": null
+      }
+    }
+  ]
+}

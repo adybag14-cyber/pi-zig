@@ -215,7 +215,10 @@ pub const Shell = struct {
             },
         };
         if (argv.len == 0) return failure(.spawn_error, error.EmptyArgv);
-        const program = startup.resolveProgram(self.gpa, self.io, argv[0], cwd, &environment_map) catch |err| {
+        // Windows discovers a program through the parent's PATH when the child
+        // environment omits PATH. An explicitly empty child PATH remains authoritative.
+        const search_environment = if (builtin.os.tag == .windows and environment_map.get("PATH") == null) &self.inherited else &environment_map;
+        const program = startup.resolveProgram(self.gpa, self.io, argv[0], cwd, search_environment) catch |err| {
             if (err == error.OutOfMemory) return err;
             return failure(.spawn_error, err);
         };

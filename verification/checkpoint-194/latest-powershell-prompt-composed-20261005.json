@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentSource": "6f6802361b9f4eb40b724f416ebd2816e05ecb70",
+  "upstream": "031b24aa6425067253cb94095fb806a9df9d619c",
+  "upstreamCommitUtc": "2026-10-05T18:39:50Z",
+  "upstreamVersion": "1.0.3",
+  "latestStableRelease": "v1.0.3",
+  "sourceArchiveSha256": "57862bebb6057df311f4fd2302c05c91d4cc11bb536a8f155a021c777c32e1f5",
+  "catalogSourceSha256": "37f184952042344266c9d02617201668a5abfd92a7cad988f3237c649429a6b3",
+  "changes": [
+    "Native explicit PowerShell tool via argv, shared Bash preparation/output runner and retained registry binding",
+    "Windows program discovery uses inherited PATH only when child PATH is absent",
+    "Native structured prompt sections, declared/hidden tool rules, skill-reader hints, ordered diffs and owned rendered text",
+    "Catalog and changelog projection verified against newest selected source archive"
+  ],
+  "validation": {
+    "windowsDebug": "139/139 steps;692 passed;39 skips",
+    "windowsReleaseSafe": "139/139 steps;692 passed;39 skips",
+    "linuxDebug": "135/135 steps;859 passed;2 Windows-only skips",
+    "linuxReleaseSafe": "135/135 steps;859 passed;2 Windows-only skips",
+    "jobs": [
+      {
+        "name": "powershell-prompt-latest-main-full-debug-20261005",
+        "pid": 50104,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T19:37:29.1588710Z",
+        "launched_utc": "2026-10-05T19:37:29.1554967+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:39:30.6120762+00:00"
+      },
+      {
+        "name": "powershell-prompt-latest-main-full-releasesafe-20261005",
+        "pid": 12216,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T19:40:31.8259740Z",
+        "launched_utc": "2026-10-05T19:40:31.8226976+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:48:32.0422248+00:00"
+      },
+      {
+        "name": "powershell-prompt-latest-main-linux-debug-20261005",
+        "pid": 49316,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-powershell-prompt-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1000s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T19:41:55.4347850Z",
+        "launched_utc": "2026-10-05T19:41:55.4316462+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:43:59.5060668+00:00"
+      },
+      {
+        "name": "powershell-prompt-latest-main-linux-releasesafe-20261005",
+        "pid": 41136,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-powershell-prompt-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1000s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T19:45:50.6349290Z",
+        "launched_utc": "2026-10-05T19:45:50.6316825+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T19:52:34.6383095+00:00"
+      }
+    ],
+    "snapshotSha256": "b4fcaeb7c3d2ee41fcc774511e97d22fbcd78101f8e5eaeb90a48bc2293f7ede",
+    "promptCases": 9,
+    "powerShellReferenceCases": 15,
+    "previousHostedCloseRepair": {
+      "runId": 37364280665,
+      "macos": "success",
+      "ubuntu": "success",
+      "windows": "cancelled; not counted as success"
+    }
+  },
+  "limits": [
+    "PowerShell installation is explicit; user-authored prepare callbacks through QuickJS remain pending",
+    "Structured prompt API is native and verified; complete CLI loadout/section-update adapter remains pending",
+    "Latest lazy SSH runtime is an active separate native environment port",
+    "Remaining MCP/codemode and native-default/JS-host removal are incomplete; release remains uncertified"
+  ]
+}

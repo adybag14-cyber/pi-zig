@@ -34,6 +34,7 @@ pub const thinking_tui = @import("thinking_tui.zig");
 pub const settings_tui = @import("settings_tui.zig");
 pub const session_tui = @import("session_tui.zig");
 pub const system_prompt = @import("system_prompt.zig");
+pub const prompt_sections = @import("prompt_sections.zig");
 pub const project_environment = @import("project_environment.zig");
 pub const effective_catalog = @import("effective_catalog.zig");
 pub const radius_catalog = @import("radius_catalog.zig");

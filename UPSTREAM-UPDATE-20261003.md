@@ -6,9 +6,9 @@ Status: in progress. This file does not certify parity or a release.
   `012e80ced763e8d8ac7e01f7331d32dad3ab468b`.
 - Previous Pi baseline: `853a80d26c90a14c1886f0ebb8ffaae133ca2185`, version 0.84.4.
 - Selected authority: earendil-works/pi main
-  `b7dfc049e917a265a5aefa9f3952a2dec9b81cfd`, package version 1.0.3.
-  It descends from and is newer than published GitHub release v1.0.0.
-- Delta: 929 commits, including new model types/classifiers, codemode, MCP
+  `031b24aa6425067253cb94095fb806a9df9d619c`, package version 1.0.3.
+  It descends from and is newer than published GitHub release v1.0.3.
+- Delta: 935 commits, including new model types/classifiers, codemode, MCP
   configuration/OAuth, providers/auth, agent-loop hooks, terminal behavior,
   and extraction of durable harness APIs into pi-durable.
   The refresh from initial target `4c6fb7cf` adds exactly one Nix workflow
@@ -40,7 +40,7 @@ Status: in progress. This file does not certify parity or a release.
   additional contracts are tracked for native implementation; this refresh
   does not certify parity. The old6100 reference remains intact for prior gates.
 - Current upstream source tar SHA-256:
-  `460959d333eaf3e4668d48088ca4b5b1c14e6b26d4550f7a563916c4a27bdf80`.
+  `57862bebb6057df311f4fd2302c05c91d4cc11bb536a8f155a021c777c32e1f5`.
 - User-required toolchain: final Zig 0.16.0. No implicit upgrade.
 - User-required implementation: Zig; direct C interoperability allowed.
   Retain upstream user-authored JavaScript/TypeScript extension compatibility
@@ -606,3 +606,16 @@ October 5 latest upstream refresh to b7dfc049:
 - Pending-stream retry and native MCP registration-body application_type inference
   pass focused gates; the remaining14-commit runtime delta stays tracked for porting.
   This refresh does not certify final parity or a release.
+
+## Latest source and native API increment
+
+The selected October 5 source is 031b24aa at 18:39:50 UTC. Six commits
+after b7df add pending MCP connection shutdown, explicit PowerShell tool execution,
+hidden-tool prompt rules and indirect skill-reader hints, planning-document
+removal, watch changelog clarification, and lazy SSH connection construction.
+The native PowerShell tool and structured prompt API have actual upstream
+captures and Windows/Linux validation. PowerShell registration remains explicit.
+Structured prompt sections are exposed as a native API; the complete CLI
+loadout/section-update adapter remains an outstanding integration. Native lazy
+daemon/SSH transport is a separate active increment. Source pinning does not
+certify that every selected-source runtime contract has been ported.

@@ -1,0 +1,482 @@
+{
+  "upstream": "98d2e1947aa9c75dff4c20474d541873dadc1d05",
+  "node": "v24.14.0",
+  "platform": "win32",
+  "results": [
+    {
+      "name": "unicode",
+      "input": {
+        "command": "Write-Output 'héllo😀'"
+      },
+      "commands": [
+        {
+          "command": [
+            "pwsh",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\nWrite-Output 'héllo😀'"
+          ],
+          "cwd": "<cwd>",
+          "env": {},
+          "inheritEnv": true,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        }
+      ],
+      "output": "héllo😀\r\n",
+      "outputBytes": 12,
+      "diagnostics": []
+    },
+    {
+      "name": "literal",
+      "input": {
+        "command": "[Console]::Write('spaces & | ; < > $() quote\" slash\\ ' + '😀')"
+      },
+      "commands": [
+        {
+          "command": [
+            "pwsh",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n[Console]::Write('spaces & | ; < > $() quote\" slash\\ ' + '😀')"
+          ],
+          "cwd": "<cwd>",
+          "env": {},
+          "inheritEnv": true,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        }
+      ],
+      "output": "spaces & | ; < > $() quote\" slash\\ 😀",
+      "outputBytes": 39,
+      "diagnostics": []
+    },
+    {
+      "name": "prefix",
+      "input": {
+        "command": "[Console]::Write($piPrefix)"
+      },
+      "prefix": "$piPrefix='before'",
+      "commands": [
+        {
+          "command": [
+            "pwsh",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n$piPrefix='before'\n[Console]::Write($piPrefix)"
+          ],
+          "cwd": "<cwd>",
+          "env": {},
+          "inheritEnv": true,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        }
+      ],
+      "output": "before",
+      "outputBytes": 6,
+      "diagnostics": []
+    },
+    {
+      "name": "prepare",
+      "input": {
+        "command": "old"
+      },
+      "prefix": "prefix",
+      "commands": [
+        {
+          "command": [
+            "pwsh",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n[Console]::Write($env:PI_NATIVE_PREPARED)"
+          ],
+          "cwd": "<cwd>",
+          "env": {
+            "PI_NATIVE_PREPARED": "prepared"
+          },
+          "inheritEnv": false,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        }
+      ],
+      "output": "prepared",
+      "outputBytes": 8,
+      "diagnostics": []
+    },
+    {
+      "name": "fallback",
+      "input": {
+        "command": "[Console]::Write('fallback')"
+      },
+      "programs": [
+        "pi-native-missing-program-20261005",
+        "powershell"
+      ],
+      "commands": [
+        {
+          "command": [
+            "pi-native-missing-program-20261005",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n[Console]::Write('fallback')"
+          ],
+          "cwd": "<cwd>",
+          "env": {},
+          "inheritEnv": true,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        },
+        {
+          "command": [
+            "powershell",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n[Console]::Write('fallback')"
+          ],
+          "cwd": "<cwd>",
+          "env": {},
+          "inheritEnv": true,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        }
+      ],
+      "output": "fallback",
+      "outputBytes": 8,
+      "diagnostics": []
+    },
+    {
+      "name": "explicitEmptyPath",
+      "input": {
+        "command": "1"
+      },
+      "programs": [
+        "pwsh"
+      ],
+      "commands": [
+        {
+          "command": [
+            "pwsh",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n1"
+          ],
+          "cwd": "<cwd>",
+          "env": {
+            "PATH": ""
+          },
+          "inheritEnv": false,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        }
+      ],
+      "output": "",
+      "outputBytes": 0,
+      "error": {
+        "name": "ExecutionError",
+        "message": "spawn pwsh ENOENT",
+        "code": "spawn_error",
+        "identity": false
+      },
+      "diagnostics": []
+    },
+    {
+      "name": "allMissing",
+      "input": {
+        "command": "1"
+      },
+      "programs": [
+        "pi-native-missing-first-20261005",
+        "pi-native-missing-last-20261005"
+      ],
+      "commands": [
+        {
+          "command": [
+            "pi-native-missing-first-20261005",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n1"
+          ],
+          "cwd": "<cwd>",
+          "env": {},
+          "inheritEnv": true,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        },
+        {
+          "command": [
+            "pi-native-missing-last-20261005",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n1"
+          ],
+          "cwd": "<cwd>",
+          "env": {},
+          "inheritEnv": true,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        }
+      ],
+      "output": "",
+      "outputBytes": 0,
+      "error": {
+        "name": "ExecutionError",
+        "message": "spawn pi-native-missing-last-20261005 ENOENT",
+        "code": "spawn_error",
+        "identity": false
+      },
+      "diagnostics": []
+    },
+    {
+      "name": "empty",
+      "input": {
+        "command": "1"
+      },
+      "programs": [],
+      "commands": [],
+      "output": "",
+      "outputBytes": 0,
+      "error": {
+        "name": "Error",
+        "message": "No command to run",
+        "identity": false
+      },
+      "diagnostics": []
+    },
+    {
+      "name": "nonzero",
+      "input": {
+        "command": "[Console]::Write('partial'); exit 3"
+      },
+      "programs": [
+        "pwsh",
+        "pi-native-never-start-20261005"
+      ],
+      "commands": [
+        {
+          "command": [
+            "pwsh",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n[Console]::Write('partial'); exit 3"
+          ],
+          "cwd": "<cwd>",
+          "env": {},
+          "inheritEnv": true,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        }
+      ],
+      "output": "partial",
+      "outputBytes": 7,
+      "error": {
+        "name": "Error",
+        "message": "Command exited with code 3",
+        "identity": false
+      },
+      "diagnostics": []
+    },
+    {
+      "name": "timeout",
+      "input": {
+        "command": "Start-Sleep -Seconds 30",
+        "timeout": 0.05
+      },
+      "commands": [
+        {
+          "command": [
+            "pwsh",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\nStart-Sleep -Seconds 30"
+          ],
+          "cwd": "<cwd>",
+          "env": {},
+          "inheritEnv": true,
+          "timeout": 0.05,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        }
+      ],
+      "output": "",
+      "outputBytes": 0,
+      "error": {
+        "name": "Error",
+        "message": "Command timed out after 0.05 seconds",
+        "identity": false
+      },
+      "diagnostics": []
+    },
+    {
+      "name": "invalidTimeout",
+      "input": {
+        "command": "1",
+        "timeout": 0
+      },
+      "commands": [],
+      "output": "",
+      "outputBytes": 0,
+      "error": {
+        "name": "Error",
+        "message": "Invalid timeout: must be a finite number of seconds",
+        "identity": false
+      },
+      "diagnostics": []
+    },
+    {
+      "name": "maximumTimeout",
+      "input": {
+        "command": "1",
+        "timeout": 2147483.648
+      },
+      "commands": [],
+      "output": "",
+      "outputBytes": 0,
+      "error": {
+        "name": "Error",
+        "message": "Invalid timeout: maximum is 2147483.647 seconds",
+        "identity": false
+      },
+      "diagnostics": []
+    },
+    {
+      "name": "large",
+      "input": {
+        "command": "[Console]::Write(('L'+[char]10)*30000)"
+      },
+      "commands": [
+        {
+          "command": [
+            "pwsh",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n[Console]::Write(('L'+[char]10)*30000)"
+          ],
+          "cwd": "<cwd>",
+          "env": {},
+          "inheritEnv": true,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        }
+      ],
+      "outputBytes": 60000,
+      "diagnostics": [
+        {
+          "severity": "info",
+          "code": "full_output",
+          "message": "Full output: <path>"
+        }
+      ],
+      "spillSize": 60000
+    },
+    {
+      "name": "callback",
+      "input": {
+        "command": "[Console]::Write('callback')"
+      },
+      "commands": [
+        {
+          "command": [
+            "pwsh",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n[Console]::Write('callback')"
+          ],
+          "cwd": "<cwd>",
+          "env": {},
+          "inheritEnv": true,
+          "spill": {
+            "afterBytes": 51200,
+            "afterLines": 2000
+          }
+        }
+      ],
+      "output": "",
+      "outputBytes": 0,
+      "error": {
+        "name": "ExecutionError",
+        "message": "OriginalPowerShellCallback",
+        "code": "callback_error",
+        "identity": true
+      },
+      "diagnostics": []
+    },
+    {
+      "name": "prepareFailure",
+      "input": {
+        "command": "1"
+      },
+      "commands": [],
+      "output": "",
+      "outputBytes": 0,
+      "error": {
+        "name": "Error",
+        "message": "OriginalPowerShellCallback",
+        "identity": true
+      },
+      "diagnostics": []
+    }
+  ]
+}
