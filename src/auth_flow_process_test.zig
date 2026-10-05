@@ -75,6 +75,8 @@ test "native auth flow stages provider methods sources masked replacement and ca
     var start = session.output.items.len;
     try session.send("/login\r");
     pos = try session.waitFor("Select authentication method:", start, 60_000);
+    pos = try session.waitFor("Sign in with an account", pos, 60_000);
+    pos = try session.waitFor("Sign in with an API key", pos, 60_000);
     try std.testing.expect(contains(session.output.items[start..], "Sign in with an account"));
     try std.testing.expect(contains(session.output.items[start..], "Sign in with an API key"));
     try session.send("\r");
@@ -119,6 +121,9 @@ test "native auth flow stages provider methods sources masked replacement and ca
     start = session.output.items.len;
     try session.send("/login anthropic\r");
     pos = try session.waitFor("Select authentication method for anthropic:", start, 60_000);
+    pos = try session.waitFor("Sign in with an account", pos, 60_000);
+    pos = try session.waitFor("Sign in with an API key", pos, 60_000);
+    pos = try session.waitFor("API key configured", pos, 60_000);
     try std.testing.expect(contains(session.output.items[start..], "Sign in with an account"));
     try std.testing.expect(contains(session.output.items[start..], "Sign in with an API key"));
     try std.testing.expect(contains(session.output.items[start..], "API key configured"));

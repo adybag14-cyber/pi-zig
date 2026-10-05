@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentSource": "d3efd59e5bada7fc10168714519975d6154b5545",
+  "hostedFailure": "https://github.com/adybag14-cyber/pi-zig/actions/runs/37319178687",
+  "hostedResults": {
+    "ubuntu": "624/625 dedicated tests; authentication option frame incomplete",
+    "windows": "passed",
+    "macos": "passed"
+  },
+  "repair": "Wait for both required authentication option rows before retaining the same assertions; scoped provider selection also waits for its credential-source row.",
+  "productionFilesChanged": false,
+  "deadlinesChanged": false,
+  "assertionsRemoved": false,
+  "sourcePath": "src/auth_flow_process_test.zig",
+  "sourceSha256": "d8a8fe4449e59ed390d5b742327c4349b4cd20ae4a7973f22bfb5227de0fd0f3",
+  "localJob": {
+    "name": "auth-flow-complete-frame-linux-20261005",
+    "pid": 41356,
+    "executable": "C:\\Windows\\System32\\wsl.exe",
+    "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-foundation-b78-native-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 360s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-auth-flow-process -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-foundation-b78-local-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+    "created_utc": "2026-10-05T14:02:07.8336970Z",
+    "launched_utc": "2026-10-05T14:02:07.8307816+00:00",
+    "identity_captured": true,
+    "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-05T14:02:14.0923632+00:00"
+  },
+  "localResult": "10/10 build steps; 6/6 tests passed",
+  "hostedRepairVerification": "pending fresh commit CI"
+}
