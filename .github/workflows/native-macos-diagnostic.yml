@@ -1,0 +1,37 @@
+name: Native macOS test diagnosis
+
+on:
+  push:
+    branches: [diagnose/pi-native-macos-20261005]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-target:
+    name: macOS ${{ matrix.target }}
+    runs-on: macos-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [test-native-worker, test-native-runtime, test-mcp-stdio]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Record source and toolchain
+        run: |
+          git rev-parse HEAD
+          uname -a
+          zig version
+          node --version
+      - name: Run named native target with verbose artifact commands
+        timeout-minutes: 6
+        run: zig build ${{ matrix.target }} -j1 --verbose --summary all
