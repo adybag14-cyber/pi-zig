@@ -62,6 +62,57 @@ test "fullscreen owner construction event mailboxes and editor snapshots release
     try std.testing.checkAllAllocationFailures(std.testing.allocator, ownershipCase, .{});
 }
 
+fn customEditorOwnershipCase(gpa: std.mem.Allocator) !void {
+    const io = std.testing.io;
+    var environ: std.process.Environ.Map = .init(gpa);
+    defer environ.deinit();
+    var bindings = keybindings.Manager.init(gpa);
+    defer bindings.deinit();
+    var buffer: [128]u8 = undefined;
+    var reader = Io.File.Reader.initStreaming(.stdin(), io, &buffer);
+    const scene = try Frontend.create(gpa, io, &environ, &reader, &bindings, .{});
+    defer scene.deinit();
+    var controls = editor_protocol.ControlQueue.init(gpa, io, 3);
+    defer controls.deinit();
+    const prefix = "\"version\":1,\"ownerGeneration\":\"3\",\"extensionId\":\"2\",\"editorGeneration\":\"1\"";
+    const records = [_][]const u8{
+        "{" ++ prefix ++ ",\"type\":\"editor_frame\",\"sequence\":\"1\",\"width\":55,\"text\":\"draft Ω\",\"lines\":[\"CUSTOM:55\",\"draft Ω\"]}",
+        "{" ++ prefix ++ ",\"type\":\"editor_submit\",\"sequence\":\"2\",\"text\":\"submitted Ω🦊\"}",
+    };
+    for (records) |raw| {
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
+        defer parsed.deinit();
+        var record = try editor_protocol.read(gpa, &parsed.value.object);
+        var transferred = false;
+        defer if (!transferred) record.deinit();
+        try Frontend.editorRecordSink(scene, record, &controls);
+        transferred = true;
+        try scene.applyUpdates();
+    }
+    var rendered = try Frontend.renderEditor(scene, gpa, 55);
+    defer rendered.deinit(gpa);
+    try std.testing.expectEqualStrings("CUSTOM:55", rendered.items[0]);
+    var submitted = try scene.readCommand();
+    defer submitted.deinit(gpa);
+    try std.testing.expectEqualStrings("submitted Ω🦊", submitted.text);
+    try std.testing.expectEqual(CommandKind.submit, submitted.kind);
+    try Frontend.editorInput(scene, "🦊");
+    var received = (try controls.next()).?;
+    defer received.deinit();
+    try std.testing.expectEqualStrings("🦊", received.kind.input);
+    try Frontend.editorClosed(scene, 3);
+    controls.stop();
+    try std.testing.expect(scene.custom_editor_controls == null);
+    try scene.applyUpdates();
+    try std.testing.expect(scene.custom_editor_frame == null);
+    const snapshot = try scene.snapshotEditor(gpa);
+    defer gpa.free(snapshot.text);
+    try std.testing.expectEqualStrings("submitted Ω🦊", snapshot.text);
+}
+test "custom editor frontend owns frames submission snapshots and all failed allocations while detaching borrowed close channels" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, customEditorOwnershipCase, .{});
+}
+
 fn rendererOwnershipCase(gpa: std.mem.Allocator) !void {
     const io = std.testing.io;
     var environ: std.process.Environ.Map = .init(gpa);
@@ -251,6 +302,7 @@ const OwnedEvent = struct {
 };
 const TextUpdate = struct { text: []u8, cursor: ?usize = null, revision: ?u64 = null };
 const ConfigUpdate = struct { bindings_json: ?[]u8, shortcuts: [][]u8, editor_padding_x: ?u8 = null };
+const editor_protocol = @import("../extensions/editor_protocol.zig");
 const Update = union(enum) {
     event: OwnedEvent,
     branch: []session.SessionEntry,
@@ -263,6 +315,7 @@ const Update = union(enum) {
     component: struct { scene: component_protocol.Scene, controls: *component_protocol.ControlQueue },
     component_close: component_protocol.Fence,
     renderer: renderer_protocol.Record,
+    custom_editor: editor_protocol.Record,
     fn deinit(self: *Update, gpa: std.mem.Allocator) void {
         switch (self.*) {
             .event => |*value| value.deinit(gpa),
@@ -281,6 +334,7 @@ const Update = union(enum) {
             },
             .component => |*value| value.scene.deinit(),
             .renderer => |*record| record.deinit(),
+            .custom_editor => |*record| record.deinit(),
             .component_close => {},
         }
     }
@@ -332,6 +386,17 @@ pub const Frontend = struct {
     editor_revision: u64 = 0,
     editor_padding_x: u8 = 0,
     revision: u64 = 0,
+    custom_editor_frame: ?editor_protocol.Record = null,
+    custom_editor_fence: ?editor_protocol.Fence = null,
+    custom_editor_sequence: u64 = 0,
+    custom_editor_controls: ?*editor_protocol.ControlQueue = null,
+    custom_editor_owner: u64 = 0,
+    custom_editor_closed: bool = false,
+    custom_editor_retire_pending: ?u64 = null,
+    custom_editor_record_count: usize = 0,
+    custom_editor_record_bytes: usize = 0,
+    custom_editor_width: usize = 0,
+    custom_editor_focused: bool = true,
     header: []u8,
     status: []u8,
     surfaces: ui.SurfaceSnapshot,
@@ -562,6 +627,53 @@ pub const Frontend = struct {
     pub fn rendererWidth(self: *Frontend) usize {
         return self.renderer_width.load(.acquire);
     }
+    pub fn editorRecordSink(raw: ?*anyopaque, record: editor_protocol.Record, controls: *editor_protocol.ControlQueue) !void {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.failure) |err| return err;
+        if (self.stopping or self.worker_finished) return error.EditorFrontendStopped;
+        if (record.fence.owner_generation != controls.owner_generation) return error.StaleEditorOwner;
+        if (self.custom_editor_owner == record.fence.owner_generation and self.custom_editor_closed) return error.EditorOwnerClosed;
+        if (self.custom_editor_owner != record.fence.owner_generation) {
+            self.custom_editor_owner = record.fence.owner_generation;
+            self.custom_editor_closed = false;
+        }
+        if (self.custom_editor_record_count >= editor_protocol.maximum_records or record.bytes() > editor_protocol.maximum_bytes - self.custom_editor_record_bytes) return error.EditorMailboxLimit;
+        try self.updates.append(self.gpa, .{ .custom_editor = record });
+        self.custom_editor_controls = controls;
+        self.custom_editor_record_count += 1;
+        self.custom_editor_record_bytes += record.bytes();
+        self.changed.broadcast(self.io);
+    }
+    pub fn editorClosed(raw: ?*anyopaque, generation: u64) !void {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.custom_editor_owner != generation) return;
+        // The borrowed queue is used only under this mutex, including modal
+        // and stopped frontend paths. Returning ACK permits its destruction.
+        self.custom_editor_controls = null;
+        self.custom_editor_closed = true;
+        self.custom_editor_retire_pending = generation;
+        self.changed.broadcast(self.io);
+    }
+    fn sendEditorControl(self: *Frontend, kind: @FieldType(editor_protocol.Control, "kind")) !bool {
+        var control: editor_protocol.Control = .{ .gpa = self.gpa, .fence = self.custom_editor_fence orelse {
+            var discarded: editor_protocol.Control = .{ .gpa = self.gpa, .fence = undefined, .kind = kind };
+            discarded.deinit();
+            return false;
+        }, .kind = kind };
+        var transferred = false;
+        defer if (!transferred) control.deinit();
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.custom_editor_closed or self.custom_editor_owner != control.fence.owner_generation) return false;
+        const queue = self.custom_editor_controls orelse return false;
+        try queue.send(control);
+        transferred = true;
+        return true;
+    }
     pub fn rendererSink(raw: ?*anyopaque, record: renderer_protocol.Record, controls: *renderer_protocol.ControlQueue) !void {
         const self: *Frontend = @ptrCast(@alignCast(raw.?));
         self.mutex.lockUncancelable(self.io);
@@ -703,6 +815,7 @@ pub const Frontend = struct {
         self.transcript.deinit();
         self.decoder.deinit();
         self.editor.deinit();
+        if (self.custom_editor_frame) |*frame| frame.deinit();
         self.bindings.deinit();
         self.environ.deinit();
         self.surfaces.deinit();
@@ -757,7 +870,7 @@ pub const Frontend = struct {
             if (self.component_overlay_id) |id| _ = self.app.removeOverlay(id);
             self.component_overlay_id = null;
             self.app.root = self.stack.component();
-            self.app.setFocus(self.editorComponent());
+            self.app.setFocus(if (self.custom_editor_frame != null and !self.custom_editor_focused) null else self.editorComponent());
             var owned = scene;
             owned.deinit();
             self.component = null;
@@ -772,12 +885,18 @@ pub const Frontend = struct {
     }
     fn renderEditor(raw: *anyopaque, gpa: std.mem.Allocator, width: usize) !layout.RenderedLines {
         const self: *Frontend = @ptrCast(@alignCast(raw));
+        if (self.custom_editor_frame) |record| return layout.RenderedLines.clone(gpa, record.kind.frame.frame.lines);
         return line_editor.renderEditorLinesPadded(gpa, &self.editor, width, self.editor_padding_x);
     }
     fn editorPaste(raw: *anyopaque, bytes: []const u8) !void {
         const self: *Frontend = @ptrCast(@alignCast(raw));
         const normalized = try line_editor.normalizePasteAlloc(self.gpa, bytes);
         defer self.gpa.free(normalized);
+        if (self.custom_editor_frame != null) {
+            if (!self.custom_editor_focused) return;
+            _ = try self.sendEditorControl(.{ .paste = try self.gpa.dupe(u8, normalized) });
+            return;
+        }
         try self.editor.insert(normalized);
         self.revision += 1;
         try self.publishEditor();
@@ -785,6 +904,11 @@ pub const Frontend = struct {
     }
     fn editorInput(raw: *anyopaque, bytes: []const u8) !void {
         const self: *Frontend = @ptrCast(@alignCast(raw));
+        if (self.custom_editor_frame != null) {
+            if (!self.custom_editor_focused) return;
+            _ = try self.sendEditorControl(.{ .input = try self.gpa.dupe(u8, bytes) });
+            return;
+        }
         if (std.mem.eql(u8, bytes, "\x1b") and self.busy) {
             @atomicStore(bool, &self.abort_flag, true, .release);
             return;
@@ -816,6 +940,10 @@ pub const Frontend = struct {
         self.updates = .empty;
         self.renderer_record_count = 0;
         self.renderer_record_bytes = 0;
+        self.custom_editor_record_count = 0;
+        self.custom_editor_record_bytes = 0;
+        const retire_editor = self.custom_editor_retire_pending;
+        self.custom_editor_retire_pending = null;
         const retire_renderers = self.renderer_retire_pending;
         self.renderer_retire_pending = false;
         const requested_close = self.component_close_request;
@@ -852,6 +980,7 @@ pub const Frontend = struct {
             },
             .text => |value| {
                 if (value.revision == null or value.revision.? == self.revision) {
+                    if (self.custom_editor_frame != null) _ = try self.sendEditorControl(.{ .set_text = try self.gpa.dupe(u8, value.text) });
                     try self.editor.setTextAt(value.text, value.cursor orelse value.text.len);
                     self.revision += 1;
                     try self.publishEditor();
@@ -900,6 +1029,63 @@ pub const Frontend = struct {
             .renderer => |*record| {
                 if (self.rendererOwnerActive(record.fence.owner_generation)) _ = try self.transcript.adoptRenderer(record);
             },
+            .custom_editor => |record| {
+                self.mutex.lockUncancelable(self.io);
+                const active = !self.custom_editor_closed and self.custom_editor_owner == record.fence.owner_generation;
+                self.mutex.unlock(self.io);
+                if (!active) continue;
+                if (self.custom_editor_fence) |current| {
+                    if (current.owner_generation == record.fence.owner_generation and record.fence.editor_generation < current.editor_generation) continue;
+                    if (current.matches(record.fence) and record.sequence <= self.custom_editor_sequence) continue;
+                }
+                self.custom_editor_fence = record.fence;
+                self.custom_editor_sequence = record.sequence;
+                switch (record.kind) {
+                    .frame => |value| {
+                        if (self.custom_editor_frame) |*old| old.deinit();
+                        self.custom_editor_frame = record;
+                        update.* = .{ .busy = self.busy };
+                        try self.editor.setTextAt(value.text, value.cursor);
+                        self.revision += 1;
+                        try self.publishEditor();
+                        self.custom_editor_width = value.width;
+                        self.custom_editor_focused = value.focused;
+                        if (self.component == null) self.app.setFocus(if (value.focused) self.editorComponent() else null);
+                    },
+                    .submit => |value| {
+                        try self.editor.setText(value);
+                        self.revision += 1;
+                        try self.queueCommand(.submit, "");
+                    },
+                    .action => |action| switch (action) {
+                        .interrupt => if (self.busy) {
+                            @atomicStore(bool, &self.abort_flag, true, .release);
+                        },
+                        .exit => try self.queueCommand(.quit, ""),
+                        .paste_image => try self.queueCommand(.clipboard, ""),
+                        .complete => try self.queueCommand(.complete, "tab"),
+                    },
+                    .retire => |value| {
+                        if (self.custom_editor_frame) |*old| old.deinit();
+                        self.custom_editor_frame = null;
+                        self.custom_editor_focused = true;
+                        if (self.component == null) self.app.setFocus(self.editorComponent());
+                        try self.editor.setText(value);
+                        self.revision += 1;
+                        try self.publishEditor();
+                    },
+                    .failure => |value| try self.transcript.notice(value),
+                }
+            },
+        };
+        if (retire_editor) |generation| if (self.custom_editor_frame == null or self.custom_editor_frame.?.fence.owner_generation == generation) {
+            if (self.custom_editor_frame) |*old| old.deinit();
+            self.custom_editor_frame = null;
+            self.custom_editor_focused = true;
+            if (self.component == null) self.app.setFocus(self.editorComponent());
+            self.custom_editor_fence = null;
+            self.revision += 1;
+            try self.publishEditor();
         };
         if (requested_close) |fence| try self.removeCustomComponent(fence);
         if (updates.items.len > 0) self.dirty = true;
@@ -924,7 +1110,10 @@ pub const Frontend = struct {
     fn draw(self: *Frontend, dimensions: terminal.Dimensions, write: bool) !void {
         self.renderer_width.store(dimensions.columns, .release);
         try self.resizeRenderers(dimensions.columns);
-        var editor_lines = try line_editor.renderEditorLinesPadded(self.gpa, &self.editor, dimensions.columns, self.editor_padding_x);
+        if (self.custom_editor_frame != null and self.custom_editor_width != dimensions.columns) {
+            if (try self.sendEditorControl(.{ .resize = dimensions.columns })) self.custom_editor_width = dimensions.columns;
+        }
+        var editor_lines = try renderEditor(self, self.gpa, dimensions.columns);
         defer editor_lines.deinit(self.gpa);
         const fallback_header = [_][]const u8{self.header};
         const header = if (self.surfaces.header) |lines| lines else &fallback_header;
@@ -1001,6 +1190,8 @@ pub const Frontend = struct {
             update.* = .{ .busy = false };
         };
         self.component_controls = null;
+        self.custom_editor_controls = null;
+        self.custom_editor_closed = true;
         for (self.renderer_owners.items) |*owner| {
             owner.controls = null;
             owner.closed = true;

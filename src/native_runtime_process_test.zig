@@ -1,5 +1,6 @@
 //! Real Runtime/Host integration with the standalone native worker and no Node.
 const std = @import("std");
+const event_wait = @import("test_support/event_wait.zig");
 const builtin = @import("builtin");
 const runtime_mod = @import("extensions/js_runtime.zig");
 const host_mod = @import("extensions/host.zig");
@@ -9,6 +10,115 @@ const provider_registry_mod = @import("extensions/provider_registry.zig");
 const provider_stream_mod = @import("extensions/provider_stream.zig");
 const component_protocol = @import("extensions/component_protocol.zig");
 const renderer_protocol = @import("extensions/renderer_protocol.zig");
+
+const editor_protocol = @import("extensions/editor_protocol.zig");
+
+test "native runtime custom editor original 031b modal factory handles idle input change submit resize retirement and close" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource(@import("test_support/upstream_modal_editor_031b.zig").source);
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "extensions/primary.mjs", .data = "export default pi=>{}" });
+    const primary = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "primary.mjs" });
+    defer gpa.free(primary);
+    const Capture = struct {
+        mutex: std.Io.Mutex = .init,
+        wake: std.Io.Event = .unset,
+        closed: std.Io.Event = .unset,
+        queue: ?*editor_protocol.ControlQueue = null,
+        fence: ?editor_protocol.Fence = null,
+        latest: ?editor_protocol.Record = null,
+        submitted: ?[]u8 = null,
+        retired: bool = false,
+        frames: usize = 0,
+        fn record(raw: ?*anyopaque, received: editor_protocol.Record, queue: *editor_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.mutex.lockUncancelable(std.testing.io);
+            defer self.mutex.unlock(std.testing.io);
+            self.queue = queue;
+            self.fence = received.fence;
+            if (received.kind == .submit) {
+                if (self.submitted) |old| std.heap.page_allocator.free(old);
+                self.submitted = try std.heap.page_allocator.dupe(u8, received.kind.submit);
+            }
+            if (received.kind == .retire) self.retired = true;
+            if (received.kind == .frame) self.frames += 1;
+            if (self.latest) |*old| old.deinit();
+            self.latest = received;
+            self.wake.set(std.testing.io);
+        }
+        fn close(raw: ?*anyopaque, _: u64) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.mutex.lockUncancelable(std.testing.io);
+            defer self.mutex.unlock(std.testing.io);
+            self.queue = null;
+            self.closed.set(std.testing.io);
+        }
+        fn control(self: *@This(), kind: @FieldType(editor_protocol.Control, "kind")) !void {
+            self.mutex.lockUncancelable(std.testing.io);
+            defer self.mutex.unlock(std.testing.io);
+            var value: editor_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = self.fence.?, .kind = kind };
+            var transferred = false;
+            defer if (!transferred) value.deinit();
+            try self.queue.?.send(value);
+            transferred = true;
+        }
+        fn expectFrame(self: *@This(), expected: []const u8, mode: []const u8, width: usize) !void {
+            const deadline = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() + 3000;
+            while (std.Io.Clock.awake.now(std.testing.io).toMilliseconds() < deadline) {
+                self.mutex.lockUncancelable(std.testing.io);
+                self.wake.reset();
+                const matches = if (self.latest) |value| value.kind == .frame and value.kind.frame.width == width and std.mem.eql(u8, value.kind.frame.text, expected) and std.mem.indexOf(u8, value.kind.frame.frame.lines[value.kind.frame.frame.lines.len - 1], mode) != null else false;
+                self.mutex.unlock(std.testing.io);
+                if (matches) return;
+                self.wake.waitTimeout(std.testing.io, .{ .duration = .{ .raw = .fromMilliseconds(200), .clock = .awake } }) catch |err| if (err != error.Timeout) return err;
+            }
+            return error.CustomEditorFrameTimeout;
+        }
+        fn deinit(self: *@This()) void {
+            if (self.latest) |*value| value.deinit();
+            if (self.submitted) |value| std.heap.page_allocator.free(value);
+        }
+    };
+    var capture: Capture = .{};
+    defer capture.deinit();
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, io, &.{ primary, fixture.source_path }, fixture.options());
+    var released = false;
+    defer if (!released) started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    try started.runtime.setEditorBridge(.{ .context = &capture, .record_fn = Capture.record, .closed_fn = Capture.close });
+    try started.runtime.setContextJson("{\"hasUI\":true,\"editorText\":\"draft Ω\",\"width\":55,\"height\":22}");
+    const installed = try started.runtime.invokeGroupRequest(2, "{\"kind\":\"hook\",\"name\":\"session_start\",\"payload\":{}}", null);
+    defer gpa.free(installed);
+    try capture.expectFrame("draft Ω", "INSERT", 55);
+    try capture.control(.{ .input = try std.heap.page_allocator.dupe(u8, "🦊") });
+    try capture.expectFrame("draft Ω🦊", "INSERT", 55);
+    try capture.control(.{ .input = try std.heap.page_allocator.dupe(u8, "\x1b") });
+    try capture.expectFrame("draft Ω🦊", "NORMAL", 55);
+    try capture.control(.{ .input = try std.heap.page_allocator.dupe(u8, "h") });
+    try capture.control(.{ .input = try std.heap.page_allocator.dupe(u8, "i") });
+    try capture.control(.{ .input = try std.heap.page_allocator.dupe(u8, "X") });
+    try capture.expectFrame("draft ΩX🦊", "INSERT", 55);
+    try capture.control(.{ .input = try std.heap.page_allocator.dupe(u8, "\r") });
+    try capture.expectFrame("", "INSERT", 55);
+    try std.testing.expectEqualStrings("draft ΩX🦊", capture.submitted.?);
+    try capture.control(.{ .paste = try std.heap.page_allocator.dupe(u8, "retained Ω") });
+    try capture.expectFrame("retained Ω", "INSERT", 55);
+    try capture.control(.{ .resize = 35 });
+    try capture.expectFrame("retained Ω", "INSERT", 35);
+    // Removing the extension must retire its persistent editor although no
+    // invocation owns the component anymore; stale controls cannot revive it.
+    const removed = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"group_remove_source\",\"ownerId\":2}", null);
+    defer gpa.free(removed);
+    capture.mutex.lockUncancelable(io);
+    const retired = capture.retired;
+    capture.mutex.unlock(io);
+    try std.testing.expect(retired);
+    started.runtime.deinit();
+    released = true;
+    try std.testing.expect(capture.closed.isSet() and capture.queue == null and capture.frames >= 7);
+    try fixture.noBridge();
+}
 
 test "native runtime renderer owner publishes idle final redraw frames resize retirement and synchronous reader close without Node" {
     const gpa = std.testing.allocator;
@@ -83,14 +193,14 @@ test "native runtime renderer owner publishes idle final redraw frames resize re
     defer gpa.free(result);
     // No further Runtime invocation is sent while these owner callbacks and
     // framed records reach the reader/frontend sink.
-    try capture.final.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    try event_wait.untilSet(io, &capture.final, 2000);
     try capture.control(.{ .resize = 55 });
-    try capture.resized.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    try event_wait.untilSet(io, &capture.resized, 2000);
     try capture.control(.retire);
-    try capture.retired.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    try event_wait.untilSet(io, &capture.retired, 2000);
     started.runtime.deinit();
     released = true;
-    try capture.closed.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(1), .clock = .awake } });
+    try event_wait.untilSet(io, &capture.closed, 1000);
     try std.testing.expect(capture.queue == null and capture.registrations == 1 and capture.frames >= 4);
     try fixture.noBridge();
 }
@@ -128,7 +238,7 @@ test "native runtime renderer sink failure closes borrowed controls original fai
     defer gpa.free(failed.manifest_json);
     try failed.runtime.setRendererBridge(.{ .context = &capture, .record_fn = Capture.record, .closed_fn = Capture.close });
     try std.testing.expectError(error.InjectedRendererSink, failed.runtime.invokeGroupRequest(1, "{\"kind\":\"render_tool_call\",\"name\":\"paint\",\"payload\":{\"toolCallId\":\"failed-row\",\"args\":{},\"width\":80}}", null));
-    try capture.closed.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    try event_wait.untilSet(io, &capture.closed, 2000);
     try std.testing.expect(failed.runtime.closed and failed.runtime.child.id == null);
     const reused = try runtime_mod.Runtime.startNativeGroup(gpa, io, &.{fixture.source_path}, fixture.options());
     defer reused.runtime.deinit();
@@ -167,7 +277,7 @@ test "native runtime asynchronous resolver actions retain source order through c
     try host.loadPath(second_path);
     const call = (try host.renderToolCall("animated", "async-row", "{}", false, 80)).?;
     defer gpa.free(call);
-    try capture.frame.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    try event_wait.untilSet(io, &capture.frame, 2000);
     const limit = std.Io.Clock.awake.now(io).toMilliseconds() + 2000;
     while (host.rendererActionCount() != 2) {
         if (std.Io.Clock.awake.now(io).toMilliseconds() >= limit) return error.AsyncRendererActionsMissing;
@@ -260,7 +370,7 @@ test "native runtime dirty renderer failures preserve diagnostics and allow inde
     try started.runtime.setRendererBridge(.{ .context = &probe, .record_fn = Probe.record, .closed_fn = Probe.close });
     const call = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"render_tool_call\",\"name\":\"row-error\",\"payload\":{\"toolCallId\":\"error-row\",\"args\":{},\"width\":80}}", null);
     defer gpa.free(call);
-    try probe.failure.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    try event_wait.untilSet(io, &probe.failure, 2000);
     const ping = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"ping\",\"rawArguments\":\"\"}", null);
     defer gpa.free(ping);
     try std.testing.expect(std.mem.indexOf(u8, ping, "live") != null);
@@ -428,6 +538,34 @@ test "native runtime group process preserves global resolver actual component st
     defer gpa.free(executed);
     try std.testing.expect(std.mem.indexOf(u8, executed, "group-execute") != null);
     try std.testing.expect(!started.runtime.closed and started.runtime.child.id != null);
+    try fixture.noBridge();
+}
+
+test "native runtime Host resolves actual upstream duplicate command aliases and global first tool catalog" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>{pi.registerTool({name:'read',description:'first',parameters:{type:'object'},execute(){return {content:'first'}}});pi.registerCommand('same:1',{handler(){return {message:'reserved-first'}}});pi.registerCommand('same',{handler(){return {message:'first'}}});pi.registerCommand('catalog',{handler(){return {message:JSON.stringify({commands:pi.getCommands().map(c=>c.name),tools:pi.getAllTools().map(t=>t.name+':'+t.description)})}}})}");
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/second.ts", .data = "export default pi=>{pi.registerTool({name:'read',description:'second',parameters:{type:'object'},execute(){return {content:'second'}}});pi.registerCommand('same',{handler(){return {message:'second'}}})}" });
+    const second_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
+    defer gpa.free(second_path);
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    try host.loadPath(second_path);
+    try std.testing.expect(!host.hasCommand("same"));
+    for ([_][]const u8{ "same:1", "same:2", "same:3" }, [_][]const u8{ "reserved-first", "first", "second" }) |name, expected| {
+        try std.testing.expect(host.hasCommand(name));
+        var result = (try host.executeCommand(name, "")).?;
+        defer result.deinit(gpa);
+        try std.testing.expectEqualStrings(expected, result.message.?);
+    }
+    var catalog = (try host.executeCommand("catalog", "")).?;
+    defer catalog.deinit(gpa);
+    try std.testing.expect(std.mem.indexOf(u8, catalog.message.?, "same:2") != null and std.mem.indexOf(u8, catalog.message.?, "same:3") != null);
+    try std.testing.expect(std.mem.indexOf(u8, catalog.message.?, "read:first") != null and std.mem.indexOf(u8, catalog.message.?, "read:second") == null);
+    var tool = (try host.executeTool("read", "{}")).?;
+    defer tool.deinit(gpa);
+    try std.testing.expectEqualStrings("first", tool.content);
     try fixture.noBridge();
 }
 
@@ -632,8 +770,11 @@ test "native runtime owner pumps idle due timers microtasks errors and wakes req
             else => return err,
         };
         defer gpa.free(marker);
-        try std.testing.expectEqualStrings("ready", marker);
-        break;
+        // File creation and contents publication are separate operations.
+        // Keep the same absolute deadline until the completed payload is visible.
+        if (std.mem.eql(u8, marker, "ready")) break;
+        if (std.Io.Clock.awake.now(std.testing.io).toMilliseconds() >= deadline) return error.IdleTimerDidNotProgress;
+        try std.testing.io.sleep(.fromMilliseconds(5), .awake);
     }
     while (true) {
         // Host does no pipe exchange during this interval: factory timers must
@@ -1925,4 +2066,75 @@ test "native runtime custom prompt hooks retain live UI context and publish both
     try std.testing.expectEqualStrings("custom-life", controller.statuses.items[0].key);
     try std.testing.expectEqualStrings("start1-end1", controller.statuses.items[0].text);
     try std.testing.expectEqual(@as(usize, 0), host.ui_prompt_events.items.len);
+}
+
+test "native runtime rejected callbacks preserve admitted action order origin and reuse for singleton and group owners without Node" {
+    const actions_mod = @import("extensions/actions.zig");
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("export default pi=>{globalThis.firstApi=pi;let saved;pi.registerCommand('reject',{async handler(raw,ctx){saved=ctx;pi.appendEntry('before-one',{sourceExtensionName:'spoof'});if(globalThis.secondApi)secondApi.appendEntry('before-two',{});await Promise.resolve();pi.setSessionName('before-three');throw Error('prethrow-original:'+raw)}});pi.registerCommand('reuse',{handler(){let stale=false;try{saved.cwd}catch(error){stale=true}return {message:String(stale)}}});pi.on('before_agent_start',()=>{pi.appendEntry('hook-before',{});throw Error('hook-original')});pi.registerTool({name:'reject-tool',execute(){pi.appendEntry('tool-before',{});throw Error('tool-original')}})}");
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "extensions/second.ts", .data = "export default pi=>{globalThis.secondApi=pi;pi.registerCommand('second',{handler(){return {}}})}" });
+    const second_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
+    defer gpa.free(second_path);
+    for ([_]bool{ false, true }) |group| {
+        const started = if (group)
+            try runtime_mod.Runtime.startNativeGroup(gpa, io, &.{ fixture.source_path, second_path }, fixture.options())
+        else
+            try runtime_mod.Runtime.startNative(gpa, io, fixture.source_path, fixture.options());
+        defer started.runtime.deinit();
+        defer gpa.free(started.manifest_json);
+        try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, if (group)
+            started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"reject\",\"rawArguments\":\"payload\"}", null)
+        else
+            started.runtime.invokeCommand("reject", "payload", "{}"));
+        try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "prethrow-original:payload") != null);
+        var queue = actions_mod.Queue.init(gpa, io);
+        defer queue.deinit();
+        var failing = std.testing.FailingAllocator.init(gpa, .{ .fail_index = 0 });
+        var unavailable = actions_mod.Queue.init(failing.allocator(), io);
+        defer unavailable.deinit();
+        try std.testing.expectError(error.OutOfMemory, started.runtime.transferRendererActions(&unavailable));
+        try std.testing.expectEqual(@as(usize, if (group) 3 else 2), started.runtime.rendererActionCount());
+        try started.runtime.transferRendererActions(&queue);
+        const records = try queue.drain();
+        defer {
+            for (records) |*record| record.deinit(gpa);
+            gpa.free(records);
+        }
+        try std.testing.expectEqual(@as(usize, if (group) 3 else 2), records.len);
+        try std.testing.expectEqualStrings("append_entry", records[0].kind);
+        try std.testing.expectEqualStrings("native", records[0].extension_name);
+        if (group) try std.testing.expectEqualStrings("second", records[1].extension_name);
+        try std.testing.expectEqualStrings("set_session_name", records[records.len - 1].kind);
+        for (records, 0..) |record, index| try std.testing.expectEqual(@as(u64, index + 1), record.sequence);
+        const reused = if (group)
+            try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"reuse\",\"rawArguments\":\"\"}", null)
+        else
+            try started.runtime.invokeCommand("reuse", "", "{}");
+        defer gpa.free(reused);
+        try std.testing.expect(std.mem.indexOf(u8, reused, "true") != null);
+        try std.testing.expectEqual(@as(usize, 0), started.runtime.rendererActionCount());
+        try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, if (group)
+            started.runtime.invokeGroupRequest(1, "{\"kind\":\"hook\",\"name\":\"before_agent_start\",\"payload\":{}}", null)
+        else
+            started.runtime.invokeHook("before_agent_start", "{}", "{}"));
+        try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "hook-original") != null);
+        try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, if (group)
+            started.runtime.invokeGroupRequest(1, "{\"kind\":\"tool\",\"name\":\"reject-tool\",\"payload\":{}}", null)
+        else
+            started.runtime.invokeTool("reject-tool", "{}", "{}"));
+        try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "tool-original") != null);
+        try started.runtime.transferRendererActions(&queue);
+        const trailing = try queue.drain();
+        defer {
+            for (trailing) |*record| record.deinit(gpa);
+            gpa.free(trailing);
+        }
+        try std.testing.expectEqual(@as(usize, 2), trailing.len);
+        try std.testing.expect(std.mem.indexOf(u8, trailing[0].json, "hook-before") != null);
+        try std.testing.expect(std.mem.indexOf(u8, trailing[1].json, "tool-before") != null);
+        try std.testing.expect(!started.runtime.closed);
+    }
+    try fixture.noBridge();
 }

@@ -1,0 +1,119 @@
+{
+  "source": "C:\\Users\\adyba\\pi-zig-env-integration-20261005",
+  "authority": "031b24aa6425067253cb94095fb806a9df9d619c",
+  "status": "native environment source frozen; platform/API limits in CONTRACT.md",
+  "files": [
+    {
+      "path": "src/env_daemon.zig",
+      "sha256": "133fe937320c203c710e0d8b6ce9ea4d818bf261baf406595e598d28cb8b7d7c",
+      "bytes": 5086
+    },
+    {
+      "path": "src/env_process_fixture.zig",
+      "sha256": "06732775de26f467a11034bff5afa514f6b81d9d7e8871449b973cf0c069b717",
+      "bytes": 2766
+    },
+    {
+      "path": "src/env_test.zig",
+      "sha256": "d0010d824c6e2f7b586101a5caaa3e8f7811ffab878a96a576b345759cdafb01",
+      "bytes": 42
+    },
+    {
+      "path": "src/env/connection.zig",
+      "sha256": "27721fa4f584868427265fb22eb89b449edecc058df0dce84b5b8ed488d42724",
+      "bytes": 19285
+    },
+    {
+      "path": "src/env/CONTRACT.md",
+      "sha256": "f89de41cd3c3d4c82747f9189ee534f2c4a4475352a663d6b69705a73820142e",
+      "bytes": 3786
+    },
+    {
+      "path": "src/env/daemon_exec.zig",
+      "sha256": "eb1d970e4f76eef8bcae3643c2b8770068876b398ac8db1195da6a7abb0c4a9e",
+      "bytes": 5856
+    },
+    {
+      "path": "src/env/daemon_input.zig",
+      "sha256": "b824dd3e593679c0375c8170524857a3f1dfce1fb4391024c15f343309f2daca",
+      "bytes": 7044
+    },
+    {
+      "path": "src/env/daemon_output.zig",
+      "sha256": "136b9ca3e1fb447a5d7b02c87577abeaaa43b820cf239aa141d8f3c8889ee9e8",
+      "bytes": 7485
+    },
+    {
+      "path": "src/env/deploy.zig",
+      "sha256": "a68416e5dff2facb87d6e3cad02c17be10a620d09d7ad2e0bda3f42cb9dbd37c",
+      "bytes": 14112
+    },
+    {
+      "path": "src/env/files.zig",
+      "sha256": "1e6fc4d2ba49304249245919c3efd4fb42efbf64a3d1a9378872cbe45b5d394e",
+      "bytes": 38764
+    },
+    {
+      "path": "src/env/fixtures/node-b78-contracts.json",
+      "sha256": "304806b80fd7e14734123c6827d959a49ecf854446016608aa813fb0550279e7",
+      "bytes": 1255
+    },
+    {
+      "path": "src/env/fixtures/node-b7df-contracts.json",
+      "sha256": "a5e43c077e4aba605d15b27d6b19220b873cd2e86deb9376179d2c469329bf4a",
+      "bytes": 1962
+    },
+    {
+      "path": "src/env/fixtures/windows-daemon-b78.json",
+      "sha256": "e1a74735803def3a5bf1b54e2b92f72a6108ee906f80f9fa87124a528637a41f",
+      "bytes": 2461
+    },
+    {
+      "path": "src/env/fixtures/windows-daemon-b7df-files.json",
+      "sha256": "02980b8d4b0fe31d4a85149b63b5dd50c0f4c7b836e1c669a101dddfa0e84acb",
+      "bytes": 236
+    },
+    {
+      "path": "src/env/frame.zig",
+      "sha256": "2ead75f7db2c20b6ec8c3bb9a32f8e5bcb3c0be7ff1927700af0207d2b62b962",
+      "bytes": 9748
+    },
+    {
+      "path": "src/env/info.zig",
+      "sha256": "c0da8383571c230d0a2bf4ca52fc1b3e41b0f25a48c1f9c91b45e00fdbec2b3a",
+      "bytes": 2512
+    },
+    {
+      "path": "src/env/lazy_connection.zig",
+      "sha256": "87f52630860a5e150facc01161c5cbd2a61baf4092a7d888a433566ef03ea11d",
+      "bytes": 6413
+    },
+    {
+      "path": "src/env/metadata.zig",
+      "sha256": "0990eea1f62389ed97fc16628743d2f85e6dfe91b5375ae360f652738457e1a1",
+      "bytes": 6560
+    },
+    {
+      "path": "src/env/root.zig",
+      "sha256": "511b19c3615bd63a1128954f1bb1605ce89b4a3d6b2a83dcb8b8eb9730fc82d4",
+      "bytes": 2420
+    },
+    {
+      "path": "src/env/ssh_process.zig",
+      "sha256": "4936e9ea623b624e3d0813aa3609574ec67382f237726050804734fdf156509d",
+      "bytes": 8249
+    },
+    {
+      "path": "src/env/ssh_remote.zig",
+      "sha256": "7bd398aabbdef05a0ac9fecae01626bc8ce0384817fee84d6c37367d32334221",
+      "bytes": 7500
+    },
+    {
+      "path": "src/env/ssh.zig",
+      "sha256": "49b3dd207c19a3a2c7d3b0e846cedded512d8ab3b8efadb25916c750ff47c7eb",
+      "bytes": 11230
+    }
+  ],
+  "existingFilePatchSha256": "f1951a1222b9b0a0c1c87ed6bdc7e7a7d5c294864084c54e14a38f1c1620f99f",
+  "actualSsh": "native-env-actual-ssh-private-key-contracts terminal passed; exact task server stopped"
+}

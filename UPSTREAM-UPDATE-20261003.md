@@ -2,13 +2,34 @@
 
 Status: in progress. This file does not certify parity or a release.
 
+The current environment candidate adds a native protocol-v1 daemon/client,
+retained file handles, priority control replies, ordered command output,
+heartbeat/session fencing and strict-key SSH deployment helpers. Independent
+original-daemon captures cover retained reads/writes, cancellation, active
+disconnect and detached Windows background lifetime. Actual private loopback
+SSH proves detection, verified upload/start and unknown/changed key rejection.
+`src/env/CONTRACT.md` records remaining worker-pool, watch, remote adapter and
+distribution gaps. The daemon version follows the validated catalog pin.
+
+The current composed candidate also admits first-registration tool catalogs,
+collision-safe command aliases, native MCP stdio/HTTP/SSE session APIs and the
+native `McpClient`/explicit `pi mcp --url` utility adapter. Persistent native
+Editor/CustomEditor factories now own fullscreen editor rows, raw input,
+submission, focus/modal handoff and draft restoration. Captured UI capabilities
+retain their original owner lifetime across unrelated headless invocations.
+The original modal-editor extension is stored as exact Zig string input with
+a SHA-256 assertion; no standalone TypeScript implementation/fixture is added.
+Native failure envelopes retain authoritative actions admitted before a throw,
+and daemon client waits handle spurious timed-event wakes with fixed deadlines.
+Final composed validation remains separate from each increment's focused proof.
+
 - Working branch: `update/pi-upstream-20261003`, based on pi-zig main
   `012e80ced763e8d8ac7e01f7331d32dad3ab468b`.
 - Previous Pi baseline: `853a80d26c90a14c1886f0ebb8ffaae133ca2185`, version 0.84.4.
 - Selected authority: earendil-works/pi main
-  `031b24aa6425067253cb94095fb806a9df9d619c`, package version 1.0.3.
+  `28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9`, package version 1.0.4.
   It descends from and is newer than published GitHub release v1.0.3.
-- Delta: 935 commits, including new model types/classifiers, codemode, MCP
+- Delta: 939 commits, including new model types/classifiers, codemode, MCP
   configuration/OAuth, providers/auth, agent-loop hooks, terminal behavior,
   and extraction of durable harness APIs into pi-durable.
   The refresh from initial target `4c6fb7cf` adds exactly one Nix workflow
@@ -40,7 +61,7 @@ Status: in progress. This file does not certify parity or a release.
   additional contracts are tracked for native implementation; this refresh
   does not certify parity. The old6100 reference remains intact for prior gates.
 - Current upstream source tar SHA-256:
-  `57862bebb6057df311f4fd2302c05c91d4cc11bb536a8f155a021c777c32e1f5`.
+  `a11ca75ccca5a5e5a359afc5b32102545c27709052e3a1e7643c14cb52c219bb`.
 - User-required toolchain: final Zig 0.16.0. No implicit upgrade.
 - User-required implementation: Zig; direct C interoperability allowed.
   Retain upstream user-authored JavaScript/TypeScript extension compatibility
@@ -619,3 +640,11 @@ Structured prompt sections are exposed as a native API; the complete CLI
 loadout/section-update adapter remains an outstanding integration. Native lazy
 daemon/SSH transport is a separate active increment. Source pinning does not
 certify that every selected-source runtime contract has been ported.
+
+The 28dcce2 refresh selects package version 1.0.4 after the release commit and
+Unreleased headers. It adds four commits after 031b24 and changes no runtime
+files under ai, coding-agent, durable, env, mcp or tui. The SSH login-shell
+test now supports zsh. GitHub releases/latest was still v1.0.3 at the recorded
+check; package/main authority is newer. Native pi-env reports the generated
+catalog version automatically. Native environment limits remain documented
+in src/env/CONTRACT.md and are not implied complete by this provenance pin.

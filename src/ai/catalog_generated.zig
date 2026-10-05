@@ -1,10 +1,10 @@
 //! Generated from catalog_source.json. Do not edit manually.
-//! Source SHA-256: 37f184952042344266c9d02617201668a5abfd92a7cad988f3237c649429a6b3
+//! Source SHA-256: 4175d9d7df88eab214ae66cf4bd70b3e6e9a5add91a6aaae3483813c80892fee
 
-pub const source_sha256 = "37f184952042344266c9d02617201668a5abfd92a7cad988f3237c649429a6b3";
-pub const upstream_version = "1.0.3";
-pub const upstream_commit = "031b24aa6425067253cb94095fb806a9df9d619c";
-pub const upstream_source_archive_sha256 = "57862bebb6057df311f4fd2302c05c91d4cc11bb536a8f155a021c777c32e1f5";
+pub const source_sha256 = "4175d9d7df88eab214ae66cf4bd70b3e6e9a5add91a6aaae3483813c80892fee";
+pub const upstream_version = "1.0.4";
+pub const upstream_commit = "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9";
+pub const upstream_source_archive_sha256 = "a11ca75ccca5a5e5a359afc5b32102545c27709052e3a1e7643c14cb52c219bb";
 pub const catalog_revision = "sha256-c5d5070c7592ca8e27743e892a7eec1d6c883be8034f888735238cdfdb3ab70f";
 pub const catalog_sha256 = "c5d5070c7592ca8e27743e892a7eec1d6c883be8034f888735238cdfdb3ab70f";
 pub const model_count: usize = 1539;

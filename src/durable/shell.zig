@@ -14,6 +14,7 @@ pub const OutputInfo = struct { stream: Stream, skipped: ?output.ShellOutputSkip
 pub const OutputFn = *const fn (?*anyopaque, []const u8, types.Context, OutputInfo) anyerror!void;
 pub const SpillOptions = struct { afterBytes: u64, afterLines: u64 };
 pub const Options = struct {
+    parent_owner: ?*ownership.ParentJob = null,
     cwd: ?[]const u8 = null,
     env: ?*const std.process.Environ.Map = null,
     inheritEnv: bool = true,
@@ -229,7 +230,8 @@ pub const Shell = struct {
         const stdin_command = if (config != null and config.?.command_on_stdin) command.text else null;
         var child = std.process.spawn(self.io, .{ .argv = resolved_argv, .cwd = .{ .path = cwd }, .environ_map = &environment_map, .stdin = if (stdin_command != null) .pipe else .ignore, .stdout = .pipe, .stderr = .pipe, .pgid = if (builtin.os.tag == .windows) null else 0, .start_suspended = builtin.os.tag == .windows, .create_no_window = true }) catch |err| return failure(.spawn_error, err);
         defer child.kill(self.io);
-        var control = ownership.Control.init(&child) catch |err| return failure(.spawn_error, err);
+        if (options.parent_owner) |owner| owner.assign(&child) catch |err| return failure(.spawn_error, err);
+        var control = (if (options.parent_owner != null) ownership.Control.initForDaemon(&child, self.io) else ownership.Control.init(&child)) catch |err| return failure(.spawn_error, err);
         defer control.deinit();
         errdefer control.kill();
         try self.register(&control);

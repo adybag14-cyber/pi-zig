@@ -15,6 +15,7 @@ const std = @import("std");
 const Io = std.Io;
 const js_runtime = @import("js_runtime.zig");
 const actions_mod = @import("actions.zig");
+const command_names = @import("command_names.zig");
 const file_permissions = @import("../file_permissions.zig");
 threadlocal var ui_prompt_draining_host: ?*Host = null;
 
@@ -406,6 +407,7 @@ pub const Host = struct {
     /// every persistent script worker, including workers loaded later.
     script_ui_bridge: ?js_runtime.UiBridge = null,
     script_renderer_bridge: ?js_runtime.RendererBridge = null,
+    script_editor_bridge: ?js_runtime.EditorBridge = null,
     native_group_runtime: ?*js_runtime.Runtime = null,
     script_context_json: ?[]u8 = null,
     ui_prompt_mutex: Io.Mutex = .init,
@@ -441,6 +443,10 @@ pub const Host = struct {
     pub fn setScriptRendererBridge(self: *Host, bridge: ?js_runtime.RendererBridge) !void {
         if (self.native_group_runtime) |owner| try owner.setRendererBridge(bridge);
         self.script_renderer_bridge = bridge;
+    }
+    pub fn setScriptEditorBridge(self: *Host, bridge: ?js_runtime.EditorBridge) !void {
+        if (self.native_group_runtime) |owner| try owner.setEditorBridge(bridge);
+        self.script_editor_bridge = bridge;
     }
 
     fn captureRendererActions(self: *Host, extension: *const ExtensionManifest, invocation: []const u8, raw: []const u8) !void {
@@ -698,8 +704,9 @@ pub const Host = struct {
         view.setUiBridge(self.script_ui_bridge);
         if (self.script_context_json) |context| try view.setContextJson(context);
         if (created) if (self.script_renderer_bridge) |bridge| try group.?.setRendererBridge(bridge);
+        if (created) if (self.script_editor_bridge) |bridge| try group.?.setEditorBridge(bridge);
         const previous_len = self.extensions.items.len;
-        try self.loadJson(raw_manifest, std.fs.path.dirname(source_path) orelse ".");
+        try self.loadJsonMode(raw_manifest, std.fs.path.dirname(source_path) orelse ".", true);
         if (self.extensions.items.len != previous_len + 1) return error.InvalidJavaScriptExtensionHandshake;
         self.extensions.items[previous_len].script_runtime = view;
         self.native_group_runtime = group;
@@ -707,6 +714,10 @@ pub const Host = struct {
     }
 
     pub fn loadJson(self: *Host, raw: []const u8, base_dir: []const u8) !void {
+        return self.loadJsonMode(raw, base_dir, false);
+    }
+
+    fn loadJsonMode(self: *Host, raw: []const u8, base_dir: []const u8, native_shadows: bool) !void {
         var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, raw, .{});
         defer parsed.deinit();
         if (parsed.value != .object) return error.InvalidManifest;
@@ -738,7 +749,7 @@ pub const Host = struct {
                 if (tool_value != .object) return error.InvalidManifest;
                 const tool_name = tool_value.object.get("name") orelse return error.InvalidManifest;
                 if (tool_name != .string or tool_name.string.len == 0) return error.InvalidManifest;
-                if (containsTool(tools_list.items, tool_name.string) or self.hasTool(tool_name.string)) return error.DuplicateToolName;
+                if (containsTool(tools_list.items, tool_name.string) or (!native_shadows and self.hasTool(tool_name.string))) return error.DuplicateToolName;
                 const description_value = tool_value.object.get("description");
                 const description = if (description_value) |value|
                     (if (value == .string) value.string else return error.InvalidManifest)
@@ -789,7 +800,7 @@ pub const Host = struct {
                 if (command_value != .object) return error.InvalidManifest;
                 const command_name = command_value.object.get("name") orelse return error.InvalidManifest;
                 if (command_name != .string or command_name.string.len == 0) return error.InvalidManifest;
-                if (containsCommand(commands_list.items, command_name.string) or self.hasCommand(command_name.string)) return error.DuplicateCommandName;
+                if (containsCommand(commands_list.items, command_name.string) or (!native_shadows and self.hasCommand(command_name.string))) return error.DuplicateCommandName;
                 const description_value = command_value.object.get("description");
                 const description = if (description_value) |value|
                     (if (value == .string) value.string else return error.InvalidManifest)
@@ -1100,20 +1111,48 @@ pub const Host = struct {
     }
 
     pub fn hasCommand(self: *const Host, name: []const u8) bool {
+        if (self.script_backend == .native) {
+            const resolved = self.resolvedCommandNames() catch return false;
+            defer command_names.deinit(self.gpa, resolved);
+            for (resolved) |command| if (std.mem.eql(u8, command.invocation_name, name)) return true;
+            return false;
+        }
         for (self.extensions.items) |ext| {
             for (ext.commands) |command| if (std.mem.eql(u8, command.name, name)) return true;
         }
         return false;
     }
 
+    pub fn resolvedCommandNames(self: *const Host) ![]command_names.Resolved {
+        var registrations: std.ArrayList(command_names.Registration) = .empty;
+        defer registrations.deinit(self.gpa);
+        for (self.extensions.items, 0..) |extension, index| for (extension.commands) |command| {
+            try registrations.append(self.gpa, .{ .owner_index = index, .name = command.name });
+        };
+        return command_names.resolve(self.gpa, registrations.items);
+    }
+
     /// Execute an extension-owned slash command. Commands are immediate native
     /// actions: they may emit a user-visible message, provide a prompt for the
     /// agent, request termination, or combine those actions in one JSON result.
     pub fn executeCommand(self: *Host, name: []const u8, raw_arguments: []const u8) !?CommandOutput {
-        for (self.extensions.items) |*ext| {
+        var owner_index: ?usize = null;
+        var registered_name: []const u8 = name;
+        if (self.script_backend == .native) {
+            const resolved = try self.resolvedCommandNames();
+            defer command_names.deinit(self.gpa, resolved);
+            for (resolved) |command| if (std.mem.eql(u8, command.invocation_name, name)) {
+                owner_index = command.owner_index;
+                registered_name = command.name;
+                break;
+            };
+            if (owner_index == null) return null;
+        }
+        for (self.extensions.items, 0..) |*ext, index| {
+            if (owner_index) |selected| if (selected != index) continue;
             var owns = false;
             for (ext.commands) |command| {
-                if (std.mem.eql(u8, command.name, name)) {
+                if (std.mem.eql(u8, command.name, registered_name)) {
                     owns = true;
                     break;
                 }
@@ -1122,7 +1161,7 @@ pub const Host = struct {
             if (ext.entry.len == 0 and ext.script_runtime == null) return try errorCommandOutput(self.gpa, "extension command has no executable entry");
             const flags_json = try self.flagsJson(ext);
             defer self.gpa.free(flags_json);
-            const raw = self.runExtension(ext, .command, name, raw_arguments, flags_json) catch |err|
+            const raw = self.runExtension(ext, .command, registered_name, raw_arguments, flags_json) catch |err|
                 return try errorCommandOutputFmt(self.gpa, "extension command execution failed: {s}", .{@errorName(err)});
             defer self.gpa.free(raw);
             const trimmed = std.mem.trim(u8, raw, " \t\r\n");

@@ -62,6 +62,15 @@ const definitions = [_]Definition{
     .{ .id = "app.exit", .legacy = "exit", .action = .exit, .defaults = &.{"ctrl+d"} },
 };
 
+/// Shared editor/action defaults for native extension keybinding objects.
+pub fn defaultKeysForAction(id: []const u8) []const []const u8 {
+    for (definitions) |definition| if (std.mem.eql(u8, id, definition.id)) return definition.defaults;
+    if (std.mem.eql(u8, id, "app.interrupt")) return &.{"escape"};
+    if (std.mem.eql(u8, id, "tui.editor.historyPrevious")) return &.{"up"};
+    if (std.mem.eql(u8, id, "tui.editor.historyNext")) return &.{"down"};
+    return &.{};
+}
+
 pub const ViewportAction = enum { page_up, page_down, half_page_up, half_page_down, line_up, line_down, top, bottom };
 const viewport_definitions = .{
     .{ "tui.altScreen.pageUp", ViewportAction.page_up, &.{"pageup"} },

@@ -1,0 +1,72 @@
+{
+  "status": "tools/commands increment frozen; late registration/modelRegistry/prethrow remain pending",
+  "worktree": "C:\\Users\\adyba\\pi-zig-native-catalogs-20261005",
+  "baseline": "fb08f5f26524b1eb84d183851291670c8098fa04",
+  "files": [
+    {
+      "path": "src/extensions/command_names.zig",
+      "before_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "sha256": "04CCAEF5421522D30D4A054FBADC9659AD7691245689A5603AE4943FB1F16AED"
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "before_sha256": "F25679084F81200DE99BE62E04AAEE0B0B1D451A589C62A791FE41DA4DD0307C",
+      "sha256": "CE3BBDB211C9D66CB01EC58D02D69A7F692BB61D9BF99B5BC0E4B4C7734802A0"
+    },
+    {
+      "path": "src/extensions/native_group.zig",
+      "before_sha256": "4FA35432C2523EFA95192A9CDD95CA25E4FCEC3FBB18222F681C3B327F70B7A7",
+      "sha256": "DE2226EE990C84A5D205CE203A2848E0A40A239D182ABBE74843B43E0BB75B58"
+    },
+    {
+      "path": "src/extensions/host.zig",
+      "before_sha256": "CB8EE0E5C422C72A07E46385FEBA498A7DB0D6B8B23A0192A92EAA7C35B93CCF",
+      "sha256": "7CF61DF953CEC9C2DE88E91EE2123368DCF2B06F2BC518F26A54BBD55AFD1C02"
+    },
+    {
+      "path": "src/native_runtime_process_test.zig",
+      "before_sha256": "F2F733527F897707E02771B10F26BB3192F3B2A895B7718DE12CE7D671C4472D",
+      "sha256": "ED744AFE360F735B7AD788C1F08C204FFAC23B676C233F80046D56F19E570B18"
+    }
+  ],
+  "gates": {
+    "debug": "native-catalog-core-final-debug-20261005a:188/188 (Runtime43 bindings145),13steps20:20:20Z",
+    "release_safe": "native-catalog-core-final-releasesafe-20261005a:188/188,13steps20:30:04Z",
+    "names": "native-command-alias-oracle-unit-20261005a:2/2 incl all allocator failures"
+  },
+  "authority": "031b24 extracted actual Node runner oracle;6 relevant sources unchanged at28dcce2",
+  "upstream_source_hashes": [
+    {
+      "path": "packages/coding-agent/src/core/extensions/runner.ts",
+      "sha256": "2A3BD7F81623928070EB956CDAC37B861A787297046F9CE7AF0522FF6D41A98A"
+    },
+    {
+      "path": "packages/coding-agent/src/core/extensions/loader.ts",
+      "sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A"
+    },
+    {
+      "path": "packages/coding-agent/src/core/agent-session.ts",
+      "sha256": "86BB6D4ED757C6FA4B4154C938C900AAFBDDF8AA067587098B6154A33F844C9A"
+    },
+    {
+      "path": "packages/coding-agent/src/core/model-registry.ts",
+      "sha256": "F4CED2D92DF9097647ABA7DA3AE0BB273FA8089E966BE15DBA880DB51D5DEE0B"
+    },
+    {
+      "path": "packages/coding-agent/src/core/model-runtime.ts",
+      "sha256": "DE28A51492788E7F5F4D6F20A57FA8B08E32FD9E766A365211B54A3F3959A177"
+    },
+    {
+      "path": "packages/ai/src/models.ts",
+      "sha256": "62E4A8CB3D52D76F3EB2286F23436F5CD6D4D33DC56CEBFA4A528C6A6D4D525E"
+    }
+  ],
+  "captured_utc": "2026-10-05T21:10:47.964861+00:00",
+  "carried_parent_repair": "renderer_protocol.zig staged union allocation fix already in Main; excluded from catalog-owned delta",
+  "remaining": [
+    "Late registration discovery and replacement/unload Host metadata publication",
+    "Qualified heterogeneous model registry APIs with unqualified chat facades unchanged",
+    "Before-throw Pi action envelope fidelity",
+    "Darwin renderer resize and diagnostic repair priority next"
+  ]
+}

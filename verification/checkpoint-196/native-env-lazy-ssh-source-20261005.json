@@ -1,0 +1,78 @@
+{
+  "authority": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+  "source": "C:\\Users\\adyba\\pi-zig-env-lazy-ssh-20261005",
+  "status": "frozen native lazy SSH follow-on",
+  "files": [
+    {
+      "path": "src/env/ssh_connection.zig",
+      "sha256": "b1de888352e97a5ed9527dd0d907745c0c768f0b356f7850c3378b2dc92b71e3"
+    },
+    {
+      "path": "src/env/root.zig",
+      "sha256": "a33cc94f4b0438f2955029f755b3ecbbf7a9b262c5fb173198f362523406565e"
+    },
+    {
+      "path": "src/env/fixtures/ssh-launch-28dc.json",
+      "sha256": "5310fe0501555336086a62f6af99165548e2b0a3fbaa1f9ad54004a0fa2171dc"
+    }
+  ],
+  "jobs": [
+    {
+      "name": "native-env-lazy-ssh-final-windows-debug",
+      "pid": 2608,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "created_utc": "2026-10-05T21:11:33.8538140Z",
+      "launched_utc": "2026-10-05T21:11:33.8506237+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-env-lazy-ssh-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T21:11:40.7235258+00:00"
+    },
+    {
+      "name": "native-env-lazy-ssh-final-windows-releasesafe",
+      "pid": 42996,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "created_utc": "2026-10-05T21:11:40.7329710Z",
+      "launched_utc": "2026-10-05T21:11:40.7322383+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-env-lazy-ssh-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T21:11:59.4170351+00:00"
+    },
+    {
+      "name": "native-env-lazy-ssh-actual-restart-linux-debug",
+      "pid": 8508,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-lazy-ssh-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /usr/bin/env PI_TEST_REAL_LAZY_SSH_ROOT=/tmp/pi-env-lazy-ssh-server-20261005 /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Dtarget=x86_64-linux-gnu.2.35 -j2 --summary all --cache-dir /tmp/pi-env-lazy-ssh-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T21:10:54.1008300Z",
+      "launched_utc": "2026-10-05T21:10:54.0978285+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-env-lazy-ssh-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T21:11:03.4218150+00:00"
+    },
+    {
+      "name": "native-env-lazy-ssh-actual-restart-linux-releasesafe",
+      "pid": 40520,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-lazy-ssh-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /usr/bin/env PI_TEST_REAL_LAZY_SSH_ROOT=/tmp/pi-env-lazy-ssh-server-20261005 /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -j2 --summary all --cache-dir /tmp/pi-env-lazy-ssh-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T21:11:33.8537090Z",
+      "launched_utc": "2026-10-05T21:11:33.8506385+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-env-lazy-ssh-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T21:11:58.9089032+00:00"
+    }
+  ],
+  "limits": [
+    "Explicit binary supplied; packaged cross-platform binary resolver still pending",
+    "Native RemoteExecutionEnv facade and host-key scan/accept still pending",
+    "Actual restart/tamper proof on Linux loopback; no Windows SSH server proof"
+  ]
+}

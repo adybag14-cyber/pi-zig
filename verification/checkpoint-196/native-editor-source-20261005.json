@@ -1,0 +1,133 @@
+{
+  "status": "source frozen; inline SHA256 input, Runtime, and both real PTY gates terminal passed; production source unchanged from full Windows native-runtime pass",
+  "source": "C:\\Users\\adyba\\pi-zig-editor-components-20261005",
+  "frozen_source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-editor-handoff-source-20261005-inline\\final",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-editor-handoff-source-20261005-inline\\editor-additive.patch",
+  "baseline_runtime_sha256": "2932bcd75f0477c14e7011d4fc3a2aaab54b3ea1fa3048e6ac062f3911d01396",
+  "latest_upstream": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+  "source_upstream": "031b24aa6425067253cb94095fb806a9df9d619c",
+  "upstream_files": [
+    {
+      "path": "packages/tui/src/editor-component.ts",
+      "sha256": "0e40ba454b74e2ce21dfc6d831c185e5fb5619b0987fa158be98ed98564e8716",
+      "unchanged_since_031b": true
+    },
+    {
+      "path": "packages/coding-agent/examples/extensions/modal-editor.ts",
+      "sha256": "4742283930949fad1920359540aa9d42c833d2d24eaa49564bfc08f90e328b0d",
+      "unchanged_since_031b": true
+    },
+    {
+      "path": "packages/coding-agent/src/modes/interactive/components/custom-editor.ts",
+      "sha256": "a19deef137c3c653e24372842dd49bb819f8fcc24a69a5dc6ec60fc2bad3f8f1",
+      "unchanged_since_031b": true
+    },
+    {
+      "path": "packages/coding-agent/src/modes/interactive/interactive-mode.ts",
+      "sha256": "14abc51f5749f174045a5cb8879e4947b87dfee1a154db857cf2709bccfe9c50",
+      "unchanged_since_031b": true
+    }
+  ],
+  "files": [
+    {
+      "path": "build.zig",
+      "sha256": "d57288a31c601f724740698e19168fb5e50314e6ce271a2d8ac8dcb95ad31a89",
+      "bytes": 53580
+    },
+    {
+      "path": "src/extensions/native_editor.zig",
+      "sha256": "cd908a32c447b4902d259f4c722357dd82826127db9f90987febaaab73818a56",
+      "bytes": 37711
+    },
+    {
+      "path": "src/extensions/editor_protocol.zig",
+      "sha256": "678ef0eac9beaead58103a2827f0ac907564e6276f0b35043b8df7ce53572aa7",
+      "bytes": 11285
+    },
+    {
+      "path": "src/extensions/native_tui.zig",
+      "sha256": "b996b2a31230d2141183e3b9bf99b7056b9a3c7f99bac775c5b1b0f62e56d577",
+      "bytes": 48730
+    },
+    {
+      "path": "src/tui/keybindings.zig",
+      "sha256": "fe83e5203831db381804601145ba3c475e0612b94b6aa18c9aef6c4783e134c3",
+      "bytes": 14644
+    },
+    {
+      "path": "src/extensions/native_ui.zig",
+      "sha256": "36b87541f8ba74f8ef1f870a982e0c3bc090ecaec295c18051dd0b6f77126846",
+      "bytes": 99597
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "sha256": "6468b2805b64e509df47aafe9132803e623eb5ee7adf8869b24992d573ead907",
+      "bytes": 141146
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "sha256": "8901e833bdfeeb006bb1236789fe737e15e5396ce3355536e71fe8b5f1bf6386",
+      "bytes": 54502
+    },
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "sha256": "a3b0d142328f3adf376ce6847c7466437e5d65040e37891a616c18edc154b5d7",
+      "bytes": 170477
+    },
+    {
+      "path": "src/extensions/host.zig",
+      "sha256": "5907052b83a00b2723cf48073ea2a5f9570e0f40f6dd159d319f8b4af1676f08",
+      "bytes": 144164
+    },
+    {
+      "path": "src/coding_agent/fullscreen_frontend.zig",
+      "sha256": "534965f041098d833b3f51cd80f30a949b3a8b6f5a313788972bf66cf38d6b7d",
+      "bytes": 68316
+    },
+    {
+      "path": "src/main.zig",
+      "sha256": "3e22726832e7a7a9924be07c85af73497e21411c88e1c996ed1fb65b630031c6",
+      "bytes": 402434
+    },
+    {
+      "path": "src/native_runtime_process_test.zig",
+      "sha256": "37591b916b2d6cb8b01e3ea0e82ccef0abe4991850144fc4959f70692e6a7bd4",
+      "bytes": 141714
+    },
+    {
+      "path": "src/fullscreen_frontend_process_test.zig",
+      "sha256": "40bbd462daa31a2d40efe57c993bab9b0a24aec792f5ad6062335ff2c86cb6f6",
+      "bytes": 52510
+    },
+    {
+      "path": "src/editor_owner_test.zig",
+      "sha256": "8c2abf1d906e8ae335766ee74b59fc3af067ddc4d5ea939e3a05e1dbc62d90dd",
+      "bytes": 12686
+    },
+    {
+      "path": "src/editor_frontend_test.zig",
+      "sha256": "a6dfb7aa9b6e2399af1ad948ef46745cc8ead71001c155f65143d44d98849b61",
+      "bytes": 66
+    },
+    {
+      "path": "src/test_support/upstream_modal_editor_031b.zig",
+      "sha256": "e0ae2169b27a46ba9752fc8ab8cf40be680574efd72296122a516ce8a57b7a99",
+      "bytes": 3817
+    }
+  ],
+  "captured_utc": "2026-10-05T22:36:19.1048156+01:00",
+  "validation_receipts": [
+    "native-editor-windows-freeze-final-20261005.json",
+    "native-editor-capability-unit-final-20261005.json",
+    "native-editor-inline-input-gate-20261005.json"
+  ],
+  "limitations": [
+    "Entire Pi rewrite is incomplete; legacy default is unchanged.",
+    "Extension-owned autocomplete provider/dropdown is explicitly unsupported; core Tab completion forwards to Main.",
+    "Native editor visual wrapping and grapheme motion retain current Zig editor core limits.",
+    "Custom editor frontend is the explicit native grouped fullscreen path.",
+    "Additional original upstream advanced editor subclasses are not certified."
+  ],
+  "runtime_patch_note": "Only new editor import/test block is added to current Main repaired runtime process tests; root catalog/renderer/close regressions are preserved.",
+  "correction_patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-editor-handoff-source-20261005-inline\\editor-inline-correction.patch"
+}

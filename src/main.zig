@@ -2191,6 +2191,7 @@ const RuntimeResourceReloadContext = struct {
             .script_backend = self.host.script_backend,
             .native_runtime_options = self.host.native_runtime_options,
             .script_renderer_bridge = self.host.script_renderer_bridge,
+            .script_editor_bridge = self.host.script_editor_bridge,
         };
         errdefer new_host.deinit();
         if (!self.cli.no_extensions) for (top_resources.extensions.items) |path| try new_host.loadPath(path);
@@ -4464,6 +4465,7 @@ fn runMain(init: std.process.Init) !void {
     defer if (regular_terminal_mode) |*mode| mode.leave();
     var frontend: ?*coding.fullscreen_frontend.Frontend = null;
     defer if (frontend) |scene| {
+        extension_host.setScriptEditorBridge(null) catch {};
         extension_host.setScriptRendererBridge(null) catch {};
         extension_ui.bindRendererFrontend(null, null, null);
         extension_ui.bindComponentScenes(null, null, null);
@@ -4497,6 +4499,7 @@ fn runMain(init: std.process.Init) !void {
         frontend.?.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, &extension_ui);
         extension_ui.bindRendererFrontend(coding.fullscreen_frontend.Frontend.rendererSink, coding.fullscreen_frontend.Frontend.rendererClosed, frontend);
         try extension_host.setScriptRendererBridge(extension_ui.rendererBridge());
+        try extension_host.setScriptEditorBridge(.{ .context = frontend, .record_fn = coding.fullscreen_frontend.Frontend.editorRecordSink, .closed_fn = coding.fullscreen_frontend.Frontend.editorClosed });
         tui.render.bindFrontend(coding.fullscreen_frontend.Frontend.noticeSink, coding.fullscreen_frontend.Frontend.renderModalObserver, frontend);
         try frontend.?.syncBranch(&sess);
     }
@@ -7834,18 +7837,22 @@ fn runSurfaceCommand(
     }
 
     if (std.mem.eql(u8, cmd, "mcp")) {
-        if (cmd_args.len == 0) {
-            try tui.render.printLine(io, "usage: pi mcp <server-command> [args...]");
+        const http_mode = cmd_args.len > 0 and std.mem.eql(u8, cmd_args[0], "--url");
+        if (cmd_args.len == 0 or (http_mode and cmd_args.len != 2)) {
+            try tui.render.printLine(io, "usage: pi mcp <server-command> [args...] | pi mcp --url <http(s)-url>");
             std.process.exit(2);
         }
-        var client = pi_zig.mcp.McpClient{ .gpa = gpa, .io = io };
+        var client = pi_zig.mcp.McpClient{ .gpa = gpa, .io = io, .environ = environ };
         defer client.deinit();
-        client.connect(cmd_args) catch |err| {
+        const connection = if (http_mode) client.connectHttp(cmd_args[1]) else client.connect(cmd_args);
+        connection catch |err| {
+            client.close();
             const m = try std.fmt.allocPrint(arena, "mcp connect failed: {s}", .{@errorName(err)});
             try tui.render.printLine(io, m);
             std.process.exit(2);
         };
         client.listTools() catch |err| {
+            client.close();
             const m = try std.fmt.allocPrint(arena, "mcp tools/list failed: {s}", .{@errorName(err)});
             try tui.render.printLine(io, m);
             std.process.exit(2);

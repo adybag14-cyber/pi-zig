@@ -1,0 +1,122 @@
+{
+  "created_utc": "2026-10-05T21:19:33.5606720+00:00",
+  "state": "immutable MCP21 source; all seven final proof jobs terminal passed; older storage63/scheduler11/PowerShell12 unchanged",
+  "source_manifest": "mcp-native-frozen-source-20261005.json",
+  "source_manifest_sha256": "ea19914d8148f50632f327b59e5addae1be49f23408d24429be4071509fb89f5",
+  "integration_patch": "mcp-native-additive-lf-20261005.patch",
+  "integration_patch_sha256": "23fb795d18fbf14cdb9389ec4cf7c205ca91d0e568ab77cbb792ee688d9a4edd",
+  "authority": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+  "authority_proof": "mcp-authority-28dc-20261005.json",
+  "authority_proof_sha256": "9f3c671b473a0028e2544f4070de322e24b50b2c2249163db1bdcedd2fb6d0de",
+  "toolchain": "final Zig0.16.0",
+  "counts_each_windows_linux_debug_releasesafe": {
+    "steps": 15,
+    "pass": 36,
+    "total": 36,
+    "runtime": 15,
+    "legacy_stdio": 12,
+    "oauth_structural": 9
+  },
+  "macos": "ARM64 semantic compile pass only; runtime unverified",
+  "linux_stage": "/tmp/pi-mcp-runtime-20261005.Ww2Jv6",
+  "notes": "Fresh owned Linux stage created after external WSL reboot; no reused stale live process claims. Existing legacy MCP client/CLI untouched. Static headers/native API only, not full OAuth/codemode parity; synchronous native callback reentry rejected; POST SSE streams closed after response; unanswered POST SSE resumption and user JS bridge remain unported. Details in NATIVE_RUNTIME_CONTRACT.md",
+  "new_files": [
+    "src/mcp/protocol.zig",
+    "src/mcp/sse.zig",
+    "src/mcp/transport.zig",
+    "src/mcp/stdio_transport.zig",
+    "src/mcp/http_transport.zig",
+    "src/mcp/session.zig",
+    "src/mcp/connection.zig",
+    "src/mcp/capabilities.zig",
+    "src/mcp/config.zig",
+    "src/mcp/content.zig",
+    "src/mcp/runtime_fixture.zig",
+    "src/mcp/runtime_tests.zig",
+    "src/mcp_runtime_fixture.zig",
+    "src/mcp_runtime_test.zig",
+    "src/mcp/fixtures/contracts_031b.json",
+    "src/mcp/fixtures/client_031b.json",
+    "src/mcp/fixtures/config_load_031b.json",
+    "src/mcp/NATIVE_RUNTIME_CONTRACT.md"
+  ],
+  "jobs": [
+    {
+      "name": "mcp-native-final-windows-debug",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 24924,
+      "identity_captured": true,
+      "completed_utc": "2026-10-05T21:04:35.3997255+00:00",
+      "record_sha256": "e9c98746687282eb6b2868ebc8696496b026ef67a514efce50e0c3a751f81f86",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "866617159810d99141d0c85a728b15d74a2aee61beba3fb146457e99773650ae"
+    },
+    {
+      "name": "mcp-native-final-windows-releasesafe",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 19640,
+      "identity_captured": true,
+      "completed_utc": "2026-10-05T21:08:52.4419370+00:00",
+      "record_sha256": "08c62ac0aea936ef7b0a9809ba14eee975a7221ec89865ddfe385d2deb58c11e",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "7b4ddd23db014d2532d4505c70b8962659f6d654c9239d3348ce60124e1b3bec"
+    },
+    {
+      "name": "mcp-native-final-linux-both",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 23068,
+      "identity_captured": true,
+      "completed_utc": "2026-10-05T21:06:06.8248531+00:00",
+      "record_sha256": "d44df349af0378300617cc1c5c217c46e99b4b8bfb7a0855026bd893ae3549cf",
+      "stdout_sha256": "c9e59bdbfe2706f48a68c3c3f9103e8e607a6e22a44b42a832410928ccc926e7",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "mcp-native-macos-arm64-semantic",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 22368,
+      "identity_captured": true,
+      "completed_utc": "2026-10-05T21:12:13.5531528+00:00",
+      "record_sha256": "182096146fd2ff7e6e2abcca1ff25e6a8ef85f3f43b37adfe01ded360b0ccc16",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "mcp-native-source-oracle",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 12068,
+      "identity_captured": false,
+      "completed_utc": "2026-10-05T20:04:42.9614973+00:00",
+      "record_sha256": "f6270f5a4938d5943fabba15645de118829f9de61b733ea19085c24d73cfb573",
+      "stdout_sha256": "a90d6e7143467ba38a6781f6ebed6caa0ed4d1f914af9c2224fc321bf43e3755",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "mcp-client-network-source-oracle",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 53980,
+      "identity_captured": false,
+      "completed_utc": "2026-10-05T20:10:52.3557999+00:00",
+      "record_sha256": "03bee6cf4dd64cca1256a5aa218f827d83310df2d28edbc6200f0d52f50d1d81",
+      "stdout_sha256": "d58157a243514f12ef68bbc6ec7db7a6d027baa45c26e68ddb4bd751a5dbebb0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "mcp-config-load-source-oracle-2",
+      "status": "passed",
+      "exit_code": 0,
+      "pid": 33052,
+      "identity_captured": false,
+      "completed_utc": "2026-10-05T20:14:29.9774663+00:00",
+      "record_sha256": "681b38748749ef3fea18c7285e33884d5ecbfcfe461a0c70029b8998e5241820",
+      "stdout_sha256": "0b6693b0fa788f42f92edb0721ac4da7e1b22ea0c796913a2c5e83b6271cfaf5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

@@ -22,6 +22,7 @@ pub const durable_backend = @import("durable/backend/root.zig");
 pub const durable_session = @import("durable/session.zig");
 pub const durable_harness = @import("durable/harness/root.zig");
 pub const durable_scheduler = @import("durable/scheduler.zig");
+pub const env = @import("env/root.zig");
 
 pub const version = config.version;
 pub const name = config.APP_NAME;

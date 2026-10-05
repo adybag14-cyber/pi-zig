@@ -19,10 +19,11 @@ const native_stream = @import("native_stream.zig");
 const component_protocol = @import("component_protocol.zig");
 const native_group = @import("native_group.zig");
 const renderer_protocol = @import("renderer_protocol.zig");
+const editor_protocol = @import("editor_protocol.zig");
 const c = engine_mod.c;
 
 const WireRecord = struct {
-    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, shutdown };
+    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, editor_control, shutdown };
     bytes: []u8,
     kind: Kind = .request,
 };
@@ -88,6 +89,7 @@ const Transport = struct {
         if (std.mem.eql(u8, kind.string, "provider_stream_ack")) return .provider_stream_ack;
         if (std.mem.eql(u8, kind.string, "component_control")) return .component_control;
         if (std.mem.eql(u8, kind.string, "renderer_control") or std.mem.eql(u8, kind.string, "renderer_subscribe")) return .renderer_control;
+        if (std.mem.eql(u8, kind.string, "editor_control") or std.mem.eql(u8, kind.string, "editor_subscribe")) return .editor_control;
         return .request;
     }
 
@@ -194,13 +196,14 @@ const Transport = struct {
         _ = try self.engine.drainReadyJobs();
         if (try timers.pumpReady(self.engine)) _ = try self.engine.drainReadyJobs();
         _ = try self.group.renderers.pumpDirtyReady();
+        _ = try self.group.ui.editors.pumpDirty();
     }
 
     fn takeControl(self: *Transport) ?WireRecord {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.records.items, 0..) |record, index| {
-            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or (self.active and record.kind == .shutdown and index == 0)) {
+            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or (self.active and record.kind == .shutdown and index == 0)) {
                 const removed = self.records.orderedRemove(index);
                 self.queued_bytes -= removed.bytes.len;
                 return removed;
@@ -230,6 +233,11 @@ const Transport = struct {
             var arena: std.heap.ArenaAllocator = .init(engine.gpa);
             defer arena.deinit();
             const request = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{});
+            if (record.kind == .editor_control) {
+                try self.editorControl(request);
+                dispatched = true;
+                continue;
+            }
             if (record.kind == .renderer_control) {
                 try self.rendererControl(request);
                 dispatched = true;
@@ -308,6 +316,33 @@ const Transport = struct {
             defer control.deinit();
             _ = try self.group.renderers.control(&control);
         }
+    }
+
+    fn editorControl(self: *Transport, request: std.json.Value) !void {
+        if (request != .object) return error.InvalidEditorControl;
+        const kind = try requiredText(request.object, "kind");
+        if (std.mem.eql(u8, kind, "editor_subscribe")) {
+            const protocol_version = request.object.get("version") orelse return error.InvalidEditorVersion;
+            if (protocol_version != .integer or protocol_version.integer != editor_protocol.version) return error.InvalidEditorVersion;
+            const generation = try component_protocol.identifier(request.object.get("ownerGeneration") orelse return error.InvalidEditorIdentity);
+            if (generation != self.group.ui.editors.owner_generation) return;
+            const enabled = request.object.get("enabled") orelse return error.InvalidEditorControl;
+            if (enabled != .bool) return error.InvalidEditorControl;
+            self.group.ui.editors.record_fn = if (enabled.bool) editorRecord else null;
+            self.group.ui.editors.dirty = enabled.bool;
+            _ = try self.group.ui.editors.pumpDirty();
+        } else {
+            var control = try editor_protocol.readControl(self.engine.gpa, &request.object);
+            defer control.deinit();
+            _ = try self.group.ui.editors.control(control);
+        }
+    }
+    fn editorRecord(context: ?*anyopaque, record: editor_protocol.Record) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        try self.writer.writeByte(0x1e);
+        try editor_protocol.write(self.writer, record);
+        try self.writer.writeByte('\n');
+        try self.writer.flush();
     }
 
     fn rendererRecord(context: ?*anyopaque, record: renderer_protocol.Record) !void {
@@ -548,6 +583,15 @@ fn writeFailure(gpa: std.mem.Allocator, writer: *std.Io.Writer, message: []const
     try writeRecord(writer, .{ .object = failure });
 }
 
+fn writeInvocationFailure(gpa: std.mem.Allocator, writer: *std.Io.Writer, message: []const u8, actions_json: []const u8) !void {
+    var failure = try std.json.parseFromSlice(std.json.Value, gpa, actions_json, .{});
+    defer failure.deinit();
+    if (failure.value != .object) return error.InvalidNativeExtensionActionQueue;
+    try failure.value.object.put(gpa, "ok", .{ .bool = false });
+    try failure.value.object.put(gpa, "error", .{ .string = message });
+    try writeRecord(writer, failure.value);
+}
+
 fn requiredText(object: std.json.ObjectMap, name: []const u8) ![]const u8 {
     const value = object.get(name) orelse return error.MissingWorkerField;
     if (value != .string) return error.InvalidWorkerField;
@@ -772,6 +816,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     const group = try native_group.Group.init(engine);
     defer group.deinit();
     group.renderers.owner_generation = owner_generation;
+    group.ui.editors.owner_generation = owner_generation;
     const bindings = try group.add(sources[0]);
     try timers.install(engine, io);
     try bindings.installSchemas();
@@ -808,10 +853,12 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     defer transport.deinit();
     group.renderers.record_fn = Transport.rendererRecord;
     group.renderers.record_context = &transport;
+    group.ui.editors.record_context = &transport;
     group.actions_fn = Transport.rendererActions;
     group.actions_context = &transport;
     defer {
         group.renderers.record_fn = null;
+        group.ui.editors.record_fn = null;
         group.actions_fn = null;
     }
     engine.host_control_context = &transport;
@@ -844,6 +891,10 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         };
         if (request != .object) {
             try writeFailure(allocator, writer, "InvalidWorkerRequest");
+            continue;
+        }
+        if (record.kind == .editor_control) {
+            try transport.editorControl(request);
             continue;
         }
         const kind = requiredText(request.object, "kind") catch |err| {
@@ -924,16 +975,25 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             } });
             continue;
         }
+        const previous_invocation_generation = selected_binding.invocation_generation;
         const result = invoke(gpa, selected_binding, &transport, request.object) catch |err| {
-            const diagnostic = engine.last_error orelse @errorName(err);
+            // Own the primary diagnostic before serializing the admitted queue;
+            // a secondary allocation/serialization failure cannot replace it.
+            const diagnostic = try gpa.dupe(u8, engine.last_error orelse @errorName(err));
+            defer gpa.free(diagnostic);
+            const admitted = if (selected_binding.invocation_generation != previous_invocation_generation)
+                try selected_binding.rejectedActions()
+            else
+                try gpa.dupe(u8, "{}");
+            defer gpa.free(admitted);
             // C frames are absent from the user's JavaScript stack. Preserve
             // the original exception while naming the native invocation in
             // its wire diagnostic, as the upstream refreshModels stack does.
             if (std.mem.eql(u8, kind, "provider_refresh_models")) {
                 const contextual = try std.fmt.allocPrint(gpa, "provider refreshModels: {s}", .{diagnostic});
                 defer gpa.free(contextual);
-                try writeFailure(allocator, writer, contextual);
-            } else try writeFailure(allocator, writer, diagnostic);
+                try writeInvocationFailure(allocator, writer, contextual, admitted);
+            } else try writeInvocationFailure(allocator, writer, diagnostic, admitted);
             if (transport.terminal) {
                 if (transport.shutdown_requested) {
                     try writer.writeAll("\x1e{\"ok\":true,\"result\":{}}\n");

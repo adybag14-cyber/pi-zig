@@ -6,6 +6,7 @@ const std = @import("std");
 const Io = std.Io;
 const component_protocol = @import("component_protocol.zig");
 const renderer_protocol = @import("renderer_protocol.zig");
+const editor_protocol = @import("editor_protocol.zig");
 const actions_mod = @import("actions.zig");
 
 const bridge_source = @embedFile("js_bridge.mjs");
@@ -19,6 +20,11 @@ const RendererBridgeAdapter = struct {
     closed_fn: *const fn (?*anyopaque, u64) anyerror!void,
 };
 pub const RendererBridge = RendererBridgeAdapter;
+pub const EditorBridge = struct {
+    context: ?*anyopaque = null,
+    record_fn: *const fn (?*anyopaque, editor_protocol.Record, *editor_protocol.ControlQueue) anyerror!void,
+    closed_fn: *const fn (?*anyopaque, u64) anyerror!void,
+};
 
 pub const Backend = enum { legacy, native };
 
@@ -108,6 +114,7 @@ const NativeReadSession = struct {
 
     fn reader(self: *@This()) Io.Cancelable!void {
         defer self.runtime.rendererEnded();
+        defer self.runtime.editorEnded();
         while (true) {
             const record = self.runtime.readRecordAllocating(std.heap.page_allocator) catch |err| {
                 self.mutex.lockUncancelable(self.runtime.io);
@@ -117,7 +124,7 @@ const NativeReadSession = struct {
                 self.wake.set(self.runtime.io);
                 return;
             };
-            const adopted = self.runtime.dispatchRendererRecord(record) catch |err| {
+            const adopted = (self.runtime.dispatchEditorRecord(record) catch |err| {
                 std.heap.page_allocator.free(record);
                 self.mutex.lockUncancelable(self.runtime.io);
                 self.finished = true;
@@ -125,7 +132,15 @@ const NativeReadSession = struct {
                 self.mutex.unlock(self.runtime.io);
                 self.wake.set(self.runtime.io);
                 return;
-            };
+            }) or (self.runtime.dispatchRendererRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            });
             if (adopted) {
                 std.heap.page_allocator.free(record);
                 continue;
@@ -576,6 +591,11 @@ pub const Runtime = struct {
     native_reader_group: Io.Group = .init,
     owner_generation: u64 = 1,
     renderer_mutex: Io.Mutex = .init,
+    editor_mutex: Io.Mutex = .init,
+    editor_bridge: ?EditorBridge = null,
+    editor_controls: ?*editor_protocol.ControlQueue = null,
+    editor_writer_group: Io.Group = .init,
+    editor_writer_started: bool = false,
     renderer_bridge: ?RendererBridgeAdapter = null,
     renderer_controls: ?*renderer_protocol.ControlQueue = null,
     renderer_writer_group: Io.Group = .init,
@@ -730,12 +750,15 @@ pub const Runtime = struct {
         }
         const manifest_json = try stringifyValue(gpa, manifest);
         errdefer gpa.free(manifest_json);
+        runtime.renderer_actions = actions_mod.Queue.init(std.heap.page_allocator, runtime.io);
+        runtime.renderer_actions_ready = true;
         if (runtime.native_group) {
+            const editor_controls = try std.heap.page_allocator.create(editor_protocol.ControlQueue);
+            editor_controls.* = editor_protocol.ControlQueue.init(std.heap.page_allocator, runtime.io, runtime.owner_generation);
+            runtime.editor_controls = editor_controls;
             const controls = try std.heap.page_allocator.create(renderer_protocol.ControlQueue);
             controls.* = renderer_protocol.ControlQueue.init(std.heap.page_allocator, runtime.io, runtime.owner_generation);
             runtime.renderer_controls = controls;
-            runtime.renderer_actions = actions_mod.Queue.init(std.heap.page_allocator, runtime.io);
-            runtime.renderer_actions_ready = true;
             const session = try gpa.create(NativeReadSession);
             session.* = .{ .runtime = runtime };
             errdefer gpa.destroy(session);
@@ -860,6 +883,12 @@ pub const Runtime = struct {
             self.gpa.destroy(session);
             self.native_read_session = null;
         }
+        self.editorEnded();
+        if (self.editor_controls) |controls| {
+            controls.deinit();
+            std.heap.page_allocator.destroy(controls);
+            self.editor_controls = null;
+        }
         if (self.renderer_controls) |controls| controls.stop();
         if (self.renderer_writer_started) {
             self.renderer_writer_group.cancel(self.io);
@@ -900,6 +929,86 @@ pub const Runtime = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         self.ui_bridge = bridge;
+    }
+
+    pub fn setEditorBridge(self: *Runtime, bridge: ?EditorBridge) !void {
+        if (self.shared_owner) |owner| return owner.setEditorBridge(bridge);
+        if (!self.native_group) return;
+        self.editor_mutex.lockUncancelable(self.io);
+        defer self.editor_mutex.unlock(self.io);
+        if (self.closed) return error.JavaScriptExtensionClosed;
+        if (self.editor_bridge == null and bridge == null) return;
+        if (self.editor_bridge) |old| if (bridge) |replacement| {
+            if (old.context == replacement.context and old.record_fn == replacement.record_fn and old.closed_fn == replacement.closed_fn) return;
+        };
+        if (self.editor_bridge) |old| {
+            self.editor_bridge = null;
+            self.stopEditorWriter();
+            try old.closed_fn(old.context, self.owner_generation);
+            const previous = self.editor_controls.?;
+            const replacement = try std.heap.page_allocator.create(editor_protocol.ControlQueue);
+            replacement.* = editor_protocol.ControlQueue.init(std.heap.page_allocator, self.io, self.owner_generation);
+            previous.deinit();
+            std.heap.page_allocator.destroy(previous);
+            self.editor_controls = replacement;
+        }
+        if (bridge != null and !self.editor_writer_started) {
+            try self.editor_writer_group.concurrent(self.io, editorControlWriter, .{self});
+            self.editor_writer_started = true;
+        }
+        self.editor_bridge = bridge;
+        var buffer: [192]u8 = undefined;
+        const request = try std.fmt.bufPrint(&buffer, "{{\"kind\":\"editor_subscribe\",\"version\":1,\"ownerGeneration\":\"{d}\",\"enabled\":{}}}", .{ self.owner_generation, bridge != null });
+        try self.writeLine(request);
+    }
+    fn stopEditorWriter(self: *Runtime) void {
+        if (self.editor_controls) |controls| controls.stop();
+        if (self.editor_writer_started) {
+            self.editor_writer_group.cancel(self.io);
+            self.editor_writer_group.await(self.io) catch {};
+            self.editor_writer_started = false;
+        }
+    }
+    fn editorEnded(self: *Runtime) void {
+        if (!self.native_group) return;
+        self.editor_mutex.lockUncancelable(self.io);
+        defer self.editor_mutex.unlock(self.io);
+        self.stopEditorWriter();
+        if (self.editor_bridge) |bridge| {
+            self.editor_bridge = null;
+            bridge.closed_fn(bridge.context, self.owner_generation) catch {};
+        }
+    }
+    fn editorControlWriter(self: *Runtime) Io.Cancelable!void {
+        const queue = self.editor_controls orelse return;
+        while (try queue.next()) |received| {
+            var control = received;
+            defer control.deinit();
+            var writer: Io.Writer.Allocating = .init(std.heap.page_allocator);
+            defer writer.deinit();
+            editor_protocol.writeControl(&writer.writer, control) catch return;
+            self.writeLine(writer.written()) catch return;
+        }
+    }
+    fn dispatchEditorRecord(self: *Runtime, bytes: []const u8) !bool {
+        if (!self.native_group) return false;
+        var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+        defer arena.deinit();
+        const root = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), bytes, .{}) catch return false;
+        if (root != .object) return false;
+        const kind = root.object.get("type") orelse return false;
+        if (kind != .string or !std.mem.startsWith(u8, kind.string, "editor_")) return false;
+        var record = try editor_protocol.read(std.heap.page_allocator, &root.object);
+        var transferred = false;
+        defer if (!transferred) record.deinit();
+        if (record.fence.owner_generation != self.owner_generation) return true;
+        self.editor_mutex.lockUncancelable(self.io);
+        defer self.editor_mutex.unlock(self.io);
+        if (self.editor_bridge) |bridge| {
+            try bridge.record_fn(bridge.context, record, self.editor_controls.?);
+            transferred = true;
+        }
+        return true;
     }
 
     pub fn setRendererBridge(self: *Runtime, bridge: ?RendererBridgeAdapter) !void {
@@ -1839,6 +1948,15 @@ pub const Runtime = struct {
             const ok_value = parsed.value.object.get("ok") orelse return error.InvalidJavaScriptExtensionResponse;
             if (ok_value != .bool) return error.InvalidJavaScriptExtensionResponse;
             if (!ok_value.bool) {
+                if (self.backend == .native and parsed.value.object.contains("actionQueue")) {
+                    // The error and admitted actions share one response record.
+                    // Queue them before returning the primary execution error;
+                    // the owner safe point drains them even after rejection.
+                    var batch = try actions_mod.Batch.parseNative(std.heap.page_allocator, "native", "failed_invocation", line);
+                    defer batch.deinit(std.heap.page_allocator);
+                    if (batch.items.len > 4096 -| self.renderer_actions.count()) return error.ExtensionRendererActionQueueLimit;
+                    try self.renderer_actions.enqueue(&batch);
+                }
                 if (parsed.value.object.get("error")) |message| if (message == .string) {
                     self.last_error = try self.gpa.dupe(u8, message.string);
                 };

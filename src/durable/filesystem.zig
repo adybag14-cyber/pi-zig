@@ -17,7 +17,7 @@ pub fn freeTextLines(gpa: std.mem.Allocator, lines: [][]u8) void {
     for (lines) |line| gpa.free(line);
     gpa.free(lines);
 }
-fn appendWindows(file: std.Io.File, bytes: []const u8) !void {
+pub fn appendWindows(file: std.Io.File, bytes: []const u8) !void {
     const windows = std.os.windows;
     var index: usize = 0;
     while (index < bytes.len) {
@@ -44,7 +44,7 @@ fn appendWindows(file: std.Io.File, bytes: []const u8) !void {
 
 /// POSIX opens must be nonblocking even for a FIFO that is rejected by fstat.
 /// std.Io.Dir.openFile does not expose O_NONBLOCK for this operation.
-fn openWindowsNoFollow(io: std.Io, gpa: std.mem.Allocator, path: []const u8) !std.Io.File {
+pub fn openWindowsNoFollow(io: std.Io, gpa: std.mem.Allocator, path: []const u8, access: u32) !std.Io.File {
     const windows = std.os.windows;
     const Native = struct {
         extern "kernel32" fn CreateFileW(path: [*:0]const u16, access: windows.DWORD, share: windows.DWORD, security: ?*const anyopaque, disposition: windows.DWORD, attributes: windows.DWORD, template: ?windows.HANDLE) callconv(.winapi) windows.HANDLE;
@@ -66,7 +66,7 @@ fn openWindowsNoFollow(io: std.Io, gpa: std.mem.Allocator, path: []const u8) !st
     // No FILE_FLAG_OVERLAPPED: the returned handle is synchronous. Opening
     // the reparse point and allowing directories preserves the subsequent
     // regular-file check without traversing a final symlink or junction.
-    const handle = Native.CreateFileW(wide.ptr, 0x80000000, 0x7, null, 3, 0x00200000 | 0x02000000, null);
+    const handle = Native.CreateFileW(wide.ptr, access, 0x7, null, 3, 0x00200000 | 0x02000000, null);
     if (handle == windows.INVALID_HANDLE_VALUE) return switch (windows.GetLastError()) {
         .FILE_NOT_FOUND, .PATH_NOT_FOUND => error.FileNotFound,
         .ACCESS_DENIED => error.AccessDenied,
@@ -78,7 +78,7 @@ fn openWindowsNoFollow(io: std.Io, gpa: std.mem.Allocator, path: []const u8) !st
     return .{ .handle = handle, .flags = .{ .nonblocking = false } };
 }
 pub fn openRegular(io: std.Io, gpa: std.mem.Allocator, path: []const u8, options: OpenBinaryOptions) !std.Io.File {
-    const file = if (builtin.os.tag == .windows and options.noFollow) try openWindowsNoFollow(io, gpa, path) else if (builtin.os.tag == .windows or builtin.os.tag == .wasi) try std.Io.Dir.cwd().openFile(io, path, .{ .follow_symlinks = !options.noFollow, .allow_directory = options.noFollow }) else posix: {
+    const file = if (builtin.os.tag == .windows and options.noFollow) try openWindowsNoFollow(io, gpa, path, 0x80000000) else if (builtin.os.tag == .windows or builtin.os.tag == .wasi) try std.Io.Dir.cwd().openFile(io, path, .{ .follow_symlinks = !options.noFollow, .allow_directory = options.noFollow }) else posix: {
         const terminated = try gpa.dupeZ(u8, path);
         defer gpa.free(terminated);
         var flags: std.posix.O = .{ .ACCMODE = .RDONLY, .NONBLOCK = true, .NOFOLLOW = options.noFollow };

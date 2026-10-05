@@ -269,6 +269,34 @@ pub fn build(b: *std.Build) void {
     const durable_tools_step = b.step("test-durable-tools", "Exercise bounded durable reader integration with existing native CLI tools");
     durable_tools_step.dependOn(&run_durable_tools_tests.step);
     test_step.dependOn(&run_durable_tools_tests.step);
+    const env_daemon = b.addExecutable(.{
+        .name = "pi-env",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/env_daemon.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkDurable(b, env_daemon.root_module);
+    const install_env_daemon = b.addInstallArtifact(env_daemon, .{});
+    const env_build_step = b.step("env", "Build the native framed Pi environment daemon");
+    env_build_step.dependOn(&install_env_daemon.step);
+    const env_fixture = b.addExecutable(.{
+        .name = "pi-env-process-fixture",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/env_process_fixture.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const install_env_fixture = b.addInstallArtifact(env_fixture, .{});
+    const env_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/env_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkDurable(b, env_tests.root_module);
+    const run_env_tests = b.addRunArtifact(env_tests);
+    run_env_tests.step.dependOn(&install_env_daemon.step);
+    run_env_tests.step.dependOn(&install_env_fixture.step);
+    run_env_tests.setEnvironmentVariable("PI_TEST_ENV_DAEMON", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env.exe" else "pi-env"));
+    run_env_tests.setEnvironmentVariable("PI_TEST_SSH_FIXTURE", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env-process-fixture.exe" else "pi-env-process-fixture"));
+    const env_test_step = b.step("test-env", "Check native daemon framing files processes client sessions and SSH contracts");
+    env_test_step.dependOn(&run_env_tests.step);
+    test_step.dependOn(&run_env_tests.step);
     const durable_backend_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_backend_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
@@ -329,16 +357,44 @@ pub fn build(b: *std.Build) void {
     const durable_powershell_step = b.step("test-durable-powershell", "Exercise real native PowerShell argv startup fallback preparation and retained output");
     durable_powershell_step.dependOn(&run_durable_powershell_tests.step);
     test_step.dependOn(&run_durable_powershell_tests.step);
+    const mcp_adapter_probe = b.addExecutable(.{
+        .name = "pi-mcp-adapter-probe",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_adapter_fixture.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkDurable(b, mcp_adapter_probe.root_module);
+    linkQuickJs(b, mcp_adapter_probe.root_module, quickjs);
+    const install_mcp_adapter_probe = b.addInstallArtifact(mcp_adapter_probe, .{});
+    const mcp_adapter_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_adapter_integration_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"mcp.adapter"},
+    });
+    linkDurable(b, mcp_adapter_tests.root_module);
+    linkQuickJs(b, mcp_adapter_tests.root_module, quickjs);
+    const run_mcp_adapter_tests = b.addRunArtifact(mcp_adapter_tests);
+    const install_mcp_adapter_cli = b.addInstallArtifact(exe, .{});
+    run_mcp_adapter_tests.step.dependOn(&install_mcp_adapter_cli.step);
+    run_mcp_adapter_tests.step.dependOn(&install_mcp_adapter_probe.step);
+    run_mcp_adapter_tests.setEnvironmentVariable("PI_MCP_ADAPTER_CLI", b.getInstallPath(.bin, b.fmt("pi{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    run_mcp_adapter_tests.setEnvironmentVariable("PI_MCP_ADAPTER_PROBE", b.getInstallPath(.bin, b.fmt("pi-mcp-adapter-probe{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    run_mcp_adapter_tests.setEnvironmentVariable("PI_MCP_ADAPTER_SERVER", b.getInstallPath(.bin, b.fmt("pi-mcp-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    const mcp_adapter_step = b.step("test-mcp-adapter", "Exercise native legacy-client ownership PATH lookup and real stdio HTTP CLI gates");
+    mcp_adapter_step.dependOn(&run_mcp_adapter_tests.step);
+    test_step.dependOn(&run_mcp_adapter_tests.step);
     const mcp_fixture = b.addExecutable(.{
         .name = "pi-mcp-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp/stdio_fixture.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     const install_mcp_fixture = b.addInstallArtifact(mcp_fixture, .{});
+    run_mcp_adapter_tests.step.dependOn(&install_mcp_fixture.step);
     const mcp_process_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp/stdio_process_test.zig"), .target = target, .optimize = optimize }),
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_adapter_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
+    linkDurable(b, mcp_process_tests.root_module);
+    linkQuickJs(b, mcp_process_tests.root_module, quickjs);
     const run_mcp_process_tests = b.addRunArtifact(mcp_process_tests);
     run_mcp_process_tests.step.dependOn(&install_mcp_fixture.step);
     const mcp_test_step = b.step("test-mcp-stdio", "Exercise real native MCP pipe framing and protocol negotiation");
@@ -361,6 +417,27 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_prompt_sections_tests.step);
     mcp_test_step.dependOn(&run_mcp_process_tests.step);
     test_step.dependOn(&run_mcp_process_tests.step);
+    const mcp_runtime_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_runtime_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"mcp.runtime"},
+    });
+    linkDurable(b, mcp_runtime_tests.root_module);
+    linkQuickJs(b, mcp_runtime_tests.root_module, quickjs);
+    const run_mcp_runtime_tests = b.addRunArtifact(mcp_runtime_tests);
+    const mcp_runtime_fixture = b.addExecutable(.{
+        .name = "pi-mcp-runtime-fixture",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_runtime_fixture.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const install_mcp_runtime_fixture = b.addInstallArtifact(mcp_runtime_fixture, .{});
+    run_mcp_adapter_tests.step.dependOn(&install_mcp_runtime_fixture.step);
+    run_mcp_adapter_tests.setEnvironmentVariable("PI_MCP_ADAPTER_ALLOC_SERVER", b.getInstallPath(.bin, b.fmt("pi-mcp-runtime-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    run_mcp_runtime_tests.step.dependOn(&install_mcp_runtime_fixture.step);
+    run_mcp_runtime_tests.setEnvironmentVariable("PI_MCP_RUNTIME_FIXTURE", b.getInstallPath(.bin, b.fmt("pi-mcp-runtime-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    const mcp_runtime_step = b.step("test-mcp-runtime", "Exercise native multiplex MCP request ownership pending-connect shutdown and transports");
+    mcp_runtime_step.dependOn(&run_mcp_runtime_tests.step);
+    test_step.dependOn(&run_mcp_runtime_tests.step);
     test_step.dependOn(&run_mod_tests.step);
     test_step.dependOn(&run_sqlite_tests.step);
     test_step.dependOn(&run_sqlite_cli_tests.step);
@@ -470,6 +547,28 @@ pub fn build(b: *std.Build) void {
     const encoding_test_step = b.step("test-extension-encoding", "Test native text encoding host APIs");
     encoding_test_step.dependOn(&run_encoding_tests.step);
     test_step.dependOn(&run_encoding_tests.step);
+    const editor_owner_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/editor_owner_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native editor"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, editor_owner_tests.root_module, quickjs);
+    linkTypeScriptParser(b, editor_owner_tests.root_module, typescript_parser);
+    const run_editor_owner_tests = b.addRunArtifact(editor_owner_tests);
+    const editor_owner_step = b.step("test-custom-editor", "Exercise native editor classes persistent factories and callback owner teardown");
+    editor_owner_step.dependOn(&run_editor_owner_tests.step);
+    test_step.dependOn(&run_editor_owner_tests.step);
+    const editor_frontend_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/editor_frontend_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"custom editor frontend"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, editor_frontend_tests.root_module, quickjs);
+    linkTypeScriptParser(b, editor_frontend_tests.root_module, typescript_parser);
+    const run_editor_frontend_tests = b.addRunArtifact(editor_frontend_tests);
+    const editor_frontend_step = b.step("test-custom-editor-components", "Exercise custom editor fullscreen frame/input/snapshot ownership and close fences");
+    editor_frontend_step.dependOn(&run_editor_frontend_tests.step);
+    test_step.dependOn(&run_editor_frontend_tests.step);
     const worker_process_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/native_worker_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
@@ -488,6 +587,15 @@ pub fn build(b: *std.Build) void {
     run_native_runtime_tests.step.dependOn(b.getInstallStep());
     const native_runtime_step = b.step("test-native-runtime", "Exercise the persistent native extension runtime and host without Node");
     native_runtime_step.dependOn(&run_native_runtime_tests.step);
+    const custom_editor_runtime_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_runtime_process_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native runtime custom editor"},
+        .use_llvm = use_llvm,
+    });
+    const run_custom_editor_runtime_tests = b.addRunArtifact(custom_editor_runtime_tests);
+    run_custom_editor_runtime_tests.step.dependOn(b.getInstallStep());
+    const custom_editor_runtime_step = b.step("test-custom-editor-runtime", "Exercise original upstream modal editor input through a real native worker");
+    custom_editor_runtime_step.dependOn(&run_custom_editor_runtime_tests.step);
     test_step.dependOn(&run_native_runtime_tests.step);
     for ([_]struct { name: []const u8, source: []const u8 }{
         .{ .name = "test-provider-method-protocol", .source = "src/provider_method_protocol_test.zig" },
@@ -635,8 +743,20 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_frontend_process_test.zig"), .target = target, .optimize = optimize }),
     });
     const run_fullscreen_frontend_tests = b.addRunArtifact(fullscreen_frontend_tests);
+    const custom_editor_frontend_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_frontend_process_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"real custom editor"},
+        .use_llvm = use_llvm,
+    });
+    const run_custom_editor_frontend_tests = b.addRunArtifact(custom_editor_frontend_tests);
+    run_custom_editor_frontend_tests.step.dependOn(b.getInstallStep());
+    const custom_editor_frontend_step = b.step("test-custom-editor-frontend", "Exercise custom editor input submit reload and terminal ownership in real PTY cells");
+    custom_editor_frontend_step.dependOn(&run_custom_editor_frontend_tests.step);
     run_fullscreen_frontend_tests.step.dependOn(b.getInstallStep());
-    if (target.result.os.tag == .macos) fullscreen_frontend_tests.root_module.link_libc = true;
+    if (target.result.os.tag == .macos) {
+        fullscreen_frontend_tests.root_module.link_libc = true;
+        custom_editor_frontend_tests.root_module.link_libc = true;
+    }
     if (target.result.os.tag == .windows) {
         for ([_]struct { name: []const u8, source: []const u8, environment: []const u8 }{
             .{ .name = "pi-conpty-launcher", .source = "src/test_support/conpty_launcher.zig", .environment = "PI_TEST_CONPTY_LAUNCHER" },
@@ -649,7 +769,9 @@ pub fn build(b: *std.Build) void {
             });
             const installation = b.addInstallArtifact(program, .{});
             run_fullscreen_frontend_tests.step.dependOn(&installation.step);
+            run_custom_editor_frontend_tests.step.dependOn(&installation.step);
             run_fullscreen_frontend_tests.setEnvironmentVariable(helper.environment, b.getInstallPath(.bin, b.fmt("{s}.exe", .{helper.name})));
+            run_custom_editor_frontend_tests.setEnvironmentVariable(helper.environment, b.getInstallPath(.bin, b.fmt("{s}.exe", .{helper.name})));
         }
     }
     const fullscreen_frontend_step = b.step("test-fullscreen-frontend-process", "Exercise persistent fullscreen CLI behavior through real native PTY terminal cells");

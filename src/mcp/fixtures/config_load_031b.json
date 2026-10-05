@@ -1,0 +1,108 @@
+{
+  "upstream": "031b24aa6425067253cb94095fb806a9df9d619c",
+  "node": "v24.14.0",
+  "global": {
+    "autoEnableCodemode": false,
+    "mcpServers": {
+      "server-a": {
+        "url": "https://example.test/mcp",
+        "auth": {
+          "provider": "p"
+        },
+        "exposure": "direct"
+      },
+      "keep": {
+        "command": "echo"
+      },
+      "server_a": {
+        "command": "bad"
+      }
+    }
+  },
+  "project": {
+    "autoEnableCodemode": true,
+    "mcpServers": {
+      "server-a": {
+        "enabled": false,
+        "exposure": "codemode-deferred"
+      },
+      "keep": {
+        "command": "other"
+      },
+      "extra": {
+        "url": "http://localhost/mcp",
+        "auth": {
+          "provider": "p"
+        }
+      },
+      "missing": {
+        "enabled": false
+      },
+      "bad": {
+        "timeout": 3
+      }
+    }
+  },
+  "trusted": {
+    "servers": [
+      {
+        "name": "server-a",
+        "config": {
+          "url": "https://example.test/mcp",
+          "auth": {
+            "provider": "p"
+          },
+          "exposure": "codemode",
+          "enabled": false
+        },
+        "source": "GLOBAL\\mcp.json",
+        "scope": "global",
+        "override": "PROJECT\\.pi\\mcp.json"
+      },
+      {
+        "name": "keep",
+        "config": {
+          "command": "other"
+        },
+        "source": "PROJECT\\.pi\\mcp.json",
+        "scope": "project"
+      }
+    ],
+    "autoEnableCodemode": true,
+    "errors": [
+      "GLOBAL\\mcp.json: server \"server_a\" conflicts with \"server-a\"",
+      "PROJECT\\.pi\\mcp.json: server \"extra\": auth is only allowed in the global mcp.json",
+      "PROJECT\\.pi\\mcp.json: server \"missing\" needs \"command\" or \"url\", or a global server to override",
+      "PROJECT\\.pi\\mcp.json: server \"bad\" needs \"command\" or \"url\", or a global server to override"
+    ],
+    "projectConfig": "PROJECT\\.pi\\mcp.json"
+  },
+  "untrusted": {
+    "servers": [
+      {
+        "name": "server-a",
+        "config": {
+          "url": "https://example.test/mcp",
+          "auth": {
+            "provider": "p"
+          },
+          "exposure": "direct"
+        },
+        "source": "GLOBAL\\mcp.json",
+        "scope": "global"
+      },
+      {
+        "name": "keep",
+        "config": {
+          "command": "echo"
+        },
+        "source": "GLOBAL\\mcp.json",
+        "scope": "global"
+      }
+    ],
+    "autoEnableCodemode": false,
+    "errors": [
+      "GLOBAL\\mcp.json: server \"server_a\" conflicts with \"server-a\""
+    ]
+  }
+}

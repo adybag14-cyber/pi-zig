@@ -3,6 +3,7 @@
 const std = @import("std");
 const Io = std.Io;
 const framing = @import("framing.zig");
+const Adapter = @import("client_adapter.zig").Adapter;
 pub const latest_protocol_version = "2025-11-25";
 pub const supported_protocol_versions = [_][]const u8{ latest_protocol_version, "2025-06-18", "2025-03-26", "2024-11-05" };
 
@@ -24,7 +25,9 @@ pub const McpClient = struct {
     io: Io,
     next_id: u64 = 1,
     /// Running MCP server process (optional).
-    child: ?std.process.Child = null,
+    child: ?*std.process.Child = null,
+    adapter: ?*Adapter = null,
+    environ: ?*const std.process.Environ.Map = null,
     tools: std.ArrayList(McpTool) = .empty,
     /// Offline test inject: last written line (owned).
     last_write: []u8 = &.{},
@@ -43,30 +46,45 @@ pub const McpClient = struct {
         if (self.last_write.len > 0) self.gpa.free(self.last_write);
         self.input.deinit(self.gpa);
         if (self.protocol_version) |version| self.gpa.free(version);
-        if (self.child) |*c| {
-            c.kill(self.io);
-        }
+        if (self.adapter) |adapter| adapter.deinit();
         self.* = undefined;
     }
 
-    /// Spawn MCP server: command is argv for the server process.
+    /// Spawn MCP server with inherited environment unless an explicit map is supplied.
     pub fn connect(self: *McpClient, argv: []const []const u8) !void {
-        if (self.child != null) return error.AlreadyConnected;
+        if (self.adapter != null) return error.AlreadyConnected;
+        const adapter = try Adapter.openStdio(self.gpa, self.io, argv, self.environ, self.request_timeout_ms);
+        errdefer adapter.deinit();
+        try self.adopt(adapter);
+    }
+    /// Explicit Streamable HTTP transport; argv strings are never guessed as URLs.
+    pub fn connectHttp(self: *McpClient, url: []const u8) !void {
+        if (self.adapter != null) return error.AlreadyConnected;
+        const adapter = try Adapter.openHttp(self.gpa, self.io, url, self.request_timeout_ms);
+        errdefer adapter.deinit();
+        try self.adopt(adapter);
+    }
+    fn adopt(self: *McpClient, adapter: *Adapter) !void {
+        const version = try self.gpa.dupe(u8, adapter.protocolVersion());
+        if (self.protocol_version) |old| self.gpa.free(old);
+        self.protocol_version = version;
         self.input.bytes.clearRetainingCapacity();
-        if (self.protocol_version) |version| self.gpa.free(version);
-        self.protocol_version = null;
-        self.next_id = 1;
-        self.child = try std.process.spawn(self.io, .{
-            .argv = argv,
-            .stdin = .pipe,
-            .stdout = .pipe,
-            .stderr = .ignore,
-        });
-        errdefer {
-            if (self.child) |*child| child.kill(self.io);
-            self.child = null;
+        self.next_id = 2;
+        self.adapter = adapter;
+        self.child = adapter.childPointer();
+        self.refreshCounters();
+    }
+    fn refreshCounters(self: *McpClient) void {
+        if (self.adapter) |adapter| {
+            self.notification_count = adapter.notifications.load(.acquire);
+            self.unknown_response_count = adapter.client.?.unknown_responses.load(.acquire);
         }
-        try self.initialize();
+    }
+    pub fn close(self: *McpClient) void {
+        self.refreshCounters();
+        if (self.adapter) |adapter| adapter.deinit();
+        self.adapter = null;
+        self.child = null;
     }
 
     fn initialize(self: *McpClient) !void {
@@ -116,13 +134,13 @@ pub const McpClient = struct {
             const id = self.next_id;
             self.next_id += 1;
             var request: std.Io.Writer.Allocating = .init(allocator);
-            try request.writer.print("{{\"jsonrpc\":\"2.0\",\"id\":{d},\"method\":\"tools/list\"", .{id});
+            request.writer.print("{{\"jsonrpc\":\"2.0\",\"id\":{d},\"method\":\"tools/list\"", .{id}) catch return error.OutOfMemory;
             if (cursor) |value| {
-                try request.writer.writeAll(",\"params\":{\"cursor\":");
-                try std.json.Stringify.value(value, .{}, &request.writer);
-                try request.writer.writeByte('}');
+                request.writer.writeAll(",\"params\":{\"cursor\":") catch return error.OutOfMemory;
+                std.json.Stringify.value(value, .{}, &request.writer) catch return error.OutOfMemory;
+                request.writer.writeByte('}') catch return error.OutOfMemory;
             }
-            try request.writer.writeByte('}');
+            request.writer.writeByte('}') catch return error.OutOfMemory;
             const line = try self.exchange(request.written(), id);
             defer self.gpa.free(line);
             try staged.parseToolsList(line);
@@ -153,7 +171,7 @@ pub const McpClient = struct {
         self.next_id += 1;
         var name_q: std.Io.Writer.Allocating = .init(self.gpa);
         defer name_q.deinit();
-        try std.json.Stringify.value(name, .{}, &name_q.writer);
+        std.json.Stringify.value(name, .{}, &name_q.writer) catch return error.OutOfMemory;
         const req = try std.fmt.allocPrint(self.gpa,
             \\{{"jsonrpc":"2.0","id":{d},"method":"tools/call","params":{{"name":{s},"arguments":{s}}}}}
         , .{
@@ -182,9 +200,9 @@ pub const McpClient = struct {
             var schema_aw: std.Io.Writer.Allocating = .init(self.gpa);
             defer schema_aw.deinit();
             if (item.object.get("inputSchema")) |s| {
-                try std.json.Stringify.value(s, .{}, &schema_aw.writer);
+                std.json.Stringify.value(s, .{}, &schema_aw.writer) catch return error.OutOfMemory;
             } else {
-                try schema_aw.writer.writeAll("{}");
+                schema_aw.writer.writeAll("{}") catch return error.OutOfMemory;
             }
             const owned_name = try self.gpa.dupe(u8, name);
             errdefer self.gpa.free(owned_name);
@@ -197,62 +215,22 @@ pub const McpClient = struct {
     }
 
     fn writeLine(self: *McpClient, line: []const u8) !void {
+        const owned = try self.gpa.dupe(u8, line);
         if (self.last_write.len > 0) self.gpa.free(self.last_write);
-        self.last_write = try self.gpa.dupe(u8, line);
-
-        const c = &(self.child orelse return); // offline path records only
-        const stdin_file = c.stdin orelse return error.NotConnected;
-        var wbuf: [256]u8 = undefined;
-        var w = stdin_file.writerStreaming(self.io, &wbuf);
-        try w.interface.writeAll(line);
-        try w.interface.writeAll("\n");
-        try w.interface.flush();
-    }
-
-    fn exchangeBlocking(self: *McpClient, request: []const u8, expected_id: u64) anyerror![]u8 {
-        try self.writeLine(request);
-        return self.readResponse(expected_id);
-    }
-
-    fn deadline(io: Io, milliseconds: u32) Io.Cancelable!void {
-        try io.sleep(.fromMilliseconds(milliseconds), .awake);
+        self.last_write = owned;
     }
 
     fn exchange(self: *McpClient, request: []const u8, expected_id: u64) ![]u8 {
-        if (self.child == null) return self.exchangeBlocking(request, expected_id);
-        const Outcome = union(enum) { response: anyerror![]u8, deadline: Io.Cancelable!void };
-        var outcomes: [2]Outcome = undefined;
-        var select = Io.Select(Outcome).init(self.io, &outcomes);
-        // Drain raced successful reads, rather than discarding owned allocations.
-        defer while (select.cancel()) |remaining| switch (remaining) {
-            .response => |result| if (result) |bytes| self.gpa.free(bytes) else |_| {},
-            .deadline => {},
-        };
-        try select.concurrent(.response, exchangeBlocking, .{ self, request, expected_id });
-        try select.concurrent(.deadline, deadline, .{ self.io, self.request_timeout_ms });
-        const completed = select.await() catch |err| {
-            // Join outstanding I/O before releasing any process handles it uses.
-            while (select.cancel()) |remaining| switch (remaining) {
-                .response => |result| if (result) |bytes| self.gpa.free(bytes) else |_| {},
-                .deadline => {},
+        if (self.adapter) |adapter| {
+            defer self.refreshCounters();
+            return adapter.exchange(request, expected_id, self.request_timeout_ms) catch |cause| {
+                // Legacy sequential client treated a deadline as a terminal connection.
+                if (cause == error.McpTimeout) self.close();
+                return cause;
             };
-            if (self.child) |*child| child.kill(self.io);
-            self.child = null;
-            return err;
-        };
-        switch (completed) {
-            .response => |result| return result,
-            .deadline => |result| {
-                try result;
-                while (select.cancel()) |remaining| switch (remaining) {
-                    .response => |response| if (response) |bytes| self.gpa.free(bytes) else |_| {},
-                    .deadline => {},
-                };
-                if (self.child) |*child| child.kill(self.io);
-                self.child = null;
-                return error.McpTimeout;
-            },
         }
+        try self.writeLine(request);
+        return self.readResponse(expected_id);
     }
 
     fn readResponse(self: *McpClient, expected_id: u64) ![]u8 {
@@ -317,28 +295,8 @@ pub const McpClient = struct {
             self.inject_idx += 1;
             return try self.gpa.dupe(u8, line);
         }
-        while (true) {
-            if (try self.input.next(self.gpa)) |line| {
-                if (std.mem.trim(u8, line, " \t\r").len > 0) return line;
-                self.gpa.free(line);
-                continue;
-            }
-            const child = self.child orelse {
-                try self.input.finish();
-                return error.McpConnectionClosed;
-            };
-            const stdout_file = child.stdout orelse return error.NotConnected;
-            var buffer: [4096]u8 = undefined;
-            const size = stdout_file.readStreaming(self.io, &.{&buffer}) catch |err| switch (err) {
-                error.EndOfStream => {
-                    try self.input.finish();
-                    return error.McpConnectionClosed;
-                },
-                error.Canceled => return error.Canceled,
-                else => return error.ReadFailed,
-            };
-            try self.input.append(self.gpa, buffer[0..size]);
-        }
+        try self.input.finish();
+        return error.McpConnectionClosed;
     }
 };
 

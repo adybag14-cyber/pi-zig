@@ -55,7 +55,7 @@ pub const Group = struct {
         if (self.entries.items.len >= 4096 or self.next_id >= 9_007_199_254_740_991) return error.NativeGroupExtensionLimit;
         const source = try self.engine.gpa.dupe(u8, path);
         errdefer self.engine.gpa.free(source);
-        const binding = try bindings_mod.Bindings.initShared(self.engine.gpa, self.engine, .{ .ui = self.ui, .renderers = self.renderers, .broker = &self.broker, .owner_id = self.next_id, .tool_lookup = lookupTool, .tool_context = self });
+        const binding = try bindings_mod.Bindings.initShared(self.engine.gpa, self.engine, .{ .ui = self.ui, .renderers = self.renderers, .broker = &self.broker, .owner_id = self.next_id, .tool_lookup = lookupTool, .tool_context = self, .catalog_fn = catalog });
         errdefer binding.deinit();
         try binding.setSourcePath(path);
         try self.entries.append(self.engine.gpa, .{ .id = self.next_id, .source = source, .binding = binding });
@@ -85,6 +85,86 @@ pub const Group = struct {
     fn lookupTool(context: ?*anyopaque, name: []const u8) ?c.JSValue {
         const self: *Group = @ptrCast(@alignCast(context.?));
         return self.tool(name);
+    }
+
+    const CatalogCommand = struct { owner: *bindings_mod.Bindings, name: []const u8, value: c.JSValue };
+    fn catalog(context: ?*anyopaque, caller: *bindings_mod.Bindings, kind: bindings_mod.Bindings.CatalogKind) !c.JSValue {
+        const self: *Group = @ptrCast(@alignCast(context.?));
+        var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        var values: std.json.Array = .init(allocator);
+        const snapshot = try caller.catalogSnapshot(allocator, kind);
+        if (snapshot != .array) return error.InvalidNativeCatalogSnapshot;
+        // Agent snapshots can contain older extension projections. The group
+        // owns current extension entries; retain external prompt/skill/builtins.
+        for (snapshot.array.items) |item| {
+            if (item != .object) return error.InvalidNativeCatalogSnapshot;
+            if (item.object.get("source")) |source| if (source == .string and std.mem.eql(u8, source.string, "extension")) continue;
+            try values.append(item);
+        }
+        var registrations: std.ArrayList(CatalogCommand) = .empty;
+        defer {
+            for (registrations.items) |item| self.engine.freeValue(item.value);
+            registrations.deinit(allocator);
+        }
+        for (self.entries.items) |entry| {
+            const order = if (kind == .tools) entry.binding.tool_order.items else entry.binding.command_order.items;
+            const table = if (kind == .tools) &entry.binding.tools else &entry.binding.commands;
+            for (order) |name| if (table.get(name)) |value| {
+                const copied_name = try allocator.dupe(u8, name);
+                const retained = c.JS_DupValue(self.engine.context, value);
+                registrations.append(allocator, .{ .owner = entry.binding, .name = copied_name, .value = retained }) catch |err| {
+                    self.engine.freeValue(retained);
+                    return err;
+                };
+            };
+        }
+        if (kind == .tools) {
+            var seen: std.StringHashMapUnmanaged(void) = .empty;
+            for (registrations.items) |entry| {
+                if (seen.contains(entry.name)) continue;
+                try seen.put(allocator, entry.name, {});
+                const projected = try entry.owner.catalogEntry(allocator, kind, entry.name, entry.value);
+                var replaced = false;
+                for (values.items) |*item| {
+                    const existing = item.object.get("name") orelse continue;
+                    if (existing == .string and std.mem.eql(u8, existing.string, entry.name)) {
+                        item.* = projected;
+                        replaced = true;
+                        break;
+                    }
+                }
+                if (!replaced) try values.append(projected);
+            }
+        } else {
+            var counts: std.StringHashMapUnmanaged(usize) = .empty;
+            var seen: std.StringHashMapUnmanaged(usize) = .empty;
+            var taken: std.StringHashMapUnmanaged(void) = .empty;
+            for (registrations.items) |entry| {
+                const count = try counts.getOrPut(allocator, entry.name);
+                if (!count.found_existing) count.value_ptr.* = 0;
+                count.value_ptr.* += 1;
+            }
+            var commands: std.json.Array = .init(allocator);
+            for (registrations.items) |entry| {
+                const occurrence = try seen.getOrPut(allocator, entry.name);
+                if (!occurrence.found_existing) occurrence.value_ptr.* = 0;
+                occurrence.value_ptr.* += 1;
+                var suffix = occurrence.value_ptr.*;
+                var invocation = if (counts.get(entry.name).? > 1) try std.fmt.allocPrint(allocator, "{s}:{d}", .{ entry.name, suffix }) else entry.name;
+                while (taken.contains(invocation)) {
+                    suffix += 1;
+                    invocation = try std.fmt.allocPrint(allocator, "{s}:{d}", .{ entry.name, suffix });
+                }
+                try taken.put(allocator, invocation, {});
+                const projected = try entry.owner.catalogEntry(allocator, kind, invocation, entry.value);
+                try commands.append(projected);
+            }
+            try commands.appendSlice(values.items);
+            values = commands;
+        }
+        return self.engine.fromJsonValue(.{ .array = values });
     }
 
     pub fn manifest(self: *Group) ![]u8 {
@@ -179,6 +259,44 @@ test "native group API reads use active session while flags keep their registrat
     const raw = try second.invokeCommand("read", "");
     defer std.testing.allocator.free(raw);
     try std.testing.expect(std.mem.indexOf(u8, raw, "active:changed:first") != null);
+}
+
+test "native group catalogs match upstream ordered first tool and collision command aliases replacement unload snapshots" {
+    const gpa = std.testing.allocator;
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const group = try Group.init(engine);
+    defer group.deinit();
+    const first = try group.add("first-catalog.mjs");
+    try first.loadFactory("export default pi=>{globalThis.catalogFirst=pi;pi.registerTool({name:'read',description:'first',parameters:{type:'object'},execute(){return {}}});pi.registerCommand('same:1',{handler(){return {}}});pi.registerCommand('same',{handler(){return {}}});pi.registerCommand('inspect',{handler(){const tools=pi.getAllTools(),commands=pi.getCommands();return {tools:tools.map(t=>t.name+':'+t.description),commands:commands.map(c=>c.name)}}})}", "first-catalog.mjs");
+    const second = try group.add("second-catalog.mjs");
+    try second.loadFactory("export default pi=>{pi.registerTool({name:'read',description:'second',parameters:{type:'object'},execute(){return {}}});pi.registerTool({name:'added',description:'added',parameters:{type:'object'},execute(){return {}}});pi.registerCommand('same',{handler(){return {}}});pi.registerCommand('inspect-second',{handler(){return {tools:pi.getAllTools().map(t=>t.name+':'+t.description),commands:pi.getCommands().map(c=>c.name)}}});pi.registerCommand('replace',{handler(){catalogFirst.registerTool({name:'read',description:'first replacement',parameters:{type:'object'},execute(){return {}}});return {}}})}", "second-catalog.mjs");
+    const context = "{\"allTools\":[{\"name\":\"read\",\"description\":\"builtin\",\"source\":\"builtin\"},{\"name\":\"write\",\"description\":\"builtin\",\"source\":\"builtin\"}],\"commands\":[{\"name\":\"prompt\",\"source\":\"prompt\"},{\"name\":\"obsolete\",\"source\":\"extension\"}]}";
+    try first.setContext(context);
+    try second.setContext(context);
+    const original = try first.invokeCommand("inspect", "");
+    defer gpa.free(original);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, original, .{});
+    defer parsed.deinit();
+    const tools = parsed.value.object.get("tools").?.array.items;
+    try std.testing.expectEqual(@as(usize, 3), tools.len);
+    try std.testing.expectEqualStrings("read:first", tools[0].string);
+    try std.testing.expectEqualStrings("write:builtin", tools[1].string);
+    try std.testing.expectEqualStrings("added:added", tools[2].string);
+    const commands = parsed.value.object.get("commands").?.array.items;
+    try std.testing.expectEqual(@as(usize, 7), commands.len);
+    for ([_][]const u8{ "same:1", "same:2", "inspect", "same:3", "inspect-second", "replace", "prompt" }, commands) |expected, actual| try std.testing.expectEqualStrings(expected, actual.string);
+    const replaced = try second.invokeCommand("replace", "");
+    defer gpa.free(replaced);
+    const inspected = try second.invokeCommand("inspect-second", "");
+    defer gpa.free(inspected);
+    try std.testing.expect(std.mem.indexOf(u8, inspected, "read:first replacement") != null);
+    group.remove(1);
+    c.JS_RunGC(engine.runtime);
+    const unloaded = try second.invokeCommand("inspect-second", "");
+    defer gpa.free(unloaded);
+    try std.testing.expect(std.mem.indexOf(u8, unloaded, "read:second") != null and std.mem.indexOf(u8, unloaded, "\"same\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, unloaded, "same:3") == null and std.mem.indexOf(u8, unloaded, "obsolete") == null);
 }
 
 test "native group owner replays dirty call and final result with actual retained state components and resize fences" {

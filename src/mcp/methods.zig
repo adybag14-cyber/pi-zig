@@ -8,6 +8,10 @@ pub const known = [_][]const u8{
     "tools/call",
     "resources/list",
     "resources/read",
+    "resources/templates/list",
+    "resources/subscribe",
+    "resources/unsubscribe",
+    "roots/list",
     "prompts/list",
     "prompts/get",
     "logging/setLevel",
@@ -15,6 +19,11 @@ pub const known = [_][]const u8{
     "notifications/initialized",
     "notifications/cancelled",
     "notifications/progress",
+    "notifications/message",
+    "notifications/tools/list_changed",
+    "notifications/resources/list_changed",
+    "notifications/resources/updated",
+    "notifications/prompts/list_changed",
 };
 
 pub fn isKnown(method: []const u8) bool {

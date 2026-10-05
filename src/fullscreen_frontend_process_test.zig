@@ -84,6 +84,18 @@ const Fixture = struct {
             .stderr = .{ .file = errors },
         }, 90_000);
     }
+    fn spawnEditor(self: *Fixture, errors: Io.File, source: []const u8) !pty.Session {
+        try self.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "editor.ts", .data = source });
+        const path = try std.fs.path.join(std.testing.allocator, &.{ self.scratch.path, "editor.ts" });
+        defer std.testing.allocator.free(path);
+        try self.environment.put("PI_EXTENSION_BACKEND", "native");
+        return pty.spawn(std.testing.allocator, std.testing.io, .{
+            .argv = &.{ self.binary, "--offline", "--mock-script", self.mock, "--session", self.history, "--no-context-files", "--no-skills", "--no-prompt-templates", "--no-themes", "--no-tools", "--approve", "-e", path },
+            .cwd = .{ .path = self.scratch.path },
+            .environ_map = &self.environment,
+            .stderr = .{ .file = errors },
+        }, 90_000);
+    }
     fn spawnRenderer(self: *Fixture, errors: Io.File, source: []const u8) !pty.Session {
         try self.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "renderer.mjs", .data = source });
         try self.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"\",\"tool_calls\":[{\"id\":\"live-tool\",\"name\":\"animated\",\"arguments\":\"{\\\"value\\\":\\\"seed\\\"}\"}]},{\"content\":\"turn-complete\"},{\"content\":\"after-reload\"}]" });
@@ -108,6 +120,88 @@ const renderer_extension =
     \\ });
     \\}
 ;
+
+test "real custom editor original modal input replaces editor row changes submits resizes reloads and restores terminal" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnEditor(errors, @import("test_support/upstream_modal_editor_031b.zig").source);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "INSERT", 0);
+    try observed.send(&child, "modal Ω🦊", "> modal Ω🦊");
+    try observed.send(&child, "\x1b", "NORMAL");
+    try observed.send(&child, "hiX", "> modal ΩX🦊");
+    try std.testing.expect(try observed.screen.contains("INSERT"));
+    try observed.send(&child, "\r", "stream-first");
+    try observed.wait(&child, "stream-final", 0);
+    try observed.send(&child, "retained-draft", "> retained-draft");
+    const before_resize = observed.screen.frames;
+    try observed.screen.resize(70, 22);
+    try child.resize(70, 22);
+    try observed.wait(&child, "INSERT", before_resize);
+    try std.testing.expect(try observed.screen.contains("> retained-draft"));
+    try observed.send(&child, "\x15/reload\r", "Reloaded:");
+    try observed.wait(&child, "INSERT", 0);
+    try observed.send(&child, "after-reload-draft", "> after-reload-draft");
+    try cleanExit(&fixture, &child, &observed);
+}
+
+const owned_editor_extension =
+    \\import {CustomEditor} from 'pi-coding-agent';import {matchesKey} from 'pi-tui';
+    \\let disposed=0;
+    \\export default pi=>{
+    \\ pi.on('session_start',(_,ctx)=>{
+    \\  class OwnedEditor extends CustomEditor {
+    \\   dispose(){disposed++}
+    \\   handleInput(data){
+    \\    this.lastKey=JSON.stringify(data);
+    \\    if(matchesKey(data,'ctrl+r')){ctx.ui.setEditorComponent(undefined);return}
+    \\    if(matchesKey(data,'ctrl+g')){this.tui.setFocus(null);setTimeout(()=>this.tui.setFocus(this),1200);return}
+    \\    super.handleInput(data);
+    \\   }
+    \\   render(width){return ['OWNED_WIDTH:'+width+' FOCUS:'+this.focused+' KEY:'+this.lastKey,...super.render(width)]}
+    \\  }
+    \\  ctx.ui.setEditorComponent((tui,theme,kb)=>new OwnedEditor(tui,theme,kb));
+    \\ });
+    \\ pi.registerCommand('editor-dialog',{async handler(_,ctx){const accepted=await ctx.ui.confirm('EDITOR_MODAL','Resume owned editor?');ctx.ui.setEditorText(accepted?'modal-restored':'modal-rejected');return {}}});
+    \\ pi.registerCommand('editor-inspect',{handler(_,ctx){ctx.ui.notify('EDITOR_DISPOSED:'+disposed);return {}}});
+    \\}
+;
+test "real custom editor focus modal handoff retained draft default restoration and owner disposal" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnEditor(errors, owned_editor_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "OWNED_WIDTH:100 FOCUS:true", 0);
+    try observed.send(&child, "focus-draft Ω", "> focus-draft Ω");
+    try observed.send(&child, "\x07", "FOCUS:false");
+    const before_focus = observed.screen.frames;
+    try child.send("LOST");
+    try observed.wait(&child, "FOCUS:true", before_focus);
+    if (!try observed.screen.contains("> focus-draft Ω")) return error.CustomEditorFocusDraftLost;
+    if (try observed.screen.contains("LOST")) return error.CustomEditorUnfocusedInputDelivered;
+    try child.send("\x15/editor-dialog\r");
+    try observed.waitAny(&child, "EDITOR_MODAL");
+    try child.send("y\r");
+    try observed.wait(&child, "> modal-restored", 0);
+    if (!try observed.screen.contains("OWNED_WIDTH:100 FOCUS:true")) return error.CustomEditorModalFocusNotRestored;
+    const before_restore = observed.screen.frames;
+    try child.send("\x12");
+    try observed.waitAbsent(&child, "OWNED_WIDTH:", before_restore);
+    try observed.waitAny(&child, "> modal-restored");
+    if (try observed.screen.contains("OWNED_WIDTH:")) return error.CustomEditorDefaultNotRestored;
+    try observed.send(&child, "\x15/editor-inspect\r", "EDITOR_DISPOSED:1");
+    try cleanExit(&fixture, &child, &observed);
+}
 
 test "real native renderer mailbox updates idle durable tool slots resizes and preserves editor and scroll anchor" {
     if (!pty.supported()) return error.SkipZigTest;
@@ -164,9 +258,10 @@ test "real native renderer idle original error keeps canonical result draft and 
     defer observed.deinit();
     try observed.wait(&child, "history-row-059", 0);
     try observed.send(&child, "render-error\r", "ERROR_RESULT:100");
+    const initial_result_frame = observed.screen.frames;
     try observed.wait(&child, "turn-complete", 0);
     try observed.send(&child, "error-draft", "> error-draft");
-    try observed.wait(&child, "renderer-original-diagnostic", observed.screen.frames);
+    try observed.wait(&child, "renderer-original-diagnostic", initial_result_frame);
     try std.testing.expect(try observed.screen.contains("done:seed"));
     try std.testing.expect(try observed.screen.contains("> error-draft"));
     try observed.send(&child, "\x15next\r", "after-reload");
@@ -478,6 +573,9 @@ const Observer = struct {
             if (try child.exited()) break;
             try child.io.sleep(.fromMilliseconds(10), .awake);
         }
+        const remaining_cells = try self.screen.textAlloc(std.testing.allocator);
+        defer std.testing.allocator.free(remaining_cells);
+        std.debug.print("Terminal cells still contain {s}:\n{s}\n", .{ marker, remaining_cells });
         return error.NativeOverlayDidNotDisappear;
     }
     fn waitAny(self: *Observer, child: *pty.Session, marker: []const u8) !void {

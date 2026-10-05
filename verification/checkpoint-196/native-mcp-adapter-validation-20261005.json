@@ -1,0 +1,93 @@
+{
+  "created_utc": "2026-10-05T21:47:19.8935463+00:00",
+  "state": "immutable coherent adapter increment; all final jobs terminal passed",
+  "worktree": "C:\\Users\\adyba\\pi-zig-mcp-adapter-20261005",
+  "authority": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+  "toolchain": "final Zig 0.16.0",
+  "source_manifest": "mcp-adapter-frozen-source-20261005.json",
+  "source_manifest_sha256": "c974d786824c7c8120ba302ad766b8611926907f25e497ea41fbed30550d45ea",
+  "integration_patch": "mcp-adapter-additive-lf-20261005.patch",
+  "integration_patch_sha256": "a7dca40a384b6f16b55be0029bca37bd2e17cffba514180a0ce15f83aa08d838",
+  "counts_each_windows_linux_debug_releasesafe": {
+    "steps": 24,
+    "passed": 64,
+    "total": 64,
+    "adapter": 7,
+    "stdio_and_imported_modules": 33,
+    "native_runtime": 15,
+    "oauth_structural": 9
+  },
+  "original_stdio_data": "src/mcp/fixtures/adapter_stdio_28dc.json",
+  "original_stdio_data_sha256": "45fe42c670a23d7f53d9c83927e0e3d11e3f0d61613f1a00ac48f701571f1cfd",
+  "macos": "ARM64 semantic compile passed; runtime not validated",
+  "linux_stage": "/tmp/pi-mcp-adapter-20261005.O4pu6E",
+  "linux_source_proof": "mcp-adapter-linux-source-proof.json",
+  "linux_source_proof_sha256": "ff7f1a84f2366c9dbbd38342e2fb557945a0a2350862d39e91ceddf0947ecc7c",
+  "native_runtime_original21": "hash verified unchanged",
+  "new_files": [
+    "src/mcp/client_adapter.zig",
+    "src/mcp_adapter_test.zig",
+    "src/mcp_adapter_fixture.zig",
+    "src/mcp_adapter_integration_test.zig",
+    "src/mcp/fixtures/adapter_stdio_28dc.json",
+    "src/mcp/NATIVE_ADAPTER_CONTRACT.md"
+  ],
+  "patch_files": [
+    "build.zig",
+    "src/mcp/client.zig",
+    "src/main.zig"
+  ],
+  "limits": "Sequential legacy facade. HTTP utility POST only; no standalone GET subscription. Full pending-connect shutdown and multiplex are native Session/Connection APIs. No configured-agent MCP exposure, codemode, OAuth, dynamic headers, or Windows cmd shim emulation. Node oracle terminal passed too quickly to capture launch identity; no PID termination performed. Prior asynchronous notification OOM sweep and Writer WriteFailed were retained as failed developmental receipts; final quiet essential-operation sweep covers actual initialize/list/call and passes.",
+  "jobs": [
+    {
+      "name": "mcp-adapter-final-windows-debug",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T22:40:53.7779454+01:00",
+      "identity_captured": true,
+      "receipt_sha256": "ad429b06794c24a18166cf32240f5802511d14865fa3021e7cee9b4550e10a74",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "a9adf0d070d3bcf92a6d3944475817bb29ed4702f8f3c3e5ddf42c40a7f5ef39"
+    },
+    {
+      "name": "mcp-adapter-final-windows-releasesafe",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T22:46:25.5445667+01:00",
+      "identity_captured": true,
+      "receipt_sha256": "da59a6ef2d822bbade9b357ee969763a6f3ad12cee6419c4492fcfe8e403b972",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "c562dae57d4a7226a1ba4ad124c36ad3f1cd1c6cb05aa9be488c2f2f4bd812e4"
+    },
+    {
+      "name": "mcp-adapter-final-linux-both-b",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T22:46:15.9722754+01:00",
+      "identity_captured": true,
+      "receipt_sha256": "10c530c11d3ceb8d5da3c666eb35cb707741eae091472c46ad301f2d98378e86",
+      "stdout_sha256": "e51c4ff8e21bd15668adb4c8447d5b2ce570160cfea52f2839b5a2d520e8a50d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "mcp-adapter-macos-arm64-semantic",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T22:42:52.4876797+01:00",
+      "identity_captured": true,
+      "receipt_sha256": "d4fcbd551333a4f255db98ec23f5a3cbfd0acc63dbc60b00a453213c76584a84",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "mcp-adapter-original-stdio-oracle",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T22:39:44.1793352+01:00",
+      "identity_captured": false,
+      "receipt_sha256": "5ae645e3cd6a3dadda91fe3b759bb3b867187d75c9884d39724800627cdf6822",
+      "stdout_sha256": "f5e0e9b19ef9bb8096db2fb63139ff8b9994f66a73295ce1c3558dec7ae13d8d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

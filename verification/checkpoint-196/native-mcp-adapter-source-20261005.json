@@ -1,0 +1,66 @@
+{
+  "created_utc": "2026-10-05T22:43:59.2957495+01:00",
+  "worktree": "C:\\Users\\adyba\\pi-zig-mcp-adapter-20261005",
+  "branch": "port/pi-mcp-adapter-20261005",
+  "base": "fb08f5f26524b1eb84d183851291670c8098fa04",
+  "authority": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+  "native_runtime_dependency": "mcp-native-frozen-source-20261005.json",
+  "native_runtime_dependency_sha256": "ea19914d8148f50632f327b59e5addae1be49f23408d24429be4071509fb89f5",
+  "state": "immutable nine-path MCP adapter source; all final Windows/Linux Debug/ReleaseSafe and macOS semantic gates terminal passed",
+  "files": [
+    {
+      "path": "src/mcp/client_adapter.zig",
+      "sha256": "b68090d67478b2da51ef052e3bc500613bb2d628ce34ddbc43324d63dea1477c",
+      "bytes": 5624,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp_adapter_test.zig",
+      "sha256": "b6c964f2c3aa3376a1bdb3c69ca4e6c2c3a84fa3ec24f42f1fc27f41fa6f7f65",
+      "bytes": 132,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp_adapter_fixture.zig",
+      "sha256": "4ea929108179024e9ba1f17f7b53264ee759cad333814a952337d07d006f2ff3",
+      "bytes": 665,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp_adapter_integration_test.zig",
+      "sha256": "0e500cda7fea1d9826e5bb7e9f5c573fd634056730ae0a81d27993eff0643d3b",
+      "bytes": 10707,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/fixtures/adapter_stdio_28dc.json",
+      "sha256": "45fe42c670a23d7f53d9c83927e0e3d11e3f0d61613f1a00ac48f701571f1cfd",
+      "bytes": 859,
+      "integration": "new file"
+    },
+    {
+      "path": "src/mcp/NATIVE_ADAPTER_CONTRACT.md",
+      "sha256": "fe1d8b3307b9cbcc4f2e1043e7f6c7004704b8031c13f72026806049d4d51023",
+      "bytes": 2739,
+      "integration": "new file"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "ab1acea1eb21583467528cef5faec138e1b2514623e13fb656711a5f84e0ac09",
+      "bytes": 53579,
+      "integration": "narrow additive patch"
+    },
+    {
+      "path": "src/mcp/client.zig",
+      "sha256": "d08c25de23faf22eb5570b0bc452e9370c1992ff0811a2900701699037fd852f",
+      "bytes": 21800,
+      "integration": "narrow additive patch"
+    },
+    {
+      "path": "src/main.zig",
+      "sha256": "9e12745e0cad48865458f258e57f5c3d662b2270ba57cec0b515cda094dc4bef",
+      "bytes": 400797,
+      "integration": "narrow additive patch"
+    }
+  ]
+}

@@ -51,7 +51,9 @@ const ContextMethod = enum(c_int) {
 pub const Bindings = struct {
     pub const InvocationBroker = struct { active: ?*Bindings = null };
     pub const ToolLookupFn = *const fn (?*anyopaque, []const u8) ?c.JSValue;
-    pub const SharedServices = struct { ui: *native_ui.Manager, renderers: *native_renderers.Manager, broker: ?*InvocationBroker = null, owner_id: u64 = 0, tool_lookup: ?ToolLookupFn = null, tool_context: ?*anyopaque = null };
+    pub const CatalogKind = enum { tools, commands };
+    pub const CatalogFn = *const fn (?*anyopaque, *Bindings, CatalogKind) anyerror!c.JSValue;
+    pub const SharedServices = struct { ui: *native_ui.Manager, renderers: *native_renderers.Manager, broker: ?*InvocationBroker = null, owner_id: u64 = 0, tool_lookup: ?ToolLookupFn = null, tool_context: ?*anyopaque = null, catalog_fn: ?CatalogFn = null };
     pub const ToolUpdateFn = *const fn (?*anyopaque, c.JSValue) anyerror!void;
     gpa: std.mem.Allocator,
     engine: *engine_mod.Engine,
@@ -66,11 +68,14 @@ pub const Bindings = struct {
     owner_id: u64 = 0,
     tool_lookup: ?ToolLookupFn = null,
     tool_context: ?*anyopaque = null,
+    catalog_fn: ?CatalogFn = null,
     stream_runner: native_stream.Runner,
     factory_active: bool = false,
     handlers: std.StringHashMapUnmanaged(std.ArrayList(c.JSValue)) = .empty,
     tools: std.StringHashMapUnmanaged(c.JSValue) = .empty,
     commands: std.StringHashMapUnmanaged(c.JSValue) = .empty,
+    tool_order: std.ArrayList([]const u8) = .empty,
+    command_order: std.ArrayList([]const u8) = .empty,
     flags: std.StringHashMapUnmanaged(c.JSValue) = .empty,
     flag_overrides: std.StringHashMapUnmanaged(c.JSValue) = .empty,
     actions: std.ArrayList(c.JSValue) = .empty,
@@ -126,8 +131,10 @@ pub const Bindings = struct {
             self.owner_id = shared.owner_id;
             self.tool_lookup = shared.tool_lookup;
             self.tool_context = shared.tool_context;
+            self.catalog_fn = shared.catalog_fn;
         }
         owner.binding = self;
+        try ui_manager.editors.addOwner(self.owner_id);
         ui_manager.provider_action_fn = providerUiAction;
         ui_manager.provider_action_context = self;
         if (services == null) engine.host_data = self;
@@ -135,6 +142,7 @@ pub const Bindings = struct {
     }
 
     pub fn deinit(self: *Bindings) void {
+        self.ui_manager.editors.removeOwner(self.owner_id);
         if (self.invocation_active) self.finishInvocation();
         const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(self.owner_token, self.owner_class).?));
         owner.binding = null;
@@ -160,6 +168,8 @@ pub const Bindings = struct {
         self.handlers.deinit(self.gpa);
         self.freeTable(&self.tools);
         self.freeTable(&self.commands);
+        self.tool_order.deinit(self.gpa);
+        self.command_order.deinit(self.gpa);
         self.freeTable(&self.flags);
         self.freeTable(&self.flag_overrides);
         for (self.actions.items) |action| self.engine.freeValue(action);
@@ -192,15 +202,20 @@ pub const Bindings = struct {
 
     fn store(self: *Bindings, table: *std.StringHashMapUnmanaged(c.JSValue), name: []const u8, value: c.JSValue) !void {
         if (table.getPtr(name)) |previous| {
+            const retained = c.JS_DupValue(self.engine.context, value);
             self.engine.freeValue(previous.*);
-            previous.* = c.JS_DupValue(self.engine.context, value);
+            previous.* = retained;
             return;
         }
         const key = try self.gpa.dupe(u8, name);
         errdefer self.gpa.free(key);
         const owned = c.JS_DupValue(self.engine.context, value);
         errdefer self.engine.freeValue(owned);
-        try table.put(self.gpa, key, owned);
+        const order: ?*std.ArrayList([]const u8) = if (table == &self.tools) &self.tool_order else if (table == &self.commands) &self.command_order else null;
+        try table.ensureUnusedCapacity(self.gpa, 1);
+        if (order) |list| try list.ensureUnusedCapacity(self.gpa, 1);
+        table.putAssumeCapacityNoClobber(key, owned);
+        if (order) |list| list.appendAssumeCapacity(key);
     }
 
     fn registration(self: *Bindings, method: Method, args: []c.JSValue) !c.JSValue {
@@ -404,6 +419,7 @@ pub const Bindings = struct {
     }
 
     fn catalogApi(self: *Bindings, method: Method) !c.JSValue {
+        if (self.catalog_fn) |lookup| return lookup(self.tool_context, self, if (method == .getAllTools) .tools else .commands);
         var arena = std.heap.ArenaAllocator.init(self.gpa);
         defer arena.deinit();
         const allocator = arena.allocator();
@@ -449,6 +465,37 @@ pub const Bindings = struct {
         }
         const json = try std.json.Stringify.valueAlloc(allocator, std.json.Value{ .array = values }, .{});
         return self.parseJson(json, "native-extension-catalog");
+    }
+
+    pub fn catalogEntry(self: *Bindings, allocator: std.mem.Allocator, kind: CatalogKind, name: []const u8, value: c.JSValue) !std.json.Value {
+        const retained = c.JS_DupValue(self.engine.context, value);
+        defer self.engine.freeValue(retained);
+        const raw = try self.projectValue(allocator, retained);
+        if (raw != .object) return error.InvalidNativeCatalogRegistration;
+        var object: std.json.ObjectMap = .empty;
+        try object.put(allocator, "name", .{ .string = name });
+        try object.put(allocator, "description", raw.object.get("description") orelse raw.object.get("label") orelse std.json.Value{ .string = "" });
+        try object.put(allocator, "source", .{ .string = "extension" });
+        var source: std.json.ObjectMap = .empty;
+        try source.put(allocator, "path", .{ .string = self.source_path orelse "" });
+        try object.put(allocator, "sourceInfo", .{ .object = source });
+        if (kind == .tools) {
+            var schema = raw.object.get("parameters") orelse raw.object.get("inputSchema") orelse std.json.Value{ .object = .empty };
+            cleanSchema(&schema);
+            try object.put(allocator, "parameters", schema);
+            try object.put(allocator, "exposure", raw.object.get("exposure") orelse std.json.Value{ .string = "direct" });
+            for ([_][]const u8{ "promptSnippet", "promptGuidelines", "label", "namespace", "annotations" }) |field| if (raw.object.get(field)) |entry| try object.put(allocator, field, entry);
+        } else if (raw.object.get("argumentHint")) |hint| try object.put(allocator, "argumentHint", hint);
+        return .{ .object = object };
+    }
+
+    pub fn catalogSnapshot(self: *Bindings, allocator: std.mem.Allocator, kind: CatalogKind) !std.json.Value {
+        if (self.context_snapshot) |snapshot| {
+            const current = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, if (kind == .tools) "allTools" else "commands"));
+            defer self.engine.freeValue(current);
+            if (c.JS_IsArray(current)) return self.projectValue(allocator, current);
+        }
+        return .{ .array = .init(allocator) };
     }
 
     fn forwardHandler(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -527,6 +574,7 @@ pub const Bindings = struct {
         for (self.actions.items) |action| self.engine.freeValue(action);
         self.actions.clearRetainingCapacity();
         if (self.ui_manager.generation == std.math.maxInt(u32)) return error.ExtensionInvocationGenerationExhausted;
+        self.ui_manager.editor_owner_id = self.owner_id;
         try self.ui_manager.begin(self.ui_manager.generation + 1, self.context_snapshot, self.invocation_signal);
         self.invocation_active = true;
         if (self.broker) |broker| broker.active = self;
@@ -576,6 +624,15 @@ pub const Bindings = struct {
             return c.JS_ThrowTypeError(context, "Native tool update: %s", @as([*:0]const u8, @errorName(err)));
         };
         return c.pi_js_undefined();
+    }
+
+    /// Already-admitted actions outlive a rejected invocation until its framed
+    /// failure response is written. Do not consult a user-authored result here.
+    pub fn rejectedActions(self: *Bindings) ![]u8 {
+        const result = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        defer self.engine.freeValue(result);
+        if (self.actions.items.len > 0) try self.mergeActions(result);
+        return self.engine.stringify(result);
     }
 
     fn mergeActions(self: *Bindings, result: c.JSValue) !void {
@@ -761,10 +818,12 @@ pub const Bindings = struct {
         const engine = engine_mod.Engine.fromContext(context.?);
         const kind: ContextMethod = @enumFromInt(magic);
         const self = fromOwnerData(engine, data, if (kind == .ui) 3 else 2) catch |err| return publicationFailure(engine, err);
+        // UI is an owner-rooted capability captured when the context is
+        // created. Its individual methods enforce invocation/owner fences.
+        if (kind == .ui) return c.JS_DupValue(context, data[2]);
         var generation: i64 = 0;
         if (c.JS_ToInt64(context, &generation, data[0]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
         if (!self.invocation_active or generation != self.invocation_generation) return c.JS_ThrowTypeError(context, "Stale native extension context");
-        if (magic == @intFromEnum(ContextMethod.ui)) return c.JS_DupValue(context, data[2]);
         const arguments: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
         return self.contextValue(@enumFromInt(magic), data[1], arguments) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
@@ -1111,40 +1170,40 @@ pub const Bindings = struct {
         }
         try manifest.put(allocator, "hooks", .{ .array = hook_names.toManaged(allocator) });
         var tools: std.ArrayList(std.json.Value) = .empty;
-        var entries = self.tools.iterator();
-        while (entries.next()) |entry| {
-            const raw = try self.projectValue(allocator, entry.value_ptr.*);
+        for (self.tool_order.items) |tool_name| {
+            const definition = self.tools.get(tool_name) orelse continue;
+            const raw = try self.projectValue(allocator, definition);
             if (raw != .object) return error.InvalidExtensionTool;
             var tool: std.json.ObjectMap = .empty;
-            try tool.put(allocator, "name", .{ .string = entry.key_ptr.* });
+            try tool.put(allocator, "name", .{ .string = tool_name });
             try tool.put(allocator, "description", raw.object.get("description") orelse raw.object.get("label") orelse std.json.Value{ .string = "" });
             var schema = raw.object.get("parameters") orelse raw.object.get("inputSchema") orelse std.json.Value{ .object = .empty };
             cleanSchema(&schema);
             try tool.put(allocator, "parameters", schema);
             const mode = raw.object.get("executionMode") orelse std.json.Value{ .string = "parallel" };
             try tool.put(allocator, "executionMode", if (mode == .string and std.mem.eql(u8, mode.string, "sequential")) mode else std.json.Value{ .string = "parallel" });
-            try tool.put(allocator, "hasRenderCall", .{ .bool = try self.functionProperty(entry.value_ptr.*, "renderCall") });
-            try tool.put(allocator, "hasRenderResult", .{ .bool = try self.functionProperty(entry.value_ptr.*, "renderResult") });
-            try tool.put(allocator, "hasPrepareArguments", .{ .bool = try self.functionProperty(entry.value_ptr.*, "prepareArguments") });
+            try tool.put(allocator, "hasRenderCall", .{ .bool = try self.functionProperty(definition, "renderCall") });
+            try tool.put(allocator, "hasRenderResult", .{ .bool = try self.functionProperty(definition, "renderResult") });
+            try tool.put(allocator, "hasPrepareArguments", .{ .bool = try self.functionProperty(definition, "prepareArguments") });
             const shell = raw.object.get("renderShell") orelse std.json.Value{ .string = "default" };
             try tool.put(allocator, "renderShell", if (shell == .string and std.mem.eql(u8, shell.string, "self")) shell else std.json.Value{ .string = "default" });
             try tools.append(allocator, .{ .object = tool });
         }
         try manifest.put(allocator, "tools", .{ .array = tools.toManaged(allocator) });
         var commands: std.ArrayList(std.json.Value) = .empty;
-        entries = self.commands.iterator();
-        while (entries.next()) |entry| {
-            const raw = try self.projectValue(allocator, entry.value_ptr.*);
+        for (self.command_order.items) |command_name| {
+            const definition = self.commands.get(command_name) orelse continue;
+            const raw = try self.projectValue(allocator, definition);
             if (raw != .object) return error.InvalidExtensionCommand;
             var command: std.json.ObjectMap = .empty;
-            try command.put(allocator, "name", .{ .string = entry.key_ptr.* });
+            try command.put(allocator, "name", .{ .string = command_name });
             try command.put(allocator, "description", raw.object.get("description") orelse std.json.Value{ .string = "" });
             if (raw.object.get("argumentHint")) |hint| try command.put(allocator, "argumentHint", hint);
             try commands.append(allocator, .{ .object = command });
         }
         try manifest.put(allocator, "commands", .{ .array = commands.toManaged(allocator) });
         var flags: std.ArrayList(std.json.Value) = .empty;
-        entries = self.flags.iterator();
+        var entries = self.flags.iterator();
         while (entries.next()) |entry| {
             var projected = try self.projectValue(allocator, entry.value_ptr.*);
             if (projected != .object) return error.InvalidExtensionFlag;
@@ -1587,6 +1646,24 @@ pub const Bindings = struct {
         return self.engine.stringify(object);
     }
 };
+
+test "native rejected action projection retains the original captured exception through GC" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(std.testing.allocator, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory("export default pi=>{globalThis.prethrowOriginal={identity:'primary'};pi.registerCommand('reject',{handler(){pi.appendEntry('admitted',{value:1});throw prethrowOriginal}})}", "prethrow-identity.mjs");
+    try bindings.setSourcePath("actual-origin.ts");
+    try std.testing.expectError(error.JavaScriptException, bindings.invokeCommand("reject", ""));
+    const original = c.JS_DupValue(engine.context, engine.captured_exception.?);
+    defer engine.freeValue(original);
+    const projected = try bindings.rejectedActions();
+    defer std.testing.allocator.free(projected);
+    try std.testing.expect(std.mem.indexOf(u8, projected, "actual-origin") != null);
+    try std.testing.expect(std.mem.indexOf(u8, projected, "admitted") != null);
+    c.JS_RunGC(engine.runtime);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, engine.captured_exception.?));
+}
 
 test "native shared VM API callbacks keep extension owner context and unsubscribe identity with no implicit active host" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});

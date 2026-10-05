@@ -416,7 +416,7 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
     return result;
 }
 
-const Helper = enum(c_int) { visibleWidth, matchesKey, parseKey, isKeyRelease, isKeyRepeat, decodePrintableKey, setKittyProtocolActive, isKittyProtocolActive };
+const Helper = enum(c_int) { visibleWidth, matchesKey, parseKey, isKeyRelease, isKeyRepeat, decodePrintableKey, setKittyProtocolActive, isKittyProtocolActive, truncateToWidth };
 fn helperCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return helper(engine, @enumFromInt(magic), if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
@@ -431,6 +431,15 @@ fn helper(engine: *engine_mod.Engine, method: Helper, args: []c.JSValue) !c.JSVa
     const text = try engine.toString(args[0]);
     defer engine.gpa.free(text);
     return switch (method) {
+        .truncateToWidth => blk: {
+            const width = try count(engine, if (args.len > 1) args[1] else c.pi_js_undefined(), false);
+            if (width == 0) break :blk try engine.checked(c.JS_NewString(engine.context, ""));
+            const ellipsis = if (args.len > 2 and !c.JS_IsUndefined(args[2])) try engine.toString(args[2]) else try engine.gpa.dupe(u8, "...");
+            defer engine.gpa.free(ellipsis);
+            const clipped = try terminal_text.truncateAlloc(engine.gpa, text, width, .{ .ellipsis = ellipsis, .pad = args.len > 3 and c.JS_ToBool(engine.context, args[3]) != 0 });
+            defer engine.gpa.free(clipped);
+            break :blk try engine.checked(c.JS_NewStringLen(engine.context, clipped.ptr, clipped.len));
+        },
         .visibleWidth => engine.checked(c.JS_NewInt64(engine.context, @intCast(terminal_text.visibleWidth(text)))),
         .matchesKey => blk: {
             if (args.len < 2 or !c.JS_IsString(args[1])) return error.InvalidNativeTuiKey;
@@ -530,6 +539,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
         try define(engine, constructor, "name", try engine.checked(c.JS_NewString(engine.context, item[0])));
         try define(engine, exports, item[0], c.JS_DupValue(engine.context, constructor));
     }
+    try @import("native_editor.zig").install(engine, exports);
     try engine.registerValueModule("@earendil-works/pi-tui", exports);
     try engine.registerValueModule("@mariozechner/pi-tui", exports);
     try engine.registerValueModule("pi-tui", exports);
@@ -576,7 +586,7 @@ fn keybindingOperation(engine: *engine_mod.Engine, magic: c_int, args: []c.JSVal
     const action_index: usize = if (magic == 0) 1 else 0;
     const action = try engine.toString(if (args.len > action_index) args[action_index] else c.pi_js_undefined());
     defer engine.gpa.free(action);
-    const binding: []const []const u8 = if (std.mem.eql(u8, action, "tui.select.confirm") or std.mem.eql(u8, action, "tui.input.submit")) &.{"enter"} else if (std.mem.eql(u8, action, "tui.select.cancel")) &.{ "escape", "ctrl+c" } else if (std.mem.eql(u8, action, "tui.select.up")) &.{"up"} else if (std.mem.eql(u8, action, "tui.select.down")) &.{"down"} else if (std.mem.eql(u8, action, "tui.select.pageUp")) &.{"pageUp"} else if (std.mem.eql(u8, action, "tui.select.pageDown")) &.{"pageDown"} else &.{};
+    const binding: []const []const u8 = if (std.mem.eql(u8, action, "tui.select.confirm")) &.{"enter"} else if (std.mem.eql(u8, action, "tui.select.cancel")) &.{ "escape", "ctrl+c" } else if (std.mem.eql(u8, action, "tui.select.up")) &.{"up"} else if (std.mem.eql(u8, action, "tui.select.down")) &.{"down"} else if (std.mem.eql(u8, action, "tui.select.pageUp")) &.{"pageUp"} else if (std.mem.eql(u8, action, "tui.select.pageDown")) &.{"pageDown"} else @import("../tui/keybindings.zig").defaultKeysForAction(action);
     if (magic != 0) {
         const array = try engine.checked(c.JS_NewArray(engine.context));
         errdefer engine.freeValue(array);
