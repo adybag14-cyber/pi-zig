@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentSource": "68f5d42f4fddb0575770136388c2b14e872cc616",
+  "changes": [
+    "Persistent native renderer subscriptions, owner-local replay of actual cached JS component/state and typed owned frame/control records",
+    "Owner-local partial rendering before tool update byte delivery avoids group invocation mutex reentry",
+    "Call/result slots attach only to canonical tool rows, survive durable reconciliation and preserve viewport/draft across idle repaint and resize",
+    "Synchronous control-queue detach, row retirement and callback admission drain fence reload/EOF/lifetime teardown",
+    "Markdown allocation admission retains ownership until transfer succeeds"
+  ],
+  "validation": {
+    "windowsDebug": "139/139 steps;704 passed;39 skips",
+    "windowsReleaseSafe": "139/139 steps;704 passed;39 skips",
+    "linuxDebug": "135/135 steps;871 passed;2 Windows-only skips",
+    "linuxReleaseSafe": "135/135 steps;871 passed;2 Windows-only skips",
+    "jobs": [
+      {
+        "name": "renderer-allocation-tag-windows-debug-repaired",
+        "pid": 12876,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T20:15:07.5800840Z",
+        "launched_utc": "2026-10-05T20:15:07.5769135+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T20:17:15.3430312+00:00"
+      },
+      {
+        "name": "renderer-allocation-tag-windows-releasesafe-repaired",
+        "pid": 53496,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T20:17:15.3579150Z",
+        "launched_utc": "2026-10-05T20:17:15.3570013+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T20:25:40.1933503+00:00"
+      },
+      {
+        "name": "renderer-allocation-tag-linux-full-debug-repaired",
+        "pid": 55064,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-renderer-composed-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1000s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T20:13:44.5714160Z",
+        "launched_utc": "2026-10-05T20:13:44.5683668+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T20:15:36.5063746+00:00"
+      },
+      {
+        "name": "renderer-allocation-tag-linux-full-releasesafe-repaired",
+        "pid": 48732,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-renderer-composed-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1000s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T20:16:07.6213830Z",
+        "launched_utc": "2026-10-05T20:16:07.6185169+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T20:27:55.1568738+00:00"
+      }
+    ],
+    "failureRetained": "renderer-latest-main-linux-debug-20261005: module allocator sweep ABRT from early tagged-union publication",
+    "repair": "Stage renderer register/failure string allocations before publishing union tags",
+    "deduplication": "Removed byte-identical second copy of already-admitted custom-close regression; assertions retained once",
+    "snapshotSha256": "d42769441b5ac546300601a5e438613a8c266b67611ddc79fc8a4cdd78e3fc0c",
+    "snapshotNote": "Initial snapshot before two-line union admission fix; corrected protocol file copied to same Linux staging and all gates replayed"
+  },
+  "limits": [
+    "Live subscription binds persistent fullscreen; regular/headless use static renderers and canonical native partial output",
+    "Arbitrary widget factory/overlay ancestry and retained editor are separate active ports",
+    "Group catalogs/late registrations, MCP/runtime facade and final JS-host removal remain incomplete",
+    "Upstream advanced to28dcce2/package1.0.4; runtime files unchanged and provenance refresh pending",
+    "Final native parity/default/release remains uncertified"
+  ]
+}

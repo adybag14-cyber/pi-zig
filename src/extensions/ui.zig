@@ -18,6 +18,9 @@ const Keybindings = @import("../tui/keybindings.zig").Manager;
 pub const component_protocol = @import("component_protocol.zig");
 pub const ComponentSceneFn = *const fn (?*anyopaque, component_protocol.Scene, *component_protocol.ControlQueue) anyerror!void;
 pub const ComponentCloseFn = *const fn (?*anyopaque, component_protocol.Fence) anyerror!void;
+pub const renderer_protocol = @import("renderer_protocol.zig");
+pub const RendererRecordFn = *const fn (?*anyopaque, renderer_protocol.Record, *renderer_protocol.ControlQueue) anyerror!void;
+pub const RendererClosedFn = *const fn (?*anyopaque, u64) anyerror!void;
 
 pub const NotificationKind = enum { info, warning, error_message };
 pub const WidgetPlacement = enum { above_editor, below_editor };
@@ -135,6 +138,12 @@ pub const Controller = struct {
     component_close_fn: ?ComponentCloseFn = null,
     component_scene_ctx: ?*anyopaque = null,
     component_fence: ?component_protocol.Fence = null,
+    renderer_record_fn: ?RendererRecordFn = null,
+    renderer_closed_fn: ?RendererClosedFn = null,
+    renderer_context: ?*anyopaque = null,
+    renderer_calls: usize = 0,
+    renderer_detaching: bool = false,
+    renderer_changed: Io.Condition = .init,
 
     state_mutex: Io.Mutex = .init,
     dialog_mutex: Io.Mutex = .init,
@@ -174,6 +183,7 @@ pub const Controller = struct {
     }
 
     pub fn deinit(self: *Controller) void {
+        self.bindRendererFrontend(null, null, null);
         for (self.notifications.items) |*item| item.deinit(self.gpa);
         self.notifications.deinit(self.gpa);
         for (self.statuses.items) |*item| item.deinit(self.gpa);
@@ -209,6 +219,58 @@ pub const Controller = struct {
         self.component_scene_fn = scene;
         self.component_close_fn = close;
         self.component_scene_ctx = context;
+    }
+    pub fn bindRendererFrontend(self: *Controller, record: ?RendererRecordFn, closed: ?RendererClosedFn, context: ?*anyopaque) void {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        self.renderer_detaching = true;
+        while (self.renderer_calls > 0) self.renderer_changed.waitUncancelable(self.io, &self.state_mutex);
+        self.renderer_record_fn = record;
+        self.renderer_closed_fn = closed;
+        self.renderer_context = context;
+        self.renderer_detaching = false;
+    }
+    pub fn rendererBridge(self: *Controller) ?js_runtime.RendererBridge {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        if (self.renderer_record_fn == null or self.renderer_detaching) return null;
+        return .{ .context = self, .record_fn = rendererRecord, .closed_fn = rendererClosed };
+    }
+    fn rendererCallbackEnded(self: *Controller) void {
+        self.state_mutex.lockUncancelable(self.io);
+        self.renderer_calls -= 1;
+        self.renderer_changed.broadcast(self.io);
+        self.state_mutex.unlock(self.io);
+    }
+    pub fn rendererRecord(raw: ?*anyopaque, record: renderer_protocol.Record, controls: *renderer_protocol.ControlQueue) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        self.state_mutex.lockUncancelable(self.io);
+        const sink = if (!self.renderer_detaching) self.renderer_record_fn else null;
+        const context = self.renderer_context;
+        if (sink != null) self.renderer_calls += 1;
+        self.state_mutex.unlock(self.io);
+        if (sink) |callback| {
+            defer self.rendererCallbackEnded();
+            try callback(context, record, controls);
+        } else {
+            // No borrowed channel was admitted when the frontend is detached.
+            var owned = record;
+            owned.deinit();
+        }
+    }
+    pub fn rendererClosed(raw: ?*anyopaque, generation: u64) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        self.state_mutex.lockUncancelable(self.io);
+        // Close callbacks still detach already-admitted borrowed channels while
+        // record admission is being fenced and existing callbacks drain.
+        const sink = self.renderer_closed_fn;
+        const context = self.renderer_context;
+        if (sink != null) self.renderer_calls += 1;
+        self.state_mutex.unlock(self.io);
+        if (sink) |callback| {
+            defer self.rendererCallbackEnded();
+            try callback(context, generation);
+        }
     }
 
     pub fn bindEditorFrontend(self: *Controller, sink: ?EditorSinkFn, context: ?*anyopaque) void {
@@ -1132,6 +1194,46 @@ test "extension UI actions retain status widgets editor and title state" {
     const pending = controller.takePendingEditorText().?;
     defer std.testing.allocator.free(pending);
     try std.testing.expectEqualStrings("hello world", pending);
+}
+
+test "renderer callback failure releases its admission and detached bridge owns discarded records" {
+    const Fake = struct {
+        closes: usize = 0,
+        fn record(_: ?*anyopaque, _: renderer_protocol.Record, _: *renderer_protocol.ControlQueue) !void {
+            return error.OutOfMemory;
+        }
+        fn closed(raw: ?*anyopaque, _: u64) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.closes += 1;
+        }
+    };
+    const gpa = std.testing.allocator;
+    var controller = try Controller.init(gpa, std.testing.io, true, 80);
+    defer controller.deinit();
+    var queue = renderer_protocol.ControlQueue.init(gpa, std.testing.io, 1);
+    defer queue.deinit();
+    var fake: Fake = .{};
+    controller.bindRendererFrontend(Fake.record, Fake.closed, &fake);
+    try std.testing.expect(controller.rendererBridge() != null);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, "{\"version\":1,\"type\":\"renderer_register\",\"ownerGeneration\":\"1\",\"extensionId\":\"2\",\"rowGeneration\":\"3\",\"toolCallId\":\"owned\",\"toolName\":\"paint\",\"width\":80}", .{});
+    defer parsed.deinit();
+    var rejected = try renderer_protocol.read(gpa, &parsed.value.object);
+    defer rejected.deinit();
+    try std.testing.expectError(error.OutOfMemory, Controller.rendererRecord(&controller, rejected, &queue));
+    try std.testing.expectEqual(@as(usize, 0), controller.renderer_calls);
+    try std.testing.expectEqualStrings("owned", rejected.fence.tool_call_id);
+    try Controller.rendererClosed(&controller, 1);
+    try std.testing.expectEqual(@as(usize, 1), fake.closes);
+    controller.bindRendererFrontend(null, null, null);
+    try std.testing.expect(controller.rendererBridge() == null);
+    const discarded = try renderer_protocol.read(gpa, &parsed.value.object);
+    Controller.rendererRecord(&controller, discarded, &queue) catch |err| {
+        var owned = discarded;
+        owned.deinit();
+        return err;
+    };
+    try Controller.rendererClosed(&controller, 1);
+    try std.testing.expectEqual(@as(usize, 1), fake.closes);
 }
 
 test "extension editor frontend failures preserve pending owned text and later actions reuse sink" {

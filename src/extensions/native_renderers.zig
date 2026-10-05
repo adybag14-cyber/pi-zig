@@ -3,13 +3,33 @@ const std = @import("std");
 const engine_mod = @import("engine.zig");
 const components = @import("native_components.zig");
 const native_tui = @import("native_tui.zig");
+const protocol = @import("renderer_protocol.zig");
 const c = engine_mod.c;
 
 pub const Kind = enum { render_message, render_entry, transform_markdown, render_tool_call, render_tool_result, prepare_tool_arguments, renderer_retire };
 const Token = struct { gpa: std.mem.Allocator, manager: ?*Manager };
 pub const RegistrationKind = enum { message, entry, markdown, resolver };
 pub const Registration = struct { owner_id: u64, name: []u8, callback: c.JSValue };
-const Row = struct { generation: u64, tool: []u8, args: c.JSValue, state: c.JSValue, call: c.JSValue, result: c.JSValue, revision: u64 = 0, dirty: bool = true };
+const Row = struct {
+    generation: u64,
+    tool: []u8,
+    args: c.JSValue,
+    state: c.JSValue,
+    call: c.JSValue,
+    result: c.JSValue,
+    owner_id: u64 = 0,
+    source_tool: c.JSValue,
+    snapshot: c.JSValue,
+    call_payload: c.JSValue,
+    result_payload: c.JSValue,
+    width: usize = 80,
+    sequence: u64 = 0,
+    revision: u64 = 0,
+    dirty: bool = true,
+    registered: bool = false,
+};
+/// Borrowed/rooted only for the owner-thread replay callback; never a DTO.
+pub const Replay = struct { owner_id: u64, id: []const u8, name: []const u8, generation: u64, kind: Kind, payload: c.JSValue, snapshot: ?c.JSValue, tool: c.JSValue };
 fn tokenFinalizer(_: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
     const token: *Token = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)) orelse return));
     token.gpa.destroy(token);
@@ -29,6 +49,14 @@ pub const Manager = struct {
     token_class: c.JSClassID,
     array_predicate: c.JSValue,
     theme: c.JSValue,
+    owner_generation: u64 = 1,
+    subscribed: bool = false,
+    record_fn: ?*const fn (?*anyopaque, protocol.Record) anyerror!void = null,
+    record_context: ?*anyopaque = null,
+    replay_fn: ?*const fn (?*anyopaque, Replay) anyerror!void = null,
+    replay_context: ?*anyopaque = null,
+    sink_failure: ?anyerror = null,
+    redraw_due_ms: ?i64 = null,
 
     pub fn init(engine: *engine_mod.Engine) !*Manager {
         var class: c.JSClassID = 0;
@@ -168,12 +196,202 @@ pub const Manager = struct {
     pub fn retire(self: *Manager, id: []const u8, generation: ?u64) bool {
         const selected = self.rows.get(id) orelse return false;
         if (generation) |actual| if (actual != selected.generation) return false;
+        if (selected.registered) self.emitRetirement(id, selected) catch |err| {
+            self.sink_failure = err;
+        };
         const removed = self.rows.fetchRemove(id).?;
         self.engine.gpa.free(removed.key);
         self.engine.gpa.free(selected.tool);
-        for ([_]c.JSValue{ selected.args, selected.state, selected.call, selected.result }) |value| self.engine.freeValue(value);
+        for ([_]c.JSValue{ selected.args, selected.state, selected.call, selected.result, selected.source_tool, selected.snapshot, selected.call_payload, selected.result_payload }) |value| self.engine.freeValue(value);
         self.engine.gpa.destroy(selected);
         return true;
+    }
+
+    fn fence(self: *Manager, id: []const u8, row_value: *const Row) !protocol.Fence {
+        return .{ .owner_generation = self.owner_generation, .extension_id = row_value.owner_id, .row_generation = row_value.generation, .tool_call_id = try self.engine.gpa.dupe(u8, id) };
+    }
+
+    fn emit(self: *Manager, record: protocol.Record) !void {
+        var owned = record;
+        var transferred = false;
+        defer if (!transferred) owned.deinit();
+        if (self.record_fn) |send| {
+            try send(self.record_context, record);
+            transferred = true;
+        }
+    }
+
+    fn emitRetirement(self: *Manager, id: []const u8, row_value: *const Row) !void {
+        try self.emit(.{ .gpa = self.engine.gpa, .fence = try self.fence(id, row_value), .kind = .retire });
+    }
+
+    fn emitFailure(self: *Manager, id: []const u8, row_value: *const Row, err: anyerror) !void {
+        const message = try self.engine.gpa.dupe(u8, self.engine.last_error orelse @errorName(err));
+        var transferred = false;
+        defer if (!transferred) self.engine.gpa.free(message);
+        const identity = try self.fence(id, row_value);
+        transferred = true;
+        try self.emit(.{ .gpa = self.engine.gpa, .fence = identity, .kind = .{ .failure = message } });
+    }
+
+    fn emitFrame(self: *Manager, id: []const u8, row_value: *Row, slot: protocol.Slot, frame: *const components.Frame) !void {
+        if (!self.subscribed or self.record_fn == null) return;
+        if (!row_value.registered) {
+            const name = try self.engine.gpa.dupe(u8, row_value.tool);
+            var transferred = false;
+            defer if (!transferred) self.engine.gpa.free(name);
+            const identity = try self.fence(id, row_value);
+            transferred = true;
+            try self.emit(.{ .gpa = self.engine.gpa, .fence = identity, .kind = .{ .register = .{ .tool_name = name, .width = row_value.width } } });
+            row_value.registered = true;
+        }
+        if (row_value.sequence >= 9_007_199_254_740_991 or row_value.revision >= 9_007_199_254_740_991) return error.NativeRendererGenerationLimit;
+        const copied = try frame.clone(self.engine.gpa);
+        var transferred = false;
+        defer if (!transferred) {
+            var owned = copied;
+            owned.deinit();
+        };
+        const identity = try self.fence(id, row_value);
+        row_value.sequence += 1;
+        transferred = true;
+        try self.emit(.{ .gpa = self.engine.gpa, .fence = identity, .kind = .{ .frame = .{ .sequence = row_value.sequence, .revision = row_value.revision + 1, .slot = slot, .width = row_value.width, .frame = copied } } });
+    }
+
+    pub fn subscribe(self: *Manager, enabled: bool) void {
+        self.subscribed = enabled;
+        var values = self.rows.valueIterator();
+        while (values.next()) |value| {
+            value.*.registered = false;
+            if (enabled) value.*.dirty = true;
+        }
+        self.redraw_due_ms = if (enabled and self.engine.native_io != null) std.Io.Clock.awake.now(self.engine.native_io.?).toMilliseconds() else null;
+    }
+
+    pub fn hasDirty(self: *Manager) bool {
+        var values = self.rows.valueIterator();
+        while (values.next()) |value| if (value.*.dirty) return true;
+        return false;
+    }
+
+    fn scheduleRedraw(self: *Manager) void {
+        if (self.redraw_due_ms == null) if (self.engine.native_io) |io| {
+            self.redraw_due_ms = std.Io.Clock.awake.now(io).toMilliseconds() + 16;
+        };
+    }
+
+    pub fn nextRedrawDeadline(self: *Manager) ?i64 {
+        if (!self.subscribed or !self.hasDirty()) {
+            self.redraw_due_ms = null;
+            return null;
+        }
+        self.scheduleRedraw();
+        return self.redraw_due_ms;
+    }
+
+    pub fn pumpDirtyReady(self: *Manager) !bool {
+        const due = self.nextRedrawDeadline() orelse return false;
+        if (self.engine.native_io) |io| if (std.Io.Clock.awake.now(io).toMilliseconds() < due) return false;
+        return self.pumpDirty();
+    }
+
+    pub fn control(self: *Manager, value: *const protocol.Control) !bool {
+        if (value.fence.owner_generation != self.owner_generation) return false;
+        const selected = self.rows.get(value.fence.tool_call_id) orelse return false;
+        if (selected.generation != value.fence.row_generation or selected.owner_id != value.fence.extension_id) return false;
+        switch (value.kind) {
+            .retire => return self.retire(value.fence.tool_call_id, value.fence.row_generation),
+            .invalidate => {},
+            .resize => |width_value| {
+                if (width_value > 16_384) return error.NativeComponentViewportLimit;
+                selected.width = width_value;
+                for ([_]c.JSValue{ selected.call_payload, selected.result_payload }) |payload| if (c.JS_IsObject(payload)) try self.put(payload, "width", c.JS_NewInt64(self.engine.context, @intCast(width_value)));
+            },
+        }
+        if (selected.revision >= 9_007_199_254_740_991) return error.NativeRendererGenerationLimit;
+        selected.revision += 1;
+        selected.dirty = true;
+        self.scheduleRedraw();
+        return true;
+    }
+
+    /// Tool onUpdate already runs in the selected invocation's owner/broker.
+    /// Render here without another Runtime request or another beginActions.
+    pub fn renderLiveUpdate(self: *Manager, id: []const u8, result: c.JSValue) !void {
+        if (!self.subscribed) return;
+        const row_value = self.rows.get(id) orelse return;
+        const generation = row_value.generation;
+        const owner_id = row_value.owner_id;
+        const name = try self.engine.gpa.dupe(u8, row_value.tool);
+        defer self.engine.gpa.free(name);
+        const tool_value = c.JS_DupValue(self.engine.context, row_value.source_tool);
+        defer self.engine.freeValue(tool_value);
+        const snapshot = c.JS_DupValue(self.engine.context, row_value.snapshot);
+        defer self.engine.freeValue(snapshot);
+        const previous = c.JS_DupValue(self.engine.context, if (c.JS_IsUndefined(row_value.result_payload)) row_value.call_payload else row_value.result_payload);
+        defer self.engine.freeValue(previous);
+        const available_width = row_value.width;
+        const payload = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        defer self.engine.freeValue(payload);
+        try self.put(payload, "toolCallId", try self.engine.checked(c.JS_NewStringLen(self.engine.context, id.ptr, id.len)));
+        try self.put(payload, "result", c.JS_DupValue(self.engine.context, result));
+        try self.put(payload, "isPartial", c.pi_js_bool(self.engine.context, 1));
+        try self.put(payload, "width", c.JS_NewInt64(self.engine.context, @intCast(available_width)));
+        inline for (.{ "expanded", "showImages", "executionStarted", "argsComplete" }) |field| {
+            try self.put(payload, field, try self.flag(previous, field, comptime std.mem.eql(u8, field, "showImages") or std.mem.eql(u8, field, "executionStarted") or std.mem.eql(u8, field, "argsComplete")));
+        }
+        try self.put(payload, "isError", try self.flag(result, "isError", false));
+        const value = self.runOwned(owner_id, .render_tool_result, name, payload, if (c.JS_IsUndefined(snapshot)) null else snapshot, tool_value) catch |err| {
+            if (err == error.OutOfMemory or err == error.JavaScriptInterrupted or err == error.JavaScriptJobLimit or err == error.NativeHostPromiseTimeout) return err;
+            if (self.rows.get(id)) |active| if (active.generation == generation) try self.emitFailure(id, active, err);
+            return;
+        };
+        self.engine.freeValue(value);
+    }
+
+    pub fn pumpDirty(self: *Manager) !bool {
+        if (!self.subscribed or self.replay_fn == null) return false;
+        var ids: std.ArrayList([]u8) = .empty;
+        defer {
+            for (ids.items) |id| self.engine.gpa.free(id);
+            ids.deinit(self.engine.gpa);
+        }
+        var entries = self.rows.iterator();
+        while (entries.next()) |entry| if (entry.value_ptr.*.dirty) {
+            const id = try self.engine.gpa.dupe(u8, entry.key_ptr.*);
+            ids.append(self.engine.gpa, id) catch |err| {
+                self.engine.gpa.free(id);
+                return err;
+            };
+        };
+        for (ids.items) |id| {
+            const selected = self.rows.get(id) orelse continue;
+            const generation = selected.generation;
+            const revision = selected.revision;
+            for ([_]Kind{ .render_tool_call, .render_tool_result }) |kind| {
+                const current = self.rows.get(id) orelse break;
+                if (current.generation != generation) break;
+                const payload = c.JS_DupValue(self.engine.context, if (kind == .render_tool_call) current.call_payload else current.result_payload);
+                defer self.engine.freeValue(payload);
+                if (c.JS_IsUndefined(payload)) continue;
+                const tool_value = c.JS_DupValue(self.engine.context, current.source_tool);
+                defer self.engine.freeValue(tool_value);
+                const snapshot = c.JS_DupValue(self.engine.context, current.snapshot);
+                defer self.engine.freeValue(snapshot);
+                const name = try self.engine.gpa.dupe(u8, current.tool);
+                defer self.engine.gpa.free(name);
+                self.replay_fn.?(self.replay_context, .{ .owner_id = current.owner_id, .id = id, .name = name, .generation = generation, .kind = kind, .payload = payload, .snapshot = if (c.JS_IsUndefined(snapshot)) null else snapshot, .tool = tool_value }) catch |err| {
+                    if (err == error.OutOfMemory or err == error.JavaScriptJobLimit or err == error.JavaScriptInterrupted or err == error.NativeHostPromiseTimeout) return err;
+                    if (self.rows.get(id)) |active| if (active.generation == generation) try self.emitFailure(id, active, err);
+                };
+            }
+            if (self.rows.get(id)) |current| if (current.generation == generation) {
+                current.dirty = current.revision != revision;
+            };
+        }
+        self.redraw_due_ms = null;
+        if (self.hasDirty()) self.scheduleRedraw();
+        return ids.items.len != 0;
     }
 
     fn owner(context: ?*c.JSContext, data: [*c]c.JSValue) !*Manager {
@@ -249,7 +467,7 @@ pub const Manager = struct {
         const created = try self.engine.gpa.create(Row);
         errdefer self.engine.gpa.destroy(created);
         try self.rows.ensureUnusedCapacity(self.engine.gpa, 1);
-        created.* = .{ .generation = self.next_row, .tool = owner_name, .args = c.JS_DupValue(self.engine.context, args), .state = state, .call = c.pi_js_undefined(), .result = c.pi_js_undefined() };
+        created.* = .{ .generation = self.next_row, .tool = owner_name, .args = c.JS_DupValue(self.engine.context, args), .state = state, .call = c.pi_js_undefined(), .result = c.pi_js_undefined(), .source_tool = c.pi_js_undefined(), .snapshot = c.pi_js_undefined(), .call_payload = c.pi_js_undefined(), .result_payload = c.pi_js_undefined() };
         self.next_row += 1;
         self.rows.putAssumeCapacityNoClobber(key, created);
         return created;
@@ -266,6 +484,7 @@ pub const Manager = struct {
         if (selected.generation != @as(u64, @intCast(generation))) return c.pi_js_undefined();
         selected.dirty = true;
         selected.revision +%= 1;
+        self.scheduleRedraw();
         return c.pi_js_undefined();
     }
 
@@ -419,10 +638,10 @@ pub const Manager = struct {
             defer frame.deinit();
             return self.output(true, &frame);
         }
-        return self.renderTool(kind, name, payload, snapshot, tool);
+        return self.renderTool(owner_id, kind, name, payload, snapshot, tool);
     }
 
-    fn renderTool(self: *Manager, kind: Kind, name: []const u8, payload: c.JSValue, snapshot: ?c.JSValue, tool: c.JSValue) !c.JSValue {
+    fn renderTool(self: *Manager, owner_id: u64, kind: Kind, name: []const u8, payload: c.JSValue, snapshot: ?c.JSValue, tool: c.JSValue) !c.JSValue {
         const resolved = try self.resolve(name, tool);
         defer self.engine.freeValue(resolved);
         if (!c.JS_IsObject(resolved)) return self.output(false, null);
@@ -460,16 +679,30 @@ pub const Manager = struct {
         defer self.engine.freeValue(component);
         const active = self.rows.get(id) orelse return error.NativeRendererRowRetired;
         if (active.generation != generation) return error.NativeRendererRowRetired;
+        const captured_tool = c.JS_DupValue(self.engine.context, tool);
+        const captured_snapshot = if (snapshot) |saved_context| c.JS_DupValue(self.engine.context, saved_context) else c.pi_js_undefined();
+        const captured_payload = c.JS_DupValue(self.engine.context, payload);
+        self.engine.freeValue(active.source_tool);
+        self.engine.freeValue(active.snapshot);
+        const previous_payload = if (call_slot) &active.call_payload else &active.result_payload;
+        self.engine.freeValue(previous_payload.*);
+        previous_payload.* = captured_payload;
+        active.source_tool = captured_tool;
+        active.snapshot = captured_snapshot;
+        active.owner_id = owner_id;
         const previous = if (call_slot) &active.call else &active.result;
         const retained = c.JS_DupValue(self.engine.context, component);
         self.engine.freeValue(previous.*);
         previous.* = retained;
         const revision = active.revision;
-        var frame = try self.render(component, try self.width(payload, snapshot));
+        const available_width = try self.width(payload, snapshot);
+        var frame = try self.render(component, available_width);
         defer frame.deinit();
         const current = self.rows.get(id) orelse return error.NativeRendererRowRetired;
         if (current.generation != generation) return error.NativeRendererRowRetired;
+        current.width = available_width;
         if (current.revision == revision) current.dirty = false;
+        try self.emitFrame(id, current, if (call_slot) .call else .result, &frame);
         const object = try self.output(true, &frame);
         errdefer self.engine.freeValue(object);
         try self.put(object, "rowGeneration", c.JS_NewInt64(self.engine.context, @intCast(generation)));

@@ -1,0 +1,240 @@
+{
+  "source_freeze": "renderer-frontend-owned-freeze-20261005.json",
+  "consumer_patch": "renderer-frontend-delta-20261005/consumer.patch",
+  "markdown_patch": "markdown-ownership-repair-20261005/repair.patch",
+  "producer_freeze": "native-renderer-mailbox-owned-freeze-20261005.json",
+  "jobs": [
+    {
+      "name": "renderer-frontend-final-debug-kernel-20261005",
+      "pid": 18264,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-fullscreen-frontend-components -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "created_utc": "2026-10-05T19:30:47.136428Z",
+      "launched_utc": "2026-10-05T20:30:47.1332514+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:31:00.3869336+01:00"
+    },
+    {
+      "name": "renderer-frontend-final-optimized-kernel-20261005",
+      "pid": 33660,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-fullscreen-frontend-components -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "created_utc": "2026-10-05T19:34:20.223728Z",
+      "launched_utc": "2026-10-05T20:34:20.220883+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:35:09.5167627+01:00"
+    },
+    {
+      "name": "renderer-controller-admission-ownership-20261005",
+      "pid": 3812,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/controller_close_test.zig --test-filter \"renderer callback\" -lc -I vendor/quickjs -I src/extensions",
+      "created_utc": "2026-10-05T19:30:21.907347Z",
+      "launched_utc": "2026-10-05T20:30:21.9045946+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:30:24.2406968+01:00"
+    },
+    {
+      "name": "renderer-markdown-actual-release-tests-20261005",
+      "pid": 40108,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/markdown_ownership_test.zig -OReleaseSafe",
+      "created_utc": "2026-10-05T19:20:16.287014Z",
+      "launched_utc": "2026-10-05T20:20:16.2826916+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:20:30.6125523+01:00"
+    },
+    {
+      "name": "renderer-final-row-protocol-tests-20261005",
+      "pid": 54108,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/renderer_frontend_test.zig -OReleaseSafe",
+      "created_utc": "2026-10-05T19:42:42.379601Z",
+      "launched_utc": "2026-10-05T20:42:42.3780822+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:42:53.1753218+01:00"
+    },
+    {
+      "name": "renderer-frontend-regular-partial-win-cli-20261005",
+      "pid": 14276,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -j2 --summary all --prefix C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-win-candidate",
+      "created_utc": "2026-10-05T19:25:38.163907Z",
+      "launched_utc": "2026-10-05T20:25:38.1606123+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:25:55.6716399+01:00"
+    },
+    {
+      "name": "renderer-frontend-all-win-cells-verbose-20261005",
+      "pid": 54284,
+      "executable": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-all-win-test.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-all-win-test.exe\"",
+      "created_utc": "2026-10-05T19:29:18.215911Z",
+      "launched_utc": "2026-10-05T20:29:18.2139721+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:29:42.3691796+01:00"
+    },
+    {
+      "name": "renderer-frontend-final-release-win-cli-20261005",
+      "pid": 22508,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -Doptimize=ReleaseSafe -j2 --summary all --prefix C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-win-release-candidate",
+      "created_utc": "2026-10-05T19:37:25.595132Z",
+      "launched_utc": "2026-10-05T20:37:25.5919675+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:39:34.4779327+01:00"
+    },
+    {
+      "name": "renderer-frontend-release-win-cells-20261005",
+      "pid": 51952,
+      "executable": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-all-win-test.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-all-win-test.exe\"",
+      "created_utc": "2026-10-05T19:40:22.235624Z",
+      "launched_utc": "2026-10-05T20:40:22.2326558+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:40:40.116624+01:00"
+    },
+    {
+      "name": "renderer-frontend-final-linux-cli-20261005",
+      "pid": 51372,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -Dtarget=x86_64-linux-gnu -j2 --summary all --prefix C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-linux-candidate",
+      "created_utc": "2026-10-05T19:32:04.365945Z",
+      "launched_utc": "2026-10-05T20:32:04.3626044+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:32:12.4855774+01:00"
+    },
+    {
+      "name": "renderer-frontend-all-linux-cells-20261005",
+      "pid": 48596,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --cd /mnt/c/Users/adyba/pi-zig-renderer-frontend-20261005 -- /usr/bin/timeout --signal=TERM --kill-after=5s 180s /usr/bin/env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/renderer-linux-candidate/bin/pi /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/renderer-all-linux-test",
+      "created_utc": "2026-10-05T19:32:55.81857Z",
+      "launched_utc": "2026-10-05T20:32:55.8179695+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:33:28.1444148+01:00"
+    },
+    {
+      "name": "renderer-frontend-final-macos-cli-cross-20261005",
+      "pid": 14560,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build -Dtarget=aarch64-macos -j2 --summary all --prefix C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-macos-candidate",
+      "created_utc": "2026-10-05T19:32:04.365947Z",
+      "launched_utc": "2026-10-05T20:32:04.3626017+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:32:38.3175674+01:00"
+    },
+    {
+      "name": "renderer-frontend-final-macos-fixture-cross-20261005",
+      "pid": 44192,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/fullscreen_frontend_process_test.zig -target aarch64-macos -lc --test-no-exec -femit-bin=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-all-macos-test",
+      "created_utc": "2026-10-05T19:42:40.157773Z",
+      "launched_utc": "2026-10-05T20:42:40.1537732+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T20:42:42.3701139+01:00"
+    }
+  ],
+  "binary_hashes": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-win-candidate\\bin\\pi.exe",
+      "sha256": "d9e520a782712ea8f86ce8e7159ac7dcffb08e96ec8d1e7488592976586e6454",
+      "bytes": 32834560
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-win-release-candidate\\bin\\pi.exe",
+      "sha256": "4c80e148556c603ac1037c70e9d7ba4be561f9873eb1c24c86a07fc4876eb54d",
+      "bytes": 15596544
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-linux-candidate\\bin\\pi",
+      "sha256": "3e7cba69515b48068bccceb2d63c046d0c2bf878690ac7351225ae7910242b5c",
+      "bytes": 202016065
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-macos-candidate\\bin\\pi",
+      "sha256": "95ffbbb4a38dd7ceb6e7b6a6e8aff77ad6dfbf619ac29be86996896b11555a8e",
+      "bytes": 38675328
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-all-win-test.exe",
+      "sha256": "ed458af697ed45546bfa0423d26c7909240feb1a42174d6123fd16d4a14f0ff6",
+      "bytes": 2385920
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-all-linux-test",
+      "sha256": "300bd9dd26825631f51606a627dcac174787438a6380581240c9467984156788",
+      "bytes": 22426829
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-all-macos-test",
+      "sha256": "3150ba9a838c10a8644964aae7c18aa88a52d91606b719eae59e13436b9df4d0",
+      "bytes": 2494872
+    }
+  ],
+  "counts": {
+    "debug_kernel": 25,
+    "optimized_kernel": 25,
+    "optimized_markdown": 44,
+    "optimized_rows_protocol": 6,
+    "controller_admission": 2,
+    "windows_debug_pass": 22,
+    "windows_debug_skip": 3,
+    "windows_optimized_pass": 22,
+    "windows_optimized_skip": 3,
+    "linux_actual_pass": 22,
+    "linux_actual_skip": 0
+  },
+  "before_evidence": [
+    "renderer-frontend-first-win-cells2-20261005",
+    "renderer-frontend-no-reentry-win-cells-20261005",
+    "renderer-frontend-transcript-gpa2-20261005",
+    "renderer-frontend-markdown-admission-gpa-20261005"
+  ],
+  "limits": [
+    "Actual new renderer runtime proof covers Windows ConPTY and Linux PTY; macOS CLI and fixture are cross-compilation proof pending hosted runtime",
+    "Live subscribed renderer mailbox binds persistent fullscreen; regular/headless retain static rendering and canonical native partial output",
+    "Arbitrary overlays and widget factory scene architecture are subsequent slices",
+    "No new consumer or producer source was written to Main by this agent; current Main patch application checked read-only"
+  ],
+  "created_utc": "2026-10-05T19:46:32.5759095+00:00"
+}

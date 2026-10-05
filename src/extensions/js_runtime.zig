@@ -5,10 +5,20 @@
 const std = @import("std");
 const Io = std.Io;
 const component_protocol = @import("component_protocol.zig");
+const renderer_protocol = @import("renderer_protocol.zig");
+const actions_mod = @import("actions.zig");
 
 const bridge_source = @embedFile("js_bridge.mjs");
 const record_prefix: u8 = 0x1e;
 var bridge_temp_counter: std.atomic.Value(u64) = .init(1);
+var native_owner_generation: std.atomic.Value(u64) = .init(1);
+
+const RendererBridgeAdapter = struct {
+    context: ?*anyopaque = null,
+    record_fn: *const fn (?*anyopaque, renderer_protocol.Record, *renderer_protocol.ControlQueue) anyerror!void,
+    closed_fn: *const fn (?*anyopaque, u64) anyerror!void,
+};
+pub const RendererBridge = RendererBridgeAdapter;
 
 pub const Backend = enum { legacy, native };
 
@@ -97,6 +107,7 @@ const NativeReadSession = struct {
     failure: ?anyerror = null,
 
     fn reader(self: *@This()) Io.Cancelable!void {
+        defer self.runtime.rendererEnded();
         while (true) {
             const record = self.runtime.readRecordAllocating(std.heap.page_allocator) catch |err| {
                 self.mutex.lockUncancelable(self.runtime.io);
@@ -106,6 +117,19 @@ const NativeReadSession = struct {
                 self.wake.set(self.runtime.io);
                 return;
             };
+            const adopted = self.runtime.dispatchRendererRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            };
+            if (adopted) {
+                std.heap.page_allocator.free(record);
+                continue;
+            }
             self.mutex.lockUncancelable(self.runtime.io);
             if (self.records.items.len >= 128 or record.len > 8 * 1024 * 1024 - self.bytes) {
                 self.finished = true;
@@ -550,6 +574,14 @@ pub const Runtime = struct {
     group_references: std.atomic.Value(usize) = .init(1),
     native_read_session: ?*NativeReadSession = null,
     native_reader_group: Io.Group = .init,
+    owner_generation: u64 = 1,
+    renderer_mutex: Io.Mutex = .init,
+    renderer_bridge: ?RendererBridgeAdapter = null,
+    renderer_controls: ?*renderer_protocol.ControlQueue = null,
+    renderer_writer_group: Io.Group = .init,
+    renderer_writer_started: bool = false,
+    renderer_actions: actions_mod.Queue = undefined,
+    renderer_actions_ready: bool = false,
     mutex: Io.Mutex = .init,
     /// Serializes worker stdin independently so the abort watcher can write while
     /// the invocation thread is blocked waiting for worker stdout.
@@ -592,6 +624,7 @@ pub const Runtime = struct {
         runtime: *Runtime,
         manifest_json: []u8,
     };
+    pub const RendererBridge = RendererBridgeAdapter;
 
     pub const NativeOptions = struct {
         // Null selects this running standalone executable. Tests/embedders can
@@ -618,10 +651,16 @@ pub const Runtime = struct {
     pub fn startNativeGroup(gpa: std.mem.Allocator, io: Io, source_paths: []const []const u8, options: NativeOptions) !Started {
         if (source_paths.len == 0 or source_paths.len > 4096) return error.InvalidNativeExtensionGroup;
         const runtime = try spawnNativeRuntimeConfigured(gpa, io, source_paths[0], options, true);
+        const generation = native_owner_generation.fetchAdd(1, .monotonic);
+        if (generation == 0 or generation > 9_007_199_254_740_991) {
+            runtime.deinit();
+            return error.NativeOwnerGenerationLimit;
+        }
+        runtime.owner_generation = generation;
         var startup: Io.Writer.Allocating = .init(gpa);
         defer startup.deinit();
         const written: ?anyerror = blk: {
-            startup.writer.writeAll("{\"kind\":\"load_group\",\"sources\":") catch break :blk error.OutOfMemory;
+            startup.writer.print("{{\"kind\":\"load_group\",\"ownerGeneration\":\"{d}\",\"sources\":", .{generation}) catch break :blk error.OutOfMemory;
             std.json.Stringify.value(source_paths, .{}, &startup.writer) catch break :blk error.OutOfMemory;
             startup.writer.writeByte('}') catch break :blk error.OutOfMemory;
             if (startup.written().len > runtime.max_line_bytes) break :blk error.NativeGroupStartupTooLarge;
@@ -692,6 +731,11 @@ pub const Runtime = struct {
         const manifest_json = try stringifyValue(gpa, manifest);
         errdefer gpa.free(manifest_json);
         if (runtime.native_group) {
+            const controls = try std.heap.page_allocator.create(renderer_protocol.ControlQueue);
+            controls.* = renderer_protocol.ControlQueue.init(std.heap.page_allocator, runtime.io, runtime.owner_generation);
+            runtime.renderer_controls = controls;
+            runtime.renderer_actions = actions_mod.Queue.init(std.heap.page_allocator, runtime.io);
+            runtime.renderer_actions_ready = true;
             const session = try gpa.create(NativeReadSession);
             session.* = .{ .runtime = runtime };
             errdefer gpa.destroy(session);
@@ -816,6 +860,19 @@ pub const Runtime = struct {
             self.gpa.destroy(session);
             self.native_read_session = null;
         }
+        if (self.renderer_controls) |controls| controls.stop();
+        if (self.renderer_writer_started) {
+            self.renderer_writer_group.cancel(self.io);
+            self.renderer_writer_group.await(self.io) catch {};
+        }
+        if (self.renderer_bridge) |bridge| bridge.closed_fn(bridge.context, self.owner_generation) catch {};
+        self.renderer_bridge = null;
+        if (self.renderer_controls) |controls| {
+            controls.deinit();
+            std.heap.page_allocator.destroy(controls);
+            self.renderer_controls = null;
+        }
+        if (self.renderer_actions_ready) self.renderer_actions.deinit();
         self.mutex.lockUncancelable(self.io);
         if (!self.closed) {
             self.writeLine("{\"kind\":\"shutdown\"}") catch {};
@@ -843,6 +900,137 @@ pub const Runtime = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         self.ui_bridge = bridge;
+    }
+
+    pub fn setRendererBridge(self: *Runtime, bridge: ?RendererBridgeAdapter) !void {
+        if (self.shared_owner) |owner| return owner.setRendererBridge(bridge);
+        if (!self.native_group) return;
+        self.renderer_mutex.lockUncancelable(self.io);
+        defer self.renderer_mutex.unlock(self.io);
+        if (self.closed) return error.JavaScriptExtensionClosed;
+        if (self.native_read_session) |session| {
+            session.mutex.lockUncancelable(self.io);
+            const finished = session.finished;
+            const failure = session.failure;
+            session.mutex.unlock(self.io);
+            if (finished) return failure orelse error.JavaScriptExtensionClosed;
+        }
+        if (self.renderer_bridge == null and bridge == null) return;
+        if (self.renderer_bridge) |old| if (bridge) |replacement| {
+            if (old.context == replacement.context and old.record_fn == replacement.record_fn and old.closed_fn == replacement.closed_fn) return;
+        };
+        if (self.renderer_bridge) |old| {
+            self.renderer_bridge = null;
+            self.stopRendererWriter();
+            try old.closed_fn(old.context, self.owner_generation);
+            const previous = self.renderer_controls.?;
+            const replacement = try std.heap.page_allocator.create(renderer_protocol.ControlQueue);
+            replacement.* = renderer_protocol.ControlQueue.init(std.heap.page_allocator, self.io, self.owner_generation);
+            previous.deinit();
+            std.heap.page_allocator.destroy(previous);
+            self.renderer_controls = replacement;
+        }
+        if (bridge != null and !self.renderer_writer_started) {
+            try self.renderer_writer_group.concurrent(self.io, rendererControlWriter, .{self});
+            self.renderer_writer_started = true;
+        }
+        self.renderer_bridge = bridge;
+        var buffer: [192]u8 = undefined;
+        const request = try std.fmt.bufPrint(&buffer, "{{\"kind\":\"renderer_subscribe\",\"version\":1,\"ownerGeneration\":\"{d}\",\"enabled\":{}}}", .{ self.owner_generation, bridge != null });
+        try self.writeLine(request);
+    }
+
+    fn stopRendererWriter(self: *Runtime) void {
+        if (self.renderer_controls) |controls| controls.stop();
+        if (self.renderer_writer_started) {
+            self.renderer_writer_group.cancel(self.io);
+            self.renderer_writer_group.await(self.io) catch {};
+            self.renderer_writer_started = false;
+        }
+    }
+
+    fn rendererEnded(self: *Runtime) void {
+        if (!self.native_group) return;
+        self.renderer_mutex.lockUncancelable(self.io);
+        defer self.renderer_mutex.unlock(self.io);
+        self.stopRendererWriter();
+        if (self.renderer_bridge) |bridge| {
+            self.renderer_bridge = null;
+            bridge.closed_fn(bridge.context, self.owner_generation) catch {};
+        }
+    }
+
+    fn rendererControlWriter(self: *Runtime) Io.Cancelable!void {
+        const queue = self.renderer_controls orelse return;
+        while (try queue.next()) |received| {
+            var control = received;
+            defer control.deinit();
+            var writer: Io.Writer.Allocating = .init(std.heap.page_allocator);
+            defer writer.deinit();
+            renderer_protocol.writeControl(&writer.writer, &control) catch return;
+            self.writeLine(writer.written()) catch return;
+        }
+    }
+
+    fn dispatchRendererRecord(self: *Runtime, bytes: []const u8) !bool {
+        if (!self.native_group) return false;
+        var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        const root = std.json.parseFromSliceLeaky(std.json.Value, allocator, bytes, .{}) catch return false;
+        if (root != .object) return false;
+        const kind = root.object.get("type") orelse return false;
+        if (kind != .string or !std.mem.startsWith(u8, kind.string, "renderer_")) return false;
+        const generation = try component_protocol.identifier(root.object.get("ownerGeneration") orelse return error.InvalidRendererIdentity);
+        if (generation != self.owner_generation) return true;
+        if (std.mem.eql(u8, kind.string, "renderer_actions")) {
+            const version_value = root.object.get("version") orelse return error.InvalidRendererVersion;
+            if (version_value != .integer or version_value.integer != renderer_protocol.version) return error.InvalidRendererVersion;
+            var batch = try actions_mod.Batch.parseNative(std.heap.page_allocator, "native", "renderer_redraw", bytes);
+            defer batch.deinit(std.heap.page_allocator);
+            if (batch.items.len > 4096 -| self.renderer_actions.count()) return error.ExtensionRendererActionQueueLimit;
+            try self.renderer_actions.enqueue(&batch);
+            return true;
+        }
+        var record = try renderer_protocol.read(std.heap.page_allocator, &root.object);
+        var transferred = false;
+        defer if (!transferred) record.deinit();
+        self.renderer_mutex.lockUncancelable(self.io);
+        defer self.renderer_mutex.unlock(self.io);
+        if (self.renderer_bridge) |bridge| {
+            try bridge.record_fn(bridge.context, record, self.renderer_controls.?);
+            transferred = true;
+        }
+        return true;
+    }
+
+    pub fn transferRendererActions(self: *Runtime, destination: *actions_mod.Queue) !void {
+        if (self.shared_owner) |owner| return owner.transferRendererActions(destination);
+        if (!self.renderer_actions_ready) return;
+        const source = &self.renderer_actions;
+        source.mutex.lockUncancelable(self.io);
+        defer source.mutex.unlock(self.io);
+        const count = source.items.items.len;
+        if (count == 0) return;
+        const records = try destination.gpa.alloc(actions_mod.Record, count);
+        var copied: usize = 0;
+        var batch: actions_mod.Batch = .{ .items = records };
+        errdefer {
+            for (records[0..copied]) |*record| record.deinit(destination.gpa);
+            destination.gpa.free(records);
+        }
+        for (source.items.items, records) |record, *owned| {
+            owned.* = try record.clone(destination.gpa);
+            copied += 1;
+        }
+        try destination.enqueue(&batch);
+        for (source.items.items) |*record| record.deinit(source.gpa);
+        source.items.clearRetainingCapacity();
+    }
+
+    pub fn rendererActionCount(self: *Runtime) usize {
+        if (self.shared_owner) |owner| return owner.rendererActionCount();
+        return if (self.renderer_actions_ready) self.renderer_actions.count() else 0;
     }
 
     /// Update the context exposed through ExtensionContext for later calls.

@@ -1189,6 +1189,15 @@ pub const Bindings = struct {
         return self.engine.stringify(result);
     }
 
+    pub fn replayRenderer(self: *Bindings, replay: native_renderers.Replay) ![]u8 {
+        try self.beginActions();
+        defer self.finishInvocation();
+        const result = try self.renderers.runOwned(self.owner_id, replay.kind, replay.name, replay.payload, replay.snapshot, replay.tool);
+        defer self.engine.freeValue(result);
+        try self.mergeActions(result);
+        return self.engine.stringify(result);
+    }
+
     fn providerUiAction(context: ?*anyopaque, method: [*:0]const u8, payload: c.JSValue) !void {
         const self: *Bindings = @ptrCast(@alignCast(context.?));
         if (!self.invocation_active) return error.StaleNativeProviderInvocation;

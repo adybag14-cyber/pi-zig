@@ -15,6 +15,7 @@ const ui = @import("../extensions/ui.zig");
 const transcript_mod = @import("transcript_view.zig");
 const platform = @import("../tui/platform_terminal.zig");
 const component_protocol = @import("../extensions/component_protocol.zig");
+pub const renderer_protocol = @import("../extensions/renderer_protocol.zig");
 
 pub const CommandKind = enum { submit, complete, shortcut, clipboard, quit };
 pub const Command = struct {
@@ -59,6 +60,56 @@ fn ownershipCase(gpa: std.mem.Allocator) !void {
 
 test "fullscreen owner construction event mailboxes and editor snapshots release every failed allocation" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, ownershipCase, .{});
+}
+
+fn rendererOwnershipCase(gpa: std.mem.Allocator) !void {
+    const io = std.testing.io;
+    var environ: std.process.Environ.Map = .init(gpa);
+    defer environ.deinit();
+    var bindings = keybindings.Manager.init(gpa);
+    defer bindings.deinit();
+    var buffer: [128]u8 = undefined;
+    var reader = Io.File.Reader.initStreaming(.stdin(), io, &buffer);
+    const owner = try Frontend.create(gpa, io, &environ, &reader, &bindings, .{});
+    defer owner.deinit();
+    var queue = renderer_protocol.ControlQueue.init(gpa, io, 1);
+    var queue_alive = true;
+    defer if (queue_alive) queue.deinit();
+    const prefix = "\"version\":1,\"ownerGeneration\":\"1\",\"extensionId\":\"2\",\"rowGeneration\":\"3\",\"toolCallId\":\"owned-tool\",\"width\":80";
+    const records = [_][]const u8{
+        "{" ++ prefix ++ ",\"type\":\"renderer_register\",\"toolName\":\"paint\"}",
+        "{" ++ prefix ++ ",\"type\":\"renderer_frame\",\"slot\":\"call\",\"sequence\":\"1\",\"revision\":\"1\",\"lines\":[\"old-renderer\"]}",
+        "{" ++ prefix ++ ",\"type\":\"renderer_frame\",\"slot\":\"call\",\"sequence\":\"2\",\"revision\":\"2\",\"lines\":[\"new-renderer\"]}",
+    };
+    try owner.postEvent(.{ .kind = .tool_execution_start, .id = "owned-tool", .name = "paint", .args_json = "canonical-call" });
+    for (records) |source| {
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, source, .{});
+        defer parsed.deinit();
+        var record = try renderer_protocol.read(gpa, &parsed.value.object);
+        var transferred = false;
+        defer if (!transferred) record.deinit();
+        try Frontend.rendererSink(owner, record, &queue);
+        transferred = true;
+    }
+    try std.testing.expectEqual(@as(usize, 2), owner.renderer_record_count);
+    try owner.applyUpdates();
+    try std.testing.expectEqualStrings("new-renderer", owner.transcript.renderers.find("owned-tool").?.lines(.call, 80).?[0]);
+    try owner.draw(.{ .columns = 70, .rows = 24 }, false);
+    try std.testing.expectEqual(@as(usize, 1), queue.controls.items.len);
+    try std.testing.expectEqual(@as(usize, 70), queue.controls.items[0].kind.resize);
+    try Frontend.rendererClosed(owner, 1);
+    try std.testing.expect(owner.renderer_owners.items[0].controls == null);
+    queue.deinit();
+    queue_alive = false;
+    // The borrowed queue is already gone before the paint owner consumes the
+    // retirement; pending owned DTOs and canonical fallback remain safe.
+    try owner.applyUpdates();
+    try std.testing.expect(owner.transcript.renderers.find("owned-tool").?.retired);
+    try owner.draw(.{ .columns = 70, .rows = 24 }, false);
+}
+
+test "fullscreen renderer mailbox coalesces slots sends resize and detaches before queue free under every allocation failure" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, rendererOwnershipCase, .{});
 }
 
 fn componentOwnershipCase(gpa: std.mem.Allocator) !void {
@@ -211,6 +262,7 @@ const Update = union(enum) {
     config: ConfigUpdate,
     component: struct { scene: component_protocol.Scene, controls: *component_protocol.ControlQueue },
     component_close: component_protocol.Fence,
+    renderer: renderer_protocol.Record,
     fn deinit(self: *Update, gpa: std.mem.Allocator) void {
         switch (self.*) {
             .event => |*value| value.deinit(gpa),
@@ -228,6 +280,7 @@ const Update = union(enum) {
                 gpa.free(value.shortcuts);
             },
             .component => |*value| value.scene.deinit(),
+            .renderer => |*record| record.deinit(),
             .component_close => {},
         }
     }
@@ -239,6 +292,12 @@ pub const Options = struct {
     editor_padding_x: u8 = 0,
 };
 
+const RendererOwner = struct {
+    generation: u64,
+    controls: ?*renderer_protocol.ControlQueue,
+    closed: bool = false,
+    retired: bool = false,
+};
 pub const Frontend = struct {
     gpa: std.mem.Allocator,
     io: Io,
@@ -258,6 +317,11 @@ pub const Frontend = struct {
     updates: std.ArrayList(Update) = .empty,
     commands: std.ArrayList(Command) = .empty,
     input_batch_active: bool = false,
+    renderer_owners: std.ArrayList(RendererOwner) = .empty,
+    renderer_record_count: usize = 0,
+    renderer_record_bytes: usize = 0,
+    renderer_retire_pending: bool = false,
+    renderer_width: std.atomic.Value(usize) = .init(80),
     stopping: bool = false,
     ready: bool = false,
     pause_depth: usize = 0,
@@ -495,6 +559,102 @@ pub const Frontend = struct {
         const self: *Frontend = @ptrCast(@alignCast(raw.?));
         try self.post(.{ .component = .{ .scene = scene, .controls = controls } });
     }
+    pub fn rendererWidth(self: *Frontend) usize {
+        return self.renderer_width.load(.acquire);
+    }
+    pub fn rendererSink(raw: ?*anyopaque, record: renderer_protocol.Record, controls: *renderer_protocol.ControlQueue) !void {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.failure) |err| return err;
+        if (self.stopping or self.worker_finished) return error.RendererFrontendStopped;
+        if (controls.owner_generation != record.fence.owner_generation) return error.StaleRendererOwner;
+        var owner: ?*RendererOwner = null;
+        for (self.renderer_owners.items) |*value| if (value.generation == record.fence.owner_generation) {
+            owner = value;
+            break;
+        };
+        if (owner) |value| if (value.closed or value.controls != controls) return error.RendererOwnerClosed;
+        var added_owner = false;
+        if (owner == null) {
+            if (self.renderer_owners.items.len >= renderer_protocol.maximum_records) return error.RendererOwnerLimit;
+            try self.renderer_owners.append(self.gpa, .{ .generation = record.fence.owner_generation, .controls = controls });
+            added_owner = true;
+        }
+        errdefer if (added_owner) {
+            _ = self.renderer_owners.pop();
+        };
+        if (record.kind == .frame) {
+            var index = self.updates.items.len;
+            while (index > 0) {
+                index -= 1;
+                if (self.updates.items[index] != .renderer) continue;
+                const old = &self.updates.items[index].renderer;
+                if (!renderer_protocol.Fence.matches(old.fence, record.fence)) continue;
+                if (old.kind != .frame) break;
+                if (old.kind.frame.slot != record.kind.frame.slot) continue;
+                if (old.kind.frame.sequence >= record.kind.frame.sequence or old.kind.frame.revision > record.kind.frame.revision) return error.StaleRendererFrame;
+                const kept = self.renderer_record_bytes - old.bytes();
+                if (record.bytes() > renderer_protocol.maximum_queue_bytes - kept) return error.RendererMailboxLimit;
+                old.deinit();
+                old.* = record;
+                self.renderer_record_bytes = kept + record.bytes();
+                return;
+            }
+        }
+        if (self.renderer_record_count >= renderer_protocol.maximum_records or record.bytes() > renderer_protocol.maximum_queue_bytes - self.renderer_record_bytes) return error.RendererMailboxLimit;
+        try self.updates.append(self.gpa, .{ .renderer = record });
+        self.renderer_record_count += 1;
+        self.renderer_record_bytes += record.bytes();
+        self.changed.broadcast(self.io);
+    }
+    pub fn rendererClosed(raw: ?*anyopaque, generation: u64) !void {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        // This registry is the only borrowed queue location. Pending records
+        // and transcript frames own their data. Detach before ACK even after
+        // paint failure or while a standard modal owns terminal output.
+        for (self.renderer_owners.items) |*owner| if (owner.generation == generation) {
+            owner.controls = null;
+            owner.closed = true;
+            self.renderer_retire_pending = true;
+            self.changed.broadcast(self.io);
+            return;
+        };
+    }
+    fn rendererOwnerActive(self: *Frontend, generation: u64) bool {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        for (self.renderer_owners.items) |owner| if (owner.generation == generation) return !owner.closed;
+        return false;
+    }
+    fn resizeRenderers(self: *Frontend, width: usize) !void {
+        for (self.transcript.renderers.rows.items) |*row| {
+            if (row.retired and !row.needs_retire) continue;
+            if (!row.needs_retire and (row.requested_width == width or !self.transcript.hasToolRow(row.fence.tool_call_id))) continue;
+            var needs_width = row.width != width;
+            for (row.slots) |slot| if (slot) |value| {
+                if (value.width != width) needs_width = true;
+            };
+            if (!needs_width and !row.needs_retire) continue;
+            self.mutex.lockUncancelable(self.io);
+            defer self.mutex.unlock(self.io);
+            const controls = for (self.renderer_owners.items) |owner| {
+                if (owner.generation == row.fence.owner_generation and !owner.closed) break owner.controls;
+            } else null;
+            const queue = controls orelse continue;
+            var control: renderer_protocol.Control = .{ .gpa = self.gpa, .fence = row.fence, .kind = if (row.needs_retire) .retire else .{ .resize = width } };
+            control.fence.tool_call_id = try self.gpa.dupe(u8, row.fence.tool_call_id);
+            queue.send(control) catch |err| {
+                control.deinit();
+                if (err == error.RendererMailboxStopped) continue;
+                return err;
+            };
+            row.requested_width = width;
+            row.needs_retire = false;
+        }
+    }
     pub fn componentClose(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
         const self: *Frontend = @ptrCast(@alignCast(raw.?));
         self.mutex.lockUncancelable(self.io);
@@ -535,6 +695,7 @@ pub const Frontend = struct {
         self.stop();
         for (self.updates.items) |*update| update.deinit(self.gpa);
         self.updates.deinit(self.gpa);
+        self.renderer_owners.deinit(self.gpa);
         for (self.commands.items) |*command| command.deinit(self.gpa);
         self.commands.deinit(self.gpa);
         if (self.anchor) |value| self.gpa.free(value.key);
@@ -653,6 +814,10 @@ pub const Frontend = struct {
         self.mutex.lockUncancelable(self.io);
         var updates = self.updates;
         self.updates = .empty;
+        self.renderer_record_count = 0;
+        self.renderer_record_bytes = 0;
+        const retire_renderers = self.renderer_retire_pending;
+        self.renderer_retire_pending = false;
         const requested_close = self.component_close_request;
         self.component_close_request = null;
         self.mutex.unlock(self.io);
@@ -660,7 +825,15 @@ pub const Frontend = struct {
             for (updates.items) |*update| update.deinit(self.gpa);
             updates.deinit(self.gpa);
         }
-        if (updates.items.len > 0 and !self.scroll.following_end and self.anchor == null) self.anchor = try self.transcript.anchor(self.scroll.scroll_top);
+        if ((updates.items.len > 0 or retire_renderers) and !self.scroll.following_end and self.anchor == null) self.anchor = try self.transcript.anchor(self.scroll.scroll_top);
+        if (retire_renderers) {
+            self.mutex.lockUncancelable(self.io);
+            defer self.mutex.unlock(self.io);
+            for (self.renderer_owners.items) |*owner| if (owner.closed and !owner.retired) {
+                if (self.transcript.closeRendererOwner(owner.generation)) self.dirty = true;
+                owner.retired = true;
+            };
+        }
         for (updates.items) |*update| switch (update.*) {
             .event => |event| try self.transcript.eventWithRendered(event.value, event.preformatted),
             .branch => |entries| try self.transcript.syncBranch(entries, if (self.anchor) |*value| value else null),
@@ -724,6 +897,9 @@ pub const Frontend = struct {
                 try self.resizeComponent(terminal.terminalDimensions(&self.environ, .{ .columns = 80, .rows = 24 }));
             },
             .component_close => |fence| try self.removeCustomComponent(fence),
+            .renderer => |*record| {
+                if (self.rendererOwnerActive(record.fence.owner_generation)) _ = try self.transcript.adoptRenderer(record);
+            },
         };
         if (requested_close) |fence| try self.removeCustomComponent(fence);
         if (updates.items.len > 0) self.dirty = true;
@@ -746,6 +922,8 @@ pub const Frontend = struct {
         self.component_dimensions = size;
     }
     fn draw(self: *Frontend, dimensions: terminal.Dimensions, write: bool) !void {
+        self.renderer_width.store(dimensions.columns, .release);
+        try self.resizeRenderers(dimensions.columns);
         var editor_lines = try line_editor.renderEditorLinesPadded(self.gpa, &self.editor, dimensions.columns, self.editor_padding_x);
         defer editor_lines.deinit(self.gpa);
         const fallback_header = [_][]const u8{self.header};
@@ -823,6 +1001,10 @@ pub const Frontend = struct {
             update.* = .{ .busy = false };
         };
         self.component_controls = null;
+        for (self.renderer_owners.items) |*owner| {
+            owner.controls = null;
+            owner.closed = true;
+        }
         if (self.close_pending) |fence| {
             self.closed_component = fence;
             self.close_pending = null;

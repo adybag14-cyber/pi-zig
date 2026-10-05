@@ -15,6 +15,8 @@ pub const Group = struct {
     broker: bindings_mod.Bindings.InvocationBroker = .{},
     entries: std.ArrayList(Entry) = .empty,
     next_id: u64 = 1,
+    actions_fn: ?*const fn (?*anyopaque, u64, []const u8) anyerror!void = null,
+    actions_context: ?*anyopaque = null,
 
     pub fn init(engine: *engine_mod.Engine) !*Group {
         if (engine.host_data != null or engine.native_ui_manager != null) return error.NativeGroupAlreadyAttached;
@@ -25,7 +27,17 @@ pub const Group = struct {
         errdefer renderers.deinit();
         const self = try engine.gpa.create(Group);
         self.* = .{ .engine = engine, .ui = ui, .renderers = renderers };
+        renderers.replay_fn = replay;
+        renderers.replay_context = self;
         return self;
+    }
+
+    fn replay(context: ?*anyopaque, invocation: native_renderers.Replay) !void {
+        const self: *Group = @ptrCast(@alignCast(context.?));
+        const owner = try self.selected(invocation.owner_id);
+        const result = try owner.replayRenderer(invocation);
+        defer self.engine.gpa.free(result);
+        if (self.actions_fn) |send| try send(self.actions_context, invocation.owner_id, result);
     }
 
     pub fn deinit(self: *Group) void {
@@ -167,4 +179,73 @@ test "native group API reads use active session while flags keep their registrat
     const raw = try second.invokeCommand("read", "");
     defer std.testing.allocator.free(raw);
     try std.testing.expect(std.mem.indexOf(u8, raw, "active:changed:first") != null);
+}
+
+test "native group owner replays dirty call and final result with actual retained state components and resize fences" {
+    const protocol = @import("renderer_protocol.zig");
+    const gpa = std.testing.allocator;
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const group = try Group.init(engine);
+    defer group.deinit();
+    const owner = try group.add("replay-owner.mjs");
+    try owner.installSchemas();
+    try owner.loadFactory("import {Text} from 'pi-tui';export default pi=>{let oldInvalidate;pi.registerTool({name:'paint',execute(){return {}},renderCall(args,theme,ctx){oldInvalidate=ctx.invalidate;ctx.state.calls=(ctx.state.calls??0)+1;const component=ctx.lastComponent??new Text('',0,0);component.setText('call:'+ctx.state.calls+':'+args.label);return component},renderResult(result,opts,theme,ctx){ctx.state.results=(ctx.state.results??0)+1;const component=ctx.lastComponent??new Text('',0,0);component.setText('result:'+ctx.state.results+':'+result.content+':'+opts.isPartial);return component}});pi.registerCommand('invalidate',{handler(){oldInvalidate();return {message:'invalidated'}}})}", "replay-owner.mjs");
+    const Capture = struct {
+        queue: protocol.Queue,
+        fn record(context: ?*anyopaque, value: protocol.Record) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            try self.queue.send(value);
+        }
+    };
+    var capture: Capture = .{ .queue = protocol.Queue.init(gpa, std.testing.io) };
+    defer capture.queue.deinit();
+    group.renderers.record_fn = Capture.record;
+    group.renderers.record_context = &capture;
+    group.renderers.owner_generation = 42;
+    group.renderers.subscribe(true);
+    const call = try owner.invokeRenderer(.render_tool_call, "paint", "{\"toolCallId\":\"row\",\"args\":{\"label\":\"owned\"},\"width\":80}");
+    defer gpa.free(call);
+    const result = try owner.invokeRenderer(.render_tool_result, "paint", "{\"toolCallId\":\"row\",\"result\":{\"content\":\"final\"},\"isPartial\":false,\"width\":80}");
+    defer gpa.free(result);
+    const before = group.renderers.rows.get("row").?;
+    const saved_call = c.JS_DupValue(engine.context, before.call);
+    defer engine.freeValue(saved_call);
+    const saved_result = c.JS_DupValue(engine.context, before.result);
+    defer engine.freeValue(saved_result);
+    const generation = before.generation;
+    const invalidated = try owner.invokeCommand("invalidate", "");
+    defer gpa.free(invalidated);
+    c.JS_RunGC(engine.runtime);
+    try std.testing.expect(try group.renderers.pumpDirty());
+    const after = group.renderers.rows.get("row").?;
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, saved_call, after.call) and c.JS_IsStrictEqual(engine.context, saved_result, after.result));
+    var fence: protocol.Fence = .{ .owner_generation = 42, .extension_id = 1, .row_generation = generation, .tool_call_id = "row" };
+    const stale: protocol.Control = .{ .gpa = gpa, .fence = .{ .owner_generation = 41, .extension_id = 1, .row_generation = generation, .tool_call_id = "row" }, .kind = .{ .resize = 60 } };
+    try std.testing.expect(!try group.renderers.control(&stale));
+    const resize: protocol.Control = .{ .gpa = gpa, .fence = fence, .kind = .{ .resize = 60 } };
+    try std.testing.expect(try group.renderers.control(&resize));
+    try std.testing.expect(try group.renderers.pumpDirty());
+    var call_seen = false;
+    var result_seen = false;
+    while (capture.queue.take()) |received| {
+        var record = received;
+        defer record.deinit();
+        if (record.kind == .frame and record.kind.frame.width == 60) {
+            if (record.kind.frame.slot == .call) {
+                try std.testing.expect(std.mem.indexOf(u8, record.kind.frame.frame.lines[0], "call:3:owned") != null);
+                call_seen = true;
+            } else {
+                try std.testing.expect(std.mem.indexOf(u8, record.kind.frame.frame.lines[0], "result:3:final:false") != null);
+                result_seen = true;
+            }
+        }
+    }
+    try std.testing.expect(call_seen and result_seen);
+    fence.row_generation += 1;
+    const late: protocol.Control = .{ .gpa = gpa, .fence = fence, .kind = .retire };
+    try std.testing.expect(!try group.renderers.control(&late));
+    try std.testing.expect(group.renderers.retire("row", generation));
+    try std.testing.expect(!try group.renderers.control(&resize));
+    c.JS_RunGC(engine.runtime);
 }

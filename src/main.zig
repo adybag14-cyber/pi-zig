@@ -2190,6 +2190,7 @@ const RuntimeResourceReloadContext = struct {
             .script_ui_bridge = self.ui.bridge(),
             .script_backend = self.host.script_backend,
             .native_runtime_options = self.host.native_runtime_options,
+            .script_renderer_bridge = self.host.script_renderer_bridge,
         };
         errdefer new_host.deinit();
         if (!self.cli.no_extensions) for (top_resources.extensions.items) |path| try new_host.loadPath(path);
@@ -4463,6 +4464,8 @@ fn runMain(init: std.process.Init) !void {
     defer if (regular_terminal_mode) |*mode| mode.leave();
     var frontend: ?*coding.fullscreen_frontend.Frontend = null;
     defer if (frontend) |scene| {
+        extension_host.setScriptRendererBridge(null) catch {};
+        extension_ui.bindRendererFrontend(null, null, null);
         extension_ui.bindComponentScenes(null, null, null);
         extension_ui.bindEditorFrontend(null, null);
         extension_ui.bindFrontend(null, null, null);
@@ -4492,6 +4495,8 @@ fn runMain(init: std.process.Init) !void {
         extension_ui.bindFrontend(coding.fullscreen_frontend.Frontend.surfaceSink, coding.fullscreen_frontend.Frontend.modalObserver, frontend);
         extension_ui.bindEditorFrontend(coding.fullscreen_frontend.Frontend.editorSink, frontend);
         frontend.?.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, &extension_ui);
+        extension_ui.bindRendererFrontend(coding.fullscreen_frontend.Frontend.rendererSink, coding.fullscreen_frontend.Frontend.rendererClosed, frontend);
+        try extension_host.setScriptRendererBridge(extension_ui.rendererBridge());
         tui.render.bindFrontend(coding.fullscreen_frontend.Frontend.noticeSink, coding.fullscreen_frontend.Frontend.renderModalObserver, frontend);
         try frontend.?.syncBranch(&sess);
     }
@@ -5135,6 +5140,13 @@ const ExtensionPrintEmitter = struct {
             },
             .tool_execution_update, .tool_execution_end => {
                 if (!self.verbose) return;
+                if (self.host.script_backend == .native and event.kind == .tool_execution_update) {
+                    // executeTool owns the group invocation until completion;
+                    // regular mode preserves its canonical partial output.
+                    tui.render.renderToolResult(self.io, event.name, event.text, event.is_error) catch {};
+                    renderToolEventImages(self.host.gpa, self.io, self.capabilities, self.show_images, self.image_width_cells, event.image_b64, event.image_mime, event.images);
+                    return;
+                }
                 const image_count: usize = @intFromBool(event.image_b64 != null) + event.images.len;
                 const render_images = self.host.gpa.alloc(extensions.host.ToolImage, image_count) catch return;
                 defer if (render_images.len > 0) self.host.gpa.free(render_images);
@@ -5229,10 +5241,18 @@ const ExtensionPrintEmitter = struct {
     }
 
     fn onFullscreenEvent(self: *ExtensionPrintEmitter, scene: *coding.fullscreen_frontend.Frontend, event: agent.AgentEvent) !void {
+        const live_renderer = self.host.script_backend == .native and self.host.script_renderer_bridge != null;
+        const width = scene.rendererWidth();
+        if (live_renderer) try scene.postEvent(event);
+        // Partial tool callbacks run inside the group's active execute call.
+        // Its owner publishes subscribed renderer updates without reentering
+        // the same Host invocation mutex from this callback.
+        if (live_renderer and event.kind == .tool_execution_update) return;
         if (event.kind == .tool_execution_start) {
             const arguments = if (event.args_json.len > 0) event.args_json else if (event.text.len > 0) event.text else "{}";
-            if (try self.host.renderToolCall(event.name, event.id, arguments, false, self.width)) |rendered| {
+            if (try self.host.renderToolCall(event.name, event.id, arguments, false, width)) |rendered| {
                 defer self.host.gpa.free(rendered);
+                if (live_renderer) return;
                 return scene.postRenderedToolEvent(event, rendered);
             }
         } else if (event.kind == .tool_execution_update or event.kind == .tool_execution_end) {
@@ -5248,8 +5268,9 @@ const ExtensionPrintEmitter = struct {
                 images[index] = .{ .data_b64 = image.data_b64, .mime_type = image.mime_type };
                 index += 1;
             }
-            if (try self.host.renderToolResultRichImages(event.name, event.id, event.text, event.is_error, event.details_json, images, false, event.kind == .tool_execution_update, self.show_images and self.capabilities.images != null, self.width)) |rendered| {
+            if (try self.host.renderToolResultRichImages(event.name, event.id, event.text, event.is_error, event.details_json, images, false, event.kind == .tool_execution_update, self.show_images and self.capabilities.images != null, width)) |rendered| {
                 defer self.host.gpa.free(rendered);
+                if (live_renderer) return;
                 return scene.postRenderedToolEvent(event, rendered);
             }
             // Keep a visible media record in the transcript when a component
@@ -5269,7 +5290,7 @@ const ExtensionPrintEmitter = struct {
                 return scene.postEvent(projected);
             }
         }
-        try scene.postEvent(event);
+        if (!live_renderer) try scene.postEvent(event);
     }
 };
 

@@ -84,7 +84,118 @@ const Fixture = struct {
             .stderr = .{ .file = errors },
         }, 90_000);
     }
+    fn spawnRenderer(self: *Fixture, errors: Io.File, source: []const u8) !pty.Session {
+        try self.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "renderer.mjs", .data = source });
+        try self.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"\",\"tool_calls\":[{\"id\":\"live-tool\",\"name\":\"animated\",\"arguments\":\"{\\\"value\\\":\\\"seed\\\"}\"}]},{\"content\":\"turn-complete\"},{\"content\":\"after-reload\"}]" });
+        const path = try std.fs.path.join(std.testing.allocator, &.{ self.scratch.path, "renderer.mjs" });
+        defer std.testing.allocator.free(path);
+        try self.environment.put("PI_EXTENSION_BACKEND", "native");
+        return pty.spawn(std.testing.allocator, std.testing.io, .{
+            .argv = &.{ self.binary, "--offline", "--mock-script", self.mock, "--session", self.history, "--no-context-files", "--no-skills", "--no-prompt-templates", "--no-themes", "--no-builtin-tools", "--approve", "--verbose", "-e", path },
+            .cwd = .{ .path = self.scratch.path },
+            .environ_map = &self.environment,
+            .stderr = .{ .file = errors },
+        }, 90_000);
+    }
 };
+
+const renderer_extension =
+    \\import {Type} from '@earendil-works/pi-ai';export default pi=>{
+    \\ pi.registerTool({name:'animated',label:'Animated',description:'Offline native renderer fixture',parameters:Type.Object({value:Type.String()}),
+    \\  async execute(id,args,signal,update){update({content:[{type:'text',text:'partial:'+args.value}]});await new Promise(resolve=>setTimeout(resolve,500));return {content:[{type:'text',text:'done:'+args.value}]}},
+    \\  renderCall(args,theme,ctx){ctx.state.label??='early';ctx.state.value=args.value;return {render(width){return ['ROW_CALL:'+ctx.state.label+':'+width+':'+ctx.state.value]}}},
+    \\  renderResult(result,options,theme,ctx){if(!options.isPartial&&!ctx.state.scheduled){ctx.state.scheduled=true;setTimeout(()=>{ctx.state.label='late';ctx.invalidate()},700)}return {render(width){return ['ROW_RESULT:'+ctx.state.label+':'+width+':'+result.content[0].text+':'+options.isPartial]}}}
+    \\ });
+    \\}
+;
+
+test "real native renderer mailbox updates idle durable tool slots resizes and preserves editor and scroll anchor" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnRenderer(errors, renderer_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "history-row-059", 0);
+    try observed.send(&child, "run-render\r", "ROW_RESULT:early:100:partial:seed:true");
+    try std.testing.expect(!try observed.screen.contains("turn-complete"));
+    try observed.wait(&child, "ROW_RESULT:early:100:done:seed:false", observed.screen.frames);
+    try observed.wait(&child, "turn-complete", 0);
+    try std.testing.expect(try observed.screen.contains("ROW_CALL:early:100:seed"));
+    try observed.send(&child, "renderer-draft", "> renderer-draft");
+    try observed.send(&child, "\x1b[1;5H", "history-row-000");
+    try std.testing.io.sleep(.fromMilliseconds(900), .awake);
+    try observed.drain(&child);
+    try std.testing.expect(try observed.screen.contains("history-row-000"));
+    try std.testing.expect(try observed.screen.contains("> renderer-draft"));
+    try observed.send(&child, "\x1b[1;5F", "ROW_RESULT:late:100:done:seed:false");
+    try std.testing.expect(try observed.screen.contains("ROW_CALL:late:100:seed"));
+    const before_resize = observed.screen.frames;
+    try observed.screen.resize(70, 22);
+    try child.resize(70, 22);
+    try observed.wait(&child, "ROW_RESULT:late:70:done:seed:false", before_resize);
+    try std.testing.expect(try observed.screen.contains("ROW_CALL:late:70:seed"));
+    try std.testing.expect(try observed.screen.contains("> renderer-draft"));
+    const cells = try observed.screen.textAlloc(std.testing.allocator);
+    defer std.testing.allocator.free(cells);
+    try std.testing.expectEqual(@as(usize, 1), std.mem.count(u8, cells, "ROW_CALL:"));
+    try std.testing.expectEqual(@as(usize, 1), std.mem.count(u8, cells, "ROW_RESULT:"));
+    try observed.send(&child, "\x15/reload\r", "Reloaded:");
+    try std.testing.expect(!try observed.screen.contains("ROW_RESULT:"));
+    try cleanExit(&fixture, &child, &observed);
+}
+
+const renderer_error_extension =
+    \\import {Type} from '@earendil-works/pi-ai';export default pi=>pi.registerTool({name:'animated',label:'Animated',description:'Native renderer original error',parameters:Type.Object({value:Type.String()}),execute(id,args){return {content:[{type:'text',text:'done:'+args.value}]}},renderCall(args,theme,ctx){return {render(width){return ['ERROR_CALL:'+width]}}},renderResult(result,options,theme,ctx){if(!ctx.state.scheduled){ctx.state.scheduled=true;setTimeout(()=>{ctx.state.fail=true;ctx.invalidate()},700)}return {render(width){if(ctx.state.fail)throw new Error('renderer-original-diagnostic');return ['ERROR_RESULT:'+width]}}}})
+;
+
+test "real native renderer idle original error keeps canonical result draft and next turn usable" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnRenderer(errors, renderer_error_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "history-row-059", 0);
+    try observed.send(&child, "render-error\r", "ERROR_RESULT:100");
+    try observed.wait(&child, "turn-complete", 0);
+    try observed.send(&child, "error-draft", "> error-draft");
+    try observed.wait(&child, "renderer-original-diagnostic", observed.screen.frames);
+    try std.testing.expect(try observed.screen.contains("done:seed"));
+    try std.testing.expect(try observed.screen.contains("> error-draft"));
+    try observed.send(&child, "\x15next\r", "after-reload");
+    try cleanExit(&fixture, &child, &observed);
+}
+
+test "real regular native tool partial callback retains canonical output and completes without group reentry" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("regular");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnRenderer(errors, renderer_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.waitAny(&child, ">");
+    try child.send("regular-render\r");
+    try observed.waitAny(&child, "partial:seed");
+    try observed.waitAny(&child, "ROW_RESULT:early:100:done:seed:false");
+    try observed.waitAny(&child, "turn-complete");
+    try std.testing.expect(!observed.screen.in_alternate);
+    try child.send("/quit\r");
+    const term = try child.wait(5000);
+    try std.testing.expect(term == .exited and term.exited == 0);
+    const stderr = try fixture.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", std.testing.allocator, .limited(65536));
+    defer std.testing.allocator.free(stderr);
+    try std.testing.expectEqualStrings("", stderr);
+}
 
 const custom_extension =
     \\export default function(pi) {

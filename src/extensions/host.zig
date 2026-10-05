@@ -405,6 +405,7 @@ pub const Host = struct {
     /// Shared native UI bridge and invocation-context snapshot propagated to
     /// every persistent script worker, including workers loaded later.
     script_ui_bridge: ?js_runtime.UiBridge = null,
+    script_renderer_bridge: ?js_runtime.RendererBridge = null,
     native_group_runtime: ?*js_runtime.Runtime = null,
     script_context_json: ?[]u8 = null,
     ui_prompt_mutex: Io.Mutex = .init,
@@ -437,6 +438,11 @@ pub const Host = struct {
         for (self.extensions.items) |*extension| if (extension.script_runtime) |runtime| runtime.setUiBridge(bridge);
     }
 
+    pub fn setScriptRendererBridge(self: *Host, bridge: ?js_runtime.RendererBridge) !void {
+        if (self.native_group_runtime) |owner| try owner.setRendererBridge(bridge);
+        self.script_renderer_bridge = bridge;
+    }
+
     fn captureRendererActions(self: *Host, extension: *const ExtensionManifest, invocation: []const u8, raw: []const u8) !void {
         if (!usesNativeRuntime(extension)) return;
         var batch = try actions_mod.Batch.parseNative(self.gpa, extension.name, invocation, raw);
@@ -457,13 +463,14 @@ pub const Host = struct {
     pub fn rendererActionCount(self: *Host) usize {
         self.renderer_action_mutex.lockUncancelable(self.io);
         defer self.renderer_action_mutex.unlock(self.io);
-        return if (self.renderer_action_queue) |queue| queue.count() else 0;
+        return (if (self.renderer_action_queue) |queue| queue.count() else 0) + (if (self.native_group_runtime) |owner| owner.rendererActionCount() else 0);
     }
 
     pub fn transferRendererActions(self: *Host, destination: *actions_mod.Queue) !void {
         self.renderer_action_mutex.lockUncancelable(self.io);
         defer self.renderer_action_mutex.unlock(self.io);
         if (self.renderer_action_queue) |queue| try queue.transferTo(destination);
+        if (self.native_group_runtime) |owner| try owner.transferRendererActions(destination);
     }
 
     /// Frontend observers run synchronously, but extension hooks must never
@@ -690,6 +697,7 @@ pub const Host = struct {
         view.timeout_ms = if (self.hook_timeout_seconds <= 0) 0 else @as(u64, @intCast(self.hook_timeout_seconds)) *| 1000;
         view.setUiBridge(self.script_ui_bridge);
         if (self.script_context_json) |context| try view.setContextJson(context);
+        if (created) if (self.script_renderer_bridge) |bridge| try group.?.setRendererBridge(bridge);
         const previous_len = self.extensions.items.len;
         try self.loadJson(raw_manifest, std.fs.path.dirname(source_path) orelse ".");
         if (self.extensions.items.len != previous_len + 1) return error.InvalidJavaScriptExtensionHandshake;

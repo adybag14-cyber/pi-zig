@@ -8,6 +8,92 @@ const integration_mod = @import("extensions/integration.zig");
 const provider_registry_mod = @import("extensions/provider_registry.zig");
 const provider_stream_mod = @import("extensions/provider_stream.zig");
 const component_protocol = @import("extensions/component_protocol.zig");
+const renderer_protocol = @import("extensions/renderer_protocol.zig");
+
+test "native runtime renderer owner publishes idle final redraw frames resize retirement and synchronous reader close without Node" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("import {Text} from 'pi-tui';export default pi=>pi.registerTool({name:'animated',execute(){return {}},renderCall(args,theme,ctx){ctx.state.label??='early';const component=ctx.lastComponent??new Text('',0,0);component.setText('call:'+ctx.state.label);return component},renderResult(result,opts,theme,ctx){if(!ctx.state.scheduled){ctx.state.scheduled=true;setTimeout(()=>{ctx.state.label='late';ctx.invalidate()},20)}const component=ctx.lastComponent??new Text('',0,0);component.setText('result:'+ctx.state.label+':'+result.content+':'+opts.isPartial);return component}})");
+    defer fixture.deinit();
+    const Capture = struct {
+        mutex: std.Io.Mutex = .init,
+        final: std.Io.Event = .unset,
+        resized: std.Io.Event = .unset,
+        retired: std.Io.Event = .unset,
+        closed: std.Io.Event = .unset,
+        queue: ?*renderer_protocol.ControlQueue = null,
+        fence: ?renderer_protocol.Fence = null,
+        registrations: usize = 0,
+        frames: usize = 0,
+        fn record(context: ?*anyopaque, received: renderer_protocol.Record, queue: *renderer_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.mutex.lockUncancelable(std.testing.io);
+            defer self.mutex.unlock(std.testing.io);
+            var record_value = received;
+            self.queue = queue;
+            if (received.kind == .register) {
+                self.registrations += 1;
+                const owned_id = try std.heap.page_allocator.dupe(u8, received.fence.tool_call_id);
+                if (self.fence) |fence| std.heap.page_allocator.free(fence.tool_call_id);
+                self.fence = received.fence;
+                self.fence.?.tool_call_id = owned_id;
+            } else if (received.kind == .frame) {
+                self.frames += 1;
+                if (received.kind.frame.slot == .result and received.kind.frame.frame.lines.len > 0 and std.mem.indexOf(u8, received.kind.frame.frame.lines[0], "result:late:done:false") != null) {
+                    self.final.set(std.testing.io);
+                    if (received.kind.frame.width == 55) self.resized.set(std.testing.io);
+                }
+            } else if (received.kind == .retire) self.retired.set(std.testing.io);
+            record_value.deinit();
+        }
+        fn close(context: ?*anyopaque, generation: u64) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.mutex.lockUncancelable(std.testing.io);
+            defer self.mutex.unlock(std.testing.io);
+            self.queue = null;
+            self.closed.set(std.testing.io);
+            if (self.fence) |fence| try std.testing.expectEqual(fence.owner_generation, generation);
+        }
+        fn control(self: *@This(), kind: @FieldType(renderer_protocol.Control, "kind")) !void {
+            self.mutex.lockUncancelable(std.testing.io);
+            defer self.mutex.unlock(std.testing.io);
+            var control_value: renderer_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = self.fence.?, .kind = kind };
+            control_value.fence.tool_call_id = try std.heap.page_allocator.dupe(u8, control_value.fence.tool_call_id);
+            var transferred = false;
+            defer if (!transferred) control_value.deinit();
+            try self.queue.?.send(control_value);
+            transferred = true;
+        }
+        fn deinit(self: *@This()) void {
+            if (self.fence) |fence| std.heap.page_allocator.free(fence.tool_call_id);
+        }
+    };
+    var capture: Capture = .{};
+    defer capture.deinit();
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, io, &.{fixture.source_path}, fixture.options());
+    var released = false;
+    defer if (!released) started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    try started.runtime.setRendererBridge(.{ .context = &capture, .record_fn = Capture.record, .closed_fn = Capture.close });
+    try started.runtime.setRendererBridge(.{ .context = &capture, .record_fn = Capture.record, .closed_fn = Capture.close });
+    try std.testing.expect(!capture.closed.isSet());
+    const call = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"render_tool_call\",\"name\":\"animated\",\"payload\":{\"toolCallId\":\"animated-row\",\"args\":{},\"width\":80}}", null);
+    defer gpa.free(call);
+    const result = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"render_tool_result\",\"name\":\"animated\",\"payload\":{\"toolCallId\":\"animated-row\",\"result\":{\"content\":\"done\"},\"isPartial\":false,\"width\":80}}", null);
+    defer gpa.free(result);
+    // No further Runtime invocation is sent while these owner callbacks and
+    // framed records reach the reader/frontend sink.
+    try capture.final.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    try capture.control(.{ .resize = 55 });
+    try capture.resized.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    try capture.control(.retire);
+    try capture.retired.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    started.runtime.deinit();
+    released = true;
+    try capture.closed.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(1), .clock = .awake } });
+    try std.testing.expect(capture.queue == null and capture.registrations == 1 and capture.frames >= 4);
+    try fixture.noBridge();
+}
 
 fn expectNativeTextLine(expected: []const u8, width: usize, actual: []const u8) !void {
     const padded = try std.testing.allocator.alloc(u8, width);
@@ -15,6 +101,217 @@ fn expectNativeTextLine(expected: []const u8, width: usize, actual: []const u8) 
     @memset(padded, ' ');
     @memcpy(padded[0..expected.len], expected);
     try std.testing.expectEqualStrings(padded, actual);
+}
+
+test "native runtime renderer sink failure closes borrowed controls original failure and owner reuse has a fresh generation" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("import {Text} from 'pi-tui';export default pi=>{pi.registerTool({name:'paint',execute(){return {}},renderCall(){return new Text('owned',0,0)}});pi.registerCommand('ping',{handler(){return {message:'live'}}})}");
+    defer fixture.deinit();
+    const Capture = struct {
+        closed: std.Io.Event = .unset,
+        calls: std.atomic.Value(usize) = .init(0),
+        fn record(context: ?*anyopaque, _: renderer_protocol.Record, _: *renderer_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            _ = self.calls.fetchAdd(1, .monotonic);
+            // Ownership stays with Runtime on the exact sink failure.
+            return error.InjectedRendererSink;
+        }
+        fn close(context: ?*anyopaque, _: u64) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.closed.set(std.testing.io);
+        }
+    };
+    var capture: Capture = .{};
+    const failed = try runtime_mod.Runtime.startNativeGroup(gpa, io, &.{fixture.source_path}, fixture.options());
+    defer failed.runtime.deinit();
+    defer gpa.free(failed.manifest_json);
+    try failed.runtime.setRendererBridge(.{ .context = &capture, .record_fn = Capture.record, .closed_fn = Capture.close });
+    try std.testing.expectError(error.InjectedRendererSink, failed.runtime.invokeGroupRequest(1, "{\"kind\":\"render_tool_call\",\"name\":\"paint\",\"payload\":{\"toolCallId\":\"failed-row\",\"args\":{},\"width\":80}}", null));
+    try capture.closed.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    try std.testing.expect(failed.runtime.closed and failed.runtime.child.id == null);
+    const reused = try runtime_mod.Runtime.startNativeGroup(gpa, io, &.{fixture.source_path}, fixture.options());
+    defer reused.runtime.deinit();
+    defer gpa.free(reused.manifest_json);
+    try std.testing.expect(reused.runtime.owner_generation != failed.runtime.owner_generation);
+    const ping = try reused.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"ping\",\"rawArguments\":\"\"}", null);
+    defer gpa.free(ping);
+    try std.testing.expect(std.mem.indexOf(u8, ping, "live") != null);
+    try std.testing.expectEqual(@as(usize, 1), capture.calls.load(.acquire));
+}
+
+test "native runtime asynchronous resolver actions retain source order through cross allocator FIFO failure and retry" {
+    const actions_mod = @import("extensions/actions.zig");
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerToolRenderer((name,next)=>{const base=next();return base?{...base,renderCall(args,theme,ctx){ctx.state.wrappers=(ctx.state.wrappers??0)+1;if(ctx.state.wrappers>1)pi.appendEntry('async-first',{});return base.renderCall(args,theme,ctx)}}:base})");
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "extensions/second.ts", .data = "import {Text} from 'pi-tui';export default pi=>pi.registerTool({name:'animated',execute(){return {}},renderCall(args,theme,ctx){ctx.state.calls=(ctx.state.calls??0)+1;if(ctx.state.calls===1)setTimeout(()=>ctx.invalidate(),5);else pi.appendEntry('async-second',{});return new Text('call:'+ctx.state.calls,0,0)}})" });
+    const second_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
+    defer gpa.free(second_path);
+    const Capture = struct {
+        frame: std.Io.Event = .unset,
+        fn record(context: ?*anyopaque, received: renderer_protocol.Record, _: *renderer_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            var owned = received;
+            defer owned.deinit();
+            if (received.kind == .frame and received.kind.frame.frame.lines.len > 0 and std.mem.indexOf(u8, received.kind.frame.frame.lines[0], "call:2") != null) self.frame.set(std.testing.io);
+        }
+        fn close(_: ?*anyopaque, _: u64) !void {}
+    };
+    var capture: Capture = .{};
+    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.setScriptRendererBridge(.{ .context = &capture, .record_fn = Capture.record, .closed_fn = Capture.close });
+    try host.loadPath(fixture.source_path);
+    try host.loadPath(second_path);
+    const call = (try host.renderToolCall("animated", "async-row", "{}", false, 80)).?;
+    defer gpa.free(call);
+    try capture.frame.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    const limit = std.Io.Clock.awake.now(io).toMilliseconds() + 2000;
+    while (host.rendererActionCount() != 2) {
+        if (std.Io.Clock.awake.now(io).toMilliseconds() >= limit) return error.AsyncRendererActionsMissing;
+        try io.sleep(.fromMilliseconds(1), .awake);
+    }
+    var failing = std.testing.FailingAllocator.init(gpa, .{ .fail_index = 0 });
+    var destination = actions_mod.Queue.init(failing.allocator(), io);
+    defer destination.deinit();
+    try std.testing.expectError(error.OutOfMemory, host.transferRendererActions(&destination));
+    try std.testing.expectEqual(@as(usize, 2), host.rendererActionCount());
+    try std.testing.expectEqual(@as(usize, 0), destination.count());
+    failing.fail_index = std.math.maxInt(usize);
+    try host.transferRendererActions(&destination);
+    const records = try destination.drain();
+    defer actions_mod.freeRecords(failing.allocator(), records);
+    try std.testing.expectEqual(@as(usize, 2), records.len);
+    try std.testing.expectEqualStrings("native", records[0].extension_name);
+    try std.testing.expectEqualStrings("second", records[1].extension_name);
+    try std.testing.expectEqualStrings("renderer_redraw", records[0].invocation);
+    try std.testing.expectEqual(@as(u64, 1), records[0].sequence);
+    try std.testing.expectEqual(@as(u64, 2), records[1].sequence);
+    try std.testing.expectEqual(@as(usize, 0), host.rendererActionCount());
+}
+
+test "native runtime owner renders partial tool updates before callback delivery without nested group invocation" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("import {Text} from 'pi-tui';export default pi=>pi.registerTool({name:'live-render',async execute(id,args,signal,update){update({content:[{type:'text',text:'live:'+args.tag}]});await new Promise(resolve=>setTimeout(resolve,5));return {content:[{type:'text',text:'done:'+args.tag}]}},renderCall(args,theme,ctx){ctx.state.tag=args.tag;return new Text('call:'+args.tag,0,0)},renderResult(result,options,theme,ctx){const component=ctx.lastComponent??new Text('',0,0);component.setText('partial:'+options.isPartial+':'+result.content[0].text+':'+ctx.state.tag);return component}})");
+    defer fixture.deinit();
+    const Probe = struct {
+        partial: std.Io.Event = .unset,
+        updates: usize = 0,
+        fn record(context: ?*anyopaque, received: renderer_protocol.Record, _: *renderer_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            var owned = received;
+            defer owned.deinit();
+            if (received.kind == .frame and received.kind.frame.slot == .result and received.kind.frame.frame.lines.len > 0 and std.mem.indexOf(u8, received.kind.frame.frame.lines[0], "partial:true:live:seed:seed") != null) self.partial.set(std.testing.io);
+        }
+        fn close(_: ?*anyopaque, _: u64) !void {}
+        fn update(context: ?*anyopaque, raw: []const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            try std.testing.expect(self.partial.isSet());
+            try std.testing.expect(std.mem.indexOf(u8, raw, "live:seed") != null);
+            self.updates += 1;
+        }
+    };
+    var probe: Probe = .{};
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, io, &.{fixture.source_path}, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const view = try started.runtime.extensionView(1, fixture.source_path);
+    defer view.deinit();
+    try started.runtime.setRendererBridge(.{ .context = &probe, .record_fn = Probe.record, .closed_fn = Probe.close });
+    const call = try view.invokeRenderer("render_tool_call", "live-render", "{\"toolCallId\":\"live-row\",\"args\":{\"tag\":\"seed\"},\"width\":80}");
+    defer gpa.free(call);
+    const result = try view.invokeToolCallStreaming("live-row", "live-render", "{\"tag\":\"seed\"}", "{}", null, Probe.update, &probe);
+    defer gpa.free(result);
+    try std.testing.expect(std.mem.indexOf(u8, result, "done:seed") != null);
+    try std.testing.expectEqual(@as(usize, 1), probe.updates);
+    const final = try view.invokeRenderer("render_tool_result", "live-render", "{\"toolCallId\":\"live-row\",\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"done:seed\"}]},\"isPartial\":false,\"width\":80}");
+    defer gpa.free(final);
+    try std.testing.expect(std.mem.indexOf(u8, final, "partial:false:done:seed:seed") != null);
+    try std.testing.expect(!started.runtime.closed);
+}
+
+test "native runtime dirty renderer failures preserve diagnostics and allow independent commands and later redraw" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("import {Text} from 'pi-tui';export default pi=>{pi.registerTool({name:'row-error',execute(){return {}},renderCall(args,theme,ctx){ctx.state.calls=(ctx.state.calls??0)+1;if(ctx.state.calls===1)setTimeout(()=>ctx.invalidate(),5);if(ctx.state.calls===2)throw Error('row-original-failure');return ctx.lastComponent??new Text('retained',0,0)}});pi.registerCommand('ping',{handler(){return {message:'live'}}})}");
+    defer fixture.deinit();
+    const Probe = struct {
+        failure: std.Io.Event = .unset,
+        count: std.atomic.Value(usize) = .init(0),
+        fn record(context: ?*anyopaque, received: renderer_protocol.Record, _: *renderer_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            var owned = received;
+            defer owned.deinit();
+            if (received.kind == .failure) {
+                try std.testing.expect(std.mem.indexOf(u8, received.kind.failure, "row-original-failure") != null);
+                _ = self.count.fetchAdd(1, .monotonic);
+                self.failure.set(std.testing.io);
+            }
+        }
+        fn close(_: ?*anyopaque, _: u64) !void {}
+    };
+    var probe: Probe = .{};
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, io, &.{fixture.source_path}, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    try started.runtime.setRendererBridge(.{ .context = &probe, .record_fn = Probe.record, .closed_fn = Probe.close });
+    const call = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"render_tool_call\",\"name\":\"row-error\",\"payload\":{\"toolCallId\":\"error-row\",\"args\":{},\"width\":80}}", null);
+    defer gpa.free(call);
+    try probe.failure.waitTimeout(io, .{ .duration = .{ .raw = .fromSeconds(2), .clock = .awake } });
+    const ping = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"ping\",\"rawArguments\":\"\"}", null);
+    defer gpa.free(ping);
+    try std.testing.expect(std.mem.indexOf(u8, ping, "live") != null);
+    const restored = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"render_tool_call\",\"name\":\"row-error\",\"payload\":{\"toolCallId\":\"error-row\",\"args\":{},\"width\":60}}", null);
+    defer gpa.free(restored);
+    try std.testing.expect(std.mem.indexOf(u8, restored, "retained") != null);
+    try std.testing.expectEqual(@as(usize, 1), probe.count.load(.acquire));
+    try std.testing.expect(!started.runtime.closed);
+}
+
+test "native runtime admitted custom factory and render rejection closes exactly once before any scene" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('pre-scene',{async handler(mode,ctx){const original={mode};let disposed=0;try{await ctx.ui.custom(async()=>{await new Promise(resolve=>setTimeout(resolve,1));if(mode==='factory')throw original;return {render(){throw original},dispose(){disposed++}}})}catch(error){return {message:(error===original?'original':'replaced')+':'+disposed}}throw Error('custom unexpectedly resolved')}})");
+    defer fixture.deinit();
+    const Probe = struct {
+        scenes: std.atomic.Value(usize) = .init(0),
+        closes: std.atomic.Value(usize) = .init(0),
+        fail_close: bool = false,
+        fn request(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            return error.UnexpectedStandardDialog;
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+        fn scene(context: ?*anyopaque, _: component_protocol.Scene, _: *component_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            _ = self.scenes.fetchAdd(1, .monotonic);
+            return error.UnexpectedFactoryScene;
+        }
+        fn close(context: ?*anyopaque, _: component_protocol.Fence) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            _ = self.closes.fetchAdd(1, .monotonic);
+            if (self.fail_close) return error.InjectedPreSceneClose;
+        }
+    };
+    var probe: Probe = .{};
+    const started = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    try started.runtime.setContextJson("{\"hasUI\":true}");
+    started.runtime.setUiBridge(.{ .context = &probe, .request_fn = Probe.request, .action_fn = Probe.action, .component_scene_fn = Probe.scene, .component_close_fn = Probe.close });
+    for ([_]bool{ false, true, false }) |fail_close| for ([_][]const u8{ "render", "factory" }) |mode| {
+        probe.fail_close = fail_close;
+        probe.scenes.store(0, .release);
+        probe.closes.store(0, .release);
+        const result = try started.runtime.invokeCommand("pre-scene", mode, "{}");
+        defer gpa.free(result);
+        try std.testing.expect(std.mem.indexOf(u8, result, "original") != null);
+        try std.testing.expect(std.mem.indexOf(u8, result, if (std.mem.eql(u8, mode, "render")) "original:1" else "original:0") != null);
+        try std.testing.expectEqual(@as(usize, 0), probe.scenes.load(.acquire));
+        try std.testing.expectEqual(@as(usize, 1), probe.closes.load(.acquire));
+        try std.testing.expect(!started.runtime.closed);
+    };
 }
 
 test "native runtime renderers prepare arguments retain row state final redraw resolver next and explicit retirement without Node" {
@@ -384,10 +681,18 @@ test "native runtime shared group startup and extension views release every fail
     const second_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
     defer gpa.free(second_path);
     const Probe = struct {
+        fn record(_: ?*anyopaque, received: renderer_protocol.Record, _: *renderer_protocol.ControlQueue) !void {
+            var owned = received;
+            owned.deinit();
+        }
+        fn close(_: ?*anyopaque, _: u64) !void {}
         fn run(allocator: std.mem.Allocator, input: *Fixture, second_source: []const u8) !void {
             const started = try runtime_mod.Runtime.startNativeGroup(allocator, std.testing.io, &.{ input.source_path, second_source }, input.options());
             defer started.runtime.deinit();
             defer allocator.free(started.manifest_json);
+            const bridge: runtime_mod.Runtime.RendererBridge = .{ .record_fn = record, .closed_fn = close };
+            try started.runtime.setRendererBridge(bridge);
+            try started.runtime.setRendererBridge(bridge);
             const first = try started.runtime.extensionView(1, input.source_path);
             defer first.deinit();
             const second = try started.runtime.extensionView(2, second_source);
@@ -1620,47 +1925,4 @@ test "native runtime custom prompt hooks retain live UI context and publish both
     try std.testing.expectEqualStrings("custom-life", controller.statuses.items[0].key);
     try std.testing.expectEqualStrings("start1-end1", controller.statuses.items[0].text);
     try std.testing.expectEqual(@as(usize, 0), host.ui_prompt_events.items.len);
-}
-
-test "native runtime admitted custom factory and render rejection closes exactly once before any scene" {
-    const gpa = std.testing.allocator;
-    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('pre-scene',{async handler(mode,ctx){const original={mode};let disposed=0;try{await ctx.ui.custom(async()=>{await new Promise(resolve=>setTimeout(resolve,1));if(mode==='factory')throw original;return {render(){throw original},dispose(){disposed++}}})}catch(error){return {message:(error===original?'original':'replaced')+':'+disposed}}throw Error('custom unexpectedly resolved')}})");
-    defer fixture.deinit();
-    const Probe = struct {
-        scenes: std.atomic.Value(usize) = .init(0),
-        closes: std.atomic.Value(usize) = .init(0),
-        fail_close: bool = false,
-        fn request(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
-            return error.UnexpectedStandardDialog;
-        }
-        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
-        fn scene(context: ?*anyopaque, _: component_protocol.Scene, _: *component_protocol.ControlQueue) !void {
-            const self: *@This() = @ptrCast(@alignCast(context.?));
-            _ = self.scenes.fetchAdd(1, .monotonic);
-            return error.UnexpectedFactoryScene;
-        }
-        fn close(context: ?*anyopaque, _: component_protocol.Fence) !void {
-            const self: *@This() = @ptrCast(@alignCast(context.?));
-            _ = self.closes.fetchAdd(1, .monotonic);
-            if (self.fail_close) return error.InjectedPreSceneClose;
-        }
-    };
-    var probe: Probe = .{};
-    const started = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
-    defer started.runtime.deinit();
-    defer gpa.free(started.manifest_json);
-    try started.runtime.setContextJson("{\"hasUI\":true}");
-    started.runtime.setUiBridge(.{ .context = &probe, .request_fn = Probe.request, .action_fn = Probe.action, .component_scene_fn = Probe.scene, .component_close_fn = Probe.close });
-    for ([_]bool{ false, true, false }) |fail_close| for ([_][]const u8{ "render", "factory" }) |mode| {
-        probe.fail_close = fail_close;
-        probe.scenes.store(0, .release);
-        probe.closes.store(0, .release);
-        const result = try started.runtime.invokeCommand("pre-scene", mode, "{}");
-        defer gpa.free(result);
-        try std.testing.expect(std.mem.indexOf(u8, result, "original") != null);
-        try std.testing.expect(std.mem.indexOf(u8, result, if (std.mem.eql(u8, mode, "render")) "original:1" else "original:0") != null);
-        try std.testing.expectEqual(@as(usize, 0), probe.scenes.load(.acquire));
-        try std.testing.expectEqual(@as(usize, 1), probe.closes.load(.acquire));
-        try std.testing.expect(!started.runtime.closed);
-    };
 }

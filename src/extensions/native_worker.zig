@@ -18,10 +18,11 @@ const abort_signal = @import("abort_signal.zig");
 const native_stream = @import("native_stream.zig");
 const component_protocol = @import("component_protocol.zig");
 const native_group = @import("native_group.zig");
+const renderer_protocol = @import("renderer_protocol.zig");
 const c = engine_mod.c;
 
 const WireRecord = struct {
-    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, shutdown };
+    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, shutdown };
     bytes: []u8,
     kind: Kind = .request,
 };
@@ -33,6 +34,7 @@ const Transport = struct {
     bindings: *bindings_mod.Bindings,
     io: std.Io,
     writer: *std.Io.Writer,
+    group: *native_group.Group,
     initial_input: ?*std.Io.File.Reader = null,
     mutex: std.Io.Mutex = .init,
     available: std.Io.Event = .unset,
@@ -42,6 +44,7 @@ const Transport = struct {
     reader_error: ?anyerror = null,
     active: bool = false,
     active_id: []const u8 = "",
+    active_tool_call_id: ?[]const u8 = null,
     active_signal: ?c.JSValue = null,
     stream_updates: bool = false,
     updates: std.ArrayList([]u8) = .empty,
@@ -64,6 +67,7 @@ const Transport = struct {
     fn clearActive(self: *Transport) void {
         self.active = false;
         self.active_id = "";
+        self.active_tool_call_id = null;
         self.bindings.clearInvocationOptions();
         if (self.active_signal) |signal| self.engine.freeValue(signal);
         self.active_signal = null;
@@ -83,6 +87,7 @@ const Transport = struct {
         if (std.mem.eql(u8, kind.string, "ui_response")) return .ui_response;
         if (std.mem.eql(u8, kind.string, "provider_stream_ack")) return .provider_stream_ack;
         if (std.mem.eql(u8, kind.string, "component_control")) return .component_control;
+        if (std.mem.eql(u8, kind.string, "renderer_control") or std.mem.eql(u8, kind.string, "renderer_subscribe")) return .renderer_control;
         return .request;
     }
 
@@ -154,7 +159,10 @@ const Transport = struct {
                 try object.put(arena.allocator(), "error", .{ .string = self.engine.last_error orelse @errorName(err) });
                 try writeRecord(self.writer, .{ .object = object });
             };
-            const deadline = try timers.nextDeadline(self.engine);
+            var deadline = try timers.nextDeadline(self.engine);
+            if (self.group.renderers.nextRedrawDeadline()) |redraw_due| {
+                deadline = if (deadline) |due| @min(due, redraw_due) else redraw_due;
+            }
             self.mutex.lockUncancelable(self.io);
             self.available.reset();
             if (self.records.items.len != 0) {
@@ -182,15 +190,17 @@ const Transport = struct {
     }
 
     fn pumpIdle(self: *Transport) !void {
+        _ = try self.engine.pumpControls();
         _ = try self.engine.drainReadyJobs();
         if (try timers.pumpReady(self.engine)) _ = try self.engine.drainReadyJobs();
+        _ = try self.group.renderers.pumpDirtyReady();
     }
 
     fn takeControl(self: *Transport) ?WireRecord {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.records.items, 0..) |record, index| {
-            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or (record.kind == .shutdown and index == 0)) {
+            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or (self.active and record.kind == .shutdown and index == 0)) {
                 const removed = self.records.orderedRemove(index);
                 self.queued_bytes -= removed.bytes.len;
                 return removed;
@@ -214,13 +224,18 @@ const Transport = struct {
 
     fn pump(engine: *engine_mod.Engine) !bool {
         const self: *Transport = @ptrCast(@alignCast(engine.host_control_context.?));
-        if (!self.active) return false;
         var dispatched = false;
         while (self.takeControl()) |record| {
             defer std.heap.page_allocator.free(record.bytes);
             var arena: std.heap.ArenaAllocator = .init(engine.gpa);
             defer arena.deinit();
             const request = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{});
+            if (record.kind == .renderer_control) {
+                try self.rendererControl(request);
+                dispatched = true;
+                continue;
+            }
+            if (!self.active) continue;
             if (record.kind == .shutdown) {
                 self.shutdown_requested = true;
                 self.terminal = true;
@@ -277,6 +292,51 @@ const Transport = struct {
         return dispatched;
     }
 
+    fn rendererControl(self: *Transport, request: std.json.Value) !void {
+        if (request != .object) return error.InvalidRendererControl;
+        const kind = try requiredText(request.object, "kind");
+        if (std.mem.eql(u8, kind, "renderer_subscribe")) {
+            const generation = component_protocol.identifier(request.object.get("ownerGeneration") orelse return error.InvalidRendererIdentity) catch return error.InvalidRendererIdentity;
+            const version_value = request.object.get("version") orelse return error.InvalidRendererVersion;
+            if (version_value != .integer or version_value.integer != renderer_protocol.version) return error.InvalidRendererVersion;
+            if (generation != self.group.renderers.owner_generation) return;
+            const enabled = request.object.get("enabled") orelse return error.InvalidRendererControl;
+            if (enabled != .bool) return error.InvalidRendererControl;
+            self.group.renderers.subscribe(enabled.bool);
+        } else {
+            var control = try renderer_protocol.readControl(self.engine.gpa, &request.object);
+            defer control.deinit();
+            _ = try self.group.renderers.control(&control);
+        }
+    }
+
+    fn rendererRecord(context: ?*anyopaque, record: renderer_protocol.Record) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        try self.writer.writeByte(0x1e);
+        try renderer_protocol.write(self.writer, &record);
+        try self.writer.writeByte('\n');
+        try self.writer.flush();
+        var owned = record;
+        owned.deinit();
+    }
+
+    fn rendererActions(context: ?*anyopaque, owner_id: u64, result: []const u8) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        const parsed = try std.json.parseFromSliceLeaky(std.json.Value, allocator, result, .{});
+        const queue = parsed.object.get("actionQueue") orelse return;
+        if (queue != .array or queue.array.items.len == 0) return;
+        var object: std.json.ObjectMap = .empty;
+        try object.put(allocator, "type", .{ .string = "renderer_actions" });
+        try object.put(allocator, "version", .{ .integer = 1 });
+        try object.put(allocator, "ownerGeneration", .{ .integer = @intCast(self.group.renderers.owner_generation) });
+        try object.put(allocator, "extensionId", .{ .integer = @intCast(owner_id) });
+        try object.put(allocator, "actionQueue", queue);
+        try writeRecord(self.writer, .{ .object = object });
+    }
+
     fn start(self: *Transport, request: std.json.ObjectMap, generated_id: []const u8) !void {
         const id = if (request.get("invocationId")) |value| if (value == .string and value.string.len > 0 and value.string.len <= 256) value.string else return error.InvalidNativeInvocationId else generated_id;
         if (self.seen_ids.contains(id)) return error.DuplicateNativeInvocationId;
@@ -287,6 +347,7 @@ const Transport = struct {
         try self.seen_ids.put(self.engine.gpa, owned_id, {});
         inserted = true;
         self.active_id = owned_id;
+        self.active_tool_call_id = if (request.get("toolCallId")) |value| if (value == .string) value.string else null else null;
         self.bindings.ui_manager.invocation_id = std.fmt.parseUnsigned(u64, owned_id, 10) catch 0;
         self.active_signal = try abort_signal.create(self.engine);
         self.active = true;
@@ -300,6 +361,10 @@ const Transport = struct {
         const source = try self.engine.stringify(value);
         defer self.engine.gpa.free(source);
         const projected = try normalizeToolResult(self.engine.gpa, source, "");
+        if (self.active_tool_call_id) |id| self.group.renderers.renderLiveUpdate(id, value) catch |err| {
+            self.engine.gpa.free(projected);
+            return err;
+        };
         if (self.stream_updates) {
             defer self.engine.gpa.free(projected);
             var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
@@ -667,7 +732,7 @@ fn loadSource(gpa: std.mem.Allocator, io: std.Io, engine: *engine_mod.Engine, lo
 }
 
 pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void {
-    return runOwner(gpa, io, &.{extension_path}, null, false);
+    return runOwner(gpa, io, &.{extension_path}, null, false, 1);
 }
 
 pub fn runGroup(gpa: std.mem.Allocator, io: std.Io) !void {
@@ -694,16 +759,19 @@ pub fn runGroup(gpa: std.mem.Allocator, io: std.Io) !void {
         if (source != .string or source.string.len == 0 or source.string.len > std.Io.Dir.max_path_bytes) return error.InvalidNativeGroupStartup;
         path.* = source.string;
     }
-    return runOwner(gpa, io, paths, &input, true);
+    const owner_generation = if (parsed.value.object.get("ownerGeneration")) |value| try component_protocol.identifier(value) else 1;
+    if (owner_generation > 9_007_199_254_740_991) return error.InvalidRendererIdentity;
+    return runOwner(gpa, io, paths, &input, true, owner_generation);
 }
 
-fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, initial_input: ?*std.Io.File.Reader, grouped: bool) !void {
+fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, initial_input: ?*std.Io.File.Reader, grouped: bool, owner_generation: u64) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();
     var loader: Loader = .{ .io = io, .engine = engine };
     engine.setSourceLoader(.{ .context = &loader, .load = Loader.source, .normalize = Loader.normalize, .normalize_require = Loader.normalizeRequire, .input = Loader.input });
     const group = try native_group.Group.init(engine);
     defer group.deinit();
+    group.renderers.owner_generation = owner_generation;
     const bindings = try group.add(sources[0]);
     try timers.install(engine, io);
     try bindings.installSchemas();
@@ -736,8 +804,16 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     try writer.writeAll(manifest);
     try writer.writeAll("}\n");
     try writer.flush();
-    var transport: Transport = .{ .engine = engine, .bindings = bindings, .io = io, .writer = writer, .initial_input = initial_input };
+    var transport: Transport = .{ .engine = engine, .bindings = bindings, .io = io, .writer = writer, .group = group, .initial_input = initial_input };
     defer transport.deinit();
+    group.renderers.record_fn = Transport.rendererRecord;
+    group.renderers.record_context = &transport;
+    group.actions_fn = Transport.rendererActions;
+    group.actions_context = &transport;
+    defer {
+        group.renderers.record_fn = null;
+        group.actions_fn = null;
+    }
     engine.host_control_context = &transport;
     engine.host_control_pump = Transport.pump;
     bindings.ui_manager.bridge = .{ .context = &transport, .request = Transport.uiRequest, .action = Transport.uiAction, .cancel = Transport.uiCancel, .component_scene = Transport.componentScene, .component_close = Transport.componentClose };
