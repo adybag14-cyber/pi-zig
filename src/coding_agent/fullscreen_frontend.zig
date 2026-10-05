@@ -257,6 +257,7 @@ pub const Frontend = struct {
     changed: Io.Condition = .init,
     updates: std.ArrayList(Update) = .empty,
     commands: std.ArrayList(Command) = .empty,
+    input_batch_active: bool = false,
     stopping: bool = false,
     ready: bool = false,
     pause_depth: usize = 0,
@@ -446,7 +447,7 @@ pub const Frontend = struct {
     pub fn readCommand(self: *Frontend) !Command {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
-        while (self.commands.items.len == 0 and self.failure == null and !self.stopping) self.changed.waitUncancelable(self.io, &self.mutex);
+        while ((self.commands.items.len == 0 or self.input_batch_active) and self.failure == null and !self.stopping) self.changed.waitUncancelable(self.io, &self.mutex);
         if (self.failure) |err| return err;
         if (self.commands.items.len == 0) return error.EndOfStream;
         return self.commands.orderedRemove(0);
@@ -866,6 +867,35 @@ pub const Frontend = struct {
         }
         self.dirty = true;
     }
+    fn finishInputBatch(self: *Frontend) void {
+        self.mutex.lockUncancelable(self.io);
+        self.input_batch_active = false;
+        self.changed.broadcast(self.io);
+        self.mutex.unlock(self.io);
+    }
+    fn readInputBatch(self: *Frontend) !void {
+        // Publish commands only after consuming the bytes already ready for
+        // this keyboard burst. Otherwise Main can open a modal at CR and steal
+        // its trailing draft bytes from the shared reader. Bound a transaction
+        // so a continuous input producer cannot starve shutdown or resize.
+        self.mutex.lockUncancelable(self.io);
+        self.input_batch_active = true;
+        self.mutex.unlock(self.io);
+        defer self.finishInputBatch();
+        var count: usize = 0;
+        while (count < 256) : (count += 1) {
+            const byte = (platform.pollByte(self.reader) catch |err| {
+                return line_editor.terminalInputError(err, self.reader.err);
+            }) orelse break;
+            if (byte == 0x1b and (self.decoder.pending.items.len == 0 or self.decoder.delivered)) self.escape_started_ms = Io.Clock.awake.now(self.io).toMilliseconds();
+            if (try self.decoder.feed(byte)) |packet| {
+                try self.input(packet);
+                self.escape_started_ms = null;
+            }
+            if (!platform.inputBuffered(self.reader) and try platform.waitInput(0) != .input) break;
+        }
+        if (self.dirty) try self.paint();
+    }
     fn runLoop(self: *Frontend) !void {
         var raw = try line_editor.RawMode.enter();
         var raw_active = true;
@@ -923,7 +953,7 @@ pub const Frontend = struct {
                 return error.DeadTerminal;
             }
             if (ready == .input or platform.inputBuffered(self.reader)) {
-                const byte = (platform.pollByte(self.reader) catch |err| {
+                self.readInputBatch() catch |err| {
                     const actual = line_editor.terminalInputError(err, self.reader.err);
                     if (actual == error.DeadTerminal) {
                         terminal_alive = false;
@@ -931,12 +961,7 @@ pub const Frontend = struct {
                         return error.DeadTerminal;
                     }
                     return err;
-                }) orelse continue;
-                if (byte == 0x1b and (self.decoder.pending.items.len == 0 or self.decoder.delivered)) self.escape_started_ms = Io.Clock.awake.now(self.io).toMilliseconds();
-                if (try self.decoder.feed(byte)) |packet| {
-                    try self.input(packet);
-                    self.escape_started_ms = null;
-                }
+                };
             } else if (self.escape_started_ms) |started| {
                 if (Io.Clock.awake.now(self.io).toMilliseconds() - started >= 30) {
                     if (self.decoder.flushEscape()) |packet| try self.input(packet);

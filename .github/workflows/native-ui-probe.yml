@@ -1,0 +1,20 @@
+name: Native UI platform probe
+on:
+  push:
+    branches: [diagnose/pi-native-ui-20261005]
+  workflow_dispatch:
+jobs:
+  native-ui:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Build and run all actual native UI process cases
+        run: zig build test-fullscreen-frontend-process -j2 --summary all

@@ -235,7 +235,7 @@ const Observer = struct {
         const end = Io.Clock.awake.now(child.io).toMilliseconds() + 5000;
         while (Io.Clock.awake.now(child.io).toMilliseconds() < end) {
             try self.drain(child);
-            if (self.screen.frames > after_frame and try self.screen.contains(marker)) return;
+            if (!self.screen.synchronized_update and self.screen.frames > after_frame and try self.screen.contains(marker)) return;
             if (try child.exited()) break;
             try child.io.sleep(.fromMilliseconds(10), .awake);
         }
@@ -253,7 +253,7 @@ const Observer = struct {
         const end = Io.Clock.awake.now(child.io).toMilliseconds() + 5000;
         while (Io.Clock.awake.now(child.io).toMilliseconds() < end) {
             try self.drain(child);
-            if (self.screen.frames > after_frame and !try self.screen.contains(marker)) return;
+            if (!self.screen.synchronized_update and self.screen.frames > after_frame and !try self.screen.contains(marker)) return;
             if (try child.exited()) break;
             try child.io.sleep(.fromMilliseconds(10), .awake);
         }
@@ -460,5 +460,24 @@ test "real fullscreen Escape aborts a live turn without clearing the independent
     try std.testing.expect(try observed.screen.contains("> abort-draft"));
     try observed.send(&child, "\x15again\r", "second-first");
     try observed.wait(&child, "second-final", observed.screen.frames);
+    try cleanExit(&fixture, &child, &observed);
+}
+
+test "real fullscreen CLI coalesces an available input burst before publishing its command" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawn(errors);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "history-row-059", 0);
+    const before = observed.screen.frames;
+    try observed.send(&child, "abcdefghijklmnopqrstuvwxyz012345", "> abcdefghijklmnopqrstuvwxyz012345");
+    // A ready keyboard burst is one editor transaction, rather than thirty-two
+    // expensive paints competing with the provider or a queued modal command.
+    try std.testing.expect(observed.screen.frames - before <= 4);
     try cleanExit(&fixture, &child, &observed);
 }

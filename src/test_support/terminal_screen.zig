@@ -16,6 +16,7 @@ pub const Screen = struct {
     wrap_pending: bool = false,
     cursor_visible: bool = true,
     frames: usize = 0,
+    synchronized_update: bool = false,
     enters: usize = 0,
     leaves: usize = 0,
     mode: enum { ground, escape, csi, string, string_escape } = .ground,
@@ -191,7 +192,10 @@ pub const Screen = struct {
                         self.leaves += 1;
                     }
                     self.wrap_pending = false;
-                } else if (flag == 25) self.cursor_visible = final == 'h' else if (flag == 2026 and final == 'l') self.frames += 1;
+                } else if (flag == 25) self.cursor_visible = final == 'h' else if (flag == 2026) {
+                    self.synchronized_update = final == 'h';
+                    if (final == 'l') self.frames += 1;
+                }
             }
             return;
         }
@@ -258,9 +262,19 @@ test "VT cells interpret fragmented cursor redraws alternate restoration Unicode
     var screen = try Screen.init(std.testing.allocator, 12, 4);
     defer screen.deinit();
     try screen.feed("shell\x1b[?1049h\x1b[?2026h\x1b[2J\x1b[Hhello\r\nworld\x1b[2;");
+    try std.testing.expect(screen.synchronized_update);
     try screen.feed("1H\x1b[2K\x1b[1mΩ🙂\x1b[0m\x1b[?2026l");
     try std.testing.expect(try screen.contains("hello\nΩ🙂"));
     try std.testing.expectEqual(@as(usize, 1), screen.frames);
+    try std.testing.expect(!screen.synchronized_update);
+    // A preceding completed frame cannot make cells of the next, fragmented
+    // synchronized update ready for a process assertion.
+    try screen.feed("\x1b[?2026h\x1b[2J");
+    try std.testing.expect(screen.synchronized_update);
+    try std.testing.expectEqual(@as(usize, 1), screen.frames);
+    try screen.feed("\x1b[?2026l");
+    try std.testing.expect(!screen.synchronized_update);
+    try std.testing.expectEqual(@as(usize, 2), screen.frames);
     try screen.feed("\x1b]0;ignored title\x07\x1b[?1049l");
     try std.testing.expect(try screen.contains("shell"));
     try std.testing.expectEqual(@as(usize, 1), screen.enters);
