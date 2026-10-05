@@ -25,10 +25,27 @@ pub const RenderedLines = struct {
             for (out.items) |line| gpa.free(line);
             out.deinit(gpa);
         }
-        for (lines) |line| try out.append(gpa, try gpa.dupe(u8, line));
+        for (lines) |line| {
+            const owned = try gpa.dupe(u8, line);
+            errdefer gpa.free(owned);
+            try out.append(gpa, owned);
+        }
         return .{ .items = try out.toOwnedSlice(gpa) };
     }
 };
+
+fn renderedCloneOwnership(gpa: std.mem.Allocator) !void {
+    const source = [_][]const u8{ "first independently owned line", "second independently owned line" };
+    var copied = try RenderedLines.clone(gpa, &source);
+    defer copied.deinit(gpa);
+    copied.items[0][0] = 'X';
+    try std.testing.expectEqualStrings("first independently owned line", source[0]);
+    try std.testing.expectEqualStrings("second independently owned line", copied.items[1]);
+}
+
+test "rendered line clones release both duplicated bytes and failed list admission" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, renderedCloneOwnership, .{});
+}
 
 pub const Viewport = struct {
     width: usize,

@@ -242,7 +242,9 @@ test "controlled fetch live abort joins its request with zero eager async capaci
     defer threaded.deinit();
     var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = threaded.io() };
     defer client.deinit();
-    const server = try fixture.PlanServer.init(std.heap.page_allocator, std.testing.io, &.{.{ .path = "/slow", .body = "late", .delay_ms = 200 }});
+    var observed: std.Io.Event = .unset;
+    var release: std.Io.Event = .unset;
+    const server = try fixture.PlanServer.init(std.heap.page_allocator, std.testing.io, &.{.{ .path = "/slow", .body = "late", .request_observed = &observed, .response_release = &release }});
     defer server.deinit();
     const url = try server.url(std.testing.allocator, "/slow");
     defer std.testing.allocator.free(url);
@@ -262,10 +264,13 @@ test "controlled fetch live abort joins its request with zero eager async capaci
     };
     var task: Task = .{ .client = &client, .url = url };
     var group: std.Io.Group = .init;
-    defer group.cancel(std.testing.io);
+    defer {
+        release.set(std.testing.io);
+        group.cancel(std.testing.io);
+    }
     try group.concurrent(std.testing.io, Task.run, .{&task});
-    try std.testing.io.sleep(.fromMilliseconds(30), .awake);
+    try observed.waitTimeout(std.testing.io, .{ .duration = .{ .raw = .fromMilliseconds(1000), .clock = .awake } });
     @atomicStore(bool, &task.aborted, true, .release);
     try task.done.waitTimeout(std.testing.io, .{ .duration = .{ .raw = .fromMilliseconds(1000), .clock = .awake } });
-    try std.testing.expectEqual(error.ProviderRequestAborted, task.failure.?);
+    try std.testing.expectEqual(@as(?anyerror, error.ProviderRequestAborted), task.failure);
 }

@@ -8,6 +8,8 @@ pub const Reply = struct {
     delay_ms: u32 = 0,
     payload_contains: ?[]const u8 = null,
     expected_request_headers: []const std.http.Header = &.{},
+    request_observed: ?*std.Io.Event = null,
+    response_release: ?*std.Io.Event = null,
 };
 pub const Captured = struct { path: []u8, payload: []u8 };
 pub const PlanServer = struct {
@@ -82,6 +84,8 @@ pub const PlanServer = struct {
             captured = true;
             if (!std.mem.eql(u8, path, reply.path)) return error.UnexpectedFixturePath;
             if (reply.payload_contains) |marker| if (std.mem.indexOf(u8, payload, marker) == null) return error.UnexpectedFixturePayload;
+            if (reply.request_observed) |event| event.set(self.io);
+            if (reply.response_release) |event| try event.waitTimeout(self.io, .{ .duration = .{ .raw = .fromSeconds(10), .clock = .awake } });
             if (reply.delay_ms > 0) try self.io.sleep(.fromMilliseconds(reply.delay_ms), .awake);
             var headers: std.ArrayList(std.http.Header) = .empty;
             defer headers.deinit(self.gpa);

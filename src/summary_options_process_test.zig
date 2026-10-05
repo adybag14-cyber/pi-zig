@@ -33,7 +33,7 @@ test "native branch summaries bound output and omit normal session affinity and 
     var scratch = try pty.Scratch.init(gpa, io, "summary-options");
     defer scratch.deinit();
     for ([_][]const u8{ "agent", "sessions", "home" }) |dir| try scratch.dir.createDir(io, dir, .default_dir);
-    try scratch.dir.writeFile(io, .{ .sub_path = "agent/settings.json", .data = "{\"retry\":{\"enabled\":false,\"provider\":{\"maxRetries\":0}},\"branchSummary\":{\"reserveTokens\":64,\"skipPrompt\":false},\"enableInstallTelemetry\":false}" });
+    try scratch.dir.writeFile(io, .{ .sub_path = "agent/settings.json", .data = "{\"tuiMode\":\"regular\",\"retry\":{\"enabled\":false,\"provider\":{\"maxRetries\":0}},\"branchSummary\":{\"reserveTokens\":64,\"skipPrompt\":false},\"enableInstallTelemetry\":false}" });
     const model = try std.fmt.allocPrint(gpa, "{{\"providers\":{{\"summary167\":{{\"baseUrl\":\"http://127.0.0.1:{d}/v1\",\"api\":\"openai-completions\",\"apiKey\":\"$SUMMARY167_KEY\",\"compat\":{{\"sendSessionAffinityHeaders\":true,\"sessionAffinityFormat\":\"openai\",\"supportsLongCacheRetention\":true}},\"models\":[{{\"id\":\"fast\",\"contextWindow\":128000,\"maxTokens\":4096}}]}}}}}}", .{server.port});
     defer gpa.free(model);
     try scratch.dir.writeFile(io, .{ .sub_path = "agent/models.json", .data = model });
@@ -102,9 +102,8 @@ test "native branch summaries bound output and omit normal session affinity and 
     try session.send("/tree\r");
     pos = try session.waitFor("Session Tree", pos, 30_000);
     try session.send("assistant-188-1");
-    _ = try session.waitFor("assistant-188-1_", pos, 30_000);
-    try io.sleep(.fromMilliseconds(150), .awake);
-    try session.drain();
+    pos = try session.waitFor("assistant-188-1_", pos, 30_000);
+    pos = try session.waitFor("1/1 entries", pos, 30_000);
     try session.send("\r");
     pos = try session.waitFor("Summarize branch?", pos, 30_000);
     pos = try session.waitFor("Choice [n]: ", pos, 30_000);

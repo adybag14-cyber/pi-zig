@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentSource": "5e77344c5955cd3889423eee63fc2b19c664a6eb",
+  "hostedFailure": "https://github.com/adybag14-cyber/pi-zig/actions/runs/37326498245",
+  "hostedResults": {
+    "ubuntu": "Summary fixture used raw regular prompt expectation after default fullscreen redraw",
+    "macos": "HTTP cancellation fixture slept 30ms and the 200ms response could win under load",
+    "windows": "passed"
+  },
+  "httpRepair": "Server signals observed request and holds response behind bounded owned event; abort is set after observation, exact aborted result retained, cleanup releases server before joins.",
+  "summaryRepair": "Explicit regular transcript mode; tree modal remains fullscreen. Wait for filtered inventory footer instead of fixed 150ms sleep. All request caps, affinity omission, search selection and persistence assertions retained.",
+  "ownershipRepair": "RenderedLines.clone frees its owned duplicate when list admission fails; every induced allocation failure releases all memory.",
+  "productionBehaviorChanges": "Only rendered line allocation-failure ownership; HTTP and summary repairs are test fixtures.",
+  "deadlineIncreases": false,
+  "assertionsRemoved": false,
+  "sourceSha256": {
+    "src/ai/http_fetch.zig": "9654da8d1d0c2c1a5720d51dc6cf4fa2424784af15e5330424730e98a310de05",
+    "src/ai/http_fixture.zig": "945ea98c1a9e4e4c18958db58b8dfaf26313fff0bf27a9db0b821bfa0ce3227c",
+    "src/summary_options_process_test.zig": "ca8c9c89c25d6aab17f51440b40a196cd7a2af3079fcffcdc676e8166bfd115c",
+    "src/tui/layout.zig": "57d61c69faf7c5cbd4fe25884aeb2588a0af8ae100d31c1721cafd72c59abe99"
+  },
+  "jobs": {
+    "http-abort-producer-windows-debug": {
+      "name": "http-abort-producer-windows-debug",
+      "pid": 22088,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/ai/http_fetch.zig",
+      "created_utc": "2026-10-05T14:57:03.9809970Z",
+      "launched_utc": "2026-10-05T14:57:03.9773591+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:57:10.7750437+00:00"
+    },
+    "http-abort-producer-windows-release": {
+      "name": "http-abort-producer-windows-release",
+      "pid": 54436,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/ai/http_fetch.zig -OReleaseSafe",
+      "created_utc": "2026-10-05T14:58:56.4308450Z",
+      "launched_utc": "2026-10-05T14:58:56.4268655+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:59:28.8038458+00:00"
+    },
+    "http-abort-producer-linux-debug": {
+      "name": "http-abort-producer-linux-debug",
+      "pid": 53724,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-foundation-b78-native-source-20261005 --exec /usr/bin/timeout 140s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/ai/http_fetch.zig -target x86_64-linux-musl -lc",
+      "created_utc": "2026-10-05T14:59:26.7148250Z",
+      "launched_utc": "2026-10-05T14:59:26.7116130+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:59:32.6316912+00:00"
+    },
+    "summary-regular-complete-filter-linux": {
+      "name": "summary-regular-complete-filter-linux",
+      "pid": 49228,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-foundation-b78-native-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 360s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-summary-options-process -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-foundation-b78-local-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T14:57:54.0708460Z",
+      "launched_utc": "2026-10-05T14:57:54.0676568+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:58:04.9933464+00:00"
+    },
+    "rendered-clone-root-windows-debug": {
+      "name": "rendered-clone-root-windows-debug",
+      "pid": 31552,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/tui/layout.zig",
+      "created_utc": "2026-10-05T14:49:21.9109150Z",
+      "launched_utc": "2026-10-05T14:49:21.9081351+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:49:24.5292724+00:00"
+    },
+    "rendered-clone-root-windows-release": {
+      "name": "rendered-clone-root-windows-release",
+      "pid": 39480,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/tui/layout.zig -OReleaseSafe",
+      "created_utc": "2026-10-05T14:59:26.7037590Z",
+      "launched_utc": "2026-10-05T14:59:26.6997103+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T14:59:41.2519415+00:00"
+    }
+  },
+  "validation": "HTTP14/14 WindowsDebug+ReleaseSafe/LinuxDebug; summary10/10 realLinux process; lineclone51/51 WindowsDebug+ReleaseSafe",
+  "hostedRepairVerification": "pending fresh commit CI"
+}
