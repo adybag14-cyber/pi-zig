@@ -4,9 +4,12 @@ const backend = @import("backend/root.zig");
 const json = backend.json;
 const types = @import("types.zig");
 const Value = json.Value;
+const tasks = @import("task_state.zig");
+pub const TaskOptions = struct { conversationId: ?u64 = null, ownerTaskId: ?u64 = null, background: bool = false };
 pub const Scope = struct { conversationId: ?u64 = null, taskId: ?u64 = null };
 pub const Publication = struct { seq: u64, changes: Value };
 pub const Listener = *const fn (?*anyopaque, *const Publication, types.Context) anyerror!void;
+pub const CloseListener = *const fn (?*anyopaque) void;
 pub const CommitFn = *const fn (?*anyopaque, *Transaction, types.Context) anyerror!Value;
 pub const Result = struct {
     value: json.Owned,
@@ -16,6 +19,7 @@ pub const Result = struct {
     }
 };
 const Subscription = struct { id: u64, callback: Listener, context: ?*anyopaque };
+const CloseSubscription = struct { id: u64, callback: CloseListener, context: ?*anyopaque };
 pub const Session = struct {
     gpa: std.mem.Allocator,
     io: std.Io,
@@ -26,10 +30,16 @@ pub const Session = struct {
     closed: bool = false,
     poison: ?anyerror = null,
     ownerThread: std.atomic.Value(std.Thread.Id) = .init(0),
+    closeListeners: std.ArrayList(CloseSubscription) = .empty,
+    closeMutex: std.Io.Mutex = .init,
+    closeOwnerThread: std.atomic.Value(std.Thread.Id) = .init(0),
+    closeNotified: bool = false,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, storage: backend.Backend) Session {
         return .{ .gpa = gpa, .io = io, .storage = storage };
     }
     pub fn deinit(self: *Session) void {
+        self.close();
+        self.closeListeners.deinit(self.gpa);
         self.listeners.deinit(self.gpa);
         self.* = undefined;
     }
@@ -56,11 +66,37 @@ pub const Session = struct {
             return;
         };
     }
+    pub fn subscribeClose(self: *Session, callback: CloseListener, context: ?*anyopaque) !u64 {
+        const on_owner = self.ownerThread.load(.acquire) == std.Thread.getCurrentId();
+        if (!on_owner) try self.mutex.lock(self.io);
+        defer if (!on_owner) self.mutex.unlock(self.io);
+        try self.healthy();
+        const id = self.nextSubscription;
+        try self.closeListeners.append(self.gpa, .{ .id = id, .callback = callback, .context = context });
+        self.nextSubscription += 1;
+        return id;
+    }
+    /// Off-line unsubscribe waits for any in-flight close callback. A callback can remove later callbacks.
+    pub fn unsubscribeClose(self: *Session, id: u64) void {
+        const on_owner = self.ownerThread.load(.acquire) == std.Thread.getCurrentId();
+        const on_close = self.closeOwnerThread.load(.acquire) == std.Thread.getCurrentId();
+        if (!on_owner and !on_close) self.closeMutex.lockUncancelable(self.io);
+        defer if (!on_owner and !on_close) self.closeMutex.unlock(self.io);
+        if (!on_owner) self.mutex.lockUncancelable(self.io);
+        defer if (!on_owner) self.mutex.unlock(self.io);
+        for (self.closeListeners.items, 0..) |item, index| if (item.id == id) {
+            _ = self.closeListeners.orderedRemove(index);
+            return;
+        };
+    }
     pub fn commit(self: *Session, callback: CommitFn, callback_context: ?*anyopaque, scope: Scope, context: types.Context) !Result {
         if (self.ownerThread.load(.acquire) == std.Thread.getCurrentId()) return error.ReentrantSessionCommit;
         if (context.aborted()) return error.Canceled;
         try self.mutex.lock(self.io);
-        defer self.mutex.unlock(self.io);
+        defer {
+            self.mutex.unlock(self.io);
+            self.notifyClose();
+        }
         self.ownerThread.store(std.Thread.getCurrentId(), .release);
         defer self.ownerThread.store(0, .release);
         try self.healthy();
@@ -78,6 +114,7 @@ pub const Session = struct {
         // Stage both durable state   and   publication before admitting storage.
         var predicted: backend.memory.Memory = .{ .gpa = self.gpa, .state = try self.storage.snapshot(self.gpa) };
         defer predicted.deinit();
+        try tx.assembleTasks(&predicted);
         var prepared = try predicted.prepare(tx.writes, null);
         defer prepared.deinit();
         var publication = try buildPublication(self.gpa, prepared.state.?, prepared.seq, tx.writes);
@@ -99,8 +136,31 @@ pub const Session = struct {
             return;
         }
         self.mutex.lockUncancelable(self.io);
-        defer self.mutex.unlock(self.io);
         self.closed = true;
+        self.mutex.unlock(self.io);
+        self.notifyClose();
+    }
+    fn notifyClose(self: *Session) void {
+        if (self.closeOwnerThread.load(.acquire) == std.Thread.getCurrentId()) return;
+        self.closeMutex.lockUncancelable(self.io);
+        defer self.closeMutex.unlock(self.io);
+        self.closeOwnerThread.store(std.Thread.getCurrentId(), .release);
+        defer self.closeOwnerThread.store(0, .release);
+        self.mutex.lockUncancelable(self.io);
+        if (!self.closed or self.closeNotified) {
+            self.mutex.unlock(self.io);
+            return;
+        }
+        self.closeNotified = true;
+        while (self.closeListeners.items.len > 0) {
+            const listener = self.closeListeners.orderedRemove(0);
+            self.mutex.unlock(self.io);
+            listener.callback(listener.context);
+            self.mutex.lockUncancelable(self.io);
+        }
+        self.closeListeners.deinit(self.gpa);
+        self.closeListeners = .empty;
+        self.mutex.unlock(self.io);
     }
 };
 pub const Transaction = struct {
@@ -113,6 +173,7 @@ pub const Transaction = struct {
     tableWritten: bool = false,
     refs: std.atomic.Value(usize) = .init(1),
     ownerThread: std.Thread.Id,
+    createdTasks: std.ArrayList(u64) = .empty,
     fn create(session: *Session, scope: Scope) !*Transaction {
         const self = try session.gpa.create(Transaction);
         errdefer session.gpa.destroy(self);
@@ -161,13 +222,15 @@ pub const Transaction = struct {
     pub fn writeRecord(self: *Transaction, table: backend.memory.Table, record: Value) !void {
         try self.ensureActive();
         if (table == .document) return error.UseDocumentCommand;
+        if (table == .task) return self.setTask(record);
         self.tableWritten = true;
         var write: Value = .{ .object = .empty };
         try write.object.put(self.allocator(), "type", .{ .string = @tagName(table) });
         try write.object.put(self.allocator(), "value", record);
         try self.stage(write);
     }
-    fn currentRecord(self: *Transaction, id: u64, table: backend.memory.Table) !?Value {
+    pub fn currentRecord(self: *Transaction, id: u64, table: backend.memory.Table) !?Value {
+        try self.ensureActive();
         var index = self.writes.array.items.len;
         while (index > 0) {
             index -= 1;
@@ -278,6 +341,116 @@ pub const Transaction = struct {
     }
     pub fn documentCommand(self: *Transaction, write: Value) !void {
         try self.stage(write);
+    }
+    /// Native definitions compute their initial checkpoint before calling this method.
+    pub fn createTask(self: *Transaction, kind: []const u8, version: u64, input: Value, checkpoint: Value, options: TaskOptions) !u64 {
+        const conversation_id = try self.taskConversation(options);
+        const id = try self.session.storage.mintId();
+        const a = self.allocator();
+        var record = tasks.object(a);
+        try record.object.put(a, "id", .{ .integer = @intCast(id) });
+        try record.object.put(a, "conversationId", .{ .integer = @intCast(conversation_id) });
+        try record.object.put(a, "kind", .{ .string = kind });
+        try record.object.put(a, "version", .{ .integer = @intCast(version) });
+        try record.object.put(a, "input", input);
+        if (options.ownerTaskId) |owner| try record.object.put(a, "owner", .{ .integer = @intCast(owner) });
+        try record.object.put(a, "background", .{ .bool = options.background });
+        try record.object.put(a, "abortRequested", .{ .bool = false });
+        try record.object.put(a, "state", try tasks.checkpointState(a, "pending", checkpoint));
+        try tasks.validate(record);
+        try self.createdTasks.append(a, id);
+        try self.setTask(record);
+        return id;
+    }
+    /// Admission checks precede invoking a definition's initial callback.
+    pub fn taskConversation(self: *Transaction, options: TaskOptions) !u64 {
+        try self.ensureActive();
+        var conversation = options.conversationId orelse self.scope.conversationId;
+        if (options.ownerTaskId) |owner| {
+            const record = (try self.currentRecord(owner, .task)) orelse return error.UnknownTaskOwner;
+            if (options.background) return error.BackgroundChildTask;
+            const owner_conversation = try tasks.number(record, "conversationId");
+            if (options.conversationId) |explicit| if (explicit != owner_conversation) return error.ChildTaskConversationMismatch;
+            conversation = owner_conversation;
+        }
+        const conversation_id = conversation orelse return error.TaskConversationRequired;
+        if ((try self.currentRecord(conversation_id, .conversation)) == null) return error.UnknownConversation;
+        return conversation_id;
+    }
+    pub fn setTask(self: *Transaction, record: Value) !void {
+        try self.ensureActive();
+        try tasks.validate(record);
+        const id = try tasks.number(record, "id");
+        const a = self.allocator();
+        var index = self.writes.array.items.len;
+        while (index > 0) {
+            index -= 1;
+            const write = self.writes.array.items[index];
+            if (!std.mem.eql(u8, try tasks.text(write, "type"), "task")) continue;
+            const prior = try tasks.field(write, "value");
+            if (try tasks.number(prior, "id") != id) continue;
+            if (try tasks.status(prior) == .terminal) return error.TerminalTaskCandidate;
+            if (try tasks.number(prior, "conversationId") != try tasks.number(record, "conversationId")) return error.TaskConversationChanged;
+            var replacement = tasks.object(a);
+            try replacement.object.put(a, "type", .{ .string = "task" });
+            try replacement.object.put(a, "value", try json.clone(a, record));
+            self.writes.array.items[index] = replacement;
+            self.tableWritten = true;
+            return;
+        }
+        var write = tasks.object(a);
+        try write.object.put(a, "type", .{ .string = "task" });
+        try write.object.put(a, "value", record);
+        try self.stage(write);
+        self.tableWritten = true;
+    }
+    fn assembleTasks(self: *Transaction, predicted: *backend.memory.Memory) !void {
+        for (self.writes.array.items) |write| {
+            if (!std.mem.eql(u8, try tasks.text(write, "type"), "task")) continue;
+            const record = try tasks.field(write, "value");
+            const id = try tasks.number(record, "id");
+            if (std.mem.indexOfScalar(u64, self.createdTasks.items, id) != null) continue;
+            const prior = predicted.state.rows.get(id) orelse return error.UnknownTask;
+            if (prior.table != .task) return error.UnknownTask;
+            if (try tasks.status(prior.record) == .terminal) return error.TaskAlreadyTerminal;
+            if (try tasks.number(prior.record, "conversationId") != try tasks.number(record, "conversationId")) return error.TaskConversationChanged;
+        }
+        var candidate = try predicted.prepare(self.writes, null);
+        defer candidate.deinit();
+        const state = candidate.state.?;
+        for (self.writes.array.items) |write| {
+            const tag = try tasks.text(write, "type");
+            var owner: ?u64 = null;
+            if (std.mem.eql(u8, tag, "conversation")) {
+                if (json.get(try tasks.field(write, "value"), "owner")) |edge| owner = try tasks.number(edge, "taskId");
+            } else if (std.mem.eql(u8, tag, "task")) {
+                const record = try tasks.field(write, "value");
+                if (std.mem.indexOfScalar(u64, self.createdTasks.items, try tasks.number(record, "id")) != null) {
+                    if (json.get(record, "owner")) |edge| owner = try json.asInteger(edge);
+                }
+            }
+            if (owner) |id| {
+                const record = try (tasks.Graph{ .state = state }).task(id);
+                const s = try tasks.status(record);
+                if (s == .completing or s == .terminal) return error.TaskOwnerSettling;
+                if (try tasks.flag(record, "abortRequested")) return error.TaskOwnerAbortMarked;
+            }
+        }
+        // Retirement is part of the same durable commit, including newly created documents.
+        var documents = state.documents.iterator();
+        while (documents.next()) |item| {
+            const record = item.value_ptr.record;
+            if (json.get(record, "retiredAt") != null) continue;
+            const scope = try tasks.field(record, "scope");
+            if (!std.mem.eql(u8, try tasks.text(scope, "kind"), "task")) continue;
+            const owner = try (tasks.Graph{ .state = state }).task(try tasks.number(scope, "taskId"));
+            if (try tasks.status(owner) != .terminal) continue;
+            var retirement = tasks.object(self.allocator());
+            try retirement.object.put(self.allocator(), "type", .{ .string = "document.retire" });
+            try retirement.object.put(self.allocator(), "id", .{ .integer = @intCast(item.key_ptr.*) });
+            // active is already sealed; assembly is private and cannot expose the transaction.
+            try self.writes.array.append(retirement);
+        }
     }
 };
 fn buildPublication(gpa: std.mem.Allocator, state: *const backend.memory.State, seq: u64, writes: Value) !json.Owned {

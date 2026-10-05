@@ -236,6 +236,13 @@ pub const Manager = struct {
     fn rejectFactory(self: *Manager, id: u64, generation: u64, reason: c.JSValue) !void {
         const entry = self.entries.get(id) orelse return;
         if (entry.generation != generation) return;
+        if (entry.settled or entry.pending_completion != null) return;
+        if (self.completion_bridge) |bridge| {
+            entry.pending_completion = c.JS_DupValue(self.engine.context, reason);
+            entry.pending_success = false;
+            try bridge.request_close(bridge.context, id, generation);
+            return;
+        }
         try self.settle(entry, reason, false);
         self.close(id, generation, reason) catch {};
     }
@@ -381,6 +388,9 @@ pub const Manager = struct {
         if (generation != self.generation or self.retiring) return;
         const entry = self.entries.get(id) orelse return;
         if (entry.generation != generation or entry.pending_completion == null) return;
+        // Host cleanup can reject a staged success, but the original callback
+        // rejection remains primary when cleanup also fails.
+        if (!entry.pending_success) return self.acknowledgeCompletion(id, generation);
         self.engine.freeValue(entry.pending_completion.?);
         entry.pending_completion = null;
         try self.settle(entry, reason, false);
@@ -792,6 +802,52 @@ test "native asynchronous and thenable factory completion remains owner-thread r
             try manager.close(opened.id, opened.generation, c.pi_js_undefined());
         }
     }
+}
+
+test "native custom async factory primary rejection waits for exact close acknowledgement and survives cleanup failure GC" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var manager = try Manager.init(engine);
+    defer manager.deinit();
+    const Capture = struct {
+        count: usize = 0,
+        id: u64 = 0,
+        generation: u64 = 0,
+        fn close(context: ?*anyopaque, id: u64, generation: u64) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.count += 1;
+            self.id = id;
+            self.generation = generation;
+        }
+    };
+    var capture: Capture = .{};
+    manager.completion_bridge = .{ .context = &capture, .request_close = Capture.close };
+    const module = try engine.evalModule("export const original={factory:true};export default async()=>{await Promise.resolve();throw original}", "factory-primary-ack.mjs");
+    defer engine.freeValue(module);
+    const factory = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "default"));
+    defer engine.freeValue(factory);
+    const original = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "original"));
+    defer engine.freeValue(original);
+    const opened = try manager.open(factory, c.pi_js_undefined(), c.pi_js_undefined());
+    defer engine.freeValue(opened.result);
+    _ = try engine.drainReadyJobs();
+    try std.testing.expectEqual(@as(usize, 1), capture.count);
+    try std.testing.expectEqual(opened.id, capture.id);
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, opened.result));
+    c.JS_RunGC(engine.runtime);
+    const secondary = try engine.checked(c.JS_NewError(engine.context));
+    defer engine.freeValue(secondary);
+    try manager.failAcknowledgement(opened.id, opened.generation + 1, secondary);
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, opened.result));
+    try manager.failAcknowledgement(opened.id, opened.generation, secondary);
+    try std.testing.expectEqual(c.JS_PROMISE_REJECTED, c.JS_PromiseState(engine.context, opened.result));
+    const reason = c.JS_PromiseResult(engine.context, opened.result);
+    defer engine.freeValue(reason);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, original));
+    try manager.failAcknowledgement(opened.id, opened.generation, secondary);
+    try std.testing.expectEqual(@as(usize, 1), capture.count);
+    try std.testing.expectEqual(@as(usize, 0), manager.entries.count());
+    c.JS_RunGC(engine.runtime);
 }
 
 test "native custom completion bridge retains component until exact owner-thread scene close acknowledgement" {

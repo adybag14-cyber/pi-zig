@@ -230,8 +230,11 @@ pub const Controller = struct {
 
     pub fn componentClose(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
         const self: *Controller = @ptrCast(@alignCast(raw.?));
-        const active = self.component_fence orelse return error.StaleNativeComponentScene;
-        if (!active.matches(fence)) return error.StaleNativeComponentScene;
+        // Runtime validates the admitted close fence before calling this
+        // boundary. A scene may have closed before its first delivery, or while
+        // another FIFO scene owns the frontend. Neither case borrowed our queue.
+        const active = self.component_fence orelse return;
+        if (!active.matches(fence)) return;
         const close = self.component_close_fn orelse return error.NativeComponentFrontendUnavailable;
         defer {
             self.component_fence = null;
@@ -1182,6 +1185,7 @@ test "component close error detaches foreground lifecycle and permits a new fenc
         fail_close: bool = true,
         starts: usize = 0,
         ends: usize = 0,
+        closes: usize = 0,
         fn scene(raw: ?*anyopaque, owned: component_protocol.Scene, queue: *component_protocol.ControlQueue) !void {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
             self.active = owned;
@@ -1189,6 +1193,7 @@ test "component close error detaches foreground lifecycle and permits a new fenc
         }
         fn close(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.closes += 1;
             try std.testing.expect(self.active.?.fence.matches(fence));
             self.active.?.deinit();
             self.active = null;
@@ -1213,14 +1218,21 @@ test "component close error detaches foreground lifecycle and permits a new fenc
     defer parsed.deinit();
     var first = try component_protocol.readScene(gpa, &parsed.value.object);
     const fence = first.fence;
+    try Controller.componentClose(&controller, fence);
+    try std.testing.expectEqual(@as(usize, 0), fake.closes);
+    try std.testing.expectEqual(@as(usize, 0), fake.starts);
+    try std.testing.expectEqual(@as(usize, 0), fake.ends);
     Controller.componentScene(&controller, first, &queue) catch |err| {
         first.deinit();
         return err;
     };
     var stale = fence;
     stale.token += 1;
-    try std.testing.expectError(error.StaleNativeComponentScene, Controller.componentClose(&controller, stale));
+    try Controller.componentClose(&controller, stale);
     try std.testing.expect(fake.borrowed != null);
+    try std.testing.expectEqual(@as(usize, 0), fake.closes);
+    try std.testing.expectEqual(@as(usize, 1), fake.starts);
+    try std.testing.expectEqual(@as(usize, 0), fake.ends);
     try std.testing.expectError(error.Canceled, Controller.componentClose(&controller, fence));
     try std.testing.expect(fake.borrowed == null and controller.component_fence == null);
     fake.fail_close = false;
@@ -1232,6 +1244,7 @@ test "component close error detaches foreground lifecycle and permits a new fenc
     try Controller.componentClose(&controller, fence);
     try std.testing.expectEqual(@as(usize, 2), fake.starts);
     try std.testing.expectEqual(@as(usize, 2), fake.ends);
+    try std.testing.expectEqual(@as(usize, 2), fake.closes);
 }
 
 test "extension UI context snapshot owns live editor model and status data" {

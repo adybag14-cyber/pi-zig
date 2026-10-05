@@ -290,6 +290,25 @@ pub fn build(b: *std.Build) void {
     const durable_harness_step = b.step("test-durable-harness", "Exercise native registry schema tool output retained invocations and committed results");
     durable_harness_step.dependOn(&run_durable_harness_tests.step);
     test_step.dependOn(&run_durable_harness_tests.step);
+    const durable_scheduler_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_scheduler_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"durable.scheduler"},
+    });
+    linkSqlite(durable_scheduler_tests.root_module, sqlite_lib_dir);
+    const run_durable_scheduler_tests = b.addRunArtifact(durable_scheduler_tests);
+    const durable_scheduler_fixture = b.addExecutable(.{
+        .name = "pi-durable-scheduler-fixture",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_scheduler_fixture.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkSqlite(durable_scheduler_fixture.root_module, sqlite_lib_dir);
+    const install_durable_scheduler_fixture = b.addInstallArtifact(durable_scheduler_fixture, .{});
+    run_durable_scheduler_tests.step.dependOn(&install_durable_scheduler_fixture.step);
+    run_durable_scheduler_tests.setEnvironmentVariable("PI_DURABLE_SCHEDULER_FIXTURE", b.getInstallPath(.bin, b.fmt("pi-durable-scheduler-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    const durable_scheduler_step = b.step("test-durable-scheduler", "Exercise native durable task recovery ownership cascades concurrent phases and late-write fences");
+    durable_scheduler_step.dependOn(&run_durable_scheduler_tests.step);
+    test_step.dependOn(&run_durable_scheduler_tests.step);
     const mcp_fixture = b.addExecutable(.{
         .name = "pi-mcp-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp/stdio_fixture.zig"), .target = target, .optimize = optimize }),

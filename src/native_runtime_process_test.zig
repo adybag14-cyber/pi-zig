@@ -1621,3 +1621,46 @@ test "native runtime custom prompt hooks retain live UI context and publish both
     try std.testing.expectEqualStrings("start1-end1", controller.statuses.items[0].text);
     try std.testing.expectEqual(@as(usize, 0), host.ui_prompt_events.items.len);
 }
+
+test "native runtime admitted custom factory and render rejection closes exactly once before any scene" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('pre-scene',{async handler(mode,ctx){const original={mode};let disposed=0;try{await ctx.ui.custom(async()=>{await new Promise(resolve=>setTimeout(resolve,1));if(mode==='factory')throw original;return {render(){throw original},dispose(){disposed++}}})}catch(error){return {message:(error===original?'original':'replaced')+':'+disposed}}throw Error('custom unexpectedly resolved')}})");
+    defer fixture.deinit();
+    const Probe = struct {
+        scenes: std.atomic.Value(usize) = .init(0),
+        closes: std.atomic.Value(usize) = .init(0),
+        fail_close: bool = false,
+        fn request(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            return error.UnexpectedStandardDialog;
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+        fn scene(context: ?*anyopaque, _: component_protocol.Scene, _: *component_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            _ = self.scenes.fetchAdd(1, .monotonic);
+            return error.UnexpectedFactoryScene;
+        }
+        fn close(context: ?*anyopaque, _: component_protocol.Fence) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            _ = self.closes.fetchAdd(1, .monotonic);
+            if (self.fail_close) return error.InjectedPreSceneClose;
+        }
+    };
+    var probe: Probe = .{};
+    const started = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    try started.runtime.setContextJson("{\"hasUI\":true}");
+    started.runtime.setUiBridge(.{ .context = &probe, .request_fn = Probe.request, .action_fn = Probe.action, .component_scene_fn = Probe.scene, .component_close_fn = Probe.close });
+    for ([_]bool{ false, true, false }) |fail_close| for ([_][]const u8{ "render", "factory" }) |mode| {
+        probe.fail_close = fail_close;
+        probe.scenes.store(0, .release);
+        probe.closes.store(0, .release);
+        const result = try started.runtime.invokeCommand("pre-scene", mode, "{}");
+        defer gpa.free(result);
+        try std.testing.expect(std.mem.indexOf(u8, result, "original") != null);
+        try std.testing.expect(std.mem.indexOf(u8, result, if (std.mem.eql(u8, mode, "render")) "original:1" else "original:0") != null);
+        try std.testing.expectEqual(@as(usize, 0), probe.scenes.load(.acquire));
+        try std.testing.expectEqual(@as(usize, 1), probe.closes.load(.acquire));
+        try std.testing.expect(!started.runtime.closed);
+    };
+}

@@ -179,6 +179,7 @@ const NativeComponentSession = struct {
     closing: bool = false,
     stopping: bool = false,
     presented: std.atomic.Value(bool) = .init(false),
+    close_attempted: std.atomic.Value(bool) = .init(false),
     failure: ?anyerror = null,
 
     fn push(self: *@This(), scene: component_protocol.Scene) !void {
@@ -267,23 +268,29 @@ const NativeComponentSession = struct {
                 try self.runtime.writeLine(record.written());
             };
         }
-        var ok = true;
-        var close_error: ?[]u8 = null;
-        defer if (close_error) |message| std.heap.page_allocator.free(message);
-        if (self.presented.load(.acquire)) if (self.bridge) |bridge| if (bridge.component_close_fn) |callback| {
-            callback(bridge.context, self.fence) catch |err| {
-                ok = false;
-                close_error = try std.heap.page_allocator.dupe(u8, @errorName(err));
-            };
-            // The callback contract removes every borrowed channel pointer
-            // before return, including failure and shutdown paths.
-            self.presented.store(false, .release);
-        };
+        const outcome = try self.closeBoundary(std.heap.page_allocator);
+        defer if (outcome.error_message) |message| std.heap.page_allocator.free(message);
         var record: Io.Writer.Allocating = .init(std.heap.page_allocator);
         defer record.deinit();
-        const acknowledgement: component_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = self.fence, .kind = .{ .close_ack = ok }, .error_message = close_error };
+        const acknowledgement: component_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = self.fence, .kind = .{ .close_ack = outcome.ok }, .error_message = outcome.error_message };
         try component_protocol.writeControl(&record.writer, &acknowledgement);
         try self.runtime.writeLine(record.written());
+    }
+
+    fn closeBoundary(self: *@This(), allocator: std.mem.Allocator) !struct { ok: bool = true, error_message: ?[]u8 = null } {
+        if (self.close_attempted.swap(true, .acq_rel)) return .{};
+        self.presented.store(false, .release);
+        if (self.bridge) |bridge| if (bridge.component_close_fn) |callback| {
+            // The admitted request may close before a queued first frame is
+            // painted. Its close callback is still the explicit ACK boundary.
+            // Publish both fences before user code or fallible diagnostics.
+            callback(bridge.context, self.fence) catch |err| {
+                return .{ .ok = false, .error_message = try allocator.dupe(u8, @errorName(err)) };
+            };
+        } else if (bridge.component_scene_fn != null) {
+            return .{ .ok = false, .error_message = try allocator.dupe(u8, "NativeComponentCloseBridgeMissing") };
+        };
+        return .{};
     }
 
     fn stop(self: *@This()) void {
@@ -297,13 +304,55 @@ const NativeComponentSession = struct {
     fn deinit(self: *@This()) void {
         // The dialog joins its owner task before this method; this close has
         // no competing scene producer and must release the frontend pointer.
-        if (self.presented.load(.acquire)) if (self.bridge) |bridge| if (bridge.component_close_fn) |callback| callback(bridge.context, self.fence) catch {};
+        if (self.presented.load(.acquire) and !self.close_attempted.swap(true, .acq_rel)) {
+            self.presented.store(false, .release);
+            if (self.bridge) |bridge| if (bridge.component_close_fn) |callback| callback(bridge.context, self.fence) catch {};
+        }
         self.controls.deinit();
         for (self.frames.items) |*frame| frame.deinit();
         self.frames.deinit(std.heap.page_allocator);
         std.heap.page_allocator.destroy(self);
     }
 };
+
+test "native component close fence survives pre-scene callbacks errors diagnostic OOM and stop fallback" {
+    const Probe = struct {
+        count: usize = 0,
+        failure: bool = false,
+        fn request(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            return error.UnexpectedDialog;
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+        fn close(context: ?*anyopaque, _: component_protocol.Fence) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.count += 1;
+            if (self.failure) return error.InjectedCloseBoundary;
+        }
+    };
+    var runtime: Runtime = undefined;
+    runtime.io = std.testing.io;
+    for ([_]enum { pre_scene, callback_error, diagnostic_oom, presented_stop }{ .pre_scene, .callback_error, .diagnostic_oom, .presented_stop }) |mode| {
+        var probe: Probe = .{ .failure = mode == .callback_error or mode == .diagnostic_oom };
+        const session = try std.heap.page_allocator.create(NativeComponentSession);
+        session.* = .{ .runtime = &runtime, .bridge = .{ .context = &probe, .request_fn = Probe.request, .action_fn = Probe.action, .component_close_fn = Probe.close }, .fence = .{ .token = 1, .generation = 1, .invocation_id = 1, .component_id = 1 }, .controls = component_protocol.ControlQueue.init(std.heap.page_allocator, std.testing.io) };
+        session.presented.store(mode != .pre_scene, .release);
+        if (mode != .presented_stop) {
+            if (mode == .diagnostic_oom) {
+                var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = 0 });
+                try std.testing.expectError(error.OutOfMemory, session.closeBoundary(failing.allocator()));
+            } else {
+                const result = try session.closeBoundary(std.testing.allocator);
+                defer if (result.error_message) |text| std.testing.allocator.free(text);
+                try std.testing.expectEqual(!probe.failure, result.ok);
+            }
+            try std.testing.expect(!session.presented.load(.acquire) and session.close_attempted.load(.acquire));
+            const repeated = try session.closeBoundary(std.testing.allocator);
+            try std.testing.expect(repeated.ok and repeated.error_message == null);
+        }
+        session.deinit();
+        try std.testing.expectEqual(@as(usize, 1), probe.count);
+    }
+}
 
 const NativeDialog = struct {
     runtime: *Runtime,
