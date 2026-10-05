@@ -1,0 +1,12 @@
+{
+  "rpcExit": 0,
+  "ptyExit": 0,
+  "fullscreenTreeSelector": true,
+  "searchSelected": "tree-answer-168-1",
+  "durableLabel": "checkpoint-168",
+  "labelTarget": "m2",
+  "osc52Payload": "tree-answer-168-1",
+  "labelTimestamps": true,
+  "labeledOnlyFilter": true,
+  "stderrBytes": 0
+}

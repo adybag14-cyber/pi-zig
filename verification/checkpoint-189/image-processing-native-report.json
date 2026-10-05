@@ -1,0 +1,54 @@
+{
+  "checkpoint": 174,
+  "status": "PASS",
+  "startupResizeOn": {
+    "images": 4,
+    "large": [
+      "image/png",
+      2000,
+      667
+    ],
+    "bmp": [
+      "image/png",
+      32,
+      16
+    ],
+    "exif": [
+      "image/png",
+      833,
+      2000
+    ],
+    "byteLimit": [
+      "image/png",
+      100,
+      100
+    ],
+    "byteLimitBase64Bytes": 124,
+    "stderrBytes": 0
+  },
+  "startupResizeOff": {
+    "exactPreservation": true,
+    "bmpConversion": true,
+    "images": 2,
+    "stderrBytes": 0
+  },
+  "readTool": {
+    "dimensions": [
+      "image/png",
+      2000,
+      1000
+    ],
+    "persisted": true,
+    "stderrBytes": 0
+  },
+  "extensionPostHook": {
+    "dimensions": [
+      "image/png",
+      2000,
+      500
+    ],
+    "postHook": true,
+    "persisted": true,
+    "stderrBytes": 0
+  }
+}

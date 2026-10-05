@@ -351,7 +351,9 @@ pub const Runtime = struct {
         const mirrors_caller = options.abort_flag != null;
         if (options.abort_flag) |caller| {
             if (aborted(caller)) @atomicStore(bool, &invocation_abort, true, .release);
-            mirror_group.async(self.io, mirrorAbortTask, .{ self.io, caller, &invocation_abort, &mirror_done });
+            // The mirror lives until this refresh finishes. Eager execution
+            // would prevent the refresh from ever reaching that finish.
+            try mirror_group.concurrent(self.io, mirrorAbortTask, .{ self.io, caller, &invocation_abort, &mirror_done });
         }
         defer if (mirrors_caller) {
             @atomicStore(bool, &mirror_done, true, .release);
@@ -672,6 +674,34 @@ fn mirrorAbortTask(io: Io, source: *const bool, target: *bool, done: *bool) Io.C
         const pause: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(5), .clock = .awake } };
         pause.sleep(io) catch return;
     }
+}
+
+test "provider model abort mirror progresses with zero eager async capacity and releases generation on setup error" {
+    const gpa = std.testing.allocator;
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    var env = std.process.Environ.Map.init(gpa);
+    defer env.deinit();
+    var registry = provider_registry.Registry.init(gpa, io, &env, null, &.{}, &.{});
+    defer registry.deinit();
+    try registry.registerJson("mirror-low-capacity", "{\"baseUrl\":\"https://mirror.invalid/v1\",\"api\":\"openai-completions\",\"apiKey\":\"configured\",\"models\":[{\"id\":\"initial\",\"name\":\"Initial\",\"reasoning\":false,\"input\":[\"text\"],\"cost\":{\"input\":0,\"output\":0,\"cacheRead\":0,\"cacheWrite\":0},\"contextWindow\":4096,\"maxTokens\":512}]}");
+    var oauth = provider_oauth.Runtime.init(gpa, io, null, &registry);
+    var runtime = try Runtime.init(gpa, io, null, &registry, &oauth);
+    defer runtime.deinit();
+    var abort_flag = false;
+    // Exercise the real coordinator's setup-error unwind, after the generation
+    // and abort mirror are acquired but before any callback can publish.
+    try std.testing.expectError(error.ProviderMethodNotRegistered, runtime.refreshOne("mirror-low-capacity", .{ .allow_network = false, .abort_flag = &abort_flag }));
+    const state = runtime.states.get("mirror-low-capacity").?;
+    try std.testing.expect(state.active_abort == null);
+    try std.testing.expect(!abort_flag);
+    try std.testing.expect(testCatalogModel(&registry, "mirror-low-capacity", "initial") != null);
+    try std.testing.expect((try runtime.readStored("mirror-low-capacity")) == null);
+    threaded.concurrent_limit = .nothing;
+    try std.testing.expectError(error.ConcurrencyUnavailable, runtime.refreshOne("mirror-low-capacity", .{ .allow_network = false, .abort_flag = &abort_flag }));
+    try std.testing.expect(state.active_abort == null);
+    try std.testing.expectEqual(@as(u64, 2), state.generation);
 }
 
 fn testProviderConfigFromManifest(gpa: std.mem.Allocator, manifest_json: []const u8, name: []const u8) ![]u8 {

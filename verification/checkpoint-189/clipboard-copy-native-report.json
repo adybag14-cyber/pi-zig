@@ -1,0 +1,28 @@
+{
+  "local": {
+    "remote": false,
+    "answer": "local-copy-answer-176",
+    "nativeCalls": 1,
+    "nativeBytes": 21,
+    "osc52": false,
+    "assistantOccurrences": 1,
+    "exit": 0,
+    "stderrBytes": 0
+  },
+  "remote": {
+    "remote": true,
+    "answer": "remote-copy-answer-176",
+    "nativeCalls": 1,
+    "nativeBytes": 22,
+    "osc52": true,
+    "assistantOccurrences": 1,
+    "exit": 0,
+    "stderrBytes": 0
+  },
+  "extension": {
+    "nativeCalls": 1,
+    "copied": true,
+    "exit": 0,
+    "stderrBytes": 0
+  }
+}

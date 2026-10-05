@@ -188,6 +188,7 @@ pub const Application = struct {
     root: layout.Component,
     focused: ?layout.Component = null,
     bindings: ?*const keybindings.Manager = null,
+    show_hardware_cursor: bool = true,
     overlays: std.ArrayList(OverlayEntry) = .empty,
     overlay_frames: std.ArrayList(OverlayFrame) = .empty,
     current_frame: ?layout.LayoutFrame = null,
@@ -671,7 +672,7 @@ pub const Application = struct {
             if (changes > 0) self.incremental_redraw_count += 1;
         }
         if (view.cursor) |cursor| {
-            try out.writer.print("\x1b[{d};{d}H{s}", .{ cursor.row + 1, cursor.column + 1, terminal.show_cursor });
+            try out.writer.print("\x1b[{d};{d}H{s}", .{ cursor.row + 1, cursor.column + 1, if (self.show_hardware_cursor) terminal.show_cursor else terminal.hide_cursor });
         } else {
             try out.writer.writeAll(terminal.hide_cursor);
         }
@@ -684,6 +685,13 @@ pub const Application = struct {
         const bytes = try self.renderAnsi(width, height);
         defer self.gpa.free(bytes);
         try writeAll(io, bytes);
+    }
+
+    pub fn invalidatePaint(self: *Application) void {
+        self.painted_lines.deinit(self.gpa);
+        self.painted_lines = .{};
+        self.painted_width = 0;
+        self.painted_height = 0;
     }
 
     fn updatePainted(self: *Application, lines: []const []u8, width: usize, height: usize) !void {
@@ -780,9 +788,10 @@ pub const Application = struct {
     }
 };
 
-fn writeAll(io: Io, bytes: []const u8) !void {
-    std.Io.File.stdout().writeStreamingAll(io, bytes) catch {
-        std.debug.print("{s}", .{bytes});
+pub fn writeAll(io: Io, bytes: []const u8) !void {
+    std.Io.File.stdout().writeStreamingAll(io, bytes) catch |err| {
+        if (err == error.InputOutput or err == error.BrokenPipe or err == error.SocketUnconnected) return error.DeadTerminal;
+        return err;
     };
 }
 

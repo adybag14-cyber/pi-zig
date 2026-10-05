@@ -1779,6 +1779,83 @@ fn queueSequentialRawProgress(raw_ctx: ?*anyopaque, update: ExternalToolUpdate) 
     ctx.events.putOne(ctx.io, .{ .update = owned }) catch {};
 }
 
+const ConcurrencyToolProbe = struct {
+    const schemas = "[{\"type\":\"function\",\"function\":{\"name\":\"native_queue\",\"parameters\":{\"type\":\"object\"}}}]";
+    owner: std.Thread.Id,
+    updates: usize = 0,
+    wrong_thread: bool = false,
+    fn exists(_: ?*anyopaque, _: []const u8) bool {
+        return true;
+    }
+    fn execute(_: ?*anyopaque, gpa: std.mem.Allocator, id: []const u8, _: []const u8, _: []const u8, callback: ExternalToolProgressFn, context: ?*anyopaque, _: ?*bool) !?tools.ToolResult {
+        // Exceed either queue's capacity before finishing. Eager execution
+        // cannot progress because the owner has not started draining yet.
+        for (0..48) |_| callback(context, .{ .content = "native queued progress" });
+        return .{ .content = try gpa.dupe(u8, id), .is_error = false };
+    }
+    fn event(raw: ?*anyopaque, value: AgentEvent) void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        if (value.kind == .tool_execution_update) {
+            self.updates += 1;
+            if (self.owner != std.Thread.getCurrentId()) self.wrong_thread = true;
+        }
+    }
+    fn config(self: *@This()) AgentConfig {
+        return .{ .hook_ctx = self, .external_tool_exists_fn = exists, .external_tool_call_streaming_fn = execute };
+    }
+};
+
+test "sequential tool progress drains its bounded queue on the owner with zero eager async capacity" {
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    var probe: ConcurrencyToolProbe = .{ .owner = std.Thread.getCurrentId() };
+    const config = probe.config();
+    const call: ai.ToolCall = .{ .id = "sequential-result", .name = "bash", .arguments = "{\"command\":\"unused external fixture\"}" };
+    var result = try executeSequentialRawTool(std.testing.allocator, threaded.io(), ".", &config, &call, call.arguments, ConcurrencyToolProbe.event, &probe);
+    defer result.deinit(std.testing.allocator);
+    try std.testing.expectEqualStrings("sequential-result", result.content);
+    try std.testing.expectEqual(@as(usize, 48), probe.updates);
+    try std.testing.expect(!probe.wrong_thread);
+}
+
+test "parallel tool progress drains both bounded queues and persists source order with zero eager async capacity" {
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    var probe: ConcurrencyToolProbe = .{ .owner = std.Thread.getCurrentId() };
+    const config = probe.config();
+    var session = try session_mod.Session.init(std.testing.allocator, "native-low-capacity", ".");
+    defer session.deinit();
+    const calls = [_]ai.ToolCall{
+        .{ .id = "first-result", .name = "native_queue", .arguments = "{}" },
+        .{ .id = "second-result", .name = "native_queue", .arguments = "{}" },
+    };
+    _ = try executeToolBatchParallel(std.testing.allocator, threaded.io(), ".", &config, ConcurrencyToolProbe.schemas, &session, &calls, ConcurrencyToolProbe.event, &probe);
+    try std.testing.expectEqual(@as(usize, 96), probe.updates);
+    try std.testing.expect(!probe.wrong_thread);
+    try std.testing.expectEqual(@as(usize, 2), session.entries.items.len);
+    try std.testing.expectEqualStrings("first-result", session.entries.items[0].content);
+    try std.testing.expectEqualStrings("second-result", session.entries.items[1].content);
+}
+
+test "tool concurrency exhaustion joins previously started producers before releasing queues and arenas" {
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing, .concurrent_limit = .nothing });
+    defer threaded.deinit();
+    var probe: ConcurrencyToolProbe = .{ .owner = std.Thread.getCurrentId() };
+    const config = probe.config();
+    const call: ai.ToolCall = .{ .id = "sequential-result", .name = "bash", .arguments = "{\"command\":\"unused external fixture\"}" };
+    try std.testing.expectError(error.ConcurrencyUnavailable, executeSequentialRawTool(std.testing.allocator, threaded.io(), ".", &config, &call, call.arguments, ConcurrencyToolProbe.event, &probe));
+    var session = try session_mod.Session.init(std.testing.allocator, "native-low-capacity", ".");
+    defer session.deinit();
+    const calls = [_]ai.ToolCall{
+        .{ .id = "first-result", .name = "native_queue", .arguments = "{}" },
+        .{ .id = "second-result", .name = "native_queue", .arguments = "{}" },
+    };
+    try std.testing.expectError(error.ConcurrencyUnavailable, executeToolBatchParallel(std.testing.allocator, threaded.io(), ".", &config, ConcurrencyToolProbe.schemas, &session, &calls, ConcurrencyToolProbe.event, &probe));
+    threaded.concurrent_limit = .limited(1);
+    try std.testing.expectError(error.ConcurrencyUnavailable, executeToolBatchParallel(std.testing.allocator, threaded.io(), ".", &config, ConcurrencyToolProbe.schemas, &session, &calls, ConcurrencyToolProbe.event, &probe));
+    try std.testing.expectEqual(@as(usize, 0), session.entries.items.len);
+}
+
 fn sequentialRawToolWorker(
     state: *SequentialRawToolState,
     io: Io,
@@ -1849,14 +1926,15 @@ fn executeSequentialRawTool(
     var events: Io.Queue(SequentialRawToolEvent) = .init(&queue_storage);
     defer events.close(io);
     var group: Io.Group = .init;
-    group.async(io, sequentialRawToolWorker, .{ &state, io, cwd, config, tc, arguments, &events });
+    defer {
+        events.close(io);
+        group.cancel(io);
+    }
+    try group.concurrent(io, sequentialRawToolWorker, .{ &state, io, cwd, config, tc, arguments, &events });
 
     while (true) {
         const event = events.getOne(io) catch |err| switch (err) {
-            error.Canceled => {
-                group.cancel(io);
-                return error.Canceled;
-            },
+            error.Canceled => return error.Canceled,
             error.Closed => break,
         };
         switch (event) {
@@ -2170,6 +2248,12 @@ fn executeToolBatchParallel(
     @memset(finals, null);
 
     var group: Io.Group = .init;
+    // A producer can fill the bounded queue before the owner starts draining.
+    // Join all acquired workers on every exit before releasing their arenas.
+    defer {
+        events.close(io);
+        group.cancel(io);
+    }
     var active_tasks: usize = 0;
     var considered: usize = 0;
     for (calls, 0..) |*tc, i| {
@@ -2189,17 +2273,14 @@ fn executeToolBatchParallel(
             states[i].arguments = owned;
             prepared.owned_arguments = null;
         }
-        group.async(io, parallelToolWorker, .{ &states[i], io, cwd, config, &events });
+        try group.concurrent(io, parallelToolWorker, .{ &states[i], io, cwd, config, &events });
         active_tasks += 1;
     }
 
     var completed: usize = 0;
     while (completed < active_tasks) {
         const event = events.getOne(io) catch |err| switch (err) {
-            error.Canceled => {
-                group.cancel(io);
-                return error.Canceled;
-            },
+            error.Canceled => return error.Canceled,
             error.Closed => break,
         };
         switch (event) {

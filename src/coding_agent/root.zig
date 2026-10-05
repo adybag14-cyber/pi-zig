@@ -2,6 +2,8 @@
 const std = @import("std");
 pub const args = @import("args.zig");
 pub const context = @import("context.zig");
+pub const fullscreen_frontend = @import("fullscreen_frontend.zig");
+pub const transcript_view = @import("transcript_view.zig");
 pub const skills = @import("skills.zig");
 pub const prompts = @import("prompts.zig");
 pub const path_utils = @import("path_utils.zig");

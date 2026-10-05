@@ -1,0 +1,54 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "clipboard-paste",
+  "reportGates": 9,
+  "semanticReportMatch": true,
+  "sourceImage": "Exact original92-byte3x2 PNG",
+  "ownedTemp": "Explicit task TMPDIR; actual staged image matches bytes and0600permissions; directory empty after shutdown",
+  "nativeLinuxTestsPassed": 5,
+  "windowsTestsPassed": 0,
+  "windowsLinuxSkips": 1,
+  "jobs": {
+    "clipboard-paste-python-baseline": {
+      "name": "clipboard-paste-python-baseline",
+      "pid": 40232,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/clipboard_paste_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/clipboard-paste-python-report.json",
+      "created_utc": "2026-10-05T11:08:20.2344380Z",
+      "launched_utc": "2026-10-05T11:08:20.2311661+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:08:22.3642876+00:00"
+    },
+    "clipboard-paste-native-live2": {
+      "name": "clipboard-paste-native-live2",
+      "pid": 40568,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_CLIPBOARD_TEST_HELPER=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/pi-clipboard-fixture PI_CLIPBOARD_PASTE_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/clipboard-paste-native-report.json /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/clipboard_paste_process_test.zig -target x86_64-linux-gnu --cache-dir /tmp/pi-clipboard-paste-cache-20261005 --global-cache-dir /tmp/pi-root-zig-global-20261005",
+      "created_utc": "2026-10-05T11:14:22.7892420Z",
+      "launched_utc": "2026-10-05T11:14:22.7862366+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:14:28.9925738+00:00"
+    },
+    "clipboard-paste-native-windows": {
+      "name": "clipboard-paste-native-windows",
+      "pid": 53952,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/clipboard_paste_process_test.zig",
+      "created_utc": "2026-10-05T11:14:29.0027220Z",
+      "launched_utc": "2026-10-05T11:14:29.0020585+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:14:30.7684742+00:00"
+    }
+  }
+}

@@ -200,6 +200,17 @@ pub const Session = struct {
         }
     }
 
+    pub fn resize(self: *Session, columns: u16, rows: u16) !void {
+        var dimensions: std.posix.winsize = .{ .row = rows, .col = columns, .xpixel = 0, .ypixel = 0 };
+        if (linux.errno(linux.ioctl(self.master, linux.T.IOCSWINSZ, @intFromPtr(&dimensions))) != .SUCCESS) return error.PtyResizeFailed;
+    }
+
+    pub fn hangup(self: *Session) void {
+        if (self.master >= 0) _ = linux.close(self.master);
+        self.master = -1;
+        self.eof = true;
+    }
+
     /// Observe termination without reaping: this exact spawned PID cannot be
     /// reused before our own Child.wait, and no unrelated process is signalled.
     pub fn exited(self: *Session) !bool {
@@ -256,7 +267,7 @@ pub const Session = struct {
 
     pub fn deinit(self: *Session) void {
         self.stopOwned() catch |err| std.debug.print("Owned PTY child cleanup failed: {s}\n", .{@errorName(err)});
-        _ = linux.close(self.master);
+        if (self.master >= 0) _ = linux.close(self.master);
         self.output.deinit(self.gpa);
     }
 };

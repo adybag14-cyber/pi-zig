@@ -14,10 +14,11 @@ const node_url = @import("node_url.zig");
 const commonjs = @import("commonjs.zig");
 const timers = @import("timers.zig");
 const abort_signal = @import("abort_signal.zig");
+const native_stream = @import("native_stream.zig");
 const c = engine_mod.c;
 
 const WireRecord = struct {
-    const Kind = enum { request, abort, ui_response, shutdown };
+    const Kind = enum { request, abort, ui_response, provider_stream_ack, shutdown };
     bytes: []u8,
     kind: Kind = .request,
 };
@@ -76,6 +77,7 @@ const Transport = struct {
         if (std.mem.eql(u8, kind.string, "abort_current") or std.mem.eql(u8, kind.string, "abort")) return .abort;
         if (std.mem.eql(u8, kind.string, "shutdown")) return .shutdown;
         if (std.mem.eql(u8, kind.string, "ui_response")) return .ui_response;
+        if (std.mem.eql(u8, kind.string, "provider_stream_ack")) return .provider_stream_ack;
         return .request;
     }
 
@@ -151,7 +153,7 @@ const Transport = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.records.items, 0..) |record, index| {
-            if (record.kind == .abort or record.kind == .ui_response or (record.kind == .shutdown and index == 0)) {
+            if (record.kind == .abort or record.kind == .ui_response or record.kind == .provider_stream_ack or (record.kind == .shutdown and index == 0)) {
                 const removed = self.records.orderedRemove(index);
                 self.queued_bytes -= removed.bytes.len;
                 return removed;
@@ -190,7 +192,15 @@ const Transport = struct {
                 // Require an explicit identity: stale or untargeted controls
                 // cannot cancel a later invocation that happens to be active.
                 if (id != .string or !std.mem.eql(u8, id.string, self.active_id)) continue;
-                if (record.kind == .ui_response) {
+                if (record.kind == .provider_stream_ack) {
+                    const sequence = request.object.get("sequence") orelse continue;
+                    const success = request.object.get("ok") orelse continue;
+                    if (sequence != .integer or sequence.integer <= 0 or success != .bool) continue;
+                    const accepted = request.object.get("accepted") orelse std.json.Value{ .bool = true };
+                    const reason = try engine.fromJsonValue(request.object.get("error") orelse std.json.Value{ .string = "Native host rejected provider stream event" });
+                    defer engine.freeValue(reason);
+                    try self.bindings.stream_runner.acknowledge(@intCast(sequence.integer), success.bool, accepted == .bool and accepted.bool, reason);
+                } else if (record.kind == .ui_response) {
                     const request_id = request.object.get("id") orelse continue;
                     if (request_id != .integer or request_id.integer <= 0 or request_id.integer > std.math.maxInt(u32)) continue;
                     const success = request.object.get("ok") orelse continue;
@@ -211,8 +221,10 @@ const Transport = struct {
             }
         }
         if (try self.bindings.ui_manager.poll()) dispatched = true;
+        try self.bindings.stream_runner.poll();
         if (self.inputEnded()) self.terminal = true;
         if (self.terminal) {
+            if (self.bindings.stream_runner.cleaning) return dispatched;
             if (self.terminal_abort_sent) {
                 if (c.JS_IsJobPending(engine.runtime)) return true;
                 return error.NativeWorkerInputClosed;
@@ -308,6 +320,19 @@ const Transport = struct {
     fn uiCancel(context: ?*anyopaque, id: u32) !void {
         const self: *Transport = @ptrCast(@alignCast(context.?));
         try self.uiRecord("ui_cancel", id, null, null);
+    }
+
+    fn streamEvent(context: ?*anyopaque, sequence: u64, event: []const u8) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        var record: std.json.ObjectMap = .empty;
+        try record.put(allocator, "type", .{ .string = "provider_stream_event" });
+        try record.put(allocator, "invocationId", .{ .string = self.active_id });
+        try record.put(allocator, "sequence", .{ .integer = @intCast(sequence) });
+        try record.put(allocator, "event", try std.json.parseFromSliceLeaky(std.json.Value, allocator, event, .{}));
+        try writeRecord(self.writer, .{ .object = record });
     }
 };
 
@@ -478,7 +503,7 @@ pub fn normalizeToolResult(gpa: std.mem.Allocator, raw: []const u8, tool_name: [
     return encoded(gpa, .{ .object = projected });
 }
 
-fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, object: std.json.ObjectMap) ![]u8 {
+fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, transport: *Transport, object: std.json.ObjectMap) ![]u8 {
     const kind = try requiredText(object, "kind");
     const snapshot = try encoded(gpa, object.get("context") orelse std.json.Value{ .object = .empty });
     defer gpa.free(snapshot);
@@ -509,6 +534,23 @@ fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, object: std.
         defer gpa.free(arguments);
         return bindings.invokeProviderMethodWithSignal(try requiredText(object, "callbackId"), arguments, append_signal, aborted);
     }
+    if (std.mem.eql(u8, kind, "provider_callback_commit")) {
+        const selected = try encoded(gpa, object.get("callbackIds") orelse std.json.Value{ .array = std.json.Array.init(gpa) });
+        defer gpa.free(selected);
+        return bindings.commitProviderCallbacks(try requiredText(object, "providerName"), selected);
+    }
+    if (std.mem.eql(u8, kind, "provider_stream_simple") or std.mem.eql(u8, kind, "provider_fetch_deferred") or std.mem.eql(u8, kind, "provider_cancel_deferred")) {
+        const generation = object.get("callbackGeneration") orelse return error.MissingWorkerField;
+        if (generation != .integer or generation.integer <= 0) return error.InvalidWorkerField;
+        const model = try encoded(gpa, object.get("model") orelse std.json.Value{ .object = .empty });
+        defer gpa.free(model);
+        const context = try encoded(gpa, object.get(if (std.mem.eql(u8, kind, "provider_stream_simple")) "streamContext" else "handle") orelse std.json.Value{ .object = .empty });
+        defer gpa.free(context);
+        const options = try encoded(gpa, object.get("options") orelse std.json.Value{ .object = .empty });
+        defer gpa.free(options);
+        const bridge: native_stream.Bridge = .{ .context = transport, .event = Transport.streamEvent };
+        return bindings.invokeProviderStream(try requiredText(object, "callbackId"), try requiredText(object, "providerName"), @intCast(generation.integer), model, context, options, transport.active_id, bridge, std.mem.eql(u8, kind, "provider_cancel_deferred"));
+    }
     return error.UnsupportedNativeWorkerRequest;
 }
 
@@ -534,9 +576,9 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
     defer bindings.deinit();
     try timers.install(engine, io);
     try bindings.installSchemas();
-    try node_fs.install(engine, io);
     try node_path.install(engine, io);
     try node_url.install(engine);
+    try node_fs.install(engine, io);
     try commonjs.install(engine);
     try console.install(engine, io);
     try text_encoding.install(engine);
@@ -598,7 +640,7 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
         defer std.heap.page_allocator.free(record.bytes);
         // A late control is consumed without producing a final response that
         // could be mistaken for the next ordinary invocation's result.
-        if (record.kind == .abort or record.kind == .ui_response) continue;
+        if (record.kind == .abort or record.kind == .ui_response or record.kind == .provider_stream_ack) continue;
         var arena: std.heap.ArenaAllocator = .init(gpa);
         defer arena.deinit();
         const allocator = arena.allocator();
@@ -629,7 +671,7 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
             continue;
         };
         defer transport.clearActive();
-        const result = invoke(gpa, bindings, request.object) catch |err| {
+        const result = invoke(gpa, bindings, &transport, request.object) catch |err| {
             try writeFailure(allocator, writer, engine.last_error orelse @errorName(err));
             if (transport.terminal) {
                 if (transport.shutdown_requested) {

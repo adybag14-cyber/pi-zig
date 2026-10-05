@@ -2,10 +2,10 @@
 const std = @import("std");
 
 pub fn decodePath(gpa: std.mem.Allocator, input: []const u8) ![]u8 {
-    return decodePathMode(gpa, input, true);
+    return decodePathMode(gpa, input, true, false);
 }
 
-fn decodePathMode(gpa: std.mem.Allocator, input: []const u8, reject_backslash: bool) ![]u8 {
+fn decodePathMode(gpa: std.mem.Allocator, input: []const u8, reject_backslash: bool, allow_nul: bool) ![]u8 {
     const output = try gpa.alloc(u8, input.len);
     errdefer gpa.free(output);
     var read: usize = 0;
@@ -17,11 +17,11 @@ fn decodePathMode(gpa: std.mem.Allocator, input: []const u8, reject_backslash: b
             const high = std.fmt.charToDigit(input[read + 1], 16) catch return error.InvalidFileUrlEncoding;
             const low = std.fmt.charToDigit(input[read + 2], 16) catch return error.InvalidFileUrlEncoding;
             const decoded = (high << 4) | low;
-            if (decoded == '/' or (reject_backslash and decoded == '\\') or decoded == 0) return error.InvalidFileUrlSeparator;
+            if (decoded == '/' or (reject_backslash and decoded == '\\') or (!allow_nul and decoded == 0)) return error.InvalidFileUrlSeparator;
             output[written] = decoded;
             read += 2;
         } else {
-            if (byte == 0) return error.InvalidFileUrlEncoding;
+            if (!allow_nul and byte == 0) return error.InvalidFileUrlEncoding;
             output[written] = byte;
         }
         written += 1;
@@ -39,15 +39,31 @@ pub fn toPath(gpa: std.mem.Allocator, input: []const u8, windows: bool) ![]u8 {
     const encoded = switch (uri.path) {
         .raw, .percent_encoded => |bytes| bytes,
     };
+    return toPathParts(gpa, host, encoded, windows);
+}
+
+/// Already branded URL consumers pass the public hostname/pathname snapshots,
+/// avoiding a second parse that would turn literal filename ?/# into suffixes.
+pub fn toPathParts(gpa: std.mem.Allocator, host: []const u8, encoded: []const u8, windows: bool) ![]u8 {
+    if (!windows and host.len > 0 and !std.ascii.eqlIgnoreCase(host, "localhost")) return error.InvalidFileUrlHost;
     if (encoded.len == 0 or encoded[0] != '/') return error.InvalidFileUrl;
-    const path = try decodePathMode(gpa, encoded, windows);
+    // Node checks escaped path separators before URI decoding, so a later
+    // separator takes priority over an earlier malformed escape.
+    for (encoded, 0..) |byte, index| {
+        if (byte != '%' or encoded.len - index < 3) continue;
+        const high = std.fmt.charToDigit(encoded[index + 1], 16) catch continue;
+        const low = std.fmt.charToDigit(encoded[index + 2], 16) catch continue;
+        const value = (high << 4) | low;
+        if (value == '/' or (windows and value == '\\')) return error.InvalidFileUrlSeparator;
+    }
+    const path = try decodePathMode(gpa, encoded, windows, true);
     defer gpa.free(path);
     if (!windows) {
-        if (host.len > 0 and !std.ascii.eqlIgnoreCase(host, "localhost")) return error.InvalidFileUrlHost;
         return gpa.dupe(u8, path);
     }
     const remote = host.len > 0 and !std.ascii.eqlIgnoreCase(host, "localhost");
-    if (remote and std.mem.indexOfAny(u8, host, "%/:\\?#\x00") != null) return error.InvalidFileUrlHost;
+    const bracketed = std.mem.startsWith(u8, host, "[") and std.mem.endsWith(u8, host, "]");
+    if (remote and (std.mem.indexOfAny(u8, host, "%/\\?#\x00") != null or (!bracketed and std.mem.indexOfScalar(u8, host, ':') != null))) return error.InvalidFileUrlHost;
     const output = if (remote)
         try std.fmt.allocPrint(gpa, "\\\\{s}{s}", .{ host, path })
     else valid_drive: {
@@ -61,7 +77,13 @@ pub fn toPath(gpa: std.mem.Allocator, input: []const u8, windows: bool) ![]u8 {
 }
 
 pub fn fromPath(gpa: std.mem.Allocator, input: []const u8, windows: bool) ![]u8 {
-    if (std.mem.indexOfScalar(u8, input, 0) != null or !std.unicode.utf8ValidateSlice(input)) return error.InvalidFileUrlPath;
+    return fromPathMode(gpa, input, windows, false);
+}
+pub fn fromPathURL(gpa: std.mem.Allocator, input: []const u8, windows: bool) ![]u8 {
+    return fromPathMode(gpa, input, windows, true);
+}
+fn fromPathMode(gpa: std.mem.Allocator, input: []const u8, windows: bool, allow_nul: bool) ![]u8 {
+    if ((!allow_nul and std.mem.indexOfScalar(u8, input, 0) != null) or !std.unicode.utf8ValidateSlice(input)) return error.InvalidFileUrlPath;
     var writer: std.Io.Writer.Allocating = .init(gpa);
     defer writer.deinit();
     try writer.writer.writeAll("file://");
@@ -82,7 +104,7 @@ pub fn fromPath(gpa: std.mem.Allocator, input: []const u8, windows: bool) ![]u8 
     for (path) |byte| {
         if (byte == '/' or (windows and byte == '\\')) {
             try writer.writer.writeByte('/');
-        } else if (std.ascii.isAlphanumeric(byte) or std.mem.indexOfScalar(u8, "-._~:", byte) != null) {
+        } else if (std.ascii.isAlphanumeric(byte) or std.mem.indexOfScalar(u8, "-._!$&'()*+,:;=@", byte) != null) {
             try writer.writer.writeByte(byte);
         } else {
             try writer.writer.writeAll(&.{ '%', hex[byte >> 4], hex[byte & 15] });

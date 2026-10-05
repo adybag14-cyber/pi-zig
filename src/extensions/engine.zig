@@ -51,6 +51,13 @@ pub const Engine = struct {
     text_encoder_class: c.JSClassID = 0,
     text_decoder_class: c.JSClassID = 0,
     dom_exception_class: c.JSClassID = 0,
+    url_class: c.JSClassID = 0,
+    url_search_params_class: c.JSClassID = 0,
+    url_search_params_iterator_class: c.JSClassID = 0,
+    url_decode_uri_component: ?c.JSValue = null,
+    event_stream_class: c.JSClassID = 0,
+    event_stream_iterator_class: c.JSClassID = 0,
+    event_stream_async_atom: c.JSAtom = c.JS_ATOM_NULL,
     buffer_prototype: ?c.JSValue = null,
     buffer_ready: bool = false,
     abort_signal_class: c.JSClassID = 0,
@@ -92,9 +99,11 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        c.JS_FreeAtom(self.context, self.event_stream_async_atom);
         if (self.host_scheduler_deinit) |cleanup| cleanup(self);
         if (self.captured_exception) |exception| self.freeValue(exception);
         if (self.buffer_prototype) |prototype| self.freeValue(prototype);
+        if (self.url_decode_uri_component) |decoder| self.freeValue(decoder);
         var values = self.native_module_values.valueIterator();
         while (values.next()) |value| self.freeValue(value.*);
         self.native_module_values.deinit(self.gpa);

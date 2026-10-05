@@ -3,6 +3,7 @@ const std = @import("std");
 const builtin = @import("builtin");
 const engine_mod = @import("engine.zig");
 const file_urls = @import("file_urls.zig");
+const native_url = @import("native_url.zig");
 const c = engine_mod.c;
 
 fn platformFilename(engine: *engine_mod.Engine, name: []const u8) ![:0]u8 {
@@ -56,14 +57,35 @@ pub fn install(engine: *engine_mod.Engine) !void {
 
 fn createRequire(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    return createRequireCall(engine, argv[0..@intCast(argc)]) catch |err| c.JS_ThrowTypeError(context, "Native createRequire: %s", @as([*:0]const u8, @errorName(err)));
+    return createRequireCall(engine, if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| {
+        if (err == error.JavaScriptException) return engine.throwCaptured();
+        if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+        _ = c.JS_ThrowTypeError(context, "Native createRequire: %s", @as([*:0]const u8, @errorName(err)));
+        const value = c.JS_GetException(context);
+        if (!c.JS_IsError(value)) return c.JS_Throw(context, value);
+        if (c.JS_DefinePropertyValueStr(context, value, "code", c.JS_NewString(context, "ERR_INVALID_ARG_VALUE"), c.JS_PROP_C_W_E) < 0) {
+            engine.freeValue(value);
+            return c.JS_Throw(context, c.JS_GetException(context));
+        }
+        return c.JS_Throw(context, value);
+    };
 }
 
 fn createRequireCall(engine: *engine_mod.Engine, args: []c.JSValue) !c.JSValue {
-    if (args.len == 0 or !c.JS_IsString(args[0])) return error.InvalidNativeRequireArgument;
-    const input = try engine.toString(args[0]);
-    defer engine.gpa.free(input);
-    const path = if (std.ascii.startsWithIgnoreCase(input, "file:")) try file_urls.toPath(engine.gpa, input, builtin.os.tag == .windows) else try engine.gpa.dupe(u8, input);
+    if (args.len == 0) return error.InvalidNativeRequireArgument;
+    const path = if (native_url.isURL(engine, args[0])) actual_url: {
+        if (!try native_url.visibleURL(engine, args[0])) return error.InvalidNativeRequireArgument;
+        break :actual_url native_url.clonedFilePath(engine, args[0], builtin.os.tag == .windows) catch |err| {
+            if (err == error.OutOfMemory) return err;
+            if (c.JS_HasException(engine.context)) engine.freeValue(c.JS_GetException(engine.context));
+            return error.InvalidNativeRequireArgument;
+        };
+    } else string: {
+        if (!c.JS_IsString(args[0])) return error.InvalidNativeRequireArgument;
+        const input = try engine.toString(args[0]);
+        defer engine.gpa.free(input);
+        break :string if (std.ascii.startsWithIgnoreCase(input, "file:")) try file_urls.toPath(engine.gpa, input, builtin.os.tag == .windows) else try engine.gpa.dupe(u8, input);
+    };
     defer engine.gpa.free(path);
     if (!std.fs.path.isAbsolute(path) or std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidNativeRequireFilename;
     const flavor: std.fs.path.PathType = if (builtin.os.tag == .windows) .windows else .posix;
@@ -76,7 +98,7 @@ fn createRequireCall(engine: *engine_mod.Engine, args: []c.JSValue) !c.JSValue {
 
 fn requireCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    return requireCall(engine, data[0], argv[0..@intCast(argc)], magic != 0) catch |err| {
+    return requireCall(engine, data[0], if (argc == 0) &.{} else argv[0..@intCast(argc)], magic != 0) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
         const message = if (err == error.JavaScriptException) engine.last_error orelse @errorName(err) else @errorName(err);
         const terminated = engine.gpa.dupeZ(u8, message) catch return c.JS_ThrowOutOfMemory(context);
@@ -214,4 +236,45 @@ test "native createRequire accepts absolute file locations and rejects ambiguous
         return err;
     };
     defer engine.freeValue(namespace);
+}
+
+test "native createRequire accepts branded actual file URL and reads a real JSON module" {
+    const io = std.testing.io;
+    var temporary = std.testing.tmpDir(.{});
+    defer temporary.cleanup();
+    try temporary.dir.writeFile(io, .{ .sub_path = "data.json", .data = "{\"marker\":\"native-file\",\"value\":42}" });
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = io;
+    try @import("node_url.zig").install(engine);
+    try install(engine);
+    const loader = struct {
+        fn loadFile(_: ?*anyopaque, gpa: std.mem.Allocator, path: []const u8) ![]u8 {
+            return std.Io.Dir.cwd().readFileAlloc(std.testing.io, path, gpa, .limited(1024 * 1024));
+        }
+        fn normalize(_: ?*anyopaque, gpa: std.mem.Allocator, base: []const u8, name: []const u8) ![]u8 {
+            if (std.mem.startsWith(u8, name, "node:")) return gpa.dupe(u8, name);
+            const joined = try std.fs.path.join(gpa, &.{ std.fs.path.dirname(base) orelse ".", name });
+            defer gpa.free(joined);
+            return @import("node_path.zig").normalize(gpa, joined, if (builtin.os.tag == .windows) .win32 else .posix);
+        }
+        fn input(_: ?*anyopaque, host: *engine_mod.Engine, path: []const u8) !engine_mod.ModuleInput {
+            const bytes = try loadFile(null, host.gpa, path);
+            defer host.gpa.free(bytes);
+            return .{ .exports = try load(host, bytes, path, std.mem.endsWith(u8, path, ".json")) };
+        }
+    };
+    engine.setSourceLoader(.{ .load = loader.loadFile, .normalize_require = loader.normalize, .input = loader.input });
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try temporary.dir.realPath(io, &path_buffer);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    if (c.JS_SetPropertyStr(engine.context, global, "fixturePath", c.JS_NewStringLen(engine.context, &path_buffer, length)) < 0) return error.JavaScriptException;
+    const value = engine.evalModule(
+        \\import {createRequire} from 'node:module';import {pathToFileURL} from 'node:url';const file=pathToFileURL(fixturePath+'/module.mjs'),require=createRequire(file),record=require('./data.json');if(record.marker!=='native-file'||record.value!==42||require('./data.json')!==record)throw Error('real module');const reason={};for(const key of ['href','protocol','auth','path']){const changed=new URL(file);Object.defineProperty(changed,key,{get(){throw reason}});try{createRequire(changed);throw Error('getter accepted')}catch(e){if(e!==reason)throw e}}for(const key of ['hostname','pathname']){const changed=new URL(file);Object.defineProperty(changed,key,{get(){throw reason}});if(createRequire(changed)('./data.json')!==record)throw Error('clone did not ignore public path fields')}for(const input of [{href:file.href},new URL('https://host/a'),new URL('file:///C:/%GG')])try{createRequire(input);throw Error('invalid accepted')}catch(e){if(e.code!=='ERR_INVALID_ARG_VALUE')throw e}const changed=new URL(file);Object.defineProperty(changed,'toString',{get(){throw reason}});try{createRequire(changed);throw Error('clone getter accepted')}catch(e){if(e.code!=='ERR_INVALID_ARG_VALUE')throw e}
+    , "native-create-require-url.mjs") catch |err| {
+        std.debug.print("createRequire URL fixture: {s}\n", .{engine.last_error orelse @errorName(err)});
+        return err;
+    };
+    defer engine.freeValue(value);
 }

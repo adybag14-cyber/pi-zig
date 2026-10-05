@@ -6,9 +6,9 @@ Status: in progress. This file does not certify parity or a release.
   `012e80ced763e8d8ac7e01f7331d32dad3ab468b`.
 - Previous Pi baseline: `853a80d26c90a14c1886f0ebb8ffaae133ca2185`, version 0.84.4.
 - Selected authority: earendil-works/pi main
-  `6100fe5a8358709a26050b8da97ccd188ae93101`, package version 1.0.2.
+  `b78e6a9085343ec0f308c3d377da72528b4cf7ee`, package version 1.0.3.
   It descends from and is newer than published GitHub release v1.0.0.
-- Delta: 907 commits, including new model types/classifiers, codemode, MCP
+- Delta: 915 commits, including new model types/classifiers, codemode, MCP
   configuration/OAuth, providers/auth, agent-loop hooks, terminal behavior,
   and extraction of durable harness APIs into pi-durable.
   The refresh from initial target `4c6fb7cf` adds exactly one Nix workflow
@@ -30,12 +30,17 @@ Status: in progress. This file does not certify parity or a release.
 - The latest refresh to `b2b5c42f` adds dead-terminal stdin handling and the
   corrected codemode MCP saved-image test expectation. The terminal change is
   being validated natively; codemode saved-image integration remains pending.
-- The selected `6100fe5a` refresh adds canonical Azure/Foundry provider contracts
+- The `6100fe5a` refresh adds canonical Azure/Foundry provider contracts
   and Home/End ownership changes. Native Azure transport/alias and Application
   component gates are implemented. Complete CLI fullscreen frontend wiring
   remains a separate pending integration.
+- The October 5 midday refresh to `b78e6a90` adds eight commits, including
+  published v1.0.3, a new catalog pin, multiline syntax-token colors, and
+  pi-env SSH execution environments with verified packaged daemons. These
+  additional contracts are tracked for native implementation; this refresh
+  does not certify parity. The old6100 reference remains intact for prior gates.
 - Current upstream source tar SHA-256:
-  `630cacdce97e3013b415d8b28186cb24d2166692cbc2232e59a4e00335ae6a39`.
+  `a9bda482530ea71866c2b314069b589876b3b048935f530fb3c0b46792ff0909`.
 - User-required toolchain: final Zig 0.16.0. No implicit upgrade.
 - User-required implementation: Zig; direct C interoperability allowed.
   Retain upstream user-authored JavaScript/TypeScript extension compatibility
@@ -43,9 +48,10 @@ Status: in progress. This file does not certify parity or a release.
 - Official Windows Zig archive SHA-256:
   `68659eb5f1e4eb1437a722f1dd889c5a322c9954607f5edcf337bc3684a75a7e`.
 - Upstream-pinned typed model catalog revision:
-  `sha256-d28b6de6985826060b6e2ccf589d16800d9fdbc40681ae4c698421c92d2ff86f`.
-  Its fetched bytes match the hash. 1,602 models, 42 providers; chat, image,
-  and classifier operations.
+  `sha256-c5d5070c7592ca8e27743e892a7eec1d6c883be8034f888735238cdfdb3ab70f`.
+  Its fetched bytes match the hash. 1,621 models, 42 providers; 1,539 chat,59 image,
+  and23 classifier operations. Native archive/package/catalog import and
+  generated-catalog verification pass for this new pin.
 
 Fresh integrated 6100 checkpoint validation:
 
@@ -74,6 +80,52 @@ Fresh integrated 6100 checkpoint validation:
   three `checkpoint-6100-*-20261005.json` process reports. Earlier records remain
   immutable. Historical Windows/Linux/macOS CI passes published `c24fa85`
   (run 37240154150); it is not proof for this newer checkpoint.
+
+Current b78e6a90 integration checkpoint:
+
+- Pi1.0.3 catalog/changelog source is verified from the immutable archive and
+  typed revision. Counts are1,539 chat,59 image and23 classifier models across
+  42 providers. Catalog tests now compare the generated rows, identities,
+  operation counts and provenance against source data instead of hardcoding a
+  previous release's counts.
+- The complete Debug graph passes105/105 steps on both Windows and Linux.
+  Windows has459 dedicated passes and26 skips, plus1,148 primary-module passes
+  and28 skips. Linux has625/625 dedicated passes, plus1,168 module passes and
+  eight skips. All416 compilation/data inputs match the native Linux snapshot
+  byte for byte. The same complete105-step graph also passes ReleaseSafe on
+  both platforms, with the same pass/skip counts. Linux explicitly targets the
+  host SQLite library's glibc2.35 ABI; generic older-ABI link failures are
+  retained as environment evidence.
+- Fifteen additional Python executable fixtures are replaced by Zig drivers,
+  retaining their original behavior gates and independently captured baseline
+  reports. Together with the four earlier replacements, this yields nineteen
+  native CLI process fixtures. Native helper executables replace shell test
+  stand-ins for browser opening, clipboard operations, package-manager calls
+  and managed-tool execution. No Python scripts remain; five legacy JavaScript
+  files still fail the strict language audit.
+- Native EventStream/provider-stream ownership and ACK/cancel/replacement
+  controls have real no-Node process proof. Native URL/URLSearchParams and
+  strongly branded filesystem/CommonJS consumers have captured Node and
+  allocation/GC evidence. URL IDN contextual/bidi tables remain incomplete;
+  one Node24 hostless-pathname inconsistency is documented explicitly.
+- The optimized TypeScript scanner now inherits an explicit create(void)
+  prototype through a narrowly reviewed native ABI header. Optimization and
+  function sanitization remain enabled; pinned vendor bytes are unchanged.
+- The persistent Linux fullscreen frontend is exercised through actual PTY
+  cells: branch history, streamed frames, anchors, editor ownership, key
+  routing, modal handoff, reload, resize, abort/reuse and dead-terminal behavior.
+  Startup and live editor padding now affect wrapping and cursor placement.
+  Windows/macOS persistent frontend and native custom scenes remain separate
+  integration work; component-only checks do not certify those platforms.
+- Mandatory concurrency and cleanup replace owner-dependent eager async work
+  in callback, reader, timeout/abort, tool-queue and mirror paths. One-CPU and
+  unavailable-concurrency regressions cover real HTTP/SSE/WebSocket/provider
+  callbacks and bounded progress queues. WebSocket HTTP ownership now stays at
+  a stable heap address and releases the upgraded connection before teardown.
+- The production extension backend remains the legacy Node bridge. Native
+  custom component factories, complete TUI exports/renderers, newer durable
+  and SSH environment APIs, codemode and final parity certification are still
+  required. Release verification intentionally rejects this checkpoint.
 
 Historical implementation evidence (preserved separately from the fresh gates):
 

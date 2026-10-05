@@ -20,6 +20,35 @@ pub const NotificationKind = enum { info, warning, error_message };
 pub const WidgetPlacement = enum { above_editor, below_editor };
 pub const PromptEvent = enum { start, end };
 pub const PromptEventFn = *const fn (?*anyopaque, PromptEvent, []const u8) void;
+pub const ModalObserverFn = *const fn (?*anyopaque, PromptEvent, ?anyerror) anyerror!void;
+pub const SurfaceSinkFn = *const fn (?*anyopaque, SurfaceSnapshot) anyerror!void;
+
+/// Owned projection for a retained frontend. No Controller slices cross threads.
+pub const SurfaceSnapshot = struct {
+    gpa: std.mem.Allocator,
+    header: ?[][]u8 = null,
+    footer: ?[][]u8 = null,
+    above: [][]u8 = &.{},
+    below: [][]u8 = &.{},
+    status: []u8 = &.{},
+    working: ?[]u8 = null,
+    working_visible: bool = true,
+    working_frames: [][]u8 = &.{},
+    working_interval_ms: u64 = 100,
+    title: ?[]u8 = null,
+    notifications: [][]u8 = &.{},
+    pub fn deinit(self: *SurfaceSnapshot) void {
+        if (self.header) |lines| freeLines(self.gpa, lines);
+        if (self.footer) |lines| freeLines(self.gpa, lines);
+        freeLines(self.gpa, self.above);
+        freeLines(self.gpa, self.below);
+        freeLines(self.gpa, self.notifications);
+        freeLines(self.gpa, self.working_frames);
+        self.gpa.free(self.status);
+        if (self.working) |value| self.gpa.free(value);
+        if (self.title) |value| self.gpa.free(value);
+    }
+};
 
 pub const Notification = struct {
     message: []u8,
@@ -92,6 +121,10 @@ pub const Controller = struct {
     clipboard_options: coding_clipboard.Options = .{},
     prompt_event_fn: ?PromptEventFn = null,
     prompt_event_ctx: ?*anyopaque = null,
+    modal_observer_fn: ?ModalObserverFn = null,
+    modal_observer_ctx: ?*anyopaque = null,
+    surface_sink_fn: ?SurfaceSinkFn = null,
+    surface_sink_ctx: ?*anyopaque = null,
 
     state_mutex: Io.Mutex = .init,
     dialog_mutex: Io.Mutex = .init,
@@ -152,6 +185,72 @@ pub const Controller = struct {
     pub fn bindPromptEvents(self: *Controller, callback: ?PromptEventFn, context: ?*anyopaque) void {
         self.prompt_event_fn = callback;
         self.prompt_event_ctx = context;
+    }
+
+    pub fn bindFrontend(self: *Controller, sink: ?SurfaceSinkFn, observer: ?ModalObserverFn, context: ?*anyopaque) void {
+        self.surface_sink_fn = sink;
+        self.surface_sink_ctx = context;
+        self.modal_observer_fn = observer;
+        self.modal_observer_ctx = context;
+    }
+
+    pub fn snapshotRetained(self: *Controller, gpa: std.mem.Allocator) !SurfaceSnapshot {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        var snapshot: SurfaceSnapshot = .{ .gpa = gpa };
+        errdefer snapshot.deinit();
+        const Clone = struct {
+            fn lines(allocator: std.mem.Allocator, values: []const []const u8) ![][]u8 {
+                const copied = try allocator.alloc([]u8, values.len);
+                var count: usize = 0;
+                errdefer {
+                    for (copied[0..count]) |line| allocator.free(line);
+                    allocator.free(copied);
+                }
+                for (copied, values) |*line, value| {
+                    line.* = try allocator.dupe(u8, value);
+                    count += 1;
+                }
+                return copied;
+            }
+        };
+        if (self.header_lines) |lines| snapshot.header = try Clone.lines(gpa, lines);
+        if (self.footer_lines) |lines| snapshot.footer = try Clone.lines(gpa, lines);
+        var above: std.ArrayList([]const u8) = .empty;
+        defer above.deinit(gpa);
+        var below: std.ArrayList([]const u8) = .empty;
+        defer below.deinit(gpa);
+        for (self.widgets.items) |widget| try (if (widget.placement == .above_editor) &above else &below).appendSlice(gpa, widget.lines);
+        snapshot.above = try Clone.lines(gpa, above.items);
+        snapshot.below = try Clone.lines(gpa, below.items);
+        var status: Io.Writer.Allocating = .init(gpa);
+        defer status.deinit();
+        for (self.statuses.items, 0..) |item, index| {
+            if (index > 0) try status.writer.writeAll("  ");
+            try status.writer.print("{s}={s}", .{ item.key, item.text });
+        }
+        snapshot.status = try status.toOwnedSlice();
+        snapshot.working_visible = self.working_visible;
+        if (self.working_visible and self.working_message != null) snapshot.working = try gpa.dupe(u8, self.working_message.?);
+        if (self.working_visible) {
+            if (self.working_indicator.frames) |frames| snapshot.working_frames = try Clone.lines(gpa, frames);
+        }
+        snapshot.working_interval_ms = @max(@as(u64, 16), self.working_indicator.interval_ms orelse 100);
+        if (self.title) |value| snapshot.title = try gpa.dupe(u8, value);
+        snapshot.notifications = try gpa.alloc([]u8, self.notifications.items.len);
+        var count: usize = 0;
+        errdefer {
+            for (snapshot.notifications[0..count]) |line| gpa.free(line);
+            gpa.free(snapshot.notifications);
+            snapshot.notifications = &.{};
+        }
+        for (snapshot.notifications, self.notifications.items) |*line, item| {
+            line.* = try std.fmt.allocPrint(gpa, "[{s}] {s}", .{ @tagName(item.kind), item.message });
+            count += 1;
+        }
+        for (self.notifications.items) |*item| item.deinit(self.gpa);
+        self.notifications.clearRetainingCapacity();
+        return snapshot;
     }
 
     /// Drop all state owned by the previous extension runtime while preserving
@@ -511,20 +610,31 @@ pub const Controller = struct {
         const reader = self.reader;
         self.state_mutex.unlock(self.io);
         if (!ui_available) return allocator.dupe(u8, if (std.mem.eql(u8, method, "confirm")) "false" else "null");
+        if (self.modal_observer_fn) |callback| try callback(self.modal_observer_ctx, .start, null);
         if (self.prompt_event_fn) |callback| callback(self.prompt_event_ctx, .start, method);
         defer if (self.prompt_event_fn) |callback| callback(self.prompt_event_ctx, .end, method);
+        const result = self.dispatchDialog(allocator, reader.?, method, &parsed.value.object) catch |err| {
+            if (self.modal_observer_fn) |callback| callback(self.modal_observer_ctx, .end, err) catch {};
+            return err;
+        };
+        errdefer allocator.free(result);
+        if (self.modal_observer_fn) |callback| try callback(self.modal_observer_ctx, .end, null);
+        return result;
+    }
 
-        if (std.mem.eql(u8, method, "select")) return self.requestSelect(allocator, reader.?, &parsed.value.object);
-        if (std.mem.eql(u8, method, "confirm")) return self.requestConfirm(allocator, reader.?, &parsed.value.object);
-        if (std.mem.eql(u8, method, "input")) return self.requestInput(allocator, reader.?, &parsed.value.object);
-        if (std.mem.eql(u8, method, "editor")) return self.requestEditor(allocator, reader.?, &parsed.value.object);
-        if (std.mem.eql(u8, method, "custom")) return self.requestCustom(allocator, reader.?, &parsed.value.object);
+    fn dispatchDialog(self: *Controller, allocator: std.mem.Allocator, reader: *Io.File.Reader, method: []const u8, object: *const std.json.ObjectMap) ![]u8 {
+        if (std.mem.eql(u8, method, "select")) return self.requestSelect(allocator, reader, object);
+        if (std.mem.eql(u8, method, "confirm")) return self.requestConfirm(allocator, reader, object);
+        if (std.mem.eql(u8, method, "input")) return self.requestInput(allocator, reader, object);
+        if (std.mem.eql(u8, method, "editor")) return self.requestEditor(allocator, reader, object);
+        if (std.mem.eql(u8, method, "custom")) return self.requestCustom(allocator, reader, object);
         return allocator.dupe(u8, "null");
     }
 
     /// Render and acknowledge the extension-owned header. Returns false when
     /// the built-in header should be used instead.
     pub fn renderCustomHeader(self: *Controller) !bool {
+        if (self.surface_sink_fn != null) return true;
         self.state_mutex.lockUncancelable(self.io);
         defer self.state_mutex.unlock(self.io);
         if (!self.has_ui or self.header_lines == null) return false;
@@ -536,6 +646,14 @@ pub const Controller = struct {
     /// Render queued notifications and changed retained surfaces. The state is
     /// preserved across invocations; only transient notifications are cleared.
     pub fn flush(self: *Controller) !void {
+        if (self.surface_sink_fn) |sink| {
+            var snapshot = try self.snapshotRetained(self.gpa);
+            sink(self.surface_sink_ctx, snapshot) catch |err| {
+                snapshot.deinit();
+                return err;
+            };
+            return;
+        }
         self.state_mutex.lockUncancelable(self.io);
         defer self.state_mutex.unlock(self.io);
         if (!self.has_ui) return;
@@ -884,6 +1002,18 @@ fn jsonString(allocator: std.mem.Allocator, value: []const u8) ![]u8 {
 
 fn printLines(io: Io, lines: [][]u8) !void {
     for (lines) |line| try render.printLine(io, line);
+}
+
+pub fn terminalTitleAlloc(gpa: std.mem.Allocator, title: []const u8) ![]u8 {
+    var sanitized: [512]u8 = undefined;
+    var length: usize = 0;
+    for (title) |byte| {
+        if (length == sanitized.len) break;
+        if (byte == 0x1b or byte == 0x07 or byte < 0x20) continue;
+        sanitized[length] = byte;
+        length += 1;
+    }
+    return std.fmt.allocPrint(gpa, "\x1b]0;{s}\x07", .{sanitized[0..length]});
 }
 
 fn writeTerminalTitle(io: Io, title: []const u8) !void {

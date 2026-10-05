@@ -283,7 +283,147 @@ pub const ShortcutHandler = struct {
     }
 };
 
-const Disposition = enum { keep_editing, submit, cancel, interrupt, exit };
+pub const Disposition = enum { keep_editing, submit, cancel, interrupt, exit };
+
+/// Incremental terminal framing shared with the fullscreen owner. Returned
+/// bytes stay valid until the next feed; incomplete UTF-8/CSI/paste never blocks.
+pub const InputDecoder = struct {
+    gpa: std.mem.Allocator,
+    pending: std.ArrayList(u8) = .empty,
+    paste: bool = false,
+    delivered: bool = false,
+    pub const Input = union(enum) { key: []const u8, paste: []const u8 };
+
+    pub fn init(gpa: std.mem.Allocator) InputDecoder {
+        return .{ .gpa = gpa };
+    }
+    pub fn deinit(self: *InputDecoder) void {
+        self.pending.deinit(self.gpa);
+    }
+    pub fn feed(self: *InputDecoder, byte: u8) !?Input {
+        if (self.delivered) {
+            self.pending.clearRetainingCapacity();
+            self.delivered = false;
+        }
+        if (self.pending.items.len >= 8 * 1024 * 1024) return error.TerminalInputLimit;
+        try self.pending.append(self.gpa, byte);
+        const value = self.pending.items;
+        if (self.paste) {
+            if (!std.mem.endsWith(u8, value, "\x1b[201~")) return null;
+            self.paste = false;
+            self.delivered = true;
+            return .{ .paste = value[0 .. value.len - 6] };
+        }
+        if (value[0] == 0x1b) {
+            if (value.len == 1) return null;
+            if (value[1] == '[') {
+                if (value.len < 3 or byte < 0x40 or byte > 0x7e) return null;
+                if (std.mem.eql(u8, value, "\x1b[200~")) {
+                    self.pending.clearRetainingCapacity();
+                    self.paste = true;
+                    return null;
+                }
+            } else if (value[1] == 'O' and value.len < 3) return null;
+        } else if (value[0] >= 0x80) {
+            const length = std.unicode.utf8ByteSequenceLength(value[0]) catch 1;
+            if (value.len < length) return null;
+        }
+        self.delivered = true;
+        return .{ .key = value };
+    }
+    pub fn flushEscape(self: *InputDecoder) ?Input {
+        if (!self.paste and !self.delivered and self.pending.items.len == 1 and self.pending.items[0] == 0x1b) {
+            self.delivered = true;
+            return .{ .key = self.pending.items };
+        }
+        return null;
+    }
+};
+
+pub fn applyInputSequence(gpa: std.mem.Allocator, editor: *Editor, bindings: *const keybindings.Manager, sequence: []const u8, shortcut: ?ShortcutHandler) !Disposition {
+    if (sequence.len == 0) return .keep_editing;
+    if (sequence[0] == 0x1b) return dispatchTerminalSequence(gpa, editor, bindings, sequence, shortcut);
+    if (sequence.len == 1) {
+        const byte = sequence[0];
+        if (byte == 0x7f or byte == 8) return dispatchKey(gpa, editor, bindings, "backspace", shortcut);
+        if (byte == 13) return dispatchKey(gpa, editor, bindings, "enter", shortcut);
+        if (byte == 9) return dispatchKey(gpa, editor, bindings, "tab", shortcut);
+        if (byte == 10) return dispatchKey(gpa, editor, bindings, "ctrl+j", shortcut);
+        if (byte >= 1 and byte <= 26) {
+            var buffer: [16]u8 = undefined;
+            if (ctrlKeyId(byte, &buffer)) |key| return dispatchKey(gpa, editor, bindings, key, shortcut);
+        }
+    }
+    if (shortcut) |handler| switch (try handler.handle(gpa, sequence)) {
+        .not_handled => {},
+        .handled_continue => return .keep_editing,
+        .handled_interrupt => return .interrupt,
+    };
+    if (sequence.len == 1) if (bindings.actionFor(sequence)) |action| return applyEditorAction(editor, action);
+    try editor.insert(sequence);
+    return .keep_editing;
+}
+
+pub fn renderEditorLines(gpa: std.mem.Allocator, editor: *const Editor, width_raw: usize) !@import("layout.zig").RenderedLines {
+    return renderEditorLinesPadded(gpa, editor, width_raw, 0);
+}
+
+pub fn renderEditorLinesPadded(gpa: std.mem.Allocator, editor: *const Editor, width_raw: usize, padding_x: u8) !@import("layout.zig").RenderedLines {
+    const width = @max(@as(usize, 3), width_raw);
+    const padding = @min(@min(@as(usize, padding_x), 3), (width - 3) / 2);
+    const content_width = width - 2 - 2 * padding;
+    var lines: std.ArrayList([]u8) = .empty;
+    errdefer {
+        for (lines.items) |line| gpa.free(line);
+        lines.deinit(gpa);
+    }
+    var line: std.ArrayList(u8) = .empty;
+    defer line.deinit(gpa);
+    try line.appendNTimes(gpa, ' ', padding);
+    try line.appendSlice(gpa, "> ");
+    var column: usize = 0;
+    var index: usize = 0;
+    const text = editor.slice();
+    while (index < text.len) {
+        const length = std.unicode.utf8ByteSequenceLength(text[index]) catch 1;
+        const end = @min(text.len, index + length);
+        const bytes = text[index..end];
+        const cell_width = @import("terminal_text.zig").visibleWidth(bytes);
+        if (text[index] == '\n' or (column > 0 and column + cell_width > content_width)) {
+            if (text[index] == '\n' and editor.cursor == index) try line.appendSlice(gpa, @import("widgets.zig").cursor_marker);
+            try appendEditorLine(gpa, &lines, line.items);
+            line.clearRetainingCapacity();
+            try line.appendNTimes(gpa, ' ', padding);
+            try line.appendSlice(gpa, "  ");
+            column = 0;
+            if (text[index] == '\n') {
+                index += 1;
+                continue;
+            }
+        }
+        if (editor.cursor == index) try line.appendSlice(gpa, @import("widgets.zig").cursor_marker);
+        try line.appendSlice(gpa, bytes);
+        column += cell_width;
+        index = end;
+    }
+    if (editor.cursor == text.len) {
+        if (column >= content_width) {
+            try appendEditorLine(gpa, &lines, line.items);
+            line.clearRetainingCapacity();
+            try line.appendNTimes(gpa, ' ', padding);
+            try line.appendSlice(gpa, "  ");
+        }
+        try line.appendSlice(gpa, @import("widgets.zig").cursor_marker);
+    }
+    try appendEditorLine(gpa, &lines, line.items);
+    return .{ .items = try lines.toOwnedSlice(gpa) };
+}
+
+fn appendEditorLine(gpa: std.mem.Allocator, lines: *std.ArrayList([]u8), text: []const u8) !void {
+    const owned = try gpa.dupe(u8, text);
+    errdefer gpa.free(owned);
+    try lines.append(gpa, owned);
+}
 
 fn applyEditorAction(editor: *Editor, action: keybindings.Action) !Disposition {
     switch (action) {

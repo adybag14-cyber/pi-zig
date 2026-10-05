@@ -1,0 +1,53 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "binarySourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "model-update",
+  "reportGates": 11,
+  "semanticReportMatch": true,
+  "managedTool": "Compiled Zig helper replaces shell rg stub; realC tar/gzip archive; onlyextractionhelpers onCLI PATH; exactlyone release/download request across two actualtoolruns",
+  "telemetry": "Observed real detached install ping beforequit, preservesrequestcount/versionquery instead of guessed sleep",
+  "nativeLinuxTestsPassed": 10,
+  "windowsLinuxSkips": 1,
+  "jobs": {
+    "windows": {
+      "name": "model-update-native-windows",
+      "pid": 2892,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/model_update_process_test.zig",
+      "created_utc": "2026-10-05T12:23:05.1836790Z",
+      "launched_utc": "2026-10-05T12:23:05.1798632+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-final-fixtures-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T12:23:07.2093223+00:00"
+    },
+    "native": {
+      "name": "model-update-native-live",
+      "pid": 33124,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_TOOL_TEST_HELPER=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/pi-tool-fixture PI_MODEL_UPDATE_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/model-update-native-report.json /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/model_update_process_test.zig -target x86_64-linux-gnu --cache-dir /tmp/pi-model-update-cache-20261005 --global-cache-dir /tmp/pi-root-zig-global-20261005",
+      "created_utc": "2026-10-05T12:21:33.5025680Z",
+      "launched_utc": "2026-10-05T12:21:33.4999412+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-final-fixtures-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T12:21:37.4652768+00:00"
+    },
+    "baseline": {
+      "name": "model-update-python-baseline",
+      "pid": 24608,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/model_update_e2e.py /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/model-update-python-report.txt",
+      "created_utc": "2026-10-05T12:15:18.7241770Z",
+      "launched_utc": "2026-10-05T12:15:18.7217646+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T12:15:20.0147304+00:00"
+    }
+  }
+}

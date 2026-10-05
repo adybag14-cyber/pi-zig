@@ -1,0 +1,13 @@
+{
+  "activeProvider": "corp177/fast",
+  "exit": 0,
+  "firstAuthorization": "interactive key",
+  "interactiveKeyStored": true,
+  "loginReboundActiveClient": true,
+  "logoutReloadedConfiguredCredential": true,
+  "logoutRemovedStoredCredential": true,
+  "providerRequests": 2,
+  "secondAuthorization": "models.json key",
+  "secretAbsentFromTerminal": true,
+  "stderrBytes": 0
+}

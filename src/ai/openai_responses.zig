@@ -209,23 +209,21 @@ fn receiveHeadWithControl(
     const Race = union(enum) { head: anyerror!std.http.Client.Response, timeout: bool, aborted: bool };
     var queue: [3]Race = undefined;
     var select = Io.Select(Race).init(io, &queue);
-    select.async(.head, receiveHeadTask, .{req});
-    if (timeout_ms > 0) select.async(.timeout, sleepMs, .{ io, timeout_ms });
-    if (abort_flag) |flag| select.async(.aborted, watchAbort, .{ io, flag });
+    defer while (select.cancel()) |_| {};
+    try select.concurrent(.head, receiveHeadTask, .{req});
+    if (timeout_ms > 0) try select.concurrent(.timeout, sleepMs, .{ io, timeout_ms });
+    if (abort_flag) |flag| try select.concurrent(.aborted, watchAbort, .{ io, flag });
 
     const winner = try select.await();
     switch (winner) {
         .head => |result| {
-            while (select.cancel()) |_| {}
             return result;
         },
         .timeout => |expired| {
-            while (select.cancel()) |_| {}
             if (expired) return error.CodexResponseHeaderIdleTimeout;
             return error.Canceled;
         },
         .aborted => |aborted| {
-            while (select.cancel()) |_| {}
             if (aborted) return error.CodexHttpAborted;
             return error.Canceled;
         },
@@ -264,23 +262,21 @@ fn readSomeWithControl(
     const Race = union(enum) { read: anyerror!usize, timeout: bool, aborted: bool };
     var queue: [3]Race = undefined;
     var select = Io.Select(Race).init(io, &queue);
-    select.async(.read, readSomeTask, .{ reader, buffer });
-    if (timeout_ms > 0) select.async(.timeout, sleepMs, .{ io, timeout_ms });
-    if (abort_flag) |flag| select.async(.aborted, watchAbort, .{ io, flag });
+    defer while (select.cancel()) |_| {};
+    try select.concurrent(.read, readSomeTask, .{ reader, buffer });
+    if (timeout_ms > 0) try select.concurrent(.timeout, sleepMs, .{ io, timeout_ms });
+    if (abort_flag) |flag| try select.concurrent(.aborted, watchAbort, .{ io, flag });
 
     const winner = try select.await();
     switch (winner) {
         .read => |result| {
-            while (select.cancel()) |_| {}
             return result;
         },
         .timeout => |expired| {
-            while (select.cancel()) |_| {}
             if (expired) return error.CodexResponseBodyIdleTimeout;
             return error.Canceled;
         },
         .aborted => |aborted| {
-            while (select.cancel()) |_| {}
             if (aborted) return error.CodexHttpAborted;
             return error.Canceled;
         },
@@ -3228,4 +3224,113 @@ test "ordinary Responses parser remains tolerant of malformed provider event" {
     defer live.deinit();
     try live.handleEventJson("{not-json");
     try std.testing.expectEqual(@as(usize, 0), live.error_message.len);
+}
+
+test "Responses controlled header and SSE body progress with zero eager async capacity" {
+    const fixture = @import("../test_support/concurrency_socket.zig");
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    const body = "data: [DONE]\n\n";
+    const head = try std.fmt.allocPrint(std.testing.allocator, "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nContent-Length: {d}\r\nConnection: close\r\n\r\n", .{body.len});
+    defer std.testing.allocator.free(head);
+    const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .head = head, .body = body, .head_delay_ms = 20 });
+    defer server.deinit();
+    const url = try server.url(std.testing.allocator);
+    defer std.testing.allocator.free(url);
+    var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = io };
+    defer client.deinit();
+    var req = try client.request(.GET, try std.Uri.parse(url), .{});
+    defer req.deinit();
+    try req.sendBodiless();
+    var aborted = false;
+    var response = try receiveHeadWithControl(&req, io, 500, &aborted);
+    try std.testing.expectEqual(std.http.Status.ok, response.head.status);
+    var buffer: [64]u8 = undefined;
+    var body_storage: [64]u8 = undefined;
+    const count = try readSomeWithControl(response.reader(&body_storage), io, &buffer, 500, &aborted);
+    try std.testing.expectEqualStrings(body, buffer[0..count]);
+    try server.finish();
+}
+
+test "Responses controlled header keeps idle timeout and cancels partial concurrency startup" {
+    const fixture = @import("../test_support/concurrency_socket.zig");
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    for ([_]Io.Limit{ .nothing, .limited(1), .unlimited }) |limit| {
+        const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .head_delay_ms = 200 });
+        defer server.deinit();
+        const url = try server.url(std.testing.allocator);
+        defer std.testing.allocator.free(url);
+        var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = io };
+        defer client.deinit();
+        var req = try client.request(.GET, try std.Uri.parse(url), .{});
+        defer req.deinit();
+        try req.sendBodiless();
+        threaded.concurrent_limit = limit;
+        if (limit == .unlimited) {
+            try std.testing.expectError(error.CodexResponseHeaderIdleTimeout, receiveHeadWithControl(&req, io, 30, null));
+        } else try std.testing.expectError(error.ConcurrencyUnavailable, receiveHeadWithControl(&req, io, 30, null));
+    }
+}
+
+test "Responses controlled SSE body keeps idle timeout and cancels partial concurrency startup" {
+    const fixture = @import("../test_support/concurrency_socket.zig");
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    for ([_]Io.Limit{ .nothing, .limited(1), .unlimited }) |limit| {
+        threaded.concurrent_limit = .unlimited;
+        const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .body_delay_ms = 200 });
+        defer server.deinit();
+        const url = try server.url(std.testing.allocator);
+        defer std.testing.allocator.free(url);
+        var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = io };
+        defer client.deinit();
+        var req = try client.request(.GET, try std.Uri.parse(url), .{});
+        defer req.deinit();
+        try req.sendBodiless();
+        var response = try receiveHeadWithControl(&req, io, 0, null);
+        threaded.concurrent_limit = limit;
+        var buffer: [64]u8 = undefined;
+        var body_storage: [64]u8 = undefined;
+        if (limit == .unlimited) {
+            try std.testing.expectError(error.CodexResponseBodyIdleTimeout, readSomeWithControl(response.reader(&body_storage), io, &buffer, 30, null));
+        } else try std.testing.expectError(error.ConcurrencyUnavailable, readSomeWithControl(response.reader(&body_storage), io, &buffer, 30, null));
+    }
+}
+
+test "Responses live abort interrupts entered header and body waits without eager async" {
+    const fixture = @import("../test_support/concurrency_socket.zig");
+    var threaded = Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    for ([_]bool{ false, true }) |body_wait| {
+        const server = try fixture.Server.init(std.heap.page_allocator, std.testing.io, .{ .head_delay_ms = if (body_wait) 0 else 500, .body_delay_ms = if (body_wait) 500 else 0 });
+        defer server.deinit();
+        const url = try server.url(std.testing.allocator);
+        defer std.testing.allocator.free(url);
+        var client: std.http.Client = .{ .allocator = std.testing.allocator, .io = io };
+        defer client.deinit();
+        var req = try client.request(.GET, try std.Uri.parse(url), .{});
+        defer req.deinit();
+        const Adapter = struct {
+            req: *std.http.Client.Request,
+            io: Io,
+            body_wait: bool,
+            pub fn run(self: *@This(), flag: *bool) !void {
+                try self.req.sendBodiless();
+                var response = try receiveHeadWithControl(self.req, self.io, 0, if (self.body_wait) null else flag);
+                if (self.body_wait) {
+                    var storage: [64]u8 = undefined;
+                    var output: [64]u8 = undefined;
+                    _ = try readSomeWithControl(response.reader(&storage), self.io, &output, 0, flag);
+                }
+                return error.UnexpectedResponsesCompletion;
+            }
+        };
+        var adapter: Adapter = .{ .req = &req, .io = io, .body_wait = body_wait };
+        try fixture.abortAfterRequest(Adapter, &adapter, if (body_wait) &server.head_seen else &server.request_seen, error.CodexHttpAborted);
+    }
 }

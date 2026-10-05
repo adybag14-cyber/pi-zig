@@ -8,6 +8,23 @@ const Theme = @import("../themes/theme.zig").Theme;
 
 /// When true, suppress terminal writes (used by unit tests to avoid pipe deadlock).
 var silent: bool = false;
+pub const SinkFn = *const fn (?*anyopaque, []const u8) anyerror!void;
+pub const ModalFn = *const fn (?*anyopaque, bool) anyerror!void;
+var frontend_sink: ?SinkFn = null;
+var frontend_modal: ?ModalFn = null;
+var frontend_context: ?*anyopaque = null;
+
+pub fn bindFrontend(sink: ?SinkFn, modal: ?ModalFn, context: ?*anyopaque) void {
+    frontend_sink = sink;
+    frontend_modal = modal;
+    frontend_context = context;
+}
+pub fn beginModal() !void {
+    if (frontend_modal) |callback| try callback(frontend_context, true);
+}
+pub fn endModal() void {
+    if (frontend_modal) |callback| callback(frontend_context, false) catch {};
+}
 
 pub const Palette = struct {
     accent_sgr: []const u8 = "36",
@@ -50,6 +67,7 @@ fn boldStyle(buf: []u8, sgr: []const u8, text: []const u8) ![]const u8 {
 
 pub fn writeAll(io: Io, bytes: []const u8) !void {
     if (silent) return;
+    if (frontend_sink) |sink| return sink(frontend_context, bytes);
     // Prefer streaming stdout; fall back to debug print.
     Io.File.stdout().writeStreamingAll(io, bytes) catch {
         std.debug.print("{s}", .{bytes});

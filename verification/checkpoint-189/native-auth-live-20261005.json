@@ -1,0 +1,39 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "auth-live",
+  "allElevenReportGatesPreserved": true,
+  "reportByteIdentical": true,
+  "reportSha256": "389db5b4751f9c691c93ea982c052228a9935011329e61797e6f9792d8605d6c",
+  "nativeLinuxTestsPassed": 5,
+  "wireCredentials": "Login rebound authorization to entered key; logout removed persisted credential and restored configured key; exactly two requests.",
+  "jobs": {
+    "auth-live-native-live": {
+      "name": "auth-live-native-live",
+      "pid": 23640,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --exec /usr/bin/env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_AUTH_LIVE_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/auth-live-native-report.json /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/auth-live-native-linux-test",
+      "created_utc": "2026-10-05T10:08:34.8537710Z",
+      "launched_utc": "2026-10-05T10:08:34.8512545+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:08:35.2628986+00:00"
+    },
+    "auth-live-python-baseline": {
+      "name": "auth-live-python-baseline",
+      "pid": 7840,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --exec /usr/bin/python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/auth_live_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/auth-live-python-report.json",
+      "created_utc": "2026-10-05T10:06:00.8720820Z",
+      "launched_utc": "2026-10-05T10:06:00.8688854+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:06:01.6782369+00:00"
+    }
+  }
+}

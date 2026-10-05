@@ -1238,10 +1238,10 @@ pub const Runtime = struct {
         if (parsed.value != .object) return error.InvalidNativeExtensionRequest;
         const kind = parsed.value.object.get("kind") orelse return error.InvalidNativeExtensionRequest;
         if (kind != .string) return error.InvalidNativeExtensionRequest;
-        for ([_][]const u8{ "hook", "tool", "command", "provider_method", "shutdown" }) |supported| {
+        for ([_][]const u8{ "hook", "tool", "command", "provider_method", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "shutdown" }) |supported| {
             if (std.mem.eql(u8, supported, kind.string)) return;
         }
-        // Keep unsupported UI/provider-stream/render operations out of the
+        // Keep unsupported custom-component and renderer operations out of the
         // pipe; they do not leave an unread response or retire a healthy worker.
         return error.NativeExtensionOperationUnsupported;
     }

@@ -1,0 +1,68 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "media-skill-settings",
+  "reportGates": 9,
+  "semanticReportMatch": true,
+  "originalBaseline": "Failed original BMP bytes assertion",
+  "upstreamCompatibility": "Current Pi processImage normalizes BMP to PNG even with resize disabled; durable content must retain normalized image, not original unsupported BMP",
+  "replacementImageAssertion": "Native independent PNG signature/CRC/dimension/deflate/palette decode verifies1x1 RGB204,102,51. External baseline independently decodes via C ImageMagick and asserts identical RGB.",
+  "nativeLinuxTestsPassed": 9,
+  "windowsTestsPassed": 0,
+  "windowsLinuxSkips": 1,
+  "jobs": {
+    "media-skills-python-baseline": {
+      "name": "media-skills-python-baseline",
+      "pid": 24780,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/media_skill_settings_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/media-skills-python-report.json",
+      "created_utc": "2026-10-05T10:44:16.4912940Z",
+      "launched_utc": "2026-10-05T10:44:16.4882880+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "failed",
+      "exit_code": 1,
+      "completed_utc": "2026-10-05T10:44:17.3272170+00:00"
+    },
+    "media-skills-normalized-pixel-baseline": {
+      "name": "media-skills-normalized-pixel-baseline",
+      "pid": 40652,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec python3 /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/media-skills-normalization-baseline.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/media-skills-python-normalized-report.json",
+      "created_utc": "2026-10-05T10:50:13.5101860Z",
+      "launched_utc": "2026-10-05T10:50:13.5076954+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:50:14.9083381+00:00"
+    },
+    "media-skills-native-live2": {
+      "name": "media-skills-native-live2",
+      "pid": 43088,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_MEDIA_SKILLS_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/media-skills-native-report.json /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/media_skills_process_test.zig -target x86_64-linux-gnu --cache-dir /tmp/pi-media-native-cache-20261005 --global-cache-dir /tmp/pi-root-zig-global-20261005",
+      "created_utc": "2026-10-05T10:49:38.3227940Z",
+      "launched_utc": "2026-10-05T10:49:38.3197763+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:49:41.6738821+00:00"
+    },
+    "media-skills-native-windows": {
+      "name": "media-skills-native-windows",
+      "pid": 14460,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/media_skills_process_test.zig",
+      "created_utc": "2026-10-05T10:50:14.9167950Z",
+      "launched_utc": "2026-10-05T10:50:14.9161426+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:50:16.7018122+00:00"
+    }
+  }
+}

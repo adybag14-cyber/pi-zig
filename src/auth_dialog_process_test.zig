@@ -90,7 +90,7 @@ test "native OAuth browser callback hyperlink persistence device dialog and coop
     const models = try std.fmt.allocPrint(gpa, "{{\"providers\":{{\"corp179\":{{\"name\":\"Corp 179\",\"baseUrl\":\"http://127.0.0.1:{d}/v1\",\"api\":\"pi-messages\",\"oauth\":\"radius\",\"models\":[{{\"id\":\"fast\",\"name\":\"Fast 179\",\"contextWindow\":4096,\"maxTokens\":512}}]}}}}}}", .{server.port});
     defer gpa.free(models);
     try scratch.dir.writeFile(io, .{ .sub_path = "agent/models.json", .data = models });
-    try scratch.dir.writeFile(io, .{ .sub_path = "agent/settings.json", .data = "{\"quietStartup\":true,\"enableInstallTelemetry\":false,\"collapseChangelog\":true}" });
+    try scratch.dir.writeFile(io, .{ .sub_path = "agent/settings.json", .data = "{\"tuiMode\":\"regular\",\"quietStartup\":true,\"enableInstallTelemetry\":false,\"collapseChangelog\":true}" });
     try scratch.dir.writeFile(io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"unused-179\"}]" });
     const work = try std.fs.path.join(gpa, &.{ scratch.path, "work" });
     defer gpa.free(work);

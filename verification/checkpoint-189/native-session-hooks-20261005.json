@@ -1,0 +1,68 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "session-hooks",
+  "reportGates": 18,
+  "semanticReportMatch": true,
+  "independentTarget": "Selected from actual assistant history; persisted tree label verified against summary id",
+  "compatibility": "Explicit compactable20-token recent budget replaces production20000 default for tinyfixture; original hook/cancel/tree assertions unchanged",
+  "productionBackend": "legacy Node bridge; native default certification pending",
+  "nativeLinuxTestsPassed": 7,
+  "windowsTestsPassed": 0,
+  "windowsLinuxSkips": 1,
+  "jobs": {
+    "session-hooks-json-baseline": {
+      "name": "session-hooks-json-baseline",
+      "pid": 10388,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin python3 /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/session-hooks-json-baseline.py /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/session-hooks-python-report.txt",
+      "created_utc": "2026-10-05T11:18:06.8688270Z",
+      "launched_utc": "2026-10-05T11:18:06.8664413+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "failed",
+      "exit_code": 1,
+      "completed_utc": "2026-10-05T11:18:07.5418084+00:00"
+    },
+    "session-hooks-budget-baseline": {
+      "name": "session-hooks-budget-baseline",
+      "pid": 612,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin python3 /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/session-hooks-budget-baseline.py /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/session-hooks-budget-python-report.txt",
+      "created_utc": "2026-10-05T11:19:50.9743610Z",
+      "launched_utc": "2026-10-05T11:19:50.9714102+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:19:51.9469492+00:00"
+    },
+    "session-hooks-native-final": {
+      "name": "session-hooks-native-final",
+      "pid": 26136,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_SESSION_HOOKS_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/session-hooks-native-report.json /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/session_hooks_process_test.zig -target x86_64-linux-gnu --cache-dir /tmp/pi-session-hooks-cache-20261005 --global-cache-dir /tmp/pi-root-zig-global-20261005",
+      "created_utc": "2026-10-05T11:27:36.6938850Z",
+      "launched_utc": "2026-10-05T11:27:36.6911822+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:27:42.0159472+00:00"
+    },
+    "session-hooks-native-windows": {
+      "name": "session-hooks-native-windows",
+      "pid": 12444,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/session_hooks_process_test.zig",
+      "created_utc": "2026-10-05T11:27:42.0284000Z",
+      "launched_utc": "2026-10-05T11:27:42.0274210+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:27:44.0106934+00:00"
+    }
+  }
+}

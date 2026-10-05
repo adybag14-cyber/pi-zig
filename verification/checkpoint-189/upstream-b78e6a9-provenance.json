@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "recordedUtc": "2026-10-05T11:33:17.5453831+00:00",
+  "status": "in_progress",
+  "parityCertified": false,
+  "selectedUpstream": "b78e6a9085343ec0f308c3d377da72528b4cf7ee",
+  "upstreamVersion": "1.0.3",
+  "upstreamArchiveSha256": "a9bda482530ea71866c2b314069b589876b3b048935f530fb3c0b46792ff0909",
+  "catalogRevision": "sha256-c5d5070c7592ca8e27743e892a7eec1d6c883be8034f888735238cdfdb3ab70f",
+  "catalogSha256": "c5d5070c7592ca8e27743e892a7eec1d6c883be8034f888735238cdfdb3ab70f",
+  "modelCount": 1621,
+  "providerCount": 42,
+  "chat": 1539,
+  "image": 59,
+  "classifier": 23,
+  "rawModelCount": 0.0,
+  "reviewedAzureProjection": "Canonical azure provider and DeepSeek Foundry deployment projection retained",
+  "nativeImport": "archive commit, package name/version, archive digest and typed catalog revision validated; generation and --check passed",
+  "delta": "8commits beyond6100: v1.0.3/catalog pin/multiline syntax colors/pi-env SSH and packaged verified daemons",
+  "remaining": "No parity certification; pi-env SSH integration and other runtime contracts pending"
+}

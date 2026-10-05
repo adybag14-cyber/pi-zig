@@ -236,6 +236,53 @@ pub const Providers = struct {
     }
 
     pub fn invoke(self: *Providers, id: []const u8, arguments: c.JSValue) !c.JSValue {
+        const pending = try self.invokeUnsettled(id, arguments);
+        defer self.engine.freeValue(pending);
+        return self.engine.awaitValue(pending);
+    }
+
+    pub fn validate(self: *Providers, id: []const u8, provider: []const u8, generation: u64) !void {
+        const entry = self.callbacks.get(id) orelse return error.UnknownNativeProviderCallback;
+        if (generation == 0 or generation > maximum_safe_integer or entry.generation != generation or !std.mem.eql(u8, entry.provider, provider)) return error.StaleNativeProviderGeneration;
+    }
+
+    pub fn live(self: *Providers, id: []const u8, provider: []const u8, generation: u64) bool {
+        self.validate(id, provider, generation) catch return false;
+        return true;
+    }
+
+    /// Old callback IDs remain rooted until the host commits its exact selected
+    /// descriptor set. Validate the entire set before removing any old entries.
+    pub fn commit(self: *Providers, provider: []const u8, ids: []const []const u8) !usize {
+        for (ids, 0..) |id, index| {
+            const entry = self.callbacks.get(id) orelse return error.UnknownNativeProviderCallback;
+            if (!std.mem.eql(u8, entry.provider, provider)) return error.NativeProviderCallbackOwnerMismatch;
+            for (ids[0..index]) |previous| if (std.mem.eql(u8, previous, id)) return error.DuplicateNativeProviderCallback;
+        }
+        var removed_count: usize = 0;
+        while (true) {
+            var entries = self.callbacks.iterator();
+            const remove_id = blk: {
+                while (entries.next()) |entry| {
+                    if (!std.mem.eql(u8, entry.value_ptr.provider, provider)) continue;
+                    var selected = false;
+                    for (ids) |id| if (std.mem.eql(u8, id, entry.key_ptr.*)) {
+                        selected = true;
+                        break;
+                    };
+                    if (!selected) break :blk entry.key_ptr.*;
+                }
+                break :blk null;
+            } orelse break;
+            const removed = self.callbacks.fetchRemove(remove_id).?;
+            self.engine.gpa.free(removed.key);
+            self.freeCallback(removed.value);
+            removed_count += 1;
+        }
+        return removed_count;
+    }
+
+    pub fn invokeUnsettled(self: *Providers, id: []const u8, arguments: c.JSValue) !c.JSValue {
         const entry = self.callbacks.get(id) orelse return error.UnknownNativeProviderCallback;
         const function = c.JS_DupValue(self.engine.context, entry.function);
         defer self.engine.freeValue(function);
@@ -255,9 +302,7 @@ pub const Providers = struct {
             value.* = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, arguments, @intCast(index)));
             initialized += 1;
         }
-        const pending = try self.engine.checked(c.JS_Call(self.engine.context, function, receiver, @intCast(count), args.ptr));
-        defer self.engine.freeValue(pending);
-        return self.engine.awaitValue(pending);
+        return self.engine.checked(c.JS_Call(self.engine.context, function, receiver, @intCast(count), args.ptr));
     }
 
     pub fn manifest(self: *Providers) !c.JSValue {

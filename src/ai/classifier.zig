@@ -534,7 +534,13 @@ test "generated typed classifier models route separately from chat models" {
         try std.testing.expectEqualStrings(info.apiName(), model.api.name());
         try std.testing.expectEqualStrings(info.providerName(), model.provider);
     }
-    try std.testing.expectEqual(@as(usize, 15), count);
+    const source = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, @embedFile("catalog_source.json"), .{});
+    defer source.deinit();
+    var source_count: usize = 0;
+    for (source.value.object.get("models").?.array.items) |model| {
+        if (std.mem.eql(u8, model.object.get("type").?.string, "classifier")) source_count += 1;
+    }
+    try std.testing.expectEqual(source_count, count);
     try std.testing.expectError(error.NotClassifierModel, Model.fromInfo(providers.known_models[0]));
 }
 

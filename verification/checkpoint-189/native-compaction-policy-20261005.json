@@ -1,0 +1,54 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "compaction-policy",
+  "reportGates": 17,
+  "semanticReportMatch": true,
+  "fixtureImplementation": "Zig driver and assertions; original user extension input retained unchanged as fixture text",
+  "productionBackend": "legacy Node bridge; native default certification still pending",
+  "nativeLinuxTestsPassed": 7,
+  "windowsTestsPassed": 0,
+  "windowsLinuxSkips": 1,
+  "jobs": {
+    "compaction-policy-python-baseline": {
+      "name": "compaction-policy-python-baseline",
+      "pid": 44616,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/compaction_policy_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/compaction-policy-python-report.txt",
+      "created_utc": "2026-10-05T10:51:22.4536970Z",
+      "launched_utc": "2026-10-05T10:51:22.4497494+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:51:23.1625794+00:00"
+    },
+    "compaction-policy-native-live": {
+      "name": "compaction-policy-native-live",
+      "pid": 20300,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_COMPACTION_POLICY_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/compaction-policy-native-report.json /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/compaction_policy_process_test.zig -target x86_64-linux-gnu --cache-dir /tmp/pi-compaction-native-cache-20261005 --global-cache-dir /tmp/pi-root-zig-global-20261005",
+      "created_utc": "2026-10-05T10:54:09.4034400Z",
+      "launched_utc": "2026-10-05T10:54:09.4007213+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:54:11.9916694+00:00"
+    },
+    "compaction-policy-native-windows": {
+      "name": "compaction-policy-native-windows",
+      "pid": 37764,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/compaction_policy_process_test.zig",
+      "created_utc": "2026-10-05T10:54:27.6969190Z",
+      "launched_utc": "2026-10-05T10:54:27.6936210+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:54:29.5201711+00:00"
+    }
+  }
+}

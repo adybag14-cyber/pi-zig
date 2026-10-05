@@ -35,6 +35,7 @@ test "native auth screen login logout masking storage permissions status and ter
     var scratch = try pty.Scratch.init(gpa, io, "auth-screen");
     defer scratch.deinit();
     for ([_][]const u8{ "agent", "sessions", "workspace", "home" }) |name| try scratch.dir.createDir(io, name, .default_dir);
+    try scratch.dir.writeFile(io, .{ .sub_path = "agent/settings.json", .data = "{\"tuiMode\":\"regular\",\"enableInstallTelemetry\":false}" });
     try scratch.dir.writeFile(io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"unused-auth-177\"}]" });
     const agent_dir = try std.fs.path.join(gpa, &.{ scratch.path, "agent" });
     defer gpa.free(agent_dir);
@@ -99,6 +100,8 @@ test "native auth screen login logout masking storage permissions status and ter
     const logout_start = session.output.items.len;
     try session.send("/logout\r");
     pos = try session.waitFor("Select provider to logout:", logout_start, 45_000);
+    pos = try session.waitFor("OpenAI", pos, 45_000);
+    pos = try session.waitFor("configured", pos, 45_000);
     try std.testing.expect(fullscreen(session.output.items[logout_start..]));
     try std.testing.expect(contains(session.output.items[logout_start..], "OpenAI"));
     try std.testing.expect(contains(session.output.items[logout_start..], "configured"));

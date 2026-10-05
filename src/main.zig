@@ -60,6 +60,8 @@ const TreeSummaryPromptContext = struct {
     }
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator) anyerror!coding.slash.TreeSummaryChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         try tui.render.printLine(self.io, "Summarize branch?");
         try tui.render.printLine(self.io, "  [n] No summary  [s] Summarize  [c] Custom prompt  [q] Cancel");
@@ -118,6 +120,8 @@ const TreeTargetPromptContext = struct {
     filter_mode: *coding.tree_tui.FilterMode,
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator, sess: *agent.Session) anyerror!coding.slash.TreeTargetChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         const selection = try coding.tree_tui.runWithFilter(gpa, self.io, self.environ, self.reader, sess, self.filter_mode.*, self.already_fullscreen);
         return .{ .target_id = selection.target_id, .cancelled = selection.cancelled };
@@ -134,6 +138,8 @@ const ModelTargetPromptContext = struct {
     abort_flag: *bool,
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator, initial_search: ?[]const u8) anyerror!coding.slash.ModelTargetChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         var refresh_result = try self.provider_models.refresh(.{
             .allow_network = true,
@@ -179,6 +185,8 @@ const ThinkingTargetPromptContext = struct {
     default_level: *?[]const u8,
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator, initial_search: ?[]const u8) anyerror!coding.slash.ThinkingTargetChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         var levels_buf: [7]ai.thinking.ThinkingLevel = undefined;
         const levels = if (coding.live_state.activeModelInfo(self.live)) |model|
@@ -215,6 +223,8 @@ const SettingsTargetPromptContext = struct {
     theme_registry: *pi_zig.themes.Registry,
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator) anyerror!coding.slash.SettingsTargetChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         const names = try gpa.alloc([]const u8, self.theme_registry.themes.items.len);
         defer gpa.free(names);
@@ -249,6 +259,8 @@ const AuthTargetPromptContext = struct {
         mode: coding.slash.AuthPromptMode,
         initial_search: ?[]const u8,
     ) anyerror!coding.slash.AuthTargetChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         const catalog = if (self.live.model_catalog.len > 0) self.live.model_catalog else &ai.providers.known_models;
         const oauth_provider_ids = try self.extension_oauth.loginProviderNames(gpa);
@@ -297,6 +309,8 @@ const SessionTargetPromptContext = struct {
     required_cwd: []const u8,
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator, initial_search: ?[]const u8) anyerror!coding.slash.SessionTargetChoice {
+        try tui.render.beginModal();
+        defer tui.render.endModal();
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         const selection = try coding.session_tui.run(gpa, self.io, self.environ, self.reader, .{
             .session_dir = self.session_dir,
@@ -3976,6 +3990,7 @@ fn runMain(init: std.process.Init) !void {
         const raw = try std.Io.Dir.cwd().readFileAlloc(io, path, gpa, .limited(4 * 1024 * 1024));
         defer gpa.free(raw);
         mock_storage = try ai.mock.MockModel.loadFromJson(gpa, raw);
+        mock_storage.?.bindIo(io);
     } else {
         client_pool.switchToIdentity(provider_id, provider, model.?) catch {
             try tui.render.printLine(io, "error: no model configured. Set OPENAI_API_KEY / ANTHROPIC_API_KEY / GOOGLE_API_KEY or --mock-script.");
@@ -4313,12 +4328,14 @@ fn runMain(init: std.process.Init) !void {
         .fullscreen => .fullscreen,
     } else settings.effectiveTuiMode();
     var fullscreen_active = false;
+    const use_terminal_editor = tui.line_editor.available(io);
+    const use_fullscreen_scene = effective_tui_mode == .fullscreen and use_terminal_editor and tui.terminal.supportsFullscreen(io);
     if (effective_tui_mode == .fullscreen and tui.terminal.supportsFullscreen(io)) {
-        try tui.terminal.enterAlternateScreen(io);
+        if (!use_fullscreen_scene) try tui.terminal.enterAlternateScreen(io);
         fullscreen_active = true;
         if (settings.show_hardware_cursor orelse false) try tui.render.writeAll(io, tui.terminal.show_cursor);
     }
-    defer if (fullscreen_active) tui.terminal.leaveAlternateScreen(io) catch {};
+    defer if (fullscreen_active and !use_fullscreen_scene) tui.terminal.leaveAlternateScreen(io) catch {};
 
     var interactive_render = InteractiveRenderOptions{
         .width = tui.terminal.columnsFromEnvironment(environ, 100),
@@ -4340,6 +4357,29 @@ fn runMain(init: std.process.Init) !void {
         .fullscreen_copy_on_select = settings.fullscreen_copy_on_select orelse true,
     };
     runtime_reload_context.render_options = &interactive_render;
+
+    var terminal_editor = tui.editor.Editor.init(gpa);
+    defer terminal_editor.deinit();
+    var terminal_keybindings = if (agent_dir) |dir| tui.keybindings.Manager.load(gpa, io, dir) catch tui.keybindings.Manager.init(gpa) else tui.keybindings.Manager.init(gpa);
+    defer terminal_keybindings.deinit();
+    runtime_reload_context.keybindings = &terminal_keybindings;
+    var frontend: ?*coding.fullscreen_frontend.Frontend = null;
+    defer if (frontend) |scene| {
+        extension_ui.bindFrontend(null, null, null);
+        tui.render.bindFrontend(null, null, null);
+        scene.deinit();
+    };
+    if (use_fullscreen_scene) {
+        const header = try std.fmt.allocPrint(gpa, "pi (pi-zig) {s} · {s}/{s}", .{ config.version, provider_name orelse "mock", model orelse "mock" });
+        defer gpa.free(header);
+        frontend = try coding.fullscreen_frontend.Frontend.start(gpa, io, environ, &extension_stdin_reader, &terminal_keybindings, .{ .header = header, .show_hardware_cursor = interactive_render.show_hardware_cursor, .editor_padding_x = interactive_render.editor_padding_x });
+        interactive_render.fullscreen = frontend;
+        agent_cfg.abort_flag = &frontend.?.abort_flag;
+        extension_bridge.setAbortFlag(agent_cfg.abort_flag);
+        extension_ui.bindFrontend(coding.fullscreen_frontend.Frontend.surfaceSink, coding.fullscreen_frontend.Frontend.modalObserver, frontend);
+        tui.render.bindFrontend(coding.fullscreen_frontend.Frontend.noticeSink, coding.fullscreen_frontend.Frontend.renderModalObserver, frontend);
+        try frontend.?.syncBranch(&sess);
+    }
 
     if (!(settings.quiet_startup orelse false)) {
         if (!try extension_ui.renderCustomHeader()) try tui.render.renderHeader(io, config.version, context_count, skills_count);
@@ -4366,12 +4406,6 @@ fn runMain(init: std.process.Init) !void {
         }
     }
 
-    const use_terminal_editor = tui.line_editor.available(io);
-    var terminal_editor = tui.editor.Editor.init(gpa);
-    defer terminal_editor.deinit();
-    var terminal_keybindings = if (agent_dir) |dir| tui.keybindings.Manager.load(gpa, io, dir) catch tui.keybindings.Manager.init(gpa) else tui.keybindings.Manager.init(gpa);
-    defer terminal_keybindings.deinit();
-    runtime_reload_context.keybindings = &terminal_keybindings;
     var clipboard_store = coding.clipboard.TempStore.init(gpa, io, environ);
     defer clipboard_store.deinit();
     var tree_summary_prompt_context = TreeSummaryPromptContext{
@@ -4385,14 +4419,14 @@ fn runMain(init: std.process.Init) !void {
         .io = io,
         .environ = environ,
         .reader = &extension_stdin_reader,
-        .already_fullscreen = fullscreen_active,
+        .already_fullscreen = fullscreen_active and frontend == null,
         .filter_mode = &tree_filter_mode,
     };
     var model_target_prompt_context = ModelTargetPromptContext{
         .io = io,
         .environ = environ,
         .reader = &extension_stdin_reader,
-        .already_fullscreen = fullscreen_active,
+        .already_fullscreen = fullscreen_active and frontend == null,
         .live = &live,
         .provider_models = &extension_models_runtime,
         .abort_flag = &shared_abort,
@@ -4401,7 +4435,7 @@ fn runMain(init: std.process.Init) !void {
         .io = io,
         .environ = environ,
         .reader = &extension_stdin_reader,
-        .already_fullscreen = fullscreen_active,
+        .already_fullscreen = fullscreen_active and frontend == null,
         .live = &live,
         .default_level = &settings.thinking_level,
     };
@@ -4409,7 +4443,7 @@ fn runMain(init: std.process.Init) !void {
         .io = io,
         .environ = environ,
         .reader = &extension_stdin_reader,
-        .already_fullscreen = fullscreen_active,
+        .already_fullscreen = fullscreen_active and frontend == null,
         .agent_dir = ad,
         .cwd = cwd,
         .trust_project = trust_project,
@@ -4419,7 +4453,7 @@ fn runMain(init: std.process.Init) !void {
         .io = io,
         .environ = environ,
         .reader = &extension_stdin_reader,
-        .already_fullscreen = fullscreen_active,
+        .already_fullscreen = fullscreen_active and frontend == null,
         .agent_dir = ad,
         .live = &live,
         .extension_oauth = &extension_oauth_runtime,
@@ -4442,7 +4476,7 @@ fn runMain(init: std.process.Init) !void {
         .io = io,
         .environ = environ,
         .reader = &extension_stdin_reader,
-        .already_fullscreen = fullscreen_active,
+        .already_fullscreen = fullscreen_active and frontend == null,
         .session_dir = session_dir,
         .all_sessions_root = all_sessions_root,
         .current_session_path = &session_path,
@@ -4501,6 +4535,17 @@ fn runMain(init: std.process.Init) !void {
         const pending_editor_text = extension_ui.takePendingEditorText();
         defer if (pending_editor_text) |value| gpa.free(value);
         const editor_prefill = pending_editor_text orelse "";
+        if (frontend) |scene| {
+            if (pending_editor_text) |text| try scene.setEditorText(text, null, null);
+            try scene.syncBranch(&sess);
+            const status = try std.fmt.allocPrint(gpa, "{s}/{s} · {s}", .{ provider_name orelse "mock", model orelse "mock", sess.id });
+            defer gpa.free(status);
+            try scene.setStatus(status);
+            var shortcut_keys: std.ArrayList([]const u8) = .empty;
+            defer shortcut_keys.deinit(gpa);
+            for (extension_host.extensions.items) |extension| for (extension.shortcuts) |shortcut| try shortcut_keys.append(gpa, shortcut.key);
+            try scene.updateConfigPadded(&terminal_keybindings, shortcut_keys.items, interactive_render.editor_padding_x);
+        }
         try syncExtensionScriptContext(
             &extension_host,
             &extension_ui,
@@ -4523,7 +4568,12 @@ fn runMain(init: std.process.Init) !void {
         var prompt_buffer: [5]u8 = .{ ' ', ' ', ' ', '>', ' ' };
         const prompt_start: usize = 3 - @min(@as(usize, interactive_render.editor_padding_x), 3);
         const prompt_text = prompt_buffer[prompt_start..];
-        const line = if (use_terminal_editor)
+        const line = if (frontend) |scene|
+            readFullscreenLine(gpa, arena, scene, &completion_context, &extension_shortcut_context) catch |err| switch (err) {
+                error.EndOfStream => break,
+                else => return err,
+            }
+        else if (use_terminal_editor)
             tui.line_editor.readLineWithCompleterAndShortcutsPrefill(arena, io, &extension_stdin_reader, &terminal_editor, &terminal_keybindings, prompt_text, terminal_completer, terminal_shortcut_handler, editor_prefill) catch |err| switch (err) {
                 error.EndOfStream => break,
                 error.DeadTerminal => {
@@ -4835,7 +4885,41 @@ const InteractiveRenderOptions = struct {
     editor_padding_x: u8 = 0,
     show_hardware_cursor: bool = false,
     fullscreen_copy_on_select: bool = true,
+    fullscreen: ?*coding.fullscreen_frontend.Frontend = null,
 };
+
+fn readFullscreenLine(
+    gpa: std.mem.Allocator,
+    arena: std.mem.Allocator,
+    scene: *coding.fullscreen_frontend.Frontend,
+    completion_context: *ReplCompletionContext,
+    shortcut_context: *ExtensionShortcutContext,
+) ![]u8 {
+    while (true) {
+        var command = try scene.readCommand();
+        defer command.deinit(gpa);
+        switch (command.kind) {
+            .submit => return arena.dupe(u8, command.text),
+            .quit => return error.EndOfStream,
+            .complete => {
+                if (try replComplete(completion_context, gpa, command.text, command.cursor)) |result| {
+                    var completion = result;
+                    defer completion.deinit(gpa);
+                    try scene.setEditorText(completion.text, completion.cursor, command.revision);
+                }
+            },
+            .clipboard, .shortcut => {
+                try shortcut_context.editor.setTextAt(command.text, command.cursor);
+                const result = if (command.kind == .clipboard)
+                    try ExtensionShortcutContext.pasteClipboard(shortcut_context, gpa)
+                else
+                    try ExtensionShortcutContext.handle(shortcut_context, gpa, command.key);
+                if (!std.mem.eql(u8, shortcut_context.editor.slice(), command.text)) try scene.setEditorText(shortcut_context.editor.slice(), shortcut_context.editor.cursor, command.revision);
+                if (result == .handled_interrupt) return arena.dupe(u8, "");
+            },
+        }
+    }
+}
 
 fn writeExtensionRendered(io: Io, rendered: []const u8) !void {
     if (rendered.len == 0) return;
@@ -4904,9 +4988,14 @@ const ExtensionPrintEmitter = struct {
     show_images: bool,
     image_width_cells: u32,
     host: *extensions.Host,
+    fullscreen: ?*coding.fullscreen_frontend.Frontend = null,
 
     fn onEvent(raw: ?*anyopaque, event: agent.AgentEvent) void {
         const self: *ExtensionPrintEmitter = @ptrCast(@alignCast(raw.?));
+        if (self.fullscreen) |scene| {
+            self.onFullscreenEvent(scene, event) catch |err| scene.recordFailure(err);
+            return;
+        }
         switch (event.kind) {
             .message_update => {
                 if (self.verbose) tui.render.writeAll(self.io, event.text) catch {};
@@ -5020,6 +5109,50 @@ const ExtensionPrintEmitter = struct {
             .tool_call, .tool_result => {},
             else => {},
         }
+    }
+
+    fn onFullscreenEvent(self: *ExtensionPrintEmitter, scene: *coding.fullscreen_frontend.Frontend, event: agent.AgentEvent) !void {
+        if (event.kind == .tool_execution_start) {
+            const arguments = if (event.args_json.len > 0) event.args_json else if (event.text.len > 0) event.text else "{}";
+            if (try self.host.renderToolCall(event.name, event.id, arguments, false, self.width)) |rendered| {
+                defer self.host.gpa.free(rendered);
+                return scene.postRenderedToolEvent(event, rendered);
+            }
+        } else if (event.kind == .tool_execution_update or event.kind == .tool_execution_end) {
+            const count: usize = @intFromBool(event.image_b64 != null) + event.images.len;
+            const images = try self.host.gpa.alloc(extensions.host.ToolImage, count);
+            defer self.host.gpa.free(images);
+            var index: usize = 0;
+            if (event.image_b64) |data| {
+                images[0] = .{ .data_b64 = @constCast(data), .mime_type = @constCast(event.image_mime orelse "image/png") };
+                index += 1;
+            }
+            for (event.images) |image| {
+                images[index] = .{ .data_b64 = image.data_b64, .mime_type = image.mime_type };
+                index += 1;
+            }
+            if (try self.host.renderToolResultRichImages(event.name, event.id, event.text, event.is_error, event.details_json, images, false, event.kind == .tool_execution_update, self.show_images and self.capabilities.images != null, self.width)) |rendered| {
+                defer self.host.gpa.free(rendered);
+                return scene.postRenderedToolEvent(event, rendered);
+            }
+            // Keep a visible media record in the transcript when a component
+            // has no custom renderer, as the ordinary terminal fallback does.
+            if (images.len > 0) {
+                var text: Io.Writer.Allocating = .init(self.host.gpa);
+                defer text.deinit();
+                try text.writer.writeAll(event.text);
+                for (images) |image| {
+                    const dimensions = try tui.terminal_image.getImageDimensionsBase64(self.host.gpa, image.data_b64, image.mime_type);
+                    const fallback = try tui.terminal_image.imageFallback(self.host.gpa, self.capabilities, image.mime_type, dimensions, null, null);
+                    defer self.host.gpa.free(fallback);
+                    try text.writer.print("\n{s}", .{fallback});
+                }
+                var projected = event;
+                projected.text = text.written();
+                return scene.postEvent(projected);
+            }
+        }
+        try scene.postEvent(event);
     }
 };
 
@@ -5137,12 +5270,17 @@ fn runOneWithImages(
         .show_images = render_options.show_images,
         .image_width_cells = render_options.image_width_cells,
         .host = extension_host,
+        .fullscreen = render_options.fullscreen,
     };
+    if (render_options.fullscreen) |scene| try scene.setBusy(true);
+    defer if (render_options.fullscreen) |scene| scene.setBusy(false) catch {};
     if (render_options.show_terminal_progress) try tui.render.writeAll(io, tui.terminal.progress_active_sequence);
     defer if (render_options.show_terminal_progress) tui.render.writeAll(io, tui.terminal.progress_clear_sequence) catch {};
     var result = try agent.runWithImages(gpa, io, cwd, client, sess, prompt, images, agent_cfg, ExtensionPrintEmitter.onEvent, &emitter);
     defer result.deinit(gpa);
-    if (!verbose) {
+    if (render_options.fullscreen) |scene| {
+        try scene.syncBranch(sess);
+    } else if (!verbose) {
         const transformed = extension_host.transformMarkdown(result.final_text, "assistant", false, render_options.width) catch try gpa.dupe(u8, result.final_text);
         defer gpa.free(transformed);
         try tui.render.renderAssistantMarkdownPadded(gpa, io, transformed, render_options.width, render_options.capabilities, render_options.output_pad);
@@ -5171,12 +5309,17 @@ fn runOne(
         .show_images = render_options.show_images,
         .image_width_cells = render_options.image_width_cells,
         .host = extension_host,
+        .fullscreen = render_options.fullscreen,
     };
+    if (render_options.fullscreen) |scene| try scene.setBusy(true);
+    defer if (render_options.fullscreen) |scene| scene.setBusy(false) catch {};
     if (render_options.show_terminal_progress) try tui.render.writeAll(io, tui.terminal.progress_active_sequence);
     defer if (render_options.show_terminal_progress) tui.render.writeAll(io, tui.terminal.progress_clear_sequence) catch {};
     var result = try agent.run(gpa, io, cwd, client, sess, prompt, agent_cfg, ExtensionPrintEmitter.onEvent, &emitter);
     defer result.deinit(gpa);
-    if (!verbose) {
+    if (render_options.fullscreen) |scene| {
+        try scene.syncBranch(sess);
+    } else if (!verbose) {
         const transformed = extension_host.transformMarkdown(result.final_text, "assistant", false, render_options.width) catch try gpa.dupe(u8, result.final_text);
         defer gpa.free(transformed);
         try tui.render.renderAssistantMarkdownPadded(gpa, io, transformed, render_options.width, render_options.capabilities, render_options.output_pad);

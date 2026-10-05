@@ -1,0 +1,68 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "branch-summary-policy",
+  "reportGates": 14,
+  "semanticReportMatch": true,
+  "baselineCompatibility": "Plain-text settings output replaced by actual selector search/value inspection and close before branch navigation; every summary/hook/assertion unchanged",
+  "nativeInventory": "Current settings count captured from unfiltered footer, avoids hardcoding43",
+  "productionBackend": "legacy Node bridge; native default certification still pending",
+  "nativeLinuxTestsPassed": 7,
+  "windowsTestsPassed": 0,
+  "windowsLinuxSkips": 1,
+  "jobs": {
+    "branch-policy-python-baseline": {
+      "name": "branch-policy-python-baseline",
+      "pid": 17252,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/branch_summary_policy_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/branch-policy-python-report.txt",
+      "created_utc": "2026-10-05T10:55:20.0274810Z",
+      "launched_utc": "2026-10-05T10:55:20.0245456+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "failed",
+      "exit_code": 1,
+      "completed_utc": "2026-10-05T10:55:46.0247695+00:00"
+    },
+    "branch-policy-settings-compat2": {
+      "name": "branch-policy-settings-compat2",
+      "pid": 13060,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin python3 /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/branch-policy-settings-compat.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/branch-policy-settings-compat-report.txt",
+      "created_utc": "2026-10-05T10:58:50.6090910Z",
+      "launched_utc": "2026-10-05T10:58:50.6066422+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:58:51.9758332+00:00"
+    },
+    "branch-policy-native-live": {
+      "name": "branch-policy-native-live",
+      "pid": 40744,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_BRANCH_POLICY_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/branch-policy-native-report.json /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/branch_policy_process_test.zig -target x86_64-linux-gnu --cache-dir /tmp/pi-branch-native-cache-20261005 --global-cache-dir /tmp/pi-root-zig-global-20261005",
+      "created_utc": "2026-10-05T11:01:49.6142070Z",
+      "launched_utc": "2026-10-05T11:01:49.6115311+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:01:53.7817512+00:00"
+    },
+    "branch-policy-native-windows": {
+      "name": "branch-policy-native-windows",
+      "pid": 17284,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/branch_policy_process_test.zig",
+      "created_utc": "2026-10-05T11:03:33.9689850Z",
+      "launched_utc": "2026-10-05T11:03:33.9658624+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:03:35.7668091+00:00"
+    }
+  }
+}

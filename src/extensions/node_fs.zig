@@ -1,8 +1,10 @@
 //! Filesystem module functions implemented in Zig for trusted extension input.
 const std = @import("std");
+const builtin = @import("builtin");
 const engine_mod = @import("engine.zig");
 const node_buffer = @import("node_buffer.zig");
 const node_directory = @import("node_directory.zig");
+const native_url = @import("native_url.zig");
 const c = engine_mod.c;
 const Method = enum(c_int) { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync, accessSync };
 const PromiseMethod = enum(c_int) { readFile, writeFile, mkdir, unlink, access };
@@ -47,13 +49,17 @@ fn invokePromise(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
         .access => .accessSync,
     };
     var failed = false;
-    const value = call(engine, method, argv[0..@intCast(argc)]) catch |err| failure: {
+    const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
+    var snapshot: ?c.JSValue = null;
+    defer if (snapshot) |value| engine.freeValue(value);
+    const value = callCaptured(engine, method, args, &snapshot) catch |err| failure: {
         failed = true;
         if (c.JS_HasException(context)) break :failure c.JS_GetException(context);
         if (err == error.JavaScriptException) {
             if (engine.captured_exception) |exception| break :failure c.JS_DupValue(context, exception);
         }
-        break :failure filesystemError(engine, err, method, argv[0..@intCast(argc)]);
+        var error_args = [_]c.JSValue{snapshot orelse c.pi_js_undefined()};
+        break :failure filesystemError(engine, err, method, if (snapshot != null) &error_args else args);
     };
     defer engine.freeValue(value);
     if (c.JS_IsException(value)) {
@@ -112,9 +118,19 @@ test "native filesystem promises settle asynchronous reads writes access and fai
 
 fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    return call(engine, @enumFromInt(magic), argv[0..@intCast(argc)]) catch |err| {
+    const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
+    var snapshot: ?c.JSValue = null;
+    defer if (snapshot) |value| engine.freeValue(value);
+    return callCaptured(engine, @enumFromInt(magic), args, &snapshot) catch |err| {
+        if (@as(Method, @enumFromInt(magic)) == .existsSync and err != error.OutOfMemory) {
+            // Node's existence probe suppresses path validation and getter
+            // exceptions. Allocation failure remains a native exception.
+            if (c.JS_HasException(context)) engine.freeValue(c.JS_GetException(context));
+            return c.pi_js_bool(context, 0);
+        }
         if (err == error.JavaScriptException) return engine.throwCaptured();
-        const failure = filesystemError(engine, err, @enumFromInt(magic), argv[0..@intCast(argc)]);
+        var error_args = [_]c.JSValue{snapshot orelse c.pi_js_undefined()};
+        const failure = filesystemError(engine, err, @enumFromInt(magic), if (snapshot != null) &error_args else args);
         if (c.JS_IsException(failure)) return failure;
         return c.JS_Throw(context, failure);
     };
@@ -143,6 +159,7 @@ fn filesystemCode(err: anyerror) ?[:0]const u8 {
 
 fn filesystemError(engine: *engine_mod.Engine, err: anyerror, method: Method, args: []c.JSValue) c.JSValue {
     if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (native_url.isFilePathError(err)) return native_url.filePathErrorValue(engine, err);
     const failure = c.JS_NewError(engine.context);
     if (c.JS_IsException(failure)) return failure;
     const message = c.JS_NewString(engine.context, @as([*:0]const u8, @errorName(err)));
@@ -221,6 +238,34 @@ test "native filesystem error construction preserves native memory failures" {
     try std.testing.expectEqualStrings("InternalError", text);
 }
 
+test "native filesystem and readdir accept actual URL objects real paths errors and original getters" {
+    var temporary = std.testing.tmpDir(.{});
+    defer temporary.cleanup();
+    try temporary.dir.createDirPath(std.testing.io, "sub");
+    try temporary.dir.writeFile(std.testing.io, .{ .sub_path = "sub/entry.txt", .data = "native" });
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("node_url.zig").install(engine);
+    try install(engine, std.testing.io);
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try temporary.dir.realPath(std.testing.io, &path_buffer);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    if (c.JS_SetPropertyStr(engine.context, global, "fixturePath", c.JS_NewStringLen(engine.context, &path_buffer, length)) < 0) return error.JavaScriptException;
+    const value = engine.evalModule(
+        \\import fs from 'node:fs';import fsp from 'node:fs/promises';import {pathToFileURL,fileURLToPath} from 'node:url';const directory=pathToFileURL(fixturePath),file=pathToFileURL(fixturePath+'/sub/entry.txt');if(fs.readFileSync(file,'utf8')!=='native'||await fsp.readFile(file,'utf8')!=='native')throw Error('read URL');fs.writeFileSync(file,'updated');if(await fsp.readFile(file,'utf8')!=='updated'||!fs.existsSync(file))throw Error('write URL');await fsp.access(file);const sync=fs.readdirSync(directory,{recursive:true}),async=await fsp.readdir(directory,{recursive:true});if(sync.map(x=>x.replaceAll('\\','/')).join(',')!=='sub,sub/entry.txt'||async.map(x=>x.replaceAll('\\','/')).join(',')!=='sub,sub/entry.txt')throw Error('recursive URL');for(const entry of fs.readdirSync(directory,{withFileTypes:true})){if(entry.parentPath!==fileURLToPath(directory))throw Error('parent URL')}const missing=pathToFileURL(fixturePath+'/missing');for(const call of [()=>fs.readFileSync(missing),()=>fsp.readFile(missing),()=>fs.readdirSync(missing),()=>fsp.readdir(missing)]){try{await call();throw Error('missing accepted')}catch(e){if(e.code!=='ENOENT'||e.path!==fileURLToPath(missing))throw e}}const reason={};for(const call of [u=>fs.readFileSync(u),u=>fsp.readFile(u),u=>fs.readdirSync(u),u=>fsp.readdir(u)]){const u=new URL(file);Object.defineProperty(u,'pathname',{get(){throw reason}});try{await call(u);throw Error('getter accepted')}catch(e){if(e!==reason)throw e}}for(const call of [u=>fs.readFileSync(u),u=>fsp.readFile(u),u=>fs.readdirSync(u),u=>fsp.readdir(u)])try{await call(new URL('file:///tmp/%FF'));throw Error('URI accepted')}catch(e){if(!(e instanceof URIError))throw e}for(const call of [()=>fs.accessSync(new URL('https://host/a')),()=>fsp.access(new URL('https://host/a'))])try{await call();throw Error('scheme accepted')}catch(e){if(e.code!=='ERR_INVALID_URL_SCHEME')throw e}await fsp.unlink(file);
+    , "native-url-filesystem.mjs") catch |err| {
+        std.debug.print("URL filesystem fixture: {s}\n", .{engine.last_error orelse @errorName(err)});
+        return err;
+    };
+    defer engine.freeValue(value);
+    const exists_value = try engine.evalModule(
+        \\import fs from 'node:fs';const reason={},u=new URL('file:///missing');Object.defineProperty(u,'pathname',{get(){throw reason}});if(fs.existsSync(u)!==false||fs.existsSync(new URL('https://host/a'))!==false||fs.existsSync()!==false)throw Error('Node24 existence validation suppression');
+    , "native-url-exists-validation.mjs");
+    defer engine.freeValue(exists_value);
+}
+
 fn optionBoolean(engine: *engine_mod.Engine, options: c.JSValue, key: [*:0]const u8) !bool {
     const value = try engine.checked(c.JS_GetPropertyStr(engine.context, options, key));
     defer engine.freeValue(value);
@@ -266,10 +311,16 @@ fn writeOptions(engine: *engine_mod.Engine, args: []c.JSValue) !WriteOptions {
 }
 
 fn call(engine: *engine_mod.Engine, method: Method, args: []c.JSValue) !c.JSValue {
+    var snapshot: ?c.JSValue = null;
+    defer if (snapshot) |value| engine.freeValue(value);
+    return callCaptured(engine, method, args, &snapshot);
+}
+fn callCaptured(engine: *engine_mod.Engine, method: Method, args: []c.JSValue, snapshot: *?c.JSValue) !c.JSValue {
     if (args.len == 0) return error.MissingFilesystemPath;
     const io = engine.native_io orelse return error.NativeIoUnavailable;
-    const path = try engine.toString(args[0]);
+    const path = if (native_url.isURL(engine, args[0])) try native_url.filePath(engine, args[0], builtin.os.tag == .windows) else try engine.toString(args[0]);
     defer engine.gpa.free(path);
+    if (native_url.isURL(engine, args[0])) snapshot.* = try engine.checked(c.JS_NewStringLen(engine.context, path.ptr, path.len));
     if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidNativeFilesystemPath;
     switch (method) {
         .readFileSync => {

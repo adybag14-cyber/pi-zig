@@ -607,14 +607,6 @@ test "Azure canonical identity retains legacy names environment keys and model A
 }
 
 test "generated catalog preserves exact upstream identity cardinality" {
-    try std.testing.expectEqual(@as(usize, 1530), catalog_generated.model_count);
-    try std.testing.expectEqual(@as(usize, 42), catalog_generated.provider_count);
-    try std.testing.expectEqual(@as(usize, 1536), known_models.len);
-    try std.testing.expectEqual(@as(usize, 1608), all_models.len);
-    try std.testing.expectEqualStrings("1.0.2", catalog_generated.upstream_version);
-    try std.testing.expectEqualStrings("6100fe5a8358709a26050b8da97ccd188ae93101", catalog_generated.upstream_commit);
-    try std.testing.expectEqualStrings("d28b6de6985826060b6e2ccf589d16800d9fdbc40681ae4c698421c92d2ff86f", catalog_generated.catalog_sha256);
-
     var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
     defer arena.deinit();
     const a = arena.allocator();
@@ -622,6 +614,27 @@ test "generated catalog preserves exact upstream identity cardinality" {
     defer identities.deinit();
     var public_providers: std.StringHashMap(void) = .init(a);
     defer public_providers.deinit();
+    const source_bytes = @embedFile("catalog_source.json");
+    const source = try std.json.parseFromSlice(std.json.Value, a, source_bytes, .{});
+    defer source.deinit();
+    const source_models = source.value.object.get("models").?.array.items;
+    var source_chat_count: usize = 0;
+    var source_chat_providers: std.StringHashMap(void) = .init(a);
+    for (source_models) |model| {
+        if (!std.mem.eql(u8, model.object.get("type").?.string, "chat")) continue;
+        source_chat_count += 1;
+        try source_chat_providers.put(model.object.get("provider").?.string, {});
+    }
+    try std.testing.expectEqual(source_chat_count, catalog_generated.model_count);
+    try std.testing.expectEqual(@as(usize, @intCast(source.value.object.get("providerCount").?.integer)), catalog_generated.provider_count);
+    try std.testing.expectEqual(source_chat_count + native_extra_models.len, known_models.len);
+    try std.testing.expectEqual(source_models.len + native_extra_models.len, all_models.len);
+    try std.testing.expectEqualStrings(source.value.object.get("upstreamVersion").?.string, catalog_generated.upstream_version);
+    try std.testing.expectEqualStrings(source.value.object.get("upstreamCommit").?.string, catalog_generated.upstream_commit);
+    try std.testing.expectEqualStrings(source.value.object.get("catalogSha256").?.string, catalog_generated.catalog_sha256);
+    var source_hash: [32]u8 = undefined;
+    std.crypto.hash.sha2.Sha256.hash(source_bytes, &source_hash, .{});
+    try std.testing.expectEqualStrings(&std.fmt.bytesToHex(source_hash, .lower), catalog_generated.source_sha256);
     for (known_models[0..catalog_generated.model_count]) |model| {
         const identity = try std.fmt.allocPrint(a, "{s}\x00{s}", .{ model.providerName(), model.id });
         try std.testing.expect(!identities.contains(identity));
@@ -632,7 +645,12 @@ test "generated catalog preserves exact upstream identity cardinality" {
         try std.testing.expect(model.context_window > 0);
         try std.testing.expect(model.max_tokens > 0);
     }
-    try std.testing.expectEqual(@as(usize, 41), public_providers.count());
+    try std.testing.expectEqual(source_chat_providers.count(), public_providers.count());
+    for (source_models) |model| {
+        if (!std.mem.eql(u8, model.object.get("type").?.string, "chat")) continue;
+        const identity = try std.fmt.allocPrint(a, "{s}\x00{s}", .{ model.object.get("provider").?.string, model.object.get("id").?.string });
+        try std.testing.expect(identities.contains(identity));
+    }
 }
 
 test "catalog exposes the current OpenRouter free capability router" {

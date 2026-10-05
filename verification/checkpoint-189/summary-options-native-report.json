@@ -1,0 +1,18 @@
+{
+  "normalRequests": 3,
+  "summaryRequests": 1,
+  "summaryMaxTokens": 2048,
+  "normalAffinityHeaders": [
+    "session_id",
+    "x-client-request-id"
+  ],
+  "summaryAffinityHeaders": [],
+  "summaryPromptCacheKey": null,
+  "summaryPromptCacheRetention": null,
+  "fullscreenTreeSelector": true,
+  "searchSelected": "assistant-188-1",
+  "summaryPersisted": true,
+  "rpcExit": 0,
+  "ptyExit": 0,
+  "stderrBytes": 0
+}

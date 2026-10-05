@@ -38,13 +38,19 @@ pub fn build(b: *std.Build) void {
     typescript_parser.root_module.addIncludePath(b.path("vendor/tree-sitter/lib/include"));
     typescript_parser.root_module.addIncludePath(b.path("vendor/tree-sitter/lib/src"));
     typescript_parser.root_module.addIncludePath(b.path("vendor/typescript-parser/typescript/src"));
+    const typescript_parser_flags = [_][]const u8{ "-std=gnu11", "-D_POSIX_C_SOURCE=200809L", "-D_DEFAULT_SOURCE", "-fno-strict-aliasing" };
     typescript_parser.root_module.addCSourceFiles(.{
         .files = &.{
             "vendor/tree-sitter/lib/src/lib.c",
             "vendor/typescript-parser/typescript/src/parser.c",
-            "vendor/typescript-parser/typescript/src/scanner.c",
         },
-        .flags = &.{ "-std=gnu11", "-D_POSIX_C_SOURCE=200809L", "-D_DEFAULT_SOURCE", "-fno-strict-aliasing" },
+        .flags = &typescript_parser_flags,
+    });
+    typescript_parser.root_module.addCSourceFile(.{
+        .file = b.path("vendor/typescript-parser/typescript/src/scanner.c"),
+        // Supply the same prototype as the generated parser before the legacy
+        // scanner definition. Preserve function-type checks and vendor bytes.
+        .flags = &.{ "-std=gnu11", "-D_POSIX_C_SOURCE=200809L", "-D_DEFAULT_SOURCE", "-fno-strict-aliasing", "-include", b.pathFromRoot("src/extensions/typescript_scanner_abi.h") },
     });
 
     const mod = b.addModule("pi_zig", .{
@@ -413,6 +419,171 @@ pub fn build(b: *std.Build) void {
     const provider_retry_step = b.step("test-provider-retry-process", "Exercise provider retries and live RPC policy reload through the native CLI");
     provider_retry_step.dependOn(&run_provider_retry_tests.step);
     test_step.dependOn(&run_provider_retry_tests.step);
+    const project_settings_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/project_settings_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_project_settings_tests = b.addRunArtifact(project_settings_tests);
+    run_project_settings_tests.step.dependOn(b.getInstallStep());
+    const project_settings_step = b.step("test-project-settings-process", "Exercise global and project settings through the real native PTY");
+    project_settings_step.dependOn(&run_project_settings_tests.step);
+    test_step.dependOn(&run_project_settings_tests.step);
+    const settings_screen_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/settings_screen_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_settings_screen_tests = b.addRunArtifact(settings_screen_tests);
+    run_settings_screen_tests.step.dependOn(b.getInstallStep());
+    const settings_screen_step = b.step("test-settings-screen-process", "Exercise settings transactions reload tree filters and quiet startup through the native PTY");
+    settings_screen_step.dependOn(&run_settings_screen_tests.step);
+    test_step.dependOn(&run_settings_screen_tests.step);
+    const auth_flow_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/auth_flow_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_auth_flow_tests = b.addRunArtifact(auth_flow_tests);
+    run_auth_flow_tests.step.dependOn(b.getInstallStep());
+    const auth_flow_step = b.step("test-auth-flow-process", "Exercise authentication stages sources masked keys and scoped selection through native PTY");
+    auth_flow_step.dependOn(&run_auth_flow_tests.step);
+    test_step.dependOn(&run_auth_flow_tests.step);
+    const auth_live_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/auth_live_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_auth_live_tests = b.addRunArtifact(auth_live_tests);
+    run_auth_live_tests.step.dependOn(b.getInstallStep());
+    const auth_live_step = b.step("test-auth-live-process", "Exercise live login credential rebinding and logout fallback through native PTY and HTTP");
+    auth_live_step.dependOn(&run_auth_live_tests.step);
+    test_step.dependOn(&run_auth_live_tests.step);
+
+    const tree_controls_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/tree_controls_process_test.zig"), .target = target, .optimize = optimize }),
+    });
+    const run_tree_controls_tests = b.addRunArtifact(tree_controls_tests);
+    run_tree_controls_tests.step.dependOn(b.getInstallStep());
+    const tree_controls_step = b.step("test-tree-controls-process", "Exercise durable tree labels, search, filters and OSC 52 through native RPC and PTY");
+    tree_controls_step.dependOn(&run_tree_controls_tests.step);
+    test_step.dependOn(&run_tree_controls_tests.step);
+
+    const summary_options_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/summary_options_process_test.zig"), .target = target, .optimize = optimize }),
+    });
+    const run_summary_options_tests = b.addRunArtifact(summary_options_tests);
+    run_summary_options_tests.step.dependOn(b.getInstallStep());
+    const summary_options_step = b.step("test-summary-options-process", "Exercise summary token caps and omitted affinity/cache options through native RPC, PTY and HTTP");
+    summary_options_step.dependOn(&run_summary_options_tests.step);
+    test_step.dependOn(&run_summary_options_tests.step);
+
+    const media_skills_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/media_skills_process_test.zig"), .target = target, .optimize = optimize }),
+    });
+    const run_media_skills_tests = b.addRunArtifact(media_skills_tests);
+    run_media_skills_tests.step.dependOn(b.getInstallStep());
+    const media_skills_step = b.step("test-media-skills-process", "Exercise image privacy, durable normalized pixels and live skill command reload through native HTTP and RPC");
+    media_skills_step.dependOn(&run_media_skills_tests.step);
+    test_step.dependOn(&run_media_skills_tests.step);
+
+    const compaction_policy_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/compaction_policy_process_test.zig"), .target = target, .optimize = optimize }),
+    });
+    const run_compaction_policy_tests = b.addRunArtifact(compaction_policy_tests);
+    run_compaction_policy_tests.step.dependOn(b.getInstallStep());
+    const compaction_policy_step = b.step("test-compaction-policy-process", "Exercise persisted token budgets, split-turn hooks and append-only compaction through native RPC");
+    compaction_policy_step.dependOn(&run_compaction_policy_tests.step);
+    test_step.dependOn(&run_compaction_policy_tests.step);
+
+    const branch_policy_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/branch_policy_process_test.zig"), .target = target, .optimize = optimize }),
+    });
+    const run_branch_policy_tests = b.addRunArtifact(branch_policy_tests);
+    run_branch_policy_tests.step.dependOn(b.getInstallStep());
+    const branch_policy_step = b.step("test-branch-policy-process", "Exercise custom branch summaries, durable usage and labels, and skip-prompt hooks through native RPC and PTY");
+    branch_policy_step.dependOn(&run_branch_policy_tests.step);
+    test_step.dependOn(&run_branch_policy_tests.step);
+
+    const fullscreen_frontend_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_frontend_process_test.zig"), .target = target, .optimize = optimize }),
+    });
+    const run_fullscreen_frontend_tests = b.addRunArtifact(fullscreen_frontend_tests);
+    run_fullscreen_frontend_tests.step.dependOn(b.getInstallStep());
+    const fullscreen_frontend_step = b.step("test-fullscreen-frontend-process", "Exercise persistent fullscreen CLI behavior through real native PTY terminal cells");
+    fullscreen_frontend_step.dependOn(&run_fullscreen_frontend_tests.step);
+    test_step.dependOn(&run_fullscreen_frontend_tests.step);
+
+    const fullscreen_frontend_components = b.addTest(.{
+        .root_module = test_mod,
+        .filters = &.{ "coding_agent.fullscreen_frontend", "coding_agent.transcript_view", "tui.line_editor.test.fullscreen", "ai.mock.test.paced" },
+        .use_llvm = use_llvm,
+    });
+    const run_fullscreen_frontend_components = b.addRunArtifact(fullscreen_frontend_components);
+    const fullscreen_frontend_components_step = b.step("test-fullscreen-frontend-components", "Exercise retained fullscreen mailbox, surfaces, editor and transcript allocation ownership");
+    fullscreen_frontend_components_step.dependOn(&run_fullscreen_frontend_components.step);
+
+    const clipboard_helper = b.addExecutable(.{
+        .name = "pi-clipboard-fixture",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/test_support/clipboard_helper.zig"), .target = target, .optimize = optimize }),
+    });
+    const install_clipboard_helper = b.addInstallArtifact(clipboard_helper, .{});
+    const clipboard_copy_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/clipboard_copy_process_test.zig"), .target = target, .optimize = optimize }),
+    });
+    const run_clipboard_copy_tests = b.addRunArtifact(clipboard_copy_tests);
+    run_clipboard_copy_tests.step.dependOn(b.getInstallStep());
+    run_clipboard_copy_tests.step.dependOn(&install_clipboard_helper.step);
+    const clipboard_copy_step = b.step("test-clipboard-copy-process", "Exercise local and remote clipboard copy and extension compatibility through native PTY and clipboard fixture");
+    clipboard_copy_step.dependOn(&run_clipboard_copy_tests.step);
+    test_step.dependOn(&run_clipboard_copy_tests.step);
+
+    const clipboard_paste_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/clipboard_paste_process_test.zig"), .target = target, .optimize = optimize }),
+    });
+    const run_clipboard_paste_tests = b.addRunArtifact(clipboard_paste_tests);
+    run_clipboard_paste_tests.step.dependOn(b.getInstallStep());
+    run_clipboard_paste_tests.step.dependOn(&install_clipboard_helper.step);
+    const clipboard_paste_step = b.step("test-clipboard-paste-process", "Exercise keyboard image and sanitized text paste with native clipboard input and owned temp cleanup");
+    clipboard_paste_step.dependOn(&run_clipboard_paste_tests.step);
+    test_step.dependOn(&run_clipboard_paste_tests.step);
+
+    const session_hooks_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/session_hooks_process_test.zig"), .target = target, .optimize = optimize }),
+    });
+    const run_session_hooks_tests = b.addRunArtifact(session_hooks_tests);
+    run_session_hooks_tests.step.dependOn(b.getInstallStep());
+    const session_hooks_step = b.step("test-session-hooks-process", "Exercise compaction replacement, immediate cancellation actions and tree hook persistence through native RPC and PTY");
+    session_hooks_step.dependOn(&run_session_hooks_tests.step);
+    test_step.dependOn(&run_session_hooks_tests.step);
+
+    const tool_fixture = b.addExecutable(.{
+        .name = "pi-tool-fixture",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/test_support/tool_helper.zig"), .target = target, .optimize = optimize }),
+    });
+    const install_tool_fixture = b.addInstallArtifact(tool_fixture, .{});
+    const session_update_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/session_update_process_test.zig"), .target = target, .optimize = optimize }),
+    });
+    const run_session_update_tests = b.addRunArtifact(session_update_tests);
+    run_session_update_tests.step.dependOn(b.getInstallStep());
+    run_session_update_tests.step.dependOn(&install_tool_fixture.step);
+    const session_update_step = b.step("test-session-update-process", "Exercise startup and live resume isolation and managed self update through native PTY HTTP and package-manager fixture");
+    session_update_step.dependOn(&run_session_update_tests.step);
+    test_step.dependOn(&run_session_update_tests.step);
+    const model_update_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/model_update_process_test.zig"), .target = target, .optimize = optimize }),
+    });
+    const run_model_update_tests = b.addRunArtifact(model_update_tests);
+    run_model_update_tests.step.dependOn(b.getInstallStep());
+    run_model_update_tests.step.dependOn(&install_tool_fixture.step);
+    const model_update_step = b.step("test-model-update-process", "Exercise durable model selection lifecycle telemetry and native managed tool archive/cache reuse");
+    model_update_step.dependOn(&run_model_update_tests.step);
+    test_step.dependOn(&run_model_update_tests.step);
+    const image_processing_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/image_processing_process_test.zig"), .target = target, .optimize = optimize }),
+    });
+    const run_image_processing_tests = b.addRunArtifact(image_processing_tests);
+    run_image_processing_tests.step.dependOn(b.getInstallStep());
+    const image_processing_step = b.step("test-image-processing-process", "Exercise actual attachment read-tool and extension post-hook image normalization with native fixtures");
+    image_processing_step.dependOn(&run_image_processing_tests.step);
+    test_step.dependOn(&run_image_processing_tests.step);
     const typescript_tests = b.addTest(.{
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/extensions/typescript.zig"),

@@ -1,0 +1,37 @@
+{
+  "baseline": "2620e5ac7eb59597f3477669dfdc8e955aff93c2",
+  "remaining_async": [
+    {
+      "kind": "test-only finite owner-independent abort sleepers",
+      "sites": [
+        "src/native_runtime_process_test.zig:152",
+        "src/extensions/js_runtime.zig:1788",
+        "src/extensions/js_runtime.zig:2098",
+        "src/extensions/js_runtime.zig:2166",
+        "src/extensions/provider_models.zig:1000",
+        "src/extensions/provider_oauth.zig:487",
+        "src/extensions/provider_stream.zig:1364"
+      ],
+      "classification": "Finite bounded sleeps then flag stores. Eager execution cannot deadlock but may reduce intended live-abort phase coverage."
+    },
+    {
+      "kind": "test-only owner-dependent invocation rendezvous",
+      "sites": [
+        "src/extensions/js_runtime.zig:2552",
+        "src/extensions/js_runtime.zig:2643"
+      ],
+      "classification": "Invocation waits on owner-driven UI/control. These should use guaranteed concurrency in a future scoped test lease; js_runtime source not edited here."
+    }
+  ],
+  "repaired_production_contracts": [
+    "Three OAuth accept/abort/deadline races",
+    "SecureTCP controlled native protocol read",
+    "One-shot HTTP fetch request/timeout/abort",
+    "Responses response-head/SSE-body timeout/abort",
+    "WebSocket connect/frame timeout/abort and stable HTTP owner teardown",
+    "Sequential and parallel bounded tool queues with close-before-join cleanup",
+    "Provider model persistent abort mirror"
+  ],
+  "producer_test": "Late noncooperative OAuth abort now gates on real oauth_progress producer entry; unexpected successful owned credential is freed before failing",
+  "remaining_production_async_count": 0
+}

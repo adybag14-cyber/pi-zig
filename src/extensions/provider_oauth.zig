@@ -518,7 +518,8 @@ test "extension OAuth ignores a late noncooperative login result after native ca
         \\    name: 'Late OAuth', baseUrl: 'https://late.invalid/v1', api: 'openai-completions', apiKey: 'unused',
         \\    models: [{ id: 'late-model', name: 'Late Model', reasoning: false, input: ['text'], cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }, contextWindow: 4096, maxTokens: 512 }],
         \\    oauth: {
-        \\      async login(_callbacks) {
+        \\      async login(callbacks) {
+        \\        callbacks.onProgress('native-late-started');
         \\        await new Promise((resolve) => setTimeout(resolve, 90));
         \\        return { refresh: 'late-refresh', access: 'late-access', expires: 9999999999999, shouldNeverPersist: true };
         \\      },
@@ -548,19 +549,32 @@ test "extension OAuth ignores a late noncooperative login result after native ca
     try registry.registerJsonWithRuntime("late-oauth", config_json, started.runtime);
 
     var lifecycle = Runtime.init(gpa, io, root, &registry);
-    const AbortTask = struct {
-        fn run(task_io: Io, flag: *bool) Io.Cancelable!void {
-            const pause: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(20), .clock = .awake } };
-            try pause.sleep(task_io);
-            @atomicStore(bool, flag, true, .release);
+    const ProducerSignal = struct {
+        flag: *bool,
+        started: bool = false,
+        fn request(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            return error.UnexpectedLateOAuthRequest;
+        }
+        fn action(raw: ?*anyopaque, allocator: std.mem.Allocator, method: []const u8, args: []const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            try std.testing.expectEqualStrings("oauth_progress", method);
+            var parsed = try std.json.parseFromSlice(std.json.Value, allocator, args, .{});
+            defer parsed.deinit();
+            try std.testing.expectEqualStrings("native-late-started", parsed.value.object.get("message").?.string);
+            self.started = true;
+            @atomicStore(bool, self.flag, true, .release);
         }
     };
     var aborted = false;
-    var group: Io.Group = .init;
-    group.async(io, AbortTask.run, .{ io, &aborted });
-    try std.testing.expectError(error.LoginCancelled, lifecycle.loginAndPersist("late-oauth", &aborted, null));
-    try group.await(io);
-
+    var producer: ProducerSignal = .{ .flag = &aborted };
+    // Abort after the real producer entered, independently of host scheduling
+    // or wall-clock speed. The callback still ignores its signal and returns a
+    // late credential, which must never cross the persistence boundary.
+    if (lifecycle.loginAndPersist("late-oauth", &aborted, .{ .context = &producer, .request_fn = ProducerSignal.request, .action_fn = ProducerSignal.action })) |unexpected| {
+        gpa.free(unexpected);
+        return error.TestExpectedLoginCancellation;
+    } else |err| try std.testing.expectEqual(error.LoginCancelled, err);
+    try std.testing.expect(producer.started);
     var store = try auth_storage.AuthStorage.init(gpa, io, root);
     defer store.deinit();
     const persisted = try store.readOAuthJson("late-oauth");

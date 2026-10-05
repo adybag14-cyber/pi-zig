@@ -5,6 +5,8 @@ const runtime_mod = @import("extensions/js_runtime.zig");
 const host_mod = @import("extensions/host.zig");
 const ui_mod = @import("extensions/ui.zig");
 const integration_mod = @import("extensions/integration.zig");
+const provider_registry_mod = @import("extensions/provider_registry.zig");
+const provider_stream_mod = @import("extensions/provider_stream.zig");
 
 const source =
     \\import {Type} from 'typebox';
@@ -21,6 +23,269 @@ const source =
     \\}
 ;
 
+const stream_source =
+    \\import {createAssistantMessageEventStream} from '@earendil-works/pi-ai';
+    \\const usage={input:1,output:2,cacheRead:0,cacheWrite:0,totalTokens:3,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};
+    \\const message=(content=[],stopReason='pending')=>({role:'assistant',content,api:'openai-completions',provider:'native-stream',model:'stream-model',usage,stopReason,timestamp:185});
+    \\export default function(pi){let nextCalls=0,returns=0,cancelCalls=0;
+    \\const events=()=>{const partial=message();return [{type:'start',partial},{type:'text_start',contentIndex:0,partial},{type:'text_delta',contentIndex:0,delta:'N',partial},{type:'text_delta',contentIndex:0,delta:'\uD83D',partial},{type:'text_delta',contentIndex:0,delta:'\uDE80',partial},{type:'text_end',contentIndex:0,content:'N🚀',partial},{type:'done',reason:'stop',message:message([{type:'text',text:'N🚀'}],'stop')}]};
+    \\function stream(model,context,options){if(this.name!=='Native Stream'||!(options.signal instanceof AbortSignal)||!Object.isFrozen(model)||!Object.isFrozen(context)||!Object.isFrozen(options))throw Error('native stream inputs');let index=0;const values=events();
+    \\if(context.mode==='queued'){const result=createAssistantMessageEventStream();values.forEach(value=>result.push(value));return result}
+    \\if(context.mode==='getter-error')return {[Symbol.asyncIterator](){return this},get next(){throw Error('original-next-getter')},return(){returns++;throw Error('cleanup-must-not-replace-original')}};
+    \\return {[Symbol.asyncIterator](){return this},next(){nextCalls++;if(context.mode==='self-remove')pi.unregisterProvider('native-stream');if(index===1&&(context.mode==='wait'||context.mode==='hostile'))return new Promise(()=>{});return Promise.resolve(index<values.length?{done:false,value:values[index++]}:{done:true})},return(){returns++;if(context.mode==='hostile')return new Promise(()=>{});if(context.mode==='cleanup-error')throw Error('cleanup-must-not-replace-original');return Promise.resolve({done:true})}}}
+    \\function register(){pi.registerProvider('native-stream',{name:'Native Stream',api:'openai-completions',baseUrl:'https://unused.invalid',apiKey:'local',models:[{id:'stream-model',name:'Stream Model',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:4096,maxTokens:512}],streamSimple:stream,fetchDeferred:stream,cancelDeferred(model,handle,options){if(!(options.signal instanceof AbortSignal))throw Error('cancel signal');cancelCalls++}})}
+    \\register();pi.registerCommand('stream-status',{handler(){return {nextCalls,returns,cancelCalls}}});pi.registerCommand('stream-replace',{handler(){register()}});pi.registerCommand('stream-remove',{handler(){pi.unregisterProvider('native-stream')}});
+    \\}
+;
+
+fn streamConfig(manifest: []const u8) ![]u8 {
+    var parsed = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, manifest, .{});
+    defer parsed.deinit();
+    return std.json.Stringify.valueAlloc(std.testing.allocator, parsed.value.object.get("providers").?.array.items[0].object.get("config").?, .{});
+}
+
+fn streamId(config: []const u8, path: []const u8) ![]u8 {
+    var parsed = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, config, .{});
+    defer parsed.deinit();
+    return std.testing.allocator.dupe(u8, parsed.value.object.get(path).?.object.get("__pi_callback_id").?.string);
+}
+
+const StreamCapture = struct {
+    count: u64 = 0,
+    reject: bool = false,
+    abort: ?*bool = null,
+    entered: ?*bool = null,
+    carry: bool = false,
+    rocket: bool = false,
+    inject_ack: ?*runtime_mod.Runtime = null,
+
+    fn event(raw: ?*anyopaque, sequence: u64, event_json: []const u8) !void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        try std.testing.expectEqual(self.count + 1, sequence);
+        self.count = sequence;
+        if (self.entered) |flag| @atomicStore(bool, flag, true, .release);
+        if (self.abort) |flag| @atomicStore(bool, flag, true, .release);
+        if (self.reject) return error.NativeDeliberateConsumerRejection;
+        if (self.inject_ack) |runtime| {
+            runtime.write_mutex.lockUncancelable(runtime.io);
+            defer runtime.write_mutex.unlock(runtime.io);
+            var buffer: [1024]u8 = undefined;
+            var writer = runtime.child.stdin.?.writerStreaming(runtime.io, &buffer);
+            const identity = @atomicLoad(u64, &runtime.active_provider_invocation_id, .acquire);
+            // Neither a stale invocation nor a stale/future sequence may reject
+            // the current acknowledgement capability.
+            try writer.interface.print("{{\"kind\":\"provider_stream_ack\",\"invocationId\":\"stale\",\"sequence\":{d},\"ok\":false}}\n{{\"kind\":\"provider_stream_ack\",\"invocationId\":\"{d}\",\"sequence\":{d},\"ok\":false}}\n", .{ sequence, identity, if (sequence == 1) @as(u64, 99) else sequence - 1 });
+            try writer.interface.flush();
+        }
+        self.carry = self.carry or std.mem.indexOf(u8, event_json, "\"delta\":\"\"") != null;
+        self.rocket = self.rocket or std.mem.indexOf(u8, event_json, "🚀") != null;
+    }
+};
+
+fn invokeStream(runtime: *runtime_mod.Runtime, id: []const u8, mode: []const u8, aborted: ?*bool, capture: *StreamCapture) ![]u8 {
+    const context = try std.fmt.allocPrint(std.testing.allocator, "{{\"messages\":[],\"mode\":{f}}}", .{std.json.fmt(mode, .{})});
+    defer std.testing.allocator.free(context);
+    return runtime.invokeProviderStreamSimple("native-stream", id, 1, "{\"id\":\"stream-model\",\"provider\":\"native-stream\",\"api\":\"openai-completions\"}", context, "{}", aborted, StreamCapture.event, capture);
+}
+
+test "native runtime provider streams ACK every event before next and preserve negative ACK through iterator cleanup" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(stream_source);
+    defer fixture.deinit();
+    const started = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const config = try streamConfig(started.manifest_json);
+    defer gpa.free(config);
+    const id = try streamId(config, "streamSimple");
+    defer gpa.free(id);
+    var rejected: StreamCapture = .{ .reject = true };
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, invokeStream(started.runtime, id, "cleanup-error", null, &rejected));
+    try std.testing.expectEqual(@as(u64, 1), rejected.count);
+    try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "NativeDeliberateConsumerRejection") != null);
+    const status = try started.runtime.invokeCommand("stream-status", "", "{}");
+    defer gpa.free(status);
+    try std.testing.expect(std.mem.indexOf(u8, status, "\"nextCalls\":1") != null);
+    try std.testing.expect(std.mem.indexOf(u8, status, "\"returns\":1") != null);
+    for ([_][]const u8{ "plain", "queued" }) |mode| {
+        var capture: StreamCapture = .{ .inject_ack = started.runtime };
+        const summary = try invokeStream(started.runtime, id, mode, null, &capture);
+        defer gpa.free(summary);
+        try std.testing.expectEqual(@as(u64, 7), capture.count);
+        try std.testing.expect(capture.carry and capture.rocket);
+        try std.testing.expect(std.mem.indexOf(u8, summary, "\"terminal\":\"done\"") != null);
+    }
+    const fetch_id = try streamId(config, "fetchDeferred");
+    defer gpa.free(fetch_id);
+    var fetch: StreamCapture = .{};
+    const fetched = try started.runtime.invokeProviderFetchDeferred("native-stream", fetch_id, 1, "{}", "{\"mode\":\"queued\"}", "{}", null, StreamCapture.event, &fetch);
+    defer gpa.free(fetched);
+    try std.testing.expectEqual(@as(u64, 7), fetch.count);
+    const cancel_id = try streamId(config, "cancelDeferred");
+    defer gpa.free(cancel_id);
+    const cancelled = try started.runtime.invokeProviderCancelDeferred("native-stream", cancel_id, 1, "{}", "{}", "{}", null);
+    defer gpa.free(cancelled);
+    try std.testing.expect(!started.runtime.closed);
+    var getter: StreamCapture = .{};
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, invokeStream(started.runtime, id, "getter-error", null, &getter));
+    try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "original-next-getter") != null);
+    try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "cleanup-must-not-replace-original") == null);
+    try fixture.noBridge();
+}
+
+test "native runtime provider generation retirement and unregister drain live iterator with bounded reuse" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource(stream_source);
+    defer fixture.deinit();
+    const started = try runtime_mod.Runtime.startNative(gpa, io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    started.runtime.provider_stream_timeout_ms = 1500;
+    const config = try streamConfig(started.manifest_json);
+    defer gpa.free(config);
+    const id = try streamId(config, "streamSimple");
+    defer gpa.free(id);
+    const Invocation = struct {
+        runtime: *runtime_mod.Runtime,
+        id: []const u8,
+        entered: bool = false,
+        failure: ?anyerror = null,
+        count: u64 = 0,
+
+        fn run(self: *@This()) void {
+            var capture: StreamCapture = .{ .entered = &self.entered };
+            const result = invokeStream(self.runtime, self.id, "wait", null, &capture) catch |err| {
+                self.failure = err;
+                self.count = capture.count;
+                return;
+            };
+            std.testing.allocator.free(result);
+        }
+    };
+    var invocation: Invocation = .{ .runtime = started.runtime, .id = id };
+    var group: std.Io.Group = .init;
+    group.async(io, Invocation.run, .{&invocation});
+    defer {
+        group.cancel(io);
+        group.await(io) catch {};
+    }
+    var elapsed: usize = 0;
+    while (!@atomicLoad(bool, &invocation.entered, .acquire) and elapsed < 1000) : (elapsed += 5) try io.sleep(.fromMilliseconds(5), .awake);
+    try std.testing.expect(@atomicLoad(bool, &invocation.entered, .acquire));
+    // Another provider's same generation must not retire this invocation.
+    try std.testing.expect(started.runtime.retireProviderGeneration("different-provider", 1, 20));
+    try std.testing.expect(@atomicLoad(bool, &started.runtime.active_provider_stream, .acquire));
+    try std.testing.expect(started.runtime.retireProviderGeneration("native-stream", 1, 1000));
+    try group.await(io);
+    try std.testing.expectEqual(error.JavaScriptExtensionExecutionFailed, invocation.failure.?);
+    try std.testing.expectEqual(@as(u64, 1), invocation.count);
+    try std.testing.expect(!started.runtime.closed);
+    var unregister: StreamCapture = .{};
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, invokeStream(started.runtime, id, "self-remove", null, &unregister));
+    try std.testing.expectEqual(@as(u64, 0), unregister.count);
+    try started.runtime.commitProviderCallbacks("native-stream", &.{});
+    var stale: StreamCapture = .{};
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, invokeStream(started.runtime, id, "plain", null, &stale));
+    const reused = try started.runtime.invokeCommand("stream-status", "", "{}");
+    defer gpa.free(reused);
+    try std.testing.expect(std.mem.indexOf(u8, reused, "\"returns\":2") != null);
+    try std.testing.expect(!started.runtime.closed);
+}
+
+test "native runtime provider live abort retires iterator and hostile return closes only owned child" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(stream_source);
+    defer fixture.deinit();
+    const started = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const config = try streamConfig(started.manifest_json);
+    defer gpa.free(config);
+    const id = try streamId(config, "streamSimple");
+    defer gpa.free(id);
+    var aborted = false;
+    var capture: StreamCapture = .{ .abort = &aborted };
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, invokeStream(started.runtime, id, "wait", &aborted, &capture));
+    try std.testing.expect(!started.runtime.closed);
+    const status = try started.runtime.invokeCommand("stream-status", "", "{}");
+    defer gpa.free(status);
+    try std.testing.expect(std.mem.indexOf(u8, status, "\"returns\":1") != null);
+    const healthy = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
+    defer healthy.runtime.deinit();
+    defer gpa.free(healthy.manifest_json);
+    aborted = false;
+    capture = .{ .abort = &aborted };
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, invokeStream(started.runtime, id, "hostile", &aborted, &capture));
+    try std.testing.expect(started.runtime.closed and started.runtime.child.id == null);
+    try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "PI_PROVIDER_STREAM_RETIRE_TIMEOUT") != null);
+    const reused = try healthy.runtime.invokeCommand("stream-status", "", "{}");
+    defer gpa.free(reused);
+    try std.testing.expect(!healthy.runtime.closed);
+}
+
+test "native runtime provider production adapter streams through registry and fences callback replacement" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(stream_source);
+    defer fixture.deinit();
+    const started = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const config = try streamConfig(started.manifest_json);
+    defer gpa.free(config);
+    const old_id = try streamId(config, "streamSimple");
+    defer gpa.free(old_id);
+    var registry = provider_registry_mod.Registry.init(gpa, std.testing.io, &fixture.environment, null, &.{}, &.{});
+    defer registry.deinit();
+    try registry.registerJsonWithRuntime("native-stream", config, started.runtime);
+    var adapter = provider_stream_mod.Runtime.init(gpa, &registry);
+    const messages = [_]@import("ai/root.zig").ChatMessage{.{ .role = "user", .content = "hello" }};
+    var response = try adapter.complete(gpa, .{ .provider_id = "native-stream", .model_id = "stream-model", .api = "openai-completions", .api_key = "local", .base_url = "https://unused.invalid" }, &messages, "[]", null, null, null);
+    defer response.deinit(gpa);
+    try std.testing.expectEqualStrings("N🚀", response.content);
+    try std.testing.expectEqualStrings("stop", response.stop_reason);
+    try std.testing.expectEqual(@as(u64, 3), response.usage.total_tokens);
+    const replacement = try started.runtime.invokeCommand("stream-replace", "", "{}");
+    defer gpa.free(replacement);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, replacement, .{});
+    defer parsed.deinit();
+    const next_config = try std.json.Stringify.valueAlloc(gpa, parsed.value.object.get("actionQueue").?.array.items[0].object.get("config").?, .{});
+    defer gpa.free(next_config);
+    try registry.registerJsonWithRuntime("native-stream", next_config, started.runtime);
+    var stale: StreamCapture = .{};
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, invokeStream(started.runtime, old_id, "plain", null, &stale));
+    try std.testing.expectEqual(@as(u64, 0), stale.count);
+    var reused = try adapter.complete(gpa, .{ .provider_id = "native-stream", .model_id = "stream-model", .api = "openai-completions", .api_key = "local", .base_url = "https://unused.invalid" }, &messages, "[]", null, null, null);
+    defer reused.deinit(gpa);
+    try std.testing.expectEqualStrings("N🚀", reused.content);
+    try std.testing.expect(!started.runtime.closed);
+}
+
+test "native runtime URL globals module aliases filesystem and createRequire consume branded URL in TypeScript without Node" {
+    const extension_source =
+        \\import fs from 'node:fs';import {createRequire} from 'node:module';import {URL as NativeURL,URLSearchParams as NativeParams} from 'node:url';import {URL as AliasURL,URLSearchParams as AliasParams} from 'url';
+        \\const sourceUrl: URL=new URL(import.meta.url);const marker: string='native-url-process-marker';
+        \\if(NativeURL!==globalThis.URL||AliasURL!==NativeURL||NativeParams!==globalThis.URLSearchParams||AliasParams!==NativeParams)throw Error('URL alias identity');
+        \\if(!fs.readFileSync(sourceUrl,'utf8').includes(marker))throw Error('branded URL filesystem');
+        \\const require=createRequire(sourceUrl);if(require('node:fs').readFileSync!==fs.readFileSync||require('./native-url.json').marker!==marker)throw Error('branded URL createRequire');
+        \\const url=new URL('https://example.test/path?a=1');const params=url.searchParams;params.append('a','2');if(url.search!=='?a=1&a=2'||[...params].length!==2)throw Error('linked URL params');
+        \\export default function(pi){pi.on('url_probe',()=>({marker,url:url.href,source:sourceUrl.protocol}))}
+    ;
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(extension_source);
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/native-url.json", .data = "{\"marker\":\"native-url-process-marker\"}" });
+    const started = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const result = try started.runtime.invokeHook("url_probe", "{}", "{}");
+    defer gpa.free(result);
+    try std.testing.expect(std.mem.indexOf(u8, result, "native-url-process-marker") != null);
+    try std.testing.expect(std.mem.indexOf(u8, result, "https://example.test/path?a=1&a=2") != null);
+    try std.testing.expect(std.mem.indexOf(u8, result, "file:") != null);
+    try fixture.noBridge();
+}
+
 const Fixture = struct {
     tmp: std.testing.TmpDir,
     root: []u8,
@@ -29,12 +294,16 @@ const Fixture = struct {
     environment: std.process.Environ.Map,
 
     fn init() !Fixture {
+        return initSource(source);
+    }
+
+    fn initSource(extension_source: []const u8) !Fixture {
         const gpa = std.testing.allocator;
         const io = std.testing.io;
         var tmp = std.testing.tmpDir(.{});
         errdefer tmp.cleanup();
         try tmp.dir.createDirPath(io, "extensions");
-        try tmp.dir.writeFile(io, .{ .sub_path = "extensions/native.ts", .data = source });
+        try tmp.dir.writeFile(io, .{ .sub_path = "extensions/native.ts", .data = extension_source });
         var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
         const length = try tmp.dir.realPath(io, &buffer);
         const root = try gpa.dupe(u8, buffer[0..length]);

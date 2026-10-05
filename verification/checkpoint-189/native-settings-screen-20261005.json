@@ -1,0 +1,38 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "settings-screen",
+  "allFourteenReportGatesPreserved": true,
+  "reportByteIdentical": true,
+  "reportSha256": "3fe242758222f67c2b0d8423d13a7c399161cf233a821e5d04cd06dcd26951bc",
+  "nativeLinuxTestsPassed": 3,
+  "jobs": {
+    "settings-screen-native-live": {
+      "name": "settings-screen-native-live",
+      "pid": 39348,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --exec /usr/bin/env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_SETTINGS_SCREEN_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/settings-screen-native-report.json /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/settings-screen-native-linux-test",
+      "created_utc": "2026-10-05T09:45:38.3003040Z",
+      "launched_utc": "2026-10-05T09:45:38.2974120+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T09:45:39.3592143+00:00"
+    },
+    "settings-screen-python-baseline": {
+      "name": "settings-screen-python-baseline",
+      "pid": 40364,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --exec /usr/bin/python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/settings_screen_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/settings-screen-python-report.json",
+      "created_utc": "2026-10-05T09:42:22.0475850Z",
+      "launched_utc": "2026-10-05T09:42:22.0446063+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T09:42:23.1065304+00:00"
+    }
+  }
+}

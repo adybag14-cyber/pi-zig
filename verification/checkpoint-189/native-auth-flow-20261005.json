@@ -1,0 +1,66 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "auth-flow",
+  "allThirteenReportGatesPreserved": true,
+  "reportByteIdentical": true,
+  "reportSha256": "b2e00042d4e17320f81fc9cca2987f11da40c134fdec9b8fdc7929f926013dfa",
+  "baselineCompatibility": "Only old unfiltered footer count changes from seven to eight. Native code captures the actual initial inventory footer and waits for it to return; all other assertions preserved.",
+  "nativeLinuxTestsPassed": 3,
+  "windows": "Explicit Linux fixture skip",
+  "jobs": {
+    "auth-flow-native-footer-live": {
+      "name": "auth-flow-native-footer-live",
+      "pid": 11820,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --exec /usr/bin/env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_AUTH_FLOW_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/auth-flow-native-report.json /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/auth-flow-native-linux-test",
+      "created_utc": "2026-10-05T10:02:36.6284160Z",
+      "launched_utc": "2026-10-05T10:02:36.6252404+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:02:36.9433782+00:00"
+    },
+    "auth-flow-python-baseline": {
+      "name": "auth-flow-python-baseline",
+      "pid": 22180,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --exec /usr/bin/python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/auth_flow_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/auth-flow-python-report.json",
+      "created_utc": "2026-10-05T09:49:06.1019730Z",
+      "launched_utc": "2026-10-05T09:49:06.0995381+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "failed",
+      "exit_code": 1,
+      "completed_utc": "2026-10-05T09:50:06.3845909+00:00"
+    },
+    "auth-flow-python-count-compat": {
+      "name": "auth-flow-python-count-compat",
+      "pid": 48448,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "C:\\Windows\\System32\\wsl.exe -d Ubuntu --exec /usr/bin/python3 /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/auth_flow_baseline_compat.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/auth-flow-python-compat-report.json",
+      "created_utc": null,
+      "launched_utc": "2026-10-05T10:02:36.6379519+00:00",
+      "identity_captured": false,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:02:36.9445358+00:00"
+    },
+    "auth-flow-native-windows": {
+      "name": "auth-flow-native-windows",
+      "pid": 55172,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/auth_flow_process_test.zig",
+      "created_utc": "2026-10-05T10:03:10.2587660Z",
+      "launched_utc": "2026-10-05T10:03:10.2557699+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T10:03:12.0514167+00:00"
+    }
+  }
+}

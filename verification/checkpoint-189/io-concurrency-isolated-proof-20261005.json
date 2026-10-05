@@ -1,0 +1,136 @@
+{
+  "baseline": "2620e5ac7eb59597f3477669dfdc8e955aff93c2",
+  "scope": "Isolated mandatory scheduling repair; excludes current Main frontend/URL/provider-stream/newcatalog integration",
+  "source_worktree": "C:\\Users\\adyba\\pi-zig-oauth-concurrency-20261005",
+  "branch": "port/pi-oauth-concurrency-20261005",
+  "source_paths": [
+    {
+      "path": "src/agent/loop.zig",
+      "sha256": "4a28209dbc9427b2ad28831db653cbf724db6e161e7a897e4ab0c2764d418d38"
+    },
+    {
+      "path": "src/ai/codex_websocket.zig",
+      "sha256": "104a00904ef09b632108d96e984d3e82fab67632643cc8164354ebe8996b8e85"
+    },
+    {
+      "path": "src/ai/http_fetch.zig",
+      "sha256": "5ee9a7cbb2f3d63086665ccce682462012e2e3b7dcf5b1bc0f2e286b2608dd9c"
+    },
+    {
+      "path": "src/ai/openai_responses.zig",
+      "sha256": "055b8d960d0cd59936b67cd8235e7ca9be5a7ca0cdb303ce5610b3fb3cb48844"
+    },
+    {
+      "path": "src/auth/anthropic_oauth.zig",
+      "sha256": "2144526165322bad0a9238c65d61c7d165d932ae923849d9f72f80236c4d7966"
+    },
+    {
+      "path": "src/auth/openai_codex_oauth.zig",
+      "sha256": "69ab8cb66904f5189ae48675699a082af5fbe836861fab1e43c155b2161f7fde"
+    },
+    {
+      "path": "src/auth/openrouter_oauth.zig",
+      "sha256": "6dd7a6c7cd0d7568955b66bf4df0bd6d7409e69120d0a73dc799c081d272f80f"
+    },
+    {
+      "path": "src/client/secure_tcp.zig",
+      "sha256": "070aa7e4b4ab9b62399e0e7dfc9bd10314119ecf75be1710e09c5410d9b7b36a"
+    },
+    {
+      "path": "src/extensions/provider_models.zig",
+      "sha256": "b95a4f544657161d8bba4f42b07a165301d495c3167468cec7a66678be73a4fb"
+    },
+    {
+      "path": "src/extensions/provider_oauth.zig",
+      "sha256": "f23d98eb3e2b3b3311c6c5d67ac6706341126f9fad31fe04a893b80ed8c7c581"
+    },
+    {
+      "path": "src/auth/callback_concurrency_test_support.zig",
+      "sha256": "f73d116da16132d71a5737ff2002a00576c0c93977c5aa3346a63e1588c3391e"
+    },
+    {
+      "path": "src/oauth_concurrency_test.zig",
+      "sha256": "6e5612ddd286e25ce40c19812cbac26c80d074c86ba20934c92a37b733d20bef"
+    },
+    {
+      "path": "src/test_support/concurrency_socket.zig",
+      "sha256": "4b6cc34e4600f76a3beaa44d0d02fb8b68c41793b939214b2eab079dd11d507c"
+    }
+  ],
+  "source_equivalence_receipt": "io-concurrency-source-equivalence-20261005.json",
+  "all_764_source_files_byte_identical": true,
+  "manifest_sha256": "f037097287bac57e447f2f30f39daf098a334f7cc171d6bb90e494c61b77fbeb",
+  "patch": "io-concurrency-2620-repair.patch",
+  "patch_main_readonly_apply_check": "passed",
+  "before_jobs": [
+    "oauth-concurrency-codex-loopback-before-20261005",
+    "oauth-concurrency-three-loopback-before-20261005",
+    "io-concurrency-fetch-before-20261005",
+    "io-concurrency-secure-tcp-before-20261005",
+    "io-concurrency-responses-before-20261005",
+    "io-concurrency-websocket-before-20261005",
+    "io-concurrency-tool-queue-before-20261005",
+    "io-concurrency-parallel-tool-queue-before2-20261005",
+    "io-concurrency-model-mirror-before2-20261005"
+  ],
+  "after_jobs": [
+    "oauth-concurrency-three-one-cpu-fixed-20261005",
+    "io-concurrency-fetch-one-cpu-fixed-20261005",
+    "io-concurrency-secure-tcp-one-cpu-fixed-20261005",
+    "io-concurrency-responses-one-cpu-fixed2-20261005",
+    "io-concurrency-websocket-one-cpu-fixed2-20261005",
+    "io-concurrency-tool-queues-one-cpu-fixed2-20261005",
+    "io-concurrency-model-mirror-one-cpu-fixed-20261005",
+    "io-concurrency-liveabort-lateoauth-one-cpu2-20261005",
+    "io-concurrency-lateoauth-producer-one-cpu-20261005"
+  ],
+  "full_gates": [
+    {
+      "job": "io-concurrency-isolated-windows-full-20261005",
+      "exit_code": 0,
+      "steps_passed": 69,
+      "steps_total": 69,
+      "dedicated_passed": 391,
+      "dedicated_skipped": 5,
+      "module_passed": 1145,
+      "module_skipped": 28,
+      "module_failed": 0,
+      "completed_utc": "2026-10-05T12:38:14.9775658+00:00"
+    },
+    {
+      "job": "io-concurrency-isolated-linux-full-20261005",
+      "exit_code": 0,
+      "steps_passed": 69,
+      "steps_total": 69,
+      "dedicated_passed": 424,
+      "module_passed": 1165,
+      "module_skipped": 8,
+      "module_failed": 0,
+      "completed_utc": "2026-10-05T12:38:34.0169653+00:00"
+    }
+  ],
+  "optimized_gate": {
+    "job": "io-concurrency-focused-release-one-cpu2-20261005",
+    "exit_code": 0,
+    "tests_passed": 32,
+    "tests_failed": 0,
+    "optimization": "ReleaseSafe Zig and matched ReleaseSafe QuickJS/TypeScript-parser archives",
+    "cpu_affinity": "one task-owned CPU",
+    "completed_utc": "2026-10-05T12:52:44.8777605+00:00"
+  },
+  "optimized_cli": {
+    "job": "io-concurrency-linux-release-libraries-20261005",
+    "exit_code": 0,
+    "steps_passed": 7,
+    "completed_utc": "2026-10-05T12:50:49.9762491+00:00"
+  },
+  "corrections": [
+    "Initial mixed Debug C archives into ReleaseSafe test linkage had unavailable UBSan symbols; matched optimized archives were rebuilt and final optimized gate passed",
+    "Real websocket tests exposed used-pool teardown assertion and dangling stack-local HTTP owner; stable heap HTTP owner plus release-closing-before-destroy fixed both",
+    "Queue exhaustion cleanup closes producer queue before joining, avoiding repeated callback blockage after cancellation"
+  ],
+  "audit": "io-concurrency-async-audit-20261005.json",
+  "readonly_next_lease_design": "fullscreen-windows-macos-readonly-design-20261005.md",
+  "hosted_repaired_source_status": "pending parent integration/publication and hosted rerun",
+  "recorded_utc": "2026-10-05T12:54:32.0786095+00:00"
+}

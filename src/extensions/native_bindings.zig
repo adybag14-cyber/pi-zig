@@ -6,6 +6,7 @@ const session_snapshot = @import("session_snapshot.zig");
 const native_providers = @import("native_providers.zig");
 const abort_signal = @import("abort_signal.zig");
 const native_ui = @import("native_ui.zig");
+const native_stream = @import("native_stream.zig");
 const c = engine_mod.c;
 const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, registerProvider, unregisterProvider, getActiveTools, getAllTools, getCommands, getSettings, getSessionName, getThinkingLevel, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel };
 const ContextMethod = enum(c_int) {
@@ -47,6 +48,7 @@ pub const Bindings = struct {
     api: c.JSValue,
     providers: native_providers.Providers,
     ui_manager: *native_ui.Manager,
+    stream_runner: native_stream.Runner,
     factory_active: bool = false,
     handlers: std.StringHashMapUnmanaged(std.ArrayList(c.JSValue)) = .empty,
     tools: std.StringHashMapUnmanaged(c.JSValue) = .empty,
@@ -77,7 +79,7 @@ pub const Bindings = struct {
             const function = try engine.checked(c.pi_js_function_magic(engine.context, invokeRegistration, name.ptr, 2, @intCast(field.value)));
             if (c.JS_DefinePropertyValueStr(engine.context, api, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         }
-        self.* = .{ .gpa = gpa, .engine = engine, .api = api, .providers = native_providers.Providers.init(engine), .ui_manager = ui_manager };
+        self.* = .{ .gpa = gpa, .engine = engine, .api = api, .providers = native_providers.Providers.init(engine), .ui_manager = ui_manager, .stream_runner = .{ .engine = engine } };
         engine.host_data = self;
         return self;
     }
@@ -498,6 +500,7 @@ pub const Bindings = struct {
     }
 
     pub fn installSchemas(self: *Bindings) !void {
+        try native_stream.install(self.engine);
         const types = try typebox.create(self.engine);
         defer self.engine.freeValue(types);
         const exports = try self.engine.checked(c.JS_NewObject(self.engine.context));
@@ -1078,6 +1081,49 @@ pub const Bindings = struct {
         defer self.engine.freeValue(result);
         try self.mergeActions(result);
         return self.engine.stringify(result);
+    }
+
+    pub fn invokeProviderStream(self: *Bindings, callback: []const u8, provider: []const u8, generation: u64, model_json: []const u8, context_json: []const u8, options_json: []const u8, invocation_id: []const u8, bridge: native_stream.Bridge, cancel_only: bool) ![]u8 {
+        try self.beginActions();
+        defer self.finishInvocation();
+        const model = try self.parseJson(model_json, "native-stream-model");
+        defer self.engine.freeValue(model);
+        const context = try self.parseJson(context_json, "native-stream-context");
+        defer self.engine.freeValue(context);
+        const options = try self.parseJson(options_json, "native-stream-options");
+        defer self.engine.freeValue(options);
+        if (!c.JS_IsObject(model) or c.JS_IsArray(model) or !c.JS_IsObject(context) or c.JS_IsArray(context) or !c.JS_IsObject(options) or c.JS_IsArray(options)) return error.InvalidNativeProviderArguments;
+        const signal = self.invocation_signal orelse return error.NativeProviderSignalMissing;
+        try self.actionProperty(options, "signal", c.JS_DupValue(self.engine.context, signal));
+        try native_stream.freezeJson(self.engine, model, 0);
+        try native_stream.freezeJson(self.engine, context, 0);
+        try native_stream.freezeJson(self.engine, options, 0);
+        const arguments = try self.engine.checked(c.JS_NewArray(self.engine.context));
+        defer self.engine.freeValue(arguments);
+        for ([_]c.JSValue{ model, context, options }, 0..) |argument, index| if (c.JS_SetPropertyUint32(self.engine.context, arguments, @intCast(index), c.JS_DupValue(self.engine.context, argument)) < 0) return error.JavaScriptException;
+        const result = try self.stream_runner.consume(&self.providers, callback, provider, generation, arguments, signal, bridge, invocation_id, cancel_only);
+        defer self.engine.freeValue(result);
+        try self.mergeActions(result);
+        return self.engine.stringify(result);
+    }
+
+    pub fn commitProviderCallbacks(self: *Bindings, provider: []const u8, selected_json: []const u8) ![]u8 {
+        var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, selected_json, .{});
+        defer parsed.deinit();
+        if (parsed.value != .array or parsed.value.array.items.len > 16_384) return error.InvalidNativeProviderCallbackSelection;
+        const ids = try self.gpa.alloc([]const u8, parsed.value.array.items.len);
+        defer self.gpa.free(ids);
+        for (parsed.value.array.items, ids) |value, *slot| {
+            if (value != .string) return error.InvalidNativeProviderCallbackSelection;
+            slot.* = value.string;
+        }
+        const retired = try self.providers.commit(provider, ids);
+        const object = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        defer self.engine.freeValue(object);
+        try self.actionProperty(object, "provider", try self.engine.fromJsonValue(.{ .string = provider }));
+        try self.actionProperty(object, "retained", c.JS_NewInt64(self.engine.context, @intCast(ids.len)));
+        try self.actionProperty(object, "retired", c.JS_NewInt64(self.engine.context, @intCast(retired)));
+        return self.engine.stringify(object);
     }
 };
 

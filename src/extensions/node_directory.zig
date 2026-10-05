@@ -4,6 +4,7 @@ const builtin = @import("builtin");
 const engine_mod = @import("engine.zig");
 const node_buffer = @import("node_buffer.zig");
 const node_path = @import("node_path.zig");
+const native_url = @import("native_url.zig");
 const c = engine_mod.c;
 const flavor: node_path.Flavor = if (builtin.os.tag == .windows) .win32 else .posix;
 const ConstructorState = struct { engine: *engine_mod.Engine, prototype: c.JSValue, symbol: c.JSValue };
@@ -133,7 +134,7 @@ fn initialOptions(engine: *engine_mod.Engine, input: c.JSValue) !c.JSValue {
 
 // Node's promise variant takes a for-in snapshot, including inherited
 // enumerable keys. Keep shadowed keys and original getter exceptions intact.
-fn snapshot(engine: *engine_mod.Engine, source: c.JSValue) !c.JSValue {
+fn snapshotOptions(engine: *engine_mod.Engine, source: c.JSValue) !c.JSValue {
     const target = try engine.checked(c.JS_NewObject(engine.context));
     errdefer engine.freeValue(target);
     var seen: std.AutoHashMapUnmanaged(c.JSAtom, void) = .empty;
@@ -168,7 +169,7 @@ fn snapshot(engine: *engine_mod.Engine, source: c.JSValue) !c.JSValue {
 }
 
 fn pathBytes(engine: *engine_mod.Engine, value: c.JSValue) ![]u8 {
-    const bytes = if (c.JS_IsString(value)) try engine.toString(value) else typed: {
+    const bytes = if (native_url.isURL(engine, value)) try native_url.filePath(engine, value, builtin.os.tag == .windows) else if (c.JS_IsString(value)) try engine.toString(value) else typed: {
         if (c.JS_GetTypedArrayType(value) != c.JS_TYPED_ARRAY_UINT8) return error.InvalidDirectoryPathType;
         var offset: usize = 0;
         var length: usize = 0;
@@ -318,13 +319,19 @@ fn collect(engine: *engine_mod.Engine, input_path: c.JSValue, path: []const u8, 
 }
 
 fn call(engine: *engine_mod.Engine, args: []c.JSValue, promise: bool, data: [*c]c.JSValue) !c.JSValue {
+    var snapshot: ?c.JSValue = null;
+    defer if (snapshot) |value| engine.freeValue(value);
+    return callCaptured(engine, args, promise, data, &snapshot);
+}
+fn callCaptured(engine: *engine_mod.Engine, args: []c.JSValue, promise: bool, data: [*c]c.JSValue, snapshot: *?c.JSValue) !c.JSValue {
     const initial = try initialOptions(engine, if (args.len > 1) args[1] else c.pi_js_undefined());
     defer engine.freeValue(initial);
-    const object = if (promise) try snapshot(engine, initial) else c.JS_DupValue(engine.context, initial);
+    const object = if (promise) try snapshotOptions(engine, initial) else c.JS_DupValue(engine.context, initial);
     defer engine.freeValue(object);
     const input_path = if (args.len > 0) args[0] else c.pi_js_undefined();
     const path = try pathBytes(engine, input_path);
     defer engine.gpa.free(path);
+    if (native_url.isURL(engine, input_path)) snapshot.* = try engine.checked(c.JS_NewStringLen(engine.context, path.ptr, path.len));
     var options: Options = .{};
     if (!promise) {
         const first = try get(engine, object, "recursive");
@@ -351,11 +358,12 @@ fn call(engine: *engine_mod.Engine, args: []c.JSValue, promise: bool, data: [*c]
         defer engine.freeValue(types);
         options.types = c.JS_ToBool(engine.context, types) != 0;
     }
-    return collect(engine, input_path, path, options, promise, object, data);
+    return collect(engine, snapshot.* orelse input_path, path, options, promise, object, data);
 }
 
 fn failure(engine: *engine_mod.Engine, err: anyerror, args: []c.JSValue) c.JSValue {
     if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (native_url.isFilePathError(err)) return native_url.filePathErrorValue(engine, err);
     const code: ?[:0]const u8 = switch (err) {
         error.InvalidDirectoryPathType, error.InvalidDirectoryOptions, error.InvalidDirectorySignal, error.InvalidDirectoryRecursive => "ERR_INVALID_ARG_TYPE",
         error.InvalidDirectoryEncoding, error.InvalidDirectoryPathValue => "ERR_INVALID_ARG_VALUE",
@@ -404,10 +412,13 @@ fn failure(engine: *engine_mod.Engine, err: anyerror, args: []c.JSValue) c.JSVal
 
 fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, promise_mode: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    const args = argv[0..@intCast(argc)];
-    if (promise_mode == 0) return call(engine, args, false, data) catch |err| {
+    const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
+    var snapshot: ?c.JSValue = null;
+    defer if (snapshot) |value| engine.freeValue(value);
+    if (promise_mode == 0) return callCaptured(engine, args, false, data, &snapshot) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
-        const value = failure(engine, err, args);
+        var error_args = [_]c.JSValue{snapshot orelse c.pi_js_undefined()};
+        const value = failure(engine, err, if (snapshot != null) &error_args else args);
         return if (c.JS_IsException(value)) value else c.JS_Throw(context, value);
     };
     var resolvers: [2]c.JSValue = undefined;
@@ -416,13 +427,14 @@ fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue
     defer engine.freeValue(resolvers[0]);
     defer engine.freeValue(resolvers[1]);
     var rejected = false;
-    const result = call(engine, args, true, data) catch |err| rejected: {
+    const result = callCaptured(engine, args, true, data, &snapshot) catch |err| rejected: {
         rejected = true;
         if (err == error.JavaScriptException) {
             _ = engine.throwCaptured();
             break :rejected c.JS_GetException(context);
         }
-        break :rejected failure(engine, err, args);
+        var error_args = [_]c.JSValue{snapshot orelse c.pi_js_undefined()};
+        break :rejected failure(engine, err, if (snapshot != null) &error_args else args);
     };
     defer engine.freeValue(result);
     if (c.JS_IsException(result)) {

@@ -1,0 +1,54 @@
+{
+  "status": "in_progress",
+  "parityCertified": false,
+  "binarySourceCheckpoint": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+  "fixture": "image-processing",
+  "cases": 4,
+  "semanticReportMatch": true,
+  "inputFixtures": "Native Zig BMP/EXIF/PNGancillary builders and directC ImageMagick generation; no Pythonimplementation inrepository",
+  "gates": "All original dimension/exactpreservation/EXIF/4.5MiBbase64/hint/durable/toolterminalevent/posthook assertions retained",
+  "productionBackend": "Posthook extension stilluseslegacyNode backend",
+  "nativeLinuxTestsPassed": 8,
+  "windowsLinuxSkips": 1,
+  "jobs": {
+    "native": {
+      "name": "image-processing-native-live2",
+      "pid": 47800,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi PI_IMAGE_TEST_CONVERTER=/usr/bin/convert PI_IMAGE_PROCESSING_REPORT=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/image-processing-native-report.json /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/image_processing_process_test.zig -target x86_64-linux-gnu --cache-dir /tmp/pi-image-processing-cache-20261005 --global-cache-dir /tmp/pi-root-zig-global-20261005",
+      "created_utc": "2026-10-05T12:48:15.5578400Z",
+      "launched_utc": "2026-10-05T12:48:15.5548698+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-final-fixtures-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T12:48:21.8472139+00:00"
+    },
+    "baseline": {
+      "name": "image-processing-python-baseline",
+      "pid": 48024,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin python3 /mnt/c/Users/adyba/pi-zig-update-20261003/scripts/image_processing_e2e.py --binary /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint-6100-linux/bin/pi --converter /usr/bin/convert --report /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/image-processing-python-report.json",
+      "created_utc": "2026-10-05T12:27:26.3819000Z",
+      "launched_utc": "2026-10-05T12:27:26.3787989+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T12:27:29.9504700+00:00"
+    },
+    "windows": {
+      "name": "image-processing-native-windows",
+      "pid": 53412,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/image_processing_process_test.zig",
+      "created_utc": "2026-10-05T12:49:49.5825610Z",
+      "launched_utc": "2026-10-05T12:49:49.5789812+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-final-fixtures-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T12:49:51.3986440+00:00"
+    }
+  }
+}

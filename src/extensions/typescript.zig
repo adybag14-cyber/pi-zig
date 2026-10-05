@@ -342,6 +342,18 @@ test "native module syntax detection distinguishes imports meta and top-level aw
     try std.testing.expect(!try hasModuleSyntax("const input=require('./data.json'); exports.value=input.value;"));
 }
 
+test "native parser repeatedly initializes and destroys its external scanner through the exact C ABI" {
+    // Regression for the optimized C function-type trap at scanner create().
+    // Reinitialize both entry paths rather than retaining one parser instance.
+    for (0..32) |_| {
+        try std.testing.expect(try hasModuleSyntax("export default function(pi) {}"));
+        try std.testing.expect(!try hasModuleSyntax("module.exports = function(pi) {};"));
+        const output = try transform(std.testing.allocator, "export default function(pi: unknown): void {};");
+        defer std.testing.allocator.free(output);
+        try std.testing.expect(std.mem.indexOf(u8, output, "unknown") == null);
+    }
+}
+
 test "native input transform erases types without changing strings or object fields" {
     const source = "interface Message { value: number }\r\ntype Id = string;\r\nconst message: Message = {value: 42}; const text = 'as Message: number'; const obj = {as: text}; message.value satisfies number;\r\n";
     const output = try transform(std.testing.allocator, source);
