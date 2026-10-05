@@ -282,6 +282,15 @@ pub fn build(b: *std.Build) void {
     const run_mcp_process_tests = b.addRunArtifact(mcp_process_tests);
     run_mcp_process_tests.step.dependOn(&install_mcp_fixture.step);
     const mcp_test_step = b.step("test-mcp-stdio", "Exercise real native MCP pipe framing and protocol negotiation");
+    const mcp_oauth_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_oauth_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, mcp_oauth_tests.root_module, quickjs);
+    const run_mcp_oauth_tests = b.addRunArtifact(mcp_oauth_tests);
+    const mcp_oauth_step = b.step("test-mcp-oauth", "Exercise native MCP OAuth registration and issuer contracts");
+    mcp_oauth_step.dependOn(&run_mcp_oauth_tests.step);
+    test_step.dependOn(&run_mcp_oauth_tests.step);
     mcp_test_step.dependOn(&run_mcp_process_tests.step);
     test_step.dependOn(&run_mcp_process_tests.step);
     test_step.dependOn(&run_mod_tests.step);

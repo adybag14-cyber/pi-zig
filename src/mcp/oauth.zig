@@ -101,6 +101,60 @@ pub fn credentialKeyForNormalizedUrl(gpa: std.mem.Allocator, server_name: []cons
     };
     return key;
 }
+/// MCP SEP-837/OIDC registration type from canonical WHATWG redirect hosts.
+pub fn applicationType(gpa: std.mem.Allocator, redirect_uris: []const []const u8) ![]const u8 {
+    const urls = @import("../extensions/url_parser.zig");
+    for (redirect_uris) |text| {
+        var url = urls.parse(gpa, text, null) catch |err| {
+            if (err == error.OutOfMemory) return err;
+            continue;
+        };
+        defer url.deinit(gpa);
+        if (!std.mem.eql(u8, url.scheme, "http") and !std.mem.eql(u8, url.scheme, "https")) return "native";
+        if (url.host) |host| if (std.mem.eql(u8, host, "localhost") or std.mem.eql(u8, host, "127.0.0.1") or std.mem.eql(u8, host, "[::1]") or std.mem.eql(u8, host, "::1")) return "native";
+    }
+    return "web";
+}
+/// Preserve arbitrary client metadata and explicit types; scope overrides only
+/// when nonempty, matching upstream's dynamic-registration request body.
+pub fn registrationBody(gpa: std.mem.Allocator, client_metadata: []const u8, scope: ?[]const u8) ![]u8 {
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, client_metadata, .{ .allocate = .alloc_always });
+    defer parsed.deinit();
+    if (parsed.value != .object) return error.InvalidOAuthClientMetadata;
+    const arena = parsed.arena.allocator();
+    const redirects = parsed.value.object.get("redirect_uris") orelse return error.InvalidOAuthClientMetadata;
+    if (redirects != .array) return error.InvalidOAuthClientMetadata;
+    var values: std.ArrayList([]const u8) = .empty;
+    defer values.deinit(gpa);
+    for (redirects.array.items) |value| {
+        if (value != .string) return error.InvalidOAuthClientMetadata;
+        try values.append(gpa, value.string);
+    }
+    const explicit = parsed.value.object.get("application_type");
+    if (explicit == null or explicit.? == .null) try parsed.value.object.put(arena, "application_type", .{ .string = try applicationType(gpa, values.items) });
+    if (scope) |text| if (text.len > 0) try parsed.value.object.put(arena, "scope", .{ .string = text });
+    return std.json.Stringify.valueAlloc(gpa, parsed.value, .{});
+}
+test "MCP registration type follows canonical loopback custom schemes and explicit overrides" {
+    const gpa = std.testing.allocator;
+    for ([_][]const u8{ "http://127.0.0.1:32123/cb", "http://localhost:123/cb", "http://[::1]:123/cb", "http://[0:0:0:0:0:0:0:1]/cb", "http://2130706433/cb", "myapp:/oauth", "mailto:owner@example.org" }) |uri| try std.testing.expectEqualStrings("native", try applicationType(gpa, &.{uri}));
+    try std.testing.expectEqualStrings("web", try applicationType(gpa, &.{ "https://example.com/cb", "not a URL" }));
+    try std.testing.expectEqualStrings("native", try applicationType(gpa, &.{ "https://example.com/cb", "myapp:/oauth" }));
+    const body = try registrationBody(gpa, "{\"redirect_uris\":[\"http://localhost/cb\"],\"application_type\":\"web\",\"client_name\":\"fixture\",\"custom\":{\"retained\":true}}", "openid");
+    defer gpa.free(body);
+    const decoded = try std.json.parseFromSlice(std.json.Value, gpa, body, .{});
+    defer decoded.deinit();
+    try std.testing.expectEqualStrings("web", decoded.value.object.get("application_type").?.string);
+    try std.testing.expectEqualStrings("openid", decoded.value.object.get("scope").?.string);
+    try std.testing.expect(decoded.value.object.get("custom").?.object.get("retained").?.bool);
+}
+fn registrationAllocationCase(gpa: std.mem.Allocator) !void {
+    const body = try registrationBody(gpa, "{\"redirect_uris\":[\"http://[::1]/cb\",\"myapp:/oauth\"],\"custom\":{\"retained\":true}}", "openid profile");
+    defer gpa.free(body);
+}
+test "MCP registration body releases every allocation failure and retained arbitrary metadata" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, registrationAllocationCase, .{});
+}
 
 test "MCP OAuth empty and null optionals are absent rather than expired" {
     var tokens = try parseTokens(std.testing.allocator, "{\"access_token\":\"fixture\",\"token_type\":\"Bearer\",\"expires_in\":null,\"scope\":\"\",\"refresh_token\":null,\"id_token\":\"\"}");

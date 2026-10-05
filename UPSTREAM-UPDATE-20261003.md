@@ -6,9 +6,9 @@ Status: in progress. This file does not certify parity or a release.
   `012e80ced763e8d8ac7e01f7331d32dad3ab468b`.
 - Previous Pi baseline: `853a80d26c90a14c1886f0ebb8ffaae133ca2185`, version 0.84.4.
 - Selected authority: earendil-works/pi main
-  `b78e6a9085343ec0f308c3d377da72528b4cf7ee`, package version 1.0.3.
+  `b7dfc049e917a265a5aefa9f3952a2dec9b81cfd`, package version 1.0.3.
   It descends from and is newer than published GitHub release v1.0.0.
-- Delta: 915 commits, including new model types/classifiers, codemode, MCP
+- Delta: 929 commits, including new model types/classifiers, codemode, MCP
   configuration/OAuth, providers/auth, agent-loop hooks, terminal behavior,
   and extraction of durable harness APIs into pi-durable.
   The refresh from initial target `4c6fb7cf` adds exactly one Nix workflow
@@ -40,7 +40,7 @@ Status: in progress. This file does not certify parity or a release.
   additional contracts are tracked for native implementation; this refresh
   does not certify parity. The old6100 reference remains intact for prior gates.
 - Current upstream source tar SHA-256:
-  `a9bda482530ea71866c2b314069b589876b3b048935f530fb3c0b46792ff0909`.
+  `460959d333eaf3e4668d48088ca4b5b1c14e6b26d4550f7a563916c4a27bdf80`.
 - User-required toolchain: final Zig 0.16.0. No implicit upgrade.
 - User-required implementation: Zig; direct C interoperability allowed.
   Retain upstream user-authored JavaScript/TypeScript extension compatibility
@@ -595,3 +595,14 @@ October 5 native UI/OAuth/model-publication integration checkpoint:
 - The session clock uses Zig's typed C ABI and builds/runs with Linux musl.
   Latest upstreamb7dfc049 adds14runtime commits under separate review. This
   checkpoint is not final parity or a release; see the native UI integration JSON.
+
+October 5 latest upstream refresh to b7dfc049:
+
+- Fourteen commits afterb78 add environment deployment/liveness/Windows fixes,
+  daemon native watch/output windows, durable growing-read/BOM/progress changes,
+  MCP OAuth metadata/tool filtering, codemode resilience and HTTP2 cancellation retry.
+- Release remains1.0.3; the main commit is newer than the published release.
+- Catalog/changelog archive provenance is regenerated and checked natively.
+- Pending-stream retry and native MCP registration-body application_type inference
+  pass focused gates; the remaining14-commit runtime delta stays tracked for porting.
+  This refresh does not certify final parity or a release.

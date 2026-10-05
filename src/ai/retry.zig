@@ -220,6 +220,7 @@ const retryable_patterns = [_][]const u8{
     "stream ended before message_stop",
     "stream ended before a terminal response event",
     "http2 request did not get a response",
+    "pending stream has been canceled",
     "retry delay",
     "you can retry your request",
     "try your request again",
@@ -371,6 +372,8 @@ test "provider retry defaults match upstream request policy" {
 }
 
 test "retry classifier accepts transient provider and transport failures" {
+    try std.testing.expect(isRetryableError("Pending stream has been canceled"));
+    try std.testing.expect(isRetryableError("ERR_HTTP2_STREAM_CANCEL: Pending stream has been canceled"));
     inline for (.{
         "529 overloaded_error: Overloaded",
         "HTTP 429 too many requests",
