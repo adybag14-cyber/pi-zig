@@ -10,9 +10,10 @@ const terminal = @import("terminal.zig");
 const rich_keys = @import("keys.zig");
 const keybindings = @import("keybindings.zig");
 const mouse = @import("mouse.zig");
+const platform = @import("platform_terminal.zig");
 
 pub fn available(io: Io) bool {
-    if (comptime builtin.os.tag != .linux) return false;
+    if (comptime builtin.os.tag != .linux and builtin.os.tag != .macos and builtin.os.tag != .windows) return false;
     return Io.File.stdin().isTty(io) catch false;
 }
 
@@ -66,7 +67,7 @@ test "interactive byte reads inspect File Reader cause and preserve genuine fail
 }
 
 fn terminalAttributes(fd: std.posix.fd_t) !std.posix.termios {
-    if (comptime builtin.os.tag != .linux) return error.UnsupportedTerminal;
+    if (comptime builtin.os.tag != .linux and builtin.os.tag != .macos) return error.UnsupportedTerminal;
     // Zig's tcgetattr currently erases EIO into Unexpected and prints an errno
     // diagnostic. Inspect errno before that mapping so a vanished tty is quiet.
     while (true) {
@@ -81,7 +82,7 @@ fn terminalAttributes(fd: std.posix.fd_t) !std.posix.termios {
 }
 
 fn setTerminalAttributes(fd: std.posix.fd_t, attributes: std.posix.termios) !void {
-    if (comptime builtin.os.tag != .linux) return error.UnsupportedTerminal;
+    if (comptime builtin.os.tag != .linux and builtin.os.tag != .macos) return error.UnsupportedTerminal;
     while (true) {
         switch (std.posix.errno(std.posix.system.tcsetattr(fd, .FLUSH, &attributes))) {
             .SUCCESS => return,
@@ -118,11 +119,25 @@ test "Linux terminal hangup maps real raw-mode ioctl EIO without a generic Unexp
 }
 
 pub const RawMode = struct {
-    original: std.posix.termios,
+    const WindowsState = struct { input: u32, output: u32, input_cp: u32, output_cp: u32 };
+    original: if (builtin.os.tag == .windows) WindowsState else std.posix.termios,
     restore: bool = true,
 
     pub fn enter() !RawMode {
-        if (comptime builtin.os.tag != .linux) return error.UnsupportedTerminal;
+        if (comptime builtin.os.tag == .windows) {
+            var original: WindowsState = .{ .input = 0, .output = 0, .input_cp = platform.win.GetConsoleCP(), .output_cp = platform.win.GetConsoleOutputCP() };
+            if (!platform.win.GetConsoleMode(Io.File.stdin().handle, &original.input).toBool() or !platform.win.GetConsoleMode(Io.File.stdout().handle, &original.output).toBool()) return error.DeadTerminal;
+            const input = (original.input & ~@as(u32, 1 | 2 | 4 | 8 | 0x40)) | 0x200 | 0x80;
+            if (!platform.win.SetConsoleMode(Io.File.stdin().handle, input).toBool()) return error.DeadTerminal;
+            errdefer _ = platform.win.SetConsoleMode(Io.File.stdin().handle, original.input);
+            if (!platform.win.SetConsoleMode(Io.File.stdout().handle, original.output | 4).toBool()) return error.DeadTerminal;
+            errdefer _ = platform.win.SetConsoleMode(Io.File.stdout().handle, original.output);
+            if (!platform.win.SetConsoleCP(65001).toBool()) return error.TerminalCodePageFailed;
+            errdefer _ = platform.win.SetConsoleCP(original.input_cp);
+            if (!platform.win.SetConsoleOutputCP(65001).toBool()) return error.TerminalCodePageFailed;
+            return .{ .original = original };
+        }
+        if (comptime builtin.os.tag != .linux and builtin.os.tag != .macos) return error.UnsupportedTerminal;
         const fd = Io.File.stdin().handle;
         const original = try terminalAttributes(fd);
         var raw = original;
@@ -141,8 +156,13 @@ pub const RawMode = struct {
 
     pub fn leave(self: *RawMode) void {
         if (!self.restore) return;
-        if (comptime builtin.os.tag == .linux) {
+        if (comptime builtin.os.tag == .linux or builtin.os.tag == .macos) {
             std.posix.tcsetattr(Io.File.stdin().handle, .FLUSH, self.original) catch {};
+        } else if (comptime builtin.os.tag == .windows) {
+            _ = platform.win.SetConsoleMode(Io.File.stdin().handle, self.original.input);
+            _ = platform.win.SetConsoleMode(Io.File.stdout().handle, self.original.output);
+            _ = platform.win.SetConsoleCP(self.original.input_cp);
+            _ = platform.win.SetConsoleOutputCP(self.original.output_cp);
         }
     }
 };
@@ -226,7 +246,7 @@ fn redraw(io: Io, editor: *const Editor, prompt: []const u8, state: *RenderState
 }
 
 fn readByte(reader: *Io.File.Reader) !u8 {
-    return reader.interface.takeByte() catch |err| {
+    return platform.readByte(reader) catch |err| {
         if (terminalInputError(err, reader.err) == error.DeadTerminal) return error.DeadTerminal;
         return err;
     };

@@ -2188,6 +2188,8 @@ const RuntimeResourceReloadContext = struct {
             .io = self.io,
             .js_runtime_program = self.environ.get("PI_JS_RUNTIME") orelse "node",
             .script_ui_bridge = self.ui.bridge(),
+            .script_backend = self.host.script_backend,
+            .native_runtime_options = self.host.native_runtime_options,
         };
         errdefer new_host.deinit();
         if (!self.cli.no_extensions) for (top_resources.extensions.items) |path| try new_host.loadPath(path);
@@ -2797,11 +2799,29 @@ pub fn main(init: std.process.Init) !void {
     };
 }
 
+fn parseExtensionBackend(value: ?[]const u8) !extensions.js_runtime.Backend {
+    const selected = value orelse return .legacy;
+    if (std.mem.eql(u8, selected, "native")) return .native;
+    if (std.mem.eql(u8, selected, "legacy")) return .legacy;
+    return error.InvalidExtensionBackend;
+}
+
+test "production extension backend selector defaults legacy and rejects unknown values" {
+    try std.testing.expectEqual(extensions.js_runtime.Backend.legacy, try parseExtensionBackend(null));
+    try std.testing.expectEqual(extensions.js_runtime.Backend.legacy, try parseExtensionBackend("legacy"));
+    try std.testing.expectEqual(extensions.js_runtime.Backend.native, try parseExtensionBackend("native"));
+    try std.testing.expectError(error.InvalidExtensionBackend, parseExtensionBackend("unknown"));
+}
+
 fn runMain(init: std.process.Init) !void {
     const arena = init.arena.allocator();
     const gpa = init.gpa;
     const io = init.io;
     const environ: *const std.process.Environ.Map = init.environ_map;
+    const extension_backend = parseExtensionBackend(environ.get("PI_EXTENSION_BACKEND")) catch |err| {
+        try Io.File.stderr().writeStreamingAll(io, "PI_EXTENSION_BACKEND must be native or legacy.\n");
+        return err;
+    };
 
     const raw_args = try init.minimal.args.toSlice(arena);
     if (raw_args.len == 3 and std.mem.eql(u8, raw_args[1], "--internal-native-extension-worker")) {
@@ -3439,11 +3459,15 @@ fn runMain(init: std.process.Init) !void {
     var extension_stdin_reader: Io.File.Reader = .init(.stdin(), io, &extension_stdin_buf);
     if (extension_has_ui) extension_ui.bindReader(&extension_stdin_reader);
 
+    const native_extension_executable = if (extension_backend == .native) try std.process.executablePathAlloc(io, gpa) else null;
+    defer if (native_extension_executable) |path| gpa.free(path);
     var extension_host = extensions.Host{
         .gpa = gpa,
         .io = io,
         .js_runtime_program = environ.get("PI_JS_RUNTIME") orelse "node",
         .script_ui_bridge = extension_ui.bridge(),
+        .script_backend = extension_backend,
+        .native_runtime_options = .{ .executable = native_extension_executable, .environ_map = environ },
     };
     defer extension_host.deinit();
     if (!cli.no_extensions) for (top_level_resources.extensions.items) |extension_path| {
@@ -4365,6 +4389,8 @@ fn runMain(init: std.process.Init) !void {
     runtime_reload_context.keybindings = &terminal_keybindings;
     var frontend: ?*coding.fullscreen_frontend.Frontend = null;
     defer if (frontend) |scene| {
+        extension_ui.bindComponentScenes(null, null, null);
+        extension_ui.bindEditorFrontend(null, null);
         extension_ui.bindFrontend(null, null, null);
         tui.render.bindFrontend(null, null, null);
         scene.deinit();
@@ -4377,6 +4403,9 @@ fn runMain(init: std.process.Init) !void {
         agent_cfg.abort_flag = &frontend.?.abort_flag;
         extension_bridge.setAbortFlag(agent_cfg.abort_flag);
         extension_ui.bindFrontend(coding.fullscreen_frontend.Frontend.surfaceSink, coding.fullscreen_frontend.Frontend.modalObserver, frontend);
+        extension_ui.bindEditorFrontend(coding.fullscreen_frontend.Frontend.editorSink, frontend);
+        frontend.?.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, &extension_ui);
+        extension_ui.bindComponentScenes(coding.fullscreen_frontend.Frontend.componentSink, coding.fullscreen_frontend.Frontend.componentClose, frontend);
         tui.render.bindFrontend(coding.fullscreen_frontend.Frontend.noticeSink, coding.fullscreen_frontend.Frontend.renderModalObserver, frontend);
         try frontend.?.syncBranch(&sess);
     }
@@ -4534,7 +4563,9 @@ fn runMain(init: std.process.Init) !void {
         extension_shortcut_context.model_catalog = live.model_catalog;
         const pending_editor_text = extension_ui.takePendingEditorText();
         defer if (pending_editor_text) |value| gpa.free(value);
-        const editor_prefill = pending_editor_text orelse "";
+        const frontend_editor_snapshot = if (frontend) |scene| try scene.snapshotEditor(gpa) else null;
+        defer if (frontend_editor_snapshot) |snapshot| gpa.free(snapshot.text);
+        const editor_prefill = pending_editor_text orelse if (frontend_editor_snapshot) |snapshot| snapshot.text else "";
         if (frontend) |scene| {
             if (pending_editor_text) |text| try scene.setEditorText(text, null, null);
             try scene.syncBranch(&sess);

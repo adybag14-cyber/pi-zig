@@ -1,6 +1,9 @@
 //! Standard extension dialogs and retained actions over the native worker wire.
 const std = @import("std");
 const engine_mod = @import("engine.zig");
+const components_mod = @import("native_components.zig");
+const native_tui = @import("native_tui.zig");
+const protocol = @import("component_protocol.zig");
 const c = engine_mod.c;
 
 pub const Bridge = struct {
@@ -8,6 +11,8 @@ pub const Bridge = struct {
     request: *const fn (?*anyopaque, u32, []const u8, []const u8) anyerror!void,
     action: *const fn (?*anyopaque, []const u8, []const u8) anyerror!void,
     cancel: *const fn (?*anyopaque, u32) anyerror!void,
+    component_scene: ?*const fn (?*anyopaque, protocol.Scene) anyerror!void = null,
+    component_close: ?*const fn (?*anyopaque, protocol.Fence) anyerror!void = null,
 };
 
 const Method = enum(c_int) { select, confirm, input, editor, notify, setStatus, setTitle, setEditorText, pasteToEditor, getEditorText, setWidget, setWorkingMessage, setWorkingVisible, setHiddenThinkingLabel, custom };
@@ -21,7 +26,28 @@ const Pending = struct {
     signals: [2]c.JSValue = undefined,
     signal_count: usize = 0,
     deadline: ?i64 = null,
+    provider_request: bool = false,
 };
+const Custom = struct {
+    fence: protocol.Fence,
+    ui_generation: u32,
+    promise: c.JSValue,
+    width: usize,
+    height: usize,
+    presented: bool = false,
+    closing: bool = false,
+    options: c.JSValue,
+    overlay: bool = false,
+    hidden: bool = false,
+    permanently_hidden: bool = false,
+    focused: bool = true,
+    layout: ?protocol.OverlayLayout = null,
+    handle_published: bool = false,
+    overlay_options: ?c.JSValue = null,
+};
+const OverlayMethod = enum(c_int) { hide, setHidden, isHidden, focus, unfocus, isFocused, getBounds, terminalColumns, terminalRows };
+const OAuthMethod = enum(c_int) { onAuth, onDeviceCode, onPrompt, onProgress, onManualCodeInput, onSelect };
+pub const ProviderActionFn = *const fn (?*anyopaque, [*:0]const u8, c.JSValue) anyerror!void;
 
 pub const Manager = struct {
     engine: *engine_mod.Engine,
@@ -33,10 +59,20 @@ pub const Manager = struct {
     bridge: ?Bridge = null,
     generation: u32 = 0,
     active: bool = false,
+    provider_action_fn: ?ProviderActionFn = null,
+    provider_action_context: ?*anyopaque = null,
     has_ui: bool = false,
     signal: ?c.JSValue = null,
     next_id: u32 = 1,
     pending: std.ArrayList(Pending) = .empty,
+    components: components_mod.Manager,
+    theme: c.JSValue,
+    keybindings: c.JSValue,
+    invocation_id: u64 = 0,
+    width: usize = 80,
+    height: usize = 24,
+    customs: std.ArrayList(Custom) = .empty,
+    polling_custom: bool = false,
 
     pub fn init(engine: *engine_mod.Engine) !*Manager {
         if (engine.native_ui_manager != null) return error.NativeUiAlreadyAttached;
@@ -56,8 +92,15 @@ pub const Manager = struct {
         errdefer engine.freeValue(abort_text);
         const editor_text = try engine.checked(c.JS_NewString(engine.context, ""));
         errdefer engine.freeValue(editor_text);
+        var components = try components_mod.Manager.init(engine);
+        errdefer components.deinit();
+        const theme = try native_tui.createTheme(engine);
+        errdefer engine.freeValue(theme);
+        const keybindings = try native_tui.createKeybindings(engine);
+        errdefer engine.freeValue(keybindings);
         const self = try engine.gpa.create(Manager);
-        self.* = .{ .engine = engine, .token = token, .add_listener = add, .remove_listener = remove, .abort_text = abort_text, .editor_text = editor_text };
+        self.* = .{ .engine = engine, .token = token, .add_listener = add, .remove_listener = remove, .abort_text = abort_text, .editor_text = editor_text, .components = components, .theme = theme, .keybindings = keybindings };
+        self.components.completion_bridge = .{ .context = self, .request_close = requestComponentClose };
         engine.native_ui_manager = self;
         return self;
     }
@@ -67,6 +110,10 @@ pub const Manager = struct {
         self.finish();
         self.engine.native_ui_manager = null;
         self.pending.deinit(self.engine.gpa);
+        self.customs.deinit(self.engine.gpa);
+        self.components.deinit();
+        self.engine.freeValue(self.theme);
+        self.engine.freeValue(self.keybindings);
         for ([_]c.JSValue{ self.token, self.add_listener, self.remove_listener, self.abort_text, self.editor_text }) |value| self.engine.freeValue(value);
         self.engine.gpa.destroy(self);
     }
@@ -85,6 +132,8 @@ pub const Manager = struct {
                 self.engine.freeValue(self.editor_text);
                 self.editor_text = c.JS_DupValue(self.engine.context, text);
             }
+            self.width = try self.snapshotDimension(context, "width", 80);
+            self.height = try self.snapshotDimension(context, "height", 24);
         }
         if (signal) |value| self.signal = c.JS_DupValue(self.engine.context, value);
         self.active = true;
@@ -92,6 +141,16 @@ pub const Manager = struct {
 
     pub fn finish(self: *Manager) void {
         while (self.pending.items.len > 0) self.cancel(self.pending.items[self.pending.items.len - 1].id) catch {};
+        while (self.customs.items.len != 0) {
+            const custom_request = self.customs.pop().?;
+            if (custom_request.presented) self.engine.host_ui_pending -= 1;
+            if (self.bridge) |bridge| if (bridge.component_close) |close| close(bridge.context, custom_request.fence) catch {};
+            self.components.close(custom_request.fence.component_id, custom_request.fence.generation, c.pi_js_undefined()) catch {};
+            self.engine.freeValue(custom_request.promise);
+            self.engine.freeValue(custom_request.options);
+            if (custom_request.overlay_options) |options| self.engine.freeValue(options);
+        }
+        self.components.retireGeneration(c.pi_js_undefined()) catch {};
         if (self.signal) |signal| self.engine.freeValue(signal);
         self.signal = null;
         self.active = false;
@@ -112,6 +171,7 @@ pub const Manager = struct {
             const function = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, invoke, name.ptr, length, @intCast(field.value), data.len, &data));
             if (c.JS_DefinePropertyValueStr(self.engine.context, object, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         }
+        try self.defineField(object, "theme", c.JS_DupValue(self.engine.context, self.theme));
         return object;
     }
 
@@ -151,6 +211,15 @@ pub const Manager = struct {
         try self.call(reject, reason);
     }
 
+    fn rejectedPromise(self: *Manager, err: anyerror) !c.JSValue {
+        var capabilities: [2]c.JSValue = undefined;
+        const promise = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &capabilities));
+        errdefer self.engine.freeValue(promise);
+        defer for (capabilities) |value| self.engine.freeValue(value);
+        try self.rejectError(capabilities[1], err);
+        return promise;
+    }
+
     fn defineField(self: *Manager, object: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
         if (c.JS_DefinePropertyValueStr(self.engine.context, object, name, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
@@ -170,16 +239,447 @@ pub const Manager = struct {
         return c.JS_ToBool(self.engine.context, value) != 0;
     }
 
+    fn snapshotDimension(self: *Manager, snapshot: c.JSValue, name: [*:0]const u8, fallback: usize) !usize {
+        const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, name));
+        defer self.engine.freeValue(value);
+        if (!c.JS_IsNumber(value)) return fallback;
+        var number: f64 = 0;
+        if (c.JS_ToFloat64(self.engine.context, &number, value) < 0) return error.JavaScriptException;
+        if (!std.math.isFinite(number) or number < 0 or number > protocol.maximum_dimension) return fallback;
+        return @intFromFloat(@floor(number));
+    }
+
+    fn overlayFunction(self: *Manager, token_id: u64, name: [*:0]const u8, method: OverlayMethod) !c.JSValue {
+        var data = [_]c.JSValue{ self.token, c.JS_NewInt64(self.engine.context, self.generation), c.JS_NewInt64(self.engine.context, @intCast(token_id)) };
+        defer self.engine.freeValue(data[1]);
+        defer self.engine.freeValue(data[2]);
+        return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, overlayCall, name, 1, @intFromEnum(method), data.len, &data));
+    }
+
+    fn createFacade(self: *Manager, token_id: u64) !c.JSValue {
+        const object = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        errdefer self.engine.freeValue(object);
+        const terminal = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        defer self.engine.freeValue(terminal);
+        inline for (.{ .{ "columns", OverlayMethod.terminalColumns }, .{ "rows", OverlayMethod.terminalRows } }) |field| {
+            const atom = c.JS_NewAtom(self.engine.context, field[0]);
+            if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+            defer c.JS_FreeAtom(self.engine.context, atom);
+            const getter = try self.overlayFunction(token_id, field[0], field[1]);
+            if (c.JS_DefinePropertyGetSet(self.engine.context, terminal, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
+        }
+        try self.defineField(object, "terminal", c.JS_DupValue(self.engine.context, terminal));
+        try self.defineField(object, "hideOverlay", try self.overlayFunction(token_id, "hideOverlay", .hide));
+        try self.defineField(object, "setFocus", try self.overlayFunction(token_id, "setFocus", .focus));
+        return object;
+    }
+
+    fn createOverlayHandle(self: *Manager, token_id: u64) !c.JSValue {
+        const object = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        errdefer self.engine.freeValue(object);
+        inline for (.{ .{ "hide", OverlayMethod.hide }, .{ "setHidden", OverlayMethod.setHidden }, .{ "isHidden", OverlayMethod.isHidden }, .{ "focus", OverlayMethod.focus }, .{ "unfocus", OverlayMethod.unfocus }, .{ "isFocused", OverlayMethod.isFocused }, .{ "getBounds", OverlayMethod.getBounds } }) |field| try self.defineField(object, field[0], try self.overlayFunction(token_id, field[0], field[1]));
+        return object;
+    }
+
+    fn overlayCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        const method: OverlayMethod = @enumFromInt(magic);
+        const self = current(engine, data) catch return if (method == .isHidden) c.pi_js_bool(context, 1) else if (method == .isFocused) c.pi_js_bool(context, 0) else c.pi_js_undefined();
+        var token_id: i64 = 0;
+        if (c.JS_ToInt64(context, &token_id, data[2]) < 0) return engine.throwCaptured();
+        return self.overlayOperation(@intCast(token_id), method, if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
+    }
+
+    fn overlayOperation(self: *Manager, token_id: u64, method: OverlayMethod, args: []c.JSValue) !c.JSValue {
+        const selected = for (self.customs.items) |*custom_request| {
+            if (custom_request.fence.token == token_id) break custom_request;
+        } else null;
+        if (method == .terminalColumns) return c.JS_NewInt64(self.engine.context, @intCast(if (selected) |request| request.width else self.width));
+        if (method == .terminalRows) return c.JS_NewInt64(self.engine.context, @intCast(if (selected) |request| request.height else self.height));
+        const request = selected orelse return if (method == .isHidden) c.pi_js_bool(self.engine.context, 1) else if (method == .isFocused) c.pi_js_bool(self.engine.context, 0) else c.pi_js_undefined();
+        if (request.closing) return c.pi_js_undefined();
+        switch (method) {
+            .isHidden => return c.pi_js_bool(self.engine.context, @intFromBool(request.hidden or request.permanently_hidden)),
+            .isFocused => return c.pi_js_bool(self.engine.context, @intFromBool(request.focused and !request.hidden and !request.permanently_hidden)),
+            .getBounds => {
+                const layout = request.layout orelse return c.pi_js_undefined();
+                if (layout.hidden) return c.pi_js_undefined();
+                const object = try self.engine.checked(c.JS_NewObject(self.engine.context));
+                errdefer self.engine.freeValue(object);
+                inline for (.{ "row", "col", "width", "height" }) |name| try self.defineField(object, name, c.JS_NewInt64(self.engine.context, @intCast(if (comptime std.mem.eql(u8, name, "row")) layout.row else if (comptime std.mem.eql(u8, name, "col")) layout.column else if (comptime std.mem.eql(u8, name, "width")) layout.width else layout.height)));
+                return object;
+            },
+            .hide => {
+                request.permanently_hidden = true;
+                request.hidden = true;
+                request.focused = false;
+            },
+            .setHidden => if (!request.permanently_hidden) {
+                request.hidden = args.len != 0 and c.JS_ToBool(self.engine.context, args[0]) != 0;
+            },
+            .focus => request.focused = true,
+            .unfocus => request.focused = false,
+            else => {},
+        }
+        const fence = request.fence;
+        self.components.invalidate(fence.component_id, fence.generation) catch |err| try self.rejectCustom(fence, err);
+        return c.pi_js_undefined();
+    }
+
+    fn sizeValue(self: *Manager, options: c.JSValue, name: [*:0]const u8, reference: usize, fallback: i64) !i64 {
+        const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options, name));
+        defer self.engine.freeValue(value);
+        if (c.JS_IsUndefined(value)) return fallback;
+        var number: f64 = 0;
+        if (c.JS_IsString(value)) {
+            const text = try self.engine.toString(value);
+            defer self.engine.gpa.free(text);
+            if (text.len < 2 or text[text.len - 1] != '%') return fallback;
+            for (text[0 .. text.len - 1]) |byte| if (!std.ascii.isDigit(byte) and byte != '.') return fallback;
+            number = (std.fmt.parseFloat(f64, text[0 .. text.len - 1]) catch return fallback) * @as(f64, @floatFromInt(reference)) / 100;
+        } else {
+            if (!c.JS_IsNumber(value)) return fallback;
+            if (c.JS_ToFloat64(self.engine.context, &number, value) < 0) return error.JavaScriptException;
+        }
+        if (!std.math.isFinite(number) or @abs(number) > protocol.maximum_dimension) return fallback;
+        return @intFromFloat(@floor(number));
+    }
+
+    fn overlayOptions(self: *Manager, request: Custom) !c.JSValue {
+        const options = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, request.options, "overlayOptions"));
+        defer self.engine.freeValue(options);
+        if (c.JS_IsFunction(self.engine.context, options)) {
+            const result = try self.engine.checked(c.JS_Call(self.engine.context, options, c.pi_js_undefined(), 0, null));
+            if (!c.JS_IsNull(result) and !c.JS_IsUndefined(result)) return result;
+            self.engine.freeValue(result);
+            return self.engine.checked(c.JS_NewObject(self.engine.context));
+        }
+        if (c.JS_IsObject(options)) return c.JS_DupValue(self.engine.context, options);
+        const result = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        errdefer self.engine.freeValue(result);
+        if (c.JS_ToBool(self.engine.context, options) == 0) {
+            const width = try self.components.property(request.fence.component_id, request.fence.generation, "width");
+            defer self.engine.freeValue(width);
+            if (c.JS_ToBool(self.engine.context, width) != 0) try self.defineField(result, "width", c.JS_DupValue(self.engine.context, width));
+        }
+        return result;
+    }
+
+    fn overlayLayout(self: *Manager, request: Custom, options: c.JSValue, content_height: usize) !protocol.OverlayLayout {
+        if (!c.JS_IsObject(options)) return error.InvalidNativeOverlayOptions;
+        const margin = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options, "margin"));
+        defer self.engine.freeValue(margin);
+        var margins: [4]usize = @splat(0);
+        if (c.JS_IsNumber(margin)) {
+            var number: f64 = 0;
+            if (c.JS_ToFloat64(self.engine.context, &number, margin) < 0) return error.JavaScriptException;
+            if (std.math.isFinite(number)) margins = @splat(@intFromFloat(@max(0, @min(protocol.maximum_dimension, @floor(number)))));
+        } else if (c.JS_IsObject(margin)) inline for (.{ "top", "right", "bottom", "left" }, 0..) |name, i| {
+            margins[i] = @intCast(@max(0, try self.sizeValue(margin, name, 0, 0)));
+        };
+        const top = margins[0];
+        const right = margins[1];
+        const bottom = margins[2];
+        const left = margins[3];
+        const available_width = @max(1, request.width -| (left + right));
+        const available_height = @max(1, request.height -| (top + bottom));
+        const width: usize = @intCast(@max(1, @min(@as(i64, @intCast(available_width)), @max(try self.sizeValue(options, "width", request.width, @intCast(@min(80, available_width))), try self.sizeValue(options, "minWidth", request.width, 1)))));
+        const requested_height = try self.sizeValue(options, "maxHeight", request.height, -1);
+        const maximum_height: usize = if (requested_height < 0) protocol.maximum_lines else @intCast(@max(1, @min(@as(i64, @intCast(available_height)), requested_height)));
+        const height = @min(content_height, maximum_height);
+        const anchor_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options, "anchor"));
+        defer self.engine.freeValue(anchor_value);
+        const anchor = if (c.JS_IsUndefined(anchor_value)) try self.engine.gpa.dupe(u8, "center") else try self.engine.toString(anchor_value);
+        defer self.engine.gpa.free(anchor);
+        var row: i64 = @intCast(top + (available_height -| height) / 2);
+        var column: i64 = @intCast(left + (available_width -| width) / 2);
+        inline for (.{ "top-left", "top-center", "top-right" }) |name| if (std.mem.eql(u8, anchor, name)) {
+            row = @intCast(top);
+        };
+        inline for (.{ "bottom-left", "bottom-center", "bottom-right" }) |name| if (std.mem.eql(u8, anchor, name)) {
+            row = @intCast(top + (available_height -| height));
+        };
+        inline for (.{ "top-left", "left-center", "bottom-left" }) |name| if (std.mem.eql(u8, anchor, name)) {
+            column = @intCast(left);
+        };
+        inline for (.{ "top-right", "right-center", "bottom-right" }) |name| if (std.mem.eql(u8, anchor, name)) {
+            column = @intCast(left + (available_width -| width));
+        };
+        row = try self.positionValue(options, "row", available_height -| height, top, row);
+        column = try self.positionValue(options, "col", available_width -| width, left, column);
+        row += try self.sizeValue(options, "offsetY", request.height, 0);
+        column += try self.sizeValue(options, "offsetX", request.width, 0);
+        const hidden = request.hidden or request.permanently_hidden;
+        const non_capturing = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options, "nonCapturing"));
+        defer self.engine.freeValue(non_capturing);
+        return .{ .row = @intCast(@max(@as(i64, @intCast(top)), @min(@as(i64, @intCast(request.height -| (bottom + height))), row))), .column = @intCast(@max(@as(i64, @intCast(left)), @min(@as(i64, @intCast(request.width -| (right + width))), column))), .width = width, .height = height, .hidden = hidden, .capture_input = c.JS_ToBool(self.engine.context, non_capturing) == 0 };
+    }
+
+    fn positionValue(self: *Manager, options: c.JSValue, name: [*:0]const u8, span: usize, margin: usize, fallback: i64) !i64 {
+        const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options, name));
+        defer self.engine.freeValue(value);
+        var number: f64 = 0;
+        if (c.JS_IsString(value)) {
+            const text = try self.engine.toString(value);
+            defer self.engine.gpa.free(text);
+            if (text.len < 2 or text[text.len - 1] != '%') return fallback;
+            for (text[0 .. text.len - 1]) |byte| if (!std.ascii.isDigit(byte) and byte != '.') return fallback;
+            number = (std.fmt.parseFloat(f64, text[0 .. text.len - 1]) catch return fallback) * @as(f64, @floatFromInt(span)) / 100;
+            if (!std.math.isFinite(number) or @abs(number) > protocol.maximum_dimension) return fallback;
+            return @as(i64, @intCast(margin)) + @as(i64, @intFromFloat(@floor(number)));
+        }
+        if (!c.JS_IsNumber(value)) return fallback;
+        if (c.JS_ToFloat64(self.engine.context, &number, value) < 0) return error.JavaScriptException;
+        if (!std.math.isFinite(number) or @abs(number) > protocol.maximum_dimension) return fallback;
+        return @intFromFloat(@floor(number));
+    }
+
+    fn custom(self: *Manager, args: []c.JSValue) !c.JSValue {
+        if (!self.has_ui or self.bridge == null) {
+            var capabilities: [2]c.JSValue = undefined;
+            const promise = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &capabilities));
+            errdefer self.engine.freeValue(promise);
+            defer for (capabilities) |value| self.engine.freeValue(value);
+            try self.call(capabilities[0], c.pi_js_undefined());
+            return promise;
+        }
+        if (self.customs.items.len >= 128 or self.next_id == std.math.maxInt(u32)) return error.NativeDialogLimit;
+        if (self.invocation_id == 0) return error.NativeComponentInvocationMissing;
+        const options = if (args.len > 1 and c.JS_IsObject(args[1])) c.JS_DupValue(self.engine.context, args[1]) else try self.engine.checked(c.JS_NewObject(self.engine.context));
+        var options_transferred = false;
+        defer if (!options_transferred) self.engine.freeValue(options);
+        const overlay_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options, "overlay"));
+        defer self.engine.freeValue(overlay_value);
+        const overlay = c.JS_ToBool(self.engine.context, overlay_value) != 0;
+        const facade = try self.createFacade(self.next_id);
+        defer self.engine.freeValue(facade);
+        const opened = try self.components.openWithFacade(if (args.len == 0) c.pi_js_undefined() else args[0], self.theme, self.keybindings, facade);
+        errdefer self.engine.freeValue(opened.result);
+        errdefer self.components.close(opened.id, opened.generation, c.pi_js_undefined()) catch {};
+        if (c.JS_PromiseState(self.engine.context, opened.result) != c.JS_PROMISE_PENDING) return opened.result;
+        const fence: protocol.Fence = .{ .token = self.next_id, .generation = opened.generation, .invocation_id = self.invocation_id, .component_id = opened.id };
+        const custom_request: Custom = .{ .fence = fence, .ui_generation = self.generation, .promise = opened.result, .width = self.width, .height = self.height, .options = options, .overlay = overlay };
+        var request: std.Io.Writer.Allocating = .init(self.engine.gpa);
+        defer request.deinit();
+        try request.writer.writeByte('{');
+        try protocol.writeFence(&request.writer, fence);
+        try request.writer.writeByte('}');
+        try self.customs.append(self.engine.gpa, custom_request);
+        options_transferred = true;
+        self.next_id += 1;
+        self.bridge.?.request(self.bridge.?.context, @intCast(fence.token), "custom_native", request.written()) catch |err| {
+            _ = self.customs.pop();
+            options_transferred = false;
+            return err;
+        };
+        return c.JS_DupValue(self.engine.context, opened.result);
+    }
+
+    fn requestComponentClose(context: ?*anyopaque, id: u64, generation: u64) !void {
+        const self: *Manager = @ptrCast(@alignCast(context.?));
+        for (self.customs.items) |*custom_request| {
+            if (custom_request.fence.component_id != id or custom_request.fence.generation != generation) continue;
+            if (custom_request.closing) return;
+            custom_request.closing = true;
+            if (self.bridge) |bridge| if (bridge.component_close) |close| {
+                try close(bridge.context, custom_request.fence);
+                return;
+            };
+            try self.components.acknowledgeCompletion(id, generation);
+            return;
+        }
+        // Synchronous done() before open returns has not published a scene.
+        try self.components.acknowledgeCompletion(id, generation);
+    }
+
+    fn rejectCustom(self: *Manager, fence: protocol.Fence, err: anyerror) !void {
+        const reason = if (err == error.JavaScriptException and self.engine.captured_exception != null) c.JS_DupValue(self.engine.context, self.engine.captured_exception.?) else blk: {
+            _ = fail(self.engine, err);
+            break :blk c.JS_GetException(self.engine.context);
+        };
+        defer self.engine.freeValue(reason);
+        try self.components.reject(fence.component_id, fence.generation, reason);
+    }
+
+    fn findCustom(self: *Manager, fence: protocol.Fence) ?*Custom {
+        for (self.customs.items) |*request| if (protocol.Fence.matches(request.fence, fence)) return request;
+        return null;
+    }
+
+    fn renderCustom(self: *Manager, initial: Custom) !protocol.Scene {
+        var request = initial;
+        var options: ?c.JSValue = null;
+        defer if (options) |value| self.engine.freeValue(value);
+        var layout: ?protocol.OverlayLayout = null;
+        if (request.overlay) {
+            if (request.overlay_options) |value| options = c.JS_DupValue(self.engine.context, value) else {
+                options = try self.overlayOptions(request);
+                const active = self.findCustom(request.fence) orelse return error.NativeComponentClosed;
+                if (active.closing) return error.NativeComponentClosing;
+                active.overlay_options = c.JS_DupValue(self.engine.context, options.?);
+                const non_capturing = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options.?, "nonCapturing"));
+                defer self.engine.freeValue(non_capturing);
+                if (self.findCustom(request.fence)) |selected| selected.focused = c.JS_ToBool(self.engine.context, non_capturing) == 0;
+            }
+            request = (self.findCustom(request.fence) orelse return error.NativeComponentClosed).*;
+            layout = try self.overlayLayout(request, options.?, 0);
+            const visible = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options.?, "visible"));
+            defer self.engine.freeValue(visible);
+            if (c.JS_IsFunction(self.engine.context, visible)) {
+                var args = [_]c.JSValue{ c.JS_NewInt64(self.engine.context, @intCast(request.width)), c.JS_NewInt64(self.engine.context, @intCast(request.height)) };
+                defer for (args) |value| self.engine.freeValue(value);
+                const result = try self.engine.checked(c.JS_Call(self.engine.context, visible, options.?, args.len, &args));
+                defer self.engine.freeValue(result);
+                layout.?.hidden = layout.?.hidden or c.JS_ToBool(self.engine.context, result) == 0;
+            }
+        }
+        const release_value = try self.components.property(request.fence.component_id, request.fence.generation, "wantsKeyRelease");
+        defer self.engine.freeValue(release_value);
+        var frame = if (layout != null and layout.?.hidden) protocol.Frame{ .gpa = self.engine.gpa, .lines = try self.engine.gpa.alloc([]u8, 0), .bytes = 0 } else try self.components.render(request.fence.component_id, request.fence.generation, if (layout) |geometry| geometry.width else request.width);
+        errdefer frame.deinit();
+        if (layout != null and layout.?.hidden) self.components.consumeHiddenFrame(request.fence.component_id, request.fence.generation);
+        const active = self.findCustom(request.fence) orelse return error.NativeComponentClosed;
+        if (active.closing) return error.NativeComponentClosing;
+        request = active.*;
+        if (layout) |geometry| {
+            const hidden = geometry.hidden;
+            layout = try self.overlayLayout(request, options.?, frame.lines.len);
+            layout.?.hidden = hidden or layout.?.hidden;
+            if (frame.lines.len > layout.?.height) {
+                const lines = try self.engine.gpa.alloc([]u8, layout.?.height);
+                @memcpy(lines, frame.lines[0..lines.len]);
+                for (frame.lines[lines.len..]) |line| {
+                    frame.bytes -= line.len;
+                    self.engine.gpa.free(line);
+                }
+                self.engine.gpa.free(frame.lines);
+                frame.lines = lines;
+            }
+        }
+        (self.findCustom(request.fence) orelse return error.NativeComponentClosed).layout = layout;
+        return .{ .fence = request.fence, .width = request.width, .height = request.height, .frame = frame, .overlay = layout, .focused = request.focused, .wants_key_release = c.JS_ToBool(self.engine.context, release_value) != 0 };
+    }
+
+    fn publishOverlayHandle(self: *Manager, fence: protocol.Fence) !void {
+        const selected = self.findCustom(fence) orelse return;
+        if (!selected.overlay or selected.handle_published or selected.closing) return;
+        selected.handle_published = true;
+        const options = c.JS_DupValue(self.engine.context, selected.options);
+        defer self.engine.freeValue(options);
+        const callback = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options, "onHandle"));
+        defer self.engine.freeValue(callback);
+        if (!c.JS_IsFunction(self.engine.context, callback)) return;
+        var args = [_]c.JSValue{try self.createOverlayHandle(fence.token)};
+        defer self.engine.freeValue(args[0]);
+        const result = try self.engine.checked(c.JS_Call(self.engine.context, callback, c.pi_js_undefined(), args.len, &args));
+        self.engine.freeValue(result);
+    }
+
+    fn pollCustom(self: *Manager) !bool {
+        if (self.polling_custom) return false;
+        self.polling_custom = true;
+        defer self.polling_custom = false;
+        var changed = false;
+        const index: usize = 0;
+        while (index < self.customs.items.len) {
+            const custom_request = self.customs.items[index];
+            if (c.JS_PromiseState(self.engine.context, custom_request.promise) != c.JS_PROMISE_PENDING) {
+                const removed = self.customs.orderedRemove(index);
+                if (removed.presented) self.engine.host_ui_pending -= 1;
+                self.engine.freeValue(removed.promise);
+                self.engine.freeValue(removed.options);
+                if (removed.overlay_options) |options| self.engine.freeValue(options);
+                changed = true;
+                continue;
+            }
+            if (custom_request.closing) return changed;
+            if (self.signal) |signal| if (try self.isAborted(signal)) {
+                try self.components.complete(custom_request.fence.component_id, custom_request.fence.generation, c.pi_js_undefined());
+                return true;
+            };
+            if (self.components.ready(custom_request.fence.component_id, custom_request.fence.generation) and self.components.dirty(custom_request.fence.component_id, custom_request.fence.generation)) {
+                var rendered = self.renderCustom(custom_request) catch |err| {
+                    if (err == error.NativeComponentClosed or err == error.NativeComponentClosing) return true;
+                    try self.rejectCustom(custom_request.fence, err);
+                    return true;
+                };
+                var consumed = false;
+                defer if (!consumed) rendered.deinit();
+                const active = self.findCustom(custom_request.fence) orelse return true;
+                if (active.closing) return true;
+                if (self.bridge) |bridge| if (bridge.component_scene) |scene| {
+                    try scene(bridge.context, rendered);
+                    consumed = true;
+                    const presented = self.findCustom(custom_request.fence) orelse return true;
+                    if (!presented.presented) {
+                        presented.presented = true;
+                        self.engine.host_ui_pending += 1;
+                    }
+                    self.publishOverlayHandle(custom_request.fence) catch |err| try self.rejectCustom(custom_request.fence, err);
+                    changed = true;
+                } else {
+                    try self.components.complete(active.fence.component_id, active.fence.generation, c.pi_js_undefined());
+                    return true;
+                };
+            }
+            // Foreground custom dialogs preserve FIFO, including async factories.
+            return changed;
+        }
+        return changed;
+    }
+
+    pub fn componentControl(self: *Manager, control: *const protocol.Control) !bool {
+        if (!self.active or self.invocation_id != control.fence.invocation_id) return false;
+        const selected = for (self.customs.items) |*custom_request| {
+            if (protocol.Fence.matches(custom_request.fence, control.fence)) break custom_request;
+        } else return false;
+        if (selected.ui_generation != self.generation) return false;
+        const fence = selected.fence;
+        switch (control.kind) {
+            .close_ack => |ok| {
+                if (!selected.closing) return false;
+                if (ok) try self.components.acknowledgeCompletion(fence.component_id, fence.generation) else {
+                    const reason = try self.engine.checked(c.JS_NewError(self.engine.context));
+                    defer self.engine.freeValue(reason);
+                    const text = control.error_message orelse "Native component close failed";
+                    try self.defineField(reason, "message", try self.engine.checked(c.JS_NewStringLen(self.engine.context, text.ptr, text.len)));
+                    try self.components.failAcknowledgement(fence.component_id, fence.generation, reason);
+                }
+            },
+            .input => |data| {
+                if (selected.closing) return false;
+                if (selected.overlay) if (selected.layout) |layout| if (layout.hidden or !layout.capture_input or !selected.focused) return false;
+                self.components.input(fence.component_id, fence.generation, data) catch |err| {
+                    if (err == error.NativeComponentClosed or err == error.NativeComponentClosing) return false;
+                    try self.rejectCustom(fence, err);
+                };
+            },
+            .resize => |size| {
+                selected.width = size.width;
+                selected.height = size.height;
+                self.components.invalidate(fence.component_id, fence.generation) catch |err| try self.rejectCustom(fence, err);
+            },
+            .invalidate => self.components.invalidate(fence.component_id, fence.generation) catch |err| try self.rejectCustom(fence, err),
+            .close, .cancel => try self.components.complete(fence.component_id, fence.generation, c.pi_js_undefined()),
+            .mouse => return error.NativeMouseComponentNotImplemented,
+        }
+        return true;
+    }
+
     fn dialog(self: *Manager, method: Method, args: []c.JSValue) !c.JSValue {
+        if (method == .custom) return self.custom(args) catch |err| {
+            var capabilities: [2]c.JSValue = undefined;
+            const promise = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &capabilities));
+            errdefer self.engine.freeValue(promise);
+            defer for (capabilities) |value| self.engine.freeValue(value);
+            try self.rejectError(capabilities[1], err);
+            return promise;
+        };
         var capabilities: [2]c.JSValue = undefined;
         const promise = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &capabilities));
         errdefer self.engine.freeValue(promise);
         var transferred = false;
         defer if (!transferred) for (capabilities) |function| self.engine.freeValue(function);
-        if (method == .custom) {
-            try self.rejectError(capabilities[1], error.NativeCustomUiNotImplemented);
-            return promise;
-        }
         if (!self.has_ui or self.bridge == null) {
             try self.call(capabilities[0], if (method == .confirm) c.pi_js_bool(self.engine.context, 0) else c.pi_js_undefined());
             return promise;
@@ -310,24 +810,195 @@ pub const Manager = struct {
         var pending = self.takePending(id) orelse return;
         defer self.freePending(&pending);
         if (!self.active or pending.generation != self.generation) return;
-        const result = if (!ok) value else if (pending.confirm) c.pi_js_bool(self.engine.context, c.JS_ToBool(self.engine.context, value)) else if (c.JS_IsNull(value)) c.pi_js_undefined() else value;
+        const result = if (!ok or pending.provider_request) value else if (pending.confirm) c.pi_js_bool(self.engine.context, c.JS_ToBool(self.engine.context, value)) else if (c.JS_IsNull(value)) c.pi_js_undefined() else value;
         try self.call(if (ok) pending.resolve else pending.reject, result);
     }
 
     pub fn cancel(self: *Manager, id: u32) !void {
         var pending = self.takePending(id) orelse return;
         defer self.freePending(&pending);
-        if (self.bridge) |bridge| bridge.cancel(bridge.context, id) catch |err| {
+        if (!pending.provider_request) if (self.bridge) |bridge| bridge.cancel(bridge.context, id) catch |err| {
             try self.rejectError(pending.reject, err);
             return err;
         };
-        try self.call(pending.resolve, if (pending.confirm) c.pi_js_bool(self.engine.context, 0) else c.pi_js_undefined());
+        if (pending.provider_request) {
+            const reason = if (pending.signal_count != 0) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, pending.signals[0], "reason")) else c.pi_js_undefined();
+            defer self.engine.freeValue(reason);
+            try self.call(pending.reject, reason);
+        } else try self.call(pending.resolve, if (pending.confirm) c.pi_js_bool(self.engine.context, 0) else c.pi_js_undefined());
+    }
+
+    /// Shared provider host requests preserve the result verbatim and reject
+    /// with the invocation's original abort reason. All capabilities remain
+    /// on the QuickJS owner thread; the host transports only JSON records.
+    pub fn requestProvider(self: *Manager, method: []const u8, object: c.JSValue) !c.JSValue {
+        if (!self.active or self.bridge == null or self.signal == null) return error.NativeProviderSignalMissing;
+        if (self.pending.items.len >= 128 or self.next_id == std.math.maxInt(u32)) return error.NativeDialogLimit;
+        var capabilities: [2]c.JSValue = undefined;
+        const promise = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &capabilities));
+        errdefer self.engine.freeValue(promise);
+        var transferred = false;
+        defer if (!transferred) for (capabilities) |value| self.engine.freeValue(value);
+        if (try self.isAborted(self.signal.?)) {
+            const reason = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, self.signal.?, "reason"));
+            defer self.engine.freeValue(reason);
+            try self.call(capabilities[1], reason);
+            return promise;
+        }
+        const encoded = try self.engine.stringify(object);
+        defer self.engine.gpa.free(encoded);
+        var data = [_]c.JSValue{ self.token, c.JS_NewInt64(self.engine.context, self.generation), c.JS_NewInt64(self.engine.context, self.next_id) };
+        defer self.engine.freeValue(data[1]);
+        defer self.engine.freeValue(data[2]);
+        const listener = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, onAbort, "native provider request abort", 0, 0, data.len, &data));
+        var pending: Pending = .{ .id = self.next_id, .generation = self.generation, .confirm = false, .resolve = capabilities[0], .reject = capabilities[1], .listener = listener, .provider_request = true };
+        var attached = false;
+        errdefer if (!attached) {
+            self.detach(&pending);
+            self.engine.freeValue(listener);
+        };
+        try self.listen(&pending, self.signal.?);
+        try self.pending.append(self.engine.gpa, pending);
+        self.engine.host_ui_pending += 1;
+        attached = true;
+        transferred = true;
+        self.next_id += 1;
+        self.bridge.?.request(self.bridge.?.context, pending.id, method, encoded) catch |err| {
+            var removed = self.takePending(pending.id).?;
+            self.freePending(&removed);
+            return err;
+        };
+        return promise;
+    }
+
+    pub fn createOAuthCallbacks(self: *Manager) !c.JSValue {
+        const object = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        errdefer self.engine.freeValue(object);
+        var data = [_]c.JSValue{ self.token, c.JS_NewInt64(self.engine.context, self.generation) };
+        defer self.engine.freeValue(data[1]);
+        inline for (std.meta.fields(OAuthMethod)) |field| {
+            try self.defineField(object, field.name, try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, oauthCallback, field.name, 1, @intCast(field.value), data.len, &data)));
+        }
+        try self.defineField(object, "signal", c.JS_DupValue(self.engine.context, self.signal orelse return error.NativeProviderSignalMissing));
+        return object;
+    }
+
+    fn oauthCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        const method: OAuthMethod = @enumFromInt(magic);
+        const self = current(engine, data) catch |err| return fail(engine, err);
+        return self.oauthOperation(method, if (argc == 0) c.pi_js_undefined() else argv[0]) catch |err| {
+            if (method == .onPrompt or method == .onManualCodeInput or method == .onSelect) return self.rejectedPromise(err) catch |failure| fail(engine, failure);
+            return fail(engine, err);
+        };
+    }
+
+    fn oauthText(self: *Manager, value: c.JSValue, optional: bool) !c.JSValue {
+        if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) return if (optional) c.pi_js_undefined() else self.engine.checked(c.JS_NewString(self.engine.context, ""));
+        const text = try self.engine.toString(value);
+        defer self.engine.gpa.free(text);
+        return self.engine.checked(c.JS_NewStringLen(self.engine.context, text.ptr, text.len));
+    }
+
+    fn oauthProperty(self: *Manager, info: c.JSValue, names: []const [*:0]const u8) !c.JSValue {
+        for (names, 0..) |name, i| {
+            const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, info, name));
+            if (i == names.len - 1 or (!c.JS_IsUndefined(value) and !c.JS_IsNull(value))) return value;
+            self.engine.freeValue(value);
+        }
+        return c.pi_js_undefined();
+    }
+
+    fn oauthField(self: *Manager, object: c.JSValue, name: [*:0]const u8, info: c.JSValue, aliases: []const [*:0]const u8, optional: bool) !void {
+        const value = try self.oauthProperty(info, aliases);
+        defer self.engine.freeValue(value);
+        try self.defineField(object, name, try self.oauthText(value, optional));
+    }
+
+    fn oauthOperation(self: *Manager, method: OAuthMethod, argument: c.JSValue) !c.JSValue {
+        const object = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        defer self.engine.freeValue(object);
+        const info = if (c.JS_IsUndefined(argument)) try self.engine.checked(c.JS_NewObject(self.engine.context)) else c.JS_DupValue(self.engine.context, argument);
+        defer self.engine.freeValue(info);
+        switch (method) {
+            .onAuth => {
+                try self.oauthField(object, "url", info, &.{"url"}, false);
+                try self.oauthField(object, "instructions", info, &.{"instructions"}, true);
+            },
+            .onDeviceCode => {
+                try self.oauthField(object, "verificationUri", info, &.{ "verificationUri", "verification_uri", "url" }, false);
+                try self.oauthField(object, "userCode", info, &.{ "userCode", "user_code", "code" }, false);
+                try self.defineField(object, "intervalSeconds", try self.oauthProperty(info, &.{ "intervalSeconds", "interval_seconds" }));
+                try self.defineField(object, "expiresInSeconds", try self.oauthProperty(info, &.{ "expiresInSeconds", "expires_in_seconds" }));
+                try self.oauthField(object, "instructions", info, &.{"instructions"}, true);
+            },
+            .onPrompt, .onSelect => {
+                try self.oauthField(object, "message", info, &.{ "message", "title" }, false);
+                if (method == .onPrompt) {
+                    try self.oauthField(object, "placeholder", info, &.{"placeholder"}, true);
+                    const secret = try self.oauthProperty(info, &.{"secret"});
+                    defer self.engine.freeValue(secret);
+                    try self.defineField(object, "secret", c.pi_js_bool(self.engine.context, c.JS_ToBool(self.engine.context, secret)));
+                } else {
+                    const source = try self.oauthProperty(info, &.{"options"});
+                    defer self.engine.freeValue(source);
+                    const options = try self.engine.checked(c.JS_NewArray(self.engine.context));
+                    var transferred = false;
+                    defer if (!transferred) self.engine.freeValue(options);
+                    var args = [_]c.JSValue{source};
+                    const is_array = try self.engine.checked(c.JS_Call(self.engine.context, self.components.array_is_array, c.pi_js_undefined(), 1, &args));
+                    defer self.engine.freeValue(is_array);
+                    if (c.JS_ToBool(self.engine.context, is_array) != 0) {
+                        const length = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, source, "length"));
+                        defer self.engine.freeValue(length);
+                        var number: f64 = 0;
+                        if (c.JS_ToFloat64(self.engine.context, &number, length) < 0) return error.JavaScriptException;
+                        if (!std.math.isFinite(number) or number < 0 or number > 4096) return error.NativeDialogLimit;
+                        for (0..@as(usize, @intFromFloat(number))) |i| {
+                            const option = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, source, @intCast(i)));
+                            defer self.engine.freeValue(option);
+                            const normalized = try self.engine.checked(c.JS_NewObject(self.engine.context));
+                            var published = false;
+                            defer if (!published) self.engine.freeValue(normalized);
+                            if (c.JS_IsObject(option)) {
+                                try self.oauthField(normalized, "value", option, &.{ "id", "value" }, false);
+                                try self.oauthField(normalized, "label", option, &.{ "label", "id", "value" }, false);
+                                try self.oauthField(normalized, "description", option, &.{"description"}, true);
+                            } else {
+                                try self.defineField(normalized, "value", try self.oauthText(option, false));
+                                try self.defineField(normalized, "label", try self.oauthText(option, false));
+                            }
+                            published = true;
+                            if (c.JS_SetPropertyUint32(self.engine.context, options, @intCast(i), normalized) < 0) return error.JavaScriptException;
+                        }
+                    }
+                    transferred = true;
+                    try self.defineField(object, "options", options);
+                }
+            },
+            .onProgress => try self.defineField(object, "message", try self.oauthText(argument, false)),
+            .onManualCodeInput => try self.defineField(object, "message", try self.engine.checked(c.JS_NewString(self.engine.context, "Paste the authorization code"))),
+        }
+        const name: [*:0]const u8 = switch (method) {
+            .onAuth => "oauth_auth",
+            .onDeviceCode => "oauth_device_code",
+            .onPrompt => "oauth_prompt",
+            .onProgress => "oauth_progress",
+            .onManualCodeInput => "oauth_manual_code",
+            .onSelect => "oauth_select",
+        };
+        if (method == .onPrompt or method == .onManualCodeInput or method == .onSelect) return self.requestProvider(std.mem.span(name), object);
+        if (self.provider_action_fn) |record| try record(self.provider_action_context, name, object);
+        const encoded = try self.engine.stringify(object);
+        defer self.engine.gpa.free(encoded);
+        if (self.bridge) |bridge| try bridge.action(bridge.context, std.mem.span(name), encoded);
+        return c.pi_js_undefined();
     }
 
     pub fn poll(self: *Manager) !bool {
-        const io = self.engine.native_io orelse return false;
+        var changed = try self.pollCustom();
+        const io = self.engine.native_io orelse return changed;
         const now = std.Io.Clock.awake.now(io).toMilliseconds();
-        var changed = false;
         var index: usize = 0;
         while (index < self.pending.items.len) {
             const pending = self.pending.items[index];
@@ -409,6 +1080,49 @@ pub const Manager = struct {
         return c.pi_js_undefined();
     }
 };
+
+test "native overlay default options retain component width and omitted maximum height" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("abort_signal.zig").install(engine);
+    const manager = try Manager.init(engine);
+    defer manager.deinit();
+    const Fake = struct {
+        frames: usize = 0,
+        fn request(_: ?*anyopaque, _: u32, _: []const u8, _: []const u8) !void {}
+        fn action(_: ?*anyopaque, _: []const u8, _: []const u8) !void {}
+        fn cancel(_: ?*anyopaque, _: u32) !void {}
+        fn scene(raw: ?*anyopaque, received: protocol.Scene) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            const layout = received.overlay orelse return error.MissingOverlay;
+            try std.testing.expectEqual(@as(usize, 12), layout.width);
+            try std.testing.expectEqual(@as(usize, 30), layout.height);
+            try std.testing.expectEqual(@as(usize, 30), received.frame.lines.len);
+            self.frames += 1;
+            var owned = received;
+            owned.deinit();
+        }
+    };
+    var fake: Fake = .{};
+    manager.bridge = .{ .context = &fake, .request = Fake.request, .action = Fake.action, .cancel = Fake.cancel, .component_scene = Fake.scene };
+    const context = try engine.fromJsonValue(.{ .object = .empty });
+    defer engine.freeValue(context);
+    try manager.defineField(context, "hasUI", c.pi_js_bool(engine.context, 1));
+    try manager.begin(1, context, null);
+    manager.invocation_id = 1;
+    const module = try engine.evalModule("export function factory(){return {width:12,render(){return Array(30).fill('line')}}}", "overlay-defaults.mjs");
+    defer engine.freeValue(module);
+    const factory = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "factory"));
+    defer engine.freeValue(factory);
+    const options = try engine.checked(c.JS_NewObject(engine.context));
+    defer engine.freeValue(options);
+    try manager.defineField(options, "overlay", c.pi_js_bool(engine.context, 1));
+    var args = [_]c.JSValue{ factory, options };
+    const promise = try manager.custom(&args);
+    defer engine.freeValue(promise);
+    try std.testing.expect(try manager.pollCustom());
+    try std.testing.expectEqual(@as(usize, 1), fake.frames);
+}
 
 test "native dialog awaiting human response suspends ordinary engine deadline and resumes after settlement" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 1 });

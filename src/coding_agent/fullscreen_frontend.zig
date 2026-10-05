@@ -13,6 +13,8 @@ const session = @import("../agent/session.zig");
 const agent_loop = @import("../agent/loop.zig");
 const ui = @import("../extensions/ui.zig");
 const transcript_mod = @import("transcript_view.zig");
+const platform = @import("../tui/platform_terminal.zig");
+const component_protocol = @import("../extensions/component_protocol.zig");
 
 pub const CommandKind = enum { submit, complete, shortcut, clipboard, quit };
 pub const Command = struct {
@@ -57,6 +59,74 @@ fn ownershipCase(gpa: std.mem.Allocator) !void {
 
 test "fullscreen owner construction event mailboxes and editor snapshots release every failed allocation" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, ownershipCase, .{});
+}
+
+fn componentOwnershipCase(gpa: std.mem.Allocator) !void {
+    const io = std.testing.io;
+    var environ: std.process.Environ.Map = .init(gpa);
+    defer environ.deinit();
+    var bindings = keybindings.Manager.init(gpa);
+    defer bindings.deinit();
+    var buffer: [128]u8 = undefined;
+    var reader = Io.File.Reader.initStreaming(.stdin(), io, &buffer);
+    var queue = component_protocol.ControlQueue.init(gpa, io);
+    defer queue.deinit();
+    var controller = try ui.Controller.init(gpa, io, true, 80);
+    defer controller.deinit();
+    const frontend = try Frontend.create(gpa, io, &environ, &reader, &bindings, .{});
+    defer frontend.deinit();
+    controller.bindEditorFrontend(Frontend.editorSink, frontend);
+    frontend.bindEditorObserver(ui.Controller.frontendEditorSnapshot, &controller);
+    try controller.applyAction("setEditorText", "{\"text\":\"saved component draft\"}");
+    try frontend.applyUpdates();
+    try std.testing.expect(controller.pending_editor_text == null);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, "{\"version\":1,\"token\":1,\"generation\":2,\"invocationId\":3,\"componentId\":4,\"width\":80,\"height\":24,\"lines\":[\"component owned bytes\"],\"overlay\":null}", .{});
+    defer parsed.deinit();
+    var dto = try component_protocol.readScene(gpa, &parsed.value.object);
+    var transferred = false;
+    defer if (!transferred) dto.deinit();
+    queue.reset(dto.fence);
+    try Frontend.componentSink(frontend, dto, &queue);
+    transferred = true;
+    try frontend.applyUpdates();
+    try frontend.draw(.{ .columns = 80, .rows = 24 }, false);
+    try std.testing.expect(std.mem.indexOf(u8, frontend.app.current_frame.?.lines.items[0], "component owned bytes") != null);
+    try frontend.input(.{ .key = "owned input" });
+    // The real dimensions may first produce a resize; consume through input.
+    while (try queue.next()) |control| {
+        var owned = control;
+        defer owned.deinit();
+        if (owned.kind == .input) {
+            try std.testing.expectEqualStrings("owned input", owned.kind.input);
+            break;
+        }
+    }
+    try std.testing.expectEqualStrings("saved component draft", frontend.editor.slice());
+    var stale = dto.fence;
+    stale.invocation_id += 1;
+    try std.testing.expectError(error.StaleNativeComponentScene, frontend.removeCustomComponent(stale));
+    try frontend.removeCustomComponent(dto.fence);
+    try std.testing.expect(frontend.component_controls == null);
+    try std.testing.expect(frontend.closed_component == null);
+    try frontend.draw(.{ .columns = 80, .rows = 24 }, false);
+    try std.testing.expect(frontend.closed_component.?.matches(dto.fence));
+    try std.testing.expectEqualStrings("saved component draft", frontend.editor.slice());
+}
+
+test "fullscreen native component scene input and restored frame release every failed allocation" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, componentOwnershipCase, .{});
+}
+
+test "fullscreen startup failure joins owner without holding its cleanup mutex" {
+    const io = std.testing.io;
+    if (try Io.File.stdin().isTty(io)) return error.SkipZigTest;
+    var environ: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environ.deinit();
+    var bindings = keybindings.Manager.init(std.testing.allocator);
+    defer bindings.deinit();
+    var buffer: [128]u8 = undefined;
+    var reader = Io.File.Reader.initStreaming(.stdin(), io, &buffer);
+    try std.testing.expectError(error.DeadTerminal, Frontend.start(std.testing.allocator, io, &environ, &reader, &bindings, .{}));
 }
 
 test "fullscreen retained Controller surfaces compose header widgets editor status working frames and footer" {
@@ -139,6 +209,8 @@ const Update = union(enum) {
     notice: []u8,
     busy: bool,
     config: ConfigUpdate,
+    component: struct { scene: component_protocol.Scene, controls: *component_protocol.ControlQueue },
+    component_close: component_protocol.Fence,
     fn deinit(self: *Update, gpa: std.mem.Allocator) void {
         switch (self.*) {
             .event => |*value| value.deinit(gpa),
@@ -155,6 +227,8 @@ const Update = union(enum) {
                 for (value.shortcuts) |key| gpa.free(key);
                 gpa.free(value.shortcuts);
             },
+            .component => |*value| value.scene.deinit(),
+            .component_close => {},
         }
     }
 };
@@ -209,6 +283,17 @@ pub const Frontend = struct {
     shortcuts: [][]u8 = &.{},
     working_frame: usize = 0,
     title_dirty: bool = false,
+    component: ?component_protocol.Scene = null,
+    component_controls: ?*component_protocol.ControlQueue = null,
+    component_overlay_id: ?u64 = null,
+    close_pending: ?component_protocol.Fence = null,
+    closed_component: ?component_protocol.Fence = null,
+    component_close_request: ?component_protocol.Fence = null,
+    component_dimensions: ?terminal.Dimensions = null,
+    observed_dimensions: terminal.Dimensions = .{ .columns = 0, .rows = 0 },
+    editor_observer: ?ui.EditorSinkFn = null,
+    editor_observer_context: ?*anyopaque = null,
+    worker_finished: bool = false,
 
     fn create(gpa: std.mem.Allocator, io: Io, environ: *const std.process.Environ.Map, reader: *Io.File.Reader, bindings: *const keybindings.Manager, options: Options) !*Frontend {
         const self = try gpa.create(Frontend);
@@ -258,14 +343,17 @@ pub const Frontend = struct {
     }
 
     pub fn start(gpa: std.mem.Allocator, io: Io, environ: *const std.process.Environ.Map, reader: *Io.File.Reader, bindings: *const keybindings.Manager, options: Options) !*Frontend {
-        if (comptime builtin.os.tag != .linux) return error.UnsupportedTerminal;
+        if (comptime builtin.os.tag != .linux and builtin.os.tag != .windows and builtin.os.tag != .macos) return error.UnsupportedTerminal;
         const self = try create(gpa, io, environ, reader, bindings, options);
         errdefer self.deinit();
         self.thread = try std.Thread.spawn(.{}, run, .{self});
         self.mutex.lockUncancelable(io);
-        defer self.mutex.unlock(io);
         while (!self.ready and self.failure == null) self.changed.waitUncancelable(io, &self.mutex);
-        if (self.failure) |err| {
+        const startup_failure = self.failure;
+        self.mutex.unlock(io);
+        if (startup_failure) |err| {
+            // The owner finishes detaching borrowed channels under this mutex.
+            // Never join while holding the lock it needs for terminal cleanup.
             if (self.thread) |thread| thread.join();
             self.thread = null;
             return err;
@@ -277,6 +365,7 @@ pub const Frontend = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         if (self.failure) |err| return err;
+        if (self.stopping) return error.EndOfStream;
         if (self.updates.items.len >= 4096) return error.FrontendQueueLimit;
         try self.updates.append(self.gpa, update);
         self.changed.broadcast(self.io);
@@ -391,6 +480,38 @@ pub const Frontend = struct {
         const self: *Frontend = @ptrCast(@alignCast(raw.?));
         try self.post(.{ .surface = surface });
     }
+    pub fn editorSink(raw: ?*anyopaque, text: []const u8) !void {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        try self.setEditorText(text, null, null);
+    }
+    pub fn bindEditorObserver(self: *Frontend, callback: ?ui.EditorSinkFn, context: ?*anyopaque) void {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        self.editor_observer = callback;
+        self.editor_observer_context = context;
+    }
+    pub fn componentSink(raw: ?*anyopaque, scene: component_protocol.Scene, controls: *component_protocol.ControlQueue) !void {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        try self.post(.{ .component = .{ .scene = scene, .controls = controls } });
+    }
+    pub fn componentClose(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        // Allocation-free close admission also works under mailbox OOM/full.
+        self.component_close_request = fence;
+        self.changed.broadcast(self.io);
+        while (true) {
+            if (self.closed_component) |closed| if (closed.matches(fence)) {
+                if (self.failure) |err| return err;
+                return;
+            };
+            // A terminal failure still requires the UI owner to detach the
+            // borrowed queue before Runtime can release the custom session.
+            if (self.worker_finished) return error.NativeComponentFrontendStopped;
+            self.changed.waitUncancelable(self.io, &self.mutex);
+        }
+    }
     pub fn noticeSink(raw: ?*anyopaque, bytes: []const u8) !void {
         const self: *Frontend = @ptrCast(@alignCast(raw.?));
         self.mutex.lockUncancelable(self.io);
@@ -423,6 +544,7 @@ pub const Frontend = struct {
         self.bindings.deinit();
         self.environ.deinit();
         self.surfaces.deinit();
+        if (self.component) |*scene| scene.deinit();
         self.gpa.free(self.editor_text);
         self.gpa.free(self.header);
         self.gpa.free(self.status);
@@ -435,11 +557,16 @@ pub const Frontend = struct {
     fn publishEditor(self: *Frontend) !void {
         const text = try self.gpa.dupe(u8, self.editor.slice());
         self.mutex.lockUncancelable(self.io);
-        defer self.mutex.unlock(self.io);
         self.gpa.free(self.editor_text);
         self.editor_text = text;
         self.editor_cursor = self.editor.cursor;
         self.editor_revision = self.revision;
+        const callback = self.editor_observer;
+        const context = self.editor_observer_context;
+        self.mutex.unlock(self.io);
+        // Pure owned-state publication, never a Session/Host or JS callback.
+        // Release the owner mutex first to avoid the Controller→mailbox inverse.
+        if (callback) |notify| try notify(context, self.editor.slice());
     }
     fn queueCommand(self: *Frontend, kind: CommandKind, key: []const u8) !void {
         var command: Command = .{ .kind = kind, .text = try self.gpa.dupe(u8, self.editor.slice()), .cursor = self.editor.cursor, .revision = self.revision };
@@ -453,6 +580,33 @@ pub const Frontend = struct {
     }
     fn editorComponent(self: *Frontend) layout.Component {
         return .{ .context = self, .vtable = &.{ .render = renderEditor, .handle_input = editorInput, .handle_paste = editorPaste } };
+    }
+    fn customComponent(self: *Frontend) layout.Component {
+        return .{ .context = self, .vtable = &.{ .render = renderCustomComponent } };
+    }
+    fn renderCustomComponent(raw: *anyopaque, gpa: std.mem.Allocator, _: usize) !layout.RenderedLines {
+        const self: *Frontend = @ptrCast(@alignCast(raw));
+        const scene = self.component orelse return .{};
+        return layout.RenderedLines.clone(gpa, scene.frame.lines);
+    }
+    fn removeCustomComponent(self: *Frontend, fence: component_protocol.Fence) !void {
+        if (self.component) |scene| {
+            if (!scene.fence.matches(fence)) return error.StaleNativeComponentScene;
+            if (self.component_overlay_id) |id| _ = self.app.removeOverlay(id);
+            self.component_overlay_id = null;
+            self.app.root = self.stack.component();
+            self.app.setFocus(self.editorComponent());
+            var owned = scene;
+            owned.deinit();
+            self.component = null;
+        }
+        self.mutex.lockUncancelable(self.io);
+        self.component_controls = null;
+        self.component_dimensions = null;
+        self.close_pending = fence;
+        self.mutex.unlock(self.io);
+        self.app.invalidatePaint();
+        self.dirty = true;
     }
     fn renderEditor(raw: *anyopaque, gpa: std.mem.Allocator, width: usize) !layout.RenderedLines {
         const self: *Frontend = @ptrCast(@alignCast(raw));
@@ -498,6 +652,8 @@ pub const Frontend = struct {
         self.mutex.lockUncancelable(self.io);
         var updates = self.updates;
         self.updates = .empty;
+        const requested_close = self.component_close_request;
+        self.component_close_request = null;
         self.mutex.unlock(self.io);
         defer {
             for (updates.items) |*update| update.deinit(self.gpa);
@@ -540,13 +696,49 @@ pub const Frontend = struct {
                 if (value.bindings_json) |json| self.gpa.free(json);
                 update.* = .{ .busy = self.busy };
             },
+            .component => |value| {
+                if (self.component) |scene| if (!scene.fence.matches(value.scene.fence)) return error.StaleNativeComponentScene;
+                if (self.component_overlay_id) |id| _ = self.app.removeOverlay(id);
+                self.component_overlay_id = null;
+                if (self.component) |*scene| scene.deinit();
+                self.component = value.scene;
+                self.mutex.lockUncancelable(self.io);
+                self.component_controls = value.controls;
+                self.closed_component = null;
+                self.mutex.unlock(self.io);
+                update.* = .{ .busy = self.busy };
+                if (value.scene.overlay) |overlay| {
+                    self.app.root = self.stack.component();
+                    self.app.setFocus(self.editorComponent());
+                    if (!overlay.hidden) self.component_overlay_id = try self.app.pushOverlay(self.customComponent(), .{ .width = overlay.width, .height = overlay.height, .placement = .{ .absolute = .{ .x = @intCast(overlay.column), .y = @intCast(overlay.row) } }, .modal = value.scene.focused and overlay.capture_input });
+                } else {
+                    self.app.root = self.customComponent();
+                    self.app.setFocus(self.customComponent());
+                }
+                self.app.invalidatePaint();
+                try self.resizeComponent(terminal.terminalDimensions(&self.environ, .{ .columns = 80, .rows = 24 }));
+            },
+            .component_close => |fence| try self.removeCustomComponent(fence),
         };
+        if (requested_close) |fence| try self.removeCustomComponent(fence);
         if (updates.items.len > 0) self.dirty = true;
     }
 
     fn paint(self: *Frontend) !void {
         const dimensions = terminal.terminalDimensions(&self.environ, .{ .columns = 80, .rows = 24 });
         try self.draw(dimensions, true);
+    }
+    fn resizeComponent(self: *Frontend, size: terminal.Dimensions) !void {
+        const scene = self.component orelse return;
+        const queue = self.component_controls orelse return;
+        if (self.component_dimensions) |previous| {
+            if (previous.columns == size.columns and previous.rows == size.rows) return;
+        } else if (scene.width == size.columns and scene.height == size.rows) {
+            self.component_dimensions = size;
+            return;
+        }
+        try queue.send(.{ .gpa = self.gpa, .fence = scene.fence, .kind = .{ .resize = .{ .width = size.columns, .height = size.rows } } });
+        self.component_dimensions = size;
     }
     fn draw(self: *Frontend, dimensions: terminal.Dimensions, write: bool) !void {
         var editor_lines = try line_editor.renderEditorLinesPadded(self.gpa, &self.editor, dimensions.columns, self.editor_padding_x);
@@ -569,7 +761,7 @@ pub const Frontend = struct {
         self.footer_lines.lines = footer;
         self.root_entries = .{
             .{ .component = self.header_lines.component(), .basis = header.len, .shrink = 0 },
-            .{ .component = self.scroll.component(), .grow = 1, .min_size = 1 },
+            .{ .component = self.scroll.component(), .basis = 1, .grow = 1, .min_size = 1 },
             .{ .component = self.above_lines.component(), .basis = self.surfaces.above.len },
             .{ .component = self.editorComponent(), .basis = @min(editor_lines.items.len, @max(@as(usize, 1), dimensions.rows / 2)), .shrink = 0 },
             .{ .component = self.below_lines.component(), .basis = self.surfaces.below.len },
@@ -595,6 +787,13 @@ pub const Frontend = struct {
         defer self.gpa.free(bytes);
         if (write) try application.writeAll(self.io, bytes);
         self.dirty = false;
+        self.mutex.lockUncancelable(self.io);
+        if (self.close_pending) |fence| {
+            self.closed_component = fence;
+            self.close_pending = null;
+            self.changed.broadcast(self.io);
+        }
+        self.mutex.unlock(self.io);
     }
     fn currentWorkingFrame(self: *Frontend) usize {
         if (self.surfaces.working_frames.len == 0) return 0;
@@ -610,8 +809,42 @@ pub const Frontend = struct {
             self.changed.broadcast(self.io);
             self.mutex.unlock(self.io);
         };
+        if (self.component) |scene| self.removeCustomComponent(scene.fence) catch {};
+        self.mutex.lockUncancelable(self.io);
+        // No borrowed Runtime queue survives a worker stop, including a frame
+        // admitted immediately before shutdown but not yet presented.
+        for (self.updates.items) |*update| if (update.* == .component) {
+            update.deinit(self.gpa);
+            update.* = .{ .busy = false };
+        };
+        self.component_controls = null;
+        if (self.close_pending) |fence| {
+            self.closed_component = fence;
+            self.close_pending = null;
+        }
+        self.worker_finished = true;
+        self.changed.broadcast(self.io);
+        self.mutex.unlock(self.io);
     }
     fn input(self: *Frontend, packet: line_editor.InputDecoder.Input) !void {
+        if (self.component) |scene| if (scene.focused and (scene.overlay == null or (scene.overlay.?.capture_input and !scene.overlay.?.hidden))) {
+            const queue = self.component_controls orelse return error.NativeComponentChannelClosed;
+            const owned = switch (packet) {
+                .key => |value| blk: {
+                    if (keys.parseKeyWithOptions(value, .{ .kitty_active = true })) |key| {
+                        if (key.event_type == .release) {
+                            const wants_release = if (comptime @hasField(component_protocol.Scene, "wants_key_release")) scene.wants_key_release else false;
+                            if (!wants_release) return;
+                        }
+                    }
+                    break :blk try self.gpa.dupe(u8, value);
+                },
+                .paste => |value| try std.fmt.allocPrint(self.gpa, "\x1b[200~{s}\x1b[201~", .{value}),
+            };
+            errdefer self.gpa.free(owned);
+            try queue.send(.{ .gpa = self.gpa, .fence = scene.fence, .kind = .{ .input = owned } });
+            return;
+        };
         switch (packet) {
             .paste => |value| try self.app.handlePaste(value),
             .key => |sequence| {
@@ -675,20 +908,22 @@ pub const Frontend = struct {
                 continue;
             }
             const size = terminal.terminalDimensions(&self.environ, .{ .columns = 80, .rows = 24 });
-            if (size.columns != self.app.painted_width or size.rows != self.app.painted_height) self.dirty = true;
+            if (size.columns != self.observed_dimensions.columns or size.rows != self.observed_dimensions.rows) {
+                self.observed_dimensions = size;
+                self.dirty = true;
+                try self.resizeComponent(size);
+            }
             if (self.busy and self.surfaces.working_visible and self.currentWorkingFrame() != self.working_frame) self.dirty = true;
             if (self.dirty) try self.paint();
-            var descriptor: std.os.linux.pollfd = .{ .fd = Io.File.stdin().handle, .events = std.os.linux.POLL.IN, .revents = 0 };
-            const buffered = self.reader.interface.seek < self.reader.interface.end;
-            const result = std.os.linux.poll(@ptrCast(&descriptor), 1, if (buffered) 0 else 10);
-            if (std.os.linux.errno(result) != .SUCCESS and std.os.linux.errno(result) != .INTR) return error.TerminalPollFailed;
-            if (descriptor.revents & (std.os.linux.POLL.HUP | std.os.linux.POLL.ERR) != 0) {
+            const buffered = platform.inputBuffered(self.reader);
+            const ready = try platform.waitInput(if (buffered) 0 else 10);
+            if (ready == .dead) {
                 terminal_alive = false;
                 raw.restore = false;
                 return error.DeadTerminal;
             }
-            if (descriptor.revents & std.os.linux.POLL.IN != 0 or self.reader.interface.seek < self.reader.interface.end) {
-                const byte = self.reader.interface.takeByte() catch |err| {
+            if (ready == .input or platform.inputBuffered(self.reader)) {
+                const byte = (platform.pollByte(self.reader) catch |err| {
                     const actual = line_editor.terminalInputError(err, self.reader.err);
                     if (actual == error.DeadTerminal) {
                         terminal_alive = false;
@@ -696,7 +931,7 @@ pub const Frontend = struct {
                         return error.DeadTerminal;
                     }
                     return err;
-                };
+                }) orelse continue;
                 if (byte == 0x1b and (self.decoder.pending.items.len == 0 or self.decoder.delivered)) self.escape_started_ms = Io.Clock.awake.now(self.io).toMilliseconds();
                 if (try self.decoder.feed(byte)) |packet| {
                     try self.input(packet);

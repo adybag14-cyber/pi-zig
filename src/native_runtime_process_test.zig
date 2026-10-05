@@ -7,6 +7,7 @@ const ui_mod = @import("extensions/ui.zig");
 const integration_mod = @import("extensions/integration.zig");
 const provider_registry_mod = @import("extensions/provider_registry.zig");
 const provider_stream_mod = @import("extensions/provider_stream.zig");
+const component_protocol = @import("extensions/component_protocol.zig");
 
 test "native runtime record budget suspends beyond ordinary deadline and rearms after human close" {
     var budget: runtime_mod.NativeRecordBudget = .{};
@@ -302,6 +303,387 @@ test "native runtime URL globals module aliases filesystem and createRequire con
     try std.testing.expect(std.mem.indexOf(u8, result, "https://example.test/path?a=1&a=2") != null);
     try std.testing.expect(std.mem.indexOf(u8, result, "file:") != null);
     try fixture.noBridge();
+}
+
+test "native runtime custom C factory frames resize input close ACK original errors and reuse without Node" {
+    const extension_source =
+        \\import {Text,matchesKey,Key} from '@earendil-works/pi-tui';
+        \\export default function(pi){pi.registerCommand('component',{async handler(mode,ctx){let disposed=0,text='first',lastWidth=0;const original={original:true};try{const result=await ctx.ui.custom(async(tui,theme,keybindings,done)=>{await Promise.resolve();if(typeof theme.bold!=='function'||!keybindings.matches('\r','tui.select.confirm')||!matchesKey('\x03',Key.ctrl('c')))throw Error('native factory arguments');return {render(width){lastWidth=width;if(mode==='render-error')throw original;return new Text(text+':'+width,0,0).render(width)},handleInput(data){if(mode==='input-error')throw original;if(data==='q')done({text,width:lastWidth});else{text=data;tui.requestRender()}},invalidate(){},dispose(){disposed++}}});return {result,disposed}}catch(error){return {caught:error===original,disposed}}}})}
+    ;
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(extension_source);
+    defer fixture.deinit();
+    const started = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    try started.runtime.setContextJson("{\"hasUI\":true,\"width\":40,\"height\":15}");
+    const Ui = struct {
+        frames: usize = 0,
+        closes: usize = 0,
+        resized: bool = false,
+        updated: bool = false,
+        mode: enum { normal, input_error, render_error } = .normal,
+        fn request(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            return error.UnexpectedStandardDialog;
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+        fn scene(context: ?*anyopaque, received: component_protocol.Scene, queue: *component_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            var owned = received;
+            var consumed = false;
+            defer if (consumed) owned.deinit();
+            self.frames += 1;
+            self.resized = self.resized or received.width == 23;
+            for (received.frame.lines) |line| self.updated = self.updated or std.mem.indexOf(u8, line, "updated:23") != null;
+            const input: []const u8 = if (self.mode == .input_error) "error" else if (!self.resized) "" else if (!self.updated) "updated" else "q";
+            if (input.len == 0) try queue.send(.{ .gpa = std.heap.page_allocator, .fence = received.fence, .kind = .{ .resize = .{ .width = 23, .height = 9 } } }) else {
+                var control: component_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = received.fence, .kind = .{ .input = try std.heap.page_allocator.dupe(u8, input) } };
+                var transferred = false;
+                defer if (!transferred) control.deinit();
+                try queue.send(control);
+                transferred = true;
+            }
+            consumed = true;
+        }
+        fn close(context: ?*anyopaque, _: component_protocol.Fence) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.closes += 1;
+        }
+    };
+    var ui: Ui = .{};
+    started.runtime.setUiBridge(.{ .context = &ui, .request_fn = Ui.request, .action_fn = Ui.action, .component_scene_fn = Ui.scene, .component_close_fn = Ui.close });
+    const result = try started.runtime.invokeCommand("component", "normal", "{}");
+    defer gpa.free(result);
+    try std.testing.expect(ui.frames >= 3 and ui.resized and ui.updated);
+    try std.testing.expectEqual(@as(usize, 1), ui.closes);
+    try std.testing.expect(std.mem.indexOf(u8, result, "\"text\":\"updated\"") != null);
+    try std.testing.expect(std.mem.indexOf(u8, result, "\"width\":23") != null);
+    try std.testing.expect(std.mem.indexOf(u8, result, "\"disposed\":1") != null);
+    ui = .{ .mode = .input_error };
+    const input_error = try started.runtime.invokeCommand("component", "input-error", "{}");
+    defer gpa.free(input_error);
+    try std.testing.expect(std.mem.indexOf(u8, input_error, "\"caught\":true") != null);
+    try std.testing.expect(std.mem.indexOf(u8, input_error, "\"disposed\":1") != null);
+    try std.testing.expectEqual(@as(usize, 1), ui.closes);
+    ui = .{ .mode = .render_error };
+    const render_error = try started.runtime.invokeCommand("component", "render-error", "{}");
+    defer gpa.free(render_error);
+    try std.testing.expect(std.mem.indexOf(u8, render_error, "\"caught\":true") != null);
+    try std.testing.expect(std.mem.indexOf(u8, render_error, "\"disposed\":1") != null);
+    try std.testing.expectEqual(@as(usize, 0), ui.frames);
+    try std.testing.expect(!started.runtime.closed);
+    try fixture.noBridge();
+}
+
+test "native runtime model publication retains update receiver async catalog rejected stale abort and old closures" {
+    const extension_source =
+        \\export default function(pi){let saved,updates=0;const config={models:[{id:'initial'}],async getModels(){return this.models},async refreshModels(ctx){if(!Object.isFrozen(ctx)||!Object.isFrozen(ctx.credential)||!Object.isFrozen(ctx.stored))throw Error('mutable refresh');saved=ctx.publish;const original={publication:true};if(ctx.stored.mode==='error'){try{await ctx.publish({get persist(){throw original}})}catch(error){if(error!==original)throw Error('publication error identity');return [{id:'caught'}]}throw Error('missing rejection')}const publication={receiver:'publication',persist:{etag:'owned'},get update(){if(ctx.stored.mode==='unregister')pi.unregisterProvider('native-models');return function(){if(this!==publication)throw Error('update receiver');updates++;config.models=[{id:'updated'}]}}};const accepted=await ctx.publish(publication);if(!accepted)return [{id:'rejected'}]}};pi.registerProvider('native-models',config);pi.registerCommand('models-status',{async handler(mode){if(mode==='stale'){let blocked=false;try{await saved({update(){updates+=100}})}catch(error){blocked=true}return {blocked,updates}}return {updates}}})}
+    ;
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(extension_source);
+    defer fixture.deinit();
+    const started = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const config = try streamConfig(started.manifest_json);
+    defer gpa.free(config);
+    const callback = try streamId(config, "refreshModels");
+    defer gpa.free(callback);
+    const Ui = struct {
+        flag: *bool,
+        accept: bool = true,
+        abort: bool = false,
+        cancelled: bool = false,
+        published: usize = 0,
+        catalogs: usize = 0,
+        fn request(context: ?*anyopaque, allocator: std.mem.Allocator, method: []const u8, args: []const u8) ![]u8 {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            var parsed = try std.json.parseFromSlice(std.json.Value, allocator, args, .{});
+            defer parsed.deinit();
+            if (std.mem.eql(u8, method, "provider_models_publish")) {
+                self.published += 1;
+                try std.testing.expect(parsed.value.object.get("hasPersist").?.bool);
+                if (self.abort) {
+                    @atomicStore(bool, self.flag, true, .release);
+                    std.testing.io.sleep(.fromMilliseconds(5000), .awake) catch |err| {
+                        self.cancelled = true;
+                        return err;
+                    };
+                    return error.PublicationAbortDidNotCancel;
+                }
+            } else {
+                try std.testing.expectEqualStrings("provider_models_catalog", method);
+                self.catalogs += 1;
+                try std.testing.expectEqualStrings("updated", parsed.value.object.get("models").?.array.items[0].object.get("id").?.string);
+            }
+            return allocator.dupe(u8, if (self.accept) "true" else "false");
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+        fn bridge(self: *@This()) runtime_mod.UiBridge {
+            return .{ .context = self, .request_fn = request, .action_fn = action };
+        }
+    };
+    var aborted = false;
+    var ui: Ui = .{ .flag = &aborted };
+    const normal = "{\"generation\":1,\"allowNetwork\":false,\"credential\":{\"owned\":true},\"stored\":{}}";
+    const first = try started.runtime.invokeProviderRefreshModels(callback, "native-models", normal, &aborted, ui.bridge());
+    defer gpa.free(first);
+    try std.testing.expect(std.mem.indexOf(u8, first, "updated") != null);
+    try std.testing.expectEqual(@as(usize, 1), ui.published);
+    try std.testing.expectEqual(@as(usize, 1), ui.catalogs);
+    const stale = try started.runtime.invokeCommand("models-status", "stale", "{}");
+    defer gpa.free(stale);
+    try std.testing.expect(std.mem.indexOf(u8, stale, "\"blocked\":true") != null and std.mem.indexOf(u8, stale, "\"updates\":1") != null);
+    ui.accept = false;
+    const rejected = try started.runtime.invokeProviderRefreshModels(callback, "native-models", normal, &aborted, ui.bridge());
+    defer gpa.free(rejected);
+    try std.testing.expect(std.mem.indexOf(u8, rejected, "rejected") != null);
+    try std.testing.expectEqual(@as(usize, 1), ui.catalogs);
+    const caught = try started.runtime.invokeProviderRefreshModels(callback, "native-models", "{\"generation\":2,\"allowNetwork\":false,\"credential\":{},\"stored\":{\"mode\":\"error\"}}", &aborted, ui.bridge());
+    defer gpa.free(caught);
+    try std.testing.expect(std.mem.indexOf(u8, caught, "caught") != null);
+    ui.accept = true;
+    ui.abort = true;
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, started.runtime.invokeProviderRefreshModels(callback, "native-models", normal, &aborted, ui.bridge()));
+    try std.testing.expect(ui.cancelled and !started.runtime.closed);
+    try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "Operation aborted") != null);
+    aborted = false;
+    ui.abort = false;
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, started.runtime.invokeProviderRefreshModels(callback, "native-models", "{\"generation\":3,\"allowNetwork\":false,\"credential\":{},\"stored\":{\"mode\":\"unregister\"}}", &aborted, ui.bridge()));
+    const status = try started.runtime.invokeCommand("models-status", "", "{}");
+    defer gpa.free(status);
+    try std.testing.expect(std.mem.indexOf(u8, status, "\"updates\":1") != null);
+    try std.testing.expect(!started.runtime.closed);
+    try fixture.noBridge();
+}
+
+test "native runtime OAuth provider receiver original errors actions live abort managed prompt and reuse" {
+    const extension_source =
+        \\export default function(pi){let calls=0,oldCallbacks;pi.registerProvider('native-oauth',{oauth:{owner:'receiver',async login(callbacks){if(this.owner!=='receiver'||!(callbacks.signal instanceof AbortSignal))throw Error('OAuth receiver/signal');calls++;if(calls===1){oldCallbacks=callbacks;const original={conversion:true};let caught=false;try{await callbacks.onPrompt({get message(){throw original}})}catch(error){caught=error===original}if(!caught)throw Error('OAuth conversion identity');callbacks.onAuth({url:'https://login.invalid',instructions:'open'});callbacks.onDeviceCode({verification_uri:'https://device.invalid',user_code:'owned',interval_seconds:7});callbacks.onProgress('progress');return {access:await callbacks.onPrompt({message:'Tenant?',secret:true}),refresh:await callbacks.onManualCodeInput(),team:await callbacks.onSelect({title:'Team?',options:[{id:'a',label:'A'},{value:'b',label:'B'}]}),caught}}if(calls===2){await callbacks.onPrompt({message:'Abort'});throw Error('abort resolved')}if(calls===3){let stale=false;try{oldCallbacks.onProgress('late')}catch(error){stale=true}return {access:'reused',stale}}throw Error('oauth-original-failure')}}})}
+    ;
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(extension_source);
+    defer fixture.deinit();
+    const started = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const config = try streamConfig(started.manifest_json);
+    defer gpa.free(config);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, config, .{});
+    defer parsed.deinit();
+    const callback = parsed.value.object.get("oauth").?.object.get("login").?.object.get("__pi_callback_id").?.string;
+    const Ui = struct {
+        flag: *bool,
+        requests: usize = 0,
+        actions: usize = 0,
+        cancelled: bool = false,
+        abort: bool = false,
+        fn request(context: ?*anyopaque, allocator: std.mem.Allocator, method: []const u8, args: []const u8) ![]u8 {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.requests += 1;
+            if (self.abort) {
+                @atomicStore(bool, self.flag, true, .release);
+                std.testing.io.sleep(.fromMilliseconds(5000), .awake) catch |err| {
+                    self.cancelled = true;
+                    return err;
+                };
+                return error.AbortDidNotCancelPrompt;
+            }
+            var request_value = try std.json.parseFromSlice(std.json.Value, allocator, args, .{});
+            defer request_value.deinit();
+            if (std.mem.eql(u8, method, "oauth_prompt")) {
+                try std.testing.expect(request_value.value.object.get("secret").?.bool);
+                return allocator.dupe(u8, "\"tenant\"");
+            }
+            return allocator.dupe(u8, if (std.mem.eql(u8, method, "oauth_manual_code")) "\"manual\"" else "\"b\"");
+        }
+        fn action(context: ?*anyopaque, _: std.mem.Allocator, method: []const u8, _: []const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            try std.testing.expect(std.mem.startsWith(u8, method, "oauth_"));
+            self.actions += 1;
+        }
+        fn bridge(self: *@This()) runtime_mod.UiBridge {
+            return .{ .context = self, .request_fn = request, .action_fn = action };
+        }
+    };
+    var flag = false;
+    var ui: Ui = .{ .flag = &flag };
+    const first = try started.runtime.invokeProviderOAuthLogin(callback, &flag, ui.bridge());
+    defer gpa.free(first);
+    try std.testing.expectEqual(@as(usize, 3), ui.requests);
+    try std.testing.expectEqual(@as(usize, 3), ui.actions);
+    try std.testing.expect(std.mem.indexOf(u8, first, "\"caught\":true") != null and std.mem.indexOf(u8, first, "tenant") != null and std.mem.indexOf(u8, first, "manual") != null);
+    var first_json = try std.json.parseFromSlice(std.json.Value, gpa, first, .{});
+    defer first_json.deinit();
+    try std.testing.expectEqual(@as(usize, 3), first_json.value.object.get("actionQueue").?.array.items.len);
+    ui.abort = true;
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, started.runtime.invokeProviderOAuthLogin(callback, &flag, ui.bridge()));
+    try std.testing.expect(ui.cancelled and !started.runtime.closed);
+    try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "Operation aborted") != null);
+    flag = false;
+    ui.abort = false;
+    const reused = try started.runtime.invokeProviderOAuthLogin(callback, &flag, ui.bridge());
+    defer gpa.free(reused);
+    try std.testing.expect(std.mem.indexOf(u8, reused, "reused") != null and std.mem.indexOf(u8, reused, "\"stale\":true") != null);
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, started.runtime.invokeProviderOAuthLogin(callback, &flag, ui.bridge()));
+    try std.testing.expect(std.mem.indexOf(u8, started.runtime.lastError().?, "oauth-original-failure") != null);
+    try fixture.noBridge();
+}
+
+test "native runtime custom overlay handles geometry key release hidden input fences and original callback errors" {
+    const extension_source =
+        \\export default function(pi){let oldHandle;pi.registerCommand('overlay',{async handler(mode,ctx){let disposed=0,optionCalls=0,inputs=0,handle,initialBounds;const original={overlayError:true};try{const result=await ctx.ui.custom((tui,theme,keys,done)=>({wantsKeyRelease:true,render(width){return ['overlay:'+width,'second','third','fourth']},handleInput(data){inputs++;if(data==='q')done({inputs,bounds:handle.getBounds(),optionCalls,initialBounds})},invalidate(){},dispose(){disposed++}}),{overlay:true,overlayOptions(){optionCalls++;return {width:'50%',maxHeight:3,margin:1,anchor:'bottom-right'}},onHandle(value){handle=value;oldHandle=value;initialBounds=value.getBounds();if(mode==='error')throw original;value.setHidden(true);value.unfocus();setTimeout(()=>{value.setHidden(false);value.focus()},10)}});return {result,disposed,staleHidden:oldHandle.isHidden(),staleFocused:oldHandle.isFocused()}}catch(error){return {caught:error===original,disposed}}}})}
+    ;
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(extension_source);
+    defer fixture.deinit();
+    const started = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    try started.runtime.setContextJson("{\"hasUI\":true,\"width\":80,\"height\":24}");
+    const Ui = struct {
+        visible: usize = 0,
+        hidden: bool = false,
+        closes: usize = 0,
+        fail: bool = false,
+        fn request(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            return error.UnexpectedStandardDialog;
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+        fn scene(context: ?*anyopaque, received: component_protocol.Scene, queue: *component_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            var owned = received;
+            var consumed = false;
+            defer if (consumed) owned.deinit();
+            try std.testing.expect(received.wants_key_release);
+            const layout = received.overlay orelse return error.MissingOverlayLayout;
+            try std.testing.expect(layout.capture_input);
+            if (layout.hidden) {
+                self.hidden = true;
+                try std.testing.expect(!received.focused and received.frame.lines.len == 0);
+            } else {
+                self.visible += 1;
+                try std.testing.expect(received.focused);
+                try std.testing.expectEqual(@as(usize, 40), layout.width);
+                try std.testing.expectEqual(@as(usize, 3), layout.height);
+                try std.testing.expectEqual(@as(usize, 20), layout.row);
+                try std.testing.expectEqual(@as(usize, 39), layout.column);
+                try std.testing.expectEqual(@as(usize, 3), received.frame.lines.len);
+                try std.testing.expectEqualStrings("overlay:40", received.frame.lines[0]);
+            }
+            if (layout.hidden or (self.hidden and !self.fail)) {
+                var control: component_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = received.fence, .kind = .{ .input = try std.heap.page_allocator.dupe(u8, if (layout.hidden) "ignored" else "q") } };
+                var transferred = false;
+                defer if (!transferred) control.deinit();
+                try queue.send(control);
+                transferred = true;
+            }
+            consumed = true;
+        }
+        fn close(context: ?*anyopaque, _: component_protocol.Fence) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.closes += 1;
+        }
+    };
+    var ui: Ui = .{};
+    started.runtime.setUiBridge(.{ .context = &ui, .request_fn = Ui.request, .action_fn = Ui.action, .component_scene_fn = Ui.scene, .component_close_fn = Ui.close });
+    const result = try started.runtime.invokeCommand("overlay", "normal", "{}");
+    defer gpa.free(result);
+    try std.testing.expect(ui.hidden and ui.visible >= 1);
+    try std.testing.expectEqual(@as(usize, 1), ui.closes);
+    try std.testing.expect(std.mem.indexOf(u8, result, "\"inputs\":1") != null);
+    try std.testing.expect(std.mem.indexOf(u8, result, "\"optionCalls\":1") != null);
+    try std.testing.expect(std.mem.indexOf(u8, result, "\"disposed\":1") != null);
+    try std.testing.expect(std.mem.indexOf(u8, result, "\"staleHidden\":true") != null);
+    try std.testing.expect(std.mem.indexOf(u8, result, "\"staleFocused\":false") != null);
+    ui = .{ .fail = true };
+    const failure = try started.runtime.invokeCommand("overlay", "error", "{}");
+    defer gpa.free(failure);
+    try std.testing.expect(std.mem.indexOf(u8, failure, "\"caught\":true") != null);
+    try std.testing.expect(std.mem.indexOf(u8, failure, "\"disposed\":1") != null);
+    try std.testing.expectEqual(@as(usize, 1), ui.closes);
+    try std.testing.expect(!started.runtime.closed);
+    try fixture.noBridge();
+}
+
+test "native runtime custom human wait live invocation abort negative close ACK and headless defaults stay bounded" {
+    const extension_source =
+        \\export default pi=>pi.registerTool({name:'component-wait',async execute(id,args,signal,update,ctx){let disposed=0;try{const result=await ctx.ui.custom((tui,theme,keys,done)=>{if(args.mode==='factory-wait')return new Promise(()=>{});return {render(){return ['waiting:'+id]},handleInput(data){if(data==='q')done('selected')},invalidate(){},dispose(){disposed++}}});return {content:[{type:'text',text:result===undefined?'cancelled':result}],details:{disposed,aborted:signal.aborted}}}catch(error){return {content:[{type:'text',text:'close-error:'+error.message}],details:{disposed}}}}})
+    ;
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource(extension_source);
+    defer fixture.deinit();
+    const started = try runtime_mod.Runtime.startNative(gpa, io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    try started.runtime.setContextJson("{\"hasUI\":true}");
+    const Ui = struct {
+        flag: *bool,
+        mode: enum { human, abort, negative_ack } = .human,
+        delay: std.Io.Group = .init,
+        frames: usize = 0,
+        closes: usize = 0,
+        fn request(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            return error.UnexpectedStandardDialog;
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+        fn delayed(queue: *component_protocol.ControlQueue, fence: component_protocol.Fence) std.Io.Cancelable!void {
+            try std.testing.io.sleep(.fromMilliseconds(80), .awake);
+            var control: component_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = fence, .kind = .{ .input = std.heap.page_allocator.dupe(u8, "q") catch return } };
+            var transferred = false;
+            defer if (!transferred) control.deinit();
+            queue.send(control) catch return;
+            transferred = true;
+        }
+        fn scene(context: ?*anyopaque, received: component_protocol.Scene, queue: *component_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            var frame = received;
+            self.frames += 1;
+            if (self.mode == .abort) @atomicStore(bool, self.flag, true, .release) else try self.delay.concurrent(std.testing.io, delayed, .{ queue, received.fence });
+            frame.deinit();
+        }
+        fn close(context: ?*anyopaque, _: component_protocol.Fence) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.closes += 1;
+            try self.delay.await(std.testing.io);
+            if (self.mode == .negative_ack) return error.InjectedComponentCloseFailure;
+        }
+        fn deinit(self: *@This()) void {
+            self.delay.cancel(std.testing.io);
+        }
+    };
+    var aborted = false;
+    var ui: Ui = .{ .flag = &aborted };
+    defer ui.deinit();
+    started.runtime.setUiBridge(.{ .context = &ui, .request_fn = Ui.request, .action_fn = Ui.action, .component_scene_fn = Ui.scene, .component_close_fn = Ui.close });
+    const human = try started.runtime.invokeToolCall("human", "component-wait", "{}", "{}", &aborted);
+    defer gpa.free(human);
+    try std.testing.expect(std.mem.indexOf(u8, human, "selected") != null);
+    try std.testing.expect(std.mem.indexOf(u8, human, "\"disposed\":1") != null);
+    try std.testing.expectEqual(@as(usize, 1), ui.closes);
+    ui.mode = .abort;
+    const cancelled = try started.runtime.invokeToolCall("abort", "component-wait", "{}", "{}", &aborted);
+    defer gpa.free(cancelled);
+    try std.testing.expect(std.mem.indexOf(u8, cancelled, "cancelled") != null);
+    try std.testing.expect(std.mem.indexOf(u8, cancelled, "\"aborted\":true") != null);
+    try std.testing.expect(std.mem.indexOf(u8, cancelled, "\"disposed\":1") != null);
+    aborted = false;
+    ui.mode = .negative_ack;
+    const failure = try started.runtime.invokeToolCall("negative", "component-wait", "{}", "{}", &aborted);
+    defer gpa.free(failure);
+    try std.testing.expect(std.mem.indexOf(u8, failure, "InjectedComponentCloseFailure") != null);
+    try std.testing.expect(std.mem.indexOf(u8, failure, "\"disposed\":1") != null);
+    try std.testing.expect(!started.runtime.closed);
+    try started.runtime.setContextJson("{\"hasUI\":false}");
+    const headless = try started.runtime.invokeTool("component-wait", "{}", "{}");
+    defer gpa.free(headless);
+    try std.testing.expect(std.mem.indexOf(u8, headless, "cancelled") != null);
+    try std.testing.expect(std.mem.indexOf(u8, headless, "\"disposed\":0") != null);
+    try started.runtime.setContextJson("{\"hasUI\":true}");
+    started.runtime.timeout_ms = 30;
+    try std.testing.expectError(error.JavaScriptExtensionTimeout, started.runtime.invokeTool("component-wait", "{\"mode\":\"factory-wait\"}", "{}"));
+    try std.testing.expect(started.runtime.closed and started.runtime.child.id == null);
 }
 
 const Fixture = struct {
@@ -759,4 +1141,50 @@ test "native runtime UI prompt hooks defer past worker lock and retain both acti
     try std.testing.expectEqualStrings("append_entry", records[0].kind);
     try std.testing.expectEqualStrings("ui_prompt_start", records[0].invocation);
     try std.testing.expectEqualStrings("ui_prompt_end", records[1].invocation);
+}
+
+test "native runtime custom prompt hooks retain live UI context and publish both statuses after close ACK" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default function(pi){let starts=0,ends=0;pi.on('ui_prompt_start',(_,ctx)=>{starts++;ctx.ui.setStatus('custom-life','start'+starts+'-end'+ends)});pi.on('ui_prompt_end',(_,ctx)=>{ends++;ctx.ui.setStatus('custom-life','start'+starts+'-end'+ends)});pi.registerCommand('custom-hooks',{async handler(_,ctx){await ctx.ui.custom((tui,theme,keys,done)=>({render(){return ['owned']},handleInput(){done()},dispose(){}}));return {message:'closed'}}})}");
+    defer fixture.deinit();
+    var controller = try ui_mod.Controller.init(gpa, std.testing.io, false, 80);
+    defer controller.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    var integration = integration_mod.Bridge.init(&host);
+    defer integration.deinit();
+    const Ui = struct {
+        closes: usize = 0,
+        fn prompt(context: ?*anyopaque, event: ui_mod.PromptEvent, method: []const u8) void {
+            const bridge: *integration_mod.Bridge = @ptrCast(@alignCast(context.?));
+            bridge.uiPromptEvent(event, method);
+        }
+        fn scene(_: ?*anyopaque, received: component_protocol.Scene, queue: *component_protocol.ControlQueue) !void {
+            var control: component_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = received.fence, .kind = .{ .input = try std.heap.page_allocator.dupe(u8, "done") } };
+            var transferred = false;
+            defer if (!transferred) control.deinit();
+            try queue.send(control);
+            transferred = true;
+            var owned = received;
+            owned.deinit();
+        }
+        fn close(context: ?*anyopaque, _: component_protocol.Fence) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            self.closes += 1;
+        }
+    };
+    var ui: Ui = .{};
+    controller.bindPromptEvents(Ui.prompt, &integration);
+    controller.bindComponentScenes(Ui.scene, Ui.close, &ui);
+    host.setScriptUiBridge(controller.bridge());
+    try host.setScriptContextJson("{\"hasUI\":true}");
+    try host.loadPath(fixture.source_path);
+    var result = (try host.executeCommand("custom-hooks", "")).?;
+    defer result.deinit(gpa);
+    try std.testing.expect(!result.is_error);
+    try std.testing.expectEqual(@as(usize, 1), ui.closes);
+    try std.testing.expectEqual(@as(usize, 1), controller.statuses.items.len);
+    try std.testing.expectEqualStrings("custom-life", controller.statuses.items[0].key);
+    try std.testing.expectEqualStrings("start1-end1", controller.statuses.items[0].text);
+    try std.testing.expectEqual(@as(usize, 0), host.ui_prompt_events.items.len);
 }

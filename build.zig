@@ -332,7 +332,7 @@ pub fn build(b: *std.Build) void {
     schema_test_step.dependOn(&run_schema_tests.step);
     test_step.dependOn(&run_schema_tests.step);
     const binding_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/native_bindings.zig"), .target = target, .optimize = optimize }),
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_bindings_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, binding_tests.root_module, quickjs);
@@ -415,6 +415,8 @@ pub fn build(b: *std.Build) void {
     for ([_]struct { name: []const u8, source: []const u8 }{
         .{ .name = "test-provider-method-protocol", .source = "src/provider_method_protocol_test.zig" },
         .{ .name = "test-provider-stream-protocol", .source = "src/provider_stream_protocol_test.zig" },
+        .{ .name = "test-provider-oauth-protocol", .source = "src/provider_oauth_protocol_test.zig" },
+        .{ .name = "test-provider-models-protocol", .source = "src/provider_models_protocol_test.zig" },
     }) |contract| {
         const raw_tests = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path(contract.source), .target = target, .optimize = optimize }),
@@ -557,6 +559,22 @@ pub fn build(b: *std.Build) void {
     });
     const run_fullscreen_frontend_tests = b.addRunArtifact(fullscreen_frontend_tests);
     run_fullscreen_frontend_tests.step.dependOn(b.getInstallStep());
+    if (target.result.os.tag == .macos) fullscreen_frontend_tests.root_module.link_libc = true;
+    if (target.result.os.tag == .windows) {
+        for ([_]struct { name: []const u8, source: []const u8, environment: []const u8 }{
+            .{ .name = "pi-conpty-launcher", .source = "src/test_support/conpty_launcher.zig", .environment = "PI_TEST_CONPTY_LAUNCHER" },
+            .{ .name = "pi-terminal-probe", .source = "src/test_support/terminal_probe.zig", .environment = "PI_TEST_CONPTY_PROBE" },
+        }) |helper| {
+            const program = b.addExecutable(.{
+                .name = helper.name,
+                .root_module = b.createModule(.{ .root_source_file = b.path(helper.source), .target = target, .optimize = optimize }),
+                .use_llvm = use_llvm,
+            });
+            const installation = b.addInstallArtifact(program, .{});
+            run_fullscreen_frontend_tests.step.dependOn(&installation.step);
+            run_fullscreen_frontend_tests.setEnvironmentVariable(helper.environment, b.getInstallPath(.bin, b.fmt("{s}.exe", .{helper.name})));
+        }
+    }
     const fullscreen_frontend_step = b.step("test-fullscreen-frontend-process", "Exercise persistent fullscreen CLI behavior through real native PTY terminal cells");
     fullscreen_frontend_step.dependOn(&run_fullscreen_frontend_tests.step);
     test_step.dependOn(&run_fullscreen_frontend_tests.step);

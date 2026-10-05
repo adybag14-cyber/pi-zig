@@ -15,6 +15,9 @@ const render = @import("../tui/render.zig");
 const line_editor = @import("../tui/line_editor.zig");
 const Editor = @import("../tui/editor.zig").Editor;
 const Keybindings = @import("../tui/keybindings.zig").Manager;
+const component_protocol = @import("component_protocol.zig");
+pub const ComponentSceneFn = *const fn (?*anyopaque, component_protocol.Scene, *component_protocol.ControlQueue) anyerror!void;
+pub const ComponentCloseFn = *const fn (?*anyopaque, component_protocol.Fence) anyerror!void;
 
 pub const NotificationKind = enum { info, warning, error_message };
 pub const WidgetPlacement = enum { above_editor, below_editor };
@@ -22,6 +25,7 @@ pub const PromptEvent = enum { start, end };
 pub const PromptEventFn = *const fn (?*anyopaque, PromptEvent, []const u8) void;
 pub const ModalObserverFn = *const fn (?*anyopaque, PromptEvent, ?anyerror) anyerror!void;
 pub const SurfaceSinkFn = *const fn (?*anyopaque, SurfaceSnapshot) anyerror!void;
+pub const EditorSinkFn = *const fn (?*anyopaque, []const u8) anyerror!void;
 
 /// Owned projection for a retained frontend. No Controller slices cross threads.
 pub const SurfaceSnapshot = struct {
@@ -125,6 +129,12 @@ pub const Controller = struct {
     modal_observer_ctx: ?*anyopaque = null,
     surface_sink_fn: ?SurfaceSinkFn = null,
     surface_sink_ctx: ?*anyopaque = null,
+    editor_sink_fn: ?EditorSinkFn = null,
+    editor_sink_ctx: ?*anyopaque = null,
+    component_scene_fn: ?ComponentSceneFn = null,
+    component_close_fn: ?ComponentCloseFn = null,
+    component_scene_ctx: ?*anyopaque = null,
+    component_fence: ?component_protocol.Fence = null,
 
     state_mutex: Io.Mutex = .init,
     dialog_mutex: Io.Mutex = .init,
@@ -143,6 +153,7 @@ pub const Controller = struct {
     theme_name: ?[]u8 = null,
     editor_snapshot: []u8,
     pending_editor_text: ?[]u8 = null,
+    pending_editor_delivered: bool = false,
     custom_editor_enabled: bool = false,
     autocomplete_requested: bool = false,
 
@@ -192,6 +203,43 @@ pub const Controller = struct {
         self.surface_sink_ctx = context;
         self.modal_observer_fn = observer;
         self.modal_observer_ctx = context;
+    }
+
+    pub fn bindComponentScenes(self: *Controller, scene: ?ComponentSceneFn, close: ?ComponentCloseFn, context: ?*anyopaque) void {
+        self.component_scene_fn = scene;
+        self.component_close_fn = close;
+        self.component_scene_ctx = context;
+    }
+
+    pub fn bindEditorFrontend(self: *Controller, sink: ?EditorSinkFn, context: ?*anyopaque) void {
+        self.editor_sink_fn = sink;
+        self.editor_sink_ctx = context;
+    }
+
+    pub fn componentScene(raw: ?*anyopaque, scene: component_protocol.Scene, controls: *component_protocol.ControlQueue) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        const sink = self.component_scene_fn orelse return error.NativeComponentFrontendUnavailable;
+        const first = self.component_fence == null;
+        if (self.component_fence) |active| if (!active.matches(scene.fence)) return error.StaleNativeComponentScene;
+        try sink(self.component_scene_ctx, scene, controls);
+        self.component_fence = scene.fence;
+        // Custom scenes retain the frontend's sole stdin/paint ownership.
+        // Extension lifecycle fanout is still deferred by the integration.
+        if (first) if (self.prompt_event_fn) |notify| notify(self.prompt_event_ctx, .start, "custom");
+    }
+
+    pub fn componentClose(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        const active = self.component_fence orelse return error.StaleNativeComponentScene;
+        if (!active.matches(fence)) return error.StaleNativeComponentScene;
+        const close = self.component_close_fn orelse return error.NativeComponentFrontendUnavailable;
+        defer {
+            self.component_fence = null;
+            if (self.prompt_event_fn) |notify| notify(self.prompt_event_ctx, .end, "custom");
+        }
+        // Success means the scene is gone and the restored editor was painted.
+        // The sink must detach the borrowed channel even when paint fails.
+        try close(self.component_scene_ctx, fence);
     }
 
     pub fn snapshotRetained(self: *Controller, gpa: std.mem.Allocator) !SurfaceSnapshot {
@@ -284,6 +332,7 @@ pub const Controller = struct {
         self.theme_name = null;
         if (self.pending_editor_text) |value| self.gpa.free(value);
         self.pending_editor_text = null;
+        self.pending_editor_delivered = false;
         self.working_visible = true;
         self.custom_editor_enabled = false;
         self.autocomplete_requested = false;
@@ -302,6 +351,8 @@ pub const Controller = struct {
             .context = self,
             .request_fn = requestThunk,
             .action_fn = actionThunk,
+            .component_scene_fn = componentScene,
+            .component_close_fn = componentClose,
         };
     }
 
@@ -338,9 +389,28 @@ pub const Controller = struct {
     pub fn takePendingEditorText(self: *Controller) ?[]u8 {
         self.state_mutex.lockUncancelable(self.io);
         defer self.state_mutex.unlock(self.io);
+        // A bound owner already received this value. Its typed publication
+        // acknowledges adoption; Main must not replay it over later user edits.
+        if (self.pending_editor_delivered) return null;
         const value = self.pending_editor_text;
         self.pending_editor_text = null;
         return value;
+    }
+
+    pub fn frontendEditorSnapshot(raw: ?*anyopaque, text: []const u8) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        const owned = try self.gpa.dupe(u8, text);
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        self.gpa.free(self.editor_snapshot);
+        self.editor_snapshot = owned;
+        if (self.pending_editor_delivered) if (self.pending_editor_text) |pending| {
+            if (std.mem.eql(u8, pending, text)) {
+                self.gpa.free(pending);
+                self.pending_editor_text = null;
+                self.pending_editor_delivered = false;
+            }
+        };
     }
 
     pub fn editorText(self: *Controller, allocator: std.mem.Allocator) ![]u8 {
@@ -545,15 +615,21 @@ pub const Controller = struct {
             const text = try requiredString(object, "text");
             const base = self.pending_editor_text orelse self.editor_snapshot;
             const joined = try std.mem.concat(self.gpa, u8, &.{ base, text });
+            errdefer self.gpa.free(joined);
+            if (self.editor_sink_fn) |sink| try sink(self.editor_sink_ctx, joined);
             if (self.pending_editor_text) |old| self.gpa.free(old);
             self.pending_editor_text = joined;
+            self.pending_editor_delivered = self.editor_sink_fn != null;
             return;
         }
         if (std.mem.eql(u8, method, "setEditorText")) {
             const text = try requiredString(object, "text");
             const owned = try self.gpa.dupe(u8, text);
+            errdefer self.gpa.free(owned);
+            if (self.editor_sink_fn) |sink| try sink(self.editor_sink_ctx, owned);
             if (self.pending_editor_text) |old| self.gpa.free(old);
             self.pending_editor_text = owned;
+            self.pending_editor_delivered = self.editor_sink_fn != null;
             return;
         }
         if (std.mem.eql(u8, method, "setTheme")) {
@@ -918,7 +994,10 @@ fn requestThunk(raw: ?*anyopaque, allocator: std.mem.Allocator, method: []const 
 fn actionThunk(raw: ?*anyopaque, allocator: std.mem.Allocator, method: []const u8, args_json: []const u8) anyerror!void {
     _ = allocator;
     const self: *Controller = @ptrCast(@alignCast(raw orelse return error.MissingExtensionUiController));
-    return self.applyAction(method, args_json);
+    try self.applyAction(method, args_json);
+    // The bridge runs on a managed Runtime owner while Main may be awaiting a
+    // custom component. Retained snapshots cross into the paint owner mailbox.
+    if (self.surface_sink_fn != null) try self.flush();
 }
 
 fn requiredString(object: *const std.json.ObjectMap, key: []const u8) ![]const u8 {
@@ -1050,6 +1129,109 @@ test "extension UI actions retain status widgets editor and title state" {
     const pending = controller.takePendingEditorText().?;
     defer std.testing.allocator.free(pending);
     try std.testing.expectEqualStrings("hello world", pending);
+}
+
+test "extension editor frontend failures preserve pending owned text and later actions reuse sink" {
+    const Fake = struct {
+        reject: bool = true,
+        calls: usize = 0,
+        fn sink(raw: ?*anyopaque, text: []const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            if (self.reject) return error.OutOfMemory;
+            try std.testing.expectEqualStrings("beforeafter", text);
+            self.calls += 1;
+        }
+    };
+    var controller = try Controller.init(std.testing.allocator, std.testing.io, true, 80);
+    defer controller.deinit();
+    try controller.applyAction("setEditorText", "{\"text\":\"before\"}");
+    var fake: Fake = .{};
+    controller.bindEditorFrontend(Fake.sink, &fake);
+    try std.testing.expectError(error.OutOfMemory, controller.applyAction("setEditorText", "{\"text\":\"lost\"}"));
+    try std.testing.expectError(error.OutOfMemory, controller.applyAction("pasteToEditor", "{\"text\":\"lost\"}"));
+    try std.testing.expectEqualStrings("before", controller.pending_editor_text.?);
+    fake.reject = false;
+    try controller.applyAction("pasteToEditor", "{\"text\":\"after\"}");
+    try std.testing.expectEqualStrings("beforeafter", controller.pending_editor_text.?);
+    try std.testing.expectEqual(@as(usize, 1), fake.calls);
+}
+
+test "delivered frontend editor snapshots acknowledge adoption and preserve later user edits" {
+    const Sink = struct {
+        fn accept(_: ?*anyopaque, _: []const u8) !void {}
+    };
+    var controller = try Controller.init(std.testing.allocator, std.testing.io, true, 80);
+    defer controller.deinit();
+    controller.bindEditorFrontend(Sink.accept, null);
+    try controller.applyAction("setEditorText", "{\"text\":\"extension draft\"}");
+    try std.testing.expect(controller.takePendingEditorText() == null);
+    try std.testing.expect(controller.pending_editor_text != null);
+    try Controller.frontendEditorSnapshot(&controller, "extension draft");
+    try std.testing.expect(controller.pending_editor_text == null);
+    try Controller.frontendEditorSnapshot(&controller, "extension draft typed");
+    try std.testing.expect(controller.takePendingEditorText() == null);
+    const snapshot = try controller.editorText(std.testing.allocator);
+    defer std.testing.allocator.free(snapshot);
+    try std.testing.expectEqualStrings("extension draft typed", snapshot);
+}
+
+test "component close error detaches foreground lifecycle and permits a new fenced scene" {
+    const Fake = struct {
+        active: ?component_protocol.Scene = null,
+        borrowed: ?*component_protocol.ControlQueue = null,
+        fail_close: bool = true,
+        starts: usize = 0,
+        ends: usize = 0,
+        fn scene(raw: ?*anyopaque, owned: component_protocol.Scene, queue: *component_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.active = owned;
+            self.borrowed = queue;
+        }
+        fn close(raw: ?*anyopaque, fence: component_protocol.Fence) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            try std.testing.expect(self.active.?.fence.matches(fence));
+            self.active.?.deinit();
+            self.active = null;
+            self.borrowed = null;
+            if (self.fail_close) return error.Canceled;
+        }
+        fn event(raw: ?*anyopaque, value: PromptEvent, name: []const u8) void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            std.debug.assert(std.mem.eql(u8, name, "custom"));
+            if (value == .start) self.starts += 1 else self.ends += 1;
+        }
+    };
+    const gpa = std.testing.allocator;
+    var controller = try Controller.init(gpa, std.testing.io, true, 80);
+    defer controller.deinit();
+    var queue = component_protocol.ControlQueue.init(gpa, std.testing.io);
+    defer queue.deinit();
+    var fake: Fake = .{};
+    controller.bindComponentScenes(Fake.scene, Fake.close, &fake);
+    controller.bindPromptEvents(Fake.event, &fake);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, "{\"version\":1,\"token\":1,\"generation\":2,\"invocationId\":3,\"componentId\":4,\"width\":80,\"height\":24,\"lines\":[\"owned\"],\"overlay\":null}", .{});
+    defer parsed.deinit();
+    var first = try component_protocol.readScene(gpa, &parsed.value.object);
+    const fence = first.fence;
+    Controller.componentScene(&controller, first, &queue) catch |err| {
+        first.deinit();
+        return err;
+    };
+    var stale = fence;
+    stale.token += 1;
+    try std.testing.expectError(error.StaleNativeComponentScene, Controller.componentClose(&controller, stale));
+    try std.testing.expect(fake.borrowed != null);
+    try std.testing.expectError(error.Canceled, Controller.componentClose(&controller, fence));
+    try std.testing.expect(fake.borrowed == null and controller.component_fence == null);
+    fake.fail_close = false;
+    var second = try component_protocol.readScene(gpa, &parsed.value.object);
+    Controller.componentScene(&controller, second, &queue) catch |err| {
+        second.deinit();
+        return err;
+    };
+    try Controller.componentClose(&controller, fence);
+    try std.testing.expectEqual(@as(usize, 2), fake.starts);
+    try std.testing.expectEqual(@as(usize, 2), fake.ends);
 }
 
 test "extension UI context snapshot owns live editor model and status data" {

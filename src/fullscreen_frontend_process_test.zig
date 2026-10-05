@@ -1,7 +1,7 @@
 //! Persistent fullscreen behavior observed in real offline CLI PTY screens.
 const std = @import("std");
 const builtin = @import("builtin");
-const pty = @import("test_support/pty.zig");
+const pty = @import("test_support/platform_pty.zig");
 const vt = @import("test_support/terminal_screen.zig");
 const Io = std.Io;
 
@@ -23,7 +23,9 @@ const Fixture = struct {
         try scratch.dir.writeFile(io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"stream-first\\nstream-second\\nstream-final\",\"stream_chunks\":[\"stream-first\\n\",\"stream-second\\n\",\"stream-final\"],\"stream_chunk_delay_ms\":400},{\"content\":\"second-first\\nsecond-final\",\"stream_chunks\":[\"second-first\\n\",\"second-final\"],\"stream_chunk_delay_ms\":1000}]" });
         var json: Io.Writer.Allocating = .init(gpa);
         defer json.deinit();
-        try json.writer.writeAll("{\"type\":\"session\",\"version\":3,\"id\":\"fullscreen-history\",\"timestamp\":\"2026-10-05T00:00:00.000Z\",\"cwd\":\"/tmp\",\"tipId\":\"entry59\"}\n");
+        try json.writer.writeAll("{\"type\":\"session\",\"version\":3,\"id\":\"fullscreen-history\",\"timestamp\":\"2026-10-05T00:00:00.000Z\",\"cwd\":");
+        try std.json.Stringify.value(scratch.path, .{}, &json.writer);
+        try json.writer.writeAll(",\"tipId\":\"entry59\"}\n");
         for (0..60) |index| {
             try json.writer.print("{{\"type\":\"message\",\"id\":\"entry{d}\",\"parentId\":", .{index});
             if (index == 0) try json.writer.writeAll("null") else try json.writer.print("\"entry{d}\"", .{index - 1});
@@ -34,7 +36,7 @@ const Fixture = struct {
         try scratch.dir.writeFile(io, .{ .sub_path = "history.jsonl", .data = json.written() });
         var environment = try std.process.Environ.createMap(std.testing.environ, gpa);
         errdefer environment.deinit();
-        const binary = try pty.executablePath(gpa, io, environment.get("PI_TEST_BINARY") orelse "zig-out/bin/pi");
+        const binary = try pty.executablePath(gpa, io, environment.get("PI_TEST_BINARY") orelse if (builtin.os.tag == .windows) "zig-out/bin/pi.exe" else "zig-out/bin/pi");
         errdefer gpa.free(binary);
         const mock = try std.fs.path.join(gpa, &.{ scratch.path, "mock.json" });
         errdefer gpa.free(mock);
@@ -63,14 +65,158 @@ const Fixture = struct {
         self.scratch.deinit();
     }
     fn spawn(self: *Fixture, errors: Io.File) !pty.Session {
-        return pty.Session.spawn(std.testing.allocator, std.testing.io, .{
+        return pty.spawn(std.testing.allocator, std.testing.io, .{
             .argv = &.{ self.binary, "--offline", "--mock-script", self.mock, "--session", self.history, "--no-context-files", "--no-skills", "--no-prompt-templates", "--no-themes", "--no-extensions", "--no-tools", "--approve" },
             .cwd = .{ .path = self.scratch.path },
             .environ_map = &self.environment,
             .stderr = .{ .file = errors },
         }, 90_000);
     }
+    fn spawnExtension(self: *Fixture, errors: Io.File, source: []const u8) !pty.Session {
+        try self.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "component.mjs", .data = source });
+        const path = try std.fs.path.join(std.testing.allocator, &.{ self.scratch.path, "component.mjs" });
+        defer std.testing.allocator.free(path);
+        try self.environment.put("PI_EXTENSION_BACKEND", "native");
+        return pty.spawn(std.testing.allocator, std.testing.io, .{
+            .argv = &.{ self.binary, "--offline", "--mock-script", self.mock, "--session", self.history, "--no-context-files", "--no-skills", "--no-prompt-templates", "--no-themes", "--no-tools", "--approve", "-e", path },
+            .cwd = .{ .path = self.scratch.path },
+            .environ_map = &self.environment,
+            .stderr = .{ .file = errors },
+        }, 90_000);
+    }
 };
+
+const custom_extension =
+    \\export default function(pi) {
+    \\ let starts=0,ends=0;
+    \\ pi.on('ui_prompt_start',(_,ctx)=>{starts++;ctx.ui.setStatus('custom-life','start'+starts+'-end'+ends)});
+    \\ pi.on('ui_prompt_end',(_,ctx)=>{ends++;ctx.ui.setStatus('custom-life','start'+starts+'-end'+ends)});
+    \\ pi.registerCommand('component', {handler: async (_,ctx) => {
+    \\  ctx.ui.setEditorText('component-draft');
+    \\  let disposed=0;
+    \\  const result=await ctx.ui.custom(async(tui,theme,keys,done) => {
+    \\   await new Promise(resolve=>setTimeout(resolve,10));
+    \\   let input='',count=0,paste=false;
+    \\   return {render(width){return ['CUSTOM_WIDTH:'+width,'CUSTOM_INPUT:'+input,'CUSTOM_COUNT:'+count,'CUSTOM_PASTE:'+paste]},
+    \\    handleInput(data){if(data==='q')done('selected');else{count++;paste=data.startsWith('\x1b[200~')&&data.endsWith('\x1b[201~');input+=paste?data.slice(6,-6):data;tui.requestRender();}},
+    \\    dispose(){disposed++;}};
+    \\  });
+    \\  ctx.ui.notify('CUSTOM_RESULT:'+result+':DISPOSED:'+disposed);
+    \\ }});
+    \\ pi.registerCommand('component-error', {handler: async (_,ctx) => {
+    \\  const original=new Error('component-original-error');
+    \\  try {await ctx.ui.custom(()=>({render(){throw original;}}));}
+    \\  catch(error){ctx.ui.notify('CUSTOM_ERROR_IDENTITY:'+(error===original));}
+    \\ }});
+    \\ pi.registerCommand('dialog-cancel',{handler:async(_,ctx)=>{
+    \\  ctx.ui.setEditorText('cancel-dialog-draft');const cancel=new AbortController();
+    \\  setTimeout(()=>cancel.abort(),150);const selected=await ctx.ui.select('NATIVE_CANCEL_DIALOG',['one','two'],{signal:cancel.signal});
+    \\  ctx.ui.notify('NATIVE_DIALOG_CANCELLED:'+(selected===undefined));
+    \\ }});
+    \\}
+;
+
+test "native CLI custom scene owns input resize close ACK and restores draft viewport without Node" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnExtension(errors, custom_extension);
+    defer child.deinit();
+    errdefer {
+        const trace = fixture.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", std.testing.allocator, .limited(65536)) catch null;
+        if (trace) |bytes| {
+            defer std.testing.allocator.free(bytes);
+            std.debug.print("Native CLI child stderr:\n{s}\n", .{bytes});
+        }
+    }
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "history-row-059", 0);
+    try observed.send(&child, "\x1b[1;5H", "history-row-000");
+    try observed.send(&child, "/component\r", "CUSTOM_WIDTH:100");
+    try std.testing.expect(!try observed.screen.contains("> component-draft"));
+    try observed.send(&child, "\x1b[120;1:3ux", "CUSTOM_INPUT:x");
+    try std.testing.expect(try observed.screen.contains("CUSTOM_COUNT:1"));
+    try observed.send(&child, "\x1b[200~Ω🦊\x1b[201~", "CUSTOM_PASTE:true");
+    if (!try observed.screen.contains("CUSTOM_INPUT:xΩ🦊")) {
+        const cells = try observed.screen.textAlloc(std.testing.allocator);
+        defer std.testing.allocator.free(cells);
+        std.debug.print("Custom paste actual cells:\n{s}\n", .{cells});
+        return error.NativeCustomPasteChanged;
+    }
+    const resize_frame = observed.screen.frames;
+    try observed.screen.resize(70, 22);
+    try child.resize(70, 22);
+    try observed.wait(&child, "CUSTOM_WIDTH:70", resize_frame);
+    try observed.send(&child, "q", "> component-draft");
+    try std.testing.expect(try observed.screen.contains("> component-draft"));
+    try std.testing.expect(try observed.screen.contains("history-row-000"));
+    try std.testing.expect(!try observed.screen.contains("CUSTOM_WIDTH:"));
+    try observed.send(&child, "\x1b[1;5F", "CUSTOM_RESULT:selected:DISPOSED:1");
+    try observed.wait(&child, "custom-life=start1-end1", 0);
+    try observed.send(&child, "\x15/component-error\r", "CUSTOM_ERROR_IDENTITY:true");
+    try std.testing.expect(!try observed.screen.contains("CUSTOM_WIDTH:"));
+    try observed.send(&child, "\x15/dialog-cancel\r", "NATIVE_DIALOG_CANCELLED:true");
+    try std.testing.expect(try observed.screen.contains("> cancel-dialog-draft"));
+    try observed.send(&child, "\x15/reload\r", "Reloaded");
+    try observed.send(&child, "\x15/component\r", "CUSTOM_WIDTH:70");
+    try observed.send(&child, "q", "> component-draft");
+    try observed.wait(&child, "CUSTOM_RESULT:selected:DISPOSED:1", 0);
+    try cleanExit(&fixture, &child, &observed);
+}
+
+const overlay_extension =
+    \\export default function(pi){pi.registerCommand('overlay',{async handler(_,ctx){
+    \\ ctx.ui.setEditorText('overlay-draft');let handle,events=0,disposed=0,bounds;
+    \\ const selected=await ctx.ui.custom((tui,theme,keys,done)=>({wantsKeyRelease:true,
+    \\  render(width){return ['OVERLAY_WIDTH:'+width,'OVERLAY_EVENTS:'+events,'OVERLAY_SCREEN:'+tui.terminal.columns+'x'+tui.terminal.rows,'OVERLAY_CLIPPED_FORBIDDEN']},
+    \\  handleInput(data){events++;if(data==='q'){bounds=handle.getBounds();done('selected')}else if(data==='h'){handle.setHidden(true);handle.unfocus();setTimeout(()=>{handle.setHidden(false);handle.focus();tui.requestRender()},1000)}else tui.requestRender()},
+    \\  dispose(){disposed++}}),{overlay:true,overlayOptions:{width:'50%',maxHeight:3,margin:1,anchor:'bottom-right'},onHandle(value){handle=value;value.focus()}});
+    \\ ctx.ui.notify('OVERLAY_DONE:'+selected+':EVENTS:'+events+':DISPOSED:'+disposed);
+    \\ ctx.ui.notify('OVERLAY_BOUNDS:'+bounds.row+':'+bounds.col);
+    \\ ctx.ui.notify('OVERLAY_STALE:'+handle.isHidden()+':'+handle.isFocused());
+    \\}})}
+;
+
+test "native CLI overlay paints real geometry releases hidden focus and restores edited background with fenced close" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnExtension(errors, overlay_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "history-row-059", 0);
+    try observed.send(&child, "/overlay\r", "OVERLAY_WIDTH:50");
+    try observed.wait(&child, "OVERLAY_SCREEN:100x40", 0);
+    try std.testing.expectEqual(@as(u21, 'O'), observed.screen.cells()[36 * 100 + 49].scalar);
+    try std.testing.expect(try observed.screen.contains("history-row-059"));
+    try std.testing.expect(!try observed.screen.contains("OVERLAY_CLIPPED_FORBIDDEN"));
+    try observed.send(&child, "\x1b[120;1:3u", "OVERLAY_EVENTS:1");
+    const resize_frame = observed.screen.frames;
+    try observed.screen.resize(70, 22);
+    try child.resize(70, 22);
+    try observed.wait(&child, "OVERLAY_WIDTH:35", resize_frame);
+    try std.testing.expectEqual(@as(u21, 'O'), observed.screen.cells()[18 * 70 + 34].scalar);
+    const hide_frame = observed.screen.frames;
+    try child.send("h");
+    try observed.waitAbsent(&child, "OVERLAY_WIDTH:", hide_frame);
+    try std.testing.expect(try observed.screen.contains("> overlay-draft"));
+    try std.testing.expect(!try observed.screen.contains("OVERLAY_WIDTH:"));
+    try observed.send(&child, "z", "> overlay-draftz");
+    try observed.wait(&child, "OVERLAY_WIDTH:35", observed.screen.frames);
+    try std.testing.expect(try observed.screen.contains("OVERLAY_EVENTS:2"));
+    try observed.send(&child, "q", "OVERLAY_DONE:selected:EVENTS:3:DISPOSED:1");
+    try observed.wait(&child, "OVERLAY_BOUNDS:18:34", 0);
+    try observed.wait(&child, "OVERLAY_STALE:true:false", 0);
+    try std.testing.expect(try observed.screen.contains("> overlay-draftz"));
+    try std.testing.expect(!try observed.screen.contains("OVERLAY_WIDTH:"));
+    try cleanExit(&fixture, &child, &observed);
+}
 const Observer = struct {
     screen: vt.Screen,
     consumed: usize = 0,
@@ -103,6 +249,16 @@ const Observer = struct {
         try child.send(input);
         try self.wait(child, marker, frame);
     }
+    fn waitAbsent(self: *Observer, child: *pty.Session, marker: []const u8, after_frame: usize) !void {
+        const end = Io.Clock.awake.now(child.io).toMilliseconds() + 5000;
+        while (Io.Clock.awake.now(child.io).toMilliseconds() < end) {
+            try self.drain(child);
+            if (self.screen.frames > after_frame and !try self.screen.contains(marker)) return;
+            if (try child.exited()) break;
+            try child.io.sleep(.fromMilliseconds(10), .awake);
+        }
+        return error.NativeOverlayDidNotDisappear;
+    }
 };
 
 fn cleanExit(fixture: *Fixture, child: *pty.Session, observed: *Observer) !void {
@@ -117,7 +273,7 @@ fn cleanExit(fixture: *Fixture, child: *pty.Session, observed: *Observer) !void 
 }
 
 test "real fullscreen CLI keeps Home End in editor and Ctrl Home End pages in retained branch viewport" {
-    if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+    if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");
     defer fixture.deinit();
     const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
@@ -147,7 +303,7 @@ test "real fullscreen CLI keeps Home End in editor and Ctrl Home End pages in re
     try child.resize(70, 22);
     try observed.wait(&child, "history-row-059", resize_frame);
     try std.testing.expect(try observed.screen.contains("> XdraftY"));
-    try observed.send(&child, "\x1b[200~\nsecond-line Ω\x1b[201~", "second-line Ω");
+    try observed.send(&child, "\x1b[200~\nsecond-line Ω🦊\x1b[201~", "second-line Ω🦊");
     try child.send("\x15\x7f\x15/quit\r");
     const term = try child.wait(5000);
     try std.testing.expect(term == .exited and term.exited == 0);
@@ -159,7 +315,7 @@ test "real fullscreen CLI keeps Home End in editor and Ctrl Home End pages in re
 }
 
 test "real fullscreen CLI routes remapped viewport keys and ignores Kitty releases while accepting repeats" {
-    if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+    if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");
     defer fixture.deinit();
     try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "agent/keybindings.json", .data = "{\"tui.altScreen.top\":[\"alt+home\"],\"tui.altScreen.bottom\":[\"alt+end\"]}" });
@@ -182,7 +338,7 @@ test "real fullscreen CLI routes remapped viewport keys and ignores Kitty releas
 }
 
 test "real fullscreen CLI exits quietly and joins its owner after actual PTY hangup" {
-    if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+    if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");
     defer fixture.deinit();
     const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
@@ -194,15 +350,19 @@ test "real fullscreen CLI exits quietly and joins its owner after actual PTY han
     try observed.wait(&child, "history-row-059", 0);
     child.hangup();
     const term = try child.wait(5000);
-    // The established CLI dead-terminal contract is a quiet SIGHUP-style 129.
-    try std.testing.expect(term == .exited and term.exited == 129);
+    // Closing ConPTY input closes its private console with native CTRL_C_EXIT;
+    // POSIX PTY disappearance follows the CLI's quiet SIGHUP-style contract.
+    if (comptime builtin.os.tag == .windows) {
+        try std.testing.expect(term == .exited);
+        try std.testing.expectEqual(@as(?u32, 0xc000013a), child.native_exit_code);
+    } else try std.testing.expect(term == .exited and term.exited == 129);
     const stderr = try fixture.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", std.testing.allocator, .limited(65536));
     defer std.testing.allocator.free(stderr);
     try std.testing.expectEqualStrings("", stderr);
 }
 
 test "real fullscreen CLI streams intermediate cells retains scroll anchor and draft through queued settings modal" {
-    if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+    if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");
     defer fixture.deinit();
     const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
@@ -242,16 +402,27 @@ test "real fullscreen CLI streams intermediate cells retains scroll anchor and d
 }
 
 test "explicit regular CLI retains ordinary editor behavior and does not enter persistent alternate screen" {
-    if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+    if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("regular");
     defer fixture.deinit();
     const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
     defer errors.close(std.testing.io);
     var child = try fixture.spawn(errors);
     defer child.deinit();
-    _ = try child.waitFor("> ", 0, 5000);
+    var observed = try Observer.init();
+    defer observed.deinit();
+    // ConPTY coalesces blank cells into cursor movement; inspect its screen.
+    _ = try child.waitFor(">", 0, 5000);
+    try observed.drain(&child);
+    try std.testing.expect(try observed.screen.contains(">"));
     try child.send("draft\x1b[HX\x1b[FY");
-    _ = try child.waitFor("XdraftY", 0, 5000);
+    const end = Io.Clock.awake.now(child.io).toMilliseconds() + 5000;
+    while (Io.Clock.awake.now(child.io).toMilliseconds() < end) {
+        try observed.drain(&child);
+        if (try observed.screen.contains("XdraftY")) break;
+        try child.io.sleep(.fromMilliseconds(10), .awake);
+    }
+    try std.testing.expect(try observed.screen.contains("XdraftY"));
     try std.testing.expect(std.mem.indexOf(u8, child.output.items, "\x1b[?1049h") == null);
     try child.send("\x15/quit\r");
     const term = try child.wait(5000);
@@ -262,7 +433,7 @@ test "explicit regular CLI retains ordinary editor behavior and does not enter p
 }
 
 test "real fullscreen Escape aborts a live turn without clearing the independent draft and next turn works" {
-    if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+    if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");
     defer fixture.deinit();
     const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});

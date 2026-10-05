@@ -144,6 +144,18 @@ pub fn terminalDimensions(environ: *const std.process.Environ.Map, fallback: Dim
             return .{ .columns = size.col, .rows = size.row };
         }
     }
+    if (comptime builtin.os.tag == .windows) {
+        const win = @import("platform_terminal.zig").win;
+        var info: win.BufferInfo = undefined;
+        if (win.GetConsoleScreenBufferInfo(std.Io.File.stdout().handle, &info).toBool()) {
+            const columns = @as(i32, info.window.right) - info.window.left + 1;
+            const rows = @as(i32, info.window.bottom) - info.window.top + 1;
+            if (columns > 0 and rows > 0) return .{ .columns = @intCast(columns), .rows = @intCast(rows) };
+        }
+    } else if (comptime builtin.os.tag == .macos) {
+        var size: std.posix.winsize = .{ .row = 0, .col = 0, .xpixel = 0, .ypixel = 0 };
+        if (std.posix.errno(std.posix.system.ioctl(std.Io.File.stdout().handle, std.posix.T.IOCGWINSZ, @intFromPtr(&size))) == .SUCCESS and size.col > 0 and size.row > 0) return .{ .columns = size.col, .rows = size.row };
+    }
     return dimensionsFromEnvironment(environ, fallback);
 }
 

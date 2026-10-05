@@ -2026,12 +2026,9 @@ fn wallishSeconds() i64 {
     }
     // POSIX: clock_gettime(CLOCK_REALTIME) via libc when linked
     if (builtin.link_libc) {
-        const c = @cImport({
-            @cInclude("time.h");
-        });
-        var ts: c.timespec = undefined;
-        if (c.clock_gettime(c.CLOCK_REALTIME, &ts) == 0) {
-            return @intCast(ts.tv_sec);
+        var ts: std.c.timespec = undefined;
+        if (std.c.clock_gettime(.REALTIME, &ts) == 0) {
+            return @intCast(ts.sec);
         }
     }
     // Fallback: process-local monotonic from 2024 anchor

@@ -13,7 +13,7 @@ const Callback = struct {
     receiver: c.JSValue,
 };
 const Pending = struct { id: []u8, callback: Callback };
-const Registration = struct { source: c.JSValue, encoded: c.JSValue, generation: u64 };
+const Registration = struct { source: c.JSValue, live: c.JSValue, encoded: c.JSValue, generation: u64 };
 
 pub const Providers = struct {
     engine: *engine_mod.Engine,
@@ -31,6 +31,7 @@ pub const Providers = struct {
         while (registrations.next()) |entry| {
             self.engine.gpa.free(entry.key_ptr.*);
             self.engine.freeValue(entry.value_ptr.source);
+            self.engine.freeValue(entry.value_ptr.live);
             self.engine.freeValue(entry.value_ptr.encoded);
         }
         self.registrations.deinit(self.engine.gpa);
@@ -202,6 +203,13 @@ pub const Providers = struct {
         errdefer engine.freeValue(encoded);
         const json = try engine.stringify(encoded);
         defer engine.gpa.free(json);
+        // Publication update closures mutate the extension's original object.
+        // Keep that object rooted beside the immutable transport snapshot.
+        const live_config = if (!replace and self.registrations.contains(name)) c.JS_DupValue(engine.context, self.registrations.get(name).?.live) else c.JS_DupValue(engine.context, config);
+        errdefer engine.freeValue(live_config);
+        if (!replace and self.registrations.contains(name)) try self.copyDefined(live_config, source);
+        // Live objects may be proxies. Reselect the maps and reserve after
+        // their define traps return; no map slot survives user callbacks.
         const key = if (self.registrations.contains(name)) null else try engine.gpa.dupe(u8, name);
         errdefer if (key) |owned| engine.gpa.free(owned);
         try self.callbacks.ensureUnusedCapacity(engine.gpa, @intCast(pending.items.len));
@@ -209,9 +217,10 @@ pub const Providers = struct {
         for (pending.items) |entry| self.callbacks.putAssumeCapacityNoClobber(entry.id, entry.callback);
         if (self.registrations.getPtr(name)) |previous| {
             engine.freeValue(previous.source);
+            engine.freeValue(previous.live);
             engine.freeValue(previous.encoded);
-            previous.* = .{ .source = source, .encoded = encoded, .generation = generation };
-        } else self.registrations.putAssumeCapacityNoClobber(key.?, .{ .source = source, .encoded = encoded, .generation = generation });
+            previous.* = .{ .source = source, .live = live_config, .encoded = encoded, .generation = generation };
+        } else self.registrations.putAssumeCapacityNoClobber(key.?, .{ .source = source, .live = live_config, .encoded = encoded, .generation = generation });
         committed = true;
         return c.JS_DupValue(engine.context, encoded);
     }
@@ -220,6 +229,7 @@ pub const Providers = struct {
         if (self.registrations.fetchRemove(name)) |removed| {
             self.engine.gpa.free(removed.key);
             self.engine.freeValue(removed.value.source);
+            self.engine.freeValue(removed.value.live);
             self.engine.freeValue(removed.value.encoded);
         }
         // Remove in repeated passes so table movement never invalidates an iterator.
@@ -239,6 +249,17 @@ pub const Providers = struct {
         const pending = try self.invokeUnsettled(id, arguments);
         defer self.engine.freeValue(pending);
         return self.engine.awaitValue(pending);
+    }
+
+    pub fn currentModelsUnsettled(self: *Providers, provider: []const u8, require_getter: bool) !c.JSValue {
+        const entry = self.registrations.get(provider) orelse return error.UnknownNativeProviderCallback;
+        const live_config = c.JS_DupValue(self.engine.context, entry.live);
+        defer self.engine.freeValue(live_config);
+        const getter = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, live_config, "getModels"));
+        defer self.engine.freeValue(getter);
+        if (c.JS_IsFunction(self.engine.context, getter)) return self.engine.checked(c.JS_Call(self.engine.context, getter, live_config, 0, null));
+        if (require_getter) return error.NativeProviderRefreshMustReturnArray;
+        return self.engine.checked(c.JS_GetPropertyStr(self.engine.context, live_config, "models"));
     }
 
     pub fn validate(self: *Providers, id: []const u8, provider: []const u8, generation: u64) !void {
@@ -344,6 +365,51 @@ fn providerAllocationProbe(gpa: std.mem.Allocator) !void {
     defer gpa.free(encoded);
     try std.testing.expect(std.mem.indexOf(u8, encoded, "Renamed") != null);
     try std.testing.expectEqual(@as(usize, 4), providers.callbacks.count());
+    const models = try providers.currentModelsUnsettled("demo", false);
+    defer engine.freeValue(models);
+    providers.unregister("demo");
+    try std.testing.expectEqual(@as(usize, 0), providers.callbacks.count());
+    try std.testing.expectEqual(@as(usize, 0), providers.registrations.count());
+    c.JS_RunGC(engine.runtime);
+}
+
+test "native provider catalog observes original closure updates while transport snapshot stays frozen across replacement and GC" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var providers = Providers.init(engine);
+    defer providers.deinit();
+    const module = try engine.evalModule("export const config={models:[{id:'initial'}],getModels(){return this.models}};export function update(){config.models=[{id:'live'}]};export const replacement={models:[{id:'replacement'}]};", "native-provider-live-models.mjs");
+    defer engine.freeValue(module);
+    const config = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "config"));
+    defer engine.freeValue(config);
+    const snapshot = try providers.register("live-models", config, false);
+    defer engine.freeValue(snapshot);
+    const update = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "update"));
+    defer engine.freeValue(update);
+    const result = try engine.checked(c.JS_Call(engine.context, update, c.pi_js_undefined(), 0, null));
+    engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+    const live_models = try providers.currentModelsUnsettled("live-models", false);
+    defer engine.freeValue(live_models);
+    const live_json = try engine.stringify(live_models);
+    defer engine.gpa.free(live_json);
+    try std.testing.expectEqualStrings("[{\"id\":\"live\"}]", live_json);
+    const frozen_json = try engine.stringify(snapshot);
+    defer engine.gpa.free(frozen_json);
+    try std.testing.expect(std.mem.indexOf(u8, frozen_json, "initial") != null);
+    const replacement = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "replacement"));
+    defer engine.freeValue(replacement);
+    const replaced = try providers.register("live-models", replacement, true);
+    defer engine.freeValue(replaced);
+    c.JS_RunGC(engine.runtime);
+    const latest = try providers.currentModelsUnsettled("live-models", false);
+    defer engine.freeValue(latest);
+    const latest_json = try engine.stringify(latest);
+    defer engine.gpa.free(latest_json);
+    try std.testing.expectEqualStrings("[{\"id\":\"replacement\"}]", latest_json);
+    providers.unregister("live-models");
+    c.JS_RunGC(engine.runtime);
+    try std.testing.expectError(error.UnknownNativeProviderCallback, providers.currentModelsUnsettled("live-models", false));
 }
 
 test "native provider registration and replacement release every failed allocation" {

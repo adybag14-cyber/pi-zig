@@ -4,6 +4,7 @@
 //! Node; the explicit native backend uses the standalone Zig/C worker.
 const std = @import("std");
 const Io = std.Io;
+const component_protocol = @import("component_protocol.zig");
 
 const bridge_source = @embedFile("js_bridge.mjs");
 const record_prefix: u8 = 0x1e;
@@ -51,6 +52,8 @@ pub const UiBridge = struct {
     context: ?*anyopaque = null,
     request_fn: *const fn (?*anyopaque, std.mem.Allocator, []const u8, []const u8) anyerror![]u8,
     action_fn: *const fn (?*anyopaque, std.mem.Allocator, []const u8, []const u8) anyerror!void,
+    component_scene_fn: ?*const fn (?*anyopaque, component_protocol.Scene, *component_protocol.ControlQueue) anyerror!void = null,
+    component_close_fn: ?*const fn (?*anyopaque, component_protocol.Fence) anyerror!void = null,
 };
 
 /// Synchronous callback for a normalized extension-tool partial result. The
@@ -145,7 +148,7 @@ const NativeReadSession = struct {
             // Human dialogs do not inherit the short ordinary script-record
             // timeout. Their own cancellation/deadline arrives on the wire.
             const now = Io.Clock.awake.now(self.runtime.io).toMilliseconds();
-            if (try budget.remaining(now, self.runtime.timeout_ms, dialogs.active != null)) |remaining| {
+            if (try budget.remaining(now, self.runtime.timeout_ms, dialogs.humanWait())) |remaining| {
                 const timeout: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(remaining), .clock = .awake } };
                 self.wake.waitTimeout(self.runtime.io, timeout) catch |err| switch (err) {
                     // Event waits may report a spurious wake as Timeout.
@@ -165,6 +168,143 @@ const NativeReadSession = struct {
     }
 };
 
+const NativeComponentSession = struct {
+    runtime: *Runtime,
+    bridge: ?UiBridge,
+    fence: component_protocol.Fence,
+    controls: component_protocol.ControlQueue,
+    mutex: Io.Mutex = .init,
+    wake: Io.Event = .unset,
+    frames: std.ArrayList(component_protocol.Scene) = .empty,
+    closing: bool = false,
+    stopping: bool = false,
+    presented: std.atomic.Value(bool) = .init(false),
+    failure: ?anyerror = null,
+
+    fn push(self: *@This(), scene: component_protocol.Scene) !void {
+        self.mutex.lockUncancelable(self.runtime.io);
+        defer self.mutex.unlock(self.runtime.io);
+        if (!component_protocol.Fence.matches(scene.fence, self.fence) or self.closing or self.stopping) return error.StaleNativeComponentScene;
+        // Coalesce queued paint frames; the latest viewport supersedes earlier
+        // owned copies without changing input ordering.
+        for (self.frames.items) |*frame| frame.deinit();
+        self.frames.clearRetainingCapacity();
+        try self.frames.append(std.heap.page_allocator, scene);
+        self.wake.set(self.runtime.io);
+    }
+
+    fn requestClose(self: *@This()) void {
+        self.mutex.lockUncancelable(self.runtime.io);
+        self.closing = true;
+        self.mutex.unlock(self.runtime.io);
+        self.controls.reset(null);
+        self.wake.set(self.runtime.io);
+    }
+
+    fn controlTask(self: *@This()) Io.Cancelable!void {
+        while (try self.controls.next()) |received| {
+            var control = received;
+            defer control.deinit();
+            var record: Io.Writer.Allocating = .init(std.heap.page_allocator);
+            defer record.deinit();
+            component_protocol.writeControl(&record.writer, &control) catch |err| {
+                self.fail(err);
+                return;
+            };
+            self.runtime.writeLine(record.written()) catch |err| {
+                self.fail(err);
+                return;
+            };
+        }
+    }
+
+    fn fail(self: *@This(), err: anyerror) void {
+        self.mutex.lockUncancelable(self.runtime.io);
+        if (self.failure == null) self.failure = err;
+        self.mutex.unlock(self.runtime.io);
+        self.wake.set(self.runtime.io);
+    }
+
+    fn execute(self: *@This()) !void {
+        var control_group: Io.Group = .init;
+        try control_group.concurrent(self.runtime.io, controlTask, .{self});
+        defer {
+            self.controls.stop();
+            control_group.cancel(self.runtime.io);
+        }
+        while (true) {
+            self.mutex.lockUncancelable(self.runtime.io);
+            if (self.failure) |err| {
+                self.mutex.unlock(self.runtime.io);
+                return err;
+            }
+            if (self.closing or self.stopping) {
+                const stopping = self.stopping;
+                self.mutex.unlock(self.runtime.io);
+                if (stopping) return;
+                break;
+            }
+            if (self.frames.items.len == 0) {
+                self.wake.reset();
+                self.mutex.unlock(self.runtime.io);
+                try self.wake.wait(self.runtime.io);
+                continue;
+            }
+            var frame = self.frames.orderedRemove(0);
+            self.mutex.unlock(self.runtime.io);
+            var consumed = false;
+            defer if (!consumed) frame.deinit();
+            if (self.bridge) |bridge| if (bridge.component_scene_fn) |callback| {
+                if (bridge.component_close_fn == null) return error.NativeComponentCloseBridgeMissing;
+                try callback(bridge.context, frame, &self.controls);
+                consumed = true;
+                self.presented.store(true, .release);
+            } else {
+                const cancel: component_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = self.fence, .kind = .cancel };
+                var record: Io.Writer.Allocating = .init(std.heap.page_allocator);
+                defer record.deinit();
+                try component_protocol.writeControl(&record.writer, &cancel);
+                try self.runtime.writeLine(record.written());
+            };
+        }
+        var ok = true;
+        var close_error: ?[]u8 = null;
+        defer if (close_error) |message| std.heap.page_allocator.free(message);
+        if (self.presented.load(.acquire)) if (self.bridge) |bridge| if (bridge.component_close_fn) |callback| {
+            callback(bridge.context, self.fence) catch |err| {
+                ok = false;
+                close_error = try std.heap.page_allocator.dupe(u8, @errorName(err));
+            };
+            // The callback contract removes every borrowed channel pointer
+            // before return, including failure and shutdown paths.
+            self.presented.store(false, .release);
+        };
+        var record: Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer record.deinit();
+        const acknowledgement: component_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = self.fence, .kind = .{ .close_ack = ok }, .error_message = close_error };
+        try component_protocol.writeControl(&record.writer, &acknowledgement);
+        try self.runtime.writeLine(record.written());
+    }
+
+    fn stop(self: *@This()) void {
+        self.mutex.lockUncancelable(self.runtime.io);
+        self.stopping = true;
+        self.mutex.unlock(self.runtime.io);
+        self.controls.stop();
+        self.wake.set(self.runtime.io);
+    }
+
+    fn deinit(self: *@This()) void {
+        // The dialog joins its owner task before this method; this close has
+        // no competing scene producer and must release the frontend pointer.
+        if (self.presented.load(.acquire)) if (self.bridge) |bridge| if (bridge.component_close_fn) |callback| callback(bridge.context, self.fence) catch {};
+        self.controls.deinit();
+        for (self.frames.items) |*frame| frame.deinit();
+        self.frames.deinit(std.heap.page_allocator);
+        std.heap.page_allocator.destroy(self);
+    }
+};
+
 const NativeDialog = struct {
     runtime: *Runtime,
     session: *NativeReadSession,
@@ -178,6 +318,7 @@ const NativeDialog = struct {
     done: std.atomic.Value(bool) = .init(false),
     cancelled: std.atomic.Value(bool) = .init(false),
     failure: ?anyerror = null,
+    component: ?*NativeComponentSession = null,
 
     fn run(self: *@This()) Io.Cancelable!void {
         defer {
@@ -190,6 +331,7 @@ const NativeDialog = struct {
     }
 
     fn execute(self: *@This()) !void {
+        if (self.component) |component| return component.execute();
         const allocator = std.heap.page_allocator;
         var failure: ?[]u8 = null;
         defer if (failure) |text| allocator.free(text);
@@ -216,11 +358,13 @@ const NativeDialog = struct {
     }
 
     fn deinit(self: *@This()) void {
+        if (self.component) |component| component.stop();
         if (self.started) {
             self.cancelled.store(true, .release);
             self.group.cancel(self.runtime.io);
             self.group.await(self.runtime.io) catch {};
         }
+        if (self.component) |component| component.deinit();
         std.heap.page_allocator.free(self.method);
         std.heap.page_allocator.free(self.args);
         std.heap.page_allocator.destroy(self);
@@ -233,6 +377,12 @@ const NativeDialogs = struct {
     invocation_id: u64,
     queued: std.ArrayList(*NativeDialog) = .empty,
     active: ?*NativeDialog = null,
+
+    fn humanWait(self: *@This()) bool {
+        const dialog = self.active orelse return false;
+        const component = dialog.component orelse return true;
+        return component.presented.load(.acquire);
+    }
 
     fn deinit(self: *@This()) void {
         if (self.active) |dialog| dialog.deinit();
@@ -280,6 +430,15 @@ const NativeDialogs = struct {
         const dialog = try allocator.create(NativeDialog);
         errdefer if (!published) allocator.destroy(dialog);
         dialog.* = .{ .runtime = self.runtime, .session = self.session, .bridge = self.runtime.ui_bridge, .invocation_id = self.invocation_id, .id = id, .method = name, .args = encoded };
+        if (std.mem.eql(u8, name, "custom_native")) {
+            const fence = try component_protocol.readFence(&args.object);
+            if (fence.invocation_id != self.invocation_id or fence.token != id) return error.InvalidNativeComponentIdentity;
+            const component = try allocator.create(NativeComponentSession);
+            errdefer if (!published) allocator.destroy(component);
+            component.* = .{ .runtime = self.runtime, .bridge = self.runtime.ui_bridge, .fence = fence, .controls = component_protocol.ControlQueue.init(allocator, self.runtime.io) };
+            component.controls.reset(fence);
+            dialog.component = component;
+        }
         try self.queued.append(allocator, dialog);
         published = true;
         try self.progress();
@@ -300,6 +459,31 @@ const NativeDialogs = struct {
         };
         // The callback may have already returned when cancellation crossed its
         // response. A duplicate/late cancel never touches another request.
+    }
+
+    fn componentSession(self: *@This(), fence: component_protocol.Fence) ?*NativeComponentSession {
+        if (fence.invocation_id != self.invocation_id) return null;
+        if (self.active) |dialog| if (dialog.component) |session| if (component_protocol.Fence.matches(session.fence, fence)) return session;
+        for (self.queued.items) |dialog| if (dialog.component) |session| if (component_protocol.Fence.matches(session.fence, fence)) return session;
+        return null;
+    }
+
+    fn scene(self: *@This(), object: *const std.json.ObjectMap) !void {
+        var frame = try component_protocol.readScene(std.heap.page_allocator, object);
+        var consumed = false;
+        defer if (!consumed) frame.deinit();
+        const session = self.componentSession(frame.fence) orelse return;
+        session.push(frame) catch |err| {
+            if (err == error.StaleNativeComponentScene) return;
+            return err;
+        };
+        consumed = true;
+    }
+
+    fn closeComponent(self: *@This(), object: *const std.json.ObjectMap) !void {
+        const fence = try component_protocol.readFence(object);
+        const session = self.componentSession(fence) orelse return;
+        session.requestClose();
     }
 };
 
@@ -1166,6 +1350,14 @@ pub const Runtime = struct {
                     if (self.backend == .native) try native_dialogs.request(&parsed.value.object) else try self.handleUiRequestUnlocked(&parsed.value.object);
                     continue;
                 }
+                if (self.backend == .native and std.mem.eql(u8, type_value.string, "component_scene")) {
+                    try native_dialogs.scene(&parsed.value.object);
+                    continue;
+                }
+                if (self.backend == .native and std.mem.eql(u8, type_value.string, "component_close")) {
+                    try native_dialogs.closeComponent(&parsed.value.object);
+                    continue;
+                }
                 if (self.backend == .native and std.mem.eql(u8, type_value.string, "ui_cancel")) {
                     try native_dialogs.cancel(&parsed.value.object);
                     continue;
@@ -1251,7 +1443,7 @@ pub const Runtime = struct {
         if (parsed.value != .object) return error.InvalidNativeExtensionRequest;
         const kind = parsed.value.object.get("kind") orelse return error.InvalidNativeExtensionRequest;
         if (kind != .string) return error.InvalidNativeExtensionRequest;
-        for ([_][]const u8{ "hook", "tool", "command", "provider_method", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "shutdown" }) |supported| {
+        for ([_][]const u8{ "hook", "tool", "command", "provider_method", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "shutdown" }) |supported| {
             if (std.mem.eql(u8, supported, kind.string)) return;
         }
         // Keep unsupported custom-component and renderer operations out of the

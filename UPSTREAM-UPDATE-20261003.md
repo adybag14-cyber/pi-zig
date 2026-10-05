@@ -574,3 +574,24 @@ October 5 durable integration checkpoint:
   registration and language adapters remain separate work. Default-native and
   final parity remain uncertified. Exact evidence is in
   verification/checkpoint-189/durable-integration-native-20261005.json.
+
+October 5 native UI/OAuth/model-publication integration checkpoint:
+
+- Persistent frontend now runs on Windows, Linux and macOS. Actual native
+  Windows/Linux CLI tests cover Unicode, streams/history, resize, modal/draft
+  ownership, hidden/revealed overlays, closeACK, disposal and reload.
+- Native custom factory promises, component/overlay ownership and pure control
+  DTOs retain original errors and caller values until fenced close acknowledgment.
+- Native OAuth callbacks/prompts and model publication preserve original config,
+  update receiver/closure, live models, stale rejection, cancellation and reuse.
+- The last two JS protocol drivers are replaced by Zig drivers with their original
+  user-authored inputs; only the legacy host bridge remains as JS implementation.
+- Production still defaults to legacy. PI_EXTENSION_BACKEND=native selects the
+  actual selfworker and survives reload. Regular native custom ownership, advanced
+  focus/mouse, renderers/retained factories and complete exports remain pending.
+- Composed full Debug/ReleaseSafe evidence is recorded separately from the final
+ 123-step Windows Debug admission. A Linux optimized fixture hang and its exact
+  owned-worker cleanup remain documented; transition-driven replay passes.
+- The session clock uses Zig's typed C ABI and builds/runs with Linux musl.
+  Latest upstreamb7dfc049 adds14runtime commits under separate review. This
+  checkpoint is not final parity or a release; see the native UI integration JSON.

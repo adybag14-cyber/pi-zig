@@ -1,0 +1,52 @@
+[
+  {
+    "path": "src/extensions/component_protocol.zig",
+    "sha256": "A74D5D4D5A27E1EF81299BAD6750CCA6DD36E13D2C39FF3598BF9B0D6A3EB51E",
+    "lines": 318
+  },
+  {
+    "path": "src/extensions/native_components.zig",
+    "sha256": "AD6A23A0FC72B46B0F6676FFB3756B48009C3BFEECC2BD5E48030688830F9B8D",
+    "lines": 841
+  },
+  {
+    "path": "src/extensions/native_tui.zig",
+    "sha256": "BF2AB064AA8C71B99BE3BB9A63CD40D79B2E24507B7FE49BF13D6003047C46D4",
+    "lines": 682
+  },
+  {
+    "path": "src/extensions/native_ui.zig",
+    "sha256": "1D8D19F448DF1F328C230EB19B7D05AF840EF716BFBCDD95337F0D98029E05EF",
+    "lines": 1174
+  },
+  {
+    "path": "src/extensions/native_bindings.zig",
+    "sha256": "31847DE32370A53DBC2CB882AB40E455B547293F938B5597EC831A82A3E5BADB",
+    "lines": 1913
+  },
+  {
+    "path": "src/extensions/native_worker.zig",
+    "sha256": "DEBAF780C88FBE812F5EA4E3CFEE5201FCF312C5A3C8DBF3B424EDB68E0A6C31",
+    "lines": 748
+  },
+  {
+    "path": "src/extensions/js_runtime.zig",
+    "sha256": "782875532DB63155514193B93CC7D60C77B0F16FF948F152CFF9CF35F2487B6A",
+    "lines": 2865
+  },
+  {
+    "path": "src/extensions/native_providers.zig",
+    "sha256": "9415739472DD24200BE114918E6ACFEDBA4DD91D60F304BFDFD14E49AA6876CA",
+    "lines": 482
+  },
+  {
+    "path": "src/native_runtime_process_test.zig",
+    "sha256": "BB6B5CF7960D3300FE6B92E1F3BBEA999B9A84D897A771A89B1E410EF0560B1F",
+    "lines": 1190
+  },
+  {
+    "path": "src/native_bindings_test.zig",
+    "sha256": "6FCF6D81279C90E422603330869AA06371D7DADFA4AFF719D8F2E1738D1F40E3",
+    "lines": 4
+  }
+]

@@ -7,6 +7,7 @@ const native_providers = @import("native_providers.zig");
 const abort_signal = @import("abort_signal.zig");
 const native_ui = @import("native_ui.zig");
 const native_stream = @import("native_stream.zig");
+const native_tui = @import("native_tui.zig");
 const c = engine_mod.c;
 const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, registerProvider, unregisterProvider, getActiveTools, getAllTools, getCommands, getSettings, getSessionName, getThinkingLevel, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel };
 const ContextMethod = enum(c_int) {
@@ -64,6 +65,7 @@ pub const Bindings = struct {
     tool_update_fn: ?ToolUpdateFn = null,
     tool_update_context: ?*anyopaque = null,
     tool_update_promise: ?c.JSValue = null,
+    publication_sequence: u64 = 0,
 
     pub fn init(gpa: std.mem.Allocator, engine: *engine_mod.Engine) !*Bindings {
         if (engine.host_data != null) return error.EngineHostAlreadyAttached;
@@ -80,6 +82,8 @@ pub const Bindings = struct {
             if (c.JS_DefinePropertyValueStr(engine.context, api, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         }
         self.* = .{ .gpa = gpa, .engine = engine, .api = api, .providers = native_providers.Providers.init(engine), .ui_manager = ui_manager, .stream_runner = .{ .engine = engine } };
+        ui_manager.provider_action_fn = providerUiAction;
+        ui_manager.provider_action_context = self;
         engine.host_data = self;
         return self;
     }
@@ -426,6 +430,7 @@ pub const Bindings = struct {
         if (self.invocation_active) return error.ExtensionInvocationBusy;
         if (self.invocation_generation == std.math.maxInt(u32)) return error.ExtensionInvocationGenerationExhausted;
         self.invocation_generation += 1;
+        self.publication_sequence = 0;
         for (self.actions.items) |action| self.engine.freeValue(action);
         self.actions.clearRetainingCapacity();
         try self.ui_manager.begin(self.invocation_generation, self.context_snapshot, self.invocation_signal);
@@ -501,6 +506,7 @@ pub const Bindings = struct {
 
     pub fn installSchemas(self: *Bindings) !void {
         try native_stream.install(self.engine);
+        try native_tui.install(self.engine);
         const types = try typebox.create(self.engine);
         defer self.engine.freeValue(types);
         const exports = try self.engine.checked(c.JS_NewObject(self.engine.context));
@@ -1029,6 +1035,292 @@ pub const Bindings = struct {
         return self.invokeProviderMethodWithSignal(id, args_json, false, false);
     }
 
+    fn providerUiAction(context: ?*anyopaque, method: [*:0]const u8, payload: c.JSValue) !void {
+        const self: *Bindings = @ptrCast(@alignCast(context.?));
+        if (!self.invocation_active) return error.StaleNativeProviderInvocation;
+        const action = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        errdefer self.engine.freeValue(action);
+        try self.actionProperty(action, "type", try self.engine.checked(c.JS_NewString(self.engine.context, "ui_action")));
+        try self.actionProperty(action, "method", try self.engine.checked(c.JS_NewString(self.engine.context, method)));
+        try self.actionProperty(action, "args", c.JS_DupValue(self.engine.context, payload));
+        try self.actions.append(self.gpa, action);
+    }
+
+    pub fn invokeProviderOAuth(self: *Bindings, id: []const u8, provider: ?[]const u8, generation: u64) ![]u8 {
+        const identity = self.providers.callbacks.get(id) orelse return error.UnknownNativeProviderCallback;
+        const actual_provider = try self.gpa.dupe(u8, provider orelse identity.provider);
+        defer self.gpa.free(actual_provider);
+        const actual_generation = if (generation == 0) identity.generation else generation;
+        try self.beginActions();
+        defer self.finishInvocation();
+        try self.providers.validate(id, actual_provider, actual_generation);
+        const callbacks = try self.ui_manager.createOAuthCallbacks();
+        defer self.engine.freeValue(callbacks);
+        const args = try self.engine.checked(c.JS_NewArray(self.engine.context));
+        defer self.engine.freeValue(args);
+        if (c.JS_SetPropertyUint32(self.engine.context, args, 0, c.JS_DupValue(self.engine.context, callbacks)) < 0) return error.JavaScriptException;
+        const value = try self.providers.invoke(id, args);
+        defer self.engine.freeValue(value);
+        try self.providers.validate(id, actual_provider, actual_generation);
+        const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
+        defer self.engine.freeValue(result);
+        try self.actionProperty(result, "value", c.JS_DupValue(self.engine.context, value));
+        try self.mergeActions(result);
+        return self.engine.stringify(result);
+    }
+
+    fn cloneJson(self: *Bindings, value: c.JSValue) !c.JSValue {
+        if (c.JS_IsUndefined(value)) return c.pi_js_undefined();
+        const json = try self.engine.stringify(value);
+        defer self.gpa.free(json);
+        return self.parseJson(json, "native-provider-publication-snapshot");
+    }
+
+    fn providerArray(self: *Bindings, value: c.JSValue) !bool {
+        var args = [_]c.JSValue{value};
+        const result = try self.engine.checked(c.JS_Call(self.engine.context, self.ui_manager.components.array_is_array, c.pi_js_undefined(), 1, &args));
+        defer self.engine.freeValue(result);
+        return c.JS_ToBool(self.engine.context, result) != 0;
+    }
+
+    fn publicationCheck(self: *Bindings, data: [*c]c.JSValue) !void {
+        var invocation: i64 = 0;
+        if (c.JS_ToInt64(self.engine.context, &invocation, data[0]) < 0) return error.JavaScriptException;
+        if (!self.invocation_active or invocation != self.invocation_generation) return error.StaleNativeProviderInvocation;
+        const signal = self.invocation_signal orelse return error.NativeProviderSignalMissing;
+        const aborted = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, signal, "aborted"));
+        defer self.engine.freeValue(aborted);
+        if (c.JS_ToBool(self.engine.context, aborted) != 0) {
+            const reason = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, signal, "reason"));
+            _ = try self.engine.checked(c.JS_Throw(self.engine.context, reason));
+            return error.JavaScriptException;
+        }
+        const callback = try self.engine.toString(data[1]);
+        defer self.gpa.free(callback);
+        const provider = try self.engine.toString(data[2]);
+        defer self.gpa.free(provider);
+        var generation: i64 = 0;
+        if (c.JS_ToInt64(self.engine.context, &generation, data[3]) < 0) return error.JavaScriptException;
+        try self.providers.validate(callback, provider, @intCast(generation));
+    }
+
+    fn publicationFailure(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
+        if (err == error.JavaScriptException) return engine.throwCaptured();
+        if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+        return c.JS_ThrowTypeError(engine.context, "Native provider publication: %s", @as([*:0]const u8, @errorName(err)));
+    }
+
+    fn publicationRejected(self: *Bindings, err: anyerror) !c.JSValue {
+        var capabilities: [2]c.JSValue = undefined;
+        const promise = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &capabilities));
+        errdefer self.engine.freeValue(promise);
+        defer for (capabilities) |value| self.engine.freeValue(value);
+        _ = publicationFailure(self.engine, err);
+        const reason = c.JS_GetException(self.engine.context);
+        defer self.engine.freeValue(reason);
+        var args = [_]c.JSValue{reason};
+        const result = try self.engine.checked(c.JS_Call(self.engine.context, capabilities[1], c.pi_js_undefined(), 1, &args));
+        self.engine.freeValue(result);
+        return promise;
+    }
+
+    fn publicationThen(self: *Bindings, value: c.JSValue, callback: c.JSCFunctionData, data: []c.JSValue) !c.JSValue {
+        var resolve_args = [_]c.JSValue{value};
+        const intrinsics = &self.ui_manager.components;
+        const promise = try self.engine.checked(c.JS_Call(self.engine.context, intrinsics.promise_resolve, intrinsics.promise_type, 1, &resolve_args));
+        defer self.engine.freeValue(promise);
+        const reaction = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, callback, "native provider publication reaction", 1, 0, @intCast(data.len), data.ptr));
+        defer self.engine.freeValue(reaction);
+        var args = [_]c.JSValue{reaction};
+        return self.engine.checked(c.JS_Call(self.engine.context, intrinsics.promise_then, promise, 1, &args));
+    }
+
+    fn publicationRequest(self: *Bindings, data: [*c]c.JSValue, catalog: bool) !c.JSValue {
+        const object = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        errdefer self.engine.freeValue(object);
+        if (self.publication_sequence == 9_007_199_254_740_991) return error.NativeProviderPublicationSequenceLimit;
+        self.publication_sequence += 1;
+        try self.actionProperty(object, "provider", c.JS_DupValue(self.engine.context, data[2]));
+        try self.actionProperty(object, "generation", c.JS_DupValue(self.engine.context, data[4]));
+        try self.actionProperty(object, "sequence", c.JS_NewInt64(self.engine.context, @intCast(self.publication_sequence)));
+        if (!catalog) try self.actionProperty(object, "hasPersist", c.pi_js_bool(self.engine.context, 0));
+        return object;
+    }
+
+    fn publishCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return publicationFailure(engine, error.StaleNativeProviderInvocation)));
+        return self.publish(if (argc == 0) c.pi_js_undefined() else argv[0], data) catch |err| return self.publicationRejected(err) catch |failure| publicationFailure(engine, failure);
+    }
+
+    fn publish(self: *Bindings, raw: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
+        try self.publicationCheck(data);
+        const publication = if (c.JS_IsUndefined(raw)) try self.engine.checked(c.JS_NewObject(self.engine.context)) else c.JS_DupValue(self.engine.context, raw);
+        defer self.engine.freeValue(publication);
+        if (!c.JS_IsObject(publication) or try self.providerArray(publication)) return error.InvalidNativeProviderPublication;
+        const request = try self.publicationRequest(data, false);
+        defer self.engine.freeValue(request);
+        const atom = c.JS_NewAtom(self.engine.context, "persist");
+        if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+        defer c.JS_FreeAtom(self.engine.context, atom);
+        var descriptor: c.JSPropertyDescriptor = undefined;
+        const own = c.JS_GetOwnProperty(self.engine.context, &descriptor, publication, atom);
+        if (own < 0) return error.JavaScriptException;
+        if (own != 0) {
+            self.engine.freeValue(descriptor.value);
+            self.engine.freeValue(descriptor.getter);
+            self.engine.freeValue(descriptor.setter);
+            const persist = try self.engine.checked(c.JS_GetProperty(self.engine.context, publication, atom));
+            defer self.engine.freeValue(persist);
+            if (!c.JS_IsUndefined(persist)) {
+                if (!c.JS_IsNull(persist) and (!c.JS_IsObject(persist) or try self.providerArray(persist))) return error.InvalidNativeProviderPublicationPersist;
+                try self.actionProperty(request, "hasPersist", c.pi_js_bool(self.engine.context, 1));
+                try self.actionProperty(request, "persist", try self.cloneJson(persist));
+            }
+        }
+        try self.publicationCheck(data);
+        const response = try self.ui_manager.requestProvider("provider_models_publish", request);
+        defer self.engine.freeValue(response);
+        var reaction_data = [_]c.JSValue{ data[0], data[1], data[2], data[3], data[4], publication };
+        return self.publicationThen(response, publicationAccepted, &reaction_data);
+    }
+
+    fn publicationAccepted(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return publicationFailure(engine, error.StaleNativeProviderInvocation)));
+        return self.afterPublication(if (argc == 0) c.pi_js_undefined() else argv[0], data) catch |err| publicationFailure(engine, err);
+    }
+
+    fn afterPublication(self: *Bindings, accepted: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
+        try self.publicationCheck(data);
+        if (!c.JS_IsBool(accepted) or c.JS_ToBool(self.engine.context, accepted) == 0) return c.pi_js_bool(self.engine.context, 0);
+        const update = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, data[5], "update"));
+        defer self.engine.freeValue(update);
+        if (c.JS_IsUndefined(update)) return c.pi_js_bool(self.engine.context, 1);
+        if (!c.JS_IsFunction(self.engine.context, update)) return error.NativeProviderPublicationUpdateMustBeFunction;
+        try self.publicationCheck(data);
+        // Preserve publication.update()'s receiver and its original closure.
+        const result = try self.engine.checked(c.JS_Call(self.engine.context, update, data[5], 0, null));
+        defer self.engine.freeValue(result);
+        if (c.JS_IsObject(result)) {
+            const then = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, result, "then"));
+            defer self.engine.freeValue(then);
+            if (c.JS_IsFunction(self.engine.context, then)) return error.NativeProviderPublicationUpdateMustBeSynchronous;
+        }
+        try self.publicationCheck(data);
+        const provider = try self.engine.toString(data[2]);
+        defer self.gpa.free(provider);
+        const models = try self.providers.currentModelsUnsettled(provider, false);
+        defer self.engine.freeValue(models);
+        return self.publicationThen(models, publicationCatalogReady, data[0..5]);
+    }
+
+    fn publicationCatalogReady(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return publicationFailure(engine, error.StaleNativeProviderInvocation)));
+        return self.catalogPublication(if (argc == 0) c.pi_js_undefined() else argv[0], data) catch |err| publicationFailure(engine, err);
+    }
+
+    fn catalogPublication(self: *Bindings, models: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
+        try self.publicationCheck(data);
+        if (c.JS_IsUndefined(models)) return c.pi_js_bool(self.engine.context, 1);
+        if (!try self.providerArray(models)) return error.NativeProviderModelsMustBeArray;
+        const request = try self.publicationRequest(data, true);
+        defer self.engine.freeValue(request);
+        try self.actionProperty(request, "models", try self.cloneJson(models));
+        const response = try self.ui_manager.requestProvider("provider_models_catalog", request);
+        defer self.engine.freeValue(response);
+        return self.publicationThen(response, publicationCatalogAccepted, data[0..5]);
+    }
+
+    fn publicationCatalogAccepted(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return publicationFailure(engine, error.StaleNativeProviderInvocation)));
+        self.publicationCheck(data) catch |err| return publicationFailure(engine, err);
+        return c.pi_js_bool(context, @intFromBool(argc > 0 and c.JS_IsBool(argv[0]) and c.JS_ToBool(context, argv[0]) != 0));
+    }
+
+    pub fn invokeProviderRefresh(self: *Bindings, id: []const u8, provider: []const u8, callback_generation: u64, context_json: []const u8) ![]u8 {
+        const identity = self.providers.callbacks.get(id) orelse return error.UnknownNativeProviderCallback;
+        const generation = if (callback_generation == 0) identity.generation else callback_generation;
+        try self.beginActions();
+        defer self.finishInvocation();
+        try self.providers.validate(id, provider, generation);
+        const raw = try self.parseJson(context_json, "native-provider-refresh-context");
+        defer self.engine.freeValue(raw);
+        if (!c.JS_IsObject(raw) or try self.providerArray(raw)) return error.InvalidNativeProviderRefreshContext;
+        const refresh_generation = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, raw, "generation"));
+        defer self.engine.freeValue(refresh_generation);
+        var number: f64 = 0;
+        if (c.JS_ToFloat64(self.engine.context, &number, refresh_generation) < 0) return error.JavaScriptException;
+        if (!std.math.isFinite(number) or number <= 0 or number > 9_007_199_254_740_991 or @floor(number) != number) return error.InvalidNativeProviderRefreshGeneration;
+        const context = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        defer self.engine.freeValue(context);
+        inline for (.{ "credential", "stored" }) |name| {
+            const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, raw, name));
+            defer self.engine.freeValue(value);
+            const snapshot = try self.cloneJson(value);
+            var transferred = false;
+            defer if (!transferred) self.engine.freeValue(snapshot);
+            try native_stream.freezeJson(self.engine, snapshot, 0);
+            transferred = true;
+            try self.actionProperty(context, name, snapshot);
+        }
+        const allow = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, raw, "allowNetwork"));
+        defer self.engine.freeValue(allow);
+        const allow_network = c.JS_IsBool(allow) and c.JS_ToBool(self.engine.context, allow) != 0;
+        try self.actionProperty(context, "allowNetwork", c.pi_js_bool(self.engine.context, @intFromBool(allow_network)));
+        if (allow_network) {
+            const atom = c.JS_NewAtom(self.engine.context, "force");
+            if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+            defer c.JS_FreeAtom(self.engine.context, atom);
+            var descriptor: c.JSPropertyDescriptor = undefined;
+            const own = c.JS_GetOwnProperty(self.engine.context, &descriptor, raw, atom);
+            if (own < 0) return error.JavaScriptException;
+            if (own != 0) {
+                self.engine.freeValue(descriptor.value);
+                self.engine.freeValue(descriptor.getter);
+                self.engine.freeValue(descriptor.setter);
+                const force = try self.engine.checked(c.JS_GetProperty(self.engine.context, raw, atom));
+                defer self.engine.freeValue(force);
+                try self.actionProperty(context, "force", c.pi_js_bool(self.engine.context, @intFromBool(c.JS_IsBool(force) and c.JS_ToBool(self.engine.context, force) != 0)));
+            }
+        }
+        var data: [5]c.JSValue = undefined;
+        var initialized: usize = 0;
+        defer for (data[0..initialized]) |value| self.engine.freeValue(value);
+        data[0] = c.JS_NewInt64(self.engine.context, self.invocation_generation);
+        initialized = 1;
+        data[1] = try self.engine.checked(c.JS_NewStringLen(self.engine.context, id.ptr, id.len));
+        initialized = 2;
+        data[2] = try self.engine.checked(c.JS_NewStringLen(self.engine.context, provider.ptr, provider.len));
+        initialized = 3;
+        data[3] = c.JS_NewInt64(self.engine.context, @intCast(generation));
+        data[4] = c.JS_NewInt64(self.engine.context, @intFromFloat(number));
+        initialized = 5;
+        try self.actionProperty(context, "publish", try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, publishCallback, "publish", 1, 0, data.len, &data)));
+        try self.actionProperty(context, "signal", c.JS_DupValue(self.engine.context, self.invocation_signal orelse return error.NativeProviderSignalMissing));
+        try native_stream.freezeJson(self.engine, context, 0);
+        const args = try self.engine.checked(c.JS_NewArray(self.engine.context));
+        defer self.engine.freeValue(args);
+        if (c.JS_SetPropertyUint32(self.engine.context, args, 0, c.JS_DupValue(self.engine.context, context)) < 0) return error.JavaScriptException;
+        const returned = try self.providers.invoke(id, args);
+        defer self.engine.freeValue(returned);
+        const models = if (c.JS_IsUndefined(returned)) blk: {
+            const pending = try self.providers.currentModelsUnsettled(provider, true);
+            defer self.engine.freeValue(pending);
+            break :blk try self.engine.awaitValue(pending);
+        } else c.JS_DupValue(self.engine.context, returned);
+        defer self.engine.freeValue(models);
+        try self.publicationCheck(&data);
+        if (!try self.providerArray(models)) return error.NativeProviderRefreshMustReturnArray;
+        const result = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        defer self.engine.freeValue(result);
+        try self.actionProperty(result, "models", try self.cloneJson(models));
+        try self.mergeActions(result);
+        return self.engine.stringify(result);
+    }
+
     pub fn invokeProviderMethodWithSignal(self: *Bindings, id: []const u8, args_json: []const u8, append_signal: bool, aborted: bool) ![]u8 {
         try self.beginActions();
         defer self.finishInvocation();
@@ -1126,6 +1418,52 @@ pub const Bindings = struct {
         return self.engine.stringify(object);
     }
 };
+
+fn providerPublicationAllocationProbe(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(gpa, engine);
+    defer bindings.deinit();
+    const Fake = struct {
+        fn request(context: ?*anyopaque, id: u32, _: []const u8, _: []const u8) !void {
+            const manager: *native_ui.Manager = @ptrCast(@alignCast(context.?));
+            try manager.respond(id, true, c.pi_js_bool(manager.engine.context, 1));
+        }
+        fn action(_: ?*anyopaque, _: []const u8, _: []const u8) !void {}
+        fn cancel(_: ?*anyopaque, _: u32) !void {}
+    };
+    bindings.ui_manager.bridge = .{ .context = bindings.ui_manager, .request = Fake.request, .action = Fake.action, .cancel = Fake.cancel };
+    try bindings.loadFactory("export default pi=>{const config={models:[{id:'initial'}],getModels(){return this.models},async refreshModels(ctx){await ctx.publish({persist:{etag:'owned'},update(){config.models=[{id:'updated'}]}})}};pi.registerProvider('allocation-models',config)}", "native-publication-allocation.mjs");
+    var callbacks = bindings.providers.callbacks.iterator();
+    const callback = blk: {
+        while (callbacks.next()) |entry| if (std.mem.eql(u8, entry.value_ptr.path, "refreshModels")) break :blk entry.key_ptr.*;
+        return error.MissingRefreshCallback;
+    };
+    const signal = try abort_signal.create(engine);
+    defer engine.freeValue(signal);
+    try bindings.setInvocationOptions(signal, null, null);
+    const json = try bindings.invokeProviderRefresh(callback, "allocation-models", 1, "{\"generation\":1,\"allowNetwork\":false,\"credential\":{},\"stored\":{}}");
+    defer gpa.free(json);
+    try std.testing.expect(std.mem.indexOf(u8, json, "updated") != null);
+    try std.testing.expectEqual(@as(usize, 0), engine.host_ui_pending);
+    c.JS_RunGC(engine.runtime);
+}
+
+test "native provider publication promises release every failed host allocation" {
+    const Probe = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            providerPublicationAllocationProbe(gpa) catch |err| {
+                // Native registration callbacks expose Zig allocation failure
+                // as a JavaScript rejection. Verify the failing allocator
+                // actually injected it before translating for the sweep.
+                const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+                if (failing.has_induced_failure and (err == error.JavaScriptException or err == error.OutOfMemory)) return error.OutOfMemory;
+                return err;
+            };
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+}
 
 test "native contexts clone snapshots and reject retained getters across invocation generations" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});

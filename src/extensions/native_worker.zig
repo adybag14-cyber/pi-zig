@@ -15,10 +15,11 @@ const commonjs = @import("commonjs.zig");
 const timers = @import("timers.zig");
 const abort_signal = @import("abort_signal.zig");
 const native_stream = @import("native_stream.zig");
+const component_protocol = @import("component_protocol.zig");
 const c = engine_mod.c;
 
 const WireRecord = struct {
-    const Kind = enum { request, abort, ui_response, provider_stream_ack, shutdown };
+    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, shutdown };
     bytes: []u8,
     kind: Kind = .request,
 };
@@ -78,6 +79,7 @@ const Transport = struct {
         if (std.mem.eql(u8, kind.string, "shutdown")) return .shutdown;
         if (std.mem.eql(u8, kind.string, "ui_response")) return .ui_response;
         if (std.mem.eql(u8, kind.string, "provider_stream_ack")) return .provider_stream_ack;
+        if (std.mem.eql(u8, kind.string, "component_control")) return .component_control;
         return .request;
     }
 
@@ -153,7 +155,7 @@ const Transport = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.records.items, 0..) |record, index| {
-            if (record.kind == .abort or record.kind == .ui_response or record.kind == .provider_stream_ack or (record.kind == .shutdown and index == 0)) {
+            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or (record.kind == .shutdown and index == 0)) {
                 const removed = self.records.orderedRemove(index);
                 self.queued_bytes -= removed.bytes.len;
                 return removed;
@@ -192,7 +194,11 @@ const Transport = struct {
                 // Require an explicit identity: stale or untargeted controls
                 // cannot cancel a later invocation that happens to be active.
                 if (id != .string or !std.mem.eql(u8, id.string, self.active_id)) continue;
-                if (record.kind == .provider_stream_ack) {
+                if (record.kind == .component_control) {
+                    var control = component_protocol.readControl(engine.gpa, &request.object) catch continue;
+                    defer control.deinit();
+                    _ = try self.bindings.ui_manager.componentControl(&control);
+                } else if (record.kind == .provider_stream_ack) {
                     const sequence = request.object.get("sequence") orelse continue;
                     const success = request.object.get("ok") orelse continue;
                     if (sequence != .integer or sequence.integer <= 0 or success != .bool) continue;
@@ -246,6 +252,7 @@ const Transport = struct {
         try self.seen_ids.put(self.engine.gpa, owned_id, {});
         inserted = true;
         self.active_id = owned_id;
+        self.bindings.ui_manager.invocation_id = std.fmt.parseUnsigned(u64, owned_id, 10) catch 0;
         self.active_signal = try abort_signal.create(self.engine);
         self.active = true;
         self.stream_updates = if (request.get("streamUpdates")) |value| value == .bool and value.bool else false;
@@ -333,6 +340,24 @@ const Transport = struct {
         try record.put(allocator, "sequence", .{ .integer = @intCast(sequence) });
         try record.put(allocator, "event", try std.json.parseFromSliceLeaky(std.json.Value, allocator, event, .{}));
         try writeRecord(self.writer, .{ .object = record });
+    }
+
+    fn componentScene(context: ?*anyopaque, scene: component_protocol.Scene) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        try self.writer.writeByte(0x1e);
+        try component_protocol.writeScene(self.writer, &scene);
+        try self.writer.writeByte('\n');
+        try self.writer.flush();
+        var owned = scene;
+        owned.deinit();
+    }
+
+    fn componentClose(context: ?*anyopaque, fence: component_protocol.Fence) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        try self.writer.writeAll("\x1e{\"type\":\"component_close\",");
+        try component_protocol.writeFence(self.writer, fence);
+        try self.writer.writeAll("}\n");
+        try self.writer.flush();
     }
 };
 
@@ -539,6 +564,19 @@ fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, transport: *
         defer gpa.free(selected);
         return bindings.commitProviderCallbacks(try requiredText(object, "providerName"), selected);
     }
+    if (std.mem.eql(u8, kind, "provider_oauth_login")) {
+        const generation = object.get("callbackGeneration");
+        if (generation) |value| if (value != .integer or value.integer <= 0) return error.InvalidWorkerField;
+        const provider = if (object.contains("providerName")) try requiredText(object, "providerName") else null;
+        return bindings.invokeProviderOAuth(try requiredText(object, "callbackId"), provider, if (generation) |value| @intCast(value.integer) else 0);
+    }
+    if (std.mem.eql(u8, kind, "provider_refresh_models")) {
+        const generation = object.get("callbackGeneration");
+        if (generation) |value| if (value != .integer or value.integer <= 0) return error.InvalidWorkerField;
+        const context = try encoded(gpa, object.get("refreshContext") orelse return error.MissingWorkerField);
+        defer gpa.free(context);
+        return bindings.invokeProviderRefresh(try requiredText(object, "callbackId"), try requiredText(object, "providerName"), if (generation) |value| @intCast(value.integer) else 0, context);
+    }
     if (std.mem.eql(u8, kind, "provider_stream_simple") or std.mem.eql(u8, kind, "provider_fetch_deferred") or std.mem.eql(u8, kind, "provider_cancel_deferred")) {
         const generation = object.get("callbackGeneration") orelse return error.MissingWorkerField;
         if (generation != .integer or generation.integer <= 0) return error.InvalidWorkerField;
@@ -622,7 +660,7 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
     defer transport.deinit();
     engine.host_control_context = &transport;
     engine.host_control_pump = Transport.pump;
-    bindings.ui_manager.bridge = .{ .context = &transport, .request = Transport.uiRequest, .action = Transport.uiAction, .cancel = Transport.uiCancel };
+    bindings.ui_manager.bridge = .{ .context = &transport, .request = Transport.uiRequest, .action = Transport.uiAction, .cancel = Transport.uiCancel, .component_scene = Transport.componentScene, .component_close = Transport.componentClose };
     defer bindings.ui_manager.bridge = null;
     defer {
         engine.host_control_context = null;
@@ -640,7 +678,7 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
         defer std.heap.page_allocator.free(record.bytes);
         // A late control is consumed without producing a final response that
         // could be mistaken for the next ordinary invocation's result.
-        if (record.kind == .abort or record.kind == .ui_response or record.kind == .provider_stream_ack) continue;
+        if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack) continue;
         var arena: std.heap.ArenaAllocator = .init(gpa);
         defer arena.deinit();
         const allocator = arena.allocator();
@@ -672,7 +710,15 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
         };
         defer transport.clearActive();
         const result = invoke(gpa, bindings, &transport, request.object) catch |err| {
-            try writeFailure(allocator, writer, engine.last_error orelse @errorName(err));
+            const diagnostic = engine.last_error orelse @errorName(err);
+            // C frames are absent from the user's JavaScript stack. Preserve
+            // the original exception while naming the native invocation in
+            // its wire diagnostic, as the upstream refreshModels stack does.
+            if (std.mem.eql(u8, kind, "provider_refresh_models")) {
+                const contextual = try std.fmt.allocPrint(gpa, "provider refreshModels: {s}", .{diagnostic});
+                defer gpa.free(contextual);
+                try writeFailure(allocator, writer, contextual);
+            } else try writeFailure(allocator, writer, diagnostic);
             if (transport.terminal) {
                 if (transport.shutdown_requested) {
                     try writer.writeAll("\x1e{\"ok\":true,\"result\":{}}\n");

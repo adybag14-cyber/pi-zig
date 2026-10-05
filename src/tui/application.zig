@@ -598,9 +598,10 @@ pub const Application = struct {
         const width = @max(@as(usize, 1), width_raw);
         const height = @max(@as(usize, 1), height_raw);
         self.clearCurrentFrames();
-        var root_frame = try layout.renderFrame(self.gpa, self.root, width, height);
-        errdefer root_frame.deinit(self.gpa);
-        self.current_frame = root_frame;
+        self.current_frame = try layout.renderFrame(self.gpa, self.root, width, height);
+        // The retained frame owns the bytes from this point, including partial
+        // overlay/search/padding work. Failed paint must clear that same owner.
+        errdefer self.clearCurrentFrames();
 
         for (self.overlays.items) |entry| try self.renderOverlay(entry, width, height);
         const frame = &self.current_frame.?;
@@ -648,6 +649,15 @@ pub const Application = struct {
 
     pub fn renderAnsi(self: *Application, width: usize, height: usize) ![]u8 {
         const view = try self.render(width, height);
+        // Every writer here is memory backed. Its WriteFailed represents the
+        // allocator failure; the terminal I/O is performed separately in paint.
+        return self.renderAnsiAlloc(view) catch |err| switch (err) {
+            error.WriteFailed => error.OutOfMemory,
+            else => err,
+        };
+    }
+
+    fn renderAnsiAlloc(self: *Application, view: View) ![]u8 {
         var out: std.Io.Writer.Allocating = .init(self.gpa);
         errdefer out.deinit();
         try out.writer.writeAll(synchronized_begin);
