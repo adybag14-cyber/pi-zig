@@ -109,12 +109,14 @@ test "native OAuth browser callback hyperlink persistence device dialog and coop
     for ([_][2][]const u8{ .{ "TERM", "xterm-256color" }, .{ "COLUMNS", "120" }, .{ "LINES", "38" }, .{ "NO_COLOR", "1" }, .{ "PI_SKIP_VERSION_CHECK", "1" }, .{ "PI_TELEMETRY", "0" } }) |entry| try environment.put(entry[0], entry[1]);
     const errors_file = try scratch.dir.createFile(io, "stderr.log", .{});
     defer errors_file.close(io);
-    var session = try pty.Session.spawn(gpa, io, .{
+    // Guaranteed concurrency must work even on a one-CPU machine, where Zig's
+    // optional async capacity is zero. This exposed the real callback deadlock.
+    var session = try pty.Session.spawnWithCpuLimit(gpa, io, .{
         .argv = &.{ binary, "--mock-script", mock, "--session-dir", sessions, "--no-context-files", "--no-skills", "--no-prompt-templates", "--no-themes", "--no-extensions", "--approve" },
         .cwd = .{ .path = work },
         .environ_map = &environment,
         .stderr = .{ .file = errors_file },
-    }, 240_000);
+    }, 240_000, 1);
     defer session.deinit();
     var pos = try session.waitFor("> ", 0, 45_000);
     const browser_start = session.output.items.len;

@@ -105,6 +105,38 @@ pub const Session = struct {
         return .{ .gpa = gpa, .io = io, .master = master, .child = child, .operation_deadline_ms = now(io) + timeout_ms };
     }
 
+    /// Limit only this test thread during its exact child spawn. The child
+    /// inherits the mask; the calling thread is restored before returning.
+    /// No other process or thread affinity changes and no taskset is required.
+    pub fn spawnWithCpuLimit(gpa: std.mem.Allocator, io: Io, options: std.process.SpawnOptions, timeout_ms: u32, max_cpus: usize) !Session {
+        if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+        if (max_cpus == 0) return error.InvalidCpuLimit;
+        var original = std.mem.zeroes(linux.cpu_set_t);
+        if (linux.errno(linux.sched_getaffinity(0, @sizeOf(linux.cpu_set_t), &original)) != .SUCCESS) return error.CpuAffinityReadFailed;
+        var limited = std.mem.zeroes(linux.cpu_set_t);
+        var count: usize = 0;
+        for (original, 0..) |word, index| {
+            var remaining = word;
+            while (remaining != 0 and count < max_cpus) {
+                const bit = @ctz(remaining);
+                limited[index] |= @as(usize, 1) << @as(std.math.Log2Int(usize), @intCast(bit));
+                remaining &= remaining - 1;
+                count += 1;
+            }
+        }
+        if (count == 0) return error.CpuAffinityReadFailed;
+        try linux.sched_setaffinity(0, &limited);
+        var result = spawn(gpa, io, options, timeout_ms) catch |err| {
+            try linux.sched_setaffinity(0, &original);
+            return err;
+        };
+        linux.sched_setaffinity(0, &original) catch |err| {
+            result.deinit();
+            return err;
+        };
+        return result;
+    }
+
     fn now(io: Io) i64 {
         return Io.Clock.awake.now(io).toMilliseconds();
     }
@@ -249,4 +281,22 @@ test "Linux PTY helper can reap its owned child after output allocation failure"
     try session.stopOwned();
     try std.testing.expect(session.child.id == null);
     try std.testing.expect(session.term.? == .signal and session.term.?.signal == .KILL);
+}
+
+test "PTY CPU limit belongs only to the spawned child and restores the test thread" {
+    if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+    var before = std.mem.zeroes(linux.cpu_set_t);
+    try std.testing.expectEqual(linux.E.SUCCESS, linux.errno(linux.sched_getaffinity(0, @sizeOf(linux.cpu_set_t), &before)));
+    var child = try Session.spawnWithCpuLimit(std.testing.allocator, std.testing.io, .{ .argv = &.{ "/bin/sleep", "60" }, .stderr = .ignore }, 5000, 1);
+    defer child.deinit();
+    var after = std.mem.zeroes(linux.cpu_set_t);
+    try std.testing.expectEqual(linux.E.SUCCESS, linux.errno(linux.sched_getaffinity(0, @sizeOf(linux.cpu_set_t), &after)));
+    try std.testing.expectEqualSlices(usize, &before, &after);
+    var inherited = std.mem.zeroes(linux.cpu_set_t);
+    try std.testing.expectEqual(linux.E.SUCCESS, linux.errno(linux.sched_getaffinity(child.child.id.?, @sizeOf(linux.cpu_set_t), &inherited)));
+    try std.testing.expectEqual(@as(linux.cpu_count_t, 1), linux.CPU_COUNT(inherited));
+    try child.stopOwned();
+    try std.testing.expectError(error.FileNotFound, Session.spawnWithCpuLimit(std.testing.allocator, std.testing.io, .{ .argv = &.{"/nonexistent-pi-owned-cpu-fixture/executable"}, .stderr = .ignore }, 5000, 1));
+    try std.testing.expectEqual(linux.E.SUCCESS, linux.errno(linux.sched_getaffinity(0, @sizeOf(linux.cpu_set_t), &after)));
+    try std.testing.expectEqualSlices(usize, &before, &after);
 }

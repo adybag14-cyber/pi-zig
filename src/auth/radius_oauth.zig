@@ -338,16 +338,23 @@ fn acceptCallback(listener: *net.Server, io: std.Io, abort_flag: ?*const bool) !
     const Race = union(enum) { accepted: anyerror!net.Stream, aborted: bool };
     var queue: [2]Race = undefined;
     var select = std.Io.Select(Race).init(io, &queue);
-    select.async(.accepted, acceptCallbackTask, .{ listener, io });
-    select.async(.aborted, callbackWatchAbort, .{ io, abort_flag.? });
+    defer while (select.cancel()) |pending| switch (pending) {
+        .accepted => |result| if (result) |accepted| {
+            var stream = accepted;
+            stream.close(io);
+        } else |_| {},
+        .aborted => {},
+    };
+    // Both branches must progress independently. async may run the abort
+    // watcher inline under a small/saturated CPU pool and never reach await.
+    try select.concurrent(.accepted, acceptCallbackTask, .{ listener, io });
+    try select.concurrent(.aborted, callbackWatchAbort, .{ io, abort_flag.? });
     const winner = try select.await();
     switch (winner) {
         .accepted => |result| {
-            while (select.cancel()) |_| {}
             return result;
         },
         .aborted => |aborted| {
-            while (select.cancel()) |_| {}
             if (aborted) return error.LoginCancelled;
             return error.Canceled;
         },

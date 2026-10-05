@@ -238,7 +238,7 @@ const NativeDialogs = struct {
             const dialog = self.queued.orderedRemove(0);
             self.active = dialog;
             dialog.started = true;
-            dialog.group.async(self.runtime.io, NativeDialog.run, .{dialog});
+            try dialog.group.concurrent(self.runtime.io, NativeDialog.run, .{dialog});
         }
     }
 
@@ -1093,7 +1093,12 @@ pub const Runtime = struct {
         var watcher_done = false;
         var watcher_group: Io.Group = .init;
         const watching_abort = invocation_id != 0 and (abort_flag != null or watch_provider_retirement);
-        if (watching_abort) watcher_group.async(self.io, abortWatcherTask, .{ self, abort_flag, invocation_id, &watcher_done, watch_provider_retirement });
+        if (watching_abort) watcher_group.concurrent(self.io, abortWatcherTask, .{ self, abort_flag, invocation_id, &watcher_done, watch_provider_retirement }) catch |err| {
+            // The request is already on the wire; retiring preserves protocol
+            // synchronization when no watcher concurrency can be acquired.
+            self.closeUnlocked();
+            return err;
+        };
         defer if (watching_abort) {
             @atomicStore(bool, &watcher_done, true, .release);
             watcher_group.cancel(self.io);
@@ -1125,7 +1130,9 @@ pub const Runtime = struct {
         var expected_stream_sequence: u64 = 1;
         var native_session: NativeReadSession = .{ .runtime = self };
         var reader_group: Io.Group = .init;
-        if (self.backend == .native) reader_group.async(self.io, NativeReadSession.reader, .{&native_session});
+        // A persistent reader and a human dialog must progress independently
+        // of the owner, including when the implementation's async pool is full.
+        if (self.backend == .native) try reader_group.concurrent(self.io, NativeReadSession.reader, .{&native_session});
         defer if (self.backend == .native) {
             reader_group.cancel(self.io);
             reader_group.await(self.io) catch {};
@@ -1340,16 +1347,15 @@ pub const Runtime = struct {
         const Race = union(enum) { record: anyerror![]u8, timeout: bool };
         var queue: [2]Race = undefined;
         var select = Io.Select(Race).init(self.io, &queue);
-        select.async(.record, readRecordTask, .{self});
-        select.async(.timeout, timeoutTask, .{ self.io, self.timeout_ms });
+        defer drainRecordRace(&select, self.gpa);
+        try select.concurrent(.record, readRecordTask, .{self});
+        try select.concurrent(.timeout, timeoutTask, .{ self.io, self.timeout_ms });
         const winner = try select.await();
         switch (winner) {
             .record => |result| {
-                drainRecordRace(&select, self.gpa);
                 return try result;
             },
             .timeout => |expired| {
-                drainRecordRace(&select, self.gpa);
                 if (expired) return error.JavaScriptExtensionTimeout;
                 return error.Canceled;
             },
