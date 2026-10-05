@@ -361,6 +361,7 @@ pub fn build(b: *std.Build) void {
     worker_process_step.dependOn(&run_worker_process_tests.step);
     test_step.dependOn(&run_worker_process_tests.step);
     const native_runtime_tests = b.addTest(.{
+        .filters = if (b.option([]const u8, "native-runtime-filter", "Run one named persistent-runtime diagnostic case")) |filter| &.{filter} else &.{},
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_runtime_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native runtime"},
         .use_llvm = use_llvm,

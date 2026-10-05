@@ -1,4 +1,4 @@
-name: Native macOS test diagnosis
+name: Native process test diagnosis
 
 on:
   push:
@@ -10,13 +10,14 @@ permissions:
 
 jobs:
   native-target:
-    name: macOS ${{ matrix.target }}
-    runs-on: macos-latest
+    name: ${{ matrix.os }} runtime ${{ matrix.filter }}
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        target: [test-native-worker, test-native-runtime, test-mcp-stdio]
+        os: [macos-latest, windows-latest]
+        filter: [standalone pipes, UI real selector, UI explicit cancellation, UI prompt hooks]
     steps:
       - uses: actions/checkout@v4
       - uses: mlugg/setup-zig@v2
@@ -34,4 +35,4 @@ jobs:
           node --version
       - name: Run named native target with verbose artifact commands
         timeout-minutes: 6
-        run: zig build ${{ matrix.target }} -j1 --verbose --summary all
+        run: zig build test-native-runtime '-Dnative-runtime-filter=${{ matrix.filter }}' -j1 --verbose --summary all
