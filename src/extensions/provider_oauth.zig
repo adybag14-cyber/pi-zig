@@ -685,6 +685,9 @@ test "cancelled extension refresh persists rotated tokens before returning to ca
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
     const source =
+        \\import { writeFileSync, existsSync } from 'node:fs';
+        \\const startedFile = new URL('./rotate-started', import.meta.url);
+        \\const releaseFile = new URL('./rotate-release', import.meta.url);
         \\export default function(pi) {
         \\  pi.registerProvider('rotate-oauth', {
         \\    baseUrl: 'https://rotate.invalid/v1', api: 'openai-completions', apiKey: 'unused',
@@ -692,7 +695,12 @@ test "cancelled extension refresh persists rotated tokens before returning to ca
         \\    oauth: {
         \\      async refreshToken(credentials, signal) {
         \\        if (signal.aborted) throw new Error('caller signal reached refresh');
-        \\        await new Promise(resolve => setTimeout(resolve, 120));
+        \\        writeFileSync(startedFile, 'started');
+        \\        const deadline = Date.now() + 10000;
+        \\        while (!existsSync(releaseFile)) {
+        \\          if (Date.now() > deadline) throw new Error('refresh producer handshake not released');
+        \\          await new Promise(resolve => setTimeout(resolve, 2));
+        \\        }
         \\        if (signal.aborted) throw new Error('caller cancelled rotated refresh');
         \\        return { ...credentials, refresh: 'rotated-refresh', access: 'fresh-access', expires: 9999999999999, refreshCount: (credentials.refreshCount ?? 0) + 1 };
         \\      },
@@ -722,17 +730,35 @@ test "cancelled extension refresh persists rotated tokens before returning to ca
     try store.setOAuthJson("rotate-oauth", "{\"refresh\":\"old-refresh\",\"access\":\"old-access\",\"expires\":1,\"tenant\":{\"keep\":true}}");
     var lifecycle = Runtime.init(gpa, io, root, &registry);
     const Cancel = struct {
-        fn run(task_io: Io, flag: *bool) !void {
-            try task_io.sleep(.fromMilliseconds(40), .awake);
+        fn run(task_io: Io, dir: std.Io.Dir, flag: *bool) !void {
+            const deadline = Io.Clock.awake.now(task_io).toMilliseconds() + 10000;
+            while (true) {
+                _ = dir.statFile(task_io, "rotate-started", .{}) catch |err| switch (err) {
+                    error.FileNotFound => {
+                        if (Io.Clock.awake.now(task_io).toMilliseconds() >= deadline) return error.RefreshProducerHandshakeTimeout;
+                        try task_io.sleep(.fromMilliseconds(2), .awake);
+                        continue;
+                    },
+                    else => return err,
+                };
+                break;
+            }
             @atomicStore(bool, flag, true, .release);
+            try dir.writeFile(task_io, .{ .sub_path = "rotate-release", .data = "release" });
         }
     };
     var aborted = false;
-    var cancellation = try io.concurrent(Cancel.run, .{ io, &aborted });
+    var cancellation = try io.concurrent(Cancel.run, .{ io, tmp.dir, &aborted });
     defer cancellation.cancel(io) catch {};
     // Refresh must use its own bounded deadline, and restore the ordinary one.
     started.runtime.timeout_ms = 20;
-    try std.testing.expectError(error.Canceled, lifecycle.resolve(gpa, "rotate-oauth", 2, &aborted, false));
+    if (lifecycle.resolve(gpa, "rotate-oauth", 2, &aborted, false)) |unexpected| {
+        if (unexpected) |value| {
+            var owned = value;
+            owned.deinit(gpa);
+        }
+        return error.TestExpectedError;
+    } else |err| try std.testing.expectEqual(error.Canceled, err);
     try cancellation.await(io);
     try std.testing.expectEqual(@as(u64, 20), started.runtime.timeout_ms);
     const stored = (try store.readOAuthJson("rotate-oauth")).?;
