@@ -1,6 +1,6 @@
 # Durable storage, Session and Harness mapping
 
-Authority: Pi `b78e6a9085343ec0f308c3d377da72528b4cf7ee`,
+Authority: Pi `b7dfc049e917a265a5aefa9f3952a2dec9b81cfd`,
 `packages/durable/src/types.ts`, `storage/memory.ts`, `storage/sqlite/*`,
 `session/*`, and `harness/*`. This inventory distinguishes reusable native
 mechanisms from interfaces that still require an implementation.
@@ -39,5 +39,7 @@ Implementation order for concrete, independently testable increments:
 4. Add Session transaction serialization and publication for implemented
    record/document types, then invocation/registry/scheduler Harness behavior.
 
-This file is a source-backed boundary map. It does not claim that the new
-storage, Session or Harness interfaces are already implemented.
+The first concrete backend/kernel/tool execution increment is now implemented
+under `backend/*`, `session.zig` and `harness/*`. See `backend/CONTRACT.md` for
+the exact implemented APIs, ownership rules and remaining scheduler/migration
+scope. Existing legacy storage formats remain separate.

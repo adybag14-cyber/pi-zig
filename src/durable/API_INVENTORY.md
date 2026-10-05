@@ -1,9 +1,10 @@
 # Native durable environment foundations
 
-Reference: Pi `b78e6a9085343ec0f308c3d377da72528b4cf7ee` (1.0.3).
-`packages/durable/src` is unchanged from the independently captured reference
-`6100fe5a8358709a26050b8da97ccd188ae93101`; the durable delta is package metadata
-and changelog. The new `packages/env` remote adapter implements the same
+Reference: Pi `b7dfc049e917a265a5aefa9f3952a2dec9b81cfd` (1.0.3).
+The retained 6100/b78 captures remain identified by their original source pins.
+Latest growing reads, byte-output BOM handling, nullish progress defaults and
+polling-relevant watch corrections are ported separately. Storage/Session and
+Chord delta source are unchanged from b78. The `packages/env` adapter implements the same
 `ExecutionEnv` interfaces. Its SSH/daemon transport is outside this foundation.
 
 ## Coverage and integration boundaries
@@ -63,7 +64,8 @@ newly created directory under the resolved temporary root.
   timestamps; mounted-volume identity and invalid-byte POSIX filenames need
   broader differential coverage.
 - Durable storage, Session, registry/schema registration and Harness invocation
-  remain separate integration work. `tools.ToolSet` and `tools.read.execute`
+  remain subsequent integration work beyond the implemented backend/Session/tool
+  execution checkpoint described in `backend/CONTRACT.md`. `tools.ToolSet` and `tools.read.execute`
   expose native typed operations; the existing CLI retains its own format.
   The native mutation queue uses one bounded global lock, so independent paths
   serialize too. Per-path parallel scheduling is not claimed.
@@ -96,6 +98,13 @@ Tracked JSON contains data, not executable host implementations:
 - `fixtures/edit_b78.json`: 17 edit cases and 240 repeated-line display/patch cases.
 - `fixtures/bash_b78_windows.json`: actual reference bash tool execute function
   over the same native process fixture, including callback identity and spill.
+- `fixtures/storage_b78.json`: 36 actual backend/query calls, also replayed and
+  reopened after every successful native SQLite write.
+- `fixtures/session_harness_b7df.json`: actual latest Session/Registry/agent and
+  locked TypeBox/pi-ai schema outcomes; native records/publications match.
+- `fixtures/fork_b7df.json`: actual Session fork policy selection and copied values.
+- `fixtures/output_b7df.json`, `fixtures/growing_read_b7df.json`: latest BOM/slice
+  cases and an actual append between metadata checks of a retained file reader.
 
 Build targets: `zig build test-durable test-durable-tools`. Standalone tests:
 `zig test src/durable_test.zig -lc src/durable/process_probe.c vendor/quickjs/libunicode.c -Ivendor/quickjs`.
@@ -105,6 +114,8 @@ integration must link `process_probe.c`, libc and the pinned native Unicode
 tables for structured normalization. CLI integration tests use
 `src/durable_tools_test.zig` and the existing pinned QuickJS C library because
 the existing tool schemas use its regexp implementation.
+Storage/kernel/tool execution targets additionally use the existing SQLite C
+library: `zig build test-durable-backend test-durable-harness -Dsqlite-lib-dir=...`.
 
 Native `tool_diff.zig` follows the Myers path selection of jsdiff 8.0.4, pinned by
 the upstream lockfile to `https://registry.npmjs.org/diff/-/diff-8.0.4.tgz` with

@@ -1,0 +1,192 @@
+{
+  "created_utc": "2026-10-05T17:42:08.4465648+00:00",
+  "status": "source frozen; all final required gates terminal passed; no commit stage push Main edit",
+  "worktree": "C:\\Users\\adyba\\pi-zig-durable-storage-20261005",
+  "base": "4b2509e9b3a101e859bb77fcd78be0097f366400",
+  "authority": "b7dfc049e917a265a5aefa9f3952a2dec9b81cfd",
+  "compiler": "Zig 0.16.0 final",
+  "source_manifest_sha256": "b7552dbfc23d8fa802db69251863df13f844b36680487ac1ffe6a34331ff65c5",
+  "source_files_verified": 63,
+  "new_files_manifest": "durable-storage-new-files-20261005.json",
+  "main_adapter_sha256": "f301c81a262e459268228116a8b156e2d4ad44589f6084719c077f56661b2cc2",
+  "core_increment_sha256": "924d05c24922ab860320c9804fc16c928c4c3975d8b68e584b5d91682b1e175d",
+  "windows_full": {
+    "debug_steps": "116/116",
+    "releasesafe_steps": "116/116",
+    "summary_pass": 499,
+    "summary_skip": 36,
+    "summary_total": 535,
+    "manual_module_executable_sqlite": "passed",
+    "scope": "isolated4b2509e +frozen63files, not combined Main"
+  },
+  "linux_scoped": {
+    "target": "x86_64-linux-gnu.2.35",
+    "debug_pass": 72,
+    "releasesafe_pass": 72,
+    "backend_pass": 16,
+    "harness_pass": 14,
+    "core_pass": 42,
+    "runtime_root": "/tmp/pi-durable-storage-20261005.jKpYFx",
+    "sqlite_link": "/tmp/pi-foundation-b78-sqlite-lib-20261005"
+  },
+  "macos": {
+    "target": "aarch64-macos",
+    "backend_compile": "passed",
+    "core_compile": "passed",
+    "runtime": "unverified"
+  },
+  "captures": {
+    "backend_trace_events": 36,
+    "sqlite_reopen_trace": "same36 results, reopen each accepted write",
+    "session_registry": "actual b7df source classes",
+    "schema": "actual pi-ai validation with lock-verified TypeBox1.3.27 external-only",
+    "fork": "actual b7df Session asOf/current/initial",
+    "output": "actual b7df BOM and slice cases",
+    "growing_read": "actual retained file append between metadata checks"
+  },
+  "remaining": [
+    "Task scheduler/recovery and ownership cascades not implemented",
+    "Typed document-definition migration/cache/proxy tracking pending",
+    "Provider generation/compaction orchestration and prompt wrappers pending",
+    "Before/after tool hooks and asynchronous progress settlement pending",
+    "Schema reference/format/conditional/dependent/unevaluated/contains/uniqueItems/multipleOf keywords fail closed",
+    "Dedicated prefixed SQLite schema and complete-snapshot transactions; no upstream/legacy database migration",
+    "Polling watches only; cross-volume identity needs dev-aware stat"
+  ],
+  "superseded": [
+    "UnixpermissionfixtureO_PATH BADF corrected to readable iterate handle",
+    "FirstfrozenWindowsReleaseSafe timed_out600s while compiling; unchangedcache rerun terminalpassed"
+  ],
+  "jobs": [
+    {
+      "name": "durable-storage-frozen-full-debug-2",
+      "pid": 24164,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -Doptimize=Debug -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-05T17:38:57.39781Z",
+      "launched_utc": "2026-10-05T18:38:57.3940924+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-durable-storage-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T18:40:34.920805+01:00"
+    },
+    {
+      "name": "durable-storage-frozen-full-releasesafe-2",
+      "pid": 684,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -Doptimize=ReleaseSafe -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-05T17:36:28.907204Z",
+      "launched_utc": "2026-10-05T18:36:28.9038803+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-durable-storage-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T18:37:29.7163194+01:00"
+    },
+    {
+      "name": "durable-storage-frozen-wsl-runtime-2",
+      "pid": 54316,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --exec /bin/sh /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/durable-storage-wsl-run.sh",
+      "created_utc": "2026-10-05T17:25:42.156958Z",
+      "launched_utc": "2026-10-05T18:25:42.1553275+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-durable-storage-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T18:27:00.7162696+01:00"
+    },
+    {
+      "name": "durable-storage-frozen-macos-backend-compile",
+      "pid": 15252,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/durable_backend_test.zig -target aarch64-macos -lc -fno-emit-bin",
+      "created_utc": "2026-10-05T17:26:49.992265Z",
+      "launched_utc": "2026-10-05T18:26:49.9887682+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-durable-storage-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T18:26:50.8956056+01:00"
+    },
+    {
+      "name": "durable-storage-frozen-macos-core-compile",
+      "pid": 54108,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/durable_test.zig -target aarch64-macos -lc src/durable/process_probe.c vendor/quickjs/libunicode.c -Ivendor/quickjs -fno-emit-bin",
+      "created_utc": "2026-10-05T17:26:51.327122Z",
+      "launched_utc": "2026-10-05T18:26:51.3236044+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-durable-storage-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T18:26:52.8421531+01:00"
+    },
+    {
+      "name": "durable-storage-node-capture-2",
+      "pid": 51304,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "C:\\Program Files\\nodejs\\node.exe durable-storage-oracle.mts durable-storage-node-data-2.json",
+      "created_utc": null,
+      "launched_utc": "2026-10-05T16:45:14.9490203+01:00",
+      "identity_captured": false,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T16:45:15.1312921+01:00"
+    },
+    {
+      "name": "durable-session-registry-node-capture",
+      "pid": 23328,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --require ./durable-reference-aliases.cjs durable-session-registry-oracle.mts durable-session-registry-node-data.json",
+      "created_utc": "2026-10-05T16:41:07.108976Z",
+      "launched_utc": "2026-10-05T17:41:07.1057167+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T17:41:07.6820388+01:00"
+    },
+    {
+      "name": "durable-fork-node-capture",
+      "pid": 47044,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "C:\\Program Files\\nodejs\\node.exe --require ./durable-reference-aliases.cjs durable-fork-oracle.mts durable-fork-node-data.json",
+      "created_utc": null,
+      "launched_utc": "2026-10-05T17:57:36.2117612+01:00",
+      "identity_captured": false,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T17:57:36.506483+01:00"
+    },
+    {
+      "name": "durable-output-b7df-node-capture",
+      "pid": 40624,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "C:\\Program Files\\nodejs\\node.exe durable-output-b7df-oracle.mts durable-output-b7df-data.json",
+      "created_utc": null,
+      "launched_utc": "2026-10-05T17:04:30.5124193+01:00",
+      "identity_captured": false,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T17:04:30.714204+01:00"
+    },
+    {
+      "name": "durable-growing-read-node-capture",
+      "pid": 40588,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --require ./durable-reference-aliases.cjs durable-growing-read-oracle.mts durable-growing-read-node-data.json",
+      "created_utc": "2026-10-05T16:55:41.898407Z",
+      "launched_utc": "2026-10-05T17:55:41.8945728+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T17:55:42.2532214+01:00"
+    }
+  ]
+}

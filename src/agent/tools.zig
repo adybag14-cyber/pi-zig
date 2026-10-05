@@ -384,7 +384,7 @@ pub fn validateArgumentsAgainstToolSchemas(
     return null;
 }
 
-fn validateSchemaValue(
+pub fn validateSchemaValue(
     gpa: std.mem.Allocator,
     schema: std.json.Value,
     value: std.json.Value,

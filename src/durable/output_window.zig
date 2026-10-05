@@ -108,6 +108,7 @@ pub const OutputBuffer = struct {
     gpa: std.mem.Allocator,
     limits: Limits,
     decoder: decode.Decoder = decode.streamDecoder(),
+    started: bool = false,
     stored: std.ArrayList(u8) = .empty,
     stored_newlines: u64 = 0,
     full: bool = false,
@@ -175,7 +176,8 @@ pub const OutputBuffer = struct {
         defer pending.deinit(self.gpa);
         try decoder.finish(decode.Text{ .gpa = self.gpa, .output = &pending });
         const accepted = try self.acceptPrepared(pending.items, text, skipped);
-        self.decoder = decode.streamDecoder();
+        self.started = self.started or decoder.started or text.len != 0 or skipped != null;
+        self.decoder = if (self.started) decode.rangeDecoder() else decode.streamDecoder();
         return accepted;
     }
     pub fn pushBytes(self: *OutputBuffer, bytes: []const u8, skipped: ?ShellOutputSkip) !bool {
@@ -185,12 +187,14 @@ pub const OutputBuffer = struct {
         defer pending.deinit(self.gpa);
         if (skipped != null) {
             try decoder.finish(decode.Text{ .gpa = self.gpa, .output = &pending });
-            decoder = decode.streamDecoder();
+            // A skip establishes prior output even when it omits zero bytes.
+            decoder = decode.rangeDecoder();
         }
         var text: std.ArrayList(u8) = .empty;
         defer text.deinit(self.gpa);
         try decoder.push(bytes, decode.Text{ .gpa = self.gpa, .output = &text });
         const accepted = try self.acceptPrepared(pending.items, text.items, skipped);
+        self.started = self.started or decoder.started or skipped != null;
         self.decoder = decoder;
         return accepted;
     }

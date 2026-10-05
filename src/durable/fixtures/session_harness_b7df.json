@@ -1,0 +1,187 @@
+{
+  "upstream": "b7dfc049e917a265a5aefa9f3952a2dec9b81cfd",
+  "node": "v24.14.0",
+  "typebox": "1.3.27",
+  "session": {
+    "root": {
+      "id": 1
+    },
+    "identity": true,
+    "readAfterWrite": {
+      "name": "ReadAfterWrite",
+      "message": "Tx.conversation() cannot read tables after the first table write"
+    },
+    "entry": {
+      "kind": "user",
+      "data": {
+        "v": 1
+      },
+      "id": 4,
+      "conversationId": 1,
+      "head": 4
+    },
+    "stale": "Transaction has settled",
+    "publications": [
+      {
+        "seq": 1,
+        "changes": [
+          {
+            "type": "conversation",
+            "value": {
+              "id": 1
+            }
+          }
+        ]
+      },
+      {
+        "seq": 2,
+        "changes": [
+          {
+            "type": "entry",
+            "value": {
+              "kind": "user",
+              "data": {
+                "v": 1
+              },
+              "id": 4,
+              "conversationId": 1,
+              "head": 4
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "registry": {
+    "previousNames": [
+      "a"
+    ],
+    "currentNames": [
+      "b"
+    ],
+    "winner": "B",
+    "deduplicatedWinner": "B",
+    "errors": [
+      "Extension dup has two tools named same",
+      "Section key instructions is reserved for the agent's instructions",
+      "Task pi.tool of extension task is already installed"
+    ],
+    "builtins": [
+      "pi.generation",
+      "pi.tool",
+      "pi.compaction"
+    ]
+  },
+  "schema": {
+    "type": "object",
+    "properties": {
+      "integer": {
+        "type": "integer"
+      },
+      "boolean": {
+        "type": "boolean"
+      },
+      "string": {
+        "type": "string"
+      },
+      "optional": {
+        "type": "number"
+      },
+      "array": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        }
+      },
+      "union": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "required": [
+      "integer",
+      "boolean",
+      "string",
+      "array",
+      "union"
+    ],
+    "additionalProperties": false
+  },
+  "coerced": [
+    {
+      "input": {
+        "integer": "0x10",
+        "boolean": "true",
+        "string": 1e+21,
+        "optional": null,
+        "array": [
+          "1",
+          true,
+          null
+        ],
+        "union": "2"
+      },
+      "result": {
+        "integer": 16,
+        "boolean": true,
+        "string": "1e+21",
+        "array": [
+          1,
+          1,
+          0
+        ],
+        "union": "2"
+      }
+    },
+    {
+      "input": {
+        "integer": " 2 ",
+        "boolean": 0,
+        "string": false,
+        "array": [
+          "3"
+        ],
+        "union": 1
+      },
+      "result": {
+        "integer": 2,
+        "boolean": false,
+        "string": "false",
+        "array": [
+          3
+        ],
+        "union": 1
+      }
+    },
+    {
+      "input": {
+        "integer": "﻿2 ",
+        "boolean": false,
+        "string": null,
+        "array": [
+          1
+        ],
+        "union": "text"
+      },
+      "result": {
+        "integer": 2,
+        "boolean": false,
+        "string": "",
+        "array": [
+          1
+        ],
+        "union": "text"
+      }
+    }
+  ],
+  "progress": {
+    "partialIntervalMs": 100,
+    "outputIntervalMs": 0
+  }
+}

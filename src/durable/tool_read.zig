@@ -165,7 +165,7 @@ pub fn execute(env: anytype, input: Input, context: types.Context) !values.Resul
         if (after_result == .failure) return values.fileFailure(gpa, after_result.failure);
         var after = after_result.value;
         defer after.deinit(gpa);
-        if (before.size != after.size or before.mtimeMs != after.mtimeMs) {
+        if (after.size < before.size or (after.size == before.size and before.mtimeMs != after.mtimeMs)) {
             if (attempt == 0) continue;
             return .{ .failure = .{ .message = try std.fmt.allocPrint(gpa, "{s} changed while it was read", .{input.path}) } };
         }
@@ -201,4 +201,66 @@ pub fn resolvePath(gpa: std.mem.Allocator, env: anytype, path: []const u8, conte
     }
     transferred = true;
     return .{ .value = original };
+}
+
+test "durable b7df growing real file returns the scanned selection without a retry" {
+    const gpa = std.testing.allocator;
+    const original = std.testing.io;
+    var scratch = std.testing.tmpDir(.{});
+    defer scratch.cleanup();
+    try scratch.dir.writeFile(original, .{ .sub_path = "log", .data = "a\nb" });
+    const writer = try scratch.dir.openFile(original, "log", .{ .mode = .read_write });
+    defer writer.close(original);
+    const Hook = struct {
+        var io: std.Io = undefined;
+        var writerFile: std.Io.File = undefined;
+        var calls: usize = 0;
+        var mutationError: ?anyerror = null;
+        fn stat(context: ?*anyopaque, file: std.Io.File) std.Io.File.StatError!std.Io.File.Stat {
+            calls += 1;
+            // Regular-file validation consumes one stat; the next two are
+            // readText's before/after metadata checks on every platform.
+            if (calls == 3) writerFile.writePositionalAll(io, "\nadded", 3) catch |err| {
+                mutationError = err;
+            };
+            return io.vtable.fileStat(context, file);
+        }
+    };
+    Hook.io = original;
+    Hook.writerFile = writer;
+    Hook.calls = 0;
+    Hook.mutationError = null;
+    var vtable = original.vtable.*;
+    vtable.fileStat = Hook.stat;
+    var modified = original;
+    modified.vtable = &vtable;
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try scratch.dir.realPath(original, &buffer);
+    var fs = try filesystem.FileSystem.init(gpa, modified, buffer[0..length], null);
+    defer fs.deinit();
+    const Env = struct {
+        fs: filesystem.FileSystem,
+        fn openBinaryReader(self: *@This(), path: []const u8, options: filesystem.OpenBinaryOptions, context: types.Context) !types.Result(filesystem.BinaryReader) {
+            return self.fs.openBinaryReader(path, options, context);
+        }
+        fn absolutePath(self: *@This(), path: []const u8, context: types.Context) !types.Result([]u8) {
+            return self.fs.absolutePath(path, context);
+        }
+        fn exists(self: *@This(), path: []const u8, context: types.Context) !types.Result(bool) {
+            return self.fs.exists(path, context);
+        }
+    };
+    var env: Env = .{ .fs = fs };
+    var result = try execute(&env, .{ .path = "log" }, .{});
+    defer result.deinit(gpa);
+    try std.testing.expect(Hook.mutationError == null);
+    try std.testing.expect(result == .value);
+    var fixture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/growing_read_b7df.json"), .{});
+    defer fixture.deinit();
+    const expected = fixture.value.object.get("result").?.object.get("content").?.array.items[0].object.get("text").?.string;
+    try std.testing.expectEqualStrings(expected, result.value.text.?);
+    try std.testing.expectEqual(@as(usize, 3), Hook.calls);
+    const contents = try scratch.dir.readFileAlloc(original, "log", gpa, .limited(100));
+    defer gpa.free(contents);
+    try std.testing.expectEqualStrings("a\nb\nadded", contents);
 }

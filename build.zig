@@ -269,6 +269,27 @@ pub fn build(b: *std.Build) void {
     const durable_tools_step = b.step("test-durable-tools", "Exercise bounded durable reader integration with existing native CLI tools");
     durable_tools_step.dependOn(&run_durable_tools_tests.step);
     test_step.dependOn(&run_durable_tools_tests.step);
+    const durable_backend_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_backend_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkSqlite(durable_backend_tests.root_module, sqlite_lib_dir);
+    const run_durable_backend_tests = b.addRunArtifact(durable_backend_tests);
+    const durable_backend_step = b.step("test-durable-backend", "Exercise native numeric durable transactions document history SQLite fencing and Session");
+    durable_backend_step.dependOn(&run_durable_backend_tests.step);
+    test_step.dependOn(&run_durable_backend_tests.step);
+    const durable_harness_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_harness_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{ "durable.harness", "durable.session" },
+    });
+    linkSqlite(durable_harness_tests.root_module, sqlite_lib_dir);
+    linkQuickJs(b, durable_harness_tests.root_module, quickjs);
+    linkDurable(b, durable_harness_tests.root_module);
+    const run_durable_harness_tests = b.addRunArtifact(durable_harness_tests);
+    const durable_harness_step = b.step("test-durable-harness", "Exercise native registry schema tool output retained invocations and committed results");
+    durable_harness_step.dependOn(&run_durable_harness_tests.step);
+    test_step.dependOn(&run_durable_harness_tests.step);
     const mcp_fixture = b.addExecutable(.{
         .name = "pi-mcp-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp/stdio_fixture.zig"), .target = target, .optimize = optimize }),

@@ -29,6 +29,9 @@ const Resolved = struct {
 const Kind = enum { file, directory, symlink, other };
 const Entry = struct { kind: Kind, inode: std.Io.File.INode, size: u64, mtime: i96, ctime: i96, hash: ?[32]u8 = null };
 const Snapshot = std.StringHashMapUnmanaged(Entry);
+fn denied(err: anyerror) bool {
+    return err == error.AccessDenied or err == error.PermissionDenied;
+}
 fn freeSnapshot(gpa: std.mem.Allocator, snapshot: *Snapshot) void {
     var keys = snapshot.keyIterator();
     while (keys.next()) |key| gpa.free(key.*);
@@ -93,7 +96,7 @@ pub const Watcher = struct {
         self.snapshot = self.scan() catch |err| {
             if (err == error.OutOfMemory) return err;
             // Allocation is still fallible when representing an expected error.
-            const result = try types.failure(*Watcher, fs.gpa, .invalid, null, err, @errorName(err));
+            const result = try types.failure(*Watcher, fs.gpa, if (denied(err)) .permission_denied else .invalid, null, err, @errorName(err));
             for (resolved) |*target| target.deinit(fs.gpa);
             fs.gpa.free(resolved);
             fs.gpa.destroy(self);
@@ -151,7 +154,7 @@ pub const Watcher = struct {
             }
             if (self.closed.load(.acquire)) break;
             self.poll() catch |err| {
-                if (!self.closed.load(.acquire)) self.callback(self.callback_context, .{ .@"error" = .{ .code = .invalid, .message = @errorName(err), .cause = err } }) catch {};
+                if (!self.closed.load(.acquire)) self.callback(self.callback_context, .{ .@"error" = .{ .code = if (denied(err)) .permission_denied else .invalid, .message = @errorName(err), .cause = err } }) catch {};
                 self.closed.store(true, .release);
                 break;
             };
@@ -214,29 +217,40 @@ pub const Watcher = struct {
         }
         return null;
     }
-    fn record(self: *Watcher, snapshot: *Snapshot, path: []const u8, stat: std.Io.File.Stat, ancestor: bool) !void {
-        if (snapshot.contains(path)) return;
-        if (snapshot.count() >= self.options.maxEntries) return error.WatchEntryLimit;
+    fn record(self: *Watcher, snapshot: *Snapshot, path: []const u8, stat: std.Io.File.Stat, ancestor: bool, replace: bool) !void {
+        if (snapshot.contains(path) and !replace) return;
+        if (!snapshot.contains(path) and snapshot.count() >= self.options.maxEntries) return error.WatchEntryLimit;
         const kind = kindOf(stat);
         const identity_only = ancestor or kind == .directory;
+        const signature: Entry = .{ .kind = kind, .inode = stat.inode, .size = if (identity_only) 0 else stat.size, .mtime = if (identity_only) 0 else stat.mtime.nanoseconds, .ctime = if (identity_only) 0 else stat.ctime.nanoseconds, .hash = if (ancestor) null else try self.hashFile(path, stat) };
+        if (snapshot.getPtr(path)) |entry| {
+            entry.* = signature;
+            return;
+        }
         const key = try self.gpa.dupe(u8, path);
         errdefer self.gpa.free(key);
-        try snapshot.put(self.gpa, key, .{ .kind = kind, .inode = stat.inode, .size = if (identity_only) 0 else stat.size, .mtime = if (identity_only) 0 else stat.mtime.nanoseconds, .ctime = if (identity_only) 0 else stat.ctime.nanoseconds, .hash = if (ancestor) null else try self.hashFile(path, stat) });
+        try snapshot.put(self.gpa, key, signature);
     }
     fn scan(self: *Watcher) !Snapshot {
         var snapshot: Snapshot = .empty;
         errdefer freeSnapshot(self.gpa, &snapshot);
-        var directories: usize = 0;
+        var counted: std.StringHashMapUnmanaged(void) = .empty;
+        defer counted.deinit(self.gpa);
+        var listed: std.StringHashMapUnmanaged(Kind) = .empty;
+        defer listed.deinit(self.gpa);
         for (self.targets) |target| {
             var parent = std.fs.path.dirname(target.path);
             while (parent) |path| {
-                if (!snapshot.contains(path)) if (std.Io.Dir.cwd().statFile(self.io, path, .{ .follow_symlinks = false }) catch null) |stat| try self.record(&snapshot, path, stat, true);
+                if (!snapshot.contains(path)) if (std.Io.Dir.cwd().statFile(self.io, path, .{ .follow_symlinks = false }) catch null) |stat| try self.record(&snapshot, path, stat, true, false);
                 const next = std.fs.path.dirname(path);
                 if (next != null and std.mem.eql(u8, next.?, path)) break;
                 parent = next;
             }
-            const stat = std.Io.Dir.cwd().statFile(self.io, target.path, .{}) catch continue;
-            try self.record(&snapshot, target.path, stat, false);
+            const stat = std.Io.Dir.cwd().statFile(self.io, target.path, .{}) catch |err| {
+                if (denied(err)) return err;
+                continue;
+            };
+            try self.record(&snapshot, target.path, stat, false, true);
             if (stat.kind != .directory) continue;
             var pending: std.ArrayList([]u8) = .empty;
             defer pending.deinit(self.gpa);
@@ -248,10 +262,13 @@ pub const Watcher = struct {
             };
             var index: usize = 0;
             while (index < pending.items.len) : (index += 1) {
-                directories += 1;
-                if (directories > self.options.maxDirectories) return error.WatchDirectoryLimit;
+                // Traversal belongs to each target's recursion/exclusions;
+                // the directory budget counts each lexical path once.
+                try counted.put(self.gpa, snapshot.getKey(pending.items[index]).?, {});
+                if (counted.count() > self.options.maxDirectories) return error.WatchDirectoryLimit;
                 if (self.closed.load(.acquire)) return error.WatchClosed;
                 const directory = std.Io.Dir.cwd().openDir(self.io, pending.items[index], .{ .iterate = true, .follow_symlinks = index == 0 }) catch |err| {
+                    if (index == 0 and denied(err)) return err;
                     if (err == error.FileNotFound or err == error.AccessDenied or err == error.PermissionDenied or err == error.NotDir or err == error.SymLinkLoop) continue;
                     return err;
                 };
@@ -262,10 +279,15 @@ pub const Watcher = struct {
                     const path = try std.fs.path.join(self.gpa, &.{ pending.items[index], entry.name });
                     var transferred = false;
                     defer if (!transferred) self.gpa.free(path);
-                    const child_stat = std.Io.Dir.cwd().statFile(self.io, path, .{ .follow_symlinks = false }) catch continue;
-                    if (snapshot.contains(path)) continue;
-                    try self.record(&snapshot, path, child_stat, false);
-                    if (target.recursive and child_stat.kind == .directory) {
+                    var child_kind = listed.get(path);
+                    if (child_kind == null) {
+                        const child_stat = std.Io.Dir.cwd().statFile(self.io, path, .{ .follow_symlinks = false }) catch continue;
+                        child_kind = kindOf(child_stat);
+                        try self.record(&snapshot, path, child_stat, false, false);
+                        const stable_key = snapshot.getKey(path).?;
+                        try listed.put(self.gpa, stable_key, child_kind.?);
+                    }
+                    if (target.recursive and child_kind.? == .directory) {
                         try pending.append(self.gpa, path);
                         transferred = true;
                     }
@@ -323,6 +345,59 @@ const Capture = struct {
         return error.WatchFixtureTimedOut;
     }
 };
+test "durable b7df overlapping targets retain independent traversal and count unique directories" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var scratch = std.testing.tmpDir(.{});
+    defer scratch.cleanup();
+    try scratch.dir.createDirPath(io, "root/child/deep");
+    try scratch.dir.writeFile(io, .{ .sub_path = "root/child/deep/file", .data = "initial" });
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try scratch.dir.realPath(io, &buffer);
+    var fs = try filesystem.FileSystem.init(gpa, io, buffer[0..length], null);
+    defer fs.deinit();
+    var capture: Capture = .{ .gpa = gpa, .io = io };
+    defer capture.deinit();
+    const watcher = try expectWatcher(gpa, try fs.watch(&.{ .{ .path = "root", .recursive = false }, .{ .path = "root/child", .recursive = true } }, .{ .mode = .polling, .pollIntervalMs = 5, .maxDirectories = 3 }, Capture.callback, &capture, .{}));
+    defer watcher.deinit();
+    const file = try fs.resolvePath("root/child/deep/file");
+    defer gpa.free(file);
+    try std.testing.expect(watcher.snapshot.contains(file));
+    try scratch.dir.writeFile(io, .{ .sub_path = "root/child/deep/file", .data = "changed" });
+    try capture.wait(file);
+    watcher.close(.{});
+    const redundant = try expectWatcher(gpa, try fs.watch(&.{ .{ .path = "root", .recursive = true }, .{ .path = "root/child", .recursive = true } }, .{ .mode = .polling, .pollIntervalMs = 5, .maxDirectories = 3 }, Capture.callback, &capture, .{}));
+    defer redundant.deinit();
+    redundant.close(.{});
+}
+
+test "durable b7df real target permission failure is distinguished from an unreadable descendant" {
+    const builtin = @import("builtin");
+    if (builtin.os.tag == .windows or builtin.os.tag == .wasi) return error.SkipZigTest;
+    if (std.posix.system.geteuid() == 0) return error.SkipZigTest;
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var scratch = std.testing.tmpDir(.{});
+    defer scratch.cleanup();
+    try scratch.dir.createDirPath(io, "root/denied");
+    const directory = try scratch.dir.openDir(io, "root/denied", .{ .iterate = true });
+    defer directory.close(io);
+    try directory.setPermissions(io, .fromMode(0));
+    defer directory.setPermissions(io, .fromMode(0o700)) catch {};
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try scratch.dir.realPath(io, &buffer);
+    var fs = try filesystem.FileSystem.init(gpa, io, buffer[0..length], null);
+    defer fs.deinit();
+    var capture: Capture = .{ .gpa = gpa, .io = io };
+    defer capture.deinit();
+    var failed = try fs.watch(&.{.{ .path = "root/denied", .recursive = true }}, .{ .mode = .polling, .pollIntervalMs = 5 }, Capture.callback, &capture, .{});
+    try std.testing.expect(failed == .failure);
+    defer failed.failure.deinit(gpa);
+    try std.testing.expectEqual(types.FileErrorCode.permission_denied, failed.failure.code);
+    const watcher = try expectWatcher(gpa, try fs.watch(&.{.{ .path = "root", .recursive = true }}, .{ .mode = .polling, .pollIntervalMs = 5 }, Capture.callback, &capture, .{}));
+    defer watcher.deinit();
+    watcher.close(.{});
+}
 fn expectWatcher(gpa: std.mem.Allocator, result: types.Result(*Watcher)) !*Watcher {
     return switch (result) {
         .value => |watcher| watcher,

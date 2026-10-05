@@ -1,0 +1,839 @@
+{
+  "upstream": "b78e6a9085343ec0f308c3d377da72528b4cf7ee",
+  "node": "v24.14.0",
+  "events": [
+    {
+      "input": {
+        "op": "mint"
+      },
+      "result": 2
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "conversation",
+            "value": {
+              "id": 1
+            }
+          }
+        ]
+      },
+      "result": 1
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "entry",
+            "value": {
+              "id": 3,
+              "conversationId": 1,
+              "kind": "user",
+              "data": {
+                "nested": [
+                  1
+                ],
+                "lone": "\ud800"
+              }
+            }
+          },
+          {
+            "type": "entry",
+            "value": {
+              "id": 4,
+              "conversationId": 1,
+              "kind": "test"
+            }
+          },
+          {
+            "type": "conversation",
+            "value": {
+              "id": 10,
+              "parent": {
+                "conversationId": 1,
+                "at": 3
+              }
+            }
+          },
+          {
+            "type": "entry",
+            "value": {
+              "id": 11,
+              "conversationId": 10,
+              "kind": "test"
+            }
+          }
+        ]
+      },
+      "result": 2
+    },
+    {
+      "input": {
+        "op": "scan",
+        "table": "entry",
+        "query": {
+          "conversationId": 10
+        },
+        "limit": 1
+      },
+      "result": {
+        "items": [
+          {
+            "id": 11,
+            "conversationId": 10,
+            "kind": "test"
+          }
+        ],
+        "next": {
+          "after": 11
+        }
+      }
+    },
+    {
+      "input": {
+        "op": "scan",
+        "table": "entry",
+        "query": {
+          "conversationId": 10
+        },
+        "limit": 10,
+        "after": 11
+      },
+      "result": {
+        "items": [
+          {
+            "id": 3,
+            "conversationId": 1,
+            "kind": "user",
+            "data": {
+              "nested": [
+                1
+              ],
+              "lone": "\ud800"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "op": "entry",
+        "id": 4,
+        "conversationId": 10
+      },
+      "result": null
+    },
+    {
+      "input": {
+        "op": "entry",
+        "id": 3,
+        "conversationId": 10
+      },
+      "result": {
+        "entry": {
+          "id": 3,
+          "conversationId": 1,
+          "kind": "user",
+          "data": {
+            "nested": [
+              1
+            ],
+            "lone": "\ud800"
+          }
+        },
+        "commitSeq": 2
+      }
+    },
+    {
+      "input": {
+        "op": "scan",
+        "table": "conversation",
+        "query": {},
+        "limit": 1
+      },
+      "result": {
+        "items": [
+          {
+            "id": 1
+          }
+        ],
+        "next": {
+          "after": 1
+        }
+      }
+    },
+    {
+      "input": {
+        "op": "scan",
+        "table": "conversation",
+        "query": {},
+        "limit": 10,
+        "after": 1
+      },
+      "result": {
+        "items": [
+          {
+            "id": 10,
+            "parent": {
+              "conversationId": 1,
+              "at": 3
+            }
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "entry",
+            "value": {
+              "id": 12,
+              "conversationId": 1,
+              "kind": "test"
+            }
+          },
+          {
+            "type": "task",
+            "value": {
+              "id": 3
+            }
+          }
+        ]
+      },
+      "error": {
+        "name": "Error",
+        "message": "ID 3 already belongs to entry"
+      }
+    },
+    {
+      "input": {
+        "op": "record",
+        "table": "entry",
+        "id": 12
+      },
+      "result": null
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "entry",
+            "value": {
+              "id": 12,
+              "conversationId": 1,
+              "kind": "test"
+            }
+          },
+          {
+            "type": "entry",
+            "value": {
+              "id": 12,
+              "conversationId": 1,
+              "kind": "test"
+            }
+          }
+        ]
+      },
+      "error": {
+        "name": "Error",
+        "message": "ID 12 is written more than once"
+      }
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "document.create",
+            "record": {
+              "id": 20,
+              "kind": "settings",
+              "scope": {
+                "kind": "session"
+              }
+            },
+            "content": {
+              "kind": "base",
+              "version": 1,
+              "value": {
+                "text": "A😀B",
+                "list": [
+                  1,
+                  2,
+                  3
+                ]
+              }
+            }
+          },
+          {
+            "type": "document.create",
+            "record": {
+              "id": 21,
+              "kind": "history",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 1
+              },
+              "history": "rewindable",
+              "fork": "asOf"
+            },
+            "content": {
+              "kind": "base",
+              "version": 1,
+              "value": {
+                "n": 1
+              }
+            }
+          }
+        ]
+      },
+      "result": 3
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "document.change",
+            "id": 20,
+            "content": {
+              "kind": "delta",
+              "version": 1,
+              "ops": [
+                [
+                  "t",
+                  [
+                    "text"
+                  ],
+                  2
+                ],
+                [
+                  "p",
+                  [
+                    "list"
+                  ],
+                  1,
+                  1,
+                  [
+                    9
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "document.change",
+            "id": 21,
+            "content": {
+              "kind": "delta",
+              "version": 1,
+              "ops": [
+                [
+                  "s",
+                  [
+                    "n"
+                  ],
+                  2
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "result": 4
+    },
+    {
+      "input": {
+        "op": "document",
+        "id": 20
+      },
+      "result": {
+        "record": {
+          "id": 20,
+          "kind": "settings",
+          "scope": {
+            "kind": "session"
+          },
+          "createdAt": 3
+        },
+        "version": 1,
+        "value": {
+          "text": "\ude00B",
+          "list": [
+            1,
+            9,
+            3
+          ]
+        },
+        "deltasSinceBase": 1
+      }
+    },
+    {
+      "input": {
+        "op": "document",
+        "id": 20,
+        "at": 3
+      },
+      "error": {
+        "name": "Error",
+        "message": "Document 20 does not retain historical content"
+      }
+    },
+    {
+      "input": {
+        "op": "document",
+        "id": 21,
+        "at": 3
+      },
+      "result": {
+        "record": {
+          "id": 21,
+          "kind": "history",
+          "scope": {
+            "kind": "conversation",
+            "conversationId": 1
+          },
+          "history": "rewindable",
+          "fork": "asOf",
+          "createdAt": 3
+        },
+        "version": 1,
+        "value": {
+          "n": 1
+        },
+        "deltasSinceBase": 0
+      }
+    },
+    {
+      "input": {
+        "op": "document",
+        "id": 21
+      },
+      "result": {
+        "record": {
+          "id": 21,
+          "kind": "history",
+          "scope": {
+            "kind": "conversation",
+            "conversationId": 1
+          },
+          "history": "rewindable",
+          "fork": "asOf",
+          "createdAt": 3
+        },
+        "version": 1,
+        "value": {
+          "n": 2
+        },
+        "deltasSinceBase": 1
+      }
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "document.change",
+            "id": 21,
+            "content": {
+              "kind": "delta",
+              "version": 2,
+              "ops": [
+                [
+                  "s",
+                  [
+                    "n"
+                  ],
+                  3
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "error": {
+        "name": "Error",
+        "message": "Document 21 version transition requires a base"
+      }
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "document.change",
+            "id": 21,
+            "content": {
+              "kind": "base",
+              "version": 2,
+              "value": {
+                "n": 3
+              }
+            }
+          }
+        ]
+      },
+      "result": 5
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "document.create",
+            "record": {
+              "id": 22,
+              "kind": "history",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 1
+              },
+              "history": "rewindable",
+              "fork": "asOf"
+            },
+            "content": {
+              "kind": "base",
+              "version": 1,
+              "value": {
+                "n": 4
+              }
+            }
+          }
+        ]
+      },
+      "error": {
+        "name": "Error",
+        "message": "Document address already has a current incarnation"
+      }
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "document.retire",
+            "id": 21
+          },
+          {
+            "type": "document.create",
+            "record": {
+              "id": 22,
+              "kind": "history",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 1
+              },
+              "history": "rewindable",
+              "fork": "asOf"
+            },
+            "content": {
+              "kind": "base",
+              "version": 1,
+              "value": {
+                "n": 4
+              }
+            }
+          }
+        ]
+      },
+      "result": 6
+    },
+    {
+      "input": {
+        "op": "document",
+        "id": 21
+      },
+      "result": null
+    },
+    {
+      "input": {
+        "op": "document",
+        "id": 21,
+        "at": 5
+      },
+      "result": {
+        "record": {
+          "id": 21,
+          "kind": "history",
+          "scope": {
+            "kind": "conversation",
+            "conversationId": 1
+          },
+          "history": "rewindable",
+          "fork": "asOf",
+          "createdAt": 3,
+          "retiredAt": 6
+        },
+        "version": 2,
+        "value": {
+          "n": 3
+        },
+        "deltasSinceBase": 0
+      }
+    },
+    {
+      "input": {
+        "op": "findDocument",
+        "address": {
+          "kind": "history",
+          "scope": {
+            "kind": "conversation",
+            "conversationId": 1
+          }
+        }
+      },
+      "result": {
+        "id": 22,
+        "kind": "history",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "history": "rewindable",
+        "fork": "asOf",
+        "createdAt": 6
+      }
+    },
+    {
+      "input": {
+        "op": "findDocument",
+        "address": {
+          "kind": "history",
+          "scope": {
+            "kind": "conversation",
+            "conversationId": 1
+          }
+        },
+        "at": 5
+      },
+      "result": {
+        "id": 21,
+        "kind": "history",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "history": "rewindable",
+        "fork": "asOf",
+        "createdAt": 3,
+        "retiredAt": 6
+      }
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "document.copy",
+            "record": {
+              "id": 23,
+              "kind": "history",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 10
+              },
+              "history": "rewindable",
+              "fork": "asOf"
+            },
+            "source": {
+              "id": 21,
+              "at": 4
+            }
+          }
+        ]
+      },
+      "result": 7
+    },
+    {
+      "input": {
+        "op": "document",
+        "id": 23
+      },
+      "result": {
+        "record": {
+          "id": 23,
+          "kind": "history",
+          "scope": {
+            "kind": "conversation",
+            "conversationId": 10
+          },
+          "history": "rewindable",
+          "fork": "asOf",
+          "createdAt": 7
+        },
+        "version": 1,
+        "value": {
+          "n": 2
+        },
+        "deltasSinceBase": 0
+      }
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "document.change",
+            "id": 23,
+            "content": {
+              "kind": "delta",
+              "version": 1,
+              "ops": [
+                [
+                  "a",
+                  [
+                    "missing"
+                  ],
+                  "bad"
+                ]
+              ]
+            }
+          },
+          {
+            "type": "document.copy",
+            "record": {
+              "id": 24,
+              "kind": "other",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 1
+              },
+              "history": "rewindable",
+              "fork": "asOf"
+            },
+            "source": {
+              "id": 23,
+              "at": "current"
+            }
+          }
+        ]
+      },
+      "error": {
+        "name": "StorageRejected",
+        "message": "Document copy 24 was rejected"
+      }
+    },
+    {
+      "input": {
+        "op": "record",
+        "table": "document",
+        "id": 24
+      },
+      "result": null
+    },
+    {
+      "input": {
+        "op": "scan",
+        "table": "document",
+        "query": {
+          "scope": {
+            "kind": "conversation",
+            "conversationId": 1
+          },
+          "at": "current"
+        },
+        "limit": 10
+      },
+      "result": {
+        "items": [
+          {
+            "id": 22,
+            "kind": "history",
+            "scope": {
+              "kind": "conversation",
+              "conversationId": 1
+            },
+            "history": "rewindable",
+            "fork": "asOf",
+            "createdAt": 6
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "op": "commit",
+        "seq": 20,
+        "writes": []
+      },
+      "result": 20
+    },
+    {
+      "input": {
+        "op": "commit",
+        "seq": 20,
+        "writes": []
+      },
+      "error": {
+        "name": "Error",
+        "message": "Commit sequence 20 does not strictly increase"
+      }
+    },
+    {
+      "input": {
+        "op": "mint"
+      },
+      "result": 24
+    },
+    {
+      "input": {
+        "op": "commit",
+        "writes": [
+          {
+            "type": "document.create",
+            "record": {
+              "id": 30,
+              "kind": "lone",
+              "scope": {
+                "kind": "conversation",
+                "conversationId": 1
+              },
+              "history": "rewindable",
+              "fork": "asOf",
+              "key": "\ud800"
+            },
+            "content": {
+              "kind": "base",
+              "version": 1,
+              "value": {
+                "\udfff": "value"
+              }
+            }
+          }
+        ]
+      },
+      "result": 21
+    },
+    {
+      "input": {
+        "op": "document",
+        "id": 30
+      },
+      "result": {
+        "record": {
+          "id": 30,
+          "kind": "lone",
+          "scope": {
+            "kind": "conversation",
+            "conversationId": 1
+          },
+          "history": "rewindable",
+          "fork": "asOf",
+          "key": "\ud800",
+          "createdAt": 21
+        },
+        "version": 1,
+        "value": {
+          "\udfff": "value"
+        },
+        "deltasSinceBase": 0
+      }
+    }
+  ]
+}

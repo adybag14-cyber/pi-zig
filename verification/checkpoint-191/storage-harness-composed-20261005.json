@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentSource": "4fdee261e20c41eb82901470463c6d4baf1d6ebb",
+  "storageAuthority": "b7dfc049e917a265a5aefa9f3952a2dec9b81cfd",
+  "frozenSourceManifestSha256": "b7552dbfc23d8fa802db69251863df13f844b36680487ac1ffe6a34331ff65c5",
+  "integration": "Twenty-one new storage/session/harness files plus additive core/API/build patches; existing runtime and terminal changes retained",
+  "validation": {
+    "windowsDebug": "126/126 steps;571 passed;39 skips",
+    "windowsReleaseSafe": "126/126 steps;571 passed;39 skips",
+    "linuxDebug": "122/122 steps;740/740 passed",
+    "linuxReleaseSafe": "122/122 steps;740/740 passed",
+    "linuxSnapshotSha256": "fdc4c6271013584c36f53c2d47d028425e01ae90d26275df59f56d4c8ffed8a0",
+    "jobs": [
+      {
+        "name": "storage-main-composed-debug-20261005",
+        "pid": 15744,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T17:43:28.6148570Z",
+        "launched_utc": "2026-10-05T17:43:28.6116180+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T17:45:34.4639136+00:00"
+      },
+      {
+        "name": "storage-main-composed-releasesafe-20261005",
+        "pid": 48980,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T17:48:51.5047870Z",
+        "launched_utc": "2026-10-05T17:48:51.5016987+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T17:57:18.4432671+00:00"
+      },
+      {
+        "name": "storage-main-composed-linux-debug-20261005",
+        "pid": 49840,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-storage-composed-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1100s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T17:50:21.1404120Z",
+        "launched_utc": "2026-10-05T17:50:21.1379686+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T17:52:37.8238508+00:00"
+      },
+      {
+        "name": "storage-main-composed-linux-releasesafe-20261005",
+        "pid": 39260,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-storage-composed-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1100s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T17:56:49.9236990Z",
+        "launched_utc": "2026-10-05T17:56:49.9205074+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T18:07:34.7031636+00:00"
+      }
+    ],
+    "previousPublishedThreePlatformCi": "https://github.com/adybag14-cyber/pi-zig/actions/runs/37350353915"
+  },
+  "limits": [
+    "Full scheduler/recovery, typed definition migration/cache, provider orchestration and asynchronous hooks are subsequent increments",
+    "Forced native watch remains unsupported; polling is implemented",
+    "SQLite persists dedicated whole snapshots and does not migrate original or legacy databases",
+    "Schema support is bounded and unsupported keywords fail closed",
+    "Latest upstream98d2e194 four-commit delta is being ported separately",
+    "Production default remains legacy; final native parity and release remain uncertified"
+  ]
+}

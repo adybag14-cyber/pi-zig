@@ -64,7 +64,7 @@ pub fn selection(reader: *filesystem.BinaryReader, options: line_scan.Options, c
         if (after_result == .failure) return propagate(Selection, after_result);
         var after = after_result.value;
         defer after.deinit(reader.gpa);
-        if (before.size != after.size or before.mtimeMs != after.mtimeMs) {
+        if (after.size < before.size or (after.size == before.size and before.mtimeMs != after.mtimeMs)) {
             if (attempt == 0) continue;
             return types.failure(Selection, reader.gpa, .invalid, reader.path, null, "File changed while it was read");
         }
