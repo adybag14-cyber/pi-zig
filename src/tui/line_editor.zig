@@ -84,13 +84,48 @@ fn terminalAttributes(fd: std.posix.fd_t) !std.posix.termios {
 fn setTerminalAttributes(fd: std.posix.fd_t, attributes: std.posix.termios) !void {
     if (comptime builtin.os.tag != .linux and builtin.os.tag != .macos) return error.UnsupportedTerminal;
     while (true) {
-        switch (std.posix.errno(std.posix.system.tcsetattr(fd, .FLUSH, &attributes))) {
+        // Reader handoffs must retain input queued after the last painted
+        // frame. FLUSH discards that input on both raw entry and restoration.
+        switch (std.posix.errno(std.posix.system.tcsetattr(fd, .NOW, &attributes))) {
             .SUCCESS => return,
             .INTR => continue,
             .IO, .NOTTY => return error.DeadTerminal,
             else => |err| return std.posix.unexpectedErrno(err),
         }
     }
+}
+
+test "raw-mode transitions preserve bytes queued on an actual terminal" {
+    if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+    const linux = std.os.linux;
+    const opened = linux.open("/dev/ptmx", .{ .ACCMODE = .RDWR, .NOCTTY = true }, 0);
+    try std.testing.expectEqual(linux.E.SUCCESS, linux.errno(opened));
+    const master: linux.fd_t = @intCast(opened);
+    defer _ = linux.close(master);
+    var unlocked: c_int = 0;
+    try std.testing.expectEqual(linux.E.SUCCESS, linux.errno(linux.ioctl(master, linux.T.IOCSPTLCK, @intFromPtr(&unlocked))));
+    const peer_result = linux.ioctl(master, linux.T.IOCGPTPEER, @as(u32, @bitCast(linux.O{ .ACCMODE = .RDWR, .NOCTTY = true, .NONBLOCK = true })));
+    try std.testing.expectEqual(linux.E.SUCCESS, linux.errno(peer_result));
+    const peer: linux.fd_t = @intCast(peer_result);
+    defer _ = linux.close(peer);
+    var attributes = try terminalAttributes(peer);
+    attributes.lflag.ICANON = false;
+    attributes.lflag.ECHO = false;
+    attributes.cc[@intFromEnum(std.posix.V.MIN)] = 1;
+    attributes.cc[@intFromEnum(std.posix.V.TIME)] = 0;
+    try setTerminalAttributes(peer, attributes);
+    const pending = "queued-draft";
+    try std.testing.expectEqual(pending.len, linux.write(master, pending.ptr, pending.len));
+    var fd: linux.pollfd = .{ .fd = peer, .events = linux.POLL.IN, .revents = 0 };
+    try std.testing.expectEqual(@as(usize, 1), linux.poll(@ptrCast(&fd), 1, 100));
+    // Switching reader ownership must change modes without silently flushing
+    // bytes that arrived after the previous owner's final visible frame.
+    try setTerminalAttributes(peer, attributes);
+    var received: [pending.len]u8 = undefined;
+    const count = linux.read(peer, &received, received.len);
+    try std.testing.expectEqual(linux.E.SUCCESS, linux.errno(count));
+    try std.testing.expectEqual(pending.len, count);
+    try std.testing.expectEqualStrings(pending, &received);
 }
 
 test "Linux terminal hangup maps real raw-mode ioctl EIO without a generic Unexpected" {
@@ -157,7 +192,7 @@ pub const RawMode = struct {
     pub fn leave(self: *RawMode) void {
         if (!self.restore) return;
         if (comptime builtin.os.tag == .linux or builtin.os.tag == .macos) {
-            std.posix.tcsetattr(Io.File.stdin().handle, .FLUSH, self.original) catch {};
+            setTerminalAttributes(Io.File.stdin().handle, self.original) catch {};
         } else if (comptime builtin.os.tag == .windows) {
             _ = platform.win.SetConsoleMode(Io.File.stdin().handle, self.original.input);
             _ = platform.win.SetConsoleMode(Io.File.stdout().handle, self.original.output);
