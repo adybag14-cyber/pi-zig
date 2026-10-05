@@ -8,7 +8,7 @@
   "complete_inventory": "FILES.sha256",
   "continuation": "UPSTREAM-UPDATE-20261003.md",
   "file_count_excluding_FILES_sha256": 760,
-  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 35478453,
+  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 35478428,
   "generated_catalog": {
     "models": 1602,
     "providers": 42,
