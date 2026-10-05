@@ -1,17 +1,42 @@
 # pi-zig
 
 The Pi 1.x update is in progress on this branch, targeting upstream commit
-`1965a80693dd929d28dda72f1986056355fb167a` (package version 1.0.2).
+`6100fe5a8358709a26050b8da97ccd188ae93101` (package version 1.0.2).
 See [the active update record](UPSTREAM-UPDATE-20261003.md) for completed gates
 and remaining ports. Final Zig 0.16.0 stays pinned. The linked C extension
 engine and Zig host are being validated before replacing production discovery's
 legacy Node bridge; remaining Python/JavaScript fixtures are also being ported.
 This branch does not yet certify complete Pi 1.x parity or an all-Zig/C tree.
 
+The explicit native extension backend now covers persistent tool/hook/provider
+calls, owner-thread cancellation, timer refresh, DOMException, Buffer/text
+encoding, and directory handles. Standard UI requests and retained UI actions
+have native worker tests; custom component factories and broader asynchronous
+host operations remain incomplete. Production discovery still uses Node.
+
+Four Python process fixtures are replaced by native Zig authentication, OAuth,
+bootstrap-network and provider-retry fixtures, including real Linux PTYs and
+live RPC settings reload. Fifteen Python scripts and five JavaScript files
+remain, and the strict language audit continues to reject them. The native
+Application has Ctrl+Home/End transcript routing and Home/End editor routing,
+but the fullscreen CLI still needs its persistent Application/ScrollView
+frontend. Component tests do not certify that missing CLI integration.
+
+Fresh validation of the frozen `6100fe5a` checkpoint passes 69 Windows build
+steps, 385 dedicated tests with five skips, and 1,117 primary-module tests with
+28 skips. Windows and Linux x64 GNU ReleaseSafe builds pass; the isolated
+offline Windows CLI smoke and all four native Linux process fixtures pass
+against that fresh Linux candidate. Formatting, catalog regeneration, all 107
+vendor digests and structural checks pass. Language/release checks correctly
+reject the remaining 20 files and incomplete parity metadata. See the
+[source-scoped checkpoint record](verification/checkpoint-189/checkpoint-6100-integration-20261005.json).
+Hosted validation of this checkpoint is separate from historical `c24fa85` CI.
+
 `pi-zig` is a native Zig 0.16 rewrite of the Pi coding-agent and AI runtime. It
-preserves Pi's provider, model, session, extension, tool, RPC, TUI, storage,
-authentication, and protocol behavior while keeping the default executable
-self-contained.
+implements provider, model, session, extension, tool, RPC, TUI, storage,
+authentication, and protocol surfaces while keeping the default executable
+self-contained. The active update record distinguishes implemented contracts
+from the remaining Pi 1.x migration work.
 
 The previously certified behavioral baseline is Pi 0.84.4 at authoritative upstream main
 commit `853a80d26c90a14c1886f0ebb8ffaae133ca2185`. The earlier embedded
@@ -22,8 +47,8 @@ native code and language-neutral data; the reference source is not restored to
 this repository. `pi-zig` is an independent rewrite and is not an official Pi
 release.
 
-The current immutable typed catalog contains 1,601 models across 42 providers:
-1,529 chat, 57 image and 15 classifier models. Its native Zig generator records
+The current immutable typed catalog contains 1,602 models across 42 providers:
+1,530 chat, 57 image and 15 classifier models. Its native Zig generator records
 the upstream package version/commit, source-archive digest and separate catalog
 revision/digest. Imported Git tar metadata and package version must match the
 supplied provenance. Unknown or unprojected fields fail explicitly.

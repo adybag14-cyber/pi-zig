@@ -2,6 +2,7 @@
 const std = @import("std");
 const engine_mod = @import("engine.zig");
 const node_buffer = @import("node_buffer.zig");
+const node_directory = @import("node_directory.zig");
 const c = engine_mod.c;
 const Method = enum(c_int) { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync, accessSync };
 const PromiseMethod = enum(c_int) { readFile, writeFile, mkdir, unlink, access };
@@ -24,6 +25,7 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
         if (c.JS_DefinePropertyValueStr(engine.context, promises, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
     if (c.JS_DefinePropertyValueStr(engine.context, exports, "promises", c.JS_DupValue(engine.context, promises), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    try node_directory.install(engine, exports, promises);
     try engine.registerDefaultModule("node:fs", exports);
     try engine.registerDefaultModule("fs", exports);
     try engine.registerDefaultModule("node:fs/promises", promises);
@@ -51,17 +53,7 @@ fn invokePromise(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
         if (err == error.JavaScriptException) {
             if (engine.captured_exception) |exception| break :failure c.JS_DupValue(context, exception);
         }
-        const failure = c.JS_NewError(context);
-        if (!c.JS_IsException(failure)) {
-            const message = if (err == error.JavaScriptException) engine.last_error orelse @errorName(err) else @errorName(err);
-            const text = c.JS_NewStringLen(context, message.ptr, message.len);
-            if (c.JS_DefinePropertyValueStr(context, failure, "message", text, c.JS_PROP_C_W_E) < 0) {
-                engine.freeValue(failure);
-                engine.freeValue(promise);
-                return c.JS_Throw(context, c.JS_GetException(context));
-            }
-        }
-        break :failure failure;
+        break :failure filesystemError(engine, err, method, argv[0..@intCast(argc)]);
     };
     defer engine.freeValue(value);
     if (c.JS_IsException(value)) {
@@ -122,8 +114,111 @@ fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue
     const engine = engine_mod.Engine.fromContext(context.?);
     return call(engine, @enumFromInt(magic), argv[0..@intCast(argc)]) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
-        return c.JS_ThrowInternalError(context, "Native filesystem operation failed: %s", @as([*:0]const u8, @errorName(err)));
+        const failure = filesystemError(engine, err, @enumFromInt(magic), argv[0..@intCast(argc)]);
+        if (c.JS_IsException(failure)) return failure;
+        return c.JS_Throw(context, failure);
     };
+}
+
+fn filesystemCode(err: anyerror) ?[:0]const u8 {
+    return switch (err) {
+        error.FileNotFound => "ENOENT",
+        error.AccessDenied => "EACCES",
+        error.PermissionDenied => "EPERM",
+        error.PathAlreadyExists => "EEXIST",
+        error.NotDir => "ENOTDIR",
+        error.IsDir => "EISDIR",
+        error.DirNotEmpty => "ENOTEMPTY",
+        error.NoSpaceLeft => "ENOSPC",
+        error.NameTooLong => "ENAMETOOLONG",
+        error.SymLinkLoop => "ELOOP",
+        error.ProcessFdQuotaExceeded => "EMFILE",
+        error.SystemFdQuotaExceeded => "ENFILE",
+        error.FileTooBig => "EFBIG",
+        error.ReadOnlyFileSystem => "EROFS",
+        error.FileBusy => "EBUSY",
+        else => null,
+    };
+}
+
+fn filesystemError(engine: *engine_mod.Engine, err: anyerror, method: Method, args: []c.JSValue) c.JSValue {
+    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    const failure = c.JS_NewError(engine.context);
+    if (c.JS_IsException(failure)) return failure;
+    const message = c.JS_NewString(engine.context, @as([*:0]const u8, @errorName(err)));
+    if (c.JS_DefinePropertyValueStr(engine.context, failure, "message", message, c.JS_PROP_C_W_E) < 0) {
+        engine.freeValue(failure);
+        return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+    }
+    if (filesystemCode(err)) |code| {
+        const syscall: [:0]const u8 = switch (method) {
+            .readFileSync => if (err == error.IsDir or err == error.InputOutput) "read" else "open",
+            .writeFileSync => if (err == error.NoSpaceLeft or err == error.FileTooBig or err == error.InputOutput) "write" else "open",
+            .mkdirSync => "mkdir",
+            .unlinkSync => "unlink",
+            .accessSync => "access",
+            .existsSync => "stat",
+        };
+        const fields = [_]struct { key: [*:0]const u8, text: [:0]const u8 }{
+            .{ .key = "code", .text = code },
+            .{ .key = "syscall", .text = syscall },
+        };
+        for (fields) |field| {
+            if (c.JS_DefinePropertyValueStr(engine.context, failure, field.key, c.JS_NewString(engine.context, field.text.ptr), c.JS_PROP_C_W_E) < 0) {
+                engine.freeValue(failure);
+                return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+            }
+        }
+        // The validated path remains an input value. Never invoke user coercion
+        // again while constructing an operation's error.
+        if (args.len != 0 and c.JS_IsString(args[0])) {
+            if (c.JS_DefinePropertyValueStr(engine.context, failure, "path", c.JS_DupValue(engine.context, args[0]), c.JS_PROP_C_W_E) < 0) {
+                engine.freeValue(failure);
+                return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+            }
+        }
+    }
+    return failure;
+}
+
+test "native filesystem missing paths expose Node error codes and syscall fields in sync and promise APIs" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine, std.testing.io);
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try tmp.dir.realPath(std.testing.io, &path_buffer);
+    const path = try std.fs.path.join(std.testing.allocator, &.{ path_buffer[0..length], "missing-parent", "missing-file" });
+    defer std.testing.allocator.free(path);
+    var source: std.Io.Writer.Allocating = .init(std.testing.allocator);
+    defer source.deinit();
+    try source.writer.writeAll("import fs from 'node:fs';const path=");
+    try std.json.Stringify.value(path, .{}, &source.writer);
+    try source.writer.writeAll(
+        ";let checks=0;for(const [sync,async,syscall,args]of [['readFileSync','readFile','open',[]],['writeFileSync','writeFile','open',['data']],['mkdirSync','mkdir','mkdir',[]],['unlinkSync','unlink','unlink',[]],['accessSync','access','access',[]]]){" ++
+            "for(const call of [()=>fs[sync](path,...args),()=>fs.promises[async](path,...args)]){let caught=false;try{await call()}catch(error){caught=true;if(!(error instanceof Error)||error.name!=='Error'||error.code!=='ENOENT'||error.path!==path||error.syscall!==syscall)throw error;checks++}if(!caught)throw Error('missing path accepted')}}" ++
+            "if(checks!==10||fs.existsSync(path)!==false)throw Error('filesystem error checks');export const result=checks;",
+    );
+    const namespace = engine.evalModule(source.written(), "native-fs-error-fields.mjs") catch |err| {
+        std.debug.print("Native filesystem error fields: {s}\n", .{engine.last_error orelse @errorName(err)});
+        return err;
+    };
+    defer engine.freeValue(namespace);
+}
+
+test "native filesystem error construction preserves native memory failures" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const failure = filesystemError(engine, error.OutOfMemory, .readFileSync, &.{});
+    try std.testing.expect(c.JS_IsException(failure));
+    const exception = c.JS_GetException(engine.context);
+    defer engine.freeValue(exception);
+    const name = try engine.checked(c.JS_GetPropertyStr(engine.context, exception, "name"));
+    defer engine.freeValue(name);
+    const text = try engine.toString(name);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings("InternalError", text);
 }
 
 fn optionBoolean(engine: *engine_mod.Engine, options: c.JSValue, key: [*:0]const u8) !bool {

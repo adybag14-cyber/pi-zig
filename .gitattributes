@@ -1,7 +1,12 @@
+# Source inventories hash exact bytes, including captured verification records.
+# Keep checkout bytes identical on every runner; source files below use LF.
+* -text
+# Preserved evidence may use CRLF; keep its bytes and the normal space checks.
+verification/** whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 *.zig text eol=lf
 *.zon text eol=lf
 src/ai/catalog_source.json text eol=lf
-vendor/** text eol=lf
+vendor/** -text
 # Preserve pinned upstream source bytes; vendor hashes govern these files.
 vendor/** -whitespace
 src/extensions/*.c text eol=lf

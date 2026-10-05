@@ -5,23 +5,48 @@ const c = engine_mod.c;
 const Timer = struct {
     id: u32,
     deadline_ms: i64,
+    handle: c.JSValue,
+};
+// The handle, rather than the pending queue entry, owns the callback. A fired
+// timeout can therefore be refreshed while an unreachable handle and callback
+// cycle can still be collected by QuickJS.
+const HandleState = struct {
+    gpa: std.mem.Allocator,
+    id: u32,
     interval_ms: ?i64,
     delay_ms: i64,
     callback: c.JSValue,
     arguments: []c.JSValue,
-    handle: c.JSValue,
+    refed: bool = true,
+    cancelled: bool = false,
 };
+
+fn handleState(value: c.JSValue) *HandleState {
+    return @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
+}
+
+fn handleFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    const retained = handleState(value);
+    c.JS_FreeValueRT(runtime, retained.callback);
+    for (retained.arguments) |argument| c.JS_FreeValueRT(runtime, argument);
+    retained.gpa.free(retained.arguments);
+    retained.gpa.destroy(retained);
+}
+
+fn handleMark(runtime: ?*c.JSRuntime, value: c.JSValue, mark: ?*const c.JS_MarkFunc) callconv(.c) void {
+    const retained = handleState(value);
+    c.JS_MarkValue(runtime, retained.callback, mark);
+    for (retained.arguments) |argument| c.JS_MarkValue(runtime, argument, mark);
+}
 const Scheduler = struct {
     engine: *engine_mod.Engine,
     io: std.Io,
     next_id: u32 = 1,
     primitive_atom: c.JSAtom = c.JS_ATOM_NULL,
+    handle_class: c.JSClassID = 0,
     timers: std.ArrayList(Timer) = .empty,
     fn freeTimer(self: *Scheduler, timer: Timer) void {
-        self.engine.freeValue(timer.callback);
         self.engine.freeValue(timer.handle);
-        for (timer.arguments) |argument| self.engine.freeValue(argument);
-        self.engine.gpa.free(timer.arguments);
     }
 };
 
@@ -58,25 +83,14 @@ fn schedule(engine: *engine_mod.Engine, args: []c.JSValue, repeat: bool) !c.JSVa
     if (args.len > 1 and c.JS_ToFloat64(engine.context, &raw_delay, args[1]) < 0) return error.JavaScriptException;
     const delay: i64 = if (!std.math.isFinite(raw_delay) or raw_delay < 1 or raw_delay > std.math.maxInt(i32)) 1 else @intFromFloat(@trunc(raw_delay));
     if (state.timers.items.len >= 4096 or state.next_id == std.math.maxInt(u32)) return error.NativeTimerLimit;
-    const arguments = try engine.gpa.alloc(c.JSValue, if (args.len > 2) args.len - 2 else 0);
-    errdefer engine.gpa.free(arguments);
-    for (arguments, 0..) |*argument, index| argument.* = c.JS_DupValue(engine.context, args[index + 2]);
-    errdefer for (arguments) |argument| engine.freeValue(argument);
-    const handle = try createHandle(engine, state.next_id);
+    const handle = try createHandle(engine, state.next_id, delay, repeat, args);
     defer engine.freeValue(handle);
     const timer: Timer = .{
         .id = state.next_id,
         .deadline_ms = std.Io.Clock.awake.now(state.io).toMilliseconds() + delay,
-        .interval_ms = if (repeat) delay else null,
-        .delay_ms = delay,
-        .callback = c.JS_DupValue(engine.context, args[0]),
-        .arguments = arguments,
         .handle = c.JS_DupValue(engine.context, handle),
     };
-    errdefer {
-        engine.freeValue(timer.callback);
-        engine.freeValue(timer.handle);
-    }
+    errdefer engine.freeValue(timer.handle);
     try state.timers.append(engine.gpa, timer);
     state.next_id += 1;
     return c.JS_DupValue(engine.context, handle);
@@ -84,33 +98,61 @@ fn schedule(engine: *engine_mod.Engine, args: []c.JSValue, repeat: bool) !c.JSVa
 
 fn handleCall(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    if (!c.JS_IsStrictEqual(context, this, data[1])) return c.JS_ThrowTypeError(context, "Illegal timer handle receiver");
-    if (magic == 0) return c.JS_DupValue(context, data[0]);
+    if (!c.JS_IsStrictEqual(context, this, data[0])) return c.JS_ThrowTypeError(context, "Illegal timer handle receiver");
+    const retained = handleState(this);
+    if (magic == 0) return c.JS_NewInt64(context, retained.id);
     const state = scheduler(engine) catch |err| return failure(context, err);
-    var id: u32 = 0;
-    if (c.JS_ToUint32(context, &id, data[0]) < 0) return engine.throwCaptured();
-    if (magic == 3) return c.JS_GetPropertyStr(context, data[2], "refed");
+    if (magic == 3) return c.pi_js_bool(context, @intFromBool(retained.refed));
     if (magic == 1 or magic == 2) {
-        if (c.JS_SetPropertyStr(context, data[2], "refed", c.pi_js_bool(context, @intFromBool(magic == 1))) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+        retained.refed = magic == 1;
     } else if (magic == 4 or magic == 5) {
-        for (state.timers.items, 0..) |*timer, index| if (timer.id == id) {
-            if (magic == 4) timer.deadline_ms = std.Io.Clock.awake.now(state.io).toMilliseconds() + timer.delay_ms else state.freeTimer(state.timers.orderedRemove(index));
+        if (magic == 5) retained.cancelled = true;
+        for (state.timers.items, 0..) |*timer, index| if (timer.id == retained.id) {
+            if (magic == 4) timer.deadline_ms = std.Io.Clock.awake.now(state.io).toMilliseconds() + retained.delay_ms else state.freeTimer(state.timers.orderedRemove(index));
             return c.JS_DupValue(context, this);
         };
-        if (magic == 4) return c.JS_ThrowTypeError(context, "Refreshing an expired native timer is not implemented");
+        if (magic == 4 and !retained.cancelled) {
+            refreshExpired(engine, this) catch |err| return failure(context, err);
+        }
     }
     return c.JS_DupValue(context, this);
 }
 
-fn createHandle(engine: *engine_mod.Engine, id: u32) !c.JSValue {
+fn refreshExpired(engine: *engine_mod.Engine, handle: c.JSValue) !void {
     const state = try scheduler(engine);
-    const object = try engine.checked(c.JS_NewObject(engine.context));
+    const retained = handleState(handle);
+    if (state.timers.items.len >= 4096 or state.next_id == std.math.maxInt(u32)) return error.NativeTimerLimit;
+    const timer: Timer = .{
+        .id = state.next_id,
+        .deadline_ms = std.Io.Clock.awake.now(state.io).toMilliseconds() + retained.delay_ms,
+        .handle = c.JS_DupValue(engine.context, handle),
+    };
+    errdefer state.freeTimer(timer);
+    try state.timers.append(engine.gpa, timer);
+    // Publish the new primitive ID only after queue allocation succeeds.
+    retained.id = state.next_id;
+    state.next_id += 1;
+}
+
+fn createHandle(engine: *engine_mod.Engine, id: u32, delay: i64, repeat: bool, args: []c.JSValue) !c.JSValue {
+    const state = try scheduler(engine);
+    const retained = try engine.gpa.create(HandleState);
+    const arguments = engine.gpa.alloc(c.JSValue, if (args.len > 2) args.len - 2 else 0) catch |err| {
+        engine.gpa.destroy(retained);
+        return err;
+    };
+    for (arguments, 0..) |*argument, index| argument.* = c.JS_DupValue(engine.context, args[index + 2]);
+    retained.* = .{ .gpa = engine.gpa, .id = id, .delay_ms = delay, .interval_ms = if (repeat) delay else null, .callback = c.JS_DupValue(engine.context, args[0]), .arguments = arguments };
+    const object = engine.checked(c.JS_NewObjectClass(engine.context, state.handle_class)) catch |err| {
+        engine.freeValue(retained.callback);
+        for (arguments) |argument| engine.freeValue(argument);
+        engine.gpa.free(arguments);
+        engine.gpa.destroy(retained);
+        return err;
+    };
+    _ = c.JS_SetOpaque(object, retained);
     errdefer engine.freeValue(object);
-    const flags = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
-    defer engine.freeValue(flags);
-    if (c.JS_DefinePropertyValueStr(engine.context, flags, "refed", c.pi_js_bool(engine.context, 1), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
-    var data = [_]c.JSValue{ c.JS_NewInt64(engine.context, id), object, flags };
-    defer engine.freeValue(data[0]);
+    var data = [_]c.JSValue{object};
     inline for (.{ .{ "valueOf", 0 }, .{ "ref", 1 }, .{ "unref", 2 }, .{ "hasRef", 3 }, .{ "refresh", 4 }, .{ "close", 5 } }) |entry| {
         const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, handleCall, entry[0], 0, entry[1], data.len, &data));
         if (c.JS_DefinePropertyValueStr(engine.context, object, entry[0], function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
@@ -131,8 +173,33 @@ fn clearCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
     const state = scheduler(engine) catch |err| return failure(context, err);
     if (argc == 0) return c.pi_js_undefined();
     var id: u32 = 0;
-    if (c.JS_ToUint32(context, &id, argv[0]) < 0) return engine.throwCaptured();
+    if (c.JS_GetOpaque(argv[0], state.handle_class)) |pointer| {
+        const retained: *HandleState = @ptrCast(@alignCast(pointer));
+        id = retained.id;
+        retained.cancelled = true;
+    } else if (c.JS_IsNumber(argv[0])) {
+        var number: f64 = 0;
+        if (c.JS_ToFloat64(context, &number, argv[0]) < 0) return engine.throwCaptured();
+        if (!std.math.isFinite(number) or number < 1 or number > std.math.maxInt(u32) or number != @trunc(number)) return c.pi_js_undefined();
+        id = @intFromFloat(number);
+    } else if (c.JS_IsString(argv[0])) {
+        var length: usize = 0;
+        const encoded = c.JS_ToCStringLen(context, &length, argv[0]) orelse return engine.throwCaptured();
+        defer c.JS_FreeCString(context, encoded);
+        const text = encoded[0..length];
+        // Node looks up the exact decimal ID string, without numeric coercion.
+        // Leading zeros, whitespace, signs and fractional spellings do not
+        // identify the same timer, and oversized numbers must not wrap around.
+        if (text.len == 0 or text[0] == '0') return c.pi_js_undefined();
+        for (text) |byte| if (byte < '0' or byte > '9') return c.pi_js_undefined();
+        id = std.fmt.parseInt(u32, text, 10) catch return c.pi_js_undefined();
+    } else {
+        // Symbols, BigInts and arbitrary objects are harmless no-ops; in
+        // particular, never invoke their user-controlled coercion methods.
+        return c.pi_js_undefined();
+    }
     for (state.timers.items, 0..) |timer, index| if (timer.id == id) {
+        handleState(timer.handle).cancelled = true;
         state.freeTimer(state.timers.orderedRemove(index));
         break;
     };
@@ -212,6 +279,19 @@ fn schedulePromise(engine: *engine_mod.Engine, args: []c.JSValue) !c.JSValue {
     errdefer engine.freeValue(promise);
     defer engine.freeValue(capabilities[0]);
     defer engine.freeValue(capabilities[1]);
+    if (args.len > 0 and !c.JS_IsUndefined(args[0]) and !c.JS_IsNumber(args[0])) {
+        // Unlike callback timers, timers/promises requires a primitive number.
+        // Its validation failure rejects the returned promise before options
+        // getters are consulted; it must not throw or coerce the delay object.
+        _ = c.JS_ThrowTypeError(engine.context, "The \"delay\" argument must be of type number");
+        const reason = c.JS_GetException(engine.context);
+        defer engine.freeValue(reason);
+        try recordProperty(engine, reason, "code", try engine.checked(c.JS_NewString(engine.context, "ERR_INVALID_ARG_TYPE")));
+        var rejected_args = [_]c.JSValue{reason};
+        const rejected = try engine.checked(c.JS_Call(engine.context, capabilities[1], c.pi_js_undefined(), 1, &rejected_args));
+        engine.freeValue(rejected);
+        return promise;
+    }
     const signal = if (args.len > 2 and c.JS_IsObject(args[2])) try engine.checked(c.JS_GetPropertyStr(engine.context, args[2], "signal")) else c.pi_js_undefined();
     defer engine.freeValue(signal);
     if (!c.JS_IsUndefined(signal) and (engine.abort_signal_class == 0 or c.JS_GetOpaque(signal, engine.abort_signal_class) == null)) return error.InvalidPromiseTimerSignal;
@@ -252,8 +332,8 @@ fn schedulePromise(engine: *engine_mod.Engine, args: []c.JSValue) !c.JSValue {
     try recordProperty(engine, record, "handle", c.JS_DupValue(engine.context, handle));
     if (!c.JS_IsUndefined(signal)) {
         const listener = try engine.checked(c.JS_NewCFunctionData2(engine.context, promiseCallback, "abort promise timer", 1, 1, 1, &data));
-        try recordProperty(engine, record, "listener", c.JS_DupValue(engine.context, listener));
         defer engine.freeValue(listener);
+        try recordProperty(engine, record, "listener", c.JS_DupValue(engine.context, listener));
         const add = try engine.checked(c.JS_GetPropertyStr(engine.context, signal, "addEventListener"));
         defer engine.freeValue(add);
         const options = try engine.checked(c.JS_NewObject(engine.context));
@@ -276,6 +356,10 @@ fn pump(engine: *engine_mod.Engine) !bool {
     };
     const deadline = state.timers.items[index].deadline_ms;
     while (true) {
+        // Abort listeners run on this owner thread and may clear or schedule
+        // timers. Yield after any dispatched control so awaitValue drains jobs
+        // and the next pump selects a fresh queue entry and deadline.
+        if (try engine.pumpControls()) return true;
         if (engine.cancelled.load(.acquire)) return error.JavaScriptInterrupted;
         const now = std.Io.Clock.awake.now(state.io).toMilliseconds();
         if (engine.host_await_deadline_ms) |limit| if (now >= limit) return error.NativeHostPromiseTimeout;
@@ -286,14 +370,13 @@ fn pump(engine: *engine_mod.Engine) !bool {
     // Remove before invocation: callbacks can clear or schedule more timers.
     const timer = state.timers.orderedRemove(index);
     defer state.freeTimer(timer);
-    if (timer.interval_ms) |interval| {
-        const args = try engine.gpa.alloc(c.JSValue, timer.arguments.len);
-        for (args, timer.arguments) |*argument, value| argument.* = c.JS_DupValue(engine.context, value);
-        const repeated: Timer = .{ .id = timer.id, .deadline_ms = std.Io.Clock.awake.now(state.io).toMilliseconds() + interval, .interval_ms = interval, .delay_ms = timer.delay_ms, .callback = c.JS_DupValue(engine.context, timer.callback), .arguments = args, .handle = c.JS_DupValue(engine.context, timer.handle) };
+    const retained = handleState(timer.handle);
+    if (retained.interval_ms) |interval| {
+        const repeated: Timer = .{ .id = timer.id, .deadline_ms = std.Io.Clock.awake.now(state.io).toMilliseconds() + interval, .handle = c.JS_DupValue(engine.context, timer.handle) };
         errdefer state.freeTimer(repeated);
         try state.timers.append(engine.gpa, repeated);
     }
-    const result = try engine.checked(c.JS_Call(engine.context, timer.callback, timer.handle, @intCast(timer.arguments.len), timer.arguments.ptr));
+    const result = try engine.checked(c.JS_Call(engine.context, retained.callback, timer.handle, @intCast(retained.arguments.len), retained.arguments.ptr));
     engine.freeValue(result);
     return true;
 }
@@ -303,6 +386,9 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
     const state = try engine.gpa.create(Scheduler);
     errdefer engine.gpa.destroy(state);
     state.* = .{ .engine = engine, .io = io };
+    _ = c.JS_NewClassID(engine.runtime, &state.handle_class);
+    const handle_class: c.JSClassDef = .{ .class_name = "Timeout", .finalizer = handleFinalizer, .gc_mark = handleMark, .call = null, .exotic = null };
+    if (c.JS_NewClass(engine.runtime, state.handle_class, &handle_class) < 0) return error.OutOfMemory;
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
     const symbols = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "Symbol"));
@@ -431,4 +517,187 @@ test "failed promise timer setup does not retain an unpublished scheduled callba
     const value = try engine.evalModule("import {setTimeout as delay} from 'node:timers/promises';const controller=new AbortController();const original=Error('setup failure');controller.signal.addEventListener=()=>{throw original};let caught=false;try{await delay(100,'bad',{signal:controller.signal})}catch(error){if(error!==original)throw Error('exception replaced');caught=true}if(!caught)throw Error('setup did not fail');", "native-promise-timer-setup.mjs");
     defer engine.freeValue(value);
     try std.testing.expectEqual(@as(usize, 0), (try scheduler(engine)).timers.items.len);
+}
+
+const expired_refresh_scenario =
+    \\const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+    \\const token={owned:true};let ticks=0;let finish;
+    \\const handle=setTimeout(function(a,b){if(this!==handle||a!==token||b!=='argument')throw Error('retained callback');ticks++;if(ticks===2){if(this.refresh()!==this||this.refresh()!==this)throw Error('self refresh identity')}else finish()},2,token,'argument');
+    \\const firstId=+handle;await new Promise(resolve=>finish=resolve);
+    \\if(handle.unref()!==handle||handle.hasRef()||handle.refresh()!==handle||handle.hasRef()||+handle===firstId)throw Error('expired refresh lifecycle');
+    \\// A referenced guard also lets Node run the unreferenced refreshed handle.
+    \\const guard=setTimeout(()=>{throw Error('refresh did not fire')},500);
+    \\await new Promise(resolve=>finish=resolve);clearTimeout(guard);
+    \\if(ticks!==3||handle.ref()!==handle||!handle.hasRef())throw Error('duplicate refresh');
+    \\let clearedTicks=0;const cleared=setTimeout(()=>clearedTicks++,1);await sleep(5);clearTimeout(cleared);cleared.refresh();
+    \\let closedTicks=0;const closed=setTimeout(()=>closedTicks++,1);await sleep(5);if(closed.close()!==closed||closed.refresh()!==closed)throw Error('close identity');
+    \\let numericTicks=0;const numeric=setTimeout(()=>numericTicks++,1);const oldId=+numeric;await sleep(5);clearTimeout(oldId);numeric.refresh();const freshId=+numeric;if(freshId===oldId)throw Error('primitive id not renewed');clearTimeout(oldId);
+    \\await sleep(5);if(clearedTicks!==1||closedTicks!==1||numericTicks!==2)throw Error('expired cancellation');
+    \\let activeTicks=0;const active=setTimeout(()=>activeTicks++,1);const activeId=+active;if(active.refresh()!==active||+active!==activeId)throw Error('active refresh identity');clearTimeout(activeId);active.refresh();await sleep(5);if(activeTicks!==0)throw Error('cleared active revived');
+    \\const branded=setTimeout(()=>{throw Error('branded handle was not cleared')},1);branded[Symbol.toPrimitive]=()=>{throw Error('clear coerced branded handle')};clearTimeout(branded);branded.refresh();await sleep(5);
+    \\export const result='refresh:'+ticks+':'+clearedTicks+':'+closedTicks+':'+numericTicks+':'+activeTicks;
+;
+
+test "expired native timers refresh with retained arguments receiver and Node cancellation semantics" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine, std.testing.io);
+    const value = try engine.evalModule(expired_refresh_scenario, "native-expired-timer-refresh.mjs");
+    defer engine.freeValue(value);
+    const result = try engine.checked(c.JS_GetPropertyStr(engine.context, value, "result"));
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings("refresh:3:1:1:2:0", text);
+    try std.testing.expectEqual(@as(usize, 0), (try scheduler(engine)).timers.items.len);
+}
+
+fn expiredRefreshAllocationProbe(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    try install(engine, std.testing.io);
+    const callback = try engine.checked(c.JS_NewCFunction(engine.context, allocationCallback, "refresh allocation", 0));
+    defer engine.freeValue(callback);
+    const handle = try scheduleOnce(engine, callback, 1);
+    defer engine.freeValue(handle);
+    try std.testing.expect(try pump(engine));
+    const state = try scheduler(engine);
+    // Fill the retained queue capacity so refreshing must grow its allocation.
+    while (state.timers.items.len < state.timers.capacity) {
+        const pending = try scheduleOnce(engine, callback, 100);
+        engine.freeValue(pending);
+    }
+    const previous_id = handleState(handle).id;
+    const previous_count = state.timers.items.len;
+    refreshExpired(engine, handle) catch |err| {
+        try std.testing.expectEqual(previous_id, handleState(handle).id);
+        try std.testing.expectEqual(previous_count, state.timers.items.len);
+        return err;
+    };
+    try std.testing.expect(handleState(handle).id != previous_id);
+    try std.testing.expectEqual(previous_count + 1, state.timers.items.len);
+}
+
+test "expired native timer refresh publishes no queue entry or id on allocation failure" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, expiredRefreshAllocationProbe, .{});
+}
+
+test "expired native timer refresh limit failures preserve the handle and can be retried" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine, std.testing.io);
+    const callback = try engine.checked(c.JS_NewCFunction(engine.context, allocationCallback, "refresh limit", 0));
+    defer engine.freeValue(callback);
+    const handle = try scheduleOnce(engine, callback, 1);
+    defer engine.freeValue(handle);
+    try std.testing.expect(try pump(engine));
+    const state = try scheduler(engine);
+    const previous_id = handleState(handle).id;
+    const next_id = state.next_id;
+    state.next_id = std.math.maxInt(u32);
+    try std.testing.expectError(error.NativeTimerLimit, refreshExpired(engine, handle));
+    try std.testing.expectEqual(previous_id, handleState(handle).id);
+    try std.testing.expectEqual(@as(usize, 0), state.timers.items.len);
+    state.next_id = next_id;
+    try refreshExpired(engine, handle);
+    try std.testing.expectEqual(next_id, handleState(handle).id);
+    try std.testing.expect(try pump(engine));
+    try std.testing.expectEqual(@as(usize, 0), state.timers.items.len);
+}
+
+test "expired native timer callback argument and handle cycles are garbage collected" {
+    var allocations = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    const engine = try engine_mod.Engine.init(allocations.allocator(), .{});
+    defer engine.deinit();
+    try install(engine, std.testing.io);
+    const callback = try engine.checked(c.JS_NewCFunction(engine.context, allocationCallback, "cycle callback", 0));
+    defer engine.freeValue(callback);
+    const argument = try engine.checked(c.JS_NewObject(engine.context));
+    var args = [_]c.JSValue{ callback, c.JS_NewInt32(engine.context, 1), argument };
+    const handle = try schedule(engine, &args, false);
+    if (c.JS_DefinePropertyValueStr(engine.context, argument, "handle", c.JS_DupValue(engine.context, handle), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    engine.freeValue(argument);
+    try std.testing.expect(try pump(engine));
+    c.JS_RunGC(engine.runtime);
+    const before = allocations.freed_bytes;
+    engine.freeValue(handle);
+    c.JS_RunGC(engine.runtime);
+    try std.testing.expectEqual(@sizeOf(HandleState) + @sizeOf(c.JSValue), allocations.freed_bytes - before);
+    try std.testing.expectEqual(@as(usize, 0), (try scheduler(engine)).timers.items.len);
+}
+
+const timer_input_validation_scenario =
+    \\import {setTimeout as delay} from 'node:timers/promises';
+    \\let coerced=0;const trap={valueOf(){coerced++;throw Error('delay coercion')},[Symbol.toPrimitive](){coerced++;throw Error('primitive coercion')}};
+    \\const invalid=[null,true,'1',Symbol('delay'),1n,new Number(1),trap];let rejected=0;
+    \\for(const value of invalid){let promise;try{promise=delay(value,'bad')}catch(error){throw Error('validation threw synchronously')}if(!(promise instanceof Promise))throw Error('missing promise');try{await promise;throw Error('invalid delay resolved')}catch(error){if(!(error instanceof TypeError)||error.code!=='ERR_INVALID_ARG_TYPE')throw error;rejected++}}
+    \\let touched=0;try{await delay('1',null,{get signal(){touched++;throw Error('signal accessed before delay validation')}})}catch(error){if(error.code!=='ERR_INVALID_ARG_TYPE')throw error}if(touched||coerced)throw Error('validation invoked user code');
+    \\for(const value of [undefined,1,NaN,Infinity,-1,0,.25])if(await delay(value,'ok')!=='ok')throw Error('primitive numeric delay');if(await delay()!==undefined)throw Error('default delay');
+    \\// Ordinary callback timers intentionally keep their numeric coercion.
+    \\let callbackCoercions=0;await new Promise(resolve=>setTimeout(resolve,{valueOf(){callbackCoercions++;return 1}}));if(callbackCoercions!==1)throw Error('callback coercion changed');
+    \\const noops=[id=>undefined,id=>null,id=>true,id=>Symbol('timer'),id=>BigInt(id),id=>trap,id=>new Number(id),id=>[id],id=>id+4294967296,id=>-id,id=>id+.25,id=>NaN,id=>Infinity,id=>'0'+id,id=>' '+id,id=>id+' ',id=>'+'+id,id=>id+'.0',id=>id+'e0',id=>'0x'+id.toString(16),id=>'',id=>String(id)+'\0'];let fired=0;
+    \\for(const input of noops){let calls=0;const handle=setTimeout(()=>calls++,1);if(clearTimeout(input(+handle))!==undefined)throw Error('clear return value');await delay(4);if(calls!==1)throw Error('noncanonical timer cancelled');fired+=calls;clearTimeout(handle)}
+    \\for(const canonical of [id=>id,id=>String(id)]){let calls=0;const handle=setTimeout(()=>calls++,1);clearInterval(canonical(+handle));handle.refresh();await delay(4);if(calls!==0)throw Error('canonical clear failed')}
+    \\if(coerced!==0)throw Error('clearTimeout coerced object');export const result='inputs:'+rejected+':'+fired+':'+coerced+':'+touched;
+;
+
+test "native timer inputs preserve Node no-coercion cancellation and promise number validation" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine, std.testing.io);
+    const value = try engine.evalModule(timer_input_validation_scenario, "native-timer-input-validation.mjs");
+    defer engine.freeValue(value);
+    const result = try engine.checked(c.JS_GetPropertyStr(engine.context, value, "result"));
+    defer engine.freeValue(result);
+    const encoded = try engine.toString(result);
+    defer engine.gpa.free(encoded);
+    try std.testing.expectEqualStrings("inputs:7:22:0:0", encoded);
+    try std.testing.expectEqual(@as(usize, 0), (try scheduler(engine)).timers.items.len);
+}
+
+fn rejectedDelayAllocationProbe(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    try install(engine, std.testing.io);
+    const invalid_delay = try engine.checked(c.JS_NewString(engine.context, "invalid delay"));
+    defer engine.freeValue(invalid_delay);
+    var args = [_]c.JSValue{invalid_delay};
+    const promise = try schedulePromise(engine, &args);
+    defer engine.freeValue(promise);
+    try std.testing.expectEqual(c.JS_PROMISE_REJECTED, c.JS_PromiseState(engine.context, promise));
+    try std.testing.expectEqual(@as(usize, 0), (try scheduler(engine)).timers.items.len);
+}
+
+test "native promise delay rejection releases every failed native allocation" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, rejectedDelayAllocationProbe, .{});
+}
+
+fn clearWaitingTimerControl(engine: *engine_mod.Engine) !bool {
+    const state = try scheduler(engine);
+    var args = [_]c.JSValue{state.timers.items[0].handle};
+    const result = try engine.checked(clearCall(engine.context, c.pi_js_undefined(), 1, &args));
+    engine.freeValue(result);
+    engine.host_control_pump = null;
+    return true;
+}
+
+fn failingWaitingTimerControl(_: *engine_mod.Engine) !bool {
+    return error.TimerControlProbeFailure;
+}
+
+test "native timer waits dispatch owner controls and reselect after queue mutation" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine, std.testing.io);
+    const callback = try engine.checked(c.JS_NewCFunction(engine.context, allocationCallback, "control wait", 0));
+    defer engine.freeValue(callback);
+    const handle = try scheduleOnce(engine, callback, 1000);
+    defer engine.freeValue(handle);
+    engine.host_control_pump = failingWaitingTimerControl;
+    try std.testing.expectError(error.TimerControlProbeFailure, pump(engine));
+    try std.testing.expectEqual(@as(usize, 1), (try scheduler(engine)).timers.items.len);
+    engine.host_control_pump = clearWaitingTimerControl;
+    try std.testing.expect(try pump(engine));
+    try std.testing.expectEqual(@as(usize, 0), (try scheduler(engine)).timers.items.len);
+    try std.testing.expect(!try pump(engine));
 }

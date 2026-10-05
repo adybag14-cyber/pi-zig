@@ -5,6 +5,7 @@ const typebox = @import("typebox.zig");
 const session_snapshot = @import("session_snapshot.zig");
 const native_providers = @import("native_providers.zig");
 const abort_signal = @import("abort_signal.zig");
+const native_ui = @import("native_ui.zig");
 const c = engine_mod.c;
 const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, registerProvider, unregisterProvider, getActiveTools, getAllTools, getCommands, getSettings, getSessionName, getThinkingLevel, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel };
 const ContextMethod = enum(c_int) {
@@ -14,6 +15,8 @@ const ContextMethod = enum(c_int) {
     model,
     scopedModels,
     thinkingLevel,
+    signal,
+    ui,
     sessionManager,
     isIdle,
     isProjectTrusted,
@@ -38,10 +41,12 @@ const ContextMethod = enum(c_int) {
 };
 
 pub const Bindings = struct {
+    pub const ToolUpdateFn = *const fn (?*anyopaque, c.JSValue) anyerror!void;
     gpa: std.mem.Allocator,
     engine: *engine_mod.Engine,
     api: c.JSValue,
     providers: native_providers.Providers,
+    ui_manager: *native_ui.Manager,
     factory_active: bool = false,
     handlers: std.StringHashMapUnmanaged(std.ArrayList(c.JSValue)) = .empty,
     tools: std.StringHashMapUnmanaged(c.JSValue) = .empty,
@@ -53,10 +58,16 @@ pub const Bindings = struct {
     invocation_generation: u32 = 0,
     context_snapshot: ?c.JSValue = null,
     source_path: ?[]u8 = null,
+    invocation_signal: ?c.JSValue = null,
+    tool_update_fn: ?ToolUpdateFn = null,
+    tool_update_context: ?*anyopaque = null,
+    tool_update_promise: ?c.JSValue = null,
 
     pub fn init(gpa: std.mem.Allocator, engine: *engine_mod.Engine) !*Bindings {
         if (engine.host_data != null) return error.EngineHostAlreadyAttached;
         if (!engine.abort_signals_ready) try abort_signal.install(engine);
+        const ui_manager = try native_ui.Manager.init(engine);
+        errdefer ui_manager.deinit();
         const self = try gpa.create(Bindings);
         errdefer gpa.destroy(self);
         const api = try engine.checked(c.JS_NewObject(engine.context));
@@ -66,12 +77,14 @@ pub const Bindings = struct {
             const function = try engine.checked(c.pi_js_function_magic(engine.context, invokeRegistration, name.ptr, 2, @intCast(field.value)));
             if (c.JS_DefinePropertyValueStr(engine.context, api, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         }
-        self.* = .{ .gpa = gpa, .engine = engine, .api = api, .providers = native_providers.Providers.init(engine) };
+        self.* = .{ .gpa = gpa, .engine = engine, .api = api, .providers = native_providers.Providers.init(engine), .ui_manager = ui_manager };
         engine.host_data = self;
         return self;
     }
 
     pub fn deinit(self: *Bindings) void {
+        self.ui_manager.deinit();
+        self.clearInvocationOptions();
         self.engine.host_data = null;
         self.providers.deinit();
         var handlers = self.handlers.iterator();
@@ -413,7 +426,51 @@ pub const Bindings = struct {
         self.invocation_generation += 1;
         for (self.actions.items) |action| self.engine.freeValue(action);
         self.actions.clearRetainingCapacity();
+        try self.ui_manager.begin(self.invocation_generation, self.context_snapshot, self.invocation_signal);
         self.invocation_active = true;
+    }
+
+    // The process transport owns the invocation identity. It supplies one
+    // real signal shared by the tool argument and context, and can dispatch
+    // abort listeners only from the QuickJS context's owning thread.
+    pub fn setInvocationOptions(self: *Bindings, signal: c.JSValue, update_fn: ?ToolUpdateFn, context: ?*anyopaque) !void {
+        if (self.invocation_active) return error.ExtensionInvocationBusy;
+        self.clearInvocationOptions();
+        self.invocation_signal = c.JS_DupValue(self.engine.context, signal);
+        self.tool_update_fn = update_fn;
+        self.tool_update_context = context;
+    }
+
+    pub fn clearInvocationOptions(self: *Bindings) void {
+        if (self.invocation_signal) |signal| self.engine.freeValue(signal);
+        self.invocation_signal = null;
+        self.tool_update_fn = null;
+        self.tool_update_context = null;
+        if (self.tool_update_promise) |promise| self.engine.freeValue(promise);
+        self.tool_update_promise = null;
+    }
+
+    fn finishInvocation(self: *Bindings) void {
+        self.ui_manager.finish();
+        self.invocation_active = false;
+        self.clearInvocationOptions();
+    }
+
+    fn toolUpdate(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return c.pi_js_undefined()));
+        var generation: i64 = 0;
+        if (c.JS_ToInt64(context, &generation, data[0]) < 0) return engine.throwCaptured();
+        // A callback retained by user code belongs to its original invocation;
+        // it must never write records into a later invocation's transport.
+        if (!self.invocation_active or generation != self.invocation_generation) return c.pi_js_undefined();
+        if (self.tool_update_promise) |promise| if (c.JS_PromiseState(context, promise) != c.JS_PROMISE_PENDING) return c.pi_js_undefined();
+        if (self.tool_update_fn) |update| update(self.tool_update_context, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| {
+            if (err == error.JavaScriptException) return engine.throwCaptured();
+            if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+            return c.JS_ThrowTypeError(context, "Native tool update: %s", @as([*:0]const u8, @errorName(err)));
+        };
+        return c.pi_js_undefined();
     }
 
     fn mergeActions(self: *Bindings, result: c.JSValue) !void {
@@ -531,6 +588,12 @@ pub const Bindings = struct {
         const token = c.JS_NewInt64(self.engine.context, generation);
         defer self.engine.freeValue(token);
         var data = [_]c.JSValue{ token, snapshot };
+        if (kind == .ui) {
+            const object = try self.ui_manager.createObject();
+            defer self.engine.freeValue(object);
+            var ui_data = [_]c.JSValue{ token, snapshot, object };
+            return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), ui_data.len, &ui_data));
+        }
         return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), data.len, &data));
     }
 
@@ -561,6 +624,7 @@ pub const Bindings = struct {
         var generation: i64 = 0;
         if (c.JS_ToInt64(context, &generation, data[0]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
         if (!self.invocation_active or generation != self.invocation_generation) return c.JS_ThrowTypeError(context, "Stale native extension context");
+        if (magic == @intFromEnum(ContextMethod.ui)) return c.JS_DupValue(context, data[2]);
         const arguments: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
         return self.contextValue(@enumFromInt(magic), data[1], arguments) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
@@ -569,6 +633,7 @@ pub const Bindings = struct {
     }
 
     fn contextValue(self: *Bindings, kind: ContextMethod, snapshot: c.JSValue, args: []c.JSValue) !c.JSValue {
+        if (kind == .signal) return if (self.invocation_signal) |signal| c.JS_DupValue(self.engine.context, signal) else c.pi_js_undefined();
         if (kind == .getLeafEntry or kind == .getEntry or kind == .getLabel or kind == .getBranch or kind == .buildContextEntries or kind == .getTree or kind == .buildSessionProjection) return self.sessionApi(kind, snapshot, args);
         if (kind == .sessionManager) {
             const manager = try self.engine.checked(c.JS_NewObject(self.engine.context));
@@ -589,6 +654,8 @@ pub const Bindings = struct {
             .model => "model",
             .scopedModels => "scopedModels",
             .thinkingLevel => "thinkingLevel",
+            .signal => unreachable,
+            .ui => unreachable,
             .isIdle => "idle",
             .isProjectTrusted => "projectTrusted",
             .hasPendingMessages => "hasPendingMessages",
@@ -797,9 +864,10 @@ pub const Bindings = struct {
 
     pub fn invokeHook(self: *Bindings, name: []const u8, payload_json: []const u8) ![]u8 {
         try self.beginActions();
-        defer self.invocation_active = false;
+        defer self.finishInvocation();
         const event = try self.parseJson(payload_json, "extension-hook");
         defer self.engine.freeValue(event);
+        if (self.invocation_signal) |signal| try self.actionProperty(event, "signal", c.JS_DupValue(self.engine.context, signal));
         const context = try self.createContext();
         defer self.engine.freeValue(context);
         const result = try self.engine.checked(c.JS_NewObject(self.engine.context));
@@ -834,7 +902,7 @@ pub const Bindings = struct {
 
     pub fn invokeCommand(self: *Bindings, name: []const u8, raw: []const u8) ![]u8 {
         try self.beginActions();
-        defer self.invocation_active = false;
+        defer self.finishInvocation();
         const options = self.commands.get(name) orelse return error.UnknownExtensionCommand;
         const handler = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options, "handler"));
         defer self.engine.freeValue(handler);
@@ -960,7 +1028,7 @@ pub const Bindings = struct {
 
     pub fn invokeProviderMethodWithSignal(self: *Bindings, id: []const u8, args_json: []const u8, append_signal: bool, aborted: bool) ![]u8 {
         try self.beginActions();
-        defer self.invocation_active = false;
+        defer self.finishInvocation();
         const args = try self.parseJson(args_json, "native-provider-arguments");
         defer self.engine.freeValue(args);
         if (append_signal) {
@@ -969,7 +1037,7 @@ pub const Bindings = struct {
             defer self.engine.freeValue(length);
             var count: u32 = 0;
             if (c.JS_ToUint32(self.engine.context, &count, length) < 0) return error.JavaScriptException;
-            const signal = try abort_signal.create(self.engine);
+            const signal = if (self.invocation_signal) |current| c.JS_DupValue(self.engine.context, current) else try abort_signal.create(self.engine);
             defer self.engine.freeValue(signal);
             if (aborted) try abort_signal.abort(self.engine, signal, c.pi_js_undefined());
             if (c.JS_SetPropertyUint32(self.engine.context, args, count, c.JS_DupValue(self.engine.context, signal)) < 0) return error.JavaScriptException;
@@ -985,7 +1053,7 @@ pub const Bindings = struct {
 
     pub fn invokeTool(self: *Bindings, name: []const u8, call_id: []const u8, args_json: []const u8) ![]u8 {
         try self.beginActions();
-        defer self.invocation_active = false;
+        defer self.finishInvocation();
         const tool = self.tools.get(name) orelse return error.UnknownExtensionTool;
         const execute = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, tool, "execute"));
         defer self.engine.freeValue(execute);
@@ -998,9 +1066,14 @@ pub const Bindings = struct {
         defer self.engine.freeValue(call);
         const context = try self.createContext();
         defer self.engine.freeValue(context);
-        var parameters = [_]c.JSValue{ call, args, c.pi_js_undefined(), c.pi_js_undefined(), context };
+        var update_data = [_]c.JSValue{c.JS_NewInt64(self.engine.context, self.invocation_generation)};
+        defer self.engine.freeValue(update_data[0]);
+        const update = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, toolUpdate, "onUpdate", 1, 0, update_data.len, &update_data));
+        defer self.engine.freeValue(update);
+        var parameters = [_]c.JSValue{ call, args, self.invocation_signal orelse c.pi_js_undefined(), update, context };
         const promise = try self.engine.checked(c.JS_Call(self.engine.context, execute, tool, parameters.len, &parameters));
         defer self.engine.freeValue(promise);
+        self.tool_update_promise = c.JS_DupValue(self.engine.context, promise);
         const result = try self.engine.awaitValue(promise);
         defer self.engine.freeValue(result);
         try self.mergeActions(result);
@@ -1364,6 +1437,7 @@ test "native provider getters preserve exceptions and nested action order" {
 test {
     _ = @import("abort_signal.zig");
     _ = @import("timers.zig");
+    _ = @import("text_decoder.zig");
 }
 
 test "native provider invocations receive real active and pre-aborted signals" {
@@ -1386,4 +1460,70 @@ test "native provider invocations receive real active and pre-aborted signals" {
     defer gpa.free(aborted);
     try std.testing.expectEqualStrings("{\"value\":\"pre-aborted:true\"}", aborted);
     try std.testing.expectError(error.NativeProviderRequestAborted, bindings.invokeProviderMethodWithSignal(reference.callback_id, "[]", false, true));
+}
+
+test "native invocation options release signals on allocation failure and retry with the same ABI" {
+    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    const engine = try engine_mod.Engine.init(failing.allocator(), .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(failing.allocator(), engine);
+    defer bindings.deinit();
+    try bindings.loadFactory("export default pi=>pi.registerTool({name:'signal',execute(id,args,signal,update,ctx){if(!(signal instanceof AbortSignal)||ctx.signal!==signal||typeof update!=='function')throw Error('invocation ABI');return {content:'healthy-retry'}}})", "owned-invocation-allocation.mjs");
+    const signal = try abort_signal.create(engine);
+    defer engine.freeValue(signal);
+    try bindings.setInvocationOptions(signal, null, null);
+    failing.fail_index = failing.alloc_index;
+    try std.testing.expectError(error.OutOfMemory, bindings.invokeTool("signal", "failed", "{}"));
+    failing.fail_index = std.math.maxInt(usize);
+    try std.testing.expect(!bindings.invocation_active);
+    try std.testing.expect(bindings.invocation_signal == null and bindings.tool_update_fn == null and bindings.tool_update_promise == null);
+    try bindings.setInvocationOptions(signal, null, null);
+    const result = try bindings.invokeTool("signal", "retry", "{}");
+    defer engine.gpa.free(result);
+    try std.testing.expectEqualStrings("{\"content\":\"healthy-retry\"}", result);
+}
+
+test "native dialog ownership releases every induced host allocation failure" {
+    const Bridge = struct {
+        manager: *native_ui.Manager,
+        fn request(context: ?*anyopaque, id: u32, _: []const u8, _: []const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(context.?));
+            const value = try self.manager.engine.checked(c.JS_NewString(self.manager.engine.context, "green"));
+            defer self.manager.engine.freeValue(value);
+            try self.manager.respond(id, true, value);
+        }
+        fn action(_: ?*anyopaque, _: []const u8, _: []const u8) !void {}
+        fn cancel(_: ?*anyopaque, _: u32) !void {}
+    };
+    var failures: usize = 0;
+    for (0..24) |offset| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+        const engine = try engine_mod.Engine.init(failing.allocator(), .{});
+        defer engine.deinit();
+        const bindings = try Bindings.init(failing.allocator(), engine);
+        defer bindings.deinit();
+        try bindings.loadFactory("export default pi=>pi.registerCommand('dialog',{async handler(args,ctx){return {message:String(await ctx.ui.select('Pick',['green'],{signal:ctx.signal}))}}})", "ui-allocation.mjs");
+        try bindings.setContext("{\"hasUI\":true}");
+        const signal = try abort_signal.create(engine);
+        defer engine.freeValue(signal);
+        var bridge: Bridge = .{ .manager = bindings.ui_manager };
+        bindings.ui_manager.bridge = .{ .context = &bridge, .request = Bridge.request, .action = Bridge.action, .cancel = Bridge.cancel };
+        try bindings.setInvocationOptions(signal, null, null);
+        failing.fail_index = failing.alloc_index + offset;
+        const result = bindings.invokeCommand("dialog", "") catch |err| {
+            failing.fail_index = std.math.maxInt(usize);
+            try std.testing.expect(err == error.OutOfMemory or err == error.JavaScriptException);
+            try std.testing.expect(failing.has_induced_failure);
+            failures += 1;
+            try std.testing.expectEqual(@as(usize, 0), bindings.ui_manager.pending.items.len);
+            try std.testing.expectEqual(@as(usize, 0), engine.host_ui_pending);
+            continue;
+        };
+        failing.fail_index = std.math.maxInt(usize);
+        defer engine.gpa.free(result);
+        try std.testing.expectEqualStrings("{\"message\":\"green\"}", result);
+        try std.testing.expectEqual(@as(usize, 0), bindings.ui_manager.pending.items.len);
+        break;
+    }
+    try std.testing.expect(failures >= 4);
 }

@@ -1,7 +1,7 @@
 # Native repository tree
 
 The active update targets upstream Pi commit
-`1965a80693dd929d28dda72f1986056355fb167a` (package version 1.0.2).
+`6100fe5a8358709a26050b8da97ccd188ae93101` (package version 1.0.2).
 Complete behavioral parity remains in progress; see
 `UPSTREAM-UPDATE-20261003.md` for the completed gates and outstanding work.
 
@@ -29,6 +29,19 @@ Complete behavioral parity remains in progress; see
   fails while remaining Python/JavaScript scripts are being ported.
 - `checkpoint-tests/` and `scripts/` contain remaining compatibility fixtures
   to port. Their behavior must remain covered before retirement.
+- `src/auth_screen_process_test.zig`, `auth_dialog_process_test.zig`,
+  `bootstrap_network_process_test.zig`, and `provider_retry_process_test.zig`
+  replace four Python executable fixtures. Their native Linux PTY/network/RPC
+  gates retain the original assertions; other hosts explicitly skip those
+  Linux-only process fixtures. `src/test_support/` owns bounded PTY, pipe,
+  loopback HTTP and native browser-opener helpers.
+- `src/native_runtime_process_test.zig` checks the explicit native worker with
+  Node absent from its PATH. Production discovery's default is still legacy.
+  `src/extensions/native_ui.zig` manages standard asynchronous UI requests;
+  native custom component factories and remaining host operations are tracked.
+- `src/fullscreen_key_routing_test.zig` exercises real editor and transcript
+  components. The native Application supports the latest Home/End binding
+  contract; wiring that persistent scene into the CLI remains outstanding.
 - `src/extensions/fixtures/node_path.json` contains captured Node 24.14.0 API
   results, not executable host implementation. Native Zig tests consume the
   data without Node. The directly linked worker also tests real path/URL imports

@@ -360,6 +360,59 @@ pub fn build(b: *std.Build) void {
     const worker_process_step = b.step("test-native-worker", "Exercise a real native extension process without Node on PATH");
     worker_process_step.dependOn(&run_worker_process_tests.step);
     test_step.dependOn(&run_worker_process_tests.step);
+    const native_runtime_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_runtime_process_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native runtime"},
+        .use_llvm = use_llvm,
+    });
+    const run_native_runtime_tests = b.addRunArtifact(native_runtime_tests);
+    run_native_runtime_tests.step.dependOn(b.getInstallStep());
+    const native_runtime_step = b.step("test-native-runtime", "Exercise the persistent native extension runtime and host without Node");
+    native_runtime_step.dependOn(&run_native_runtime_tests.step);
+    test_step.dependOn(&run_native_runtime_tests.step);
+    const auth_screen_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/auth_screen_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_auth_screen_tests = b.addRunArtifact(auth_screen_tests);
+    run_auth_screen_tests.step.dependOn(b.getInstallStep());
+    const auth_screen_step = b.step("test-auth-screen", "Exercise native authentication selectors through a real Linux PTY");
+    auth_screen_step.dependOn(&run_auth_screen_tests.step);
+    test_step.dependOn(&run_auth_screen_tests.step);
+    const auth_opener = b.addExecutable(.{
+        .name = "pi-auth-opener",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/test_support/http_fixture.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const install_auth_opener = b.addInstallArtifact(auth_opener, .{});
+    const auth_dialog_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/auth_dialog_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_auth_dialog_tests = b.addRunArtifact(auth_dialog_tests);
+    run_auth_dialog_tests.step.dependOn(b.getInstallStep());
+    run_auth_dialog_tests.step.dependOn(&install_auth_opener.step);
+    const auth_dialog_step = b.step("test-auth-dialog", "Exercise native browser and device OAuth through a real Linux PTY");
+    auth_dialog_step.dependOn(&run_auth_dialog_tests.step);
+    test_step.dependOn(&run_auth_dialog_tests.step);
+    const bootstrap_network_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/bootstrap_network_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_bootstrap_network_tests = b.addRunArtifact(bootstrap_network_tests);
+    run_bootstrap_network_tests.step.dependOn(b.getInstallStep());
+    const bootstrap_network_step = b.step("test-bootstrap-network", "Exercise bootstrap HTTP retries timeouts persistence and proxies through the native CLI");
+    bootstrap_network_step.dependOn(&run_bootstrap_network_tests.step);
+    test_step.dependOn(&run_bootstrap_network_tests.step);
+    const provider_retry_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/provider_retry_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_provider_retry_tests = b.addRunArtifact(provider_retry_tests);
+    run_provider_retry_tests.step.dependOn(b.getInstallStep());
+    const provider_retry_step = b.step("test-provider-retry-process", "Exercise provider retries and live RPC policy reload through the native CLI");
+    provider_retry_step.dependOn(&run_provider_retry_tests.step);
+    test_step.dependOn(&run_provider_retry_tests.step);
     const typescript_tests = b.addTest(.{
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/extensions/typescript.zig"),
@@ -384,6 +437,11 @@ pub fn build(b: *std.Build) void {
         }),
         .use_llvm = use_llvm,
     });
+    maintenance.root_module.addImport("release_config", b.createModule(.{
+        .root_source_file = b.path("src/config.zig"),
+        .target = target,
+        .optimize = optimize,
+    }));
     const run_maintenance = b.addRunArtifact(maintenance);
     if (b.args) |args| run_maintenance.addArgs(args);
     const maintenance_step = b.step("maintenance", "Run native repository maintenance commands");
@@ -393,6 +451,22 @@ pub fn build(b: *std.Build) void {
     const maintenance_test_step = b.step("test-maintenance", "Test native repository maintenance");
     maintenance_test_step.dependOn(&run_maintenance_tests.step);
     test_step.dependOn(&run_maintenance_tests.step);
+    const azure_alias_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/azure_alias_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Azure"},
+        .use_llvm = use_llvm,
+    });
+    const run_azure_alias_tests = b.addRunArtifact(azure_alias_tests);
+    const azure_alias_step = b.step("test-azure-aliases", "Check Azure identity compatibility across models settings and credentials");
+    azure_alias_step.dependOn(&run_azure_alias_tests.step);
+    test_step.dependOn(&run_azure_alias_tests.step);
+    const fullscreen_key_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_key_routing_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_fullscreen_key_tests = b.addRunArtifact(fullscreen_key_tests);
+    const fullscreen_key_step = b.step("test-fullscreen-keys", "Check editor and transcript navigation through real native components");
+    fullscreen_key_step.dependOn(&run_fullscreen_key_tests.step);
 
     const classifier_tests = b.addTest(.{
         .root_module = test_mod,

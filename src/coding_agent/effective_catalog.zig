@@ -6,7 +6,7 @@ const providers = @import("../ai/providers.zig");
 const models_file_mod = @import("models_file.zig");
 
 fn sameIdentity(a: providers.ModelInfo, b: providers.ModelInfo) bool {
-    return a.kind == b.kind and std.ascii.eqlIgnoreCase(a.providerName(), b.providerName()) and std.mem.eql(u8, a.id, b.id);
+    return a.kind == b.kind and providers.providerIdsEqual(a.providerName(), b.providerName()) and std.mem.eql(u8, a.id, b.id);
 }
 
 fn hasIdentity(list: []const providers.ModelInfo, target: providers.ModelInfo) bool {

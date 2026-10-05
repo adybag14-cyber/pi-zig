@@ -8,6 +8,8 @@ const terminal_text = @import("terminal_text.zig");
 const osc52 = @import("osc52.zig");
 const mouse = @import("mouse.zig");
 const widgets = @import("widgets.zig");
+const keys = @import("keys.zig");
+const keybindings = @import("keybindings.zig");
 
 pub const mouse_enable = "\x1b[?1000h\x1b[?1002h\x1b[?1006h";
 pub const mouse_disable = "\x1b[?1006l\x1b[?1002l\x1b[?1000l";
@@ -185,6 +187,7 @@ pub const Application = struct {
     gpa: std.mem.Allocator,
     root: layout.Component,
     focused: ?layout.Component = null,
+    bindings: ?*const keybindings.Manager = null,
     overlays: std.ArrayList(OverlayEntry) = .empty,
     overlay_frames: std.ArrayList(OverlayFrame) = .empty,
     current_frame: ?layout.LayoutFrame = null,
@@ -344,7 +347,43 @@ pub const Application = struct {
             }
             return;
         }
+        if (keys.parseKeyWithOptions(data, .{ .kitty_active = true })) |key| {
+            if (key.event_type == .release) return;
+            const key_id = try key.formatAlloc(self.gpa);
+            defer self.gpa.free(key_id);
+            if (self.handleViewportKey(key_id)) return;
+        }
         if (self.inputTarget()) |target| try target.handleInput(data);
+    }
+
+    pub fn handleViewportKey(self: *Application, key_id: []const u8) bool {
+        // A focused dialog keeps its navigation keys; nonmodal overlays that
+        // leave focus on the editor do not steal transcript navigation.
+        for (self.overlays.items) |entry| {
+            if (self.focused) |focused| {
+                if (focused.eql(entry.component)) return false;
+                if (entry.options.focus) |focus| if (focused.eql(focus)) return false;
+            }
+            if (entry.options.modal) return false;
+        }
+        const defaults = keybindings.Manager.init(self.gpa);
+        const bindings = self.bindings orelse &defaults;
+        const action = bindings.viewportActionFor(key_id) orelse return false;
+        const frame = if (self.current_frame) |*value| value else return false;
+        const scroll = frame.primary_scroll_view orelse return false;
+        const page: isize = @intCast(@max(@as(usize, 1), scroll.viewport_height -| 4));
+        const half_page: isize = @intCast(@max(@as(usize, 1), scroll.viewport_height / 2));
+        switch (action) {
+            .top => scroll.scrollToStart(),
+            .bottom => scroll.scrollToEnd(),
+            .page_up => _ = scroll.scrollBy(-page),
+            .page_down => _ = scroll.scrollBy(page),
+            .half_page_up => _ = scroll.scrollBy(-half_page),
+            .half_page_down => _ = scroll.scrollBy(half_page),
+            .line_up => _ = scroll.scrollBy(-1),
+            .line_down => _ = scroll.scrollBy(1),
+        }
+        return true;
     }
 
     fn inputTarget(self: *const Application) ?layout.Component {
@@ -879,6 +918,99 @@ test "application overlays compose, focus and restore deterministically" {
     try std.testing.expect(std.mem.indexOf(u8, view.lines[2], "dialog") != null);
     try std.testing.expect(app.removeOverlay(id));
     try std.testing.expect(input.focused);
+}
+
+test "fullscreen routes Home End to the focused editor and Ctrl Home End to transcript" {
+    const gpa = std.testing.allocator;
+    var text = layout.StaticLines{ .lines = &.{ "line 1", "line 2", "line 3", "line 4", "line 5", "line 6", "line 7", "line 8", "line 9", "line 10", "line 11", "line 12" } };
+    var transcript = layout.ScrollView.init(text.component(), true);
+    transcript.primary = true;
+    var input = widgets.Input.init(gpa);
+    defer input.deinit();
+    try input.setValue("first\nsecond");
+    const entries = [_]layout.StackEntry{
+        .{ .component = transcript.component(), .grow = 1 },
+        .{ .component = input.component(), .basis = 3, .shrink = 0 },
+    };
+    var stack = layout.Stack{ .axis = .vertical, .entries = &entries };
+    var app = Application.init(gpa, stack.component());
+    defer app.deinit();
+    app.setFocus(input.component());
+    _ = try app.render(20, 6);
+    const bottom = transcript.scroll_top;
+    try std.testing.expect(bottom > 0);
+    try app.handleInput("\x1bOH");
+    try std.testing.expectEqual(@as(usize, 6), input.editor.cursor);
+    try app.handleInput("\x1b[F");
+    try std.testing.expectEqual(@as(usize, 12), input.editor.cursor);
+    try app.handleInput("\x1b[57423u");
+    try std.testing.expectEqual(@as(usize, 6), input.editor.cursor);
+    try app.handleInput("\x1b[5;5~");
+    try app.handleInput("\x1b[6;5~");
+    try std.testing.expectEqual(bottom, transcript.scroll_top);
+    try app.handleInput("\x1b[1;5H");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try std.testing.expectEqual(@as(usize, 6), input.editor.cursor);
+    try app.handleInput("\x1b[1;5F");
+    try std.testing.expectEqual(bottom, transcript.scroll_top);
+    try std.testing.expect(transcript.following_end);
+    try app.handleInput("\x1b[57423;5:3u");
+    try std.testing.expectEqual(bottom, transcript.scroll_top);
+    try std.testing.expect(transcript.following_end);
+    try app.handleInput("\x1b[57423;5:2u");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try app.handleInput("\x1b[57424;5:3u");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try app.handleInput("\x1b[6~");
+    try std.testing.expectEqual(@as(usize, 1), transcript.scroll_top);
+    try app.handleInput("\x1b[5~");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try app.handleInput("\x1b[8^");
+    try std.testing.expectEqual(bottom, transcript.scroll_top);
+    try app.handleInput("\x1b[7^");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+}
+
+test "fullscreen custom navigation respects remaps releases and focused overlays" {
+    const gpa = std.testing.allocator;
+    var text = layout.StaticLines{ .lines = &.{ "one", "two", "three", "four", "five", "six" } };
+    var transcript = layout.ScrollView.init(text.component(), true);
+    transcript.primary = true;
+    var input = widgets.Input.init(gpa);
+    defer input.deinit();
+    try input.setValue("editor");
+    var bindings = keybindings.Manager{
+        .gpa = gpa,
+        .parsed = try std.json.parseFromSlice(std.json.Value, gpa, "{\"tui.altScreen.top\":[\"alt+home\"],\"tui.altScreen.bottom\":[],\"tui.altScreen.lineDown\":\"ctrl+j\"}", .{ .allocate = .alloc_always }),
+    };
+    defer bindings.deinit();
+    var app = Application.init(gpa, transcript.component());
+    defer app.deinit();
+    app.bindings = &bindings;
+    app.setFocus(input.component());
+    _ = try app.render(20, 3);
+    const bottom = transcript.scroll_top;
+    try app.handleInput("\x1b[1;3H");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try std.testing.expectEqual(@as(usize, 6), input.editor.cursor);
+    try app.handleInput("\x1b[57423;3:3u");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try app.handleInput("\x1b[106;5u");
+    try std.testing.expectEqual(@as(usize, 1), transcript.scroll_top);
+    try std.testing.expect(!app.handleViewportKey("ctrl+end"));
+    try std.testing.expect(!app.handleViewportKey("ctrl+home"));
+    var overlay = widgets.Input.init(gpa);
+    defer overlay.deinit();
+    try overlay.setValue("dialog");
+    const id = try app.pushOverlay(overlay.component(), .{ .modal = true });
+    try app.handleInput("\x1bOH");
+    try std.testing.expectEqual(@as(usize, 0), overlay.editor.cursor);
+    try app.handleInput("\x1b[1;3H");
+    try std.testing.expectEqual(@as(usize, 1), transcript.scroll_top);
+    try std.testing.expect(app.removeOverlay(id));
+    try app.handleInput("\x1b[1;3H");
+    try std.testing.expectEqual(@as(usize, 0), transcript.scroll_top);
+    try std.testing.expect(bottom > 0);
 }
 
 test "application extracts cursor and emits differential synchronized output" {

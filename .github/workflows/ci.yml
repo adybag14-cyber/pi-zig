@@ -48,6 +48,9 @@ jobs:
       - name: Verify native C dependency provenance
         run: zig build maintenance -- verify-vendors
 
+      - name: Verify source artifact inventory
+        run: zig build maintenance -- verify-artifacts
+
       - name: Check Zig formatting
         run: zig fmt --check build.zig src tools
 
@@ -72,9 +75,9 @@ jobs:
         timeout-minutes: 20
         run: |
           if [[ -n "${PI_SQLITE_LIB_DIR:-}" ]]; then
-            zig build test -j2 --summary all -Dsqlite-lib-dir="$PI_SQLITE_LIB_DIR"
+            zig build test test-provider-contracts -j2 --summary all -Dsqlite-lib-dir="$PI_SQLITE_LIB_DIR"
           else
-            zig build test -j2 --summary all
+            zig build test test-provider-contracts -j2 --summary all
           fi
 
       - name: Smoke --version

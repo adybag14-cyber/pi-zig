@@ -1,13 +1,15 @@
 //! Persistent compatibility runtime for upstream JavaScript and TypeScript
 //! extensions. The Zig host owns discovery, lifecycle, validation, limits and
-//! agent integration; Node is used only to execute the extension language that
-//! upstream Pi exposes as a public plugin ABI.
+//! agent integration. The legacy backend executes extension input through
+//! Node; the explicit native backend uses the standalone Zig/C worker.
 const std = @import("std");
 const Io = std.Io;
 
 const bridge_source = @embedFile("js_bridge.mjs");
 const record_prefix: u8 = 0x1e;
 var bridge_temp_counter: std.atomic.Value(u64) = .init(1);
+
+pub const Backend = enum { legacy, native };
 
 fn privateFilePermissions() std.Io.File.Permissions {
     if (@hasDecl(std.Io.File.Permissions, "fromMode")) return std.Io.File.Permissions.fromMode(0o600);
@@ -62,6 +64,232 @@ pub const ToolUpdateFn = *const fn (?*anyopaque, []const u8) anyerror!void;
 /// protocol-synchronized and reusable.
 pub const ProviderStreamEventFn = *const fn (?*anyopaque, u64, []const u8) anyerror!void;
 
+// Native dialog callbacks contain no JavaScript. A separate, bounded pipe
+// reader keeps receiving cancellation records while one frontend callback
+// waits in cancellable native I/O. Record memory uses a thread-safe allocator.
+const NativeReadSession = struct {
+    runtime: *Runtime,
+    mutex: Io.Mutex = .init,
+    wake: Io.Event = .unset,
+    records: std.ArrayList([]u8) = .empty,
+    bytes: usize = 0,
+    finished: bool = false,
+    failure: ?anyerror = null,
+
+    fn reader(self: *@This()) Io.Cancelable!void {
+        while (true) {
+            const record = self.runtime.readRecordAllocating(std.heap.page_allocator) catch |err| {
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            };
+            self.mutex.lockUncancelable(self.runtime.io);
+            if (self.records.items.len >= 128 or record.len > 8 * 1024 * 1024 - self.bytes) {
+                self.finished = true;
+                self.failure = error.NativeUiRecordQueueLimit;
+                self.mutex.unlock(self.runtime.io);
+                std.heap.page_allocator.free(record);
+                self.wake.set(self.runtime.io);
+                return;
+            }
+            self.records.append(std.heap.page_allocator, record) catch |err| {
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                std.heap.page_allocator.free(record);
+                self.wake.set(self.runtime.io);
+                return;
+            };
+            self.bytes += record.len;
+            self.mutex.unlock(self.runtime.io);
+            self.wake.set(self.runtime.io);
+        }
+    }
+
+    fn next(self: *@This(), dialogs: *NativeDialogs) ![]u8 {
+        var deadline: ?i64 = null;
+        while (true) {
+            self.wake.reset();
+            try dialogs.progress();
+            self.mutex.lockUncancelable(self.runtime.io);
+            if (self.records.items.len > 0) {
+                const value = self.records.orderedRemove(0);
+                self.bytes -= value.len;
+                self.mutex.unlock(self.runtime.io);
+                return value;
+            }
+            const finished = self.finished;
+            const failure = self.failure;
+            self.mutex.unlock(self.runtime.io);
+            if (finished) return failure orelse error.JavaScriptExtensionClosed;
+            // Human dialogs do not inherit the short ordinary script-record
+            // timeout. Their own cancellation/deadline arrives on the wire.
+            if (dialogs.active != null or self.runtime.timeout_ms == 0) {
+                deadline = null;
+                try self.wake.wait(self.runtime.io);
+            } else {
+                const now = Io.Clock.awake.now(self.runtime.io).toMilliseconds();
+                if (deadline == null) deadline = now +| @as(i64, @intCast(@min(self.runtime.timeout_ms, std.math.maxInt(i64))));
+                const remaining = deadline.? - now;
+                if (remaining <= 0) return error.JavaScriptExtensionTimeout;
+                const timeout: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(remaining), .clock = .awake } };
+                self.wake.waitTimeout(self.runtime.io, timeout) catch |err| switch (err) {
+                    // Event waits may report a spurious wake as Timeout.
+                    // Check the absolute deadline before retiring the worker.
+                    error.Timeout => continue,
+                    else => return err,
+                };
+            }
+        }
+    }
+
+    fn deinit(self: *@This()) void {
+        for (self.records.items) |record| std.heap.page_allocator.free(record);
+        self.records.deinit(std.heap.page_allocator);
+    }
+};
+
+const NativeDialog = struct {
+    runtime: *Runtime,
+    session: *NativeReadSession,
+    bridge: ?UiBridge,
+    invocation_id: u64,
+    id: u32,
+    method: []u8,
+    args: []u8,
+    group: Io.Group = .init,
+    started: bool = false,
+    done: std.atomic.Value(bool) = .init(false),
+    cancelled: std.atomic.Value(bool) = .init(false),
+    failure: ?anyerror = null,
+
+    fn run(self: *@This()) Io.Cancelable!void {
+        defer {
+            self.done.store(true, .release);
+            self.session.wake.set(self.runtime.io);
+        }
+        self.execute() catch |err| {
+            if (!self.cancelled.load(.acquire)) self.failure = err;
+        };
+    }
+
+    fn execute(self: *@This()) !void {
+        const allocator = std.heap.page_allocator;
+        var failure: ?[]u8 = null;
+        defer if (failure) |text| allocator.free(text);
+        const result = if (self.bridge) |bridge| bridge.request_fn(bridge.context, allocator, self.method, self.args) catch |err| blk: {
+            if (self.cancelled.load(.acquire)) return;
+            failure = try std.fmt.allocPrint(allocator, "native UI request failed: {s}", .{@errorName(err)});
+            break :blk null;
+        } else try allocator.dupe(u8, if (std.mem.eql(u8, self.method, "confirm")) "false" else "null");
+        defer if (result) |value| allocator.free(value);
+        if (self.cancelled.load(.acquire)) return;
+        if (result) |value| try validateAnyJson(allocator, value);
+        var response: Io.Writer.Allocating = .init(allocator);
+        defer response.deinit();
+        try response.writer.print("{{\"kind\":\"ui_response\",\"invocationId\":\"{d}\",\"id\":{d},", .{ self.invocation_id, self.id });
+        if (result) |value| {
+            try response.writer.writeAll("\"ok\":true,\"result\":");
+            try response.writer.writeAll(value);
+        } else {
+            try response.writer.writeAll("\"ok\":false,\"error\":");
+            try std.json.Stringify.value(failure orelse "native UI request failed", .{}, &response.writer);
+        }
+        try response.writer.writeByte('}');
+        if (!self.cancelled.load(.acquire)) try self.runtime.writeLine(response.written());
+    }
+
+    fn deinit(self: *@This()) void {
+        if (self.started) {
+            self.cancelled.store(true, .release);
+            self.group.cancel(self.runtime.io);
+            self.group.await(self.runtime.io) catch {};
+        }
+        std.heap.page_allocator.free(self.method);
+        std.heap.page_allocator.free(self.args);
+        std.heap.page_allocator.destroy(self);
+    }
+};
+
+const NativeDialogs = struct {
+    runtime: *Runtime,
+    session: *NativeReadSession,
+    invocation_id: u64,
+    queued: std.ArrayList(*NativeDialog) = .empty,
+    active: ?*NativeDialog = null,
+
+    fn deinit(self: *@This()) void {
+        if (self.active) |dialog| dialog.deinit();
+        for (self.queued.items) |dialog| dialog.deinit();
+        self.queued.deinit(std.heap.page_allocator);
+    }
+
+    fn progress(self: *@This()) !void {
+        if (self.active) |dialog| if (dialog.done.load(.acquire)) {
+            const failure = dialog.failure;
+            self.active = null;
+            dialog.deinit();
+            if (failure) |err| return err;
+        };
+        if (self.active == null and self.queued.items.len > 0) {
+            const dialog = self.queued.orderedRemove(0);
+            self.active = dialog;
+            dialog.started = true;
+            dialog.group.async(self.runtime.io, NativeDialog.run, .{dialog});
+        }
+    }
+
+    fn fencedId(self: *@This(), object: *const std.json.ObjectMap) !u32 {
+        const invocation = object.get("invocationId") orelse return error.InvalidNativeInvocationIdentity;
+        if (try wireInvocationId(invocation) != self.invocation_id or self.invocation_id == 0) return error.InvalidNativeInvocationIdentity;
+        const id = object.get("id") orelse return error.InvalidNativeUiIdentity;
+        if (id != .integer or id.integer <= 0 or id.integer > std.math.maxInt(u32)) return error.InvalidNativeUiIdentity;
+        return @intCast(id.integer);
+    }
+
+    fn request(self: *@This(), object: *const std.json.ObjectMap) !void {
+        const id = try self.fencedId(object);
+        if (self.active) |dialog| if (dialog.id == id) return error.DuplicateNativeUiIdentity;
+        for (self.queued.items) |dialog| if (dialog.id == id) return error.DuplicateNativeUiIdentity;
+        if (self.queued.items.len >= 128) return error.NativeDialogLimit;
+        const method = object.get("method") orelse return error.InvalidNativeUiRequest;
+        const args = object.get("args") orelse std.json.Value{ .object = .empty };
+        if (method != .string or method.string.len == 0 or args != .object) return error.InvalidNativeUiRequest;
+        const allocator = std.heap.page_allocator;
+        var published = false;
+        const name = try allocator.dupe(u8, method.string);
+        errdefer if (!published) allocator.free(name);
+        const encoded = try stringifyValue(allocator, args);
+        errdefer if (!published) allocator.free(encoded);
+        const dialog = try allocator.create(NativeDialog);
+        errdefer if (!published) allocator.destroy(dialog);
+        dialog.* = .{ .runtime = self.runtime, .session = self.session, .bridge = self.runtime.ui_bridge, .invocation_id = self.invocation_id, .id = id, .method = name, .args = encoded };
+        try self.queued.append(allocator, dialog);
+        published = true;
+        try self.progress();
+    }
+
+    fn cancel(self: *@This(), object: *const std.json.ObjectMap) !void {
+        const id = try self.fencedId(object);
+        if (self.active) |dialog| if (dialog.id == id) {
+            self.active = null;
+            dialog.deinit();
+            try self.progress();
+            return;
+        };
+        for (self.queued.items, 0..) |dialog, index| if (dialog.id == id) {
+            _ = self.queued.orderedRemove(index);
+            dialog.deinit();
+            return;
+        };
+        // The callback may have already returned when cancellation crossed its
+        // response. A duplicate/late cancel never touches another request.
+    }
+};
+
 pub const Runtime = struct {
     gpa: std.mem.Allocator,
     io: Io,
@@ -69,6 +297,7 @@ pub const Runtime = struct {
     source_path: []u8,
     node_program: []u8,
     bridge_path: []u8,
+    backend: Backend = .legacy,
     mutex: Io.Mutex = .init,
     /// Serializes worker stdin independently so the abort watcher can write while
     /// the invocation thread is blocked waiting for worker stdout.
@@ -108,13 +337,57 @@ pub const Runtime = struct {
         manifest_json: []u8,
     };
 
+    pub const NativeOptions = struct {
+        // Null selects this running standalone executable. Tests/embedders can
+        // explicitly select an installed pi binary instead of the test runner.
+        executable: ?[]const u8 = null,
+        environ_map: ?*const std.process.Environ.Map = null,
+    };
+
     pub fn start(
         gpa: std.mem.Allocator,
         io: Io,
         source_path: []const u8,
         node_program: []const u8,
     ) !Started {
-        const runtime = try spawnRuntime(gpa, io, source_path, node_program);
+        return startSpawned(try spawnRuntime(gpa, io, source_path, node_program));
+    }
+
+    /// Start the directly linked worker without creating bridge source or
+    /// resolving Node. This remains explicit until its complete API is gated.
+    pub fn startNative(gpa: std.mem.Allocator, io: Io, source_path: []const u8, options: NativeOptions) !Started {
+        return startSpawned(try spawnNativeRuntime(gpa, io, source_path, options));
+    }
+
+    fn spawnNativeRuntime(gpa: std.mem.Allocator, io: Io, source_path: []const u8, options: NativeOptions) !*Runtime {
+        const owned_source = try gpa.dupe(u8, source_path);
+        errdefer gpa.free(owned_source);
+        const owned_program = if (options.executable) |program| try gpa.dupe(u8, program) else blk: {
+            const executable = try std.process.executablePathAlloc(io, gpa);
+            defer gpa.free(executable);
+            break :blk try gpa.dupe(u8, executable);
+        };
+        errdefer gpa.free(owned_program);
+        const owned_bridge = try gpa.dupe(u8, "");
+        errdefer gpa.free(owned_bridge);
+        var child = try std.process.spawn(io, .{
+            .argv = &.{ owned_program, "--internal-native-extension-worker", owned_source },
+            .environ_map = options.environ_map,
+            .stdin = .pipe,
+            .stdout = .pipe,
+            .stderr = .inherit,
+            .create_no_window = true,
+        });
+        // This exact owned child may already be running user factory code.
+        // Reuse the bounded native termination path on every setup failure.
+        errdefer terminateChild(&child, io);
+        const runtime = try gpa.create(Runtime);
+        runtime.* = .{ .gpa = gpa, .io = io, .child = child, .source_path = owned_source, .node_program = owned_program, .bridge_path = owned_bridge, .backend = .native };
+        return runtime;
+    }
+
+    fn startSpawned(runtime: *Runtime) !Started {
+        const gpa = runtime.gpa;
         errdefer runtime.deinit();
 
         const ready_line = runtime.readRecordUnlocked() catch |err| {
@@ -200,7 +473,7 @@ pub const Runtime = struct {
         if (self.context_json) |context| self.gpa.free(context);
         self.gpa.free(self.source_path);
         self.gpa.free(self.node_program);
-        std.Io.Dir.cwd().deleteFile(self.io, self.bridge_path) catch {};
+        if (self.backend == .legacy) std.Io.Dir.cwd().deleteFile(self.io, self.bridge_path) catch {};
         self.gpa.free(self.bridge_path);
         const gpa = self.gpa;
         self.* = undefined;
@@ -309,10 +582,16 @@ pub const Runtime = struct {
         try std.json.Stringify.value(raw_arguments, .{}, &request.writer);
         try request.writer.writeAll(",\"flags\":");
         try request.writer.writeAll(flags_json);
+        const invocation_id = if (self.backend == .native) blk: {
+            const id = self.next_invocation_id;
+            self.next_invocation_id = std.math.add(u64, id, 1) catch return error.ExtensionInvocationIdExhausted;
+            try request.writer.print(",\"invocationId\":\"{d}\"", .{id});
+            break :blk id;
+        } else 0;
         try request.writer.writeAll(",\"context\":");
         try self.writeContext(&request.writer);
         try request.writer.writeByte('}');
-        return self.exchangeUnlocked(request.written());
+        return self.exchangeWithUpdatesUnlocked(request.written(), invocation_id, null, null, null);
     }
 
     pub fn invokeShortcut(self: *Runtime, key: []const u8, flags_json: []const u8) ![]u8 {
@@ -804,6 +1083,7 @@ pub const Runtime = struct {
         stream_event_ctx: ?*anyopaque,
         watch_provider_retirement: bool,
     ) ![]u8 {
+        if (self.backend == .native) try self.requireNativeRequest(request);
         self.clearLastErrorUnlocked();
         self.writeLine(request) catch |err| {
             self.closeUnlocked();
@@ -843,9 +1123,19 @@ pub const Runtime = struct {
         abort_flag: ?*const bool,
     ) ![]u8 {
         var expected_stream_sequence: u64 = 1;
+        var native_session: NativeReadSession = .{ .runtime = self };
+        var reader_group: Io.Group = .init;
+        if (self.backend == .native) reader_group.async(self.io, NativeReadSession.reader, .{&native_session});
+        defer if (self.backend == .native) {
+            reader_group.cancel(self.io);
+            reader_group.await(self.io) catch {};
+            native_session.deinit();
+        };
+        var native_dialogs: NativeDialogs = .{ .runtime = self, .session = &native_session, .invocation_id = expected_invocation_id };
+        defer native_dialogs.deinit();
         while (true) {
-            const line = try self.readRecordUnlocked();
-            defer self.gpa.free(line);
+            const line = if (self.backend == .native) try native_session.next(&native_dialogs) else try self.readRecordUnlocked();
+            defer (if (self.backend == .native) std.heap.page_allocator else self.gpa).free(line);
             var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, line, .{});
             defer parsed.deinit();
             if (parsed.value != .object) return error.InvalidJavaScriptExtensionResponse;
@@ -853,14 +1143,26 @@ pub const Runtime = struct {
             if (parsed.value.object.get("type")) |type_value| {
                 if (type_value != .string) return error.InvalidJavaScriptExtensionResponse;
                 if (std.mem.eql(u8, type_value.string, "ui_request")) {
-                    try self.handleUiRequestUnlocked(&parsed.value.object);
+                    if (self.backend == .native) try native_dialogs.request(&parsed.value.object) else try self.handleUiRequestUnlocked(&parsed.value.object);
+                    continue;
+                }
+                if (self.backend == .native and std.mem.eql(u8, type_value.string, "ui_cancel")) {
+                    try native_dialogs.cancel(&parsed.value.object);
                     continue;
                 }
                 if (std.mem.eql(u8, type_value.string, "ui_action")) {
+                    if (self.backend == .native) {
+                        const identity = parsed.value.object.get("invocationId") orelse return error.InvalidNativeInvocationIdentity;
+                        if (try wireInvocationId(identity) != expected_invocation_id or expected_invocation_id == 0) return error.InvalidNativeInvocationIdentity;
+                    }
                     self.handleUiActionUnlocked(&parsed.value.object) catch {};
                     continue;
                 }
                 if (std.mem.eql(u8, type_value.string, "tool_update")) {
+                    if (self.backend == .native) {
+                        const identity = parsed.value.object.get("invocationId") orelse return error.InvalidNativeInvocationIdentity;
+                        if (try wireInvocationId(identity) != expected_invocation_id or expected_invocation_id == 0) return error.InvalidNativeInvocationIdentity;
+                    }
                     const update = parsed.value.object.get("update") orelse return error.InvalidJavaScriptExtensionResponse;
                     if (update != .object) return error.InvalidJavaScriptExtensionResponse;
                     if (update_fn) |callback| {
@@ -921,6 +1223,20 @@ pub const Runtime = struct {
             if (result != .object) return error.InvalidJavaScriptExtensionResponse;
             return stringifyValue(self.gpa, result);
         }
+    }
+
+    fn requireNativeRequest(self: *Runtime, request: []const u8) !void {
+        var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, request, .{});
+        defer parsed.deinit();
+        if (parsed.value != .object) return error.InvalidNativeExtensionRequest;
+        const kind = parsed.value.object.get("kind") orelse return error.InvalidNativeExtensionRequest;
+        if (kind != .string) return error.InvalidNativeExtensionRequest;
+        for ([_][]const u8{ "hook", "tool", "command", "provider_method", "shutdown" }) |supported| {
+            if (std.mem.eql(u8, supported, kind.string)) return;
+        }
+        // Keep unsupported UI/provider-stream/render operations out of the
+        // pipe; they do not leave an unread response or retire a healthy worker.
+        return error.NativeExtensionOperationUnsupported;
     }
 
     fn sendProviderStreamAckUnlocked(
@@ -1041,6 +1357,10 @@ pub const Runtime = struct {
     }
 
     fn readRecordBlockingUnlocked(self: *Runtime) ![]u8 {
+        return self.readRecordAllocating(self.gpa);
+    }
+
+    fn readRecordAllocating(self: *Runtime, allocator: std.mem.Allocator) ![]u8 {
         // The bridge record separator may follow arbitrary extension stdout
         // without a newline. Scan the byte stream itself rather than assuming
         // line alignment, while retaining unread bytes across invocations.
@@ -1054,15 +1374,15 @@ pub const Runtime = struct {
             }
 
             var record: std.ArrayList(u8) = .empty;
-            errdefer record.deinit(self.gpa);
+            errdefer record.deinit(allocator);
             while (true) {
                 const next = try self.readByteBlockingUnlocked();
                 if (next == '\n') {
                     if (record.items.len > 0 and record.items[record.items.len - 1] == '\r') _ = record.pop();
                     if (record.items.len == 0) return error.InvalidJavaScriptExtensionResponse;
-                    return record.toOwnedSlice(self.gpa);
+                    return record.toOwnedSlice(allocator);
                 }
-                try record.append(self.gpa, next);
+                try record.append(allocator, next);
                 if (record.items.len > self.max_line_bytes) return error.JavaScriptExtensionResponseTooLarge;
             }
         }
@@ -1077,7 +1397,6 @@ pub const Runtime = struct {
                 else => return error.JavaScriptExtensionReadFailed,
             };
             if (read_count == 0) {
-                self.closed = true;
                 return error.JavaScriptExtensionClosed;
             }
             self.read_start = 0;
@@ -1161,8 +1480,30 @@ fn drainRecordRace(select: anytype, gpa: std.mem.Allocator) void {
 fn stringifyValue(gpa: std.mem.Allocator, value: std.json.Value) ![]u8 {
     var out: std.Io.Writer.Allocating = .init(gpa);
     errdefer out.deinit();
-    try std.json.Stringify.value(value, .{}, &out.writer);
+    // Allocating.Writer's only write failure is an allocator failure. Preserve
+    // that cause rather than turning a startup OOM into an unrelated I/O error.
+    std.json.Stringify.value(value, .{}, &out.writer) catch return error.OutOfMemory;
     return out.toOwnedSlice();
+}
+
+fn wireInvocationId(value: std.json.Value) !u64 {
+    return switch (value) {
+        .string => blk: {
+            const identity = std.fmt.parseUnsigned(u64, value.string, 10) catch return error.InvalidNativeInvocationIdentity;
+            break :blk if (identity > 0) identity else error.InvalidNativeInvocationIdentity;
+        },
+        .integer => if (value.integer > 0) @intCast(value.integer) else error.InvalidNativeInvocationIdentity,
+        else => error.InvalidNativeInvocationIdentity,
+    };
+}
+
+test "native runtime wire invocation identity accepts exact strings and integers without float coercion" {
+    try std.testing.expectEqual(@as(u64, 42), try wireInvocationId(.{ .string = "42" }));
+    try std.testing.expectEqual(@as(u64, 42), try wireInvocationId(.{ .integer = 42 }));
+    try std.testing.expectEqual(std.math.maxInt(u64), try wireInvocationId(.{ .string = "18446744073709551615" }));
+    for ([_]std.json.Value{ .{ .integer = -1 }, .{ .integer = 0 }, .{ .float = 42 }, .{ .string = "0" }, .{ .string = "1.0" }, .{ .string = "18446744073709551616" }, .null }) |value| {
+        try std.testing.expectError(error.InvalidNativeInvocationIdentity, wireInvocationId(value));
+    }
 }
 
 fn validateObjectJson(gpa: std.mem.Allocator, raw: []const u8) !void {

@@ -8,10 +8,308 @@ const node_fs = @import("node_fs.zig");
 const console = @import("console.zig");
 const module_resolver = @import("module_resolver.zig");
 const text_encoding = @import("text_encoding.zig");
+const text_decoder = @import("text_decoder.zig");
 const node_path = @import("node_path.zig");
 const node_url = @import("node_url.zig");
 const commonjs = @import("commonjs.zig");
 const timers = @import("timers.zig");
+const abort_signal = @import("abort_signal.zig");
+const c = engine_mod.c;
+
+const WireRecord = struct {
+    const Kind = enum { request, abort, ui_response, shutdown };
+    bytes: []u8,
+    kind: Kind = .request,
+};
+
+// The reader task owns only bytes and synchronization. All C/QuickJS calls,
+// including abort listeners and update serialization, stay on run()'s thread.
+const Transport = struct {
+    engine: *engine_mod.Engine,
+    bindings: *bindings_mod.Bindings,
+    io: std.Io,
+    writer: *std.Io.Writer,
+    mutex: std.Io.Mutex = .init,
+    available: std.Io.Condition = .init,
+    records: std.ArrayList(WireRecord) = .empty,
+    queued_bytes: usize = 0,
+    finished: bool = false,
+    reader_error: ?anyerror = null,
+    active: bool = false,
+    active_id: []const u8 = "",
+    active_signal: ?c.JSValue = null,
+    stream_updates: bool = false,
+    updates: std.ArrayList([]u8) = .empty,
+    terminal: bool = false,
+    shutdown_requested: bool = false,
+    terminal_abort_sent: bool = false,
+    next_id: u64 = 1,
+    seen_ids: std.StringHashMapUnmanaged(void) = .empty,
+
+    fn deinit(self: *Transport) void {
+        self.clearActive();
+        for (self.records.items) |record| std.heap.page_allocator.free(record.bytes);
+        self.records.deinit(std.heap.page_allocator);
+        self.updates.deinit(self.engine.gpa);
+        var ids = self.seen_ids.keyIterator();
+        while (ids.next()) |id| self.engine.gpa.free(id.*);
+        self.seen_ids.deinit(self.engine.gpa);
+    }
+
+    fn clearActive(self: *Transport) void {
+        self.active = false;
+        self.active_id = "";
+        self.bindings.clearInvocationOptions();
+        if (self.active_signal) |signal| self.engine.freeValue(signal);
+        self.active_signal = null;
+        for (self.updates.items) |update| self.engine.gpa.free(update);
+        self.updates.clearRetainingCapacity();
+    }
+
+    fn classify(bytes: []const u8) WireRecord.Kind {
+        var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+        defer arena.deinit();
+        const value = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), bytes, .{}) catch return .request;
+        if (value != .object) return .request;
+        const kind = value.object.get("kind") orelse return .request;
+        if (kind != .string) return .request;
+        if (std.mem.eql(u8, kind.string, "abort_current") or std.mem.eql(u8, kind.string, "abort")) return .abort;
+        if (std.mem.eql(u8, kind.string, "shutdown")) return .shutdown;
+        if (std.mem.eql(u8, kind.string, "ui_response")) return .ui_response;
+        return .request;
+    }
+
+    fn enqueue(self: *Transport, bytes: []u8) !void {
+        const record: WireRecord = .{ .bytes = bytes, .kind = classify(bytes) };
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        // Apply backpressure through a bounded queue rather than allowing a
+        // stopped extension to retain unbounded stdin in host memory.
+        if (self.records.items.len >= 128 or bytes.len > 8 * 1024 * 1024 - self.queued_bytes) return error.NativeWorkerQueueLimit;
+        try self.records.append(std.heap.page_allocator, record);
+        self.queued_bytes += bytes.len;
+        self.available.signal(self.io);
+    }
+
+    fn finishReader(self: *Transport, err: ?anyerror) void {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        self.finished = true;
+        self.reader_error = err;
+        self.available.broadcast(self.io);
+    }
+
+    fn readInput(self: *Transport) !void {
+        var buffer: [4096]u8 = undefined;
+        var input = std.Io.File.stdin().readerStreaming(self.io, &buffer);
+        while (true) {
+            var line: std.ArrayList(u8) = .empty;
+            defer line.deinit(std.heap.page_allocator);
+            while (true) {
+                const byte = input.interface.takeByte() catch |err| switch (err) {
+                    error.EndOfStream => {
+                        if (std.mem.trim(u8, line.items, " \t\r").len != 0) return error.IncompleteNativeWorkerRequest;
+                        return;
+                    },
+                    else => return err,
+                };
+                if (byte == '\n') break;
+                if (line.items.len >= 4 * 1024 * 1024) return error.NativeWorkerRequestTooLarge;
+                try line.append(std.heap.page_allocator, byte);
+            }
+            if (std.mem.trim(u8, line.items, " \t\r").len == 0) continue;
+            const bytes = try line.toOwnedSlice(std.heap.page_allocator);
+            self.enqueue(bytes) catch |err| {
+                std.heap.page_allocator.free(bytes);
+                return err;
+            };
+        }
+    }
+
+    fn readerTask(self: *Transport) std.Io.Cancelable!void {
+        self.readInput() catch |err| {
+            self.finishReader(err);
+            return;
+        };
+        self.finishReader(null);
+    }
+
+    fn next(self: *Transport) !?WireRecord {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        while (self.records.items.len == 0 and !self.finished) self.available.waitUncancelable(self.io, &self.mutex);
+        if (self.records.items.len == 0) {
+            if (self.reader_error) |err| return err;
+            return null;
+        }
+        const record = self.records.orderedRemove(0);
+        self.queued_bytes -= record.bytes.len;
+        return record;
+    }
+
+    fn takeControl(self: *Transport) ?WireRecord {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        for (self.records.items, 0..) |record, index| {
+            if (record.kind == .abort or record.kind == .ui_response or (record.kind == .shutdown and index == 0)) {
+                const removed = self.records.orderedRemove(index);
+                self.queued_bytes -= removed.bytes.len;
+                return removed;
+            }
+        }
+        return null;
+    }
+
+    fn inputEnded(self: *Transport) bool {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        return self.finished and self.records.items.len == 0;
+    }
+
+    fn abortActive(self: *Transport, reason: std.json.Value) !void {
+        const signal = self.active_signal orelse return;
+        const value = try self.engine.fromJsonValue(reason);
+        defer self.engine.freeValue(value);
+        try abort_signal.abort(self.engine, signal, value);
+    }
+
+    fn pump(engine: *engine_mod.Engine) !bool {
+        const self: *Transport = @ptrCast(@alignCast(engine.host_control_context.?));
+        if (!self.active) return false;
+        var dispatched = false;
+        while (self.takeControl()) |record| {
+            defer std.heap.page_allocator.free(record.bytes);
+            var arena: std.heap.ArenaAllocator = .init(engine.gpa);
+            defer arena.deinit();
+            const request = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{});
+            if (record.kind == .shutdown) {
+                self.shutdown_requested = true;
+                self.terminal = true;
+            } else if (request == .object) {
+                const id = request.object.get("invocationId") orelse continue;
+                // Require an explicit identity: stale or untargeted controls
+                // cannot cancel a later invocation that happens to be active.
+                if (id != .string or !std.mem.eql(u8, id.string, self.active_id)) continue;
+                if (record.kind == .ui_response) {
+                    const request_id = request.object.get("id") orelse continue;
+                    if (request_id != .integer or request_id.integer <= 0 or request_id.integer > std.math.maxInt(u32)) continue;
+                    const success = request.object.get("ok") orelse continue;
+                    if (success != .bool) continue;
+                    const value = if (success.bool) try engine.fromJsonValue(request.object.get("result") orelse std.json.Value.null) else blk: {
+                        const reason = request.object.get("error") orelse std.json.Value{ .string = "Native UI request failed" };
+                        const text = if (reason == .string) try engine.gpa.dupe(u8, reason.string) else try encoded(engine.gpa, reason);
+                        defer engine.gpa.free(text);
+                        const failure = try engine.checked(c.JS_NewError(engine.context));
+                        errdefer engine.freeValue(failure);
+                        if (c.JS_DefinePropertyValueStr(engine.context, failure, "message", c.JS_NewStringLen(engine.context, text.ptr, text.len), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
+                        break :blk failure;
+                    };
+                    defer engine.freeValue(value);
+                    try self.bindings.ui_manager.respond(@intCast(request_id.integer), success.bool, value);
+                } else try self.abortActive(request.object.get("reason") orelse std.json.Value{ .string = "Operation aborted" });
+                dispatched = true;
+            }
+        }
+        if (try self.bindings.ui_manager.poll()) dispatched = true;
+        if (self.inputEnded()) self.terminal = true;
+        if (self.terminal) {
+            if (self.terminal_abort_sent) {
+                if (c.JS_IsJobPending(engine.runtime)) return true;
+                return error.NativeWorkerInputClosed;
+            }
+            self.terminal_abort_sent = true;
+            try self.abortActive(.{ .string = "Native extension transport closed" });
+            return true;
+        }
+        return dispatched;
+    }
+
+    fn start(self: *Transport, request: std.json.ObjectMap, generated_id: []const u8) !void {
+        const id = if (request.get("invocationId")) |value| if (value == .string and value.string.len > 0 and value.string.len <= 256) value.string else return error.InvalidNativeInvocationId else generated_id;
+        if (self.seen_ids.contains(id)) return error.DuplicateNativeInvocationId;
+        if (self.seen_ids.count() >= 65_536) return error.NativeInvocationLimit;
+        const owned_id = try self.engine.gpa.dupe(u8, id);
+        var inserted = false;
+        errdefer if (!inserted) self.engine.gpa.free(owned_id);
+        try self.seen_ids.put(self.engine.gpa, owned_id, {});
+        inserted = true;
+        self.active_id = owned_id;
+        self.active_signal = try abort_signal.create(self.engine);
+        self.active = true;
+        self.stream_updates = if (request.get("streamUpdates")) |value| value == .bool and value.bool else false;
+        if (request.get("aborted")) |value| if (value == .bool and value.bool) try self.abortActive(request.get("abortReason") orelse std.json.Value{ .string = "Operation aborted" });
+        try self.bindings.setInvocationOptions(self.active_signal.?, sendToolUpdate, self);
+    }
+
+    fn sendToolUpdate(context: ?*anyopaque, value: c.JSValue) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        const source = try self.engine.stringify(value);
+        defer self.engine.gpa.free(source);
+        const projected = try normalizeToolResult(self.engine.gpa, source, "");
+        if (self.stream_updates) {
+            defer self.engine.gpa.free(projected);
+            var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
+            defer arena.deinit();
+            const allocator = arena.allocator();
+            const object = try std.json.parseFromSliceLeaky(std.json.Value, allocator, projected, .{});
+            var record: std.json.ObjectMap = .empty;
+            try record.put(allocator, "type", .{ .string = "tool_update" });
+            try record.put(allocator, "invocationId", .{ .string = self.active_id });
+            try record.put(allocator, "update", object);
+            writeRecord(self.writer, .{ .object = record }) catch |err| {
+                self.terminal = true;
+                return err;
+            };
+        } else self.updates.append(self.engine.gpa, projected) catch |err| {
+            self.engine.gpa.free(projected);
+            return err;
+        };
+    }
+
+    fn withUpdates(self: *Transport, result: []const u8) ![]u8 {
+        if (self.updates.items.len == 0) return self.engine.gpa.dupe(u8, result);
+        var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        var root = try std.json.parseFromSliceLeaky(std.json.Value, allocator, result, .{});
+        if (root != .object) return error.InvalidNativeToolResult;
+        var updates: std.json.Array = .init(allocator);
+        for (self.updates.items) |source| try updates.append(try std.json.parseFromSliceLeaky(std.json.Value, allocator, source, .{}));
+        try root.object.put(allocator, "updates", .{ .array = updates });
+        return encoded(self.engine.gpa, root);
+    }
+
+    fn uiRecord(self: *Transport, kind: []const u8, id: ?u32, method: ?[]const u8, arguments: ?[]const u8) !void {
+        var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        var object: std.json.ObjectMap = .empty;
+        try object.put(allocator, "type", .{ .string = kind });
+        try object.put(allocator, "invocationId", .{ .string = self.active_id });
+        if (id) |value| try object.put(allocator, "id", .{ .integer = value });
+        if (method) |value| try object.put(allocator, "method", .{ .string = value });
+        if (arguments) |value| try object.put(allocator, "args", try std.json.parseFromSliceLeaky(std.json.Value, allocator, value, .{}));
+        writeRecord(self.writer, .{ .object = object }) catch |err| {
+            self.terminal = true;
+            return err;
+        };
+    }
+
+    fn uiRequest(context: ?*anyopaque, id: u32, method: []const u8, args: []const u8) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        try self.uiRecord("ui_request", id, method, args);
+    }
+
+    fn uiAction(context: ?*anyopaque, method: []const u8, args: []const u8) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        try self.uiRecord("ui_action", null, method, args);
+    }
+
+    fn uiCancel(context: ?*anyopaque, id: u32) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        try self.uiRecord("ui_cancel", id, null, null);
+    }
+};
 
 const Loader = struct {
     io: std.Io,
@@ -242,6 +540,7 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
     try commonjs.install(engine);
     try console.install(engine, io);
     try text_encoding.install(engine);
+    try text_decoder.install(engine);
     const absolute = try std.Io.Dir.cwd().realPathFileAlloc(io, extension_path, gpa);
     defer gpa.free(absolute);
     const filename = try gpa.dupeZ(u8, absolute);
@@ -277,28 +576,32 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
     try writer.writeAll(manifest);
     try writer.writeAll("}\n");
     try writer.flush();
-    var input_buffer: [4096]u8 = undefined;
-    var input = std.Io.File.stdin().readerStreaming(io, &input_buffer);
+    var transport: Transport = .{ .engine = engine, .bindings = bindings, .io = io, .writer = writer };
+    defer transport.deinit();
+    engine.host_control_context = &transport;
+    engine.host_control_pump = Transport.pump;
+    bindings.ui_manager.bridge = .{ .context = &transport, .request = Transport.uiRequest, .action = Transport.uiAction, .cancel = Transport.uiCancel };
+    defer bindings.ui_manager.bridge = null;
+    defer {
+        engine.host_control_context = null;
+        engine.host_control_pump = null;
+    }
+    var reader_group: std.Io.Group = .init;
+    reader_group.async(io, Transport.readerTask, .{&transport});
+    defer {
+        reader_group.cancel(io);
+        reader_group.await(io) catch {};
+    }
     while (true) {
-        var line: std.ArrayList(u8) = .empty;
-        defer line.deinit(gpa);
-        while (true) {
-            const byte = input.interface.takeByte() catch |err| switch (err) {
-                error.EndOfStream => {
-                    if (std.mem.trim(u8, line.items, " \t\r").len != 0) return error.IncompleteNativeWorkerRequest;
-                    return;
-                },
-                else => return err,
-            };
-            if (byte == '\n') break;
-            if (line.items.len >= 4 * 1024 * 1024) return error.NativeWorkerRequestTooLarge;
-            try line.append(gpa, byte);
-        }
-        if (std.mem.trim(u8, line.items, " \t\r").len == 0) continue;
+        const record = (try transport.next()) orelse return;
+        defer std.heap.page_allocator.free(record.bytes);
+        // A late control is consumed without producing a final response that
+        // could be mistaken for the next ordinary invocation's result.
+        if (record.kind == .abort or record.kind == .ui_response) continue;
         var arena: std.heap.ArenaAllocator = .init(gpa);
         defer arena.deinit();
         const allocator = arena.allocator();
-        const request = std.json.parseFromSliceLeaky(std.json.Value, allocator, line.items, .{}) catch |err| {
+        const request = std.json.parseFromSliceLeaky(std.json.Value, allocator, record.bytes, .{}) catch |err| {
             try writeFailure(allocator, writer, @errorName(err));
             continue;
         };
@@ -316,14 +619,41 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
             return;
         }
         engine.beginInvocation();
+        var generated: [32]u8 = undefined;
+        const generated_id = try std.fmt.bufPrint(&generated, "native-{d}", .{transport.next_id});
+        transport.next_id = std.math.add(u64, transport.next_id, 1) catch return error.NativeInvocationLimit;
+        transport.start(request.object, generated_id) catch |err| {
+            transport.clearActive();
+            try writeFailure(allocator, writer, @errorName(err));
+            continue;
+        };
+        defer transport.clearActive();
         const result = invoke(gpa, bindings, request.object) catch |err| {
             try writeFailure(allocator, writer, engine.last_error orelse @errorName(err));
+            if (transport.terminal) {
+                if (transport.shutdown_requested) {
+                    try writer.writeAll("\x1e{\"ok\":true,\"result\":{}}\n");
+                    try writer.flush();
+                }
+                return;
+            }
+            const interrupted = if (engine.captured_exception) |exception| c.JS_IsUncatchableError(exception) else false;
+            if (interrupted or err == error.OutOfMemory or err == error.NativeHostPromiseTimeout or err == error.JavaScriptJobLimit or err == error.JavaScriptInterrupted) return;
             continue;
         };
         defer gpa.free(result);
+        const projected = try transport.withUpdates(result);
+        defer gpa.free(projected);
         try writer.writeAll("\x1e{\"ok\":true,\"result\":");
-        try writer.writeAll(result);
+        try writer.writeAll(projected);
         try writer.writeAll("}\n");
         try writer.flush();
+        if (transport.terminal) {
+            if (transport.shutdown_requested) {
+                try writer.writeAll("\x1e{\"ok\":true,\"result\":{}}\n");
+                try writer.flush();
+            }
+            return;
+        }
     }
 }

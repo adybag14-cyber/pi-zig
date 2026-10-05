@@ -7,6 +7,17 @@
 const std = @import("std");
 const Io = std.Io;
 
+fn canonicalCredentialProvider(id: []const u8) []const u8 {
+    return if (std.ascii.eqlIgnoreCase(id, "azure") or std.ascii.eqlIgnoreCase(id, "azure-openai-responses")) "azure" else id;
+}
+
+fn credentialValue(root: std.json.ObjectMap, id: []const u8) ?std.json.Value {
+    const canonical = canonicalCredentialProvider(id);
+    if (root.get(canonical)) |value| return value;
+    if (std.mem.eql(u8, canonical, "azure")) return root.get("azure-openai-responses") orelse root.get(id);
+    return null;
+}
+
 pub const CredentialType = enum { api_key, oauth };
 
 pub const ApiKeyCredential = struct {
@@ -264,7 +275,7 @@ pub const AuthStorage = struct {
         var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, raw, .{}) catch return error.InvalidAuthJson;
         defer parsed.deinit();
         if (parsed.value != .object) return error.InvalidAuthJson;
-        const value = parsed.value.object.get(provider_id) orelse return null;
+        const value = credentialValue(parsed.value.object, provider_id) orelse return null;
         return self.parseCredential(value);
     }
 
@@ -331,7 +342,7 @@ pub const AuthStorage = struct {
         if (key) |api_key| {
             try credential_object.put(a, "key", .{ .string = try a.dupe(u8, api_key) });
         }
-        try parsed.value.object.put(a, try a.dupe(u8, provider_id), .{ .object = credential_object });
+        try parsed.value.object.put(a, try a.dupe(u8, canonicalCredentialProvider(provider_id)), .{ .object = credential_object });
         try self.writeParsed(file, parsed.value);
     }
 
@@ -364,7 +375,7 @@ pub const AuthStorage = struct {
         var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, raw, .{}) catch return error.InvalidAuthJson;
         defer parsed.deinit();
         if (parsed.value != .object) return error.InvalidAuthJson;
-        const value = parsed.value.object.get(provider_id) orelse return null;
+        const value = credentialValue(parsed.value.object, provider_id) orelse return null;
         if (value != .object) return error.InvalidCredential;
         const type_value = value.object.get("type") orelse return error.InvalidCredential;
         if (type_value != .string or
@@ -558,6 +569,10 @@ pub const AuthStorage = struct {
         var parsed = try self.parseRootForWrite(raw);
         defer parsed.deinit();
         _ = parsed.value.object.orderedRemove(provider_id);
+        if (std.mem.eql(u8, canonicalCredentialProvider(provider_id), "azure")) {
+            _ = parsed.value.object.orderedRemove("azure");
+            _ = parsed.value.object.orderedRemove("azure-openai-responses");
+        }
         try self.writeParsed(file, parsed.value);
     }
 };
@@ -582,16 +597,21 @@ pub const RuntimeCredentials = struct {
     }
 
     pub fn setRuntimeApiKey(self: *RuntimeCredentials, provider_id: []const u8, api_key: []const u8) !void {
-        if (self.overrides.getPtr(provider_id)) |existing| {
+        const canonical = canonicalCredentialProvider(provider_id);
+        const owned_value = try self.gpa.dupe(u8, api_key);
+        errdefer self.gpa.free(owned_value);
+        if (self.overrides.getPtr(canonical)) |existing| {
             self.gpa.free(existing.*);
-            existing.* = try self.gpa.dupe(u8, api_key);
+            existing.* = owned_value;
             return;
         }
-        try self.overrides.put(try self.gpa.dupe(u8, provider_id), try self.gpa.dupe(u8, api_key));
+        const owned_id = try self.gpa.dupe(u8, canonical);
+        errdefer self.gpa.free(owned_id);
+        try self.overrides.put(owned_id, owned_value);
     }
 
     pub fn removeRuntimeApiKey(self: *RuntimeCredentials, provider_id: []const u8) bool {
-        if (self.overrides.fetchRemove(provider_id)) |removed| {
+        if (self.overrides.fetchRemove(canonicalCredentialProvider(provider_id))) |removed| {
             self.gpa.free(removed.key);
             self.gpa.free(removed.value);
             return true;
@@ -600,11 +620,11 @@ pub const RuntimeCredentials = struct {
     }
 
     pub fn hasRuntimeApiKey(self: *const RuntimeCredentials, provider_id: []const u8) bool {
-        return self.overrides.contains(provider_id);
+        return self.overrides.contains(canonicalCredentialProvider(provider_id));
     }
 
     pub fn read(self: *const RuntimeCredentials, provider_id: []const u8) !?Credential {
-        if (self.overrides.get(provider_id)) |value| {
+        if (self.overrides.get(canonicalCredentialProvider(provider_id))) |value| {
             return .{ .api_key = .{ .key = try self.gpa.dupe(u8, value) } };
         }
         return self.store.read(provider_id);
@@ -620,6 +640,55 @@ fn tempAuthPath(gpa: std.mem.Allocator, tmp: *std.testing.TmpDir) ![]u8 {
     var path_buf: [std.Io.Dir.max_path_bytes]u8 = undefined;
     const n = try tmp.dir.realPath(std.testing.io, &path_buf);
     return std.fs.path.join(gpa, &.{ path_buf[0..n], "auth.json" });
+}
+
+test "Azure credential rename reads legacy records prefers canonical values and logout removes both" {
+    const gpa = std.testing.allocator;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var store = AuthStorage.initPath(gpa, std.testing.io, try tempAuthPath(gpa, &tmp));
+    defer store.deinit();
+    try tmp.dir.writeFile(std.testing.io, .{ .sub_path = "auth.json", .data = "{\"azure-openai-responses\":{\"type\":\"api_key\",\"key\":\"legacy-test\"},\"other\":{\"type\":\"api_key\",\"key\":\"preserved-test\"}}" });
+    var legacy = (try store.read("azure")).?;
+    defer legacy.deinit(gpa);
+    try std.testing.expectEqualStrings("legacy-test", legacy.api_key.key.?);
+    const legacy_json = (try store.readCredentialJson("azure")).?;
+    defer gpa.free(legacy_json);
+    try std.testing.expect(std.mem.indexOf(u8, legacy_json, "legacy-test") != null);
+    try store.setApiKey("azure-openai-responses", "canonical-test");
+    var updated = (try store.read("azure-openai-responses")).?;
+    defer updated.deinit(gpa);
+    try std.testing.expectEqualStrings("canonical-test", updated.api_key.key.?);
+    try store.delete("azure");
+    try std.testing.expect(try store.read("azure") == null);
+    try std.testing.expect(try store.read("azure-openai-responses") == null);
+    var other = (try store.read("other")).?;
+    defer other.deinit(gpa);
+    try std.testing.expectEqualStrings("preserved-test", other.api_key.key.?);
+}
+
+test "Azure runtime aliases share overrides and allocation failure preserves the previous key" {
+    const gpa = std.testing.allocator;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var store = AuthStorage.initPath(gpa, std.testing.io, try tempAuthPath(gpa, &tmp));
+    defer store.deinit();
+    var failing = std.testing.FailingAllocator.init(gpa, .{});
+    var runtime = RuntimeCredentials.init(failing.allocator(), &store);
+    defer runtime.deinit();
+    try runtime.setRuntimeApiKey("azure-openai-responses", "old-test");
+    failing.fail_index = failing.alloc_index;
+    try std.testing.expectError(error.OutOfMemory, runtime.setRuntimeApiKey("azure", "replacement-test"));
+    failing.fail_index = std.math.maxInt(usize);
+    var existing = (try runtime.read("azure")).?;
+    defer existing.deinit(failing.allocator());
+    try std.testing.expectEqualStrings("old-test", existing.api_key.key.?);
+    try runtime.setRuntimeApiKey("azure", "new-test");
+    var replacement = (try runtime.read("azure-openai-responses")).?;
+    defer replacement.deinit(failing.allocator());
+    try std.testing.expectEqualStrings("new-test", replacement.api_key.key.?);
+    try runtime.delete("azure-openai-responses");
+    try std.testing.expect(!runtime.hasRuntimeApiKey("azure"));
 }
 
 test "auth storage reads writes lists and deletes arbitrary provider ids" {

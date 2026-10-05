@@ -384,6 +384,173 @@ fn numericView(engine: *engine_mod.Engine, value: c.JSValue) !View {
     };
 }
 
+// The BigInt writers in Node's internal/buffer use the original value in four
+// separate expressions: > max, < min, & lowMask, and >> 32n. In particular,
+// coercion is observable, and the first word is written before coercing the
+// second. Keep the intrinsic symbol in C function data instead of consulting
+// the mutable global Symbol constructor during each conversion.
+fn numberPrimitive(engine: *engine_mod.Engine, value: c.JSValue, symbol: c.JSValue) !c.JSValue {
+    if (!c.JS_IsObject(value)) return c.JS_DupValue(engine.context, value);
+    const atom = c.JS_ValueToAtom(engine.context, symbol);
+    if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+    defer c.JS_FreeAtom(engine.context, atom);
+    const exotic = try engine.checked(c.JS_GetProperty(engine.context, value, atom));
+    defer engine.freeValue(exotic);
+    if (!c.JS_IsUndefined(exotic) and !c.JS_IsNull(exotic)) {
+        var arguments = [_]c.JSValue{try engine.checked(c.JS_NewString(engine.context, "number"))};
+        defer engine.freeValue(arguments[0]);
+        const primitive = try engine.checked(c.JS_Call(engine.context, exotic, value, 1, &arguments));
+        if (!c.JS_IsObject(primitive)) return primitive;
+        engine.freeValue(primitive);
+        _ = try engine.checked(c.JS_ThrowTypeError(engine.context, "Cannot convert object to primitive value"));
+        unreachable;
+    }
+    for ([_][*:0]const u8{ "valueOf", "toString" }) |name| {
+        const converter = try engine.checked(c.JS_GetPropertyStr(engine.context, value, name));
+        defer engine.freeValue(converter);
+        if (!c.JS_IsFunction(engine.context, converter)) continue;
+        const primitive = try engine.checked(c.JS_Call(engine.context, converter, value, 0, null));
+        if (!c.JS_IsObject(primitive)) return primitive;
+        engine.freeValue(primitive);
+    }
+    _ = try engine.checked(c.JS_ThrowTypeError(engine.context, "Cannot convert object to primitive value"));
+    unreachable;
+}
+
+const ComparedInteger = struct { negative: bool = false, magnitude: u64 = 0, overflow: bool = false };
+
+fn bigintWhitespace(point: u21) bool {
+    return switch (point) {
+        0x0009...0x000d, 0x0020, 0x00a0, 0x1680, 0x2000...0x200a, 0x2028, 0x2029, 0x202f, 0x205f, 0x3000, 0xfeff => true,
+        else => false,
+    };
+}
+
+// StringToBigInt in relational comparisons returns an undefined comparison
+// for invalid syntax; it does not use Number(string) or throw SyntaxError.
+// Only the sign and whether the magnitude exceeds u64 are needed here. Still
+// scan every digit after overflow so an invalid suffix remains incomparable.
+fn comparedInteger(text: []const u8) ?ComparedInteger {
+    var iterator = (std.unicode.Wtf8View.init(text) catch return null).iterator();
+    var begin: usize = text.len;
+    var end: usize = 0;
+    var previous: usize = 0;
+    while (iterator.nextCodepoint()) |point| {
+        if (!bigintWhitespace(point)) {
+            begin = @min(begin, previous);
+            end = iterator.i;
+        }
+        previous = iterator.i;
+    }
+    if (end == 0) return .{};
+    var digits = text[begin..end];
+    var result: ComparedInteger = .{};
+    var has_sign = false;
+    if (digits[0] == '+' or digits[0] == '-') {
+        has_sign = true;
+        result.negative = digits[0] == '-';
+        digits = digits[1..];
+        if (digits.len == 0) return null;
+    }
+    var base: u64 = 10;
+    if (digits.len >= 2 and digits[0] == '0') {
+        base = switch (digits[1]) {
+            'x', 'X' => 16,
+            'o', 'O' => 8,
+            'b', 'B' => 2,
+            else => 10,
+        };
+        if (base != 10) {
+            if (has_sign) return null;
+            digits = digits[2..];
+            if (digits.len == 0) return null;
+        }
+    }
+    for (digits) |byte| {
+        const digit: u64 = switch (byte) {
+            '0'...'9' => byte - '0',
+            'a'...'f' => byte - 'a' + 10,
+            'A'...'F' => byte - 'A' + 10,
+            else => return null,
+        };
+        if (digit >= base) return null;
+        if (!result.overflow) {
+            if (result.magnitude > (std.math.maxInt(u64) - digit) / base) result.overflow = true else result.magnitude = result.magnitude * base + digit;
+        }
+    }
+    if (result.magnitude == 0 and !result.overflow) result.negative = false;
+    return result;
+}
+
+fn bigintOutside(engine: *engine_mod.Engine, value: c.JSValue, symbol: c.JSValue, signed: bool, upper: bool) !bool {
+    const primitive = try numberPrimitive(engine, value, symbol);
+    defer engine.freeValue(primitive);
+    if (c.JS_IsBigInt(primitive) or c.JS_IsString(primitive)) {
+        const text = try engine.toString(primitive);
+        defer engine.gpa.free(text);
+        const integer = comparedInteger(text) orelse return false;
+        if (upper) return !integer.negative and (integer.overflow or integer.magnitude > (if (signed) @as(u64, std.math.maxInt(i64)) else std.math.maxInt(u64)));
+        return integer.negative and (!signed or integer.overflow or integer.magnitude > @as(u64, 1) << 63);
+    }
+    var number: f64 = 0;
+    if (c.JS_ToFloat64(engine.context, &number, primitive) < 0) return error.JavaScriptException;
+    return if (upper) number >= (if (signed) @as(f64, 9_223_372_036_854_775_808) else @as(f64, 18_446_744_073_709_551_616)) else number < (if (signed) @as(f64, -9_223_372_036_854_775_808) else @as(f64, 0));
+}
+
+fn bigintWord(engine: *engine_mod.Engine, value: c.JSValue, symbol: c.JSValue, high: bool) !u32 {
+    const primitive = try numberPrimitive(engine, value, symbol);
+    defer engine.freeValue(primitive);
+    if (!c.JS_IsBigInt(primitive)) {
+        // ToNumeric(Symbol) throws before the mixed BigInt/Number check.
+        if (c.JS_IsSymbol(primitive)) {
+            var number: f64 = 0;
+            if (c.JS_ToFloat64(engine.context, &number, primitive) < 0) return error.JavaScriptException;
+        }
+        return error.MixingBigIntTypes;
+    }
+    var bits: u64 = 0;
+    if (c.JS_ToBigUint64(engine.context, &bits, primitive) < 0) return error.JavaScriptException;
+    return @truncate(if (high) bits >> 32 else bits);
+}
+
+fn writeBigintWord(engine: *engine_mod.Engine, this: c.JSValue, offset: usize, word: u32, little: bool, high: bool) !void {
+    // Bounds were checked before word coercion. Node's subsequent indexed
+    // writes are silent if that coercion detaches or shrinks the typed array.
+    // Indexed C ABI setters preserve that behavior without retaining a pointer
+    // across the next callback (which can transfer the backing store).
+    for (0..4) |index| {
+        const destination = offset + if (little) (if (high) @as(usize, 4) else 0) + index else (if (high) @as(usize, 3) else 7) - index;
+        if (c.JS_SetPropertyInt64(engine.context, this, @intCast(destination), c.JS_NewInt32(engine.context, @intCast((word >> @as(u5, @intCast(index * 8))) & 0xff))) < 0) return error.JavaScriptException;
+    }
+}
+
+fn bigintWrite(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args: []c.JSValue, symbol: c.JSValue) !c.JSValue {
+    const signed = method == .writeBigInt64LE or method == .writeBigInt64BE;
+    const little = method == .writeBigUInt64LE or method == .writeBigInt64LE;
+    const value = if (args.len > 0) args[0] else c.pi_js_undefined();
+    if (try bigintOutside(engine, value, symbol, signed, true) or try bigintOutside(engine, value, symbol, signed, false)) return error.BufferRange;
+    const raw_offset = try numericArgument(engine, args, 1, 0);
+    if (std.math.isNan(raw_offset) or raw_offset != @trunc(raw_offset)) return error.BufferRange;
+    const size = blk: {
+        const target = try numericView(engine, this);
+        defer engine.freeValue(target.backing);
+        break :blk target.bytes.len;
+    };
+    if (size < 8) return error.BufferBounds;
+    if (raw_offset < 0 or raw_offset > @as(f64, @floatFromInt(size - 8))) return error.BufferRange;
+    const offset: usize = @intFromFloat(raw_offset);
+    const low = try bigintWord(engine, value, symbol, false);
+    try writeBigintWord(engine, this, offset, low, little, false);
+    const high = try bigintWord(engine, value, symbol, true);
+    try writeBigintWord(engine, this, offset, high, little, true);
+    return c.JS_NewInt64(engine.context, @intCast(offset + 8));
+}
+
+fn invokeBigintWrite(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    return bigintWrite(engine, @enumFromInt(magic), this, argv[0..@intCast(argc)], data[0]) catch |err| failure(context, err);
+}
+
 fn numericCall(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args: []c.JSValue) !c.JSValue {
     const name = @tagName(method);
     if (std.mem.startsWith(u8, name, "swap")) {
@@ -410,38 +577,23 @@ fn numericCall(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args
         break :blk @intFromFloat(count);
     } else if (big or std.mem.startsWith(u8, operation, "Double")) 8 else if (std.mem.indexOf(u8, operation, "32") != null or floating) 4 else if (std.mem.indexOf(u8, operation, "16") != null) 2 else 1;
     var bits: u64 = 0;
-    var mixing_bigint_types = false;
     if (write) {
+        // BigInt writers are registered through invokeBigintWrite so their
+        // observable repeated conversions can interleave with word writes.
+        std.debug.assert(!big);
         const value = if (args.len > 0) args[0] else c.pi_js_undefined();
-        if (big) {
-            if (!c.JS_IsBigInt(value)) {
-                mixing_bigint_types = true;
-                var number: f64 = 0;
-                if (c.JS_ToFloat64(engine.context, &number, value) < 0) return error.JavaScriptException;
-                const limit: f64 = if (signed) 9_223_372_036_854_775_808 else 18_446_744_073_709_551_616;
-                if (number >= limit or number < (if (signed) -limit else @as(f64, 0))) return error.BufferRange;
-            } else {
-                const text = try engine.toString(value);
-                defer engine.gpa.free(text);
-                bits = if (signed)
-                    @bitCast(std.fmt.parseInt(i64, text, 10) catch return error.BufferRange)
-                else
-                    std.fmt.parseInt(u64, text, 10) catch return error.BufferRange;
-            }
+        var number: f64 = 0;
+        if (c.JS_ToFloat64(engine.context, &number, value) < 0) return error.JavaScriptException;
+        // Node's one-byte writer validates offset type before value range.
+        if (!floating and width == 1) _ = try numericArgument(engine, args, 1, if (variable) null else 0);
+        if (floating) {
+            bits = if (width == 4) @as(u32, @bitCast(@as(f32, @floatCast(number)))) else @as(u64, @bitCast(number));
         } else {
-            var number: f64 = 0;
-            if (c.JS_ToFloat64(engine.context, &number, value) < 0) return error.JavaScriptException;
-            // Node's one-byte writer validates offset type before value range.
-            if (!floating and width == 1) _ = try numericArgument(engine, args, 1, if (variable) null else 0);
-            if (floating) {
-                bits = if (width == 4) @as(u32, @bitCast(@as(f32, @floatCast(number)))) else @as(u64, @bitCast(number));
-            } else {
-                const magnitude = @as(u64, 1) << @as(u6, @intCast(width * 8 - @intFromBool(signed)));
-                const maximum: f64 = @floatFromInt(magnitude - 1);
-                const minimum: f64 = if (signed) -@as(f64, @floatFromInt(magnitude)) else 0;
-                if (number > maximum or number < minimum) return error.BufferRange;
-                bits = if (std.math.isNan(number)) 0 else if (signed) @bitCast(@as(i64, @intFromFloat(@trunc(number)))) else @intFromFloat(@trunc(number));
-            }
+            const magnitude = @as(u64, 1) << @as(u6, @intCast(width * 8 - @intFromBool(signed)));
+            const maximum: f64 = @floatFromInt(magnitude - 1);
+            const minimum: f64 = if (signed) -@as(f64, @floatFromInt(magnitude)) else 0;
+            if (number > maximum or number < minimum) return error.BufferRange;
+            bits = if (std.math.isNan(number)) 0 else if (signed) @bitCast(@as(i64, @intFromFloat(@trunc(number)))) else @intFromFloat(@trunc(number));
         }
     }
     // All possible user conversions happen before borrowing the backing store.
@@ -452,7 +604,6 @@ fn numericCall(engine: *engine_mod.Engine, method: Method, this: c.JSValue, args
     if (target.bytes.len < width) return error.BufferBounds;
     if (raw_offset < 0 or raw_offset > @as(f64, @floatFromInt(target.bytes.len - width))) return error.BufferRange;
     const offset: usize = @intFromFloat(raw_offset);
-    if (mixing_bigint_types) return error.MixingBigIntTypes;
     if (write) {
         for (0..width) |index| target.bytes[offset + index] = @truncate(bits >> @as(u6, @intCast((if (little) index else width - 1 - index) * 8)));
         return c.JS_NewInt64(engine.context, @intCast(offset + width));
@@ -629,6 +780,10 @@ pub fn install(engine: *engine_mod.Engine) !void {
     defer engine.freeValue(prototype);
     const constructor = try engine.checked(c.JS_NewCFunction2(engine.context, construct, "Buffer", 3, c.JS_CFUNC_constructor_or_func, 0));
     defer engine.freeValue(constructor);
+    const symbol_constructor = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "Symbol"));
+    defer engine.freeValue(symbol_constructor);
+    var bigint_data = [_]c.JSValue{try engine.checked(c.JS_GetPropertyStr(engine.context, symbol_constructor, "toPrimitive"))};
+    defer engine.freeValue(bigint_data[0]);
     if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0 or c.JS_SetPrototype(engine.context, constructor, typed_constructor) < 0) return error.JavaScriptException;
     inline for (std.meta.fields(Static)) |operation| {
         const name: [:0]const u8 = operation.name;
@@ -636,7 +791,12 @@ pub fn install(engine: *engine_mod.Engine) !void {
     }
     inline for (std.meta.fields(Method)) |operation| {
         const name: [:0]const u8 = operation.name;
-        const function = try engine.checked(c.pi_js_function_magic(engine.context, invokeMethod, name.ptr, if (std.mem.startsWith(u8, name, "write")) 2 else 1, @intCast(operation.value)));
+        const bigint_write = comptime std.mem.startsWith(u8, name, "writeBig");
+        const function = try engine.checked(if (bigint_write) c.JS_NewCFunctionData(engine.context, invokeBigintWrite, 2, @intCast(operation.value), bigint_data.len, &bigint_data) else c.pi_js_function_magic(engine.context, invokeMethod, name.ptr, if (std.mem.startsWith(u8, name, "write")) 2 else 1, @intCast(operation.value)));
+        if (bigint_write and c.JS_DefinePropertyValueStr(engine.context, function, "name", c.JS_NewString(engine.context, name.ptr), c.JS_PROP_CONFIGURABLE) < 0) {
+            engine.freeValue(function);
+            return error.JavaScriptException;
+        }
         try property(engine, prototype, name, function);
         if (comptime std.mem.indexOf(u8, operation.name, "UInt")) |index| {
             const alias: [:0]const u8 = comptime std.fmt.comptimePrint("{s}Uint{s}", .{ operation.name[0..index], operation.name[index + 4 ..] });
@@ -852,5 +1012,62 @@ test "native numeric Buffer conversion preserves exceptions and detached storage
             "const original=new Error('original numeric conversion');const b=Buffer.alloc(8);for(const method of ['writeUInt32LE','writeDoubleBE']){let caught=false;try{b[method]({valueOf(){throw original}},0)}catch(error){if(error!==original)throw Error('numeric exception replaced');caught=true}if(!caught||b.toString('hex')!=='0000000000000000')throw Error('throwing write modified bytes');}b.writeDoubleLE(-0);if(!Object.is(b.readDoubleLE(),-0))throw Error('negative zero');b.writeDoubleBE(Infinity);if(b.readDoubleBE()!==Infinity)throw Error('infinity');b.writeFloatLE(NaN);if(!Number.isNaN(b.readFloatLE()))throw Error('nan');",
         "native-buffer-numeric-detachment.mjs",
     );
+    defer engine.freeValue(namespace);
+}
+
+test "native BigInt Buffer writers preserve Node comparison word coercion and partial writes" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .interrupt_budget = 100_000 });
+    defer engine.deinit();
+    try install(engine);
+    const namespace = engine.evalModule(
+        "const methods=['writeBigUInt64LE','writeBigUInt64BE','writeBigInt64LE','writeBigInt64BE'];" ++
+            "for(const method of methods){const le=method.endsWith('LE');const b=Buffer.alloc(8);let n=0;const v={valueOf(){n++;return 0x12345678abcdef01n}};if(b[method](v)!==8||n!==4||b.toString('hex')!==(le?'01efcdab78563412':'12345678abcdef01'))throw Error('ordinary bigint '+method);" ++
+            "let events=[];const exotic={get [Symbol.toPrimitive](){events.push('get');return function(hint){events.push(hint);return 0x12345678abcdef01n}},valueOf(){throw Error('exotic fallback')}};b[method](exotic);if(events.join(',')!=='get,number,get,number,get,number,get,number')throw Error('exotic calls '+method);" ++
+            "let step=0;const changing={valueOf(){return [0n,0n,0xabcdef01n,0x1234567800000000n][step++]}};b.fill(0);b[method](changing);if(step!==4||b.toString('hex')!==(le?'01efcdab78563412':'12345678abcdef01'))throw Error('changing words '+method);" ++
+            "const original=new Error('original getter');for(const failAt of [1,2,3,4]){let calls=0;b.fill(0);const bad={get valueOf(){if(++calls===failAt)throw original;return function(){return 0x12345678abcdef01n}}};let caught=false;try{b[method](bad)}catch(error){if(error!==original)throw Error('getter error identity '+method);caught=true}if(!caught||calls!==failAt||b.toString('hex')!==(failAt===4?(le?'01efcdab00000000':'00000000abcdef01'):'0000000000000000'))throw Error('partial write '+method+' '+failAt);}" ++
+            "}",
+        "native-buffer-bigint-coercion.mjs",
+    ) catch |err| {
+        std.debug.print("Native BigInt Buffer coercion: {s}\n", .{engine.last_error orelse @errorName(err)});
+        return err;
+    };
+    defer engine.freeValue(namespace);
+}
+
+test "native BigInt Buffer comparisons use exact StringToBigInt and Node error order" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .interrupt_budget = 100_000 });
+    defer engine.deinit();
+    try install(engine);
+    const namespace = engine.evalModule(
+        "function fails(call,name,code){let caught=false;try{call()}catch(error){if(error.name!==name||error.code!==code)throw Error('wrong error '+error.name+' '+error.code);caught=true}if(!caught)throw Error('missing error')}" ++
+            "for(const method of ['writeBigUInt64LE','writeBigUInt64BE','writeBigInt64LE','writeBigInt64BE']){const signed=method.includes('BigInt');const b=Buffer.alloc(8);" ++
+            "for(const value of ['', '0', '0xff', '0b1', '0o7', '-0', '+0', '1e100', '1.5', '-0x1', '0x', '999999999999999999999z', '\\u200b1', '\\ud800', null,true,undefined,NaN]){fails(()=>b[method](value),'TypeError',undefined);fails(()=>b[method](value,'bad'),'TypeError','ERR_INVALID_ARG_TYPE');}" ++
+            "const maximum=signed?'9223372036854775807':'18446744073709551615';for(const value of [maximum,'\\ufeff\\u2000'+maximum+'\\u2029\\u3000',signed?'0x7fffffffffffffff':'0xffffffffffffffff']){fails(()=>b[method](value),'TypeError',undefined);fails(()=>b[method](value,'bad'),'TypeError','ERR_INVALID_ARG_TYPE');}" ++
+            "const outside=signed?['9223372036854775808','-9223372036854775809','0x8000000000000000',9223372036854775808]:['18446744073709551616','-1','0x10000000000000000',18446744073709551616];for(const value of outside){fails(()=>b[method](value,'bad'),'RangeError','ERR_OUT_OF_RANGE');fails(()=>Buffer.alloc(0)[method](value),'RangeError','ERR_OUT_OF_RANGE');}" ++
+            "if(signed){fails(()=>b[method]('-9223372036854775808'),'TypeError',undefined);b[method]({valueOf(){return -9223372036854775808n}});if(b.toString('hex')!==(method.endsWith('LE')?'0000000000000080':'8000000000000000'))throw Error('signed minimum')}" ++
+            "let n=0;fails(()=>b[method]({valueOf(){n++;return signed?9223372036854775808n:18446744073709551616n}},'bad'),'RangeError','ERR_OUT_OF_RANGE');if(n!==1)throw Error('upper short circuit');n=0;fails(()=>b[method]({valueOf(){n++;return 0n}},'bad'),'TypeError','ERR_INVALID_ARG_TYPE');if(n!==2)throw Error('offset order');" ++
+            "const original=new Error('exotic getter');fails(()=>b[method]({[Symbol.toPrimitive]:1}),'TypeError',undefined);fails(()=>b[method]({[Symbol.toPrimitive](){return {}}}),'TypeError',undefined);try{b[method]({get [Symbol.toPrimitive](){throw original}})}catch(error){if(error!==original)throw Error('exotic getter identity')}" ++
+            "let fallback=[];fails(()=>b[method]({[Symbol.toPrimitive]:null,valueOf(){fallback.push('valueOf');return {}},toString(){fallback.push('toString');return '0'}},'bad'),'TypeError','ERR_INVALID_ARG_TYPE');if(fallback.join(',')!=='valueOf,toString,valueOf,toString')throw Error('ordinary fallback');}" ++
+            "const intrinsicSymbol=Symbol.toPrimitive,OldSymbol=Symbol;globalThis.Symbol={toPrimitive:'wrong'};try{let calls=0;Buffer.alloc(8).writeBigUInt64LE({[intrinsicSymbol](hint){if(hint!=='number')throw Error('hint');calls++;return 1n}});if(calls!==4)throw Error('intrinsic symbol')}finally{globalThis.Symbol=OldSymbol}",
+        "native-buffer-bigint-comparison.mjs",
+    ) catch |err| {
+        std.debug.print("Native BigInt Buffer comparisons: {s}\n", .{engine.last_error orelse @errorName(err)});
+        return err;
+    };
+    defer engine.freeValue(namespace);
+}
+
+test "native BigInt Buffer callbacks never retain detached storage and respect partial mutation" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .interrupt_budget = 100_000 });
+    defer engine.deinit();
+    try install(engine);
+    const namespace = engine.evalModule(
+        "for(const method of ['writeBigUInt64LE','writeBigUInt64BE','writeBigInt64LE','writeBigInt64BE'])for(const stage of [1,2,3,4]){const storage=new ArrayBuffer(8),b=Buffer.from(storage);let calls=0,moved;const value={valueOf(){if(++calls===stage)moved=storage.transfer();return 0x12345678abcdef01n}};let caught=false;try{if(b[method](value)!==8)throw Error('return offset')}catch(error){if(stage>2||error.name!=='RangeError'||error.code!=='ERR_BUFFER_OUT_OF_BOUNDS')throw error;caught=true}if(caught!==(stage<3)||calls!==(stage<3?2:4)||b.length!==0)throw Error('detach ordering '+method+' '+stage);if(stage===4){const bytes=Buffer.from(moved).toString('hex');if(bytes!==(method.endsWith('LE')?'01efcdab00000000':'00000000abcdef01'))throw Error('transfer partial word')}}" ++
+            "for(const method of ['writeBigUInt64LE','writeBigUInt64BE']){const b=Buffer.alloc(8);let calls=0;const v={valueOf(){calls++;if(calls===4){b.fill(0x55);return 0x1234567800000000n}return 0xabcdef01n}};b[method](v);if(b.toString('hex')!==(method.endsWith('LE')?'5555555578563412':'1234567855555555'))throw Error('interleaved word mutation')}",
+        "native-buffer-bigint-detachment.mjs",
+    ) catch |err| {
+        std.debug.print("Native BigInt Buffer detachment: {s}\n", .{engine.last_error orelse @errorName(err)});
+        return err;
+    };
     defer engine.freeValue(namespace);
 }

@@ -229,7 +229,7 @@ const Context = struct {
     }
 
     fn storedType(self: *const Context, provider_id: []const u8) ?auth_storage.CredentialType {
-        for (self.infos) |info| if (std.ascii.eqlIgnoreCase(info.provider_id, provider_id)) return info.credential_type;
+        for (self.infos) |info| if (providers.providerIdsEqual(info.provider_id, provider_id)) return info.credential_type;
         return null;
     }
 
@@ -238,12 +238,12 @@ const Context = struct {
         if (providers.Provider.fromString(provider_id) != null) return true;
         if (self.models_file.findProvider(provider_id) != null) return true;
         if (self.storedType(provider_id) != null) return true;
-        for (self.catalog) |model| if (std.ascii.eqlIgnoreCase(model.providerName(), provider_id)) return true;
+        for (self.catalog) |model| if (providers.providerIdsEqual(model.providerName(), provider_id)) return true;
         return false;
     }
 
     fn providerHasCatalog(self: *const Context, provider_id: []const u8) bool {
-        for (self.catalog) |model| if (std.ascii.eqlIgnoreCase(model.providerName(), provider_id)) return true;
+        for (self.catalog) |model| if (providers.providerIdsEqual(model.providerName(), provider_id)) return true;
         return false;
     }
 

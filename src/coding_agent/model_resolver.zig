@@ -70,7 +70,7 @@ pub fn isAlias(id: []const u8) bool {
 }
 
 fn modelEqual(a: ModelInfo, b: ModelInfo) bool {
-    return std.ascii.eqlIgnoreCase(a.providerName(), b.providerName()) and std.mem.eql(u8, a.id, b.id);
+    return providers.providerIdsEqual(a.providerName(), b.providerName()) and std.mem.eql(u8, a.id, b.id);
 }
 
 /// Exact matching semantics from upstream:
@@ -88,7 +88,7 @@ pub fn findExactModelReferenceMatch(reference_raw: []const u8, models: []const M
         if (slash) |idx| {
             const p = trim(reference[0..idx]);
             const id = trim(reference[idx + 1 ..]);
-            if (p.len > 0 and id.len > 0 and std.ascii.eqlIgnoreCase(p, m.providerName()) and std.ascii.eqlIgnoreCase(id, m.id)) {
+            if (p.len > 0 and id.len > 0 and providers.providerIdsEqual(p, m.providerName()) and std.ascii.eqlIgnoreCase(id, m.id)) {
                 canonical = m;
                 canonical_count += 1;
             }
@@ -253,7 +253,12 @@ pub fn resolveModelScopeFromModels(gpa: std.mem.Allocator, patterns: []const []c
             for (models) |m| {
                 var full_buf: [512]u8 = undefined;
                 const full = std.fmt.bufPrint(&full_buf, "{s}/{s}", .{ m.providerName(), m.id }) catch m.id;
-                if (globMatch(glob_pattern, full) or globMatch(glob_pattern, m.id)) {
+                var legacy_buf: [512]u8 = undefined;
+                const legacy = if (providers.providerIdsEqual(m.providerName(), "azure"))
+                    std.fmt.bufPrint(&legacy_buf, "azure-openai-responses/{s}", .{m.id}) catch ""
+                else
+                    "";
+                if (globMatch(glob_pattern, full) or globMatch(glob_pattern, m.id) or (legacy.len != 0 and globMatch(glob_pattern, legacy))) {
                     match_count += 1;
                     if (!alreadyScoped(scoped.items, m)) try scoped.append(gpa, .{ .model = m, .thinking_level = thinking });
                 }
@@ -290,12 +295,12 @@ pub const ResolveCliModelResult = struct {
 };
 
 fn providerRepresented(provider_id: []const u8, models: []const ModelInfo) bool {
-    for (models) |m| if (std.ascii.eqlIgnoreCase(m.providerName(), provider_id)) return true;
+    for (models) |m| if (providers.providerIdsEqual(m.providerName(), provider_id)) return true;
     return false;
 }
 
 fn providerConfigured(provider_id: []const u8, configured: []const []const u8) bool {
-    for (configured) |c| if (std.ascii.eqlIgnoreCase(c, provider_id)) return true;
+    for (configured) |c| if (providers.providerIdsEqual(c, provider_id)) return true;
     return false;
 }
 
@@ -376,7 +381,7 @@ pub fn resolveCliModel(
     var candidate_buf: [knownMaxModels()]ModelInfo = undefined;
     var candidate_len: usize = 0;
     for (models) |m| {
-        if (provider_id == null or std.ascii.eqlIgnoreCase(m.providerName(), provider_id.?)) {
+        if (provider_id == null or providers.providerIdsEqual(m.providerName(), provider_id.?)) {
             if (candidate_len < candidate_buf.len) {
                 candidate_buf[candidate_len] = m;
                 candidate_len += 1;
@@ -457,6 +462,23 @@ const test_models = [_]ModelInfo{
     .{ .provider = .openrouter, .id = "openai/gpt-4o:extended", .display = "GPT-4o Extended" },
     .{ .provider = .openrouter, .id = "qwen/qwen3-coder:exacto", .display = "Qwen3 Coder Exacto" },
 };
+
+test "Azure references scopes and CLI selection retain legacy provider aliases" {
+    const models = [_]ModelInfo{
+        .{ .provider = .openai, .provider_id = "azure", .id = "gpt-5.4", .display = "Azure GPT" },
+        .{ .provider = .openai, .id = "gpt-5.4", .display = "OpenAI GPT" },
+    };
+    try std.testing.expectEqualStrings("azure", findExactModelReferenceMatch("azure-openai-responses/gpt-5.4", &models).?.providerName());
+    const selected = resolveCliModel("azure-openai-responses", "gpt-5.4", null, &models, &.{"azure-openai-responses"});
+    try std.testing.expect(selected.err == null);
+    try std.testing.expectEqualStrings("azure", selected.model.?.providerName());
+    const available = resolveCliModel(null, "gpt-5.4", null, &models, &.{"azure-openai-responses"});
+    try std.testing.expectEqualStrings("azure", available.model.?.providerName());
+    var scope = try resolveModelScopeFromModels(std.testing.allocator, &.{"azure-openai-responses/*"}, &models);
+    defer scope.deinit(std.testing.allocator);
+    try std.testing.expectEqual(@as(usize, 1), scope.scoped_models.len);
+    try std.testing.expectEqualStrings("azure", scope.scoped_models[0].model.providerName());
+}
 
 test "exact model reference supports canonical provider/model and rejects ambiguous bare id" {
     const models = [_]ModelInfo{

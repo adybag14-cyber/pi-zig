@@ -71,7 +71,7 @@ pub const Provider = enum {
         if (std.ascii.eqlIgnoreCase(s, "qwen-token-plan-cn")) return .qwen_token_plan_cn;
         if (std.ascii.eqlIgnoreCase(s, "qwen-token-plan-individual")) return .qwen_token_plan_individual;
         if (std.ascii.eqlIgnoreCase(s, "ant-ling")) return .ant_ling;
-        if (std.ascii.eqlIgnoreCase(s, "azure-openai-responses")) return .azure_openai_responses;
+        if (std.ascii.eqlIgnoreCase(s, "azure") or std.ascii.eqlIgnoreCase(s, "azure-openai-responses")) return .azure_openai_responses;
         if (std.ascii.eqlIgnoreCase(s, "google-vertex")) return .google_vertex;
         if (std.ascii.eqlIgnoreCase(s, "minimax-cn")) return .minimax_cn;
         if (std.ascii.eqlIgnoreCase(s, "moonshotai-cn")) return .moonshotai_cn;
@@ -102,7 +102,7 @@ pub const Provider = enum {
             .qwen_token_plan_cn => "qwen-token-plan-cn",
             .qwen_token_plan_individual => "qwen-token-plan-individual",
             .ant_ling => "ant-ling",
-            .azure_openai_responses => "azure-openai-responses",
+            .azure_openai_responses => "azure",
             .google_vertex => "google-vertex",
             .minimax_cn => "minimax-cn",
             .moonshotai_cn => "moonshotai-cn",
@@ -131,6 +131,14 @@ pub const Provider = enum {
         return self.transport() == .openai and self != .openai;
     }
 };
+
+pub fn canonicalProviderId(id: []const u8) []const u8 {
+    return if (std.ascii.eqlIgnoreCase(id, "azure-openai-responses") or std.ascii.eqlIgnoreCase(id, "azure")) "azure" else id;
+}
+
+pub fn providerIdsEqual(left: []const u8, right: []const u8) bool {
+    return std.ascii.eqlIgnoreCase(canonicalProviderId(left), canonicalProviderId(right));
+}
 
 pub const ModelCostRates = struct {
     input: f64 = 0,
@@ -190,6 +198,7 @@ pub const ModelInfo = struct {
     pub fn apiKind(self: ModelInfo) api_mod.Api {
         std.debug.assert(self.kind == .chat);
         if (self.api) |value| return value;
+        if (self.provider == .azure_openai_responses) return .azure_openai_responses;
         return switch (self.provider.transport()) {
             .anthropic => .anthropic_messages,
             .google => .google_generative_ai,
@@ -574,13 +583,36 @@ test "catalog has distinct gateway provider ids" {
     try std.testing.expect(saw_groq and saw_openrouter);
 }
 
+test "Azure canonical identity retains legacy names environment keys and model API selection" {
+    try std.testing.expectEqual(Provider.azure_openai_responses, Provider.fromString("azure").?);
+    try std.testing.expectEqual(Provider.azure_openai_responses, Provider.fromString("azure-openai-responses").?);
+    try std.testing.expectEqualStrings("azure", Provider.azure_openai_responses.name());
+    try std.testing.expectEqual(api_mod.Api.azure_openai_responses, (ModelInfo{ .provider = .azure_openai_responses, .id = "custom", .display = "Custom" }).apiKind());
+    try std.testing.expect(providerIdsEqual("AZURE", "azure-openai-responses"));
+    try std.testing.expect(!providerIdsEqual("azure-custom", "azure"));
+    try std.testing.expectEqualStrings("gpt-5.4", defaultModel(.azure_openai_responses));
+    var env = std.process.Environ.Map.init(std.testing.allocator);
+    defer env.deinit();
+    try env.put("AZURE_OPENAI_API_KEY", "azure-test-key");
+    try std.testing.expectEqualStrings("azure-test-key", resolveApiKey(.azure_openai_responses, null, &env).?);
+    var found = false;
+    for (known_models) |model| if (std.mem.eql(u8, model.providerName(), "azure") and std.mem.eql(u8, model.id, "deepseek-v4-pro")) {
+        found = true;
+        try std.testing.expectEqual(api_mod.Api.openai_completions, model.apiKind());
+        try std.testing.expectApproxEqAbs(@as(f64, 1.925), model.cost.input, 0.00001);
+        try std.testing.expectApproxEqAbs(@as(f64, 3.828), model.cost.output, 0.00001);
+        try std.testing.expectEqual(false, model.compat.supports_long_cache_retention.?);
+    };
+    try std.testing.expect(found);
+}
+
 test "generated catalog preserves exact upstream identity cardinality" {
-    try std.testing.expectEqual(@as(usize, 1529), catalog_generated.model_count);
+    try std.testing.expectEqual(@as(usize, 1530), catalog_generated.model_count);
     try std.testing.expectEqual(@as(usize, 42), catalog_generated.provider_count);
-    try std.testing.expectEqual(@as(usize, 1535), known_models.len);
-    try std.testing.expectEqual(@as(usize, 1607), all_models.len);
+    try std.testing.expectEqual(@as(usize, 1536), known_models.len);
+    try std.testing.expectEqual(@as(usize, 1608), all_models.len);
     try std.testing.expectEqualStrings("1.0.2", catalog_generated.upstream_version);
-    try std.testing.expectEqualStrings("1965a80693dd929d28dda72f1986056355fb167a", catalog_generated.upstream_commit);
+    try std.testing.expectEqualStrings("6100fe5a8358709a26050b8da97ccd188ae93101", catalog_generated.upstream_commit);
     try std.testing.expectEqualStrings("d28b6de6985826060b6e2ccf589d16800d9fdbc40681ae4c698421c92d2ff86f", catalog_generated.catalog_sha256);
 
     var arena = std.heap.ArenaAllocator.init(std.testing.allocator);

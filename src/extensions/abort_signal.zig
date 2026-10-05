@@ -2,6 +2,7 @@
 const std = @import("std");
 const engine_mod = @import("engine.zig");
 const timers = @import("timers.zig");
+const dom_exception = @import("dom_exception.zig");
 const c = engine_mod.c;
 const Listener = struct { callback: c.JSValue, once: bool, capture: bool, id: u32, onabort: bool = false };
 const State = struct {
@@ -74,12 +75,7 @@ pub fn create(engine: *engine_mod.Engine) !c.JSValue {
 }
 
 fn defaultReason(engine: *engine_mod.Engine) !c.JSValue {
-    const reason = try engine.checked(c.JS_NewError(engine.context));
-    errdefer engine.freeValue(reason);
-    if (c.JS_DefinePropertyValueStr(engine.context, reason, "name", c.JS_NewString(engine.context, "AbortError"), c.JS_PROP_C_W_E) < 0 or
-        c.JS_DefinePropertyValueStr(engine.context, reason, "message", c.JS_NewString(engine.context, "This operation was aborted"), c.JS_PROP_C_W_E) < 0 or
-        c.JS_DefinePropertyValueStr(engine.context, reason, "code", c.JS_NewInt32(engine.context, 20), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
-    return reason;
+    return dom_exception.create(engine, "This operation was aborted", "AbortError");
 }
 
 pub fn abort(engine: *engine_mod.Engine, signal: c.JSValue, reason: c.JSValue) !void {
@@ -259,12 +255,8 @@ fn staticAbort(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JS
 
 fn timeoutFire(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    const reason = c.JS_NewError(context);
-    if (c.JS_IsException(reason)) return reason;
+    const reason = dom_exception.create(engine, "The operation was aborted due to timeout", "TimeoutError") catch |err| return fail(context, err);
     defer engine.freeValue(reason);
-    if (c.JS_DefinePropertyValueStr(context, reason, "name", c.JS_NewString(context, "TimeoutError"), c.JS_PROP_C_W_E) < 0 or
-        c.JS_DefinePropertyValueStr(context, reason, "message", c.JS_NewString(context, "The operation was aborted due to timeout"), c.JS_PROP_C_W_E) < 0 or
-        c.JS_DefinePropertyValueStr(context, reason, "code", c.JS_NewInt32(context, 23), c.JS_PROP_C_W_E) < 0) return c.JS_Throw(context, c.JS_GetException(context));
     abort(engine, data[0], reason) catch |err| return fail(context, err);
     return c.pi_js_undefined();
 }
@@ -377,6 +369,7 @@ fn accessor(engine: *engine_mod.Engine, prototype: c.JSValue, name: [:0]const u8
 
 pub fn install(engine: *engine_mod.Engine) !void {
     if (engine.abort_signal_class != 0) return error.NativeAbortSignalAlreadyInstalled;
+    if (engine.dom_exception_class == 0) try dom_exception.install(engine);
     _ = c.JS_NewClassID(engine.runtime, &engine.abort_signal_class);
     _ = c.JS_NewClassID(engine.runtime, &engine.abort_controller_class);
     const signal_class: c.JSClassDef = .{ .class_name = "AbortSignal", .finalizer = signalFinalizer, .gc_mark = signalMark, .call = null, .exotic = null };
@@ -445,7 +438,7 @@ test "native timed signals settle a real listener promise with timeout reasons" 
     defer engine.deinit();
     try install(engine);
     try timers.install(engine, std.testing.io);
-    const value = try engine.evalModule("const signal=AbortSignal.timeout(2);if(!(signal instanceof AbortSignal)||signal.aborted)throw Error('timed brand');await new Promise(resolve=>signal.addEventListener('abort',resolve,{once:true}));if(!signal.aborted||signal.reason.name!=='TimeoutError'||signal.reason.code!==23)throw Error('timed reason');", "native-timeout-signal.mjs");
+    const value = try engine.evalModule("const signal=AbortSignal.timeout(2);if(!(signal instanceof AbortSignal)||signal.aborted)throw Error('timed brand');await new Promise(resolve=>signal.addEventListener('abort',resolve,{once:true}));if(!signal.aborted||!(signal.reason instanceof DOMException)||!(signal.reason instanceof Error)||signal.reason.name!=='TimeoutError'||signal.reason.code!==23||signal.reason.message!=='The operation was aborted due to timeout')throw Error('timed reason');", "native-timeout-signal.mjs");
     defer engine.freeValue(value);
 }
 
@@ -503,4 +496,35 @@ fn signalAllocationProbe(gpa: std.mem.Allocator) !void {
 
 test "native abort ownership releases every allocator failure without losing listener values" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, signalAllocationProbe, .{});
+}
+
+test "native AbortSignal default reasons are DOMExceptions while explicit reasons retain identity" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    const value = try engine.eval(
+        \\const originalDOMException=DOMException,controller=new AbortController();controller.abort();const a=AbortSignal.abort(),b=AbortSignal.abort(undefined);for(const signal of [controller.signal,a,b]){if(!(signal.reason instanceof originalDOMException)||!(signal.reason instanceof Error)||signal.reason.name!=='AbortError'||signal.reason.code!==20||signal.reason.message!=='This operation was aborted')throw Error('default DOMException');let caught;try{signal.throwIfAborted()}catch(e){caught=e}if(caught!==signal.reason)throw Error('default exception identity')}
+        \\for(const reason of [null,false,0,'',{},new originalDOMException('owned','DataCloneError')]){const signal=AbortSignal.abort(reason);if(signal.reason!==reason)throw Error('explicit identity');let caught;try{signal.throwIfAborted()}catch(e){caught=e}if(caught!==reason)throw Error('explicit throw identity')}
+        \\globalThis.DOMException=function(){throw Error('poisoned constructor')};const native=AbortSignal.abort();if(!(native.reason instanceof originalDOMException)||native.reason.code!==20)throw Error('mutable global used');
+    , "native-abort-dom-exception.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(value);
+    c.JS_RunGC(engine.runtime);
+}
+
+test "native abort and timeout reason records match the Node DOMException oracle" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    try timers.install(engine, std.testing.io);
+    const module = try engine.evalModule(
+        \\const a=AbortSignal.abort(),controller=new AbortController();controller.abort();const timed=AbortSignal.timeout(2);await new Promise(resolve=>timed.addEventListener('abort',resolve,{once:true}));
+        \\function describe(reason){return [reason.name,reason.message,reason.code,reason instanceof DOMException,reason instanceof Error,Object.prototype.toString.call(reason),String(reason)]}const reason={original:true},explicit=AbortSignal.abort(reason);let caught;try{explicit.throwIfAborted()}catch(e){caught=e}
+        \\globalThis.reasonOracle=JSON.stringify({default:describe(a.reason),controller:describe(controller.signal.reason),timeout:describe(timed.reason),explicit:explicit.reason===reason&&caught===reason});
+    , "native-abort-reason-oracle.mjs");
+    defer engine.freeValue(module);
+    const result = try engine.eval("reasonOracle", "native-abort-reason-result.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings("{\"default\":[\"AbortError\",\"This operation was aborted\",20,true,true,\"[object DOMException]\",\"AbortError: This operation was aborted\"],\"controller\":[\"AbortError\",\"This operation was aborted\",20,true,true,\"[object DOMException]\",\"AbortError: This operation was aborted\"],\"timeout\":[\"TimeoutError\",\"The operation was aborted due to timeout\",23,true,true,\"[object DOMException]\",\"TimeoutError: The operation was aborted due to timeout\"],\"explicit\":true}", text);
 }

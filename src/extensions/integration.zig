@@ -32,16 +32,13 @@ pub const Bridge = struct {
 
     pub fn uiPromptEvent(self: *Bridge, event: ui.PromptEvent, method: []const u8) void {
         const hook = if (event == .start) "ui_prompt_start" else "ui_prompt_end";
-        if (!self.host.hasHook(hook)) return;
-        var payload: std.Io.Writer.Allocating = .init(self.host.gpa);
-        defer payload.deinit();
-        payload.writer.writeAll("{\"type\":") catch return;
-        std.json.Stringify.value(hook, .{}, &payload.writer) catch return;
-        payload.writer.writeAll(",\"method\":") catch return;
-        std.json.Stringify.value(method, .{}, &payload.writer) catch return;
-        payload.writer.writeAll("}") catch return;
-        var emitted = self.executeHook(hook, payload.written()) catch return;
-        emitted.deinit(self.host.gpa);
+        self.host.deferUiPromptEvent(hook, method, self, consumeUiPromptEvent);
+    }
+
+    fn consumeUiPromptEvent(context: ?*anyopaque, emitted: *host_mod.EmitResult) !void {
+        const self: *Bridge = @ptrCast(@alignCast(context.?));
+        try self.queueEmitted(emitted);
+        if (emitted.errors.len > 0) return error.ExtensionUiPromptHookFailed;
     }
 
     pub fn deinit(self: *Bridge) void {

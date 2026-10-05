@@ -43,8 +43,8 @@ const definitions = [_]Definition{
     .{ .id = "tui.editor.cursorRight", .legacy = "cursorRight", .action = .cursor_right, .defaults = &.{ "right", "ctrl+f" } },
     .{ .id = "tui.editor.cursorWordLeft", .legacy = "cursorWordLeft", .action = .cursor_word_left, .defaults = &.{ "alt+left", "ctrl+left", "alt+b" } },
     .{ .id = "tui.editor.cursorWordRight", .legacy = "cursorWordRight", .action = .cursor_word_right, .defaults = &.{ "alt+right", "ctrl+right", "alt+f" } },
-    .{ .id = "tui.editor.cursorLineStart", .legacy = "cursorLineStart", .action = .cursor_line_start, .defaults = &.{ "home", "ctrl+home", "ctrl+a" } },
-    .{ .id = "tui.editor.cursorLineEnd", .legacy = "cursorLineEnd", .action = .cursor_line_end, .defaults = &.{ "end", "ctrl+end", "ctrl+e" } },
+    .{ .id = "tui.editor.cursorLineStart", .legacy = "cursorLineStart", .action = .cursor_line_start, .defaults = &.{ "home", "ctrl+a" } },
+    .{ .id = "tui.editor.cursorLineEnd", .legacy = "cursorLineEnd", .action = .cursor_line_end, .defaults = &.{ "end", "ctrl+e" } },
     .{ .id = "tui.editor.deleteCharBackward", .legacy = "deleteCharBackward", .action = .delete_char_backward, .defaults = &.{"backspace"} },
     .{ .id = "tui.editor.deleteCharForward", .legacy = "deleteCharForward", .action = .delete_char_forward, .defaults = &.{ "delete", "ctrl+d" } },
     .{ .id = "tui.editor.deleteWordBackward", .legacy = "deleteWordBackward", .action = .delete_word_backward, .defaults = &.{ "ctrl+w", "alt+backspace" } },
@@ -60,6 +60,18 @@ const definitions = [_]Definition{
     .{ .id = "app.clipboard.pasteImage", .legacy = "pasteImage", .action = .clipboard_paste, .defaults = if (builtin.os.tag == .windows) &.{"alt+v"} else &.{"ctrl+v"} },
     .{ .id = "app.clear", .legacy = "clear", .action = .clear, .defaults = &.{"ctrl+c"} },
     .{ .id = "app.exit", .legacy = "exit", .action = .exit, .defaults = &.{"ctrl+d"} },
+};
+
+pub const ViewportAction = enum { page_up, page_down, half_page_up, half_page_down, line_up, line_down, top, bottom };
+const viewport_definitions = .{
+    .{ "tui.altScreen.pageUp", ViewportAction.page_up, &.{"pageup"} },
+    .{ "tui.altScreen.pageDown", ViewportAction.page_down, &.{"pagedown"} },
+    .{ "tui.altScreen.halfPageUp", ViewportAction.half_page_up, &.{} },
+    .{ "tui.altScreen.halfPageDown", ViewportAction.half_page_down, &.{} },
+    .{ "tui.altScreen.lineUp", ViewportAction.line_up, &.{} },
+    .{ "tui.altScreen.lineDown", ViewportAction.line_down, &.{} },
+    .{ "tui.altScreen.top", ViewportAction.top, &.{"ctrl+home"} },
+    .{ "tui.altScreen.bottom", ViewportAction.bottom, &.{"ctrl+end"} },
 };
 
 pub const Manager = struct {
@@ -117,6 +129,23 @@ pub const Manager = struct {
                         if (std.mem.eql(u8, normalized, normalized_input)) return def.action;
                     }
                 }
+            }
+        }
+        return null;
+    }
+
+    /// Fullscreen bindings have their own precedence and never become editor
+    /// actions. Explicit JSON arrays replace defaults, including empty arrays.
+    pub fn viewportActionFor(self: *const Manager, input_key: []const u8) ?ViewportAction {
+        var input_buf: [96]u8 = undefined;
+        const normalized = normalizeKey(input_key, &input_buf) orelse return null;
+        inline for (viewport_definitions) |definition| {
+            const configured = if (self.parsed) |parsed| parsed.value.object.get(definition[0]) else null;
+            if (configured) |value| {
+                if (valueMatches(value, normalized)) return definition[1];
+            } else {
+                const defaults: []const []const u8 = definition[2];
+                for (defaults) |key| if (std.mem.eql(u8, normalized, key)) return definition[1];
             }
         }
         return null;
@@ -237,6 +266,12 @@ test "keybinding defaults normalize modifier order" {
     defer manager.deinit();
     try std.testing.expectEqual(Action.cursor_left, manager.actionFor("ctrl+b").?);
     try std.testing.expectEqual(Action.cursor_word_left, manager.actionFor("ctrl+left").?);
+    try std.testing.expectEqual(Action.cursor_line_start, manager.actionFor("home").?);
+    try std.testing.expectEqual(Action.cursor_line_end, manager.actionFor("end").?);
+    try std.testing.expect(manager.actionFor("ctrl+home") == null);
+    try std.testing.expect(manager.actionFor("ctrl+end") == null);
+    try std.testing.expectEqual(ViewportAction.top, manager.viewportActionFor("ctrl+home").?);
+    try std.testing.expectEqual(ViewportAction.bottom, manager.viewportActionFor("ctrl+end").?);
     try std.testing.expectEqual(Action.clipboard_paste, manager.actionFor(if (builtin.os.tag == .windows) "alt+v" else "ctrl+v").?);
     var buf: [96]u8 = undefined;
     try std.testing.expectEqualStrings("ctrl+shift+p", normalizeKey("shift+ctrl+P", &buf).?);

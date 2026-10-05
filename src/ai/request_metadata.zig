@@ -372,7 +372,7 @@ fn urlHas(base_url: []const u8, needle: []const u8) bool {
 pub fn detectOpenAIResponsesCompat(provider_id: []const u8, base_url: []const u8, model_id: []const u8) Compat {
     const openrouter = providerIs(provider_id, "openrouter") or urlHas(base_url, "openrouter.ai");
     const grammar = (providerIs(provider_id, "github-copilot") or providerIs(provider_id, "openai") or
-        providerIs(provider_id, "openai-codex") or providerIs(provider_id, "azure-openai-responses") or
+        providerIs(provider_id, "openai-codex") or @import("azure.zig").isProvider(provider_id) or
         providerIs(provider_id, "cloudflare-ai-gateway")) and std.mem.startsWith(u8, model_id, "gpt-5");
     return .{
         .supports_developer_role = true,

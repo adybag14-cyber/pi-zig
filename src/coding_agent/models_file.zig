@@ -88,6 +88,7 @@ pub const ModelsFile = struct {
         for (self.providers) |*provider| {
             if (std.ascii.eqlIgnoreCase(provider.id, id)) return provider;
         }
+        for (self.providers) |*provider| if (providers.providerIdsEqual(provider.id, id)) return provider;
         return null;
     }
 
@@ -486,6 +487,7 @@ fn parseThinkingMap(object: std.json.ObjectMap, name: []const u8) !?thinking.Thi
 fn inheritedApi(provider_id: []const u8) ?Api {
     if (std.ascii.eqlIgnoreCase(provider_id, "google-vertex")) return .google_vertex;
     const builtin = providers.Provider.fromString(provider_id) orelse return null;
+    if (builtin == .azure_openai_responses) return .azure_openai_responses;
     if (builtin == .mistral) return .mistral_conversations;
     if (builtin == .radius) return .pi_messages;
     if (builtin == .amazon_bedrock) return .bedrock_converse_stream;
@@ -593,7 +595,7 @@ pub fn parseFromSlice(gpa: std.mem.Allocator, raw: []const u8) !ModelsFile {
                 const model_compat = metadata.Compat.merge(provider_compat, try parseCompat(model_object));
                 const info = providers.ModelInfo{
                     .provider = model_api.nativeProvider(),
-                    .provider_id = provider_id,
+                    .provider_id = providers.canonicalProviderId(provider_id),
                     .api = model_api,
                     .id = model_id,
                     .display = model_name,

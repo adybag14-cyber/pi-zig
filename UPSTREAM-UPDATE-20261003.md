@@ -6,9 +6,9 @@ Status: in progress. This file does not certify parity or a release.
   `012e80ced763e8d8ac7e01f7331d32dad3ab468b`.
 - Previous Pi baseline: `853a80d26c90a14c1886f0ebb8ffaae133ca2185`, version 0.84.4.
 - Selected authority: earendil-works/pi main
-  `1965a80693dd929d28dda72f1986056355fb167a`, package version 1.0.2.
+  `6100fe5a8358709a26050b8da97ccd188ae93101`, package version 1.0.2.
   It descends from and is newer than published GitHub release v1.0.0.
-- Delta: 903 commits, including new model types/classifiers, codemode, MCP
+- Delta: 907 commits, including new model types/classifiers, codemode, MCP
   configuration/OAuth, providers/auth, agent-loop hooks, terminal behavior,
   and extraction of durable harness APIs into pi-durable.
   The refresh from initial target `4c6fb7cf` adds exactly one Nix workflow
@@ -27,8 +27,15 @@ Status: in progress. This file does not certify parity or a release.
   Windows polling/rename behavior and macOS startup handling, line scanning,
   windowed shell output with counted skips, progress intervals, and codemode
   image output to temporary files. These new runtime contracts remain pending.
+- The latest refresh to `b2b5c42f` adds dead-terminal stdin handling and the
+  corrected codemode MCP saved-image test expectation. The terminal change is
+  being validated natively; codemode saved-image integration remains pending.
+- The selected `6100fe5a` refresh adds canonical Azure/Foundry provider contracts
+  and Home/End ownership changes. Native Azure transport/alias and Application
+  component gates are implemented. Complete CLI fullscreen frontend wiring
+  remains a separate pending integration.
 - Current upstream source tar SHA-256:
-  `bca975ce44baabcfd58774b322d52c58fa79b2a2c1c3f5c926d24e04686de607`.
+  `630cacdce97e3013b415d8b28186cb24d2166692cbc2232e59a4e00335ae6a39`.
 - User-required toolchain: final Zig 0.16.0. No implicit upgrade.
 - User-required implementation: Zig; direct C interoperability allowed.
   Retain upstream user-authored JavaScript/TypeScript extension compatibility
@@ -37,10 +44,38 @@ Status: in progress. This file does not certify parity or a release.
   `68659eb5f1e4eb1437a722f1dd889c5a322c9954607f5edcf337bc3684a75a7e`.
 - Upstream-pinned typed model catalog revision:
   `sha256-d28b6de6985826060b6e2ccf589d16800d9fdbc40681ae4c698421c92d2ff86f`.
-  Its fetched bytes match the hash. 1,601 models, 42 providers; chat, image,
+  Its fetched bytes match the hash. 1,602 models, 42 providers; chat, image,
   and classifier operations.
 
-Completed evidence:
+Fresh integrated 6100 checkpoint validation:
+
+- The final Azure/UI sources were frozen before validation. All 376 compilation
+  and runtime-data inputs have the same before/after SHA-256 aggregate:
+  `76c302ef5795f6ae3e1c0adf6b286b44e26185c7939286d9dc2b3843ab77c927`.
+- The exact Windows graph `build test test-provider-contracts -j2 --summary all`
+  passes 69/69 steps, 385 dedicated tests and five skips. The primary module
+  runner passes 1,117 tests with 28 skips; failures are zero.
+- Windows ReleaseSafe passes all seven build steps. An executable-only PATH,
+  isolated agent/home/workspace and offline mock CLI run returns the expected
+  result with zero stderr, without touching the user's installation or history.
+- A fresh x64 Linux GNU ReleaseSafe candidate is built from those same inputs.
+  Authentication screen (3 tests), OAuth dialog (5), bootstrap networking (5,
+  including all five scenarios), and provider retry (7, including all seven
+  scenarios and real RPC reload) pass through owned Ubuntu/PTY/pipe processes
+  against that candidate and a freshly compiled native browser opener.
+- Formatting, byte-exact catalog regeneration, all 107 pinned vendor digests and
+  structural auditing pass. The language audit still rejects exactly 15 Python
+  and five JavaScript files. One bytecode file created by the external baseline
+  adapter was removed by its exact owned path; the audit itself was not weakened.
+- Native `verify-release` rejects `IncompleteParityCheckpoint` as expected.
+  Parity remains false and production discovery still uses the legacy backend.
+- Fresh evidence is appended in
+  `verification/checkpoint-189/checkpoint-6100-integration-20261005.json` and the
+  three `checkpoint-6100-*-20261005.json` process reports. Earlier records remain
+  immutable. Historical Windows/Linux/macOS CI passes published `c24fa85`
+  (run 37240154150); it is not proof for this newer checkpoint.
+
+Historical implementation evidence (preserved separately from the fresh gates):
 
 - Unmodified Windows Debug build and full test graph pass with Zig 0.16.0
   and the existing SQLite 3.53.4 native library.
@@ -346,13 +381,103 @@ Completed evidence:
   version smoke pass. These are candidates from that checkpoint, not the newer
   source head and not a published or parity-certified release.
 
+Latest native integration (October 5, London):
+
+- Expired timer refresh preserves the handle, arguments, callback receiver and
+  ref state, allocates a new numeric ID atomically, and permits callback-time
+  refresh. Closed handles cannot revive. Node comparisons, allocation failures,
+  ID exhaustion/retry and callback/argument/handle GC cycles pass focused tests.
+- BigInt Buffer writes now perform all four observable primitive conversions,
+  compare integer strings without floating-point loss, preserve partial low-word
+  writes and original thrown values, and handle detachment at each stage. All
+  31,352 existing numeric oracle cases and new adversarial cases pass.
+- Native TextDecoder supports UTF-8 and UTF-16LE/BE labels and their aliases,
+  BOM handling, fatal decoding, streaming/flush state, detached genuine views,
+  subclass prototypes and original exceptions. Ten focused tests cover 287
+  scalar split positions, 4,096 deterministic Node oracle calls and allocator
+  failures. Other WHATWG encodings remain unsupported and throw RangeError.
+- TextEncoder now rejects nonprimitive encodeInto sources before inspecting
+  destinations, returns zero counts for detached/out-of-bounds Uint8Array views,
+  and preserves conversion exceptions and Node error codes. Captured Unicode
+  capacity/count cases and allocation failure/retry tests pass.
+- CI runs the native provider contract suite and exact artifact inventory
+  verification. Git checkout attributes preserve inventory bytes across hosts.
+  A real worker fixture checks streaming decoding and encoding counts with
+  Node absent from PATH. Combined validation is recorded after integration.
+
+October 5 native host checkpoint:
+
+- The explicit native Runtime/Host backend discovers and invokes real extension
+  workers with Node absent from their PATH. Tools, hooks and provider methods
+  receive live signals; tool updates preserve call identity and invocation
+  generations. The worker reads bounded input on a separate task and dispatches
+  controls only on the C context's owner thread. Timeout/EOF/shutdown cleanup,
+  worker reuse, stale controls and allocation failures have real process tests.
+  Production discovery still selects the legacy backend while remaining UI,
+  provider streams, custom components and lifecycle operations are ported.
+- Native DOMException has legacy codes/constants, Error inheritance, constructor
+  options/cause, original exceptions and GC ownership. Abort and timeout default
+  reasons match Node. Native stack capture and internal JS_IsError branding are
+  not claimed.
+- Directory enumeration and native Dirent objects support string/Buffer output,
+  sync and promise recursion, exact getter behavior, stable constructors and
+  Node's differing symlink traversal modes. Windows real-directory, Unicode and
+  junction records match Node, including self-cycle results. URL-object paths,
+  some Buffer error metadata and further legacy encodings remain outstanding.
+- Four Python executable fixtures were retired after native real-process gates:
+  authentication screen (11 byte-identical report fields), OAuth dialog (nine
+  byte-identical fields), bootstrap HTTP (all five scenarios), and provider retry
+  (all seven scenarios including live RPC reload). The retry mock now emits
+  Responses events for current upstream gpt-4o; original assertions are retained.
+  Fifteen Python scripts and five JavaScript files remain.
+- Exact source before the latest upstream refresh passes Windows Debug with
+  67 build steps, 363 dedicated tests, five platform skips, 1,105 module tests,
+  28 module skips and zero failures. ReleaseSafe passes. Linux fixtures used the
+  separately recorded earlier candidate; the final source needs hosted matrix
+  validation. Evidence: verification/checkpoint-189/native-host-integration-20261005.json.
+- Publishing requires native verify-release metadata, matching version/tag and
+  certified upstream identity, the source inventory, language audit and C vendor
+  provenance. Candidate builds remain possible. The draft checkpoint correctly
+  rejects release publication with IncompleteParityCheckpoint.
+- Latest observed upstream is 6100fe5a8358709a26050b8da97ccd188ae93101, two commits
+  beyond the prior pin: Azure Foundry Chat Completions and fullscreen Home/End
+  routing. Its source archive, catalog and changelog are now pinned and verified.
+  The reviewed Azure transform retains the immutable raw catalog digest, renames
+  the provider to azure and adds the DeepSeek Chat Completions deployment row:
+  1,602 models total, 1,530 chat, 57 image, 15 classifier and 42 providers.
+- Azure aliases preserve old CLI/model references, scopes, configuration and
+  stored credentials. Canonical writes and logout cover both credential names;
+  failed runtime-key replacement preserves the previous key. A legacy models.json
+  provider config applies once to the canonical catalog and keeps the DeepSeek
+  model's Chat Completions API. Twelve focused integration tests and fourteen
+  credential tests pass. Native endpoint/deployment, payload-hook, header,
+  reasoning and Responses API-version tests pass in Debug and ReleaseSafe
+  (27 focused tests each). The reviewed upstream config oracle also matches.
+  Live cloud credentials and arbitrary WHATWG URL normalization are not claimed;
+  the streaming entry point remains options-less.
+- The native Application routes Home/End to the editor and Ctrl+Home/End to the
+  primary transcript ScrollView. Real editor/scroll component tests cover custom
+  mappings, overlay focus, repeat/release and navigation overlap: Windows 104
+  pass/one platform skip and Linux 105 pass. Main's fullscreen CLI still needs a
+  persistent Application/ScrollView frontend; CLI transcript routing is not
+  certified by these component gates.
+- Standard native UI request roundtrips, FIFO delivery, retained actions,
+  headless fallbacks, original errors, stale-context and reply-generation fences,
+  cancellation and human-dialog deadlines have real worker coverage. Prompt
+  lifecycle hooks are deferred until the active runtime lock is released,
+  retaining both hook order and action batches. The final focused UI run passes
+  13 steps and 91 tests (eight runtime and 83 bindings). Native custom component
+  factories and overlay rendering remain unsupported; host UI callbacks must
+  cooperate with native I/O cancellation.
+
 Required outstanding work:
 
 1. Native extension module loader and TypeScript input erasure, host bindings,
    persistent worker protocol, provider callbacks, UI/renderers, and adversarial
    lifecycle coverage. Replace the Node bridge only after compatibility passes.
-2. Native Zig catalog importer/generator, typed model lookup, classifier/image
-   operation routing, provider transports, auth and metadata changes.
+2. Remaining provider transport/auth/transcript changes and shared stored-refresh
+   locking for built-in adapters. Catalog/importer and selected operation routes
+   are already native; complete provider behavior still needs certification.
 3. Latest agent-loop hooks, durable APIs, MCP configuration/transports/OAuth,
    codemode and its bounded output/store/model/tool APIs.
 4. Terminal, settings, selectors, completion, clipboard/image and render deltas.

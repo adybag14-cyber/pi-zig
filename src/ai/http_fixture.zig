@@ -7,6 +7,7 @@ pub const Reply = struct {
     headers: []const std.http.Header = &.{},
     delay_ms: u32 = 0,
     payload_contains: ?[]const u8 = null,
+    expected_request_headers: []const std.http.Header = &.{},
 };
 pub const Captured = struct { path: []u8, payload: []u8 };
 pub const PlanServer = struct {
@@ -61,6 +62,16 @@ pub const PlanServer = struct {
             var writer = connection.writer(self.io, &write_buffer);
             var server = std.http.Server.init(&reader.interface, &writer.interface);
             var request = try server.receiveHead();
+            for (reply.expected_request_headers) |expected| {
+                var iterator = request.iterateHeaders();
+                var found = false;
+                while (iterator.next()) |header| {
+                    if (!std.ascii.eqlIgnoreCase(header.name, expected.name)) continue;
+                    if (!std.mem.eql(u8, header.value, expected.value)) return error.UnexpectedFixtureHeader;
+                    found = true;
+                }
+                if (!found) return error.MissingFixtureHeader;
+            }
             const path = try self.gpa.dupe(u8, request.head.target);
             var captured = false;
             errdefer if (!captured) self.gpa.free(path);

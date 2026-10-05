@@ -56,7 +56,7 @@ const TreeSummaryPromptContext = struct {
             return tui.line_editor.readLine(gpa, self.io, self.reader, self.editor, self.bindings, prompt_text);
         }
         try tui.render.writeAll(self.io, prompt_text);
-        return readLine(self.reader, gpa);
+        return readInteractiveLine(self.reader, gpa);
     }
 
     fn prompt(raw: ?*anyopaque, gpa: std.mem.Allocator) anyerror!coding.slash.TreeSummaryChoice {
@@ -2777,6 +2777,13 @@ fn runInteractiveReleaseLifecycle(
 }
 
 pub fn main(init: std.process.Init) !void {
+    runMain(init) catch |err| {
+        if (err == error.DeadTerminal) std.process.exit(129);
+        return err;
+    };
+}
+
+fn runMain(init: std.process.Init) !void {
     const arena = init.arena.allocator();
     const gpa = init.gpa;
     const io = init.io;
@@ -4300,7 +4307,7 @@ pub fn main(init: std.process.Init) !void {
     }
 
     // Interactive REPL. Fullscreen uses the terminal's alternate-screen buffer
-    // and always restores the caller's screen on normal/error unwinding.
+    // and restores the caller's screen unless the terminal itself vanished.
     const effective_tui_mode: coding.settings.TuiMode = if (cli.tui_mode) |mode| switch (mode) {
         .regular => .regular,
         .fullscreen => .fullscreen,
@@ -4519,6 +4526,10 @@ pub fn main(init: std.process.Init) !void {
         const line = if (use_terminal_editor)
             tui.line_editor.readLineWithCompleterAndShortcutsPrefill(arena, io, &extension_stdin_reader, &terminal_editor, &terminal_keybindings, prompt_text, terminal_completer, terminal_shortcut_handler, editor_prefill) catch |err| switch (err) {
                 error.EndOfStream => break,
+                error.DeadTerminal => {
+                    fullscreen_active = false;
+                    return error.DeadTerminal;
+                },
                 else => return err,
             }
         else blk: {
@@ -4527,8 +4538,12 @@ pub fn main(init: std.process.Init) !void {
                 try tui.render.printLine(io, editor_prefill);
                 break :blk try arena.dupe(u8, editor_prefill);
             }
-            break :blk readLine(&extension_stdin_reader, arena) catch |err| switch (err) {
+            break :blk readInteractiveLine(&extension_stdin_reader, arena) catch |err| switch (err) {
                 error.EndOfStream => break,
+                error.DeadTerminal => {
+                    fullscreen_active = false;
+                    return error.DeadTerminal;
+                },
                 else => return err,
             };
         };
@@ -7838,6 +7853,28 @@ fn readLine(reader: *Io.File.Reader, arena: std.mem.Allocator) ![]u8 {
         try list.append(arena, n);
     }
     return try list.toOwnedSlice(arena);
+}
+
+fn readInteractiveLine(reader: *Io.File.Reader, arena: std.mem.Allocator) ![]u8 {
+    return readLine(reader, arena) catch |err| {
+        if (tui.line_editor.terminalInputError(err, reader.err) == error.DeadTerminal) return error.DeadTerminal;
+        return err;
+    };
+}
+
+test "interactive stdin distinguishes dead terminal causes from genuine and redirected errors" {
+    var buffer: [1]u8 = undefined;
+    var reader = Io.File.Reader.initStreaming(.stdin(), std.testing.io, &buffer);
+    reader.interface = Io.Reader.failing;
+    reader.interface.buffer = &buffer;
+    reader.err = error.InputOutput;
+    try std.testing.expectError(error.DeadTerminal, readInteractiveLine(&reader, std.testing.allocator));
+    // RPC and redirected-file readers keep their ordinary failure behavior.
+    try std.testing.expectError(error.ReadFailed, readLine(&reader, std.testing.allocator));
+    reader.err = error.AccessDenied;
+    try std.testing.expectError(error.ReadFailed, readInteractiveLine(&reader, std.testing.allocator));
+    reader.err = error.SystemResources;
+    try std.testing.expectError(error.ReadFailed, readInteractiveLine(&reader, std.testing.allocator));
 }
 
 test "SQLite session command flags normalize without changing operands" {

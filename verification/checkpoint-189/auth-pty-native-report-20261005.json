@@ -1,0 +1,13 @@
+{
+  "apiKeyStored": true,
+  "authPermissionsPrivate": true,
+  "credentialRemoved": true,
+  "exit": 0,
+  "loginFullscreen": true,
+  "logoutFullscreen": true,
+  "maskedSecret": true,
+  "secretAbsentFromTerminal": true,
+  "stderrBytes": 0,
+  "storedStatusVisible": true,
+  "terminalRestored": true
+}

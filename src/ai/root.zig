@@ -228,7 +228,16 @@ pub const ProviderResponse = struct {
 
 pub const ProviderResponseHandler = *const fn (?*anyopaque, ProviderResponse) anyerror!void;
 
+pub const PayloadModel = struct { id: []const u8, provider: []const u8, api: []const u8 };
+/// Returns an optional owned replacement JSON payload. The input and catalog
+/// identity are borrowed; Azure applies its deployment map before this hook.
+pub const PayloadHandler = *const fn (?*anyopaque, std.mem.Allocator, []const u8, PayloadModel) anyerror!?[]u8;
+
 pub const CompletionOptions = struct {
+    azure_options: @import("azure.zig").Options = .{},
+    headers: []const request_metadata.Header = &.{},
+    on_payload: ?PayloadHandler = null,
+    on_payload_ctx: ?*anyopaque = null,
     /// Provider-specific request values override model and thinking-level defaults.
     sampling_params: []const request_metadata.SamplingParam = &.{},
     /// Request-local output cap. Zero preserves the model/provider default.
@@ -317,6 +326,7 @@ pub const ModelClient = struct {
 test {
     _ = catalog_projection_test;
     _ = @import("sampling_transport_tests.zig");
+    _ = @import("azure_transport_tests.zig");
     std.testing.refAllDecls(@This());
 }
 

@@ -45,8 +45,12 @@ pub const Engine = struct {
     last_error: ?[]u8 = null,
     captured_exception: ?c.JSValue = null,
     host_data: ?*anyopaque = null,
+    native_ui_manager: ?*anyopaque = null,
+    host_ui_pending: usize = 0,
     native_io: ?std.Io = null,
     text_encoder_class: c.JSClassID = 0,
+    text_decoder_class: c.JSClassID = 0,
+    dom_exception_class: c.JSClassID = 0,
     buffer_prototype: ?c.JSValue = null,
     buffer_ready: bool = false,
     abort_signal_class: c.JSClassID = 0,
@@ -54,6 +58,10 @@ pub const Engine = struct {
     abort_signals_ready: bool = false,
     host_scheduler: ?*anyopaque = null,
     host_pump: ?*const fn (*Engine) anyerror!bool = null,
+    // Called only by the context's owning thread. Transport reader tasks may
+    // queue bytes, but must never call QuickJS or dispatch AbortSignal listeners.
+    host_control_context: ?*anyopaque = null,
+    host_control_pump: ?*const fn (*Engine) anyerror!bool = null,
     host_scheduler_deinit: ?*const fn (*Engine) void = null,
     host_await_deadline_ms: ?i64 = null,
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
@@ -467,6 +475,16 @@ pub const Engine = struct {
     }
 
     /// Return a new owned result without consuming the caller's promise/value.
+    pub fn pumpControls(self: *Engine) !bool {
+        self.refreshUiDeadline();
+        return if (self.host_control_pump) |pump| try pump(self) else false;
+    }
+
+    fn refreshUiDeadline(self: *Engine) void {
+        if (self.host_ui_pending == 0 or self.host_await_deadline_ms == null or self.options.host_await_timeout_ms == 0) return;
+        if (self.native_io) |io| self.host_await_deadline_ms = std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(self.options.host_await_timeout_ms, std.math.maxInt(i64))));
+    }
+
     pub fn awaitValue(self: *Engine, value: c.JSValue) !c.JSValue {
         const previous_deadline = self.host_await_deadline_ms;
         defer self.host_await_deadline_ms = previous_deadline;
@@ -475,8 +493,15 @@ pub const Engine = struct {
         }
         var jobs: usize = 0;
         while (c.JS_PromiseState(self.context, value) == c.JS_PROMISE_PENDING or c.JS_IsJobPending(self.runtime)) {
+            self.refreshUiDeadline();
+            if (self.native_io) |io| if (self.host_await_deadline_ms) |limit| {
+                if (std.Io.Clock.awake.now(io).toMilliseconds() >= limit) return error.NativeHostPromiseTimeout;
+            };
+            // Once this promise has settled, remaining queued microtasks may
+            // still drain, but a late wire abort must not mutate its signal.
+            if (c.JS_PromiseState(self.context, value) == c.JS_PROMISE_PENDING) _ = try self.pumpControls();
+            if (c.JS_PromiseState(self.context, value) != c.JS_PROMISE_PENDING and !c.JS_IsJobPending(self.runtime)) break;
             if (jobs >= self.options.job_budget) return error.JavaScriptJobLimit;
-            jobs += 1;
             var context: ?*c.JSContext = null;
             const status = c.JS_ExecutePendingJob(self.runtime, &context);
             if (status < 0) {
@@ -487,8 +512,15 @@ pub const Engine = struct {
                 if (self.host_pump) |pump| {
                     if (try pump(self)) continue;
                 }
+                // A native transport can settle a promise through an incoming
+                // abort or UI response even when no timer or JS job is pending.
+                if (self.host_control_pump != null and self.native_io != null) {
+                    try self.native_io.?.sleep(.fromMilliseconds(5), .awake);
+                    continue;
+                }
                 return error.JavaScriptPromiseUnsettled;
             }
+            jobs += 1;
         }
         return switch (c.JS_PromiseState(self.context, value)) {
             c.JS_PROMISE_REJECTED => blk: {
@@ -528,6 +560,47 @@ pub const Engine = struct {
         return if (self.interrupts > self.options.interrupt_budget) 1 else 0;
     }
 };
+
+test "native control pump settles an idle promise on its owner thread and bounds missing responses" {
+    const Control = struct {
+        polls: usize = 0,
+        settle: bool = true,
+
+        fn pump(engine: *Engine) !bool {
+            const self: *@This() = @ptrCast(@alignCast(engine.host_control_context.?));
+            self.polls += 1;
+            if (!self.settle or self.polls < 2) return false;
+            const global = c.JS_GetGlobalObject(engine.context);
+            defer engine.freeValue(global);
+            const resolve = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "ownedResolve"));
+            defer engine.freeValue(resolve);
+            var arguments = [_]c.JSValue{try engine.checked(c.JS_NewString(engine.context, "owner-settled"))};
+            defer engine.freeValue(arguments[0]);
+            const result = try engine.checked(c.JS_Call(engine.context, resolve, c.pi_js_undefined(), 1, &arguments));
+            engine.freeValue(result);
+            return true;
+        }
+    };
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 1000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    var control: Control = .{};
+    engine.host_control_context = &control;
+    engine.host_control_pump = Control.pump;
+    const pending = try engine.eval("new Promise(resolve=>globalThis.ownedResolve=resolve)", "owner-control.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(pending);
+    const result = try engine.awaitValue(pending);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings("owner-settled", text);
+    try std.testing.expectEqual(@as(usize, 2), control.polls);
+    control.settle = false;
+    engine.options.host_await_timeout_ms = 1;
+    const unanswered = try engine.eval("new Promise(()=>{})", "owner-control-timeout.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(unanswered);
+    try std.testing.expectError(error.NativeHostPromiseTimeout, engine.awaitValue(unanswered));
+}
 
 test "native rejected promises retain the original reason when diagnostic conversion throws" {
     const engine = try Engine.init(std.testing.allocator, .{});

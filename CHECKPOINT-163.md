@@ -100,7 +100,8 @@ These scalar fields are intentionally omitted from durable assistant/session ser
 
 ## Real executable provider-retry gate
 
-`scripts/provider_retry_e2e.py` runs the built `pi` executable against loopback HTTP servers and validates:
+The native successor, `zig build test-provider-retry-process`, runs the built
+`pi` executable against loopback HTTP servers and validates the same gates:
 
 1. `retry-after-ms` delays a retry and the second response succeeds;
 2. `x-should-retry:true` forces retry of HTTP 400;

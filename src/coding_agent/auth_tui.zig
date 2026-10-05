@@ -214,7 +214,7 @@ const Selector = struct {
     }
 
     fn storedStatus(infos: []const auth_storage.CredentialInfo, provider_id: []const u8) ?AuthStatus {
-        for (infos) |info| if (std.ascii.eqlIgnoreCase(info.provider_id, provider_id)) return .{
+        for (infos) |info| if (providers.providerIdsEqual(info.provider_id, provider_id)) return .{
             .credential_type = info.credential_type,
             .source = "stored credential",
         };
@@ -273,7 +273,7 @@ const Selector = struct {
 
     fn containsEntry(self: *const Selector, provider_id: []const u8, method: LoginMethod) bool {
         for (self.entries.items) |entry| {
-            if (entry.method == method and std.ascii.eqlIgnoreCase(entry.provider_id, provider_id)) return true;
+            if (entry.method == method and providers.providerIdsEqual(entry.provider_id, provider_id)) return true;
         }
         return false;
     }
@@ -385,7 +385,7 @@ const Selector = struct {
     fn authTypesForScope(self: *const Selector, provider_id: ?[]const u8) AuthTypeAvailability {
         var result: AuthTypeAvailability = .{};
         for (self.entries.items) |entry| {
-            if (provider_id) |scope| if (!std.ascii.eqlIgnoreCase(entry.provider_id, scope)) continue;
+            if (provider_id) |scope| if (!providers.providerIdsEqual(entry.provider_id, scope)) continue;
             switch (authTypeForMethod(entry.method)) {
                 .oauth => if (!result.oauth) {
                     result.oauth = true;
@@ -414,7 +414,7 @@ const Selector = struct {
     fn findScopedEntry(self: *const Selector, auth_type: AuthType) ?Entry {
         const scope = self.provider_scope orelse return null;
         for (self.entries.items) |entry| {
-            if (std.ascii.eqlIgnoreCase(entry.provider_id, scope) and authTypeForMethod(entry.method) == auth_type) return entry;
+            if (providers.providerIdsEqual(entry.provider_id, scope) and authTypeForMethod(entry.method) == auth_type) return entry;
         }
         return null;
     }

@@ -3,6 +3,8 @@ const std = @import("std");
 const catalog = @import("catalog.zig");
 const projections = @import("projections.zig");
 const artifacts = @import("artifacts.zig");
+const release = @import("release.zig");
+const release_config = @import("release_config");
 
 const forbidden_names = [_][]const u8{
     "gen_surface.py",
@@ -121,6 +123,23 @@ pub fn main(init: std.process.Init) !void {
     var buffer: [4096]u8 = undefined;
     var stdout = std.Io.File.stdout().writer(init.io, &buffer);
     const writer = &stdout.interface;
+    if ((args.len == 2 or args.len == 3) and std.mem.eql(u8, args[1], "verify-release")) {
+        const manifest = try std.Io.Dir.cwd().readFileAlloc(init.io, "ARTIFACT-MANIFEST.json", init.gpa, .limited(1024 * 1024));
+        defer init.gpa.free(manifest);
+        const source = try std.Io.Dir.cwd().readFileAlloc(init.io, "src/ai/catalog_source.json", init.gpa, .limited(16 * 1024 * 1024));
+        defer init.gpa.free(source);
+        try release.validate(init.gpa, manifest, source, .{
+            .version = release_config.version,
+            .upstream_version = release_config.upstream_version,
+            .upstream_commit = release_config.upstream_commit,
+        }, if (args.len == 3) args[2] else null);
+        try artifacts.verify(init.gpa, init.io, writer);
+        const languages_passed = try auditSource(init.gpa, init.io, writer, true);
+        const vendors_passed = try verifyVendors(init.gpa, init.io, writer);
+        try writer.flush();
+        if (!languages_passed or !vendors_passed) return error.InvalidNativeReleaseSources;
+        return;
+    }
     if (args.len == 2 and std.mem.eql(u8, args[1], "verify-artifacts")) {
         try artifacts.verify(init.gpa, init.io, writer);
         try writer.flush();
@@ -205,7 +224,7 @@ pub fn main(init: std.process.Init) !void {
     }
     try writer.writeAll("usage: pi-maintenance audit-source | audit-structure | verify-vendors | catalog [--check | --output <path>]\n" ++
         "       pi-maintenance import-changelog <upstream-checkout> <expected-commit>\n" ++
-        "       pi-maintenance artifact-manifest <checkpoint> | verify-artifacts\n" ++
+        "       pi-maintenance artifact-manifest <checkpoint> | verify-artifacts | verify-release [tag]\n" ++
         "       pi-maintenance import-catalog <catalog-json> <version> <commit> <source-archive> <revision> <destination>\n");
     try writer.flush();
     if (args.len > 1) std.process.exit(2);
@@ -223,4 +242,5 @@ test "language audit rejects implementation scripts and synthetic surfaces" {
 test {
     _ = projections;
     _ = artifacts;
+    _ = release;
 }

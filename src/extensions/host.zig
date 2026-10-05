@@ -16,6 +16,14 @@ const Io = std.Io;
 const js_runtime = @import("js_runtime.zig");
 const actions_mod = @import("actions.zig");
 const file_permissions = @import("../file_permissions.zig");
+threadlocal var ui_prompt_draining_host: ?*Host = null;
+
+const DeferredUiPrompt = struct {
+    hook: []u8,
+    method: []u8,
+    context: ?*anyopaque,
+    consume: *const fn (?*anyopaque, *EmitResult) anyerror!void,
+};
 
 pub const ToolCost = struct {
     input: f64 = 0,
@@ -389,22 +397,106 @@ pub const Host = struct {
     /// Program used for upstream JavaScript/TypeScript extension execution.
     /// The default resolves through PATH and can be replaced by embedders.
     js_runtime_program: []const u8 = "node",
+    // Internal/embedder selection. Production keeps the legacy backend until
+    // the complete native extension API has passed its compatibility gates.
+    script_backend: js_runtime.Backend = .legacy,
+    native_runtime_options: js_runtime.Runtime.NativeOptions = .{},
     /// Shared native UI bridge and invocation-context snapshot propagated to
     /// every persistent script worker, including workers loaded later.
     script_ui_bridge: ?js_runtime.UiBridge = null,
     script_context_json: ?[]u8 = null,
+    ui_prompt_mutex: Io.Mutex = .init,
+    ui_prompt_drain_mutex: Io.Mutex = .init,
+    ui_prompt_events: std.ArrayList(DeferredUiPrompt) = .empty,
+    ui_prompt_failure: ?anyerror = null,
 
     pub fn deinit(self: *Host) void {
         for (self.extensions.items) |*e| e.deinit(self.gpa);
         self.extensions.deinit(self.gpa);
         if (self.last_hook.len > 0) self.gpa.free(self.last_hook);
         if (self.script_context_json) |context| self.gpa.free(context);
+        for (self.ui_prompt_events.items) |event| {
+            std.heap.page_allocator.free(event.hook);
+            std.heap.page_allocator.free(event.method);
+        }
+        self.ui_prompt_events.deinit(std.heap.page_allocator);
         self.* = undefined;
     }
 
     pub fn setScriptUiBridge(self: *Host, bridge: ?js_runtime.UiBridge) void {
         self.script_ui_bridge = bridge;
         for (self.extensions.items) |*extension| if (extension.script_runtime) |runtime| runtime.setUiBridge(bridge);
+    }
+
+    /// Frontend observers run synchronously, but extension hooks must never
+    /// reenter the Runtime mutex held by the dialog's current invocation.
+    pub fn deferUiPromptEvent(self: *Host, hook: []const u8, method: []const u8, context: ?*anyopaque, consume: *const fn (?*anyopaque, *EmitResult) anyerror!void) void {
+        if (!self.hasHook(hook)) return;
+        self.ui_prompt_mutex.lockUncancelable(self.io);
+        defer self.ui_prompt_mutex.unlock(self.io);
+        const allocator = std.heap.page_allocator;
+        if (self.ui_prompt_events.items.len >= 256) {
+            self.ui_prompt_failure = error.ExtensionUiPromptQueueLimit;
+            return;
+        }
+        const owned_hook = allocator.dupe(u8, hook) catch |err| {
+            self.ui_prompt_failure = err;
+            return;
+        };
+        const owned_method = allocator.dupe(u8, method) catch |err| {
+            allocator.free(owned_hook);
+            self.ui_prompt_failure = err;
+            return;
+        };
+        self.ui_prompt_events.append(allocator, .{ .hook = owned_hook, .method = owned_method, .context = context, .consume = consume }) catch |err| {
+            allocator.free(owned_hook);
+            allocator.free(owned_method);
+            self.ui_prompt_failure = err;
+        };
+    }
+
+    /// Drain in FIFO after the current worker has released its invocation lock,
+    /// before the Host result reaches its caller. Hook action batches retain
+    /// their ownership through the supplied integration consumer.
+    pub fn flushUiPromptEvents(self: *Host) anyerror!void {
+        if (ui_prompt_draining_host == self) return;
+        self.ui_prompt_drain_mutex.lockUncancelable(self.io);
+        defer self.ui_prompt_drain_mutex.unlock(self.io);
+        const previous = ui_prompt_draining_host;
+        ui_prompt_draining_host = self;
+        defer ui_prompt_draining_host = previous;
+        var count: usize = 0;
+        while (true) {
+            self.ui_prompt_mutex.lockUncancelable(self.io);
+            if (self.ui_prompt_failure) |err| {
+                self.ui_prompt_failure = null;
+                self.ui_prompt_mutex.unlock(self.io);
+                return err;
+            }
+            if (self.ui_prompt_events.items.len == 0) {
+                self.ui_prompt_mutex.unlock(self.io);
+                return;
+            }
+            if (count >= 512) {
+                self.ui_prompt_mutex.unlock(self.io);
+                return error.ExtensionUiPromptDispatchLimit;
+            }
+            const event = self.ui_prompt_events.orderedRemove(0);
+            self.ui_prompt_mutex.unlock(self.io);
+            defer std.heap.page_allocator.free(event.hook);
+            defer std.heap.page_allocator.free(event.method);
+            var payload: std.Io.Writer.Allocating = .init(self.gpa);
+            defer payload.deinit();
+            try payload.writer.writeAll("{\"reason\":\"ui_prompt\",\"method\":");
+            try std.json.Stringify.value(event.method, .{}, &payload.writer);
+            try payload.writer.writeAll(",\"kind\":");
+            try std.json.Stringify.value(event.method, .{}, &payload.writer);
+            try payload.writer.writeByte('}');
+            var emitted = try self.executeHook(event.hook, payload.written());
+            defer emitted.deinit(self.gpa);
+            try event.consume(event.context, &emitted);
+            count += 1;
+        }
     }
 
     /// Return the persistent JavaScript worker that owns an extension action.
@@ -492,7 +584,10 @@ pub const Host = struct {
     }
 
     fn loadScript(self: *Host, source_path: []const u8) !void {
-        var started = try js_runtime.Runtime.start(self.gpa, self.io, source_path, self.js_runtime_program);
+        var started = try switch (self.script_backend) {
+            .legacy => js_runtime.Runtime.start(self.gpa, self.io, source_path, self.js_runtime_program),
+            .native => js_runtime.Runtime.startNative(self.gpa, self.io, source_path, self.native_runtime_options),
+        };
         errdefer started.runtime.deinit();
         started.runtime.timeout_ms = if (self.hook_timeout_seconds <= 0)
             0
@@ -825,6 +920,7 @@ pub const Host = struct {
                 continue;
             };
             defer self.gpa.free(raw);
+            try self.flushUiPromptEvents();
             const trimmed = std.mem.trim(u8, raw, " \t\r\n");
             if (trimmed.len == 0) continue;
             validateJson(self.gpa, trimmed) catch {
@@ -863,12 +959,15 @@ pub const Host = struct {
         flags_json: []const u8,
     ) ![]u8 {
         if (ext.script_runtime) |runtime| {
-            return switch (kind) {
+            const result = try switch (kind) {
                 .hook => runtime.invokeHook(name, argument, flags_json),
                 .tool => runtime.invokeTool(name, argument, flags_json),
                 .command => runtime.invokeCommand(name, argument, flags_json),
                 .shortcut => runtime.invokeShortcut(name, flags_json),
             };
+            errdefer self.gpa.free(result);
+            try self.flushUiPromptEvents();
+            return result;
         }
         if (ext.entry.len == 0) return error.ExtensionHasNoExecutableEntry;
         const mode = switch (kind) {
@@ -1045,11 +1144,12 @@ pub const Host = struct {
                     break :blk runtime.invokeToolCallStreaming(tool_call_id, name, arguments_json, flags_json, abort_flag, LiveUpdateAdapter.forward, &adapter) catch |err|
                         return try errorToolOutputFmt(self.gpa, "extension tool execution failed: {s}", .{@errorName(err)});
                 }
-                break :blk runtime.invokeTool(name, arguments_json, flags_json) catch |err|
+                break :blk runtime.invokeToolCall(tool_call_id, name, arguments_json, flags_json, abort_flag) catch |err|
                     return try errorToolOutputFmt(self.gpa, "extension tool execution failed: {s}", .{@errorName(err)});
             } else self.runExtension(ext, .tool, name, arguments_json, flags_json) catch |err|
                 return try errorToolOutputFmt(self.gpa, "extension tool execution failed: {s}", .{@errorName(err)});
             defer self.gpa.free(raw);
+            self.flushUiPromptEvents() catch |err| return try errorToolOutputFmt(self.gpa, "extension UI prompt hook failed: {s}", .{@errorName(err)});
             const trimmed = std.mem.trim(u8, raw, " \t\r\n");
             if (trimmed.len == 0) return try errorToolOutput(self.gpa, "extension tool returned no result");
             var output = parseToolOutput(self.gpa, ext.name, name, trimmed) catch

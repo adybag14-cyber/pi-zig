@@ -22,13 +22,109 @@ pub fn windowsRightClickPasteEnabled(term_program: ?[]const u8) bool {
     return !std.ascii.eqlIgnoreCase(std.mem.trim(u8, program, " \t\r\n"), "vscode");
 }
 
+/// File.Reader reports ReadFailed for many distinct operating-system errors.
+/// Only the causes used for a disconnected interactive terminal are quiet
+/// shutdowns; resource, permission, descriptor and cancellation errors remain
+/// visible to the caller. Piped/file input does not use this classification.
+pub fn terminalInputError(err: anyerror, read_error: ?Io.File.Reader.Error) anyerror {
+    return switch (err) {
+        error.NotATerminal, error.ProcessOrphaned => error.DeadTerminal,
+        error.ReadFailed => if (read_error) |cause| switch (cause) {
+            error.InputOutput, error.SocketUnconnected => error.DeadTerminal,
+            else => err,
+        } else err,
+        else => err,
+    };
+}
+
+test "dead terminal input classification preserves unrelated reader errors" {
+    try std.testing.expectEqual(error.DeadTerminal, terminalInputError(error.ReadFailed, error.InputOutput));
+    try std.testing.expectEqual(error.DeadTerminal, terminalInputError(error.ReadFailed, error.SocketUnconnected));
+    try std.testing.expectEqual(error.DeadTerminal, terminalInputError(error.NotATerminal, null));
+    try std.testing.expectEqual(error.DeadTerminal, terminalInputError(error.ProcessOrphaned, null));
+    try std.testing.expectEqual(error.ReadFailed, terminalInputError(error.ReadFailed, null));
+    const genuine = [_]Io.File.Reader.Error{ error.SystemResources, error.IsDir, error.ConnectionResetByPeer, error.NotOpenForReading, error.WouldBlock, error.AccessDenied, error.LockViolation, error.Unexpected, error.Canceled };
+    for (genuine) |cause| try std.testing.expectEqual(error.ReadFailed, terminalInputError(error.ReadFailed, cause));
+    try std.testing.expectEqual(error.Unexpected, terminalInputError(error.Unexpected, error.InputOutput));
+    try std.testing.expectEqual(error.EndOfStream, terminalInputError(error.EndOfStream, error.InputOutput));
+    try std.testing.expectEqual(error.OutOfMemory, terminalInputError(error.OutOfMemory, error.InputOutput));
+}
+
+test "interactive byte reads inspect File Reader cause and preserve genuine failures" {
+    var buffer: [1]u8 = undefined;
+    var reader = Io.File.Reader.initStreaming(.stdin(), std.testing.io, &buffer);
+    reader.interface = Io.Reader.failing;
+    reader.interface.buffer = &buffer;
+    reader.err = error.InputOutput;
+    try std.testing.expectError(error.DeadTerminal, readByte(&reader));
+    reader.err = error.SocketUnconnected;
+    try std.testing.expectError(error.DeadTerminal, readByte(&reader));
+    reader.err = error.AccessDenied;
+    try std.testing.expectError(error.ReadFailed, readByte(&reader));
+    reader.err = null;
+    try std.testing.expectError(error.ReadFailed, readByte(&reader));
+}
+
+fn terminalAttributes(fd: std.posix.fd_t) !std.posix.termios {
+    if (comptime builtin.os.tag != .linux) return error.UnsupportedTerminal;
+    // Zig's tcgetattr currently erases EIO into Unexpected and prints an errno
+    // diagnostic. Inspect errno before that mapping so a vanished tty is quiet.
+    while (true) {
+        var attributes: std.posix.termios = undefined;
+        switch (std.posix.errno(std.posix.system.tcgetattr(fd, &attributes))) {
+            .SUCCESS => return attributes,
+            .INTR => continue,
+            .IO, .NOTTY => return error.DeadTerminal,
+            else => |err| return std.posix.unexpectedErrno(err),
+        }
+    }
+}
+
+fn setTerminalAttributes(fd: std.posix.fd_t, attributes: std.posix.termios) !void {
+    if (comptime builtin.os.tag != .linux) return error.UnsupportedTerminal;
+    while (true) {
+        switch (std.posix.errno(std.posix.system.tcsetattr(fd, .FLUSH, &attributes))) {
+            .SUCCESS => return,
+            .INTR => continue,
+            .IO, .NOTTY => return error.DeadTerminal,
+            else => |err| return std.posix.unexpectedErrno(err),
+        }
+    }
+}
+
+test "Linux terminal hangup maps real raw-mode ioctl EIO without a generic Unexpected" {
+    if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+    const linux = std.os.linux;
+    const master_result = linux.open("/dev/ptmx", .{ .ACCMODE = .RDWR, .NOCTTY = true }, 0);
+    if (linux.errno(master_result) != .SUCCESS) return error.SkipZigTest;
+    const master: linux.fd_t = @intCast(master_result);
+    var master_open = true;
+    defer if (master_open) {
+        _ = linux.close(master);
+    };
+    var unlocked: c_int = 0;
+    try std.testing.expectEqual(std.posix.E.SUCCESS, linux.errno(linux.ioctl(master, linux.T.IOCSPTLCK, @intFromPtr(&unlocked))));
+    const peer_result = linux.ioctl(master, linux.T.IOCGPTPEER, @as(u32, @bitCast(linux.O{ .ACCMODE = .RDWR, .NOCTTY = true })));
+    try std.testing.expectEqual(std.posix.E.SUCCESS, linux.errno(peer_result));
+    const peer: linux.fd_t = @intCast(peer_result);
+    defer _ = linux.close(peer);
+    const attributes = try terminalAttributes(peer);
+    _ = linux.close(master);
+    master_open = false;
+    try std.testing.expectError(error.DeadTerminal, terminalAttributes(peer));
+    try std.testing.expectError(error.DeadTerminal, setTerminalAttributes(peer, attributes));
+    var raw: RawMode = .{ .original = attributes, .restore = false };
+    raw.leave();
+}
+
 pub const RawMode = struct {
     original: std.posix.termios,
+    restore: bool = true,
 
     pub fn enter() !RawMode {
         if (comptime builtin.os.tag != .linux) return error.UnsupportedTerminal;
         const fd = Io.File.stdin().handle;
-        const original = try std.posix.tcgetattr(fd);
+        const original = try terminalAttributes(fd);
         var raw = original;
         raw.lflag.ICANON = false;
         raw.lflag.ECHO = false;
@@ -39,11 +135,12 @@ pub const RawMode = struct {
         raw.iflag.IXON = false;
         raw.cc[@intFromEnum(std.posix.V.MIN)] = 1;
         raw.cc[@intFromEnum(std.posix.V.TIME)] = 0;
-        try std.posix.tcsetattr(fd, .FLUSH, raw);
+        try setTerminalAttributes(fd, raw);
         return .{ .original = original };
     }
 
     pub fn leave(self: *RawMode) void {
+        if (!self.restore) return;
         if (comptime builtin.os.tag == .linux) {
             std.posix.tcsetattr(Io.File.stdin().handle, .FLUSH, self.original) catch {};
         }
@@ -129,7 +226,10 @@ fn redraw(io: Io, editor: *const Editor, prompt: []const u8, state: *RenderState
 }
 
 fn readByte(reader: *Io.File.Reader) !u8 {
-    return reader.interface.takeByte();
+    return reader.interface.takeByte() catch |err| {
+        if (terminalInputError(err, reader.err) == error.DeadTerminal) return error.DeadTerminal;
+        return err;
+    };
 }
 
 fn readUtf8(reader: *Io.File.Reader, first: u8, out: *[4]u8) ![]const u8 {
@@ -507,8 +607,15 @@ pub fn readLineWithCompleterAndShortcutsPrefill(gpa: std.mem.Allocator, io: Io, 
     var raw = try RawMode.enter();
     defer raw.leave();
     try render.writeAll(io, terminal.bracketed_paste_enable);
-    defer render.writeAll(io, terminal.bracketed_paste_disable) catch {};
+    defer if (raw.restore) render.writeAll(io, terminal.bracketed_paste_disable) catch {};
+    return readEditedLine(gpa, io, reader, editor, bindings, prompt, completer, shortcut, prefill) catch |err| {
+        // Mark the terminal before both cleanup defers run.
+        if (err == error.DeadTerminal) raw.restore = false;
+        return err;
+    };
+}
 
+fn readEditedLine(gpa: std.mem.Allocator, io: Io, reader: *Io.File.Reader, editor: *Editor, bindings: *const keybindings.Manager, prompt: []const u8, completer: ?Completer, shortcut: ?ShortcutHandler, prefill: []const u8) ![]u8 {
     try editor.setText(prefill);
     var render_state: RenderState = .{};
     try redraw(io, editor, prompt, &render_state);

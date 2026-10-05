@@ -369,8 +369,14 @@ pub fn importTyped(gpa: std.mem.Allocator, raw_catalog: []const u8, version: []c
     var arena: std.heap.ArenaAllocator = .init(gpa);
     defer arena.deinit();
     const allocator = arena.allocator();
-    const catalog = try std.json.parseFromSliceLeaky(std.json.Value, allocator, raw_catalog, .{});
+    var catalog = try std.json.parseFromSliceLeaky(std.json.Value, allocator, raw_catalog, .{});
     if (catalog != .object) return error.InvalidCatalogSource;
+    // These commits changed the provider projections without replacing the
+    // immutable catalog archive. Apply the reviewed generator contract while
+    // retaining the raw archive's SHA-256 and revision above.
+    if (std.mem.eql(u8, commit, "a37306d437c528c355357bc9123524de2bf67267") or
+        std.mem.eql(u8, commit, "6100fe5a8358709a26050b8da97ccd188ae93101"))
+        try applyAzureContract(allocator, &catalog);
     var models: std.json.Array = .init(allocator);
     var providers_iterator = catalog.object.iterator();
     while (providers_iterator.next()) |provider| {
@@ -400,6 +406,77 @@ pub fn importTyped(gpa: std.mem.Allocator, raw_catalog: []const u8, version: []c
     return output.toOwnedSlice();
 }
 
+fn applyAzureContract(allocator: std.mem.Allocator, catalog: *std.json.Value) !void {
+    const old_name = "azure-openai-responses";
+    var azure = if (catalog.object.get("azure")) |models| models else catalog.object.get(old_name) orelse return error.MissingAzureCatalogProvider;
+    if (azure != .array) return error.InvalidCatalogProvider;
+    for (azure.array.items) |*model| {
+        if (model.* != .object) return error.InvalidCatalogProvider;
+        try model.object.put(allocator, "provider", .{ .string = "azure" });
+    }
+    _ = catalog.object.swapRemove(old_name);
+    var existing = false;
+    for (azure.array.items) |model| if (std.mem.eql(u8, try getString(model.object, "id"), "deepseek-v4-pro")) {
+        existing = true;
+        break;
+    };
+    if (!existing) {
+        const deepseek = catalog.object.get("deepseek") orelse return error.MissingDeepSeekCatalogProvider;
+        if (deepseek != .array) return error.InvalidCatalogProvider;
+        var found = false;
+        for (deepseek.array.items) |source| {
+            if (source != .object or !std.mem.eql(u8, try getString(source.object, "id"), "deepseek-v4-pro")) continue;
+            var model = try source.object.clone(allocator);
+            try model.put(allocator, "provider", .{ .string = "azure" });
+            try model.put(allocator, "baseUrl", .{ .string = "" });
+            const cost = try std.json.parseFromSliceLeaky(std.json.Value, allocator, "{\"input\":1.925,\"output\":3.828,\"cacheRead\":0.165,\"cacheWrite\":0}", .{});
+            try model.put(allocator, "cost", cost);
+            const original_compat: std.json.Value = model.get("compat") orelse .{ .object = .empty };
+            if (original_compat != .object) return error.InvalidCatalogCompat;
+            var compat = try original_compat.object.clone(allocator);
+            try compat.put(allocator, "supportsDeveloperRole", .{ .bool = false });
+            try compat.put(allocator, "supportsMidConvoSystemMessages", .{ .bool = true });
+            try compat.put(allocator, "thinkingFormat", .{ .string = "openai" });
+            try compat.put(allocator, "supportsLongCacheRetention", .{ .bool = false });
+            try model.put(allocator, "compat", .{ .object = compat });
+            const thinking = try std.json.parseFromSliceLeaky(std.json.Value, allocator, "{\"minimal\":null,\"low\":\"low\",\"medium\":\"medium\",\"high\":\"high\",\"xhigh\":null,\"max\":null}", .{});
+            try model.put(allocator, "thinkingLevelMap", thinking);
+            try azure.array.append(.{ .object = model });
+            found = true;
+            break;
+        }
+        if (!found) return error.MissingAzureDeepSeekSource;
+    }
+    try catalog.object.put(allocator, "azure", azure);
+}
+
+test "reviewed Azure catalog projection remaps provider clones DeepSeek and retains original metadata" {
+    var arena: std.heap.ArenaAllocator = .init(std.testing.allocator);
+    defer arena.deinit();
+    const allocator = arena.allocator();
+    var catalog = try std.json.parseFromSliceLeaky(std.json.Value, allocator,
+        \\{"azure-openai-responses":[{"id":"gpt-5.4","provider":"azure-openai-responses","api":"azure-openai-responses"}],"deepseek":[{"id":"deepseek-v4-pro","provider":"deepseek","api":"openai-completions","baseUrl":"https://api.deepseek.com","compat":{"requiresReasoningContentOnAssistantMessages":true,"supportsStore":false,"thinkingFormat":"deepseek"}}]}
+    , .{});
+    try applyAzureContract(allocator, &catalog);
+    try std.testing.expect(!catalog.object.contains("azure-openai-responses"));
+    try std.testing.expectEqual(@as(usize, 2), catalog.object.count());
+    const azure = catalog.object.get("azure").?.array.items;
+    try std.testing.expectEqual(@as(usize, 2), azure.len);
+    try std.testing.expectEqualStrings("azure", azure[0].object.get("provider").?.string);
+    try std.testing.expectEqualStrings("azure-openai-responses", azure[0].object.get("api").?.string);
+    const projected = azure[1].object;
+    try std.testing.expectEqualStrings("openai-completions", projected.get("api").?.string);
+    try std.testing.expectEqualStrings("openai", projected.get("compat").?.object.get("thinkingFormat").?.string);
+    try std.testing.expect(projected.get("compat").?.object.get("requiresReasoningContentOnAssistantMessages").?.bool);
+    try std.testing.expect(!projected.get("compat").?.object.get("supportsLongCacheRetention").?.bool);
+    try std.testing.expectEqualStrings("high", projected.get("thinkingLevelMap").?.object.get("high").?.string);
+    try std.testing.expect(projected.get("thinkingLevelMap").?.object.get("max").? == .null);
+    try std.testing.expectEqualStrings("deepseek", catalog.object.get("deepseek").?.array.items[0].object.get("compat").?.object.get("thinkingFormat").?.string);
+    try std.testing.expectApproxEqAbs(@as(f64, 1.925), projected.get("cost").?.object.get("input").?.float, 0.000001);
+    try applyAzureContract(allocator, &catalog);
+    try std.testing.expectEqual(@as(usize, 2), catalog.object.get("azure").?.array.items.len);
+}
+
 test "Zig source strings escape control bytes without JavaScript Unicode escapes" {
     var output: std.Io.Writer.Allocating = .init(std.testing.allocator);
     defer output.deinit();
@@ -422,6 +499,6 @@ test "catalog generator accepts Pi 1.0.2 per-thinking-level metadata and rejects
     try std.testing.expect(std.mem.indexOf(u8, output.written(), ".name = \"vendor\", .value_json = \"{\\\"x\\\":false}\"") != null);
     var invalid = try std.json.parseFromSlice(std.json.Value, gpa, "{\"extra\":{}}", .{});
     defer invalid.deinit();
-    try parsed.value.object.put("samplingParamsByThinkingLevel", invalid.value);
+    try parsed.value.object.put(parsed.arena.allocator(), "samplingParamsByThinkingLevel", invalid.value);
     try std.testing.expectError(error.InvalidCatalogSampling, renderModel(&output.writer, parsed.value.object, true));
 }

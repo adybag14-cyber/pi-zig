@@ -3,6 +3,7 @@
 //! Responses-style input replay, function calls/results, tools, reasoning,
 //! streaming output events, usage accounting, cancellation, and custom headers.
 const std = @import("std");
+const azure = @import("azure.zig");
 const Io = std.Io;
 const http_proxy = @import("http_proxy.zig");
 const retry_mod = @import("retry.zig");
@@ -488,6 +489,7 @@ pub const ResponsesClient = struct {
     auth_mode: AuthMode = .bearer,
     api_version: ?[]const u8 = null,
     protocol_mode: ProtocolMode = .standard,
+    azure_options: azure.Options = .{},
     transport: codex_ws.Transport = .sse,
     /// Maximum idle time for Codex HTTP response headers and each body read.
     /// Zero disables the deadline.
@@ -555,12 +557,19 @@ pub const ResponsesClient = struct {
         delta_ctx: ?*anyopaque,
     ) !ai.ModelResponse {
         try self.ensureTokenFresh();
+        const azure_protocol = self.protocol_mode == .azure or self.auth_mode == .azure_api_key;
+        var azure_options = azure.Options.merge(self.azure_options, request_options.azure_options);
+        if (azure_options.api_version == null) azure_options.api_version = self.api_version;
+        const azure_config = if (azure_protocol) azure.resolveConfig(gpa, self.base_url, self.environ, azure_options) catch |err| return azure.configurationErrorResponse(ai.ModelResponse, gpa, self.provider_id, self.model, err) else null;
+        defer if (azure_config) |config| config.deinit(gpa);
+        const deployment = if (azure_protocol) try azure.resolveDeploymentName(gpa, self.model, self.environ, azure_options) else null;
+        defer if (deployment) |value| gpa.free(value);
         const effective_max_tokens = context_estimate.clampMaxTokens(self.context_window, ai.resolveMaxTokens(self.max_tokens, request_options.max_tokens), messages, tools_json);
         const effective_cache_retention: metadata.CacheRetention = ai.resolveCacheRetention(self.cache_retention, request_options);
         const effective_session_id: ?[]const u8 = ai.resolveSessionAffinity(self.session_id, request_options);
         const sampling = try metadata.resolveSamplingParams(gpa, self.sampling_params, self.sampling_params_by_thinking_level, self.reasoning, self.thinking_level_map, self.thinking, request_options.sampling_params);
         defer gpa.free(sampling);
-        const payload = if (self.protocol_mode == .codex)
+        const original_payload = if (self.protocol_mode == .codex)
             try buildCodexRequestBody(gpa, self.model, messages, tools_json, .{
                 .stream = streaming,
                 .thinking = self.thinking,
@@ -577,7 +586,7 @@ pub const ResponsesClient = struct {
                 .tool_choice = request_options.tool_choice,
             })
         else
-            try buildRequestBody(gpa, self.model, messages, tools_json, .{
+            try buildRequestBody(gpa, deployment orelse self.model, messages, tools_json, .{
                 .stream = streaming,
                 .thinking = self.thinking,
                 .reasoning = self.reasoning,
@@ -591,10 +600,16 @@ pub const ResponsesClient = struct {
                 .provider_id = self.provider_id,
                 .api_id = protocolApiName(self.protocol_mode),
                 .tool_choice = request_options.tool_choice,
+                .catalog_model = self.model,
             });
-        defer gpa.free(payload);
+        defer gpa.free(original_payload);
+        const hook_payload = if (request_options.on_payload) |hook| try hook(request_options.on_payload_ctx, gpa, original_payload, .{ .id = self.model, .provider = self.provider_id, .api = protocolApiName(self.protocol_mode) }) else null;
+        defer if (hook_payload) |value| gpa.free(value);
+        const payload = hook_payload orelse original_payload;
         const url = if (self.protocol_mode == .codex)
             try resolveCodexUrl(gpa, self.base_url)
+        else if (azure_config) |config|
+            try azure.endpoint(gpa, config.base_url, "responses", config.api_version)
         else if (self.api_version) |version|
             try std.fmt.allocPrint(gpa, "{s}/responses?api-version={s}", .{ self.base_url, version })
         else
@@ -619,6 +634,7 @@ pub const ResponsesClient = struct {
         if (self.protocol_mode == .codex) {
             // Codex applies custom headers first, then mandatory identity/auth headers.
             for (self.custom_headers) |header| try putHeader(gpa, &headers, header.name, header.value);
+            for (request_options.headers) |header| try putHeader(gpa, &headers, header.name, header.value);
             try putHeader(gpa, &headers, "authorization", authorization.?);
             codex_account_id = try extractCodexAccountId(gpa, self.api_key);
             try putHeader(gpa, &headers, "chatgpt-account-id", codex_account_id.?);
@@ -662,6 +678,7 @@ pub const ResponsesClient = struct {
             }
             for (self.custom_headers) |header| try putHeader(gpa, &headers, header.name, header.value);
         }
+        if (self.protocol_mode != .codex) for (request_options.headers) |header| try putHeader(gpa, &headers, header.name, header.value);
         try putHeader(gpa, &headers, "accept", if (streaming) "text/event-stream" else "application/json");
 
         var live = ResponsesLive.init(gpa, on_delta, delta_ctx, streaming, self.abort_flag);
@@ -1289,6 +1306,7 @@ fn putHeader(gpa: std.mem.Allocator, headers: *std.ArrayList(std.http.Header), n
 }
 
 pub const RequestOptions = struct {
+    catalog_model: ?[]const u8 = null,
     stream: bool = false,
     thinking: ai.ThinkingLevel = .off,
     reasoning: bool = true,
@@ -1711,7 +1729,7 @@ pub fn buildRequestBody(
     try w.writeAll("{\"model\":");
     try std.json.Stringify.value(model, .{}, w);
     try w.writeAll(",\"input\":");
-    try writeResponseInput(gpa, w, messages, tools_json, options.compat, options.provider_id, options.api_id, model, options.input_image);
+    try writeResponseInput(gpa, w, messages, tools_json, options.compat, options.provider_id, options.api_id, options.catalog_model orelse model, options.input_image);
     if (!hasSampling(options.sampling_params, "stream")) try w.print(",\"stream\":{s}", .{if (options.stream) "true" else "false"});
     if (!hasSampling(options.sampling_params, "store")) try w.writeAll(",\"store\":false");
     if (options.session_id) |sid| {
