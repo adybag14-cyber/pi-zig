@@ -587,7 +587,8 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
         engine.host_control_pump = null;
     }
     var reader_group: std.Io.Group = .init;
-    reader_group.async(io, Transport.readerTask, .{&transport});
+    // The persistent stdin reader must not execute eagerly on the JS owner.
+    try reader_group.concurrent(io, Transport.readerTask, .{&transport});
     defer {
         reader_group.cancel(io);
         reader_group.await(io) catch {};

@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "recordedUtc": "2026-10-05T11:35:47.8543999+00:00",
+  "status": "in_progress",
+  "parityCertified": false,
+  "sourceCheckpoint": "59cb5cc638d5e6811c8643968e3b9eb76cbbebca",
+  "failedHostedRun": "https://github.com/adybag14-cyber/pi-zig/actions/runs/37298280278",
+  "namedMacDiagnostic": "https://github.com/adybag14-cyber/pi-zig/actions/runs/37302812369",
+  "rootCause": "Zig0.16 eager Group/Select.async fallback when async pool is saturated can execute persistent reader/dialog/abort watcher inline and block the owning loop before it can progress",
+  "productionRepair": "Mandatory Group/Select.concurrent for persistent readers, dialog/ticker tasks and callback/timeout/abort races; cleanup on allocation/concurrency failure and drain raced accepted streams",
+  "beforeAfter": "Unchanged OAuth callback fails at originaldeadline on4CPU before, passes4/2/1CPU after. Native runtime real-selector before hangsCPU1, after full10tests incl exact formerlyhanging Macstandalone testcase passCPU1.",
+  "deterministicRegression": "OAuth child receivesone availableCPU only; invokingtestthread affinity restored on successful/failedspawn. Native runtime explicitly limitsasync/concurrent implementation resources and verifies reuse/exactchildcleanup.",
+  "windowsGraph": {
+    "modulePassed": 1117,
+    "dedicatedPassed": 390,
+    "dedicatedSkipped": 5,
+    "steps": 69,
+    "failures": 0,
+    "moduleSkipped": 28
+  },
+  "linuxGraph": {
+    "modulePassed": 1137,
+    "dedicatedPassed": 423,
+    "steps": 69,
+    "moduleSkipped": 8,
+    "failures": 0
+  },
+  "sourceEquivalence": {
+    "baseline": "59cb5cc638d5e6811c8643968e3b9eb76cbbebca",
+    "source": "C:\\Users\\adyba\\pi-zig-ci-repair-verified-20261005",
+    "native_source": "/tmp/pi-ci59cb-scheduler-source-20261005",
+    "tracked_files": 760,
+    "sha256_manifest": "ffed412c3549c9b1b67eebd3ad116cdbf7254b3f8652bf4c15915c11c3f7b81a",
+    "byte_identical": true,
+    "verified_utc": "2026-10-05T11:30:14.5115235+00:00"
+  },
+  "jobs": {
+    "ci59cb-scheduler-native-full-one-cpu-20261005": {
+      "name": "ci59cb-scheduler-native-full-one-cpu-20261005",
+      "pid": 10376,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --cd /tmp/pi-ci59cb-scheduler-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 290s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Dtarget=x86_64-linux-gnu -Dsqlite-lib-dir=/tmp/pi-ci-d0-sqlite-lib -j2 --summary all --cache-dir /tmp/pi-ci59cb-scheduler-local --global-cache-dir /tmp/pi-ci-d0-native-global",
+      "created_utc": "2026-10-05T11:27:22.0348360Z",
+      "launched_utc": "2026-10-05T11:27:22.0319832+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-ci-repair-verified-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:28:46.3578178+00:00"
+    },
+    "ci59cb-scheduler-windows-full-20261005": {
+      "name": "ci59cb-scheduler-windows-full-20261005",
+      "pid": 40952,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -j2 --summary all -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64",
+      "created_utc": "2026-10-05T11:30:14.5919070Z",
+      "launched_utc": "2026-10-05T11:30:14.5905187+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-ci-repair-verified-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T11:32:06.5869634+00:00"
+    },
+    "ci59cb-oauth-four-cpu-repro-20261005": {
+      "name": "ci59cb-oauth-four-cpu-repro-20261005",
+      "pid": 46908,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" -d Ubuntu --exec /usr/bin/timeout --signal=TERM --kill-after=5s 40s /usr/bin/taskset -c 0-3 /usr/bin/env PI_TEST_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/ci59cb-linux-candidate/bin/pi PI_TEST_AUTH_OPENER_BINARY=/mnt/c/Users/adyba/pi-zig-update-evidence-20261003/ci59cb-auth-opener /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/ci59cb-auth-dialog-test",
+      "created_utc": "2026-10-05T11:15:15.2488650Z",
+      "launched_utc": "2026-10-05T11:15:15.2481373+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-ci-repair-verified-20261005",
+      "status": "failed",
+      "exit_code": 1,
+      "completed_utc": "2026-10-05T11:15:25.7866517+00:00"
+    }
+  },
+  "hostedRepairVerification": "Pending newsource run; all ordinary namedWin/MacUIcases passed59cb separately but combinedsuite and exactMacstandalone stalled"
+}

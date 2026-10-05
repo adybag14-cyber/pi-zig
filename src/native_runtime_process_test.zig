@@ -354,6 +354,48 @@ test "native runtime UI real selector promises FIFO retained actions headless er
     try fixture.noBridge();
 }
 
+test "native runtime reader and human dialogs progress with zero eager async capacity" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.init();
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/native.ts", .data = ui_source });
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const io = threaded.io();
+    var controller = try ui_mod.Controller.init(gpa, io, false, 80);
+    defer controller.deinit();
+    var dialogs: DialogUi = .{ .controller = &controller, .io = io };
+    defer dialogs.deinit();
+    const started = try runtime_mod.Runtime.startNative(gpa, io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    started.runtime.setUiBridge(dialogs.bridge());
+    try started.runtime.setContextJson("{\"hasUI\":true}");
+    started.runtime.timeout_ms = 30;
+    const human = try started.runtime.invokeCommand("ui", "human", "{}");
+    defer gpa.free(human);
+    try std.testing.expect(std.mem.indexOf(u8, human, "green") != null);
+    started.runtime.timeout_ms = 1000;
+    const cancelled = try started.runtime.invokeCommand("ui", "cancel", "{}");
+    defer gpa.free(cancelled);
+    try std.testing.expect(std.mem.indexOf(u8, cancelled, "cancel-defaults") != null);
+    try std.testing.expectEqual(@as(usize, 3), dialogs.cancelled.load(.acquire));
+    try std.testing.expectEqual(@as(usize, 0), dialogs.active.load(.acquire));
+    try std.testing.expect(!started.runtime.closed);
+    const reused = try started.runtime.invokeCommand("ui", "roundtrip", "{}");
+    defer gpa.free(reused);
+    try std.testing.expect(std.mem.indexOf(u8, reused, "Ada") != null);
+}
+
+test "native runtime startup releases its exact worker when concurrency is unavailable" {
+    var fixture = try Fixture.init();
+    defer fixture.deinit();
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing, .concurrent_limit = .nothing });
+    defer threaded.deinit();
+    try std.testing.expectError(error.ConcurrencyUnavailable, runtime_mod.Runtime.startNative(std.testing.allocator, threaded.io(), fixture.source_path, fixture.options()));
+    try fixture.noBridge();
+}
+
 test "native runtime UI explicit cancellation timeout and live invocation abort join managed tasks and reuse" {
     const gpa = std.testing.allocator;
     var fixture = try Fixture.init();

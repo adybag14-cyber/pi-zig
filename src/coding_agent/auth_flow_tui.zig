@@ -474,14 +474,22 @@ pub const Controller = struct {
             try tui_render.writeAll(self.io, application.enter_sequence);
         }
         self.state = state;
+        errdefer {
+            @atomicStore(bool, &state.stop, true, .release);
+            state.group.cancel(self.io);
+            state.group.await(self.io) catch {};
+            self.state = null;
+        }
         state.mutex.lockUncancelable(state.io);
         state.paintLocked() catch |err| {
             state.mutex.unlock(state.io);
             return err;
         };
         state.mutex.unlock(state.io);
-        state.group.async(self.io, State.inputTask, .{state});
-        state.group.async(self.io, State.tickerTask, .{state});
+        // These tasks live until the dialog closes. Eager async execution
+        // would block begin before the authentication transport can progress.
+        try state.group.concurrent(self.io, State.inputTask, .{state});
+        try state.group.concurrent(self.io, State.tickerTask, .{state});
     }
 
     pub fn close(self: *Controller) void {
