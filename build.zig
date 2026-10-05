@@ -376,6 +376,21 @@ pub fn build(b: *std.Build) void {
     const native_runtime_step = b.step("test-native-runtime", "Exercise the persistent native extension runtime and host without Node");
     native_runtime_step.dependOn(&run_native_runtime_tests.step);
     test_step.dependOn(&run_native_runtime_tests.step);
+    for ([_]struct { name: []const u8, source: []const u8 }{
+        .{ .name = "test-provider-method-protocol", .source = "src/provider_method_protocol_test.zig" },
+        .{ .name = "test-provider-stream-protocol", .source = "src/provider_stream_protocol_test.zig" },
+    }) |contract| {
+        const raw_tests = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path(contract.source), .target = target, .optimize = optimize }),
+            .use_llvm = use_llvm,
+        });
+        const run_raw_tests = b.addRunArtifact(raw_tests);
+        run_raw_tests.step.dependOn(b.getInstallStep());
+        run_raw_tests.setEnvironmentVariable("PI_TEST_BINARY", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi.exe" else "pi"));
+        const raw_step = b.step(contract.name, "Exercise original provider raw protocol contracts through the native worker without Node");
+        raw_step.dependOn(&run_raw_tests.step);
+        test_step.dependOn(&run_raw_tests.step);
+    }
     const auth_screen_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/auth_screen_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,

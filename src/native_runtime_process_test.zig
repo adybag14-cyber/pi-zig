@@ -8,6 +8,24 @@ const integration_mod = @import("extensions/integration.zig");
 const provider_registry_mod = @import("extensions/provider_registry.zig");
 const provider_stream_mod = @import("extensions/provider_stream.zig");
 
+test "native runtime record budget suspends beyond ordinary deadline and rearms after human close" {
+    var budget: runtime_mod.NativeRecordBudget = .{};
+    try std.testing.expectEqual(@as(?i64, 30), try budget.remaining(100, 30, false));
+    try std.testing.expectEqual(@as(?i64, 1), try budget.remaining(129, 30, false));
+    try std.testing.expectEqual(@as(?i64, null), try budget.remaining(129, 30, true));
+    // A genuine admitted human wait can exceed the ordinary timeout by any
+    // amount, independent of subprocess startup and host scheduling latency.
+    try std.testing.expectEqual(@as(?i64, null), try budget.remaining(10_000, 30, true));
+    try std.testing.expectEqual(@as(?i64, 30), try budget.remaining(10_001, 30, false));
+    try std.testing.expectEqual(@as(?i64, 1), try budget.remaining(10_030, 30, false));
+    try std.testing.expectError(error.JavaScriptExtensionTimeout, budget.remaining(10_031, 30, false));
+    try std.testing.expectEqual(@as(?i64, null), try budget.remaining(20_000, 0, false));
+    try std.testing.expectEqual(@as(?i64, 30), try budget.remaining(20_001, 30, false));
+    var ordinary: runtime_mod.NativeRecordBudget = .{};
+    _ = try ordinary.remaining(100, 30, false);
+    try std.testing.expectError(error.JavaScriptExtensionTimeout, ordinary.remaining(130, 30, false));
+}
+
 const source =
     \\import {Type} from 'typebox';
     \\export default function(pi){let calls=0;
@@ -640,7 +658,6 @@ test "native runtime reader and human dialogs progress with zero eager async cap
     defer gpa.free(started.manifest_json);
     started.runtime.setUiBridge(dialogs.bridge());
     try started.runtime.setContextJson("{\"hasUI\":true}");
-    started.runtime.timeout_ms = 30;
     const human = try started.runtime.invokeCommand("ui", "human", "{}");
     defer gpa.free(human);
     try std.testing.expect(std.mem.indexOf(u8, human, "green") != null);
@@ -684,7 +701,6 @@ test "native runtime UI explicit cancellation timeout and live invocation abort 
     try std.testing.expect(std.mem.indexOf(u8, result, "cancel-defaults") != null);
     try std.testing.expectEqual(@as(usize, 3), dialogs.cancelled.load(.acquire));
     try std.testing.expectEqual(@as(usize, 0), dialogs.active.load(.acquire));
-    started.runtime.timeout_ms = 30;
     const human = try started.runtime.invokeCommand("ui", "human", "{}");
     defer gpa.free(human);
     try std.testing.expect(std.mem.indexOf(u8, human, "green") != null);

@@ -542,3 +542,17 @@ Required outstanding work:
 Local task evidence is outside the repository at
 `C:\Users\adyba\pi-zig-update-evidence-20261003`. Task process records include
 PID, start time, executable, command line, exit status and separate output logs.
+
+October 5 native provider raw protocol checkpoint:
+
+- Zig drivers replace the provider-method and stream JavaScript drivers, retaining
+  original user-authored extension inputs and complete behavior checks.
+- Actual native workers run with Node absent; supplied stream cancellation reasons
+  survive cleanup, including bounded hostile retirement with an original cause.
+- Injected clock values verify human-wait budget suspension and exact ordinary
+  timeout rearming. Actual process tests separately verify dialog concurrency.
+- Complete Debug graphs pass 109/109 steps: Windows 467 passes/32 skips plus
+  1,148 module passes/28 skips; Linux 639 dedicated and1,168 module passes/eight skips.
+  Optimized runtime plus both raw targets pass Windows25/six skips and Linux31/31 See exact evidence:
+  verification/checkpoint-189/native-provider-raw-budget-20261005.json.
+- Three legacy JavaScript files remain; default-native and parity stay incomplete.

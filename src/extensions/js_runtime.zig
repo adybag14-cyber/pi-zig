@@ -64,6 +64,23 @@ pub const ToolUpdateFn = *const fn (?*anyopaque, []const u8) anyerror!void;
 /// protocol-synchronized and reusable.
 pub const ProviderStreamEventFn = *const fn (?*anyopaque, u64, []const u8) anyerror!void;
 
+/// The ordinary record budget starts when no host UI owns the human wait.
+/// Timestamp input is explicit so suspension and resume are testable without
+/// relying on subprocess admission latency or operating-system scheduling.
+pub const NativeRecordBudget = struct {
+    deadline: ?i64 = null,
+    pub fn remaining(self: *@This(), now: i64, timeout_ms: u64, human_wait: bool) !?i64 {
+        if (human_wait or timeout_ms == 0) {
+            self.deadline = null;
+            return null;
+        }
+        if (self.deadline == null) self.deadline = now +| @as(i64, @intCast(@min(timeout_ms, std.math.maxInt(i64))));
+        const value = self.deadline.? - now;
+        if (value <= 0) return error.JavaScriptExtensionTimeout;
+        return value;
+    }
+};
+
 // Native dialog callbacks contain no JavaScript. A separate, bounded pipe
 // reader keeps receiving cancellation records while one frontend callback
 // waits in cancellable native I/O. Record memory uses a thread-safe allocator.
@@ -110,7 +127,7 @@ const NativeReadSession = struct {
     }
 
     fn next(self: *@This(), dialogs: *NativeDialogs) ![]u8 {
-        var deadline: ?i64 = null;
+        var budget: NativeRecordBudget = .{};
         while (true) {
             self.wake.reset();
             try dialogs.progress();
@@ -127,14 +144,8 @@ const NativeReadSession = struct {
             if (finished) return failure orelse error.JavaScriptExtensionClosed;
             // Human dialogs do not inherit the short ordinary script-record
             // timeout. Their own cancellation/deadline arrives on the wire.
-            if (dialogs.active != null or self.runtime.timeout_ms == 0) {
-                deadline = null;
-                try self.wake.wait(self.runtime.io);
-            } else {
-                const now = Io.Clock.awake.now(self.runtime.io).toMilliseconds();
-                if (deadline == null) deadline = now +| @as(i64, @intCast(@min(self.runtime.timeout_ms, std.math.maxInt(i64))));
-                const remaining = deadline.? - now;
-                if (remaining <= 0) return error.JavaScriptExtensionTimeout;
+            const now = Io.Clock.awake.now(self.runtime.io).toMilliseconds();
+            if (try budget.remaining(now, self.runtime.timeout_ms, dialogs.active != null)) |remaining| {
                 const timeout: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(remaining), .clock = .awake } };
                 self.wake.waitTimeout(self.runtime.io, timeout) catch |err| switch (err) {
                     // Event waits may report a spurious wake as Timeout.
@@ -142,6 +153,8 @@ const NativeReadSession = struct {
                     error.Timeout => continue,
                     else => return err,
                 };
+            } else {
+                try self.wake.wait(self.runtime.io);
             }
         }
     }

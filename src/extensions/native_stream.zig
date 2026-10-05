@@ -528,10 +528,15 @@ pub const Runner = struct {
 
     pub fn poll(self: *Runner) !void {
         if (!self.active or self.cleaning) return;
-        if (!self.providers.?.live(self.callback, self.provider, self.generation)) return error.NativeProviderStreamRetired;
         const aborted = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, self.signal.?, "aborted"));
         defer self.engine.freeValue(aborted);
-        if (c.JS_ToBool(self.engine.context, aborted) != 0) return error.NativeProviderStreamAborted;
+        if (c.JS_ToBool(self.engine.context, aborted) != 0) {
+            const reason = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, self.signal.?, "reason"));
+            defer self.engine.freeValue(reason);
+            _ = try self.engine.checked(c.JS_Throw(self.engine.context, c.JS_DupValue(self.engine.context, reason)));
+            return error.JavaScriptException;
+        }
+        if (!self.providers.?.live(self.callback, self.provider, self.generation)) return error.NativeProviderStreamRetired;
     }
 
     pub fn acknowledge(self: *Runner, sequence: u64, ok: bool, accepted: bool, message: c.JSValue) !void {
@@ -621,8 +626,15 @@ pub const Runner = struct {
             }
             defer if (original) |value| self.engine.freeValue(value);
             if (!self.retire(iterator)) {
-                _ = c.JS_ThrowTypeError(self.engine.context, "PI_PROVIDER_STREAM_RETIRE_TIMEOUT: native iterator did not settle return()");
-                _ = self.engine.checked(c.JS_Throw(self.engine.context, c.JS_GetException(self.engine.context))) catch {};
+                const failure = try self.engine.checked(c.JS_NewError(self.engine.context));
+                defer self.engine.freeValue(failure);
+                const text = if (original) |value| self.engine.toString(value) catch null else null;
+                defer if (text) |value| self.engine.gpa.free(value);
+                const message = try std.fmt.allocPrint(self.engine.gpa, "PI_PROVIDER_STREAM_RETIRE_TIMEOUT: {s}", .{text orelse "native iterator did not settle return()"});
+                defer self.engine.gpa.free(message);
+                try property(self.engine, failure, "message", try self.engine.checked(c.JS_NewStringLen(self.engine.context, message.ptr, message.len)));
+                if (original) |value| try property(self.engine, failure, "cause", c.JS_DupValue(self.engine.context, value));
+                _ = self.engine.checked(c.JS_Throw(self.engine.context, c.JS_DupValue(self.engine.context, failure))) catch {};
                 return error.JavaScriptException;
             }
             if (original) |value| _ = self.engine.checked(c.JS_Throw(self.engine.context, c.JS_DupValue(self.engine.context, value))) catch {};
@@ -736,4 +748,59 @@ test "native provider validation accepts only exact event names numeric indices 
     var right = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, "{\"large\":9007199254740992,\"one\":1}", .{});
     defer right.deinit();
     try std.testing.expect(jsonEqual(left.value, right.value));
+}
+
+test "native provider cancellation retains supplied reason identity through throwing and hostile iterator cleanup" {
+    const abort_signal = @import("abort_signal.zig");
+    const Control = struct {
+        fn pump(_: *engine_mod.Engine) !bool {
+            return false;
+        }
+        fn event(_: ?*anyopaque, _: u64, _: []const u8) !void {
+            return error.UnexpectedCancelledStreamEvent;
+        }
+    };
+    for ([_]bool{ false, true }) |hostile| {
+        const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+        defer engine.deinit();
+        engine.native_io = std.testing.io;
+        engine.host_control_pump = Control.pump;
+        try abort_signal.install(engine);
+        try install(engine);
+        var providers = providers_mod.Providers.init(engine);
+        defer providers.deinit();
+        const source = if (hostile)
+            "export const original={supplied:'cancelled-by-native-185'};export const config={callback(){return {[Symbol.asyncIterator](){return this},next(){return new Promise(()=>{})},return(){return new Promise(()=>{})}}}}"
+        else
+            "export const original={supplied:'cancelled-by-native-185'};export const config={callback(){return {[Symbol.asyncIterator](){return this},next(){return new Promise(()=>{})},return(){throw Error('secondary-cleanup-must-not-replace')}}}}";
+        const module = try engine.evalModule(source, "native-stream-cancel-reason.mjs");
+        defer engine.freeValue(module);
+        const original = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "original"));
+        defer engine.freeValue(original);
+        const config = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "config"));
+        defer engine.freeValue(config);
+        const encoded = try providers.register("owned", config, false);
+        defer engine.freeValue(encoded);
+        const descriptor = try engine.checked(c.JS_GetPropertyStr(engine.context, encoded, "callback"));
+        defer engine.freeValue(descriptor);
+        const id_value = try engine.checked(c.JS_GetPropertyStr(engine.context, descriptor, "__pi_callback_id"));
+        defer engine.freeValue(id_value);
+        const id = try engine.toString(id_value);
+        defer engine.gpa.free(id);
+        const arguments = try engine.checked(c.JS_NewArray(engine.context));
+        defer engine.freeValue(arguments);
+        const signal = try abort_signal.create(engine);
+        defer engine.freeValue(signal);
+        try abort_signal.abort(engine, signal, original);
+        var runner: Runner = .{ .engine = engine };
+        try std.testing.expectError(error.JavaScriptException, runner.consume(&providers, id, "owned", 1, arguments, signal, .{ .context = null, .event = Control.event }, "1", false));
+        if (hostile) {
+            const failure = engine.captured_exception.?;
+            const cause = try engine.checked(c.JS_GetPropertyStr(engine.context, failure, "cause"));
+            defer engine.freeValue(cause);
+            try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, cause));
+            try std.testing.expect(std.mem.indexOf(u8, engine.last_error.?, "PI_PROVIDER_STREAM_RETIRE_TIMEOUT") != null);
+        } else try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, engine.captured_exception.?));
+        try std.testing.expect(!runner.active and !runner.cleaning);
+    }
 }
