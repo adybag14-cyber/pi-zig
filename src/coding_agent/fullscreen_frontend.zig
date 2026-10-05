@@ -710,11 +710,15 @@ pub const Frontend = struct {
                 update.* = .{ .busy = self.busy };
                 if (value.scene.overlay) |overlay| {
                     self.app.root = self.stack.component();
-                    self.app.setFocus(self.editorComponent());
-                    if (!overlay.hidden) self.component_overlay_id = try self.app.pushOverlay(self.customComponent(), .{ .width = overlay.width, .height = overlay.height, .placement = .{ .absolute = .{ .x = @intCast(overlay.column), .y = @intCast(overlay.row) } }, .modal = value.scene.focused and overlay.capture_input });
+                    self.app.setFocus(if (value.scene.focus_mode == .none) null else self.editorComponent());
+                    if (!overlay.hidden) self.component_overlay_id = try self.app.pushOverlay(self.customComponent(), .{ .width = overlay.width, .height = overlay.height, .placement = .{ .absolute = .{ .x = @intCast(overlay.column), .y = @intCast(overlay.row) } }, .modal = value.scene.focused });
                 } else {
                     self.app.root = self.customComponent();
-                    self.app.setFocus(self.customComponent());
+                    self.app.setFocus(switch (value.scene.focus_mode) {
+                        .custom => self.customComponent(),
+                        .editor => self.editorComponent(),
+                        .none => null,
+                    });
                 }
                 self.app.invalidatePaint();
                 try self.resizeComponent(terminal.terminalDimensions(&self.environ, .{ .columns = 80, .rows = 24 }));
@@ -828,7 +832,8 @@ pub const Frontend = struct {
         self.mutex.unlock(self.io);
     }
     fn input(self: *Frontend, packet: line_editor.InputDecoder.Input) !void {
-        if (self.component) |scene| if (scene.focused and (scene.overlay == null or (scene.overlay.?.capture_input and !scene.overlay.?.hidden))) {
+        if (self.component) |scene| if (scene.focus_mode == .none) return;
+        if (self.component) |scene| if (scene.focused and (scene.overlay == null or !scene.overlay.?.hidden)) {
             const queue = self.component_controls orelse return error.NativeComponentChannelClosed;
             const owned = switch (packet) {
                 .key => |value| blk: {
@@ -843,7 +848,7 @@ pub const Frontend = struct {
                 .paste => |value| try std.fmt.allocPrint(self.gpa, "\x1b[200~{s}\x1b[201~", .{value}),
             };
             errdefer self.gpa.free(owned);
-            try queue.send(.{ .gpa = self.gpa, .fence = scene.fence, .kind = .{ .input = owned } });
+            try queue.send(.{ .gpa = self.gpa, .fence = scene.fence, .target_id = scene.target_id, .target_generation = scene.target_generation, .kind = .{ .input = owned } });
             return;
         };
         switch (packet) {

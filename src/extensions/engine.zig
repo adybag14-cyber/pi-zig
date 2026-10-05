@@ -489,6 +489,22 @@ pub const Engine = struct {
         return if (self.host_control_pump) |pump| try pump(self) else false;
     }
 
+    /// Drain queued microtasks without awaiting a promise or sleeping on the
+    /// host scheduler. Used by the persistent owner's idle event loop.
+    pub fn drainReadyJobs(self: *Engine) !bool {
+        var jobs: usize = 0;
+        while (c.JS_IsJobPending(self.runtime)) {
+            if (jobs >= self.options.job_budget) return error.JavaScriptJobLimit;
+            var context: ?*c.JSContext = null;
+            if (c.JS_ExecutePendingJob(self.runtime, &context) < 0) {
+                self.captureException(context orelse self.context);
+                return error.JavaScriptException;
+            }
+            jobs += 1;
+        }
+        return jobs != 0;
+    }
+
     fn refreshUiDeadline(self: *Engine) void {
         if (self.host_ui_pending == 0 or self.host_await_deadline_ms == null or self.options.host_await_timeout_ms == 0) return;
         if (self.native_io) |io| self.host_await_deadline_ms = std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(self.options.host_await_timeout_ms, std.math.maxInt(i64))));

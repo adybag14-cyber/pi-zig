@@ -41,17 +41,28 @@ const Custom = struct {
     hidden: bool = false,
     permanently_hidden: bool = false,
     focused: bool = true,
+    focus_mode: protocol.FocusMode = .custom,
+    focus_target: ?c.JSValue = null,
+    focus_target_id: u64 = 0,
+    focus_target_generation: u64 = 0,
+    next_target_id: u64 = 1,
+    explicit_focus: bool = false,
+    restore_state: enum { cleared, eligible, blocked } = .cleared,
+    restore_to_target: bool = false,
+    restore_target: ?c.JSValue = null,
     layout: ?protocol.OverlayLayout = null,
     handle_published: bool = false,
     overlay_options: ?c.JSValue = null,
 };
-const OverlayMethod = enum(c_int) { hide, setHidden, isHidden, focus, unfocus, isFocused, getBounds, terminalColumns, terminalRows };
+const OverlayMethod = enum(c_int) { hide, setHidden, isHidden, focus, unfocus, isFocused, getBounds, terminalColumns, terminalRows, setFocus };
+const OpeningFocus = struct { token: u64, target: ?c.JSValue = null, mode: protocol.FocusMode = .custom, explicit: bool = false, previous: ?*OpeningFocus = null };
 const OAuthMethod = enum(c_int) { onAuth, onDeviceCode, onPrompt, onProgress, onManualCodeInput, onSelect };
 pub const ProviderActionFn = *const fn (?*anyopaque, [*:0]const u8, c.JSValue) anyerror!void;
 
 pub const Manager = struct {
     engine: *engine_mod.Engine,
     token: c.JSValue,
+    opening_focus: ?*OpeningFocus = null,
     add_listener: c.JSValue,
     remove_listener: c.JSValue,
     abort_text: c.JSValue,
@@ -149,6 +160,8 @@ pub const Manager = struct {
             self.engine.freeValue(custom_request.promise);
             self.engine.freeValue(custom_request.options);
             if (custom_request.overlay_options) |options| self.engine.freeValue(options);
+            if (custom_request.focus_target) |target| self.engine.freeValue(target);
+            if (custom_request.restore_target) |target| self.engine.freeValue(target);
         }
         self.components.retireGeneration(c.pi_js_undefined()) catch {};
         if (self.signal) |signal| self.engine.freeValue(signal);
@@ -270,7 +283,7 @@ pub const Manager = struct {
         }
         try self.defineField(object, "terminal", c.JS_DupValue(self.engine.context, terminal));
         try self.defineField(object, "hideOverlay", try self.overlayFunction(token_id, "hideOverlay", .hide));
-        try self.defineField(object, "setFocus", try self.overlayFunction(token_id, "setFocus", .focus));
+        try self.defineField(object, "setFocus", try self.overlayFunction(token_id, "setFocus", .setFocus));
         return object;
     }
 
@@ -296,11 +309,28 @@ pub const Manager = struct {
         } else null;
         if (method == .terminalColumns) return c.JS_NewInt64(self.engine.context, @intCast(if (selected) |request| request.width else self.width));
         if (method == .terminalRows) return c.JS_NewInt64(self.engine.context, @intCast(if (selected) |request| request.height else self.height));
-        const request = selected orelse return if (method == .isHidden) c.pi_js_bool(self.engine.context, 1) else if (method == .isFocused) c.pi_js_bool(self.engine.context, 0) else c.pi_js_undefined();
+        var request = selected orelse {
+            if (method == .setFocus) {
+                var opening = self.opening_focus;
+                while (opening) |candidate| : (opening = candidate.previous) {
+                    if (candidate.token != token_id) continue;
+                    const value = if (args.len > 0) args[0] else c.pi_js_null();
+                    if (!c.JS_IsNull(value) and !c.JS_IsObject(value)) return error.InvalidNativeFocusTarget;
+                    const owned = if (c.JS_IsNull(value)) null else c.JS_DupValue(self.engine.context, value);
+                    if (candidate.target) |old| self.engine.freeValue(old);
+                    candidate.target = owned;
+                    candidate.mode = if (owned == null) .none else .custom;
+                    candidate.explicit = true;
+                    break;
+                }
+            }
+            return if (method == .isHidden) c.pi_js_bool(self.engine.context, 1) else if (method == .isFocused) c.pi_js_bool(self.engine.context, 0) else c.pi_js_undefined();
+        };
         if (request.closing) return c.pi_js_undefined();
+        const fence = request.fence;
         switch (method) {
             .isHidden => return c.pi_js_bool(self.engine.context, @intFromBool(request.hidden or request.permanently_hidden)),
-            .isFocused => return c.pi_js_bool(self.engine.context, @intFromBool(request.focused and !request.hidden and !request.permanently_hidden)),
+            .isFocused => return c.pi_js_bool(self.engine.context, @intFromBool(request.focused and request.focus_target_id == 0 and !request.hidden and !request.permanently_hidden)),
             .getBounds => {
                 const layout = request.layout orelse return c.pi_js_undefined();
                 if (layout.hidden) return c.pi_js_undefined();
@@ -317,13 +347,125 @@ pub const Manager = struct {
             .setHidden => if (!request.permanently_hidden) {
                 request.hidden = args.len != 0 and c.JS_ToBool(self.engine.context, args[0]) != 0;
             },
-            .focus => request.focused = true,
-            .unfocus => request.focused = false,
+            .focus => {
+                self.clearRestoreTarget(request);
+                request.restore_state = .eligible;
+                try self.changeFocus(fence, .custom, null);
+            },
+            .setFocus => {
+                const target = if (args.len > 0) args[0] else c.pi_js_null();
+                if (!c.JS_IsNull(target) and !c.JS_IsObject(target)) return error.InvalidNativeFocusTarget;
+                if (c.JS_IsNull(target) and request.restore_state == .blocked) {
+                    try self.resumeBlockedFocus(fence);
+                    try self.components.invalidate(fence.component_id, fence.generation);
+                    return c.pi_js_undefined();
+                }
+                const previous_restore = request.restore_state;
+                if (request.focus_target_generation == std.math.maxInt(u64)) return error.NativeFocusTargetLimit;
+                const expected_revision = request.focus_target_generation + 1;
+                try self.changeFocus(fence, if (c.JS_IsNull(target)) .none else .custom, if (c.JS_IsNull(target)) null else target);
+                if (self.findCustom(fence)) |active| {
+                    if (active.focus_target_generation == expected_revision) {
+                        active.restore_state = if (c.JS_IsNull(target)) .cleared else if (active.focus_target_id == 0) .eligible else if (previous_restore == .eligible) .blocked else previous_restore;
+                        if (active.restore_state != .blocked) self.clearRestoreTarget(active);
+                    }
+                }
+            },
+            .unfocus => {
+                if (args.len == 0 or c.JS_IsUndefined(args[0])) {
+                    self.clearRestoreTarget(request);
+                    request.restore_state = .cleared;
+                    // A temporary replacement retains focus until it closes;
+                    // an unfocus without a target cancels the pending restore.
+                    if (request.focus_target_id == 0) try self.changeFocus(fence, .editor, null);
+                } else {
+                    if (!c.JS_IsObject(args[0])) return error.InvalidNativeFocusTarget;
+                    const target = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args[0], "target"));
+                    defer self.engine.freeValue(target);
+                    if (!c.JS_IsNull(target) and !c.JS_IsObject(target)) return error.InvalidNativeFocusTarget;
+                    request = self.findCustom(fence) orelse return error.NativeComponentClosed;
+                    if (request.closing) return error.NativeComponentClosing;
+                    if (request.restore_state == .blocked) {
+                        self.clearRestoreTarget(request);
+                        request.restore_to_target = true;
+                        request.restore_target = if (c.JS_IsNull(target)) null else c.JS_DupValue(self.engine.context, target);
+                        try self.components.invalidate(fence.component_id, fence.generation);
+                        return c.pi_js_undefined();
+                    }
+                    self.clearRestoreTarget(request);
+                    request.restore_state = .cleared;
+                    try self.changeFocus(fence, if (c.JS_IsNull(target)) .none else .custom, if (c.JS_IsNull(target)) null else target);
+                }
+            },
             else => {},
         }
-        const fence = request.fence;
         self.components.invalidate(fence.component_id, fence.generation) catch |err| try self.rejectCustom(fence, err);
         return c.pi_js_undefined();
+    }
+
+    fn rootComponent(self: *Manager, fence: protocol.Fence) !c.JSValue {
+        const entry = self.components.entries.get(fence.component_id) orelse return error.NativeComponentClosed;
+        if (entry.generation != fence.generation) return error.NativeComponentClosed;
+        return c.JS_DupValue(self.engine.context, entry.component orelse return error.NativeComponentNotReady);
+    }
+    fn clearRestoreTarget(self: *Manager, request: *Custom) void {
+        if (request.restore_target) |target| self.engine.freeValue(target);
+        request.restore_target = null;
+        request.restore_to_target = false;
+    }
+    fn resumeBlockedFocus(self: *Manager, fence: protocol.Fence) !void {
+        const request = self.findCustom(fence) orelse return error.NativeComponentClosed;
+        const to_target = request.restore_to_target;
+        const target = if (request.restore_target) |value| c.JS_DupValue(self.engine.context, value) else null;
+        defer if (target) |value| self.engine.freeValue(value);
+        self.clearRestoreTarget(request);
+        request.restore_state = if (to_target) .cleared else .eligible;
+        try self.changeFocus(fence, if (to_target and target == null) .none else .custom, target);
+    }
+    fn setFocusedProperty(self: *Manager, value: c.JSValue, focused: bool) !void {
+        const atom = c.JS_NewAtom(self.engine.context, "focused");
+        if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+        defer c.JS_FreeAtom(self.engine.context, atom);
+        const has = c.JS_HasProperty(self.engine.context, value, atom);
+        if (has < 0) {
+            _ = try self.engine.checked(c.JS_Throw(self.engine.context, c.JS_GetException(self.engine.context)));
+        }
+        if (has != 0 and c.JS_SetProperty(self.engine.context, value, atom, c.pi_js_bool(self.engine.context, @intFromBool(focused))) < 0) {
+            _ = try self.engine.checked(c.JS_Throw(self.engine.context, c.JS_GetException(self.engine.context)));
+        }
+    }
+    fn changeFocus(self: *Manager, fence: protocol.Fence, mode: protocol.FocusMode, target: ?c.JSValue) !void {
+        const selected = self.findCustom(fence) orelse return error.NativeComponentClosed;
+        if (selected.closing) return error.NativeComponentClosing;
+        if (selected.focus_target_generation == std.math.maxInt(u64) or selected.next_target_id == std.math.maxInt(u64)) return error.NativeFocusTargetLimit;
+        selected.focus_target_generation += 1;
+        const focus_revision = selected.focus_target_generation;
+        const root: ?c.JSValue = self.rootComponent(fence) catch |err| switch (err) {
+            error.NativeComponentNotReady => null,
+            else => return err,
+        };
+        defer if (root) |value| self.engine.freeValue(value);
+        const value = if (mode == .custom) if (target orelse root) |value| c.JS_DupValue(self.engine.context, value) else null else null;
+        defer if (value) |owned| self.engine.freeValue(owned);
+        const previous = if (selected.focus_target) |old| c.JS_DupValue(self.engine.context, old) else if (selected.focused and root != null) c.JS_DupValue(self.engine.context, root.?) else null;
+        defer if (previous) |old| self.engine.freeValue(old);
+        // Stage the rooted target before observable setters. A reentrant
+        // setFocus then sees and clears this target, and its newer generation
+        // cannot be overwritten by the outer transition.
+        if (selected.focus_target) |old| self.engine.freeValue(old);
+        selected.focus_target = if (value) |owned| c.JS_DupValue(self.engine.context, owned) else null;
+        selected.focused = mode == .custom;
+        selected.focus_mode = mode;
+        selected.explicit_focus = true;
+        selected.focus_target_id = if (value) |owned| if (root != null and c.JS_IsStrictEqual(self.engine.context, owned, root.?)) 0 else selected.next_target_id else 0;
+        if (selected.focus_target_id != 0) selected.next_target_id += 1;
+        if (previous) |old| try self.setFocusedProperty(old, false);
+        if ((self.findCustom(fence) orelse return error.NativeComponentClosed).focus_target_generation != focus_revision) return;
+        if (value) |owned| try self.setFocusedProperty(owned, true);
+        // Getters/setters may reenter done(); select the owner again afterwards.
+        const active = self.findCustom(fence) orelse return error.NativeComponentClosed;
+        if (active.closing) return error.NativeComponentClosing;
+        if (active.focus_target_generation != focus_revision) return;
     }
 
     fn sizeValue(self: *Manager, options: c.JSValue, name: [*:0]const u8, reference: usize, fallback: i64) !i64 {
@@ -451,13 +593,21 @@ pub const Manager = struct {
         const overlay_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options, "overlay"));
         defer self.engine.freeValue(overlay_value);
         const overlay = c.JS_ToBool(self.engine.context, overlay_value) != 0;
-        const facade = try self.createFacade(self.next_id);
+        const token_id = self.next_id;
+        self.next_id += 1;
+        var opening: OpeningFocus = .{ .token = token_id, .previous = self.opening_focus };
+        self.opening_focus = &opening;
+        defer {
+            self.opening_focus = opening.previous;
+            if (opening.target) |target| self.engine.freeValue(target);
+        }
+        const facade = try self.createFacade(token_id);
         defer self.engine.freeValue(facade);
         const opened = try self.components.openWithFacade(if (args.len == 0) c.pi_js_undefined() else args[0], self.theme, self.keybindings, facade);
         errdefer self.engine.freeValue(opened.result);
         errdefer self.components.close(opened.id, opened.generation, c.pi_js_undefined()) catch {};
         if (c.JS_PromiseState(self.engine.context, opened.result) != c.JS_PROMISE_PENDING) return opened.result;
-        const fence: protocol.Fence = .{ .token = self.next_id, .generation = opened.generation, .invocation_id = self.invocation_id, .component_id = opened.id };
+        const fence: protocol.Fence = .{ .token = token_id, .generation = opened.generation, .invocation_id = self.invocation_id, .component_id = opened.id };
         const custom_request: Custom = .{ .fence = fence, .ui_generation = self.generation, .promise = opened.result, .width = self.width, .height = self.height, .options = options, .overlay = overlay };
         var request: std.Io.Writer.Allocating = .init(self.engine.gpa);
         defer request.deinit();
@@ -466,12 +616,17 @@ pub const Manager = struct {
         try request.writer.writeByte('}');
         try self.customs.append(self.engine.gpa, custom_request);
         options_transferred = true;
-        self.next_id += 1;
         self.bridge.?.request(self.bridge.?.context, @intCast(fence.token), "custom_native", request.written()) catch |err| {
             _ = self.customs.pop();
             options_transferred = false;
             return err;
         };
+        if (opening.explicit) {
+            self.changeFocus(fence, opening.mode, opening.target) catch |err| try self.rejectCustom(fence, err);
+            if (self.findCustom(fence)) |active| if (!active.closing and active.focus_target_generation == 1) {
+                active.restore_state = if (opening.mode == .custom and active.focus_target_id == 0) .eligible else .cleared;
+            };
+        }
         return c.JS_DupValue(self.engine.context, opened.result);
     }
 
@@ -493,12 +648,15 @@ pub const Manager = struct {
     }
 
     fn rejectCustom(self: *Manager, fence: protocol.Fence, err: anyerror) !void {
-        const reason = if (err == error.JavaScriptException and self.engine.captured_exception != null) c.JS_DupValue(self.engine.context, self.engine.captured_exception.?) else blk: {
+        const reason = try self.exceptionReason(err);
+        defer self.engine.freeValue(reason);
+        try self.components.reject(fence.component_id, fence.generation, reason);
+    }
+    fn exceptionReason(self: *Manager, err: anyerror) !c.JSValue {
+        return if (err == error.JavaScriptException and self.engine.captured_exception != null) c.JS_DupValue(self.engine.context, self.engine.captured_exception.?) else blk: {
             _ = fail(self.engine, err);
             break :blk c.JS_GetException(self.engine.context);
         };
-        defer self.engine.freeValue(reason);
-        try self.components.reject(fence.component_id, fence.generation, reason);
     }
 
     fn findCustom(self: *Manager, fence: protocol.Fence) ?*Custom {
@@ -519,7 +677,11 @@ pub const Manager = struct {
                 active.overlay_options = c.JS_DupValue(self.engine.context, options.?);
                 const non_capturing = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, options.?, "nonCapturing"));
                 defer self.engine.freeValue(non_capturing);
-                if (self.findCustom(request.fence)) |selected| selected.focused = c.JS_ToBool(self.engine.context, non_capturing) == 0;
+                if (self.findCustom(request.fence)) |selected| if (!selected.explicit_focus) {
+                    selected.focused = c.JS_ToBool(self.engine.context, non_capturing) == 0;
+                    selected.focus_mode = if (selected.focused) .custom else .editor;
+                    selected.restore_state = if (selected.focused) .eligible else .cleared;
+                };
             }
             request = (self.findCustom(request.fence) orelse return error.NativeComponentClosed).*;
             layout = try self.overlayLayout(request, options.?, 0);
@@ -533,14 +695,13 @@ pub const Manager = struct {
                 layout.?.hidden = layout.?.hidden or c.JS_ToBool(self.engine.context, result) == 0;
             }
         }
-        const release_value = try self.components.property(request.fence.component_id, request.fence.generation, "wantsKeyRelease");
-        defer self.engine.freeValue(release_value);
         var frame = if (layout != null and layout.?.hidden) protocol.Frame{ .gpa = self.engine.gpa, .lines = try self.engine.gpa.alloc([]u8, 0), .bytes = 0 } else try self.components.render(request.fence.component_id, request.fence.generation, if (layout) |geometry| geometry.width else request.width);
         errdefer frame.deinit();
         if (layout != null and layout.?.hidden) self.components.consumeHiddenFrame(request.fence.component_id, request.fence.generation);
         const active = self.findCustom(request.fence) orelse return error.NativeComponentClosed;
         if (active.closing) return error.NativeComponentClosing;
         request = active.*;
+        const wants_release = (try self.focusWantsRelease(request.fence)) orelse return error.NativeFocusChanged;
         if (layout) |geometry| {
             const hidden = geometry.hidden;
             layout = try self.overlayLayout(request, options.?, frame.lines.len);
@@ -556,8 +717,24 @@ pub const Manager = struct {
                 frame.lines = lines;
             }
         }
-        (self.findCustom(request.fence) orelse return error.NativeComponentClosed).layout = layout;
-        return .{ .fence = request.fence, .width = request.width, .height = request.height, .frame = frame, .overlay = layout, .focused = request.focused, .wants_key_release = c.JS_ToBool(self.engine.context, release_value) != 0 };
+        const latest = self.findCustom(request.fence) orelse return error.NativeComponentClosed;
+        if (latest.closing) return error.NativeComponentClosing;
+        if (latest.focus_target_generation != request.focus_target_generation) return error.NativeFocusChanged;
+        latest.layout = layout;
+        return .{ .fence = request.fence, .width = request.width, .height = request.height, .frame = frame, .overlay = layout, .focused = request.focused, .wants_key_release = wants_release, .focus_mode = if (layout != null and layout.?.hidden and request.focus_mode == .custom) .editor else request.focus_mode, .target_id = request.focus_target_id, .target_generation = request.focus_target_generation };
+    }
+
+    fn focusWantsRelease(self: *Manager, fence: protocol.Fence) !?bool {
+        const request = self.findCustom(fence) orelse return error.NativeComponentClosed;
+        const revision = request.focus_target_generation;
+        const target = if (request.focus_target) |value| c.JS_DupValue(self.engine.context, value) else try self.rootComponent(fence);
+        defer self.engine.freeValue(target);
+        const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, target, "wantsKeyRelease"));
+        defer self.engine.freeValue(value);
+        const active = self.findCustom(fence) orelse return error.NativeComponentClosed;
+        if (active.closing) return error.NativeComponentClosing;
+        if (active.focus_target_generation != revision) return null;
+        return c.JS_ToBool(self.engine.context, value) != 0;
     }
 
     fn publishOverlayHandle(self: *Manager, fence: protocol.Fence) !void {
@@ -589,6 +766,8 @@ pub const Manager = struct {
                 self.engine.freeValue(removed.promise);
                 self.engine.freeValue(removed.options);
                 if (removed.overlay_options) |options| self.engine.freeValue(options);
+                if (removed.focus_target) |target| self.engine.freeValue(target);
+                if (removed.restore_target) |target| self.engine.freeValue(target);
                 changed = true;
                 continue;
             }
@@ -599,6 +778,10 @@ pub const Manager = struct {
             };
             if (self.components.ready(custom_request.fence.component_id, custom_request.fence.generation) and self.components.dirty(custom_request.fence.component_id, custom_request.fence.generation)) {
                 var rendered = self.renderCustom(custom_request) catch |err| {
+                    if (err == error.NativeFocusChanged) {
+                        try self.components.invalidate(custom_request.fence.component_id, custom_request.fence.generation);
+                        return true;
+                    }
                     if (err == error.NativeComponentClosed or err == error.NativeComponentClosing) return true;
                     try self.rejectCustom(custom_request.fence, err);
                     return true;
@@ -638,6 +821,19 @@ pub const Manager = struct {
         switch (control.kind) {
             .close_ack => |ok| {
                 if (!selected.closing) return false;
+                const target = if (selected.focus_target) |value| c.JS_DupValue(self.engine.context, value) else self.rootComponent(fence) catch null;
+                defer if (target) |value| self.engine.freeValue(value);
+                if (target) |value| self.setFocusedProperty(value, false) catch |err| {
+                    const reason = try self.exceptionReason(err);
+                    defer self.engine.freeValue(reason);
+                    // done()/render errors already staged a primary result.
+                    // Cleanup cannot replace an existing primary rejection.
+                    const entry = self.components.entries.get(fence.component_id) orelse return true;
+                    if (entry.generation != fence.generation) return true;
+                    if (!entry.pending_success) try self.components.acknowledgeCompletion(fence.component_id, fence.generation) else try self.components.failAcknowledgement(fence.component_id, fence.generation, reason);
+                    return true;
+                };
+                if (self.findCustom(fence) == null) return true;
                 if (ok) try self.components.acknowledgeCompletion(fence.component_id, fence.generation) else {
                     const reason = try self.engine.checked(c.JS_NewError(self.engine.context));
                     defer self.engine.freeValue(reason);
@@ -648,8 +844,9 @@ pub const Manager = struct {
             },
             .input => |data| {
                 if (selected.closing) return false;
-                if (selected.overlay) if (selected.layout) |layout| if (layout.hidden or !layout.capture_input or !selected.focused) return false;
-                self.components.input(fence.component_id, fence.generation, data) catch |err| {
+                if (control.target_id != selected.focus_target_id or (control.target_generation != 0 and control.target_generation != selected.focus_target_generation)) return false;
+                if (selected.overlay) if (selected.layout) |layout| if (layout.hidden or !selected.focused) return false;
+                self.inputFocused(fence, data) catch |err| {
                     if (err == error.NativeComponentClosed or err == error.NativeComponentClosing) return false;
                     try self.rejectCustom(fence, err);
                 };
@@ -664,6 +861,41 @@ pub const Manager = struct {
             .mouse => return error.NativeMouseComponentNotImplemented,
         }
         return true;
+    }
+
+    fn inputFocused(self: *Manager, fence: protocol.Fence, data: []const u8) !void {
+        var request = self.findCustom(fence) orelse return error.NativeComponentClosed;
+        if (request.focus_mode != .custom) return;
+        if (request.restore_state == .blocked and request.focus_target_id != 0) {
+            const revision = request.focus_target_generation;
+            const target = c.JS_DupValue(self.engine.context, request.focus_target orelse return error.NativeComponentClosed);
+            defer self.engine.freeValue(target);
+            const root = try self.rootComponent(fence);
+            defer self.engine.freeValue(root);
+            const mounted = try native_tui.containsComponent(self.engine, root, target);
+            request = self.findCustom(fence) orelse return error.NativeComponentClosed;
+            if (request.closing or request.focus_target_generation != revision) return;
+            if (!mounted or request.restore_to_target) {
+                try self.resumeBlockedFocus(fence);
+                request = self.findCustom(fence) orelse return error.NativeComponentClosed;
+            }
+        }
+        if (request.focus_mode != .custom) return;
+        if (request.focus_target_id == 0) return self.components.input(fence.component_id, fence.generation, data);
+        const revision = request.focus_target_generation;
+        const target = c.JS_DupValue(self.engine.context, request.focus_target orelse return error.NativeComponentClosed);
+        defer self.engine.freeValue(target);
+        const handler = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, target, "handleInput"));
+        defer self.engine.freeValue(handler);
+        const current_target = self.findCustom(fence) orelse return;
+        if (current_target.closing or current_target.focus_target_generation != revision) return;
+        if (c.JS_IsFunction(self.engine.context, handler)) {
+            var args = [_]c.JSValue{try self.engine.checked(c.JS_NewStringLen(self.engine.context, data.ptr, data.len))};
+            defer self.engine.freeValue(args[0]);
+            const result = try self.engine.checked(c.JS_Call(self.engine.context, handler, target, args.len, &args));
+            self.engine.freeValue(result);
+        }
+        self.components.invalidate(fence.component_id, fence.generation) catch |err| if (err != error.NativeComponentClosed and err != error.NativeComponentClosing) return err;
     }
 
     fn dialog(self: *Manager, method: Method, args: []c.JSValue) !c.JSValue {
@@ -1080,6 +1312,143 @@ pub const Manager = struct {
         return c.pi_js_undefined();
     }
 };
+
+fn focusLifetimeCase(source: []const u8, finish: ?[]const u8, inspect: ?[]const u8) !void {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("abort_signal.zig").install(engine);
+    const manager = try Manager.init(engine);
+    defer manager.deinit();
+    const Receiver = struct {
+        engine: *engine_mod.Engine,
+        closed: ?protocol.Fence = null,
+        frames: usize = 0,
+        fn request(_: ?*anyopaque, _: u32, _: []const u8, _: []const u8) !void {}
+        fn action(_: ?*anyopaque, _: []const u8, _: []const u8) !void {}
+        fn cancel(_: ?*anyopaque, _: u32) !void {}
+        fn scene(raw: ?*anyopaque, received: protocol.Scene) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            const global_object = c.JS_GetGlobalObject(self.engine.context);
+            defer self.engine.freeValue(global_object);
+            const expected = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, global_object, "expectedFocusedRelease"));
+            defer self.engine.freeValue(expected);
+            if (c.JS_ToBool(self.engine.context, expected) != 0) {
+                try std.testing.expect(received.target_id != 0);
+                try std.testing.expect(received.wants_key_release);
+            }
+            var owned = received;
+            owned.deinit();
+            self.frames += 1;
+        }
+        fn close(raw: ?*anyopaque, fence: protocol.Fence) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            try std.testing.expect(self.closed == null);
+            self.closed = fence;
+        }
+    };
+    var receiver: Receiver = .{ .engine = engine };
+    manager.bridge = .{ .context = &receiver, .request = Receiver.request, .action = Receiver.action, .cancel = Receiver.cancel, .component_scene = Receiver.scene, .component_close = Receiver.close };
+    const snapshot = try engine.checked(c.JS_ParseJSON(engine.context, "{\"hasUI\":true}", 14, "focus-lifetime-context"));
+    defer engine.freeValue(snapshot);
+    try manager.begin(1, snapshot, null);
+    manager.invocation_id = 1;
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    if (c.JS_DefinePropertyValueStr(engine.context, global, "nativeUi", try manager.createObject(), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    const promise = try engine.eval(source, "focus-lifetime-input.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(promise);
+    for (0..16) |_| {
+        _ = try manager.pollCustom();
+        if (receiver.frames > 0 or receiver.closed != null) break;
+    }
+    if (receiver.frames == 0 and receiver.closed == null) return error.MissingNativeComponentScene;
+    if (receiver.closed == null) {
+        const active = manager.customs.items[0];
+        var stale: protocol.Control = .{ .gpa = std.testing.allocator, .fence = active.fence, .target_id = active.focus_target_id, .target_generation = active.focus_target_generation + 1, .kind = .{ .input = try std.testing.allocator.dupe(u8, "stale") } };
+        defer stale.deinit();
+        try std.testing.expect(!try manager.componentControl(&stale));
+        stale.target_generation = active.focus_target_generation;
+        stale.target_id += 1;
+        try std.testing.expect(!try manager.componentControl(&stale));
+    }
+    if (inspect) |expression| {
+        const result = try engine.eval(expression, "focus-lifetime-inspection.js", c.JS_EVAL_TYPE_GLOBAL);
+        defer engine.freeValue(result);
+        try std.testing.expect(c.JS_ToBool(engine.context, result) != 0);
+    }
+    if (finish) |expression| {
+        const result = engine.eval(expression, "focus-lifetime-finish.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+            if (engine.captured_exception) |exception| {
+                const detail = try engine.toString(exception);
+                defer engine.gpa.free(detail);
+                std.debug.print("Focus lifecycle finish failed: {s}\n", .{detail});
+            }
+            return err;
+        };
+        defer engine.freeValue(result);
+    }
+    c.JS_RunGC(engine.runtime);
+    const fence = receiver.closed orelse return error.MissingNativeComponentClose;
+    const control: protocol.Control = .{ .gpa = std.testing.allocator, .fence = fence, .kind = .{ .close_ack = true } };
+    try std.testing.expect(try manager.componentControl(&control));
+    _ = try manager.pollCustom();
+    const result = try engine.awaitValue(promise);
+    defer engine.freeValue(result);
+    try std.testing.expect(c.JS_ToBool(engine.context, result) != 0);
+    try std.testing.expectEqual(@as(usize, 0), manager.customs.items.len);
+    try std.testing.expectEqual(@as(usize, 0), manager.components.entries.count());
+    c.JS_RunGC(engine.runtime);
+}
+
+test "native focused opening setter failure rejects through close acknowledgement without duplicate ownership" {
+    try focusLifetimeCase(
+        "globalThis.original={opening:1}; nativeUi.custom((tui)=>{const root={get focused(){return false},set focused(value){if(value)throw original},render(){return ['root']}}; tui.setFocus(root);return root}).then(()=>false,error=>error===original)",
+        null,
+        null,
+    );
+}
+
+test "native focused close setter failure replaces success but preserves a primary rejection" {
+    try focusLifetimeCase(
+        "globalThis.original={cleanup:1};nativeUi.custom((tui,theme,keys,done)=>{let armed=false,focused=false;globalThis.finish=()=>{armed=true;done('success')};const root={get focused(){return focused},set focused(value){if(!value&&armed)throw original;focused=value},render(){return ['root']}};tui.setFocus(root);return root}).then(()=>false,error=>error===original)",
+        "finish()",
+        null,
+    );
+    try focusLifetimeCase(
+        "globalThis.original={primary:1};nativeUi.custom((tui)=>{let armed=false,focused=false;const root={get focused(){return focused},set focused(value){if(!value&&armed)throw {cleanup:1};focused=value},render(){armed=true;throw original}};tui.setFocus(root);return root}).then(()=>false,error=>error===original)",
+        null,
+        null,
+    );
+}
+
+test "native focused setters reenter without committing an obsolete target and clear focus before disposal" {
+    try focusLifetimeCase(
+        "globalThis.one=null;globalThis.two=null;nativeUi.custom((tui,theme,keys,done)=>{let first=false;two={focused:false,handleInput(){}};one={get focused(){return first},set focused(value){first=value;if(value)tui.setFocus(two)},handleInput(){}};globalThis.finish=()=>done('success');const root={render(){return ['root']},dispose(){if(two.focused)throw Error('target still focused')}};tui.setFocus(one);return root}).then(value=>value==='success',()=>false)",
+        "finish()",
+        "one.focused===false&&two.focused===true",
+    );
+}
+
+test "native focused blocked replacement null resumes root and explicit unfocus target waits for replacement close" {
+    try focusLifetimeCase(
+        "globalThis.root=null;globalThis.replacement={focused:false};nativeUi.custom((tui,theme,keys,done)=>{root={focused:false,render(){return ['root']}};tui.setFocus(root);globalThis.finish=()=>{tui.setFocus(replacement);if(root.focused||!replacement.focused)throw Error('replacement');tui.setFocus(null);if(!root.focused||replacement.focused)throw Error('blocked null');done('success')};return root}).then(value=>value==='success',()=>false)",
+        "finish()",
+        null,
+    );
+    try focusLifetimeCase(
+        "globalThis.root=null;globalThis.replacement={focused:false};globalThis.destination={focused:false};let tuiRef;nativeUi.custom((tui,theme,keys,done)=>{tuiRef=tui;root={focused:false,render(){return ['root']}};globalThis.finish=()=>{tui.setFocus(replacement);h.unfocus({target:destination});if(!replacement.focused||destination.focused)throw Error('premature restore');tui.setFocus(null);if(!destination.focused||replacement.focused||root.focused)throw Error('explicit target');done('success')};return root},{overlay:true,overlayOptions:{nonCapturing:true,width:12},onHandle(handle){globalThis.h=handle;handle.focus()}}).then(value=>value==='success',()=>false)",
+        "finish()",
+        null,
+    );
+}
+
+test "native focused overlay geometry getters cannot publish obsolete target or release metadata" {
+    try focusLifetimeCase(
+        "globalThis.expectedFocusedRelease=true;nativeUi.custom((tui,theme,keys,done)=>{let widths=0;const child={focused:false,wantsKeyRelease:true};const root={focused:false,render(){return ['root']}};tui.setFocus(root);globalThis.options={get width(){if(++widths===2)tui.setFocus(child);return 12}};globalThis.finish=()=>done('success');return root},{overlay:true,overlayOptions:()=>options}).then(value=>value==='success',()=>false)",
+        "finish()",
+        null,
+    );
+}
 
 test "native overlay default options retain component width and omitted maximum height" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});

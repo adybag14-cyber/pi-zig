@@ -180,6 +180,116 @@ const overlay_extension =
     \\}})}
 ;
 
+const focus_extension =
+    \\export default function(pi){pi.registerCommand('focus',{async handler(_,ctx){
+    \\ ctx.ui.setEditorText('focus-draft');let phase='root',rootInput='',oneInput='',twoInput='',h,disposed=0;
+    \\ const result=await ctx.ui.custom((tui,theme,keys,done)=>{
+    \\  const one={focused:false,wantsKeyRelease:true,handleInput(data){if(this!==one||!one.focused)throw Error('focus-one-receiver');oneInput+=data==='\x1b[120;1:3u'?'RELEASE':data;if(data==='y'){phase='two';h.unfocus({target:two})}}};
+    \\  const two={focused:false,handleInput(data){if(this!==two||!two.focused)throw Error('focus-two-receiver');twoInput+=data;if(data==='z'){phase='none';tui.setFocus(null);setTimeout(()=>{phase='root-again';tui.setFocus(root);tui.requestRender()},1000)}}};
+    \\  const root={focused:false,render(width){return ['FOCUS_PHASE:'+phase,'FOCUS_ROOT:'+root.focused+':'+rootInput,'FOCUS_ONE:'+one.focused+':'+oneInput,'FOCUS_TWO:'+two.focused+':'+twoInput]},handleInput(data){rootInput+=data;if(data==='x'){phase='one';h.unfocus({target:one})}else if(data==='q')done('selected')},dispose(){disposed++}};
+    \\  return root;
+    \\ },{overlay:true,overlayOptions:{width:60,nonCapturing:true,anchor:'top-left'},onHandle(handle){h=handle;handle.focus()}});
+    \\ ctx.ui.notify('FOCUS_DONE:'+result+':DISPOSED:'+disposed);
+    \\}})}
+;
+
+const focus_restore_extension =
+    \\export default function(pi){pi.registerCommand('restore-focus',{async handler(_,ctx){
+    \\ let h,rootInput='',baseInput='',phase='root';ctx.ui.setEditorText('restore-draft');
+    \\ const result=await ctx.ui.custom((tui,theme,keys,done)=>{
+    \\  const base={focused:false,handleInput(data){baseInput+=data;if(data==='b'){phase='cleared';h.unfocus({target:null});setTimeout(()=>{phase='root-again';h.focus();tui.requestRender()},1000)}}};
+    \\  const root={focused:false,render(){return ['RESTORE_PHASE:'+phase,'RESTORE_ROOT:'+rootInput+':'+root.focused,'RESTORE_BASE:'+baseInput+':'+base.focused]},handleInput(data){rootInput+=data;if(data==='s'){phase='stolen';tui.setFocus(base)}else if(data==='n'){phase='blocked-null';tui.setFocus(base);setTimeout(()=>{tui.setFocus(null);phase='root-null-restored';tui.requestRender()},300)}else if(data==='d'){phase='deferred';tui.setFocus(base);h.unfocus({target:null});setTimeout(()=>{tui.setFocus(null);phase='deferred-cleared';tui.requestRender();setTimeout(()=>{h.focus();phase='root-deferred-returned';tui.requestRender()},700)},300)}else if(data==='u'){phase='base';h.unfocus({target:base})}else if(data==='q')done('done')}};
+    \\  return root;
+    \\ },{overlay:true,overlayOptions:{width:60,nonCapturing:true,anchor:'top-left'},onHandle(handle){h=handle;h.focus()}});
+    \\ ctx.ui.notify('RESTORE_RESULT:'+result);
+    \\}})}
+;
+
+test "actual native explicit passive focus restores unmounted base steal while unfocus null remains clear" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("regular");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnExtension(errors, focus_restore_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.waitAny(&child, ">");
+    try child.send("/restore-focus\r");
+    try observed.waitAny(&child, "RESTORE_ROOT::true");
+    try observed.send(&child, "s", "RESTORE_PHASE:stolen");
+    try observed.send(&child, "x", "RESTORE_ROOT:sx:true");
+    try std.testing.expect(try observed.screen.contains("RESTORE_BASE::false"));
+    try observed.send(&child, "n", "RESTORE_PHASE:blocked-null");
+    try std.testing.expect(try observed.screen.contains("RESTORE_BASE::true"));
+    try observed.wait(&child, "RESTORE_PHASE:root-null-restored", observed.screen.frames);
+    try std.testing.expect(try observed.screen.contains("RESTORE_ROOT:sxn:true"));
+    try observed.send(&child, "d", "RESTORE_PHASE:deferred");
+    try std.testing.expect(try observed.screen.contains("RESTORE_BASE::true"));
+    try observed.wait(&child, "RESTORE_PHASE:deferred-cleared", observed.screen.frames);
+    try std.testing.expect(try observed.screen.contains("RESTORE_ROOT:sxnd:false"));
+    try std.testing.expect(try observed.screen.contains("RESTORE_BASE::false"));
+    const no_resume_frame = observed.screen.frames;
+    try child.send("LOST");
+    try observed.wait(&child, "RESTORE_PHASE:root-deferred-returned", no_resume_frame);
+    try std.testing.expect(!try observed.screen.contains("LOST"));
+    try observed.send(&child, "u", "RESTORE_PHASE:base");
+    try observed.send(&child, "b", "RESTORE_PHASE:cleared");
+    const clear_frame = observed.screen.frames;
+    try child.send("LOST");
+    try observed.wait(&child, "RESTORE_PHASE:root-again", clear_frame);
+    try std.testing.expect(try observed.screen.contains("RESTORE_BASE:b:false"));
+    try std.testing.expect(!try observed.screen.contains("LOST"));
+    const leaves = observed.screen.leaves;
+    try child.send("q");
+    try observed.waitAny(&child, "RESTORE_RESULT:done");
+    try observed.waitPrimary(&child, "> restore-draft", leaves);
+    try child.send("\x15/quit\r");
+    const term = try child.wait(5000);
+    try std.testing.expect(term == .exited and term.exited == 0);
+    const stderr = try fixture.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", std.testing.allocator, .limited(65536));
+    defer std.testing.allocator.free(stderr);
+    try std.testing.expectEqualStrings("", stderr);
+}
+
+test "actual native focused passive overlay routes rooted targets key releases explicit null and unfocus target" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("regular");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnExtension(errors, focus_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.waitAny(&child, ">");
+    try child.send("/focus\r");
+    try observed.waitAny(&child, "FOCUS_ROOT:true:");
+    try observed.send(&child, "x", "FOCUS_PHASE:one");
+    try std.testing.expect(try observed.screen.contains("FOCUS_ROOT:false:x"));
+    try observed.send(&child, "\x1b[120;1:3u", "FOCUS_ONE:true:RELEASE");
+    try observed.send(&child, "y", "FOCUS_PHASE:two");
+    try std.testing.expect(try observed.screen.contains("FOCUS_ONE:false:RELEASEy"));
+    try observed.send(&child, "z", "FOCUS_PHASE:none");
+    try std.testing.expect(try observed.screen.contains("FOCUS_TWO:false:z"));
+    const no_target_frame = observed.screen.frames;
+    try child.send("LOST");
+    try observed.wait(&child, "FOCUS_PHASE:root-again", no_target_frame);
+    try std.testing.expect(try observed.screen.contains("FOCUS_ROOT:true:x"));
+    try std.testing.expect(!try observed.screen.contains("LOST"));
+    const leaves = observed.screen.leaves;
+    try child.send("q");
+    try observed.waitAny(&child, "FOCUS_DONE:selected:DISPOSED:1");
+    try observed.waitPrimary(&child, "> focus-draft", leaves);
+    try child.send("\x15/quit\r");
+    const term = try child.wait(5000);
+    try std.testing.expect(term == .exited and term.exited == 0);
+    const stderr = try fixture.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", std.testing.allocator, .limited(65536));
+    defer std.testing.allocator.free(stderr);
+    try std.testing.expectEqualStrings("", stderr);
+}
+
 test "native CLI overlay paints real geometry releases hidden focus and restores edited background with fenced close" {
     if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");
@@ -259,7 +369,80 @@ const Observer = struct {
         }
         return error.NativeOverlayDidNotDisappear;
     }
+    fn waitAny(self: *Observer, child: *pty.Session, marker: []const u8) !void {
+        const end = Io.Clock.awake.now(child.io).toMilliseconds() + 5000;
+        while (Io.Clock.awake.now(child.io).toMilliseconds() < end) {
+            try self.drain(child);
+            if (!self.screen.synchronized_update and try self.screen.contains(marker)) return;
+            if (try child.exited()) break;
+            try child.io.sleep(.fromMilliseconds(10), .awake);
+        }
+        const cells = try self.screen.textAlloc(std.testing.allocator);
+        defer std.testing.allocator.free(cells);
+        std.debug.print("Regular cells missing {s}:\n{s}\n", .{ marker, cells });
+        return error.RegularCustomCellAssertionFailed;
+    }
+    fn waitPrimary(self: *Observer, child: *pty.Session, marker: []const u8, previous_leaves: usize) !void {
+        const end = Io.Clock.awake.now(child.io).toMilliseconds() + 5000;
+        while (Io.Clock.awake.now(child.io).toMilliseconds() < end) {
+            try self.drain(child);
+            if (!self.screen.synchronized_update and !self.screen.in_alternate and self.screen.leaves > previous_leaves and try self.screen.contains(marker)) return;
+            if (try child.exited()) break;
+            try child.io.sleep(.fromMilliseconds(10), .awake);
+        }
+        return error.RegularCustomPrimaryRestoreFailed;
+    }
 };
+
+test "actual regular native custom owner restores primary screen draft stdin modes after resize cancel error and reuse" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("regular");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnExtension(errors, custom_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.waitAny(&child, ">");
+    try std.testing.expect(!observed.screen.in_alternate);
+    try child.send("/component\r");
+    try observed.waitAny(&child, "CUSTOM_WIDTH:100");
+    try std.testing.expect(observed.screen.in_alternate);
+    try observed.send(&child, "\x1b[120;1:3ux", "CUSTOM_COUNT:1");
+    try observed.send(&child, "\x1b[200~Ω🦊\x1b[201~", "CUSTOM_INPUT:xΩ🦊");
+    const resize_frame = observed.screen.frames;
+    try observed.screen.resize(70, 22);
+    try child.resize(70, 22);
+    try observed.wait(&child, "CUSTOM_WIDTH:70", resize_frame);
+    try child.send("q");
+    try observed.waitAny(&child, "CUSTOM_RESULT:selected:DISPOSED:1");
+    try observed.waitAny(&child, "> component-draft");
+    try std.testing.expect(!observed.screen.in_alternate);
+    try child.send("\x15/component-error\r");
+    try observed.waitAny(&child, "CUSTOM_ERROR_IDENTITY:true");
+    try std.testing.expect(!observed.screen.in_alternate);
+    try child.send("\x15/dialog-cancel\r");
+    try observed.waitAny(&child, "NATIVE_DIALOG_CANCELLED:true");
+    try observed.waitAny(&child, "> cancel-dialog-draft");
+    try std.testing.expect(!observed.screen.in_alternate);
+    try child.send("\x15/reload\r");
+    try observed.waitAny(&child, "Reloaded");
+    const second_enter = observed.screen.enters;
+    try child.send("\x15/component\r");
+    try observed.waitAny(&child, "CUSTOM_WIDTH:70");
+    try std.testing.expect(observed.screen.enters > second_enter);
+    const second_leave = observed.screen.leaves;
+    try child.send("q");
+    try observed.waitPrimary(&child, "> component-draft", second_leave);
+    try std.testing.expect(!observed.screen.in_alternate);
+    try child.send("\x15/quit\r");
+    const term = try child.wait(5000);
+    try std.testing.expect(term == .exited and term.exited == 0);
+    const stderr = try fixture.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", std.testing.allocator, .limited(65536));
+    defer std.testing.allocator.free(stderr);
+    try std.testing.expectEqualStrings("", stderr);
+}
 
 fn cleanExit(fixture: *Fixture, child: *pty.Session, observed: *Observer) !void {
     try child.send("\x15/quit\r");
@@ -312,6 +495,25 @@ test "real fullscreen CLI keeps Home End in editor and Ctrl Home End pages in re
     const stderr = try fixture.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", std.testing.allocator, .limited(65536));
     defer std.testing.allocator.free(stderr);
     try std.testing.expectEqualStrings("", stderr);
+}
+
+test "real fullscreen CLI coalesces an available input burst before publishing its command" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawn(errors);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "history-row-059", 0);
+    const before = observed.screen.frames;
+    try observed.send(&child, "abcdefghijklmnopqrstuvwxyz012345", "> abcdefghijklmnopqrstuvwxyz012345");
+    // A ready keyboard burst is one editor transaction, rather than thirty-two
+    // expensive paints competing with the provider or a queued modal command.
+    try std.testing.expect(observed.screen.frames - before <= 4);
+    try cleanExit(&fixture, &child, &observed);
 }
 
 test "real fullscreen CLI routes remapped viewport keys and ignores Kitty releases while accepting repeats" {
@@ -460,24 +662,5 @@ test "real fullscreen Escape aborts a live turn without clearing the independent
     try std.testing.expect(try observed.screen.contains("> abort-draft"));
     try observed.send(&child, "\x15again\r", "second-first");
     try observed.wait(&child, "second-final", observed.screen.frames);
-    try cleanExit(&fixture, &child, &observed);
-}
-
-test "real fullscreen CLI coalesces an available input burst before publishing its command" {
-    if (!pty.supported()) return error.SkipZigTest;
-    var fixture = try Fixture.init("fullscreen");
-    defer fixture.deinit();
-    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
-    defer errors.close(std.testing.io);
-    var child = try fixture.spawn(errors);
-    defer child.deinit();
-    var observed = try Observer.init();
-    defer observed.deinit();
-    try observed.wait(&child, "history-row-059", 0);
-    const before = observed.screen.frames;
-    try observed.send(&child, "abcdefghijklmnopqrstuvwxyz012345", "> abcdefghijklmnopqrstuvwxyz012345");
-    // A ready keyboard burst is one editor transaction, rather than thirty-two
-    // expensive paints competing with the provider or a queued modal command.
-    try std.testing.expect(observed.screen.frames - before <= 4);
     try cleanExit(&fixture, &child, &observed);
 }

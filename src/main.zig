@@ -2806,6 +2806,71 @@ fn parseExtensionBackend(value: ?[]const u8) !extensions.js_runtime.Backend {
     return error.InvalidExtensionBackend;
 }
 
+/// Main supplies only Controller/editor snapshots to the temporary paint owner.
+/// Runtime's frame task never reads Session, Host or the regular editor object.
+const ComponentFrontendOwner = struct {
+    const Frontend = coding.fullscreen_frontend.Frontend;
+    const protocol = extensions.ui.component_protocol;
+    gpa: std.mem.Allocator,
+    io: Io,
+    environ: *const std.process.Environ.Map,
+    reader: *Io.File.Reader,
+    bindings: *const tui.keybindings.Manager,
+    controller: *extensions.ui.Controller,
+    options: coding.fullscreen_frontend.Options,
+    persistent: ?*Frontend = null,
+    temporary: ?*Frontend = null,
+
+    fn detachTemporary(self: *@This()) void {
+        if (self.temporary) |owner| {
+            self.controller.bindEditorFrontend(null, null);
+            self.controller.bindFrontend(null, null, null);
+            tui.render.bindFrontend(null, null, null);
+            owner.deinit();
+            self.temporary = null;
+        }
+    }
+    fn scene(raw: ?*anyopaque, dto: protocol.Scene, controls: *protocol.ControlQueue) !void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        if (self.persistent) |owner| return Frontend.componentSink(owner, dto, controls);
+        const first = self.temporary == null;
+        if (first) {
+            const editor = try self.controller.editorText(self.gpa);
+            defer self.gpa.free(editor);
+            const owner = try Frontend.start(self.gpa, self.io, self.environ, self.reader, self.bindings, self.options);
+            self.temporary = owner;
+            errdefer self.detachTemporary();
+            self.controller.bindFrontend(Frontend.surfaceSink, Frontend.modalObserver, owner);
+            self.controller.bindEditorFrontend(Frontend.editorSink, owner);
+            owner.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, self.controller);
+            tui.render.bindFrontend(Frontend.noticeSink, Frontend.renderModalObserver, owner);
+            try owner.setEditorText(editor, null, null);
+            try self.controller.flush();
+        }
+        errdefer if (first) self.detachTemporary();
+        try Frontend.componentSink(self.temporary.?, dto, controls);
+    }
+    fn close(raw: ?*anyopaque, fence: protocol.Fence) !void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        if (self.persistent) |owner| return Frontend.componentClose(owner, fence);
+        const owner = self.temporary orelse return error.StaleNativeComponentScene;
+        defer self.detachTemporary();
+        // ACK follows scene removal, restored paint, raw-mode release and
+        // alternate-screen teardown before the ordinary editor owns input again.
+        try Frontend.componentClose(owner, fence);
+        const editor = try owner.snapshotEditor(self.gpa);
+        defer self.gpa.free(editor.text);
+        owner.stop();
+        self.controller.bindEditorFrontend(null, null);
+        var action: Io.Writer.Allocating = .init(self.gpa);
+        defer action.deinit();
+        try action.writer.writeAll("{\"text\":");
+        try std.json.Stringify.value(editor.text, .{}, &action.writer);
+        try action.writer.writeByte('}');
+        try self.controller.applyAction("setEditorText", action.written());
+    }
+};
+
 test "production extension backend selector defaults legacy and rejects unknown values" {
     try std.testing.expectEqual(extensions.js_runtime.Backend.legacy, try parseExtensionBackend(null));
     try std.testing.expectEqual(extensions.js_runtime.Backend.legacy, try parseExtensionBackend("legacy"));
@@ -2826,6 +2891,9 @@ fn runMain(init: std.process.Init) !void {
     const raw_args = try init.minimal.args.toSlice(arena);
     if (raw_args.len == 3 and std.mem.eql(u8, raw_args[1], "--internal-native-extension-worker")) {
         return extensions.native_worker.run(gpa, io, raw_args[2]);
+    }
+    if (raw_args.len == 2 and std.mem.eql(u8, raw_args[1], "--internal-native-extension-group-worker")) {
+        return extensions.native_worker.runGroup(gpa, io);
     }
     var cli = coding.args.parseArgs(arena, raw_args) catch |err| {
         const message = switch (err) {
@@ -4387,6 +4455,12 @@ fn runMain(init: std.process.Init) !void {
     var terminal_keybindings = if (agent_dir) |dir| tui.keybindings.Manager.load(gpa, io, dir) catch tui.keybindings.Manager.init(gpa) else tui.keybindings.Manager.init(gpa);
     defer terminal_keybindings.deinit();
     runtime_reload_context.keybindings = &terminal_keybindings;
+    // Keep the ordinary interactive terminal raw between commands. A temporary
+    // custom scene or standard dialog borrows this mode and restores it, rather
+    // than exposing a canonical interval that translates already-typed Enter
+    // into Ctrl+J before the next editor takes ownership.
+    var regular_terminal_mode: ?tui.line_editor.RawMode = if (use_terminal_editor and !use_fullscreen_scene) try tui.line_editor.RawMode.enter() else null;
+    defer if (regular_terminal_mode) |*mode| mode.leave();
     var frontend: ?*coding.fullscreen_frontend.Frontend = null;
     defer if (frontend) |scene| {
         extension_ui.bindComponentScenes(null, null, null);
@@ -4395,17 +4469,29 @@ fn runMain(init: std.process.Init) !void {
         tui.render.bindFrontend(null, null, null);
         scene.deinit();
     };
+    var component_frontend_owner: ComponentFrontendOwner = .{
+        .gpa = gpa,
+        .io = io,
+        .environ = environ,
+        .reader = &extension_stdin_reader,
+        .bindings = &terminal_keybindings,
+        .controller = &extension_ui,
+        .options = .{ .show_hardware_cursor = interactive_render.show_hardware_cursor, .editor_padding_x = interactive_render.editor_padding_x },
+    };
+    defer component_frontend_owner.detachTemporary();
+    extension_ui.bindComponentScenes(ComponentFrontendOwner.scene, ComponentFrontendOwner.close, &component_frontend_owner);
+    defer extension_ui.bindComponentScenes(null, null, null);
     if (use_fullscreen_scene) {
         const header = try std.fmt.allocPrint(gpa, "pi (pi-zig) {s} · {s}/{s}", .{ config.version, provider_name orelse "mock", model orelse "mock" });
         defer gpa.free(header);
         frontend = try coding.fullscreen_frontend.Frontend.start(gpa, io, environ, &extension_stdin_reader, &terminal_keybindings, .{ .header = header, .show_hardware_cursor = interactive_render.show_hardware_cursor, .editor_padding_x = interactive_render.editor_padding_x });
+        component_frontend_owner.persistent = frontend;
         interactive_render.fullscreen = frontend;
         agent_cfg.abort_flag = &frontend.?.abort_flag;
         extension_bridge.setAbortFlag(agent_cfg.abort_flag);
         extension_ui.bindFrontend(coding.fullscreen_frontend.Frontend.surfaceSink, coding.fullscreen_frontend.Frontend.modalObserver, frontend);
         extension_ui.bindEditorFrontend(coding.fullscreen_frontend.Frontend.editorSink, frontend);
         frontend.?.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, &extension_ui);
-        extension_ui.bindComponentScenes(coding.fullscreen_frontend.Frontend.componentSink, coding.fullscreen_frontend.Frontend.componentClose, frontend);
         tui.render.bindFrontend(coding.fullscreen_frontend.Frontend.noticeSink, coding.fullscreen_frontend.Frontend.renderModalObserver, frontend);
         try frontend.?.syncBranch(&sess);
     }

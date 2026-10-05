@@ -8,8 +8,14 @@ const abort_signal = @import("abort_signal.zig");
 const native_ui = @import("native_ui.zig");
 const native_stream = @import("native_stream.zig");
 const native_tui = @import("native_tui.zig");
+const native_renderers = @import("native_renderers.zig");
 const c = engine_mod.c;
-const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, registerProvider, unregisterProvider, getActiveTools, getAllTools, getCommands, getSettings, getSessionName, getThinkingLevel, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel };
+const OwnerToken = struct { gpa: std.mem.Allocator, binding: ?*Bindings = null };
+fn ownerFinalizer(_: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
+    const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)) orelse return));
+    owner.gpa.destroy(owner);
+}
+const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, registerProvider, unregisterProvider, registerMessageRenderer, registerEntryRenderer, registerMarkdownTransformer, registerToolRenderer, getActiveTools, getAllTools, getCommands, getSettings, getSessionName, getThinkingLevel, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel };
 const ContextMethod = enum(c_int) {
     mode,
     hasUI,
@@ -43,12 +49,23 @@ const ContextMethod = enum(c_int) {
 };
 
 pub const Bindings = struct {
+    pub const InvocationBroker = struct { active: ?*Bindings = null };
+    pub const ToolLookupFn = *const fn (?*anyopaque, []const u8) ?c.JSValue;
+    pub const SharedServices = struct { ui: *native_ui.Manager, renderers: *native_renderers.Manager, broker: ?*InvocationBroker = null, owner_id: u64 = 0, tool_lookup: ?ToolLookupFn = null, tool_context: ?*anyopaque = null };
     pub const ToolUpdateFn = *const fn (?*anyopaque, c.JSValue) anyerror!void;
     gpa: std.mem.Allocator,
     engine: *engine_mod.Engine,
     api: c.JSValue,
     providers: native_providers.Providers,
     ui_manager: *native_ui.Manager,
+    renderers: *native_renderers.Manager,
+    owner_token: c.JSValue,
+    owner_class: c.JSClassID,
+    owns_services: bool,
+    broker: ?*InvocationBroker = null,
+    owner_id: u64 = 0,
+    tool_lookup: ?ToolLookupFn = null,
+    tool_context: ?*anyopaque = null,
     stream_runner: native_stream.Runner,
     factory_active: bool = false,
     handlers: std.StringHashMapUnmanaged(std.ArrayList(c.JSValue)) = .empty,
@@ -69,29 +86,70 @@ pub const Bindings = struct {
 
     pub fn init(gpa: std.mem.Allocator, engine: *engine_mod.Engine) !*Bindings {
         if (engine.host_data != null) return error.EngineHostAlreadyAttached;
+        return initInternal(gpa, engine, null);
+    }
+
+    pub fn initShared(gpa: std.mem.Allocator, engine: *engine_mod.Engine, services: SharedServices) !*Bindings {
+        if (services.ui.engine != engine or services.renderers.engine != engine) return error.NativeExtensionOwnerMismatch;
+        return initInternal(gpa, engine, services);
+    }
+
+    fn initInternal(gpa: std.mem.Allocator, engine: *engine_mod.Engine, services: ?SharedServices) !*Bindings {
         if (!engine.abort_signals_ready) try abort_signal.install(engine);
-        const ui_manager = try native_ui.Manager.init(engine);
-        errdefer ui_manager.deinit();
+        const ui_manager = if (services) |shared| shared.ui else try native_ui.Manager.init(engine);
+        errdefer if (services == null) ui_manager.deinit();
+        const renderers = if (services) |shared| shared.renderers else try native_renderers.Manager.init(engine);
+        errdefer if (services == null) renderers.deinit();
         const self = try gpa.create(Bindings);
         errdefer gpa.destroy(self);
+        var owner_class: c.JSClassID = 0;
+        _ = c.JS_NewClassID(engine.runtime, &owner_class);
+        const definition: c.JSClassDef = .{ .class_name = "Native Extension Owner", .finalizer = ownerFinalizer, .gc_mark = null, .call = null, .exotic = null };
+        if (c.JS_NewClass(engine.runtime, owner_class, &definition) < 0) return error.OutOfMemory;
+        const owner_token = try engine.checked(c.JS_NewObjectClass(engine.context, @intCast(owner_class)));
+        errdefer engine.freeValue(owner_token);
+        const owner = try gpa.create(OwnerToken);
+        owner.* = .{ .gpa = gpa };
+        _ = c.JS_SetOpaque(owner_token, owner);
         const api = try engine.checked(c.JS_NewObject(engine.context));
         errdefer engine.freeValue(api);
+        var owner_data = [_]c.JSValue{ owner_token, c.JS_NewInt64(engine.context, owner_class) };
+        defer engine.freeValue(owner_data[1]);
         inline for (std.meta.fields(Method)) |field| {
             const name: [:0]const u8 = field.name;
-            const function = try engine.checked(c.pi_js_function_magic(engine.context, invokeRegistration, name.ptr, 2, @intCast(field.value)));
+            const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, invokeRegistration, name.ptr, 2, @intCast(field.value), owner_data.len, &owner_data));
             if (c.JS_DefinePropertyValueStr(engine.context, api, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         }
-        self.* = .{ .gpa = gpa, .engine = engine, .api = api, .providers = native_providers.Providers.init(engine), .ui_manager = ui_manager, .stream_runner = .{ .engine = engine } };
+        self.* = .{ .gpa = gpa, .engine = engine, .api = api, .providers = native_providers.Providers.init(engine), .ui_manager = ui_manager, .renderers = renderers, .owner_token = owner_token, .owner_class = owner_class, .owns_services = services == null, .stream_runner = .{ .engine = engine } };
+        if (services) |shared| {
+            self.broker = shared.broker;
+            self.owner_id = shared.owner_id;
+            self.tool_lookup = shared.tool_lookup;
+            self.tool_context = shared.tool_context;
+        }
+        owner.binding = self;
         ui_manager.provider_action_fn = providerUiAction;
         ui_manager.provider_action_context = self;
-        engine.host_data = self;
+        if (services == null) engine.host_data = self;
         return self;
     }
 
     pub fn deinit(self: *Bindings) void {
-        self.ui_manager.deinit();
+        if (self.invocation_active) self.finishInvocation();
+        const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(self.owner_token, self.owner_class).?));
+        owner.binding = null;
+        if (!self.owns_services) self.renderers.removeOwner(self.owner_id);
+        const owner_pointer: *anyopaque = @ptrCast(self);
+        if (self.ui_manager.provider_action_context == @as(?*anyopaque, owner_pointer)) {
+            self.ui_manager.provider_action_context = null;
+            self.ui_manager.provider_action_fn = null;
+        }
+        if (self.owns_services) {
+            self.renderers.deinit();
+            self.ui_manager.deinit();
+        }
         self.clearInvocationOptions();
-        self.engine.host_data = null;
+        if (self.engine.host_data == @as(?*anyopaque, owner_pointer)) self.engine.host_data = null;
         self.providers.deinit();
         var handlers = self.handlers.iterator();
         while (handlers.next()) |entry| {
@@ -107,10 +165,20 @@ pub const Bindings = struct {
         for (self.actions.items) |action| self.engine.freeValue(action);
         self.actions.deinit(self.gpa);
         self.engine.freeValue(self.api);
+        self.engine.freeValue(self.owner_token);
         if (self.context_snapshot) |snapshot| self.engine.freeValue(snapshot);
         if (self.source_path) |path| self.gpa.free(path);
         const gpa = self.gpa;
         gpa.destroy(self);
+    }
+
+    fn fromOwnerData(engine: *engine_mod.Engine, data: [*c]c.JSValue, offset: usize) !*Bindings {
+        var class: i64 = 0;
+        if (c.JS_ToInt64(engine.context, &class, data[offset + 1]) < 0) return error.JavaScriptException;
+        const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(data[offset], @intCast(class)) orelse return error.StaleNativeExtensionOwner));
+        const binding = owner.binding orelse return error.StaleNativeExtensionOwner;
+        if (binding.engine != engine) return error.NativeExtensionOwnerMismatch;
+        return binding;
     }
 
     fn freeTable(self: *Bindings, table: *std.StringHashMapUnmanaged(c.JSValue)) void {
@@ -139,8 +207,18 @@ pub const Bindings = struct {
         if (@intFromEnum(method) >= @intFromEnum(Method.getActiveTools) and @intFromEnum(method) <= @intFromEnum(Method.getThinkingLevel)) return self.readonlyApi(method);
         if (args.len == 0) return error.MissingExtensionArgument;
         if (method == .registerProvider or method == .unregisterProvider) return self.providerRegistration(method, args);
+        if (method == .registerMessageRenderer or method == .registerEntryRenderer or method == .registerMarkdownTransformer or method == .registerToolRenderer) {
+            if (method == .registerMarkdownTransformer or method == .registerToolRenderer) {
+                try self.renderers.registerOwned(self.owner_id, if (method == .registerMarkdownTransformer) .markdown else .resolver, "", args[0]);
+            } else {
+                if (args.len < 2) return error.MissingExtensionArgument;
+                const name = try self.engine.toString(args[0]);
+                defer self.gpa.free(name);
+                try self.renderers.registerOwned(self.owner_id, if (method == .registerMessageRenderer) .message else .entry, name, args[1]);
+            }
+            return c.pi_js_undefined();
+        }
         if (@intFromEnum(method) >= @intFromEnum(Method.setSessionName)) {
-            if (!self.invocation_active) return error.StaleExtensionActionContext;
             return self.recordAction(method, args);
         }
         if (method == .registerTool) {
@@ -170,7 +248,8 @@ pub const Bindings = struct {
                 defer self.engine.freeValue(wrapper);
                 const event_name = try self.engine.checked(c.JS_NewStringLen(self.engine.context, name.ptr, name.len));
                 defer self.engine.freeValue(event_name);
-                var data = [_]c.JSValue{ event_name, wrapper };
+                var data = [_]c.JSValue{ event_name, wrapper, self.owner_token, c.JS_NewInt64(self.engine.context, self.owner_class) };
+                defer self.engine.freeValue(data[3]);
                 const unsubscribe = try self.engine.checked(c.JS_NewCFunctionData(self.engine.context, unsubscribeHandler, 0, 0, data.len, &data));
                 errdefer self.engine.freeValue(unsubscribe);
                 const entry = try self.handlers.getOrPut(self.gpa, name);
@@ -232,16 +311,18 @@ pub const Bindings = struct {
         const kind = if (method == .registerProvider) "register_provider" else "unregister_provider";
         try self.actionProperty(action, "type", try self.engine.fromJsonValue(.{ .string = kind }));
         try self.actionProperty(action, "name", try self.engine.fromJsonValue(.{ .string = name }));
+        try self.actionOrigin(action);
         // Reserve an owned queue slot before registration can invoke user getters.
         // Remove the placeholder before publishing, preserving nested action order.
-        const reservation = if (self.invocation_active) self.actions.items.len else null;
+        const recipient: ?*Bindings = if (self.broker) |broker| broker.active else if (self.invocation_active) self else null;
+        const reservation = if (recipient) |active| active.actions.items.len else null;
         if (reservation != null) {
             const retained = c.JS_DupValue(self.engine.context, action);
             errdefer self.engine.freeValue(retained);
-            try self.actions.append(self.gpa, retained);
+            try recipient.?.actions.append(recipient.?.gpa, retained);
         }
         var published = false;
-        defer if (!published) if (reservation) |index| self.engine.freeValue(self.actions.orderedRemove(index));
+        defer if (!published) if (reservation) |index| self.engine.freeValue(recipient.?.actions.orderedRemove(index));
         if (method == .registerProvider) try self.actionProperty(action, "config", c.pi_js_undefined());
         if (method == .registerProvider) {
             const config = if (named) args[1] else args[0];
@@ -249,8 +330,8 @@ pub const Bindings = struct {
             if (c.JS_SetPropertyStr(self.engine.context, action, "config", encoded) < 0) return error.JavaScriptException;
         } else self.providers.unregister(name);
         if (reservation) |index| {
-            const retained = self.actions.orderedRemove(index);
-            self.actions.appendAssumeCapacity(retained);
+            const retained = recipient.?.actions.orderedRemove(index);
+            recipient.?.actions.appendAssumeCapacity(retained);
         }
         published = true;
         return c.pi_js_undefined();
@@ -258,6 +339,12 @@ pub const Bindings = struct {
 
     fn actionProperty(self: *Bindings, object: c.JSValue, key: [*:0]const u8, value: c.JSValue) !void {
         if (c.JS_DefinePropertyValueStr(self.engine.context, object, key, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    }
+
+    fn actionOrigin(self: *Bindings, action: c.JSValue) !void {
+        const name = std.fs.path.stem(self.source_path orelse "extension");
+        try self.actionProperty(action, "sourceExtensionName", try self.engine.checked(c.JS_NewStringLen(self.engine.context, name.ptr, name.len)));
+        if (self.owner_id != 0) try self.actionProperty(action, "sourceExtensionId", c.JS_NewInt64(self.engine.context, @intCast(self.owner_id)));
     }
 
     fn cloneValue(self: *Bindings, value: c.JSValue) !c.JSValue {
@@ -268,6 +355,7 @@ pub const Bindings = struct {
     }
 
     fn readonlyApi(self: *Bindings, method: Method) !c.JSValue {
+        if (self.broker) |broker| if (broker.active) |active| if (active != self) return active.readonlyApi(method);
         if (method == .getAllTools or method == .getCommands) return self.catalogApi(method);
         const key: [*:0]const u8 = switch (method) {
             .getActiveTools => "activeTools",
@@ -369,7 +457,7 @@ pub const Bindings = struct {
 
     fn unsubscribeHandler(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
-        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return c.pi_js_undefined()));
+        const self = fromOwnerData(engine, data, 2) catch return c.pi_js_undefined();
         const name = engine.toString(data[0]) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
             return c.JS_ThrowOutOfMemory(context);
@@ -392,6 +480,7 @@ pub const Bindings = struct {
     }
 
     fn recordAction(self: *Bindings, method: Method, args: []c.JSValue) !c.JSValue {
+        const recipient = if (self.broker) |broker| broker.active orelse return error.StaleExtensionActionContext else if (self.invocation_active) self else return error.StaleExtensionActionContext;
         const action = try self.engine.checked(c.JS_NewObject(self.engine.context));
         errdefer self.engine.freeValue(action);
         const kind: [*:0]const u8 = switch (method) {
@@ -422,19 +511,25 @@ pub const Bindings = struct {
         } else if (method == .sendUserMessage and args.len > 1) {
             if (c.JS_DefinePropertyValueStr(self.engine.context, action, "options", c.JS_DupValue(self.engine.context, args[1]), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         }
-        try self.actions.append(self.gpa, action);
+        try self.actionOrigin(action);
+        try recipient.actions.append(recipient.gpa, action);
         return c.pi_js_undefined();
     }
 
     fn beginActions(self: *Bindings) !void {
         if (self.invocation_active) return error.ExtensionInvocationBusy;
+        if (self.broker) |broker| if (broker.active != null) return error.ExtensionInvocationBusy;
         if (self.invocation_generation == std.math.maxInt(u32)) return error.ExtensionInvocationGenerationExhausted;
         self.invocation_generation += 1;
         self.publication_sequence = 0;
+        self.ui_manager.provider_action_fn = providerUiAction;
+        self.ui_manager.provider_action_context = self;
         for (self.actions.items) |action| self.engine.freeValue(action);
         self.actions.clearRetainingCapacity();
-        try self.ui_manager.begin(self.invocation_generation, self.context_snapshot, self.invocation_signal);
+        if (self.ui_manager.generation == std.math.maxInt(u32)) return error.ExtensionInvocationGenerationExhausted;
+        try self.ui_manager.begin(self.ui_manager.generation + 1, self.context_snapshot, self.invocation_signal);
         self.invocation_active = true;
+        if (self.broker) |broker| broker.active = self;
     }
 
     // The process transport owns the invocation identity. It supplies one
@@ -460,12 +555,15 @@ pub const Bindings = struct {
     fn finishInvocation(self: *Bindings) void {
         self.ui_manager.finish();
         self.invocation_active = false;
+        if (self.broker) |broker| if (broker.active == self) {
+            broker.active = null;
+        };
         self.clearInvocationOptions();
     }
 
     fn toolUpdate(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
-        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return c.pi_js_undefined()));
+        const self = fromOwnerData(engine, data, 1) catch return c.pi_js_undefined();
         var generation: i64 = 0;
         if (c.JS_ToInt64(context, &generation, data[0]) < 0) return engine.throwCaptured();
         // A callback retained by user code belongs to its original invocation;
@@ -481,7 +579,36 @@ pub const Bindings = struct {
     }
 
     fn mergeActions(self: *Bindings, result: c.JSValue) !void {
-        if (self.actions.items.len == 0) return;
+        if (self.actions.items.len == 0) {
+            // Returned JSON may contain an action queue authored by the input
+            // extension. Rebuild it and overwrite provenance from this owner.
+            const supplied = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, result, "actionQueue"));
+            defer self.engine.freeValue(supplied);
+            if (c.JS_IsUndefined(supplied) or c.JS_IsNull(supplied)) return;
+            if (!try self.providerArray(supplied)) return error.InvalidNativeExtensionActionQueue;
+            const length = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, supplied, "length"));
+            defer self.engine.freeValue(length);
+            var count: f64 = 0;
+            if (c.JS_ToFloat64(self.engine.context, &count, length) < 0) return error.JavaScriptException;
+            if (!std.math.isFinite(count) or count < 0 or count > 1024) return error.NativeExtensionActionLimit;
+            const queue = try self.engine.checked(c.JS_NewArray(self.engine.context));
+            var consumed = false;
+            errdefer if (!consumed) self.engine.freeValue(queue);
+            for (0..@as(usize, @intFromFloat(count))) |index| {
+                const original = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, supplied, @intCast(index)));
+                defer self.engine.freeValue(original);
+                if (!c.JS_IsObject(original) or try self.providerArray(original)) return error.InvalidNativeExtensionAction;
+                const copy = try self.cloneJson(original);
+                var transferred = false;
+                defer if (!transferred) self.engine.freeValue(copy);
+                try self.actionOrigin(copy);
+                transferred = true;
+                if (c.JS_SetPropertyUint32(self.engine.context, queue, @intCast(index), copy) < 0) return error.JavaScriptException;
+            }
+            consumed = true;
+            try self.actionProperty(result, "actionQueue", queue);
+            return;
+        }
         const queue = try self.engine.checked(c.JS_NewArray(self.engine.context));
         var consumed = false;
         errdefer if (!consumed) self.engine.freeValue(queue);
@@ -494,9 +621,9 @@ pub const Bindings = struct {
         if (status < 0) return error.JavaScriptException;
     }
 
-    fn invokeRegistration(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    fn invokeRegistration(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
-        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return c.JS_ThrowInternalError(context, "Native extension host is detached")));
+        const self = fromOwnerData(engine, data, 0) catch |err| return publicationFailure(engine, err);
         const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
         return self.registration(@enumFromInt(magic), args) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
@@ -507,6 +634,7 @@ pub const Bindings = struct {
     pub fn installSchemas(self: *Bindings) !void {
         try native_stream.install(self.engine);
         try native_tui.install(self.engine);
+        if (self.engine.native_module_names.contains("typebox")) return;
         const types = try typebox.create(self.engine);
         defer self.engine.freeValue(types);
         const exports = try self.engine.checked(c.JS_NewObject(self.engine.context));
@@ -596,11 +724,13 @@ pub const Bindings = struct {
     fn contextFunction(self: *Bindings, name: [:0]const u8, kind: ContextMethod, snapshot: c.JSValue, generation: u32) !c.JSValue {
         const token = c.JS_NewInt64(self.engine.context, generation);
         defer self.engine.freeValue(token);
-        var data = [_]c.JSValue{ token, snapshot };
+        const owner_class = c.JS_NewInt64(self.engine.context, self.owner_class);
+        defer self.engine.freeValue(owner_class);
+        var data = [_]c.JSValue{ token, snapshot, self.owner_token, owner_class };
         if (kind == .ui) {
             const object = try self.ui_manager.createObject();
             defer self.engine.freeValue(object);
-            var ui_data = [_]c.JSValue{ token, snapshot, object };
+            var ui_data = [_]c.JSValue{ token, snapshot, object, self.owner_token, owner_class };
             return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), ui_data.len, &ui_data));
         }
         return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), data.len, &data));
@@ -629,7 +759,8 @@ pub const Bindings = struct {
 
     fn contextCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
-        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return c.JS_ThrowTypeError(context, "Native extension context is detached")));
+        const kind: ContextMethod = @enumFromInt(magic);
+        const self = fromOwnerData(engine, data, if (kind == .ui) 3 else 2) catch |err| return publicationFailure(engine, err);
         var generation: i64 = 0;
         if (c.JS_ToInt64(context, &generation, data[0]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
         if (!self.invocation_active or generation != self.invocation_generation) return c.JS_ThrowTypeError(context, "Stale native extension context");
@@ -1025,6 +1156,14 @@ pub const Bindings = struct {
         const registered_providers = try self.providers.manifest();
         defer self.engine.freeValue(registered_providers);
         try manifest.put(allocator, "providers", try self.projectValue(allocator, registered_providers));
+        var message_renderers: std.json.Array = .init(allocator);
+        for (self.renderers.messages.items) |renderer_registration| if (renderer_registration.owner_id == self.owner_id) try message_renderers.append(.{ .string = renderer_registration.name });
+        try manifest.put(allocator, "messageRenderers", .{ .array = message_renderers });
+        var entry_renderers: std.json.Array = .init(allocator);
+        for (self.renderers.entries.items) |renderer_registration| if (renderer_registration.owner_id == self.owner_id) try entry_renderers.append(.{ .string = renderer_registration.name });
+        try manifest.put(allocator, "entryRenderers", .{ .array = entry_renderers });
+        try manifest.put(allocator, "hasMarkdownTransformer", .{ .bool = self.renderers.hasOwner(.markdown, self.owner_id) });
+        try manifest.put(allocator, "hasToolRenderers", .{ .bool = self.renderers.hasOwner(.resolver, self.owner_id) });
         var output: std.Io.Writer.Allocating = .init(self.gpa);
         defer output.deinit();
         try std.json.Stringify.value(std.json.Value{ .object = manifest }, .{}, &output.writer);
@@ -1035,6 +1174,21 @@ pub const Bindings = struct {
         return self.invokeProviderMethodWithSignal(id, args_json, false, false);
     }
 
+    pub fn invokeRenderer(self: *Bindings, kind: native_renderers.Kind, name: []const u8, payload_json: []const u8) ![]u8 {
+        try self.beginActions();
+        defer self.finishInvocation();
+        const payload = try self.parseJson(payload_json, "native-renderer-payload");
+        defer self.engine.freeValue(payload);
+        if (!c.JS_IsObject(payload) or c.JS_IsArray(payload)) return error.InvalidNativeRendererPayload;
+        const registered = if (self.tool_lookup) |lookup| lookup(self.tool_context, name) else self.tools.get(name);
+        const tool = if (registered) |value| c.JS_DupValue(self.engine.context, value) else c.pi_js_undefined();
+        defer self.engine.freeValue(tool);
+        const result = try self.renderers.runOwned(self.owner_id, kind, name, payload, self.context_snapshot, tool);
+        defer self.engine.freeValue(result);
+        try self.mergeActions(result);
+        return self.engine.stringify(result);
+    }
+
     fn providerUiAction(context: ?*anyopaque, method: [*:0]const u8, payload: c.JSValue) !void {
         const self: *Bindings = @ptrCast(@alignCast(context.?));
         if (!self.invocation_active) return error.StaleNativeProviderInvocation;
@@ -1043,6 +1197,7 @@ pub const Bindings = struct {
         try self.actionProperty(action, "type", try self.engine.checked(c.JS_NewString(self.engine.context, "ui_action")));
         try self.actionProperty(action, "method", try self.engine.checked(c.JS_NewString(self.engine.context, method)));
         try self.actionProperty(action, "args", c.JS_DupValue(self.engine.context, payload));
+        try self.actionOrigin(action);
         try self.actions.append(self.gpa, action);
     }
 
@@ -1149,7 +1304,7 @@ pub const Bindings = struct {
 
     fn publishCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
-        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return publicationFailure(engine, error.StaleNativeProviderInvocation)));
+        const self = fromOwnerData(engine, data, 5) catch |err| return publicationFailure(engine, err);
         return self.publish(if (argc == 0) c.pi_js_undefined() else argv[0], data) catch |err| return self.publicationRejected(err) catch |failure| publicationFailure(engine, failure);
     }
 
@@ -1181,13 +1336,13 @@ pub const Bindings = struct {
         try self.publicationCheck(data);
         const response = try self.ui_manager.requestProvider("provider_models_publish", request);
         defer self.engine.freeValue(response);
-        var reaction_data = [_]c.JSValue{ data[0], data[1], data[2], data[3], data[4], publication };
+        var reaction_data = [_]c.JSValue{ data[0], data[1], data[2], data[3], data[4], publication, data[5], data[6] };
         return self.publicationThen(response, publicationAccepted, &reaction_data);
     }
 
     fn publicationAccepted(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
-        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return publicationFailure(engine, error.StaleNativeProviderInvocation)));
+        const self = fromOwnerData(engine, data, 6) catch |err| return publicationFailure(engine, err);
         return self.afterPublication(if (argc == 0) c.pi_js_undefined() else argv[0], data) catch |err| publicationFailure(engine, err);
     }
 
@@ -1212,12 +1367,13 @@ pub const Bindings = struct {
         defer self.gpa.free(provider);
         const models = try self.providers.currentModelsUnsettled(provider, false);
         defer self.engine.freeValue(models);
-        return self.publicationThen(models, publicationCatalogReady, data[0..5]);
+        var next_data = [_]c.JSValue{ data[0], data[1], data[2], data[3], data[4], data[6], data[7] };
+        return self.publicationThen(models, publicationCatalogReady, &next_data);
     }
 
     fn publicationCatalogReady(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
-        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return publicationFailure(engine, error.StaleNativeProviderInvocation)));
+        const self = fromOwnerData(engine, data, 5) catch |err| return publicationFailure(engine, err);
         return self.catalogPublication(if (argc == 0) c.pi_js_undefined() else argv[0], data) catch |err| publicationFailure(engine, err);
     }
 
@@ -1230,12 +1386,12 @@ pub const Bindings = struct {
         try self.actionProperty(request, "models", try self.cloneJson(models));
         const response = try self.ui_manager.requestProvider("provider_models_catalog", request);
         defer self.engine.freeValue(response);
-        return self.publicationThen(response, publicationCatalogAccepted, data[0..5]);
+        return self.publicationThen(response, publicationCatalogAccepted, data[0..7]);
     }
 
     fn publicationCatalogAccepted(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
-        const self: *Bindings = @ptrCast(@alignCast(engine.host_data orelse return publicationFailure(engine, error.StaleNativeProviderInvocation)));
+        const self = fromOwnerData(engine, data, 5) catch |err| return publicationFailure(engine, err);
         self.publicationCheck(data) catch |err| return publicationFailure(engine, err);
         return c.pi_js_bool(context, @intFromBool(argc > 0 and c.JS_IsBool(argv[0]) and c.JS_ToBool(context, argv[0]) != 0));
     }
@@ -1286,7 +1442,7 @@ pub const Bindings = struct {
                 try self.actionProperty(context, "force", c.pi_js_bool(self.engine.context, @intFromBool(c.JS_IsBool(force) and c.JS_ToBool(self.engine.context, force) != 0)));
             }
         }
-        var data: [5]c.JSValue = undefined;
+        var data: [7]c.JSValue = undefined;
         var initialized: usize = 0;
         defer for (data[0..initialized]) |value| self.engine.freeValue(value);
         data[0] = c.JS_NewInt64(self.engine.context, self.invocation_generation);
@@ -1298,6 +1454,9 @@ pub const Bindings = struct {
         data[3] = c.JS_NewInt64(self.engine.context, @intCast(generation));
         data[4] = c.JS_NewInt64(self.engine.context, @intFromFloat(number));
         initialized = 5;
+        data[5] = c.JS_DupValue(self.engine.context, self.owner_token);
+        data[6] = c.JS_NewInt64(self.engine.context, self.owner_class);
+        initialized = 7;
         try self.actionProperty(context, "publish", try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, publishCallback, "publish", 1, 0, data.len, &data)));
         try self.actionProperty(context, "signal", c.JS_DupValue(self.engine.context, self.invocation_signal orelse return error.NativeProviderSignalMissing));
         try native_stream.freezeJson(self.engine, context, 0);
@@ -1361,8 +1520,9 @@ pub const Bindings = struct {
         defer self.engine.freeValue(call);
         const context = try self.createContext();
         defer self.engine.freeValue(context);
-        var update_data = [_]c.JSValue{c.JS_NewInt64(self.engine.context, self.invocation_generation)};
+        var update_data = [_]c.JSValue{ c.JS_NewInt64(self.engine.context, self.invocation_generation), self.owner_token, c.JS_NewInt64(self.engine.context, self.owner_class) };
         defer self.engine.freeValue(update_data[0]);
+        defer self.engine.freeValue(update_data[2]);
         const update = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, toolUpdate, "onUpdate", 1, 0, update_data.len, &update_data));
         defer self.engine.freeValue(update);
         var parameters = [_]c.JSValue{ call, args, self.invocation_signal orelse c.pi_js_undefined(), update, context };
@@ -1418,6 +1578,45 @@ pub const Bindings = struct {
         return self.engine.stringify(object);
     }
 };
+
+test "native shared VM API callbacks keep extension owner context and unsubscribe identity with no implicit active host" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try abort_signal.install(engine);
+    const ui = try native_ui.Manager.init(engine);
+    defer ui.deinit();
+    const renderers = try native_renderers.Manager.init(engine);
+    defer renderers.deinit();
+    const services: Bindings.SharedServices = .{ .ui = ui, .renderers = renderers };
+    const first = try Bindings.initShared(std.testing.allocator, engine, services);
+    var first_live = true;
+    defer if (first_live) first.deinit();
+    const second = try Bindings.initShared(std.testing.allocator, engine, services);
+    defer second.deinit();
+    try first.loadFactory("export default pi=>{globalThis.firstApi=pi;globalThis.firstStop=pi.on('shared-hook',(_,ctx)=>({session:ctx.sessionManager.getSessionId()}));pi.registerFlag('first',{type:'string',default:'one'});pi.registerCommand('first-cmd',{handler(_,ctx){globalThis.oldContext=ctx;return {message:ctx.sessionManager.getSessionId()}}})}", "group-first.mjs");
+    try second.loadFactory("export default pi=>{firstApi.registerFlag('first',{type:'string',default:'revised'});firstStop();pi.on('shared-hook',(_,ctx)=>({session:ctx.sessionManager.getSessionId()}));pi.registerFlag('second',{type:'string',default:'two'});pi.registerCommand('second-cmd',{handler(_,ctx){let fenced=false;try{oldContext.sessionManager.getSessionId()}catch(error){fenced=true}return {message:ctx.sessionManager.getSessionId(),fenced}}})}", "group-second.mjs");
+    try std.testing.expect(first.flags.contains("first") and !first.flags.contains("second"));
+    try std.testing.expect(second.flags.contains("second") and !second.flags.contains("first"));
+    try std.testing.expectEqual(@as(usize, 0), first.handlers.count());
+    try std.testing.expectEqual(@as(usize, 1), second.handlers.count());
+    try std.testing.expect(engine.host_data == null);
+    try first.setContext("{\"sessionId\":\"first-owner\"}");
+    try second.setContext("{\"sessionId\":\"second-owner\"}");
+    const first_result = try first.invokeCommand("first-cmd", "");
+    defer std.testing.allocator.free(first_result);
+    try std.testing.expect(std.mem.indexOf(u8, first_result, "first-owner") != null);
+    const second_result = try second.invokeCommand("second-cmd", "");
+    defer std.testing.allocator.free(second_result);
+    try std.testing.expect(std.mem.indexOf(u8, second_result, "second-owner") != null and std.mem.indexOf(u8, second_result, "\"fenced\":true") != null);
+    first.deinit();
+    first_live = false;
+    c.JS_RunGC(engine.runtime);
+    const late = try engine.evalModule("let stale=false;try{firstApi.registerFlag('late',{type:'string'})}catch(error){stale=true}if(!stale)throw Error('retired extension owner was callable');firstStop();", "group-retired-owner.mjs");
+    defer engine.freeValue(late);
+    const still_live = try second.invokeHook("shared-hook", "{}");
+    defer std.testing.allocator.free(still_live);
+    try std.testing.expect(std.mem.indexOf(u8, still_live, "second-owner") != null);
+}
 
 fn providerPublicationAllocationProbe(gpa: std.mem.Allocator) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});

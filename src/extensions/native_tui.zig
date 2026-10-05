@@ -30,6 +30,61 @@ const Node = struct {
     revision: u64 = 0,
 };
 const Constructor = struct { engine: *engine_mod.Engine, prototype: c.JSValue, array_is_array: c.JSValue, node_class: c.JSClassID, kind: Kind };
+
+/// Match upstream mounted containment: identity, then genuine Container children.
+/// Snapshots stay rooted on the worker owner across observable child getters.
+pub fn containsComponent(engine: *engine_mod.Engine, root: c.JSValue, target: c.JSValue) !bool {
+    var pending: std.ArrayList(c.JSValue) = .empty;
+    defer {
+        for (pending.items) |value| engine.freeValue(value);
+        pending.deinit(engine.gpa);
+    }
+    var visited: std.ArrayList(c.JSValue) = .empty;
+    defer {
+        for (visited.items) |value| engine.freeValue(value);
+        visited.deinit(engine.gpa);
+    }
+    {
+        const owned = c.JS_DupValue(engine.context, root);
+        errdefer engine.freeValue(owned);
+        try pending.append(engine.gpa, owned);
+    }
+    while (pending.pop()) |value| {
+        var transferred = false;
+        defer if (!transferred) engine.freeValue(value);
+        if (c.JS_IsStrictEqual(engine.context, value, target)) return true;
+        var seen = false;
+        for (visited.items) |previous| if (c.JS_IsStrictEqual(engine.context, previous, value)) {
+            seen = true;
+            break;
+        };
+        if (seen) continue;
+        if (visited.items.len >= 4096) return error.NativeFocusContainmentLimit;
+        try visited.append(engine.gpa, value);
+        transferred = true;
+        if (!c.JS_IsObject(value)) continue;
+        const class_id = c.JS_GetClassID(value);
+        const atom = c.JS_GetClassName(engine.runtime, class_id);
+        defer c.JS_FreeAtom(engine.context, atom);
+        const name = c.JS_AtomToCString(engine.context, atom) orelse return error.OutOfMemory;
+        defer c.JS_FreeCString(engine.context, name);
+        if (!std.mem.eql(u8, std.mem.span(name), "Native TUI Component")) continue;
+        const node: *Node = @ptrCast(@alignCast(c.JS_GetOpaque(value, class_id) orelse continue));
+        if (node.kind != .container) continue;
+        const array = try children(engine, value);
+        defer engine.freeValue(array);
+        const length_value = try engine.checked(c.JS_GetPropertyStr(engine.context, array, "length"));
+        defer engine.freeValue(length_value);
+        const length = try count(engine, length_value, false);
+        if (length > 4096 - pending.items.len) return error.NativeFocusContainmentLimit;
+        for (0..length) |index| {
+            const child = try engine.checked(c.JS_GetPropertyUint32(engine.context, array, @intCast(index)));
+            errdefer engine.freeValue(child);
+            try pending.append(engine.gpa, child);
+        }
+    }
+    return false;
+}
 const Method = enum(c_int) { render, invalidate, setText, setLines, setBgFn, addChild, removeChild, clear };
 
 fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
@@ -539,6 +594,38 @@ pub fn createKeybindings(engine: *engine_mod.Engine) !c.JSValue {
     try define(engine, object, "matches", try engine.checked(c.pi_js_function_magic(engine.context, keybindingCall, "matches", 2, 0)));
     try define(engine, object, "getKeys", try engine.checked(c.pi_js_function_magic(engine.context, keybindingCall, "getKeys", 1, 1)));
     return object;
+}
+
+fn focusContainmentOwnershipCase(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    const module = try engine.evalModule("import {Container,Box} from '@earendil-works/pi-tui';export const target={};export const missing={};export const root=new Container();root.addChild(target);root.addChild(root);export const box=new Box();box.addChild(target);export const fake={get children(){throw Error('plain object children must not be visited')}};", "focus-containment-input.mjs");
+    defer engine.freeValue(module);
+    const root = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "root"));
+    defer engine.freeValue(root);
+    const target = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "target"));
+    defer engine.freeValue(target);
+    const missing = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "missing"));
+    defer engine.freeValue(missing);
+    const box = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "box"));
+    defer engine.freeValue(box);
+    const fake = try engine.checked(c.JS_GetPropertyStr(engine.context, module, "fake"));
+    defer engine.freeValue(fake);
+    // Isolate the new owned traversal allocations from constructor setup while
+    // retaining genuine native objects and GC roots throughout every failure.
+    const original_allocator = engine.gpa;
+    engine.gpa = gpa;
+    defer engine.gpa = original_allocator;
+    try std.testing.expect(try containsComponent(engine, root, target));
+    try std.testing.expect(!try containsComponent(engine, root, missing));
+    try std.testing.expect(!try containsComponent(engine, box, target));
+    try std.testing.expect(!try containsComponent(engine, fake, target));
+    c.JS_RunGC(engine.runtime);
+}
+
+test "native focus containment is branded bounded cycle safe and releases every failed traversal allocation" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, focusContainmentOwnershipCase, .{});
 }
 
 test "native TUI classes preserve constructors aliases children mutation Unicode padding and render cache" {

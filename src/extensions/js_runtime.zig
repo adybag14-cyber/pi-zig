@@ -495,6 +495,12 @@ pub const Runtime = struct {
     node_program: []u8,
     bridge_path: []u8,
     backend: Backend = .legacy,
+    native_group: bool = false,
+    shared_owner: ?*Runtime = null,
+    extension_id: u64 = 1,
+    group_references: std.atomic.Value(usize) = .init(1),
+    native_read_session: ?*NativeReadSession = null,
+    native_reader_group: Io.Group = .init,
     mutex: Io.Mutex = .init,
     /// Serializes worker stdin independently so the abort watcher can write while
     /// the invocation thread is blocked waiting for worker stdout.
@@ -517,6 +523,9 @@ pub const Runtime = struct {
     provider_stream_timeout_ms: u64 = 0,
     closed: bool = false,
     last_error: ?[]u8 = null,
+    /// Latest asynchronous owner diagnostic, separate from an invocation's
+    /// result/error identity. It never consumes the next invocation response.
+    last_owner_error: ?[]u8 = null,
     ui_bridge: ?UiBridge = null,
     context_json: ?[]u8 = null,
     next_invocation_id: u64 = 1,
@@ -526,6 +535,7 @@ pub const Runtime = struct {
     active_provider_stream: bool align(@alignOf(u64)) = false,
     active_provider_hash: u64 = 0,
     active_provider_generation: u64 = 0,
+    active_extension_id: u64 = 0,
     active_provider_invocation_id: u64 = 0,
     retired_provider_generation: u64 = 0,
 
@@ -556,7 +566,31 @@ pub const Runtime = struct {
         return startSpawned(try spawnNativeRuntime(gpa, io, source_path, options));
     }
 
+    pub fn startNativeGroup(gpa: std.mem.Allocator, io: Io, source_paths: []const []const u8, options: NativeOptions) !Started {
+        if (source_paths.len == 0 or source_paths.len > 4096) return error.InvalidNativeExtensionGroup;
+        const runtime = try spawnNativeRuntimeConfigured(gpa, io, source_paths[0], options, true);
+        var startup: Io.Writer.Allocating = .init(gpa);
+        defer startup.deinit();
+        const written: ?anyerror = blk: {
+            startup.writer.writeAll("{\"kind\":\"load_group\",\"sources\":") catch break :blk error.OutOfMemory;
+            std.json.Stringify.value(source_paths, .{}, &startup.writer) catch break :blk error.OutOfMemory;
+            startup.writer.writeByte('}') catch break :blk error.OutOfMemory;
+            if (startup.written().len > runtime.max_line_bytes) break :blk error.NativeGroupStartupTooLarge;
+            runtime.writeLine(startup.written()) catch |err| break :blk err;
+            break :blk null;
+        };
+        if (written) |err| {
+            runtime.deinit();
+            return err;
+        }
+        return startSpawned(runtime);
+    }
+
     fn spawnNativeRuntime(gpa: std.mem.Allocator, io: Io, source_path: []const u8, options: NativeOptions) !*Runtime {
+        return spawnNativeRuntimeConfigured(gpa, io, source_path, options, false);
+    }
+
+    fn spawnNativeRuntimeConfigured(gpa: std.mem.Allocator, io: Io, source_path: []const u8, options: NativeOptions, grouped: bool) !*Runtime {
         const owned_source = try gpa.dupe(u8, source_path);
         errdefer gpa.free(owned_source);
         const owned_program = if (options.executable) |program| try gpa.dupe(u8, program) else blk: {
@@ -567,8 +601,10 @@ pub const Runtime = struct {
         errdefer gpa.free(owned_program);
         const owned_bridge = try gpa.dupe(u8, "");
         errdefer gpa.free(owned_bridge);
+        const single_args = [_][]const u8{ owned_program, "--internal-native-extension-worker", owned_source };
+        const group_args = [_][]const u8{ owned_program, "--internal-native-extension-group-worker" };
         var child = try std.process.spawn(io, .{
-            .argv = &.{ owned_program, "--internal-native-extension-worker", owned_source },
+            .argv = if (grouped) &group_args else &single_args,
             .environ_map = options.environ_map,
             .stdin = .pipe,
             .stdout = .pipe,
@@ -579,7 +615,7 @@ pub const Runtime = struct {
         // Reuse the bounded native termination path on every setup failure.
         errdefer terminateChild(&child, io);
         const runtime = try gpa.create(Runtime);
-        runtime.* = .{ .gpa = gpa, .io = io, .child = child, .source_path = owned_source, .node_program = owned_program, .bridge_path = owned_bridge, .backend = .native };
+        runtime.* = .{ .gpa = gpa, .io = io, .child = child, .source_path = owned_source, .node_program = owned_program, .bridge_path = owned_bridge, .backend = .native, .native_group = grouped };
         return runtime;
     }
 
@@ -600,12 +636,63 @@ pub const Runtime = struct {
         defer parsed.deinit();
         if (parsed.value != .object) return error.InvalidJavaScriptExtensionHandshake;
         const type_value = parsed.value.object.get("type") orelse return error.InvalidJavaScriptExtensionHandshake;
-        const manifest = parsed.value.object.get("manifest") orelse return error.InvalidJavaScriptExtensionHandshake;
-        if (type_value != .string or !std.mem.eql(u8, type_value.string, "ready") or manifest != .object) {
+        const manifest = parsed.value.object.get(if (runtime.native_group) "extensions" else "manifest") orelse return error.InvalidJavaScriptExtensionHandshake;
+        if (type_value != .string or !std.mem.eql(u8, type_value.string, "ready") or (if (runtime.native_group) manifest != .array else manifest != .object)) {
             return error.InvalidJavaScriptExtensionHandshake;
         }
         const manifest_json = try stringifyValue(gpa, manifest);
+        errdefer gpa.free(manifest_json);
+        if (runtime.native_group) {
+            const session = try gpa.create(NativeReadSession);
+            session.* = .{ .runtime = runtime };
+            errdefer gpa.destroy(session);
+            try runtime.native_reader_group.concurrent(runtime.io, NativeReadSession.reader, .{session});
+            runtime.native_read_session = session;
+        }
         return .{ .runtime = runtime, .manifest_json = manifest_json };
+    }
+
+    /// A group owner serializes every request and tags the selected extension.
+    /// Runtime views will delegate here instead of owning duplicate pipe ends.
+    pub fn invokeGroupRequest(self: *Runtime, extension_id: u64, request_json: []const u8, abort_flag: ?*bool) ![]u8 {
+        if (!self.native_group or extension_id == 0 or extension_id > 9_007_199_254_740_991) return error.InvalidNativeExtensionGroup;
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.closed) return error.JavaScriptExtensionClosed;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        var request = try std.json.parseFromSliceLeaky(std.json.Value, allocator, request_json, .{});
+        if (request != .object) return error.InvalidNativeExtensionGroup;
+        const invocation_id = self.next_invocation_id;
+        self.next_invocation_id +%= 1;
+        if (self.next_invocation_id == 0) self.next_invocation_id = 1;
+        try request.object.put(allocator, "extensionId", .{ .integer = @intCast(extension_id) });
+        try request.object.put(allocator, "invocationId", .{ .string = try std.fmt.allocPrint(allocator, "{d}", .{invocation_id}) });
+        try request.object.put(allocator, "abortable", .{ .bool = true });
+        if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) try request.object.put(allocator, "aborted", .{ .bool = true });
+        if (!request.object.contains("context")) {
+            const context = if (self.context_json) |raw| try std.json.parseFromSliceLeaky(std.json.Value, allocator, raw, .{}) else std.json.Value{ .object = .empty };
+            try request.object.put(allocator, "context", context);
+        }
+        const encoded = try std.json.Stringify.valueAlloc(allocator, request, .{});
+        return self.exchangeWithUpdatesUnlocked(encoded, invocation_id, abort_flag, null, null);
+    }
+
+    /// Extension views own only metadata/context. One group owner retains all
+    /// pipe handles, reader state, invocation ordering and process cleanup.
+    pub fn extensionView(self: *Runtime, id: u64, source_path: []const u8) !*Runtime {
+        if (!self.native_group or self.shared_owner != null or id == 0 or id > 9_007_199_254_740_991) return error.InvalidNativeExtensionGroup;
+        const source = try self.gpa.dupe(u8, source_path);
+        errdefer self.gpa.free(source);
+        const program = try self.gpa.dupe(u8, self.node_program);
+        errdefer self.gpa.free(program);
+        const bridge = try self.gpa.dupe(u8, "");
+        errdefer self.gpa.free(bridge);
+        const view = try self.gpa.create(Runtime);
+        view.* = .{ .gpa = self.gpa, .io = self.io, .child = self.child, .source_path = source, .node_program = program, .bridge_path = bridge, .backend = .native, .shared_owner = self, .extension_id = id };
+        _ = self.group_references.fetchAdd(1, .monotonic);
+        return view;
     }
 
     fn spawnRuntime(
@@ -659,6 +746,27 @@ pub const Runtime = struct {
     }
 
     pub fn deinit(self: *Runtime) void {
+        if (self.shared_owner) |owner| {
+            self.shared_owner = null;
+            if (self.last_error) |message| self.gpa.free(message);
+            if (self.last_owner_error) |message| self.gpa.free(message);
+            if (self.context_json) |context| self.gpa.free(context);
+            self.gpa.free(self.source_path);
+            self.gpa.free(self.node_program);
+            self.gpa.free(self.bridge_path);
+            const gpa = self.gpa;
+            gpa.destroy(self);
+            owner.deinit();
+            return;
+        }
+        if (self.native_group and self.group_references.fetchSub(1, .acq_rel) != 1) return;
+        if (self.native_read_session) |session| {
+            self.native_reader_group.cancel(self.io);
+            self.native_reader_group.await(self.io) catch {};
+            session.deinit();
+            self.gpa.destroy(session);
+            self.native_read_session = null;
+        }
         self.mutex.lockUncancelable(self.io);
         if (!self.closed) {
             self.writeLine("{\"kind\":\"shutdown\"}") catch {};
@@ -667,6 +775,7 @@ pub const Runtime = struct {
         }
         self.mutex.unlock(self.io);
         if (self.last_error) |message| self.gpa.free(message);
+        if (self.last_owner_error) |message| self.gpa.free(message);
         if (self.context_json) |context| self.gpa.free(context);
         self.gpa.free(self.source_path);
         self.gpa.free(self.node_program);
@@ -1126,6 +1235,10 @@ pub const Runtime = struct {
     /// provider hash is paired with the runtime-local generation, preventing a
     /// colliding generation from another provider or worker from being aborted.
     pub fn retireProviderGeneration(self: *Runtime, provider_name: []const u8, generation: u64, timeout_ms: u64) bool {
+        if (self.shared_owner) |owner| {
+            if (@atomicLoad(u64, &owner.active_extension_id, .acquire) != self.extension_id) return true;
+            return owner.retireProviderGeneration(provider_name, generation, timeout_ms);
+        }
         if (generation == 0 or !@atomicLoad(bool, &self.active_provider_stream, .acquire)) return true;
         if (@atomicLoad(u64, &self.active_provider_hash, .acquire) != std.hash.Wyhash.hash(0, provider_name) or
             @atomicLoad(u64, &self.active_provider_generation, .acquire) != generation)
@@ -1173,7 +1286,8 @@ pub const Runtime = struct {
             std.mem.eql(u8, kind, "transform_markdown") or
             std.mem.eql(u8, kind, "render_tool_call") or
             std.mem.eql(u8, kind, "render_tool_result") or
-            std.mem.eql(u8, kind, "prepare_tool_arguments"))) return error.InvalidJavaScriptRendererKind;
+            std.mem.eql(u8, kind, "prepare_tool_arguments") or
+            std.mem.eql(u8, kind, "renderer_retire"))) return error.InvalidJavaScriptRendererKind;
         try validateObjectJson(self.gpa, payload_json);
 
         self.mutex.lockUncancelable(self.io);
@@ -1280,6 +1394,7 @@ pub const Runtime = struct {
         stream_event_ctx: ?*anyopaque,
         watch_provider_retirement: bool,
     ) ![]u8 {
+        if (self.shared_owner) |owner| return self.exchangeGroupView(owner, request, abort_flag, update_fn, update_ctx, stream_event_fn, stream_event_ctx, watch_provider_retirement);
         if (self.backend == .native) try self.requireNativeRequest(request);
         self.clearLastErrorUnlocked();
         self.writeLine(request) catch |err| {
@@ -1315,6 +1430,58 @@ pub const Runtime = struct {
         };
     }
 
+    fn exchangeGroupView(self: *Runtime, owner: *Runtime, raw: []const u8, abort_flag: ?*bool, update_fn: ?ToolUpdateFn, update_ctx: ?*anyopaque, event_fn: ?ProviderStreamEventFn, event_ctx: ?*anyopaque, retirement: bool) anyerror![]u8 {
+        owner.mutex.lockUncancelable(owner.io);
+        defer owner.mutex.unlock(owner.io);
+        if (owner.closed) {
+            self.closed = true;
+            self.child.id = null;
+            return error.JavaScriptExtensionClosed;
+        }
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const allocator = arena.allocator();
+        var request = try std.json.parseFromSliceLeaky(std.json.Value, allocator, raw, .{});
+        if (request != .object) return error.InvalidNativeExtensionGroup;
+        const id = owner.next_invocation_id;
+        owner.next_invocation_id +%= 1;
+        if (owner.next_invocation_id == 0) owner.next_invocation_id = 1;
+        try request.object.put(allocator, "extensionId", .{ .integer = @intCast(self.extension_id) });
+        try request.object.put(allocator, "invocationId", .{ .string = try std.fmt.allocPrint(allocator, "{d}", .{id}) });
+        try request.object.put(allocator, "abortable", .{ .bool = true });
+        const encoded = try std.json.Stringify.valueAlloc(allocator, request, .{});
+        const previous_timeout = owner.timeout_ms;
+        const previous_bridge = owner.ui_bridge;
+        owner.timeout_ms = self.timeout_ms;
+        owner.ui_bridge = self.ui_bridge;
+        defer {
+            owner.timeout_ms = previous_timeout;
+            owner.ui_bridge = previous_bridge;
+        }
+        @atomicStore(u64, &owner.active_extension_id, self.extension_id, .release);
+        defer @atomicStore(u64, &owner.active_extension_id, 0, .release);
+        if (retirement) {
+            @atomicStore(bool, &owner.active_provider_stream, true, .release);
+            @atomicStore(u64, &owner.active_provider_hash, @atomicLoad(u64, &self.active_provider_hash, .acquire), .release);
+            @atomicStore(u64, &owner.active_provider_generation, @atomicLoad(u64, &self.active_provider_generation, .acquire), .release);
+            @atomicStore(u64, &owner.active_provider_invocation_id, id, .release);
+            @atomicStore(u64, &owner.retired_provider_generation, @atomicLoad(u64, &self.retired_provider_generation, .acquire), .release);
+        }
+        defer if (retirement) {
+            @atomicStore(bool, &owner.active_provider_stream, false, .release);
+            @atomicStore(u64, &owner.active_provider_invocation_id, 0, .release);
+        };
+        const result = owner.exchangeWithCallbacksUnlocked(encoded, id, abort_flag, update_fn, update_ctx, event_fn, event_ctx, retirement) catch |err| {
+            self.clearLastErrorUnlocked();
+            if (owner.last_error) |message| self.last_error = try self.gpa.dupe(u8, message);
+            self.closed = owner.closed;
+            self.child.id = owner.child.id;
+            return err;
+        };
+        self.clearLastErrorUnlocked();
+        return result;
+    }
+
     fn readResultUnlocked(
         self: *Runtime,
         update_fn: ?ToolUpdateFn,
@@ -1325,17 +1492,18 @@ pub const Runtime = struct {
         abort_flag: ?*const bool,
     ) ![]u8 {
         var expected_stream_sequence: u64 = 1;
-        var native_session: NativeReadSession = .{ .runtime = self };
+        var local_native_session: NativeReadSession = .{ .runtime = self };
+        const native_session = self.native_read_session orelse &local_native_session;
         var reader_group: Io.Group = .init;
         // A persistent reader and a human dialog must progress independently
         // of the owner, including when the implementation's async pool is full.
-        if (self.backend == .native) try reader_group.concurrent(self.io, NativeReadSession.reader, .{&native_session});
-        defer if (self.backend == .native) {
+        if (self.backend == .native and self.native_read_session == null) try reader_group.concurrent(self.io, NativeReadSession.reader, .{native_session});
+        defer if (self.backend == .native and self.native_read_session == null) {
             reader_group.cancel(self.io);
             reader_group.await(self.io) catch {};
             native_session.deinit();
         };
-        var native_dialogs: NativeDialogs = .{ .runtime = self, .session = &native_session, .invocation_id = expected_invocation_id };
+        var native_dialogs: NativeDialogs = .{ .runtime = self, .session = native_session, .invocation_id = expected_invocation_id };
         defer native_dialogs.deinit();
         while (true) {
             const line = if (self.backend == .native) try native_session.next(&native_dialogs) else try self.readRecordUnlocked();
@@ -1346,6 +1514,14 @@ pub const Runtime = struct {
 
             if (parsed.value.object.get("type")) |type_value| {
                 if (type_value != .string) return error.InvalidJavaScriptExtensionResponse;
+                if (self.backend == .native and std.mem.eql(u8, type_value.string, "native_owner_error")) {
+                    const message = parsed.value.object.get("error") orelse return error.InvalidJavaScriptExtensionResponse;
+                    if (message != .string) return error.InvalidJavaScriptExtensionResponse;
+                    const owned = try self.gpa.dupe(u8, message.string);
+                    if (self.last_owner_error) |old| self.gpa.free(old);
+                    self.last_owner_error = owned;
+                    continue;
+                }
                 if (std.mem.eql(u8, type_value.string, "ui_request")) {
                     if (self.backend == .native) try native_dialogs.request(&parsed.value.object) else try self.handleUiRequestUnlocked(&parsed.value.object);
                     continue;
@@ -1443,7 +1619,7 @@ pub const Runtime = struct {
         if (parsed.value != .object) return error.InvalidNativeExtensionRequest;
         const kind = parsed.value.object.get("kind") orelse return error.InvalidNativeExtensionRequest;
         if (kind != .string) return error.InvalidNativeExtensionRequest;
-        for ([_][]const u8{ "hook", "tool", "command", "provider_method", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "shutdown" }) |supported| {
+        for ([_][]const u8{ "hook", "tool", "command", "group_add_source", "group_remove_source", "provider_method", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "render_message", "render_entry", "transform_markdown", "render_tool_call", "render_tool_result", "prepare_tool_arguments", "renderer_retire", "shutdown" }) |supported| {
             if (std.mem.eql(u8, supported, kind.string)) return;
         }
         // Keep unsupported custom-component and renderer operations out of the
@@ -1532,6 +1708,7 @@ pub const Runtime = struct {
     }
 
     fn writeLine(self: *Runtime, line: []const u8) !void {
+        if (self.shared_owner) |owner| return owner.writeLine(line);
         self.write_mutex.lockUncancelable(self.io);
         defer self.write_mutex.unlock(self.io);
         const stdin_file = self.child.stdin orelse return error.JavaScriptExtensionClosed;

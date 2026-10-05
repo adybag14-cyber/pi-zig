@@ -354,6 +354,27 @@ fn schedulePromise(engine: *engine_mod.Engine, args: []c.JSValue) !c.JSValue {
     return promise;
 }
 
+pub fn nextDeadline(engine: *engine_mod.Engine) !?i64 {
+    const state = try scheduler(engine);
+    if (state.timers.items.len == 0) return null;
+    var deadline = state.timers.items[0].deadline_ms;
+    for (state.timers.items) |timer| deadline = @min(deadline, timer.deadline_ms);
+    return deadline;
+}
+
+/// Execute one due callback without waiting for a future deadline. All timer
+/// and JavaScript ownership remains on the calling engine owner thread.
+pub fn pumpReady(engine: *engine_mod.Engine) !bool {
+    const state = try scheduler(engine);
+    if (state.timers.items.len == 0) return false;
+    var index: usize = 0;
+    for (state.timers.items, 0..) |timer, candidate| if (timer.deadline_ms < state.timers.items[index].deadline_ms) {
+        index = candidate;
+    };
+    if (state.timers.items[index].deadline_ms > std.Io.Clock.awake.now(state.io).toMilliseconds()) return false;
+    return fire(state, index);
+}
+
 fn pump(engine: *engine_mod.Engine) !bool {
     const state = try scheduler(engine);
     if (state.timers.items.len == 0) return false;
@@ -374,6 +395,11 @@ fn pump(engine: *engine_mod.Engine) !bool {
         if (remaining <= 0) break;
         try state.io.sleep(.fromMilliseconds(@min(remaining, 10)), .awake);
     }
+    return fire(state, index);
+}
+
+fn fire(state: *Scheduler, index: usize) !bool {
+    const engine = state.engine;
     // Remove before invocation: callbacks can clear or schedule more timers.
     const timer = state.timers.orderedRemove(index);
     defer state.freeTimer(timer);

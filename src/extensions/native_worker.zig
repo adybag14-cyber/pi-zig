@@ -1,6 +1,7 @@
 //! Internal native extension process. The production runtime switches here
 //! only after the complete compatibility surface is certified.
 const std = @import("std");
+const native_renderers = @import("native_renderers.zig");
 const engine_mod = @import("engine.zig");
 const bindings_mod = @import("native_bindings.zig");
 const typescript = @import("typescript.zig");
@@ -16,6 +17,7 @@ const timers = @import("timers.zig");
 const abort_signal = @import("abort_signal.zig");
 const native_stream = @import("native_stream.zig");
 const component_protocol = @import("component_protocol.zig");
+const native_group = @import("native_group.zig");
 const c = engine_mod.c;
 
 const WireRecord = struct {
@@ -31,8 +33,9 @@ const Transport = struct {
     bindings: *bindings_mod.Bindings,
     io: std.Io,
     writer: *std.Io.Writer,
+    initial_input: ?*std.Io.File.Reader = null,
     mutex: std.Io.Mutex = .init,
-    available: std.Io.Condition = .init,
+    available: std.Io.Event = .unset,
     records: std.ArrayList(WireRecord) = .empty,
     queued_bytes: usize = 0,
     finished: bool = false,
@@ -92,7 +95,7 @@ const Transport = struct {
         if (self.records.items.len >= 128 or bytes.len > 8 * 1024 * 1024 - self.queued_bytes) return error.NativeWorkerQueueLimit;
         try self.records.append(std.heap.page_allocator, record);
         self.queued_bytes += bytes.len;
-        self.available.signal(self.io);
+        self.available.set(self.io);
     }
 
     fn finishReader(self: *Transport, err: ?anyerror) void {
@@ -100,12 +103,13 @@ const Transport = struct {
         defer self.mutex.unlock(self.io);
         self.finished = true;
         self.reader_error = err;
-        self.available.broadcast(self.io);
+        self.available.set(self.io);
     }
 
     fn readInput(self: *Transport) !void {
         var buffer: [4096]u8 = undefined;
-        var input = std.Io.File.stdin().readerStreaming(self.io, &buffer);
+        var default_input = std.Io.File.stdin().readerStreaming(self.io, &buffer);
+        const input = self.initial_input orelse &default_input;
         while (true) {
             var line: std.ArrayList(u8) = .empty;
             defer line.deinit(std.heap.page_allocator);
@@ -139,16 +143,47 @@ const Transport = struct {
     }
 
     fn next(self: *Transport) !?WireRecord {
-        self.mutex.lockUncancelable(self.io);
-        defer self.mutex.unlock(self.io);
-        while (self.records.items.len == 0 and !self.finished) self.available.waitUncancelable(self.io, &self.mutex);
-        if (self.records.items.len == 0) {
-            if (self.reader_error) |err| return err;
-            return null;
+        while (true) {
+            self.engine.beginInvocation();
+            self.pumpIdle() catch |err| {
+                if (err != error.JavaScriptException) return err;
+                var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
+                defer arena.deinit();
+                var object: std.json.ObjectMap = .empty;
+                try object.put(arena.allocator(), "type", .{ .string = "native_owner_error" });
+                try object.put(arena.allocator(), "error", .{ .string = self.engine.last_error orelse @errorName(err) });
+                try writeRecord(self.writer, .{ .object = object });
+            };
+            const deadline = try timers.nextDeadline(self.engine);
+            self.mutex.lockUncancelable(self.io);
+            self.available.reset();
+            if (self.records.items.len != 0) {
+                const record = self.records.orderedRemove(0);
+                self.queued_bytes -= record.bytes.len;
+                self.mutex.unlock(self.io);
+                return record;
+            }
+            const finished = self.finished;
+            const failure = self.reader_error;
+            self.mutex.unlock(self.io);
+            if (finished) {
+                if (failure) |err| return err;
+                return null;
+            }
+            if (deadline) |due| {
+                const remaining = due - std.Io.Clock.awake.now(self.io).toMilliseconds();
+                if (remaining <= 0) continue;
+                self.available.waitTimeout(self.io, .{ .duration = .{ .raw = .fromMilliseconds(remaining), .clock = .awake } }) catch |err| switch (err) {
+                    error.Timeout => continue,
+                    else => return err,
+                };
+            } else try self.available.wait(self.io);
         }
-        const record = self.records.orderedRemove(0);
-        self.queued_bytes -= record.bytes.len;
-        return record;
+    }
+
+    fn pumpIdle(self: *Transport) !void {
+        _ = try self.engine.drainReadyJobs();
+        if (try timers.pumpReady(self.engine)) _ = try self.engine.drainReadyJobs();
     }
 
     fn takeControl(self: *Transport) ?WireRecord {
@@ -589,6 +624,11 @@ fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, transport: *
         const bridge: native_stream.Bridge = .{ .context = transport, .event = Transport.streamEvent };
         return bindings.invokeProviderStream(try requiredText(object, "callbackId"), try requiredText(object, "providerName"), @intCast(generation.integer), model, context, options, transport.active_id, bridge, std.mem.eql(u8, kind, "provider_cancel_deferred"));
     }
+    if (std.meta.stringToEnum(native_renderers.Kind, kind)) |renderer_kind| {
+        const payload = try encoded(gpa, object.get("payload") orelse std.json.Value{ .object = .empty });
+        defer gpa.free(payload);
+        return bindings.invokeRenderer(renderer_kind, try requiredText(object, "name"), payload);
+    }
     return error.UnsupportedNativeWorkerRequest;
 }
 
@@ -605,13 +645,66 @@ test "native tool result projection preserves text images details and usage" {
     try std.testing.expect(parsed.value.object.contains("details") and parsed.value.object.contains("usage"));
 }
 
+fn loadSource(gpa: std.mem.Allocator, io: std.Io, engine: *engine_mod.Engine, loader: *Loader, binding: *bindings_mod.Bindings, extension_path: []const u8) !void {
+    const absolute = try std.Io.Dir.cwd().realPathFileAlloc(io, extension_path, gpa);
+    defer gpa.free(absolute);
+    const filename = try gpa.dupeZ(u8, absolute);
+    defer gpa.free(filename);
+    for (filename) |*byte| if (byte.* == '\\') {
+        byte.* = '/';
+    };
+    try binding.setSourcePath(filename);
+    const input_module = try Loader.input(loader, engine, filename);
+    defer switch (input_module) {
+        .source => |source| gpa.free(source),
+        .exports => |exports| engine.freeValue(exports),
+    };
+    const loaded_factory = switch (input_module) {
+        .source => |source| binding.loadFactory(source, filename),
+        .exports => |exports| binding.loadFactoryValue(exports),
+    };
+    try loaded_factory;
+}
+
 pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void {
+    return runOwner(gpa, io, &.{extension_path}, null, false);
+}
+
+pub fn runGroup(gpa: std.mem.Allocator, io: std.Io) !void {
+    var input_buffer: [4096]u8 = undefined;
+    var input = std.Io.File.stdin().readerStreaming(io, &input_buffer);
+    var startup: std.ArrayList(u8) = .empty;
+    defer startup.deinit(gpa);
+    while (true) {
+        const byte = try input.interface.takeByte();
+        if (byte == '\n') break;
+        if (startup.items.len >= 4 * 1024 * 1024) return error.NativeGroupStartupTooLarge;
+        try startup.append(gpa, byte);
+    }
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, startup.items, .{});
+    defer parsed.deinit();
+    if (parsed.value != .object) return error.InvalidNativeGroupStartup;
+    const kind = parsed.value.object.get("kind") orelse return error.InvalidNativeGroupStartup;
+    if (kind != .string or !std.mem.eql(u8, kind.string, "load_group")) return error.InvalidNativeGroupStartup;
+    const sources = parsed.value.object.get("sources") orelse return error.InvalidNativeGroupStartup;
+    if (sources != .array or sources.array.items.len == 0 or sources.array.items.len > 4096) return error.InvalidNativeGroupStartup;
+    const paths = try gpa.alloc([]const u8, sources.array.items.len);
+    defer gpa.free(paths);
+    for (sources.array.items, paths) |source, *path| {
+        if (source != .string or source.string.len == 0 or source.string.len > std.Io.Dir.max_path_bytes) return error.InvalidNativeGroupStartup;
+        path.* = source.string;
+    }
+    return runOwner(gpa, io, paths, &input, true);
+}
+
+fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, initial_input: ?*std.Io.File.Reader, grouped: bool) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();
     var loader: Loader = .{ .io = io, .engine = engine };
     engine.setSourceLoader(.{ .context = &loader, .load = Loader.source, .normalize = Loader.normalize, .normalize_require = Loader.normalizeRequire, .input = Loader.input });
-    const bindings = try bindings_mod.Bindings.init(gpa, engine);
-    defer bindings.deinit();
+    const group = try native_group.Group.init(engine);
+    defer group.deinit();
+    const bindings = try group.add(sources[0]);
     try timers.install(engine, io);
     try bindings.installSchemas();
     try node_path.install(engine, io);
@@ -621,42 +714,29 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
     try console.install(engine, io);
     try text_encoding.install(engine);
     try text_decoder.install(engine);
-    const absolute = try std.Io.Dir.cwd().realPathFileAlloc(io, extension_path, gpa);
-    defer gpa.free(absolute);
-    const filename = try gpa.dupeZ(u8, absolute);
-    defer gpa.free(filename);
-    for (filename) |*byte| if (byte.* == '\\') {
-        byte.* = '/';
-    };
-    try bindings.setSourcePath(filename);
-    const input_module = try Loader.input(&loader, engine, filename);
-    defer switch (input_module) {
-        .source => |source| gpa.free(source),
-        .exports => |exports| engine.freeValue(exports),
-    };
-    const loaded_factory = switch (input_module) {
-        .source => |source| bindings.loadFactory(source, filename),
-        .exports => |exports| bindings.loadFactoryValue(exports),
-    };
-    loaded_factory catch |err| {
-        if (engine.last_error) |message| {
-            var error_buffer: [4096]u8 = undefined;
-            var stderr = std.Io.File.stderr().writerStreaming(io, &error_buffer);
-            try stderr.interface.print("Native extension load failed: {s}\n", .{message});
-            try stderr.interface.flush();
-        }
-        return err;
-    };
+    for (sources, 0..) |extension_path, index| {
+        const source_binding = if (index == 0) bindings else try group.add(extension_path);
+        const loaded_factory = loadSource(gpa, io, engine, &loader, source_binding, extension_path);
+        loaded_factory catch |err| {
+            if (engine.last_error) |message| {
+                var error_buffer: [4096]u8 = undefined;
+                var stderr = std.Io.File.stderr().writerStreaming(io, &error_buffer);
+                try stderr.interface.print("Native extension load failed: {s}\n", .{message});
+                try stderr.interface.flush();
+            }
+            return err;
+        };
+    }
     var output_buffer: [8192]u8 = undefined;
     var output = std.Io.File.stdout().writerStreaming(io, &output_buffer);
     const writer = &output.interface;
-    const manifest = try bindings.manifestJson(extension_path);
+    const manifest = if (grouped) try group.manifest() else try bindings.manifestJson(sources[0]);
     defer gpa.free(manifest);
-    try writer.writeAll("\x1e{\"type\":\"ready\",\"manifest\":");
+    try writer.writeAll(if (grouped) "\x1e{\"type\":\"ready\",\"group\":true,\"extensions\":" else "\x1e{\"type\":\"ready\",\"manifest\":");
     try writer.writeAll(manifest);
     try writer.writeAll("}\n");
     try writer.flush();
-    var transport: Transport = .{ .engine = engine, .bindings = bindings, .io = io, .writer = writer };
+    var transport: Transport = .{ .engine = engine, .bindings = bindings, .io = io, .writer = writer, .initial_input = initial_input };
     defer transport.deinit();
     engine.host_control_context = &transport;
     engine.host_control_pump = Transport.pump;
@@ -699,6 +779,15 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
             try writer.flush();
             return;
         }
+        const extension_id: u64 = if (request.object.get("extensionId")) |value| component_protocol.identifier(value) catch {
+            try writeFailure(allocator, writer, "InvalidNativeExtensionOwner");
+            continue;
+        } else 1;
+        const selected_binding = group.selected(extension_id) catch |err| {
+            try writeFailure(allocator, writer, @errorName(err));
+            continue;
+        };
+        transport.bindings = selected_binding;
         engine.beginInvocation();
         var generated: [32]u8 = undefined;
         const generated_id = try std.fmt.bufPrint(&generated, "native-{d}", .{transport.next_id});
@@ -709,7 +798,57 @@ pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void
             continue;
         };
         defer transport.clearActive();
-        const result = invoke(gpa, bindings, &transport, request.object) catch |err| {
+        if (grouped and std.mem.eql(u8, kind, "group_remove_source")) {
+            const value = request.object.get("ownerId") orelse {
+                try writeFailure(allocator, writer, "MissingNativeExtensionOwner");
+                continue;
+            };
+            const owner_id = component_protocol.identifier(value) catch {
+                try writeFailure(allocator, writer, "InvalidNativeExtensionOwner");
+                continue;
+            };
+            if (owner_id == 1) {
+                try writeFailure(allocator, writer, "NativeGroupPrimaryOwnerRequired");
+                continue;
+            }
+            // The request may target the same binding it removes. Release
+            // its invocation signal and retarget transport before destruction;
+            // the loop's deferred cleanup must never retain a freed binding.
+            transport.clearActive();
+            transport.bindings = try group.selected(1);
+            group.remove(owner_id);
+            try writer.writeAll("\x1e{\"ok\":true,\"result\":{}}\n");
+            try writer.flush();
+            continue;
+        }
+        if (grouped and std.mem.eql(u8, kind, "group_add_source")) {
+            const path = requiredText(request.object, "sourcePath") catch |err| {
+                try writeFailure(allocator, writer, @errorName(err));
+                continue;
+            };
+            const added = group.add(path) catch |err| {
+                try writeFailure(allocator, writer, @errorName(err));
+                continue;
+            };
+            const added_id = added.owner_id;
+            loadSource(gpa, io, engine, &loader, added, path) catch |err| {
+                group.remove(added_id);
+                try writeFailure(allocator, writer, engine.last_error orelse @errorName(err));
+                continue;
+            };
+            const raw_manifest = try added.manifestJson(path);
+            defer gpa.free(raw_manifest);
+            var manifest_value = try std.json.parseFromSliceLeaky(std.json.Value, allocator, raw_manifest, .{});
+            try manifest_value.object.put(allocator, "extensionId", .{ .integer = @intCast(added_id) });
+            try writeRecord(writer, .{ .object = record: {
+                var response: std.json.ObjectMap = .empty;
+                try response.put(allocator, "ok", .{ .bool = true });
+                try response.put(allocator, "result", manifest_value);
+                break :record response;
+            } });
+            continue;
+        }
+        const result = invoke(gpa, selected_binding, &transport, request.object) catch |err| {
             const diagnostic = engine.last_error orelse @errorName(err);
             // C frames are absent from the user's JavaScript stack. Preserve
             // the original exception while naming the native invocation in

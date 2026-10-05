@@ -47,20 +47,27 @@ pub const Bridge = struct {
     }
 
     pub fn drainActions(self: *Bridge) ![]actions_mod.Record {
+        try self.flushRendererActions();
         return self.action_queue.drain();
     }
 
     pub fn queuedActionCount(self: *Bridge) usize {
-        return self.action_queue.count();
+        return self.action_queue.count() + self.host.rendererActionCount();
     }
 
     /// Transfer command/shortcut action ownership into the same FIFO used by
     /// lifecycle hooks and parallel extension-tool callbacks.
     pub fn enqueueActions(self: *Bridge, batch: *actions_mod.Batch) !void {
+        try self.flushRendererActions();
         try self.action_queue.enqueue(batch);
     }
 
+    fn flushRendererActions(self: *Bridge) !void {
+        try self.host.transferRendererActions(&self.action_queue);
+    }
+
     fn queueEmitted(self: *Bridge, emitted: *host_mod.EmitResult) !void {
+        try self.flushRendererActions();
         for (emitted.responses) |*response| try self.action_queue.enqueue(&response.actions);
     }
 
@@ -457,7 +464,7 @@ pub const Bridge = struct {
     }
 
     fn transferToolOutput(self: *Bridge, gpa: std.mem.Allocator, output: *host_mod.ToolOutput) !?agent_tools.ToolResult {
-        try self.action_queue.enqueue(&output.actions);
+        try self.enqueueActions(&output.actions);
         if (output.delegate_builtin) return null;
 
         // The agent may execute external tools in a per-worker arena. The host

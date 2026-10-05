@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parentSource": "90a6748b2b57079936bbf1173f5a6ef3c16b5a0c",
+  "changes": [
+    "One native extension owner VM/process per Host generation, incremental source loading, owner-token API dispatch and shared cross-extension renderer identity",
+    "Persistent owner reader, due idle timers/microtasks, source rollback, targeted unload and authoritative renderer action FIFO",
+    "Regular-terminal native custom scene ownership, raw-terminal lease, explicit target/custom/editor/none focus and close acknowledgement"
+  ],
+  "integration": [
+    "Applied seven renderer files, fourteen group deltas and seven regular/focus deltas additively",
+    "Kept already-published provider retirement synchronization and overlay transition repairs; duplicate patch hunks omitted",
+    "Existing native bindings test wrapper/build target already matched; retained all current build targets"
+  ],
+  "validation": {
+    "windowsDebug": "126/126 steps;597 passed;39 skips",
+    "windowsReleaseSafe": "126/126 steps;597 passed;39 skips",
+    "linuxDebug": "122/122 steps;766/766 passed",
+    "linuxReleaseSafe": "122/122 steps;766/766 passed",
+    "snapshotSha256": "1ed8e1a491664b833b6afeb2c3061d93a14f2e13f49287d8941e27ca3818baab",
+    "jobs": [
+      {
+        "name": "group-regular-storage-main-full-debug-20261005",
+        "pid": 28824,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T18:13:00.0494430Z",
+        "launched_utc": "2026-10-05T18:13:00.0467882+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T18:14:46.3890692+00:00"
+      },
+      {
+        "name": "group-regular-storage-main-full-releasesafe-20261005",
+        "pid": 19788,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T18:14:46.4026760Z",
+        "launched_utc": "2026-10-05T18:14:46.4018639+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T18:24:38.8457605+00:00"
+      },
+      {
+        "name": "group-regular-storage-main-linux-full-debug-20261005",
+        "pid": 30632,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-group-regular-composed-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1100s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T18:13:14.4859290Z",
+        "launched_utc": "2026-10-05T18:13:14.4819946+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T18:15:06.3319497+00:00"
+      },
+      {
+        "name": "group-regular-storage-main-linux-full-releasesafe-20261005",
+        "pid": 54860,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-group-regular-composed-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1100s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T18:18:24.2520360Z",
+        "launched_utc": "2026-10-05T18:18:24.2494293+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T18:29:17.4681204+00:00"
+      },
+      {
+        "name": "group-regular-storage-main-focused-debug-20261005",
+        "pid": 31844,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-runtime test-extension-bindings test-fullscreen-frontend-process test-fullscreen-frontend-components test-provider-oauth-protocol test-provider-models-protocol -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T18:10:31.4736510Z",
+        "launched_utc": "2026-10-05T18:10:31.4705435+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T18:11:08.7383167+00:00"
+      }
+    ]
+  },
+  "limits": [
+    "Unsolicited dirty renderer-row delivery remains a separate active increment",
+    "Full group provider/catalog and late-registration behavior remains to audit",
+    "Arbitrary multi-overlay ancestry and complete mounted base/widget trees remain incomplete",
+    "Production backend still defaults to legacy; final JS host removal and native parity certification are pending",
+    "Fresh hosted macOS execution is required for this expanded checkpoint; prior terminal repair matrix passed"
+  ]
+}

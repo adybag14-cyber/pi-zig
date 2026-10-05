@@ -9,6 +9,395 @@ const provider_registry_mod = @import("extensions/provider_registry.zig");
 const provider_stream_mod = @import("extensions/provider_stream.zig");
 const component_protocol = @import("extensions/component_protocol.zig");
 
+fn expectNativeTextLine(expected: []const u8, width: usize, actual: []const u8) !void {
+    const padded = try std.testing.allocator.alloc(u8, width);
+    defer std.testing.allocator.free(padded);
+    @memset(padded, ' ');
+    @memcpy(padded[0..expected.len], expected);
+    try std.testing.expectEqualStrings(padded, actual);
+}
+
+test "native runtime renderers prepare arguments retain row state final redraw resolver next and explicit retirement without Node" {
+    const extension_source =
+        \\import {Type,EventStream} from '@earendil-works/pi-ai';import {Type as SameType} from 'typebox';import {Type as AliasType} from '@sinclair/typebox';import {Text,Box} from '@earendil-works/pi-tui';if(Type!==SameType||Type!==AliasType||typeof EventStream!=='function')throw Error('schema/stream aliases');
+        \\export default function(pi){let oldNext,oldInvalidate;const original={renderError:true};pi.registerMessageRenderer('default-message',()=>undefined);pi.registerEntryRenderer('hidden-entry',()=>undefined);pi.registerMessageRenderer('message',(message,options,theme)=>{if(message.content==='error')throw original;const box=new Box(options.outputPad,0);box.addChild(new Text('MESSAGE|'+message.content+'|'+options.expanded,0,0));return box});pi.registerEntryRenderer('entry',(entry,options)=>new Text('ENTRY|'+entry.data.message+'|'+options.expanded,0,0));pi.registerMarkdownTransformer((text,ctx)=>'['+ctx.messageType+':'+ctx.isStreaming+':'+ctx.availableWidth+'] '+text);pi.registerTool({name:'paint',parameters:Type.Object({value:Type.String()}),prepareArguments(args){return {value:String(args.alias??args.value)}},async execute(id,args,signal,update){update({content:[{type:'text',text:'live:'+args.value}]});return {content:[{type:'text',text:'done:'+args.value}]}},renderCall(args,theme,ctx){oldInvalidate=ctx.invalidate;ctx.state.value=args.value;ctx.state.calls=(ctx.state.calls??0)+1;const result=ctx.lastComponent??new Text('',0,0);result.setText('CALL|'+args.value+'|'+ctx.toolCallId+'|'+ctx.state.calls+'|'+ctx.cwd);return result},renderResult(result,options,theme,ctx){ctx.state.results=(ctx.state.results??0)+1;const component=ctx.lastComponent??new Text('',0,0);component.setText('RESULT|'+ctx.state.value+'|'+result.content[0].text+'|'+ctx.state.results+'|'+options.isPartial);return component}});pi.registerToolRenderer((name,next)=>{oldNext=next;return next()});pi.registerToolRenderer((name,next)=>name==='unregistered'?{renderCall(){return new Text('RESOLVED',0,0)}}:next());pi.registerCommand('renderer-stale',{handler(){let blocked=false;try{oldNext()}catch(error){blocked=true}oldInvalidate?.();return {blocked}}})}
+    ;
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(extension_source);
+    defer fixture.deinit();
+    const started = try runtime_mod.Runtime.startNative(gpa, std.testing.io, fixture.source_path, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    try started.runtime.setContextJson("{\"width\":80,\"cwd\":\"owned-renderer-cwd\"}");
+    var manifest = try std.json.parseFromSlice(std.json.Value, gpa, started.manifest_json, .{});
+    defer manifest.deinit();
+    try std.testing.expect(manifest.value.object.get("hasMarkdownTransformer").?.bool and manifest.value.object.get("hasToolRenderers").?.bool);
+    const fallback = try started.runtime.invokeRenderer("render_message", "default-message", "{}");
+    defer gpa.free(fallback);
+    try std.testing.expect(std.mem.indexOf(u8, fallback, "\"found\":false") != null);
+    const hidden = try started.runtime.invokeRenderer("render_entry", "hidden-entry", "{}");
+    defer gpa.free(hidden);
+    try std.testing.expect(std.mem.indexOf(u8, hidden, "\"found\":true") != null and std.mem.indexOf(u8, hidden, "\"lines\":[]") != null);
+    const prepared = try started.runtime.invokeRenderer("prepare_tool_arguments", "paint", "{\"args\":{\"alias\":7}}");
+    defer gpa.free(prepared);
+    try std.testing.expect(std.mem.indexOf(u8, prepared, "\"value\":\"7\"") != null);
+    const message = try started.runtime.invokeRenderer("render_message", "message", "{\"message\":{\"content\":\"ready\"},\"expanded\":true,\"outputPad\":2,\"width\":40}");
+    defer gpa.free(message);
+    try std.testing.expect(std.mem.indexOf(u8, message, "MESSAGE|ready|true") != null);
+    const entry = try started.runtime.invokeRenderer("render_entry", "entry", "{\"entry\":{\"data\":{\"message\":\"saved\"}},\"expanded\":false,\"width\":40}");
+    defer gpa.free(entry);
+    try std.testing.expect(std.mem.indexOf(u8, entry, "ENTRY|saved|false") != null);
+    const markdown = try started.runtime.invokeRenderer("transform_markdown", "", "{\"markdown\":\"hello\",\"messageType\":\"assistant\",\"isStreaming\":true,\"availableWidth\":67}");
+    defer gpa.free(markdown);
+    try std.testing.expect(std.mem.indexOf(u8, markdown, "[assistant:true:67] hello") != null);
+    const call = try started.runtime.invokeRenderer("render_tool_call", "paint", "{\"toolCallId\":\"row-owned\",\"args\":{\"value\":\"blue\"},\"width\":80}");
+    defer gpa.free(call);
+    try std.testing.expect(std.mem.indexOf(u8, call, "CALL|blue|row-owned|1|owned-renderer-cwd") != null);
+    var call_json = try std.json.parseFromSlice(std.json.Value, gpa, call, .{});
+    defer call_json.deinit();
+    const generation = call_json.value.object.get("rowGeneration").?.integer;
+    for ([_]bool{ true, false, false }, 0..) |partial, index| {
+        const payload = try std.fmt.allocPrint(gpa, "{{\"toolCallId\":\"row-owned\",\"result\":{{\"content\":[{{\"type\":\"text\",\"text\":\"done\"}}]}},\"isPartial\":{},\"expanded\":{},\"width\":{d}}}", .{ partial, index == 2, if (index == 2) @as(usize, 64) else 80 });
+        defer gpa.free(payload);
+        const result = try started.runtime.invokeRenderer("render_tool_result", "paint", payload);
+        defer gpa.free(result);
+        const expected = try std.fmt.allocPrint(gpa, "RESULT|blue|done|{d}|{}", .{ index + 1, partial });
+        defer gpa.free(expected);
+        try std.testing.expect(std.mem.indexOf(u8, result, expected) != null);
+    }
+    const stale = try started.runtime.invokeCommand("renderer-stale", "", "{}");
+    defer gpa.free(stale);
+    try std.testing.expect(std.mem.indexOf(u8, stale, "\"blocked\":true") != null);
+    const wrong = try std.fmt.allocPrint(gpa, "{{\"toolCallId\":\"row-owned\",\"rowGeneration\":{d}}}", .{generation + 1});
+    defer gpa.free(wrong);
+    const refused = try started.runtime.invokeRenderer("renderer_retire", "paint", wrong);
+    defer gpa.free(refused);
+    try std.testing.expect(std.mem.indexOf(u8, refused, "\"retired\":false") != null);
+    const correct = try std.fmt.allocPrint(gpa, "{{\"toolCallId\":\"row-owned\",\"rowGeneration\":{d}}}", .{generation});
+    defer gpa.free(correct);
+    const retired = try started.runtime.invokeRenderer("renderer_retire", "paint", correct);
+    defer gpa.free(retired);
+    try std.testing.expect(std.mem.indexOf(u8, retired, "\"retired\":true") != null);
+    const fresh = try started.runtime.invokeRenderer("render_tool_call", "paint", "{\"toolCallId\":\"row-owned\",\"args\":{\"value\":\"fresh\"},\"width\":80}");
+    defer gpa.free(fresh);
+    try std.testing.expect(std.mem.indexOf(u8, fresh, "CALL|fresh|row-owned|1|") != null);
+    const resolved = try started.runtime.invokeRenderer("render_tool_call", "unregistered", "{\"toolCallId\":\"row-resolver\",\"args\":{},\"width\":80}");
+    defer gpa.free(resolved);
+    try std.testing.expect(std.mem.indexOf(u8, resolved, "RESOLVED") != null);
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, started.runtime.invokeRenderer("render_message", "message", "{\"message\":{\"content\":\"error\"}}"));
+    try std.testing.expect(!started.runtime.closed);
+    const reused = try started.runtime.invokeRenderer("render_entry", "entry", "{\"entry\":{\"data\":{\"message\":\"reused\"}}}");
+    defer gpa.free(reused);
+    try std.testing.expect(std.mem.indexOf(u8, reused, "reused") != null);
+    try fixture.noBridge();
+}
+
+test "native runtime group process preserves global resolver actual component state identity and extension registrations without Node" {
+    const first_source =
+        \\export default function(pi){globalThis.firstApi=pi;pi.registerFlag('label',{type:'string',default:'first'});pi.registerCommand('same',{handler(_,ctx){return {message:'first:'+pi.getFlag('label')+':'+ctx.sessionManager.getSessionId()}}});pi.registerToolRenderer((name,next)=>{const base=next();if(!base)return base;return {...base,renderCall(args,theme,ctx){const actual=base.renderCall(args,theme,ctx);if(actual!==baseComponent||ctx.state!==baseState)throw Error('global resolver identity');pi.appendEntry('resolver-source',{identity:true});return actual}}})}
+    ;
+    const second_source =
+        \\import {Type} from 'typebox';import {Text} from 'pi-tui';export default function(pi){pi.registerFlag('label',{type:'string',default:'second'});pi.registerCommand('same',{handler(_,ctx){return {message:'second:'+pi.getFlag('label')+':'+ctx.sessionManager.getSessionId()}}});pi.registerTool({name:'group-tool',parameters:Type.Object({}),execute(){return {content:'group-execute'}},renderCall(args,theme,ctx){globalThis.baseState=ctx.state;globalThis.baseComponent=ctx.lastComponent??new Text('shared-identity',0,0);return baseComponent}})}
+    ;
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(first_source);
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/second.ts", .data = second_source });
+    const second_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
+    defer gpa.free(second_path);
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, std.testing.io, &.{ fixture.source_path, second_path }, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    var manifests = try std.json.parseFromSlice(std.json.Value, gpa, started.manifest_json, .{});
+    defer manifests.deinit();
+    try std.testing.expectEqual(@as(usize, 2), manifests.value.array.items.len);
+    try std.testing.expectEqual(@as(i64, 1), manifests.value.array.items[0].object.get("extensionId").?.integer);
+    try std.testing.expectEqual(@as(i64, 2), manifests.value.array.items[1].object.get("extensionId").?.integer);
+    const first = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"same\",\"rawArguments\":\"\",\"context\":{\"sessionId\":\"one\"}}", null);
+    defer gpa.free(first);
+    try std.testing.expect(std.mem.indexOf(u8, first, "first:first:one") != null);
+    const second = try started.runtime.invokeGroupRequest(2, "{\"kind\":\"command\",\"name\":\"same\",\"rawArguments\":\"\",\"context\":{\"sessionId\":\"two\"}}", null);
+    defer gpa.free(second);
+    try std.testing.expect(std.mem.indexOf(u8, second, "second:second:two") != null);
+    const rendered = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"render_tool_call\",\"name\":\"group-tool\",\"payload\":{\"toolCallId\":\"group-row\",\"args\":{},\"width\":40}}", null);
+    defer gpa.free(rendered);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "shared-identity") != null);
+    var result = try std.json.parseFromSlice(std.json.Value, gpa, rendered, .{});
+    defer result.deinit();
+    const actions = result.value.object.get("actionQueue").?.array.items;
+    try std.testing.expectEqual(@as(usize, 1), actions.len);
+    try std.testing.expectEqual(@as(i64, 1), actions[0].object.get("sourceExtensionId").?.integer);
+    const executed = try started.runtime.invokeGroupRequest(2, "{\"kind\":\"tool\",\"name\":\"group-tool\",\"args\":{}}", null);
+    defer gpa.free(executed);
+    try std.testing.expect(std.mem.indexOf(u8, executed, "group-execute") != null);
+    try std.testing.expect(!started.runtime.closed and started.runtime.child.id != null);
+    try fixture.noBridge();
+}
+
+test "native runtime group extension views own one child and preserve contexts after owner and sibling release" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('same',{handler(_,ctx){return {message:'first:'+ctx.sessionManager.getSessionId()}}})");
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/second.ts", .data = "export default pi=>pi.registerCommand('same',{handler(_,ctx){return {message:'second:'+ctx.sessionManager.getSessionId()}}})" });
+    const second_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
+    defer gpa.free(second_path);
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, std.testing.io, &.{ fixture.source_path, second_path }, fixture.options());
+    var owner_live = true;
+    defer if (owner_live) started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const first = try started.runtime.extensionView(1, fixture.source_path);
+    var first_live = true;
+    defer if (first_live) first.deinit();
+    const second = try started.runtime.extensionView(2, second_path);
+    defer second.deinit();
+    const pid = started.runtime.child.id;
+    started.runtime.deinit();
+    owner_live = false;
+    try first.setContextJson("{\"sessionId\":\"one\"}");
+    try second.setContextJson("{\"sessionId\":\"two\"}");
+    const first_result = try first.invokeCommand("same", "", "{}");
+    defer gpa.free(first_result);
+    const second_result = try second.invokeCommand("same", "", "{}");
+    defer gpa.free(second_result);
+    try std.testing.expect(std.mem.indexOf(u8, first_result, "first:one") != null and std.mem.indexOf(u8, second_result, "second:two") != null);
+    first.deinit();
+    first_live = false;
+    const reused = try second.invokeCommand("same", "", "{}");
+    defer gpa.free(reused);
+    try std.testing.expect(std.mem.indexOf(u8, reused, "second:two") != null);
+    try std.testing.expect(second.shared_owner.?.child.id == pid and !second.shared_owner.?.closed);
+    try fixture.noBridge();
+}
+
+test "native runtime Host native discovery shares one process global resolver and rolls back failed extension registrations" {
+    const gpa = std.testing.allocator;
+    const first_source = "export default function(pi){globalThis.firstFactories=(globalThis.firstFactories??0)+1;pi.registerToolRenderer((name,next)=>{const base=next();if(!base)return base;return {...base,renderCall(args,theme,ctx){const component=base.renderCall(args,theme,ctx);if(component!==baseComponent||ctx.state!==baseState)throw Error('Host global identity');return component}}});pi.registerMessageRenderer('duplicate',()=>({render(){return ['first-message']}}));pi.registerCommand('factory-count',{handler(){return {message:String(firstFactories)}}})}";
+    const second_source = "import {Text} from 'pi-tui';export default function(pi){pi.registerTool({name:'second-tool',execute(){return {content:'second-executed'}},renderCall(args,theme,ctx){globalThis.baseState=ctx.state;globalThis.baseComponent=ctx.lastComponent??new Text('HOST-GLOBAL',0,0);return baseComponent}});pi.registerMessageRenderer('duplicate',()=>({render(){return ['second-message']}}));pi.registerCommand('second-command',{handler(){return {message:'second-command'}}})}";
+    var fixture = try Fixture.initSource(first_source);
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/second.ts", .data = second_source });
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/failed.ts", .data = "export default pi=>{pi.registerMessageRenderer('failed-renderer',()=>({render(){return ['must-not-leak']}}));pi.registerToolRenderer(()=>({renderCall(){return {render(){return ['must-not-leak']}}}}));throw Error('group-factory-original')}" });
+    const second_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
+    defer gpa.free(second_path);
+    const failed_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "failed.ts" });
+    defer gpa.free(failed_path);
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    const pid = host.native_group_runtime.?.child.id;
+    try host.loadPath(second_path);
+    try std.testing.expectEqual(@as(usize, 2), host.extensions.items.len);
+    try std.testing.expect(host.extensions.items[0].script_runtime.?.shared_owner == host.extensions.items[1].script_runtime.?.shared_owner);
+    try std.testing.expect(host.native_group_runtime.?.child.id == pid);
+    var count = (try host.executeCommand("factory-count", "")).?;
+    defer count.deinit(gpa);
+    try std.testing.expectEqualStrings("1", count.message.?);
+    const rendered = (try host.renderToolCall("second-tool", "host-group-row", "{}", false, 40)).?;
+    defer gpa.free(rendered);
+    try expectNativeTextLine("HOST-GLOBAL", 40, rendered);
+    const message = (try host.renderMessage("duplicate", "{}", false, 0, 40)).?;
+    defer gpa.free(message);
+    try std.testing.expectEqualStrings("first-message", message);
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, host.loadPath(failed_path));
+    try std.testing.expectEqual(@as(usize, 2), host.extensions.items.len);
+    const still_rendered = (try host.renderToolCall("second-tool", "host-group-row", "{}", false, 40)).?;
+    defer gpa.free(still_rendered);
+    try expectNativeTextLine("HOST-GLOBAL", 40, still_rendered);
+    try std.testing.expect((try host.renderMessage("failed-renderer", "{}", false, 0, 40)) == null);
+    var command = (try host.executeCommand("second-command", "")).?;
+    defer command.deinit(gpa);
+    try std.testing.expectEqualStrings("second-command", command.message.?);
+    try fixture.noBridge();
+}
+
+test "native runtime Host group actions preserve C owner origin and overwrite returned spoofed provenance" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>{globalThis.originApi=pi;pi.registerCommand('first',{handler(){return {message:'first'}}})}");
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/second.ts", .data = "export default pi=>{pi.registerCommand('cross-origin',{handler(){originApi.appendEntry('from-first',{ok:true});return {message:'cross'}}});pi.registerCommand('spoof',{handler(){return {message:'spoof',actionQueue:[{type:'append_entry',customType:'spoofed',data:{},sourceExtensionName:'forged',sourceExtensionId:999}]}}})}" });
+    const second_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
+    defer gpa.free(second_path);
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    try host.loadPath(second_path);
+    var cross = (try host.executeCommand("cross-origin", "")).?;
+    defer cross.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 1), cross.actions.items.len);
+    try std.testing.expectEqualStrings("native", cross.actions.items[0].extension_name);
+    var spoof = (try host.executeCommand("spoof", "")).?;
+    defer spoof.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 1), spoof.actions.items.len);
+    try std.testing.expectEqualStrings("second", spoof.actions.items[0].extension_name);
+    var record = try std.json.parseFromSlice(std.json.Value, gpa, spoof.actions.items[0].json, .{});
+    defer record.deinit();
+    try std.testing.expectEqual(@as(i64, 2), record.value.object.get("sourceExtensionId").?.integer);
+    try fixture.noBridge();
+}
+
+test "native runtime renderer next actions enter Bridge FIFO with actual origins ordering and reload retirement" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerToolRenderer((name,next)=>{const base=next();return base?{...base,renderCall(...args){pi.appendEntry('resolver-origin',{});return base.renderCall(...args)}}:base})");
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/second.ts", .data = "import {Text} from 'pi-tui';export default pi=>{pi.registerTool({name:'paint-origin',execute(){return {content:'tool'}},renderCall(args,theme,ctx){pi.appendEntry('base-origin',{});return new Text('origin',0,0)}});pi.registerCommand('after-render',{handler(){pi.appendEntry('command-origin',{});return {message:'after'}}})}" });
+    const second_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
+    defer gpa.free(second_path);
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    var bridge = integration_mod.Bridge.init(&host);
+    defer bridge.deinit();
+    try host.loadPath(fixture.source_path);
+    try host.loadPath(second_path);
+    const first = (try host.renderToolCall("paint-origin", "origin-row", "{}", false, 40)).?;
+    defer gpa.free(first);
+    try std.testing.expectEqual(@as(usize, 2), bridge.queuedActionCount());
+    var command = (try host.executeCommand("after-render", "")).?;
+    defer command.deinit(gpa);
+    try bridge.enqueueActions(&command.actions);
+    const records = try bridge.drainActions();
+    defer {
+        for (records) |*record| record.deinit(gpa);
+        if (records.len > 0) gpa.free(records);
+    }
+    try std.testing.expectEqual(@as(usize, 3), records.len);
+    for ([_][]const u8{ "native", "second", "second" }, [_][]const u8{ "render_tool_call", "render_tool_call", "after-render" }, records, 0..) |origin, invocation, record, i| {
+        try std.testing.expectEqualStrings(origin, record.extension_name);
+        try std.testing.expectEqualStrings(invocation, record.invocation);
+        try std.testing.expectEqual(@as(u64, @intCast(i + 1)), record.sequence);
+    }
+    const again = (try host.renderToolCall("paint-origin", "origin-row", "{}", false, 40)).?;
+    defer gpa.free(again);
+    try std.testing.expectEqual(@as(usize, 2), bridge.queuedActionCount());
+    host.deinit();
+    host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    try host.loadPath(fixture.source_path);
+    const empty = try bridge.drainActions();
+    defer if (empty.len > 0) gpa.free(empty);
+    try std.testing.expectEqual(@as(usize, 0), empty.len);
+    try std.testing.expect((try host.renderToolCall("paint-origin", "origin-row", "{}", false, 40)) == null);
+}
+
+test "native runtime group persistent reader and selected live signals progress with zero eager async capacity" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('ping',{handler(_,ctx){return {message:'first:'+ctx.cwd}}})");
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/second.ts", .data = "export default pi=>pi.registerTool({name:'wait',async execute(id,args,signal,update,ctx){if(ctx.signal!==signal)throw Error('signal identity');if(args.wait){update({content:'entered'});if(!signal.aborted)await new Promise(resolve=>signal.addEventListener('abort',resolve,{once:true}))}return {content:signal.aborted?'cancelled:'+ctx.cwd:'live:'+ctx.cwd}}})" });
+    const second_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
+    defer gpa.free(second_path);
+    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{ .async_limit = .nothing });
+    defer threaded.deinit();
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, threaded.io(), &.{ fixture.source_path, second_path }, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const first = try started.runtime.extensionView(1, fixture.source_path);
+    defer first.deinit();
+    const second = try started.runtime.extensionView(2, second_path);
+    defer second.deinit();
+    try first.setContextJson("{\"cwd\":\"one\"}");
+    try second.setContextJson("{\"cwd\":\"two\"}");
+    var aborted = false;
+    const Cancel = struct {
+        fn update(context: ?*anyopaque, raw: []const u8) !void {
+            try std.testing.expect(std.mem.indexOf(u8, raw, "entered") != null);
+            const flag: *bool = @ptrCast(@alignCast(context.?));
+            @atomicStore(bool, flag, true, .release);
+        }
+    };
+    const cancelled = try second.invokeToolCallStreaming("selected-second", "wait", "{\"wait\":true}", "{}", &aborted, Cancel.update, &aborted);
+    defer gpa.free(cancelled);
+    try std.testing.expect(std.mem.indexOf(u8, cancelled, "cancelled:two") != null);
+    const ping = try first.invokeCommand("ping", "", "{}");
+    defer gpa.free(ping);
+    try std.testing.expect(std.mem.indexOf(u8, ping, "first:one") != null);
+    aborted = false;
+    const reused = try second.invokeToolCall("selected-reused", "wait", "{}", "{}", &aborted);
+    defer gpa.free(reused);
+    try std.testing.expect(std.mem.indexOf(u8, reused, "live:two") != null);
+    try std.testing.expect(started.runtime.native_read_session != null and !started.runtime.closed);
+}
+
+test "native runtime owner pumps idle due timers microtasks errors and wakes requests ahead of future timers" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("import {writeFileSync} from 'node:fs';export default pi=>{let ready=false;setTimeout(()=>{Promise.resolve().then(()=>{ready=true;writeFileSync(new URL('./idle.marker',import.meta.url),'ready')})},5);setTimeout(()=>{throw Error('idle-original-error')},8);setTimeout(()=>{},60000);pi.registerCommand('idle',{handler(){return {message:ready?'ready':'pending'}}})}");
+    defer fixture.deinit();
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, std.testing.io, &.{fixture.source_path}, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    started.runtime.timeout_ms = 1000;
+    const deadline = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() + 1000;
+    while (true) {
+        const marker = fixture.tmp.dir.readFileAlloc(std.testing.io, "extensions/idle.marker", gpa, .limited(16)) catch |err| switch (err) {
+            error.FileNotFound => {
+                if (std.Io.Clock.awake.now(std.testing.io).toMilliseconds() >= deadline) return error.IdleTimerDidNotProgress;
+                try std.testing.io.sleep(.fromMilliseconds(5), .awake);
+                continue;
+            },
+            else => return err,
+        };
+        defer gpa.free(marker);
+        try std.testing.expectEqualStrings("ready", marker);
+        break;
+    }
+    while (true) {
+        // Host does no pipe exchange during this interval: factory timers must
+        // progress on the worker owner even between independent requests.
+        try std.testing.io.sleep(.fromMilliseconds(20), .awake);
+        const result = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"idle\",\"rawArguments\":\"\"}", null);
+        defer gpa.free(result);
+        if (std.mem.indexOf(u8, result, "ready") != null and started.runtime.last_owner_error != null) break;
+        if (std.Io.Clock.awake.now(std.testing.io).toMilliseconds() >= deadline) return error.IdleTimerDidNotProgress;
+    }
+    try std.testing.expect(std.mem.indexOf(u8, started.runtime.last_owner_error.?, "idle-original-error") != null);
+    try std.testing.expect(!started.runtime.closed);
+    try fixture.noBridge();
+}
+
+test "native runtime group targeted unload fences retained API and renderer generations without destroying sibling owner" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('late',{handler(){let blocked=false;try{removedApi.appendEntry('late',{})}catch(error){blocked=true}return {message:blocked?'fenced':'wrong'}}})");
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/second.ts", .data = "import {Text} from 'pi-tui';export default pi=>{globalThis.removedApi=pi;pi.registerTool({name:'gone',execute(){return {content:'gone'}},renderCall(args,theme,ctx){globalThis.oldInvalidation=ctx.invalidate;return new Text('gone',0,0)}})}" });
+    const second_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
+    defer gpa.free(second_path);
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, std.testing.io, &.{ fixture.source_path, second_path }, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const rendered = try started.runtime.invokeGroupRequest(2, "{\"kind\":\"render_tool_call\",\"name\":\"gone\",\"payload\":{\"toolCallId\":\"gone-row\",\"args\":{}}}", null);
+    defer gpa.free(rendered);
+    const removed = try started.runtime.invokeGroupRequest(2, "{\"kind\":\"group_remove_source\",\"ownerId\":2}", null);
+    defer gpa.free(removed);
+    const late = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"late\",\"rawArguments\":\"\"}", null);
+    defer gpa.free(late);
+    try std.testing.expect(std.mem.indexOf(u8, late, "fenced") != null);
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, started.runtime.invokeGroupRequest(2, "{\"kind\":\"command\",\"name\":\"late\",\"rawArguments\":\"\"}", null));
+    try std.testing.expect(!started.runtime.closed);
+    const missing = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"render_tool_call\",\"name\":\"gone\",\"payload\":{\"toolCallId\":\"gone-row\"}}", null);
+    defer gpa.free(missing);
+    try std.testing.expect(std.mem.indexOf(u8, missing, "\"found\":false") != null);
+}
+
+test "native runtime shared group startup and extension views release every failed host allocation" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('first',{handler(){return {message:'first'}}})");
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/second.ts", .data = "export default pi=>pi.registerCommand('second',{handler(){return {message:'second'}}})" });
+    const second_path = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
+    defer gpa.free(second_path);
+    const Probe = struct {
+        fn run(allocator: std.mem.Allocator, input: *Fixture, second_source: []const u8) !void {
+            const started = try runtime_mod.Runtime.startNativeGroup(allocator, std.testing.io, &.{ input.source_path, second_source }, input.options());
+            defer started.runtime.deinit();
+            defer allocator.free(started.manifest_json);
+            const first = try started.runtime.extensionView(1, input.source_path);
+            defer first.deinit();
+            const second = try started.runtime.extensionView(2, second_source);
+            defer second.deinit();
+        }
+    };
+    try std.testing.checkAllAllocationFailures(gpa, Probe.run, .{ &fixture, second_path });
+    try fixture.noBridge();
+}
+
 test "native runtime record budget suspends beyond ordinary deadline and rearms after human close" {
     var budget: runtime_mod.NativeRecordBudget = .{};
     try std.testing.expectEqual(@as(?i64, 30), try budget.remaining(100, 30, false));
@@ -25,6 +414,50 @@ test "native runtime record budget suspends beyond ordinary deadline and rearms 
     var ordinary: runtime_mod.NativeRecordBudget = .{};
     _ = try ordinary.remaining(100, 30, false);
     try std.testing.expectError(error.JavaScriptExtensionTimeout, ordinary.remaining(130, 30, false));
+}
+
+test "native runtime Host production adapters prepare schema input and render native message entry markdown and tool rows" {
+    const extension_source =
+        \\import {Type} from '@earendil-works/pi-ai';import {Text,Box} from '@earendil-works/pi-tui';export default function(pi){pi.registerMessageRenderer('status-update',(message,{expanded,outputPad},theme)=>{const box=new Box(outputPad,0,line=>theme.bg('customMessageBg',line));box.addChild(new Text('MESSAGE|'+message.content+'|'+expanded+'|'+outputPad,0,0));return box});pi.registerEntryRenderer('status-card',(entry,{expanded})=>new Text('ENTRY|'+entry.data.message+'|'+expanded,0,0));pi.registerMarkdownTransformer((markdown,options)=>'['+options.messageType+':'+options.isStreaming+':'+options.availableWidth+'] '+markdown);pi.registerToolRenderer((name,next)=>name==='unregistered'?{renderCall(){return new Text('OWNER-LOCAL',0,0)}}:next());pi.registerTool({name:'paint',renderShell:'self',parameters:Type.Object({value:Type.String()}),prepareArguments(args){return {value:String(args.alias??args.value)}},async execute(id,args){return {content:[{type:'text',text:'done:'+args.value}],details:{}}},renderCall(args,theme,context){context.state.value=args.value;return new Text('CALL|'+args.value+'|'+context.toolCallId+'|'+context.executionStarted,0,0)},renderResult(result,{expanded,isPartial},theme,context){return new Text('RESULT|'+context.state.value+'|'+result.content[0].text+'|'+expanded+'|'+isPartial,0,0)}})}
+    ;
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(extension_source);
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    try std.testing.expect(host.extensions.items[0].has_markdown_transformer);
+    try std.testing.expect(host.extensions.items[0].tools[0].render_shell_self);
+    const prepared = (try host.prepareToolArguments("paint", "{\"alias\":7}")).?;
+    defer gpa.free(prepared);
+    try std.testing.expectEqualStrings("{\"value\":\"7\"}", prepared);
+    var executed = (try host.executeTool("paint", prepared)).?;
+    defer executed.deinit(gpa);
+    try std.testing.expectEqualStrings("done:7", executed.content);
+    const message = (try host.renderMessage("status-update", "{\"role\":\"custom\",\"customType\":\"status-update\",\"content\":\"ready\"}", true, 2, 72)).?;
+    defer gpa.free(message);
+    try std.testing.expect(std.mem.indexOf(u8, message, "MESSAGE|ready|true|2") != null);
+    const entry = (try host.renderEntry("status-card", "{\"type\":\"custom\",\"customType\":\"status-card\",\"data\":{\"message\":\"saved\"}}", false, 72)).?;
+    defer gpa.free(entry);
+    try expectNativeTextLine("ENTRY|saved|false", 72, entry);
+    const markdown = try host.transformMarkdown("hello", "assistant", true, 67);
+    defer gpa.free(markdown);
+    try std.testing.expectEqualStrings("[assistant:true:67] hello", markdown);
+    const call = (try host.renderToolCall("paint", "tool-17", "{\"value\":\"blue\"}", false, 72)).?;
+    defer gpa.free(call);
+    try expectNativeTextLine("CALL|blue|tool-17|true", 72, call);
+    const result = (try host.renderToolResult("paint", "tool-17", "done:blue", false, true, false, 72)).?;
+    defer gpa.free(result);
+    try expectNativeTextLine("RESULT|blue|done:blue|true|false", 72, result);
+    const redrawn = (try host.renderToolResult("paint", "tool-17", "done:blue", false, false, false, 40)).?;
+    defer gpa.free(redrawn);
+    try expectNativeTextLine("RESULT|blue|done:blue|false|false", 40, redrawn);
+    try host.retireToolRenderer("paint", "tool-17", null);
+    const owner_local = (try host.renderToolCall("unregistered", "tool-local", "{}", false, 40)).?;
+    defer gpa.free(owner_local);
+    try expectNativeTextLine("OWNER-LOCAL", 40, owner_local);
+    try std.testing.expect((try host.renderMessage("unowned", "{}", false, 0, 72)) == null);
+    try fixture.noBridge();
 }
 
 const source =

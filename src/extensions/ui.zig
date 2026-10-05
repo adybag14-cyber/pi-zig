@@ -15,7 +15,7 @@ const render = @import("../tui/render.zig");
 const line_editor = @import("../tui/line_editor.zig");
 const Editor = @import("../tui/editor.zig").Editor;
 const Keybindings = @import("../tui/keybindings.zig").Manager;
-const component_protocol = @import("component_protocol.zig");
+pub const component_protocol = @import("component_protocol.zig");
 pub const ComponentSceneFn = *const fn (?*anyopaque, component_protocol.Scene, *component_protocol.ControlQueue) anyerror!void;
 pub const ComponentCloseFn = *const fn (?*anyopaque, component_protocol.Fence) anyerror!void;
 

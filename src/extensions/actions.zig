@@ -67,6 +67,14 @@ pub const Batch = struct {
         invocation: []const u8,
         result_json: []const u8,
     ) !Batch {
+        return parseMode(gpa, extension_name, invocation, result_json, false);
+    }
+
+    pub fn parseNative(gpa: std.mem.Allocator, extension_name: []const u8, invocation: []const u8, result_json: []const u8) !Batch {
+        return parseMode(gpa, extension_name, invocation, result_json, true);
+    }
+
+    fn parseMode(gpa: std.mem.Allocator, extension_name: []const u8, invocation: []const u8, result_json: []const u8, native_origins: bool) !Batch {
         var parsed = try std.json.parseFromSlice(std.json.Value, gpa, result_json, .{});
         defer parsed.deinit();
         if (parsed.value != .object) return error.InvalidExtensionActionEnvelope;
@@ -90,7 +98,12 @@ pub const Batch = struct {
                     return error.InvalidExtensionAction;
             }
 
-            const owned_extension = try gpa.dupe(u8, extension_name);
+            const origin_name = if (native_origins) name: {
+                const supplied = action_value.object.get("sourceExtensionName") orelse break :name extension_name;
+                if (supplied != .string or supplied.string.len == 0 or supplied.string.len > 4096) return error.InvalidExtensionActionOrigin;
+                break :name supplied.string;
+            } else extension_name;
+            const owned_extension = try gpa.dupe(u8, origin_name);
             errdefer gpa.free(owned_extension);
             const owned_invocation = try gpa.dupe(u8, invocation);
             errdefer gpa.free(owned_invocation);
@@ -161,6 +174,26 @@ pub const Queue = struct {
         defer self.mutex.unlock(self.io);
         return self.items.items.len;
     }
+
+    /// Move a source FIFO into its sole downstream FIFO. Reserve before
+    /// publishing any move so allocation failure leaves every source record.
+    /// Callers use one direction (Host capture -> Bridge) to order the locks.
+    pub fn transferTo(self: *Queue, destination: *Queue) !void {
+        if (self == destination) return;
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        destination.mutex.lockUncancelable(destination.io);
+        defer destination.mutex.unlock(destination.io);
+        try destination.items.ensureUnusedCapacity(destination.gpa, self.items.items.len);
+        for (self.items.items) |record| {
+            var moved = record;
+            moved.sequence = destination.next_sequence;
+            destination.next_sequence +%= 1;
+            if (destination.next_sequence == 0) destination.next_sequence = 1;
+            destination.items.appendAssumeCapacity(moved);
+        }
+        self.items.clearRetainingCapacity();
+    }
 };
 
 pub fn freeRecords(gpa: std.mem.Allocator, records: []Record) void {
@@ -189,6 +222,18 @@ test "action batches preserve invocation order and canonical payloads" {
     try std.testing.expectEqualStrings("after_tool", batch.items[0].invocation);
     try std.testing.expectEqualStrings("set_session_name", batch.items[0].kind);
     try std.testing.expect(std.mem.indexOf(u8, batch.items[1].json, "\"n\":2") != null);
+}
+
+test "native action provenance is admitted only by the native parsing boundary" {
+    const gpa = std.testing.allocator;
+    const raw = "{\"actionQueue\":[{\"type\":\"abort\",\"sourceExtensionName\":\"actual-owner\"}]}";
+    var legacy = try Batch.parse(gpa, "legacy-target", "hook", raw);
+    defer legacy.deinit(gpa);
+    try std.testing.expectEqualStrings("legacy-target", legacy.items[0].extension_name);
+    var native = try Batch.parseNative(gpa, "native-target", "hook", raw);
+    defer native.deinit(gpa);
+    try std.testing.expectEqualStrings("actual-owner", native.items[0].extension_name);
+    try std.testing.expectError(error.InvalidExtensionActionOrigin, Batch.parseNative(gpa, "target", "hook", "{\"actionQueue\":[{\"type\":\"abort\",\"sourceExtensionName\":null}]}"));
 }
 
 test "queue moves batches atomically and assigns monotonic sequence numbers" {
@@ -220,4 +265,28 @@ test "malformed action queues are rejected without leaking" {
         error.InvalidExtensionActionQueue,
         Batch.parse(gpa, "x", "hook", "{\"actionQueue\":{}}"),
     );
+}
+
+test "FIFO downstream allocation failure retains all source records and order for retry" {
+    const gpa = std.testing.allocator;
+    var source = Queue.init(gpa, std.testing.io);
+    defer source.deinit();
+    var batch = try Batch.parseNative(gpa, "owner", "renderer", "{\"actionQueue\":[{\"type\":\"abort\"},{\"type\":\"shutdown\"}]}");
+    defer batch.deinit(gpa);
+    try source.enqueue(&batch);
+    var failing = std.testing.FailingAllocator.init(gpa, .{ .fail_index = 0 });
+    var destination = Queue.init(failing.allocator(), std.testing.io);
+    defer destination.deinit();
+    try std.testing.expectError(error.OutOfMemory, source.transferTo(&destination));
+    try std.testing.expectEqual(@as(usize, 2), source.count());
+    try std.testing.expectEqual(@as(usize, 0), destination.count());
+    failing.fail_index = std.math.maxInt(usize);
+    try source.transferTo(&destination);
+    try std.testing.expectEqual(@as(usize, 0), source.count());
+    const records = try destination.drain();
+    defer freeRecords(failing.allocator(), records);
+    try std.testing.expectEqualStrings("abort", records[0].kind);
+    try std.testing.expectEqualStrings("shutdown", records[1].kind);
+    try std.testing.expectEqual(@as(u64, 1), records[0].sequence);
+    try std.testing.expectEqual(@as(u64, 2), records[1].sequence);
 }

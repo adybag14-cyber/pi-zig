@@ -1,5 +1,6 @@
 //! Native pi-ai event streams and acknowledged provider iteration. No host JS.
 const std = @import("std");
+const typebox = @import("typebox.zig");
 const engine_mod = @import("engine.zig");
 const providers_mod = @import("native_providers.zig");
 const c = engine_mod.c;
@@ -294,6 +295,18 @@ pub fn install(engine: *engine_mod.Engine) !void {
     if (c.JS_SetConstructor(engine.context, assistant, assistant_prototype) < 0 or c.JS_SetPrototype(engine.context, assistant, constructor) < 0) return error.JavaScriptException;
     const module = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(module);
+    // Register the shared schema object before immutable module export names
+    // are declared. All pi-ai and Typebox aliases retain its exact identity.
+    const schema_exports = if (engine.native_module_values.get("typebox")) |existing| c.JS_DupValue(engine.context, existing) else blk: {
+        const created = try engine.checked(c.JS_NewObject(engine.context));
+        errdefer engine.freeValue(created);
+        try property(engine, created, "Type", try typebox.create(engine));
+        try engine.registerValueModule("typebox", created);
+        try engine.registerValueModule("@sinclair/typebox", created);
+        break :blk created;
+    };
+    defer engine.freeValue(schema_exports);
+    try property(engine, module, "Type", try engine.checked(c.JS_GetPropertyStr(engine.context, schema_exports, "Type")));
     try property(engine, module, "EventStream", c.JS_DupValue(engine.context, constructor));
     try property(engine, module, "AssistantMessageEventStream", c.JS_DupValue(engine.context, assistant));
     var factory_data = [_]c.JSValue{assistant};

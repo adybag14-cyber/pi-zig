@@ -54,6 +54,7 @@ pub const Mouse = struct {
     wheel_delta: ?i64 = null,
     click_count: ?u32 = null,
 };
+pub const FocusMode = enum { custom, editor, none };
 pub const Scene = struct {
     fence: Fence,
     width: usize,
@@ -62,6 +63,9 @@ pub const Scene = struct {
     overlay: ?OverlayLayout = null,
     focused: bool = true,
     wants_key_release: bool = false,
+    focus_mode: FocusMode = .custom,
+    target_id: u64 = 0,
+    target_generation: u64 = 0,
     pub fn deinit(self: *Scene) void {
         self.frame.deinit();
     }
@@ -75,6 +79,8 @@ pub const Control = struct {
     gpa: std.mem.Allocator,
     fence: Fence,
     error_message: ?[]u8 = null,
+    target_id: u64 = 0,
+    target_generation: u64 = 0,
     kind: union(enum) {
         input: []u8,
         resize: struct { width: usize, height: usize },
@@ -128,7 +134,7 @@ pub fn writeScene(writer: *std.Io.Writer, scene: *const Scene) !void {
     try std.json.Stringify.value(scene.frame.lines, .{}, writer);
     try writer.writeAll(",\"overlay\":");
     if (scene.overlay) |overlay| try writer.print("{{\"row\":{d},\"column\":{d},\"width\":{d},\"height\":{d},\"hidden\":{s},\"captureInput\":{s}}}", .{ overlay.row, overlay.column, overlay.width, overlay.height, if (overlay.hidden) "true" else "false", if (overlay.capture_input) "true" else "false" }) else try writer.writeAll("null");
-    try writer.writeByte('}');
+    try writer.print(",\"focusMode\":\"{s}\",\"targetId\":\"{d}\",\"targetGeneration\":\"{d}\"}}", .{ @tagName(scene.focus_mode), scene.target_id, scene.target_generation });
 }
 
 fn dimension(object: *const std.json.ObjectMap, name: []const u8) !usize {
@@ -173,7 +179,21 @@ pub fn readScene(gpa: std.mem.Allocator, object: *const std.json.ObjectMap) !Sce
     if (focused != .bool) return error.InvalidComponentFrame;
     const releases = object.get("wantsKeyRelease") orelse std.json.Value{ .bool = false };
     if (releases != .bool) return error.InvalidComponentFrame;
-    return .{ .fence = fence, .width = width, .height = height, .frame = .{ .gpa = gpa, .lines = lines, .bytes = bytes }, .overlay = overlay, .focused = focused.bool, .wants_key_release = releases.bool };
+    var scene: Scene = .{ .fence = fence, .width = width, .height = height, .frame = .{ .gpa = gpa, .lines = lines, .bytes = bytes }, .overlay = overlay, .focused = focused.bool, .wants_key_release = releases.bool, .focus_mode = if (focused.bool) .custom else .editor };
+    if (object.get("focusMode")) |mode| {
+        if (mode != .string) return error.InvalidComponentFocus;
+        scene.focus_mode = std.meta.stringToEnum(@TypeOf(scene.focus_mode), mode.string) orelse return error.InvalidComponentFocus;
+    }
+    scene.target_id = try optionalCapability(object, "targetId");
+    scene.target_generation = try optionalCapability(object, "targetGeneration");
+    return scene;
+}
+
+fn optionalCapability(object: *const std.json.ObjectMap, name: []const u8) !u64 {
+    const value = object.get(name) orelse return 0;
+    if (value == .integer and value.integer == 0) return 0;
+    if (value == .string and std.mem.eql(u8, value.string, "0")) return 0;
+    return identifier(value);
 }
 
 pub fn readControl(gpa: std.mem.Allocator, object: *const std.json.ObjectMap) !Control {
@@ -181,6 +201,8 @@ pub fn readControl(gpa: std.mem.Allocator, object: *const std.json.ObjectMap) !C
     const kind = object.get("control") orelse return error.InvalidComponentControl;
     if (kind != .string) return error.InvalidComponentControl;
     var value: Control = .{ .gpa = gpa, .fence = fence, .kind = .invalidate };
+    value.target_id = try optionalCapability(object, "targetId");
+    value.target_generation = try optionalCapability(object, "targetGeneration");
     if (std.mem.eql(u8, kind.string, "input")) {
         const data = object.get("data") orelse return error.InvalidComponentControl;
         if (data != .string or data.string.len > 64 * 1024 or !std.unicode.utf8ValidateSlice(data.string)) return error.InvalidComponentControl;
@@ -200,6 +222,7 @@ pub fn readControl(gpa: std.mem.Allocator, object: *const std.json.ObjectMap) !C
 pub fn writeControl(writer: *std.Io.Writer, value: *const Control) !void {
     try writer.writeAll("{\"kind\":\"component_control\",");
     try writeFence(writer, value.fence);
+    try writer.print(",\"targetId\":\"{d}\",\"targetGeneration\":\"{d}\"", .{ value.target_id, value.target_generation });
     try writer.writeAll(",\"control\":");
     try std.json.Stringify.value(@tagName(value.kind), .{}, writer);
     switch (value.kind) {
