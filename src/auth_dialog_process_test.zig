@@ -82,9 +82,9 @@ test "native OAuth browser callback hyperlink persistence device dialog and coop
     for ([_][]const u8{ "agent", "sessions", "work", "home", "bin" }) |name| try scratch.dir.createDir(io, name, .default_dir);
     var environment = try std.process.Environ.createMap(std.testing.environ, gpa);
     defer environment.deinit();
-    const binary = try std.fs.path.resolve(gpa, &.{environment.get("PI_TEST_BINARY") orelse "zig-out/bin/pi"});
+    const binary = try pty.executablePath(gpa, io, environment.get("PI_TEST_BINARY") orelse "zig-out/bin/pi");
     defer gpa.free(binary);
-    const opener = try std.fs.path.resolve(gpa, &.{environment.get("PI_TEST_AUTH_OPENER_BINARY") orelse "zig-out/bin/pi-auth-opener"});
+    const opener = try pty.executablePath(gpa, io, environment.get("PI_TEST_AUTH_OPENER_BINARY") orelse "zig-out/bin/pi-auth-opener");
     defer gpa.free(opener);
     try scratch.dir.symLink(io, opener, "bin/xdg-open", .{});
     const models = try std.fmt.allocPrint(gpa, "{{\"providers\":{{\"corp179\":{{\"name\":\"Corp 179\",\"baseUrl\":\"http://127.0.0.1:{d}/v1\",\"api\":\"pi-messages\",\"oauth\":\"radius\",\"models\":[{{\"id\":\"fast\",\"name\":\"Fast 179\",\"contextWindow\":4096,\"maxTokens\":512}}]}}}}}}", .{server.port});

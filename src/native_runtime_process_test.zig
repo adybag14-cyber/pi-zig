@@ -41,7 +41,7 @@ const Fixture = struct {
         errdefer gpa.free(root);
         const source_path = try std.fs.path.join(gpa, &.{ root, "extensions", "native.ts" });
         errdefer gpa.free(source_path);
-        const executable = try std.fs.path.resolve(gpa, &.{ "zig-out", "bin", if (builtin.os.tag == .windows) "pi.exe" else "pi" });
+        const executable = try @import("test_support/pty.zig").executablePath(gpa, io, if (builtin.os.tag == .windows) "zig-out/bin/pi.exe" else "zig-out/bin/pi");
         errdefer gpa.free(executable);
         var environment: std.process.Environ.Map = .init(gpa);
         errdefer environment.deinit();
@@ -226,7 +226,9 @@ test "native runtime failed startup owns no bridge and releases every host alloc
     defer fixture.deinit();
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{&fixture});
     try fixture.noBridge();
-    try std.testing.expectError(error.FileNotFound, runtime_mod.Runtime.startNative(std.testing.allocator, std.testing.io, fixture.source_path, .{ .executable = "intentionally-missing-native-executable", .environ_map = &fixture.environment }));
+    const missing = try std.fs.path.join(std.testing.allocator, &.{ fixture.root, "intentionally-missing-native-executable" });
+    defer std.testing.allocator.free(missing);
+    try std.testing.expectError(error.FileNotFound, runtime_mod.Runtime.startNative(std.testing.allocator, std.testing.io, fixture.source_path, .{ .executable = missing, .environ_map = &fixture.environment }));
     try fixture.noBridge();
 }
 

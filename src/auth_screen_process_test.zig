@@ -48,7 +48,7 @@ test "native auth screen login logout masking storage permissions status and ter
     defer gpa.free(mock);
     var environment = try std.process.Environ.createMap(std.testing.environ, gpa);
     defer environment.deinit();
-    const binary = try std.fs.path.resolve(gpa, &.{environment.get("PI_TEST_BINARY") orelse "zig-out/bin/pi"});
+    const binary = try pty.executablePath(gpa, io, environment.get("PI_TEST_BINARY") orelse "zig-out/bin/pi");
     defer gpa.free(binary);
     try environment.put("PI_AGENT_DIR", agent_dir);
     try environment.put("TERM", "xterm-256color");

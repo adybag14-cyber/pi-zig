@@ -46,7 +46,7 @@ fn writeAgent(gpa: std.mem.Allocator, io: Io, scratch: *pty.Scratch, base_url: [
 fn check(gpa: std.mem.Allocator, io: Io, scratch: *pty.Scratch, no_proxy: ?[]const u8, expect_ready: bool) !i64 {
     var environment = try std.process.Environ.createMap(std.testing.environ, gpa);
     defer environment.deinit();
-    const binary = try std.fs.path.resolve(gpa, &.{environment.get("PI_TEST_BINARY") orelse "zig-out/bin/pi"});
+    const binary = try pty.executablePath(gpa, io, environment.get("PI_TEST_BINARY") orelse "zig-out/bin/pi");
     defer gpa.free(binary);
     const agent_dir = try std.fs.path.join(gpa, &.{ scratch.path, "agent" });
     defer gpa.free(agent_dir);

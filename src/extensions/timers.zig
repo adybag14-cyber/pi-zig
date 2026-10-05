@@ -98,8 +98,9 @@ fn schedule(engine: *engine_mod.Engine, args: []c.JSValue, repeat: bool) !c.JSVa
 
 fn handleCall(context: ?*c.JSContext, this: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    if (!c.JS_IsStrictEqual(context, this, data[0])) return c.JS_ThrowTypeError(context, "Illegal timer handle receiver");
-    const retained = handleState(this);
+    var class_id: u32 = 0;
+    if (c.JS_ToUint32(context, &class_id, data[0]) < 0) return engine.throwCaptured();
+    const retained: *HandleState = @ptrCast(@alignCast(c.JS_GetOpaque(this, class_id) orelse return c.JS_ThrowTypeError(context, "Illegal timer handle receiver")));
     if (magic == 0) return c.JS_NewInt64(context, retained.id);
     const state = scheduler(engine) catch |err| return failure(context, err);
     if (magic == 3) return c.pi_js_bool(context, @intFromBool(retained.refed));
@@ -152,7 +153,13 @@ fn createHandle(engine: *engine_mod.Engine, id: u32, delay: i64, repeat: bool, a
     };
     _ = c.JS_SetOpaque(object, retained);
     errdefer engine.freeValue(object);
-    var data = [_]c.JSValue{object};
+    // Method closures carry only the immutable native brand, never their own
+    // handle. Capturing object here creates seven handle/method self-cycles,
+    // delaying release of callback state until runtime cycle collection after
+    // scheduler/context teardown. Brand the supplied receiver instead, as Node
+    // does, so an unreachable timer releases its native ownership immediately.
+    var data = [_]c.JSValue{c.JS_NewInt64(engine.context, state.handle_class)};
+    defer engine.freeValue(data[0]);
     inline for (.{ .{ "valueOf", 0 }, .{ "ref", 1 }, .{ "unref", 2 }, .{ "hasRef", 3 }, .{ "refresh", 4 }, .{ "close", 5 } }) |entry| {
         const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, handleCall, entry[0], 0, entry[1], data.len, &data));
         if (c.JS_DefinePropertyValueStr(engine.context, object, entry[0], function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
@@ -454,6 +461,47 @@ test "native host promise deadlines bound a timer that never completes its await
     defer engine.deinit();
     try install(engine, std.testing.io);
     try std.testing.expectError(error.NativeHostPromiseTimeout, engine.evalModule("await new Promise(resolve=>setTimeout(resolve,1000));", "native-timer-deadline.mjs"));
+}
+
+test "pending timer timeout callback cycles survive repeated explicit GC and engine teardown" {
+    for (0..96) |iteration| {
+        const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5 });
+        defer engine.deinit();
+        try install(engine, std.testing.io);
+        try std.testing.expectError(error.NativeHostPromiseTimeout, engine.evalModule("await new Promise(resolve=>setTimeout(resolve,1000));", "pending-timer-gc.mjs"));
+        // Exercise collection with a queued native root, then with only the
+        // timer/method/promise cycles left after scheduler ownership releases.
+        c.JS_RunGC(engine.runtime);
+        cleanup(engine);
+        c.JS_RunGC(engine.runtime);
+        const allocation_churn = try engine.eval("Array.from({length:128},(_,i)=>({i,payload:new Uint8Array((i%7)+1)}))", "pending-timer-churn.js", c.JS_EVAL_TYPE_GLOBAL);
+        engine.freeValue(allocation_churn);
+        c.JS_RunGC(engine.runtime);
+        if (iteration % 8 == 0) c.JS_RunGC(engine.runtime);
+    }
+}
+
+test "timed-out scheduler releases native callback ownership before cycle GC" {
+    var counting = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    const engine = try engine_mod.Engine.init(counting.allocator(), .{ .host_await_timeout_ms = 5 });
+    defer engine.deinit();
+    try install(engine, std.testing.io);
+    const installed_bytes = counting.allocated_bytes - counting.freed_bytes;
+    try std.testing.expectError(error.NativeHostPromiseTimeout, engine.evalModule("await new Promise(resolve=>setTimeout(resolve,1000));", "timeout-native-owner.mjs"));
+    cleanup(engine);
+    // No JavaScript reference retains this handle: the timeout call's result
+    // was discarded. Host callback state must be gone before any cycle GC or
+    // context teardown tries to free method-function captured values.
+    try std.testing.expectEqual(installed_bytes - @sizeOf(Scheduler), counting.allocated_bytes - counting.freed_bytes);
+    c.JS_RunGC(engine.runtime);
+}
+
+test "native timer methods brand their receiver without retaining a different handle" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine, std.testing.io);
+    const module = try engine.evalModule("const a=setTimeout(()=>{},1000),b=setTimeout(()=>{},1000);const ref=a.ref;if(ref.call(b)!==b||a.hasRef.call(b)!==true)throw Error('genuine receiver');let caught=false;try{ref.call({})}catch(error){caught=error instanceof TypeError}if(!caught)throw Error('unbranded receiver');clearTimeout(a);clearTimeout(b);", "timer-method-receiver.mjs");
+    defer engine.freeValue(module);
 }
 
 test "native microtasks drain in order before a settled callback is published" {

@@ -4,6 +4,35 @@ const builtin = @import("builtin");
 const linux = std.os.linux;
 const Io = std.Io;
 
+/// Resolve relative fixture executables before a child changes to its scratch
+/// cwd. std.fs.path.resolve normalizes paths but does not query the current dir.
+pub fn executablePath(gpa: std.mem.Allocator, io: Io, path: []const u8) ![]u8 {
+    if (std.fs.path.isAbsolute(path)) return std.fs.path.resolve(gpa, &.{path});
+    var buffer: [Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try std.process.currentPath(io, &buffer);
+    return std.fs.path.resolve(gpa, &.{ buffer[0..length], path });
+}
+
+test "native fixture executable paths stay absolute across child cwd changes" {
+    const gpa = std.testing.allocator;
+    const path = try executablePath(gpa, std.testing.io, "zig-out/bin/pi");
+    defer gpa.free(path);
+    try std.testing.expect(std.fs.path.isAbsolute(path));
+    try std.testing.expect(std.mem.endsWith(u8, path, if (builtin.os.tag == .windows) "zig-out\\bin\\pi" else "zig-out/bin/pi"));
+}
+
+fn executablePathAllocationCase(gpa: std.mem.Allocator) !void {
+    const path = try executablePath(gpa, std.testing.io, "zig-out/bin/pi");
+    defer gpa.free(path);
+    try std.testing.expect(std.fs.path.isAbsolute(path));
+    const absolute = try executablePath(gpa, std.testing.io, path);
+    defer gpa.free(absolute);
+    try std.testing.expectEqualStrings(path, absolute);
+}
+
+test "native executable path resolution releases every failed allocation" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, executablePathAllocationCase, .{});
+}
 pub const Scratch = struct {
     gpa: std.mem.Allocator,
     io: Io,
@@ -66,7 +95,13 @@ pub const Session = struct {
         const slave: Io.File = .{ .handle = peer, .flags = .{ .nonblocking = false } };
         configured.stdin = .{ .file = slave };
         configured.stdout = .{ .file = slave };
-        const child = try std.process.spawn(io, configured);
+        const child = std.process.spawn(io, configured) catch |err| {
+            std.debug.print("PTY spawn failure: {s}; program={s}; cwd={s}; master={d}; slave={d}\n", .{ @errorName(err), configured.argv[0], switch (configured.cwd) {
+                .path => |path| path,
+                else => "inherited/dir",
+            }, master, peer });
+            return err;
+        };
         return .{ .gpa = gpa, .io = io, .master = master, .child = child, .operation_deadline_ms = now(io) + timeout_ms };
     }
 

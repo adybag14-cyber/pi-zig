@@ -189,7 +189,7 @@ test "native provider retry preserves all seven network and live RPC reload scen
     const io = std.testing.io;
     var environment = try std.process.Environ.createMap(std.testing.environ, gpa);
     defer environment.deinit();
-    const binary = try std.fs.path.resolve(gpa, &.{environment.get("PI_TEST_BINARY") orelse "zig-out/bin/pi"});
+    const binary = try pty.executablePath(gpa, io, environment.get("PI_TEST_BINARY") orelse "zig-out/bin/pi");
     defer gpa.free(binary);
     const defaults = try policy(gpa, 3000, 1, 1000);
     defer gpa.free(defaults);
