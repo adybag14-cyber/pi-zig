@@ -17,7 +17,7 @@ const platform = @import("../tui/platform_terminal.zig");
 const component_protocol = @import("../extensions/component_protocol.zig");
 pub const renderer_protocol = @import("../extensions/renderer_protocol.zig");
 
-pub const CommandKind = enum { submit, complete, shortcut, clipboard, quit };
+pub const CommandKind = enum { submit, complete, shortcut, clipboard, presentation, quit };
 pub const Command = struct {
     kind: CommandKind,
     text: []u8,
@@ -423,6 +423,10 @@ pub const Frontend = struct {
     terminal_input_bridge: ?script_runtime.TerminalInputBridge = null,
     terminal_input_generation: u64 = 0,
     terminal_input_calls: usize = 0,
+    terminal_report_fn: ?*const fn (?*anyopaque, []const u8) anyerror!bool = null,
+    terminal_report_context: ?*anyopaque = null,
+    terminal_report_calls: usize = 0,
+    terminal_report_pump: ?*const fn (?*anyopaque) anyerror!bool = null,
     stopping: bool = false,
     ready: bool = false,
     pause_depth: usize = 0,
@@ -669,6 +673,35 @@ pub const Frontend = struct {
         defer self.mutex.unlock(self.io);
         self.editor_observer = callback;
         self.editor_observer_context = context;
+    }
+    pub fn bindTerminalReports(self: *Frontend, callback: ?*const fn (?*anyopaque, []const u8) anyerror!bool, context: ?*anyopaque) void {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        while (self.terminal_report_calls != 0) self.changed.waitUncancelable(self.io, &self.mutex);
+        self.terminal_report_fn = callback;
+        self.terminal_report_context = context;
+    }
+    pub fn bindTerminalReportPump(self: *Frontend, callback: ?*const fn (?*anyopaque) anyerror!bool) void {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        while (self.terminal_report_calls != 0) self.changed.waitUncancelable(self.io, &self.mutex);
+        self.terminal_report_pump = callback;
+    }
+    fn pumpTerminalReports(self: *Frontend) !void {
+        self.mutex.lockUncancelable(self.io);
+        const callback = self.terminal_report_pump;
+        const context = self.terminal_report_context;
+        if (callback != null) self.terminal_report_calls += 1;
+        self.mutex.unlock(self.io);
+        if (callback) |pump| {
+            defer {
+                self.mutex.lockUncancelable(self.io);
+                self.terminal_report_calls -= 1;
+                self.changed.broadcast(self.io);
+                self.mutex.unlock(self.io);
+            }
+            if (try pump(context)) try self.queueCommand(.presentation, "");
+        }
     }
     pub fn componentSink(raw: ?*anyopaque, scene: component_protocol.Scene, controls: *component_protocol.ControlQueue) !void {
         const self: *Frontend = @ptrCast(@alignCast(raw.?));
@@ -1412,6 +1445,25 @@ pub const Frontend = struct {
         self.mutex.unlock(self.io);
     }
     fn input(self: *Frontend, packet: line_editor.InputDecoder.Input) !void {
+        if (packet == .key) {
+            self.mutex.lockUncancelable(self.io);
+            const report = self.terminal_report_fn;
+            const report_context = self.terminal_report_context;
+            if (report != null) self.terminal_report_calls += 1;
+            self.mutex.unlock(self.io);
+            if (report) |callback| {
+                defer {
+                    self.mutex.lockUncancelable(self.io);
+                    self.terminal_report_calls -= 1;
+                    self.changed.broadcast(self.io);
+                    self.mutex.unlock(self.io);
+                }
+                if (try callback(report_context, packet.key)) {
+                    try self.queueCommand(.presentation, "");
+                    return;
+                }
+            }
+        }
         self.mutex.lockUncancelable(self.io);
         const input_bridge = self.terminal_input_bridge;
         if (input_bridge != null) self.terminal_input_calls += 1;
@@ -1510,6 +1562,8 @@ pub const Frontend = struct {
             if (try self.decoder.feed(byte)) |packet| {
                 try self.input(packet);
                 self.escape_started_ms = null;
+            } else if (!self.decoder.paste) {
+                self.escape_started_ms = Io.Clock.awake.now(self.io).toMilliseconds();
             }
             if (!platform.inputBuffered(self.reader) and try platform.waitInput(0) != .input) break;
         }
@@ -1552,6 +1606,7 @@ pub const Frontend = struct {
                 self.dirty = true;
             }
             try self.applyUpdates();
+            try self.pumpTerminalReports();
             if (wanted_pause) {
                 try self.io.sleep(.fromMilliseconds(10), .awake);
                 continue;
@@ -1582,8 +1637,8 @@ pub const Frontend = struct {
                     return err;
                 };
             } else if (self.escape_started_ms) |started| {
-                if (Io.Clock.awake.now(self.io).toMilliseconds() - started >= 30) {
-                    if (self.decoder.flushEscape()) |packet| try self.input(packet);
+                if (Io.Clock.awake.now(self.io).toMilliseconds() - started >= self.decoder.pendingTimeoutMs()) {
+                    if (self.decoder.flushPending()) |packet| try self.input(packet);
                     self.escape_started_ms = null;
                 }
             }

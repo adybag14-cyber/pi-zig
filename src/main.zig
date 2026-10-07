@@ -2313,6 +2313,7 @@ const RuntimeResourceReloadContext = struct {
     command_infos: *std.ArrayList(coding.rpc_data.ExtensionCommandInfo),
     theme_registry: *pi_zig.themes.Registry,
     action_runtime: *ExtensionActionRuntime,
+    terminal_theme: *extensions.terminal_theme_producer.Producer,
     steering: *std.ArrayList([]const u8),
     followups: *std.ArrayList([]const u8),
     shared_abort: *bool,
@@ -2825,6 +2826,7 @@ const RuntimeResourceReloadContext = struct {
             const theme_name = resolveThemeSelection(selection, self.environ);
             if (self.theme_registry.find(theme_name)) |theme| tui.render.setTheme(theme);
         }
+        try selectTerminalTheme(self.terminal_theme, self.theme_registry);
 
         if (self.host.extensions.items.len > 0) {
             self.bridge.sessionStart(gpa, self.cwd, self.session.id, "reload") catch |err| {
@@ -3121,6 +3123,7 @@ const ComponentFrontendOwner = struct {
     reader: *Io.File.Reader,
     bindings: *const tui.keybindings.Manager,
     controller: *extensions.ui.Controller,
+    terminal_theme: *extensions.terminal_theme_producer.Producer,
     options: coding.fullscreen_frontend.Options,
     persistent: ?*Frontend = null,
     temporary: ?*Frontend = null,
@@ -3144,6 +3147,9 @@ const ComponentFrontendOwner = struct {
             const owner = try Frontend.start(self.gpa, self.io, self.environ, self.reader, self.bindings, self.options);
             self.temporary = owner;
             errdefer self.detachTemporary();
+            owner.bindTerminalReports(extensions.terminal_theme_producer.Producer.report, self.terminal_theme);
+            owner.bindTerminalReportPump(extensions.terminal_theme_producer.Producer.pump);
+            try self.terminal_theme.request();
             self.controller.bindFrontend(Frontend.surfaceSink, Frontend.modalObserver, owner);
             self.controller.bindEditorFrontend(Frontend.editorSink, owner);
             owner.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, self.controller);
@@ -3174,6 +3180,18 @@ const ComponentFrontendOwner = struct {
         try self.controller.applyAction("setEditorText", action.written());
     }
 };
+
+fn selectTerminalTheme(producer: *extensions.terminal_theme_producer.Producer, registry: *pi_zig.themes.Registry) !void {
+    const resource = tui.render.activeThemeResource();
+    var identity: ?[]const u8 = null;
+    if (resource) |selected| for (registry.themes.items) |theme| {
+        if (theme.resource_json) |json| if (json.ptr == selected.ptr) {
+            identity = registry.sourceFor(theme.name);
+            break;
+        };
+    };
+    try producer.select(resource, identity);
+}
 
 test "production extension backend selector defaults legacy and rejects unknown values" {
     try std.testing.expectEqual(extensions.js_runtime.Backend.legacy, try parseExtensionBackend(null));
@@ -3831,6 +3849,10 @@ fn runMain(init: std.process.Init) !void {
     );
     defer extension_ui.deinit();
     extension_ui.bindClipboardEnvironment(environ);
+    const terminal_capabilities = tui.terminal_image.detectCapabilities(tui.terminal_image.environmentFromMap(environ), build_options.os.tag == .windows, false);
+    var terminal_theme = try extensions.terminal_theme_producer.Producer.init(gpa, io, &extension_ui, if (terminal_capabilities.true_color) .truecolor else .@"256color", Io.File.stdout().isTty(io) catch false);
+    defer terminal_theme.deinit();
+    try selectTerminalTheme(&terminal_theme, &theme_registry);
     var extension_stdin_buf: [4096]u8 = undefined;
     var extension_stdin_reader: Io.File.Reader = .init(.stdin(), io, &extension_stdin_buf);
     if (extension_has_ui) extension_ui.bindReader(&extension_stdin_reader);
@@ -4608,6 +4630,7 @@ fn runMain(init: std.process.Init) !void {
         .command_infos = &extension_command_infos,
         .theme_registry = &theme_registry,
         .action_runtime = &extension_action_runtime,
+        .terminal_theme = &terminal_theme,
         .steering = &extension_command_steering,
         .followups = &extension_command_followups,
         .shared_abort = &shared_abort,
@@ -4836,6 +4859,7 @@ fn runMain(init: std.process.Init) !void {
         .reader = &extension_stdin_reader,
         .bindings = &terminal_keybindings,
         .controller = &extension_ui,
+        .terminal_theme = &terminal_theme,
         .options = .{ .show_hardware_cursor = interactive_render.show_hardware_cursor, .editor_padding_x = interactive_render.editor_padding_x },
     };
     defer component_frontend_owner.detachTemporary();
@@ -4852,6 +4876,9 @@ fn runMain(init: std.process.Init) !void {
         extension_ui.bindFrontend(coding.fullscreen_frontend.Frontend.surfaceSink, coding.fullscreen_frontend.Frontend.modalObserver, frontend);
         extension_ui.bindEditorFrontend(coding.fullscreen_frontend.Frontend.editorSink, frontend);
         frontend.?.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, &extension_ui);
+        frontend.?.bindTerminalReports(extensions.terminal_theme_producer.Producer.report, &terminal_theme);
+        frontend.?.bindTerminalReportPump(extensions.terminal_theme_producer.Producer.pump);
+        try terminal_theme.request();
         extension_ui.bindRendererFrontend(coding.fullscreen_frontend.Frontend.rendererSink, coding.fullscreen_frontend.Frontend.rendererClosed, frontend);
         try extension_host.setScriptRendererBridge(extension_ui.rendererBridge());
         try extension_host.setScriptEditorBridge(.{ .context = frontend, .record_fn = coding.fullscreen_frontend.Frontend.editorRecordSink, .closed_fn = coding.fullscreen_frontend.Frontend.editorClosed });
@@ -5385,6 +5412,10 @@ fn readFullscreenLine(
         defer command.deinit(gpa);
         switch (command.kind) {
             .submit => return arena.dupe(u8, command.text),
+            .presentation => {
+                try syncExtensionScriptContext(shortcut_context.host, shortcut_context.ui_controller, shortcut_context.mode, shortcut_context.cwd, shortcut_context.session, shortcut_context.provider.*, shortcut_context.model_id.*, shortcut_context.thinking_level.*, shortcut_context.project_trusted, null, shortcut_context.tool_filter.*, shortcut_context.disable_builtin_tools, shortcut_context.model_catalog, shortcut_context.configured_providers, shortcut_context.session_file, shortcut_context.session_dir);
+                try shortcut_context.ui_controller.flush();
+            },
             .quit => return error.EndOfStream,
             .complete => {
                 if (try replComplete(completion_context, gpa, command.text, command.cursor)) |result| {

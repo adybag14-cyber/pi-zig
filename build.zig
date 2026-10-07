@@ -276,6 +276,19 @@ pub fn build(b: *std.Build) void {
     const program_status_step = b.step("test-program-status", "Exercise Pi program status negotiation and interactive lifecycle ownership");
     program_status_step.dependOn(&run_program_status_tests.step);
     test_step.dependOn(&run_program_status_tests.step);
+    const terminal_theme_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/terminal_theme_producer_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "native terminal report", "terminal color" },
+        .use_llvm = use_llvm,
+    });
+    terminal_theme_tests.root_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, terminal_theme_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, terminal_theme_tests.root_module, typescript_parser);
+    linkDurable(b, terminal_theme_tests.root_module);
+    const run_terminal_theme_tests = b.addRunArtifact(terminal_theme_tests);
+    const terminal_theme_step = b.step("test-terminal-theme-producer", "Exercise actual terminal report cache and owned ThemeState producer");
+    terminal_theme_step.dependOn(&run_terminal_theme_tests.step);
+    test_step.dependOn(&run_terminal_theme_tests.step);
     const sdk_process_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
