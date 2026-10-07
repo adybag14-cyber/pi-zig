@@ -38,6 +38,11 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue {
 fn jsString(engine: *engine_mod.Engine, text: []const u8) !c.JSValue {
     return engine.checked(c.JS_NewStringLen(engine.context, text.ptr, text.len));
 }
+fn invoke(engine: *engine_mod.Engine, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
+    const function = try get(engine, receiver, name);
+    defer engine.freeValue(function);
+    return engine.checked(c.JS_Call(engine.context, function, receiver, @intCast(args.len), @constCast(args.ptr)));
+}
 fn object(engine: *engine_mod.Engine) !c.JSValue {
     return engine.checked(c.JS_NewObject(engine.context));
 }
@@ -713,6 +718,12 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try put(engine, module, "pending", c.JS_NewBool(engine.context, false));
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
+    const map_constructor = try get(engine, global, "Map");
+    defer engine.freeValue(map_constructor);
+    try put(engine, module, "registeredThemes", try engine.checked(c.JS_CallConstructor(engine.context, map_constructor, 0, null)));
+    const symbol = try get(engine, global, "Symbol");
+    defer engine.freeValue(symbol);
+    try put(engine, module, "iteratorSymbol", try get(engine, symbol, "iterator"));
     const function = try get(engine, global, "Function");
     defer engine.freeValue(function);
     const function_prototype = try get(engine, function, "prototype");
@@ -947,11 +958,108 @@ pub fn createSystem(engine: *engine_mod.Engine, color_mode: ?ColorMode) !c.JSVal
 }
 pub fn loadByName(engine: *engine_mod.Engine, name: []const u8, color_mode: ?ColorMode) !c.JSValue {
     if (std.mem.eql(u8, name, "system")) return createSystem(engine, color_mode);
+    const module = try moduleState(engine);
+    defer engine.freeValue(module);
+    const registered = try get(engine, module, "registeredThemes");
+    defer engine.freeValue(registered);
+    const key = try jsString(engine, name);
+    defer engine.freeValue(key);
+    var args = [_]c.JSValue{key};
+    const existing = try invoke(engine, registered, "get", &args);
+    if (!c.JS_IsUndefined(existing)) return existing;
+    engine.freeValue(existing);
     if (std.mem.eql(u8, name, "dark")) return fromJson(engine, @embedFile("../themes/fixtures/dark-original-7fb.json"), null, color_mode);
     if (std.mem.eql(u8, name, "light")) return fromJson(engine, @embedFile("../themes/fixtures/light-original-7fb.json"), null, color_mode);
     const message = try std.fmt.allocPrint(engine.gpa, "Theme not found: {s}", .{name});
     defer engine.gpa.free(message);
     return color_api.throwError(engine, message);
+}
+fn registerTheme(engine: *engine_mod.Engine, registry: c.JSValue, theme: c.JSValue) !void {
+    // Source reads this getter independently for truthiness, validation and key.
+    const present = try get(engine, theme, "name");
+    defer engine.freeValue(present);
+    if (c.JS_ToBool(engine.context, present) == 0) return;
+    const validated = try get(engine, theme, "name");
+    defer engine.freeValue(validated);
+    const slash = try jsString(engine, "/");
+    defer engine.freeValue(slash);
+    var includes_args = [_]c.JSValue{slash};
+    const includes = try invoke(engine, validated, "includes", &includes_args);
+    defer engine.freeValue(includes);
+    if (c.JS_ToBool(engine.context, includes) != 0) {
+        const text = try engine.toString(validated);
+        defer engine.gpa.free(text);
+        const message = try std.fmt.allocPrint(engine.gpa, "Invalid theme name \"{s}\": theme names cannot contain \"/\" because it is reserved for automatic light/dark theme settings.", .{text});
+        defer engine.gpa.free(message);
+        return color_api.throwError(engine, message);
+    }
+    const key = try get(engine, theme, "name");
+    defer engine.freeValue(key);
+    var set_args = [_]c.JSValue{ key, theme };
+    const result = try invoke(engine, registry, "set", &set_args);
+    engine.freeValue(result);
+}
+fn closeRegistrationIterator(engine: *engine_mod.Engine, iterator: c.JSValue) void {
+    // IteratorClose preserves an already thrown body completion even if return
+    // itself throws. Keep its exact object rooted across that user callback.
+    const original = if (engine.captured_exception) |value| c.JS_DupValue(engine.context, value) else null;
+    defer if (original) |value| engine.freeValue(value);
+    if (get(engine, iterator, "return")) |function| {
+        defer engine.freeValue(function);
+        if (!c.JS_IsUndefined(function) and !c.JS_IsNull(function)) {
+            if (engine.checked(c.JS_Call(engine.context, function, iterator, 0, null))) |value| engine.freeValue(value) else |_| {}
+        }
+    } else |_| {}
+    if (engine.captured_exception) |value| engine.freeValue(value);
+    engine.captured_exception = if (original) |value| c.JS_DupValue(engine.context, value) else null;
+}
+/// Source module-global registry admission. Clear first, then retain each exact
+/// instance in iteration order. A later failure leaves its successful prefix.
+pub fn setRegisteredThemes(engine: *engine_mod.Engine, themes: c.JSValue) !void {
+    const module = try moduleState(engine);
+    defer engine.freeValue(module);
+    const registry = try get(engine, module, "registeredThemes");
+    defer engine.freeValue(registry);
+    const cleared = try invoke(engine, registry, "clear", &.{});
+    engine.freeValue(cleared);
+    const symbol = try get(engine, module, "iteratorSymbol");
+    defer engine.freeValue(symbol);
+    const atom = c.JS_ValueToAtom(engine.context, symbol);
+    defer c.JS_FreeAtom(engine.context, atom);
+    if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+    const method = try engine.checked(c.JS_GetProperty(engine.context, themes, atom));
+    defer engine.freeValue(method);
+    const iterator = try engine.checked(c.JS_Call(engine.context, method, themes, 0, null));
+    defer engine.freeValue(iterator);
+    const next = try get(engine, iterator, "next");
+    defer engine.freeValue(next);
+    while (true) {
+        const entry = try engine.checked(c.JS_Call(engine.context, next, iterator, 0, null));
+        defer engine.freeValue(entry);
+        if (!c.JS_IsObject(entry)) {
+            _ = try engine.checked(c.JS_ThrowTypeError(engine.context, "Iterator result is not an object"));
+            return error.JavaScriptException;
+        }
+        const done = try get(engine, entry, "done");
+        defer engine.freeValue(done);
+        if (c.JS_ToBool(engine.context, done) != 0) return;
+        const theme = try get(engine, entry, "value");
+        defer engine.freeValue(theme);
+        registerTheme(engine, registry, theme) catch |err| {
+            closeRegistrationIterator(engine, iterator);
+            return err;
+        };
+    }
+}
+/// Registered instances retain identity; system remains reserved. As Source,
+/// lookup failures produce undefined rather than a rejected UI operation.
+pub fn getThemeByName(engine: *engine_mod.Engine, name: []const u8) !c.JSValue {
+    return loadByName(engine, name, null) catch |err| {
+        if (err == error.OutOfMemory) return err;
+        if (engine.captured_exception) |value| engine.freeValue(value);
+        engine.captured_exception = null;
+        return c.pi_js_undefined();
+    };
 }
 pub fn current(engine: *engine_mod.Engine) !c.JSValue {
     if (!engine.native_module_names.contains("pi-coding-agent")) try @import("native_tui.zig").install(engine);
@@ -1423,4 +1531,80 @@ fn componentAllocationProbe(gpa: std.mem.Allocator) !void {
 }
 test "component theme closure allocation failures release proxy roots and partially built helper objects" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, componentAllocationProbe, .{});
+}
+
+fn registryProbeCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    if (magic == 0) {
+        setRegisteredThemes(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| return fail(engine, err);
+        return c.pi_js_undefined();
+    }
+    const module = moduleState(engine) catch |err| return fail(engine, err);
+    defer engine.freeValue(module);
+    return get(engine, module, "registeredThemes") catch |err| fail(engine, err);
+}
+test "actual original Theme registry clear prefix getter order synchronous reentry iterator close and thrown identity replay" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("native_tui.zig").install(engine);
+    const fixture = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/theme-registry-original-7fb.json"), .{});
+    defer fixture.deinit();
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try put(engine, global, "registryOracle", try engine.fromJsonValue(fixture.value));
+    const component_fixture = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/theme-components-original-7fb.json"), .{});
+    defer component_fixture.deinit();
+    try put(engine, global, "registryOracleInput", try engine.fromJsonValue(component_fixture.value.object.get("cases").?.array.items[0].object.get("first").?));
+    try put(engine, global, "registerThemeProbe", try engine.checked(c.pi_js_function_magic(engine.context, registryProbeCallback, "register", 1, 0)));
+    try put(engine, global, "getRegistryProbe", try engine.checked(c.pi_js_function_magic(engine.context, registryProbeCallback, "getRegistry", 0, 1)));
+    const script = try engine.evalModule(
+        \\import {Theme} from 'pi-coding-agent';
+        \\const input=registryOracleInput,labels=new WeakMap();function instance(name,label){const t=new Theme(input.fg,input.bg,'truecolor',{...input.options,name});labels.set(t,label);return t}
+        \\const a=instance('alpha','alpha-first'),a2=instance('alpha','alpha-last'),b=instance('beta','beta'),unnamed=instance(undefined,'unnamed'),invalid=instance('not/valid','invalid');
+        \\const register=registerThemeProbe,traces=[],snapshot=()=>Array.from(getRegistryProbe().entries()).map(([name,t])=>[name,labels.get(t)??'probe']);
+        \\register([a,a2,unnamed]);traces.push({case:'duplicates-and-unnamed',entries:snapshot(),sameLast:Array.from(getRegistryProbe().entries())[0][1]===a2});
+        \\let message;try{register([b,invalid,a])}catch(error){message=error.message};traces.push({case:'invalid-name-partial-registry',entries:snapshot(),message});
+        \\let reads=0;const probe={get name(){reads++;return reads===1?'truthy':reads===2?'allowed':'actual-key'}};register([probe]);traces.push({case:'name-getter-order',reads,entries:snapshot()});
+        \\const marker={};let sameMarker=false;try{register([{get name(){throw marker}}])}catch(error){sameMarker=error===marker};traces.push({case:'getter-throw-cleared-registry',sameMarker,entries:snapshot()});
+        \\let entered=false;const reentry={get name(){if(!entered){entered=true;register([a])}return 'outer'}};register([reentry]);traces.push({case:'synchronous-getter-reentry',entries:snapshot()});
+        \\const iteratorLog=[];const iterable={*[Symbol.iterator](){try{iteratorLog.push('yield-beta');yield b;iteratorLog.push('yield-invalid');yield invalid;iteratorLog.push('unexpected')}finally{iteratorLog.push('finally')}}};message=undefined;try{register(iterable)}catch(error){message=error.message};traces.push({case:'iterator-close-on-body-throw',entries:snapshot(),iteratorLog,message});
+        \\register([]);traces.push({case:'explicit-clear',entries:snapshot()});if(JSON.stringify(traces)!==JSON.stringify(registryOracle.traces))throw Error(JSON.stringify({traces,expected:registryOracle.traces}));
+        \\globalThis.retainedRegisteredTheme=a2;register([a2]);a2.sourceInfo={metadata:'same-instance'};globalThis.iteratorOriginal=marker;let same=false;try{register({[Symbol.iterator](){return {next(){return {value:{get name(){throw marker}},done:false}},return(){throw Error('close failure')}}}})}catch(error){same=error===marker}if(!same)throw Error('IteratorClose replaced body exception');register([a2]);
+    , "native-theme-registry-original.mjs");
+    defer engine.freeValue(script);
+    c.JS_RunGC(engine.runtime);
+    const found = try getThemeByName(engine, "alpha");
+    defer engine.freeValue(found);
+    const saved = try get(engine, global, "retainedRegisteredTheme");
+    defer engine.freeValue(saved);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, found, saved));
+    const metadata = try get(engine, found, "sourceInfo");
+    defer engine.freeValue(metadata);
+    try std.testing.expect(c.JS_IsObject(metadata));
+    const missing = try getThemeByName(engine, "nonexistent-registry-fixture");
+    defer engine.freeValue(missing);
+    try std.testing.expect(c.JS_IsUndefined(missing));
+}
+
+fn registryAllocationProbe(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    try @import("native_tui.zig").install(engine);
+    const theme = fromJson(engine, @embedFile("../themes/fixtures/dark-original-7fb.json"), "registry-allocation.json", .truecolor) catch |err| return allocationError(engine, err);
+    defer engine.freeValue(theme);
+    const themes = engine.checked(c.JS_NewArray(engine.context)) catch |err| return allocationError(engine, err);
+    defer engine.freeValue(themes);
+    if (c.JS_SetPropertyUint32(engine.context, themes, 0, c.JS_DupValue(engine.context, theme)) < 0) return error.OutOfMemory;
+    setRegisteredThemes(engine, themes) catch |err| return allocationError(engine, err);
+    c.JS_RunGC(engine.runtime);
+    const found = getThemeByName(engine, "dark") catch |err| return allocationError(engine, err);
+    defer engine.freeValue(found);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, found, theme));
+    const empty = engine.checked(c.JS_NewArray(engine.context)) catch |err| return allocationError(engine, err);
+    defer engine.freeValue(empty);
+    setRegisteredThemes(engine, empty) catch |err| return allocationError(engine, err);
+    c.JS_RunGC(engine.runtime);
+}
+test "Theme registry admission lookup explicit clear and final VM retirement release every induced allocation failure" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, registryAllocationProbe, .{});
 }
