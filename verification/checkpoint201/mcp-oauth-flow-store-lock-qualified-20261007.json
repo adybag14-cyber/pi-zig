@@ -1,0 +1,78 @@
+{
+  "status": "qualified subset",
+  "source_commit": "6fc9d21",
+  "inputs": 635,
+  "patch_sha256": "d645a6981cb2f4215e2c3accf9af8e99eecf405efead4913b39f400f768a6978",
+  "gates": [
+    {
+      "name": "mcp-oauth-store-whitespace-corrected-windows-debug-20261007",
+      "pid": 63944,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-mcp-runtime -j2 --summary all",
+      "created_utc": "2026-10-07T17:06:19.2718600Z",
+      "launched_utc": "2026-10-07T17:06:19.2680352+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-flow-builtin-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T17:06:29.6938628+00:00"
+    },
+    {
+      "name": "mcp-oauth-flow-store-lock-windows-releasesafe-20261007",
+      "pid": 35708,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-mcp-runtime -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-07T17:07:59.5116970Z",
+      "launched_utc": "2026-10-07T17:07:59.5075232+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-flow-builtin-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T17:09:14.1717941+00:00"
+    },
+    {
+      "name": "mcp-oauth-flow-store-lock-native-linux-debug-20261007",
+      "pid": 64292,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-mcp-oauth-flow-store-lock-final-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /usr/bin/env ZIG_LIBC=/tmp/pi-checkpoint198-native-libc-20261007.txt PATH=/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-mcp-runtime -j2 --summary all --cache-dir /tmp/pi-mcp-oauth-flow-store-lock-cache-20261007",
+      "created_utc": "2026-10-07T17:07:59.4991270Z",
+      "launched_utc": "2026-10-07T17:07:59.4956343+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-flow-builtin-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T17:08:18.2740118+00:00"
+    },
+    {
+      "name": "mcp-oauth-flow-store-lock-native-linux-releasesafe-20261007",
+      "pid": 13476,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-mcp-oauth-flow-store-lock-final-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /usr/bin/env ZIG_LIBC=/tmp/pi-checkpoint198-native-libc-20261007.txt PATH=/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-mcp-runtime -Doptimize=ReleaseSafe -j2 --summary all --cache-dir /tmp/pi-mcp-oauth-flow-store-lock-cache-20261007",
+      "created_utc": "2026-10-07T17:10:03.6958880Z",
+      "launched_utc": "2026-10-07T17:10:03.6925161+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-flow-builtin-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T17:11:21.4299083+00:00"
+    },
+    {
+      "name": "mcp-refresh-lock-atomic-renewal-interop-windows-20261007",
+      "pid": 51832,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\mcp-refresh-lock-original-native-interop-20261007.mjs",
+      "created_utc": "2026-10-07T16:57:12.4733200Z",
+      "launched_utc": "2026-10-07T16:57:12.4691628+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-flow-builtin-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T16:57:13.3220222+00:00"
+    }
+  ],
+  "limitations": [
+    "Production provider and manager not wired",
+    "Browser callback DCR CIMD and sign-in still required",
+    "macOS execution not yet qualified"
+  ]
+}

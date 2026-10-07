@@ -1,0 +1,64 @@
+{
+  "status": "qualified subset",
+  "source_commit": "32ab959",
+  "compiled_inputs": 645,
+  "tests": 54,
+  "gates": [
+    {
+      "name": "mcp-oauth-signin-live-deadline-cancel-windows-debug-20261007",
+      "pid": 57128,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-mcp-runtime -j2 --summary all",
+      "created_utc": "2026-10-07T19:00:53.1572350Z",
+      "launched_utc": "2026-10-07T19:00:53.1529255+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-authorize-signin-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T19:01:07.3321038+00:00"
+    },
+    {
+      "name": "mcp-oauth-authorize-signin-windows-releasesafe-20261007",
+      "pid": 63672,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-mcp-runtime -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-07T19:01:43.5649000Z",
+      "launched_utc": "2026-10-07T19:01:43.5606030+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-authorize-signin-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T19:02:59.2632330+00:00"
+    },
+    {
+      "name": "mcp-oauth-authorize-signin-native-linux-debug-20261007",
+      "pid": 60320,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-mcp-oauth-authorize-signin-native-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /usr/bin/env ZIG_LIBC=/tmp/pi-checkpoint198-native-libc-20261007.txt PATH=/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-mcp-runtime -Doptimize=Debug -j2 --summary all --cache-dir /tmp/pi-mcp-oauth-authorize-signin-cache-20261007",
+      "created_utc": "2026-10-07T19:01:43.5818420Z",
+      "launched_utc": "2026-10-07T19:01:43.5784272+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-authorize-signin-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T19:01:58.7268081+00:00"
+    },
+    {
+      "name": "mcp-oauth-authorize-signin-native-linux-releasesafe-20261007",
+      "pid": 2716,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-mcp-oauth-authorize-signin-native-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /usr/bin/env ZIG_LIBC=/tmp/pi-checkpoint198-native-libc-20261007.txt PATH=/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-mcp-runtime -Doptimize=ReleaseSafe -j2 --summary all --cache-dir /tmp/pi-mcp-oauth-authorize-signin-cache-20261007",
+      "created_utc": "2026-10-07T19:01:58.7418050Z",
+      "launched_utc": "2026-10-07T19:01:58.7408529+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-authorize-signin-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T19:03:08.5612321+00:00"
+    }
+  ],
+  "patch_sha256": "d3a7f644785ac503b2238ff00c582004b97bfa32879849316e03c92cf0cc0b21",
+  "scope_document": "mcp-oauth-authorize-signin-scope-20261007.md",
+  "production_integration": false,
+  "macos_runtime_qualified": false
+}

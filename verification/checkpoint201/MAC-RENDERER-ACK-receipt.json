@@ -1,0 +1,23 @@
+{
+  "status": "frozen; Windows and native Linux full fixtures passed; hosted macOS unknown",
+  "baseline": "dbb80b0278995a1b080aa30e25573d89fc1ffef9",
+  "worktree": "C:\\Users\\adyba\\pi-zig-macos-renderer-20261007",
+  "path": "src/fullscreen_frontend_process_test.zig",
+  "source_sha256": "4B73297AD52AE1ED1FFD0F9CFE8B85DFB9C94A799108AF94E3420795D4FA9051",
+  "patch": "MAC-RENDERER-ACK-dbb80b0.patch",
+  "patch_sha256": "60A60DB58C53D0E80D9B2104E150F29DE5882C953DE5D95A5E8DEC6C292F9E6E",
+  "windows_binary_sha256": "B1C1A7DAC22F2DA6826650C42FA14B2F136DCF39D7E28F41E62F8640649CF39B",
+  "linux_binary_sha256": "BF11ECC6895F2C5C52674A053644C4FBEBCE7F0BFCF04F45734E08F678DA6104",
+  "windows_filtered": "2 passed",
+  "windows_full": "31 passed; 3 skipped; 0 failed",
+  "invariants": [
+    "actual owner command ACK after current header/editor",
+    "startup has existing separate 90 second budget",
+    "all subsequent current cell deadlines remain 5 seconds",
+    "original 700 ms idle error timer begins after observer phase ACK",
+    "actual component render throws original Error and writes fired witness",
+    "canonical result editor draft next turn scroll anchor partial/final resize reload assertions retained"
+  ],
+  "production_changes": false,
+  "linux_full": "All 31 tests passed."
+}
