@@ -832,3 +832,99 @@ test "native durable VM public SQLite allocation persists only at commit and ign
     defer std.testing.allocator.free(text);
     try std.testing.expectEqualStrings("{\"reserved\":2,\"reused\":2,\"seq\":1,\"record\":{\"id\":1},\"next\":3}", text);
 }
+
+test "native durable VM cold document reads follow original ignored storage Context cancellation policy" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Cold document Context VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {createSession,MemoryStorage,defineDoc} from '@earendil-works/pi-durable';
+        \\const session=createSession(new MemoryStorage()),Doc=defineDoc({kind:'fixture.read.context',version:1,scope:'conversation',history:'rewindable',fork:'asOf',initial:()=>({n:1})});let anchor;await session.commit(async tx=>{const root=await tx.createRootConversation();await tx.doc(Doc,root.id);anchor=await tx.appendEntry(root.id,{kind:'anchor'})},{});
+        \\const reason={raw:true},context={abortSignal:AbortSignal.abort(reason)};await session.unloadDocuments();let cold,historical,state;try{cold=await session.snapshot(Doc,1,context)}catch(error){cold={failed:error===reason}}try{historical=await session.snapshotAsOf(Doc,1,anchor.id,context)}catch(error){historical={failed:error===reason}}await session.unloadDocuments();try{const value=await session.documentState(Doc,1,context);state=value.value;value.dispose()}catch(error){state={failed:error===reason}}await session.close({});globalThis.result=JSON.stringify({cold,historical,state});
+    , "native-durable-cold-context");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"cold\":{\"n\":1},\"historical\":{\"n\":1},\"state\":{\"n\":1}}", text);
+}
+
+test "native durable VM document object undefined deletes while array undefined and sparse growth are rejected" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Document mutation VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {createSession,MemoryStorage,defineDoc} from '@earendil-works/pi-durable';
+        \\const calls=[],Doc=defineDoc({kind:'fixture.undefined',version:1,scope:'session',initial:()=>({remove:1,arr:[1,2]}),checkpointWhen(value,ops){calls.push(ops);return false}}),session=createSession(new MemoryStorage());await session.commit(async tx=>{await tx.doc(Doc)},{});
+        \\let objectDeleted=false,arrayRejected=false,sparseRejected=false,lengthRejected=false;await session.commit(async tx=>{const doc=await tx.doc(Doc);doc.remove=undefined;objectDeleted=!Object.hasOwn(doc,'remove');try{doc.arr[0]=undefined}catch{arrayRejected=true}try{doc.arr[4]=9}catch{sparseRejected=true}try{doc.arr.length=5}catch{lengthRejected=true}},{});const value=await session.snapshot(Doc,{});await session.close({});globalThis.result=JSON.stringify({objectDeleted,arrayRejected,sparseRejected,lengthRejected,value,calls});
+    , "native-durable-document-undefined");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"objectDeleted\":true,\"arrayRejected\":true,\"sparseRejected\":true,\"lengthRejected\":false,\"value\":{\"arr\":[1,2,null,null,null]},\"calls\":[[[\"d\",[\"remove\"]],[\"p\",[\"arr\"],2,0,[null,null,null]]]]}", text);
+}
+
+test "native durable VM reserved document properties remain own data and fold unsafe delta paths" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Reserved document VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {createSession,MemoryStorage,defineDoc} from '@earendil-works/pi-durable';
+        \\const calls=[],Doc=defineDoc({kind:'fixture.reserved',version:1,scope:'session',initial:()=>({normal:1}),checkpointWhen(value,ops){calls.push(ops);return false}}),session=createSession(new MemoryStorage());await session.commit(async tx=>{await tx.doc(Doc)},{});let own,prototype;
+        \\await session.commit(async tx=>{const doc=await tx.doc(Doc);const prior=Object.getPrototypeOf(doc);doc.__proto__={safe:true};doc.constructor=null;own=Object.hasOwn(doc,'__proto__')&&Object.hasOwn(doc,'constructor');prototype=Object.getPrototypeOf(doc)===prior},{});const first=await session.snapshot(Doc,{});await session.commit(async tx=>{(await tx.doc(Doc)).constructor=undefined},{});const second=await session.snapshot(Doc,{});await session.close({});globalThis.result=JSON.stringify({own,prototype,first,second,calls});
+    , "native-durable-document-reserved");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"own\":true,\"prototype\":true,\"first\":{\"normal\":1,\"__proto__\":{\"safe\":true},\"constructor\":null},\"second\":{\"normal\":1,\"__proto__\":{\"safe\":true}},\"calls\":[[[\"r\",{\"normal\":1,\"__proto__\":{\"safe\":true},\"constructor\":null}]],[[\"r\",{\"normal\":1,\"__proto__\":{\"safe\":true}}]]]}", text);
+}
+
+test "native durable VM document owner validation and failed initializers precede ID allocation" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Document owner VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {createSession,MemoryStorage,defineDoc} from '@earendil-works/pi-durable';
+        \\const store=new MemoryStorage(),session=createSession(store),reason={initializer:true},calls=[];const Failing=defineDoc({kind:'fixture.init.fail',version:1,scope:'session',initial(){calls.push('fail');throw reason}}),Conversation=defineDoc({kind:'fixture.owner.conv',version:1,scope:'conversation',history:'latest',fork:'current',initial(){calls.push('conversation');return{n:1}}}),Task=defineDoc({kind:'fixture.owner.task',version:1,scope:'task',initial(){calls.push('task');return{n:1}}});
+        \\await session.commit(tx=>tx.createRootConversation(),{});let failed=false,conversation,task;try{await session.commit(tx=>tx.doc(Failing),{})}catch(error){failed=error===reason}try{await session.commit(tx=>tx.doc(Conversation,99),{})}catch(error){conversation=error.message}try{await session.commit(tx=>tx.doc(Task,99),{})}catch(error){task=error.message}const next=await store.mintId();await session.close({});globalThis.result=JSON.stringify({failed,conversation,task,calls,next});
+    , "native-durable-document-owner");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"failed\":true,\"conversation\":\"Conversation 99 does not exist\",\"task\":\"Task 99 does not exist\",\"calls\":[\"fail\"],\"next\":2}", text);
+}
+
+test "native durable VM checkpoint predicates run after final Runtime state validation" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Predicate ordering VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineDoc,defineTask} from '@earendil-works/pi-durable';
+        \\let calls=0;const Doc=defineDoc({kind:'fixture.predicate.order',version:1,scope:'session',initial:()=>({n:1}),checkpointWhen(){calls++;return true}}),Task=defineTask({name:'fixture.predicate.task',version:1,initial:()=>({phase:'go'}),phases:{go:async(task,runtime,context)=>{let failed=false;try{await runtime.commit(async tx=>{(await tx.doc(Doc)).n=2;return{status:'waiting',checkpoint:{phase:'go'},on:[runtime.taskId],policy:'allSettled'}},context)}catch{failed=true}const value=await runtime.snapshot(Doc,context);await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:{failed,calls,value}}}),context)}},abort:async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context)});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return name===Task.definition.name?Task:{definition:{name}}},tasks(){return[Task]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const harness=await Harness.open(new MemoryStorage(),{registry,models:{}},{}),root=await harness.root({});await harness.commit(async tx=>{await tx.doc(Doc)},{});const id=await root.commit(tx=>tx.createTask(Task,{},{ownership:{kind:'conversation'}}),{}),done=await harness.waitForTask(id,{});await harness.close({});globalThis.result=JSON.stringify(done.state.outcome);
+    , "native-durable-predicate-order");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"status\":\"completed\",\"result\":{\"failed\":true,\"calls\":0,\"value\":{\"n\":1}}}", text);
+}

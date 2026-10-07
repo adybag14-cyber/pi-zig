@@ -8,7 +8,7 @@ const json = backend.json;
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
 const Pair = struct { target: c.JSValue, proxy: c.JSValue };
-const Document = struct { address: json.Owned, record: json.Owned, baseline: json.Owned, definition: c.JSValue, target: c.JSValue, pairs: std.ArrayList(Pair) = .empty, created: bool, plan: ?usize, version: u64, stored_version: u64, deltas_since_base: u64 = 0, retired: bool = false };
+const Document = struct { address: json.Owned, record: json.Owned, baseline: json.Owned, definition: c.JSValue, target: c.JSValue, pairs: std.ArrayList(Pair) = .empty, created: bool, plan: ?usize, version: u64, stored_version: u64, deltas_since_base: u64 = 0, retired: bool = false, write_index: ?usize = null };
 const Cached = struct { address: json.Owned, record: json.Owned, value: c.JSValue, version: u64 };
 pub const Cache = struct {
     engine: *Engine,
@@ -147,29 +147,51 @@ pub const Drafts = struct {
             defer path.deinit(self.engine.gpa);
             try differences(a, self.engine.gpa, doc.baseline.value, value.value, &path, &operations);
             if (!doc.created) try tx.documentPublicationOps(try json.asInteger(try json.required(doc.record.value, "id")), operations);
-            var base = doc.created or doc.version > doc.stored_version;
-            if (!base) {
-                const predicate = try sdk.get(self.engine, doc.definition, "checkpointWhen");
-                defer self.engine.freeValue(predicate);
-                if (c.JS_IsFunction(self.engine.context, predicate)) {
-                    const ops = try durable.jsValue(self.engine, operations);
-                    defer self.engine.freeValue(ops);
-                    const info = try sdk.object(self.engine);
-                    defer self.engine.freeValue(info);
-                    try sdk.put(self.engine, info, "deltasSinceBase", c.JS_NewInt64(self.engine.context, @intCast(doc.deltas_since_base)));
-                    var args = [_]c.JSValue{ doc.target, ops, info };
-                    const result = try self.engine.checked(c.JS_Call(self.engine.context, predicate, doc.definition, args.len, &args));
-                    defer self.engine.freeValue(result);
-                    base = c.JS_ToBool(self.engine.context, result) > 0;
-                }
-            }
+            const base = doc.created or doc.version > doc.stored_version;
             try content.object.put(a, "kind", .{ .string = if (base) "base" else "delta" });
             try content.object.put(a, if (base) "value" else "ops", if (base) try json.clone(a, value.value) else operations);
             try write.value.object.put(a, "content", content);
             try tx.documentCommand(write.value);
+            doc.write_index = tx.writes.array.items.len - 1;
         }
+        tx.before_storage = finalizePredicates;
+        tx.before_storage_context = self;
         tx.after_storage = afterStorage;
         tx.after_storage_context = self;
+    }
+    fn finalizePredicates(raw: ?*anyopaque) !void {
+        const self: *Drafts = @ptrCast(@alignCast(raw.?));
+        const engine = self.engine;
+        const tx = self.owner.transaction.?;
+        if (std.Thread.getCurrentId() != tx.ownerThread) return error.VMCallbackOnWorker;
+        for (self.items.items) |doc| {
+            const write_index = doc.write_index orelse continue;
+            const content = tx.writes.array.items[write_index].object.getPtr("content").?;
+            if (!std.mem.eql(u8, try json.asString(try json.required(content.*, "kind")), "delta")) continue;
+            const predicate = try sdk.get(engine, doc.definition, "checkpointWhen");
+            defer engine.freeValue(predicate);
+            if (!c.JS_IsFunction(engine.context, predicate)) continue;
+            const ops = try durable.jsValue(engine, try json.required(content.*, "ops"));
+            defer engine.freeValue(ops);
+            const info = try sdk.object(engine);
+            defer engine.freeValue(info);
+            try sdk.put(engine, info, "deltasSinceBase", c.JS_NewInt64(engine.context, @intCast(doc.deltas_since_base)));
+            var args = [_]c.JSValue{ doc.target, ops, info };
+            const result = try engine.checked(c.JS_Call(engine.context, predicate, doc.definition, args.len, &args));
+            defer engine.freeValue(result);
+            var operations = try durable.owned(engine, ops);
+            defer operations.deinit();
+            const a = tx.owned.arena.allocator();
+            const stored_ops = try json.clone(a, operations.value);
+            try tx.preparedDocumentOps.put(a, try json.asInteger(try json.required(doc.record.value, "id")), stored_ops);
+            if (c.JS_ToBool(engine.context, result) > 0) {
+                var value = try durable.owned(engine, doc.target);
+                defer value.deinit();
+                _ = content.object.orderedRemove("ops");
+                try content.object.put(a, "kind", .{ .string = "base" });
+                try content.object.put(a, "value", try json.clone(a, value.value));
+            } else try content.object.put(a, "ops", stored_ops);
+        }
     }
     fn afterStorage(raw: ?*anyopaque) !void {
         const self: *Drafts = @ptrCast(@alignCast(raw.?));
@@ -351,8 +373,19 @@ pub fn acquire(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue) !c
         } else {
             created = true;
             record.value = try json.clone(a, resolved.value.value);
-            try record.value.object.put(a, "id", .{ .integer = @intCast(try native.session.storage.mintId()) });
             const scope = try json.required(record.value, "scope");
+            const scope_kind = try json.asString(try json.required(scope, "kind"));
+            if (std.mem.eql(u8, scope_kind, "conversation")) {
+                const id = try json.asInteger(try json.required(scope, "conversationId"));
+                if ((try native.currentRecord(id, .conversation)) == null) try sourceError(engine, "Conversation {d} does not exist", .{id});
+            } else if (std.mem.eql(u8, scope_kind, "task")) {
+                const id = try json.asInteger(try json.required(scope, "taskId"));
+                const task = (try native.currentRecord(id, .task)) orelse {
+                    try sourceError(engine, "Task {d} does not exist", .{id});
+                    return error.JavaScriptException;
+                };
+                if (std.mem.eql(u8, try json.asString(try json.required(try json.required(task, "state"), "status")), "terminal")) try sourceError(engine, "Task {d} is terminal", .{id});
+            }
             if (std.mem.eql(u8, try json.asString(try json.required(scope, "kind")), "conversation")) {
                 inline for (.{ "history", "fork" }) |name| {
                     const text = try field(engine, definition_value, name);
@@ -370,6 +403,7 @@ pub fn acquire(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue) !c
             var copied = try durable.owned(engine, value);
             defer copied.deinit();
             baseline.value = try json.clone(baseline.arena.allocator(), copied.value);
+            try record.value.object.put(a, "id", .{ .integer = @intCast(try native.session.storage.mintId()) });
         }
     }
     const version_value = try sdk.get(engine, definition_value, "version");
@@ -386,6 +420,19 @@ pub fn acquire(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue) !c
     const borrowed = try proxy(drafts, receiver, index, target);
     defer engine.freeValue(borrowed);
     return sdk.promise(engine, borrowed);
+}
+fn sourceError(engine: *Engine, comptime format: []const u8, args: anytype) !void {
+    const message = try std.fmt.allocPrint(engine.gpa, format, args);
+    defer engine.gpa.free(message);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const constructor = try sdk.get(engine, global, "Error");
+    defer engine.freeValue(constructor);
+    const text = try sdk.text(engine, message);
+    defer engine.freeValue(text);
+    var parameters = [_]c.JSValue{text};
+    const failure = try engine.checked(c.JS_CallConstructor(engine.context, constructor, 1, &parameters));
+    _ = try engine.checked(c.JS_Throw(engine.context, failure));
 }
 pub fn retire(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
     const owner = try durable.state(engine, receiver);
@@ -469,6 +516,30 @@ fn trapOwned(engine: *Engine, args: []const c.JSValue, operation: c_int, data: [
         if (deleted < 0) return error.JavaScriptException;
         return c.pi_js_bool(engine.context, @intFromBool(deleted != 0));
     }
+    if (c.JS_IsSymbol(args[1])) return error.NonJsonDocumentProperty;
+    const is_array = c.JS_IsArray(args[0]);
+    if (c.JS_IsUndefined(args[2]) and !is_array) {
+        const deleted = c.JS_DeleteProperty(engine.context, args[0], atom, c.JS_PROP_THROW);
+        if (deleted < 0) return error.JavaScriptException;
+        return c.pi_js_bool(engine.context, 1);
+    }
+    if (is_array) {
+        const key = try engine.toString(args[1]);
+        defer engine.gpa.free(key);
+        const count = try sdk.length(engine, args[0]);
+        if (std.mem.eql(u8, key, "length")) {
+            const requested = try durable.number(engine, args[2]);
+            if (requested > std.math.maxInt(u32)) return error.InvalidDocumentArrayLength;
+            var fill_index: u32 = @intCast(count);
+            while (fill_index < requested) : (fill_index += 1) if (c.JS_SetPropertyUint32(engine.context, args[0], fill_index, c.pi_js_null()) < 0) return error.JavaScriptException;
+            if (c.JS_SetProperty(engine.context, args[0], atom, c.JS_DupValue(engine.context, args[2])) < 0) return error.JavaScriptException;
+            return c.pi_js_bool(engine.context, 1);
+        }
+        if (key.len == 0 or (key.len > 1 and key[0] == '0')) return error.InvalidDocumentArrayProperty;
+        for (key) |byte| if (byte < '0' or byte > '9') return error.InvalidDocumentArrayProperty;
+        const array_index = std.fmt.parseInt(u32, key, 10) catch return error.InvalidDocumentArrayProperty;
+        if (array_index == std.math.maxInt(u32) or array_index > count) return error.SparseDocumentArray;
+    }
     if (c.JS_IsUndefined(args[2]) or c.JS_IsFunction(engine.context, args[2]) or c.JS_IsSymbol(args[2])) return error.NonJsonDocumentValue;
     var seen: std.ArrayList(c.JSValue) = .empty;
     defer seen.deinit(engine.gpa);
@@ -476,7 +547,8 @@ fn trapOwned(engine: *Engine, args: []const c.JSValue, operation: c_int, data: [
     var copy = try durable.owned(engine, args[2]);
     defer copy.deinit();
     const value = try durable.jsValue(engine, copy.value);
-    if (c.JS_SetProperty(engine.context, args[0], atom, value) < 0) return error.JavaScriptException;
+    const set = if (is_array) c.JS_SetProperty(engine.context, args[0], atom, value) else c.JS_DefinePropertyValue(engine.context, args[0], atom, value, c.JS_PROP_C_W_E);
+    if (set < 0) return error.JavaScriptException;
     return c.pi_js_bool(engine.context, 1);
 }
 pub fn unload(engine: *Engine, session: c.JSValue) !c.JSValue {
@@ -572,7 +644,6 @@ fn historicalDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue
     defer resolved.value.deinit();
     const at_index = resolved.next + 1;
     if (args.len <= at_index + 1) return error.DocumentHistoricalPointRequired;
-    try durable.checkCancellation(engine, args[at_index + 1]);
     const conversation = try json.asInteger(try json.required(try json.required(resolved.value.value, "scope"), "conversationId"));
     var entry = (try native.session.?.storage.readEntry(engine.gpa, try durable.number(engine, args[at_index]), conversation)) orelse return error.DocumentHistoricalEntryMissing;
     defer entry.deinit();
@@ -606,7 +677,6 @@ fn snapshotDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue) 
         try checkSemantics(engine, definition_value, value.record.value);
         return sdk.promise(engine, value.value);
     }
-    if (resolved.next + 1 < args.len) try durable.checkCancellation(engine, args[resolved.next + 1]);
     var model: backend.memory.Memory = .{ .gpa = engine.gpa, .state = try native.session.?.storage.snapshot(engine.gpa) };
     defer model.deinit();
     var found = (try backend.query.findDocument(engine.gpa, &model, resolved.value.value, .current)) orelse return sdk.promise(engine, c.pi_js_undefined());
@@ -708,8 +778,13 @@ fn differences(a: std.mem.Allocator, gpa: std.mem.Allocator, before: json.Value,
     if (json.equal(before, after)) return;
     if (before == .object and after == .object) {
         // Chord folds unsafe property segments into the containing object.
+        for (before.object.keys()) |key| if (std.mem.eql(u8, key, "__proto__") or std.mem.eql(u8, key, "constructor") or std.mem.eql(u8, key, "prototype")) {
+            const replacement = after.object.get(key);
+            if (replacement == null or !json.equal(before.object.get(key).?, replacement.?)) return emit(a, operations, if (path.items.len == 0) "r" else "s", path.items, after);
+        };
         for (after.object.keys()) |key| if (std.mem.eql(u8, key, "__proto__") or std.mem.eql(u8, key, "constructor") or std.mem.eql(u8, key, "prototype")) {
-            if (!json.equal(before.object.get(key) orelse .null, after.object.get(key).?)) return emit(a, operations, if (path.items.len == 0) "r" else "s", path.items, after);
+            const original = before.object.get(key);
+            if (original == null or !json.equal(original.?, after.object.get(key).?)) return emit(a, operations, if (path.items.len == 0) "r" else "s", path.items, after);
         };
         for (before.object.keys()) |key| if (!after.object.contains(key)) {
             try path.append(gpa, .{ .string = key });

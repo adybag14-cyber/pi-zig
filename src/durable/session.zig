@@ -117,6 +117,7 @@ pub const Session = struct {
         var predicted: backend.memory.Memory = .{ .gpa = self.gpa, .state = try self.storage.snapshot(self.gpa) };
         defer predicted.deinit();
         try tx.assembleTasks(&predicted);
+        if (tx.before_storage) |finalize| try finalize(tx.before_storage_context);
         var prepared = try predicted.prepare(tx.writes, null);
         defer prepared.deinit();
         var publication = try buildPublication(self.gpa, prepared.state.?, prepared.seq, tx.writes, &tx.preparedDocumentOps);
@@ -180,6 +181,8 @@ pub const Transaction = struct {
     preparedDocumentOps: std.AutoHashMapUnmanaged(u64, Value) = .empty,
     after_storage: ?*const fn (?*anyopaque) anyerror!void = null,
     after_storage_context: ?*anyopaque = null,
+    before_storage: ?*const fn (?*anyopaque) anyerror!void = null,
+    before_storage_context: ?*anyopaque = null,
     fn create(session: *Session, scope: Scope) !*Transaction {
         const self = try session.gpa.create(Transaction);
         errdefer session.gpa.destroy(self);
