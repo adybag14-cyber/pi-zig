@@ -119,7 +119,7 @@ pub const Session = struct {
         try tx.assembleTasks(&predicted);
         var prepared = try predicted.prepare(tx.writes, null);
         defer prepared.deinit();
-        var publication = try buildPublication(self.gpa, prepared.state.?, prepared.seq, tx.writes);
+        var publication = try buildPublication(self.gpa, prepared.state.?, prepared.seq, tx.writes, &tx.preparedDocumentOps);
         defer publication.deinit();
         const listeners = try self.gpa.dupe(Subscription, self.listeners.items);
         defer self.gpa.free(listeners);
@@ -176,6 +176,7 @@ pub const Transaction = struct {
     refs: std.atomic.Value(usize) = .init(1),
     ownerThread: std.Thread.Id,
     createdTasks: std.ArrayList(u64) = .empty,
+    preparedDocumentOps: std.AutoHashMapUnmanaged(u64, Value) = .empty,
     fn create(session: *Session, scope: Scope) !*Transaction {
         const self = try session.gpa.create(Transaction);
         errdefer session.gpa.destroy(self);
@@ -344,6 +345,13 @@ pub const Transaction = struct {
     pub fn documentCommand(self: *Transaction, write: Value) !void {
         try self.stage(write);
     }
+    /// Prepared operations remain independent of storage checkpoint selection.
+    /// Called by an owner facade before sealing and storage admission.
+    pub fn documentPublicationOps(self: *Transaction, id: u64, operations: Value) !void {
+        try self.ensureActive();
+        const value = try json.clone(self.allocator(), operations);
+        try self.preparedDocumentOps.put(self.allocator(), id, value);
+    }
     /// Native definitions compute their initial checkpoint before calling this method.
     pub fn createTask(self: *Transaction, kind: []const u8, version: u64, input: Value, checkpoint: Value, options: TaskOptions) !u64 {
         const conversation_id = try self.taskConversation(options);
@@ -469,7 +477,7 @@ pub const Transaction = struct {
         }
     }
 };
-fn buildPublication(gpa: std.mem.Allocator, state: *const backend.memory.State, seq: u64, writes: Value) !json.Owned {
+fn buildPublication(gpa: std.mem.Allocator, state: *const backend.memory.State, seq: u64, writes: Value, prepared_ops: *const std.AutoHashMapUnmanaged(u64, Value)) !json.Owned {
     var result = try json.Owned.empty(gpa);
     errdefer result.deinit();
     const allocator = result.arena.allocator();
@@ -500,7 +508,13 @@ fn buildPublication(gpa: std.mem.Allocator, state: *const backend.memory.State, 
             try change.object.put(allocator, "source", try json.clone(allocator, try backend.memory.field(write, "source")));
         } else {
             var ops: Value = .{ .array = .init(allocator) };
-            if (json.get(doc.record, "retiredAt") != null) try change.object.put(allocator, "value", .null) else {
+            if (json.get(doc.record, "retiredAt") != null) {
+                try change.object.put(allocator, "value", .null);
+                var replacement: std.array_list.Managed(Value) = .init(allocator);
+                try replacement.append(.{ .string = "r" });
+                try replacement.append(.null);
+                try ops.array.append(.{ .array = replacement });
+            } else {
                 const contents = (try backend.memory.materialize(allocator, state, id, .current)).?;
                 try change.object.put(allocator, "version", .{ .integer = @intCast(contents.version) });
                 try change.object.put(allocator, "value", contents.value);
@@ -512,6 +526,7 @@ fn buildPublication(gpa: std.mem.Allocator, state: *const backend.memory.State, 
                         try ops.array.append(.{ .array = replacement });
                     }
                 };
+                if (prepared_ops.get(id)) |original| ops = try json.clone(allocator, original);
             }
             try change.object.put(allocator, "ops", ops);
         }

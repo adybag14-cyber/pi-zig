@@ -80,6 +80,10 @@ pub const Runtime = struct {
     pub fn taskId(self: Runtime) u64 {
         return self.invocation.task_id;
     }
+    /// Public facades retain one invocation across all its running phases.
+    pub fn isActive(self: Runtime) bool {
+        return self.invocation.active.load(.acquire);
+    }
     /// An owner broker detected a registry boundary before invoking a phase.
     pub fn requeueForRegistryChange(self: Runtime) !void {
         const Call = struct {

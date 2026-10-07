@@ -35,10 +35,10 @@ const Entry = struct {
         }
     }
 };
-const Runtime = struct { entry: *Entry, session: c.JSValue, signal: c.JSValue };
-const RuntimeMethod = enum(c_int) { getTask, outcomes, entry, now, report, memo };
+const Runtime = struct { entry: *Entry, session: c.JSValue, signal: c.JSValue, context: c.JSValue };
+const RuntimeMethod = enum(c_int) { getTask, outcomes, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc };
 const Waiter = struct { id: ?u64, conversation: ?u64, resolve: c.JSValue, reject: c.JSValue, context: c.JSValue };
-const Signal = struct { entry: *Entry, value: c.JSValue };
+const Signal = struct { entry: *Entry, value: c.JSValue, context: c.JSValue };
 pub const Manager = struct {
     engine: *Engine,
     hub: *Hub,
@@ -56,6 +56,7 @@ pub const Manager = struct {
     mutex: std.Io.Mutex = .init,
     waiters: std.ArrayList(Waiter) = .empty,
     signals: std.ArrayList(Signal) = .empty,
+    watches: std.ArrayList(struct { entry: *Entry, value: c.JSValue }) = .empty,
     next_invocation: u64 = 1,
     generation: u64,
     refs: std.atomic.Value(usize) = .init(1),
@@ -130,6 +131,7 @@ pub const Manager = struct {
         self.ledger.deinit(std.heap.page_allocator);
         self.waiters.deinit(self.engine.gpa);
         self.signals.deinit(self.engine.gpa);
+        self.watches.deinit(self.engine.gpa);
         self.lease.release();
         self.engine.gpa.destroy(self);
     }
@@ -257,17 +259,34 @@ pub const Manager = struct {
         }
     }
     fn pollSignals(self: *Manager) !void {
+        var watch_index = self.watches.items.len;
+        while (watch_index > 0) {
+            watch_index -= 1;
+            const watch = self.watches.items[watch_index];
+            const closed = try sdk.get(self.engine, watch.value, "closed");
+            defer self.engine.freeValue(closed);
+            const finished = c.JS_PromiseState(self.engine.context, closed) != c.JS_PROMISE_PENDING;
+            if (!finished and watch.entry.runtime.isActive() and !self.closed) continue;
+            if (!finished) {
+                const stopped = try sdk.invoke(self.engine, watch.value, "stop", &.{});
+                self.engine.freeValue(stopped);
+            }
+            _ = self.watches.orderedRemove(watch_index);
+            self.engine.freeValue(watch.value);
+            watch.entry.release();
+        }
         var index = self.signals.items.len;
         while (index > 0) {
             index -= 1;
             const signal = self.signals.items[index];
-            if (signal.entry.active.load(.acquire) and !signal.entry.runtime.context().aborted() and !self.closed) continue;
+            if (signal.entry.runtime.isActive() and !signal.entry.runtime.context().aborted() and !self.closed) continue;
             const aborted = try sdk.get(self.engine, signal.value, "aborted");
             defer self.engine.freeValue(aborted);
             if (c.JS_ToBool(self.engine.context, aborted) == 0) try aborts.abort(self.engine, signal.value, c.pi_js_undefined());
-            if (!signal.entry.active.load(.acquire)) {
+            if (!signal.entry.runtime.isActive()) {
                 _ = self.signals.orderedRemove(index);
                 self.engine.freeValue(signal.value);
+                self.engine.freeValue(signal.context);
                 signal.entry.release();
             }
         }
@@ -344,9 +363,7 @@ pub const Manager = struct {
         const runtime = try runtimeObject(self, entry, task_record);
         defer self.engine.freeValue(runtime);
         const runtime_state = runtimeState(self.engine, runtime).?;
-        const context = try sdk.object(self.engine);
-        defer self.engine.freeValue(context);
-        try sdk.put(self.engine, context, "abortSignal", c.JS_DupValue(self.engine.context, runtime_state.signal));
+        const context = runtime_state.context;
         const record = try durable.jsValue(self.engine, task_record);
         defer self.engine.freeValue(record);
         var args = [_]c.JSValue{ record, runtime, context };
@@ -359,6 +376,12 @@ pub const Manager = struct {
     pub fn close(self: *Manager) void {
         if (self.closed) return;
         self.closed = true;
+        for (self.watches.items) |watch| {
+            if (sdk.invoke(self.engine, watch.value, "stop", &.{})) |stopped| self.engine.freeValue(stopped) else |_| {}
+            self.engine.freeValue(watch.value);
+            watch.entry.release();
+        }
+        self.watches.clearRetainingCapacity();
         self.scheduler.close();
         self.broker.close();
         if (self.thread) |thread| {
@@ -429,6 +452,7 @@ const Hub = struct {
             session.session.?.source_clock_context = null;
             for (manager.signals.items) |signal| {
                 engine.freeValue(signal.value);
+                engine.freeValue(signal.context);
                 signal.entry.release();
             }
             manager.signals.clearRetainingCapacity();
@@ -615,6 +639,7 @@ fn runtimeFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void 
     const self = runtimeState(engine, value) orelse return;
     c.JS_FreeValueRT(runtime, self.session);
     c.JS_FreeValueRT(runtime, self.signal);
+    c.JS_FreeValueRT(runtime, self.context);
     self.entry.release();
     engine.gpa.destroy(self);
 }
@@ -623,6 +648,7 @@ fn runtimeMark(runtime: ?*c.JSRuntime, value: c.JSValue, mark: ?*const c.JS_Mark
     const self = runtimeState(engine, value) orelse return;
     c.JS_MarkValue(runtime, self.session, mark);
     c.JS_MarkValue(runtime, self.signal, mark);
+    c.JS_MarkValue(runtime, self.context, mark);
 }
 fn runtimeObject(self: *Manager, entry: *Entry, record: json.Value) !c.JSValue {
     const engine = self.engine;
@@ -630,8 +656,24 @@ fn runtimeObject(self: *Manager, entry: *Entry, record: json.Value) !c.JSValue {
     errdefer engine.freeValue(object);
     const runtime = try engine.gpa.create(Runtime);
     errdefer engine.gpa.destroy(runtime);
-    const signal = try aborts.create(engine);
+    var signal = c.pi_js_undefined();
+    var invocation_context = c.pi_js_undefined();
+    var existing = false;
+    for (self.signals.items) |live| if (live.entry.runtime.invocation == entry.runtime.invocation) {
+        signal = c.JS_DupValue(engine.context, live.value);
+        invocation_context = c.JS_DupValue(engine.context, live.context);
+        existing = true;
+        break;
+    };
+    if (!existing) {
+        signal = try aborts.create(engine);
+        invocation_context = @import("native_durable_context.zig").withAbortSignal(engine, signal, self.context) catch |err| {
+            engine.freeValue(signal);
+            return err;
+        };
+    }
     errdefer engine.freeValue(signal);
+    errdefer engine.freeValue(invocation_context);
     try self.signals.ensureUnusedCapacity(engine.gpa, 1);
     try sdk.put(engine, object, "signal", c.JS_DupValue(engine.context, signal));
     try sdk.put(engine, object, "taskId", c.JS_NewInt64(engine.context, @intCast(entry.runtime.taskId())));
@@ -640,13 +682,13 @@ fn runtimeObject(self: *Manager, entry: *Entry, record: json.Value) !c.JSValue {
     try sdk.put(engine, object, "models", try sdk.get(engine, self.options, "models"));
     try sdk.put(engine, object, "commit", try engine.checked(c.JS_NewCFunction(engine.context, runtimeCommit, "commit", 2)));
     inline for (std.meta.fields(RuntimeMethod)) |operation| try sdk.put(engine, object, operation.name, try engine.checked(c.pi_js_function_magic(engine.context, runtimeMethod, operation.name, 2, @intCast(operation.value))));
-    runtime.* = .{ .entry = entry.retain(), .session = c.JS_DupValue(engine.context, self.session), .signal = signal };
+    runtime.* = .{ .entry = entry.retain(), .session = c.JS_DupValue(engine.context, self.session), .signal = signal, .context = invocation_context };
     _ = c.JS_SetOpaque(object, runtime);
-    self.signals.appendAssumeCapacity(.{ .entry = entry.retain(), .value = c.JS_DupValue(engine.context, signal) });
+    if (!existing) self.signals.appendAssumeCapacity(.{ .entry = entry.retain(), .value = c.JS_DupValue(engine.context, signal), .context = c.JS_DupValue(engine.context, invocation_context) });
     return object;
 }
 fn active(self: *Runtime) !void {
-    if (!self.entry.active.load(.acquire) or self.entry.manager.closed) return error.InvocationEnded;
+    if (!self.entry.runtime.isActive() or self.entry.manager.closed) return error.InvocationEnded;
     if (self.entry.runtime.context().aborted()) return error.Canceled;
 }
 fn runtimeMethod(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
@@ -657,6 +699,20 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
     const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
     try active(self);
     const owner = self.entry.manager;
+    if (operation == .snapshot or operation == .snapshotAsOf or operation == .watchDoc) {
+        const session = try durable.state(engine, self.session);
+        const pending = try durable.sessionDispatch(session, self.session, switch (operation) {
+            .snapshot => .snapshot,
+            .snapshotAsOf => .snapshotAsOf,
+            else => .watchDoc,
+        }, args);
+        if (operation != .watchDoc) return pending;
+        defer engine.freeValue(pending);
+        var captures = [_]c.JSValue{receiver};
+        const adopted = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeWatchAdopted, 1, 0, 1, &captures));
+        defer engine.freeValue(adopted);
+        return sdk.invoke(engine, pending, "then", &.{adopted});
+    }
     if (operation == .now) {
         try owner.updateClock();
         return engine.checked(c.JS_NewInt64(engine.context, Manager.nativeClock(owner)));
@@ -675,6 +731,24 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
     const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeReadQueued, 0, @intFromEnum(operation), data.len, &data));
     defer engine.freeValue(callback);
     return durable.enqueue(engine, self.session, callback);
+}
+fn runtimeWatchAdopted(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return runtimeWatchAdoptedOwned(engine, data[0], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| durable.reject(engine, err);
+}
+fn runtimeWatchAdoptedOwned(engine: *Engine, receiver: c.JSValue, watch: c.JSValue) !c.JSValue {
+    if (c.JS_IsUndefined(watch)) return c.pi_js_undefined();
+    var admitted = false;
+    errdefer if (!admitted) {
+        if (sdk.invoke(engine, watch, "stop", &.{})) |stopped| engine.freeValue(stopped) else |_| {}
+    };
+    const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
+    try active(self);
+    const manager = self.entry.manager;
+    try manager.watches.ensureUnusedCapacity(engine.gpa, 1);
+    manager.watches.appendAssumeCapacity(.{ .entry = self.entry.retain(), .value = c.JS_DupValue(engine.context, watch) });
+    admitted = true;
+    return c.JS_DupValue(engine.context, watch);
 }
 fn runtimeReadQueued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);

@@ -9,7 +9,7 @@ const json = backend.json;
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
 pub const State = struct { engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64 = null };
-const Method = enum(c_int) { commit, close, root, conversation, createConversation, getTask, entries, fork, subscribeCommits, subscribeClose, @"resume", waitForTask, waitForIdle, abortTask, snapshot, snapshotAsOf, unloadDocuments };
+const Method = enum(c_int) { commit, close, root, conversation, createConversation, getTask, entries, fork, subscribeCommits, subscribeClose, @"resume", waitForTask, waitForIdle, abortTask, snapshot, snapshotAsOf, unloadDocuments, watchDoc };
 pub fn state(engine: *Engine, receiver: c.JSValue) !*State {
     return @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, receiver, engine.native_durable_harness_class) orelse return error.InvalidHarnessReceiver));
 }
@@ -75,7 +75,7 @@ pub fn object(engine: *Engine, session: c.JSValue, options: c.JSValue, conversat
     errdefer engine.freeValue(result);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
-    const methods = if (conversation != null) &[_]Method{ .commit, .entries, .fork, .waitForIdle } else &[_]Method{ .commit, .close, .root, .conversation, .createConversation, .getTask, .subscribeCommits, .subscribeClose, .@"resume", .waitForTask, .waitForIdle, .abortTask, .snapshot, .snapshotAsOf, .unloadDocuments };
+    const methods = if (conversation != null) &[_]Method{ .commit, .entries, .fork, .waitForIdle } else &[_]Method{ .commit, .close, .root, .conversation, .createConversation, .getTask, .subscribeCommits, .subscribeClose, .@"resume", .waitForTask, .waitForIdle, .abortTask, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc };
     for (methods) |operation| {
         const name = try engine.gpa.dupeZ(u8, @tagName(operation));
         defer engine.gpa.free(name);
@@ -96,6 +96,7 @@ fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.
 fn dispatch(engine: *Engine, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const self = try state(engine, receiver);
     const session = try durable.state(engine, self.session);
+    if (operation == .watchDoc) return durable.sessionDispatch(session, self.session, .watchDoc, args);
     if (operation == .unloadDocuments) return durable.sessionDispatch(session, self.session, .unloadDocuments, args);
     if (operation == .snapshot) return durable.sessionDispatch(session, self.session, .snapshot, args);
     if (operation == .snapshotAsOf) return durable.sessionDispatch(session, self.session, .snapshotAsOf, args);

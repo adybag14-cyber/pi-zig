@@ -138,6 +138,7 @@ pub const Drafts = struct {
             var path: std.ArrayList(json.Value) = .empty;
             defer path.deinit(self.engine.gpa);
             try differences(a, self.engine.gpa, doc.baseline.value, value.value, &path, &operations);
+            if (!doc.created) try tx.documentPublicationOps(try json.asInteger(try json.required(doc.record.value, "id")), operations);
             var base = doc.created or doc.version > doc.stored_version;
             if (!base) {
                 const predicate = try sdk.get(self.engine, doc.definition, "checkpointWhen");
@@ -594,6 +595,40 @@ fn snapshotDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue) 
     defer engine.freeValue(value);
     try values.put(resolved.value.value, found.value, value, version);
     return sdk.promise(engine, value);
+}
+pub const Observation = struct { value: c.JSValue, record: json.Owned, version: u64, context: c.JSValue };
+pub fn observe(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !?Observation {
+    const definition_value = try sdk.get(engine, args[0], "definition");
+    defer engine.freeValue(definition_value);
+    var resolved = try address(engine, definition_value, args[1..]);
+    defer resolved.value.deinit();
+    const context = if (resolved.next + 1 < args.len) args[resolved.next + 1] else c.pi_js_undefined();
+    const signal = try sdk.get(engine, context, "abortSignal");
+    defer engine.freeValue(signal);
+    if (!c.JS_IsUndefined(signal)) {
+        const aborted = try sdk.get(engine, signal, "aborted");
+        defer engine.freeValue(aborted);
+        if (c.JS_ToBool(engine.context, aborted) > 0) {
+            const failure = try @import("native_durable_context.zig").abortError(engine, signal);
+            _ = try engine.checked(c.JS_Throw(engine.context, failure));
+        }
+    }
+    const promise = try snapshotDirect(engine, session, args);
+    defer engine.freeValue(promise);
+    const value = try engine.awaitValue(promise);
+    errdefer engine.freeValue(value);
+    if (c.JS_IsUndefined(value)) {
+        engine.freeValue(value);
+        return null;
+    }
+    const version_value = try sdk.get(engine, definition_value, "version");
+    defer engine.freeValue(version_value);
+    const version = try durable.number(engine, version_value);
+    const item = (try cache(engine, session)).get(resolved.value.value, version).?;
+    var record = try json.Owned.empty(engine.gpa);
+    errdefer record.deinit();
+    record.value = try json.clone(record.arena.allocator(), item.record.value);
+    return .{ .value = value, .record = record, .version = version, .context = c.JS_DupValue(engine.context, context) };
 }
 fn checkSemantics(engine: *Engine, definition_value: c.JSValue, record: json.Value) !void {
     const scope = try field(engine, definition_value, "scope");

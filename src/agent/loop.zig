@@ -260,8 +260,10 @@ pub const AgentConfig = struct {
     configured_tool_exists_fn: ?ExternalToolExistsFn = null,
     builtin_extension_ctx: ?*anyopaque = null,
     builtin_extension_tool_fn: ?ExternalToolCallStreamingFn = null,
+    builtin_extension_runtime_fn: ?*const fn (?*anyopaque, std.mem.Allocator, *const AgentConfig, []const u8, []const u8, []const u8, ExternalToolProgressFn, ?*anyopaque, ?*bool) anyerror!?tools.ToolResult = null,
     builtin_extension_exists_fn: ?ExternalToolExistsFn = null,
     builtin_extension_schemas_fn: ?*const fn (?*anyopaque, std.mem.Allocator) anyerror![]u8 = null,
+    builtin_extension_schemas_runtime_fn: ?*const fn (?*anyopaque, std.mem.Allocator, *const AgentConfig) anyerror![]u8 = null,
     external_tool_fn: ?ExternalToolFn = null,
     /// Streaming dispatcher used when an external runtime can deliver tool
     /// progress before the final result. The legacy dispatcher remains as a
@@ -714,7 +716,7 @@ pub fn runWithImages(
         const external_schemas = try mergeToolSchemaArrays(gpa, builtin_schemas, config.extra_tools_json);
         const dynamic_configured = if (config.configured_tools_json_fn) |get| try get(config.configured_tool_ctx, gpa) else null;
         defer if (dynamic_configured) |value| gpa.free(value);
-        const dynamic_builtins = if (config.builtin_extension_schemas_fn) |get| try get(config.builtin_extension_ctx, gpa) else null;
+        const dynamic_builtins = if (config.builtin_extension_schemas_runtime_fn) |get| try get(config.builtin_extension_ctx, gpa, &config) else if (config.builtin_extension_schemas_fn) |get| try get(config.builtin_extension_ctx, gpa) else null;
         defer if (dynamic_builtins) |value| gpa.free(value);
         const configured_json = if (dynamic_builtins) |value| try mergeToolSchemaArrays(gpa, dynamic_configured orelse config.configured_tools_json, value) else dynamic_configured orelse config.configured_tools_json;
         defer if (dynamic_builtins != null) gpa.free(configured_json);
@@ -1480,6 +1482,7 @@ fn executeExternalTool(
     progress_ctx: ?*anyopaque,
 ) !?tools.ToolResult {
     if (config.builtin_extension_exists_fn) |exists| if (exists(config.builtin_extension_ctx, name)) {
+        if (config.builtin_extension_runtime_fn) |execute| return execute(config.builtin_extension_ctx, allocator, config, tool_call_id, name, arguments_json, progress_fn orelse discardExternalToolProgress, progress_ctx, config.abort_flag);
         const execute = config.builtin_extension_tool_fn orelse return error.BuiltinExtensionDispatcherMissing;
         return execute(config.builtin_extension_ctx, allocator, tool_call_id, name, arguments_json, progress_fn orelse discardExternalToolProgress, progress_ctx, config.abort_flag);
     };

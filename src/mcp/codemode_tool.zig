@@ -67,9 +67,13 @@ const Call = struct {
     sequence: *std.atomic.Value(u64),
     fn run(raw: ?*anyopaque, gpa: std.mem.Allocator, arguments: ?Value, abort_flag: ?*bool) !json.Owned {
         const self: *@This() = @ptrCast(@alignCast(raw.?));
+        return runSequenced(raw, gpa, arguments, abort_flag, @intCast(self.sequence.fetchAdd(1, .monotonic) + 1));
+    }
+    fn runSequenced(raw: ?*anyopaque, gpa: std.mem.Allocator, arguments: ?Value, abort_flag: ?*bool, ordinal: usize) !json.Owned {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
         const encoded = if (arguments) |value| try json.stringify(gpa, value) else try gpa.dupe(u8, "{}");
         defer gpa.free(encoded);
-        const call_id = try std.fmt.allocPrint(gpa, "{s}/{d}", .{ self.options.call_id, self.sequence.fetchAdd(1, .monotonic) + 1 });
+        const call_id = try std.fmt.allocPrint(gpa, "{s}/{d}", .{ self.options.call_id, ordinal });
         defer gpa.free(call_id);
         var result = try self.options.invoke(self.options.context, gpa, call_id, self.entry.name, encoded, abort_flag);
         defer result.deinit(gpa);
@@ -105,7 +109,7 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, code: []const u8, options: Op
     var sequence: std.atomic.Value(u64) = .init(0);
     for (options.entries, calls, descriptions) |entry, *call, *description| {
         call.* = .{ .options = &options, .entry = entry, .sequence = &sequence };
-        description.* = .{ .name = entry.name, .description = entry.description, .context = call, .execute = Call.run, .error_marker = true };
+        description.* = .{ .name = entry.name, .description = entry.description, .context = call, .execute = Call.run, .execute_sequenced = Call.runSequenced, .error_marker = true };
     }
     const started = std.Io.Clock.awake.now(io).toMilliseconds();
     var result = try sandbox.execute(gpa, io, descriptions, parsed.code, .{ .abort_flag = abort_flag, .timeout_ms = parsed.timeout_ms orelse 300_000, .store = options.store });

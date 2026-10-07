@@ -13,6 +13,98 @@ const renderer_protocol = @import("extensions/renderer_protocol.zig");
 
 const editor_protocol = @import("extensions/editor_protocol.zig");
 
+test "native runtime editor factory receives source Theme callbacks and retains live palette through resize and retirement without Node" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("export default pi=>{pi.registerCommand('editor-install',{handler(_,ctx){ctx.ui.setEditorComponent((tui,theme)=>{globalThis.editorTheme=theme;globalThis.editorTui=tui;let text='';return{getText(){return text},setText(value){text=value},handleInput(){},render(){return [theme.borderColor('plain'),theme.selectList.selectedText('plain')]},invalidate(){},dispose(){globalThis.editorDisposed=true}}});return {message:'installed'}}});pi.registerCommand('editor-probe',{handler(){editorTui.requestRender();return {message:editorTheme.borderColor('plain')+'|'+editorTheme.selectList.description('plain')}}})}");
+    defer fixture.deinit();
+    const Capture = struct {
+        mutex: std.Io.Mutex = .init,
+        wake: std.Io.Event = .unset,
+        latest: ?editor_protocol.Record = null,
+        retired: bool = false,
+        queue: ?*editor_protocol.ControlQueue = null,
+        fence: ?editor_protocol.Fence = null,
+        fn record(raw: ?*anyopaque, received: editor_protocol.Record, queue: *editor_protocol.ControlQueue) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.mutex.lockUncancelable(std.testing.io);
+            defer self.mutex.unlock(std.testing.io);
+            self.queue = queue;
+            self.fence = received.fence;
+            if (received.kind == .retire) self.retired = true;
+            if (self.latest) |*old| old.deinit();
+            self.latest = received;
+            self.wake.set(std.testing.io);
+        }
+        fn close(raw: ?*anyopaque, _: u64) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.mutex.lockUncancelable(std.testing.io);
+            defer self.mutex.unlock(std.testing.io);
+            self.queue = null;
+        }
+        fn resize(self: *@This(), width: usize) !void {
+            self.mutex.lockUncancelable(std.testing.io);
+            defer self.mutex.unlock(std.testing.io);
+            try self.queue.?.send(.{ .gpa = std.heap.page_allocator, .fence = self.fence.?, .kind = .{ .resize = width } });
+        }
+        fn expectFrame(self: *@This(), border: []const u8, selected: []const u8, width: usize) !void {
+            const deadline = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() + 3000;
+            while (std.Io.Clock.awake.now(std.testing.io).toMilliseconds() < deadline) {
+                self.mutex.lockUncancelable(std.testing.io);
+                self.wake.reset();
+                const matches = if (self.latest) |value| value.kind == .frame and value.kind.frame.width == width and value.kind.frame.frame.lines.len == 2 and std.mem.eql(u8, value.kind.frame.frame.lines[0], border) and std.mem.eql(u8, value.kind.frame.frame.lines[1], selected) else false;
+                self.mutex.unlock(std.testing.io);
+                if (matches) return;
+                self.wake.waitTimeout(std.testing.io, .{ .duration = .{ .raw = .fromMilliseconds(200), .clock = .awake } }) catch |err| if (err != error.Timeout) return err;
+            }
+            return error.ComponentThemeFrameTimeout;
+        }
+        fn deinit(self: *@This()) void {
+            if (self.latest) |*value| value.deinit();
+        }
+    };
+    var capture: Capture = .{};
+    defer capture.deinit();
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "extensions/theme-primary.mjs", .data = "export default pi=>{}" });
+    const primary = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "theme-primary.mjs" });
+    defer gpa.free(primary);
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, io, &.{ primary, fixture.source_path }, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    try started.runtime.setEditorBridge(.{ .context = &capture, .record_fn = Capture.record, .closed_fn = Capture.close });
+    var controller = try ui_mod.Controller.init(gpa, io, true, 80);
+    defer controller.deinit();
+    const options: ui_mod.ContextOptions = .{ .mode = "interactive", .cwd = fixture.root, .session_id = "component-theme" };
+    const oracle = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("extensions/fixtures/theme-components-original-7fb.json"), .{});
+    defer oracle.deinit();
+    const source_case = oracle.value.object.get("cases").?.array.items[0];
+    try controller.setThemeState(.{ .revision = 1, .color_mode = .truecolor, .stdout_is_tty = true, .resource_json = @embedFile("themes/fixtures/dark-original-7fb.json"), .resource_identity = "dark-source" });
+    const dark_context = try controller.contextJson(gpa, options);
+    defer gpa.free(dark_context);
+    try started.runtime.setContextJson(dark_context);
+    const installed = try started.runtime.invokeGroupRequest(2, "{\"kind\":\"command\",\"name\":\"editor-install\",\"args\":\"\"}", null);
+    defer gpa.free(installed);
+    const before = source_case.object.get("before").?.object;
+    try capture.expectFrame(before.get("border").?.array.items[1].string, before.get("editorSelect").?.object.get("selectedText").?.array.items[1].string, 80);
+    try controller.setThemeState(.{ .revision = 2, .color_mode = .truecolor, .stdout_is_tty = true, .resource_json = @embedFile("themes/fixtures/light-original-7fb.json"), .resource_identity = "light-source" });
+    const light_context = try controller.contextJson(gpa, options);
+    defer gpa.free(light_context);
+    try started.runtime.setContextJson(light_context);
+    const probe = try started.runtime.invokeGroupRequest(2, "{\"kind\":\"command\",\"name\":\"editor-probe\",\"args\":\"\"}", null);
+    defer gpa.free(probe);
+    const after = source_case.object.get("after").?.object;
+    try capture.expectFrame(after.get("border").?.array.items[1].string, after.get("editorSelect").?.object.get("selectedText").?.array.items[1].string, 80);
+    try capture.resize(35);
+    try capture.expectFrame(after.get("border").?.array.items[1].string, after.get("editorSelect").?.object.get("selectedText").?.array.items[1].string, 35);
+    const removed = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"group_remove_source\",\"ownerId\":2}", null);
+    defer gpa.free(removed);
+    capture.mutex.lockUncancelable(io);
+    const retired = capture.retired;
+    capture.mutex.unlock(io);
+    try std.testing.expect(retired);
+    try fixture.noBridge();
+}
+
 test "native runtime cached ThemeState survives actual worker callbacks repeated reads late snapshots and owner retirement without Node" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;

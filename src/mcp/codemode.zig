@@ -13,6 +13,7 @@ pub const Tool = struct {
     /// Native workers may call different tools concurrently. The callback must
     /// not access VM values and must observe its cooperative abort flag.
     execute: *const fn (?*anyopaque, std.mem.Allocator, ?Value, ?*bool) anyerror!json.Owned,
+    execute_sequenced: ?*const fn (?*anyopaque, std.mem.Allocator, ?Value, ?*bool, usize) anyerror!json.Owned = null,
     /// Agent adapters can return an owned marker with the exact error message;
     /// ordinary sandbox tools keep arbitrary object results unchanged.
     error_marker: bool = false,
@@ -27,11 +28,13 @@ const Work = struct {
     gpa: std.mem.Allocator,
     tool: Tool,
     args: ?json.Owned,
+    sequence: usize = 0,
     aborted: bool = false,
     done: std.atomic.Value(bool) = .init(false),
     future: ?std.Io.Future(anyerror!json.Owned) = null,
     fn run(self: *Work) anyerror!json.Owned {
         defer self.done.store(true, .release);
+        if (self.tool.execute_sequenced) |callback| return callback(self.tool.context, self.gpa, if (self.args) |args| args.value else null, &self.aborted, self.sequence);
         return self.tool.execute(self.tool.context, self.gpa, if (self.args) |args| args.value else null, &self.aborted);
     }
 };
@@ -291,6 +294,7 @@ const Execution = struct {
             return self.fail(cause);
         };
         const record_index = self.result.value.object.getPtr("calls").?.array.items.len - 1;
+        work.sequence = record_index + 1;
         self.pending.append(self.gpa, .{ .index = @intCast(magic), .work = work, .resolve = functions[0], .reject = functions[1], .started = started, .record_index = record_index }) catch |cause| {
             if (work.args) |*value| value.deinit();
             self.gpa.destroy(work);

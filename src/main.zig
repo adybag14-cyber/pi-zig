@@ -4430,6 +4430,7 @@ fn runMain(init: std.process.Init) !void {
     extension_bridge.setAbortFlag(&shared_abort);
 
     // Mutable agent config so /reload can update prompts for subsequent turns
+    var codemode_runtime: pi_zig.mcp.codemode_builtin.Runtime = .{ .io = io, .cwd = cwd, .session = &sess, .configured = configured_mcp, .host = &extension_host, .output_root = if (configured_mcp) |service| service.output_root else null };
     var agent_cfg = agent.AgentConfig{
         .max_turns = max_turns,
         .system_prompt = system_body,
@@ -4482,6 +4483,10 @@ fn runMain(init: std.process.Init) !void {
         .disable_builtin_tools = effective_no_builtin_tools,
     };
     // Assign these callbacks after constructing the large configuration. Zig
+    agent_cfg.builtin_extension_ctx = &codemode_runtime;
+    agent_cfg.builtin_extension_runtime_fn = pi_zig.mcp.codemode_builtin.Runtime.execute;
+    agent_cfg.builtin_extension_exists_fn = pi_zig.mcp.codemode_builtin.Runtime.exists;
+    agent_cfg.builtin_extension_schemas_runtime_fn = pi_zig.mcp.codemode_builtin.Runtime.schemasForRuntime;
     // 0.16's native x86 backend can reuse AL for a later boolean initializer
     // while this function pointer is still held in RAX, corrupting its address.
     // Keeping each assignment complete also avoids conditional callback values

@@ -26,7 +26,7 @@ pub const SessionLease = struct {
     }
 };
 const Kind = enum { memory, jsonl, sqlite, session, transaction };
-pub const Method = enum(c_int) { mintId, commit, close, conversation, entry, task, submission, submissionByRequest, document, findDocument, findLatestHeadMarker, scanConversations, scanEntries, scanTasks, scanSubmissions, scanDocuments, createRootConversation, createConversation, forkConversation, appendEntry, subscribeCommits, subscribeClose, createTask, doc, snapshot, retireDoc, snapshotAsOf, unloadDocuments };
+pub const Method = enum(c_int) { mintId, commit, close, conversation, entry, task, submission, submissionByRequest, document, findDocument, findLatestHeadMarker, scanConversations, scanEntries, scanTasks, scanSubmissions, scanDocuments, createRootConversation, createConversation, forkConversation, appendEntry, subscribeCommits, subscribeClose, createTask, doc, snapshot, retireDoc, snapshotAsOf, unloadDocuments, watchDoc };
 pub const State = struct {
     engine: *Engine,
     kind: Kind,
@@ -299,6 +299,7 @@ pub fn memoryObject(engine: *Engine) !c.JSValue {
     return object;
 }
 pub fn install(engine: *Engine) !void {
+    try @import("native_durable_context.zig").install(engine);
     if (engine.native_durable_class == 0) _ = c.JS_NewClassID(engine.runtime, &engine.native_durable_class);
     const definition: c.JSClassDef = .{ .class_name = "Native durable object", .finalizer = finalizer, .gc_mark = mark, .call = null, .exotic = null };
     if (!c.JS_IsRegisteredClass(engine.runtime, engine.native_durable_class) and c.JS_NewClass(engine.runtime, engine.native_durable_class, &definition) < 0) return error.OutOfMemory;
@@ -417,7 +418,7 @@ pub fn sessionObject(engine: *Engine, storage: c.JSValue) !c.JSValue {
     self.* = .{ .engine = engine, .kind = .session, .memory = undefined, .session = native, .session_lease = lease, .owner_thread = std.Thread.getCurrentId(), .parent = c.JS_DupValue(engine.context, storage), .tail = tail };
     errdefer engine.freeValue(self.parent);
     _ = try native.subscribe(publication, self);
-    try methods(engine, result_object, &.{ .commit, .close, .subscribeCommits, .subscribeClose, .snapshot, .snapshotAsOf, .unloadDocuments });
+    try methods(engine, result_object, &.{ .commit, .close, .subscribeCommits, .subscribeClose, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc });
     _ = c.JS_SetOpaque(result_object, self);
     return result_object;
 }
@@ -492,6 +493,7 @@ fn queuedContinuation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.J
     return call.returned;
 }
 pub fn sessionDispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
+    if (operation == .watchDoc) return @import("native_durable_observation.zig").acquire(self.engine, receiver, args);
     if (operation == .unloadDocuments) return @import("native_durable_documents.zig").unload(self.engine, receiver);
     if (operation == .snapshot) return @import("native_durable_documents.zig").snapshot(self.engine, receiver, args);
     if (operation == .snapshotAsOf) return @import("native_durable_documents.zig").snapshotAsOf(self.engine, receiver, args);
@@ -539,7 +541,7 @@ fn freeListeners(engine: *Engine, listeners: []c.JSValue) void {
     for (listeners) |listener| engine.freeValue(listener);
     engine.gpa.free(listeners);
 }
-fn subscribe(self: *State, receiver: c.JSValue, operation: Method, listener: c.JSValue) !c.JSValue {
+pub fn subscribe(self: *State, receiver: c.JSValue, operation: Method, listener: c.JSValue) !c.JSValue {
     const engine = self.engine;
     if (self.kind != .session or self.closing) return error.SessionClosed;
     if (!c.JS_IsFunction(engine.context, listener)) return error.ExpectedDurableListener;

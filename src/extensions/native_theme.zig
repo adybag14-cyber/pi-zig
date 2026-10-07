@@ -6,7 +6,7 @@ const colors = color_api.colors;
 const c = engine_mod.c;
 pub const ColorMode = colors.ColorMode;
 const Method = enum(c_int) { fg, bg, getFgAnsi, getBgAnsi, getColorMode, style, bold, italic, underline, inverse, strikethrough, getThinkingBorderColor, getBashModeBorderColor, appearance, concreteColors };
-const ModuleMethod = enum(c_int) { setTerminalColors, setTerminalColorScheme, markTerminalColorsPending, getTerminalTheme, loadThemeFromPath, initTheme };
+const ModuleMethod = enum(c_int) { setTerminalColors, setTerminalColorScheme, markTerminalColorsPending, getTerminalTheme, loadThemeFromPath, initTheme, getSelectListTheme, getSettingsListTheme };
 const Node = struct {
     engine: *engine_mod.Engine,
     module: c.JSValue,
@@ -482,6 +482,8 @@ fn moduleCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSV
 }
 fn moduleOperation(engine: *engine_mod.Engine, module: c.JSValue, method: ModuleMethod, args: []const c.JSValue) !c.JSValue {
     switch (method) {
+        .getSelectListTheme => return getSelectListTheme(engine),
+        .getSettingsListTheme => return getSettingsListTheme(engine),
         .setTerminalColors => {
             try put(engine, module, "terminal", try snapshot(engine, arg(args, 0)));
             try put(engine, module, "pending", c.JS_NewBool(engine.context, false));
@@ -506,6 +508,64 @@ fn moduleOperation(engine: *engine_mod.Engine, module: c.JSValue, method: Module
         },
     }
     return c.pi_js_undefined();
+}
+const ComponentMethod = enum(c_int) { accent, muted, dim, borderMuted, label, value };
+fn componentCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    const kind: ComponentMethod = @enumFromInt(magic);
+    const text = if (argc > 0) argv[0] else c.pi_js_undefined();
+    const selected = argc > 1 and c.JS_ToBool(context, argv[1]) != 0;
+    if (kind == .label and !selected) return c.JS_DupValue(context, text);
+    const token: []const u8 = switch (kind) {
+        .accent => "accent",
+        .muted => "muted",
+        .dim => "dim",
+        .borderMuted => "borderMuted",
+        .label => "accent",
+        .value => if (selected) "accent" else "muted",
+    };
+    const fg = get(engine, data[0], "fg") catch |err| return fail(engine, err);
+    defer engine.freeValue(fg);
+    const name = jsString(engine, token) catch |err| return fail(engine, err);
+    defer engine.freeValue(name);
+    var args = [_]c.JSValue{ name, text };
+    return c.JS_Call(context, fg, data[0], args.len, &args);
+}
+fn componentFunction(engine: *engine_mod.Engine, proxy: c.JSValue, name: [*:0]const u8, kind: ComponentMethod) !c.JSValue {
+    var data = [_]c.JSValue{proxy};
+    return engine.checked(c.JS_NewCFunctionData2(engine.context, componentCall, name, if (kind == .label or kind == .value) 2 else 1, @intFromEnum(kind), data.len, &data));
+}
+pub fn getSelectListTheme(engine: *engine_mod.Engine) !c.JSValue {
+    const proxy = try current(engine);
+    defer engine.freeValue(proxy);
+    const result = try object(engine);
+    errdefer engine.freeValue(result);
+    inline for (.{ .{ "selectedPrefix", ComponentMethod.accent }, .{ "selectedText", ComponentMethod.accent }, .{ "description", ComponentMethod.muted }, .{ "scrollInfo", ComponentMethod.muted }, .{ "noMatch", ComponentMethod.muted } }) |entry| try put(engine, result, entry[0], try componentFunction(engine, proxy, entry[0], entry[1]));
+    return result;
+}
+pub fn getEditorTheme(engine: *engine_mod.Engine) !c.JSValue {
+    const proxy = try current(engine);
+    defer engine.freeValue(proxy);
+    const result = try object(engine);
+    errdefer engine.freeValue(result);
+    try put(engine, result, "borderColor", try componentFunction(engine, proxy, "borderColor", .borderMuted));
+    try put(engine, result, "selectList", try getSelectListTheme(engine));
+    return result;
+}
+pub fn getSettingsListTheme(engine: *engine_mod.Engine) !c.JSValue {
+    const proxy = try current(engine);
+    defer engine.freeValue(proxy);
+    const result = try object(engine);
+    errdefer engine.freeValue(result);
+    inline for (.{ .{ "label", ComponentMethod.label }, .{ "value", ComponentMethod.value }, .{ "description", ComponentMethod.dim } }) |entry| try put(engine, result, entry[0], try componentFunction(engine, proxy, entry[0], entry[1]));
+    const arrow = try jsString(engine, "→ ");
+    defer engine.freeValue(arrow);
+    const paint = try componentFunction(engine, proxy, "cursor", .accent);
+    defer engine.freeValue(paint);
+    var args = [_]c.JSValue{arrow};
+    try put(engine, result, "cursor", try engine.checked(c.JS_Call(engine.context, paint, c.pi_js_undefined(), args.len, &args)));
+    try put(engine, result, "hint", try componentFunction(engine, proxy, "hint", .dim));
+    return result;
 }
 fn supportsModifiers(engine: *engine_mod.Engine, tty_override: ?bool) !bool {
     const global = c.JS_GetGlobalObject(engine.context);
@@ -675,7 +735,8 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     inline for (std.meta.fields(ModuleMethod)) |field| {
         const name: [:0]const u8 = field.name;
         var data = [_]c.JSValue{module};
-        try put(engine, exports, name.ptr, try engine.checked(c.JS_NewCFunctionData2(engine.context, moduleCall, name.ptr, 1, @intCast(field.value), 1, &data)));
+        const arity: c_int = if (field.value == @intFromEnum(ModuleMethod.getSelectListTheme) or field.value == @intFromEnum(ModuleMethod.getSettingsListTheme)) 0 else 1;
+        try put(engine, exports, name.ptr, try engine.checked(c.JS_NewCFunctionData2(engine.context, moduleCall, name.ptr, arity, @intCast(field.value), 1, &data)));
     }
 }
 pub fn defaultMode(engine: *engine_mod.Engine) !ColorMode {
@@ -1300,4 +1361,66 @@ fn stateAllocationProbe(gpa: std.mem.Allocator) !void {
 }
 test "cached theme owner allocation failures release candidate reports roots signatures and retained old colors" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, stateAllocationProbe, .{});
+}
+
+test "actual original component Theme callbacks retain live palette closures and captured settings cursor through GC" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("native_tui.zig").install(engine);
+    const fixture = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/theme-components-original-7fb.json"), .{});
+    defer fixture.deinit();
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try put(engine, global, "componentOracle", try engine.fromJsonValue(fixture.value));
+    const script = try engine.evalModule(
+        \\import {Theme,getSelectListTheme,getSettingsListTheme} from 'pi-coding-agent';
+        \\const helperShape=Object.fromEntries([getSelectListTheme,getSettingsListTheme].map(fn=>[fn.name,fn.length]));if(JSON.stringify(helperShape)!==JSON.stringify(componentOracle.helperShape))throw Error('Source helper function shape');
+        \\globalThis.makeComponentTheme=(input)=>new Theme(input.fg,input.bg,componentItem.mode,input.options);
+        \\globalThis.makeComponentHelpers=()=>[getSelectListTheme(),getSettingsListTheme()];
+        \\globalThis.observeComponents=(select,editor,settings)=>{const samples=componentOracle.samples,marker={};return{keys:[Object.keys(select),Object.keys(editor),Object.keys(editor.selectList),Object.keys(settings)],select:Object.fromEntries(Object.keys(select).map(key=>[key,samples.map(text=>select[key](text))])),border:samples.map(text=>editor.borderColor(text)),editorSelect:Object.fromEntries(Object.keys(editor.selectList).map(key=>[key,samples.map(text=>editor.selectList[key](text))])),settings:{label:samples.map(text=>[settings.label(text,false),settings.label(text,true),settings.label(text,'selected')]),value:samples.map(text=>[settings.value(text,false),settings.value(text,true)]),description:samples.map(text=>settings.description(text)),hint:samples.map(text=>settings.hint(text)),cursor:settings.cursor,labelIdentity:settings.label(marker,false)===marker}}};
+        \\globalThis.compareComponents=(expected,actual)=>{if(JSON.stringify(expected)!==JSON.stringify(actual))throw Error(JSON.stringify({expected,actual}))};
+    , "native-component-theme-functions.mjs");
+    defer engine.freeValue(script);
+    const module = try moduleState(engine);
+    defer engine.freeValue(module);
+    for (fixture.value.object.get("cases").?.array.items) |item| {
+        try put(engine, global, "componentItem", try engine.fromJsonValue(item));
+        try put(engine, module, "current", try engine.eval("makeComponentTheme(componentItem.first)", "native-component-first.js", c.JS_EVAL_TYPE_GLOBAL));
+        try put(engine, global, "componentEditor", try getEditorTheme(engine));
+        const before = try engine.eval("var componentHelpers=makeComponentHelpers();compareComponents(componentItem.before,observeComponents(componentHelpers[0],componentEditor,componentHelpers[1]));", "native-component-before.js", c.JS_EVAL_TYPE_GLOBAL);
+        engine.freeValue(before);
+        c.JS_RunGC(engine.runtime);
+        try put(engine, module, "current", try engine.eval("makeComponentTheme(componentItem.second)", "native-component-second.js", c.JS_EVAL_TYPE_GLOBAL));
+        const after = try engine.eval("compareComponents(componentItem.after,observeComponents(componentHelpers[0],componentEditor,componentHelpers[1]));", "native-component-after.js", c.JS_EVAL_TYPE_GLOBAL);
+        engine.freeValue(after);
+        try put(engine, global, "freshComponentEditor", try getEditorTheme(engine));
+        const fresh = try engine.eval("var freshHelpers=makeComponentHelpers();compareComponents(componentItem.fresh,observeComponents(freshHelpers[0],freshComponentEditor,freshHelpers[1]));", "native-component-fresh.js", c.JS_EVAL_TYPE_GLOBAL);
+        engine.freeValue(fresh);
+        c.JS_RunGC(engine.runtime);
+    }
+}
+
+fn componentAllocationProbe(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    try @import("native_tui.zig").install(engine);
+    const module = moduleState(engine) catch |err| return allocationError(engine, err);
+    defer engine.freeValue(module);
+    const selected = fromJson(engine, @embedFile("../themes/fixtures/dark-original-7fb.json"), null, .truecolor) catch |err| return allocationError(engine, err);
+    try put(engine, module, "current", selected);
+    const editor = getEditorTheme(engine) catch |err| return allocationError(engine, err);
+    defer engine.freeValue(editor);
+    const settings = getSettingsListTheme(engine) catch |err| return allocationError(engine, err);
+    defer engine.freeValue(settings);
+    c.JS_RunGC(engine.runtime);
+    const paint = get(engine, editor, "borderColor") catch |err| return allocationError(engine, err);
+    defer engine.freeValue(paint);
+    const text = jsString(engine, "retained") catch |err| return allocationError(engine, err);
+    defer engine.freeValue(text);
+    var args = [_]c.JSValue{text};
+    const result = engine.checked(c.JS_Call(engine.context, paint, c.pi_js_undefined(), args.len, &args)) catch |err| return allocationError(engine, err);
+    defer engine.freeValue(result);
+}
+test "component theme closure allocation failures release proxy roots and partially built helper objects" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, componentAllocationProbe, .{});
 }

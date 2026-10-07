@@ -6,6 +6,7 @@ const native_json = @import("durable/backend/json.zig");
 test {
     _ = @import("extensions/native_durable_broker.zig");
     _ = @import("extensions/native_worker.zig");
+    _ = @import("extensions/native_durable_observation.zig");
 }
 test "native durable VM stores owned numeric records and serves source ordered cursors without Node" {
     const engine = try engine_module.Engine.init(std.testing.allocator, .{});
@@ -566,4 +567,140 @@ test "native durable VM document unloading cold reads storage and checkpoint pre
     const text = try engine.toString(result);
     defer std.testing.allocator.free(text);
     try std.testing.expectEqualStrings("{\"ended\":[true,true,true,true],\"same\":true,\"distinct\":true,\"first\":{\"nested\":{\"n\":99}},\"second\":{\"nested\":{\"n\":2}}}", text);
+}
+
+test "native durable VM document watch serializes pending frames and stop settles while callback remains owned" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Document watch VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineDoc} from '@earendil-works/pi-durable';
+        \\const Doc=defineDoc({kind:'fixture.watch',version:1,scope:'session',initial:()=>({n:1})});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return{definition:{name}}},tasks(){return[]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{}},{});await harness.commit(async tx=>{await tx.doc(Doc)},{});
+        \\const watch=await harness.watchDoc(Doc,{}),initial=watch.value.n,calls=[];for(const n of [2,3])await harness.commit(async tx=>{(await tx.doc(Doc)).n=n},{tag:n});const beforeStart=watch.value.n;
+        \\let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);watch.start(async(value,ops,context)=>{calls.push({value,ops,tag:context.tag});entered();await gate});await started;const running=watch.value.n;
+        \\await harness.commit(async tx=>{(await tx.doc(Doc)).n=4},{tag:4});const stopped=await watch.stop(),closed=await watch.closed;release();await Promise.resolve();await Promise.resolve();await harness.close({});
+        \\globalThis.result=JSON.stringify({initial,beforeStart,running,calls,stopped,closed,sameEnd:stopped===closed});
+    , "native-durable-document-watch-stop");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"initial\":1,\"beforeStart\":1,\"running\":2,\"calls\":[{\"value\":{\"n\":2},\"ops\":[[\"s\",[\"n\"],2]]}],\"stopped\":{\"reason\":\"stopped\"},\"closed\":{\"reason\":\"stopped\"},\"sameEnd\":true}", text);
+}
+
+test "native durable VM document watches preserve checkpoint ops retire cancel and normalize listener failure" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Document watch lifecycle VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineDoc} from '@earendil-works/pi-durable';
+        \\import {BACKGROUND_CONTEXT,createContextKey,withContextValue,withAbortSignal} from '@earendil-works/chord/context';
+        \\const Doc=defineDoc({kind:'fixture.watch.lifecycle',version:1,scope:'session',initial:()=>({n:1}),checkpointWhen:()=>true}),key=createContextKey('trace'),context=withContextValue(key,17,BACKGROUND_CONTEXT),controller=new AbortController(),cancelContext=withAbortSignal(controller.signal,context);
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return{definition:{name}}},tasks(){return[]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{}},context);await harness.commit(async tx=>{await tx.doc(Doc)},context);
+        \\const watch=await harness.watchDoc(Doc,context),cancelled=await harness.watchDoc(Doc,cancelContext),failed=await harness.watchDoc(Doc,context),events=[];
+        \\watch.start(async(value,ops,delivery)=>{events.push({value,ops,key:delivery.value(key),uncancelled:delivery.abortSignal===undefined})});failed.start(async()=>{throw 'bad-listener'});
+        \\await harness.commit(async tx=>{(await tx.doc(Doc)).n=2},cancelContext);const failure=await failed.closed;controller.abort();const cancellation=await cancelled.closed;
+        \\await harness.commit(async tx=>{await tx.retireDoc(Doc)},context);const retirement=await watch.closed;
+        \\const missing=await harness.watchDoc(Doc,context);await harness.commit(async tx=>{await tx.doc(Doc)},context);const closing=await harness.watchDoc(Doc,context);await harness.close(context);const closed=await closing.closed;
+        \\globalThis.result=JSON.stringify({events,failure:{reason:failure.reason,error:failure.error instanceof Error,message:failure.error.message},cancellation,retirement,missing:missing===undefined,closed});
+    , "native-durable-document-watch-lifecycle");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"events\":[{\"value\":{\"n\":2},\"ops\":[[\"s\",[\"n\"],2]],\"key\":17,\"uncancelled\":true},{\"value\":null,\"ops\":[[\"r\",null]],\"key\":17,\"uncancelled\":true}],\"failure\":{\"reason\":\"listener_error\",\"error\":true,\"message\":\"bad-listener\"},\"cancellation\":{\"reason\":\"cancelled\"},\"retirement\":{\"reason\":\"retired\"},\"missing\":true,\"closed\":{\"reason\":\"session_closed\"}}", text);
+}
+
+test "native durable VM document watch overflow replaces the bounded pending queue" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Document watch overflow VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {createSession,MemoryStorage,defineDoc} from '@earendil-works/pi-durable';
+        \\const Doc=defineDoc({kind:'fixture.watch.overflow',version:1,scope:'session',initial:()=>({n:0})}),store=new MemoryStorage(),session=createSession(store);await session.commit(async tx=>{await tx.doc(Doc)},{});
+        \\const watch=await session.watchDoc(Doc,{}),initial=watch.value.n,frames=[];for(let n=1;n<=102;n++)await session.commit(async tx=>{(await tx.doc(Doc)).n=n},{});
+        \\watch.start(async(value,ops)=>{frames.push({value,ops});if(frames.length===2)await watch.stop()});const end=await watch.closed;await session.close({});globalThis.result=JSON.stringify({initial,frames,end,value:watch.value});
+    , "native-durable-document-watch-overflow");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"initial\":0,\"frames\":[{\"value\":{\"n\":101},\"ops\":[[\"r\",{\"n\":101}]]},{\"value\":{\"n\":102},\"ops\":[[\"s\",[\"n\"],102]]}],\"end\":{\"reason\":\"stopped\"},\"value\":{\"n\":102}}", text);
+}
+
+test "native durable VM runtime document reads and watches live across phases then stop at invocation end" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Runtime document watch VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineDoc,defineTask} from '@earendil-works/pi-durable';
+        \\const Doc=defineDoc({kind:'fixture.runtime.doc',version:1,scope:'session',initial:()=>({n:1}),checkpointWhen:()=>true}),events=[];let watch,retained,firstContext;
+        \\const Task=defineTask({name:'fixture.runtime.doc.task',version:1,initial:()=>({phase:'start'}),phases:{
+        \\ start:async(task,runtime,context)=>{retained=runtime;firstContext=context;watch=await runtime.watchDoc(Doc,context);watch.start(async(value,ops)=>{events.push({value,ops})});await runtime.commit(async tx=>{(await tx.doc(Doc)).n=2;return{status:'running',checkpoint:{phase:'next'}}},context)},
+        \\ next:async(task,runtime,context)=>{const prior=await retained.snapshot(Doc,context),value=await runtime.snapshot(Doc,context);await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:{sameContext:context===firstContext,sameSignal:context.abortSignal===firstContext.abortSignal,prior,value}}}),context)}
+        \\},abort:async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context)});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return name===Task.definition.name?Task:{definition:{name}}},tasks(){return[Task]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{}},{}),root=await harness.root({});await harness.commit(async tx=>{await tx.doc(Doc)},{});let id;await root.commit(async tx=>{id=await tx.createTask(Task,{},{ownership:{kind:'conversation'}});},{});const done=await harness.waitForTask(id,{}),end=await watch.closed;let fenced=false;try{await retained.snapshot(Doc,{})}catch{fenced=true}await harness.close({});globalThis.result=JSON.stringify({events,outcome:done.state.outcome,end,fenced});
+    , "native-durable-runtime-document-watch");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"events\":[{\"value\":{\"n\":2},\"ops\":[[\"s\",[\"n\"],2]]}],\"outcome\":{\"status\":\"completed\",\"result\":{\"sameContext\":true,\"sameSignal\":true,\"prior\":{\"n\":2},\"value\":{\"n\":2}}},\"end\":{\"reason\":\"stopped\"},\"fenced\":true}", text);
+}
+
+test "native durable VM context keys cancellation and waiters preserve source identities and underlying work" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Native Context VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {BACKGROUND_CONTEXT,TODO_CONTEXT,createContextKey,withContextValue,withAbortSignal,withoutAbortSignal,withCancel,awaitWithContext} from '@earendil-works/chord/context';
+        \\const key=createContextKey('trace'),other=createContextKey('trace'),value={owned:true},base=withContextValue(key,value,BACKGROUND_CONTEXT),child=withCancel(base),reason=new Error('original');let resolve;
+        \\const pending=new Promise(r=>resolve=r),waiter=awaitWithContext(pending,child.context);child.cancel(reason);let rejectIdentity=false;try{await waiter}catch(error){rejectIdentity=error===reason}resolve(7);const late=await pending;
+        \\const promise=Promise.resolve(8),same=awaitWithContext(promise,BACKGROUND_CONTEXT)===promise,clean=withoutAbortSignal(child.context),aborted=new AbortController();aborted.abort('raw');let plain;try{await awaitWithContext(Promise.resolve(1),withAbortSignal(aborted.signal,base))}catch(error){plain={name:error.name,message:error.message,error:error instanceof Error}}
+        \\globalThis.result=JSON.stringify({keyUnique:key.token!==other.token,frozen:Object.isFrozen(key),valueIdentity:clean.value(key)===value,missing:clean.value(other)===undefined,rootName:String(BACKGROUND_CONTEXT),todoName:String(TODO_CONTEXT),childName:String(child.context),same,rejectIdentity,late,removed:clean.abortSignal===undefined,plain,parentActive:base.abortSignal===undefined});
+    , "native-durable-context-lifetime");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"keyUnique\":true,\"frozen\":true,\"valueIdentity\":true,\"missing\":true,\"rootName\":\"[Context BACKGROUND_CONTEXT]\",\"todoName\":\"[Context TODO_CONTEXT]\",\"childName\":\"[Context BACKGROUND_CONTEXT].WithValue(trace).WithValue(chord.abortSignal)\",\"same\":true,\"rejectIdentity\":true,\"late\":7,\"removed\":true,\"plain\":{\"name\":\"AbortError\",\"message\":\"The operation was aborted\",\"error\":true},\"parentActive\":true}", text);
+}
+
+test "native durable VM queued document watch cancellation normalizes raw reasons and readonly accessors survive stop" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Queued watch VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {createSession,MemoryStorage,defineDoc} from '@earendil-works/pi-durable';
+        \\const session=createSession(new MemoryStorage()),Doc=defineDoc({kind:'fixture.queued.watch',version:1,scope:'session',initial:()=>({n:1})});await session.commit(async tx=>{await tx.doc(Doc)},{});
+        \\let enter,leave;const entered=new Promise(r=>enter=r),gate=new Promise(r=>leave=r),controller=new AbortController();const commit=session.commit(async()=>{enter();await gate},{});await entered;const pending=session.watchDoc(Doc,{abortSignal:controller.signal});controller.abort('plain');leave();await commit;let failure;try{await pending}catch(error){failure={name:error.name,message:error.message,error:error instanceof Error}}
+        \\const watch=await session.watchDoc(Doc,{});let valueReadonly=false,closedReadonly=false;try{watch.value={n:9}}catch{valueReadonly=true}try{watch.closed=Promise.resolve({reason:'bad'})}catch{closedReadonly=true}const keys=Object.keys(watch),end=await watch.stop();await session.close({});globalThis.result=JSON.stringify({failure,valueReadonly,closedReadonly,keys,end,value:watch.value});
+    , "native-durable-document-watch-queued");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"failure\":{\"name\":\"AbortError\",\"message\":\"The operation was aborted\",\"error\":true},\"valueReadonly\":true,\"closedReadonly\":true,\"keys\":[],\"end\":{\"reason\":\"stopped\"},\"value\":{\"n\":1}}", text);
 }

@@ -742,6 +742,48 @@ test "mcp.configured actual standalone CLI runs global direct stdio tool without
     try std.testing.expect(saw_result);
 }
 
+test "mcp.configured standalone codemode builtin runs selected nested read without Node and stays inactive by default" {
+    var root = try Root.init();
+    defer root.deinit();
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const program = try gpa.dupe(u8, env.get("PI_MCP_CONFIGURED_CLI") orelse return error.MissingCliFixture);
+    defer gpa.free(program);
+    try env.put("PI_AGENT_DIR", root.path);
+    try env.put("PI_OFFLINE", "1");
+    try env.put("PATH", std.fs.path.dirname(program).?);
+    try root.tmp.dir.writeFile(io, .{ .sub_path = "input.txt", .data = "native builtin fixture" });
+    try root.tmp.dir.writeFile(io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"run\",\"tool_calls\":[{\"id\":\"outer\",\"name\":\"codemode\",\"arguments\":\"{\\\"code\\\":\\\"return await tools.read({path:'input.txt'});\\\"}\"}]},{\"content\":\"done\"}]" });
+    for ([_][]const u8{ "read,codemode", "read" }, 0..) |loadout, index| {
+        const result = try std.process.run(gpa, io, .{ .argv = &.{ program, "--mode", "json", "--mock-script", "mock.json", "--offline", "--no-session", "--tools", loadout, "-p", "run" }, .cwd = .{ .path = root.path }, .environ_map = &env, .stdout_limit = .limited(4 * 1024 * 1024), .stderr_limit = .limited(65536), .timeout = .{ .duration = .{ .raw = .fromSeconds(20), .clock = .awake } } });
+        defer gpa.free(result.stdout);
+        defer gpa.free(result.stderr);
+        if (result.term != .exited or result.term.exited != 0) std.debug.print("codemode CLI {any}: {s}; {s}\n", .{ result.term, result.stdout, result.stderr });
+        try std.testing.expect(result.term == .exited and result.term.exited == 0);
+        if (index == 0) {
+            try std.testing.expect(std.mem.indexOf(u8, result.stdout, "Script completed") != null);
+            try std.testing.expect(std.mem.indexOf(u8, result.stdout, "native builtin fixture") != null);
+            var events = std.mem.splitScalar(u8, result.stdout, '\n');
+            var recorded_read = false;
+            while (events.next()) |line| {
+                if (line.len == 0) continue;
+                var event = try json.Owned.parse(gpa, line);
+                defer event.deinit();
+                if (json.get(event.value, "type")) |kind| if (std.mem.eql(u8, kind.string, "tool_execution_end")) {
+                    const tool_result = json.get(event.value, "result").?;
+                    if (json.get(tool_result, "details")) |details| if (json.get(details, "calls")) |calls| for (calls.array.items) |call| {
+                        if (std.mem.eql(u8, try protocol.text(call, "name"), "read") and std.mem.eql(u8, try protocol.text(call, "status"), "ok")) recorded_read = true;
+                    };
+                };
+            }
+            try std.testing.expect(recorded_read);
+        } else {
+            try std.testing.expect(std.mem.indexOf(u8, result.stdout, "native builtin fixture") == null);
+            try std.testing.expect(std.mem.indexOf(u8, result.stdout, "Script completed") == null);
+        }
+    }
+}
+
 test "mcp.configured native MCP commands list actual hidden tools and dispatch standalone without Node" {
     const fixture = try fixturePath();
     defer gpa.free(fixture);

@@ -99,11 +99,12 @@ fn count(engine: *engine_mod.Engine, value: c.JSValue, maximum: usize) !usize {
 }
 fn borderColor(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    const text = engine.toString(if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| return fail(engine, err);
-    defer engine.gpa.free(text);
-    const painted = std.fmt.allocPrint(engine.gpa, "\x1b[90m{s}\x1b[0m", .{text}) catch |err| return fail(engine, err);
-    defer engine.gpa.free(painted);
-    return c.JS_NewStringLen(context, painted.ptr, painted.len);
+    const theme = @import("native_theme.zig").getEditorTheme(engine) catch |err| return fail(engine, err);
+    defer engine.freeValue(theme);
+    const paint = engine.checked(c.JS_GetPropertyStr(context, theme, "borderColor")) catch |err| return fail(engine, err);
+    defer engine.freeValue(paint);
+    var args = [_]c.JSValue{if (argc > 0) argv[0] else c.pi_js_undefined()};
+    return c.JS_Call(context, paint, theme, args.len, &args);
 }
 fn callback(node: *Node, object: c.JSValue, name: [*:0]const u8, args: []c.JSValue) !?c.JSValue {
     return components.callMethod(node.engine, object, name, args, true);
@@ -457,7 +458,7 @@ pub const Manager = struct {
             const draft_value = try self.textValue();
             defer self.engine.freeValue(draft_value);
             const native_tui = @import("native_tui.zig");
-            const theme = try native_tui.createTheme(self.engine);
+            const theme = try @import("native_theme.zig").current(self.engine);
             defer self.engine.freeValue(theme);
             const keybindings = try native_tui.createKeybindings(self.engine);
             defer self.engine.freeValue(keybindings);
@@ -541,6 +542,9 @@ pub const Manager = struct {
         return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, ownerCall, @tagName(method), 1, @intFromEnum(method), data.len, &data));
     }
     pub fn setFactory(self: *Manager, owner: u64, factory: c.JSValue, draft: c.JSValue, theme: c.JSValue, keybindings: c.JSValue, width: usize, height: usize) !void {
+        // Source custom-editor factories receive getEditorTheme(), whose
+        // callbacks read the retained global theme rather than this UI argument.
+        _ = theme;
         if (!self.owners.contains(owner)) return error.StaleNativeExtensionOwner;
         if (self.retiring or self.polling or self.creating) return error.EditorCallbackReentry;
         self.creating = true;
@@ -570,10 +574,8 @@ pub const Manager = struct {
             if (c.JS_DefinePropertyGetSet(self.engine.context, terminal, atom, c.JS_DupValue(self.engine.context, getter), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
         }
         try put(self.engine, tui, "terminal", c.JS_DupValue(self.engine.context, terminal));
-        const editor_theme = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        const editor_theme = try @import("native_theme.zig").getEditorTheme(self.engine);
         defer self.engine.freeValue(editor_theme);
-        try put(self.engine, editor_theme, "borderColor", try self.engine.checked(c.pi_js_function_magic(self.engine.context, borderColor, "borderColor", 1, 0)));
-        try put(self.engine, editor_theme, "selectList", c.JS_DupValue(self.engine.context, theme));
         var args = [_]c.JSValue{ tui, editor_theme, keybindings };
         const created = try self.engine.checked(c.JS_Call(self.engine.context, factory, c.pi_js_undefined(), args.len, &args));
         errdefer self.engine.freeValue(created);
