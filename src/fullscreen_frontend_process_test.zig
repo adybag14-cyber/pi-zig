@@ -5,6 +5,39 @@ const pty = @import("test_support/platform_pty.zig");
 const vt = @import("test_support/terminal_screen.zig");
 const Io = std.Io;
 
+test "native persistent terminal reports Pi program status lifecycle without prompt or assistant leakage" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    try fixture.environment.put("PI_PROGRAM_STATUS", "1");
+    try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"private-assistant-answer\",\"stream_chunks\":[\"private-assistant-answer\"],\"stream_chunk_delay_ms\":200},{\"content\":\"failure-first-line\\nprivate-error-detail\",\"stop_reason\":\"error\"}]" });
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawn(errors);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.waitInitialStartup(&child, ">");
+    _ = try child.waitFor("\x1b]7501;state=idle:app=pi", 0, 5000);
+    const first = child.output.items.len;
+    try child.send("private-user-prompt\r");
+    _ = try child.waitFor("\x1b]7501;state=working:app=pi", first, 5000);
+    _ = try child.waitFor("\x1b]7501;state=done:app=pi", first, 5000);
+    try observed.waitAny(&child, "private-assistant-answer");
+    const second = child.output.items.len;
+    try child.send("private-next-prompt\r");
+    _ = try child.waitFor("\x1b]7501;state=error:app=pi:msg=ZmFpbHVyZS1maXJzdC1saW5l", second, 5000);
+    try cleanExit(&fixture, &child, &observed);
+    try std.testing.expect(std.mem.indexOf(u8, child.output.items, "\x1b]7501;state=clear\x1b\\") != null);
+    var reports = std.mem.splitSequence(u8, child.output.items, "\x1b]7501;");
+    _ = reports.next();
+    while (reports.next()) |tail| {
+        const end = std.mem.indexOf(u8, tail, "\x1b\\") orelse return error.MissingProgramStatusTerminator;
+        try std.testing.expect(std.mem.indexOf(u8, tail[0..end], "private") == null);
+        try std.testing.expect(std.mem.indexOf(u8, tail[0..end], "cHJpdmF0ZQ") == null);
+    }
+}
+
 const Fixture = struct {
     scratch: pty.Scratch,
     environment: std.process.Environ.Map,

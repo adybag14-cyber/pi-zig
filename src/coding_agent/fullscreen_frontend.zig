@@ -1182,6 +1182,7 @@ pub const Frontend = struct {
                 if (event.value.kind == .message_end and std.mem.eql(u8, event.value.name, "assistant")) {
                     try self.program_status.handle(.{ .assistant_end = .{ .failed = event.value.is_error, .error_message = event.value.error_message } });
                 }
+                try self.publishProgramStatus();
             },
             .branch => |entries| try self.transcript.syncBranch(entries, if (self.anchor) |*value| value else null),
             .surface => |snapshot| {
@@ -1211,7 +1212,10 @@ pub const Frontend = struct {
                 self.program_session_name = value;
                 update.* = .{ .busy = self.busy };
             },
-            .program_settled => |aborted| try self.program_status.handle(.{ .agent_settled = aborted }),
+            .program_settled => |aborted| {
+                try self.program_status.handle(.{ .agent_settled = aborted });
+                try self.publishProgramStatus();
+            },
             .config => |value| {
                 var bindings = keybindings.Manager.init(self.gpa);
                 if (value.bindings_json) |json| bindings.parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, json, .{ .allocate = .alloc_always });
@@ -1326,12 +1330,15 @@ pub const Frontend = struct {
             try self.publishEditor();
         };
         if (requested_close) |fence| try self.removeCustomComponent(fence);
+        try self.publishProgramStatus();
+        if (updates.items.len > 0) self.dirty = true;
+    }
+    fn publishProgramStatus(self: *Frontend) !void {
         if (try self.program_status.report(self.program_session_name)) |encoded| {
             defer self.gpa.free(encoded);
             const status = self.program_status.current(self.program_session_name);
             try self.app.setProgramStatus(self.io, status);
         }
-        if (updates.items.len > 0) self.dirty = true;
     }
 
     fn paint(self: *Frontend) !void {
