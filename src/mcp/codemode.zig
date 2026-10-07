@@ -722,6 +722,36 @@ fn traceAllocation(gpa: std.mem.Allocator, phase: []const u8) void {
         std.debug.print("CODEMODE_ALLOCATION {s} fail_index={d} allocated={d} freed={d}\n", .{ phase, failing.fail_index, failing.allocated_bytes, failing.freed_bytes });
     } else std.debug.print("CODEMODE_ALLOCATION {s} baseline\n", .{phase});
 }
+fn checkCodemodeAllocationFailures(comptime check: anytype) !void {
+    const shard_text = std.testing.environ.getAlloc(std.heap.page_allocator, "PI_CODEMODE_ALLOCATION_SHARD") catch |cause| {
+        if (cause == error.EnvironmentVariableNotFound) return std.testing.checkAllAllocationFailures(std.testing.allocator, check, .{});
+        return cause;
+    };
+    defer std.heap.page_allocator.free(shard_text);
+    const count_text = try std.testing.environ.getAlloc(std.heap.page_allocator, "PI_CODEMODE_ALLOCATION_SHARDS");
+    defer std.heap.page_allocator.free(count_text);
+    const shard = try std.fmt.parseInt(usize, shard_text, 10);
+    const count = try std.fmt.parseInt(usize, count_text, 10);
+    if (count == 0 or shard >= count) return error.InvalidAllocationShard;
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try check(baseline.allocator());
+    try std.testing.expectEqual(baseline.allocated_bytes, baseline.freed_bytes);
+    const total = baseline.alloc_index;
+    const start = total * shard / count;
+    const end = total * (shard + 1) / count;
+    std.debug.print("CODEMODE_SHARD {d}/{d} range=[{d},{d}) total={d}\n", .{ shard, count, start, end, total });
+    for (start..end) |index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = index });
+        if (check(failing.allocator())) |_| {
+            if (failing.has_induced_failure) return error.SwallowedOutOfMemoryError;
+            return error.NondeterministicMemoryUsage;
+        } else |cause| {
+            if (cause != error.OutOfMemory) return cause;
+            try std.testing.expectEqual(failing.allocated_bytes, failing.freed_bytes);
+        }
+    }
+    std.debug.print("CODEMODE_SHARD_COMPLETE {d}/{d} range=[{d},{d}) total={d}\n", .{ shard, count, start, end, total });
+}
 test "native codemode allocation failures free host ownership output stores callbacks and VM roots" {
     const Check = struct {
         fn run(gpa: std.mem.Allocator) !void {
@@ -732,7 +762,7 @@ test "native codemode allocation failures free host ownership output stores call
             try std.testing.expect(result.value.object.get("ok").?.bool);
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Check.run, .{});
+    try checkCodemodeAllocationFailures(Check.run);
 }
 
 test "native codemode allocation failures join tool workers and release JSON results and promise roots" {
@@ -751,7 +781,7 @@ test "native codemode allocation failures join tool workers and release JSON res
             try std.testing.expect(result.value.object.get("ok").?.bool);
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Check.run, .{});
+    try checkCodemodeAllocationFailures(Check.run);
 }
 fn expectJsonEquivalent(expected: Value, actual: Value) anyerror!void {
     try std.testing.expectEqual(std.meta.activeTag(expected), std.meta.activeTag(actual));

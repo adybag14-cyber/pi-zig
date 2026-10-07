@@ -6,6 +6,10 @@ on:
 jobs:
   diagnose:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
     steps:
       - uses: actions/checkout@v4
       - uses: mlugg/setup-zig@v2
@@ -19,4 +23,6 @@ jobs:
         timeout-minutes: 10
         env:
           PI_CODEMODE_ALLOCATION_TRACE: "1"
+          PI_CODEMODE_ALLOCATION_SHARD: ${{ matrix.shard }}
+          PI_CODEMODE_ALLOCATION_SHARDS: "4"
         run: zig build test-codemode -Ddiagnostic-all-tests=true -j2 --summary all
