@@ -35,8 +35,10 @@ test "latest tool duration records thrown execution and omits rejected invocatio
         var sess = try session.Session.init(gpa, "duration-errors", ".");
         defer sess.deinit();
         var result = try loop.run(gpa, std.testing.io, ".", model.client(), &sess, "run", .{
-            .extra_tools_json = schema, .external_tool_fn = Probe.execute,
-            .hook_ctx = &probe, .tool_execution = mode,
+            .extra_tools_json = schema,
+            .external_tool_fn = Probe.execute,
+            .hook_ctx = &probe,
+            .tool_execution = mode,
         }, Probe.event, &probe);
         defer result.deinit(gpa);
         try std.testing.expect(probe.executed and probe.rejected and probe.valid);

@@ -24,9 +24,9 @@ test "native CLI tool selection matches source defaults modifiers SDK ordering v
     try fixture.tmp.dir.createDirPath(io, "agent");
     try fixture.tmp.dir.writeFile(io, .{ .sub_path = "agent/settings.json", .data = "{\"quietStartup\":true,\"enableInstallTelemetry\":false,\"retry\":{\"enabled\":false}}" });
     try fixture.tmp.dir.writeFile(io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"done\"}]" });
-    const agent_dir = try std.fs.path.join(gpa, &.{fixture.root, "agent"});
+    const agent_dir = try std.fs.path.join(gpa, &.{ fixture.root, "agent" });
     defer gpa.free(agent_dir);
-    const mock = try std.fs.path.join(gpa, &.{fixture.root, "mock.json"});
+    const mock = try std.fs.path.join(gpa, &.{ fixture.root, "mock.json" });
     defer gpa.free(mock);
     try fixture.environment.put("PI_AGENT_DIR", agent_dir);
     try fixture.environment.put("HOME", fixture.root);
@@ -35,22 +35,22 @@ test "native CLI tool selection matches source defaults modifiers SDK ordering v
     try fixture.environment.put("PI_SKIP_VERSION_CHECK", "1");
     try fixture.environment.put("PI_TELEMETRY", "0");
     const cases = [_]Case{
-        .{ .prompts = &.{"/probe", "/flip", "/probe"}, .expected = &.{ "SNAP:[\"always\"]", "FLIP:{\"before\":false,\"middle\":true,\"after\":true}", "SNAP:[\"always\",\"sticky\"]" } },
-        .{ .args = &.{"--tools", "+sticky,-always"}, .prompts = &.{"/probe"}, .expected = &.{"SNAP:[\"sticky\"]"} },
-        .{ .prompts = &.{"/mixed", "/probe", "/next-tool", "/probe"}, .expected = &.{ "MIXED:[\"sticky\",\"after\"]", "SNAP:[\"sticky\",\"after\"]", "NEW:[\"sticky\",\"after\",\"new\"]", "SNAP:[\"sticky\",\"after\",\"new\"]" } },
-        .{ .args = &.{"--tools", "-sticky"}, .prompts = &.{"/flip", "/probe"}, .expected = &.{"FLIP:{\"before\":false,\"middle\":false,\"after\":false}", "SNAP:[\"always\"]"} },
-        .{ .prompts = &.{"/reverse", "/probe"}, .expected = &.{"REVERSE:[\"sticky\",\"always\"]", "SNAP:[\"sticky\",\"always\"]"} },
-        .{ .prompts = &.{"/sdk-select", "/probe"}, .expected = &.{"SDK:[\"sticky\",\"deferred\"]", "SNAP:[\"sticky\",\"deferred\"]"} },
-        .{ .args = &.{"--no-tools", "--tools", "+sticky"}, .prompts = &.{"/probe"}, .expected = &.{"SNAP:[\"sticky\"]"} },
-        .{ .args = &.{"--exclude-tools", "sti*"}, .prompts = &.{"/flip", "/probe"}, .expected = &.{"FLIP:{\"before\":false,\"middle\":false,\"after\":false}", "SNAP:[\"always\"]"} },
-        .{ .args = &.{"--tools", "+deferred"}, .prompts = &.{"/probe"}, .expected = &.{"SNAP:[\"always\"]"} },
-        .{ .prompts = &.{"/hide-always", "/probe"}, .expected = &.{"HIDE:[]", "SNAP:[]"} },
+        .{ .prompts = &.{ "/probe", "/flip", "/probe" }, .expected = &.{ "SNAP:[\"always\"]", "FLIP:{\"before\":false,\"middle\":true,\"after\":true}", "SNAP:[\"always\",\"sticky\"]" } },
+        .{ .args = &.{ "--tools", "+sticky,-always" }, .prompts = &.{"/probe"}, .expected = &.{"SNAP:[\"sticky\"]"} },
+        .{ .prompts = &.{ "/mixed", "/probe", "/next-tool", "/probe" }, .expected = &.{ "MIXED:[\"sticky\",\"after\"]", "SNAP:[\"sticky\",\"after\"]", "NEW:[\"sticky\",\"after\",\"new\"]", "SNAP:[\"sticky\",\"after\",\"new\"]" } },
+        .{ .args = &.{ "--tools", "-sticky" }, .prompts = &.{ "/flip", "/probe" }, .expected = &.{ "FLIP:{\"before\":false,\"middle\":false,\"after\":false}", "SNAP:[\"always\"]" } },
+        .{ .prompts = &.{ "/reverse", "/probe" }, .expected = &.{ "REVERSE:[\"sticky\",\"always\"]", "SNAP:[\"sticky\",\"always\"]" } },
+        .{ .prompts = &.{ "/sdk-select", "/probe" }, .expected = &.{ "SDK:[\"sticky\",\"deferred\"]", "SNAP:[\"sticky\",\"deferred\"]" } },
+        .{ .args = &.{ "--no-tools", "--tools", "+sticky" }, .prompts = &.{"/probe"}, .expected = &.{"SNAP:[\"sticky\"]"} },
+        .{ .args = &.{ "--exclude-tools", "sti*" }, .prompts = &.{ "/flip", "/probe" }, .expected = &.{ "FLIP:{\"before\":false,\"middle\":false,\"after\":false}", "SNAP:[\"always\"]" } },
+        .{ .args = &.{ "--tools", "+deferred" }, .prompts = &.{"/probe"}, .expected = &.{"SNAP:[\"always\"]"} },
+        .{ .prompts = &.{ "/hide-always", "/probe" }, .expected = &.{ "HIDE:[]", "SNAP:[]" } },
         .{ .prompts = &.{"/probe"}, .expected = &.{"SNAP:[\"read\",\"bash\",\"edit\",\"write\",\"always\"]"}, .builtins = true },
     };
     for (cases, 0..) |case, index| {
         var argv: std.ArrayList([]const u8) = .empty;
         defer argv.deinit(gpa);
-        try argv.appendSlice(gpa, &.{fixture.executable, "--offline", "--print", "--mock-script", mock, "--no-session", "--no-context-files", "--no-skills", "--no-prompt-templates", "--no-themes", "--approve", "-e", fixture.source_path});
+        try argv.appendSlice(gpa, &.{ fixture.executable, "--offline", "--print", "--mock-script", mock, "--no-session", "--no-context-files", "--no-skills", "--no-prompt-templates", "--no-themes", "--approve", "-e", fixture.source_path });
         if (!case.builtins) try argv.append(gpa, "--no-builtin-tools");
         try argv.appendSlice(gpa, case.args);
         try argv.appendSlice(gpa, case.prompts);
@@ -58,11 +58,11 @@ test "native CLI tool selection matches source defaults modifiers SDK ordering v
         defer gpa.free(result.stdout);
         defer gpa.free(result.stderr);
         if (result.term != .exited or result.term.exited != 0) {
-            std.debug.print("Selection case {d}: {s}\n{s}\n", .{index, result.stdout, result.stderr});
+            std.debug.print("Selection case {d}: {s}\n{s}\n", .{ index, result.stdout, result.stderr });
             return error.NativeSelectionCliFailed;
         }
         for (case.expected) |expected| if (std.mem.indexOf(u8, result.stdout, expected) == null) {
-            std.debug.print("Selection case {d} expected {s}\nactual: {s}\n", .{index, expected, result.stdout});
+            std.debug.print("Selection case {d} expected {s}\nactual: {s}\n", .{ index, expected, result.stdout });
             return error.NativeSelectionCliMismatch;
         };
     }

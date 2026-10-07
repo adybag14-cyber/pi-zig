@@ -2696,8 +2696,12 @@ test "latest Codex caller headers override defaults on the actual HTTP transport
     const url = try server.url(gpa, "");
     defer gpa.free(url);
     var client = ResponsesClient{
-        .gpa = gpa, .io = std.testing.io, .api_key = token, .base_url = url,
-        .model = "gpt-test", .protocol_mode = .codex,
+        .gpa = gpa,
+        .io = std.testing.io,
+        .api_key = token,
+        .base_url = url,
+        .model = "gpt-test",
+        .protocol_mode = .codex,
         .provider_retry = .{ .max_retries = 0, .timeout_ms = 1_000 },
         .custom_headers = &.{ .{ .name = "Originator", .value = "model-app" }, .{ .name = "User-Agent", .value = "model-agent" } },
     };

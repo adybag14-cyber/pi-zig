@@ -1791,7 +1791,10 @@ fn collectExtensionContextTools(
         for (builtins) |name| {
             var hidden = false;
             registered: for (host.extensions.items) |extension| for (extension.tools) |tool| {
-                if (std.mem.eql(u8, tool.name, name)) { hidden = tool.model_hidden; break :registered; }
+                if (std.mem.eql(u8, tool.name, name)) {
+                    hidden = tool.model_hidden;
+                    break :registered;
+                }
             };
             if (active_only and hidden) continue;
             if (!active_only or filter.isEnabled(name)) try names.append(allocator, name);
@@ -1872,7 +1875,9 @@ fn prepareNativeToolActivation(host: *extensions.Host, filter: *agent.tools.Tool
     var policy = NativeRegistrationPolicy{ .filter = policy_filter };
     if (events.len > 0) try prepared.apply(events, .{ .context = &policy, .enabled_fn = NativeRegistrationPolicy.enabled, .selected_fn = NativeRegistrationPolicy.selected });
     var explicit_selection = host.activation_explicit_selection;
-    for (events) |event| if (event.kind == .selection) { explicit_selection = true; };
+    for (events) |event| if (event.kind == .selection) {
+        explicit_selection = true;
+    };
     const Lookup = struct {
         host: *extensions.Host,
         tracker: *extensions.tool_activation.Tracker,

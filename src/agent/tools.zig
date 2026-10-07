@@ -281,7 +281,10 @@ pub const ToolFilter = struct {
         var enabled = if (self.default_activation_fn) |lookup| lookup(self.default_activation_ctx, name) else true;
         if (self.allow) |allowed| {
             enabled = false;
-            for (allowed) |pattern| if (if (self.allow_is_loadout) std.mem.eql(u8, pattern, name) else mcpPatternMatches(pattern, name)) { enabled = true; break; };
+            for (allowed) |pattern| if (if (self.allow_is_loadout) std.mem.eql(u8, pattern, name) else mcpPatternMatches(pattern, name)) {
+                enabled = true;
+                break;
+            };
         }
         enabled = tool_selection.enabled(enabled, name, self.modifiers);
         if (self.exclude) |excluded| for (excluded) |pattern| if (mcpPatternMatches(pattern, name)) return false;

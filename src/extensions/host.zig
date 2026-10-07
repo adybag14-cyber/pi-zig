@@ -897,7 +897,10 @@ pub const Host = struct {
         // initialized strings/lists share one owner when allocation fails.
         const arena = try self.gpa.create(std.heap.ArenaAllocator);
         arena.* = .init(self.gpa);
-        errdefer { arena.deinit(); self.gpa.destroy(arena); }
+        errdefer {
+            arena.deinit();
+            self.gpa.destroy(arena);
+        }
         var temporary: Host = .{ .gpa = arena.allocator(), .io = self.io };
         // Borrow existing descriptors for cross-extension collision checks;
         // only the new descriptor belongs to this provisional arena.

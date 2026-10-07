@@ -317,8 +317,8 @@ pub fn build(b: *std.Build) void {
     linkSqlite(capability_tests.root_module, sqlite_lib_dir);
     const run_capability_tests = b.addRunArtifact(capability_tests);
     if (target.result.os.tag == .windows) if (sqlite_lib_dir) |directory| {
-        const inherited_path=b.graph.environ_map.get("PATH") orelse "";
-        run_capability_tests.setEnvironmentVariable("PATH",b.fmt("{s};{s}",.{directory,inherited_path}));
+        const inherited_path = b.graph.environ_map.get("PATH") orelse "";
+        run_capability_tests.setEnvironmentVariable("PATH", b.fmt("{s};{s}", .{ directory, inherited_path }));
     };
     run_capability_tests.step.dependOn(&install_env_daemon.step);
     run_capability_tests.step.dependOn(&install_durable_fixture.step);
@@ -673,7 +673,8 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_late_registration_tests.step);
     const selection_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/tool_selection_process_test.zig"), .target = target, .optimize = optimize }),
-        .filters = &.{"native CLI tool selection"}, .use_llvm = use_llvm,
+        .filters = &.{"native CLI tool selection"},
+        .use_llvm = use_llvm,
     });
     const run_selection_tests = b.addRunArtifact(selection_tests);
     run_selection_tests.step.dependOn(b.getInstallStep());
@@ -996,14 +997,18 @@ pub fn build(b: *std.Build) void {
     maintenance_test_step.dependOn(&run_maintenance_tests.step);
     test_step.dependOn(&run_maintenance_tests.step);
     const duration_module = b.createModule(.{
-        .root_source_file = b.path("src/latest_duration_test.zig"), .target = target, .optimize = optimize,
+        .root_source_file = b.path("src/latest_duration_test.zig"),
+        .target = target,
+        .optimize = optimize,
     });
     duration_module.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, duration_module, quickjs);
     linkTypeScriptParser(b, duration_module, typescript_parser);
     linkSqlite(duration_module, sqlite_lib_dir);
     linkDurable(b, duration_module);
-    const duration_tests = b.addTest(.{ .root_module = duration_module, .use_llvm = use_llvm,
+    const duration_tests = b.addTest(.{
+        .root_module = duration_module,
+        .use_llvm = use_llvm,
         .filters = &.{ "latest tool duration", "parallel tool end events", "streaming external update", "agent event payload" },
     });
     const run_duration_tests = b.addRunArtifact(duration_tests);
