@@ -4,6 +4,7 @@ const std = @import("std");
 const Io = std.Io;
 const layout = @import("layout.zig");
 const terminal = @import("terminal.zig");
+const program_status = @import("program_status.zig");
 const terminal_text = @import("terminal_text.zig");
 const osc52 = @import("osc52.zig");
 const mouse = @import("mouse.zig");
@@ -198,6 +199,9 @@ pub const Application = struct {
     painted_height: usize = 0,
     next_overlay_id: u64 = 1,
     started: bool = false,
+    program_status_protocol: program_status.Protocol,
+    program_status_override: ?[]const u8 = null,
+    program_status_owner: bool = false,
     alternate_screen: bool = true,
     clock_io: ?Io = null,
     selection: ?Selection = null,
@@ -217,6 +221,7 @@ pub const Application = struct {
         return .{
             .gpa = gpa,
             .root = root,
+            .program_status_protocol = program_status.Protocol.init(gpa),
             .search = SearchState.init(gpa),
             .composition = CompositionState.init(gpa),
         };
@@ -230,20 +235,45 @@ pub const Application = struct {
         self.overlays.deinit(self.gpa);
         self.search.deinit();
         self.composition.deinit();
+        self.program_status_protocol.deinit();
         self.* = undefined;
     }
 
     pub fn start(self: *Application, io: Io) !void {
         if (self.started) return;
         try writeAll(io, if (self.alternate_screen) enter_sequence else terminal.hide_cursor ++ terminal.bracketed_paste_enable ++ mouse_enable);
+        if (self.program_status_owner) {
+            const negotiation = try self.program_status_protocol.start(self.program_status_override);
+            defer self.gpa.free(negotiation);
+            try writeAll(io, negotiation);
+        }
         self.clock_io = io;
         self.started = true;
     }
 
     pub fn stop(self: *Application, io: Io) !void {
         if (!self.started) return;
+        if (try self.program_status_protocol.stop()) |bytes| {
+            defer self.gpa.free(bytes);
+            try writeAll(io, bytes);
+        }
         try writeAll(io, if (self.alternate_screen) leave_sequence else mouse_disable ++ terminal.bracketed_paste_disable ++ terminal.show_cursor);
         self.started = false;
+    }
+
+    pub fn setProgramStatus(self: *Application, io: Io, status: program_status.Status) !void {
+        if (try self.program_status_protocol.set(status)) |bytes| {
+            defer self.gpa.free(bytes);
+            try writeAll(io, bytes);
+        }
+    }
+    pub fn consumeProgramStatusReply(self: *Application, io: Io, sequence: []const u8) !bool {
+        const result = try self.program_status_protocol.response(sequence);
+        if (result.report) |bytes| {
+            defer self.gpa.free(bytes);
+            try writeAll(io, bytes);
+        }
+        return result.consumed;
     }
 
     pub fn setFocus(self: *Application, component: ?layout.Component) void {

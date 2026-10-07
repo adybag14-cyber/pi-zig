@@ -1445,6 +1445,7 @@ pub const Frontend = struct {
         self.mutex.unlock(self.io);
     }
     fn input(self: *Frontend, packet: line_editor.InputDecoder.Input) !void {
+        if (packet == .key and try self.app.consumeProgramStatusReply(self.io, packet.key)) return;
         if (packet == .key) {
             self.mutex.lockUncancelable(self.io);
             const report = self.terminal_report_fn;
@@ -1570,6 +1571,8 @@ pub const Frontend = struct {
         if (self.dirty) try self.paint();
     }
     fn runLoop(self: *Frontend) !void {
+        self.app.program_status_owner = true;
+        self.app.program_status_override = self.environ.get("PI_PROGRAM_STATUS");
         var raw = try line_editor.RawMode.enter();
         var raw_active = true;
         defer if (raw_active) raw.leave();

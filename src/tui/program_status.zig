@@ -23,7 +23,7 @@ pub const Protocol = struct {
         if (self.owed_attributes == std.math.maxInt(usize)) return error.ProgramStatusQueryOverflow;
         const forced = if (override) |value| std.mem.eql(u8, value, "1") else false;
         const disabled = if (override) |value| std.mem.eql(u8, value, "0") else false;
-        const output = try std.fmt.allocPrint(self.gpa, "\x1b[>7u\x1b[?u{s}\x1b[c{s}", .{
+        const output = try std.fmt.allocPrint(self.gpa, "{s}\x1b[c{s}", .{
             if (!forced and !disabled) query else "",
             if (forced) self.latest orelse "" else "",
         });
@@ -169,7 +169,7 @@ test "program status support handshake caches reports fences DA restarts and cle
     try std.testing.expect(try protocol.set(.{ .state = .working, .app = "pi" }) == null);
     const first = try protocol.start(null);
     defer gpa.free(first);
-    try std.testing.expectEqualStrings("\x1b[>7u\x1b[?u\x1b]7501;?\x1b\\\x1b[c", first);
+    try std.testing.expectEqualStrings("\x1b]7501;?\x1b\\\x1b[c", first);
     const reply = try protocol.response("\x1b]7501;?version=2\x07");
     defer gpa.free(reply.report.?);
     try std.testing.expect(reply.consumed and protocol.supported);
@@ -216,4 +216,24 @@ test "program status owned report transitions reclaim every failed allocation" {
         }
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Check.run, .{});
+}
+
+test "program status replays authentic Pi 1.1 format and future reply captures" {
+    const gpa = std.testing.allocator;
+    const original = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/program-status-original-1ced.json"), .{});
+    defer original.deinit();
+    for (original.value.object.get("statuses").?.array.items) |row| {
+        const value = row.object.get("status").?.object;
+        const actual = try format(gpa, .{
+            .state = std.meta.stringToEnum(State, value.get("state").?.string).?,
+            .app = if (value.get("app")) |app| app.string else null,
+            .kind = if (value.get("kind")) |kind| std.meta.stringToEnum(Kind, kind.string).? else null,
+            .message = if (value.get("message")) |message| message.string else null,
+        });
+        defer gpa.free(actual);
+        try std.testing.expectEqualStrings(row.object.get("result").?.string, actual);
+    }
+    for (original.value.object.get("replies").?.array.items) |row| {
+        try std.testing.expectEqual(row.object.get("result").?.bool, isReply(row.object.get("input").?.string));
+    }
 }
