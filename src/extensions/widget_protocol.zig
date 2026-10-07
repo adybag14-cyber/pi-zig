@@ -2,6 +2,7 @@
 const std = @import("std");
 const component = @import("component_protocol.zig");
 pub const Placement = enum { aboveEditor, belowEditor };
+pub const Slot = enum { widget, header, footer };
 pub const Dimensions = struct { width: usize, height: usize };
 pub const Record = struct {
     gpa: std.mem.Allocator,
@@ -12,6 +13,7 @@ pub const Record = struct {
     placement: Placement,
     width: usize,
     frame: ?component.Frame,
+    slot: Slot = .widget,
     pub fn deinit(self: *Record) void {
         self.gpa.free(self.key);
         if (self.frame) |*frame| frame.deinit();
@@ -29,7 +31,7 @@ fn integer(object: *const std.json.ObjectMap, name: []const u8) !u64 {
     return component.identifier(object.get(name) orelse return error.InvalidWidgetRecord);
 }
 pub fn write(writer: *std.Io.Writer, record: Record) !void {
-    try writer.print("{{\"type\":\"widget_record\",\"version\":1,\"ownerGeneration\":\"{d}\",\"generation\":\"{d}\",\"sequence\":\"{d}\",\"width\":{d},\"placement\":\"{s}\",\"key\":", .{ record.owner_generation, record.generation, record.sequence, record.width, @tagName(record.placement) });
+    try writer.print("{{\"type\":\"widget_record\",\"version\":1,\"ownerGeneration\":\"{d}\",\"generation\":\"{d}\",\"sequence\":\"{d}\",\"width\":{d},\"slot\":\"{s}\",\"placement\":\"{s}\",\"key\":", .{ record.owner_generation, record.generation, record.sequence, record.width, @tagName(record.slot), @tagName(record.placement) });
     try std.json.Stringify.value(record.key, .{}, writer);
     try writer.writeAll(",\"lines\":");
     if (record.frame) |frame| try std.json.Stringify.value(frame.lines, .{}, writer) else try writer.writeAll("null");
@@ -46,6 +48,10 @@ pub fn read(gpa: std.mem.Allocator, object: *const std.json.ObjectMap) !Record {
     if (width > component.maximum_dimension) return error.InvalidWidgetRecord;
     var record: Record = .{ .gpa = gpa, .owner_generation = try integer(object, "ownerGeneration"), .generation = try integer(object, "generation"), .sequence = try integer(object, "sequence"), .key = try gpa.dupe(u8, key.string), .placement = placement, .width = @intCast(width), .frame = null };
     errdefer record.deinit();
+    if (object.get("slot")) |slot| {
+        if (slot != .string) return error.InvalidWidgetRecord;
+        record.slot = std.meta.stringToEnum(Slot, slot.string) orelse return error.InvalidWidgetRecord;
+    }
     const values = object.get("lines") orelse return error.InvalidWidgetRecord;
     if (values == .null) return record;
     if (values != .array or values.array.items.len > component.maximum_lines) return error.InvalidWidgetRecord;

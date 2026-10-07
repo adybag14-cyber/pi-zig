@@ -256,6 +256,39 @@ test "mcp.runtime real HTTP session headers JSON handshake tool request and boun
     try client.close();
     try server.finish();
 }
+test "mcp.runtime HTTP close reuses last bearer token without refreshing after lifetime cancellation" {
+    const fixture = @import("../ai/http_fixture.zig");
+    const server = try fixture.PlanServer.init(gpa, io, &.{
+        .{ .path = "/mcp", .body = "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{},\"serverInfo\":{\"name\":\"token\",\"version\":\"1\"}}}", .headers = &.{ .{ .name = "content-type", .value = "application/json" }, .{ .name = "mcp-session-id", .value = "token-session" } }, .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer retained-token" }} },
+        .{ .path = "/mcp", .body = "", .status = .accepted, .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer retained-token" }} },
+        .{ .path = "/mcp", .body = "", .status = .no_content, .expected_request_headers = &.{ .{ .name = "authorization", .value = "Bearer retained-token" }, .{ .name = "mcp-session-id", .value = "token-session" } } },
+    });
+    defer server.deinit();
+    const Token = struct {
+        calls: usize = 0,
+        fn resolve(raw: ?*anyopaque, allocator: std.mem.Allocator, flag: ?*bool) !?[]u8 {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.calls += 1;
+            if (@atomicLoad(bool, flag.?, .acquire)) return error.AuthProviderCalledAfterClose;
+            return try allocator.dupe(u8, "retained-token");
+        }
+    };
+    var token: Token = .{};
+    const url = try server.url(gpa, "/mcp");
+    defer gpa.free(url);
+    const transport = try http.Http.create(gpa, io, .{ .url = url, .open_get_stream = false, .auth_context = &token, .auth_token = Token.resolve });
+    defer transport.deinit();
+    const client = try session.Client.create(gpa, io, transport.transport(), .{});
+    defer client.deinit();
+    var initialized = try client.connect();
+    defer initialized.deinit();
+    const before_close = token.calls;
+    try std.testing.expect(before_close > 0);
+    try client.close();
+    try std.testing.expectEqual(before_close, token.calls);
+    try server.finish();
+}
+
 test "mcp.runtime real HTTP stalled initialize shutdown cancels socket before close returns" {
     const fixture = @import("../ai/http_fixture.zig");
     var observed: std.Io.Event = .unset;

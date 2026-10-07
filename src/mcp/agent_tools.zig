@@ -46,7 +46,7 @@ pub fn toolName(a: std.mem.Allocator, server: []const u8, tool: []const u8, take
     const hex = std.fmt.bytesToHex(digest, .lower);
     return std.fmt.allocPrint(a, "{s}_{s}", .{ output.items[0..@min(55, output.items.len)], hex[0..8] });
 }
-fn trimJs(text: []const u8) ![]const u8 {
+pub fn trimJs(text: []const u8) ![]const u8 {
     var iterator = (try std.unicode.Wtf8View.init(text)).iterator();
     var begin: usize = 0;
     var end: usize = 0;

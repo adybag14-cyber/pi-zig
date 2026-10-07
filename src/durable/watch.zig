@@ -3,7 +3,9 @@ const std = @import("std");
 const types = @import("types.zig");
 const filesystem = @import("filesystem.zig");
 const builtin = @import("builtin");
-const native = @import("watch_linux.zig");
+const native = if (builtin.os.tag == .windows) @import("watch_windows.zig") else if (builtin.os.tag == .macos) @import("watch_macos.zig") else @import("watch_linux.zig");
+const native_supported = builtin.os.tag == .linux or builtin.os.tag == .windows or builtin.os.tag == .macos;
+const identity = @import("watch_identity.zig");
 pub const Mode = enum(u8) { native, polling };
 pub const Exclude = struct { hidden: bool = false, names: []const []const u8 = &.{} };
 pub const Target = struct { path: []const u8, recursive: bool = false, exclude: Exclude = .{} };
@@ -29,7 +31,7 @@ const Resolved = struct {
     }
 };
 const Kind = enum { file, directory, symlink, other };
-const Entry = struct { kind: Kind, inode: std.Io.File.INode, size: u64, mtime: i96, ctime: i96, hash: ?[32]u8 = null };
+const Entry = struct { kind: Kind, device: u64, inode: std.Io.File.INode, size: u64, mtime: i96, ctime: i96, hash: ?[32]u8 = null };
 const Snapshot = std.StringHashMapUnmanaged(Entry);
 fn denied(err: anyerror) bool {
     return err == error.AccessDenied or err == error.PermissionDenied;
@@ -103,10 +105,11 @@ pub const Watcher = struct {
     backend: ?native.Backend = null,
     events: std.StringHashMapUnmanaged(void) = .empty,
     flush_at: ?i64 = null,
+    settle_at: ?i64 = null,
 
     pub fn open(fs: anytype, targets: []const Target, options: Options, callback: Callback, callback_context: ?*anyopaque, context: types.Context) !types.Result(*Watcher) {
         if (context.aborted()) return types.failure(*Watcher, fs.gpa, .aborted, null, null, "aborted");
-        if (options.mode == .native and builtin.os.tag != .linux) return types.failure(*Watcher, fs.gpa, .not_supported, null, null, "Native event backend is not installed for this platform");
+        if (options.mode == .native and !native_supported) return types.failure(*Watcher, fs.gpa, .not_supported, null, null, "Native event backend is not installed for this platform");
         const resolved = try fs.gpa.alloc(Resolved, targets.len);
         var count: usize = 0;
         errdefer {
@@ -132,7 +135,7 @@ pub const Watcher = struct {
         const self = try fs.gpa.create(Watcher);
         errdefer fs.gpa.destroy(self);
         self.* = .{ .gpa = fs.gpa, .io = fs.io, .targets = resolved, .options = options, .callback = callback, .callback_context = callback_context };
-        if (builtin.os.tag == .linux and (options.mode == .native or (options.mode == null and !try native.unreliable(fs.gpa, resolved)))) self.mode.store(.native, .release);
+        if (native_supported and (options.mode == .native or (options.mode == null and builtin.os.tag != .windows and !try native.unreliable(fs.gpa, resolved)))) self.mode.store(.native, .release);
         self.snapshot = self.scan() catch |err| {
             if (err == error.OutOfMemory) return err;
             // Allocation is still fallible when representing an expected error.
@@ -148,7 +151,8 @@ pub const Watcher = struct {
             freeSnapshotKeys(fs.gpa, &self.events);
         }
         if (self.mode.load(.acquire) == .native) {
-            self.backend = native.Backend.init(fs.gpa) catch blk: {
+            self.backend = native.Backend.init(fs.gpa) catch |err| blk: {
+                if (err == error.OutOfMemory) return err;
                 self.mode.store(.polling, .release);
                 self.callback(self.callback_context, .overflow) catch {};
                 break :blk null;
@@ -158,6 +162,10 @@ pub const Watcher = struct {
                 const next = try self.scan();
                 freeSnapshot(fs.gpa, &self.snapshot);
                 self.snapshot = next;
+            };
+            if (builtin.os.tag == .macos and self.backend != null) self.backend.?.prepare() catch |err| {
+                if (err == error.OutOfMemory) return err;
+                self.switchToPolling();
             };
         }
         if (context.aborted()) {
@@ -275,6 +283,10 @@ pub const Watcher = struct {
                 self.switchToPolling();
                 continue;
             };
+            if (self.settle_at) |at| if (std.Io.Clock.awake.now(self.io).toMilliseconds() >= at) {
+                self.settle_at = null;
+                self.flush_at = std.Io.Clock.awake.now(self.io).toMilliseconds();
+            };
             if (self.flush_at) |at| if (std.Io.Clock.awake.now(self.io).toMilliseconds() >= at) {
                 self.flush_at = null;
                 self.poll() catch |err| {
@@ -315,19 +327,20 @@ pub const Watcher = struct {
         var installed = backend.installed.iterator();
         while (installed.next()) |entry| {
             const signature = self.snapshot.get(entry.key_ptr.*);
-            if (signature == null or signature.?.inode != entry.value_ptr.inode or !self.wantedNative(entry.key_ptr.*, signature.?)) try stale.append(self.gpa, entry.key_ptr.*);
+            if (signature == null or signature.?.device != entry.value_ptr.device or signature.?.inode != entry.value_ptr.inode or !self.wantedNative(entry.key_ptr.*, signature.?)) try stale.append(self.gpa, entry.key_ptr.*);
         }
         for (stale.items) |path| backend.remove(path);
         var added = false;
         var iterator = self.snapshot.iterator();
         while (iterator.next()) |entry| if (self.wantedNative(entry.key_ptr.*, entry.value_ptr.*)) {
-            const was_added = backend.add(entry.key_ptr.*, entry.value_ptr.inode) catch |err| {
+            const was_added = backend.add(entry.key_ptr.*, entry.value_ptr.inode, entry.value_ptr.device) catch |err| {
                 if (err == error.OutOfMemory) return err;
                 self.switchToPolling();
                 return false;
             };
             added = added or was_added;
         };
+        if (builtin.os.tag == .macos and added) self.settle_at = std.Io.Clock.awake.now(self.io).toMilliseconds() + 500;
         return added;
     }
     fn wantedNative(self: *Watcher, path: []const u8, entry: Entry) bool {
@@ -405,8 +418,9 @@ pub const Watcher = struct {
         if (snapshot.contains(path) and !replace) return;
         if (!snapshot.contains(path) and snapshot.count() >= self.options.maxEntries) return error.WatchEntryLimit;
         const kind = kindOf(stat);
+        const file_identity = try identity.query(self.gpa, path, stat.kind != .sym_link, stat.inode);
         const identity_only = ancestor or kind == .directory;
-        const signature: Entry = .{ .kind = kind, .inode = stat.inode, .size = if (identity_only) 0 else stat.size, .mtime = if (identity_only) 0 else stat.mtime.nanoseconds, .ctime = 0, .hash = if (ancestor) null else try self.hashFile(path, stat) };
+        const signature: Entry = .{ .kind = kind, .device = file_identity.device, .inode = file_identity.inode, .size = if (identity_only) 0 else stat.size, .mtime = if (identity_only) 0 else stat.mtime.nanoseconds, .ctime = 0, .hash = if (ancestor) null else try self.hashFile(path, stat) };
         if (snapshot.getPtr(path)) |entry| {
             entry.* = signature;
             return;
@@ -649,7 +663,7 @@ test "durable polling watch budgets fail closed and callback close cannot join i
     var capture: Capture = .{ .gpa = gpa, .io = io };
     defer capture.deinit();
     for ([_]Options{ .{ .mode = .native }, .{ .maxDirectories = 0 }, .{ .maxEntries = 0 } }, 0..) |options, index| {
-        if (index == 0 and builtin.os.tag == .linux) continue;
+        if (index == 0 and native_supported) continue;
         var result = try Watcher.open(&fs, &.{.{ .path = ".", .recursive = true }}, options, Capture.callback, &capture, .{});
         switch (result) {
             .failure => |*err| {
@@ -670,13 +684,13 @@ test "durable polling watch budgets fail closed and callback close cannot join i
     try std.testing.expect(watcher.closed.load(.acquire));
     try std.testing.expectEqual(@as(usize, 1), capture.count());
 }
-fn watchAllocationProbe(gpa: std.mem.Allocator, cwd: []const u8) !void {
+fn watchAllocationProbe(gpa: std.mem.Allocator, cwd: []const u8, mode: ?Mode) !void {
     var fs = try filesystem.FileSystem.init(gpa, std.testing.io, cwd, null);
     defer fs.deinit();
     const Null = struct {
         fn callback(_: ?*anyopaque, _: Change) !void {}
     };
-    const watcher = try expectWatcher(gpa, try Watcher.open(&fs, &.{.{ .path = ".", .recursive = true, .exclude = .{ .names = &.{ "ignore", "other" } } }}, .{}, Null.callback, null, .{}));
+    const watcher = try expectWatcher(gpa, try Watcher.open(&fs, &.{.{ .path = ".", .recursive = true, .exclude = .{ .names = &.{ "ignore", "other" } } }}, .{ .mode = mode }, Null.callback, null, .{}));
     watcher.deinit();
 }
 test "durable watch initial snapshot resources release on every allocation failure" {
@@ -688,5 +702,39 @@ test "durable watch initial snapshot resources release on every allocation failu
     try temporary_dir.dir.writeFile(io, .{ .sub_path = "sub/file", .data = "small hashed file" });
     var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
     const length = try temporary_dir.dir.realPath(io, &path_buffer);
-    try std.testing.checkAllAllocationFailures(gpa, watchAllocationProbe, .{path_buffer[0..length]});
+    try std.testing.checkAllAllocationFailures(gpa, watchAllocationProbe, .{ path_buffer[0..length], @as(?Mode, null) });
+    if (builtin.os.tag == .windows) try std.testing.checkAllAllocationFailures(gpa, watchAllocationProbe, .{ path_buffer[0..length], @as(?Mode, .native) });
+}
+
+test "durable watch macOS default native stream observes immediate startup writes and repeated close" {
+    if (builtin.os.tag != .macos) return error.SkipZigTest;
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try tmp.dir.realPath(io, &buffer);
+    var fs = try filesystem.FileSystem.init(gpa, io, buffer[0..length], null);
+    defer fs.deinit();
+    for (0..4) |index| {
+        var capture: Capture = .{ .gpa = gpa, .io = io };
+        defer capture.deinit();
+        const watcher = try expectWatcher(gpa, try Watcher.open(&fs, &.{.{ .path = ".", .recursive = true }}, .{}, Capture.callback, &capture, .{}));
+        defer watcher.deinit();
+        try std.testing.expectEqual(Mode.native, watcher.mode.load(.acquire));
+        const name = try std.fmt.allocPrint(gpa, "immediate-Ω-{d}", .{index});
+        defer gpa.free(name);
+        try tmp.dir.writeFile(io, .{ .sub_path = name, .data = "before-FSEvents-settles" });
+        const path = try fs.resolvePath(name);
+        defer gpa.free(path);
+        try capture.wait(path);
+        try std.testing.expectEqual(Mode.native, watcher.mode.load(.acquire));
+        try std.testing.expectEqual(@as(usize, 0), capture.errors);
+        watcher.close(.{});
+        watcher.close(.{});
+        const count = capture.count();
+        try tmp.dir.writeFile(io, .{ .sub_path = name, .data = "after-close" });
+        try io.sleep(.fromMilliseconds(100), .awake);
+        try std.testing.expectEqual(count, capture.count());
+    }
 }

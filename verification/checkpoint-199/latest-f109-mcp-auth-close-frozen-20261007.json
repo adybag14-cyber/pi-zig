@@ -1,0 +1,55 @@
+{
+  "upstream": "f10993bc7f28145df1375f3ff39c7f5c4cfc05f0",
+  "patch_sha256": "06bd5e0a5855146594bc8ce2c69b56eda62b1375bae67721e5f08c4811c18482",
+  "paths": [
+    {
+      "path": "src/mcp/http_transport.zig",
+      "sha256": "2b54d3a0df38290b240f73daa79216c2b36f1182a1105f09011c0c69e8860190"
+    },
+    {
+      "path": "src/mcp/runtime_tests.zig",
+      "sha256": "2170d4fe79ccde66004b562ba7901221f66674d492f7c60834fa79e43dbd6e84"
+    }
+  ],
+  "validation": [
+    {
+      "name": "latest-f109-mcp-auth-close-first-windows-debug-20261007",
+      "pid": 39944,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-mcp-runtime -j2 --summary all",
+      "created_utc": "2026-10-07T15:40:02.4701780Z",
+      "launched_utc": "2026-10-07T15:40:02.4667148+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-codemode-agent-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T15:40:15.3821331+00:00"
+    },
+    {
+      "name": "latest-f109-mcp-auth-close-windows-releasesafe-20261007",
+      "pid": 36840,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-mcp-runtime -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-07T15:45:34.1940260Z",
+      "launched_utc": "2026-10-07T15:45:34.1909731+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-codemode-agent-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T15:46:30.3420804+00:00"
+    },
+    {
+      "name": "latest-f109-mcp-auth-close-linux-debug-safe-20261007",
+      "pid": 38456,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-latest-f109-mcp-auth-close-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 650s /bin/sh /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/latest-f109-mcp-auth-close-linux-20261007.sh",
+      "created_utc": "2026-10-07T15:45:59.8162870Z",
+      "launched_utc": "2026-10-07T15:45:59.8147376+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T15:47:14.7482727+00:00"
+    }
+  ]
+}

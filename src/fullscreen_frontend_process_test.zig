@@ -134,6 +134,120 @@ const renderer_extension =
     \\}
 ;
 
+const persistent_ui_extension =
+    \\import {VERSION} from 'pi-coding-agent';export default pi=>{
+    \\ let header=0,footer=0,unsubscribe;pi.on('session_start',(_,ctx)=>{
+    \\  if(ctx.mode!=='tui')throw Error('native mode');ctx.ui.setStatus('lane','alive');
+    \\  ctx.ui.setHeader((tui,theme)=>({render(width){return ['PERSISTENT_HEADER:'+width+':'+VERSION]},dispose(){header++}}));
+    \\  ctx.ui.setFooter((tui,theme,data)=>{const off=data.onBranchChange(()=>tui.requestRender());return {render(width){return ['PERSISTENT_FOOTER:'+width+':'+ctx.sessionManager.getSessionId()+':'+data.getExtensionStatuses().get('lane')]},dispose(){off();footer++}}});
+    \\  unsubscribe=ctx.ui.onTerminalInput(data=>{if(data.startsWith('\x1b[200~')){ctx.ui.notify('PASTE_MARKERS_OBSERVED');return {data:data.replace('paste-original','paste-transformed')}}return data==='!'?{consume:true}:data==='x'?{data:'Ω'}:undefined});
+    \\ });
+    \\ pi.registerCommand('restore-surfaces',{handler(_,ctx){ctx.ui.setHeader(undefined);ctx.ui.setFooter(undefined);unsubscribe();ctx.ui.notify('SURFACES_DISPOSED:'+header+':'+footer);return {}}});
+    \\ pi.registerCommand('indicator',{handler(_,ctx){ctx.ui.setWorkingIndicator({frames:['CUSTOM_INDICATOR'],intervalMs:40});return {}}});
+    \\ pi.registerCommand('footer-factory-throw',{handler(_,ctx){const original={footerOriginal:true};try{ctx.ui.setFooter(()=>{throw original})}catch(error){if(error!==original)throw Error('footer identity');ctx.ui.notify('FOOTER_FACTORY_THROW_CAUGHT')}return {}}});
+    \\}
+;
+test "actual native retained header footer live context indicator and terminal input work across resize retirement" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnExtension(errors, persistent_ui_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "PERSISTENT_HEADER:100:", 0);
+    try observed.wait(&child, "PERSISTENT_FOOTER:100:fullscreen-history:alive", 0);
+    try observed.send(&child, "x!", "> Ω");
+    try std.testing.expect(!try observed.screen.contains("> Ω!"));
+    try observed.send(&child, "\x15\x1b[200~paste-original\x1b[201~", "> paste-transformed");
+    try observed.waitAny(&child, "PASTE_MARKERS_OBSERVED");
+    const frame = observed.screen.frames;
+    try observed.screen.resize(70, 22);
+    try child.resize(70, 22);
+    try observed.wait(&child, "PERSISTENT_HEADER:70:", frame);
+    try observed.wait(&child, "PERSISTENT_FOOTER:70:fullscreen-history:alive", 0);
+    try observed.send(&child, "\x15/indicator\r", ">");
+    try observed.send(&child, "run\r", "CUSTOM_INDICATOR");
+    try observed.wait(&child, "stream-final", 0);
+    try observed.send(&child, "/footer-factory-throw\r", "FOOTER_FACTORY_THROW_CAUGHT");
+    try std.testing.expect(try observed.screen.contains("PERSISTENT_HEADER:"));
+    try std.testing.expect(!try observed.screen.contains("PERSISTENT_FOOTER:"));
+    // The source footer container is empty after its replacement factory
+    // throws. This is distinct from clearing to the built-in status footer.
+    const bottom = observed.screen.cells()[21 * 70 .. 22 * 70];
+    var footer_text: [70]u8 = undefined;
+    for (bottom, 0..) |cell, index| footer_text[index] = if (cell.scalar < 128) @intCast(cell.scalar) else '?';
+    try std.testing.expect(std.mem.indexOf(u8, &footer_text, "fullscreen-history") == null);
+    try observed.send(&child, "/restore-surfaces\r", "SURFACES_DISPOSED:1:2");
+    try std.testing.expect(!try observed.screen.contains("PERSISTENT_HEADER:"));
+    try std.testing.expect(!try observed.screen.contains("PERSISTENT_FOOTER:"));
+    try observed.send(&child, "x!", "> x!");
+    try cleanExit(&fixture, &child, &observed);
+}
+
+test "actual untouched upstream header footer and working indicator examples render continuously in regular and fullscreen without Node" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var input_arena: std.heap.ArenaAllocator = .init(std.testing.allocator);
+    defer input_arena.deinit();
+    const arena = input_arena.allocator();
+    for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
+        var fixture = try Fixture.init(mode);
+        defer fixture.deinit();
+        try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "original-header.ts", .data = try originalModuleInput(arena, @embedFile("extensions/fixtures/custom-header-original-7fb.input.json")) });
+        try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "original-footer.ts", .data = try originalModuleInput(arena, @embedFile("extensions/fixtures/custom-footer-original-7fb.input.json")) });
+        try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "original-indicator.ts", .data = try originalModuleInput(arena, @embedFile("extensions/fixtures/working-indicator-original-7fb.input.json")) });
+        try fixture.scratch.dir.createDir(std.testing.io, ".git", .default_dir);
+        try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = ".git/HEAD", .data = "ref: refs/heads/live-one\n" });
+        const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+        defer errors.close(std.testing.io);
+        var child = try fixture.spawnExtension(errors, "import header from './original-header.ts';import footer from './original-footer.ts';import indicator from './original-indicator.ts';export default pi=>{header(pi);footer(pi);indicator(pi)}");
+        defer child.deinit();
+        var observed = try Observer.init();
+        defer observed.deinit();
+        try observed.waitAny(&child, "shitty coding agent");
+        try observed.waitAny(&child, "Indicator: custom spinner");
+        try observed.send(&child, "/footer\r", "Custom footer enabled");
+        try observed.waitAny(&child, "↑0 ↓0 $0.000");
+        try observed.waitAny(&child, "(live-one)");
+        try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = ".git/next", .data = "ref: refs/heads/live-two\n" });
+        try fixture.scratch.dir.rename(".git/next", fixture.scratch.dir, ".git/HEAD", std.testing.io);
+        try observed.waitAny(&child, "(live-two)");
+        try std.testing.expect(!try observed.screen.contains("(live-one)"));
+        try observed.send(&child, "/working-indicator dot\r", "Working indicator set to: static dot");
+        try observed.send(&child, "run\r", "●");
+        try observed.waitAny(&child, "stream-final");
+        // The original footer reads its saved command context after that
+        // command returned and again after the agent appended its response.
+        try observed.waitAny(&child, "↑");
+        try observed.send(&child, "draft", "> draft");
+        const frame = observed.screen.frames;
+        try observed.screen.resize(70, 22);
+        try child.resize(70, 22);
+        try observed.wait(&child, "> draft", frame);
+        try std.testing.expect(try observed.screen.contains("shitty coding agent"));
+        try std.testing.expect(try observed.screen.contains("↑"));
+        try observed.send(&child, "\x15/footer\r", "Default footer restored");
+        try observed.send(&child, "/builtin-header\r", "Built-in header restored");
+        try std.testing.expect(!try observed.screen.contains("shitty coding agent"));
+        try cleanExit(&fixture, &child, &observed);
+    }
+}
+
+fn originalModuleInput(gpa: std.mem.Allocator, bytes: []const u8) ![]const u8 {
+    const ModuleInput = struct { schemaVersion: u32, sourceCommit: []const u8, inputSha256: []const u8, input: []const u8 };
+    const parsed = try std.json.parseFromSlice(ModuleInput, gpa, bytes, .{});
+    defer parsed.deinit();
+    try std.testing.expectEqual(@as(u32, 1), parsed.value.schemaVersion);
+    try std.testing.expectEqualStrings("7fb59f995b0a1db552001a8577b234e4105d7179", parsed.value.sourceCommit);
+    var digest: [32]u8 = undefined;
+    std.crypto.hash.sha2.Sha256.hash(parsed.value.input, &digest, .{});
+    const actual = std.fmt.bytesToHex(digest, .lower);
+    try std.testing.expectEqualStrings(parsed.value.inputSha256, &actual);
+    return gpa.dupe(u8, parsed.value.input);
+}
+
 test "real custom editor original modal input replaces editor row changes submits resizes reloads and restores terminal" {
     if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");
@@ -366,6 +480,7 @@ test "real regular native tool partial callback retains canonical output and com
 
 const custom_extension =
     \\export default function(pi) {
+    \\ pi.registerCommand('fixture-ready',{handler(_,ctx){ctx.ui.notify('FIXTURE_READY:HEADER_EDITOR_COMMAND_ACK');return {}}});
     \\ let starts=0,ends=0;
     \\ pi.on('ui_prompt_start',(_,ctx)=>{starts++;ctx.ui.setStatus('custom-life','start'+starts+'-end'+ends)});
     \\ pi.on('ui_prompt_end',(_,ctx)=>{ends++;ctx.ui.setStatus('custom-life','start'+starts+'-end'+ends)});
@@ -411,6 +526,11 @@ test "native CLI custom scene owns input resize close ACK and restores draft vie
     }
     var observed = try Observer.init();
     defer observed.deinit();
+    try observed.waitAny(&child, ">");
+    try std.testing.expect(try observed.screen.contains("pi (pi-zig)"));
+    const startup_frame = observed.screen.frames;
+    try child.send("/fixture-ready\r");
+    try observed.waitStartupCommand(&child, startup_frame);
     try observed.wait(&child, "history-row-059", 0);
     try observed.send(&child, "\x1b[1;5H", "history-row-000");
     try observed.send(&child, "/component\r", "CUSTOM_WIDTH:100");
@@ -726,6 +846,19 @@ const Observer = struct {
         const frame = self.screen.frames;
         try child.send(input);
         try self.wait(child, marker, frame);
+    }
+    fn waitStartupCommand(self: *Observer, child: *pty.Session, after_frame: usize) !void {
+        // Startup includes native-owner and bridge attachment after the first
+        // header/editor frame. Its existing child budget is distinct from the
+        // five-second current-cell render assertions that follow admission.
+        const deadline = Io.Clock.awake.now(child.io).toMilliseconds() + 90_000;
+        while (Io.Clock.awake.now(child.io).toMilliseconds() < deadline) {
+            try self.drain(child);
+            if (!self.screen.synchronized_update and self.screen.frames > after_frame and try self.screen.contains("FIXTURE_READY:HEADER_EDITOR_COMMAND_ACK")) return;
+            if (try child.exited()) break;
+            try child.io.sleep(.fromMilliseconds(10), .awake);
+        }
+        return error.FrontendStartupCommandReadinessTimedOut;
     }
     fn waitAbsent(self: *Observer, child: *pty.Session, marker: []const u8, after_frame: usize) !void {
         const end = Io.Clock.awake.now(child.io).toMilliseconds() + 5000;

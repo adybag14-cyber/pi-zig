@@ -1,0 +1,123 @@
+{
+  "status": "frozen_candidate_requires_hosted_runtime",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "base": "e071d075da16a004dc984296b907d25befff1278",
+  "prerequisite": "all ten prior ENV patches through watch-observer-ack-device-prefix.patch",
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-watch-macos-20261007",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\macos-native-fsevents-candidate.patch",
+  "patch_sha256": "b42cab931dd922b76b47779ed5032f4771ec20119c0d3f647b097f15e66b4d40",
+  "files": [
+    {
+      "path": "src/durable/watch.zig",
+      "bytes": 37670,
+      "sha256": "dd277576d3544ebd9187eba20b485586d9d5dc62fc289c0da56c32ac20ee181e"
+    },
+    {
+      "path": "src/durable/watch_macos.zig",
+      "bytes": 8943,
+      "sha256": "294d124955f29d23b628d7bc9043845a404b273afbfea58afd4b7a66be38e20a"
+    },
+    {
+      "path": "src/env/CONTRACT.md",
+      "bytes": 9624,
+      "sha256": "04abf5ae364cefb826edc2efc16366fa210c278188c43c2f9070ba8c17851200"
+    },
+    {
+      "path": "src/env/watch_test.zig",
+      "bytes": 19470,
+      "sha256": "f6df25e35c25c90f4ee1f86158901b024e1069cc03454ff0ac8eb01ea9163a36"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 66816,
+      "sha256": "a37b3531572ff3f7df52f8ee9dbb9480d8a608efae1f821e60228af904e77474"
+    }
+  ],
+  "fmt": {
+    "status": "passed",
+    "files": [
+      "src/durable/watch.zig",
+      "src/durable/watch_macos.zig",
+      "src/env/watch_test.zig",
+      "build.zig"
+    ],
+    "source_unchanged": true
+  },
+  "tests": [
+    {
+      "name": "watch-macos-test-semantic-compile",
+      "pid": 12964,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-macos-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 120s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/env_test.zig -target aarch64-macos -lc -fno-emit-bin -O Debug --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T14:59:05.318161Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-macos-20261007",
+      "status": "passed",
+      "deadline_seconds": 130,
+      "started_utc": "2026-10-07T14:59:05.5889769Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:59:07.264583Z"
+    },
+    {
+      "name": "watch-macos-ack-semantic-compile",
+      "pid": 55120,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-macos-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 120s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build-exe src/env_watch_identity_fixture.zig -target aarch64-macos -lc -fno-emit-bin -O ReleaseSafe --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T14:57:46.409731Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-macos-20261007",
+      "status": "passed",
+      "deadline_seconds": 130,
+      "started_utc": "2026-10-07T14:57:46.6698959Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:57:47.2199541Z"
+    },
+    {
+      "name": "watch-macos-windows-final-debug-regression",
+      "pid": 53812,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env test-durable -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T15:02:50.868718Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-macos-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T15:02:51.176966Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T15:03:12.2611142Z"
+    },
+    {
+      "name": "watch-macos-linux-debug-regression",
+      "pid": 57212,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-macos-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env test-durable -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T15:02:41.908987Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-macos-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T15:02:42.2232032Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T15:03:04.0105085Z"
+    }
+  ],
+  "implementation": "Aggregate source notify FSEvents FileEvents|NoDefer/SinceNow/zero latency, retained CF array/string objects, owning watcher run loop, stop/invalidate/release before context destruction, canonical-to-lexical nonrecursive scope mapping, default native mode,500ms startup/new-coverage rescan.",
+  "runtime_gap": "No macOS execution was possible locally. Arm64 semantic compile is not runtime certification. Hosted exact-head Debug/ReleaseSafe test-env/test-durable and original-daemon comparison remain required.",
+  "hosted_commands": [
+    "zig build test-env test-durable -Doptimize=Debug -j2 --summary all",
+    "zig build test-env test-durable -Doptimize=ReleaseSafe -j2 --summary all"
+  ],
+  "hosted_required_cases": [
+    "Forced-native recursive UTF8 reads/exclusions/repeated close plus ordinaryRPC",
+    "Default-native immediate startup write and500ms rescan",
+    "Every GPA constructor failure cleanup",
+    "Stream/root replacement and canonical-linked target coverage"
+  ],
+  "frameworks": [
+    "CoreFoundation",
+    "CoreServices"
+  ],
+  "primary_lifecycle_source": "https://developer.apple.com/library/archive/documentation/Darwin/Conceptual/FSEvents_ProgGuide/UsingtheFSEventsFramework/UsingtheFSEventsFramework.html",
+  "source_flags": "notify8.2.0 src/fsevent.rs lines300-301, pinned fsevent-sys4.1.0",
+  "frozen_utc": "2026-10-07T15:06:43.3310602Z"
+}

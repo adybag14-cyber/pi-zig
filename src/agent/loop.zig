@@ -254,6 +254,7 @@ pub const AgentConfig = struct {
     extra_tools_json: []const u8 = "[]",
     /// Independently owned configured native tools; lifecycle hooks retain hook_ctx.
     configured_tools_json: []const u8 = "[]",
+    configured_tools_json_fn: ?*const fn (?*anyopaque, std.mem.Allocator) anyerror![]u8 = null,
     configured_tool_ctx: ?*anyopaque = null,
     configured_tool_fn: ?ExternalToolCallStreamingFn = null,
     configured_tool_exists_fn: ?ExternalToolExistsFn = null,
@@ -707,9 +708,12 @@ pub fn runWithImages(
             try tools.toolSchemasJsonWithOptions(gpa, config.tool_filter, .{ .experimental_strict = config.experimental_strict_tools });
         defer gpa.free(builtin_schemas);
         const external_schemas = try mergeToolSchemaArrays(gpa, builtin_schemas, config.extra_tools_json);
-        const schemas = if (std.mem.eql(u8, config.configured_tools_json, "[]")) external_schemas else blk: {
+        const dynamic_configured = if (config.configured_tools_json_fn) |get| try get(config.configured_tool_ctx, gpa) else null;
+        defer if (dynamic_configured) |value| gpa.free(value);
+        const configured_json = dynamic_configured orelse config.configured_tools_json;
+        const schemas = if (std.mem.eql(u8, configured_json, "[]")) external_schemas else blk: {
             defer gpa.free(external_schemas);
-            const configured_schemas = try filteredConfiguredSchemas(gpa, config.configured_tools_json, config.tool_filter);
+            const configured_schemas = try filteredConfiguredSchemas(gpa, configured_json, config.tool_filter);
             defer gpa.free(configured_schemas);
             break :blk try mergeToolSchemaArrays(gpa, external_schemas, configured_schemas);
         };

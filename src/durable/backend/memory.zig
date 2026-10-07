@@ -4,6 +4,10 @@ pub const json = @import("json.zig");
 const delta = @import("delta.zig");
 pub const Value = json.Value;
 pub const max_integer = 9007199254740991;
+pub fn requestKey(gpa: std.mem.Allocator, conversation: Value, request: Value) ![]u8 {
+    var tuple = [_]Value{ conversation, request };
+    return json.stringify(gpa, .{ .array = std.array_list.Managed(Value).fromOwnedSlice(gpa, &tuple) });
+}
 pub const Table = enum { conversation, entry, task, submission, document };
 pub const Point = union(enum) { current, seq: u64 };
 pub const Row = struct { table: Table, record: Value, commitSeq: u64 };
@@ -13,6 +17,7 @@ pub const State = struct {
     arena: std.heap.ArenaAllocator,
     rows: std.AutoHashMap(u64, Row),
     documents: std.AutoHashMap(u64, Document),
+    submissionRequests: std.StringHashMap(u64),
     nextId: u64 = 2,
     nextSeq: u64 = 1,
     pub fn create(gpa: std.mem.Allocator) !*State {
@@ -21,6 +26,7 @@ pub const State = struct {
         const allocator = state.arena.allocator();
         state.rows = .init(allocator);
         state.documents = .init(allocator);
+        state.submissionRequests = .init(allocator);
         state.nextId = 2;
         state.nextSeq = 1;
         return state;
@@ -43,6 +49,8 @@ pub const State = struct {
             for (item.value_ptr.revisions.items) |revision| try document.revisions.append(.{ .seq = revision.seq, .content = try json.clone(allocator, revision.content) });
             try copy.documents.put(item.key_ptr.*, document);
         }
+        var requests = self.submissionRequests.iterator();
+        while (requests.next()) |entry| try copy.submissionRequests.put(try allocator.dupe(u8, entry.key_ptr.*), entry.value_ptr.*);
         return copy;
     }
 };
@@ -51,6 +59,8 @@ pub const Prepared = struct {
     state: ?*State,
     generation: u64,
     seq: u64,
+    /// Detached, resolved writes used by portable publication backends.
+    writes: Value = .null,
     applied: bool = false,
     pub fn deinit(self: *Prepared) void {
         if (self.state) |state| state.destroy(self.owner.gpa);
@@ -80,7 +90,7 @@ pub fn idOf(value: Value) !u64 {
     return json.asInteger(try field(value, "id"));
 }
 pub fn currentOnly(record: Value) !bool {
-    return !std.mem.eql(u8, try json.asString(try field(try field(record, "scope"), "kind")), "conversation") or (if (json.get(record, "history")) |history| std.mem.eql(u8, try json.asString(history), "latest") else true);
+    return !std.mem.eql(u8, try json.asString(try field(try field(record, "scope"), "kind")), "conversation") or (if (json.get(record, "history")) |history| std.mem.eql(u8, try json.asString(history), "latest") else false);
 }
 pub fn alive(record: Value, point: Point) !bool {
     const retired = json.get(record, "retiredAt");
@@ -181,6 +191,7 @@ pub const Memory = struct {
         errdefer next.destroy(self.gpa);
         const allocator = next.arena.allocator();
         const writes = try json.clone(allocator, input);
+        const normalized = try json.clone(allocator, input);
         var claimed: std.AutoHashMap(u64, Table) = .init(allocator);
         var actions: std.AutoHashMap(u64, Action) = .init(allocator);
         // IDs  and  document actions are checked before touching any staged tables.
@@ -202,7 +213,7 @@ pub const Memory = struct {
             }
             try claimed.put(id, table);
         }
-        for (writes.array.items) |*write| {
+        for (writes.array.items, 0..) |*write, write_index| {
             const tag = try json.asString(try field(write.*, "type"));
             if (!std.mem.startsWith(u8, tag, "document.")) continue;
             const create = std.mem.eql(u8, tag, "document.create") or std.mem.eql(u8, tag, "document.copy");
@@ -244,6 +255,11 @@ pub const Memory = struct {
                     try base.object.put(allocator, "version", .{ .integer = @intCast(contents.version) });
                     try base.object.put(allocator, "value", contents.value);
                     action.content = base;
+                    var resolved: Value = .{ .object = .empty };
+                    try resolved.object.put(allocator, "type", .{ .string = "document.create" });
+                    try resolved.object.put(allocator, "record", try json.clone(allocator, record.?));
+                    try resolved.object.put(allocator, "content", try json.clone(allocator, base));
+                    normalized.array.items[write_index] = resolved;
                 } else action.content = try field(write.*, "content");
             } else if (std.mem.eql(u8, tag, "document.change")) {
                 if (action.content != null) return self.reject("Document {d} has more than one content command", .{id});
@@ -293,6 +309,18 @@ pub const Memory = struct {
             const table = std.meta.stringToEnum(Table, tag) orelse return error.UnknownStorageWrite;
             const record = try field(write, "value");
             const id = try idOf(record);
+            if (table == .submission) {
+                if (next.rows.get(id)) |previous| if (json.get(previous.record, "requestId")) |request| {
+                    const key = try requestKey(allocator, try field(previous.record, "conversationId"), request);
+                    if (next.submissionRequests.get(key)) |current| if (current == id) {
+                        _ = next.submissionRequests.remove(key);
+                    };
+                };
+                if (json.get(record, "requestId")) |request| {
+                    const key = try requestKey(allocator, try field(record, "conversationId"), request);
+                    try next.submissionRequests.put(key, id);
+                }
+            }
             try next.rows.put(id, .{ .table = table, .record = record, .commitSeq = seq });
             next.nextId = @max(next.nextId, id + 1);
         }
@@ -322,7 +350,7 @@ pub const Memory = struct {
             try next.rows.put(id, .{ .table = .document, .record = doc.record, .commitSeq = seq });
         }
         next.nextSeq = seq + 1;
-        return .{ .owner = self, .state = next, .generation = self.generation, .seq = seq };
+        return .{ .owner = self, .state = next, .generation = self.generation, .seq = seq, .writes = normalized };
     }
     pub fn commit(self: *Memory, writes: Value) !u64 {
         var prepared = try self.prepare(writes, null);

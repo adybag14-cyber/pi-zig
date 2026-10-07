@@ -48,6 +48,9 @@ pub const Engine = struct {
     native_ui_manager: ?*anyopaque = null,
     host_ui_pending: usize = 0,
     native_io: ?std.Io = null,
+    native_sdk_class: c.JSClassID = 0,
+    native_sdk_prototypes: [6]?c.JSValue = .{null} ** 6,
+    native_console_stdout: bool = false,
     text_encoder_class: c.JSClassID = 0,
     text_decoder_class: c.JSClassID = 0,
     dom_exception_class: c.JSClassID = 0,
@@ -99,6 +102,7 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        for (self.native_sdk_prototypes) |prototype| if (prototype) |value| self.freeValue(value);
         c.JS_FreeAtom(self.context, self.event_stream_async_atom);
         if (self.host_scheduler_deinit) |cleanup| cleanup(self);
         if (self.captured_exception) |exception| self.freeValue(exception);

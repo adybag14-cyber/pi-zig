@@ -653,6 +653,50 @@ test "native group catalogs match upstream ordered first tool and collision comm
     try std.testing.expect(std.mem.indexOf(u8, unloaded, "same:3") == null and std.mem.indexOf(u8, unloaded, "obsolete") == null);
 }
 
+test "native renderer duration and padding match original 7fb context including partial old and zero results" {
+    const gpa = std.testing.allocator;
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const group = try Group.init(engine);
+    defer group.deinit();
+    const owner = try group.add("timed-renderer.mjs");
+    try owner.installSchemas();
+    try owner.loadFactory(
+        \\import {Text} from 'pi-tui';
+        \\export default pi => {
+        \\  let last;
+        \\  const render = ctx => {
+        \\    last = {outputPad:ctx.outputPad,durationMs:ctx.durationMs??null,hasDuration:Object.hasOwn(ctx,'durationMs')};
+        \\    return new Text(JSON.stringify(last),0,0);
+        \\  };
+        \\  pi.registerTool({name:'paint',execute(){return {}},renderCall(args,theme,ctx){return render(ctx)},renderResult(result,options,theme,ctx){return render(ctx)}});
+        \\}
+    , "timed-renderer.mjs");
+    const fixture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/renderer-duration-7fb.json"), .{});
+    defer fixture.deinit();
+    for (fixture.value.object.get("cases").?.array.items) |case| {
+        const name = case.object.get("name").?.string;
+        const call = std.mem.eql(u8, name, "initial") or std.mem.eql(u8, name, "changedPadding");
+        const duration = if (std.mem.eql(u8, name, "partial")) "9" else if (case.object.get("durationMs").? == .null) "null" else if (std.mem.eql(u8, name, "final")) "37" else "0";
+        const payload = try std.fmt.allocPrint(gpa, "{{\"toolCallId\":\"row\",\"args\":{{}},\"result\":{{}},\"isPartial\":{},\"outputPad\":{d},\"durationMs\":{s},\"width\":80}}", .{ std.mem.eql(u8, name, "partial"), case.object.get("outputPad").?.integer, duration });
+        defer gpa.free(payload);
+        const rendered = try owner.invokeRenderer(if (call) .render_tool_call else .render_tool_result, "paint", payload);
+        defer gpa.free(rendered);
+        const parsed = try std.json.parseFromSlice(std.json.Value, gpa, rendered, .{});
+        defer parsed.deinit();
+        const lines = parsed.value.object.get("lines").?.array.items;
+        try std.testing.expectEqual(@as(usize, 1), lines.len);
+        const actual = try std.json.parseFromSlice(std.json.Value, gpa, std.mem.trim(u8, lines[0].string, " "), .{});
+        defer actual.deinit();
+        try std.testing.expectEqual(case.object.get("outputPad").?.integer, actual.value.object.get("outputPad").?.integer);
+        const expected_duration = case.object.get("durationMs").?;
+        const actual_duration = actual.value.object.get("durationMs").?;
+        try std.testing.expectEqual(expected_duration, actual_duration);
+        try std.testing.expect(actual.value.object.get("hasDuration").?.bool);
+        c.JS_RunGC(engine.runtime);
+    }
+}
+
 test "native group owner replays dirty call and final result with actual retained state components and resize fences" {
     const protocol = @import("renderer_protocol.zig");
     const gpa = std.testing.allocator;

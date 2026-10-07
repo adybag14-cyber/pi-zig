@@ -27,6 +27,7 @@ const Row = struct {
     revision: u64 = 0,
     dirty: bool = true,
     registered: bool = false,
+    duration_ms: ?f64 = null,
 };
 /// Borrowed/rooted only for the owner-thread replay callback; never a DTO.
 pub const Replay = struct { owner_id: u64, id: []const u8, name: []const u8, generation: u64, kind: Kind, payload: c.JSValue, snapshot: ?c.JSValue, tool: c.JSValue };
@@ -337,6 +338,9 @@ pub const Manager = struct {
         try self.put(payload, "result", c.JS_DupValue(self.engine.context, result));
         try self.put(payload, "isPartial", c.pi_js_bool(self.engine.context, 1));
         try self.put(payload, "width", c.JS_NewInt64(self.engine.context, @intCast(available_width)));
+        const pad = try self.get(previous, "outputPad");
+        defer self.engine.freeValue(pad);
+        try self.put(payload, "outputPad", c.JS_DupValue(self.engine.context, pad));
         inline for (.{ "expanded", "showImages", "executionStarted", "argsComplete" }) |field| {
             try self.put(payload, field, try self.flag(previous, field, comptime std.mem.eql(u8, field, "showImages") or std.mem.eql(u8, field, "executionStarted") or std.mem.eql(u8, field, "argsComplete")));
         }
@@ -498,6 +502,22 @@ pub const Manager = struct {
         inline for (.{ "executionStarted", "argsComplete", "isPartial", "expanded", "showImages", "isError" }) |name| {
             try self.put(object, name, try self.flag(payload, name, comptime std.mem.eql(u8, name, "executionStarted") or std.mem.eql(u8, name, "argsComplete") or std.mem.eql(u8, name, "showImages")));
         }
+        const pad = try self.get(payload, "outputPad");
+        defer self.engine.freeValue(pad);
+        try self.put(object, "outputPad", if (c.JS_IsUndefined(pad)) c.JS_NewInt32(self.engine.context, 1) else c.JS_DupValue(self.engine.context, pad));
+        const partial = try self.get(object, "isPartial");
+        defer self.engine.freeValue(partial);
+        if (!call_slot) {
+            const duration = try self.get(payload, "durationMs");
+            defer self.engine.freeValue(duration);
+            selected.duration_ms = null;
+            if (c.JS_ToBool(self.engine.context, partial) == 0 and !c.JS_IsNull(duration) and !c.JS_IsUndefined(duration)) {
+                var milliseconds: f64 = 0;
+                if (c.JS_ToFloat64(self.engine.context, &milliseconds, duration) < 0) return error.JavaScriptException;
+                selected.duration_ms = milliseconds;
+            }
+        }
+        try self.put(object, "durationMs", if (selected.duration_ms) |duration| c.JS_NewFloat64(self.engine.context, duration) else c.pi_js_undefined());
         const cwd = if (snapshot) |current| try self.get(current, "cwd") else c.pi_js_undefined();
         defer self.engine.freeValue(cwd);
         try self.put(object, "cwd", if (c.JS_IsUndefined(cwd)) try self.engine.checked(c.JS_NewString(self.engine.context, ".")) else c.JS_DupValue(self.engine.context, cwd));

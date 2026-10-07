@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "inputSha256": "11fe2c73f05fdedd002ac9e08bdddad285d51860ebffd3b07c7a9ab5c5ecac08",
+  "input": "import {ModelRuntime} from '@earendil-works/pi-coding-agent';const r=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false});await r.setRuntimeApiKey('opencode','fixture-key');await r.setRuntimeApiKey('openrouter','fixture-key');const cm={...r.getModelOfType('classifier','opencode','jev-1.13'),baseUrl:process.env.SDK_CLASS_URL};const im={...r.getModelsOfType('image','openrouter')[0],baseUrl:process.env.SDK_IMAGE_URL};const classification=await r.classify(cm,{state:{text:'sdk'},questions:{q:{type:'bool',instructions:'check',criteria:{true:'yes',false:'no'}}}},{maxRetries:0});const images=await r.generateImages(im,{input:[{type:'text',text:'fixture'}]},{maxRetries:0});delete classification.timestamp;delete images.timestamp;if(classification.stopReason!=='stop'||images.stopReason!=='stop')throw Error(JSON.stringify({classification,images}));console.log(JSON.stringify({classification,images}));"
+}

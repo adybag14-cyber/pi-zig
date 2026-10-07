@@ -19,3 +19,4 @@ test {
     std.testing.refAllDecls(@This());
 }
 pub const configured = @import("configured.zig");
+pub const tool_search = @import("tool_search.zig");

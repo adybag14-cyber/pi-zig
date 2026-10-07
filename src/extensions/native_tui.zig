@@ -498,19 +498,62 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try engine.registerValueModule("pi-tui", exports);
 }
 
-fn themeCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn themeCall(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    return themeOperation(engine, magic, if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
+    return themeOperation(engine, receiver, magic, if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
 }
-fn themeOperation(engine: *engine_mod.Engine, magic: c_int, args: []c.JSValue) !c.JSValue {
-    const index: usize = if (magic < 2) 1 else 0;
-    const text = try engine.toString(if (args.len > index) args[index] else c.pi_js_undefined());
+fn themeOperation(engine: *engine_mod.Engine, receiver: c.JSValue, magic: c_int, args: []c.JSValue) !c.JSValue {
+    if (magic == 10) return engine.checked(c.JS_GetPropertyStr(engine.context, receiver, "_nativeColorMode"));
+    const color_magic: ?c_int = switch (magic) {
+        0, 8 => 0,
+        1, 9 => 1,
+        else => null,
+    };
+    const opening_only = magic == 8 or magic == 9;
+    const index: usize = if (color_magic != null) 1 else 0;
+    const text = if (opening_only) try engine.gpa.dupe(u8, "") else try engine.toString(if (args.len > index) args[index] else c.pi_js_undefined());
     defer engine.gpa.free(text);
-    const style: []const u8 = if (magic < 2) blk: {
+    if (color_magic != null and c.JS_IsObject(receiver)) {
+        const colors = try engine.checked(c.JS_GetPropertyStr(engine.context, receiver, "_nativeColors"));
+        defer engine.freeValue(colors);
+        if (c.JS_IsObject(colors)) {
+            const name = try engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined());
+            defer engine.gpa.free(name);
+            const name_z = try engine.gpa.dupeZ(u8, name);
+            defer engine.gpa.free(name_z);
+            const selected = try engine.checked(c.JS_GetPropertyStr(engine.context, colors, name_z.ptr));
+            defer engine.freeValue(selected);
+            if (c.JS_IsString(selected)) {
+                const foreground = try engine.toString(selected);
+                defer engine.gpa.free(foreground);
+                const parameters = if (color_magic.? == 0) try engine.gpa.dupe(u8, foreground) else if (std.mem.startsWith(u8, foreground, "38;")) try std.mem.concat(engine.gpa, u8, &.{ "48", foreground[2..] }) else blk: {
+                    const number = std.fmt.parseInt(u16, foreground, 10) catch 39;
+                    break :blk try std.fmt.allocPrint(engine.gpa, "{d}", .{number + 10});
+                };
+                defer engine.gpa.free(parameters);
+                const dim_tokens = try engine.checked(c.JS_GetPropertyStr(engine.context, receiver, "_nativeDim"));
+                defer engine.freeValue(dim_tokens);
+                const dim_token = if (c.JS_IsObject(dim_tokens)) try engine.checked(c.JS_GetPropertyStr(engine.context, dim_tokens, name_z.ptr)) else c.pi_js_undefined();
+                defer engine.freeValue(dim_token);
+                const faint = color_magic.? == 0 and c.JS_ToBool(engine.context, dim_token) == 1;
+                const painted = if (opening_only) try std.fmt.allocPrint(engine.gpa, "\x1b[{s}m{s}", .{ parameters, if (faint) "\x1b[2m" else "" }) else try std.fmt.allocPrint(engine.gpa, "\x1b[{s}m{s}{s}\x1b[{s}m", .{ parameters, if (faint) "\x1b[2m" else "", text, if (faint) "22;39" else if (color_magic.? == 0) "39" else "49" });
+                defer engine.gpa.free(painted);
+                return engine.checked(c.JS_NewStringLen(engine.context, painted.ptr, painted.len));
+            }
+            const unknown = try engine.checked(c.JS_NewError(engine.context));
+            defer engine.freeValue(unknown);
+            const message = try std.fmt.allocPrint(engine.gpa, "Unknown theme color: {s}", .{name});
+            defer engine.gpa.free(message);
+            try define(engine, unknown, "message", try engine.checked(c.JS_NewStringLen(engine.context, message.ptr, message.len)));
+            _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, unknown)));
+            return error.JavaScriptException;
+        }
+    }
+    const style: []const u8 = if (color_magic != null) blk: {
         const name = try engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined());
         defer engine.gpa.free(name);
         const foreground: []const u8 = if (std.mem.eql(u8, name, "error")) "31" else if (std.mem.eql(u8, name, "success")) "32" else if (std.mem.eql(u8, name, "warning")) "33" else if (std.mem.eql(u8, name, "accent") or std.mem.eql(u8, name, "border")) "36" else if (std.mem.eql(u8, name, "dim") or std.mem.eql(u8, name, "muted")) "90" else "39";
-        if (magic == 1) break :blk if (std.mem.eql(u8, name, "error")) "41" else if (std.mem.eql(u8, name, "success")) "42" else if (std.mem.eql(u8, name, "warning")) "43" else "49";
+        if (color_magic.? == 1) break :blk if (std.mem.eql(u8, name, "error")) "41" else if (std.mem.eql(u8, name, "success")) "42" else if (std.mem.eql(u8, name, "warning")) "43" else "49";
         break :blk foreground;
     } else switch (magic) {
         2 => "1",
@@ -520,7 +563,16 @@ fn themeOperation(engine: *engine_mod.Engine, magic: c_int, args: []c.JSValue) !
         6 => "7",
         else => "9",
     };
-    const painted = try std.fmt.allocPrint(engine.gpa, "\x1b[{s}m{s}\x1b[0m", .{ style, text });
+    const closing: []const u8 = switch (magic) {
+        0 => "39",
+        1 => "49",
+        2, 3 => "22",
+        4 => "23",
+        5 => "24",
+        6 => "27",
+        else => "29",
+    };
+    const painted = if (opening_only) try std.fmt.allocPrint(engine.gpa, "\x1b[{s}m", .{style}) else try std.fmt.allocPrint(engine.gpa, "\x1b[{s}m{s}\x1b[{s}m", .{ style, text, closing });
     defer engine.gpa.free(painted);
     return engine.checked(c.JS_NewStringLen(engine.context, painted.ptr, painted.len));
 }
@@ -528,8 +580,100 @@ pub fn createTheme(engine: *engine_mod.Engine) !c.JSValue {
     const object = try engine.checked(c.JS_NewObject(engine.context));
     errdefer engine.freeValue(object);
     try define(engine, object, "name", try engine.checked(c.JS_NewString(engine.context, "default")));
-    inline for (.{ "fg", "bg", "bold", "dim", "italic", "underline", "inverse", "strikethrough" }, 0..) |name, index| try define(engine, object, name, try engine.checked(c.pi_js_function_magic(engine.context, themeCall, name, if (index < 2) 2 else 1, @intCast(index))));
+    try define(engine, object, "_nativeColorMode", try engine.checked(c.JS_NewString(engine.context, if (try themeTrueColor(engine)) "truecolor" else "256color")));
+    inline for (.{ "fg", "bg", "bold", "dim", "italic", "underline", "inverse", "strikethrough", "getFgAnsi", "getBgAnsi", "getColorMode" }, 0..) |name, index| try define(engine, object, name, try engine.checked(c.pi_js_function_magic(engine.context, themeCall, name, if (index < 2) 2 else if (index == 10) 0 else 1, @intCast(index))));
     return object;
+}
+fn themeTrueColor(engine: *engine_mod.Engine) !bool {
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const process = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "process"));
+    defer engine.freeValue(process);
+    // Bare embedded-engine component tests have no terminal binding.
+    if (!c.JS_IsObject(process)) return true;
+    const variables = try engine.checked(c.JS_GetPropertyStr(engine.context, process, "env"));
+    defer engine.freeValue(variables);
+    if (!c.JS_IsObject(variables)) return true;
+    var arena = std.heap.ArenaAllocator.init(engine.gpa);
+    defer arena.deinit();
+    const images = @import("../tui/terminal_image.zig");
+    var env: images.Environment = .{};
+    inline for (.{ .{ "term_program", "TERM_PROGRAM" }, .{ "terminal_emulator", "TERMINAL_EMULATOR" }, .{ "term", "TERM" }, .{ "color_term", "COLORTERM" }, .{ "tmux", "TMUX" }, .{ "kitty_window_id", "KITTY_WINDOW_ID" }, .{ "ghostty_resources_dir", "GHOSTTY_RESOURCES_DIR" }, .{ "wezterm_pane", "WEZTERM_PANE" }, .{ "warp_session_id", "WARP_SESSION_ID" }, .{ "warp_terminal_session_uuid", "WARP_TERMINAL_SESSION_UUID" }, .{ "iterm_session_id", "ITERM_SESSION_ID" }, .{ "wt_session", "WT_SESSION" }, .{ "pi_true_color", "PI_TRUE_COLOR" } }) |field| {
+        const value = try engine.checked(c.JS_GetPropertyStr(engine.context, variables, field[1]));
+        defer engine.freeValue(value);
+        if (c.JS_IsString(value)) {
+            const text = try engine.toString(value);
+            defer engine.gpa.free(text);
+            @field(env, field[0]) = try arena.allocator().dupe(u8, text);
+        }
+    }
+    return images.detectCapabilities(env, @import("builtin").os.tag == .windows, false).true_color;
+}
+fn ansi256(r: f64, g: f64, b: f64) u16 {
+    const cube = [_]f64{ 0, 95, 135, 175, 215, 255 };
+    var indices = [_]usize{0} ** 3;
+    for ([_]f64{ r, g, b }, 0..) |value, channel| {
+        for (cube, 0..) |candidate, index| if (@abs(value - candidate) < @abs(value - cube[indices[channel]])) {
+            indices[channel] = index;
+        };
+    }
+    const gray = @round(0.299 * r + 0.587 * g + 0.114 * b);
+    var gray_index: u16 = 0;
+    var distance: f64 = @abs(gray - 8);
+    for (1..24) |index| {
+        const next = @abs(gray - @as(f64, @floatFromInt(8 + index * 10)));
+        if (next < distance) {
+            distance = next;
+            gray_index = @intCast(index);
+        }
+    }
+    const level: f64 = @floatFromInt(8 + gray_index * 10);
+    const gray_distance = 0.299 * (r - level) * (r - level) + 0.587 * (g - level) * (g - level) + 0.114 * (b - level) * (b - level);
+    const cube_distance = 0.299 * (r - cube[indices[0]]) * (r - cube[indices[0]]) + 0.587 * (g - cube[indices[1]]) * (g - cube[indices[1]]) + 0.114 * (b - cube[indices[2]]) * (b - cube[indices[2]]);
+    return if (@max(r, @max(g, b)) - @min(r, @min(g, b)) < 10 and gray_distance < cube_distance) 232 + gray_index else @intCast(16 + 36 * indices[0] + 6 * indices[1] + indices[2]);
+}
+pub fn hydrateTheme(engine: *engine_mod.Engine, target: c.JSValue, resource: c.JSValue) !void {
+    if (!c.JS_IsObject(resource)) return;
+    const encoded = try engine.stringify(resource);
+    defer engine.gpa.free(encoded);
+    var arena = std.heap.ArenaAllocator.init(engine.gpa);
+    defer arena.deinit();
+    const root = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), encoded, .{});
+    if (root != .object) return error.InvalidNativeTheme;
+    const colors_value = root.object.get("colors") orelse return error.InvalidNativeTheme;
+    if (colors_value != .object) return error.InvalidNativeTheme;
+    const variables = root.object.getPtr("vars");
+    const vars = if (variables) |value| if (value.* == .object) &value.object else null else null;
+    const colors = try engine.checked(c.JS_NewObject(engine.context));
+    defer engine.freeValue(colors);
+    const color_mode = try engine.checked(c.JS_GetPropertyStr(engine.context, target, "_nativeColorMode"));
+    defer engine.freeValue(color_mode);
+    const mode = try engine.toString(color_mode);
+    defer engine.gpa.free(mode);
+    var entries = colors_value.object.iterator();
+    while (entries.next()) |entry| {
+        var stack: std.ArrayList([]const u8) = .empty;
+        const resolved = try @import("../themes/theme.zig").resolveColor(arena.allocator(), entry.value_ptr.*, vars, &stack);
+        const sgr = if (std.mem.eql(u8, mode, "256color") and std.mem.startsWith(u8, resolved.sgr, "38;2;")) blk: {
+            var channels = std.mem.splitScalar(u8, resolved.sgr[5..], ';');
+            const r = try std.fmt.parseFloat(f64, channels.next() orelse return error.InvalidNativeTheme);
+            const g = try std.fmt.parseFloat(f64, channels.next() orelse return error.InvalidNativeTheme);
+            const b = try std.fmt.parseFloat(f64, channels.next() orelse return error.InvalidNativeTheme);
+            break :blk try std.fmt.allocPrint(arena.allocator(), "38;5;{d}", .{ansi256(r, g, b)});
+        } else resolved.sgr;
+        const name = try arena.allocator().dupeZ(u8, entry.key_ptr.*);
+        try define(engine, colors, name, try engine.checked(c.JS_NewStringLen(engine.context, sgr.ptr, sgr.len)));
+    }
+    if (root.object.get("name")) |name| if (name == .string) try define(engine, target, "name", try engine.checked(c.JS_NewStringLen(engine.context, name.string.ptr, name.string.len)));
+    try define(engine, target, "_nativeColors", c.JS_DupValue(engine.context, colors));
+    const faint = try engine.checked(c.JS_NewObject(engine.context));
+    defer engine.freeValue(faint);
+    if (root.object.get("dim")) |list| if (list == .array) for (list.array.items) |item| {
+        if (item != .string) continue;
+        const name = try arena.allocator().dupeZ(u8, item.string);
+        try define(engine, faint, name, c.pi_js_bool(engine.context, 1));
+    };
+    try define(engine, target, "_nativeDim", c.JS_DupValue(engine.context, faint));
 }
 fn keybindingCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
@@ -557,6 +701,33 @@ pub fn createKeybindings(engine: *engine_mod.Engine) !c.JSValue {
     try define(engine, object, "matches", try engine.checked(c.pi_js_function_magic(engine.context, keybindingCall, "matches", 2, 0)));
     try define(engine, object, "getKeys", try engine.checked(c.pi_js_function_magic(engine.context, keybindingCall, "getKeys", 1, 1)));
     return object;
+}
+
+test "native hydrated theme methods replay actual original ANSI color modes dim tokens and unknown errors" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var capture = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/theme-methods-original-7fb.json"), .{});
+    defer capture.deinit();
+    for (capture.value.object.get("values").?.array.items) |source| {
+        const theme = try createTheme(engine);
+        defer engine.freeValue(theme);
+        const mode = source.object.get("mode").?.string;
+        try define(engine, theme, "_nativeColorMode", try engine.checked(c.JS_NewStringLen(engine.context, mode.ptr, mode.len)));
+        const resource = try engine.eval("({name:'source-theme',vars:{accent:'#12abcd'},colors:{accent:'accent',dim:244},dim:['dim']})", "native-theme-original-resource.js", c.JS_EVAL_TYPE_GLOBAL);
+        defer engine.freeValue(resource);
+        try hydrateTheme(engine, theme, resource);
+        const global = c.JS_GetGlobalObject(engine.context);
+        defer engine.freeValue(global);
+        if (c.JS_SetPropertyStr(engine.context, global, "sourceTheme", c.JS_DupValue(engine.context, theme)) < 0) return error.JavaScriptException;
+        c.JS_RunGC(engine.runtime);
+        const observation = try engine.eval("({mode:sourceTheme.getColorMode(),fg:sourceTheme.fg('accent','a\\nb'),bg:sourceTheme.bg('accent','x'),dim:sourceTheme.fg('dim','dim'),fgAnsi:sourceTheme.getFgAnsi('dim'),bgAnsi:sourceTheme.getBgAnsi('accent'),unknown:(()=>{try{sourceTheme.fg('missing','x')}catch(error){return error.message}})()})", "native-theme-original-observation.js", c.JS_EVAL_TYPE_GLOBAL);
+        defer engine.freeValue(observation);
+        const actual = try engine.stringify(observation);
+        defer engine.gpa.free(actual);
+        const expected = try std.json.Stringify.valueAlloc(engine.gpa, source, .{});
+        defer engine.gpa.free(expected);
+        try std.testing.expectEqualStrings(expected, actual);
+    }
 }
 
 fn focusContainmentOwnershipCase(gpa: std.mem.Allocator) !void {

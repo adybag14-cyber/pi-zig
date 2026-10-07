@@ -35,12 +35,14 @@ pub const Palette = struct {
 
 /// Set once during startup. The referenced theme must outlive terminal rendering.
 var palette: Palette = .{};
+var theme_resource: ?[]const u8 = null;
 
 pub fn setSilent(v: bool) void {
     silent = v;
 }
 
 pub fn setTheme(theme: *const Theme) void {
+    theme_resource = theme.resource_json;
     palette = .{
         .accent_sgr = theme.accent_sgr,
         .error_sgr = theme.error_sgr,
@@ -50,11 +52,15 @@ pub fn setTheme(theme: *const Theme) void {
 }
 
 pub fn resetTheme() void {
+    theme_resource = null;
     palette = .{};
 }
 
 pub fn activePalette() Palette {
     return palette;
+}
+pub fn activeThemeResource() ?[]const u8 {
+    return theme_resource;
 }
 
 pub fn style(buf: []u8, sgr: []const u8, text: []const u8) ![]const u8 {

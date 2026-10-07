@@ -1,0 +1,225 @@
+{
+  "status": "frozen",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "base": "e071d075da16a004dc984296b907d25befff1278",
+  "prerequisite_patches": [
+    "remote-env-adapter-7fb59f9.patch",
+    "file-workers-fifo-7fb59f9.patch",
+    "native-linux-watch-reconnect-7fb59f9.patch",
+    "watch-task-retirement-uaf-repair.patch",
+    "durable-local-remote-capability-7fb59f9.patch",
+    "capability-drvfs-source-aware-test.patch"
+  ],
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-jsonl-20261007",
+  "toolchain": "Zig 0.16.0",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\durable-jsonl-storage-7fb59f9.patch",
+  "patch_sha256": "cf65d39c5d1aa9e823bb5acecb4fd33f787717b3c26b59022e9d4a260fe46de5",
+  "files": [
+    {
+      "path": "src/durable/backend/JSONL_CONTRACT.md",
+      "bytes": 3496,
+      "sha256": "2d0e39ce6b04cb73743fc254c2a585434c90b52bc01831653bbb7985f6ea152b"
+    },
+    {
+      "path": "src/durable/backend/jsonl.zig",
+      "bytes": 39569,
+      "sha256": "152ed3054493477d031fbc74020afbd747d69dc8b8cb89ee24a26b18abce3dbf"
+    },
+    {
+      "path": "src/durable/backend/jsonl_test_support.zig",
+      "bytes": 8178,
+      "sha256": "18c6bb62dae892d1aa063d64eb52d7e842ba1031477cc93ade3fde3d58e5261e"
+    },
+    {
+      "path": "src/durable/backend/memory.zig",
+      "bytes": 26735,
+      "sha256": "8fcffc177f7cf1d68954e7324b3080b07233a7c01426736e4fbda22e272a6e64"
+    },
+    {
+      "path": "src/durable/backend/root.zig",
+      "bytes": 3321,
+      "sha256": "988cefe5dba10508b0bfac5aa864090e6ba753b6fdf8a7d56d785cd372151596"
+    },
+    {
+      "path": "src/durable/backend/source_scan.zig",
+      "bytes": 7383,
+      "sha256": "7c98129b60edfec3b2a8f6d1c4aacf7caf03523fb2e600428380c1ecf60de9a1"
+    },
+    {
+      "path": "src/durable/env_capability.zig",
+      "bytes": 31115,
+      "sha256": "eaa6e70538a5aa563f0b04226d87672695883cab89751f520bf91f90804635e9"
+    },
+    {
+      "path": "src/durable/fixtures/jsonl-7fb59f9.json",
+      "bytes": 16019,
+      "sha256": "0d62bc6f249eccea8d1c2d429260abaab08ae77fed19233c1fe787d4c82a82d8"
+    },
+    {
+      "path": "src/durable/fixtures/jsonl-scans-7fb59f9.json",
+      "bytes": 10921,
+      "sha256": "0312e17b657a186d57365c72fd7e070e99eabbdf56c011724c72b0fa9012a7a0"
+    },
+    {
+      "path": "src/durable/fixtures/jsonl-submission-7fb59f9.json",
+      "bytes": 1317,
+      "sha256": "e382046bf4ab24bc77d4b40015394f25de29ce0c7e7dc8abfec95c575402f2e2"
+    },
+    {
+      "path": "src/durable/jsonl_session_test.zig",
+      "bytes": 2968,
+      "sha256": "94300efc99995da49e6788248efe42e7d84e91451497b0cb5b7549d4e663b527"
+    },
+    {
+      "path": "src/durable_harness_test.zig",
+      "bytes": 326,
+      "sha256": "a061be14919371f31ef8ff22f790588054951b693968f278e4ca3105c0ada62b"
+    },
+    {
+      "path": "src/durable_jsonl_fixture.zig",
+      "bytes": 2267,
+      "sha256": "f42ab6aa3a873a5928814ff1fc200f050a0e68039a11aec99b8f208c051adced"
+    },
+    {
+      "path": "src/durable_jsonl_test.zig",
+      "bytes": 23340,
+      "sha256": "ddbfdd9415ddae5f8f0e90575ef33dd5f848d5b91c447510f68a0199bdbd4617"
+    },
+    {
+      "path": "src/env/CONTRACT.md",
+      "bytes": 8315,
+      "sha256": "271c415944ecab9ee16057b6c6e504a95d11c42b85a3d365f7340f08badbd3d5"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 66036,
+      "sha256": "661b4d1b59a80635eb06ad1228e9033092c47cb15092029f13f3dbf7004b4384"
+    }
+  ],
+  "reference_source": [
+    {
+      "path": "packages/durable/src/storage/jsonl/storage.ts",
+      "sha256": "c4eb5b609b87a08df2595f066dbc75d7a3d6a5d11021cfdfc08e282435dca780"
+    },
+    {
+      "path": "packages/durable/src/storage/memory.ts",
+      "sha256": "5c885f3f06b3e53689c8a75be2545a5845af60fdf036bad309f0760990d12830"
+    },
+    {
+      "path": "packages/durable/src/storage/scan.ts",
+      "sha256": "c877b0d33d681212994387abdace219bc85557a2fa574a885a74020189be481e"
+    },
+    {
+      "path": "packages/durable/src/types.ts",
+      "sha256": "d96980f5203dce5606ab240b4f653394d667207dd6bfe32f710500b87cb1ebf8"
+    }
+  ],
+  "tests": [
+    {
+      "name": "jsonl-windows-final-debug",
+      "pid": 6212,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-durable-jsonl test-durable-backend test-durable-harness test-env-capability test-env test-durable test-durable-powershell -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T12:53:38.014873Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-jsonl-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T12:53:38.3088106Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T12:54:02.3809976Z"
+    },
+    {
+      "name": "jsonl-linux-final-debug",
+      "pid": 56824,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-jsonl-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-durable-jsonl test-durable-backend test-durable-harness test-env-capability test-env test-durable test-durable-powershell -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T12:54:06.574848Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-jsonl-20261007",
+      "status": "passed",
+      "deadline_seconds": 310,
+      "started_utc": "2026-10-07T12:54:06.8290506Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T12:54:29.4998732Z"
+    },
+    {
+      "name": "jsonl-windows-final-release-safe",
+      "pid": 35836,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-durable-jsonl test-durable-backend test-durable-harness test-env-capability test-env test-durable test-durable-powershell jsonl-fixture -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T12:54:55.179918Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-jsonl-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T12:54:55.4429539Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T12:57:41.7670469Z"
+    },
+    {
+      "name": "jsonl-linux-final-release-safe",
+      "pid": 35664,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-jsonl-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-durable-jsonl test-durable-backend test-durable-harness test-env-capability test-env test-durable test-durable-powershell jsonl-fixture -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T12:55:43.380581Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-jsonl-20261007",
+      "status": "passed",
+      "deadline_seconds": 310,
+      "started_utc": "2026-10-07T12:55:43.727569Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T12:58:18.5477593Z"
+    },
+    {
+      "name": "jsonl-original-native-final-bidirectional",
+      "pid": 47888,
+      "executable": null,
+      "command_line": null,
+      "identity_captured": false,
+      "created_utc": "2026-10-07T12:58:05.919342Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-jsonl-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T12:58:06.2555783Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T12:58:06.2990095Z"
+    },
+    {
+      "name": "original-jsonl-scans-fork-order",
+      "pid": 34692,
+      "executable": null,
+      "command_line": null,
+      "identity_captured": false,
+      "created_utc": null,
+      "directory": "C:\\Users\\adyba\\pi-zig-env-jsonl-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T12:53:07.228537Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T12:53:07.2631654Z"
+    }
+  ],
+  "counts": {
+    "windows": "171 pass, 15 platform skips, 186 total (Debug and ReleaseSafe)",
+    "linux": "182 pass, 4 platform skips, 186 total (Debug and ReleaseSafe)",
+    "focused": "9 JSONL and 1 Session integration tests within selections",
+    "original_interop": "both directions passed on final ReleaseSafe fixture",
+    "source_scans": "16 original captures across all five tables, including backward-ID fork"
+  },
+  "limitations": [
+    "Existing native IDs are u64; unchecked negative externally supplied source IDs are not covered.",
+    "Exact source error message and cause object identity remains incomplete.",
+    "New JSONL request index and scan APIs do not imply equivalent new SQLite APIs or request-index persistence.",
+    "Physical torn/short/post-marker state recovery is proved; hardware power-loss durability is not certified.",
+    "Windows/macOS forced native watches and device/remount gates remain separate ENV work."
+  ],
+  "source_tree_inputs": "jsonl-source-inputs.txt",
+  "capture_evidence": [
+    "original-jsonl-capture.stdout.log",
+    "original-jsonl-scans-fork-order.stdout.log",
+    "jsonl-submission-capture.json",
+    "jsonl-original-native-final-bidirectional.stdout.log"
+  ],
+  "frozen_utc": "2026-10-07T12:59:28.3670761Z"
+}

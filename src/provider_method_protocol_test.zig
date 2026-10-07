@@ -37,7 +37,8 @@ fn final(worker: *peer.Peer) !std.json.Parsed(std.json.Value) {
 fn command(worker: *peer.Peer, name: []const u8, id: u64) !std.json.Parsed(std.json.Value) {
     const wire_id = try std.fmt.allocPrint(worker.gpa, "{d}", .{id});
     defer worker.gpa.free(wire_id);
-    try worker.send(.{ .kind = "command", .name = name, .rawArguments = "", .flags = std.json.Value{ .object = .empty }, .invocationId = wire_id, .context = .{ .mode = "print", .hasUI = false } });
+    const notification_probe = std.mem.eql(u8, name, "provider-ping");
+    try worker.send(.{ .kind = "command", .name = name, .rawArguments = "", .flags = std.json.Value{ .object = .empty }, .invocationId = wire_id, .context = .{ .mode = if (notification_probe) @as([]const u8, "interactive") else "print", .hasUI = notification_probe } });
     return final(worker);
 }
 fn ok(value: std.json.Value) !std.json.Value {

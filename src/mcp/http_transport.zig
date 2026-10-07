@@ -16,6 +16,8 @@ pub const Options = struct {
     max_retries: usize = 5,
     error_context: ?*anyopaque = null,
     on_http_error: ?*const fn (?*anyopaque, u16, []const u8) anyerror!void = null,
+    auth_context: ?*anyopaque = null,
+    auth_token: ?*const fn (?*anyopaque, std.mem.Allocator, ?*bool) anyerror!?[]u8 = null,
 };
 pub const Http = struct {
     gpa: std.mem.Allocator,
@@ -34,6 +36,7 @@ pub const Http = struct {
     get_started: bool = false,
     get_future: ?std.Io.Future(anyerror!void) = null,
     closed_emitted: bool = false,
+    last_auth_token: ?[]u8 = null,
     pub fn create(gpa: std.mem.Allocator, io: std.Io, options: Options) !*Http {
         const uri = try std.Uri.parse(options.url);
         if (!std.mem.eql(u8, uri.scheme, "http") and !std.mem.eql(u8, uri.scheme, "https")) return error.UnsupportedMcpUrl;
@@ -53,6 +56,7 @@ pub const Http = struct {
         self.close() catch {};
         if (self.session_id) |value| self.gpa.free(value);
         if (self.version) |value| self.gpa.free(value);
+        if (self.last_auth_token) |value| self.gpa.free(value);
         self.arena.deinit();
         const gpa = self.gpa;
         gpa.destroy(self);
@@ -154,7 +158,26 @@ pub const Http = struct {
         var client: std.http.Client = .{ .allocator = self.gpa, .io = self.io };
         defer client.deinit();
         _ = try proxy.configureClient(&client, arena.allocator(), self.options.url, self.options.proxy);
-        return fetch.fetchControlledObserved(&client, .{ .location = .{ .url = self.options.url }, .method = method, .payload = payload, .keep_alive = false, .extra_headers = try self.makeHeaders(arena.allocator(), method, last_id), .response_writer = &body.writer }, timeout, if (method == .DELETE) null else &self.closing, .{ .context = body, .callback = Body.head });
+        var headers: std.ArrayList(std.http.Header) = .empty;
+        try headers.appendSlice(arena.allocator(), try self.makeHeaders(arena.allocator(), method, last_id));
+        if (self.options.auth_token) |token| {
+            var current: ?[]u8 = null;
+            if (method != .DELETE) current = try token(self.options.auth_context, self.gpa, &self.closing) else {
+                self.mutex.lockUncancelable(self.io);
+                defer self.mutex.unlock(self.io);
+                if (self.last_auth_token) |previous| current = try self.gpa.dupe(u8, previous);
+            }
+            defer if (current) |value| self.gpa.free(value);
+            if (method != .DELETE) {
+                const retained = if (current) |value| try self.gpa.dupe(u8, value) else null;
+                self.mutex.lockUncancelable(self.io);
+                if (self.last_auth_token) |previous| self.gpa.free(previous);
+                self.last_auth_token = retained;
+                self.mutex.unlock(self.io);
+            }
+            if (current) |value| try putHeader(arena.allocator(), &headers, "authorization", try std.fmt.allocPrint(arena.allocator(), "Bearer {s}", .{value}));
+        }
+        return fetch.fetchControlledObserved(&client, .{ .location = .{ .url = self.options.url }, .method = method, .payload = payload, .keep_alive = false, .extra_headers = headers.items, .response_writer = &body.writer }, timeout, if (method == .DELETE) null else &self.closing, .{ .context = body, .callback = Body.head });
     }
     fn startGet(self: *Http) !void {
         try self.mutex.lock(self.io);

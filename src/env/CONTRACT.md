@@ -76,8 +76,9 @@ outlive those leases. Generic bounded reads and Harness bindings use the same
 facade, and mutable cwd forwards to its provider without changing its namespace.
 Actual local and remote read/write/edit/bash registrations cross retained
 registry snapshots, and every induced boxing/provider allocation failure closes
-opened handles/subscriptions. This capability boundary is ready for portable
-JSONL storage; the JSONL backend itself is a separate subsequent slice.
+opened handles/subscriptions. Portable format-v1 durable JSONL storage now uses
+this capability for local or remote persistence; its publication/recovery
+boundary is described in `../durable/backend/JSONL_CONTRACT.md`.
 
 File dispatch uses sixteen workers with a bounded queue. Registry access is
 protected; admitted operations retain handle leases through concurrent close.
@@ -100,7 +101,15 @@ their watches, and rescans cover files written before a new directory watch is
 installed. Linux network/FUSE/9P file systems poll by default. Running out of
 native watches switches to polling and reports overflow. The existing 100,000
 snapshot-entry budget is explicit; original Node's unbounded entry count is not
-claimed. Device/inode identity across remounts still needs its own watch gate.
+claimed. Snapshot and installed-watch identity now compare device plus inode.
+Actual private-namespace Linux remount captures replace a tmpfs root with the
+same inode number on a different device, then prove a later write is observed.
+Both the latest original Node environment and the native process pass; the
+previous native implementation misses that later write in the same capture.
+Windows identity uses the source daemon's volume serial and 64-bit file index,
+with an owned zero-access metadata handle closed after every query. A real
+rename retains identity while recreating the old name produces a distinct inode.
+macOS identity is semantically cross-compiled; runtime is not claimed.
 
 The remote watch facade owns its subscription and callback thread, waits for
 ready coverage, ignores callback exceptions, cancels/settles on close and
@@ -113,10 +122,19 @@ The connection's simultaneous ticket waits use a monotonic wake epoch, avoiding
 reset of an event beneath another active waiter; eight actual concurrent
 consumers and watch/RPC interleaving cross this boundary.
 
-Windows uses polling by default. Forced native watch on Windows/macOS still
-returns an explicit unsupported result; their event backends remain subsequent
-work. The current macOS default is polling and is not certified as the upstream
-native default. Cross-compilation is not presented as native watch runtime proof.
+Windows uses polling by default and now supports forced native subscriptions
+through owned overlapped ReadDirectoryChangesW requests. Cancellation settles
+the exact request before freeing its buffer, event and directory handle. Actual
+recursive UTF-8 writes, reads, exclusions and close followed by same-session
+RPCs are checked against the latest original Windows daemon. Process handle
+counts remain stable through every induced constructor allocation failure and
+100 open/cancel/close cycles. The macOS candidate uses an aggregate FSEvents
+stream with source notify FileEvents/NoDefer flags, zero latency, canonical-to-
+lexical event mapping and an owned run loop. Stream stop, invalidation and release
+precede context destruction. A 500 ms rescan covers stream startup and newly
+installed directory coverage, matching the Node source contract. It selects
+native mode by default. Its source is semantically checked, but hosted macOS
+runtime qualification remains required; no runtime certification is claimed.
 
 Independent original implementations are run outside repository implementation
 sources. Reference scripts and toolchains are not runtime dependencies. Native

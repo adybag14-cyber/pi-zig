@@ -86,6 +86,12 @@ jobs:
             zig build test test-provider-contracts -j2 --summary all
           fi
 
+      - name: Qualify macOS native environment lifecycle (ReleaseSafe)
+        if: runner.os == 'macOS'
+        shell: bash
+        timeout-minutes: 10
+        run: zig build test-env test-env-capability test-durable-backend -Doptimize=ReleaseSafe -j2 --summary all
+
       - name: Smoke --version
         shell: bash
         run: |

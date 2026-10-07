@@ -78,7 +78,7 @@ pub fn environmentFromMap(environ: *const std.process.Environ.Map) Environment {
         .ghostty_resources_dir = environ.get("GHOSTTY_RESOURCES_DIR"),
         .wezterm_pane = environ.get("WEZTERM_PANE"),
         .warp_session_id = environ.get("WARP_SESSION_ID"),
-        .warp_terminal_session_uuid = environ.get("WARP_IS_LOCAL_SHELL_SESSION"),
+        .warp_terminal_session_uuid = environ.get("WARP_TERMINAL_SESSION_UUID"),
         .iterm_session_id = environ.get("ITERM_SESSION_ID"),
         .wt_session = environ.get("WT_SESSION"),
         .pi_hyperlinks = environ.get("PI_HYPERLINKS"),
@@ -108,20 +108,23 @@ fn startsLower(value: ?[]const u8, prefix: []const u8) bool {
 }
 
 fn present(value: ?[]const u8) bool {
-    return value != null;
+    return if (value) |text| text.len > 0 else false;
 }
 
 /// Detect terminal capabilities using the same positive-identification policy as
 /// Pi's TypeScript TUI. Image protocols are intentionally disabled in tmux and
 /// screen because their passthrough behavior is not reliable enough for redraws.
 fn detectCapabilitiesBase(env: Environment, is_windows_console: bool, tmux_forwards_hyperlinks: bool) TerminalCapabilities {
-    const has_true_color_hint = eqlLower(env.color_term, "truecolor") or eqlLower(env.color_term, "24bit");
+    const has_true_color_hint = eqlLower(env.color_term, "truecolor") or eqlLower(env.color_term, "24bit") or if (env.term) |term| term.len >= 7 and std.ascii.eqlIgnoreCase(term[term.len - 7 ..], "-direct") else false;
 
     if (present(env.tmux) or startsLower(env.term, "tmux")) {
         return .{ .images = null, .true_color = has_true_color_hint, .hyperlinks = tmux_forwards_hyperlinks };
     }
     if (startsLower(env.term, "screen")) {
         return .{ .images = null, .true_color = has_true_color_hint, .hyperlinks = false };
+    }
+    if (eqlLower(env.term_program, "herdr")) {
+        return .{ .images = null, .true_color = has_true_color_hint, .hyperlinks = true };
     }
     if (present(env.kitty_window_id) or eqlLower(env.term_program, "kitty")) {
         return .{ .images = .kitty, .true_color = true, .hyperlinks = true };

@@ -20,8 +20,10 @@ pub const Theme = struct {
     success_sgr: []const u8 = "32",
     muted_sgr: []const u8 = "90",
     owned: bool = false,
+    resource_json: ?[]u8 = null,
 
     pub fn deinit(self: *Theme, gpa: std.mem.Allocator) void {
+        if (self.resource_json) |json| gpa.free(json);
         if (self.owned) {
             gpa.free(self.name);
             gpa.free(self.accent);
@@ -37,7 +39,7 @@ pub const Theme = struct {
     }
 };
 
-const ResolvedColor = struct {
+pub const ResolvedColor = struct {
     label: []u8,
     sgr: []u8,
 
@@ -103,7 +105,7 @@ fn colorFromScalar(gpa: std.mem.Allocator, value: std.json.Value) !ResolvedColor
     }
 }
 
-fn resolveColor(
+pub fn resolveColor(
     gpa: std.mem.Allocator,
     value: std.json.Value,
     vars: ?*const std.json.ObjectMap,
@@ -178,6 +180,8 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Theme {
     var muted = try parseCoreColor(gpa, root, colors, vars, "muted", "brightBlack", "90");
     errdefer muted.deinit(gpa);
 
+    const resource = try gpa.dupe(u8, raw);
+    errdefer gpa.free(resource);
     return .{
         .name = try gpa.dupe(u8, raw_name),
         .accent = accent.label,
@@ -189,6 +193,7 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Theme {
         .success_sgr = success.sgr,
         .muted_sgr = muted.sgr,
         .owned = true,
+        .resource_json = resource,
     };
 }
 

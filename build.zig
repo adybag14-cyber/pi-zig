@@ -102,6 +102,14 @@ pub fn build(b: *std.Build) void {
     }
 
     b.installArtifact(exe);
+    const sdk_embedder = b.addExecutable(.{
+        .name = "pi-sdk-embedder",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_embedder.zig"), .target = target, .optimize = optimize, .imports = &.{.{ .name = "pi_zig", .module = mod }} }),
+        .use_llvm = use_llvm,
+    });
+    const sdk_install = b.addInstallArtifact(sdk_embedder, .{});
+    const sdk_step = b.step("sdk-embedder", "Build the no-Node native SDK module embedder");
+    sdk_step.dependOn(&sdk_install.step);
 
     // The canonical SQLite backend remains optional so the ordinary `pi`
     // executable stays self-contained. `zig build sqlite` installs the
@@ -239,6 +247,15 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    const sdk_process_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_sdk_process_tests = b.addRunArtifact(sdk_process_tests);
+    run_sdk_process_tests.step.dependOn(&sdk_install.step);
+    const sdk_test_step = b.step("test-native-sdk", "Exercise source-captured programmatic SDK lifecycle without Node on PATH");
+    sdk_test_step.dependOn(&run_sdk_process_tests.step);
+    test_step.dependOn(&run_sdk_process_tests.step);
     const upstream_contract_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("tools/upstream_contract.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
@@ -247,6 +264,25 @@ pub fn build(b: *std.Build) void {
     const upstream_contract_step = b.step("test-upstream-contract", "Check whole-tree upstream drift admission and malformed identities");
     upstream_contract_step.dependOn(&run_upstream_contract_tests.step);
     test_step.dependOn(&run_upstream_contract_tests.step);
+    const latest_bash_output_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/latest_bash_output_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, latest_bash_output_tests.root_module, quickjs);
+    const run_latest_bash_output_tests = b.addRunArtifact(latest_bash_output_tests);
+    const latest_bash_output_step = b.step("test-latest-bash-output", "Check latest user bash ANSI stream and Android clipboard contracts");
+    latest_bash_output_step.dependOn(&run_latest_bash_output_tests.step);
+    test_step.dependOn(&run_latest_bash_output_tests.step);
+    const latest_bash_process_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/latest_bash_output_process_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_latest_bash_process_tests = b.addRunArtifact(latest_bash_process_tests);
+    run_latest_bash_process_tests.step.dependOn(b.getInstallStep());
+    run_latest_bash_process_tests.setEnvironmentVariable("PI_TEST_BINARY", b.getInstallPath(.bin, b.fmt("pi{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    const latest_bash_process_step = b.step("test-latest-bash-output-process", "Replay native RPC streaming bash sanitization and persistence");
+    latest_bash_process_step.dependOn(&run_latest_bash_process_tests.step);
+    test_step.dependOn(&run_latest_bash_process_tests.step);
     const durable_fixture = b.addExecutable(.{
         .name = "pi-durable-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable/process_fixture.zig"), .target = target, .optimize = optimize, .link_libc = true }),
@@ -290,6 +326,11 @@ pub fn build(b: *std.Build) void {
     const install_env_daemon = b.addInstallArtifact(env_daemon, .{});
     const env_build_step = b.step("env", "Build the native framed Pi environment daemon");
     env_build_step.dependOn(&install_env_daemon.step);
+    const identity_fixture = b.addExecutable(.{ .name = "pi-env-watch-identity-fixture", .root_module = b.createModule(.{ .root_source_file = b.path("src/env_watch_identity_fixture.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    linkDurable(b, identity_fixture.root_module);
+    const install_identity_fixture = b.addInstallArtifact(identity_fixture, .{});
+    const identity_fixture_step = b.step("env-watch-identity-fixture", "Build native process participant for actual isolated filesystem identity gates");
+    identity_fixture_step.dependOn(&install_identity_fixture.step);
     const env_fixture = b.addExecutable(.{
         .name = "pi-env-process-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/env_process_fixture.zig"), .target = target, .optimize = optimize }),
@@ -327,11 +368,25 @@ pub fn build(b: *std.Build) void {
     const capability_step = b.step("test-env-capability", "Exercise shared local and remote durable storage environment capabilities");
     capability_step.dependOn(&run_capability_tests.step);
     test_step.dependOn(&run_capability_tests.step);
+    const jsonl_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_jsonl_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"durable JSONL"}, .use_llvm = use_llvm });
+    linkDurable(b, jsonl_tests.root_module);
+    const run_jsonl_tests = b.addRunArtifact(jsonl_tests);
+    run_jsonl_tests.step.dependOn(&install_env_daemon.step);
+    run_jsonl_tests.setEnvironmentVariable("PI_TEST_ENV_DAEMON", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env.exe" else "pi-env"));
+    const jsonl_step = b.step("test-durable-jsonl", "Verify portable durable JSONL publication recovery and source-compatible scans");
+    jsonl_step.dependOn(&run_jsonl_tests.step);
+    test_step.dependOn(&run_jsonl_tests.step);
+    const jsonl_fixture = b.addExecutable(.{ .name = "pi-durable-jsonl-fixture", .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_jsonl_fixture.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    linkDurable(b, jsonl_fixture.root_module);
+    const install_jsonl_fixture = b.addInstallArtifact(jsonl_fixture, .{});
+    const jsonl_fixture_step = b.step("jsonl-fixture", "Build original/native durable JSONL interop fixture");
+    jsonl_fixture_step.dependOn(&install_jsonl_fixture.step);
     const durable_backend_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_backend_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkSqlite(durable_backend_tests.root_module, sqlite_lib_dir);
+    linkDurable(b, durable_backend_tests.root_module);
     const run_durable_backend_tests = b.addRunArtifact(durable_backend_tests);
     const durable_backend_step = b.step("test-durable-backend", "Exercise native numeric durable transactions document history SQLite fencing and Session");
     durable_backend_step.dependOn(&run_durable_backend_tests.step);
@@ -469,6 +524,16 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_prompt_sections_tests.step);
     mcp_test_step.dependOn(&run_mcp_process_tests.step);
     test_step.dependOn(&run_mcp_process_tests.step);
+    const codemode_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_codemode_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native codemode"},
+    });
+    linkQuickJs(b, codemode_tests.root_module, quickjs);
+    const run_codemode_tests = b.addRunArtifact(codemode_tests);
+    const codemode_step = b.step("test-codemode", "Exercise isolated native codemode user scripts and Zig host callbacks");
+    codemode_step.dependOn(&run_codemode_tests.step);
+    test_step.dependOn(&run_codemode_tests.step);
     const mcp_runtime_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_runtime_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
@@ -1090,4 +1155,8 @@ fn linkSqlite(module: *std.Build.Module, library_dir: ?[]const u8) void {
 fn linkDurable(b: *std.Build, module: *std.Build.Module) void {
     module.addCSourceFile(.{ .file = b.path("src/durable/process_probe.c"), .flags = &.{"-std=gnu11"} });
     module.link_libc = true;
+    if (module.resolved_target.?.result.os.tag == .macos) {
+        module.linkFramework("CoreFoundation", .{});
+        module.linkFramework("CoreServices", .{});
+    }
 }

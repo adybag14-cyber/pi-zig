@@ -13,6 +13,84 @@ const renderer_protocol = @import("extensions/renderer_protocol.zig");
 
 const editor_protocol = @import("extensions/editor_protocol.zig");
 
+test "native runtime terminal input detach wakes actual pending worker callback drains close reentry rejects late ticket and reattaches" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    const widgets = @import("extensions/widget_protocol.zig");
+    var fixture = try Fixture.initSource("import fs from 'node:fs';export default pi=>{pi.registerCommand('install',{handler(_,ctx){ctx.ui.onTerminalInput(data=>{if(data==='hold'){fs.writeFileSync(ctx.cwd+'/input-entered','entered');const deadline=Date.now()+3000;while(!fs.existsSync(ctx.cwd+'/input-ack')&&Date.now()<deadline){}return {data:'late-old-ticket'}}return {data:data+'Ω'}});return {}}});pi.registerCommand('ping',{handler(){return {message:'reusable'}}})}");
+    defer fixture.deinit();
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, io, &.{fixture.source_path}, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const encoded_path = try std.json.Stringify.valueAlloc(gpa, fixture.root, .{});
+    defer gpa.free(encoded_path);
+    const context = try std.fmt.allocPrint(gpa, "{{\"hasUI\":true,\"cwd\":{s}}}", .{encoded_path});
+    defer gpa.free(context);
+    try started.runtime.setContextJson(context);
+    const Capture = struct {
+        runtime: *runtime_mod.Runtime,
+        closes: usize = 0,
+        fn record(_: ?*anyopaque, received: widgets.Record, _: *widgets.ControlQueue) !void {
+            var value = received;
+            value.deinit();
+        }
+        fn close(raw: ?*anyopaque, _: u64) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            // This takes the record mutex through swapUiBridge. Holding that
+            // mutex over a frontend's drain would deadlock this real callback.
+            self.runtime.setUiBridge(null);
+            self.closes += 1;
+        }
+    };
+    var capture: Capture = .{ .runtime = started.runtime };
+    const bridge: runtime_mod.WidgetBridge = .{ .context = &capture, .record_fn = Capture.record, .closed_fn = Capture.close };
+    try started.runtime.setWidgetBridge(bridge);
+    const installed = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"install\",\"rawArguments\":\"\"}", null);
+    defer gpa.free(installed);
+    const Probe = struct {
+        bridge: runtime_mod.TerminalInputBridge,
+        finished: std.Io.Event = .unset,
+        failure: ?anyerror = null,
+        result: ?runtime_mod.TerminalInputResult = null,
+        fn run(self: *@This()) void {
+            defer self.finished.set(std.testing.io);
+            self.result = self.bridge.input_fn(self.bridge.context, "hold") catch |err| {
+                self.failure = err;
+                return;
+            };
+        }
+    };
+    var probe: Probe = .{ .bridge = started.runtime.terminalInputBridge() };
+    var group: std.Io.Group = .init;
+    try group.concurrent(io, Probe.run, .{&probe});
+    defer {
+        fixture.tmp.dir.writeFile(io, .{ .sub_path = "input-ack", .data = "release" }) catch {};
+        group.cancel(io);
+        group.await(io) catch {};
+        if (probe.result) |value| std.heap.page_allocator.free(value.data);
+    }
+    const deadline = std.Io.Clock.awake.now(io).toMilliseconds() + 3000;
+    while (true) {
+        if (fixture.tmp.dir.statFile(io, "input-entered", .{})) |_| break else |err| if (err != error.FileNotFound) return err;
+        if (std.Io.Clock.awake.now(io).toMilliseconds() >= deadline) return error.TerminalInputCallbackAdmissionTimeout;
+        try io.sleep(.fromMilliseconds(5), .awake);
+    }
+    try std.testing.expect(!probe.finished.isSet());
+    try started.runtime.setWidgetBridge(null);
+    try event_wait.untilSet(io, &probe.finished, 1000);
+    try std.testing.expectEqual(error.TerminalInputChannelClosed, probe.failure.?);
+    try std.testing.expectEqual(@as(usize, 1), capture.closes);
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "input-ack", .data = "release" });
+    const reused = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"ping\",\"rawArguments\":\"\"}", null);
+    defer gpa.free(reused);
+    try std.testing.expect(std.mem.indexOf(u8, reused, "reusable") != null);
+    try started.runtime.setWidgetBridge(bridge);
+    const transformed = try probe.bridge.input_fn(probe.bridge.context, "x");
+    defer std.heap.page_allocator.free(transformed.data);
+    try std.testing.expectEqualStrings("xΩ", transformed.data);
+    try fixture.noBridge();
+}
+
 test "native runtime custom editor original 031b modal factory handles idle input change submit resize retirement and close" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
@@ -2113,7 +2191,8 @@ test "native runtime rejected callbacks preserve admitted action order origin an
         else
             try started.runtime.invokeCommand("reuse", "", "{}");
         defer gpa.free(reused);
-        try std.testing.expect(std.mem.indexOf(u8, reused, "true") != null);
+        // Original runner contexts stay live until their owner is invalidated.
+        try std.testing.expect(std.mem.indexOf(u8, reused, "false") != null);
         try std.testing.expectEqual(@as(usize, 0), started.runtime.rendererActionCount());
         try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, if (group)
             started.runtime.invokeGroupRequest(1, "{\"kind\":\"hook\",\"name\":\"before_agent_start\",\"payload\":{}}", null)
@@ -2177,7 +2256,7 @@ test "native runtime qualified registry preserves chat facade live shared provid
     defer gpa.free(unloaded);
     const stale = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"stale\",\"rawArguments\":\"\"}", null);
     defer gpa.free(stale);
-    try std.testing.expect(std.mem.indexOf(u8, stale, "true") != null and std.mem.indexOf(u8, stale, "same") != null and std.mem.indexOf(u8, stale, "second") == null);
+    try std.testing.expect(std.mem.indexOf(u8, stale, "false") != null and std.mem.indexOf(u8, stale, "same") != null and std.mem.indexOf(u8, stale, "second") == null);
     const late = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"late\",\"rawArguments\":\"\"}", null);
     defer gpa.free(late);
     try std.testing.expect(std.mem.indexOf(u8, late, "late") != null and std.mem.indexOf(u8, late, "second") == null);

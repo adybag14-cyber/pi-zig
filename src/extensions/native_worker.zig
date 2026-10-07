@@ -24,7 +24,7 @@ const widget_protocol = @import("widget_protocol.zig");
 const c = engine_mod.c;
 
 const WireRecord = struct {
-    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, shutdown };
+    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, shutdown };
     bytes: []u8,
     kind: Kind = .request,
 };
@@ -95,6 +95,7 @@ const Transport = struct {
         if (std.mem.eql(u8, kind.string, "renderer_control") or std.mem.eql(u8, kind.string, "renderer_subscribe")) return .renderer_control;
         if (std.mem.eql(u8, kind.string, "editor_control") or std.mem.eql(u8, kind.string, "editor_subscribe")) return .editor_control;
         if (std.mem.eql(u8, kind.string, "widget_control")) return .widget_control;
+        if (std.mem.eql(u8, kind.string, "terminal_input")) return .terminal_input;
         return .request;
     }
 
@@ -168,6 +169,7 @@ const Transport = struct {
             };
             try self.publishMetadataSafe();
             var deadline = try timers.nextDeadline(self.engine);
+            if (self.group.ui.footer_data.next_poll) |footer_due| deadline = if (deadline) |due| @min(due, footer_due) else footer_due;
             if (self.group.renderers.nextRedrawDeadline()) |redraw_due| {
                 deadline = if (deadline) |due| @min(due, redraw_due) else redraw_due;
             }
@@ -204,6 +206,7 @@ const Transport = struct {
         _ = try self.group.renderers.pumpDirtyReady();
         _ = try self.group.ui.editors.pumpDirty();
         _ = try self.group.ui.widgets.pumpDirty();
+        _ = try self.group.ui.footer_data.poll();
     }
 
     fn publishMetadataSafe(self: *Transport) !void {
@@ -250,7 +253,7 @@ const Transport = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.records.items, 0..) |record, index| {
-            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or (self.active and record.kind == .shutdown and index == 0)) {
+            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or record.kind == .terminal_input or (self.active and record.kind == .shutdown and index == 0)) {
                 const removed = self.records.orderedRemove(index);
                 self.queued_bytes -= removed.bytes.len;
                 return removed;
@@ -280,6 +283,11 @@ const Transport = struct {
             var arena: std.heap.ArenaAllocator = .init(engine.gpa);
             defer arena.deinit();
             const request = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{});
+            if (record.kind == .terminal_input) {
+                try self.terminalInput(request);
+                dispatched = true;
+                continue;
+            }
             if (record.kind == .widget_control) {
                 try self.widgetControl(request);
                 dispatched = true;
@@ -371,6 +379,7 @@ const Transport = struct {
     }
     fn persistentControl(self: *Transport, kind: WireRecord.Kind, request: std.json.Value) !bool {
         switch (kind) {
+            .terminal_input => try self.terminalInput(request),
             .widget_control => try self.widgetControl(request),
             .renderer_control => try self.rendererControl(request),
             .editor_control => try self.editorControl(request),
@@ -384,6 +393,27 @@ const Transport = struct {
         const control = try widget_protocol.readControl(&request.object);
         if (control.owner_generation != self.group.ui.widgets.owner_generation) return;
         try self.group.ui.widgets.resize(control.width, control.height);
+    }
+    fn terminalInput(self: *Transport, request: std.json.Value) !void {
+        if (request != .object) return error.InvalidTerminalInput;
+        const id = try component_protocol.identifier(request.object.get("id") orelse return error.InvalidTerminalInput);
+        const generation = try component_protocol.identifier(request.object.get("ownerGeneration") orelse return error.InvalidTerminalInput);
+        if (generation != self.group.ui.widgets.owner_generation) return;
+        const input = try requiredText(request.object, "data");
+        const transformed = self.group.ui.terminal_input.dispatch(input) catch |err| {
+            try self.writer.print("\x1e{{\"type\":\"terminal_input_result\",\"id\":\"{d}\",\"ownerGeneration\":\"{d}\",\"consume\":false,\"data\":", .{ id, generation });
+            try std.json.Stringify.value(input, .{}, self.writer);
+            try self.writer.writeAll(",\"error\":");
+            try std.json.Stringify.value(self.engine.last_error orelse @errorName(err), .{}, self.writer);
+            try self.writer.writeAll("}\n");
+            try self.writer.flush();
+            return;
+        };
+        defer self.engine.gpa.free(transformed.data);
+        try self.writer.print("\x1e{{\"type\":\"terminal_input_result\",\"id\":\"{d}\",\"ownerGeneration\":\"{d}\",\"consume\":{},\"data\":", .{ id, generation, transformed.consume });
+        try std.json.Stringify.value(transformed.data, .{}, self.writer);
+        try self.writer.writeAll("}\n");
+        try self.writer.flush();
     }
     fn widgetRecord(context: ?*anyopaque, record: widget_protocol.Record) !void {
         const self: *Transport = @ptrCast(@alignCast(context.?));
@@ -531,7 +561,16 @@ const Transport = struct {
 
     fn uiAction(context: ?*anyopaque, method: []const u8, args: []const u8) !void {
         const self: *Transport = @ptrCast(@alignCast(context.?));
-        try self.uiRecord("ui_action", null, method, args);
+        if (self.active) return self.uiRecord("ui_action", null, method, args);
+        var out: std.Io.Writer.Allocating = .init(self.engine.gpa);
+        defer out.deinit();
+        try out.writer.print("{{\"type\":\"widget_action\",\"ownerGeneration\":\"{d}\",\"method\":", .{self.group.ui.widgets.owner_generation});
+        try std.json.Stringify.value(method, .{}, &out.writer);
+        try out.writer.print(",\"args\":{s}}}", .{args});
+        try self.writer.writeByte(0x1e);
+        try self.writer.writeAll(out.written());
+        try self.writer.writeByte('\n');
+        try self.writer.flush();
     }
 
     fn uiCancel(context: ?*anyopaque, id: u32) !void {
@@ -915,6 +954,65 @@ fn loadSource(gpa: std.mem.Allocator, io: std.Io, engine: *engine_mod.Engine, lo
 
 pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void {
     return runOwner(gpa, io, &.{extension_path}, null, false, 1);
+}
+
+/// Native programmatic embedding entrypoint. It evaluates a user SDK module
+/// directly, without requiring an extension factory or a Node executable.
+pub fn runSdkFile(gpa: std.mem.Allocator, io: std.Io, script_path: []const u8) !void {
+    var environment: std.process.Environ.Map = .init(gpa);
+    defer environment.deinit();
+    return runSdkFileWithEnvironment(gpa, io, script_path, &environment, &.{script_path});
+}
+pub fn runSdkFileWithEnvironment(gpa: std.mem.Allocator, io: std.Io, script_path: []const u8, environment: *const std.process.Environ.Map, arguments: []const []const u8) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{ .main_module = true });
+    defer engine.deinit();
+    var loader: Loader = .{ .io = io, .engine = engine };
+    engine.setSourceLoader(.{ .context = &loader, .load = Loader.source, .normalize = Loader.normalize, .normalize_require = Loader.normalizeRequire, .input = Loader.input });
+    const group = try native_group.Group.init(engine);
+    defer group.deinit();
+    const binding = try group.add(script_path);
+    try timers.install(engine, io);
+    try binding.installSchemas();
+    try node_path.install(engine, io);
+    try node_url.install(engine);
+    try node_fs.install(engine, io);
+    try commonjs.install(engine);
+    try console.install(engine, io);
+    try text_encoding.install(engine);
+    try text_decoder.install(engine);
+    try @import("native_process.zig").install(engine, io, environment, arguments);
+    engine.native_console_stdout = true;
+    const filename = try std.Io.Dir.cwd().realPathFileAlloc(io, script_path, gpa);
+    defer gpa.free(filename);
+    for (filename) |*byte| if (byte.* == '\\') {
+        byte.* = '/';
+    };
+    const terminated = try gpa.dupeZ(u8, filename);
+    defer gpa.free(terminated);
+    const input = try Loader.input(&loader, engine, filename);
+    defer switch (input) {
+        .source => |body| gpa.free(body),
+        .exports => |exports| engine.freeValue(exports),
+    };
+    const evaluated = switch (input) {
+        .source => |body| engine.evalModule(body, terminated) catch |err| {
+            if (engine.last_error) |message| try std.Io.File.stderr().writeStreamingAll(io, message);
+            return err;
+        },
+        .exports => return error.NativeSDKEntrypointMustBeModule,
+    };
+    defer engine.freeValue(evaluated);
+    const settled = engine.awaitValue(evaluated) catch |err| {
+        if (engine.last_error) |message| {
+            var buffer: [4096]u8 = undefined;
+            var output = std.Io.File.stderr().writerStreaming(io, &buffer);
+            try output.interface.print("{s}\n", .{message});
+            try output.interface.flush();
+        }
+        return err;
+    };
+    defer engine.freeValue(settled);
+    _ = try engine.drainReadyJobs();
 }
 
 pub fn runGroup(gpa: std.mem.Allocator, io: std.Io) !void {

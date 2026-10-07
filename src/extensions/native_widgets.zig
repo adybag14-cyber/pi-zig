@@ -5,7 +5,7 @@ const components = @import("native_components.zig");
 const protocol = @import("widget_protocol.zig");
 const c = engine_mod.c;
 const Token = struct { gpa: std.mem.Allocator, manager: ?*Manager };
-const Entry = struct { key: []u8, owner: u64, generation: u64, component: c.JSValue, placement: protocol.Placement, dirty: bool = true };
+const Entry = struct { key: []u8, owner: u64, generation: u64, component: c.JSValue, placement: protocol.Placement, dirty: bool = true, mounted: bool = true, slot: protocol.Slot = .widget };
 const Method = enum(c_int) { requestRender, columns, rows };
 
 fn finalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
@@ -64,22 +64,25 @@ pub const Manager = struct {
             if (self.entries.items[index].owner == owner) self.retire(index) else index += 1;
         }
     }
-    fn publish(self: *Manager, key: []const u8, generation: u64, placement: protocol.Placement, frame: ?components.Frame) !void {
-        return self.publishWidth(key, generation, placement, frame, self.width);
+    fn publish(self: *Manager, entry: Entry, frame: ?components.Frame) !void {
+        return self.publishWidth(entry, frame, self.width);
     }
-    fn publishWidth(self: *Manager, key: []const u8, generation: u64, placement: protocol.Placement, frame: ?components.Frame, width: usize) !void {
+    fn publishWidth(self: *Manager, entry: Entry, frame: ?components.Frame, width: usize) !void {
         self.sequence += 1;
-        if (self.record_fn) |sink| try sink(self.record_context, .{ .gpa = self.engine.gpa, .owner_generation = self.owner_generation, .generation = generation, .sequence = self.sequence, .key = @constCast(key), .placement = placement, .width = width, .frame = frame });
+        if (self.record_fn) |sink| try sink(self.record_context, .{ .gpa = self.engine.gpa, .owner_generation = self.owner_generation, .generation = entry.generation, .sequence = self.sequence, .key = entry.key, .placement = entry.placement, .width = width, .frame = frame, .slot = entry.slot });
     }
     fn remove(self: *Manager, index: usize) !void {
         // Like upstream, a throwing explicit replacement/clear leaves the old
         // map entry retained. Owner retirement is a separate cleanup boundary.
         const current = self.entries.items[index];
         if (try components.callMethod(self.engine, current.component, "dispose", &.{}, true)) |value| self.engine.freeValue(value);
+        try self.removeDisposed(index);
+    }
+    fn removeDisposed(self: *Manager, index: usize) !void {
         const entry = self.entries.orderedRemove(index);
         defer self.engine.gpa.free(entry.key);
         defer self.engine.freeValue(entry.component);
-        try self.publish(entry.key, entry.generation, entry.placement, null);
+        try self.publish(entry, null);
     }
     fn retire(self: *Manager, index: usize) void {
         const entry = self.entries.orderedRemove(index);
@@ -87,7 +90,7 @@ pub const Manager = struct {
         defer self.engine.freeValue(entry.component);
         // Teardown releases the retained root even if its user cleanup throws.
         if (components.callMethod(self.engine, entry.component, "dispose", &.{}, true) catch null) |value| self.engine.freeValue(value);
-        self.publish(entry.key, entry.generation, entry.placement, null) catch {};
+        self.publish(entry, null) catch {};
     }
     pub fn clear(self: *Manager) !void {
         if (self.busy) return error.NativeWidgetCallbackReentry;
@@ -103,7 +106,7 @@ pub const Manager = struct {
         while (self.entries.pop()) |entry| {
             defer self.engine.gpa.free(entry.key);
             defer self.engine.freeValue(entry.component);
-            try self.publish(entry.key, entry.generation, entry.placement, null);
+            try self.publish(entry, null);
         }
     }
     fn function(self: *Manager, generation: u64, method: Method) !c.JSValue {
@@ -124,8 +127,11 @@ pub const Manager = struct {
             .columns => return c.JS_NewInt64(context, @intCast(self.width)),
             .rows => return c.JS_NewInt64(context, @intCast(self.height)),
             .requestRender => {
-                for (self.entries.items) |*entry| if (entry.generation == generation) {
-                    entry.dirty = true;
+                const live = for (self.entries.items) |entry| {
+                    if (entry.generation == generation) break true;
+                } else false;
+                if (live) for (self.entries.items) |*entry| {
+                    entry.dirty = entry.mounted;
                 };
                 return c.pi_js_undefined();
             },
@@ -167,17 +173,40 @@ pub const Manager = struct {
         return container;
     }
     pub fn set(self: *Manager, owner: u64, key: []const u8, factory: c.JSValue, placement: protocol.Placement, theme: c.JSValue) !void {
+        return self.setSlot(owner, key, factory, placement, theme, .widget, c.pi_js_undefined());
+    }
+    pub fn setSlot(self: *Manager, owner: u64, key: []const u8, factory: c.JSValue, placement: protocol.Placement, theme: c.JSValue, slot: protocol.Slot, footer_data: c.JSValue) !void {
         if (!self.owners.contains(owner)) return error.StaleNativeExtensionOwner;
         if (self.busy) return error.NativeWidgetCallbackReentry;
         self.busy = true;
         defer self.busy = false;
+        var replace_index: ?usize = null;
         var index: usize = 0;
         while (index < self.entries.items.len) {
-            if (std.mem.eql(u8, self.entries.items[index].key, key)) try self.remove(index) else index += 1;
+            if (self.entries.items[index].slot == slot and std.mem.eql(u8, self.entries.items[index].key, key)) {
+                if (slot == .widget) try self.remove(index) else {
+                    const previous = self.entries.items[index];
+                    if (try components.callMethod(self.engine, previous.component, "dispose", &.{}, true)) |value| self.engine.freeValue(value);
+                    replace_index = index;
+                    // Footer clears its Container before the factory call;
+                    // header replacement retains its current child on throw.
+                    if (slot == .footer) {
+                        self.entries.items[index].mounted = false;
+                        self.entries.items[index].dirty = false;
+                        // A present empty frame keeps the footer Container
+                        // empty; null restores the built-in footer instead.
+                        try self.publish(previous, .{ .gpa = self.engine.gpa, .lines = &.{}, .bytes = 0 });
+                    }
+                    break;
+                }
+            } else index += 1;
         }
-        if (c.JS_IsUndefined(factory) or c.JS_IsNull(factory)) return;
-        if (!c.JS_IsFunction(self.engine.context, factory) and !c.JS_IsArray(factory)) return error.InvalidNativeWidgetFactory;
-        if (self.entries.items.len >= 256 or key.len > 65536) return error.NativeWidgetLimit;
+        if (c.JS_IsUndefined(factory) or c.JS_IsNull(factory)) {
+            if (replace_index) |previous| try self.removeDisposed(previous);
+            return;
+        }
+        if (!c.JS_IsFunction(self.engine.context, factory) and (slot != .widget or !c.JS_IsArray(factory))) return error.InvalidNativeWidgetFactory;
+        if ((self.entries.items.len >= 256 and replace_index == null) or key.len > 65536) return error.NativeWidgetLimit;
         self.generation += 1;
         const generation = self.generation;
         const tui = try self.engine.checked(c.JS_NewObject(self.engine.context));
@@ -191,8 +220,8 @@ pub const Manager = struct {
             if (c.JS_DefinePropertyGetSet(self.engine.context, terminal, atom, try self.function(generation, field[1]), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
         }
         try self.put(tui, "terminal", c.JS_DupValue(self.engine.context, terminal));
-        var args = [_]c.JSValue{ tui, theme };
-        const component = if (c.JS_IsArray(factory)) try self.arrayComponent(factory, theme) else try self.engine.checked(c.JS_Call(self.engine.context, factory, c.pi_js_undefined(), args.len, &args));
+        var args = [_]c.JSValue{ tui, theme, footer_data };
+        const component = if (c.JS_IsArray(factory)) try self.arrayComponent(factory, theme) else try self.engine.checked(c.JS_Call(self.engine.context, factory, c.pi_js_undefined(), if (slot == .footer) 3 else 2, &args));
         var transferred = false;
         errdefer if (!transferred) {
             const original = if (self.engine.captured_exception) |value| c.JS_DupValue(self.engine.context, value) else null;
@@ -210,7 +239,13 @@ pub const Manager = struct {
         if (!self.owners.contains(owner)) return error.StaleNativeExtensionOwner;
         const owned_key = try self.engine.gpa.dupe(u8, key);
         errdefer self.engine.gpa.free(owned_key);
-        try self.entries.append(self.engine.gpa, .{ .key = owned_key, .owner = owner, .generation = generation, .component = component, .placement = placement });
+        const replacement: Entry = .{ .key = owned_key, .owner = owner, .generation = generation, .component = component, .placement = placement, .slot = slot };
+        if (replace_index) |previous| {
+            const old = self.entries.items[previous];
+            self.entries.items[previous] = replacement;
+            self.engine.gpa.free(old.key);
+            self.engine.freeValue(old.component);
+        } else try self.entries.append(self.engine.gpa, replacement);
         transferred = true;
     }
     pub fn pumpDirty(self: *Manager) !bool {
@@ -225,7 +260,7 @@ pub const Manager = struct {
         }
         var changed = false;
         for (self.entries.items) |*entry| {
-            if (!entry.dirty) continue;
+            if (!entry.dirty or !entry.mounted) continue;
             entry.dirty = false;
             const held = c.JS_DupValue(self.engine.context, entry.component);
             defer self.engine.freeValue(held);
@@ -236,7 +271,7 @@ pub const Manager = struct {
             defer self.engine.freeValue(result);
             var frame = try components.normalize(self.engine, result);
             defer frame.deinit();
-            try self.publishWidth(entry.key, entry.generation, entry.placement, frame, rendered_width);
+            try self.publishWidth(entry.*, frame, rendered_width);
             changed = true;
         }
         return changed;
@@ -252,6 +287,96 @@ pub const Manager = struct {
         _ = try self.pumpDirty();
     }
 };
+
+fn slotFailureTrace(engine: *engine_mod.Engine) !void {
+    const error_value = engine.captured_exception orelse return error.MissingOriginalSlotError;
+    const message = try engine.checked(c.JS_GetPropertyStr(engine.context, error_value, "message"));
+    defer engine.freeValue(message);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "slotTrace"));
+    defer engine.freeValue(trace);
+    const push = try engine.checked(c.JS_GetPropertyStr(engine.context, trace, "push"));
+    defer engine.freeValue(push);
+    var args = [_]c.JSValue{message};
+    const result = try engine.checked(c.JS_Call(engine.context, push, trace, 1, &args));
+    engine.freeValue(result);
+}
+test "native persistent header footer replay original dispose retry factory throw visibility retained roots and clear" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var capture = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/persistent-slots-original-7fb.json"), .{});
+    defer capture.deinit();
+    const Capture = struct {
+        latest: ?protocol.Record = null,
+        fn receive(raw: ?*anyopaque, value: protocol.Record) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            const owned = try value.clone(std.testing.allocator);
+            if (self.latest) |*previous| previous.deinit();
+            self.latest = owned;
+        }
+        fn deinit(self: *@This()) void {
+            if (self.latest) |*value| value.deinit();
+        }
+    };
+    inline for (.{ protocol.Slot.header, protocol.Slot.footer }) |slot| {
+        var records: Capture = .{};
+        defer records.deinit();
+        var manager = try Manager.init(engine);
+        manager.attach();
+        defer manager.deinit();
+        manager.record_context = &records;
+        manager.record_fn = Capture.receive;
+        try manager.addOwner(1);
+        const factories = try engine.eval("globalThis.slotTrace=[];globalThis.slotThrows=true;globalThis.oldSlot={name:'old',render(){return ['old']},dispose(){slotTrace.push('dispose-old');if(slotThrows){slotThrows=false;throw Error('dispose-once')}}};({old(...args){slotTrace.push('factory-old:'+args.length);return oldSlot},bad(){slotTrace.push('factory-throw');throw Error('factory-original')},replacement(){slotTrace.push('factory-new');return {name:'new',render(){return ['new']},dispose(){slotTrace.push('dispose-new')}}}})", "persistent-source-factories.js", c.JS_EVAL_TYPE_GLOBAL);
+        defer engine.freeValue(factories);
+        const expected = capture.value.object.get("observations").?.object.get(@tagName(slot)).?.array.items;
+        for (expected, 0..) |step, index| {
+            const factory = if (index == 4) c.pi_js_undefined() else try engine.checked(c.JS_GetPropertyStr(engine.context, factories, switch (index) {
+                0 => "old",
+                1, 2 => "bad",
+                else => "replacement",
+            }));
+            defer engine.freeValue(factory);
+            if (index == 1 or index == 2) {
+                try std.testing.expectError(error.JavaScriptException, manager.setSlot(1, "", factory, .aboveEditor, c.pi_js_undefined(), slot, c.pi_js_undefined()));
+                try slotFailureTrace(engine);
+            } else try manager.setSlot(1, "", factory, .aboveEditor, c.pi_js_undefined(), slot, c.pi_js_undefined());
+            if (index == 0 or index == 3) _ = try manager.pumpDirty();
+            if (slot == .footer and index == 2) {
+                try std.testing.expect(records.latest.?.frame != null);
+                try std.testing.expectEqual(@as(usize, 0), records.latest.?.frame.?.lines.len);
+            }
+            if (index == 4) try std.testing.expect(records.latest.?.frame == null);
+            c.JS_RunGC(engine.runtime);
+            const observed = try engine.eval("slotTrace", "persistent-source-trace.js", c.JS_EVAL_TYPE_GLOBAL);
+            defer engine.freeValue(observed);
+            const actual = try engine.stringify(observed);
+            defer engine.gpa.free(actual);
+            var filtered: std.ArrayList(std.json.Value) = .empty;
+            defer filtered.deinit(engine.gpa);
+            for (step.object.get("events").?.array.items) |event| if (!std.mem.eql(u8, event.string, "render")) try filtered.append(engine.gpa, event);
+            const encoded = try std.json.Stringify.valueAlloc(engine.gpa, filtered.items, .{});
+            defer engine.gpa.free(encoded);
+            try std.testing.expectEqualStrings(encoded, actual);
+            const visible = step.object.get("visible").?.array.items;
+            if (index == 4) {
+                try std.testing.expectEqual(@as(usize, 0), manager.entries.items.len);
+                try std.testing.expectEqualStrings("builtin", visible[0].string);
+            } else {
+                try std.testing.expectEqual(@as(usize, 1), manager.entries.items.len);
+                const entry = manager.entries.items[0];
+                const name = try engine.checked(c.JS_GetPropertyStr(engine.context, entry.component, "name"));
+                defer engine.freeValue(name);
+                const retained = try engine.toString(name);
+                defer engine.gpa.free(retained);
+                try std.testing.expectEqualStrings(step.object.get("retained").?.string, retained);
+                try std.testing.expectEqual(visible.len > 0, entry.mounted);
+                if (entry.mounted) try std.testing.expectEqualStrings(visible[0].string, retained);
+            }
+        }
+    }
+}
 
 test "native retained widgets reproduce authentic upstream factory width replace clear and disposal outcomes" {
     const gpa = std.testing.allocator;

@@ -1,0 +1,181 @@
+{
+  "status": "frozen",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "base": "e071d075da16a004dc984296b907d25befff1278",
+  "prerequisite_patches": [
+    "remote-env-adapter-7fb59f9.patch",
+    "file-workers-fifo-7fb59f9.patch",
+    "native-linux-watch-reconnect-7fb59f9.patch",
+    "watch-task-retirement-uaf-repair.patch",
+    "durable-local-remote-capability-7fb59f9.patch",
+    "capability-drvfs-source-aware-test.patch",
+    "durable-jsonl-storage-7fb59f9.patch",
+    "windows-native-watch-7fb59f9.patch"
+  ],
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-watch-identity-20261007",
+  "toolchain": "Zig 0.16.0",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\watch-device-inode-remount-7fb59f9.patch",
+  "patch_sha256": "097fe58baa2672682b4f870dfc1de9a98355a1a4490b953d8f3199e8e6434a54",
+  "files": [
+    {
+      "path": "src/durable/watch.zig",
+      "bytes": 35265,
+      "sha256": "8552c9988c2ccd64d9231681ed7c0a0ddcf8e3f323c0b4499a4c5f5593bea3ac"
+    },
+    {
+      "path": "src/durable/watch_identity.zig",
+      "bytes": 4221,
+      "sha256": "6a5ad2432f13932c6705d3a5bd51105d5ab4675676c56335b18c74719bffc0af"
+    },
+    {
+      "path": "src/durable/watch_linux.zig",
+      "bytes": 6105,
+      "sha256": "5e3047b16e9e0c0f6cf5a966ef935160afa85472655a637b65dff33fe48474cf"
+    },
+    {
+      "path": "src/durable/watch_windows.zig",
+      "bytes": 9286,
+      "sha256": "8096e9ac1421b448d6b3ffe81efd68c9fedd68aba9a45b96afe7a49bcd4047ff"
+    },
+    {
+      "path": "src/env/CONTRACT.md",
+      "bytes": 9310,
+      "sha256": "20f0951824abddf7c8cf29408c634e7129ae91e112b30ff8b7628e56426a5e19"
+    },
+    {
+      "path": "src/env/watch_test.zig",
+      "bytes": 16206,
+      "sha256": "513ca90d1c6eba74ce4ca5a771315343037b73c6031bd993ded03a925cf3cae4"
+    },
+    {
+      "path": "src/env_watch_identity_fixture.zig",
+      "bytes": 2706,
+      "sha256": "21407b6609ff9f289acab14b2bd949bef70d1733ff5184f9f42a470305420b19"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 66646,
+      "sha256": "51c1e11f1ac74d4911cd37b0d40e5c314b4bf0297e10957acff07e5435edc1db"
+    }
+  ],
+  "fmt": {
+    "status": "passed",
+    "toolchain": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "files": [
+      "build.zig",
+      "src/durable/watch_identity.zig",
+      "src/durable/watch.zig",
+      "src/durable/watch_linux.zig",
+      "src/durable/watch_windows.zig",
+      "src/env/watch_test.zig",
+      "src/env_watch_identity_fixture.zig"
+    ],
+    "fmt_changed_files": [],
+    "source_unchanged_after_fmt": true,
+    "checked_utc": "2026-10-07T13:48:39.4958523Z"
+  },
+  "tests": [
+    {
+      "name": "watch-device-windows-final-debug",
+      "pid": 57192,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell env-watch-identity-fixture -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T13:39:38.583335Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-identity-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T13:39:38.839763Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T13:40:27.4795822Z"
+    },
+    {
+      "name": "watch-device-linux-final-debug",
+      "pid": 35064,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-identity-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell env-watch-identity-fixture -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T13:41:04.637326Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-identity-20261007",
+      "status": "passed",
+      "deadline_seconds": 310,
+      "started_utc": "2026-10-07T13:41:04.930107Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T13:41:30.03877Z"
+    },
+    {
+      "name": "watch-device-windows-final-release-safe",
+      "pid": 54936,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell env-watch-identity-fixture -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T13:47:32.810548Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-identity-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T13:47:33.1449394Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T13:50:20.1071322Z"
+    },
+    {
+      "name": "watch-device-linux-final-release-safe",
+      "pid": 39884,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-identity-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell env-watch-identity-fixture -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T13:47:32.810268Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-identity-20261007",
+      "status": "passed",
+      "deadline_seconds": 310,
+      "started_utc": "2026-10-07T13:47:33.1489288Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T13:50:02.2886482Z"
+    },
+    {
+      "name": "watch-device-original-native-final-remount",
+      "pid": 5664,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --user root --exec /usr/bin/timeout --signal=TERM --kill-after=5s 40s /usr/bin/unshare --mount --propagation private /mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin/node --experimental-strip-types /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/env-completion-20261007/watch-remount-oracle.mjs /tmp/pi-env-watch-identity-20261007/zig-out/bin/pi-env-watch-identity-fixture",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T13:52:01.095899Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-identity-20261007",
+      "status": "passed",
+      "deadline_seconds": 50,
+      "started_utc": "2026-10-07T13:52:01.3876521Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T13:52:02.313812Z"
+    },
+    {
+      "name": "watch-device-linux-macos-semantic-compile",
+      "pid": 50720,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-identity-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 120s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build-exe src/env_watch_identity_fixture.zig -target aarch64-macos -lc -fno-emit-bin -O ReleaseSafe --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T13:34:51.225596Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-identity-20261007",
+      "status": "passed",
+      "deadline_seconds": 130,
+      "started_utc": "2026-10-07T13:34:51.4854298Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T13:34:52.1598461Z"
+    }
+  ],
+  "counts": {
+    "windows": "178 pass, 15 platform skips, 193 total (Debug and ReleaseSafe)",
+    "linux": "186 pass, 4 platform skips, 190 total (Debug and ReleaseSafe)",
+    "positive_remount": "Latest original Node and final native ReleaseSafe process both pass equal-inode/different-device replacement and subsequent write",
+    "negative_remount": "Original Node passes, previous native watcher misses only the subsequent write and closes normally",
+    "macos": "arm64 semantic compile only, no runtime qualification"
+  },
+  "namespace_safety": "Private mount namespace and private propagation; all owned mounts and unique task paths removed before exit; exact native child executable/start identity captured.",
+  "capture_evidence": [
+    "watch-device-original-native-final-remount.stdout.log",
+    "watch-device-negative-remount.stdout.log"
+  ],
+  "limitations": [
+    "macOS native event backend and hosted runtime remain pending.",
+    "Metadata query falls back to prior inode with device zero if its secondary OS query cannot resolve a raced or denied path.",
+    "Existing snapshot entry budget discrepancy remains documented."
+  ],
+  "frozen_utc": "2026-10-07T13:56:51.7763991Z"
+}

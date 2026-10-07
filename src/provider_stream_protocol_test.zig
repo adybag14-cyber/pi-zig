@@ -139,7 +139,7 @@ test "native raw stream preserves ordered deltas terminal errors cancellation qu
     const rejected = try worker.record();
     defer rejected.deinit();
     try failure(rejected.value, "rejected-for-test");
-    try worker.send(.{ .kind = "command", .name = "stream-ping", .rawArguments = "", .flags = std.json.Value{ .object = .empty }, .invocationId = "8", .context = .{ .mode = "print", .hasUI = false } });
+    try worker.send(.{ .kind = "command", .name = "stream-ping", .rawArguments = "", .flags = std.json.Value{ .object = .empty }, .invocationId = "8", .context = .{ .mode = "interactive", .hasUI = true } });
     var notified = false;
     while (true) {
         const record = try worker.record();

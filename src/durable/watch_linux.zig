@@ -2,7 +2,7 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const linux = std.os.linux;
-pub const Installed = struct { descriptor: i32, inode: std.Io.File.INode };
+pub const Installed = struct { descriptor: i32, inode: std.Io.File.INode, device: u64 };
 pub const Backend = struct {
     gpa: std.mem.Allocator,
     fd: i32,
@@ -30,7 +30,7 @@ pub const Backend = struct {
         if (builtin.os.tag == .linux and !shared) _ = linux.inotify_rm_watch(self.fd, entry.value.descriptor);
         self.gpa.free(entry.key);
     }
-    pub fn add(self: *Backend, path: []const u8, inode: std.Io.File.INode) !bool {
+    pub fn add(self: *Backend, path: []const u8, inode: std.Io.File.INode, device: u64) !bool {
         if (builtin.os.tag != .linux) return error.OperationUnsupported;
         if (self.installed.contains(path)) return false;
         const terminated = try self.gpa.dupeZ(u8, path);
@@ -45,7 +45,7 @@ pub const Backend = struct {
         const descriptor: i32 = @intCast(result);
         const owned = try self.gpa.dupe(u8, path);
         errdefer self.gpa.free(owned);
-        self.installed.put(self.gpa, owned, .{ .descriptor = descriptor, .inode = inode }) catch |err| {
+        self.installed.put(self.gpa, owned, .{ .descriptor = descriptor, .inode = inode, .device = device }) catch |err| {
             _ = linux.inotify_rm_watch(self.fd, descriptor);
             return err;
         };

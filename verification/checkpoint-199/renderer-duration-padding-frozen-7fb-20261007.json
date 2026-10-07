@@ -1,0 +1,68 @@
+{
+  "base": "168db17f665abf7a264a26ef1549e8d4f095425c",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "patch_sha256": "85bf4df05f047e2c2b278ab95ac1e7b63ec1138ef7a60e28eb968d39261ac2e1",
+  "files": [
+    {
+      "path": "src/extensions/host.zig",
+      "sha256": "313385772cae04cbf067e5ee3c096c8946eba92852978af6229583dbe822faea"
+    },
+    {
+      "path": "src/extensions/native_renderers.zig",
+      "sha256": "563601f0c8f97bb692003648997c810925e893e7733802eb086d94d0314684f8"
+    },
+    {
+      "path": "src/extensions/native_group.zig",
+      "sha256": "5c604a844d1628dfe11f384e46f24240ddfb69aea5fb798d2c4306bc81da9961"
+    },
+    {
+      "path": "src/extensions/fixtures/renderer-duration-7fb.json",
+      "sha256": "81a4483a899a464d57c19be372c55e4887d3dd69d62f41c56bd5f8e06e1f33be"
+    },
+    {
+      "path": "src/main.zig",
+      "sha256": "009b21ab8212f9844e74a03cf9e0058a59cb30f16b08c93955d7d7329ea52b5f"
+    }
+  ],
+  "validation": [
+    {
+      "name": "renderer-duration-host-corrected-windows-debug-20261007",
+      "pid": 54208,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings test-native-runtime test-fullscreen-frontend-process -j2 --summary all",
+      "created_utc": "2026-10-07T14:32:04.5206440Z",
+      "launched_utc": "2026-10-07T14:32:04.5167295+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-tool-render-duration-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:33:15.6475690+00:00"
+    },
+    {
+      "name": "renderer-duration-host-windows-releasesafe-20261007",
+      "pid": 49568,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-extension-bindings test-native-runtime test-fullscreen-frontend-process -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-07T14:34:11.0382070Z",
+      "launched_utc": "2026-10-07T14:34:11.0367584+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-tool-render-duration-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:37:30.2452177+00:00"
+    },
+    {
+      "name": "renderer-duration-host-linux-debug-safe-20261007",
+      "pid": 7556,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-renderer-duration-native-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 850s /bin/sh /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/renderer-duration-native-linux-20261007.sh",
+      "created_utc": "2026-10-07T14:34:18.8830290Z",
+      "launched_utc": "2026-10-07T14:34:18.8801261+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:39:00.3489738+00:00"
+    }
+  ]
+}

@@ -32,9 +32,9 @@ fn emit(engine: *engine_mod.Engine, arguments: []const c.JSValue) !void {
     const line = try format(engine, arguments);
     defer engine.gpa.free(line);
     var buffer: [4096]u8 = undefined;
-    var stderr = std.Io.File.stderr().writerStreaming(io, &buffer);
-    try stderr.interface.writeAll(line);
-    try stderr.interface.flush();
+    var output = (if (engine.native_console_stdout) std.Io.File.stdout() else std.Io.File.stderr()).writerStreaming(io, &buffer);
+    try output.interface.writeAll(line);
+    try output.interface.flush();
 }
 
 pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {

@@ -102,6 +102,35 @@ pub const WorkingIndicator = struct {
     }
 };
 
+fn writeModelSnapshot(writer: *std.Io.Writer, model: providers.ModelInfo) !void {
+    try writer.writeAll("{\"id\":");
+    try std.json.Stringify.value(model.id, .{}, writer);
+    try writer.writeAll(",\"name\":");
+    try std.json.Stringify.value(model.display, .{}, writer);
+    try writer.writeAll(",\"provider\":");
+    try std.json.Stringify.value(model.providerName(), .{}, writer);
+    try writer.writeAll(",\"type\":");
+    try std.json.Stringify.value(@tagName(model.kind), .{}, writer);
+    try writer.writeAll(",\"api\":");
+    try std.json.Stringify.value(model.operation_api orelse model.apiKind().name(), .{}, writer);
+    try writer.writeAll(",\"baseUrl\":");
+    if (model.base_url) |base_url| try std.json.Stringify.value(base_url, .{}, writer) else try writer.writeAll("null");
+    try writer.print(",\"reasoning\":{s},\"input\":[", .{if (model.reasoning) "true" else "false"});
+    if (model.input_text) try writer.writeAll("\"text\"");
+    if (model.input_image) {
+        if (model.input_text) try writer.writeByte(',');
+        try writer.writeAll("\"image\"");
+    }
+    try writer.print("],\"contextWindow\":{d},\"maxTokens\":{d},\"cost\":{{\"input\":{d},\"output\":{d},\"cacheRead\":{d},\"cacheWrite\":{d}}}}}", .{
+        model.context_window,
+        model.max_tokens,
+        model.cost.input,
+        model.cost.output,
+        model.cost.cache_read,
+        model.cost.cache_write,
+    });
+}
+
 pub const ContextOptions = struct {
     mode: []const u8,
     cwd: []const u8,
@@ -116,6 +145,10 @@ pub const ContextOptions = struct {
     all_tools: []const []const u8 = &.{},
     native_tool_selection: ?NativeToolSelection = null,
     model_catalog: []const providers.ModelInfo = &.{},
+    scoped_models: []const providers.ModelInfo = &.{},
+    /// Null means the host has not bound an availability snapshot; an empty
+    /// slice is a bound snapshot with no available providers.
+    available_models: ?[]const providers.ModelInfo = null,
     configured_providers: []const []const u8 = &.{},
     session: ?*const agent_session.Session = null,
     session_file: ?[]const u8 = null,
@@ -160,6 +193,8 @@ pub const Controller = struct {
     widgets: std.ArrayList(Widget) = .empty,
     header_lines: ?[][]u8 = null,
     footer_lines: ?[][]u8 = null,
+    native_header_owner: ?u64 = null,
+    native_footer_owner: ?u64 = null,
     custom_lines: ?[][]u8 = null,
     title: ?[]u8 = null,
     working_message: ?[]u8 = null,
@@ -439,16 +474,39 @@ pub const Controller = struct {
         try out.writer.print(",\"nativeOwnerGeneration\":\"{d}\",\"placement\":\"{s}\",\"lines\":", .{ record.owner_generation, @tagName(record.placement) });
         if (record.frame) |frame| try std.json.Stringify.value(frame.lines, .{}, &out.writer) else try out.writer.writeAll("null");
         try out.writer.writeByte('}');
-        try self.applyAction("setWidget", out.written());
+        try self.applyAction(switch (record.slot) {
+            .widget => "setWidget",
+            .header => "setHeader",
+            .footer => "setFooter",
+        }, out.written());
         consumed = true;
     }
     pub fn widgetProjectionClosed(raw: ?*anyopaque, generation: u64) !void {
         const self: *Controller = @ptrCast(@alignCast(raw.?));
         self.clearNativeWidgetProjections(generation);
     }
+    pub fn persistentAction(raw: ?*anyopaque, method: []const u8, args: []const u8) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        try self.applyAction(method, args);
+        try self.flush();
+    }
     pub fn clearNativeWidgetProjections(self: *Controller, generation: ?u64) void {
         self.state_mutex.lockUncancelable(self.io);
         defer self.state_mutex.unlock(self.io);
+        if (self.native_header_owner) |owner| if (generation == null or owner == generation.?) {
+            if (self.header_lines) |lines| freeLines(self.gpa, lines);
+            self.header_lines = null;
+            self.native_header_owner = null;
+            self.header_dirty = true;
+            self.surface_dirty = true;
+        };
+        if (self.native_footer_owner) |owner| if (generation == null or owner == generation.?) {
+            if (self.footer_lines) |lines| freeLines(self.gpa, lines);
+            self.footer_lines = null;
+            self.native_footer_owner = null;
+            self.footer_dirty = true;
+            self.surface_dirty = true;
+        };
         var index: usize = 0;
         while (index < self.widgets.items.len) {
             const owner = self.widgets.items[index].native_owner_generation;
@@ -533,6 +591,9 @@ pub const Controller = struct {
         errdefer out.deinit();
         try out.writer.writeAll("{\"mode\":");
         try std.json.Stringify.value(options.mode, .{}, &out.writer);
+        if (@import("../tui/render.zig").activeThemeResource()) |resource| {
+            try out.writer.print(",\"themeResource\":{s}", .{resource});
+        }
         try out.writer.print(",\"hasUI\":{s},\"cwd\":", .{if (self.has_ui) "true" else "false"});
         try std.json.Stringify.value(options.cwd, .{}, &out.writer);
         try out.writer.print(",\"width\":{d},\"editorText\":", .{self.width});
@@ -578,34 +639,23 @@ pub const Controller = struct {
         try out.writer.writeAll("],\"models\":[");
         for (options.model_catalog, 0..) |model, index| {
             if (index > 0) try out.writer.writeByte(',');
-            try out.writer.writeAll("{\"id\":");
-            try std.json.Stringify.value(model.id, .{}, &out.writer);
-            try out.writer.writeAll(",\"name\":");
-            try std.json.Stringify.value(model.display, .{}, &out.writer);
-            try out.writer.writeAll(",\"provider\":");
-            try std.json.Stringify.value(model.providerName(), .{}, &out.writer);
-            try out.writer.writeAll(",\"type\":");
-            try std.json.Stringify.value(@tagName(model.kind), .{}, &out.writer);
-            try out.writer.writeAll(",\"api\":");
-            try std.json.Stringify.value(model.operation_api orelse model.apiKind().name(), .{}, &out.writer);
-            try out.writer.writeAll(",\"baseUrl\":");
-            if (model.base_url) |base_url| try std.json.Stringify.value(base_url, .{}, &out.writer) else try out.writer.writeAll("null");
-            try out.writer.print(",\"reasoning\":{s},\"input\":[", .{if (model.reasoning) "true" else "false"});
-            if (model.input_text) try out.writer.writeAll("\"text\"");
-            if (model.input_image) {
-                if (model.input_text) try out.writer.writeByte(',');
-                try out.writer.writeAll("\"image\"");
-            }
-            try out.writer.print("],\"contextWindow\":{d},\"maxTokens\":{d},\"cost\":{{\"input\":{d},\"output\":{d},\"cacheRead\":{d},\"cacheWrite\":{d}}}}}", .{
-                model.context_window,
-                model.max_tokens,
-                model.cost.input,
-                model.cost.output,
-                model.cost.cache_read,
-                model.cost.cache_write,
-            });
+            try writeModelSnapshot(&out.writer, model);
         }
-        try out.writer.writeAll("],\"configuredProviders\":[");
+        try out.writer.writeAll("],\"scopedModels\":[");
+        for (options.scoped_models, 0..) |model, index| {
+            if (index > 0) try out.writer.writeByte(',');
+            try writeModelSnapshot(&out.writer, model);
+        }
+        try out.writer.writeAll("],\"availableModels\":");
+        if (options.available_models) |models| {
+            try out.writer.writeByte('[');
+            for (models, 0..) |model, index| {
+                if (index > 0) try out.writer.writeByte(',');
+                try writeModelSnapshot(&out.writer, model);
+            }
+            try out.writer.writeByte(']');
+        } else try out.writer.writeAll("null");
+        try out.writer.writeAll(",\"configuredProviders\":[");
         for (options.configured_providers, 0..) |provider, index| {
             if (index > 0) try out.writer.writeByte(',');
             try std.json.Stringify.value(provider, .{}, &out.writer);
@@ -710,12 +760,16 @@ pub const Controller = struct {
             return;
         }
         if (std.mem.eql(u8, method, "setHeader")) {
+            const owner = if (object.get("nativeOwnerGeneration")) |value| try component_protocol.identifier(value) else null;
             try replaceNullableLines(self.gpa, &self.header_lines, object.get("lines"));
+            self.native_header_owner = owner;
             self.header_dirty = true;
             return;
         }
         if (std.mem.eql(u8, method, "setFooter")) {
+            const owner = if (object.get("nativeOwnerGeneration")) |value| try component_protocol.identifier(value) else null;
             try replaceNullableLines(self.gpa, &self.footer_lines, object.get("lines"));
+            self.native_footer_owner = owner;
             self.footer_dirty = true;
             return;
         }

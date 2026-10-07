@@ -1,0 +1,142 @@
+{
+  "status": "frozen",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "base": "e071d075da16a004dc984296b907d25befff1278",
+  "prerequisite_patches": [
+    "remote-env-adapter-7fb59f9.patch",
+    "file-workers-fifo-7fb59f9.patch",
+    "native-linux-watch-reconnect-7fb59f9.patch",
+    "watch-task-retirement-uaf-repair.patch",
+    "durable-local-remote-capability-7fb59f9.patch",
+    "capability-drvfs-source-aware-test.patch",
+    "durable-jsonl-storage-7fb59f9.patch"
+  ],
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-watch-platforms-20261007",
+  "toolchain": "Zig 0.16.0",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\windows-native-watch-7fb59f9.patch",
+  "patch_sha256": "9b2562c68231776db364ba4ab524b1abe9af8d890ac9e176e56a9e685104c0d1",
+  "files": [
+    {
+      "path": "src/durable/watch.zig",
+      "bytes": 34989,
+      "sha256": "279a981a7f7fce63ff54bbb8fb4d517fd1467315ac848afa1943f8eb61e0f337"
+    },
+    {
+      "path": "src/durable/watch_windows.zig",
+      "bytes": 9239,
+      "sha256": "0cbc7b2b3dda4aae6837584ac5d49929f4f084a0ceb4dd7740664a90ae0eca3f"
+    },
+    {
+      "path": "src/env/CONTRACT.md",
+      "bytes": 8697,
+      "sha256": "5fd04902f302605590eba557ce35172fdce3f9bfd89f4c0896b5bf1d4389eeb3"
+    },
+    {
+      "path": "src/env/watch_test.zig",
+      "bytes": 16319,
+      "sha256": "379040c7c0197b93295a21fcd3775775c3a9b4b4eb72001abb602f4e7c1e8b42"
+    }
+  ],
+  "reference_source": [
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-7fb59f9-20261007\\packages\\env\\daemon\\src\\watch.rs",
+      "sha256": "842007e6501f4e47c399c42f44667207196601ddad130987d3120b7808492458"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-upstream-7fb59f9-20261007\\packages\\durable\\src\\env\\node-watch.ts",
+      "sha256": "f3a9b9d186489166ffb7ab6ab0032f46ca3e8d05943c1db386be1fd17106cefa"
+    },
+    {
+      "path": "C:\\Users\\adyba\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\notify-8.2.0\\src\\windows.rs",
+      "sha256": "cf53732c805266977136622371a1273eaa0bf3148f734893f393fe752c37b168"
+    }
+  ],
+  "tests": [
+    {
+      "name": "windows-native-watch-source-buffer-debug",
+      "pid": 17912,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T13:20:16.042481Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-platforms-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T13:20:16.3930766Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T13:20:54.2383959Z"
+    },
+    {
+      "name": "windows-native-watch-linux-source-buffer-debug",
+      "pid": 44028,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-platforms-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T13:20:16.071416Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-platforms-20261007",
+      "status": "passed",
+      "deadline_seconds": 310,
+      "started_utc": "2026-10-07T13:20:16.4031791Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T13:20:45.1808672Z"
+    },
+    {
+      "name": "windows-native-watch-source-buffer-release-safe",
+      "pid": 19988,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T13:22:48.938127Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-platforms-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T13:22:49.2386241Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T13:24:44.9043433Z"
+    },
+    {
+      "name": "windows-native-watch-linux-source-buffer-release-safe",
+      "pid": 54456,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-platforms-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env test-durable test-env-capability test-durable-jsonl test-durable-backend test-durable-harness test-durable-powershell -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T13:22:48.918261Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-platforms-20261007",
+      "status": "passed",
+      "deadline_seconds": 310,
+      "started_utc": "2026-10-07T13:22:49.1954357Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T13:25:15.979261Z"
+    },
+    {
+      "name": "windows-native-watch-original-final-debug",
+      "pid": 28608,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Doptimize=Debug -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T13:26:12.822133Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-platforms-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T13:26:13.1281513Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T13:26:24.3702975Z"
+    }
+  ],
+  "counts": {
+    "windows": "175 pass, 15 platform skips, 190 total (Debug and ReleaseSafe)",
+    "linux": "183 pass, 4 platform skips, 187 total (Debug and ReleaseSafe)",
+    "original_windows": "70 pass, 9 platform skips, 79 total; forced-native fixture uses independently built latest original daemon",
+    "kernel_handles": "Exact unchanged process handle count through every GPA backend allocation failure and 100 native open/cancel/close cycles"
+  },
+  "lifecycle": "Owned overlapped request buffers/events/handles survive exact CancelIoEx and GetOverlappedResult retirement; no process or transport teardown masks post-close RPC evidence.",
+  "notification_buffer_bytes": 16384,
+  "capture_note": "Read-period assertion starts after startup settlement; first immediate assertion observed one startup-period original notification and was corrected without weakening the read check.",
+  "limitations": [
+    "macOS forced-native backend/default native runtime remains pending.",
+    "Device/inode/remount identity gates remain pending in separate checkout.",
+    "Source snapshot-entry bound discrepancy remains documented.",
+    "No complete event equivalence is claimed for every Windows filesystem/case/reparse configuration."
+  ],
+  "frozen_utc": "2026-10-07T13:27:41.8084923Z"
+}

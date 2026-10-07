@@ -48,6 +48,7 @@ pub const auth_tui = @import("auth_tui.zig");
 pub const auth_flow_tui = @import("auth_flow_tui.zig");
 pub const rpc_data = @import("rpc_data.zig");
 pub const rpc_bash = @import("rpc_bash.zig");
+pub const bash_output = @import("bash_output.zig");
 pub const rpc_queue = @import("rpc_queue.zig");
 pub const remote_transcript = @import("remote_transcript.zig");
 pub const remote_session = @import("remote_session.zig");

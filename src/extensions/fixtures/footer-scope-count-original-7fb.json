@@ -1,0 +1,67 @@
+{
+  "authority": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "sourcePath": "C:/Users/adyba/pi-upstream-7fb59f9-20261007/packages/coding-agent/src/modes/interactive/interactive-mode.ts",
+  "sourceSha256": "2e1fbb5e695c78d6e05dfcd5d7d511e755ea4495db3af34969388a24a4c221b5",
+  "methodSha256": "f6a85e877c3db1d2a0cce64f605f1faa92d56c44552997081cca5750b87c292a",
+  "cases": [
+    {
+      "scope": [],
+      "available": [],
+      "count": 0
+    },
+    {
+      "scope": [],
+      "available": [
+        {
+          "provider": "a"
+        },
+        {
+          "provider": "a"
+        },
+        {
+          "provider": "b"
+        }
+      ],
+      "count": 2
+    },
+    {
+      "scope": [
+        {
+          "model": {
+            "provider": "scope"
+          }
+        },
+        {
+          "model": {
+            "provider": "scope"
+          }
+        }
+      ],
+      "available": [
+        {
+          "provider": "a"
+        },
+        {
+          "provider": "b"
+        }
+      ],
+      "count": 1
+    },
+    {
+      "scope": [
+        {
+          "model": {
+            "provider": "a"
+          }
+        },
+        {
+          "model": {
+            "provider": "b"
+          }
+        }
+      ],
+      "available": [],
+      "count": 2
+    }
+  ]
+}

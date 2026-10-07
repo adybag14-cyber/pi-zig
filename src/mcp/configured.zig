@@ -1,4 +1,4 @@
-//! Configured direct MCP tools, trusted file merging and retained native connections.
+//! Trusted configured MCP catalogs, model declarations and retained native connections.
 const std = @import("std");
 const builtin = @import("builtin");
 const protocol = @import("protocol.zig");
@@ -15,9 +15,10 @@ const agent = @import("../agent/loop.zig");
 const tools = @import("../agent/tools.zig");
 const startup = @import("../durable/startup.zig");
 const Resolver = @import("../coding_agent/config_value.zig").Resolver;
+const tool_search = @import("tool_search.zig");
 
 pub const Options = struct { agent_dir: []const u8, cwd: []const u8, project_trusted: bool = false, environ: *const std.process.Environ.Map, reserved_names: []const []const u8 = &.{}, output_root: ?[]const u8 = null, max_servers: usize = 64 };
-pub const Descriptor = struct { server: *Server, raw_name: []const u8, name: []const u8, schema: Value };
+pub const Descriptor = struct { server: *Server, raw_name: []const u8, name: []const u8, schema: Value, exposure: config.Exposure = .direct, loaded: bool = false };
 pub const Server = struct {
     owner: *Service,
     name: []const u8,
@@ -92,19 +93,45 @@ pub const Server = struct {
         value.deinit();
     }
 };
+
+test "mcp.configured search allocation failures restore activation and release all owned result fields" {
+    const Sweep = struct {
+        fn run(a: std.mem.Allocator) !void {
+            var loaded = try json.Owned.empty(a);
+            defer loaded.deinit();
+            var environment: std.process.Environ.Map = .init(a);
+            defer environment.deinit();
+            var schema = try json.Owned.parse(a, "{\"type\":\"function\",\"function\":{\"name\":\"mcp__fixture__double\",\"description\":\"Double a value\",\"parameters\":{\"type\":\"object\",\"properties\":{\"value\":{\"type\":\"number\"}}}}}");
+            defer schema.deinit();
+            var service: Service = .{ .gpa = a, .io = std.testing.io, .loaded = loaded, .environment = environment, .cwd = "", .output_root = "", .reserved = &.{} };
+            defer service.descriptors.deinit(a);
+            var server: Server = .{ .owner = &service, .name = "fixture", .config = .null, .connection = undefined, .timeout_ms = 60_000 };
+            try service.descriptors.append(a, .{ .server = &server, .raw_name = "double", .name = "mcp__fixture__double", .schema = schema.value, .exposure = .deferred });
+            var result = service.searchResult(a, "{\"query\":\"double value\"}") catch |err| {
+                try std.testing.expect(!service.descriptors.items[0].loaded);
+                const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(a.ptr));
+                return if (err == error.WriteFailed and failing.has_induced_failure) error.OutOfMemory else err;
+            };
+            defer result.deinit(a);
+            try std.testing.expect(service.descriptors.items[0].loaded);
+            try std.testing.expectEqual(@as(usize, 1), result.added_tool_names.len);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Sweep.run, .{});
+}
 fn expandHome(gpa: std.mem.Allocator, environment: *const std.process.Environ.Map, value: []const u8) ![]u8 {
     if (std.mem.eql(u8, value, "~")) return gpa.dupe(u8, startup.home(environment) orelse return error.McpHomeUnavailable);
     if (std.mem.startsWith(u8, value, "~/") or (builtin.os.tag == .windows and std.mem.startsWith(u8, value, "~\\"))) return std.fs.path.join(gpa, &.{ startup.home(environment) orelse return error.McpHomeUnavailable, value[2..] });
     return gpa.dupe(u8, value);
 }
-fn directPossible(value: Value) bool {
+fn callablePossible(value: Value) bool {
     if (json.get(value, "enabled")) |enabled| if (enabled == .bool and !enabled.bool) return false;
-    if (json.get(value, "exposure")) |exposure| if (exposure == .string and std.mem.eql(u8, exposure.string, "direct")) return true;
+    if (json.get(value, "exposure")) |exposure| if (exposure == .string and !std.mem.eql(u8, exposure.string, "hidden")) return true;
     if (json.get(value, "toolExposure")) |map| {
         var iterator = map.object.iterator();
-        while (iterator.next()) |entry| if (entry.value_ptr.* == .string and std.mem.eql(u8, entry.value_ptr.string, "direct")) return true;
+        while (iterator.next()) |entry| if (entry.value_ptr.* == .string and !std.mem.eql(u8, entry.value_ptr.string, "hidden")) return true;
     }
-    return false;
+    return json.get(value, "exposure") == null;
 }
 fn unsupportedAuthentication(value: Value) bool {
     if (json.get(value, "auth") != null or json.get(value, "oauth") != null) return true;
@@ -166,11 +193,7 @@ pub const Service = struct {
             const name = try protocol.text(entry, "name");
             const value = try protocol.field(entry, "config");
             if (json.get(value, "enabled")) |enabled| if (!enabled.bool) continue;
-            if (!directPossible(value)) {
-                const exposure = try config.toolExposure(value, "");
-                if (exposure != .hidden) try self.diagnostic(name, "McpExposureUnsupported: only explicitly direct tools are implemented");
-                continue;
-            }
+            if (!callablePossible(value)) continue;
             if (unsupportedAuthentication(value)) {
                 try self.diagnostic(name, "McpOAuthUnsupported: native configured HTTP requires an explicit static Authorization header; auth and oauth are not implemented");
                 continue;
@@ -211,10 +234,7 @@ pub const Service = struct {
         for (listed.value.array.items) |item| {
             const raw_name = try protocol.text(item, "name");
             const exposure = try config.toolExposure(server.config, raw_name);
-            if (exposure != .direct) {
-                if (exposure != .hidden) try self.diagnostic(server.name, "McpExposureUnsupported: non-direct tools remain unavailable");
-                continue;
-            }
+            if (exposure == .hidden) continue;
             var duplicate = false;
             for (self.descriptors.items) |descriptor| if (descriptor.server == server and std.mem.eql(u8, descriptor.raw_name, raw_name)) {
                 duplicate = true;
@@ -227,7 +247,7 @@ pub const Service = struct {
             defer self.gpa.free(name);
             if (self.taken(name)) return error.DuplicateMcpToolName;
             const schema = try projection.schema(a, server.name, name, item);
-            try self.descriptors.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, raw_name), .name = try a.dupe(u8, name), .schema = schema });
+            try self.descriptors.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, raw_name), .name = try a.dupe(u8, name), .schema = schema, .exposure = exposure });
         }
     }
     fn taken(self: *Service, name: []const u8) bool {
@@ -239,10 +259,110 @@ pub const Service = struct {
         var owned = try json.Owned.empty(self.gpa);
         defer owned.deinit();
         owned.value = .{ .array = .init(owned.arena.allocator()) };
+        for (self.descriptors.items) |descriptor| if (descriptor.exposure == .direct or descriptor.loaded) try owned.value.array.append(descriptor.schema);
+        if (self.hasDeferred()) {
+            var schema = try json.Owned.parse(self.gpa, "{\"type\":\"function\",\"function\":{\"name\":\"tool_search\",\"description\":\"Searches deferred tool metadata with BM25 and exposes matching tools for the next model call.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"},\"limit\":{\"type\":\"number\"}},\"required\":[\"query\"]}}}");
+            defer schema.deinit();
+            const function = schema.value.object.getPtr("function").?;
+            try function.object.put(schema.arena.allocator(), "description", .{ .string = tool_search.description });
+            const parameters = function.object.getPtr("parameters").?;
+            const properties = parameters.object.getPtr("properties").?;
+            try properties.object.getPtr("query").?.object.put(schema.arena.allocator(), "description", .{ .string = "Search query for deferred tools." });
+            try properties.object.getPtr("limit").?.object.put(schema.arena.allocator(), "description", .{ .string = "Maximum number of tools to return. Defaults to 8." });
+            try owned.value.array.append(try json.clone(owned.arena.allocator(), schema.value));
+        }
+        return json.stringify(self.gpa, owned.value);
+    }
+    fn hasDeferred(self: *const Service) bool {
+        for (self.descriptors.items) |descriptor| if (descriptor.exposure == .deferred) return true;
+        return false;
+    }
+    pub fn dynamicSchemas(raw: ?*anyopaque, gpa: std.mem.Allocator) ![]u8 {
+        const self: *Service = @ptrCast(@alignCast(raw.?));
+        const bytes = try self.schemasJson();
+        defer self.gpa.free(bytes);
+        return gpa.dupe(u8, bytes);
+    }
+    /// The complete callable registry, separately from model declarations.
+    pub fn registrySchemasJson(self: *Service) ![]u8 {
+        var owned = try json.Owned.empty(self.gpa);
+        defer owned.deinit();
+        owned.value = .{ .array = .init(owned.arena.allocator()) };
         for (self.descriptors.items) |descriptor| try owned.value.array.append(descriptor.schema);
         return json.stringify(self.gpa, owned.value);
     }
+    /// Returned array storage is owned; names borrow this Service. Allocation
+    /// completes before loadout mutation, so failed searches activate nothing.
+    pub fn searchAndLoad(self: *Service, query: []const u8, limit: usize) ![]const []const u8 {
+        var documents: std.ArrayList(tool_search.Document) = .empty;
+        defer {
+            for (documents.items) |document| self.gpa.free(document.text);
+            documents.deinit(self.gpa);
+        }
+        for (self.descriptors.items) |descriptor| {
+            if (descriptor.loaded or descriptor.exposure == .direct) continue;
+            const function = try protocol.field(descriptor.schema, "function");
+            const document = try tool_search.createDocument(self.gpa, .{ .name = descriptor.name, .description = try protocol.text(function, "description"), .parameters = try protocol.field(function, "parameters") }, .{ .name = descriptor.server.name });
+            errdefer self.gpa.free(document.text);
+            try documents.append(self.gpa, document);
+        }
+        const matches = try tool_search.rank(self.gpa, query, documents.items, limit, .{});
+        defer self.gpa.free(matches);
+        const names = try self.gpa.alloc([]const u8, matches.len);
+        for (names, matches) |*name, match| name.* = match.name;
+        for (self.descriptors.items) |*descriptor| for (names) |name| if (std.mem.eql(u8, name, descriptor.name)) {
+            descriptor.loaded = true;
+        };
+        return names;
+    }
+    fn searchResult(self: *Service, gpa: std.mem.Allocator, arguments: []const u8) !tools.ToolResult {
+        var parsed = try json.Owned.parse(gpa, arguments);
+        defer parsed.deinit();
+        const query = try protocol.text(parsed.value, "query");
+        if (tool_search.blank(query)) return .{ .content = try gpa.dupe(u8, "query must not be empty"), .is_error = true };
+        var limit: usize = 8;
+        if (json.get(parsed.value, "limit")) |value| {
+            const number = try json.asNumber(value);
+            if (!std.math.isFinite(number) or number <= 0 or @floor(number) != number) return .{ .content = try gpa.dupe(u8, "limit must be a positive integer"), .is_error = true };
+            limit = @intFromFloat(@min(number, @as(f64, @floatFromInt(self.descriptors.items.len))));
+        }
+        const selected = try self.searchAndLoad(query, limit);
+        defer self.gpa.free(selected);
+        errdefer for (self.descriptors.items) |*descriptor| for (selected) |name| if (std.mem.eql(u8, name, descriptor.name)) {
+            descriptor.loaded = false;
+        };
+        const names = try gpa.alloc([]const u8, selected.len);
+        var copied: usize = 0;
+        errdefer {
+            for (names[0..copied]) |name| gpa.free(name);
+            gpa.free(names);
+        }
+        for (selected, names) |name, *target| {
+            target.* = try gpa.dupe(u8, name);
+            copied += 1;
+        }
+        var text: std.Io.Writer.Allocating = .init(gpa);
+        defer text.deinit();
+        if (selected.len == 0) try text.writer.writeAll("No matching tools found.") else {
+            try text.writer.print("Loaded {d} tool{s}. They are available from your next call:", .{ selected.len, if (selected.len == 1) "" else "s" });
+            for (selected) |name| {
+                var description: []const u8 = "";
+                for (self.descriptors.items) |descriptor| if (std.mem.eql(u8, descriptor.name, name)) {
+                    description = try protocol.text(try protocol.field(descriptor.schema, "function"), "description");
+                    break;
+                };
+                const trimmed = try projection.trimJs(description);
+                const newline = std.mem.indexOfScalar(u8, trimmed, '\n') orelse trimmed.len;
+                const first = if (newline > 0 and trimmed[newline - 1] == '\r') trimmed[0 .. newline - 1] else trimmed[0..newline];
+                try text.writer.print("\n- {s}: {s}", .{ name, first });
+            }
+        }
+        const details = try std.json.Stringify.valueAlloc(gpa, .{ .loaded = names }, .{});
+        errdefer gpa.free(details);
+        return .{ .content = try text.toOwnedSlice(), .is_error = false, .details_json = details, .added_tool_names = names };
+    }
     pub fn owns(self: *Service, name: []const u8) bool {
+        if (std.mem.eql(u8, name, "tool_search")) return self.hasDeferred();
         for (self.descriptors.items) |descriptor| if (std.mem.eql(u8, descriptor.name, name)) return true;
         return false;
     }
@@ -252,6 +372,7 @@ pub const Service = struct {
     }
     pub fn execute(raw: ?*anyopaque, gpa: std.mem.Allocator, _: []const u8, name: []const u8, arguments: []const u8, progress: agent.ExternalToolProgressFn, progress_context: ?*anyopaque, abort_flag: ?*bool) !?tools.ToolResult {
         const self: *Service = @ptrCast(@alignCast(raw.?));
+        if (std.mem.eql(u8, name, "tool_search") and self.hasDeferred()) return try self.searchResult(gpa, arguments);
         for (self.descriptors.items) |descriptor| if (std.mem.eql(u8, descriptor.name, name)) {
             const server = descriptor.server;
             const borrow = try server.connection.acquire();

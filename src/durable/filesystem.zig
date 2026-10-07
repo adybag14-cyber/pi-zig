@@ -54,7 +54,7 @@ pub fn openWindowsNoFollow(io: std.Io, gpa: std.mem.Allocator, path: []const u8,
     for (absolute) |*byte| if (byte.* == '/') {
         byte.* = '\\';
     };
-    const prefixed = if (std.mem.startsWith(u8, absolute, "\\\\?\\"))
+    const prefixed = if (std.mem.startsWith(u8, absolute, "\\\\?\\") or std.mem.startsWith(u8, absolute, "\\\\.\\"))
         try gpa.dupe(u8, absolute)
     else if (std.mem.startsWith(u8, absolute, "\\\\"))
         try std.fmt.allocPrint(gpa, "\\\\?\\UNC\\{s}", .{absolute[2..]})

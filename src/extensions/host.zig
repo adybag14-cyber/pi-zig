@@ -403,6 +403,9 @@ pub const EmitResult = struct {
 };
 
 pub const Host = struct {
+    pub const FooterModels = struct { scoped: []const @import("../ai/providers.zig").ModelInfo, available: ?[]const @import("../ai/providers.zig").ModelInfo };
+    footer_models_context: ?*anyopaque = null,
+    footer_models_fn: ?*const fn (?*anyopaque, std.mem.Allocator) anyerror!FooterModels = null,
     gpa: std.mem.Allocator,
     io: Io,
     extensions: std.ArrayList(ExtensionManifest) = .empty,
@@ -1671,6 +1674,18 @@ pub const Host = struct {
         expanded: bool,
         width: usize,
     ) !?[]u8 {
+        return self.renderToolCallPadded(tool_name, tool_call_id, arguments_json, expanded, width, 1);
+    }
+
+    pub fn renderToolCallPadded(
+        self: *Host,
+        tool_name: []const u8,
+        tool_call_id: []const u8,
+        arguments_json: []const u8,
+        expanded: bool,
+        width: usize,
+        output_pad: usize,
+    ) !?[]u8 {
         try validateObjectJson(self.gpa, arguments_json);
         for (self.extensions.items) |*ext| {
             const tool = findTool(ext.tools, tool_name);
@@ -1690,7 +1705,7 @@ pub const Host = struct {
             try std.json.Stringify.value(tool_call_id, .{}, &payload.writer);
             try payload.writer.writeAll(",\"args\":");
             try payload.writer.writeAll(arguments_json);
-            try payload.writer.print(",\"expanded\":{},\"isPartial\":false,\"executionStarted\":true,\"argsComplete\":true,\"width\":{d}}}", .{ expanded, width });
+            try payload.writer.print(",\"expanded\":{},\"isPartial\":false,\"executionStarted\":true,\"argsComplete\":true,\"outputPad\":{d},\"width\":{d}}}", .{ expanded, output_pad, width });
             const raw = try runtime.invokeRenderer("render_tool_call", tool_name, payload.written());
             defer self.gpa.free(raw);
             try self.captureRendererActions(ext, "render_tool_call", raw);
@@ -1775,6 +1790,24 @@ pub const Host = struct {
         show_images: bool,
         width: usize,
     ) !?[]u8 {
+        return self.renderToolResultRichImagesTimed(tool_name, tool_call_id, content, is_error, details_json, images, expanded, is_partial, show_images, width, null, 1);
+    }
+
+    pub fn renderToolResultRichImagesTimed(
+        self: *Host,
+        tool_name: []const u8,
+        tool_call_id: []const u8,
+        content: []const u8,
+        is_error: bool,
+        details_json: ?[]const u8,
+        images: []const ToolImage,
+        expanded: bool,
+        is_partial: bool,
+        show_images: bool,
+        width: usize,
+        duration_ms: ?u64,
+        output_pad: usize,
+    ) !?[]u8 {
         if (details_json) |details| try validateJson(self.gpa, details);
         for (self.extensions.items) |*ext| {
             const tool = findTool(ext.tools, tool_name);
@@ -1814,7 +1847,9 @@ pub const Host = struct {
                 try payload.writer.writeAll(details)
             else
                 try payload.writer.writeAll("null");
-            try payload.writer.print(",\"isError\":{}}},\"isError\":{},\"expanded\":{},\"isPartial\":{},\"showImages\":{},\"executionStarted\":true,\"argsComplete\":true,\"width\":{d}}}", .{ is_error, is_error, expanded, is_partial, show_images, width });
+            try payload.writer.print(",\"isError\":{}}},\"isError\":{},\"expanded\":{},\"isPartial\":{},\"showImages\":{},\"executionStarted\":true,\"argsComplete\":true,\"outputPad\":{d},\"width\":{d}", .{ is_error, is_error, expanded, is_partial, show_images, output_pad, width });
+            if (!is_partial) if (duration_ms) |duration| try payload.writer.print(",\"durationMs\":{d}", .{duration});
+            try payload.writer.writeByte('}');
             const raw = try runtime.invokeRenderer("render_tool_result", tool_name, payload.written());
             defer self.gpa.free(raw);
             try self.captureRendererActions(ext, "render_tool_result", raw);

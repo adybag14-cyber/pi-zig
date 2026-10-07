@@ -30,6 +30,7 @@ pub const BinaryReader = struct {
         destroy: *const fn (*anyopaque, std.mem.Allocator) void,
     };
     pub fn fromOwned(gpa: std.mem.Allocator, reader: anytype) !BinaryReader {
+        if (@TypeOf(reader) == BinaryReader) return reader;
         const T = @TypeOf(reader);
         const owned = gpa.create(T) catch |err| {
             var released = reader;
@@ -90,6 +91,7 @@ pub const TextLineReader = struct {
         destroy: *const fn (*anyopaque, std.mem.Allocator) void,
     };
     pub fn fromOwned(gpa: std.mem.Allocator, reader: anytype) !TextLineReader {
+        if (@TypeOf(reader) == TextLineReader) return reader;
         const T = @TypeOf(reader);
         const owned = gpa.create(T) catch |err| {
             var released = reader;
@@ -137,6 +139,7 @@ pub const DirReader = struct {
         destroy: *const fn (*anyopaque, std.mem.Allocator) void,
     };
     pub fn fromOwned(gpa: std.mem.Allocator, reader: anytype) !DirReader {
+        if (@TypeOf(reader) == DirReader) return reader;
         const T = @TypeOf(reader);
         const owned = gpa.create(T) catch |err| {
             var released = reader;
@@ -180,6 +183,7 @@ pub const FileWatcher = struct {
     vtable: *const VTable,
     const VTable = struct { mode: *const fn (*anyopaque) watching.Mode, close: *const fn (*anyopaque, types.Context) void, destroy: *const fn (*anyopaque) void };
     pub fn fromOwned(gpa: std.mem.Allocator, watcher: anytype) !*FileWatcher {
+        if (@TypeOf(watcher) == *FileWatcher) return watcher;
         const T = Provider(@TypeOf(watcher));
         const owned = gpa.create(FileWatcher) catch |err| {
             watcher.deinit();

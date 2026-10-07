@@ -198,6 +198,7 @@ pub const Application = struct {
     painted_height: usize = 0,
     next_overlay_id: u64 = 1,
     started: bool = false,
+    alternate_screen: bool = true,
     clock_io: ?Io = null,
     selection: ?Selection = null,
     copy_on_select: bool = true,
@@ -234,14 +235,14 @@ pub const Application = struct {
 
     pub fn start(self: *Application, io: Io) !void {
         if (self.started) return;
-        try writeAll(io, enter_sequence);
+        try writeAll(io, if (self.alternate_screen) enter_sequence else terminal.hide_cursor ++ terminal.bracketed_paste_enable ++ mouse_enable);
         self.clock_io = io;
         self.started = true;
     }
 
     pub fn stop(self: *Application, io: Io) !void {
         if (!self.started) return;
-        try writeAll(io, leave_sequence);
+        try writeAll(io, if (self.alternate_screen) leave_sequence else mouse_disable ++ terminal.bracketed_paste_disable ++ terminal.show_cursor);
         self.started = false;
     }
 
@@ -664,7 +665,7 @@ pub const Application = struct {
         const full = self.painted_lines.items.len == 0 or self.painted_width != view.width or self.painted_height != view.height;
         if (full) {
             self.full_redraw_count += 1;
-            try out.writer.writeAll("\x1b[2J\x1b[H\x1b[3J");
+            try out.writer.writeAll(if (self.alternate_screen) "\x1b[2J\x1b[H\x1b[3J" else "\x1b[2J\x1b[H");
             for (view.lines, 0..) |line, row| {
                 if (row > 0) try out.writer.writeAll("\r\n");
                 try out.writer.writeAll(line);

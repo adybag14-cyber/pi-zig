@@ -93,6 +93,7 @@ pub const Bindings = struct {
     actions: std.ArrayList(c.JSValue) = .empty,
     invocation_active: bool = false,
     invocation_generation: u32 = 0,
+    context_epoch: u32 = 1,
     context_snapshot: ?c.JSValue = null,
     source_path: ?[]u8 = null,
     invocation_signal: ?c.JSValue = null,
@@ -156,6 +157,10 @@ pub const Bindings = struct {
         try ui_manager.editors.addOwner(self.owner_id);
         errdefer ui_manager.editors.removeOwner(self.owner_id);
         try ui_manager.widgets.addOwner(self.owner_id);
+        errdefer ui_manager.widgets.removeOwner(self.owner_id);
+        try ui_manager.footer_data.addOwner(self.owner_id);
+        errdefer ui_manager.footer_data.removeOwner(self.owner_id);
+        try ui_manager.terminal_input.addOwner(self.owner_id);
         ui_manager.provider_action_fn = providerUiAction;
         ui_manager.provider_action_context = self;
         if (services == null) engine.host_data = self;
@@ -167,6 +172,8 @@ pub const Bindings = struct {
         const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(self.owner_token, self.owner_class).?));
         owner.binding = null;
         self.ui_manager.widgets.removeOwner(self.owner_id);
+        self.ui_manager.footer_data.removeOwner(self.owner_id);
+        self.ui_manager.terminal_input.removeOwner(self.owner_id);
         self.ui_manager.editors.removeOwner(self.owner_id);
         if (self.invocation_active) self.finishInvocation();
         if (!self.owns_services) self.renderers.removeOwner(self.owner_id);
@@ -823,6 +830,10 @@ pub const Bindings = struct {
         if (self.context_snapshot) |old| self.engine.freeValue(old);
         self.context_snapshot = snapshot;
     }
+    pub fn invalidateContext(self: *Bindings) !void {
+        if (self.context_epoch == std.math.maxInt(u32)) return error.ExtensionContextEpochExhausted;
+        self.context_epoch += 1;
+    }
 
     fn contextFunction(self: *Bindings, name: [:0]const u8, kind: ContextMethod, snapshot: c.JSValue, generation: u32) !c.JSValue {
         const token = c.JS_NewInt64(self.engine.context, generation);
@@ -861,8 +872,8 @@ pub const Bindings = struct {
         const self = fromOwnerData(engine, data, 2) catch |err| return publicationFailure(engine, err);
         var generation: i64 = 0;
         if (c.JS_ToInt64(context, &generation, data[0]) < 0) return engine.throwCaptured();
-        if (!self.invocation_active or generation != self.invocation_generation) return c.JS_ThrowTypeError(context, "Stale native model registry context");
-        return self.registryValue(@enumFromInt(magic), data[1], if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| {
+        if (generation != self.context_epoch) return c.JS_ThrowTypeError(context, "Stale native model registry context");
+        return self.registryValue(@enumFromInt(magic), self.context_snapshot orelse data[1], if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
             if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
             return c.JS_ThrowTypeError(context, "Native model registry: %s", @as([*:0]const u8, @errorName(err)));
@@ -1115,7 +1126,7 @@ pub const Bindings = struct {
             const kind: ContextMethod = @enumFromInt(field.value);
             if (@intFromEnum(kind) <= @intFromEnum(ContextMethod.getSystemPrompt)) {
                 const name: [:0]const u8 = field.name;
-                const function = try self.contextFunction(name, kind, snapshot, self.invocation_generation);
+                const function = try self.contextFunction(name, kind, snapshot, self.context_epoch);
                 const status = if (@intFromEnum(kind) <= @intFromEnum(ContextMethod.sessionManager)) property: {
                     const atom = c.JS_NewAtom(self.engine.context, name.ptr);
                     defer c.JS_FreeAtom(self.engine.context, atom);
@@ -1133,12 +1144,12 @@ pub const Bindings = struct {
         const self = fromOwnerData(engine, data, if (kind == .ui or kind == .modelRegistry) 3 else 2) catch |err| return publicationFailure(engine, err);
         // UI is an owner-rooted capability captured when the context is
         // created. Its individual methods enforce invocation/owner fences.
-        if (kind == .ui or kind == .modelRegistry) return c.JS_DupValue(context, data[2]);
         var generation: i64 = 0;
         if (c.JS_ToInt64(context, &generation, data[0]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
-        if (!self.invocation_active or generation != self.invocation_generation) return c.JS_ThrowTypeError(context, "Stale native extension context");
+        if (generation != self.context_epoch) return c.JS_ThrowTypeError(context, "Stale native extension context");
+        if (kind == .ui or kind == .modelRegistry) return c.JS_DupValue(context, data[2]);
         const arguments: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
-        return self.contextValue(@enumFromInt(magic), data[1], arguments) catch |err| {
+        return self.contextValue(@enumFromInt(magic), self.context_snapshot orelse data[1], arguments) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
             return c.JS_ThrowTypeError(context, "Native extension context failed: %s", @as([*:0]const u8, @errorName(err)));
         };
@@ -1153,7 +1164,7 @@ pub const Bindings = struct {
             inline for (std.meta.fields(ContextMethod)) |field| {
                 if (field.value >= @intFromEnum(ContextMethod.getCwd)) {
                     const name: [:0]const u8 = field.name;
-                    const function = try self.contextFunction(name, @enumFromInt(field.value), snapshot, self.invocation_generation);
+                    const function = try self.contextFunction(name, @enumFromInt(field.value), snapshot, self.context_epoch);
                     if (c.JS_DefinePropertyValueStr(self.engine.context, manager, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
                 }
             }
@@ -1189,7 +1200,14 @@ pub const Bindings = struct {
         switch (kind) {
             .isIdle => return c.pi_js_bool(self.engine.context, @intFromBool(!c.JS_IsBool(value) or c.JS_ToBool(self.engine.context, value) == 1)),
             .hasUI, .isProjectTrusted, .hasPendingMessages => return c.pi_js_bool(self.engine.context, c.JS_ToBool(self.engine.context, value)),
-            .mode => if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewString(self.engine.context, "print")),
+            .mode => {
+                if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewString(self.engine.context, "print"));
+                if (c.JS_IsString(value)) {
+                    const mode = try self.engine.toString(value);
+                    defer self.gpa.free(mode);
+                    if (std.mem.eql(u8, mode, "interactive")) return self.engine.checked(c.JS_NewString(self.engine.context, "tui"));
+                }
+            },
             .thinkingLevel => if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewString(self.engine.context, "off")),
             .getSystemPrompt => if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewString(self.engine.context, "")),
             .cwd, .getCwd => if (c.JS_IsUndefined(value)) {
@@ -2047,7 +2065,7 @@ test "native shared VM API callbacks keep extension owner context and unsubscrib
     try std.testing.expect(std.mem.indexOf(u8, first_result, "first-owner") != null);
     const second_result = try second.invokeCommand("second-cmd", "");
     defer std.testing.allocator.free(second_result);
-    try std.testing.expect(std.mem.indexOf(u8, second_result, "second-owner") != null and std.mem.indexOf(u8, second_result, "\"fenced\":true") != null);
+    try std.testing.expect(std.mem.indexOf(u8, second_result, "second-owner") != null and std.mem.indexOf(u8, second_result, "\"fenced\":false") != null);
     first.deinit();
     first_live = false;
     c.JS_RunGC(engine.runtime);
@@ -2116,14 +2134,20 @@ test "native contexts clone snapshots and reject retained getters across invocat
     try std.testing.expect(std.mem.indexOf(u8, first, "\"pristine\":\"original\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, first, "\"trusted\":true") != null);
     try std.testing.expect(std.mem.indexOf(u8, first, "\"idle\":false") != null);
-    try std.testing.expectError(error.JavaScriptException, engine.eval("retainedContext.cwd", "expired-context.js", c.JS_EVAL_TYPE_GLOBAL));
+    const retained_cwd = try engine.eval("retainedContext.cwd", "retained-context.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(retained_cwd);
+    try std.testing.expect(c.JS_IsString(retained_cwd));
     engine.beginInvocation();
     try std.testing.expectError(error.InvalidExtensionContext, bindings.setContext("{\"projectTrusted\":\"true\"}"));
     const second = try bindings.invokeTool("context", "call-two", "{}");
     defer std.testing.allocator.free(second);
-    try std.testing.expect(std.mem.indexOf(u8, second, "\"stale\":true") != null);
+    try std.testing.expect(std.mem.indexOf(u8, second, "\"stale\":false") != null);
     try std.testing.expect(std.mem.indexOf(u8, second, "\"cwd\":\"first\"") != null);
-    try std.testing.expectError(error.JavaScriptException, engine.eval("retainedContext.sessionManager.getEntries()", "expired-session.js", c.JS_EVAL_TYPE_GLOBAL));
+    const retained_entries = try engine.eval("retainedContext.sessionManager.getEntries()", "retained-session.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(retained_entries);
+    try std.testing.expect(c.JS_IsArray(retained_entries));
+    try bindings.invalidateContext();
+    try std.testing.expectError(error.JavaScriptException, engine.eval("retainedContext.cwd", "retired-context.js", c.JS_EVAL_TYPE_GLOBAL));
 }
 
 test "native Pi factory registers typed tools commands flags and hooks then executes an async tool" {
@@ -2147,6 +2171,62 @@ test "native Pi factory registers typed tools commands flags and hooks then exec
     try std.testing.expectEqualStrings("native-factory", parsed.value.object.get("name").?.string);
     try std.testing.expectEqualStrings("before_prompt", parsed.value.object.get("hooks").?.array.items[0].string);
     try std.testing.expectEqual(@as(usize, 1), parsed.value.object.get("tools").?.array.items.len);
+}
+
+test "native read only contexts match actual original callback lifetime live snapshots and explicit retirement" {
+    const gpa = std.testing.allocator;
+    var capture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/context-lifetime-original-7fb.json"), .{});
+    defer capture.deinit();
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(gpa, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory("export default pi=>pi.registerCommand('capture',{handler(_,ctx){globalThis.retainedCtx=ctx;return {}}})", "context-owner-lifetime.mjs");
+    try bindings.setContext("{\"cwd\":\"source-workspace\",\"model\":{\"id\":\"first\"},\"sessionId\":\"session-one\",\"contextUsage\":{\"tokens\":11}}");
+    const installed = try bindings.invokeCommand("capture", "");
+    defer gpa.free(installed);
+    const source = "({cwd:retainedCtx.cwd,model:retainedCtx.model.id,session:retainedCtx.sessionManager.getSessionId(),usage:retainedCtx.getContextUsage().tokens})";
+    for ([_][]const u8{ "first", "afterCallback" }, 0..) |name, index| {
+        if (index == 1) try bindings.setContext("{\"cwd\":\"source-workspace\",\"model\":{\"id\":\"second\"},\"sessionId\":\"session-two\",\"contextUsage\":{\"tokens\":29}}");
+        const value = try engine.eval(source, "context-owner-observation.js", c.JS_EVAL_TYPE_GLOBAL);
+        defer engine.freeValue(value);
+        const actual = try engine.stringify(value);
+        defer gpa.free(actual);
+        var expected: std.Io.Writer.Allocating = .init(gpa);
+        defer expected.deinit();
+        try std.json.Stringify.value(capture.value.object.get(name).?, .{}, &expected.writer);
+        try std.testing.expectEqualStrings(expected.written(), actual);
+    }
+    try bindings.invalidateContext();
+    try std.testing.expectError(error.JavaScriptException, engine.eval("retainedCtx.cwd", "context-owner-retired.js", c.JS_EVAL_TYPE_GLOBAL));
+}
+
+test "native header footer factories retain owner contexts footer data and restore separate slots" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(std.testing.allocator, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory("export default pi=>{let ctx;pi.registerCommand('install',{handler(_,value){ctx=value;ctx.ui.setStatus('live','status');ctx.ui.setHeader((tui,theme)=>({render(width){return ['header:'+width]},dispose(){globalThis.headerDisposed=(globalThis.headerDisposed??0)+1}}));ctx.ui.setFooter((tui,theme,data)=>{const statuses=data.getExtensionStatuses();globalThis.footerData=data;globalThis.footerTui=tui;return {render(width){return ['footer:'+width+':'+ctx.model.id+':'+statuses.get('live')]},dispose(){globalThis.footerDisposed=(globalThis.footerDisposed??0)+1}}});return {}}});pi.registerCommand('clear',{handler(_,value){value.ui.setHeader(undefined);value.ui.setFooter(undefined);return {}}})}", "persistent-header-footer.mjs");
+    try bindings.setContext("{\"hasUI\":true,\"mode\":\"interactive\",\"model\":{\"id\":\"one\"},\"configuredProviders\":[\"source\"]}");
+    const installed = try bindings.invokeCommand("install", "");
+    defer engine.gpa.free(installed);
+    try std.testing.expectEqual(@as(usize, 2), bindings.ui_manager.widgets.entries.items.len);
+    try bindings.setContext("{\"hasUI\":true,\"model\":{\"id\":\"two\"},\"configuredProviders\":[\"source\"]}");
+    c.JS_RunGC(engine.runtime);
+    try bindings.ui_manager.widgets.resize(31, 20);
+    const footer = bindings.ui_manager.widgets.entries.items[1].component;
+    var args = [_]c.JSValue{c.JS_NewInt32(engine.context, 31)};
+    const rendered = (try @import("native_components.zig").callMethod(engine, footer, "render", &args, false)).?;
+    defer engine.freeValue(rendered);
+    const lines = try engine.stringify(rendered);
+    defer engine.gpa.free(lines);
+    try std.testing.expectEqualStrings("[\"footer:31:two:status\"]", lines);
+    const cleared = try bindings.invokeCommand("clear", "");
+    defer engine.gpa.free(cleared);
+    try std.testing.expectEqual(@as(usize, 0), bindings.ui_manager.widgets.entries.items.len);
+    const retired = try engine.eval("headerDisposed===1&&footerDisposed===1", "persistent-disposal.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(retired);
+    try std.testing.expect(c.JS_ToBool(engine.context, retired) == 1);
 }
 
 test "native Pi registration rejects mismatched flag defaults" {
@@ -2287,7 +2367,8 @@ test "native session manager entry lookups explicit branches and compaction view
     try std.testing.expectEqual(@as(usize, 5), details.get("branch").?.array.items.len);
     try std.testing.expectEqual(@as(usize, 4), details.get("context").?.array.items.len);
     try std.testing.expectEqualStrings("compacted", details.get("context").?.array.items[0].string);
-    const guarded = try engine.eval("let blocked=false;try{retainedSession.getEntry('old')}catch{blocked=true}if(!blocked)throw Error('stale session manager');", "native-stale-session.js", c.JS_EVAL_TYPE_GLOBAL);
+    try bindings.invalidateContext();
+    const guarded = try engine.eval("let blocked=false;try{retainedSession.getEntry('old')}catch{blocked=true}if(!blocked)throw Error('retired session manager');", "native-retired-session.js", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(guarded);
 }
 

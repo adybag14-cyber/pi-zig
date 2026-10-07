@@ -146,6 +146,15 @@ test "deployment allocation failures release paths scripts encoded commands and 
     try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationCase, .{});
     try std.testing.expectError(error.InvalidDeploymentPath, prepare(std.testing.allocator, .{ .platform = .linux, .arch = .x64, .home = "bad\x00path" }, "x"));
 }
+extern "kernel32" fn GetSystemDirectoryW([*]u16, u32) callconv(.winapi) u32;
+fn localWindowsPowerShell(gpa: std.mem.Allocator) ![]u8 {
+    var buffer: [std.Io.Dir.max_path_bytes]u16 = undefined;
+    const length = GetSystemDirectoryW(&buffer, buffer.len);
+    if (length == 0 or length >= buffer.len) return error.WindowsSystemDirectoryUnavailable;
+    const directory = try std.unicode.wtf16LeToWtf8Alloc(gpa, buffer[0..length]);
+    defer gpa.free(directory);
+    return std.fs.path.join(gpa, &.{ directory, "WindowsPowerShell", "v1.0", "powershell.exe" });
+}
 fn executePlan(gpa: std.mem.Allocator, io: std.Io, command: []const u8, input: []const u8) !@import("ssh_process.zig").Result {
     const runner = @import("ssh_process.zig");
     if (@import("builtin").os.tag == .windows) {
@@ -157,7 +166,16 @@ fn executePlan(gpa: std.mem.Allocator, io: std.Io, command: []const u8, input: [
         // Real SSH uses the remote environment, where Windows PowerShell builds
         // its own native module path. Preserve that boundary in this fixture.
         _ = environment.swapRemove("PSModulePath");
-        return runner.runProgram(gpa, io, &.{ "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-NoProfile", "-NonInteractive", "-EncodedCommand", command[prefix.len..] }, .{ .stdin = input, .timeout_ms = 10_000, .environ_map = &environment });
+        const program = try localWindowsPowerShell(gpa);
+        defer gpa.free(program);
+        const timeout_ms = (runner.Options{}).timeout_ms;
+        const began = std.Io.Clock.awake.now(io).toMilliseconds();
+        return runner.runProgram(gpa, io, &.{ program, "-NoProfile", "-NonInteractive", "-EncodedCommand", command[prefix.len..] }, .{ .stdin = input, .timeout_ms = timeout_ms, .environ_map = &environment }) catch |err| {
+            // This helper is a local test fixture. Preserve the actual error
+            // and disclose neither encoded commands nor upload payloads.
+            std.debug.print("Local deployment execution failure: error={s}, elapsed_ms={d}, engine={s}, deadline_ms={d}\n", .{ @errorName(err), std.Io.Clock.awake.now(io).toMilliseconds() - began, program, timeout_ms });
+            return err;
+        };
     }
     return runner.runProgram(gpa, io, &.{ "/bin/sh", "-c", command }, .{ .stdin = input, .timeout_ms = 10_000 });
 }

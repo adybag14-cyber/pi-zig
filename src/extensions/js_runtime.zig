@@ -15,7 +15,12 @@ pub const WidgetBridge = struct {
     initial_width: usize = 80,
     initial_height: usize = 24,
     dimensions_fn: ?*const fn (?*anyopaque) widget_protocol.Dimensions = null,
+    action_fn: ?*const fn (?*anyopaque, []const u8, []const u8) anyerror!void = null,
+    action_context: ?*anyopaque = null,
+    attached_fn: ?*const fn (?*anyopaque, TerminalInputBridge, u64) anyerror!void = null,
 };
+pub const TerminalInputResult = struct { data: []u8, consume: bool };
+pub const TerminalInputBridge = struct { context: ?*anyopaque, input_fn: *const fn (?*anyopaque, []const u8) anyerror!TerminalInputResult };
 const actions_mod = @import("actions.zig");
 
 const bridge_source = @embedFile("js_bridge.mjs");
@@ -634,10 +639,18 @@ pub const Runtime = struct {
     editor_writer_group: Io.Group = .init,
     editor_writer_started: bool = false,
     widget_mutex: Io.Mutex = .init,
+    widget_lifecycle_mutex: Io.Mutex = .init,
     widget_bridge: ?WidgetBridge = null,
     widget_controls: ?*widget_protocol.ControlQueue = null,
     widget_writer_group: Io.Group = .init,
     widget_writer_started: bool = false,
+    terminal_input_mutex: Io.Mutex = .init,
+    terminal_result_mutex: Io.Mutex = .init,
+    terminal_input_wake: Io.Event = .unset,
+    terminal_input_next: u64 = 1,
+    terminal_input_pending: u64 = 0,
+    terminal_input_result: ?TerminalInputResult = null,
+    terminal_input_closed: bool = false,
     renderer_bridge: ?RendererBridgeAdapter = null,
     renderer_controls: ?*renderer_protocol.ControlQueue = null,
     renderer_writer_group: Io.Group = .init,
@@ -987,15 +1000,25 @@ pub const Runtime = struct {
     pub fn setWidgetBridge(self: *Runtime, bridge: ?WidgetBridge) !void {
         if (self.shared_owner) |owner| return owner.setWidgetBridge(bridge);
         if (!self.native_group) return;
-        self.widget_mutex.lockUncancelable(self.io);
-        defer self.widget_mutex.unlock(self.io);
+        self.widget_lifecycle_mutex.lockUncancelable(self.io);
+        defer self.widget_lifecycle_mutex.unlock(self.io);
         if (self.closed) return error.JavaScriptExtensionClosed;
-        if (self.widget_bridge) |old| if (bridge) |replacement| {
-            if (old.context == replacement.context and old.record_fn == replacement.record_fn and old.closed_fn == replacement.closed_fn and old.dimensions_fn == replacement.dimensions_fn) return;
-        };
-        if (self.widget_bridge) |old| {
+        const previous = blk: {
+            self.widget_mutex.lockUncancelable(self.io);
+            defer self.widget_mutex.unlock(self.io);
+            if (self.widget_bridge) |old| if (bridge) |replacement| {
+                if (old.context == replacement.context and old.record_fn == replacement.record_fn and old.closed_fn == replacement.closed_fn and old.dimensions_fn == replacement.dimensions_fn and old.action_fn == replacement.action_fn and old.action_context == replacement.action_context and old.attached_fn == replacement.attached_fn) return;
+            };
+            const old = self.widget_bridge;
             self.widget_bridge = null;
+            break :blk old;
+        };
+        if (previous) |old| {
             self.stopWidgetWriter();
+            self.closeTerminalInput();
+            self.drainTerminalInput();
+            // A frontend close drains its own callback leases. Keep the record
+            // mutex available for any final actions those callbacks publish.
             try old.closed_fn(old.context, self.owner_generation);
         }
         if (bridge == null) return;
@@ -1006,7 +1029,13 @@ pub const Runtime = struct {
         self.widget_controls = controls;
         try self.widget_writer_group.concurrent(self.io, widgetControlWriter, .{self});
         self.widget_writer_started = true;
+        self.widget_mutex.lockUncancelable(self.io);
         self.widget_bridge = bridge;
+        self.widget_mutex.unlock(self.io);
+        self.terminal_result_mutex.lockUncancelable(self.io);
+        self.terminal_input_closed = false;
+        self.terminal_result_mutex.unlock(self.io);
+        if (bridge.?.attached_fn) |attached| try attached(bridge.?.context, self.terminalInputBridge(), self.owner_generation);
         const dimensions = if (bridge.?.dimensions_fn) |get| get(bridge.?.context) else widget_protocol.Dimensions{ .width = bridge.?.initial_width, .height = bridge.?.initial_height };
         // Admit current geometry before a following session-start request can
         // construct a factory. A scheduled writer alone does not order this.
@@ -1025,13 +1054,28 @@ pub const Runtime = struct {
     }
     fn widgetEnded(self: *Runtime) void {
         if (!self.native_group) return;
+        self.widget_lifecycle_mutex.lockUncancelable(self.io);
+        defer self.widget_lifecycle_mutex.unlock(self.io);
         self.widget_mutex.lockUncancelable(self.io);
-        defer self.widget_mutex.unlock(self.io);
+        const previous = self.widget_bridge;
+        self.widget_bridge = null;
+        self.widget_mutex.unlock(self.io);
         self.stopWidgetWriter();
-        if (self.widget_bridge) |bridge| {
-            self.widget_bridge = null;
+        self.closeTerminalInput();
+        self.drainTerminalInput();
+        if (previous) |bridge| {
             bridge.closed_fn(bridge.context, self.owner_generation) catch {};
         }
+    }
+    fn closeTerminalInput(self: *Runtime) void {
+        self.terminal_result_mutex.lockUncancelable(self.io);
+        self.terminal_input_closed = true;
+        self.terminal_input_wake.set(self.io);
+        self.terminal_result_mutex.unlock(self.io);
+    }
+    fn drainTerminalInput(self: *Runtime) void {
+        self.terminal_input_mutex.lockUncancelable(self.io);
+        self.terminal_input_mutex.unlock(self.io);
     }
     fn widgetControlWriter(self: *Runtime) Io.Cancelable!void {
         const controls = self.widget_controls orelse return;
@@ -1049,7 +1093,37 @@ pub const Runtime = struct {
         const root = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), bytes, .{}) catch return false;
         if (root != .object) return false;
         const kind = root.object.get("type") orelse return false;
-        if (kind != .string or !std.mem.eql(u8, kind.string, "widget_record")) return false;
+        if (kind != .string) return false;
+        if (std.mem.eql(u8, kind.string, "terminal_input_result")) {
+            const generation = try component_protocol.identifier(root.object.get("ownerGeneration") orelse return error.InvalidTerminalInput);
+            const id = try component_protocol.identifier(root.object.get("id") orelse return error.InvalidTerminalInput);
+            const data = root.object.get("data") orelse return error.InvalidTerminalInput;
+            const consume = root.object.get("consume") orelse return error.InvalidTerminalInput;
+            if (data != .string or consume != .bool) return error.InvalidTerminalInput;
+            self.terminal_result_mutex.lockUncancelable(self.io);
+            defer self.terminal_result_mutex.unlock(self.io);
+            if (!self.terminal_input_closed and generation == self.owner_generation and id == self.terminal_input_pending and self.terminal_input_result == null) {
+                self.terminal_input_result = .{ .data = try std.heap.page_allocator.dupe(u8, data.string), .consume = consume.bool };
+                self.terminal_input_wake.set(self.io);
+            }
+            return true;
+        }
+        if (std.mem.eql(u8, kind.string, "widget_action")) {
+            const generation = try component_protocol.identifier(root.object.get("ownerGeneration") orelse return error.InvalidWidgetRecord);
+            if (generation != self.owner_generation) return true;
+            const method = root.object.get("method") orelse return error.InvalidWidgetRecord;
+            const args = root.object.get("args") orelse return error.InvalidWidgetRecord;
+            if (method != .string or args != .object) return error.InvalidWidgetRecord;
+            const encoded = try std.json.Stringify.valueAlloc(std.heap.page_allocator, args, .{});
+            defer std.heap.page_allocator.free(encoded);
+            self.widget_mutex.lockUncancelable(self.io);
+            defer self.widget_mutex.unlock(self.io);
+            if (self.widget_bridge) |bridge| {
+                if (bridge.action_fn) |action| try action(bridge.action_context, method.string, encoded);
+            } else if (self.ui_bridge) |bridge| try bridge.action_fn(bridge.context, std.heap.page_allocator, method.string, encoded);
+            return true;
+        }
+        if (!std.mem.eql(u8, kind.string, "widget_record")) return false;
         var record = try widget_protocol.read(std.heap.page_allocator, &root.object);
         var transferred = false;
         defer if (!transferred) record.deinit();
@@ -1067,7 +1141,11 @@ pub const Runtime = struct {
             try projection.writer.print(",\"nativeOwnerGeneration\":\"{d}\",\"placement\":\"{s}\",\"lines\":", .{ record.owner_generation, @tagName(record.placement) });
             if (record.frame) |frame| try std.json.Stringify.value(frame.lines, .{}, &projection.writer) else try projection.writer.writeAll("null");
             try projection.writer.writeByte('}');
-            try bridge.action_fn(bridge.context, std.heap.page_allocator, "setWidget", projection.written());
+            try bridge.action_fn(bridge.context, std.heap.page_allocator, switch (record.slot) {
+                .widget => "setWidget",
+                .header => "setHeader",
+                .footer => "setFooter",
+            }, projection.written());
         }
         return true;
     }
@@ -1101,6 +1179,43 @@ pub const Runtime = struct {
         var buffer: [192]u8 = undefined;
         const request = try std.fmt.bufPrint(&buffer, "{{\"kind\":\"editor_subscribe\",\"version\":1,\"ownerGeneration\":\"{d}\",\"enabled\":{}}}", .{ self.owner_generation, bridge != null });
         try self.writeLine(request);
+    }
+    pub fn terminalInputBridge(self: *Runtime) TerminalInputBridge {
+        return .{ .context = self.shared_owner orelse self, .input_fn = terminalInput };
+    }
+    fn terminalInput(raw: ?*anyopaque, data: []const u8) !TerminalInputResult {
+        const self: *Runtime = @ptrCast(@alignCast(raw.?));
+        self.terminal_input_mutex.lockUncancelable(self.io);
+        defer self.terminal_input_mutex.unlock(self.io);
+        self.terminal_result_mutex.lockUncancelable(self.io);
+        if (self.terminal_input_closed) {
+            self.terminal_result_mutex.unlock(self.io);
+            return error.TerminalInputChannelClosed;
+        }
+        const id = self.terminal_input_next;
+        self.terminal_input_next += 1;
+        self.terminal_input_pending = id;
+        self.terminal_input_wake.reset();
+        self.terminal_result_mutex.unlock(self.io);
+        defer {
+            self.terminal_result_mutex.lockUncancelable(self.io);
+            self.terminal_input_pending = 0;
+            if (self.terminal_input_result) |value| std.heap.page_allocator.free(value.data);
+            self.terminal_input_result = null;
+            self.terminal_result_mutex.unlock(self.io);
+        }
+        var out: Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer out.deinit();
+        try out.writer.print("{{\"kind\":\"terminal_input\",\"id\":\"{d}\",\"ownerGeneration\":\"{d}\",\"data\":", .{ id, self.owner_generation });
+        try std.json.Stringify.value(data, .{}, &out.writer);
+        try out.writer.writeByte('}');
+        try self.writeLine(out.written());
+        try self.terminal_input_wake.waitTimeout(self.io, .{ .duration = .{ .raw = .fromMilliseconds(5000), .clock = .awake } });
+        self.terminal_result_mutex.lockUncancelable(self.io);
+        defer self.terminal_result_mutex.unlock(self.io);
+        const result = self.terminal_input_result orelse return error.TerminalInputChannelClosed;
+        self.terminal_input_result = null;
+        return result;
     }
     fn stopEditorWriter(self: *Runtime) void {
         if (self.editor_controls) |controls| controls.stop();

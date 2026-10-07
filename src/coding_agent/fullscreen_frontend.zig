@@ -338,6 +338,7 @@ const TextUpdate = struct { text: []u8, cursor: ?usize = null, revision: ?u64 = 
 const ConfigUpdate = struct { bindings_json: ?[]u8, shortcuts: [][]u8, editor_padding_x: ?u8 = null };
 const editor_protocol = @import("../extensions/editor_protocol.zig");
 const widget_protocol = @import("../extensions/widget_protocol.zig");
+const script_runtime = @import("../extensions/js_runtime.zig");
 const Update = union(enum) {
     event: OwnedEvent,
     branch: []session.SessionEntry,
@@ -381,6 +382,7 @@ pub const Options = struct {
     status: []const u8 = "idle",
     show_hardware_cursor: bool = false,
     editor_padding_x: u8 = 0,
+    alternate_screen: bool = true,
 };
 
 const RendererOwner = struct {
@@ -418,6 +420,9 @@ pub const Frontend = struct {
     widget_owners: std.ArrayList(WidgetOwner) = .empty,
     widgets: std.ArrayList(widget_protocol.Record) = .empty,
     widget_record_bytes: usize = 0,
+    terminal_input_bridge: ?script_runtime.TerminalInputBridge = null,
+    terminal_input_generation: u64 = 0,
+    terminal_input_calls: usize = 0,
     stopping: bool = false,
     ready: bool = false,
     pause_depth: usize = 0,
@@ -460,6 +465,8 @@ pub const Frontend = struct {
     component_overlay_id: ?u64 = null,
     close_pending: ?component_protocol.Fence = null,
     closed_component: ?component_protocol.Fence = null,
+    custom_alternate_screen: bool = false,
+    alternate_transition: enum { none, enter, leave } = .none,
     component_close_request: ?component_protocol.Fence = null,
     component_dimensions: ?terminal.Dimensions = null,
     observed_dimensions: terminal.Dimensions = .{ .columns = 0, .rows = 0 },
@@ -507,6 +514,7 @@ pub const Frontend = struct {
         self.scroll.primary = true;
         self.stack = .{ .axis = .vertical, .entries = &self.root_entries };
         self.app = application.Application.init(gpa, self.stack.component());
+        self.app.alternate_screen = options.alternate_screen;
         self.app.bindings = &self.bindings;
         self.app.show_hardware_cursor = options.show_hardware_cursor;
         self.app.setFocus(self.editorComponent());
@@ -859,7 +867,7 @@ pub const Frontend = struct {
             if (self.widget_owners.items.len >= 256) return error.FrontendWidgetOwnerLimit;
             try self.widget_owners.append(self.gpa, .{ .generation = record.owner_generation, .controls = controls });
         }
-        for (self.updates.items) |*update| if (update.* == .widget and update.widget.owner_generation == record.owner_generation and std.mem.eql(u8, update.widget.key, record.key)) {
+        for (self.updates.items) |*update| if (update.* == .widget and update.widget.slot == record.slot and update.widget.owner_generation == record.owner_generation and std.mem.eql(u8, update.widget.key, record.key)) {
             const old = update.widget;
             if (old.sequence >= record.sequence) {
                 var owned = record;
@@ -883,10 +891,22 @@ pub const Frontend = struct {
         const dimensions = self.widget_dimensions.load(.acquire);
         return .{ .width = @intCast(dimensions & 0xffffffff), .height = @intCast(dimensions >> 32) };
     }
+    pub fn terminalInputAttached(raw: ?*anyopaque, bridge: script_runtime.TerminalInputBridge, generation: u64) !void {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        while (self.terminal_input_calls > 0) self.changed.waitUncancelable(self.io, &self.mutex);
+        self.terminal_input_bridge = bridge;
+        self.terminal_input_generation = generation;
+    }
     pub fn widgetClosed(raw: ?*anyopaque, generation: u64) !void {
         const self: *Frontend = @ptrCast(@alignCast(raw.?));
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
+        if (self.terminal_input_generation == generation) {
+            self.terminal_input_bridge = null;
+            while (self.terminal_input_calls > 0) self.changed.waitUncancelable(self.io, &self.mutex);
+        }
         for (self.widget_owners.items) |*owner| if (owner.generation == generation) {
             owner.controls = null;
             owner.closed = true;
@@ -902,7 +922,7 @@ pub const Frontend = struct {
         if (closed) return;
         var index: usize = 0;
         while (index < self.widgets.items.len) : (index += 1) {
-            if (!std.mem.eql(u8, self.widgets.items[index].key, record.key)) continue;
+            if (self.widgets.items[index].slot != record.slot or !std.mem.eql(u8, self.widgets.items[index].key, record.key)) continue;
             if (self.widgets.items[index].owner_generation == record.owner_generation and self.widgets.items[index].sequence >= record.sequence) return;
             var old = self.widgets.orderedRemove(index);
             old.deinit();
@@ -999,6 +1019,11 @@ pub const Frontend = struct {
             var owned = scene;
             owned.deinit();
             self.component = null;
+            if (self.custom_alternate_screen) {
+                self.app.alternate_screen = false;
+                self.custom_alternate_screen = false;
+                self.alternate_transition = .leave;
+            }
         }
         self.mutex.lockUncancelable(self.io);
         self.component_controls = null;
@@ -1140,6 +1165,13 @@ pub const Frontend = struct {
             },
             .component => |value| {
                 if (self.component) |scene| if (!scene.fence.matches(value.scene.fence)) return error.StaleNativeComponentScene;
+                // A custom regular-mode session keeps the established private
+                // alternate buffer while the continuous base stays primary.
+                if (!self.app.alternate_screen) {
+                    self.app.alternate_screen = true;
+                    self.custom_alternate_screen = true;
+                    self.alternate_transition = .enter;
+                }
                 if (self.component_overlay_id) |id| _ = self.app.removeOverlay(id);
                 self.component_overlay_id = null;
                 if (self.component) |*scene| scene.deinit();
@@ -1270,9 +1302,9 @@ pub const Frontend = struct {
         var editor_lines = try renderEditor(self, self.gpa, dimensions.columns);
         defer editor_lines.deinit(self.gpa);
         const fallback_header = [_][]const u8{self.header};
-        const header = if (self.surfaces.header) |lines| lines else &fallback_header;
+        var header: []const []const u8 = if (self.surfaces.header) |lines| lines else &fallback_header;
         const fallback_footer = [_][]const u8{self.status};
-        const footer = if (self.surfaces.footer) |lines| lines else &fallback_footer;
+        var footer: []const []const u8 = if (self.surfaces.footer) |lines| lines else &fallback_footer;
         const working = self.busy and self.surfaces.working_visible;
         const frame = self.currentWorkingFrame();
         self.working_frame = frame;
@@ -1280,7 +1312,6 @@ pub const Frontend = struct {
         const status = try std.fmt.allocPrint(self.gpa, "{s}{s}{s}{s}{s}", .{ glyph, if (glyph.len > 0) " " else "", if (working) self.surfaces.working orelse "Working…" else "", if (working and self.surfaces.status.len > 0) "  " else "", self.surfaces.status });
         defer self.gpa.free(status);
         const statuses = [_][]const u8{status};
-        self.header_lines.lines = header;
         var above: std.ArrayList([]const u8) = .empty;
         defer above.deinit(self.gpa);
         var below: std.ArrayList([]const u8) = .empty;
@@ -1288,8 +1319,13 @@ pub const Frontend = struct {
         try above.appendSlice(self.gpa, self.surfaces.above);
         try below.appendSlice(self.gpa, self.surfaces.below);
         for (self.widgets.items) |record| {
-            if (record.frame) |widget_frame| try (if (record.placement == .aboveEditor) &above else &below).appendSlice(self.gpa, widget_frame.lines);
+            if (record.frame) |widget_frame| switch (record.slot) {
+                .widget => try (if (record.placement == .aboveEditor) &above else &below).appendSlice(self.gpa, widget_frame.lines),
+                .header => header = widget_frame.lines,
+                .footer => footer = widget_frame.lines,
+            };
         }
+        self.header_lines.lines = header;
         self.above_lines.lines = above.items;
         self.below_lines.lines = below.items;
         self.status_lines.lines = if (status.len > 0) &statuses else &.{};
@@ -1317,6 +1353,14 @@ pub const Frontend = struct {
                 try application.writeAll(self.io, bytes);
             }
             self.title_dirty = false;
+        }
+        if (write) {
+            switch (self.alternate_transition) {
+                .none => {},
+                .enter => try application.writeAll(self.io, terminal.alternate_screen_enter),
+                .leave => try application.writeAll(self.io, terminal.alternate_screen_leave),
+            }
+            self.alternate_transition = .none;
         }
         const bytes = try self.app.renderAnsi(dimensions.columns, dimensions.rows);
         defer self.gpa.free(bytes);
@@ -1368,6 +1412,40 @@ pub const Frontend = struct {
         self.mutex.unlock(self.io);
     }
     fn input(self: *Frontend, packet: line_editor.InputDecoder.Input) !void {
+        self.mutex.lockUncancelable(self.io);
+        const input_bridge = self.terminal_input_bridge;
+        if (input_bridge != null) self.terminal_input_calls += 1;
+        self.mutex.unlock(self.io);
+        if (input_bridge) |bridge| {
+            defer {
+                self.mutex.lockUncancelable(self.io);
+                self.terminal_input_calls -= 1;
+                self.changed.broadcast(self.io);
+                self.mutex.unlock(self.io);
+            }
+            var owned_raw: ?[]u8 = null;
+            defer if (owned_raw) |value| self.gpa.free(value);
+            const raw_data = switch (packet) {
+                .key => |data| data,
+                // ProcessTerminal re-wraps StdinBuffer paste events before
+                // calling TUI listeners. Preserve that same observable input.
+                .paste => |data| blk: {
+                    owned_raw = try std.fmt.allocPrint(self.gpa, "\x1b[200~{s}\x1b[201~", .{data});
+                    break :blk owned_raw.?;
+                },
+            };
+            const result = bridge.input_fn(bridge.context, raw_data) catch |err| {
+                if (err == error.TerminalInputChannelClosed or err == error.JavaScriptExtensionClosed) return self.inputFiltered(packet);
+                return err;
+            };
+            defer std.heap.page_allocator.free(result.data);
+            if (result.consume or result.data.len == 0) return;
+            const bracketed = result.data.len >= 12 and std.mem.startsWith(u8, result.data, "\x1b[200~") and std.mem.endsWith(u8, result.data, "\x1b[201~");
+            return self.inputFiltered(if (bracketed) .{ .paste = result.data[6 .. result.data.len - 6] } else .{ .key = result.data });
+        }
+        return self.inputFiltered(packet);
+    }
+    fn inputFiltered(self: *Frontend, packet: line_editor.InputDecoder.Input) !void {
         if (self.component) |scene| if (scene.focus_mode == .none) return;
         if (self.component) |scene| if (scene.focused and (scene.overlay == null or !scene.overlay.?.hidden)) {
             const queue = self.component_controls orelse return error.NativeComponentChannelClosed;

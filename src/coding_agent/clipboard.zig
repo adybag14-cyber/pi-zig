@@ -16,6 +16,7 @@ const Io = std.Io;
 pub const max_clipboard_bytes: usize = 50 * 1024 * 1024;
 pub const list_timeout_ms: u64 = 1_000;
 pub const read_timeout_ms: u64 = 3_000;
+pub const text_read_timeout_ms: u64 = 5_000;
 pub const powershell_timeout_ms: u64 = 5_000;
 pub const write_timeout_ms: u64 = 5_000;
 
@@ -367,7 +368,7 @@ pub fn readClipboardText(gpa: std.mem.Allocator, io: Io, options: Options) !?[]u
     var bytes: ?[]u8 = null;
 
     if (envHas(environ, "TERMUX_VERSION")) {
-        bytes = try capture(gpa, io, &.{options.commands.termux_clipboard_get}, read_timeout_ms, options);
+        bytes = try capture(gpa, io, &.{options.commands.termux_clipboard_get}, text_read_timeout_ms, options);
     } else switch (platform) {
         .linux => {
             if (isWaylandSession(environ) and envHas(environ, "WAYLAND_DISPLAY")) {
@@ -783,6 +784,29 @@ test "Termux skips image probing and retains text clipboard fallback" {
         .text => |text| try std.testing.expectEqualStrings("termux clipboard", text),
         .image => return error.TestUnexpectedResult,
     }
+    try std.testing.expectEqual(@as(usize, 1), fake.calls);
+}
+
+test "Termux clipboard also runs on Android-like platform without a Linux platform label" {
+    const Fake = struct {
+        calls: usize = 0,
+        fn run(raw: *anyopaque, gpa: std.mem.Allocator, _: Io, argv: []const []const u8, timeout_ms: u64, _: ?*const std.process.Environ.Map) !?[]u8 {
+            const self: *@This() = @ptrCast(@alignCast(raw));
+            self.calls += 1;
+            try std.testing.expectEqualStrings("termux-clipboard-get", argv[0]);
+            try std.testing.expectEqual(@as(usize, 1), argv.len);
+            try std.testing.expectEqual(@as(u64, 5_000), timeout_ms);
+            return try gpa.dupe(u8, "android clipboard");
+        }
+    };
+    var env: std.process.Environ.Map = .init(std.testing.allocator);
+    defer env.deinit();
+    try env.put("TERMUX_VERSION", "0.119");
+    var fake: Fake = .{};
+    var paste = (try readPaste(std.testing.allocator, std.testing.io, .{ .environ = &env, .platform = .other, .runner = .{ .context = &fake, .run_fn = Fake.run } })).?;
+    defer paste.deinit(std.testing.allocator);
+    try std.testing.expect(paste == .text);
+    try std.testing.expectEqualStrings("android clipboard", paste.text);
     try std.testing.expectEqual(@as(usize, 1), fake.calls);
 }
 

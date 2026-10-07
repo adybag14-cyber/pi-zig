@@ -37,7 +37,7 @@ fn failure(value: std.json.Value, message: []const u8) !void {
     try std.testing.expect(std.mem.indexOf(u8, (try json.field(value, "error")).string, message) != null);
 }
 fn ping(worker: *peer.Peer, id: []const u8, expected: ?[]const u8) !void {
-    try worker.send(.{ .kind = "command", .name = "refresh-ping", .rawArguments = "", .flags = std.json.Value{ .object = .empty }, .invocationId = id, .context = .{ .mode = "print", .hasUI = false } });
+    try worker.send(.{ .kind = "command", .name = "refresh-ping", .rawArguments = "", .flags = std.json.Value{ .object = .empty }, .invocationId = id, .context = .{ .mode = "interactive", .hasUI = true } });
     var notified = false;
     while (true) {
         const record = try worker.record();

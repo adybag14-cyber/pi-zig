@@ -1,0 +1,160 @@
+{
+  "authority": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "sourcePath": "C:/Users/adyba/pi-upstream-7fb59f9-20261007/packages/coding-agent/src/modes/interactive/interactive-mode.ts",
+  "sourceSha256": "2e1fbb5e695c78d6e05dfcd5d7d511e755ea4495db3af34969388a24a4c221b5",
+  "methodSha256": "ae1a9c1a2dbfa403bd14073f425ee59dbbe0a254dc81aa5ee3bbfa0ce28bb256",
+  "observations": {
+    "header": [
+      {
+        "events": [
+          "factory-old:2",
+          "render"
+        ],
+        "visible": [
+          "old"
+        ],
+        "retained": "old"
+      },
+      {
+        "events": [
+          "factory-old:2",
+          "render",
+          "dispose-old",
+          "dispose-once"
+        ],
+        "visible": [
+          "old"
+        ],
+        "retained": "old"
+      },
+      {
+        "events": [
+          "factory-old:2",
+          "render",
+          "dispose-old",
+          "dispose-once",
+          "dispose-old",
+          "factory-throw",
+          "factory-original"
+        ],
+        "visible": [
+          "old"
+        ],
+        "retained": "old"
+      },
+      {
+        "events": [
+          "factory-old:2",
+          "render",
+          "dispose-old",
+          "dispose-once",
+          "dispose-old",
+          "factory-throw",
+          "factory-original",
+          "dispose-old",
+          "factory-new",
+          "render"
+        ],
+        "visible": [
+          "new"
+        ],
+        "retained": "new"
+      },
+      {
+        "events": [
+          "factory-old:2",
+          "render",
+          "dispose-old",
+          "dispose-once",
+          "dispose-old",
+          "factory-throw",
+          "factory-original",
+          "dispose-old",
+          "factory-new",
+          "render",
+          "dispose-new",
+          "render"
+        ],
+        "visible": [
+          "builtin"
+        ],
+        "retained": null
+      }
+    ],
+    "footer": [
+      {
+        "events": [
+          "factory-old:3",
+          "render"
+        ],
+        "visible": [
+          "old"
+        ],
+        "retained": "old"
+      },
+      {
+        "events": [
+          "factory-old:3",
+          "render",
+          "dispose-old",
+          "dispose-once"
+        ],
+        "visible": [
+          "old"
+        ],
+        "retained": "old"
+      },
+      {
+        "events": [
+          "factory-old:3",
+          "render",
+          "dispose-old",
+          "dispose-once",
+          "dispose-old",
+          "factory-throw",
+          "factory-original"
+        ],
+        "visible": [],
+        "retained": "old"
+      },
+      {
+        "events": [
+          "factory-old:3",
+          "render",
+          "dispose-old",
+          "dispose-once",
+          "dispose-old",
+          "factory-throw",
+          "factory-original",
+          "dispose-old",
+          "factory-new",
+          "render"
+        ],
+        "visible": [
+          "new"
+        ],
+        "retained": "new"
+      },
+      {
+        "events": [
+          "factory-old:3",
+          "render",
+          "dispose-old",
+          "dispose-once",
+          "dispose-old",
+          "factory-throw",
+          "factory-original",
+          "dispose-old",
+          "factory-new",
+          "render",
+          "dispose-new",
+          "render"
+        ],
+        "visible": [
+          "builtin"
+        ],
+        "retained": null
+      }
+    ]
+  }
+}

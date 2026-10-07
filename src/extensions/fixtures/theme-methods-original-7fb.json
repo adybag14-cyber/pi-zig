@@ -1,0 +1,27 @@
+{
+  "authority": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "sourcePath": "C:/Users/adyba/pi-upstream-7fb59f9-20261007/packages/coding-agent/src/modes/interactive/theme/theme.ts",
+  "sourceSha256": "7f80e57eedbd29271882f1e58746eca0ab408dc092a6b700c8042d2507d4aff1",
+  "colorSourceSha256": "d4fe729c424d2c07bc64cf0c3edfdbf5642865cba395dfb37234c6c88d65f468",
+  "methodSha256": "7fef724aa909d1a9bbfce3d35a06d637b026b1b7a52df96ee5e2fb54dca3f7b4",
+  "values": [
+    {
+      "mode": "truecolor",
+      "fg": "\u001b[38;2;18;171;205ma\nb\u001b[39m",
+      "bg": "\u001b[48;2;18;171;205mx\u001b[49m",
+      "dim": "\u001b[38;5;244m\u001b[2mdim\u001b[22;39m",
+      "fgAnsi": "\u001b[38;5;244m\u001b[2m",
+      "bgAnsi": "\u001b[48;2;18;171;205m",
+      "unknown": "Unknown theme color: missing"
+    },
+    {
+      "mode": "256color",
+      "fg": "\u001b[38;5;38ma\nb\u001b[39m",
+      "bg": "\u001b[48;5;38mx\u001b[49m",
+      "dim": "\u001b[38;5;244m\u001b[2mdim\u001b[22;39m",
+      "fgAnsi": "\u001b[38;5;244m\u001b[2m",
+      "bgAnsi": "\u001b[48;5;38m",
+      "unknown": "Unknown theme color: missing"
+    }
+  ]
+}

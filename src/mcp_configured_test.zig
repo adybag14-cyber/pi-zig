@@ -82,7 +82,7 @@ test "mcp.configured trusted project overrides and untrusted files never execute
     defer result.deinit(gpa);
     try std.testing.expectEqualStrings("6", result.content);
 }
-test "mcp.configured default codemode deferred and OAuth remain explicit unsupported" {
+test "mcp.configured callable exposure attempts report connection failures and OAuth remains explicit unsupported" {
     var root = try Root.init();
     defer root.deinit();
     var arena: std.heap.ArenaAllocator = .init(gpa);
@@ -95,10 +95,133 @@ test "mcp.configured default codemode deferred and OAuth remain explicit unsuppo
     const service = try create(&root, &env, true);
     defer service.deinit();
     try service.start();
-    try std.testing.expectEqual(@as(usize, 0), service.servers.items.len);
+    try std.testing.expectEqual(@as(usize, 2), service.servers.items.len);
     try std.testing.expectEqual(@as(usize, 3), service.diagnostics.items.len);
-    try std.testing.expect(std.mem.indexOf(u8, service.diagnostics.items[2], "McpOAuthUnsupported") != null);
+    var oauth = false;
+    for (service.diagnostics.items) |message| if (std.mem.indexOf(u8, message, "McpOAuthUnsupported") != null) {
+        oauth = true;
+    };
+    try std.testing.expect(oauth);
 }
+
+test "mcp.configured real deferred discovery stays callable while model declarations load ranked matches" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    try root.write(false, try document(arena.allocator(), "fixture", try stdioConfig(arena.allocator(), program, "deferred")));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const service = try create(&root, &env, false);
+    defer service.deinit();
+    try service.start();
+    try std.testing.expect(service.owns("mcp__fixture__double"));
+    try std.testing.expect(!service.owns("mcp__fixture__hidden"));
+    const initial = try service.schemasJson();
+    defer gpa.free(initial);
+    var initial_parsed = try json.Owned.parse(gpa, initial);
+    defer initial_parsed.deinit();
+    try std.testing.expectEqual(@as(usize, 1), initial_parsed.value.array.items.len);
+    try std.testing.expectEqualStrings("tool_search", try protocol.text(try protocol.field(initial_parsed.value.array.items[0], "function"), "name"));
+    const registry = try service.registrySchemasJson();
+    defer gpa.free(registry);
+    try std.testing.expect(std.mem.indexOf(u8, registry, "mcp__fixture__double") != null);
+    const names = try service.searchAndLoad("double value", 1);
+    defer gpa.free(names);
+    try std.testing.expectEqual(@as(usize, 1), names.len);
+    try std.testing.expectEqualStrings("mcp__fixture__double", names[0]);
+    const active = try service.schemasJson();
+    defer gpa.free(active);
+    var parsed = try json.Owned.parse(gpa, active);
+    defer parsed.deinit();
+    try std.testing.expectEqual(@as(usize, 2), parsed.value.array.items.len);
+    const repeated = try service.searchAndLoad("double value", 1);
+    defer gpa.free(repeated);
+    try std.testing.expectEqual(@as(usize, 0), repeated.len);
+}
+test "mcp.configured real agent tool_search loads only the next model declaration and persists transcript discovery" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    try root.write(false, try document(arena.allocator(), "fixture", try stdioConfig(arena.allocator(), program, "deferred")));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const service = try create(&root, &env, false);
+    defer service.deinit();
+    try service.start();
+    var model = try mock.MockModel.loadFromJson(gpa, "[{\"content\":\"search\",\"tool_calls\":[{\"id\":\"search\",\"name\":\"tool_search\",\"arguments\":\"{\\\"query\\\":\\\"double value\\\",\\\"limit\\\":1}\"}]},{\"content\":\"call\",\"tool_calls\":[{\"id\":\"double\",\"name\":\"mcp__fixture__double\",\"arguments\":\"{\\\"value\\\":4}\"}]},{\"content\":\"done\"}]");
+    defer model.deinit(gpa);
+    const Probe = struct {
+        model: *mock.MockModel,
+        calls: usize = 0,
+        fn complete(raw: *anyopaque, allocator: std.mem.Allocator, messages: []const @import("ai/root.zig").ChatMessage, schema: []const u8) anyerror!@import("ai/root.zig").ModelResponse {
+            const self: *@This() = @ptrCast(@alignCast(raw));
+            try std.testing.expect(std.mem.indexOf(u8, schema, "tool_search") != null);
+            try std.testing.expectEqual(self.calls != 0, std.mem.indexOf(u8, schema, "mcp__fixture__double") != null);
+            self.calls += 1;
+            return self.model.client().complete(allocator, messages, schema);
+        }
+    };
+    var probe = Probe{ .model = &model };
+    var session = try Session.init(gpa, "mcp-discovery", root.path);
+    defer session.deinit();
+    var result = try agent.run(gpa, io, root.path, .{ .ptr = &probe, .completeFn = Probe.complete }, &session, "discover", .{ .disable_builtin_tools = true, .configured_tool_ctx = service, .configured_tools_json_fn = configured.Service.dynamicSchemas, .configured_tool_fn = configured.Service.execute, .configured_tool_exists_fn = configured.Service.exists }, null, null);
+    defer result.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 3), probe.calls);
+    var loaded = false;
+    var executed = false;
+    for (session.entries.items) |entry| if (std.mem.eql(u8, entry.role, "tool")) {
+        if (std.mem.eql(u8, entry.tool_name.?, "tool_search")) {
+            try std.testing.expectEqual(@as(usize, 1), entry.added_tool_names.len);
+            try std.testing.expectEqualStrings("mcp__fixture__double", entry.added_tool_names[0]);
+            loaded = !entry.tool_is_error;
+        } else if (std.mem.eql(u8, entry.tool_name.?, "mcp__fixture__double")) {
+            try std.testing.expectEqualStrings("8", entry.content);
+            executed = !entry.tool_is_error;
+        }
+    };
+    try std.testing.expect(loaded and executed);
+}
+
+test "mcp.configured deferred search validates source query and limit diagnostics without mutating loadout" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    try root.write(false, try document(arena.allocator(), "fixture", try stdioConfig(arena.allocator(), program, "deferred")));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const service = try create(&root, &env, false);
+    defer service.deinit();
+    try service.start();
+    const Progress = struct {
+        fn update(_: ?*anyopaque, _: agent.ExternalToolUpdate) void {}
+    };
+    const cases = [_]struct { args: []const u8, message: []const u8 }{
+        .{ .args = "{\"query\":\"\\u00a0\\ufeff\"}", .message = "query must not be empty" },
+        .{ .args = "{\"query\":\"double\",\"limit\":0}", .message = "limit must be a positive integer" },
+        .{ .args = "{\"query\":\"double\",\"limit\":1.5}", .message = "limit must be a positive integer" },
+    };
+    for (cases) |case| {
+        var result = (try configured.Service.execute(service, gpa, "invalid-search", "tool_search", case.args, Progress.update, null, null)).?;
+        defer result.deinit(gpa);
+        try std.testing.expect(result.is_error);
+        try std.testing.expectEqualStrings(case.message, result.content);
+        for (service.descriptors.items) |descriptor| try std.testing.expect(!descriptor.loaded);
+    }
+    var empty = (try configured.Service.execute(service, gpa, "empty-search", "tool_search", "{\"query\":\"missing-word\"}", Progress.update, null, null)).?;
+    defer empty.deinit(gpa);
+    try std.testing.expectEqualStrings("No matching tools found.", empty.content);
+    try std.testing.expectEqual(@as(usize, 0), empty.added_tool_names.len);
+}
+
 test "mcp.configured direct exact override wins glob without downgrading other exposures" {
     const program = try fixturePath();
     defer gpa.free(program);

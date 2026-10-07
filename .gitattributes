@@ -11,3 +11,4 @@ vendor/** -text
 vendor/** -whitespace
 src/extensions/*.c text eol=lf
 src/extensions/*.h text eol=lf
+src/extensions/fixtures/*.input.json whitespace=cr-at-eol

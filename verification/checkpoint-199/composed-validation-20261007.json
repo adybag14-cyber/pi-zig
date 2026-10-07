@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": 199,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parent": "91404c07cee5515acb2849002ff8671416ca260b",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "reviewedNewerDelta": "f10993bc7f28145df1375f3ff39c7f5c4cfc05f0",
+  "packageVersion": "1.0.4",
+  "validation": [
+    {
+      "receipt": {
+        "name": "checkpoint199-final-amended-windows-debug",
+        "pid": 60128,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-07T15:48:54.0899960Z",
+        "launched_utc": "2026-10-07T15:48:54.0883602+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-composition199-20261007",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T15:53:47.2388369+00:00"
+      },
+      "summary": [
+        "Build Summary: 191/191 steps succeeded; 1209/1268 tests passed (59 skipped)"
+      ],
+      "stderrSha256": "1791e76b2eb9ab17c0b726d81ec94082ffb3c1dc5a2528ece738a8b933b8cfbb"
+    },
+    {
+      "receipt": {
+        "name": "checkpoint199-final-amended-windows-releasesafe-cached-20261007",
+        "pid": 52256,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-07T16:10:43.5797730Z",
+        "launched_utc": "2026-10-07T16:10:43.5764603+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-composition199-20261007",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T16:19:57.3161420+00:00"
+      },
+      "summary": [
+        "Build Summary: 191/191 steps succeeded; 1209/1268 tests passed (59 skipped)"
+      ],
+      "stderrSha256": "8462295542c9ce14c31498027efba5a8ac995b9e59d9b096dbd580a97c8329cf"
+    },
+    {
+      "receipt": {
+        "name": "checkpoint199-final-amended-native-linux-debug-safe-20261007",
+        "pid": 40940,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-checkpoint199-final-amended-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1750s /bin/sh /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/checkpoint199-final-amended-native-linux-20261007.sh",
+        "created_utc": "2026-10-07T15:49:16.6397240Z",
+        "launched_utc": "2026-10-07T15:49:16.6368134+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T16:17:50.6981989+00:00"
+      },
+      "summary": [
+        "Build Summary: 187/187 steps succeeded; 1395/1402 tests passed (7 skipped)",
+        "Build Summary: 187/187 steps succeeded; 1395/1402 tests passed (7 skipped)"
+      ],
+      "stderrSha256": "517ccda9afe895af19e605c2271b5fab80979aa614dca0d2c39ec8e4a72b07e7"
+    }
+  ],
+  "compiledInputsUnchanged": 668,
+  "sourceArchiveSha256": "e8f5a432dcd465d553208952974c3fdbf2c6b292545fcc8052885629f008c21d",
+  "limits": [
+    "Full SDK/TUI/durable orchestration/configured MCP OAuth and codemode builtin remain incomplete",
+    "Production retains legacy backend and one JS host; strict release guard remains active",
+    "macOS FSEvents runtime is a candidate pending exact-head hosted Debug/ReleaseSafe qualification",
+    "Footer scoped models are wired; credential-backed available list still needs full custom filter/runtime availability snapshot integration",
+    "Upstream pin remains7fb until all f109 OAuth/image lifecycle contracts are reviewed and implemented"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "base": "1d5b639",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "patch_sha256": "f3b15113e072f243313dd246a9a3f54baceab48744bc269ef793224bdf07346c",
+  "files": [
+    {
+      "path": "build.zig",
+      "sha256": "686caf93c54136388d08303babe1ab5932f6f589de87fca6ebaac04a14ce34e6"
+    },
+    {
+      "path": "src/mcp/codemode.zig",
+      "sha256": "a57335373a203ada19f0c07c1f979098fb5ab8277c20f89b894f0bd92f665f78"
+    },
+    {
+      "path": "src/mcp/fixtures/codemode-7fb.json",
+      "sha256": "4a76e62672dc1264d388f81278f5f6e096a25409727205704108380ea5c1886d"
+    },
+    {
+      "path": "src/mcp_codemode_test.zig",
+      "sha256": "b65da22d7d01a07c8efae9560ad0285ad2cd1ea854b725dd9a0e1663a11b5c03"
+    }
+  ],
+  "validation": [
+    {
+      "name": "codemode-foundation-timeout-windows-debug-20261007",
+      "pid": 25200,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-codemode -j2 --summary all",
+      "created_utc": "2026-10-07T15:08:39.4205170Z",
+      "launched_utc": "2026-10-07T15:08:39.4188879+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-codemode-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T15:09:37.1884142+00:00"
+    },
+    {
+      "name": "codemode-foundation-timeout-windows-releasesafe-20261007",
+      "pid": 53060,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-codemode -Doptimize=ReleaseSafe -j2 --summary all",
+      "created_utc": "2026-10-07T15:17:30.5510070Z",
+      "launched_utc": "2026-10-07T15:17:30.5471587+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-mcp-codemode-20261007",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T15:18:13.1293077+00:00"
+    },
+    {
+      "name": "codemode-foundation-timeout-linux-debug-safe-20261007",
+      "pid": 56620,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-codemode-foundation-timeout-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 650s /bin/sh /mnt/c/Users/adyba/pi-zig-update-evidence-20261003/codemode-foundation-timeout-linux-20261007.sh",
+      "created_utc": "2026-10-07T15:09:09.4918210Z",
+      "launched_utc": "2026-10-07T15:09:09.4885642+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T15:13:18.1496952+00:00"
+    }
+  ],
+  "scope": "Isolated native codemode sandbox foundation only; builtin agent tool/globals/declarations/manager integration remains incomplete."
+}

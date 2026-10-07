@@ -1955,6 +1955,61 @@ test "native CLI activation allocation failure retains producer acknowledgement 
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Sweep.run, .{});
 }
 
+const FooterModelSnapshot = struct {
+    live: *coding.live_state.LiveState,
+    registry: *extensions.provider_registry.Registry,
+    oauth: *extensions.provider_oauth.Runtime,
+    models_file: *const coding.models_file.ModelsFile,
+    environ: *const std.process.Environ.Map,
+    io: Io,
+    agent_dir: ?[]const u8,
+    explicit_provider: ?[]const u8,
+    explicit_key: ?[]const u8,
+
+    fn read(raw: ?*anyopaque, gpa: std.mem.Allocator) !extensions.Host.FooterModels {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        const scoped = try gpa.alloc(ai.providers.ModelInfo, self.live.model_scope.len);
+        errdefer gpa.free(scoped);
+        for (self.live.model_scope, 0..) |model, index| scoped[index] = model.model;
+        var available: std.ArrayList(ai.providers.ModelInfo) = .empty;
+        errdefer available.deinit(gpa);
+        var known: std.StringHashMap(bool) = .init(gpa);
+        defer known.deinit();
+        for (self.live.model_catalog) |model| {
+            const provider_id = model.providerName();
+            const has_auth = if (known.get(provider_id)) |value| value else blk: {
+                var valid = false;
+                for (self.registry.runtimes()) |runtime| if (std.mem.eql(u8, runtime.id, provider_id) and runtime.api_key != null) {
+                    valid = true;
+                    break;
+                };
+                const credential = try self.oauth.credentialForModelRefresh(gpa, provider_id, Io.Clock.real.now(self.io).toMilliseconds(), false, null);
+                defer if (credential) |value| gpa.free(value);
+                valid = valid or credential != null;
+                if (!valid) {
+                    var runtime = coding.runtime_config.resolveForModel(gpa, self.io, self.environ, self.models_file, model, .{
+                        .agent_dir = self.agent_dir,
+                        .explicit_api_key = if (self.explicit_provider != null and std.mem.eql(u8, self.explicit_provider.?, provider_id)) self.explicit_key else null,
+                        .allow_generic_api_key = false,
+                    }) catch |cause| switch (cause) {
+                        error.MissingCloudflareAccountId, error.MissingCloudflareGatewayId, error.MissingGoogleCloudProject, error.MissingGoogleCloudLocation => {
+                            try known.put(provider_id, false);
+                            break :blk false;
+                        },
+                        else => return cause,
+                    };
+                    defer runtime.deinit();
+                    valid = runtime.api_key != null or (ai.Provider.fromString(provider_id) != null and ai.providers.hasUsableCredential(model.provider, null, self.environ));
+                }
+                try known.put(provider_id, valid);
+                break :blk valid;
+            };
+            if (has_auth) try available.append(gpa, model);
+        }
+        return .{ .scoped = scoped, .available = try available.toOwnedSlice(gpa) };
+    }
+};
+
 fn syncExtensionScriptContext(
     host: *extensions.Host,
     ui_controller: *extensions.ui.Controller,
@@ -1978,6 +2033,11 @@ fn syncExtensionScriptContext(
     defer host.gpa.free(active_tools);
     const all_tools = try collectExtensionContextTools(host.gpa, host, tool_filter, disable_builtin_tools, false);
     defer host.gpa.free(all_tools);
+    const footer_models = if (host.footer_models_fn) |read| try read(host.footer_models_context, host.gpa) else extensions.Host.FooterModels{ .scoped = &.{}, .available = null };
+    defer if (host.footer_models_fn != null) {
+        host.gpa.free(footer_models.scoped);
+        if (footer_models.available) |models| host.gpa.free(models);
+    };
     const context = try ui_controller.contextJson(host.gpa, .{
         .mode = mode,
         .cwd = cwd,
@@ -1991,6 +2051,8 @@ fn syncExtensionScriptContext(
         .all_tools = all_tools,
         .native_tool_selection = host.native_tool_selection,
         .model_catalog = model_catalog,
+        .scoped_models = footer_models.scoped,
+        .available_models = footer_models.available,
         .configured_providers = configured_providers,
         .session = sess,
         .session_file = session_file,
@@ -2417,6 +2479,8 @@ const RuntimeResourceReloadContext = struct {
             .js_runtime_program = self.environ.get("PI_JS_RUNTIME") orelse "node",
             .script_ui_bridge = self.ui.bridge(),
             .script_backend = self.host.script_backend,
+            .footer_models_context = self.host.footer_models_context,
+            .footer_models_fn = self.host.footer_models_fn,
             .native_runtime_options = self.host.native_runtime_options,
             .script_renderer_bridge = self.host.script_renderer_bridge,
             .script_editor_bridge = self.host.script_editor_bridge,
@@ -4420,6 +4484,7 @@ fn runMain(init: std.process.Init) !void {
     // Keeping each assignment complete also avoids conditional callback values
     // sharing that initializer's register lifetime.
     if (configured_mcp != null) {
+        agent_cfg.configured_tools_json_fn = pi_zig.mcp.configured.Service.dynamicSchemas;
         agent_cfg.configured_tool_fn = pi_zig.mcp.configured.Service.execute;
         agent_cfg.configured_tool_exists_fn = pi_zig.mcp.configured.Service.exists;
     }
@@ -4456,6 +4521,9 @@ fn runMain(init: std.process.Init) !void {
     extension_oauth_runtime.bindLiveState(&live);
     extension_models_runtime.bindLiveState(&live);
     defer live.deinitDynamicCatalog();
+    var footer_model_snapshot: FooterModelSnapshot = .{ .live = &live, .registry = &extension_provider_registry, .oauth = &extension_oauth_runtime, .models_file = &models_file, .environ = environ, .io = io, .agent_dir = agent_dir, .explicit_provider = provider_name, .explicit_key = cli.api_key };
+    extension_host.footer_models_context = &footer_model_snapshot;
+    extension_host.footer_models_fn = FooterModelSnapshot.read;
 
     var extension_command_steering: std.ArrayList([]const u8) = .empty;
     defer {
@@ -4692,6 +4760,7 @@ fn runMain(init: std.process.Init) !void {
     var fullscreen_active = false;
     const use_terminal_editor = tui.line_editor.available(io);
     const use_fullscreen_scene = effective_tui_mode == .fullscreen and use_terminal_editor and tui.terminal.supportsFullscreen(io);
+    const use_persistent_scene = use_fullscreen_scene or (use_terminal_editor and extension_host.script_backend == .native);
     if (effective_tui_mode == .fullscreen and tui.terminal.supportsFullscreen(io)) {
         if (!use_fullscreen_scene) try tui.terminal.enterAlternateScreen(io);
         fullscreen_active = true;
@@ -4729,12 +4798,12 @@ fn runMain(init: std.process.Init) !void {
     // custom scene or standard dialog borrows this mode and restores it, rather
     // than exposing a canonical interval that translates already-typed Enter
     // into Ctrl+J before the next editor takes ownership.
-    var regular_terminal_mode: ?tui.line_editor.RawMode = if (use_terminal_editor and !use_fullscreen_scene) try tui.line_editor.RawMode.enter() else null;
+    var regular_terminal_mode: ?tui.line_editor.RawMode = if (use_terminal_editor and !use_persistent_scene) try tui.line_editor.RawMode.enter() else null;
     defer if (regular_terminal_mode) |*mode| mode.leave();
     var frontend: ?*coding.fullscreen_frontend.Frontend = null;
     defer extension_host.setScriptWidgetBridge(null) catch {};
     const widget_size = tui.terminal.terminalDimensions(environ, .{ .columns = 80, .rows = 24 });
-    if (!use_fullscreen_scene) try extension_host.setScriptWidgetBridge(.{ .context = &extension_ui, .record_fn = extensions.ui.Controller.widgetRecordProjection, .closed_fn = extensions.ui.Controller.widgetProjectionClosed, .initial_width = widget_size.columns, .initial_height = widget_size.rows });
+    if (!use_fullscreen_scene) try extension_host.setScriptWidgetBridge(.{ .context = &extension_ui, .record_fn = extensions.ui.Controller.widgetRecordProjection, .closed_fn = extensions.ui.Controller.widgetProjectionClosed, .initial_width = widget_size.columns, .initial_height = widget_size.rows, .action_fn = extensions.ui.Controller.persistentAction, .action_context = &extension_ui });
     defer if (frontend) |scene| {
         extension_host.setScriptEditorBridge(null) catch {};
         extension_host.setScriptWidgetBridge(null) catch {};
@@ -4758,10 +4827,10 @@ fn runMain(init: std.process.Init) !void {
     defer component_frontend_owner.detachTemporary();
     extension_ui.bindComponentScenes(ComponentFrontendOwner.scene, ComponentFrontendOwner.close, &component_frontend_owner);
     defer extension_ui.bindComponentScenes(null, null, null);
-    if (use_fullscreen_scene) {
+    if (use_persistent_scene) {
         const header = try std.fmt.allocPrint(gpa, "pi (pi-zig) {s} · {s}/{s}", .{ config.version, provider_name orelse "mock", model orelse "mock" });
         defer gpa.free(header);
-        frontend = try coding.fullscreen_frontend.Frontend.start(gpa, io, environ, &extension_stdin_reader, &terminal_keybindings, .{ .header = header, .show_hardware_cursor = interactive_render.show_hardware_cursor, .editor_padding_x = interactive_render.editor_padding_x });
+        frontend = try coding.fullscreen_frontend.Frontend.start(gpa, io, environ, &extension_stdin_reader, &terminal_keybindings, .{ .header = header, .show_hardware_cursor = interactive_render.show_hardware_cursor, .editor_padding_x = interactive_render.editor_padding_x, .alternate_screen = use_fullscreen_scene });
         component_frontend_owner.persistent = frontend;
         interactive_render.fullscreen = frontend;
         agent_cfg.abort_flag = &frontend.?.abort_flag;
@@ -4772,7 +4841,7 @@ fn runMain(init: std.process.Init) !void {
         extension_ui.bindRendererFrontend(coding.fullscreen_frontend.Frontend.rendererSink, coding.fullscreen_frontend.Frontend.rendererClosed, frontend);
         try extension_host.setScriptRendererBridge(extension_ui.rendererBridge());
         try extension_host.setScriptEditorBridge(.{ .context = frontend, .record_fn = coding.fullscreen_frontend.Frontend.editorRecordSink, .closed_fn = coding.fullscreen_frontend.Frontend.editorClosed });
-        try extension_host.setScriptWidgetBridge(.{ .context = frontend, .record_fn = coding.fullscreen_frontend.Frontend.widgetRecordSink, .closed_fn = coding.fullscreen_frontend.Frontend.widgetClosed, .initial_width = widget_size.columns, .initial_height = widget_size.rows, .dimensions_fn = coding.fullscreen_frontend.Frontend.widgetDimensions });
+        try extension_host.setScriptWidgetBridge(.{ .context = frontend, .record_fn = coding.fullscreen_frontend.Frontend.widgetRecordSink, .closed_fn = coding.fullscreen_frontend.Frontend.widgetClosed, .initial_width = widget_size.columns, .initial_height = widget_size.rows, .dimensions_fn = coding.fullscreen_frontend.Frontend.widgetDimensions, .attached_fn = coding.fullscreen_frontend.Frontend.terminalInputAttached, .action_fn = extensions.ui.Controller.persistentAction, .action_context = &extension_ui });
         extension_ui.clearNativeWidgetProjections(null);
         try extension_ui.flush();
         tui.render.bindFrontend(coding.fullscreen_frontend.Frontend.noticeSink, coding.fullscreen_frontend.Frontend.renderModalObserver, frontend);
@@ -5388,6 +5457,7 @@ const ExtensionPrintEmitter = struct {
     capabilities: tui.terminal_image.TerminalCapabilities,
     show_images: bool,
     image_width_cells: u32,
+    output_pad: usize = 1,
     host: *extensions.Host,
     fullscreen: ?*coding.fullscreen_frontend.Frontend = null,
 
@@ -5410,7 +5480,7 @@ const ExtensionPrintEmitter = struct {
             .tool_execution_start => {
                 if (!self.verbose) return;
                 const arguments = if (event.args_json.len > 0) event.args_json else if (event.text.len > 0) event.text else "{}";
-                if (self.host.renderToolCall(event.name, event.id, arguments, false, self.width) catch null) |rendered| {
+                if (self.host.renderToolCallPadded(event.name, event.id, arguments, false, self.width, self.output_pad) catch null) |rendered| {
                     defer self.host.gpa.free(rendered);
                     writeExtensionRendered(self.io, rendered) catch {};
                 } else {
@@ -5444,7 +5514,7 @@ const ExtensionPrintEmitter = struct {
                     };
                     image_index += 1;
                 }
-                if (self.host.renderToolResultRichImages(
+                if (self.host.renderToolResultRichImagesTimed(
                     event.name,
                     event.id,
                     event.text,
@@ -5455,6 +5525,8 @@ const ExtensionPrintEmitter = struct {
                     event.kind == .tool_execution_update,
                     self.show_images and self.capabilities.images != null,
                     self.width,
+                    event.duration_ms,
+                    self.output_pad,
                 ) catch null) |rendered| {
                     defer self.host.gpa.free(rendered);
                     writeExtensionRendered(self.io, rendered) catch {};
@@ -5529,7 +5601,7 @@ const ExtensionPrintEmitter = struct {
         if (live_renderer and event.kind == .tool_execution_update) return;
         if (event.kind == .tool_execution_start) {
             const arguments = if (event.args_json.len > 0) event.args_json else if (event.text.len > 0) event.text else "{}";
-            if (try self.host.renderToolCall(event.name, event.id, arguments, false, width)) |rendered| {
+            if (try self.host.renderToolCallPadded(event.name, event.id, arguments, false, width, self.output_pad)) |rendered| {
                 defer self.host.gpa.free(rendered);
                 if (live_renderer) return;
                 return scene.postRenderedToolEvent(event, rendered);
@@ -5547,7 +5619,7 @@ const ExtensionPrintEmitter = struct {
                 images[index] = .{ .data_b64 = image.data_b64, .mime_type = image.mime_type };
                 index += 1;
             }
-            if (try self.host.renderToolResultRichImages(event.name, event.id, event.text, event.is_error, event.details_json, images, false, event.kind == .tool_execution_update, self.show_images and self.capabilities.images != null, width)) |rendered| {
+            if (try self.host.renderToolResultRichImagesTimed(event.name, event.id, event.text, event.is_error, event.details_json, images, false, event.kind == .tool_execution_update, self.show_images and self.capabilities.images != null, width, event.duration_ms, self.output_pad)) |rendered| {
                 defer self.host.gpa.free(rendered);
                 if (live_renderer) return;
                 return scene.postRenderedToolEvent(event, rendered);
@@ -5686,6 +5758,7 @@ fn runOneWithImages(
         .capabilities = render_options.capabilities,
         .show_images = render_options.show_images,
         .image_width_cells = render_options.image_width_cells,
+        .output_pad = render_options.output_pad,
         .host = extension_host,
         .fullscreen = render_options.fullscreen,
     };
@@ -5725,6 +5798,7 @@ fn runOne(
         .capabilities = render_options.capabilities,
         .show_images = render_options.show_images,
         .image_width_cells = render_options.image_width_cells,
+        .output_pad = render_options.output_pad,
         .host = extension_host,
         .fullscreen = render_options.fullscreen,
     };
@@ -6597,16 +6671,54 @@ fn runRpcMode(
             const BashProgressCtx = struct {
                 io: Io,
                 id: []const u8,
+                gpa: std.mem.Allocator,
+                stream: coding.bash_output.Stream,
+                output: std.ArrayList(u8) = .empty,
+                dropped_output: bool = false,
+                failure: ?anyerror = null,
                 mutex: std.Io.Mutex = .init,
 
                 fn onProgress(ptr: ?*anyopaque, delta: []const u8) void {
                     const self: *@This() = @ptrCast(@alignCast(ptr.?));
                     self.mutex.lockUncancelable(self.io);
                     defer self.mutex.unlock(self.io);
-                    coding.modes.writeBashExecutionUpdate(self.io, self.id, delta) catch {};
+                    if (self.failure != null) return;
+                    const text = self.stream.feed(delta) catch |cause| {
+                        self.failure = cause;
+                        return;
+                    };
+                    defer self.gpa.free(text);
+                    self.append(text) catch |cause| {
+                        self.failure = cause;
+                        return;
+                    };
+                    if (text.len != 0) coding.modes.writeBashExecutionUpdate(self.io, self.id, text) catch |cause| {
+                        self.failure = cause;
+                    };
+                }
+                fn append(self: *@This(), text: []const u8) !void {
+                    const limit = 2 * agent.truncate.DEFAULT_MAX_BYTES;
+                    if (self.output.items.len + text.len > limit) {
+                        self.dropped_output = true;
+                        self.output.clearRetainingCapacity();
+                        const start = text.len -| limit;
+                        var boundary = start;
+                        while (boundary < text.len and text[boundary] & 0xc0 == 0x80) boundary += 1;
+                        return self.output.appendSlice(self.gpa, text[boundary..]);
+                    }
+                    try self.output.appendSlice(self.gpa, text);
+                }
+                fn finish(self: *@This()) !void {
+                    if (self.failure) |cause| return cause;
+                    const text = try self.stream.finish();
+                    defer self.gpa.free(text);
+                    try self.append(text);
+                    if (text.len != 0) try coding.modes.writeBashExecutionUpdate(self.io, self.id, text);
                 }
             };
-            var progress_ctx = BashProgressCtx{ .io = io, .id = req.id };
+            var progress_ctx = BashProgressCtx{ .io = io, .id = req.id, .gpa = gpa, .stream = try coding.bash_output.Stream.init(gpa) };
+            defer progress_ctx.stream.deinit();
+            defer progress_ctx.output.deinit(gpa);
 
             const BashRunCtx = struct {
                 tool_ctx: agent.ToolContext,
@@ -6713,6 +6825,12 @@ fn runRpcMode(
             defer tool_result.deinit(gpa);
             var parsed_result = try coding.rpc_bash.parse(gpa, tool_result.content, tool_result.is_error);
             defer parsed_result.deinit(gpa);
+            try progress_ctx.finish();
+            if (parsed_result.exit_code >= 0 and !parsed_result.cancelled and !parsed_result.truncated and !progress_ctx.dropped_output) {
+                const sanitized = try gpa.dupe(u8, progress_ctx.output.items);
+                gpa.free(parsed_result.output);
+                parsed_result.output = sanitized;
+            }
             const response_data = try coding.rpc_bash.formatJson(gpa, parsed_result);
             defer gpa.free(response_data);
             try coding.modes.writeRpcResponse(io, req.id, req.method, true, response_data);
