@@ -1,0 +1,38 @@
+{
+  "runtime_tests": "55 actual native process tests, including callback-held shutdown control ACK, cancelled switch decision, stale Error reason and fresh context",
+  "gates": [
+    {
+      "status": "passed",
+      "name": "context-invalidate-runtime-win-rs-20261007-c",
+      "completed_utc": "2026-10-07T16:18:31.1899820Z"
+    },
+    {
+      "status": "passed",
+      "name": "context-invalidate-runtime-win-debug-20261007-a",
+      "completed_utc": "2026-10-07T16:19:37.0216109Z"
+    },
+    {
+      "status": "passed",
+      "name": "context-invalidate-runtime-linux-rs-20261007-a",
+      "completed_utc": "2026-10-07T16:30:24.6585404Z"
+    },
+    {
+      "status": "passed",
+      "name": "context-invalidate-runtime-linux-debug-20261007-a",
+      "completed_utc": "2026-10-07T16:35:03.7742950Z"
+    }
+  ],
+  "main_lifecycle_wiring": "Root owned; only after actual committed teardown and settled shutdown",
+  "source_archive_sha256": "D05F26B04A1F9357F51641E6736843986D788E0F5876CFD15E5B30C3740FE06B",
+  "source_archive": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\CONTEXT-INVALIDATE-source-20261007-a.tar",
+  "frozen_utc": "2026-10-07T16:45:46.1828408+00:00",
+  "bindings": "Windows249pass2skip/Linux251pass; GC, subsequent distinct reasons, existing host allocation-failure checks",
+  "scope": "dedicated readonly context invalidation control",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "status": "qualified",
+  "patch_sha256": "B754F8326B0449FDD15743DEA1214CA12A3CD8EF3CF360E9E52FF9F2E4405780",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\CONTEXT-INVALIDATE-FINAL.patch",
+  "source_hashes": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\CONTEXT-INVALIDATE-FINAL-source-hashes.json",
+  "theme_tui_qualification": "unqualified; not part of this patch",
+  "ownership": "No Main edits/stage/commit/push"
+}

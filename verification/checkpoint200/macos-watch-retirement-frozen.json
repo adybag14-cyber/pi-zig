@@ -1,0 +1,105 @@
+{
+  "status": "frozen_additive_candidate_requires_hosted_macos_runtime",
+  "base": "fefc394b0767883feaf5ad7a623009a46257d7de",
+  "prerequisite": "published checkpoint199 includes unchanged macOS candidate",
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-watch-macos-retirement-20261007",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\macos-watch-owner-thread-retirement.patch",
+  "patch_sha256": "c95e95a86f2cbd81fb9a6105e70b90b2ffca83ec8473bedcbf87969cdd651a0a",
+  "files": [
+    {
+      "path": "src/durable/watch.zig",
+      "bytes": 38640,
+      "sha256": "f708b93cb424f1026576b779f93353b2ef21be5f859cf73dfc552f6a7ee5096e"
+    },
+    {
+      "path": "src/durable/watch_macos.zig",
+      "bytes": 9726,
+      "sha256": "c54179228609a3f612346fd34d8b3924d03318760437d047379cb9d1ce4627a8"
+    }
+  ],
+  "source_authority": "notify 8.2.0 src/fsevent.rs lines 481-491: run loop then worker Stop/Invalidate/Release",
+  "changes": [
+    "Retire scheduled stream and retained runloop on recorded runloop owner before watcher join completes",
+    "Worker-owned fallback also retires before backend destruction",
+    "Unscheduled constructor cleanup stays on constructor caller",
+    "macOS tests assert null stream/runloop/owner after repeated close and exercise unstarted prepared rollback"
+  ],
+  "fmt_check": "passed",
+  "tests": [
+    {
+      "name": "watch-macos-retirement-windows-debug",
+      "pid": 40220,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env test-durable -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T16:55:58.426852Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-macos-retirement-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T16:55:58.7122597Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T16:56:32.1604881Z"
+    },
+    {
+      "name": "watch-macos-retirement-windows-rs",
+      "pid": 39044,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env test-durable -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T16:57:06.558329Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-macos-retirement-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T16:57:06.9607128Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T16:58:33.5917279Z"
+    },
+    {
+      "name": "watch-macos-retirement-linux-debug",
+      "pid": 34024,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-macos-retirement-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env test-durable -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T16:56:25.867208Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-macos-retirement-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T16:56:26.1810289Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T16:56:46.3990701Z"
+    },
+    {
+      "name": "watch-macos-retirement-linux-rs",
+      "pid": 60548,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-macos-retirement-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env test-durable -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T16:57:06.558204Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-macos-retirement-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T16:57:06.9616999Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T16:58:36.2286933Z"
+    },
+    {
+      "name": "watch-macos-retirement-arm64-semantic",
+      "pid": 46828,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-macos-retirement-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 120s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test src/env_test.zig -target aarch64-macos -lc -fno-emit-bin -O Debug --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T16:55:59.415538Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-macos-retirement-20261007",
+      "status": "passed",
+      "deadline_seconds": 130,
+      "started_utc": "2026-10-07T16:55:59.6976792Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T16:56:01.4930805Z"
+    }
+  ],
+  "limits": [
+    "macOS runtime tests have not executed locally; Windows/Linux skip platform-specific bodies",
+    "Hosted timeout cause remains unconfirmed",
+    "Root owns dedicated hosted qualification; semantic compilation is not runtime certification"
+  ]
+}

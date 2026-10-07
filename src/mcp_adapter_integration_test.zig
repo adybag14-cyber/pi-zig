@@ -145,15 +145,19 @@ test "mcp.adapter actual child initialize list call allocation failures clean na
     defer gpa.free(program);
     const Allocate = struct {
         fn run(allocator: std.mem.Allocator, path: []const u8) !void {
-            var env: std.process.Environ.Map = .init(allocator);
+            // std.testing.FailingAllocator mutates plain counters. The real
+            // transport reader and request owner must not race those counters.
+            var synchronized: @import("test_support/synchronized_allocator.zig").Synchronized = .{ .backing = allocator };
+            const task_allocator = synchronized.allocator();
+            var env: std.process.Environ.Map = .init(task_allocator);
             defer env.deinit();
-            var client = client_mod.McpClient{ .gpa = allocator, .io = io, .environ = &env, .request_timeout_ms = 1000 };
+            var client = client_mod.McpClient{ .gpa = task_allocator, .io = io, .environ = &env, .request_timeout_ms = 1000 };
             defer client.deinit();
             try client.connect(&.{path});
             try std.testing.expect(client.child != null);
             try client.listTools();
             const response = try client.callTool("first", "{}");
-            defer allocator.free(response);
+            defer task_allocator.free(response);
             client.close();
             try std.testing.expect(client.child == null);
         }
