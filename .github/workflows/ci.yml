@@ -44,9 +44,10 @@ jobs:
 
       - name: Setup native image converter (Linux fixtures)
         if: runner.os == 'Linux'
+        timeout-minutes: 5
         run: |
-          sudo apt-get update
-          sudo apt-get install --yes imagemagick
+          sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install --yes imagemagick
 
       - name: Verify generated model catalog
         run: zig build maintenance -- catalog --check
@@ -66,29 +67,15 @@ jobs:
       - name: Build
         run: zig build -Doptimize=ReleaseSafe
 
-      - name: Setup SQLite development library (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $vcpkg = Join-Path $env:VCPKG_INSTALLATION_ROOT "vcpkg.exe"
-          & $vcpkg install "sqlite3[fts5]:x64-windows"
-          $installed = Join-Path $env:VCPKG_INSTALLATION_ROOT "installed\x64-windows"
-          "PI_SQLITE_LIB_DIR=$(Join-Path $installed 'lib')" >> $env:GITHUB_ENV
-          (Join-Path $installed "bin") >> $env:GITHUB_PATH
-
       - name: Test
         shell: bash
         timeout-minutes: 20
         run: |
-          if [[ -n "${PI_SQLITE_LIB_DIR:-}" ]]; then
-            zig build test test-provider-contracts -j2 --summary all -Dsqlite-lib-dir="$PI_SQLITE_LIB_DIR"
-          else
-            if [[ "${{ runner.os }}" == "macOS" ]]; then
-              export PI_CODEMODE_ALLOCATION_SHARD=0
-              export PI_CODEMODE_ALLOCATION_SHARDS=4
-            fi
-            zig build test test-provider-contracts -j2 --summary all
+          if [[ "${{ runner.os }}" == "macOS" ]]; then
+            export PI_CODEMODE_ALLOCATION_SHARD=0
+            export PI_CODEMODE_ALLOCATION_SHARDS=8
           fi
+          zig build test test-provider-contracts -j2 --summary all
 
       - name: Qualify macOS native environment lifecycle (ReleaseSafe)
         if: runner.os == 'macOS'
@@ -111,7 +98,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
     steps:
       - uses: actions/checkout@v4
       - uses: mlugg/setup-zig@v2
@@ -122,5 +109,5 @@ jobs:
         timeout-minutes: 10
         env:
           PI_CODEMODE_ALLOCATION_SHARD: ${{ matrix.shard }}
-          PI_CODEMODE_ALLOCATION_SHARDS: "4"
+          PI_CODEMODE_ALLOCATION_SHARDS: "8"
         run: zig build test-codemode -j2 --summary all
