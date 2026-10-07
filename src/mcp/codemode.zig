@@ -711,9 +711,19 @@ test "native codemode tool calls overlap retain declaration call order and cance
     try std.testing.expectEqualStrings("cancelled", abandoned.value.object.get("calls").?.array.items[0].object.get("status").?.string);
 }
 
+fn traceAllocation(gpa: std.mem.Allocator, phase: []const u8) void {
+    if (!(std.testing.environ.contains(std.heap.page_allocator, "PI_CODEMODE_ALLOCATION_TRACE") catch false)) return;
+    var probe = std.testing.FailingAllocator.init(std.heap.page_allocator, .{});
+    if (gpa.vtable == probe.allocator().vtable) {
+        const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+        std.debug.print("CODEMODE_ALLOCATION {s} fail_index={d} allocated={d} freed={d}\n", .{ phase, failing.fail_index, failing.allocated_bytes, failing.freed_bytes });
+    } else std.debug.print("CODEMODE_ALLOCATION {s} baseline\n", .{phase});
+}
 test "native codemode allocation failures free host ownership output stores callbacks and VM roots" {
     const Check = struct {
         fn run(gpa: std.mem.Allocator) !void {
+            traceAllocation(gpa, "owner-start");
+            defer traceAllocation(gpa, "owner-end");
             var result = try execute(gpa, std.testing.io, &.{}, "store('owned',{x:1});text(load('owned'));return {done:true};", .{});
             defer result.deinit();
             try std.testing.expect(result.value.object.get("ok").?.bool);
@@ -731,6 +741,8 @@ test "native codemode allocation failures join tool workers and release JSON res
             return result;
         }
         fn run(gpa: std.mem.Allocator) !void {
+            traceAllocation(gpa, "worker-start");
+            defer traceAllocation(gpa, "worker-end");
             var result = try execute(gpa, std.testing.io, &.{.{ .name = "echo", .execute = tool }}, "const value=await tools.echo({x:1});text(value);return value;", .{});
             defer result.deinit();
             try std.testing.expect(result.value.object.get("ok").?.bool);
