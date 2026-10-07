@@ -98,6 +98,8 @@ const Execution = struct {
         const freeze = try engine.checked(c.JS_GetPropertyStr(engine.context, object_type, "freeze"));
         defer engine.freeValue(freeze);
         var objects: std.ArrayList(c.JSValue) = .empty;
+        var seen: std.AutoHashMapUnmanaged(usize, void) = .empty;
+        defer seen.deinit(self.gpa);
         defer {
             for (objects.items) |value| engine.freeValue(value);
             objects.deinit(self.gpa);
@@ -123,14 +125,14 @@ const Execution = struct {
         }) |selector| {
             const selected = try engine.eval(selector, "codemode-intrinsic.js", c.JS_EVAL_TYPE_GLOBAL);
             defer engine.freeValue(selected);
-            try self.graphAdd(&objects, globals, selected);
+            try self.graphAdd(&objects, &seen, globals, selected);
         }
         var index: usize = 0;
         while (index < objects.items.len) : (index += 1) {
             const object = objects.items[index];
             const prototype = try engine.checked(c.JS_GetPrototype(engine.context, object));
             defer engine.freeValue(prototype);
-            try self.graphAdd(&objects, globals, prototype);
+            try self.graphAdd(&objects, &seen, globals, prototype);
             var names: [*c]c.JSPropertyEnum = null;
             var length: u32 = 0;
             if (c.JS_GetOwnPropertyNames(engine.context, &names, &length, object, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK) < 0) return error.JavaScriptException;
@@ -148,9 +150,9 @@ const Execution = struct {
                     engine.freeValue(descriptor.getter);
                     engine.freeValue(descriptor.setter);
                 }
-                try self.graphAdd(&objects, globals, descriptor.value);
-                try self.graphAdd(&objects, globals, descriptor.getter);
-                try self.graphAdd(&objects, globals, descriptor.setter);
+                try self.graphAdd(&objects, &seen, globals, descriptor.value);
+                try self.graphAdd(&objects, &seen, globals, descriptor.getter);
+                try self.graphAdd(&objects, &seen, globals, descriptor.setter);
                 if (index == 0 and descriptor.flags & c.JS_PROP_CONFIGURABLE != 0 and descriptor.flags & c.JS_PROP_TMASK == c.JS_PROP_NORMAL) {
                     if (c.JS_DefineProperty(engine.context, object, name.atom, c.pi_js_undefined(), c.pi_js_undefined(), c.pi_js_undefined(), c.JS_PROP_HAS_CONFIGURABLE | c.JS_PROP_HAS_WRITABLE) < 0) return error.JavaScriptException;
                 }
@@ -183,15 +185,16 @@ const Execution = struct {
             }
         }
     }
-    fn graphAdd(self: *Execution, objects: *std.ArrayList(c.JSValue), globals: c.JSValue, value: c.JSValue) !void {
+    fn graphAdd(self: *Execution, objects: *std.ArrayList(c.JSValue), seen: *std.AutoHashMapUnmanaged(usize, void), globals: c.JSValue, value: c.JSValue) !void {
         if (!c.JS_IsObject(value) or c.JS_IsStrictEqual(self.engine.context, value, globals)) return;
-        for (objects.items) |seen| if (c.JS_IsStrictEqual(self.engine.context, seen, value)) return;
+        const identity = @intFromPtr(c.pi_js_object_identity(value));
+        if (seen.contains(identity)) return;
         if (objects.items.len >= 8192) return error.CodemodeIntrinsicGraphLimit;
+        try seen.ensureUnusedCapacity(self.gpa, 1);
+        try objects.ensureUnusedCapacity(self.gpa, 1);
         const retained = c.JS_DupValue(self.engine.context, value);
-        objects.append(self.gpa, retained) catch |cause| {
-            self.engine.freeValue(retained);
-            return cause;
-        };
+        seen.putAssumeCapacity(identity, {});
+        objects.appendAssumeCapacity(retained);
     }
     fn parseArgument(self: *Execution, value: c.JSValue) !?json.Owned {
         if (c.JS_IsUndefined(value)) return null;
@@ -711,15 +714,55 @@ test "native codemode tool calls overlap retain declaration call order and cance
     try std.testing.expectEqualStrings("cancelled", abandoned.value.object.get("calls").?.array.items[0].object.get("status").?.string);
 }
 
+fn traceAllocation(gpa: std.mem.Allocator, phase: []const u8) void {
+    if (!(std.testing.environ.contains(std.heap.page_allocator, "PI_CODEMODE_ALLOCATION_TRACE") catch false)) return;
+    var probe = std.testing.FailingAllocator.init(std.heap.page_allocator, .{});
+    if (gpa.vtable == probe.allocator().vtable) {
+        const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+        std.debug.print("CODEMODE_ALLOCATION {s} fail_index={d} allocated={d} freed={d}\n", .{ phase, failing.fail_index, failing.allocated_bytes, failing.freed_bytes });
+    } else std.debug.print("CODEMODE_ALLOCATION {s} baseline\n", .{phase});
+}
+fn checkCodemodeAllocationFailures(comptime check: anytype) !void {
+    const shard_text = std.testing.environ.getAlloc(std.heap.page_allocator, "PI_CODEMODE_ALLOCATION_SHARD") catch |cause| {
+        if (cause == error.EnvironmentVariableNotFound) return std.testing.checkAllAllocationFailures(std.testing.allocator, check, .{});
+        return cause;
+    };
+    defer std.heap.page_allocator.free(shard_text);
+    const count_text = try std.testing.environ.getAlloc(std.heap.page_allocator, "PI_CODEMODE_ALLOCATION_SHARDS");
+    defer std.heap.page_allocator.free(count_text);
+    const shard = try std.fmt.parseInt(usize, shard_text, 10);
+    const count = try std.fmt.parseInt(usize, count_text, 10);
+    if (count == 0 or shard >= count) return error.InvalidAllocationShard;
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try check(baseline.allocator());
+    try std.testing.expectEqual(baseline.allocated_bytes, baseline.freed_bytes);
+    const total = baseline.alloc_index;
+    const start = total * shard / count;
+    const end = total * (shard + 1) / count;
+    std.debug.print("CODEMODE_SHARD {d}/{d} range=[{d},{d}) total={d}\n", .{ shard, count, start, end, total });
+    for (start..end) |index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = index });
+        if (check(failing.allocator())) |_| {
+            if (failing.has_induced_failure) return error.SwallowedOutOfMemoryError;
+            return error.NondeterministicMemoryUsage;
+        } else |cause| {
+            if (cause != error.OutOfMemory) return cause;
+            try std.testing.expectEqual(failing.allocated_bytes, failing.freed_bytes);
+        }
+    }
+    std.debug.print("CODEMODE_SHARD_COMPLETE {d}/{d} range=[{d},{d}) total={d}\n", .{ shard, count, start, end, total });
+}
 test "native codemode allocation failures free host ownership output stores callbacks and VM roots" {
     const Check = struct {
         fn run(gpa: std.mem.Allocator) !void {
+            traceAllocation(gpa, "owner-start");
+            defer traceAllocation(gpa, "owner-end");
             var result = try execute(gpa, std.testing.io, &.{}, "store('owned',{x:1});text(load('owned'));return {done:true};", .{});
             defer result.deinit();
             try std.testing.expect(result.value.object.get("ok").?.bool);
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Check.run, .{});
+    try checkCodemodeAllocationFailures(Check.run);
 }
 
 test "native codemode allocation failures join tool workers and release JSON results and promise roots" {
@@ -731,12 +774,14 @@ test "native codemode allocation failures join tool workers and release JSON res
             return result;
         }
         fn run(gpa: std.mem.Allocator) !void {
+            traceAllocation(gpa, "worker-start");
+            defer traceAllocation(gpa, "worker-end");
             var result = try execute(gpa, std.testing.io, &.{.{ .name = "echo", .execute = tool }}, "const value=await tools.echo({x:1});text(value);return value;", .{});
             defer result.deinit();
             try std.testing.expect(result.value.object.get("ok").?.bool);
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Check.run, .{});
+    try checkCodemodeAllocationFailures(Check.run);
 }
 fn expectJsonEquivalent(expected: Value, actual: Value) anyerror!void {
     try std.testing.expectEqual(std.meta.activeTag(expected), std.meta.activeTag(actual));
