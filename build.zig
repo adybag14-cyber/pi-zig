@@ -268,6 +268,11 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    const wheel_settings_tests = b.addTest(.{ .root_module = test_mod, .use_llvm = use_llvm, .filters = &.{ "fullscreen wheel setting", "coding_agent.settings_tui" } });
+    const run_wheel_settings_tests = b.addRunArtifact(wheel_settings_tests);
+    const wheel_settings_step = b.step("test-wheel-settings", "Exercise source wheel setting admission persistence and UI choices");
+    wheel_settings_step.dependOn(&run_wheel_settings_tests.step);
+    test_step.dependOn(&run_wheel_settings_tests.step);
     const latest_catalog_tests = b.addTest(.{ .root_module = test_mod, .use_llvm = use_llvm, .filters = &.{ "ai.bedrock", "ai.catalog", "ai.providers" } });
     const run_latest_catalog_tests = b.addRunArtifact(latest_catalog_tests);
     const latest_catalog_step = b.step("test-latest-catalog", "Exercise reviewed Pi 1.1 model catalog and Bedrock contracts");
