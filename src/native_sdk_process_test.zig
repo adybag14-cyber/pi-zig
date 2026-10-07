@@ -2,6 +2,24 @@ const std = @import("std");
 const builtin = @import("builtin");
 const http_fixture = @import("ai/http_fixture.zig");
 const EnvValue = struct { name: []const u8, value: []const u8 };
+test "native public model store graph clones and async abort identity match actual source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-model-store-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-model-store-7fb59f9.json"));
+}
+test "native public Models refresh cache network and publication matches actual source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-model-refresh-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-model-refresh-7fb59f9.json"));
+}
+test "native model refresh blocked write replacement cancellation and errors match actual source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-model-refresh-races-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-model-refresh-races-7fb59f9.json"));
+}
+test "native OAuth rotation persists after cancel and serializes the next refresh like source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-model-refresh-oauth-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-model-refresh-oauth-7fb59f9.json"));
+}
+test "native SDK runtime refresh creation cache selected availability and abort match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-runtime-refresh-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-runtime-refresh-7fb59f9.json"));
+}
+test "native completed refresh controllers retire and stale publication returns false like source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-model-refresh-retirement-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-model-refresh-retirement-7fb59f9.json"));
+}
 test "native SDK builtin chat HTTP stream completion and actual session prompt match original" {
     const response = "data: {\"id\":\"chat-sdk\",\"object\":\"chat.completion.chunk\",\"model\":\"fixture-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n\n" ++
         "data: {\"id\":\"chat-sdk\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"SDK \"},\"finish_reason\":null}]}\n\n" ++

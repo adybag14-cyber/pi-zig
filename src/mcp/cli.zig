@@ -377,7 +377,7 @@ fn transportText(a: std.mem.Allocator, config: json.Value) ![]const u8 {
     return writer.toOwnedSlice();
 }
 fn oauthRequired(cause: anyerror) bool {
-    return cause == error.McpOAuthAuthorizationRequired or cause == error.McpOAuthFlowRequired or cause == error.McpOAuthInsufficientScope;
+    return cause == error.McpOAuthAuthorizationRequired or cause == error.McpOAuthFlowRequired or cause == error.McpOAuthInsufficientScope or cause == error.McpAuthRequired;
 }
 fn serverReport(a: std.mem.Allocator, entry: json.Value, service: *@import("configured.zig").Service) !json.Value {
     const config = json.get(entry, "config").?;

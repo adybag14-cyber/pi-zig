@@ -5,7 +5,7 @@ const engine_mod = @import("engine.zig");
 const abort_signal = @import("abort_signal.zig");
 const c = engine_mod.c;
 
-pub const Method = enum(c_int) { setProvider, deleteProvider, clearProviders, getProviders, getProvider, getModels, getAllModels, getModelsOfType, getModel, getModelOfType, getAvailable, getAllAvailable, getAvailableOfType, checkAuth };
+pub const Method = enum(c_int) { setProvider, deleteProvider, clearProviders, getProviders, getProvider, getModels, getAllModels, getModelsOfType, getModel, getModelOfType, getAvailable, getAllAvailable, getAvailableOfType, checkAuth, refresh };
 fn get(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8) !c.JSValue {
     return engine.checked(c.JS_GetPropertyStr(engine.context, object, name));
 }
@@ -161,9 +161,22 @@ pub fn query(engine: *engine_mod.Engine, store: c.JSValue, method: Method, args:
         if (method == .setProvider) {
             const id = try get(engine, first, "id");
             defer engine.freeValue(id);
+            _ = try @import("native_models_refresh.zig").supersede(engine, store, id);
             const ignored = try cached(engine, store, "map_set", map, &.{ id, first });
             engine.freeValue(ignored);
             return c.pi_js_undefined();
+        }
+        if (method == .deleteProvider) _ = try @import("native_models_refresh.zig").supersede(engine, store, first);
+        if (method == .clearProviders) {
+            const providers = try providerList(engine, store, c.pi_js_undefined());
+            defer engine.freeValue(providers);
+            for (0..try length(engine, providers)) |index| {
+                const provider = try engine.checked(c.JS_GetPropertyUint32(engine.context, providers, @intCast(index)));
+                defer engine.freeValue(provider);
+                const id = try get(engine, provider, "id");
+                defer engine.freeValue(id);
+                _ = try @import("native_models_refresh.zig").supersede(engine, store, id);
+            }
         }
         const value = try cached(engine, store, switch (method) {
             .deleteProvider => "map_delete",
@@ -175,6 +188,11 @@ pub fn query(engine: *engine_mod.Engine, store: c.JSValue, method: Method, args:
         return c.pi_js_undefined();
     }
     if (method == .getProviders) return providerList(engine, store, c.pi_js_undefined());
+    if (method == .refresh) {
+        const providers = try providerList(engine, store, c.pi_js_undefined());
+        defer engine.freeValue(providers);
+        return @import("native_models_refresh.zig").refresh(engine, store, first, providers);
+    }
     if (method == .getModels or method == .getAllModels) return collect(engine, store, first, method == .getAllModels);
     if (method == .getModelsOfType) {
         const models = try collect(engine, store, second, true);
@@ -228,6 +246,7 @@ pub fn create(engine: *engine_mod.Engine, cache: c.JSValue, options: c.JSValue) 
     }
     const result = try engine.checked(c.JS_NewObject(engine.context));
     errdefer engine.freeValue(result);
+    try @import("native_models_refresh.zig").initialize(engine, store, options);
     var data = [_]c.JSValue{store};
     inline for (std.meta.fields(Method)) |field| try put(engine, result, field.name, try engine.checked(c.JS_NewCFunctionData2(engine.context, methodCallback, field.name, 0, field.value, data.len, &data)));
     return result;
@@ -249,6 +268,7 @@ fn typeCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.J
 }
 
 pub fn populateExports(engine: *engine_mod.Engine, exports: c.JSValue) !void {
+    try @import("native_models_store.zig").install(engine, exports);
     if (engine.abort_signal_class == 0) try abort_signal.install(engine);
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
@@ -665,6 +685,20 @@ fn errorConstructor(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c
         return c.JS_ThrowOutOfMemory(context);
     };
     return result;
+}
+pub fn fromCause(engine: *engine_mod.Engine, store: c.JSValue, code_text: []const u8, message_text: []const u8, cause: c.JSValue) !c.JSValue {
+    const cache = try get(engine, store, "cache");
+    defer engine.freeValue(cache);
+    const prototype = try get(engine, cache, "models_error_prototype");
+    defer engine.freeValue(prototype);
+    const code = try engine.checked(c.JS_NewStringLen(engine.context, code_text.ptr, code_text.len));
+    defer engine.freeValue(code);
+    const message = try engine.checked(c.JS_NewStringLen(engine.context, message_text.ptr, message_text.len));
+    defer engine.freeValue(message);
+    const options = try newObject(engine);
+    defer engine.freeValue(options);
+    try put(engine, options, "cause", c.JS_DupValue(engine.context, cause));
+    return errorValue(engine, prototype, code, message, options);
 }
 fn errorValue(engine: *engine_mod.Engine, prototype: c.JSValue, code: c.JSValue, message: c.JSValue, options: c.JSValue) !c.JSValue {
     const result = try engine.checked(c.JS_NewError(engine.context));

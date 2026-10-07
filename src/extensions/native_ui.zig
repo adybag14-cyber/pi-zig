@@ -160,9 +160,15 @@ pub const Manager = struct {
         self.has_ui = false;
         if (snapshot) |context| {
             try self.footer_data.update(context);
-            const resource = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "themeResource"));
-            defer self.engine.freeValue(resource);
-            if (c.JS_IsObject(resource)) try @import("native_theme.zig").hydrate(self.engine, resource);
+            const theme_state = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "themeState"));
+            defer self.engine.freeValue(theme_state);
+            if (!c.JS_IsNull(theme_state) and !c.JS_IsUndefined(theme_state)) {
+                try @import("native_theme.zig").hydrateState(self.engine, theme_state);
+            } else {
+                const resource = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "themeResource"));
+                defer self.engine.freeValue(resource);
+                if (c.JS_IsObject(resource)) try @import("native_theme.zig").hydrate(self.engine, resource);
+            }
             const available = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "hasUI"));
             defer self.engine.freeValue(available);
             self.has_ui = c.JS_ToBool(self.engine.context, available) != 0;

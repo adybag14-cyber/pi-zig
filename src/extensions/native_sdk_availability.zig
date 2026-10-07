@@ -28,6 +28,7 @@ pub fn getAvailable(engine: *engine_mod.Engine, runtime: c.JSValue, args: []cons
     defer engine.freeValue(catalog);
     // A provider-specific query does not refresh the aggregate SDK snapshot.
     if (args.len > 0 and !c.JS_IsUndefined(args[0]) and !c.JS_IsNull(args[0])) return sdk.invoke(engine, catalog, "getAvailable", args);
+    try @import("native_sdk_refresh.zig").invalidateProviderQueries(engine, owner.data);
     owner.availability_sequence = std.math.add(u64, owner.availability_sequence, 1) catch return error.NativeSDKRevisionOverflow;
     if (owner.availability_sequence > 9007199254740991) return error.NativeSDKRevisionOverflow;
     const sequence = owner.availability_sequence;
@@ -38,22 +39,26 @@ pub fn getAvailable(engine: *engine_mod.Engine, runtime: c.JSValue, args: []cons
     defer engine.freeValue(done);
     return sdk.invoke(engine, pending, "then", &.{done});
 }
+pub fn admit(engine: *engine_mod.Engine, runtime: c.JSValue, rows: c.JSValue) !void {
+    const owner = try sdk.state(engine, runtime);
+    if (owner.availability_sequence >= 9007199254740991) return error.NativeSDKRevisionOverflow;
+    owner.availability_sequence += 1;
+    const result = try complete(engine, runtime, c.JS_NewFloat64(engine.context, @floatFromInt(owner.availability_sequence)), rows);
+    engine.freeValue(result);
+}
 pub fn registrationRefresh(engine: *engine_mod.Engine, runtime: c.JSValue) !void {
     var captured = [_]c.JSValue{runtime};
     if (c.JS_EnqueueJob(engine.context, registrationJob, 1, &captured) < 0) return error.OutOfMemory;
 }
 fn registrationJob(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
-    // The local catalog refresh and the SDK availability pass are distinct
-    // asynchronous phases, as in Models.refresh followed by ModelRuntime.refresh.
-    if (c.JS_EnqueueJob(context, registrationAvailabilityJob, 1, args) < 0) return c.JS_ThrowOutOfMemory(context);
-    return c.pi_js_undefined();
-}
-fn registrationAvailabilityJob(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return startRegistrationRefresh(engine, args[0]) catch |err| sdk.fail(engine, err);
 }
 fn startRegistrationRefresh(engine: *engine_mod.Engine, runtime: c.JSValue) !c.JSValue {
-    const pending = try getAvailable(engine, runtime, &.{});
+    const options = try sdk.object(engine);
+    defer engine.freeValue(options);
+    try sdk.put(engine, options, "allowNetwork", c.pi_js_bool(engine.context, 0));
+    const pending = try @import("native_sdk_refresh.zig").start(engine, runtime, options);
     defer engine.freeValue(pending);
     const rejected = try engine.checked(c.pi_js_function_magic(engine.context, ignoreRefreshError, "availabilityRefreshError", 1, 0));
     defer engine.freeValue(rejected);

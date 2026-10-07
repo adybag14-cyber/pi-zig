@@ -1333,12 +1333,6 @@ fn modelDispatch(self: *State, operation: Method, args: []const c.JSValue) !c.JS
         defer engine.freeValue(resolved);
         return promise(engine, resolved);
     }
-    if (operation == .refresh) {
-        const value = try object(engine);
-        defer engine.freeValue(value);
-        try put(engine, value, "errors", try array(engine));
-        return promise(engine, value);
-    }
     if (operation == .setRuntimeApiKey or operation == .clearRuntimeApiKey or operation == .removeRuntimeApiKey or operation == .hasConfiguredAuth) {
         if (args.len < 1) return error.NativeSDKMissingArgument;
         const keys = try get(engine, self.data, "keys");
@@ -1606,6 +1600,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
     }
     if (self.kind == .settings_manager) return settingsDispatch(self, operation, args);
     if (self.kind == .model_runtime) {
+        if (operation == .refresh) return @import("native_sdk_refresh.zig").start(engine, receiver, if (args.len > 0) args[0] else c.pi_js_undefined());
         if (operation == .streamSimple or operation == .completeSimple) {
             const stream = try @import("native_sdk_chat.zig").stream(engine, receiver, self.data, args);
             if (operation == .streamSimple) return stream;
@@ -1953,7 +1948,7 @@ fn staticMethod(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.J
     }) catch |err| return fail(engine, err);
     if (magic == 300) {
         defer engine.freeValue(result);
-        return promise(engine, result) catch |err| fail(engine, err);
+        return @import("native_sdk_refresh.zig").created(engine, result, if (args.len > 0) args[0] else c.pi_js_undefined()) catch |err| fail(engine, err);
     }
     return result;
 }

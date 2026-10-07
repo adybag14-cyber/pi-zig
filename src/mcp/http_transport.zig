@@ -141,7 +141,7 @@ pub const Http = struct {
             }
             return cause;
         };
-        if (body.status == 401 and self.options.on_unauthorized != null) {
+        if (try self.needsAuthorization(&body)) {
             try self.options.on_unauthorized.?(self.options.auth_context, body.token_used, body.challenge);
             body.deinit();
             body = Body.init(self, jsonRequestId(value));
@@ -154,6 +154,37 @@ pub const Http = struct {
     fn jsonRequestId(value: protocol.Value) ?protocol.Value {
         const kind = protocol.kind(value) catch return null;
         return if (kind == .request) protocol.json.get(value, "id") else null;
+    }
+    fn needsAuthorization(self: *Http, body: *const Body) !bool {
+        if (self.options.on_unauthorized == null) return false;
+        if (body.status == 401) return true;
+        if (body.status != 403) return false;
+        const challenge = body.challenge orelse return false;
+        for (challenge, 0..) |_, index| {
+            if (!challengeBoundary(challenge[0..index])) continue;
+            const remainder = challenge[index..];
+            if (remainder.len < 6 or !std.ascii.eqlIgnoreCase(remainder[0..6], "error=")) continue;
+            const value = remainder[6 + @as(usize, @intFromBool(remainder.len > 6 and remainder[6] == '"')) ..];
+            const required = "insufficient_scope";
+            if (value.len >= required.len and std.ascii.eqlIgnoreCase(value[0..required.len], required)) return true;
+        }
+        return false;
+    }
+    fn challengeBoundary(prefix: []const u8) bool {
+        if (prefix.len == 0) return true;
+        const last = prefix[prefix.len - 1];
+        if (last == ',' or std.mem.indexOfScalar(u8, "\t\n\x0b\x0c\r ", last) != null) return true;
+        for ([_][]const u8{ "\xc2\xa0", "\xe1\x9a\x80", "\xe2\x80\x80", "\xe2\x80\x81", "\xe2\x80\x82", "\xe2\x80\x83", "\xe2\x80\x84", "\xe2\x80\x85", "\xe2\x80\x86", "\xe2\x80\x87", "\xe2\x80\x88", "\xe2\x80\x89", "\xe2\x80\x8a", "\xe2\x80\xa8", "\xe2\x80\xa9", "\xe2\x80\xaf", "\xe2\x81\x9f", "\xe3\x80\x80", "\xef\xbb\xbf" }) |space| if (std.mem.endsWith(u8, prefix, space)) return true;
+        return false;
+    }
+    fn authorizedGet(self: *Http, body: *Body, last_id: ?[]const u8) !fetch.Result {
+        const first = try self.perform(.GET, null, body, last_id, null);
+        if (!try self.needsAuthorization(body)) return first;
+        try self.options.on_unauthorized.?(self.options.auth_context, body.token_used, body.challenge);
+        body.deinit();
+        body.* = Body.init(self, null);
+        body.is_get = true;
+        return self.perform(.GET, null, body, last_id, null);
     }
     fn jsonMethod(value: protocol.Value, method: []const u8) bool {
         const actual = protocol.text(value, "method") catch return false;
@@ -204,11 +235,14 @@ pub const Http = struct {
             var body = Body.init(self, null);
             defer body.deinit();
             body.is_get = true;
-            const result = self.perform(.GET, null, &body, last_id, null);
+            const result = self.authorizedGet(&body, last_id);
             if (@atomicLoad(bool, &self.closing, .acquire)) return;
             if (result) |response| {
                 if (response.status == 405) return;
-                body.finish() catch |cause| self.receiver.?.failure(self.receiver.?.context, cause);
+                body.finish() catch |cause| {
+                    self.receiver.?.failure(self.receiver.?.context, cause);
+                    if (body.status == 401 or body.status == 403 or body.status == 404 or (body.status >= 400 and body.status < 500 and body.status != 408 and body.status != 429)) return;
+                };
             } else |cause| {
                 self.receiver.?.failure(self.receiver.?.context, cause);
                 if (body.status == 401 or body.status == 403 or body.status == 404 or (body.status >= 400 and body.status < 500 and body.status != 408 and body.status != 429)) return;
@@ -421,3 +455,28 @@ pub const Http = struct {
         }
     };
 };
+
+test "mcp.runtime HTTP authorization status matcher retains source regex prefix and Unicode whitespace" {
+    var value: Http = .{ .gpa = std.testing.allocator, .io = std.testing.io, .arena = .init(std.testing.allocator), .options = .{ .url = "https://unused.example", .on_unauthorized = struct {
+        fn run(_: ?*anyopaque, _: ?[]const u8, _: ?[]const u8) !void {}
+    }.run } };
+    var body = Http.Body.init(&value, null);
+    defer body.deinit();
+    body.status = 403;
+    for ([_][]const u8{ "Bearer error=insufficient_scope", "Bearer ERROR=\"INSUFFICIENT_SCOPE_extra", "x,Error=insufficient_scope", "x\xc2\xa0error=insufficient_scope", "x\xef\xbb\xbferror=insufficient_scope" }) |text| {
+        body.challenge = try std.testing.allocator.dupe(u8, text);
+        try std.testing.expect(try value.needsAuthorization(&body));
+        std.testing.allocator.free(body.challenge.?);
+        body.challenge = null;
+    }
+    for ([_][]const u8{ "xerror=insufficient_scope", "error =insufficient_scope", "error=\"other\"", "x\xc2\x85error=insufficient_scope" }) |text| {
+        body.challenge = try std.testing.allocator.dupe(u8, text);
+        try std.testing.expect(!try value.needsAuthorization(&body));
+        std.testing.allocator.free(body.challenge.?);
+        body.challenge = null;
+    }
+    body.status = 401;
+    try std.testing.expect(try value.needsAuthorization(&body));
+    body.status = 500;
+    try std.testing.expect(!try value.needsAuthorization(&body));
+}

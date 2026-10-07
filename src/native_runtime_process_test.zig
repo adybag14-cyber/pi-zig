@@ -13,6 +13,44 @@ const renderer_protocol = @import("extensions/renderer_protocol.zig");
 
 const editor_protocol = @import("extensions/editor_protocol.zig");
 
+test "native runtime cached ThemeState survives actual worker callbacks repeated reads late snapshots and owner retirement without Node" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("export default pi=>{pi.registerCommand('theme-retain',{handler(_,ctx){globalThis.savedTheme=ctx.ui.theme;globalThis.savedColors=savedTheme.colors;return {message:savedTheme.name+'|'+savedTheme.getColorMode()+'|'+savedTheme.getFgAnsi('accent')}}});pi.registerCommand('theme-probe',{handler(_,ctx){if(ctx.ui.theme!==savedTheme)throw Error('proxy identity');return {message:savedTheme.name+'|'+savedTheme.getColorMode()+'|'+savedTheme.getFgAnsi('accent')+'|'+(savedTheme.colors===savedColors)}}})}");
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options(), .js_runtime_program = "missing-node" };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    var controller = try ui_mod.Controller.init(gpa, io, true, 100);
+    defer controller.deinit();
+    try controller.setThemeState(.{ .revision = 1, .color_mode = .@"256color", .stdout_is_tty = false, .terminal_colors_pending = true });
+    const options: ui_mod.ContextOptions = .{ .mode = "interactive", .cwd = fixture.root, .session_id = "theme-state" };
+    const pending = try controller.contextJson(gpa, options);
+    defer gpa.free(pending);
+    try host.setScriptContextJson(pending);
+    const runtime = host.extensions.items[0].script_runtime.?;
+    const retained = try runtime.invokeCommand("theme-retain", "", "{}");
+    defer gpa.free(retained);
+    try std.testing.expect(std.mem.indexOf(u8, retained, "system|256color|\\u001b[39m") != null);
+    const repeated = try runtime.invokeCommand("theme-probe", "", "{}");
+    defer gpa.free(repeated);
+    try std.testing.expect(std.mem.indexOf(u8, repeated, "|true") != null);
+    try controller.setThemeState(.{ .revision = 2, .color_mode = .truecolor, .stdout_is_tty = true, .terminal_colors = .{ .background = .{ .r = 0, .g = 0, .b = 0 }, .foreground = .{ .r = 240, .g = 240, .b = 240 } } });
+    const report = try controller.contextJson(gpa, options);
+    defer gpa.free(report);
+    try host.setScriptContextJson(report);
+    const changed = try runtime.invokeCommand("theme-probe", "", "{}");
+    defer gpa.free(changed);
+    try std.testing.expect(std.mem.indexOf(u8, changed, "system|truecolor|\\u001b[38;2;") != null);
+    try std.testing.expect(std.mem.indexOf(u8, changed, "|false") != null);
+    // A captured renderer or old caller cannot roll the global palette back.
+    try host.setScriptContextJson(pending);
+    const stale = try runtime.invokeCommand("theme-probe", "", "{}");
+    defer gpa.free(stale);
+    try std.testing.expectEqualStrings(changed, stale);
+    try fixture.noBridge();
+}
+
 test "native runtime context invalidation control progresses during shutdown callback preserves cancelled decision and fresh contexts" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;

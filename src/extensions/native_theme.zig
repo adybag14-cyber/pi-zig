@@ -9,7 +9,6 @@ const Method = enum(c_int) { fg, bg, getFgAnsi, getBgAnsi, getColorMode, style, 
 const ModuleMethod = enum(c_int) { setTerminalColors, setTerminalColorScheme, markTerminalColorsPending, getTerminalTheme, loadThemeFromPath, initTheme };
 const Node = struct {
     engine: *engine_mod.Engine,
-    chalk_enabled: bool,
     module: c.JSValue,
     fg: c.JSValue,
     bg: c.JSValue,
@@ -170,14 +169,10 @@ fn construct(state: *Constructor, target: c.JSValue, args: []const c.JSValue) !c
     errdefer engine.freeValue(value);
     const node = try engine.gpa.create(Node);
     node.engine = engine;
-    node.chalk_enabled = false;
     inline for (std.meta.fields(Node)) |field| {
         if (field.type == c.JSValue) @field(node, field.name) = c.pi_js_undefined();
     }
     _ = c.JS_SetOpaque(value, node);
-    const chalk_enabled = try get(engine, state.module, "chalkEnabled");
-    defer engine.freeValue(chalk_enabled);
-    node.chalk_enabled = c.JS_ToBool(engine.context, chalk_enabled) != 0;
     node.module = c.JS_DupValue(engine.context, state.module);
     node.fg = try dictionary(engine);
     node.bg = try dictionary(engine);
@@ -430,7 +425,11 @@ fn methodOperation(node: *Node, receiver: c.JSValue, method: Method, args: []con
             defer engine.freeValue(background);
             return color_api.style(engine, arg(args, 0), foreground, background, options);
         },
-        else => return chalkStyle(engine, node.chalk_enabled, method, arg(args, 0)),
+        else => {
+            const enabled = try get(engine, node.module, "chalkEnabled");
+            defer engine.freeValue(enabled);
+            return chalkStyle(engine, c.JS_ToBool(engine.context, enabled) != 0, method, arg(args, 0));
+        },
     }
 }
 fn styleColor(node: *Node, value: c.JSValue, background: bool) !c.JSValue {
@@ -508,12 +507,12 @@ fn moduleOperation(engine: *engine_mod.Engine, module: c.JSValue, method: Module
     }
     return c.pi_js_undefined();
 }
-fn supportsModifiers(engine: *engine_mod.Engine) !bool {
+fn supportsModifiers(engine: *engine_mod.Engine, tty_override: ?bool) !bool {
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
     const process = try get(engine, global, "process");
     defer engine.freeValue(process);
-    if (!c.JS_IsObject(process)) return false;
+    if (!c.JS_IsObject(process)) return tty_override orelse false;
     const env = try get(engine, process, "env");
     defer engine.freeValue(env);
     var force: ?bool = null;
@@ -547,10 +546,9 @@ fn supportsModifiers(engine: *engine_mod.Engine) !bool {
     if (try envHas(engine, env, "TF_BUILD") and try envHas(engine, env, "AGENT_NAME")) return true;
     const stdout = try get(engine, process, "stdout");
     defer engine.freeValue(stdout);
-    if (!c.JS_IsObject(stdout)) return false;
-    const tty = try get(engine, stdout, "isTTY");
+    const tty = if (c.JS_IsObject(stdout)) try get(engine, stdout, "isTTY") else c.pi_js_undefined();
     defer engine.freeValue(tty);
-    if (c.JS_ToBool(engine.context, tty) == 0) return false;
+    if (!(tty_override orelse (c.JS_ToBool(engine.context, tty) != 0))) return false;
     var arena = std.heap.ArenaAllocator.init(engine.gpa);
     defer arena.deinit();
     const term = try envText(engine, arena.allocator(), env, "TERM");
@@ -650,7 +648,7 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     }
     const module = try object(engine);
     defer engine.freeValue(module);
-    try put(engine, module, "chalkEnabled", c.JS_NewBool(engine.context, try supportsModifiers(engine)));
+    try put(engine, module, "chalkEnabled", c.JS_NewBool(engine.context, try supportsModifiers(engine, null)));
     try put(engine, module, "terminal", try object(engine));
     try put(engine, module, "pending", c.JS_NewBool(engine.context, false));
     const global = c.JS_GetGlobalObject(engine.context);
@@ -681,7 +679,126 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     }
 }
 pub fn defaultMode(engine: *engine_mod.Engine) !ColorMode {
+    if (engine.native_module_values.contains("pi-coding-agent")) {
+        const module = try moduleState(engine);
+        defer engine.freeValue(module);
+        const bound = try get(engine, module, "boundMode");
+        defer engine.freeValue(bound);
+        if (c.JS_IsString(bound)) return color_api.mode(engine, bound);
+    }
     return if (try @import("native_tui.zig").themeTrueColor(engine)) .truecolor else .@"256color";
+}
+
+fn revision(engine: *engine_mod.Engine, value: c.JSValue) !u64 {
+    if (!c.JS_IsString(value)) return error.InvalidThemeStateRevision;
+    const text = try engine.toString(value);
+    defer engine.gpa.free(text);
+    if (text.len == 0 or (text.len > 1 and text[0] == '0')) return error.InvalidThemeStateRevision;
+    for (text) |byte| if (!std.ascii.isDigit(byte)) return error.InvalidThemeStateRevision;
+    return std.fmt.parseInt(u64, text, 10) catch error.InvalidThemeStateRevision;
+}
+
+/// Apply only cached host state on the owning VM. Late renderer snapshots
+/// cannot restore an older palette; equal revisions must have equal content.
+pub fn hydrateState(engine: *engine_mod.Engine, state: c.JSValue) !void {
+    if (c.JS_IsNull(state) or c.JS_IsUndefined(state)) return;
+    const module = try moduleState(engine);
+    defer engine.freeValue(module);
+    const revision_value = try get(engine, state, "revision");
+    defer engine.freeValue(revision_value);
+    const incoming = try revision(engine, revision_value);
+    const previous_revision = try get(engine, module, "stateRevision");
+    defer engine.freeValue(previous_revision);
+    const signature = try engine.stringify(state);
+    defer engine.gpa.free(signature);
+    if (!c.JS_IsUndefined(previous_revision)) {
+        const previous = try revision(engine, previous_revision);
+        if (incoming < previous) return;
+        if (incoming == previous) {
+            const previous_signature = try get(engine, module, "stateSignature");
+            defer engine.freeValue(previous_signature);
+            const text = try engine.toString(previous_signature);
+            defer engine.gpa.free(text);
+            if (!std.mem.eql(u8, text, signature)) return error.ConflictingThemeStateRevision;
+            return;
+        }
+    }
+    const mode_value = try get(engine, state, "colorMode");
+    defer engine.freeValue(mode_value);
+    const mode_text = try engine.toString(mode_value);
+    defer engine.gpa.free(mode_text);
+    const color_mode = std.meta.stringToEnum(ColorMode, mode_text) orelse return error.InvalidThemeStateMode;
+    const tty = try get(engine, state, "stdoutIsTTY");
+    defer engine.freeValue(tty);
+    const pending = try get(engine, state, "terminalColorsPending");
+    defer engine.freeValue(pending);
+    const scheme = try get(engine, state, "terminalColorScheme");
+    defer engine.freeValue(scheme);
+    const terminal = try get(engine, state, "terminalColors");
+    defer engine.freeValue(terminal);
+    if (!c.JS_IsObject(terminal)) return error.InvalidThemeStateReports;
+    const terminal_signature = try engine.stringify(terminal);
+    defer engine.gpa.free(terminal_signature);
+    const previous_terminal_signature = try get(engine, module, "terminalSignature");
+    defer engine.freeValue(previous_terminal_signature);
+    var same_reports = false;
+    if (c.JS_IsString(previous_terminal_signature)) {
+        const text = try engine.toString(previous_terminal_signature);
+        defer engine.gpa.free(text);
+        same_reports = std.mem.eql(u8, text, terminal_signature);
+    }
+    const resource = try get(engine, state, "resource");
+    defer engine.freeValue(resource);
+    const resource_identity = try get(engine, state, "resourceIdentity");
+    defer engine.freeValue(resource_identity);
+    // Retain the preceding report state until a complete candidate is ready.
+    const names = .{ "terminal", "pending", "scheme", "boundMode", "chalkEnabled" };
+    var old: [names.len]c.JSValue = undefined;
+    var count: usize = 0;
+    defer for (old[0..count]) |value| engine.freeValue(value);
+    inline for (names, 0..) |name, index| {
+        old[index] = try get(engine, module, name);
+        count += 1;
+    }
+    var committed = false;
+    defer if (!committed) {
+        inline for (names, 0..) |name, index| put(engine, module, name, c.JS_DupValue(engine.context, old[index])) catch {};
+    };
+    if (!same_reports) try put(engine, module, "terminal", try snapshot(engine, terminal));
+    try put(engine, module, "pending", c.JS_DupValue(engine.context, pending));
+    try put(engine, module, "scheme", if (c.JS_IsNull(scheme)) c.pi_js_undefined() else c.JS_DupValue(engine.context, scheme));
+    try put(engine, module, "boundMode", c.JS_DupValue(engine.context, mode_value));
+    try put(engine, module, "chalkEnabled", c.JS_NewBool(engine.context, try supportsModifiers(engine, c.JS_ToBool(engine.context, tty) != 0)));
+    const resource_signature = if (c.JS_IsNull(resource)) null else try engine.stringify(resource);
+    defer if (resource_signature) |raw| engine.gpa.free(raw);
+    var reuse = false;
+    if (resource_signature) |raw| {
+        const prior_signature = try get(engine, module, "selectedResourceSignature");
+        defer engine.freeValue(prior_signature);
+        const prior_identity = try get(engine, module, "resourceIdentity");
+        defer engine.freeValue(prior_identity);
+        if (c.JS_IsString(prior_signature) and c.JS_IsStrictEqual(engine.context, prior_identity, resource_identity) and c.JS_IsStrictEqual(engine.context, old[3], mode_value)) {
+            const prior = try engine.toString(prior_signature);
+            defer engine.gpa.free(prior);
+            reuse = std.mem.eql(u8, prior, raw);
+        }
+    }
+    const candidate = if (reuse) try get(engine, module, "current") else if (resource_signature) |raw| try fromJson(engine, raw, null, color_mode) else try createSystem(engine, color_mode);
+    var transferred = false;
+    defer if (!transferred) engine.freeValue(candidate);
+    const signature_value = try jsString(engine, signature);
+    defer engine.freeValue(signature_value);
+    const reports_value = try jsString(engine, terminal_signature);
+    defer engine.freeValue(reports_value);
+    transferred = true;
+    try put(engine, module, "current", candidate);
+    try put(engine, module, "resourceIdentity", c.JS_DupValue(engine.context, resource_identity));
+    try put(engine, module, "terminalSignature", c.JS_DupValue(engine.context, reports_value));
+    try put(engine, module, "stateSignature", c.JS_DupValue(engine.context, signature_value));
+    try put(engine, module, "stateRevision", c.JS_DupValue(engine.context, revision_value));
+    try put(engine, module, "selectedResourceSignature", if (resource_signature) |raw| try jsString(engine, raw) else c.pi_js_undefined());
+    try put(engine, module, "resourceSignature", c.pi_js_undefined());
+    committed = true;
 }
 fn moduleState(engine: *engine_mod.Engine) !c.JSValue {
     const exports = engine.native_module_values.get("pi-coding-agent") orelse return error.NativeThemeModuleUnavailable;
@@ -1086,4 +1203,101 @@ test "native retained theme proxy preserves cache across unchanged snapshots and
     const retained = try get(engine, initial, "accent");
     defer engine.freeValue(retained);
     try std.testing.expect(c.JS_IsObject(retained));
+}
+
+fn stateValue(engine: *engine_mod.Engine, state: @import("theme_state.zig").State) !c.JSValue {
+    const encoded = try @import("theme_state.zig").encode(engine.gpa, state);
+    defer engine.gpa.free(encoded);
+    const text = try engine.gpa.dupeZ(u8, encoded);
+    defer engine.gpa.free(text);
+    return engine.checked(c.JS_ParseJSON(engine.context, text.ptr, text.len, "theme-state.json"));
+}
+test "actual owner cached theme reports fence replay preserve custom instances and rollback failed hydration through GC" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("native_tui.zig").install(engine);
+    const proxy = try current(engine);
+    defer engine.freeValue(proxy);
+    const old_instance = try fromJson(engine, @embedFile("../themes/fixtures/dark-original-7fb.json"), null, .truecolor);
+    defer engine.freeValue(old_instance);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try put(engine, global, "retainedTheme", c.JS_DupValue(engine.context, proxy));
+    try put(engine, global, "oldThemeInstance", c.JS_DupValue(engine.context, old_instance));
+    const pending_state = try stateValue(engine, .{ .revision = 1, .color_mode = .@"256color", .stdout_is_tty = false, .terminal_colors_pending = true });
+    defer engine.freeValue(pending_state);
+    try hydrateState(engine, pending_state);
+    const initial_colors = try get(engine, proxy, "colors");
+    defer engine.freeValue(initial_colors);
+    try hydrateState(engine, pending_state);
+    const same_colors = try get(engine, proxy, "colors");
+    defer engine.freeValue(same_colors);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, initial_colors, same_colors));
+    const first = try engine.eval("if(retainedTheme.name!=='system'||retainedTheme.getFgAnsi('accent')!=='\\x1b[39m'||retainedTheme.bold('x')!=='x')throw Error('pending source defaults')", "native-theme-state-pending.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(first);
+    const report = try stateValue(engine, .{ .revision = 2, .color_mode = .truecolor, .stdout_is_tty = true, .terminal_colors = .{ .background = .{ .r = 0, .g = 0, .b = 0 }, .foreground = .{ .r = 240, .g = 240, .b = 240 } } });
+    defer engine.freeValue(report);
+    try hydrateState(engine, report);
+    const report_colors = try get(engine, proxy, "colors");
+    defer engine.freeValue(report_colors);
+    const second = try engine.eval("if(retainedTheme.getColorMode()!=='truecolor'||retainedTheme.getFgAnsi('accent')==='\\x1b[39m'||oldThemeInstance.bold('x')!=='\\x1b[1mx\\x1b[22m')throw Error('report mode/shared modifier capability')", "native-theme-state-report.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(second);
+    try hydrateState(engine, pending_state);
+    const after_stale = try get(engine, proxy, "colors");
+    defer engine.freeValue(after_stale);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, report_colors, after_stale));
+    const conflict = try stateValue(engine, .{ .revision = 2, .color_mode = .@"256color", .stdout_is_tty = false });
+    defer engine.freeValue(conflict);
+    try std.testing.expectError(error.ConflictingThemeStateRevision, hydrateState(engine, conflict));
+    const bad = try stateValue(engine, .{ .revision = 3, .color_mode = .@"256color", .stdout_is_tty = false, .resource_json = "{\"colors\":{\"accent\":\"missing\"}}", .terminal_colors = .{ .background = .{ .r = 255, .g = 255, .b = 255 } } });
+    defer engine.freeValue(bad);
+    try std.testing.expectError(error.JavaScriptException, hydrateState(engine, bad));
+    const after_failure = try get(engine, proxy, "colors");
+    defer engine.freeValue(after_failure);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, report_colors, after_failure));
+    const custom = try stateValue(engine, .{ .revision = 4, .color_mode = .truecolor, .stdout_is_tty = true, .resource_json = @embedFile("../themes/fixtures/dark-original-7fb.json"), .resource_identity = "loader-1/theme-1" });
+    defer engine.freeValue(custom);
+    try hydrateState(engine, custom);
+    const module = try moduleState(engine);
+    defer engine.freeValue(module);
+    const selected = try get(engine, module, "current");
+    defer engine.freeValue(selected);
+    const marker = try object(engine);
+    defer engine.freeValue(marker);
+    try put(engine, selected, "sourceInfo", c.JS_DupValue(engine.context, marker));
+    const custom_report = try stateValue(engine, .{ .revision = 5, .color_mode = .truecolor, .stdout_is_tty = true, .resource_json = @embedFile("../themes/fixtures/dark-original-7fb.json"), .resource_identity = "loader-1/theme-1", .terminal_colors = .{ .background = .{ .r = 180, .g = 170, .b = 160 } } });
+    defer engine.freeValue(custom_report);
+    try hydrateState(engine, custom_report);
+    const preserved = try get(engine, module, "current");
+    defer engine.freeValue(preserved);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, selected, preserved));
+    const info = try get(engine, preserved, "sourceInfo");
+    defer engine.freeValue(info);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, info, marker));
+    c.JS_RunGC(engine.runtime);
+    const retained = try get(engine, report_colors, "accent");
+    defer engine.freeValue(retained);
+    try std.testing.expect(c.JS_IsObject(retained));
+}
+
+fn stateAllocationProbe(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    try @import("native_tui.zig").install(engine);
+    const proxy = current(engine) catch |err| return allocationError(engine, err);
+    defer engine.freeValue(proxy);
+    const first = try stateValue(engine, .{ .revision = 1, .color_mode = .truecolor, .stdout_is_tty = true, .resource_json = @embedFile("../themes/fixtures/dark-original-7fb.json"), .resource_identity = "loader-1/theme-1" });
+    defer engine.freeValue(first);
+    hydrateState(engine, first) catch |err| return allocationError(engine, err);
+    const previous = get(engine, proxy, "colors") catch |err| return allocationError(engine, err);
+    defer engine.freeValue(previous);
+    const second = try stateValue(engine, .{ .revision = 2, .color_mode = .truecolor, .stdout_is_tty = true, .resource_json = @embedFile("../themes/fixtures/light-original-7fb.json"), .resource_identity = "loader-2/theme-1", .terminal_colors = .{ .background = .{ .r = 180, .g = 170, .b = 160 } } });
+    defer engine.freeValue(second);
+    hydrateState(engine, second) catch |err| return allocationError(engine, err);
+    const after = get(engine, proxy, "colors") catch |err| return allocationError(engine, err);
+    defer engine.freeValue(after);
+    c.JS_RunGC(engine.runtime);
+}
+test "cached theme owner allocation failures release candidate reports roots signatures and retained old colors" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, stateAllocationProbe, .{});
 }

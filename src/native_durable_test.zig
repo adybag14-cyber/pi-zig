@@ -440,3 +440,130 @@ test "native durable VM public task migrations execute on owner before native re
     defer std.testing.allocator.free(text);
     try std.testing.expectEqualStrings("{\"calls\":[{\"input\":{\"n\":3},\"checkpoint\":{\"phase\":\"legacy\",\"extra\":4},\"from\":1}],\"version\":2,\"input\":{\"n\":7},\"outcome\":{\"status\":\"completed\",\"result\":7}}", text);
 }
+
+test "native durable VM document drafts revoke nested handles and preserve committed snapshots on rollback" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Document VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineDoc} from '@earendil-works/pi-durable';
+        \\const Doc=defineDoc({kind:'fixture.doc',version:1,scope:'conversation',history:'rewindable',fork:'asOf',initial:()=>({nested:{n:0},items:[]}),checkpointWhen:()=>true});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return{definition:{name}}},tasks(){return[]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{}},{}),root=await harness.root({});let draft,nested,same=false;
+        \\await root.commit(async tx=>{draft=await tx.doc(Doc,root.id);same=draft===await tx.doc(Doc,root.id);nested=draft.nested;draft.nested.n=2;draft.items.push('Ω')},{});
+        \\let ended=false;try{nested.n=99}catch{ended=true}
+        \\const first=await harness.snapshot(Doc,root.id,{});let readonly=false;try{first.nested.n=99}catch{readonly=true}
+        \\const reason={original:true};let failed=false;try{await root.commit(async tx=>{const value=await tx.doc(Doc,root.id);value.nested.n=3;throw reason},{})}catch(e){failed=e===reason}
+        \\const second=await harness.snapshot(Doc,root.id,{});await harness.close({});
+        \\globalThis.result=JSON.stringify({same,ended,readonly,failed,first,second});
+    , "native-durable-document-draft");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"same\":true,\"ended\":true,\"readonly\":false,\"failed\":true,\"first\":{\"nested\":{\"n\":99},\"items\":[\"Ω\"]},\"second\":{\"nested\":{\"n\":99},\"items\":[\"Ω\"]}}", text);
+}
+
+test "native durable VM document families migrate and retain historical fork values" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Document family VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineDocFamily} from '@earendil-works/pi-durable';
+        \\const common={kind:'fixture.family',scope:'conversation',history:'rewindable',fork:'asOf',family:true,checkpointWhen:()=>true};
+        \\const V1=defineDocFamily({...common,version:1,initial:seed=>({n:seed.n})}), V2=defineDocFamily({...common,version:2,initial:()=>({n:0,label:'new'}),migrate:(value,from)=>({...value,label:'migrated-'+from})});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return{definition:{name}}},tasks(){return[]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{}},{}),root=await harness.root({});
+        \\let anchor;await root.commit(async tx=>{const value=await tx.doc(V1,root.id,'key',{n:5});value.n+=1;anchor=await tx.appendEntry(root.id,{kind:'anchor'})},{});
+        \\const migrated=await harness.snapshot(V2,root.id,'key',{});
+        \\await root.commit(async tx=>{const value=await tx.doc(V2,root.id,'key',{});value.n=9},{});
+        \\const record=await store.findDocument({kind:'fixture.family',scope:{kind:'conversation',conversationId:root.id},key:'key'},'current',{}), stored=await store.document(record.id,'current',{});
+        \\const fork=await root.fork(anchor.id,{ownership:{kind:'ownerless'}},{}), inherited=await harness.snapshot(V2,fork.id,'key',{}),historical=await harness.snapshotAsOf(V2,root.id,'key',anchor.id,{});
+        \\await harness.close({});globalThis.result=JSON.stringify({migrated,current:stored.value,version:stored.version,inherited,historical});
+    , "native-durable-document-family");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"migrated\":{\"n\":6,\"label\":\"migrated-1\"},\"current\":{\"n\":9,\"label\":\"migrated-1\"},\"version\":2,\"inherited\":{\"n\":6,\"label\":\"migrated-1\"},\"historical\":{\"n\":6,\"label\":\"migrated-1\"}}", text);
+}
+
+test "native durable VM document retirement preserves final history and replacement uses a fresh identity" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Document retirement VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineDoc} from '@earendil-works/pi-durable';
+        \\const Doc=defineDoc({kind:'fixture.retire',version:1,scope:'conversation',history:'rewindable',fork:'asOf',initial:()=>({n:1}),checkpointWhen:()=>true});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return{definition:{name}}},tasks(){return[]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{}},{}),root=await harness.root({});
+        \\await root.commit(async tx=>{(await tx.doc(Doc,root.id)).n=2},{});
+        \\const address={kind:'fixture.retire',scope:{kind:'conversation',conversationId:root.id}},old=await store.findDocument(address,'current',{});
+        \\await root.commit(async tx=>{const doc=await tx.doc(Doc,root.id);doc.n=3;await tx.retireDoc(Doc,root.id);const replacement=await tx.doc(Doc,root.id);replacement.n=4},{});
+        \\const current=await store.findDocument(address,'current',{}),value=await harness.snapshot(Doc,root.id,{}),history=await store.document(old.id,2,{});
+        \\await harness.close({});globalThis.result=JSON.stringify({old:old.id,current:current.id,distinct:old.id!==current.id,value,history:history.value});
+    , "native-durable-document-retirement");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"old\":7,\"current\":8,\"distinct\":true,\"value\":{\"n\":4},\"history\":{\"n\":2}}", text);
+}
+
+test "native durable VM document deltas and checkpoint predicates preserve source counters" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Document checkpoint VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineDoc} from '@earendil-works/pi-durable';
+        \\const calls=[],Doc=defineDoc({kind:'fixture.delta',version:1,scope:'conversation',history:'rewindable',fork:'asOf',initial(){calls.push({initial:arguments.length});return{n:0,nested:{x:1},text:'A',items:[]}},checkpointWhen(value,ops,info){calls.push({ops,info});return info.deltasSinceBase===1}});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return{definition:{name}}},tasks(){return[]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{}},{}),root=await harness.root({});
+        \\await root.commit(async tx=>{await tx.doc(Doc,root.id)},{});
+        \\const record=await store.findDocument({kind:'fixture.delta',scope:{kind:'conversation',conversationId:root.id}},'current',{});
+        \\await root.commit(async tx=>{const d=await tx.doc(Doc,root.id);d.n=2;d.text+='Ω';d.items.push(7)},{});const first=await store.document(record.id,'current',{});
+        \\await root.commit(async tx=>{const d=await tx.doc(Doc,root.id);d.nested.x=3},{});const second=await store.document(record.id,'current',{});
+        \\await root.commit(async tx=>{await tx.doc(Doc,root.id)},{});
+        \\await harness.close({});globalThis.result=JSON.stringify({calls,first:{value:first.value,deltas:first.deltasSinceBase},second:{value:second.value,deltas:second.deltasSinceBase}});
+    , "native-durable-document-checkpoint");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"calls\":[{\"initial\":0},{\"ops\":[[\"s\",[\"n\"],2],[\"a\",[\"text\"],\"Ω\"],[\"p\",[\"items\"],0,0,[7]]],\"info\":{\"deltasSinceBase\":0}},{\"ops\":[[\"s\",[\"nested\",\"x\"],3]],\"info\":{\"deltasSinceBase\":1}}],\"first\":{\"value\":{\"n\":2,\"nested\":{\"x\":1},\"text\":\"AΩ\",\"items\":[7]},\"deltas\":1},\"second\":{\"value\":{\"n\":2,\"nested\":{\"x\":3},\"text\":\"AΩ\",\"items\":[7]},\"deltas\":0}}", text);
+}
+
+test "native durable VM document unloading cold reads storage and checkpoint preparation revokes every draft access" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Document cache VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineDoc} from '@earendil-works/pi-durable';
+        \\let captured,ended=[];const Doc=defineDoc({kind:'fixture.unload',version:1,scope:'session',initial:()=>({nested:{n:1}}),checkpointWhen(){for(const read of [()=>captured.nested,()=>Object.keys(captured),()=>('nested' in captured),()=>Object.getOwnPropertyDescriptor(captured,'nested')]){try{read();ended.push(false)}catch{ended.push(true)}}return false}});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return{definition:{name}}},tasks(){return[]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{}},{});
+        \\await harness.commit(async tx=>{await tx.doc(Doc)},{});await harness.commit(async tx=>{captured=await tx.doc(Doc);captured.nested.n=2},{});
+        \\const first=await harness.snapshot(Doc,{});first.nested.n=99;const same=first===await harness.snapshot(Doc,{});await harness.unloadDocuments();const second=await harness.snapshot(Doc,{});await harness.close({});
+        \\globalThis.result=JSON.stringify({ended,same,distinct:first!==second,first,second});
+    , "native-durable-document-unload");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"ended\":[true,true,true,true],\"same\":true,\"distinct\":true,\"first\":{\"nested\":{\"n\":99}},\"second\":{\"nested\":{\"n\":2}}}", text);
+}

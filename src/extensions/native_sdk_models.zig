@@ -28,12 +28,13 @@ fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSVal
     const engine = engine_mod.Engine.fromContext(context.?);
     const input = if (argc > 0) args[0] else c.pi_js_undefined();
     return (switch (magic) {
-        0 => readCredential(engine, data[0], input),
+        0 => readCredentialOptions(engine, data[0], input, if (argc > 1) args[1] else c.pi_js_undefined()),
         1 => environment(engine, input),
         2 => builtinModels(engine, data[0], false),
         3 => builtinModels(engine, data[0], true),
         4 => builtinAuth(engine, data[0], input, false),
         5 => builtinAuth(engine, data[0], input, true),
+        6 => modifyCredential(engine, data[0], if (argc > 0) args[0..@intCast(argc)] else &.{}),
         else => error.NativeSDKMethodUnavailable,
     }) catch |err| sdk.fail(engine, err);
 }
@@ -45,9 +46,21 @@ pub fn credentials(engine: *engine_mod.Engine, data: c.JSValue) !c.JSValue {
     const result = try sdk.object(engine);
     errdefer engine.freeValue(result);
     try function(engine, result, "read", 0, data);
+    try function(engine, result, "modify", 6, data);
     return result;
 }
 pub fn readCredential(engine: *engine_mod.Engine, data: c.JSValue, id: c.JSValue) !c.JSValue {
+    return readCredentialOptions(engine, data, id, c.pi_js_undefined());
+}
+fn modifyCredential(engine: *engine_mod.Engine, data: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    const options = try sdk.get(engine, data, "options");
+    defer engine.freeValue(options);
+    const supplied = try sdk.get(engine, options, "credentials");
+    defer engine.freeValue(supplied);
+    if (!c.JS_IsObject(supplied)) return error.NativeSDKCredentialModifyUnavailable;
+    return sdk.invoke(engine, supplied, "modify", args);
+}
+fn readCredentialOptions(engine: *engine_mod.Engine, data: c.JSValue, id: c.JSValue, operation_options: c.JSValue) !c.JSValue {
     const keys = try sdk.get(engine, data, "keys");
     defer engine.freeValue(keys);
     const key = try property(engine, keys, id);
@@ -63,7 +76,7 @@ pub fn readCredential(engine: *engine_mod.Engine, data: c.JSValue, id: c.JSValue
     defer engine.freeValue(options);
     const supplied = try sdk.get(engine, options, "credentials");
     defer engine.freeValue(supplied);
-    if (c.JS_IsObject(supplied)) return sdk.invoke(engine, supplied, "read", &.{id});
+    if (c.JS_IsObject(supplied)) return sdk.invoke(engine, supplied, "read", &.{ id, operation_options });
     const path = try sdk.get(engine, data, "authPath");
     defer engine.freeValue(path);
     if (engine.native_io == null or !c.JS_IsString(path)) return c.pi_js_undefined();

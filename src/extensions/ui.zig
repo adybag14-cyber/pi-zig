@@ -132,6 +132,8 @@ fn writeModelSnapshot(writer: *std.Io.Writer, model: providers.ModelInfo) !void 
 }
 
 pub const ContextOptions = struct {
+    /// Null leaves the controller's cached presentation state bound as-is.
+    theme_state: ?@import("theme_state.zig").State = null,
     mode: []const u8,
     cwd: []const u8,
     session_id: []const u8,
@@ -202,6 +204,7 @@ pub const Controller = struct {
     working_indicator: WorkingIndicator = .{},
     hidden_thinking_label: ?[]u8 = null,
     theme_name: ?[]u8 = null,
+    theme_state_json: ?[]u8 = null,
     editor_snapshot: []u8,
     pending_editor_text: ?[]u8 = null,
     pending_editor_delivered: bool = false,
@@ -240,6 +243,7 @@ pub const Controller = struct {
         self.working_indicator.deinit(self.gpa);
         if (self.hidden_thinking_label) |value| self.gpa.free(value);
         if (self.theme_name) |value| self.gpa.free(value);
+        if (self.theme_state_json) |value| self.gpa.free(value);
         self.gpa.free(self.editor_snapshot);
         if (self.pending_editor_text) |value| self.gpa.free(value);
         self.* = undefined;
@@ -546,6 +550,16 @@ pub const Controller = struct {
         self.editor_snapshot = owned;
     }
 
+    /// Bind an owned cached DTO atomically. Null unbinds it; a present state
+    /// with empty reports explicitly selects source defaults. No terminal read.
+    pub fn setThemeState(self: *Controller, state: ?@import("theme_state.zig").State) !void {
+        const encoded = if (state) |value| try @import("theme_state.zig").encode(self.gpa, value) else null;
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        if (self.theme_state_json) |old| self.gpa.free(old);
+        self.theme_state_json = encoded;
+    }
+
     /// Transfer the next editor prefill to the caller. Ownership follows the
     /// controller allocator and the caller must free the returned slice.
     pub fn takePendingEditorText(self: *Controller) ?[]u8 {
@@ -591,6 +605,13 @@ pub const Controller = struct {
         errdefer out.deinit();
         try out.writer.writeAll("{\"mode\":");
         try std.json.Stringify.value(options.mode, .{}, &out.writer);
+        if (options.theme_state) |state| {
+            try @import("theme_state.zig").validate(allocator, state);
+            try out.writer.writeAll(",\"themeState\":");
+            try @import("theme_state.zig").write(&out.writer, state);
+        } else if (self.theme_state_json) |state| {
+            try out.writer.print(",\"themeState\":{s}", .{state});
+        }
         if (@import("../tui/render.zig").activeThemeResource()) |resource| {
             try out.writer.print(",\"themeResource\":{s}", .{resource});
         }

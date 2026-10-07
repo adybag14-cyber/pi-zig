@@ -26,7 +26,7 @@ pub const SessionLease = struct {
     }
 };
 const Kind = enum { memory, jsonl, sqlite, session, transaction };
-pub const Method = enum(c_int) { mintId, commit, close, conversation, entry, task, submission, submissionByRequest, document, findDocument, findLatestHeadMarker, scanConversations, scanEntries, scanTasks, scanSubmissions, scanDocuments, createRootConversation, createConversation, forkConversation, appendEntry, subscribeCommits, subscribeClose, createTask };
+pub const Method = enum(c_int) { mintId, commit, close, conversation, entry, task, submission, submissionByRequest, document, findDocument, findLatestHeadMarker, scanConversations, scanEntries, scanTasks, scanSubmissions, scanDocuments, createRootConversation, createConversation, forkConversation, appendEntry, subscribeCommits, subscribeClose, createTask, doc, snapshot, retireDoc, snapshotAsOf, unloadDocuments };
 pub const State = struct {
     engine: *Engine,
     kind: Kind,
@@ -53,6 +53,8 @@ pub const State = struct {
     finish_hook: ?*const fn (*Engine, c.JSValue, c.JSValue) anyerror!void = null,
     task_creator: ?*const fn (*Engine, c.JSValue, c.JSValue, []const c.JSValue) anyerror!c.JSValue = null,
     plans: std.ArrayList(json.Owned) = .empty,
+    documents: ?*@import("native_durable_documents.zig").Drafts = null,
+    document_cache: ?*@import("native_durable_documents.zig").Cache = null,
     fn storage(self: *State) !backend.Backend {
         if (self.storage_closed) return error.StorageClosed;
         return switch (self.kind) {
@@ -99,6 +101,8 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     c.JS_FreeValueRT(runtime, self.parent);
     c.JS_FreeValueRT(runtime, self.tail);
     if (self.creation_owner) |owner| c.JS_FreeValueRT(runtime, owner);
+    if (self.documents) |documents| documents.deinit(runtime);
+    if (self.document_cache) |cache| cache.deinit(runtime);
     for (self.plans.items) |*plan| plan.deinit();
     self.plans.deinit(engine.gpa);
     for (self.commit_listeners.items) |listener| c.JS_FreeValueRT(runtime, listener);
@@ -113,6 +117,8 @@ fn mark(runtime: ?*c.JSRuntime, input: c.JSValue, marker: ?*const c.JS_MarkFunc)
     c.JS_MarkValue(runtime, self.parent, marker);
     c.JS_MarkValue(runtime, self.tail, marker);
     if (self.creation_owner) |owner| c.JS_MarkValue(runtime, owner, marker);
+    if (self.documents) |documents| documents.mark(runtime, marker);
+    if (self.document_cache) |cache| cache.mark(runtime, marker);
     for (self.commit_listeners.items) |listener| c.JS_MarkValue(runtime, listener, marker);
     for (self.close_listeners.items) |listener| c.JS_MarkValue(runtime, listener, marker);
 }
@@ -308,6 +314,7 @@ pub fn install(engine: *Engine) !void {
     try sdk.put(engine, exports, "createSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createSession", 1)));
     try @import("native_durable_harness.zig").install(engine, exports);
     try @import("native_durable_tasks.zig").defineTask(engine, exports);
+    try @import("native_durable_documents.zig").install(engine, exports);
     if (!engine.native_module_names.contains("@earendil-works/pi-durable")) try engine.registerValueModule("@earendil-works/pi-durable", exports);
     inline for (.{ .{ "jsonl", "openNodeJsonlStorage", 0 }, .{ "sqlite", "openNodeSqliteStorage", 1 } }) |item| {
         const storage_exports = try sdk.object(engine);
@@ -410,7 +417,7 @@ pub fn sessionObject(engine: *Engine, storage: c.JSValue) !c.JSValue {
     self.* = .{ .engine = engine, .kind = .session, .memory = undefined, .session = native, .session_lease = lease, .owner_thread = std.Thread.getCurrentId(), .parent = c.JS_DupValue(engine.context, storage), .tail = tail };
     errdefer engine.freeValue(self.parent);
     _ = try native.subscribe(publication, self);
-    try methods(engine, result_object, &.{ .commit, .close, .subscribeCommits, .subscribeClose });
+    try methods(engine, result_object, &.{ .commit, .close, .subscribeCommits, .subscribeClose, .snapshot, .snapshotAsOf, .unloadDocuments });
     _ = c.JS_SetOpaque(result_object, self);
     return result_object;
 }
@@ -419,7 +426,7 @@ pub fn transactionObject(engine: *Engine, native: *session_module.Transaction, p
     errdefer engine.freeValue(result_object);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
-    try methods(engine, result_object, &.{ .createRootConversation, .createConversation, .forkConversation, .appendEntry, .conversation, .entry, .task, .createTask });
+    try methods(engine, result_object, &.{ .createRootConversation, .createConversation, .forkConversation, .appendEntry, .conversation, .entry, .task, .createTask, .doc, .retireDoc });
     self.* = .{ .engine = engine, .kind = .transaction, .memory = undefined, .transaction = native.retain(), .parent = c.JS_DupValue(engine.context, parent), .tail = c.pi_js_undefined() };
     _ = c.JS_SetOpaque(result_object, self);
     return result_object;
@@ -430,6 +437,8 @@ const CommitCall = struct {
     receiver: c.JSValue,
     returned: c.JSValue,
     context: c.JSValue,
+    drafts: ?*@import("native_durable_documents.zig").Drafts = null,
+    transaction_value: ?c.JSValue = null,
     fn run(raw: ?*anyopaque, native: *session_module.Transaction, _: context_module.Context) !json.Value {
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         const transaction_object = try transactionObject(self.engine, native, self.receiver);
@@ -438,6 +447,9 @@ const CommitCall = struct {
         const pending = try self.engine.checked(c.JS_Call(self.engine.context, self.change, c.pi_js_undefined(), 1, &args));
         defer self.engine.freeValue(pending);
         self.returned = try self.engine.awaitValue(pending);
+        if ((try state(self.engine, transaction_object)).documents) |documents| try documents.finish();
+        self.drafts = (try state(self.engine, transaction_object)).documents;
+        self.transaction_value = c.JS_DupValue(self.engine.context, transaction_object);
         const parent = try state(self.engine, self.receiver);
         if (parent.finish_hook) |finish| try finish(self.engine, parent.creation_owner.?, transaction_object);
         return .null;
@@ -462,12 +474,17 @@ fn queuedContinuation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.J
     self.publication_context = data[2];
     defer self.publication_context = null;
     var call: CommitCall = .{ .engine = engine, .change = data[1], .receiver = data[0], .returned = c.pi_js_undefined(), .context = data[2] };
+    defer if (call.transaction_value) |value| engine.freeValue(value);
     const scope = if (c.JS_IsUndefined(data[3])) session_module.Scope{} else session_module.Scope{ .conversationId = number(engine, data[3]) catch |err| return reject(engine, err) };
     var native_result = self.session.?.commit(CommitCall.run, &call, scope, .{}) catch |err| {
         engine.freeValue(call.returned);
         return reject(engine, err);
     };
     native_result.deinit();
+    if (call.drafts) |drafts| drafts.adopt(data[0]) catch |err| {
+        engine.freeValue(call.returned);
+        return reject(engine, err);
+    };
     if (self.after_commit) |flush| flush(self.foreign_publication_context) catch |err| {
         engine.freeValue(call.returned);
         return reject(engine, err);
@@ -475,6 +492,9 @@ fn queuedContinuation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.J
     return call.returned;
 }
 pub fn sessionDispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
+    if (operation == .unloadDocuments) return @import("native_durable_documents.zig").unload(self.engine, receiver);
+    if (operation == .snapshot) return @import("native_durable_documents.zig").snapshot(self.engine, receiver, args);
+    if (operation == .snapshotAsOf) return @import("native_durable_documents.zig").snapshotAsOf(self.engine, receiver, args);
     return sessionDispatchScoped(self, receiver, operation, args, null);
 }
 pub fn sessionDispatchScoped(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue, conversation: ?u64) !c.JSValue {
@@ -568,6 +588,8 @@ pub fn deliverPublication(self: *State, event: *const session_module.Publication
 fn transactionDispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const engine = self.engine;
     const native = self.transaction.?;
+    if (operation == .doc) return @import("native_durable_documents.zig").acquire(engine, receiver, args);
+    if (operation == .retireDoc) return @import("native_durable_documents.zig").retire(engine, receiver, args);
     if (operation == .createTask) {
         if (!native.active) return error.TransactionClosed;
         const parent = try state(engine, self.parent);

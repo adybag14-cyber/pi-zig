@@ -778,6 +778,8 @@ const Change = struct {
     callback: c.JSValue,
     context: c.JSValue,
     returned: ?json.Owned = null,
+    documents: ?*@import("native_durable_documents.zig").Drafts = null,
+    transaction_value: ?c.JSValue = null,
     fn run(raw: ?*anyopaque, native: *session_mod.Transaction, current: json.Value) !?json.Value {
         const self: *@This() = @ptrCast(@alignCast(raw.?));
         const manager_pointer = self.runtime.entry.manager;
@@ -793,6 +795,9 @@ const Change = struct {
         defer engine.freeValue(promise);
         const result = try engine.awaitValue(promise);
         defer engine.freeValue(result);
+        if ((try durable.state(engine, tx)).documents) |documents| try documents.finish();
+        self.documents = (try durable.state(engine, tx)).documents;
+        self.transaction_value = c.JS_DupValue(engine.context, tx);
         const parent = try durable.state(engine, self.runtime.session);
         if (parent.finish_hook) |finish| try finish(engine, parent.creation_owner.?, tx);
         if (c.JS_IsUndefined(result)) return null;
@@ -805,9 +810,11 @@ fn runtimeCommitQueued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.
     const self = runtimeState(engine, data[0]) orelse return durable.reject(engine, error.InvalidTaskRuntime);
     active(self) catch |err| return durable.reject(engine, err);
     var call: Change = .{ .runtime = self, .callback = data[1], .context = data[2] };
+    defer if (call.transaction_value) |value| engine.freeValue(value);
     defer if (call.returned) |*value| value.deinit();
     self.entry.manager.updateClock() catch |err| return durable.reject(engine, err);
     self.entry.runtime.commit(Change.run, &call) catch |err| return durable.reject(engine, err);
+    if (call.documents) |documents| documents.adopt(self.session) catch |err| return durable.reject(engine, err);
     Manager.deliver(self.entry.manager) catch |err| return durable.reject(engine, err);
     return c.pi_js_undefined();
 }

@@ -398,6 +398,50 @@ test "mcp.runtime real HTTP GET SSE stream teardown and exactly once bounded ses
     try client.close();
     try server.finish();
 }
+
+test "mcp.runtime GET unauthorized retry owns its rejected token and closes with replacement bearer" {
+    const fixture = @import("../ai/http_fixture.zig");
+    var observed: std.Io.Event = .unset;
+    const server = try fixture.PlanServer.init(gpa, io, &.{
+        .{ .path = "/mcp", .body = "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{},\"serverInfo\":{\"name\":\"get-auth\",\"version\":\"1\"}}}", .headers = &.{ .{ .name = "content-type", .value = "application/json" }, .{ .name = "mcp-session-id", .value = "auth-session" } } },
+        .{ .path = "/mcp", .body = "", .status = .accepted },
+        .{ .path = "/mcp", .body = "denied", .status = .unauthorized, .headers = &.{.{ .name = "www-authenticate", .value = "Bearer error=invalid_token" }}, .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer old" }} },
+        .{ .path = "/mcp", .body = "", .status = .method_not_allowed, .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer new" }}, .request_observed = &observed },
+        .{ .path = "/mcp", .body = "", .status = .no_content, .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer new" }} },
+    });
+    defer server.deinit();
+    const url = try server.url(gpa, "/mcp");
+    defer gpa.free(url);
+    const Auth = struct {
+        replaced: bool = false,
+        retries: usize = 0,
+        token_calls: usize = 0,
+        fn token(raw: ?*anyopaque, allocator: std.mem.Allocator, _: ?*bool) !?[]u8 {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.token_calls += 1;
+            return try allocator.dupe(u8, if (self.replaced) "new" else "old");
+        }
+        fn unauthorized(raw: ?*anyopaque, stale: ?[]const u8, challenge: ?[]const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            try std.testing.expectEqualStrings("old", stale.?);
+            try std.testing.expectEqualStrings("Bearer error=invalid_token", challenge.?);
+            self.replaced = true;
+            self.retries += 1;
+        }
+    };
+    var auth: Auth = .{};
+    const transport = try http.Http.create(gpa, io, .{ .url = url, .auth_context = &auth, .auth_token = Auth.token, .on_unauthorized = Auth.unauthorized });
+    defer transport.deinit();
+    const client = try session.Client.create(gpa, io, transport.transport(), .{});
+    defer client.deinit();
+    var initialized = try client.connect();
+    defer initialized.deinit();
+    try observed.wait(io);
+    try client.close();
+    try server.finish();
+    try std.testing.expectEqual(@as(usize, 1), auth.retries);
+    try std.testing.expectEqual(@as(usize, 4), auth.token_calls);
+}
 test "mcp.runtime real HTTP SSE progressive messages preserve result and protocol session" {
     const fixture = @import("../ai/http_fixture.zig");
     const server = try fixture.PlanServer.init(gpa, io, &.{

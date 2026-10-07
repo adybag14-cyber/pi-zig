@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "inputSha256": "c844eb6d2e842aac92b41bea7b19ca43029c835f6ade5cff20736b502bb26d26",
+  "input": "import {createModels} from '@earendil-works/pi-ai';const models=createModels(),contexts=[],updates=[];const make=()=>({id:'p',auth:{apiKey:{resolve:async()=>undefined}},getModels:()=>[],async refreshModels(ctx){contexts.push(ctx);await ctx.publish({update(){updates.push('initial')}})}});models.setProvider(make());await models.refresh({allowNetwork:false});const first=contexts[0];models.setProvider(make());const replaced=first.signal.aborted;const stale=await first.publish({update(){updates.push('stale')}});await models.refresh({allowNetwork:false});const second=contexts[1];const current=await second.publish({update(){updates.push('current')}});models.deleteProvider('p');const removed=second.signal.aborted;const deleted=await second.publish({update(){updates.push('deleted')}});models.setProvider(make());await models.refresh({allowNetwork:false});const third=contexts[2];models.clearProviders();const cleared=third.signal.aborted;const afterClear=await third.publish({update(){updates.push('cleared')}});console.log(JSON.stringify({replaced,stale,current,removed,deleted,cleared,afterClear,updates}));"
+}

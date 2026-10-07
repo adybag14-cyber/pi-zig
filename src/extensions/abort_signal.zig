@@ -178,9 +178,14 @@ fn signalMethod(engine: *engine_mod.Engine, this: c.JSValue, method: Method, arg
         .throwIfAborted => return if (state.aborted) c.JS_Throw(engine.context, c.JS_DupValue(engine.context, state.reason)) else c.pi_js_undefined(),
         .add, .remove => {
             if (args.len < 2) return error.InvalidAbortListener;
-            const kind = try engine.toString(args[0]);
-            defer engine.gpa.free(kind);
-            if (!std.mem.eql(u8, kind, "abort")) return error.NativeSignalEventUnsupported;
+            // Listener removal participates in promise settlement. Borrow the
+            // VM conversion instead of allocating host memory during cleanup.
+            const kind = c.JS_ToCString(engine.context, args[0]) orelse {
+                _ = engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context))) catch {};
+                return error.JavaScriptException;
+            };
+            defer c.JS_FreeCString(engine.context, kind);
+            if (!std.mem.eql(u8, std.mem.span(kind), "abort")) return error.NativeSignalEventUnsupported;
             if (c.JS_IsNull(args[1]) or c.JS_IsUndefined(args[1])) return c.pi_js_undefined();
             if (!c.JS_IsObject(args[1])) return error.InvalidAbortListener;
             var capture = false;
