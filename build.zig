@@ -1220,6 +1220,12 @@ fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Ste
     module.addIncludePath(b.path("src/extensions"));
     module.linkLibrary(library);
     module.link_libc = true;
+    // SDK imports can reach native durable filesystem watchers from any VM
+    // consumer. Darwin framework dependencies belong to each final module.
+    if (module.resolved_target.?.result.os.tag == .macos) {
+        module.linkFramework("CoreFoundation", .{});
+        module.linkFramework("CoreServices", .{});
+    }
 }
 
 fn linkSqlite(module: *std.Build.Module, library_dir: ?[]const u8, library: ?*std.Build.Step.Compile) void {
