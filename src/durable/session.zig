@@ -128,6 +128,7 @@ pub const Session = struct {
             return err;
         };
         result.seq = seq;
+        if (tx.after_storage) |adopt| try adopt(tx.after_storage_context);
         const event: Publication = .{ .seq = seq, .changes = publication.value };
         for (listeners) |listener| try listener.callback(listener.context, &event, context);
         return result;
@@ -177,6 +178,8 @@ pub const Transaction = struct {
     ownerThread: std.Thread.Id,
     createdTasks: std.ArrayList(u64) = .empty,
     preparedDocumentOps: std.AutoHashMapUnmanaged(u64, Value) = .empty,
+    after_storage: ?*const fn (?*anyopaque) anyerror!void = null,
+    after_storage_context: ?*anyopaque = null,
     fn create(session: *Session, scope: Scope) !*Transaction {
         const self = try session.gpa.create(Transaction);
         errdefer session.gpa.destroy(self);

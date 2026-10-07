@@ -282,7 +282,11 @@ pub const Manager = struct {
             if (signal.entry.runtime.isActive() and !signal.entry.runtime.context().aborted() and !self.closed) continue;
             const aborted = try sdk.get(self.engine, signal.value, "aborted");
             defer self.engine.freeValue(aborted);
-            if (c.JS_ToBool(self.engine.context, aborted) == 0) try aborts.abort(self.engine, signal.value, c.pi_js_undefined());
+            if (c.JS_ToBool(self.engine.context, aborted) == 0) {
+                const failure = try endedError(self.engine, signal.entry.runtime.taskId());
+                defer self.engine.freeValue(failure);
+                try aborts.abort(self.engine, signal.value, failure);
+            }
             if (!signal.entry.runtime.isActive()) {
                 _ = self.signals.orderedRemove(index);
                 self.engine.freeValue(signal.value);
@@ -688,8 +692,24 @@ fn runtimeObject(self: *Manager, entry: *Entry, record: json.Value) !c.JSValue {
     return object;
 }
 fn active(self: *Runtime) !void {
-    if (!self.entry.runtime.isActive() or self.entry.manager.closed) return error.InvocationEnded;
+    if (!self.entry.runtime.isActive() or self.entry.manager.closed) {
+        const engine = self.entry.manager.engine;
+        const failure = try endedError(engine, self.entry.runtime.taskId());
+        _ = try engine.checked(c.JS_Throw(engine.context, failure));
+    }
     if (self.entry.runtime.context().aborted()) return error.Canceled;
+}
+fn endedError(engine: *Engine, task_id: u64) !c.JSValue {
+    const message = try std.fmt.allocPrint(engine.gpa, "Task {d} invocation has ended", .{task_id});
+    defer engine.gpa.free(message);
+    const text = try sdk.text(engine, message);
+    defer engine.freeValue(text);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const constructor = try sdk.get(engine, global, "Error");
+    defer engine.freeValue(constructor);
+    var args = [_]c.JSValue{text};
+    return engine.checked(c.JS_CallConstructor(engine.context, constructor, 1, &args));
 }
 fn runtimeMethod(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);

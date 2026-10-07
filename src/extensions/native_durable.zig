@@ -26,7 +26,7 @@ pub const SessionLease = struct {
     }
 };
 const Kind = enum { memory, jsonl, sqlite, session, transaction };
-pub const Method = enum(c_int) { mintId, commit, close, conversation, entry, task, submission, submissionByRequest, document, findDocument, findLatestHeadMarker, scanConversations, scanEntries, scanTasks, scanSubmissions, scanDocuments, createRootConversation, createConversation, forkConversation, appendEntry, subscribeCommits, subscribeClose, createTask, doc, snapshot, retireDoc, snapshotAsOf, unloadDocuments, watchDoc };
+pub const Method = enum(c_int) { mintId, commit, close, conversation, entry, task, submission, submissionByRequest, document, findDocument, findLatestHeadMarker, scanConversations, scanEntries, scanTasks, scanSubmissions, scanDocuments, createRootConversation, createConversation, forkConversation, appendEntry, subscribeCommits, subscribeClose, createTask, doc, snapshot, retireDoc, snapshotAsOf, unloadDocuments, watchDoc, documentState };
 pub const State = struct {
     engine: *Engine,
     kind: Kind,
@@ -418,7 +418,7 @@ pub fn sessionObject(engine: *Engine, storage: c.JSValue) !c.JSValue {
     self.* = .{ .engine = engine, .kind = .session, .memory = undefined, .session = native, .session_lease = lease, .owner_thread = std.Thread.getCurrentId(), .parent = c.JS_DupValue(engine.context, storage), .tail = tail };
     errdefer engine.freeValue(self.parent);
     _ = try native.subscribe(publication, self);
-    try methods(engine, result_object, &.{ .commit, .close, .subscribeCommits, .subscribeClose, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc });
+    try methods(engine, result_object, &.{ .commit, .close, .subscribeCommits, .subscribeClose, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc, .documentState });
     _ = c.JS_SetOpaque(result_object, self);
     return result_object;
 }
@@ -493,6 +493,7 @@ fn queuedContinuation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.J
     return call.returned;
 }
 pub fn sessionDispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
+    if (operation == .documentState) return @import("native_durable_state.zig").acquire(self.engine, receiver, args);
     if (operation == .watchDoc) return @import("native_durable_observation.zig").acquire(self.engine, receiver, args);
     if (operation == .unloadDocuments) return @import("native_durable_documents.zig").unload(self.engine, receiver);
     if (operation == .snapshot) return @import("native_durable_documents.zig").snapshot(self.engine, receiver, args);
@@ -580,7 +581,19 @@ pub fn deliverPublication(self: *State, event: *const session_module.Publication
     const value = try sdk.object(engine);
     defer engine.freeValue(value);
     try sdk.put(engine, value, "seq", c.JS_NewInt64(engine.context, @intCast(event.seq)));
-    try sdk.put(engine, value, "changes", try jsValue(engine, event.changes));
+    const changes = try jsValue(engine, event.changes);
+    defer engine.freeValue(changes);
+    for (event.changes.array.items, 0..) |change, index| {
+        const kind = json.get(change, "type") orelse continue;
+        if (kind != .string or !std.mem.eql(u8, kind.string, "document")) continue;
+        const record = json.get(change, "record") orelse continue;
+        const version = json.get(change, "version") orelse continue;
+        const canonical = @import("native_durable_documents.zig").publicationValue(self, record, try json.asInteger(version)) orelse continue;
+        const item = try engine.checked(c.JS_GetPropertyUint32(engine.context, changes, @intCast(index)));
+        defer engine.freeValue(item);
+        try sdk.put(engine, item, "value", c.JS_DupValue(engine.context, canonical));
+    }
+    try sdk.put(engine, value, "changes", c.JS_DupValue(engine.context, changes));
     var args = [_]c.JSValue{ value, self.publication_context orelse c.pi_js_undefined() };
     for (listeners) |listener| {
         const returned = try engine.checked(c.JS_Call(engine.context, listener, c.pi_js_undefined(), args.len, &args));

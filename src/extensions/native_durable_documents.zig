@@ -58,6 +58,7 @@ pub const Drafts = struct {
     engine: *Engine,
     owner: *durable.State,
     prepared: bool = false,
+    adopted: bool = false,
     items: std.ArrayList(Document) = .empty,
     prepared_cache: std.ArrayList(Cached) = .empty,
     pub fn deinit(self: *Drafts, runtime: ?*c.JSRuntime) void {
@@ -101,6 +102,13 @@ pub const Drafts = struct {
         try self.prepared_cache.ensureUnusedCapacity(self.engine.gpa, self.items.items.len);
         for (self.items.items) |doc| {
             if (doc.retired) continue;
+            if (values.get(doc.address.value, doc.version)) |existing| {
+                if (json.equal(json.get(existing.record.value, "id") orelse .null, json.get(doc.record.value, "id") orelse .null)) {
+                    var current = try durable.owned(self.engine, doc.target);
+                    defer current.deinit();
+                    if (json.equal(current.value, doc.baseline.value)) continue;
+                }
+            }
             var address_copy = try json.Owned.empty(self.engine.gpa);
             errdefer address_copy.deinit();
             address_copy.value = try json.clone(address_copy.arena.allocator(), doc.address.value);
@@ -160,8 +168,16 @@ pub const Drafts = struct {
             try write.value.object.put(a, "content", content);
             try tx.documentCommand(write.value);
         }
+        tx.after_storage = afterStorage;
+        tx.after_storage_context = self;
+    }
+    fn afterStorage(raw: ?*anyopaque) !void {
+        const self: *Drafts = @ptrCast(@alignCast(raw.?));
+        if (std.Thread.getCurrentId() != self.owner.transaction.?.ownerThread) return error.VMCallbackOnWorker;
+        try self.adopt(self.owner.parent);
     }
     pub fn adopt(self: *Drafts, session: c.JSValue) !void {
+        if (self.adopted) return;
         const values = try cache(self.engine, session);
         for (self.prepared_cache.items) |prepared| {
             var replaced = false;
@@ -197,8 +213,16 @@ pub const Drafts = struct {
                 self.engine.freeValue(removed.value);
             }
         };
+        self.adopted = true;
     }
 };
+pub fn publicationValue(owner: *durable.State, record: json.Value, version: u64) ?c.JSValue {
+    const values = owner.document_cache orelse return null;
+    for (values.items.items) |item| {
+        if (item.version == version and json.equal(json.get(item.record.value, "id") orelse .null, json.get(record, "id") orelse .null)) return item.value;
+    }
+    return null;
+}
 pub fn install(engine: *Engine, exports: c.JSValue) !void {
     try sdk.put(engine, exports, "defineDoc", try engine.checked(c.JS_NewCFunction(engine.context, define, "defineDoc", 1)));
     try sdk.put(engine, exports, "defineDocFamily", try engine.checked(c.JS_NewCFunction(engine.context, define, "defineDocFamily", 1)));
@@ -598,6 +622,12 @@ fn snapshotDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue) 
 }
 pub const Observation = struct { value: c.JSValue, record: json.Owned, version: u64, context: c.JSValue };
 pub fn observe(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !?Observation {
+    return observeDirect(engine, session, args, true);
+}
+pub fn observeState(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !?Observation {
+    return observeDirect(engine, session, args, false);
+}
+fn observeDirect(engine: *Engine, session: c.JSValue, args: []const c.JSValue, guard_watch: bool) !?Observation {
     const definition_value = try sdk.get(engine, args[0], "definition");
     defer engine.freeValue(definition_value);
     var resolved = try address(engine, definition_value, args[1..]);
@@ -605,7 +635,7 @@ pub fn observe(engine: *Engine, session: c.JSValue, args: []const c.JSValue) !?O
     const context = if (resolved.next + 1 < args.len) args[resolved.next + 1] else c.pi_js_undefined();
     const signal = try sdk.get(engine, context, "abortSignal");
     defer engine.freeValue(signal);
-    if (!c.JS_IsUndefined(signal)) {
+    if (guard_watch and !c.JS_IsUndefined(signal)) {
         const aborted = try sdk.get(engine, signal, "aborted");
         defer engine.freeValue(aborted);
         if (c.JS_ToBool(engine.context, aborted) > 0) {
