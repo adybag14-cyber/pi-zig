@@ -340,6 +340,9 @@ fn postHttpCaptureRetry(
     var req = try client.request(.POST, uri, .{
         .redirect_behavior = .unhandled,
         .keep_alive = false,
+        // All application headers were already merged case-insensitively.
+        // std.http otherwise adds its own user-agent beside the caller's.
+        .headers = .{ .user_agent = .omit },
         .extra_headers = headers,
     });
     defer req.deinit();
@@ -628,14 +631,15 @@ pub const ResponsesClient = struct {
         defer if (codex_account_id) |value| gpa.free(value);
         try putHeader(gpa, &headers, "content-type", "application/json");
         if (self.protocol_mode == .codex) {
-            // Codex applies custom headers first, then mandatory identity/auth headers.
+            // Application defaults precede model/caller overrides. Account
+            // and authorization remain authoritative after those overrides.
+            try putHeader(gpa, &headers, "originator", "pi");
+            try putHeader(gpa, &headers, "user-agent", ai.pi_user_agent.value);
             for (self.custom_headers) |header| try putHeader(gpa, &headers, header.name, header.value);
             for (request_options.headers) |header| try putHeader(gpa, &headers, header.name, header.value);
             try putHeader(gpa, &headers, "authorization", authorization.?);
             codex_account_id = try extractCodexAccountId(gpa, self.api_key);
             try putHeader(gpa, &headers, "chatgpt-account-id", codex_account_id.?);
-            try putHeader(gpa, &headers, "originator", "pi");
-            try putHeader(gpa, &headers, "user-agent", "pi-zig/0.3.0");
             try putHeader(gpa, &headers, "openai-beta", "responses=experimental");
             try putHeader(gpa, &headers, "content-type", "application/json");
             if (codexCacheSessionId(effective_session_id, effective_cache_retention)) |sid| {
@@ -2670,6 +2674,48 @@ test "responses cache modes and codex request shape" {
     try std.testing.expect(std.mem.indexOf(u8, codex, "\"include\":[\"reasoning.encrypted_content\"]") != null);
     // System prompt is instructions, not duplicated in Codex input.
     try std.testing.expect(std.mem.indexOf(u8, codex, "\"role\":\"system\"") == null);
+}
+
+test "latest Codex caller headers override defaults on the actual HTTP transport" {
+    const gpa = std.testing.allocator;
+    const token = "e30.eyJodHRwczovL2FwaS5vcGVuYWkuY29tL2F1dGgiOnsiY2hhdGdwdF9hY2NvdW50X2lkIjoiYWNjdC00MiJ9fQ.sig";
+    const authorization = try std.fmt.allocPrint(gpa, "Bearer {s}", .{token});
+    defer gpa.free(authorization);
+    const fixture = @import("http_fixture.zig");
+    const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{
+        .path = "/codex/responses",
+        .body = "{\"id\":\"r\",\"status\":\"completed\",\"output\":[{\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"ok\"}]}]}",
+        .expected_request_headers = &.{
+            .{ .name = "originator", .value = "caller-app" },
+            .{ .name = "user-agent", .value = "caller-agent" },
+            .{ .name = "authorization", .value = authorization },
+            .{ .name = "chatgpt-account-id", .value = "acct-42" },
+        },
+    }});
+    defer server.deinit();
+    const url = try server.url(gpa, "");
+    defer gpa.free(url);
+    var client = ResponsesClient{
+        .gpa = gpa, .io = std.testing.io, .api_key = token, .base_url = url,
+        .model = "gpt-test", .protocol_mode = .codex,
+        .provider_retry = .{ .max_retries = 0, .timeout_ms = 1_000 },
+        .custom_headers = &.{ .{ .name = "Originator", .value = "model-app" }, .{ .name = "User-Agent", .value = "model-agent" } },
+    };
+    defer client.deinit();
+    var response = client.client().completeWithOptions(gpa, &.{.{ .role = "user", .content = "hello" }}, "[]", .{
+        .headers = &.{
+            .{ .name = "ORIGINATOR", .value = "caller-app" },
+            .{ .name = "USER-AGENT", .value = "caller-agent" },
+            .{ .name = "Authorization", .value = "rejected-override" },
+            .{ .name = "ChatGPT-Account-ID", .value = "rejected-account" },
+        },
+    }) catch |err| {
+        try server.finish();
+        return err;
+    };
+    defer response.deinit(gpa);
+    try server.finish();
+    try std.testing.expectEqualStrings("ok", response.content);
 }
 
 test "codex URL and JWT account extraction" {

@@ -4,6 +4,7 @@ const engine_mod = @import("engine.zig");
 const components_mod = @import("native_components.zig");
 const native_tui = @import("native_tui.zig");
 const native_editor = @import("native_editor.zig");
+const native_widgets = @import("native_widgets.zig");
 const protocol = @import("component_protocol.zig");
 const c = engine_mod.c;
 
@@ -79,6 +80,7 @@ pub const Manager = struct {
     pending: std.ArrayList(Pending) = .empty,
     components: components_mod.Manager,
     editors: native_editor.Manager,
+    widgets: native_widgets.Manager,
     editor_owner_id: u64 = 0,
     theme: c.JSValue,
     keybindings: c.JSValue,
@@ -110,19 +112,23 @@ pub const Manager = struct {
         errdefer components.deinit();
         var editors = try native_editor.Manager.init(engine);
         errdefer editors.deinit();
+        var widgets = try native_widgets.Manager.init(engine);
+        errdefer widgets.deinit();
         const theme = try native_tui.createTheme(engine);
         errdefer engine.freeValue(theme);
         const keybindings = try native_tui.createKeybindings(engine);
         errdefer engine.freeValue(keybindings);
         const self = try engine.gpa.create(Manager);
-        self.* = .{ .engine = engine, .token = token, .add_listener = add, .remove_listener = remove, .abort_text = abort_text, .editor_text = editor_text, .components = components, .editors = editors, .theme = theme, .keybindings = keybindings };
+        self.* = .{ .engine = engine, .token = token, .add_listener = add, .remove_listener = remove, .abort_text = abort_text, .editor_text = editor_text, .components = components, .editors = editors, .widgets = widgets, .theme = theme, .keybindings = keybindings };
         self.editors.attach();
+        self.widgets.attach();
         self.components.completion_bridge = .{ .context = self, .request_close = requestComponentClose };
         engine.native_ui_manager = self;
         return self;
     }
 
     pub fn deinit(self: *Manager) void {
+        self.widgets.deinit();
         self.editors.deinit();
         self.bridge = null;
         self.finish();
@@ -158,6 +164,10 @@ pub const Manager = struct {
             }
             self.width = try self.snapshotDimension(context, "width", 80);
             self.height = try self.snapshotDimension(context, "height", 24);
+            if (!self.widgets.dimensions_controlled) {
+                self.widgets.width = self.width;
+                self.widgets.height = self.height;
+            }
             if (self.has_ui and self.editors.component == null) {
                 self.editors.width = self.width;
                 self.editors.height = self.height;
@@ -218,7 +228,7 @@ pub const Manager = struct {
         const engine = engine_mod.Engine.fromContext(context.?);
         const method: Method = @enumFromInt(magic);
         const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
-        if (method == .setEditorComponent or method == .getEditorComponent or method == .getEditorText or method == .setEditorText or method == .pasteToEditor or method == .addAutocompleteProvider) {
+        if (method == .setWidget or method == .setEditorComponent or method == .getEditorComponent or method == .getEditorText or method == .setEditorText or method == .pasteToEditor or method == .addAutocompleteProvider) {
             const self: *Manager = @ptrCast(@alignCast(engine.native_ui_manager orelse return fail(engine, error.StaleNativeUi)));
             if (!c.JS_IsStrictEqual(engine.context, self.token, data[0])) return fail(engine, error.StaleNativeUi);
             var owner: i64 = 0;
@@ -227,6 +237,24 @@ pub const Manager = struct {
             // Snapshot capability is independent of the shared invocation's
             // mutable hasUI state. Headless contexts never acquire editor UI.
             if (c.JS_ToBool(context, data[3]) == 0) return if (method == .getEditorText) c.JS_NewString(context, "") else c.pi_js_undefined();
+            if (method == .setWidget) {
+                const key = engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined()) catch |err| return fail(engine, err);
+                defer engine.gpa.free(key);
+                const content = if (args.len > 1) args[1] else c.pi_js_undefined();
+                var placement: @import("widget_protocol.zig").Placement = .aboveEditor;
+                if (args.len > 2 and c.JS_IsObject(args[2])) {
+                    const value = engine.checked(c.JS_GetPropertyStr(context, args[2], "placement")) catch |err| return fail(engine, err);
+                    defer engine.freeValue(value);
+                    if (!c.JS_IsUndefined(value)) {
+                        const text = engine.toString(value) catch |err| return fail(engine, err);
+                        defer engine.gpa.free(text);
+                        if (std.mem.eql(u8, text, "belowEditor")) placement = .belowEditor;
+                    }
+                }
+                self.widgets.set(@intCast(owner), key, content, placement, self.theme) catch |err| return fail(engine, err);
+                _ = self.widgets.pumpDirty() catch |err| return fail(engine, err);
+                return c.pi_js_undefined();
+            }
             if (method == .addAutocompleteProvider) {
                 self.editors.addAutocompleteProvider(@intCast(owner), if (args.len > 0) args[0] else c.pi_js_undefined()) catch |err| return fail(engine, err);
                 return c.pi_js_undefined();
@@ -1277,6 +1305,7 @@ pub const Manager = struct {
     pub fn poll(self: *Manager) !bool {
         var changed = try self.pollCustom();
         if (try self.editors.pumpDirty()) changed = true;
+        if (try self.widgets.pumpDirty()) changed = true;
         const io = self.engine.native_io orelse return changed;
         const now = std.Io.Clock.awake.now(io).toMilliseconds();
         var index: usize = 0;

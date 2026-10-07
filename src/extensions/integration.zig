@@ -47,6 +47,7 @@ pub const Bridge = struct {
     }
 
     pub fn drainActions(self: *Bridge) ![]actions_mod.Record {
+        _ = try self.host.synchronizeNativeMetadata();
         try self.flushRendererActions();
         return self.action_queue.drain();
     }
@@ -365,14 +366,31 @@ pub const Bridge = struct {
         return result;
     }
 
+    /// Registration defaults govern automatic activation. Explicit SDK
+    /// selections may declare deferred/codemode tools; hidden stays hidden.
+    pub fn isToolDeclared(tool: host_mod.ExtensionTool, filter: agent_tools.ToolFilter) bool {
+        const enabled = if (@hasDecl(agent_tools.ToolFilter, "isExtensionEnabled")) filter.isExtensionEnabled(tool.name) else filter.isEnabled(tool.name);
+        if (tool.model_hidden or !enabled) return false;
+        if (tool.model_declarable) return true;
+        if (@hasField(agent_tools.ToolFilter, "default_activation_fn")) {
+            if (filter.default_activation_fn) |selected| return selected(filter.default_activation_ctx, tool.name);
+        }
+        return filter.allow != null;
+    }
+
     pub fn toolSchemasJson(self: *Bridge, gpa: std.mem.Allocator, filter: agent_tools.ToolFilter) ![]u8 {
+        _ = try self.host.synchronizeNativeMetadata();
+        var seen: std.StringHashMapUnmanaged(void) = .empty;
+        defer seen.deinit(gpa);
         var out: std.Io.Writer.Allocating = .init(gpa);
         errdefer out.deinit();
         try out.writer.writeByte('[');
         var first = true;
         for (self.host.extensions.items) |ext| {
             for (ext.tools) |tool| {
-                if (!filter.isEnabled(tool.name)) continue;
+                if (!isToolDeclared(tool, filter)) continue;
+                if (seen.contains(tool.name)) continue;
+                try seen.put(gpa, tool.name, {});
                 if (!first) try out.writer.writeByte(',');
                 first = false;
                 try out.writer.writeAll("{\"type\":\"function\",\"function\":{\"name\":");
@@ -878,6 +896,7 @@ fn eventPayload(gpa: std.mem.Allocator, event: agent_loop.AgentEvent, hook: []co
             try writeEventToolResult(&out.writer, event);
             try out.writer.writeAll(",\"isError\":");
             try out.writer.writeAll(if (event.is_error) "true" else "false");
+            if (event.duration_ms) |duration| try out.writer.print(",\"durationMs\":{d}", .{duration});
         },
         .agent_end => {
             try out.writer.writeAll(",\"messages\":[],\"text\":");
@@ -1853,6 +1872,7 @@ test "agent event payloads are valid upstream-shaped JSON" {
             .text = "contents",
             .is_error = true,
             .details_json = "{\"line\":3}",
+            .duration_ms = 0,
         },
         .{ .kind = .agent_end, .text = "done" },
     };
@@ -1886,6 +1906,7 @@ test "agent event payloads are valid upstream-shaped JSON" {
     var parsed_end = try std.json.parseFromSlice(std.json.Value, gpa, tool_end, .{});
     defer parsed_end.deinit();
     const result = parsed_end.value.object.get("result").?;
+    try std.testing.expectEqual(@as(i64, 0), parsed_end.value.object.get("durationMs").?.integer);
     try std.testing.expect(result == .object);
     try std.testing.expect(result.object.get("isError").?.bool);
     try std.testing.expectEqual(@as(i64, 3), result.object.get("details").?.object.get("line").?.integer);

@@ -170,6 +170,7 @@ pub const MistralClient = struct {
         }
         if (streaming) {
             var response = try live.acc.finish();
+            errdefer response.deinit(gpa);
             response.provider = try gpa.dupe(u8, self.provider_id);
             response.model = try gpa.dupe(u8, self.model);
             if (live.response_id.len > 0) response.response_id = try gpa.dupe(u8, live.response_id);
@@ -178,6 +179,7 @@ pub const MistralClient = struct {
             response.usage = live.usage;
             _ = cost_mod.calculate(self.model_cost, &response.usage);
             response.stop_reason = try gpa.dupe(u8, if (live.stop_reason.len > 0) live.stop_reason else if (response.tool_calls.len > 0) "toolUse" else "stop");
+            response.error_message = try stopErrorMessage(gpa, live.raw_stop_reason);
             return response;
         }
         const raw = try live.body.toOwnedSlice(gpa);
@@ -491,6 +493,8 @@ pub fn parseResponse(gpa: std.mem.Allocator, raw: []const u8) !ai.ModelResponse 
         .stop_reason = try gpa.dupe(u8, stop),
         .usage = usage,
     };
+    errdefer response.deinit(gpa);
+    response.error_message = try stopErrorMessage(gpa, raw_stop);
     if (parsed.value.object.get("model")) |mv| {
         if (mv == .string) response.model = try gpa.dupe(u8, mv.string);
     }
@@ -529,6 +533,26 @@ fn mapStop(raw: []const u8) []const u8 {
     if (raw.len == 0 or std.mem.eql(u8, raw, "stop")) return "stop";
     if (std.mem.eql(u8, raw, "error")) return "error";
     return "error";
+}
+
+fn stopErrorMessage(gpa: std.mem.Allocator, raw: []const u8) ![]const u8 {
+    if (!std.mem.eql(u8, mapStop(raw), "error")) return "";
+    if (std.mem.eql(u8, raw, "error")) return gpa.dupe(u8, "Provider stopped with: error (server error)");
+    return std.fmt.allocPrint(gpa, "Provider stopped with: {s}", .{raw});
+}
+
+test "latest Mistral raw error preserves retryable original diagnostic" {
+    const gpa = std.testing.allocator;
+    var response = try parseResponse(gpa, "{\"choices\":[{\"message\":{\"content\":\"\"},\"finish_reason\":\"error\"}],\"usage\":{}}");
+    defer response.deinit(gpa);
+    try std.testing.expectEqualStrings("error", response.stop_reason);
+    try std.testing.expectEqualStrings("error", response.raw_stop_reason);
+    try std.testing.expectEqualStrings("Provider stopped with: error (server error)", response.error_message);
+    try std.testing.expect(retry_mod.isRetryableError(response.error_message));
+    const unknown = try stopErrorMessage(gpa, "unknown-reason");
+    defer gpa.free(unknown);
+    try std.testing.expectEqualStrings("Provider stopped with: unknown-reason", unknown);
+    try std.testing.expect(!retry_mod.isRetryableError(unknown));
 }
 
 const LiveWriter = struct {

@@ -1,0 +1,15 @@
+{
+  "baseline": "e071d075da16a004dc984296b907d25befff1278",
+  "source": "C:\\Users\\adyba\\pi-zig-macos-phase-ack-20261007",
+  "file": "src/fullscreen_frontend_process_test.zig",
+  "source_sha256": "78315A063AC415D12DF9A1220EE4B094A590A8BE0418854FC7D2D4D4A6809552",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\MAC-PHASE-ACK-e071d075.patch",
+  "patch_sha256": "63CDBCE6D5185C5F336360595879DD92C530436CE8E2AAA3C0C7168F6D2D2512",
+  "filtered": "mac-phase-ack-windows-rs-20261007-a.json",
+  "full": "mac-phase-ack-full-windows-rs-20261007-a.json",
+  "full_passed": 26,
+  "full_skipped": 3,
+  "full_failed": 0,
+  "production_modified": false,
+  "macos_hosted_requalification_claimed": false
+}

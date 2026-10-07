@@ -60,6 +60,18 @@ pub const Peer = struct {
         return true;
     }
     pub fn record(self: *Peer) !std.json.Parsed(std.json.Value) {
+        for (0..4096) |_| {
+            const parsed = try self.rawRecord();
+            errdefer parsed.deinit();
+            if (try @import("native_metadata.zig").consume(self.gpa, parsed.value)) {
+                parsed.deinit();
+                continue;
+            }
+            return parsed;
+        }
+        return error.NativePeerMetadataFlood;
+    }
+    fn rawRecord(self: *Peer) !std.json.Parsed(std.json.Value) {
         const Race = union(enum) { record: anyerror![]u8, timeout: bool };
         var queue: [2]Race = undefined;
         var select = Io.Select(Race).init(self.io, &queue);

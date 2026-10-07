@@ -1,0 +1,997 @@
+{
+  "upstream": "7fb59f9",
+  "fixtures": [
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "",
+      "result": "/work/dir"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": ".",
+      "result": "/work/dir"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "..",
+      "result": "/work"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "../../file",
+      "result": "/file"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "~",
+      "result": "/home/Ω"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "~/a/../b",
+      "result": "/home/Ω/b"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "~\\b",
+      "result": "/work/dir/~\\b"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "file:///tmp/a%20b",
+      "result": "/tmp/a b"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "file://badhost/a",
+      "result": "/work/dir/file:/badhost/a"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "file:///c:/temp/Ω",
+      "result": "/c:/temp/Ω"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "file:///tmp/%2fno",
+      "result": "/work/dir/file:/tmp/%2fno"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "/root/../next/",
+      "result": "/next"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "\\root\\..\\next",
+      "result": "/work/dir/\\root\\..\\next"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "d:child",
+      "result": "/work/dir/d:child"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "D:../a",
+      "result": "/work/dir/D:../a"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "z:child",
+      "result": "/work/dir/z:child"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "c:child",
+      "result": "/work/dir/c:child"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "D:\\absolute\\..\\next",
+      "result": "/work/dir/D:\\absolute\\..\\next"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "c:/lower/drive",
+      "result": "/work/dir/c:/lower/drive"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "\\\\host\\share\\x\\..\\y",
+      "result": "/work/dir/\\\\host\\share\\x\\..\\y"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "//host/share",
+      "result": "/host/share"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "a/./b//../c/",
+      "result": "/work/dir/a/c"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "file:///tmp/%E2%98%83",
+      "result": "/tmp/☃"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "file:///tmp/%ZZ",
+      "result": "/work/dir/file:/tmp/%ZZ"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "cwd": "/work/dir",
+      "input": "file:///tmp/%00nul",
+      "result": "/tmp/\u0000nul"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "parts": [],
+      "result": "."
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "parts": [
+        ""
+      ],
+      "result": "."
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "parts": [
+        "a",
+        "/b",
+        "..",
+        "c/"
+      ],
+      "result": "a/c/"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "parts": [
+        "//host",
+        "share",
+        "a"
+      ],
+      "result": "/host/share/a"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "parts": [
+        "///",
+        "host",
+        "share"
+      ],
+      "result": "/host/share"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "parts": [
+        "c:",
+        "child"
+      ],
+      "result": "c:/child"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "parts": [
+        "c:\\",
+        "child",
+        ".."
+      ],
+      "result": "c:\\"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "parts": [
+        "a",
+        ""
+      ],
+      "result": "a"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "linux",
+        "home": "/home/Ω",
+        "cwd": "/daemon/cwd",
+        "driveCwds": {}
+      },
+      "parts": [
+        "",
+        "//host/share/",
+        "x"
+      ],
+      "result": "/host/share/x"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "",
+      "result": "c:\\work\\dir"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": ".",
+      "result": "c:\\work\\dir"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "..",
+      "result": "c:\\work"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "../../file",
+      "result": "c:\\file"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "~",
+      "result": "c:\\Users\\Ω"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "~/a/../b",
+      "result": "c:\\Users\\Ω\\b"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "~\\b",
+      "result": "c:\\Users\\Ω\\b"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "file:///tmp/a%20b",
+      "result": "c:\\work\\dir\\file:\\tmp\\a%20b"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "file://badhost/a",
+      "result": "\\\\badhost\\a\\"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "file:///c:/temp/Ω",
+      "result": "c:\\temp\\Ω"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "file:///tmp/%2fno",
+      "result": "c:\\work\\dir\\file:\\tmp\\%2fno"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "/root/../next/",
+      "result": "C:\\next"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "\\root\\..\\next",
+      "result": "C:\\next"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "d:child",
+      "result": "d:\\saved\\🦊\\child"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "D:../a",
+      "result": "D:\\saved\\a"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "z:child",
+      "result": "z:\\child"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "c:child",
+      "result": "c:\\work\\dir\\child"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "D:\\absolute\\..\\next",
+      "result": "D:\\next"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "c:/lower/drive",
+      "result": "c:\\lower\\drive"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "\\\\host\\share\\x\\..\\y",
+      "result": "\\\\host\\share\\y"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "//host/share",
+      "result": "\\\\host\\share\\"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "a/./b//../c/",
+      "result": "c:\\work\\dir\\a\\c"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "file:///tmp/%E2%98%83",
+      "result": "c:\\work\\dir\\file:\\tmp\\%E2%98%83"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "file:///tmp/%ZZ",
+      "result": "c:\\work\\dir\\file:\\tmp\\%ZZ"
+    },
+    {
+      "kind": "resolve",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "cwd": "c:\\work\\dir",
+      "input": "file:///tmp/%00nul",
+      "result": "c:\\work\\dir\\file:\\tmp\\%00nul"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "parts": [],
+      "result": "."
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "parts": [
+        ""
+      ],
+      "result": "."
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "parts": [
+        "a",
+        "/b",
+        "..",
+        "c/"
+      ],
+      "result": "a\\c\\"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "parts": [
+        "//host",
+        "share",
+        "a"
+      ],
+      "result": "\\\\host\\share\\a"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "parts": [
+        "///",
+        "host",
+        "share"
+      ],
+      "result": "\\host\\share"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "parts": [
+        "c:",
+        "child"
+      ],
+      "result": "c:\\child"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "parts": [
+        "c:\\",
+        "child",
+        ".."
+      ],
+      "result": "c:\\"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "parts": [
+        "a",
+        ""
+      ],
+      "result": "a"
+    },
+    {
+      "kind": "join",
+      "ambientCwd": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "info": {
+        "os": "windows",
+        "home": "c:\\Users\\Ω",
+        "cwd": "e:\\daemon\\cwd",
+        "driveCwds": {
+          "D:": "d:\\saved\\🦊"
+        }
+      },
+      "parts": [
+        "",
+        "//host/share/",
+        "x"
+      ],
+      "result": "\\\\host\\share\\x"
+    }
+  ]
+}

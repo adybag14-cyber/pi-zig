@@ -1,5 +1,6 @@
 //! Coding-agent CLI, resources, settings, sessions and modes.
 const std = @import("std");
+pub const tool_selection = @import("tool_selection.zig");
 pub const args = @import("args.zig");
 pub const context = @import("context.zig");
 pub const fullscreen_frontend = @import("fullscreen_frontend.zig");

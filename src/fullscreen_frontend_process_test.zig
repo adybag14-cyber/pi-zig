@@ -109,14 +109,27 @@ const Fixture = struct {
             .stderr = .{ .file = errors },
         }, 90_000);
     }
+    fn spawnLateRegistration(self: *Fixture, errors: Io.File) !pty.Session {
+        try self.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "late.mjs", .data = "export default pi=>pi.registerCommand('seed',{handler(){pi.registerCommand('late',{handler(){return {message:'late-live-command'}}});pi.registerTool({name:'late-tool',parameters:{type:'object'},execute(){pi.appendEntry('late-live-tool',{value:'late-live-tool-result'});return {content:'late-live-tool-result'}}});return {message:'late-live-seeded'}}})" });
+        try self.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"\",\"tool_calls\":[{\"id\":\"late-live-call\",\"name\":\"late-tool\",\"arguments\":\"{}\"}]},{\"content\":\"late-live-turn-complete\"}]" });
+        const path = try std.fs.path.join(std.testing.allocator, &.{ self.scratch.path, "late.mjs" });
+        defer std.testing.allocator.free(path);
+        try self.environment.put("PI_EXTENSION_BACKEND", "native");
+        return pty.spawn(std.testing.allocator, std.testing.io, .{
+            .argv = &.{ self.binary, "--offline", "--mock-script", self.mock, "--session", self.history, "--no-context-files", "--no-skills", "--no-prompt-templates", "--no-themes", "--no-builtin-tools", "--approve", "--verbose", "-e", path },
+            .cwd = .{ .path = self.scratch.path },
+            .environ_map = &self.environment,
+            .stderr = .{ .file = errors },
+        }, 90_000);
+    }
 };
 
 const renderer_extension =
-    \\import {Type} from '@earendil-works/pi-ai';export default pi=>{
+    \\import fs from 'node:fs';import {Type} from '@earendil-works/pi-ai';export default pi=>{
     \\ pi.registerTool({name:'animated',label:'Animated',description:'Offline native renderer fixture',parameters:Type.Object({value:Type.String()}),
     \\  async execute(id,args,signal,update){update({content:[{type:'text',text:'partial:'+args.value}]});await new Promise(resolve=>setTimeout(resolve,500));return {content:[{type:'text',text:'done:'+args.value}]}},
     \\  renderCall(args,theme,ctx){ctx.state.label??='early';ctx.state.value=args.value;return {render(width){return ['ROW_CALL:'+ctx.state.label+':'+width+':'+ctx.state.value]}}},
-    \\  renderResult(result,options,theme,ctx){if(!options.isPartial&&!ctx.state.scheduled){ctx.state.scheduled=true;setTimeout(()=>{ctx.state.label='late';ctx.invalidate()},700)}return {render(width){return ['ROW_RESULT:'+ctx.state.label+':'+width+':'+result.content[0].text+':'+options.isPartial]}}}
+    \\  renderResult(result,options,theme,ctx){if(!options.isPartial&&!ctx.state.scheduled){ctx.state.scheduled=true;const ack=setInterval(()=>{if(!fs.existsSync('renderer-phase-ack'))return;clearInterval(ack);setTimeout(()=>{ctx.state.label='late';ctx.invalidate()},0)},5)}return {render(width){if(ctx.state.label==='late')fs.writeFileSync('renderer-phase-rendered','late');return ['ROW_RESULT:'+ctx.state.label+':'+width+':'+result.content[0].text+':'+options.isPartial]}}}
     \\ });
     \\}
 ;
@@ -275,7 +288,12 @@ test "real native renderer mailbox updates idle durable tool slots resizes and p
     try std.testing.expect(try observed.screen.contains("ROW_CALL:early:100:seed"));
     try observed.send(&child, "renderer-draft", "> renderer-draft");
     try observed.send(&child, "\x1b[1;5H", "history-row-000");
-    try std.testing.io.sleep(.fromMilliseconds(900), .awake);
+    // The early current-cell assertions are complete before the real idle
+    // timer is admitted. CPU/PTY batching cannot supersede them beforehand.
+    const before_idle_frame = observed.screen.frames;
+    try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "renderer-phase-ack", .data = "observer-ready" });
+    try waitFixtureSignal(&fixture, &child, "renderer-phase-rendered");
+    try observed.wait(&child, "history-row-000", before_idle_frame);
     try observed.drain(&child);
     try std.testing.expect(try observed.screen.contains("history-row-000"));
     try std.testing.expect(try observed.screen.contains("> renderer-draft"));
@@ -454,16 +472,87 @@ const focus_extension =
 ;
 
 const focus_restore_extension =
-    \\export default function(pi){pi.registerCommand('restore-focus',{async handler(_,ctx){
+    \\import fs from 'node:fs';export default function(pi){pi.registerCommand('restore-focus',{async handler(_,ctx){
     \\ let h,rootInput='',baseInput='',phase='root';ctx.ui.setEditorText('restore-draft');
+    \\ const afterAck=(file,delay,run)=>{const ack=setInterval(()=>{if(!fs.existsSync(file))return;clearInterval(ack);setTimeout(run,delay)},5)};
     \\ const result=await ctx.ui.custom((tui,theme,keys,done)=>{
-    \\  const base={focused:false,handleInput(data){baseInput+=data;if(data==='b'){phase='cleared';h.unfocus({target:null});setTimeout(()=>{phase='root-again';h.focus();tui.requestRender()},1000)}}};
-    \\  const root={focused:false,render(){return ['RESTORE_PHASE:'+phase,'RESTORE_ROOT:'+rootInput+':'+root.focused,'RESTORE_BASE:'+baseInput+':'+base.focused]},handleInput(data){rootInput+=data;if(data==='s'){phase='stolen';tui.setFocus(base)}else if(data==='n'){phase='blocked-null';tui.setFocus(base);setTimeout(()=>{tui.setFocus(null);phase='root-null-restored';tui.requestRender()},300)}else if(data==='d'){phase='deferred';tui.setFocus(base);h.unfocus({target:null});setTimeout(()=>{tui.setFocus(null);phase='deferred-cleared';tui.requestRender();setTimeout(()=>{h.focus();phase='root-deferred-returned';tui.requestRender()},700)},300)}else if(data==='u'){phase='base';h.unfocus({target:base})}else if(data==='q')done('done')}};
+    \\  const base={focused:false,handleInput(data){baseInput+=data;if(data==='b'){phase='cleared';h.unfocus({target:null});afterAck('focus-cleared-ack',1000,()=>{phase='root-again';h.focus();tui.requestRender()})}}};
+    \\  const root={focused:false,render(){return ['RESTORE_PHASE:'+phase,'RESTORE_ROOT:'+rootInput+':'+root.focused,'RESTORE_BASE:'+baseInput+':'+base.focused]},handleInput(data){rootInput+=data;if(data==='s'){phase='stolen';tui.setFocus(base)}else if(data==='n'){phase='blocked-null';tui.setFocus(base);afterAck('focus-blocked-ack',300,()=>{tui.setFocus(null);phase='root-null-restored';tui.requestRender()})}else if(data==='d'){phase='deferred';tui.setFocus(base);h.unfocus({target:null});afterAck('focus-deferred-ack',300,()=>{tui.setFocus(null);phase='deferred-cleared';tui.requestRender();afterAck('focus-resume-ack',700,()=>{h.focus();phase='root-deferred-returned';tui.requestRender()})})}else if(data==='u'){phase='base';h.unfocus({target:base})}else if(data==='q')done('done')}};
     \\  return root;
     \\ },{overlay:true,overlayOptions:{width:60,nonCapturing:true,anchor:'top-left'},onHandle(handle){h=handle;h.focus()}});
     \\ ctx.ui.notify('RESTORE_RESULT:'+result);
     \\}})}
 ;
+
+const widget_extension =
+    \\let disposed=0,redraw=null;export default pi=>{
+    \\ pi.on('session_start',(_,ctx)=>{
+    \\  ctx.ui.setWidget('factory',(tui,theme)=>{let phase='first';const initialColumns=tui.terminal.columns;redraw=()=>{phase='changed';tui.requestRender()};return {render(width){return [theme.fg('accent','WIDGET_WIDTH:'+width+':'+phase+':COLS:'+tui.terminal.columns+':FACTORY:'+initialColumns)]},invalidate(){},dispose(){disposed++}}},{placement:'belowEditor'});
+    \\  ctx.ui.setWidget('upper',(tui,theme)=>({render(width){return ['WIDGET_ABOVE:'+width]},dispose(){disposed++}}));
+    \\ });
+    \\ pi.registerCommand('widget-redraw',{handler(){redraw();return {}}});
+    \\ pi.registerCommand('widget-replace',{handler(_,ctx){ctx.ui.setWidget('factory',(tui,theme)=>({render(width){return ['WIDGET_REPLACED:'+width+':DISPOSED:'+disposed]},dispose(){disposed++}}),{placement:'aboveEditor'});return {}}});
+    \\ pi.registerCommand('widget-clear',{handler(_,ctx){ctx.ui.setWidget('factory',undefined);ctx.ui.setWidget('upper',undefined);ctx.ui.notify('WIDGET_CLEARED:DISPOSED:'+disposed);return {}}});
+    \\ pi.registerCommand('widget-timer',{handler(_,ctx){setTimeout(()=>ctx.ui.setWidget('later',()=>({render(width){return ['WIDGET_IDLE:'+width]}}),{placement:'belowEditor'}),100);return {}}});
+    \\ pi.registerCommand('widget-inspect',{handler(_,ctx){ctx.ui.notify('WIDGET_DISPOSED:'+disposed);return {}}});
+    \\}
+;
+
+test "actual no Node native widget factories render width placement redraw replacement clearing reload and rooted teardown" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnExtension(errors, widget_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "WIDGET_WIDTH:100:first:COLS:100:FACTORY:100", 0);
+    try observed.wait(&child, "WIDGET_ABOVE:100", 0);
+    try observed.send(&child, "/widget-redraw\r", "WIDGET_WIDTH:100:changed:COLS:100");
+    const frame = observed.screen.frames;
+    try observed.screen.resize(70, 22);
+    try child.resize(70, 22);
+    try observed.wait(&child, "WIDGET_WIDTH:70:changed:COLS:70", frame);
+    try observed.wait(&child, "WIDGET_ABOVE:70", 0);
+    try observed.send(&child, "/widget-timer\r", "WIDGET_IDLE:70");
+    try observed.send(&child, "/widget-replace\r", "WIDGET_REPLACED:70:DISPOSED:1");
+    try std.testing.expect(!try observed.screen.contains("WIDGET_WIDTH:"));
+    try observed.send(&child, "/widget-clear\r", "WIDGET_CLEARED:DISPOSED:3");
+    try std.testing.expect(!try observed.screen.contains("WIDGET_REPLACED:"));
+    try std.testing.expect(!try observed.screen.contains("WIDGET_ABOVE:"));
+    try observed.send(&child, "/reload\r", "Reloaded:");
+    try observed.wait(&child, "WIDGET_WIDTH:70:first:COLS:70:FACTORY:70", 0);
+    try cleanExit(&fixture, &child, &observed);
+}
+
+test "actual no Node regular native widgets project retained factories replacement clearing and idle callback without invocation corruption" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("regular");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnExtension(errors, widget_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.waitAny(&child, "WIDGET_WIDTH:100:first:COLS:100");
+    try child.send("/widget-replace\r");
+    try observed.waitAny(&child, "WIDGET_REPLACED:100:DISPOSED:1");
+    try child.send("/widget-timer\r");
+    try observed.waitAny(&child, ">");
+    try child.send("/widget-inspect\r");
+    try observed.waitAny(&child, "WIDGET_DISPOSED:1");
+    try child.send("/widget-clear\r");
+    try observed.waitAny(&child, "WIDGET_CLEARED:DISPOSED:3");
+    try child.send("/quit\r");
+    const term = try child.wait(5000);
+    try std.testing.expect(term == .exited and term.exited == 0);
+    const stderr = try fixture.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", std.testing.allocator, .limited(65536));
+    defer std.testing.allocator.free(stderr);
+    try std.testing.expectEqualStrings("", stderr);
+}
 
 test "actual native explicit passive focus restores unmounted base steal while unfocus null remains clear" {
     if (!pty.supported()) return error.SkipZigTest;
@@ -483,19 +572,23 @@ test "actual native explicit passive focus restores unmounted base steal while u
     try std.testing.expect(try observed.screen.contains("RESTORE_BASE::false"));
     try observed.send(&child, "n", "RESTORE_PHASE:blocked-null");
     try std.testing.expect(try observed.screen.contains("RESTORE_BASE::true"));
+    try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "focus-blocked-ack", .data = "observer-ready" });
     try observed.wait(&child, "RESTORE_PHASE:root-null-restored", observed.screen.frames);
     try std.testing.expect(try observed.screen.contains("RESTORE_ROOT:sxn:true"));
     try observed.send(&child, "d", "RESTORE_PHASE:deferred");
     try std.testing.expect(try observed.screen.contains("RESTORE_BASE::true"));
+    try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "focus-deferred-ack", .data = "observer-ready" });
     try observed.wait(&child, "RESTORE_PHASE:deferred-cleared", observed.screen.frames);
     try std.testing.expect(try observed.screen.contains("RESTORE_ROOT:sxnd:false"));
     try std.testing.expect(try observed.screen.contains("RESTORE_BASE::false"));
     const no_resume_frame = observed.screen.frames;
+    try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "focus-resume-ack", .data = "observer-ready" });
     try child.send("LOST");
     try observed.wait(&child, "RESTORE_PHASE:root-deferred-returned", no_resume_frame);
     try std.testing.expect(!try observed.screen.contains("LOST"));
     try observed.send(&child, "u", "RESTORE_PHASE:base");
     try observed.send(&child, "b", "RESTORE_PHASE:cleared");
+    try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "focus-cleared-ack", .data = "observer-ready" });
     const clear_frame = observed.screen.frames;
     try child.send("LOST");
     try observed.wait(&child, "RESTORE_PHASE:root-again", clear_frame);
@@ -586,6 +679,21 @@ test "native CLI overlay paints real geometry releases hidden focus and restores
     try std.testing.expect(try observed.screen.contains("> overlay-draftz"));
     try std.testing.expect(!try observed.screen.contains("OVERLAY_WIDTH:"));
     try cleanExit(&fixture, &child, &observed);
+}
+fn waitFixtureSignal(fixture: *Fixture, child: *pty.Session, name: []const u8) !void {
+    const end = Io.Clock.awake.now(child.io).toMilliseconds() + 5000;
+    while (Io.Clock.awake.now(child.io).toMilliseconds() < end) {
+        fixture.scratch.dir.access(child.io, name, .{}) catch |err| switch (err) {
+            error.FileNotFound => {
+                if (try child.exited()) return error.FixtureExitedBeforePhaseAck;
+                try child.io.sleep(.fromMilliseconds(10), .awake);
+                continue;
+            },
+            else => return err,
+        };
+        return;
+    }
+    return error.FixturePhaseAckTimeout;
 }
 const Observer = struct {
     screen: vt.Screen,
@@ -952,5 +1060,27 @@ test "real fullscreen CLI applies native command and hook actions before throw a
     const third = std.mem.indexOf(u8, saved, "hook-before-three") orelse return error.MissingPrethrowHookAction;
     try std.testing.expect(first < second and second < third);
     try std.testing.expect(std.mem.indexOf(u8, saved, "Ω🦊") != null);
+    try cleanExit(&fixture, &child, &observed);
+}
+
+test "native late live fullscreen command discovery completion and next agent tool turn preserve actual session evidence" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnLateRegistration(errors);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "history-row-059", 0);
+    try observed.send(&child, "/seed\r", "late-live-seeded");
+    try observed.send(&child, "/la\t", "> /late");
+    try observed.send(&child, "\r", "late-live-command");
+    try observed.send(&child, "invoke-the-new-tool\r", "late-live-turn-complete");
+    const saved = try fixture.scratch.dir.readFileAlloc(std.testing.io, "history.jsonl", std.testing.allocator, .limited(1024 * 1024));
+    defer std.testing.allocator.free(saved);
+    try std.testing.expect(std.mem.indexOf(u8, saved, "late-live-tool-result") != null);
+    try std.testing.expect(std.mem.indexOf(u8, saved, "late-live-tool") != null);
     try cleanExit(&fixture, &child, &observed);
 }

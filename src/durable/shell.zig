@@ -28,11 +28,16 @@ pub const ExecutionErrorCode = enum { aborted, timeout, shell_unavailable, spawn
 pub const ExecutionError = struct {
     code: ExecutionErrorCode,
     message: []const u8,
+    message_owned: bool = false,
     cause: ?anyerror = null,
     spillPath: ?[]u8 = null,
     pub fn deinit(self: *ExecutionError, gpa: std.mem.Allocator) void {
         if (self.spillPath) |path| gpa.free(path);
-        self.* = undefined;
+        if (self.message_owned) gpa.free(self.message);
+        self.spillPath = null;
+        self.message = "";
+        self.message_owned = false;
+        self.cause = null;
     }
 };
 pub const ExecResult = struct {

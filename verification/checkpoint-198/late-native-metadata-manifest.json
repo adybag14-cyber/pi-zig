@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "status": "metadata_slice_validated",
+  "base": "1665296020007c26c5c82084029c093c930bce40",
+  "compatiblePublished": "e071d075da16a004dc984296b907d25befff1278",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "zigVersion": "0.16.0",
+  "zigSha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "piSha256": "570D9200D0A8251C53A04349A4305A7CC544A4CF098A06BF723C3455671BD646",
+  "sourceFiles": 589,
+  "sourceFrozenUnchanged": true,
+  "patchSha256": "D605E1250D869B3EA7045DBFC8FD9499D1A2D0671352E19DB273A22BD3151747",
+  "changedFiles": [
+    {
+      "path": "build.zig",
+      "sha256": "2B41A218333775E1A75B33409F39905DFF3BF4C6291CBADBE96DFDC7D43B9F10"
+    },
+    {
+      "path": "src/extensions/host.zig",
+      "sha256": "6F134F94D4A36728AB80A92D8B967A841A699346D9EECAE6CDA1219AEB54CFD6"
+    },
+    {
+      "path": "src/extensions/integration.zig",
+      "sha256": "EA7133694224C818BBF9ACCF7EC731AEBDA98E4E566C0D48BA16C65DE5B47CD6"
+    },
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "sha256": "1997F76A2CD0196676510256C1BE90CAA8AF70813C42AD41CD814548BB42E413"
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "sha256": "C22B78AED2B111A5330FD21859CF698296A7E47B99AFC91F438AB3BEE135372E"
+    },
+    {
+      "path": "src/extensions/native_group.zig",
+      "sha256": "31764CC42C6C0B0904BFC7867E8EC7D61E2C60272602486D8B785CC2A77FFE97"
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "sha256": "315B177F6878475C4BDD2ADE27DAF6AD620B4520A049960CC61AE324D8B0442D"
+    },
+    {
+      "path": "src/fullscreen_frontend_process_test.zig",
+      "sha256": "2F1AF65A9129105C70B3D3EE97997236377751067B24EEC6298FC18CA6550B88"
+    },
+    {
+      "path": "src/main.zig",
+      "sha256": "9E407E2F2CD58F0DE67E9544083815DE47C40ADE57B4E384A74DD19CB4AE12D7"
+    },
+    {
+      "path": "src/native_runtime_process_test.zig",
+      "sha256": "6AE08FAB33B437E4B67780CC4E63DC9CAE3A4ADD94C5ED5F6080F520619B0BDF"
+    }
+  ],
+  "gates": [
+    "late-gates-07.json",
+    "original-late-oracle-hashfenced.json"
+  ],
+  "limits": [
+    "Source compiled on Windows ReleaseSafe; other platforms and hosted graphs require parent integration gates",
+    "defaultActive metadata and first-winner selector are covered; Main active tracker and registration transition journal are the separately authorized next slice",
+    "Native Host synchronization is owner-only between invocations; arbitrary concurrent embedder catalog access is not asserted",
+    "Legacy bridge remains unchanged and default selection is parent-owned"
+  ]
+}

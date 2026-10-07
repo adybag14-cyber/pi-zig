@@ -2,6 +2,34 @@
 
 Status: in progress. This file does not certify parity or a release.
 
+Checkpoint 198 reviews upstream `7fb59f995b0a1db552001a8577b234e4105d7179`
+(Pi 1.0.4). The immutable catalog revision contains 1,631 models across
+42 providers. The native AI update includes Decisions classifiers and images,
+3.5-character UTF-16 context estimation, Bedrock GPT thinking profiles,
+Mistral server diagnostics, and caller-overridable Codex application headers.
+
+Native extension registrations now carry ordered registration and SDK selection
+events. Owned activation state, model schemas, and acknowledgements commit
+after allocation succeeds. Actual no-Node CLI cases cover defaults, exact
+positive/negative selectors, caller order, hidden/deferred tools, and late
+false/true/false replacements. Raw-provider fixtures validate and consume
+unsolicited metadata records. Retained widgets preserve component ownership,
+current geometry, replacement/disposal behavior, and original text wrapping.
+
+The environment candidate includes remote capability adapters, concurrent file
+workers with ordered writes, native Linux watches, portable polling, reconnect,
+and owned local/remote FileSystem and ExecutionEnv bindings. A watch teardown
+use-after-free is repaired and proved by a negative control and ordinary RPCs
+after close. Tool execution duration is measured monotonically and preserved
+through events, JSONL reload, cloning, and forks. The original source reproduces
+DrvFS rename behavior; tests separately measure retained handles and path reads.
+
+Four complete Debug/ReleaseSafe Windows/Linux graphs passed on 619 unchanged
+compiled inputs. `verification/checkpoint-198` records exact receipts, source
+hashes, and slice limits. Hosted macOS results remain separate. Production still
+defaults to the legacy runtime; the JS host and native release guard remain
+until complete SDK/UI/durable/MCP/codemode parity and final distribution checks.
+
 The current environment candidate adds a native protocol-v1 daemon/client,
 retained file handles, priority control replies, ordered command output,
 heartbeat/session fencing and strict-key SSH deployment helpers. Independent

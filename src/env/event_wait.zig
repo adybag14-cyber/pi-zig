@@ -1,5 +1,14 @@
 //! One absolute timeout budget survives spurious timed-event wakes.
 const std = @import("std");
+/// A shared event cannot be reset while another ticket is still waiting. An
+/// epoch plus a futex comparison makes simultaneous ticket waits independent
+/// without allocating one wake object per retained request.
+pub fn changed(io: std.Io, epoch: *std.atomic.Value(u32), observed: u32, deadline: std.Io.Timestamp) !void {
+    if (epoch.load(.acquire) != observed) return;
+    if (std.Io.Clock.awake.now(io).nanoseconds >= deadline.nanoseconds) return error.Timeout;
+    try io.futexWaitTimeout(u32, &epoch.raw, observed, .{ .deadline = .{ .raw = deadline, .clock = .awake } });
+    if (epoch.load(.acquire) == observed and std.Io.Clock.awake.now(io).nanoseconds >= deadline.nanoseconds) return error.Timeout;
+}
 const Waiter = struct {
     context: ?*anyopaque = null,
     now: *const fn (?*anyopaque, std.Io) std.Io.Timestamp = currentTime,

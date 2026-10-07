@@ -2,4 +2,5 @@
 test {
     _ = @import("extensions/native_bindings.zig");
     _ = @import("extensions/native_group.zig");
+    _ = @import("widget_array_oracle_test.zig");
 }

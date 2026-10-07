@@ -27,6 +27,10 @@ pub const Options = struct {
     on_notification: ?Notification = null,
     on_error: ?ErrorListener = null,
     max_pending: usize = 1024,
+    /// Optional monotonic clock for deterministic deadline policy verification.
+    /// Production uses Io.Clock.awake; context must outlive this Client.
+    clock_context: ?*anyopaque = null,
+    clock_now_ms: ?*const fn (?*anyopaque, std.Io) i64 = null,
 };
 pub const RequestOptions = struct { context: Context = .{}, timeout_ms: ?f64 = null, on_progress: ?Progress = null, progress_context: ?*anyopaque = null, on_remote_error: ?Progress = null, remote_error_context: ?*anyopaque = null };
 const Pending = struct {
@@ -288,7 +292,7 @@ pub const Client = struct {
             if (@atomicLoad(bool, &pending.canceled, .acquire)) return .closed;
             if (pending.options.context.aborted()) return .aborted;
             const end = pending.deadline.load(.acquire);
-            if (end != 0 and std.Io.Clock.awake.now(self.io).toMilliseconds() >= end and self.expireObserved(pending, end)) return .timeout;
+            if (end != 0 and self.nowMs() >= end and self.expireObserved(pending, end)) return .timeout;
             try self.io.sleep(.fromMilliseconds(5), .awake);
         }
     }
@@ -299,7 +303,7 @@ pub const Client = struct {
         defer self.mutex.unlock(self.io);
         const current = pending.deadline.load(.acquire);
         if (current == 0 or current != observed or pending.reply != null or pending.cause != null or @atomicLoad(bool, &pending.canceled, .acquire)) return false;
-        if (std.Io.Clock.awake.now(self.io).toMilliseconds() < current) return false;
+        if (self.nowMs() < current) return false;
         pending.cause = error.McpTimeout;
         @atomicStore(bool, &pending.canceled, true, .release);
         return true;
@@ -324,7 +328,10 @@ pub const Client = struct {
             return;
         }
         const millis: i64 = @intFromFloat(@min(@ceil(timeout), @as(f64, @floatFromInt(std.math.maxInt(i64) / 2))));
-        pending.deadline.store(std.Io.Clock.awake.now(self.io).toMilliseconds() + millis, .release);
+        pending.deadline.store(self.nowMs() +| millis, .release);
+    }
+    fn nowMs(self: *Client) i64 {
+        return if (self.options.clock_now_ms) |clock| clock(self.options.clock_context, self.io) else std.Io.Clock.awake.now(self.io).toMilliseconds();
     }
     pub fn notify(self: *Client, method: []const u8, params: ?Value) !void {
         return self.notifyInternal(method, params, false);

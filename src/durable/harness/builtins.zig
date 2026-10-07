@@ -7,6 +7,7 @@ const types = @import("../types.zig");
 const tools = @import("../tools.zig");
 const execution_env = @import("../execution_env.zig");
 const commands = @import("../shell.zig");
+const capability = @import("../env_capability.zig");
 const names = [_][]const u8{ "read", "write", "edit", "bash" };
 const schemas = [_][]const u8{
     "{\"type\":\"object\",\"properties\":{\"path\":{\"type\":\"string\"},\"offset\":{\"type\":\"number\"},\"limit\":{\"type\":\"number\"}},\"required\":[\"path\"]}",
@@ -17,15 +18,15 @@ const schemas = [_][]const u8{
 const Entry = struct { owner: *Bindings, method: usize };
 pub const Bindings = struct {
     gpa: std.mem.Allocator,
-    env: *execution_env.ExecutionEnv,
+    env: capability.ExecutionEnv,
     metadata: json.Owned,
     entries: [4]Entry,
     tools: [4]registry.Tool,
     refs: std.atomic.Value(usize) = .init(1),
-    pub fn create(gpa: std.mem.Allocator, env: *execution_env.ExecutionEnv) !*Bindings {
+    pub fn create(gpa: std.mem.Allocator, env: anytype) !*Bindings {
         const self = try gpa.create(Bindings);
         errdefer gpa.destroy(self);
-        self.* = .{ .gpa = gpa, .env = env, .metadata = try json.Owned.empty(gpa), .entries = undefined, .tools = undefined };
+        self.* = .{ .gpa = gpa, .env = capability.ExecutionEnv.from(env), .metadata = try json.Owned.empty(gpa), .entries = undefined, .tools = undefined };
         errdefer self.metadata.deinit();
         for (names, schemas, 0..) |name, schema, index| {
             self.entries[index] = .{ .owner = self, .method = index };
@@ -48,16 +49,16 @@ pub const Bindings = struct {
 /// prepare_context must outlive the registry snapshots/invocations holding this binding.
 pub const PowerShellBinding = struct {
     gpa: std.mem.Allocator,
-    env: *execution_env.ExecutionEnv,
+    env: capability.ExecutionEnv,
     metadata: json.Owned,
     options: tools.PowerShellOptions,
     environment: ?std.process.Environ.Map = null,
     tool: registry.Tool,
     refs: std.atomic.Value(usize) = .init(1),
-    pub fn create(gpa: std.mem.Allocator, env: *execution_env.ExecutionEnv, options: tools.PowerShellOptions) !*PowerShellBinding {
+    pub fn create(gpa: std.mem.Allocator, env: anytype, options: tools.PowerShellOptions) !*PowerShellBinding {
         const self = try gpa.create(PowerShellBinding);
         errdefer gpa.destroy(self);
-        self.* = .{ .gpa = gpa, .env = env, .metadata = try json.Owned.empty(gpa), .options = options, .tool = undefined };
+        self.* = .{ .gpa = gpa, .env = capability.ExecutionEnv.from(env), .metadata = try json.Owned.empty(gpa), .options = options, .tool = undefined };
         errdefer self.metadata.deinit();
         const a = self.metadata.arena.allocator();
         if (options.commandPrefix) |prefix| self.options.commandPrefix = try a.dupe(u8, prefix);
@@ -92,7 +93,7 @@ pub const PowerShellBinding = struct {
         try owner.install(.{ .name = "pi.tools.powershell", .tools = &.{self.tool} });
     }
 };
-pub fn createPowerShellTool(gpa: std.mem.Allocator, env: *execution_env.ExecutionEnv, options: tools.PowerShellOptions) !*PowerShellBinding {
+pub fn createPowerShellTool(gpa: std.mem.Allocator, env: anytype, options: tools.PowerShellOptions) !*PowerShellBinding {
     return PowerShellBinding.create(gpa, env, options);
 }
 fn retainPowerShell(raw: ?*anyopaque) void {

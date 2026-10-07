@@ -355,6 +355,7 @@ pub const AgentEvent = struct {
     /// JSON-ish args for tool_execution_start
     args_json: []const u8 = "",
     is_error: bool = false,
+    duration_ms: ?u64 = null,
     details_json: ?[]const u8 = null,
     image_b64: ?[]const u8 = null,
     image_mime: ?[]const u8 = null,
@@ -1507,6 +1508,7 @@ fn cloneToolResult(gpa: std.mem.Allocator, source: *const tools.ToolResult) !too
     return .{
         .content = content,
         .is_error = source.is_error,
+        .duration_ms = source.duration_ms,
         .image_b64 = image_b64,
         .image_mime = image_mime,
         .images = images,
@@ -1715,6 +1717,7 @@ fn emitToolEnd(on_event: ?EventHandler, event_ctx: ?*anyopaque, tc: *const ai.To
         .args_json = tc.arguments,
         .text = result.content,
         .is_error = result.is_error,
+        .duration_ms = result.duration_ms,
         .details_json = result.details_json,
         .image_b64 = result.image_b64,
         .image_mime = result.image_mime,
@@ -1992,6 +1995,7 @@ fn persistToolResult(
         .id = tc.id,
         .text = result.content,
         .is_error = result.is_error,
+        .duration_ms = result.duration_ms,
         .details_json = result.details_json,
         .image_b64 = result.image_b64,
         .image_mime = result.image_mime,
@@ -2001,6 +2005,7 @@ fn persistToolResult(
     });
     const p = sess.lastEntryId();
     _ = try sess.appendToolResultStatusWithImages(p, result.content, tc.id, tc.name, result.is_error, result.added_tool_names, result.image_b64, result.image_mime, result.images);
+    sess.entries.items[sess.entries.items.len - 1].tool_duration_ms = result.duration_ms;
     if (result.usage) |usage| {
         const entry = &sess.entries.items[sess.entries.items.len - 1];
         entry.meta.usage_input = usage.input;
@@ -2119,6 +2124,7 @@ fn executeToolBatchSequential(
             continue;
         }
 
+        const execution_started = Io.Clock.awake.now(io);
         var raw: tools.ToolResult = executeSequentialRawTool(
             gpa,
             io,
@@ -2133,6 +2139,7 @@ fn executeToolBatchSequential(
             .is_error = true,
         };
         defer raw.deinit(gpa);
+        raw.duration_ms = executionDurationMs(io, execution_started);
         emitToolUpdates(on_event, event_ctx, tc, &raw);
         var final = try finalizeToolResult(gpa, io, config, tc, prepared.arguments, &raw);
         defer final.deinit(gpa);
@@ -2151,7 +2158,13 @@ const ParallelToolState = struct {
     owned_arguments: ?[]u8 = null,
     result: ?tools.ToolResult = null,
     error_name: ?[]const u8 = null,
+    duration_ms: ?u64 = null,
 };
+
+fn executionDurationMs(io: Io, started: Io.Timestamp) u64 {
+    const elapsed = @max(@as(i96, 0), started.durationTo(Io.Clock.awake.now(io)).toNanoseconds());
+    return @intCast(@min(@as(i96, std.math.maxInt(u64)), @divTrunc(elapsed + 500_000, 1_000_000)));
+}
 
 const ParallelToolEvent = union(enum) {
     update: struct {
@@ -2205,6 +2218,7 @@ fn parallelToolWorker(
         .io = io,
         .events = events,
     };
+    const execution_started = Io.Clock.awake.now(io);
     state.result = executeRawTool(
         allocator,
         io,
@@ -2218,6 +2232,8 @@ fn parallelToolWorker(
         state.error_name = @errorName(err);
         break :blk null;
     };
+    state.duration_ms = executionDurationMs(io, execution_started);
+    if (state.result) |*result| result.duration_ms = state.duration_ms;
     events.putOne(io, .{ .complete = state.index }) catch |err| switch (err) {
         error.Canceled => return error.Canceled,
         error.Closed => return,
@@ -2332,6 +2348,7 @@ fn executeToolBatchParallel(
                     raw_error = .{
                         .content = try std.fmt.allocPrint(gpa, "tool execution failed: {s}", .{state.error_name orelse "unknown"}),
                         .is_error = true,
+                        .duration_ms = state.duration_ms,
                     };
                     break :blk &raw_error.?;
                 };
@@ -3505,6 +3522,7 @@ test "parallel tool end events follow completion order while persistence follows
         io: Io,
         end_order: [2]u8 = .{ 0, 0 },
         end_count: usize = 0,
+        missing_duration: bool = false,
 
         fn exec(ptr: ?*anyopaque, allocator: std.mem.Allocator, name: []const u8, _: []const u8) anyerror!?tools.ToolResult {
             const self: *@This() = @ptrCast(@alignCast(ptr.?));
@@ -3516,6 +3534,7 @@ test "parallel tool end events follow completion order while persistence follows
         fn event(ptr: ?*anyopaque, e: AgentEvent) void {
             const self: *@This() = @ptrCast(@alignCast(ptr.?));
             if (e.kind != .tool_execution_end or self.end_count >= self.end_order.len) return;
+            if (e.duration_ms == null) self.missing_duration = true;
             self.end_order[self.end_count] = if (std.mem.eql(u8, e.id, "c1")) 1 else if (std.mem.eql(u8, e.id, "c2")) 2 else 9;
             self.end_count += 1;
         }
@@ -3530,12 +3549,14 @@ test "parallel tool end events follow completion order while persistence follows
     defer result.deinit(gpa);
 
     try std.testing.expectEqual(@as(usize, 2), ctx.end_count);
+    try std.testing.expect(!ctx.missing_duration);
     try std.testing.expectEqualSlices(u8, &.{ 2, 1 }, &ctx.end_order);
 
     var tool_ids: [2][]const u8 = undefined;
     var tool_count: usize = 0;
     for (sess.entries.items) |entry| {
         if (!std.mem.eql(u8, entry.role, "tool")) continue;
+        try std.testing.expect(entry.tool_duration_ms != null);
         if (tool_count < tool_ids.len) tool_ids[tool_count] = entry.tool_call_id orelse "";
         tool_count += 1;
     }
@@ -4548,6 +4569,7 @@ test "streaming external update is emitted before tool execution returns" {
     const State = struct {
         update_events: usize = 0,
         update_seen_before_return: bool = false,
+        execution_duration: ?u64 = null,
         order: [3]EventKind = undefined,
         order_len: usize = 0,
 
@@ -4573,6 +4595,7 @@ test "streaming external update is emitted before tool execution returns" {
             return .{
                 .content = try allocator.dupe(u8, "live-complete"),
                 .is_error = false,
+                .duration_ms = 999_999,
             };
         }
 
@@ -4587,6 +4610,7 @@ test "streaming external update is emitted before tool execution returns" {
                     if (event.kind == .tool_execution_update and std.mem.eql(u8, event.text, "live-now")) {
                         self.update_events += 1;
                     }
+                    if (event.kind == .tool_execution_end) self.execution_duration = event.duration_ms;
                 },
                 else => {},
             }
@@ -4603,6 +4627,14 @@ test "streaming external update is emitted before tool execution returns" {
     defer result.deinit(gpa);
 
     try std.testing.expect(state.update_seen_before_return);
+    try std.testing.expect(state.execution_duration != null);
+    try std.testing.expect(state.execution_duration.? < 999_999);
+    var duration_persisted = false;
+    for (sess.entries.items) |entry| if (std.mem.eql(u8, entry.role, "tool")) {
+        try std.testing.expectEqual(state.execution_duration, entry.tool_duration_ms);
+        duration_persisted = true;
+    };
+    try std.testing.expect(duration_persisted);
     try std.testing.expectEqual(@as(usize, 1), state.update_events);
     try std.testing.expectEqual(@as(usize, 3), state.order_len);
     try std.testing.expectEqual(EventKind.tool_execution_start, state.order[0]);

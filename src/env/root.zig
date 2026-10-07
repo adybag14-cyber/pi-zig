@@ -10,6 +10,9 @@ pub const daemon_output = @import("daemon_output.zig");
 pub const lazy_connection = @import("lazy_connection.zig");
 pub const ssh_remote = @import("ssh_remote.zig");
 pub const ssh_connection = @import("ssh_connection.zig");
+pub const remote_path = @import("remote_path.zig");
+pub const remote_env = @import("remote_env.zig");
+pub const RemoteExecutionEnv = remote_env.RemoteExecutionEnv;
 test {
     _ = frame;
     _ = ssh;
@@ -23,6 +26,11 @@ test {
     _ = lazy_connection;
     _ = ssh_remote;
     _ = ssh_connection;
+    _ = remote_path;
+    _ = remote_env;
+    _ = @import("file_workers_test.zig");
+    _ = @import("../durable/watch.zig");
+    _ = @import("watch_test.zig");
 }
 test "native environment contracts match independent captured upstream Node bytes and arguments" {
     const std = @import("std");

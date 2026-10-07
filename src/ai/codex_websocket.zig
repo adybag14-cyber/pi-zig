@@ -169,7 +169,7 @@ pub const Client = struct {
         var req = try http.request(.GET, uri, .{
             .keep_alive = true,
             .redirect_behavior = .unhandled,
-            .headers = .{ .connection = .{ .override = "Upgrade" }, .accept_encoding = .omit },
+            .headers = .{ .connection = .{ .override = "Upgrade" }, .accept_encoding = .omit, .user_agent = .omit },
             .extra_headers = headers.items,
         });
         defer req.deinit();

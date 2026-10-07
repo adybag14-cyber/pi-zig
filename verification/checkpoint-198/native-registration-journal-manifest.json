@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "status": "journal_slice_validated",
+  "metadataDonor": "49702bce4703d62ea7f15f3426062f36ac955f62",
+  "metadataPatchSha256": "D605E1250D869B3EA7045DBFC8FD9499D1A2D0671352E19DB273A22BD3151747",
+  "sourceFiles": 590,
+  "sourceFrozenUnchanged": true,
+  "patchSha256": "D7CB27B8E249DA62EA903B2B58EBE14704B6FC91D0FE77BCFB50ED080A17262C",
+  "piSha256": "13DB2CB2AF280F0858CF5E48C3B6BD585113DFF6BD87662710F6CE42FD3BD137",
+  "changedFiles": [
+    {
+      "path": "src/extensions/host.zig",
+      "sha256": "895EC63BFBBCAB006D3BC6B68D84EA22320FE41B13152D7656633D6966E0FA33"
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "sha256": "FAC9E0E7801E62CAC71B5420F833D81AA64F646E4547458A03586917A9CB0593"
+    },
+    {
+      "path": "src/extensions/native_group.zig",
+      "sha256": "801948EB075D639D94F1CF8CA1BE0756C848D037AE7EC035CCCE066592FEBC4F"
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "sha256": "69419CD1F70EE1472E03FA533B7B1FC06E777859D973B98A2A4A308E8D7A4330"
+    },
+    {
+      "path": "src/extensions/native_worker_process_test.zig",
+      "sha256": "65E332C7E88AB3B035B6C33C1C907BBB35F3718CFDE1B64DA23ADDF4A1585B90"
+    },
+    {
+      "path": "src/extensions/root.zig",
+      "sha256": "15351DDF862F89B36745DBC8E21B24C9BEFBE9B9AA3B761BE0EC4C9BEC6A865C"
+    },
+    {
+      "path": "src/extensions/tool_activation.zig",
+      "sha256": "CD72CA90E0348E2A50686ECF811FFB5A58268E39D8F2E97A6254D287AEA6E104"
+    },
+    {
+      "path": "src/native_runtime_process_test.zig",
+      "sha256": "0DC9E9174F39EB3FB7A07CC626AB5944B1BB666A0BAE7B13AB663571D2806AC9"
+    }
+  ],
+  "gates": [
+    "journal-final-frozen.json",
+    "journal-tracker-unit-01.json"
+  ],
+  "limits": [
+    "Root Main tracker lifecycle and native action deduplication integration are required before the composed CLI selects from this journal",
+    "Main must skip native set_active_tools actions whose nativeSelectionSequence was already committed through selection-kind journal entries",
+    "Main must serialize nativeToolSelection from the active CLI policy and acknowledge only after tracker commit",
+    "Windows ReleaseSafe donor validated; root composed fullgraphs and Linux/macOS remain separate gates",
+    "Only the scoped registration/activation contract is certified here; arbitrary observable getter invocation-count parity and unknown pending tool selectors were not exhaustively certified"
+  ]
+}

@@ -168,6 +168,8 @@ const non_retryable_patterns = [_][]const u8{
 
 const retryable_patterns = [_][]const u8{
     "overloaded",
+    "server_busy",
+    "servers are currently busy",
     "currently experiencing high demand",
     "model is at capacity",
     "subscription_sharing_usage_unavailable",
@@ -376,6 +378,8 @@ test "retry classifier accepts transient provider and transport failures" {
     try std.testing.expect(isRetryableError("ERR_HTTP2_STREAM_CANCEL: Pending stream has been canceled"));
     inline for (.{
         "529 overloaded_error: Overloaded",
+        "SERVER_BUSY",
+        "The servers are currently busy, please try later",
         "HTTP 429 too many requests",
         "Provider returned error",
         "fetch failed: getaddrinfo ENOTFOUND api.example.test",

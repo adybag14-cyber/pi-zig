@@ -7,16 +7,19 @@ const http_fetch = @import("http_fetch.zig");
 const http_proxy = @import("http_proxy.zig");
 const retry = @import("retry.zig");
 const llama = @import("llama_classifier.zig");
+const decisions = @import("openai_decisions.zig");
 
 pub const Api = enum {
     typesafe_system_one,
     cloudflare_workers_ai_system_one,
     llama_cpp_classify,
+    openai_decisions,
 
     pub fn parse(value: []const u8) ?Api {
         if (std.mem.eql(u8, value, "typesafe-system-one")) return .typesafe_system_one;
         if (std.mem.eql(u8, value, "cloudflare-workers-ai-system-one")) return .cloudflare_workers_ai_system_one;
         if (std.mem.eql(u8, value, "llama-cpp-classify")) return .llama_cpp_classify;
+        if (std.mem.eql(u8, value, "openai-decisions")) return .openai_decisions;
         return null;
     }
 
@@ -25,6 +28,7 @@ pub const Api = enum {
             .typesafe_system_one => "typesafe-system-one",
             .cloudflare_workers_ai_system_one => "cloudflare-workers-ai-system-one",
             .llama_cpp_classify => "llama-cpp-classify",
+            .openai_decisions => "openai-decisions",
         };
     }
 };
@@ -36,11 +40,12 @@ pub const Model = struct {
     base_url: []const u8,
     cost: providers.ModelCost = .{},
     headers: []const metadata.Header = &.{},
+    input_image: bool = false,
 
     pub fn fromInfo(info: providers.ModelInfo) !Model {
         if (info.kind != .classifier) return error.NotClassifierModel;
         const api = Api.parse(info.operation_api orelse return error.MissingClassifierApi) orelse return error.UnsupportedClassifierApi;
-        return .{ .api = api, .provider = info.providerName(), .id = info.id, .base_url = info.base_url orelse return error.MissingClassifierBaseUrl, .cost = info.cost, .headers = info.headers };
+        return .{ .api = api, .provider = info.providerName(), .id = info.id, .base_url = info.base_url orelse return error.MissingClassifierBaseUrl, .cost = info.cost, .headers = info.headers, .input_image = info.input_image };
     }
 };
 
@@ -72,11 +77,25 @@ pub const Client = struct {
     pub fn classify(self: *Client, gpa: std.mem.Allocator, context_json: []const u8) !Result {
         const timestamp = std.Io.Clock.real.now(self.io).toMilliseconds();
         if (self.aborted()) return errorResult(gpa, self.model, timestamp, "Request aborted", true);
+        var parsed_context = std.json.parseFromSlice(std.json.Value, gpa, context_json, .{}) catch |err| return errorResult(gpa, self.model, timestamp, @errorName(err), false);
+        defer parsed_context.deinit();
+        if (parsed_context.value == .object) if (parsed_context.value.object.get("images")) |images| {
+            if (images == .array and images.array.items.len > 0 and !self.model.input_image) {
+                const message = try std.fmt.allocPrint(gpa, "Model {s}/{s} does not accept image input", .{ self.model.provider, self.model.id });
+                defer gpa.free(message);
+                return errorResult(gpa, self.model, timestamp, message, false);
+            }
+            if (self.model.api == .openai_decisions and images == .array and images.array.items.len > 128) {
+                const message = try std.fmt.allocPrint(gpa, "OpenAI Decisions accepts at most 128 images, got {d}", .{images.array.items.len});
+                defer gpa.free(message);
+                return errorResult(gpa, self.model, timestamp, message, false);
+            }
+        };
         if (self.model.api == .llama_cpp_classify) return self.classifyLocal(gpa, context_json, timestamp) catch |err| errorResult(gpa, self.model, timestamp, @errorName(err), self.aborted());
         if (self.api_key.len == 0) return errorResult(gpa, self.model, timestamp, "No API key for classifier provider", false);
         const payload = buildPayload(gpa, self.model, context_json) catch |err| return errorResult(gpa, self.model, timestamp, @errorName(err), false);
         defer gpa.free(payload);
-        const endpoint = if (self.model.api == .cloudflare_workers_ai_system_one) "run" else "systemone";
+        const endpoint = if (self.model.api == .cloudflare_workers_ai_system_one) "run" else if (self.model.api == .openai_decisions) "decisions" else "systemone";
         const url = try std.fmt.allocPrint(gpa, "{s}/{s}", .{ std.mem.trimEnd(u8, self.model.base_url, "/"), endpoint });
         defer gpa.free(url);
         var headers: std.ArrayList(std.http.Header) = .empty;
@@ -105,13 +124,16 @@ pub const Client = struct {
                 return parseResponse(gpa, self.model, context_json, response.body, timestamp) catch |err| errorResult(gpa, self.model, timestamp, @errorName(err), false);
             }
             response.retry_meta.status = response.status;
-            if (retries < self.provider_retry.max_retries and retry.isRetryableProviderResponse(response.retry_meta)) {
+            if (!(self.model.api == .openai_decisions and response.status == 504) and retries < self.provider_retry.max_retries and retry.isRetryableProviderResponse(response.retry_meta)) {
                 const delay = retry.providerDelayMs(self.io, self.provider_retry, retries, response.retry_meta.retry_after_ms) catch |delay_error| return errorResult(gpa, self.model, timestamp, @errorName(delay_error), false);
                 retries += 1;
                 if (!retry.waitProvider(self.io, delay, self.abort_flag)) return errorResult(gpa, self.model, timestamp, "Request aborted", true);
                 continue;
             }
-            const message = try std.fmt.allocPrint(gpa, "Classifier provider returned HTTP {d}: {s}", .{ response.status, response.body });
+            const message = if (self.model.api == .openai_decisions and response.status == 504)
+                try gpa.dupe(u8, "OpenAI Decisions error (504): the request timed out at the gateway. Very large inputs (above roughly 600K tokens) currently exceed its time limit.")
+            else
+                try std.fmt.allocPrint(gpa, "Classifier provider returned HTTP {d}: {s}", .{ response.status, response.body });
             defer gpa.free(message);
             return errorResult(gpa, self.model, timestamp, message, false);
         }
@@ -262,6 +284,7 @@ fn number(value: std.json.Value) !f64 {
 }
 
 pub fn buildPayload(gpa: std.mem.Allocator, model: Model, context_json: []const u8) ![]u8 {
+    if (model.api == .openai_decisions) return decisions.payload(gpa, model.id, context_json);
     if (model.api == .llama_cpp_classify) return error.NotSystemOneApi;
     var arena = std.heap.ArenaAllocator.init(gpa);
     defer arena.deinit();
@@ -297,7 +320,7 @@ pub fn buildPayload(gpa: std.mem.Allocator, model: Model, context_json: []const 
 }
 
 fn unwrap(api: Api, root: std.json.ObjectMap) !std.json.ObjectMap {
-    if (api == .typesafe_system_one) return root;
+    if (api == .typesafe_system_one or api == .openai_decisions) return root;
     if (api != .cloudflare_workers_ai_system_one) return error.NotSystemOneApi;
     if (root.get("success")) |success| if (success == .bool and !success.bool) return error.CloudflareClassifierFailure;
     const result = try object(try required(root, "result"));
@@ -380,7 +403,12 @@ pub fn parseResponse(gpa: std.mem.Allocator, model: Model, context_json: []const
     };
     // Parse billable usage first, even if malformed answers subsequently fail.
     result.usage = parseUsage(output.get("usage"), model);
-    const answers = projectAnswers(allocator, output, context) catch |err| {
+    if (model.api == .openai_decisions) if (try decisions.answerDiagnostic(allocator, output, context)) |diagnostic| {
+        result.stop_reason = .err;
+        result.error_message = diagnostic;
+        return result;
+    };
+    const answers = (if (model.api == .openai_decisions) decisions.answers(allocator, output, context) else projectAnswers(allocator, output, context)) catch |err| {
         result.stop_reason = .err;
         result.error_message = @errorName(err);
         return result;
@@ -394,6 +422,37 @@ fn projectAnswers(allocator: std.mem.Allocator, output: std.json.ObjectMap, cont
 }
 
 const fixture_model: Model = .{ .api = .typesafe_system_one, .provider = "typesafe", .id = "jev-latest", .base_url = "https://api.typesafe.ai/v1", .cost = .{ .input = 0.042 } };
+
+test "latest Decisions usage survives refusal images are gated and gateway504 never retries" {
+    const gpa = std.testing.allocator;
+    const model: Model = .{ .api = .openai_decisions, .provider = "openai", .id = "decision-test", .base_url = "https://api.openai.com/v1", .input_image = true };
+    const context = "{\"state\":{},\"questions\":{\"yes\":{\"type\":\"bool\",\"instructions\":\"Decide\",\"criteria\":{}}}}";
+    var refused = try parseResponse(gpa, model, context, "{\"answers\":[{\"name\":\"yes\",\"type\":\"refusal\"}],\"usage\":{\"input_tokens\":17,\"output_tokens\":2}}", 1);
+    defer refused.deinit(gpa);
+    try std.testing.expectEqualStrings("OpenAI Decisions refused to answer yes", refused.error_message.?);
+    try std.testing.expectEqual(@as(u64, 19), refused.usage.?.total_tokens);
+    try std.testing.expectEqual(@as(usize, 0), refused.answers.count());
+    const Fixture = struct {
+        calls: usize = 0,
+        fn fetch(raw: ?*anyopaque, allocator: std.mem.Allocator, url: []const u8, _: []const std.http.Header, _: []const u8) !HttpResult {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.calls += 1;
+            try std.testing.expectEqualStrings("https://api.openai.com/v1/decisions", url);
+            return .{ .status = 504, .body = try allocator.dupe(u8, "gateway"), .retry_meta = .{ .should_retry = true } };
+        }
+    };
+    var fixture: Fixture = .{};
+    var client: Client = .{ .io = std.testing.io, .model = model, .api_key = "mock-key", .provider_retry = .{ .max_retries = 3 }, .fetch_override = .{ .context = &fixture, .call = Fixture.fetch } };
+    var timed_out = try client.classify(gpa, context);
+    defer timed_out.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 1), fixture.calls);
+    try std.testing.expect(std.mem.startsWith(u8, timed_out.error_message.?, "OpenAI Decisions error (504):"));
+    client.model.input_image = false;
+    var image_error = try client.classify(gpa, "{\"state\":{},\"questions\":{},\"images\":[{\"mimeType\":\"image/png\",\"data\":\"AA==\"}]}");
+    defer image_error.deinit(gpa);
+    try std.testing.expectEqualStrings("Model openai/decision-test does not accept image input", image_error.error_message.?);
+    try std.testing.expectEqual(@as(usize, 1), fixture.calls);
+}
 const fixture_context = "{\"state\":{\"text\":\"deployment succeeded\"},\"questions\":{\"approved\":{\"type\":\"bool\",\"criteria\":{\"true\":\"Yes\",\"false\":\"No\"}},\"category\":{\"type\":\"choice\"},\"satisfaction\":{\"type\":\"score\"}}}";
 const fixture_output = "{\"answers\":{\"approved\":{\"type\":\"noul\",\"noul\":0.95},\"category\":{\"type\":\"choice\",\"choice\":\"success\",\"probabilities\":{\"success\":0.9,\"failure\":0.1},\"confidence\":0.8},\"satisfaction\":{\"type\":\"score\",\"score\":2,\"confidence\":0.7}},\"usage\":{\"input_tokens\":308,\"output_tokens\":23}}";
 

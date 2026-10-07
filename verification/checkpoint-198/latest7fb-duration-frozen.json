@@ -1,0 +1,47 @@
+{
+  "status": "frozen",
+  "base": "e071d075da16a004dc984296b907d25befff1278",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "scope": "ToolResult duration-only hunk excludes unrelated pending CLI selector changes",
+  "files": [
+    {
+      "path": "build.zig",
+      "sha256": "bc812390d355d34b8582b447961ccdaf217cb7dbd4c9723fb3d377cbbfe9ba3e"
+    },
+    {
+      "path": "src/agent/loop.zig",
+      "sha256": "c4d957a589284fc503de6b5e7c6a79e79f7cd803994239850379bf3881e2e1b9"
+    },
+    {
+      "path": "src/agent/session.zig",
+      "sha256": "ea78846ca1e135a277ceb28e1e3d368f0bbe02f02f1f0354580b64db6a944f0b"
+    },
+    {
+      "path": "src/extensions/integration.zig",
+      "sha256": "c81b290a22c447a6da5655e5391068770cb82424e358ee94bb549c377f3d9776"
+    },
+    {
+      "path": "src/coding_agent/modes.zig",
+      "sha256": "694158a96bce761bb0f820356612c24f9dc06c87aa54139b5eba65ca640638ad"
+    },
+    {
+      "path": "src/latest_duration_test.zig",
+      "sha256": "11dfc21919dd7c2928180651063d07aecbdadabedadd8be8298666c475caddeb"
+    },
+    {
+      "path": "src/latest_duration_failure_test.zig",
+      "sha256": "172d4d1c23560a6f1fa15f081f4bb3448def334f46480db5e8d01bb34bb75760"
+    }
+  ],
+  "patch_sha256": "254e97f7be965735303a9d440e0a66d8e8db7b23623a50400d6f3f7653655b27",
+  "proofs": [
+    "latest-duration-mcp-final-windows-debug-20261007",
+    "latest-tool-duration-final-windows-releasesafe-20261007",
+    "latest-duration-mcp-final-linux-debug-20261007",
+    "latest-duration-mcp-final-linux-releasesafe-20261007",
+    "latest-mcp-progress-clock-windows-releasesafe-20261007"
+  ],
+  "limits": [
+    "Renderer duration/outputPad projection remains pending"
+  ]
+}

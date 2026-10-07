@@ -333,9 +333,32 @@ const Handle = union(enum) {
         }
     }
 };
+const Lease = struct {
+    handle: *Handle,
+    references: std.atomic.Value(usize) = .init(1),
+    mutex: std.Io.Mutex = .init,
+    fn release(self: *Lease, gpa: std.mem.Allocator, io: std.Io) void {
+        if (self.references.fetchSub(1, .acq_rel) != 1) return;
+        self.handle.deinit(gpa, io);
+        gpa.destroy(self.handle);
+        gpa.destroy(self);
+    }
+};
+const FileLease = struct {
+    lease: *Lease,
+    reader: *fs.BinaryReader,
+    server: *Server,
+    locked: bool,
+    fn deinit(self: FileLease) void {
+        const owner = self.server;
+        if (self.locked) self.lease.mutex.unlock(owner.filesystem.io);
+        self.lease.release(owner.filesystem.gpa, owner.filesystem.io);
+    }
+};
 pub const Server = struct {
     filesystem: fs.FileSystem,
-    handles: std.AutoHashMap(u64, *Handle),
+    handles: std.AutoHashMap(u64, *Lease),
+    registry_mutex: std.Io.Mutex = .init,
     next_handle: u64 = 1,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, cwd: []const u8, home: ?[]const u8) !Server {
         return .{ .filesystem = try fs.FileSystem.init(gpa, io, cwd, home), .handles = .init(gpa) };
@@ -343,8 +366,7 @@ pub const Server = struct {
     pub fn deinit(self: *Server) void {
         var iterator = self.handles.valueIterator();
         while (iterator.next()) |handle| {
-            handle.*.deinit(self.filesystem.gpa, self.filesystem.io);
-            self.filesystem.gpa.destroy(handle.*);
+            handle.*.release(self.filesystem.gpa, self.filesystem.io);
         }
         self.handles.deinit();
         self.filesystem.deinit();
@@ -365,18 +387,30 @@ pub const Server = struct {
         const value = json.object.get(name) orelse return false;
         return value == .bool and value.bool;
     }
-    fn file(self: *Server, json: std.json.Value) !*fs.BinaryReader {
-        const handle = self.handles.get(try number(json, "handle")) orelse return error.BadHandle;
-        return switch (handle.*) {
-            .file => |*owned| &owned.reader,
-            .directory => error.BadHandle,
-        };
+    fn retain(self: *Server, json: std.json.Value) !*Lease {
+        const id = try number(json, "handle");
+        self.registry_mutex.lockUncancelable(self.filesystem.io);
+        defer self.registry_mutex.unlock(self.filesystem.io);
+        const lease = self.handles.get(id) orelse return error.BadHandle;
+        _ = lease.references.fetchAdd(1, .monotonic);
+        return lease;
+    }
+    fn file(self: *Server, json: std.json.Value, locked: bool) !FileLease {
+        const lease = try self.retain(json);
+        errdefer lease.release(self.filesystem.gpa, self.filesystem.io);
+        if (lease.handle.* != .file) return error.BadHandle;
+        if (locked) lease.mutex.lockUncancelable(self.filesystem.io);
+        return .{ .lease = lease, .reader = &lease.handle.file.reader, .server = self, .locked = locked };
     }
     fn admit(self: *Server, handle: *Handle) !u64 {
+        // Caller holds the registry lock while constructing the matching reply.
         if (self.handles.count() >= 4096) return error.TooManyHandles;
         if (self.next_handle >= 9007199254740991) return error.HandleIdentityExhausted;
         const id = self.next_handle;
-        try self.handles.putNoClobber(id, handle);
+        const lease = try self.filesystem.gpa.create(Lease);
+        errdefer self.filesystem.gpa.destroy(lease);
+        lease.* = .{ .handle = handle };
+        try self.handles.putNoClobber(id, lease);
         self.next_handle += 1;
         return id;
     }
@@ -404,14 +438,17 @@ pub const Server = struct {
         const op = try text(json, "op");
         if (context.aborted()) return Reply.failure(gpa, "aborted", error.Canceled, null);
         if (std.mem.eql(u8, op, "close")) {
-            if (self.handles.fetchRemove(try number(json, "handle"))) |entry| {
-                entry.value.deinit(gpa, io);
-                gpa.destroy(entry.value);
-            }
+            const id = try number(json, "handle");
+            self.registry_mutex.lockUncancelable(io);
+            const removed = self.handles.fetchRemove(id);
+            self.registry_mutex.unlock(io);
+            if (removed) |entry| entry.value.release(gpa, io);
             return Reply.success(gpa, std.json.Value{ .object = .empty });
         }
         if (std.mem.eql(u8, op, "writeChunk")) {
-            const handle = self.handles.get(try number(json, "handle")) orelse return error.BadHandle;
+            const leased = try self.file(json, true);
+            defer leased.deinit();
+            const handle = leased.lease.handle;
             if (handle.* != .file or handle.file.failed) return error.BadHandle;
             const target = handle.file.reader.file orelse return error.BadHandle;
             self.writeBytes(target, payload, handle.file.append) catch |err| {
@@ -421,7 +458,10 @@ pub const Server = struct {
             return Reply.success(gpa, std.json.Value{ .object = .empty });
         }
         if (std.mem.eql(u8, op, "pread")) {
-            const reader = try self.file(json);
+            const positional = json.object.get("offset");
+            const leased = try self.file(json, builtin.os.tag == .windows or positional == null or positional.? != .integer or positional.?.integer < 0);
+            defer leased.deinit();
+            const reader = leased.reader;
             const count = @min(try number(json, "length"), frame.maximum_payload);
             const offset = json.object.get("offset");
             if (offset == null or offset.? != .integer or offset.?.integer < 0) {
@@ -448,13 +488,17 @@ pub const Server = struct {
             return reply;
         }
         if (std.mem.eql(u8, op, "fstat")) {
-            const reader = try self.file(json);
+            const leased = try self.file(json, false);
+            defer leased.deinit();
+            const reader = leased.reader;
             var info = try metadata.fstat(gpa, io, reader.path, reader.file orelse return error.BadHandle);
             defer info.deinit(gpa);
             return Reply.success(gpa, info);
         }
         if (std.mem.eql(u8, op, "scanLines")) {
-            const reader = try self.file(json);
+            const leased = try self.file(json, false);
+            defer leased.deinit();
+            const reader = leased.reader;
             const options: @import("../durable/line_scan.zig").Options = .{ .startLine = try number(json, "startLine"), .endLine = if (json.object.contains("endLine")) try number(json, "endLine") else null };
             const result = try reader.scanLines(options, context);
             return switch (result) {
@@ -481,6 +525,8 @@ pub const Server = struct {
                 const handle = try gpa.create(Handle);
                 errdefer gpa.destroy(handle);
                 handle.* = .{ .file = .{ .reader = .{ .gpa = gpa, .io = io, .path = owned_path, .file = target } } };
+                self.registry_mutex.lockUncancelable(io);
+                defer self.registry_mutex.unlock(io);
                 var reply = if (metadata.fstat(gpa, io, path, target)) |value| block: {
                     var info = value;
                     defer info.deinit(gpa);
@@ -500,6 +546,8 @@ pub const Server = struct {
             handle.* = .{ .file = .{ .reader = owned } };
             var info = try metadata.fstat(gpa, io, path, handle.file.reader.file.?);
             defer info.deinit(gpa);
+            self.registry_mutex.lockUncancelable(io);
+            defer self.registry_mutex.unlock(io);
             if (self.next_handle >= 9007199254740991) return error.HandleIdentityExhausted;
             var reply = try Reply.success(gpa, .{ .handle = self.next_handle, .info = info });
             errdefer reply.deinit();
@@ -514,6 +562,8 @@ pub const Server = struct {
             const handle = try gpa.create(Handle);
             errdefer gpa.destroy(handle);
             handle.* = .{ .directory = .{ .directory = directory, .iterator = directory.iterate(), .path = owned } };
+            self.registry_mutex.lockUncancelable(io);
+            defer self.registry_mutex.unlock(io);
             if (self.next_handle >= 9007199254740991) return error.HandleIdentityExhausted;
             var reply = try Reply.success(gpa, .{ .handle = self.next_handle });
             errdefer reply.deinit();
@@ -589,6 +639,8 @@ pub const Server = struct {
         const handle = try gpa.create(Handle);
         errdefer gpa.destroy(handle);
         handle.* = .{ .file = .{ .reader = .{ .gpa = gpa, .io = io, .path = owned_path, .file = target }, .append = append } };
+        self.registry_mutex.lockUncancelable(io);
+        defer self.registry_mutex.unlock(io);
         var reply = try Reply.success(gpa, .{ .handle = self.next_handle });
         errdefer reply.deinit();
         _ = try self.admit(handle);
@@ -598,7 +650,11 @@ pub const Server = struct {
     fn readDirectory(self: *Server, json: std.json.Value, context: types.Context) !Reply {
         const gpa = self.filesystem.gpa;
         const io = self.filesystem.io;
-        const handle = self.handles.get(try number(json, "handle")) orelse return error.BadHandle;
+        const lease = try self.retain(json);
+        defer lease.release(gpa, io);
+        lease.mutex.lockUncancelable(io);
+        defer lease.mutex.unlock(io);
+        const handle = lease.handle;
         if (handle.* != .directory) return error.BadHandle;
         const maximum = @min(try number(json, "max"), 4096);
         if (maximum == 0) return error.InvalidField;

@@ -1,5 +1,18 @@
 //! Full CLI arg parse matching upstream flags surface.
 const std = @import("std");
+const tool_selection = @import("tool_selection.zig");
+
+test "latest tools option retains exact modifier diagnostics and valid lists" {
+    var arena_state = std.heap.ArenaAllocator.init(std.testing.allocator);
+    defer arena_state.deinit();
+    const arena = arena_state.allocator();
+    const valid = try parseArgs(arena, &.{ "pi", "--tools", "+codemode,-write" });
+    try std.testing.expect(valid.tool_list_error == null and valid.tools.?.len == 2);
+    const mixed = try parseArgs(arena, &.{ "pi", "--tools", "+read,write" });
+    try std.testing.expectEqualStrings("--tools: tool names cannot be mixed with +name or -name entries", mixed.tool_list_error.?);
+    const pattern = try parseArgs(arena, &.{ "pi", "--tools", "+mcp__*" });
+    try std.testing.expectEqualStrings("--tools: +name and -name entries take exact tool names, not patterns: +mcp__*", pattern.tool_list_error.?);
+}
 
 pub const Mode = enum { text, json, rpc };
 pub const TuiMode = enum { regular, fullscreen };
@@ -31,6 +44,7 @@ pub const Args = struct {
     fork: ?[]const u8 = null,
     models: ?[]const []const u8 = null,
     tools: ?[]const []const u8 = null,
+    tool_list_error: ?[]const u8 = null,
     exclude_tools: ?[]const []const u8 = null,
     no_tools: bool = false,
     no_builtin_tools: bool = false,
@@ -175,7 +189,10 @@ pub fn parseArgs(arena: std.mem.Allocator, raw_args: []const []const u8) !Args {
         } else if (std.mem.eql(u8, arg, "--tools") or std.mem.eql(u8, arg, "-t")) {
             i += 1;
             if (i >= raw_args.len) return error.MissingArg;
-            result.tools = try splitCsv(arena, raw_args[i]);
+            const tools = try splitCsv(arena, raw_args[i]);
+            if (try tool_selection.listError(arena, tools)) |diagnostic| {
+                result.tool_list_error = try std.fmt.allocPrint(arena, "{s}: {s}", .{ arg, diagnostic });
+            } else result.tools = tools;
         } else if (std.mem.eql(u8, arg, "--exclude-tools") or std.mem.eql(u8, arg, "-xt")) {
             i += 1;
             if (i >= raw_args.len) return error.MissingArg;

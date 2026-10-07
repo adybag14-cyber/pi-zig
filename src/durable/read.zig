@@ -19,7 +19,7 @@ pub const Selection = struct {
 fn propagate(comptime T: type, result: anytype) types.Result(T) {
     return .{ .failure = result.failure };
 }
-pub fn head(reader: *filesystem.BinaryReader, start: u64, end: u64, skip_bom: bool, context: types.Context) !types.Result([]u8) {
+pub fn head(reader: anytype, start: u64, end: u64, skip_bom: bool, context: types.Context) !types.Result([]u8) {
     var text: std.ArrayList(u8) = .empty;
     defer text.deinit(reader.gpa);
     var decoder = decode.rangeDecoder();
@@ -43,7 +43,7 @@ pub fn head(reader: *filesystem.BinaryReader, start: u64, end: u64, skip_bom: bo
 }
 /// Metadata belongs to the same open file. Retry once if a writer changed it
 /// during the scan/read, and never substitute a new file at its original path.
-pub fn selection(reader: *filesystem.BinaryReader, options: line_scan.Options, context: types.Context) !types.Result(Selection) {
+pub fn selection(reader: anytype, options: line_scan.Options, context: types.Context) !types.Result(Selection) {
     for (0..2) |attempt| {
         const info_result = try reader.info(context);
         if (info_result == .failure) return propagate(Selection, info_result);

@@ -2,7 +2,9 @@
 const std = @import("std");
 const types = @import("types.zig");
 const filesystem = @import("filesystem.zig");
-pub const Mode = enum { native, polling };
+const builtin = @import("builtin");
+const native = @import("watch_linux.zig");
+pub const Mode = enum(u8) { native, polling };
 pub const Exclude = struct { hidden: bool = false, names: []const []const u8 = &.{} };
 pub const Target = struct { path: []const u8, recursive: bool = false, exclude: Exclude = .{} };
 pub const Options = struct { mode: ?Mode = null, pollIntervalMs: u64 = 2000, maxDirectories: usize = 10000, maxEntries: usize = 100000 };
@@ -38,6 +40,12 @@ fn freeSnapshot(gpa: std.mem.Allocator, snapshot: *Snapshot) void {
     snapshot.deinit(gpa);
     snapshot.* = .empty;
 }
+fn freeSnapshotKeys(gpa: std.mem.Allocator, values: anytype) void {
+    var keys = values.keyIterator();
+    while (keys.next()) |key| gpa.free(key.*);
+    values.deinit(gpa);
+    values.* = .empty;
+}
 fn within(path: []const u8, parent: []const u8) bool {
     if (std.mem.eql(u8, path, parent)) return true;
     if (!std.mem.startsWith(u8, path, parent)) return false;
@@ -51,8 +59,36 @@ fn kindOf(stat: std.Io.File.Stat) Kind {
         else => .other,
     };
 }
+const Utf16Units = struct {
+    iterator: std.unicode.Utf8Iterator,
+    pending: ?u16 = null,
+    fn init(bytes: []const u8) Utf16Units {
+        return .{ .iterator = std.unicode.Utf8View.initUnchecked(bytes).iterator() };
+    }
+    fn next(self: *Utf16Units) ?u16 {
+        if (self.pending) |value| {
+            self.pending = null;
+            return value;
+        }
+        const point = self.iterator.nextCodepoint() orelse return null;
+        if (point < 0x10000) return @intCast(point);
+        self.pending = @intCast(0xdc00 + ((point - 0x10000) & 0x3ff));
+        return @intCast(0xd800 + ((point - 0x10000) >> 10));
+    }
+};
+fn lessLikeJavascript(_: void, a: []const u8, b: []const u8) bool {
+    var lhs = Utf16Units.init(a);
+    var rhs = Utf16Units.init(b);
+    while (true) {
+        const left = lhs.next();
+        const right = rhs.next();
+        if (left == null) return right != null;
+        if (right == null) return false;
+        if (left.? != right.?) return left.? < right.?;
+    }
+}
 pub const Watcher = struct {
-    mode: Mode = .polling,
+    mode: std.atomic.Value(Mode) = .init(.polling),
     gpa: std.mem.Allocator,
     io: std.Io,
     targets: []Resolved,
@@ -64,10 +100,13 @@ pub const Watcher = struct {
     thread: ?std.Thread = null,
     worker_id: std.atomic.Value(std.Thread.Id) = .init(0),
     close_mutex: std.Io.Mutex = .init,
+    backend: ?native.Backend = null,
+    events: std.StringHashMapUnmanaged(void) = .empty,
+    flush_at: ?i64 = null,
 
     pub fn open(fs: anytype, targets: []const Target, options: Options, callback: Callback, callback_context: ?*anyopaque, context: types.Context) !types.Result(*Watcher) {
         if (context.aborted()) return types.failure(*Watcher, fs.gpa, .aborted, null, null, "aborted");
-        if (options.mode == .native) return types.failure(*Watcher, fs.gpa, .not_supported, null, null, "Native event backend is not installed");
+        if (options.mode == .native and builtin.os.tag != .linux) return types.failure(*Watcher, fs.gpa, .not_supported, null, null, "Native event backend is not installed for this platform");
         const resolved = try fs.gpa.alloc(Resolved, targets.len);
         var count: usize = 0;
         errdefer {
@@ -93,6 +132,7 @@ pub const Watcher = struct {
         const self = try fs.gpa.create(Watcher);
         errdefer fs.gpa.destroy(self);
         self.* = .{ .gpa = fs.gpa, .io = fs.io, .targets = resolved, .options = options, .callback = callback, .callback_context = callback_context };
+        if (builtin.os.tag == .linux and (options.mode == .native or (options.mode == null and !try native.unreliable(fs.gpa, resolved)))) self.mode.store(.native, .release);
         self.snapshot = self.scan() catch |err| {
             if (err == error.OutOfMemory) return err;
             // Allocation is still fallible when representing an expected error.
@@ -103,9 +143,28 @@ pub const Watcher = struct {
             return result;
         };
         errdefer freeSnapshot(fs.gpa, &self.snapshot);
+        errdefer {
+            if (self.backend) |*backend| backend.deinit();
+            freeSnapshotKeys(fs.gpa, &self.events);
+        }
+        if (self.mode.load(.acquire) == .native) {
+            self.backend = native.Backend.init(fs.gpa) catch blk: {
+                self.mode.store(.polling, .release);
+                self.callback(self.callback_context, .overflow) catch {};
+                break :blk null;
+            };
+            if (self.backend != null) for (0..10) |_| {
+                if (!try self.reconcile()) break;
+                const next = try self.scan();
+                freeSnapshot(fs.gpa, &self.snapshot);
+                self.snapshot = next;
+            };
+        }
         if (context.aborted()) {
             const result = try types.failure(*Watcher, fs.gpa, .aborted, null, null, "aborted");
             freeSnapshot(fs.gpa, &self.snapshot);
+            if (self.backend) |*backend| backend.deinit();
+            freeSnapshotKeys(fs.gpa, &self.events);
             for (resolved) |*target| target.deinit(fs.gpa);
             fs.gpa.free(resolved);
             fs.gpa.destroy(self);
@@ -115,6 +174,8 @@ pub const Watcher = struct {
             if (err == error.OutOfMemory) return err;
             const result = try types.failure(*Watcher, fs.gpa, .unknown, null, err, @errorName(err));
             freeSnapshot(fs.gpa, &self.snapshot);
+            if (self.backend) |*backend| backend.deinit();
+            freeSnapshotKeys(fs.gpa, &self.events);
             for (resolved) |*target| target.deinit(fs.gpa);
             fs.gpa.free(resolved);
             fs.gpa.destroy(self);
@@ -138,6 +199,8 @@ pub const Watcher = struct {
         std.debug.assert(self.worker_id.load(.acquire) != std.Thread.getCurrentId());
         self.close(.{});
         freeSnapshot(self.gpa, &self.snapshot);
+        if (self.backend) |*backend| backend.deinit();
+        freeSnapshotKeys(self.gpa, &self.events);
         for (self.targets) |*target| target.deinit(self.gpa);
         self.gpa.free(self.targets);
         const gpa = self.gpa;
@@ -146,6 +209,8 @@ pub const Watcher = struct {
     }
     fn run(self: *Watcher) void {
         self.worker_id.store(std.Thread.getCurrentId(), .release);
+        defer self.worker_id.store(0, .release);
+        if (self.mode.load(.acquire) == .native) return self.runNative();
         while (!self.closed.load(.acquire)) {
             const began = std.Io.Clock.awake.now(self.io).toMilliseconds();
             const delay: i64 = @intCast(@min(@max(self.options.pollIntervalMs, 1), std.math.maxInt(i64)));
@@ -160,6 +225,123 @@ pub const Watcher = struct {
             };
         }
     }
+    fn inScope(self: *Watcher, path: []const u8) bool {
+        for (self.targets) |target| {
+            if (within(target.path, path)) return true;
+            if (!within(path, target.path) or std.mem.eql(u8, path, target.path)) continue;
+            var relative = path[target.path.len..];
+            while (relative.len > 0 and std.fs.path.isSep(relative[0])) relative = relative[1..];
+            var parts = std.mem.tokenizeAny(u8, relative, if (builtin.os.tag == .windows) "/\\" else "/");
+            var count: usize = 0;
+            var excluded = false;
+            while (parts.next()) |part| {
+                count += 1;
+                if (target.excluded(part)) excluded = true;
+            }
+            if (!excluded and (target.recursive or count <= 1)) return true;
+        }
+        return false;
+    }
+    const NativeSink = struct {
+        watcher: *Watcher,
+        pub fn event(self: @This(), path: []const u8) !void {
+            const owner = self.watcher;
+            if (!owner.inScope(path)) return;
+            const reported = owner.report(path);
+            if (!owner.events.contains(reported)) {
+                const owned = try owner.gpa.dupe(u8, reported);
+                errdefer owner.gpa.free(owned);
+                try owner.events.put(owner.gpa, owned, {});
+            }
+            if (owner.flush_at == null) owner.flush_at = std.Io.Clock.awake.now(owner.io).toMilliseconds() + 50;
+        }
+        pub fn overflow(self: @This()) !void {
+            // Like notify's need_rescan flag, native queue overflow triggers
+            // a rescan; a switch of backend separately reports overflow.
+            self.watcher.flush_at = std.Io.Clock.awake.now(self.watcher.io).toMilliseconds() + 50;
+        }
+    };
+    fn runNative(self: *Watcher) void {
+        while (!self.closed.load(.acquire)) {
+            if (self.mode.load(.acquire) == .polling) {
+                self.run();
+                return;
+            }
+            self.backend.?.drain(NativeSink{ .watcher = self }) catch |err| {
+                if (err == error.OutOfMemory) {
+                    self.failWatch(err);
+                    return;
+                }
+                self.switchToPolling();
+                continue;
+            };
+            if (self.flush_at) |at| if (std.Io.Clock.awake.now(self.io).toMilliseconds() >= at) {
+                self.flush_at = null;
+                self.poll() catch |err| {
+                    self.failWatch(err);
+                    return;
+                };
+                for (0..10) |_| {
+                    const added = self.reconcile() catch |err| {
+                        self.failWatch(err);
+                        return;
+                    };
+                    if (!added) break;
+                    self.poll() catch |err| {
+                        self.failWatch(err);
+                        return;
+                    };
+                }
+            };
+            self.io.sleep(.fromMilliseconds(10), .awake) catch {};
+        }
+    }
+    fn failWatch(self: *Watcher, err: anyerror) void {
+        if (!self.closed.load(.acquire)) self.callback(self.callback_context, .{ .@"error" = .{ .code = if (denied(err)) .permission_denied else .invalid, .message = @errorName(err), .cause = err } }) catch {};
+        self.closed.store(true, .release);
+    }
+    fn switchToPolling(self: *Watcher) void {
+        if (self.mode.load(.acquire) == .polling) return;
+        self.mode.store(.polling, .release);
+        if (self.backend) |*backend| backend.deinit();
+        self.backend = null;
+        self.callback(self.callback_context, .overflow) catch {};
+    }
+    fn reconcile(self: *Watcher) !bool {
+        if (self.backend == null) return false;
+        const backend = &self.backend.?;
+        var stale: std.ArrayList([]const u8) = .empty;
+        defer stale.deinit(self.gpa);
+        var installed = backend.installed.iterator();
+        while (installed.next()) |entry| {
+            const signature = self.snapshot.get(entry.key_ptr.*);
+            if (signature == null or signature.?.inode != entry.value_ptr.inode or !self.wantedNative(entry.key_ptr.*, signature.?)) try stale.append(self.gpa, entry.key_ptr.*);
+        }
+        for (stale.items) |path| backend.remove(path);
+        var added = false;
+        var iterator = self.snapshot.iterator();
+        while (iterator.next()) |entry| if (self.wantedNative(entry.key_ptr.*, entry.value_ptr.*)) {
+            const was_added = backend.add(entry.key_ptr.*, entry.value_ptr.inode) catch |err| {
+                if (err == error.OutOfMemory) return err;
+                self.switchToPolling();
+                return false;
+            };
+            added = added or was_added;
+        };
+        return added;
+    }
+    fn wantedNative(self: *Watcher, path: []const u8, entry: Entry) bool {
+        if (entry.kind == .directory) {
+            for (self.targets) |target| if (within(target.path, path) or (target.recursive and within(path, target.path))) return true;
+            return false;
+        }
+        if (entry.kind != .file) return false;
+        for (self.targets) |target| if (std.mem.eql(u8, target.path, path)) {
+            const stat = std.Io.Dir.cwd().statFile(self.io, path, .{ .follow_symlinks = false }) catch return false;
+            return stat.kind == .sym_link;
+        };
+        return false;
+    }
     fn report(self: *Watcher, path: []const u8) []const u8 {
         for (self.targets) |target| if (within(path, target.path)) return path;
         for (self.targets) |target| if (within(target.path, path)) return target.path;
@@ -170,6 +352,12 @@ pub const Watcher = struct {
         defer freeSnapshot(self.gpa, &next);
         var changed: std.StringHashMapUnmanaged(void) = .empty;
         defer changed.deinit(self.gpa);
+        var events = self.events.keyIterator();
+        while (events.next()) |key| try changed.put(self.gpa, key.*, {});
+        defer {
+            freeSnapshotKeys(self.gpa, &self.events);
+            self.events = .empty;
+        }
         var items = next.iterator();
         while (items.next()) |item| {
             const previous = self.snapshot.get(item.key_ptr.*);
@@ -183,11 +371,7 @@ pub const Watcher = struct {
             var changed_keys = changed.keyIterator();
             var index: usize = 0;
             while (changed_keys.next()) |key| : (index += 1) paths[index] = key.*;
-            std.mem.sort([]const u8, paths, {}, struct {
-                fn less(_: void, lhs: []const u8, rhs: []const u8) bool {
-                    return std.mem.lessThan(u8, lhs, rhs);
-                }
-            }.less);
+            std.mem.sort([]const u8, paths, {}, lessLikeJavascript);
             // Borrowed paths stay valid throughout this call. Exceptions do
             // not stop watching, as in the pinned environment contract.
             self.callback(self.callback_context, .{ .paths = paths }) catch {};
@@ -195,7 +379,7 @@ pub const Watcher = struct {
         std.mem.swap(Snapshot, &self.snapshot, &next);
     }
     fn hashFile(self: *Watcher, path: []const u8, stat: std.Io.File.Stat) !?[32]u8 {
-        if (stat.kind != .file or stat.size > 256 * 1024 or std.Io.Clock.real.now(self.io).toMilliseconds() - stat.mtime.toMilliseconds() >= 5000) return null;
+        if (self.mode.load(.acquire) != .polling or stat.kind != .file or stat.size > 256 * 1024 or std.Io.Clock.real.now(self.io).toMilliseconds() - stat.mtime.toMilliseconds() >= 5000) return null;
         const file = filesystem.openRegular(self.io, self.gpa, path, .{}) catch |err| {
             if (err == error.OutOfMemory) return err;
             return null;
@@ -222,7 +406,7 @@ pub const Watcher = struct {
         if (!snapshot.contains(path) and snapshot.count() >= self.options.maxEntries) return error.WatchEntryLimit;
         const kind = kindOf(stat);
         const identity_only = ancestor or kind == .directory;
-        const signature: Entry = .{ .kind = kind, .inode = stat.inode, .size = if (identity_only) 0 else stat.size, .mtime = if (identity_only) 0 else stat.mtime.nanoseconds, .ctime = if (identity_only) 0 else stat.ctime.nanoseconds, .hash = if (ancestor) null else try self.hashFile(path, stat) };
+        const signature: Entry = .{ .kind = kind, .inode = stat.inode, .size = if (identity_only) 0 else stat.size, .mtime = if (identity_only) 0 else stat.mtime.nanoseconds, .ctime = 0, .hash = if (ancestor) null else try self.hashFile(path, stat) };
         if (snapshot.getPtr(path)) |entry| {
             entry.* = signature;
             return;
@@ -372,7 +556,6 @@ test "durable b7df overlapping targets retain independent traversal and count un
 }
 
 test "durable b7df real target permission failure is distinguished from an unreadable descendant" {
-    const builtin = @import("builtin");
     if (builtin.os.tag == .windows or builtin.os.tag == .wasi) return error.SkipZigTest;
     if (std.posix.system.geteuid() == 0) return error.SkipZigTest;
     const gpa = std.testing.allocator;
@@ -422,9 +605,9 @@ test "durable polling watch initial coverage missing paths excludes recursive ch
     defer fs.deinit();
     var capture: Capture = .{ .gpa = gpa, .io = io };
     defer capture.deinit();
-    const watcher = try expectWatcher(gpa, try Watcher.open(&fs, &.{ .{ .path = "watched", .recursive = true, .exclude = .{ .hidden = true, .names = &.{"ignored"} } }, .{ .path = "missing" } }, .{ .pollIntervalMs = 20 }, Capture.callback, &capture, .{}));
+    const watcher = try expectWatcher(gpa, try Watcher.open(&fs, &.{ .{ .path = "watched", .recursive = true, .exclude = .{ .hidden = true, .names = &.{"ignored"} } }, .{ .path = "missing" } }, .{ .mode = .polling, .pollIntervalMs = 20 }, Capture.callback, &capture, .{}));
     defer watcher.deinit();
-    try std.testing.expectEqual(Mode.polling, watcher.mode);
+    try std.testing.expectEqual(Mode.polling, watcher.mode.load(.acquire));
     // A write immediately after open is observed against the established first
     // snapshot; the target did not exist during that snapshot.
     try temporary_dir.dir.writeFile(io, .{ .sub_path = "missing", .data = "created" });
@@ -466,6 +649,7 @@ test "durable polling watch budgets fail closed and callback close cannot join i
     var capture: Capture = .{ .gpa = gpa, .io = io };
     defer capture.deinit();
     for ([_]Options{ .{ .mode = .native }, .{ .maxDirectories = 0 }, .{ .maxEntries = 0 } }, 0..) |options, index| {
+        if (index == 0 and builtin.os.tag == .linux) continue;
         var result = try Watcher.open(&fs, &.{.{ .path = ".", .recursive = true }}, options, Capture.callback, &capture, .{});
         switch (result) {
             .failure => |*err| {
@@ -475,7 +659,7 @@ test "durable polling watch budgets fail closed and callback close cannot join i
             .value => return error.ExpectedWatchLimit,
         }
     }
-    const watcher = try expectWatcher(gpa, try Watcher.open(&fs, &.{.{ .path = "created" }}, .{ .pollIntervalMs = 20 }, Capture.callback, &capture, .{}));
+    const watcher = try expectWatcher(gpa, try Watcher.open(&fs, &.{.{ .path = "created" }}, .{ .mode = .polling, .pollIntervalMs = 20 }, Capture.callback, &capture, .{}));
     defer watcher.deinit();
     capture.close_on_callback = watcher;
     try temporary_dir.dir.writeFile(io, .{ .sub_path = "created", .data = "change" });

@@ -1,0 +1,104 @@
+{
+  "status": "frozen",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "base": "e071d075da16a004dc984296b907d25befff1278",
+  "prerequisite_patches": [
+    "remote-env-adapter-7fb59f9.patch",
+    "file-workers-fifo-7fb59f9.patch",
+    "native-linux-watch-reconnect-7fb59f9.patch"
+  ],
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-watch-repair-20261007",
+  "toolchain": "Zig0.16.0",
+  "files": [
+    {
+      "path": "src/env/daemon_watch.zig",
+      "bytes": 5116,
+      "sha256": "01c5c8da74f2b1a570e847de82152a6a0167e42f16c42378658eb53842fe26dd"
+    },
+    {
+      "path": "src/env/watch_test.zig",
+      "bytes": 11588,
+      "sha256": "cfa4c5d5e68e5401fd71c21488399c953d74566c6999a4bde6226e82a2813927"
+    }
+  ],
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\watch-task-retirement-uaf-repair.patch",
+  "patch_sha256": "13e5e00ef86c9d0a0900d706c3397567ef0debddf2bfda6c62ac734bf16cc37f",
+  "tests": [
+    {
+      "name": "watch-repair-final-windows-debug",
+      "pid": 54492,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Doptimize=Debug -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T11:09:57.66866Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-repair-20261007",
+      "status": "passed",
+      "deadline_seconds": 180,
+      "started_utc": "2026-10-07T11:09:57.9747943Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T11:10:13.1255652Z"
+    },
+    {
+      "name": "watch-repair-final-windows-release-safe",
+      "pid": 25324,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Doptimize=ReleaseSafe -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T11:10:13.141359Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-repair-20261007",
+      "status": "passed",
+      "deadline_seconds": 180,
+      "started_utc": "2026-10-07T11:10:13.3186989Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T11:10:48.1672047Z"
+    },
+    {
+      "name": "watch-repair-final-linux-debug",
+      "pid": 54756,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-repair-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T11:09:57.668597Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-repair-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T11:09:58.0001662Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T11:10:10.864257Z"
+    },
+    {
+      "name": "watch-repair-final-linux-release-safe",
+      "pid": 39944,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-repair-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T11:10:10.882247Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-repair-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T11:10:11.0782689Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T11:10:49.4035407Z"
+    }
+  ],
+  "negative_expected_failure": {
+    "name": "watch-repair-negative-diagnostic",
+    "pid": 51656,
+    "executable": "C:\\Windows\\System32\\wsl.exe",
+    "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-negative-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 60s env PI_TEST_ENV_DAEMON=/tmp/pi-env-watch-negative-20261007/zig-out/bin/pi-env /tmp/pi-env-watch-negative-20261007/close-negative-test",
+    "identity_captured": true,
+    "created_utc": "2026-10-07T11:09:05.869661Z",
+    "directory": "C:\\Users\\adyba\\pi-zig-env-watch-repair-20261007",
+    "status": "failed",
+    "deadline_seconds": 70,
+    "started_utc": "2026-10-07T11:09:06.0897798Z",
+    "exit_code": 1,
+    "completed_utc": "2026-10-07T11:09:07.3094345Z"
+  },
+  "regression": "Twelve watcher closes followed by ordinary exists RPCs on the same session; historical unfixed daemon crashes at daemon_watch Task.run complete after freed Task",
+  "mainEdits": false,
+  "staged": false,
+  "committed": false,
+  "published": false,
+  "frozen_utc": "2026-10-07T11:12:13.4041034Z"
+}

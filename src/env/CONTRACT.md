@@ -49,16 +49,74 @@ binary and prove verified replacement before a new framed session. Twenty
 original launch-command captures cover POSIX/login-shell and CMD/PowerShell
 quoting. Explicit target-specific daemon bytes are supplied by the caller.
 Windows SSH server deployment, host-key scan/accept file management,
-RemoteExecutionEnv adapters and packaged cross-platform distribution remain
+and packaged cross-platform distribution remain
 subsequent work. A local PowerShell upload without EOF is not presented as actual
 Windows SSH proof.
 
-File dispatch is currently serialized. The upstream bounded file-worker pool,
-per-handle concurrent admission/arrival-order lanes, robust blocking FIFO/device
-operations and native watch subscription implementation remain pending. Unknown
-operations fail with EINVAL; forced native watch is not silently emulated. The
+The native RemoteExecutionEnv adapter now exposes remote-system path resolution,
+owned file and command failures, binary and text whole-file reads, retained
+binary/line/directory readers, line scanning, depth-eight chunk reads and writes,
+metadata/listing, mutations, temporary resources and a command facade with
+output callbacks, timeout validation, abort/callback precedence and owned kill
+cleanup. It borrows either the existing native connection or its lazy factory;
+it does not own transport destruction. Readers are released before their env.
+The caller provides UTF-8 bytes for text writes and a stable borrowed shellEnv.
+Expected daemon failures preserve their message/path after reply-frame release;
+error deinit is idempotent and borrowed local messages remain borrowed.
+
+Latest original class captures select both platform path rules and verify actual
+file/command behavior against a separately built original Rust daemon. Rooted
+win32 inputs preserve an upstream implementation quirk: its no-base resolve
+uses the caller's ambient process drive. The native resolver receives ambient
+cwd explicitly; it does not substitute the remote cwd for that source behavior.
+Durable now exposes borrowed FileSystem/ExecutionEnv capabilities over local or
+remote providers. Binary, line and directory readers own their boxed leases;
+watchers own their subscription wrappers. Provider, allocator and I/O lifetimes
+outlive those leases. Generic bounded reads and Harness bindings use the same
+facade, and mutable cwd forwards to its provider without changing its namespace.
+Actual local and remote read/write/edit/bash registrations cross retained
+registry snapshots, and every induced boxing/provider allocation failure closes
+opened handles/subscriptions. This capability boundary is ready for portable
+JSONL storage; the JSONL backend itself is a separate subsequent slice.
+
+File dispatch uses sixteen workers with a bounded queue. Registry access is
+protected; admitted operations retain handle leases through concurrent close.
+Chunk writes enter per-handle arrival-order lanes and failed writes poison that
+handle. POSIX positional reads run concurrently; shared cursors and directory
+iteration retain their own locks. Actual Linux tests occupy all sixteen slots
+with FIFO opens, prove unrelated file traffic while one slot remains, release
+one slot and validate FIFO bytes/EOF. Another blocked FIFO read completes after
+its registry handle is closed. Polite transport EOF cancels workers blocked in
+FIFO open and reaps the daemon with status zero. Unknown
+operations fail with EINVAL. The
 daemon version follows the validated generated catalog pin, rather than a
 hardcoded version string.
+
+Linux watch subscriptions now use an owned inotify backend. Native events only
+trigger a debounced rescan and are filtered by target recursion/exclusions;
+reads are not subscribed events. Snapshot differences and event paths are
+reported in JavaScript UTF-16 sort order. Directory identity changes replace
+their watches, and rescans cover files written before a new directory watch is
+installed. Linux network/FUSE/9P file systems poll by default. Running out of
+native watches switches to polling and reports overflow. The existing 100,000
+snapshot-entry budget is explicit; original Node's unbounded entry count is not
+claimed. Device/inode identity across remounts still needs its own watch gate.
+
+The remote watch facade owns its subscription and callback thread, waits for
+ready coverage, ignores callback exceptions, cancels/settles on close and
+reopens after transport loss with the original bounded reconnect delay and an
+overflow notification. Actual Linux native and Windows polling file changes,
+recursive installation, rename, close and session-loss tests pass both the
+native daemon and independently built latest original Rust daemons. Native
+constructor and remote constructor allocation-failure gates cover cleanup.
+The connection's simultaneous ticket waits use a monotonic wake epoch, avoiding
+reset of an event beneath another active waiter; eight actual concurrent
+consumers and watch/RPC interleaving cross this boundary.
+
+Windows uses polling by default. Forced native watch on Windows/macOS still
+returns an explicit unsupported result; their event backends remain subsequent
+work. The current macOS default is polling and is not certified as the upstream
+native default. Cross-compilation is not presented as native watch runtime proof.
 
 Independent original implementations are run outside repository implementation
 sources. Reference scripts and toolchains are not runtime dependencies. Native

@@ -17,3 +17,4 @@ pub const provider_stream = @import("provider_stream.zig");
 
 pub const models_store = @import("models_store.zig");
 pub const provider_models = @import("provider_models.zig");
+pub const tool_activation = @import("tool_activation.zig");

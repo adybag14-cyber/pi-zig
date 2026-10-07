@@ -8,6 +8,7 @@
 const std = @import("std");
 const Io = std.Io;
 const js_runtime = @import("js_runtime.zig");
+const widget_protocol = @import("widget_protocol.zig");
 const providers = @import("../ai/providers.zig");
 const coding_clipboard = @import("../coding_agent/clipboard.zig");
 const agent_session = @import("../agent/session.zig");
@@ -82,6 +83,7 @@ pub const Widget = struct {
     key: []u8,
     lines: [][]u8,
     placement: WidgetPlacement,
+    native_owner_generation: ?u64 = null,
 
     fn deinit(self: *Widget, gpa: std.mem.Allocator) void {
         gpa.free(self.key);
@@ -112,12 +114,17 @@ pub const ContextOptions = struct {
     idle: bool = true,
     active_tools: []const []const u8 = &.{},
     all_tools: []const []const u8 = &.{},
+    native_tool_selection: ?NativeToolSelection = null,
     model_catalog: []const providers.ModelInfo = &.{},
     configured_providers: []const []const u8 = &.{},
     session: ?*const agent_session.Session = null,
     session_file: ?[]const u8 = null,
     session_dir: ?[]const u8 = null,
 };
+
+/// Native registration callbacks must use the same initial selection policy
+/// as the owner, before a newly registered tool appears in the next snapshot.
+pub const NativeToolSelection = @import("tool_activation.zig").Selection;
 
 pub const Controller = struct {
     gpa: std.mem.Allocator,
@@ -420,6 +427,38 @@ pub const Controller = struct {
             .component_close_fn = componentClose,
         };
     }
+    pub fn widgetRecordProjection(raw: ?*anyopaque, record: widget_protocol.Record, _: *widget_protocol.ControlQueue) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        var owned = record;
+        var consumed = false;
+        defer if (consumed) owned.deinit();
+        var out: Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer out.deinit();
+        try out.writer.writeAll("{\"key\":");
+        try std.json.Stringify.value(record.key, .{}, &out.writer);
+        try out.writer.print(",\"nativeOwnerGeneration\":\"{d}\",\"placement\":\"{s}\",\"lines\":", .{ record.owner_generation, @tagName(record.placement) });
+        if (record.frame) |frame| try std.json.Stringify.value(frame.lines, .{}, &out.writer) else try out.writer.writeAll("null");
+        try out.writer.writeByte('}');
+        try self.applyAction("setWidget", out.written());
+        consumed = true;
+    }
+    pub fn widgetProjectionClosed(raw: ?*anyopaque, generation: u64) !void {
+        const self: *Controller = @ptrCast(@alignCast(raw.?));
+        self.clearNativeWidgetProjections(generation);
+    }
+    pub fn clearNativeWidgetProjections(self: *Controller, generation: ?u64) void {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        var index: usize = 0;
+        while (index < self.widgets.items.len) {
+            const owner = self.widgets.items[index].native_owner_generation;
+            if (owner != null and (generation == null or owner.? == generation.?)) {
+                var removed = self.widgets.orderedRemove(index);
+                removed.deinit(self.gpa);
+                self.surface_dirty = true;
+            } else index += 1;
+        }
+    }
 
     pub fn bindClipboardEnvironment(self: *Controller, environ: ?*const std.process.Environ.Map) void {
         self.state_mutex.lockUncancelable(self.io);
@@ -520,6 +559,10 @@ pub const Controller = struct {
             if (options.provider) |provider| try std.json.Stringify.value(provider, .{}, &out.writer) else try out.writer.writeAll("null");
             try out.writer.writeByte('}');
         } else try out.writer.writeAll("null");
+        if (options.native_tool_selection) |selection| {
+            try out.writer.writeAll(",\"nativeToolSelection\":");
+            try std.json.Stringify.value(selection, .{}, &out.writer);
+        }
         try out.writer.writeAll(",\"activeTools\":[");
         for (options.active_tools, 0..) |tool, index| {
             if (index > 0) try out.writer.writeByte(',');
@@ -649,6 +692,7 @@ pub const Controller = struct {
         }
         if (std.mem.eql(u8, method, "setWidget")) {
             const key = try requiredString(object, "key");
+            const native_owner = if (object.get("nativeOwnerGeneration")) |value| try component_protocol.identifier(value) else null;
             const lines_value = object.get("lines");
             if (lines_value == null or lines_value.? == .null) {
                 self.removeWidget(key);
@@ -658,6 +702,9 @@ pub const Controller = struct {
                 const placement_text = optionalString(object, "placement") orelse "aboveEditor";
                 const placement: WidgetPlacement = if (std.mem.eql(u8, placement_text, "belowEditor")) .below_editor else .above_editor;
                 try self.putWidget(key, lines, placement);
+                for (self.widgets.items) |*widget| if (std.mem.eql(u8, widget.key, key)) {
+                    widget.native_owner_generation = native_owner;
+                };
             }
             self.surface_dirty = true;
             return;

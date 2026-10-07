@@ -1,0 +1,67 @@
+{
+  "status": "qualified_additive_slice",
+  "baseline": "636fac669297c585adc5509ca50986b8cdc42cd4",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "patchSha256": "a49423718bf76ef827586211056b3630f8f1c47e2cb2e666cd497458e77f3f66",
+  "files": [
+    {
+      "path": "build.zig",
+      "sha256": "af3f1e810777cd51753805bd780621b797200a413c995525307df3abcf7584ad"
+    },
+    {
+      "path": "src/agent/tools.zig",
+      "sha256": "c859f0ed36d0b7bad5cfdefc9b6c0cbad60f09c650fd6f096a8aac32707b01c3"
+    },
+    {
+      "path": "src/coding_agent/args.zig",
+      "sha256": "147d75154353211e36797b48c501616e5dbedcef82cd44f50584914fc435b2c6"
+    },
+    {
+      "path": "src/coding_agent/root.zig",
+      "sha256": "f23cccac410d8e18d1db1af195737c65bf9b8f9145e38333b64b0eea46864161"
+    },
+    {
+      "path": "src/coding_agent/tool_selection.zig",
+      "sha256": "a5c685dfbcb1b9bfb36f0b69ec94d6c83fd186cc7f97cf186816ca727d4e6a6e"
+    },
+    {
+      "path": "src/extensions/host.zig",
+      "sha256": "19ad28795ca10298806620386be7358488fc353bc559cc5e09c2994baf918ad4"
+    },
+    {
+      "path": "src/extensions/native_group.zig",
+      "sha256": "e2f863d50b592a10e6cd49ee550938881be9ac3973db9802f1bad160942e23c3"
+    },
+    {
+      "path": "src/extensions/tool_activation.zig",
+      "sha256": "c666454c451e4dc4a81c8762783e58c145a11ae7f72f8d77a6ee5658b98ade4b"
+    },
+    {
+      "path": "src/extensions/ui.zig",
+      "sha256": "1715d064a80fe61a6f93e496b665e80ac18a50c18e7886585209259bb4e58b3f"
+    },
+    {
+      "path": "src/main.zig",
+      "sha256": "8e535f206163708183b8c4e47ae2592bec30aceb0a8d9d1241db73bed0917c31"
+    },
+    {
+      "path": "src/native_runtime_process_test.zig",
+      "sha256": "1d3d9ae3e1e66de7ebfe65026c01152bc537017a80f3970179550bf7402bebc6"
+    },
+    {
+      "path": "src/tool_selection_process_test.zig",
+      "sha256": "e51a9c5db43378bb657eef180f9c84ce64525a48966c4e1e5313d2528db87c01"
+    }
+  ],
+  "limits": [
+    "Whole native Pi parity still incomplete",
+    "Hosted final macOS qualification pending",
+    "Configured MCP/codemode and full SDK completion underway"
+  ],
+  "proofs": [
+    "cli-journal-qualified-windows-debug-20261007",
+    "cli-journal-qualified-windows-releasesafe-20261007",
+    "cli198-native-linux-debug-20261007",
+    "cli198-native-linux-releasesafe-20261007"
+  ]
+}

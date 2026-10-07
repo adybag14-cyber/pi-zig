@@ -1,0 +1,133 @@
+{
+  "status": "frozen",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "base": "e071d075da16a004dc984296b907d25befff1278",
+  "prerequisite_patches": [
+    "remote-env-adapter-7fb59f9.patch",
+    "file-workers-fifo-7fb59f9.patch",
+    "native-linux-watch-reconnect-7fb59f9.patch",
+    "watch-task-retirement-uaf-repair.patch"
+  ],
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-storage-20261007",
+  "toolchain": "Zig0.16.0",
+  "files": [
+    {
+      "path": "src/durable/read.zig",
+      "bytes": 7432,
+      "sha256": "dc9ecf4db14d38b1c0029aa087eb38a3d27efb5cae6885a13ca1cbd60b415841"
+    },
+    {
+      "path": "src/durable/tool_read.zig",
+      "bytes": 14532,
+      "sha256": "2d3e6bff6d7e1785eecfb8b2161b357f5e8f707c95bb87cb2e3a5108a72de77c"
+    },
+    {
+      "path": "src/durable/root.zig",
+      "bytes": 1158,
+      "sha256": "14f9dab6fa1fdc48ed7b1d02f9acf696d0af441e3cfb96fc32ac0484e8e74ff4"
+    },
+    {
+      "path": "src/durable/harness/builtins.zig",
+      "bytes": 13032,
+      "sha256": "e6ca2f67a92c05a5007f98503fc28f8d7e3ccc760747c1304b84d70abb57f7ed"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 64656,
+      "sha256": "e977b3e206c32893496d1c1156d14be6f70beeb0f0ce68cdad986d62cf84ffbe"
+    },
+    {
+      "path": "src/env/remote_env.zig",
+      "bytes": 68596,
+      "sha256": "9cdf537c4b51108166e23c6b418f1d89e50daadc103493c979bcfbb8bfe593b3"
+    },
+    {
+      "path": "src/env/CONTRACT.md",
+      "bytes": 8245,
+      "sha256": "0b3dc5b8f3bc0dc135665f627c0fe42f1b0f1851790be21db0d188baf9bbca46"
+    },
+    {
+      "path": "src/durable/env_capability.zig",
+      "bytes": 30874,
+      "sha256": "497aa82450bfd3a6777a22c0801996c6a310ca990577cb4b8dd618e3739844fc"
+    },
+    {
+      "path": "src/env_capability_test.zig",
+      "bytes": 10204,
+      "sha256": "dc6d4005f3c37771e663ba94c094e90f19963b045d1135fa44ce8c3207e0c2de"
+    }
+  ],
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\durable-local-remote-capability-7fb59f9.patch",
+  "patch_sha256": "d2d032ffbf4d496e8d82eb2a3e371961007380623b205e05e3825a5fc50a56b8",
+  "tests": [
+    {
+      "name": "capability-windows-release-safe",
+      "pid": 46828,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env-capability test-env test-durable test-durable-harness test-durable-powershell -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T11:23:14.380823Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-storage-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T11:23:14.7349113Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T11:25:51.1935962Z"
+    },
+    {
+      "name": "capability-linux-release-safe",
+      "pid": 55564,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-storage-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env-capability test-env test-durable test-durable-harness test-durable-powershell -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T11:23:14.380265Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-storage-20261007",
+      "status": "passed",
+      "deadline_seconds": 310,
+      "started_utc": "2026-10-07T11:23:14.7348427Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T11:25:16.9370227Z"
+    },
+    {
+      "name": "capability-windows-debug-runtime-complete",
+      "pid": 51128,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env-capability test-durable-harness test-durable-powershell -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T11:18:24.29515Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-storage-20261007",
+      "status": "passed",
+      "deadline_seconds": 240,
+      "started_utc": "2026-10-07T11:18:24.5151029Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T11:18:28.6429493Z"
+    },
+    {
+      "name": "capability-linux-debug",
+      "pid": 26808,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-storage-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 240s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env-capability test-durable-harness test-durable-powershell -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T11:17:05.957239Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-storage-20261007",
+      "status": "passed",
+      "deadline_seconds": 250,
+      "started_utc": "2026-10-07T11:17:06.2492707Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T11:17:26.4824457Z"
+    }
+  ],
+  "known_limits": [
+    "Provider allocator and I/O must outlive borrowed capability and all opened leases",
+    "Portable JsonlStorage implementation next separate slice",
+    "Forced native Windows/macOS event backends pending",
+    "macOS native default parity not certified",
+    "Watch device/inode remount gate pending",
+    "Complete Node daemon error text equivalence not claimed"
+  ],
+  "mainEdits": false,
+  "staged": false,
+  "committed": false,
+  "published": false,
+  "frozen_utc": "2026-10-07T11:29:24.6717347Z"
+}

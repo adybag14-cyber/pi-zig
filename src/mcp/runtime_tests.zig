@@ -106,6 +106,7 @@ test "mcp.runtime real stdio capabilities match actual original network client c
     const Capture = struct {
         errors: std.atomic.Value(usize) = .init(0),
         progress: std.atomic.Value(usize) = .init(0),
+        elapsed_ms: std.atomic.Value(i64) = .init(0),
         remote: ?json.Owned = null,
         canceled: std.atomic.Value(usize) = .init(0),
         fn errorListener(raw: ?*anyopaque, cause: anyerror) void {
@@ -115,7 +116,12 @@ test "mcp.runtime real stdio capabilities match actual original network client c
         fn progressListener(raw: ?*anyopaque, _: protocol.Value) !void {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
             _ = self.progress.fetchAdd(1, .acq_rel);
+            _ = self.elapsed_ms.fetchAdd(25, .acq_rel);
             return error.OriginalMcpProgress;
+        }
+        fn clock(raw: ?*anyopaque, _: std.Io) i64 {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            return self.elapsed_ms.load(.acquire);
         }
         fn remoteListener(raw: ?*anyopaque, value: protocol.Value) !void {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
@@ -131,7 +137,7 @@ test "mcp.runtime real stdio capabilities match actual original network client c
     };
     var capture: Capture = .{};
     defer if (capture.remote) |*remote| remote.deinit();
-    const client = try session.Client.create(gpa, io, transport.transport(), .{ .context = &capture, .on_error = Capture.errorListener, .on_notification = Capture.notification });
+    const client = try session.Client.create(gpa, io, transport.transport(), .{ .context = &capture, .on_error = Capture.errorListener, .on_notification = Capture.notification, .clock_context = &capture, .clock_now_ms = Capture.clock });
     defer client.deinit();
     var initialized = try client.connect();
     defer initialized.deinit();
@@ -158,7 +164,13 @@ test "mcp.runtime real stdio capabilities match actual original network client c
     defer progress.deinit();
     try std.testing.expect(json.equal(try protocol.field(oracle.value, "result"), progress.value));
     try std.testing.expectEqual(@as(usize, 5), capture.progress.load(.acquire));
+    // The real child/reader/callback path crosses 125 logical milliseconds with
+    // a 60ms reset budget. Host CPU scheduling cannot advance this policy clock.
+    try std.testing.expectEqual(@as(i64, 125), capture.elapsed_ms.load(.acquire));
     try std.testing.expectEqual(@as(usize, 5), capture.errors.load(.acquire));
+    // The previous request has retired and joined its watcher/callbacks.
+    // Subsequent failure, genuine timeout and abort checks use production time.
+    client.options.clock_now_ms = null;
     try std.testing.expectError(error.McpRemoteError, client.request("failure", null, .{ .on_remote_error = Capture.remoteListener, .remote_error_context = &capture }));
     const expected = try protocol.field(oracle.value, "remote");
     try std.testing.expect(json.equal(try protocol.field(expected, "code"), try protocol.field(capture.remote.?.value, "code")));

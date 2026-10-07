@@ -1,6 +1,66 @@
 //! Real native worker fixture: stripped environment has no Node executable.
 const std = @import("std");
 const builtin = @import("builtin");
+const activation = @import("tool_activation.zig");
+
+fn consumeMetadata(gpa: std.mem.Allocator, value: std.json.Value) !bool {
+    if (value != .object) return false;
+    const object = value.object;
+    const kind = object.get("type") orelse return false;
+    if (kind != .string or !std.mem.eql(u8, kind.string, "native_metadata")) return false;
+    const version = object.get("version") orelse return error.NativeFixtureInvalidMetadata;
+    if (version != .integer or version.integer != 1) return error.NativeFixtureInvalidMetadata;
+    const generation = try activation.Event.identifier(object.get("ownerGeneration") orelse return error.NativeFixtureInvalidMetadata);
+    const revision = try activation.Event.identifier(object.get("revision") orelse return error.NativeFixtureInvalidMetadata);
+    if (generation == 0 or revision == 0) return error.NativeFixtureInvalidMetadata;
+    const extensions = object.get("extensions") orelse return error.NativeFixtureInvalidMetadata;
+    if (extensions != .array or extensions.array.items.len > 4096) return error.NativeFixtureInvalidMetadata;
+    for (extensions.array.items) |extension| {
+        if (extension != .object) return error.NativeFixtureInvalidMetadata;
+        const owner = try activation.Event.identifier(extension.object.get("extensionId") orelse return error.NativeFixtureInvalidMetadata);
+        const path = extension.object.get("sourcePath") orelse return error.NativeFixtureInvalidMetadata;
+        if (owner == 0 or path != .string) return error.NativeFixtureInvalidMetadata;
+        for ([_][]const u8{ "tools", "commands", "hooks", "flags" }) |field| {
+            const records = extension.object.get(field) orelse return error.NativeFixtureInvalidMetadata;
+            if (records != .array) return error.NativeFixtureInvalidMetadata;
+        }
+    }
+    if (object.get("toolRegistrations")) |records| {
+        if (records != .array or records.array.items.len > 4096) return error.NativeFixtureInvalidMetadata;
+        var previous: u64 = 0;
+        for (records.array.items) |record| {
+            var event = try activation.Event.parse(gpa, record);
+            defer event.deinit(gpa);
+            if (event.owner_generation != generation or event.sequence <= previous) return error.NativeFixtureInvalidMetadata;
+            previous = event.sequence;
+        }
+        const last = try activation.Event.identifier(object.get("registrationSequence") orelse return error.NativeFixtureInvalidMetadata);
+        if (previous != 0 and previous != last) return error.NativeFixtureInvalidMetadata;
+    }
+    return true;
+}
+
+const TranscriptCounts = struct { responses: usize = 0, metadata: usize = 0, errors: usize = 0 };
+fn transcriptCounts(gpa: std.mem.Allocator, output: []const u8) !TranscriptCounts {
+    var counts: TranscriptCounts = .{};
+    var transcript = std.mem.splitScalar(u8, output, 0x1e);
+    _ = transcript.next();
+    while (transcript.next()) |record| {
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, std.mem.trim(u8, record, "\r\n"), .{});
+        defer parsed.deinit();
+        if (try consumeMetadata(gpa, parsed.value)) {
+            counts.metadata += 1;
+            continue;
+        }
+        if (parsed.value != .object) return error.NativeFixtureRecordMismatch;
+        counts.responses += 1;
+        if (parsed.value.object.get("ok")) |ok| {
+            if (ok != .bool) return error.NativeFixtureRecordMismatch;
+            if (!ok.bool) counts.errors += 1;
+        }
+    }
+    return counts;
+}
 
 fn readProtocolRecord(gpa: std.mem.Allocator, reader: *std.Io.Reader) ![]u8 {
     var bytes: std.ArrayList(u8) = .empty;
@@ -15,15 +75,19 @@ fn readProtocolRecord(gpa: std.mem.Allocator, reader: *std.Io.Reader) ![]u8 {
 }
 
 fn expectRecordContains(gpa: std.mem.Allocator, reader: *std.Io.Reader, marker: []const u8) !void {
-    const bytes = try readProtocolRecord(gpa, reader);
-    defer gpa.free(bytes);
-    if (std.mem.indexOf(u8, bytes, marker) == null) {
-        std.debug.print("Native protocol expected {s}: {s}\n", .{ marker, bytes });
-        return error.NativeFixtureRecordMismatch;
+    while (true) {
+        const bytes = try readProtocolRecord(gpa, reader);
+        defer gpa.free(bytes);
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, bytes, .{});
+        defer parsed.deinit();
+        if (try consumeMetadata(gpa, parsed.value)) continue;
+        if (std.mem.indexOf(u8, bytes, marker) == null) {
+            std.debug.print("Native protocol expected {s}: {s}\n", .{ marker, bytes });
+            return error.NativeFixtureRecordMismatch;
+        }
+        try std.testing.expect(parsed.value == .object);
+        return;
     }
-    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, bytes, .{});
-    defer parsed.deinit();
-    try std.testing.expect(parsed.value == .object);
 }
 
 test "native extension process loads TypeScript imports and exchanges real protocol records" {
@@ -106,12 +170,10 @@ test "native extension process loads TypeScript imports and exchanges real proto
     try std.testing.expect(std.mem.indexOf(u8, output, "\"dependency\":\"esm-dependency\"") != null);
     try std.testing.expect(std.mem.indexOf(u8, output, "\"nativeTools\":[\"echo\"]") != null);
     try std.testing.expect(std.mem.indexOf(u8, output, "\"settings\":{\"mode\":\"native\"}") != null);
-    try std.testing.expectEqual(@as(usize, 3), std.mem.count(u8, output, "\"ok\":false"));
-    var records: usize = 0;
-    for (output) |byte| if (byte == 0x1e) {
-        records += 1;
-    };
-    try std.testing.expectEqual(@as(usize, 7), records);
+    const counts = try transcriptCounts(gpa, output);
+    try std.testing.expectEqual(@as(usize, 3), counts.errors);
+    try std.testing.expectEqual(@as(usize, 7), counts.responses);
+    try std.testing.expect(counts.metadata >= 1);
 }
 
 test "native worker loads CommonJS TypeScript JSON cycles and conditional require dependencies" {
@@ -181,7 +243,9 @@ test "native worker loads CommonJS TypeScript JSON cycles and conditional requir
         try std.testing.expectEqualStrings("", errors);
         try std.testing.expect(std.mem.indexOf(u8, output, "native-json:a:true") != null);
         try std.testing.expect(std.mem.indexOf(u8, output, "\"exists\":true") != null);
-        try std.testing.expectEqual(@as(usize, 3), std.mem.count(u8, output, "\x1e"));
+        const counts = try transcriptCounts(gpa, output);
+        try std.testing.expectEqual(@as(usize, 3), counts.responses);
+        try std.testing.expect(counts.metadata >= 1);
     }
 }
 
@@ -245,7 +309,9 @@ test "native provider process retains callbacks across replacement with Node abs
             return error.NativeProviderProtocolMismatch;
         }
     }
-    try std.testing.expectEqual(@as(usize, 9), std.mem.count(u8, output, "\x1e"));
+    const counts = try transcriptCounts(gpa, output);
+    try std.testing.expectEqual(@as(usize, 9), counts.responses);
+    try std.testing.expect(counts.metadata >= 1);
 }
 
 const control_fixture =
@@ -367,4 +433,18 @@ test "native worker EOF settles cooperative abort or retires an uncooperative aw
         reaped = true;
         try std.testing.expect(status == .exited and status.exited == 0);
     }
+}
+
+test "native worker protocol fixture skips only validated metadata and rejects other unexpected records" {
+    const gpa = std.testing.allocator;
+    const valid = "{\"type\":\"native_metadata\",\"version\":1,\"ownerGeneration\":\"42\",\"revision\":\"1\",\"extensions\":[]}";
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, valid, .{});
+    defer parsed.deinit();
+    try std.testing.expect(try consumeMetadata(gpa, parsed.value));
+    var invalid = try std.json.parseFromSlice(std.json.Value, gpa, "{\"type\":\"native_metadata\",\"version\":2}", .{});
+    defer invalid.deinit();
+    try std.testing.expectError(error.NativeFixtureInvalidMetadata, consumeMetadata(gpa, invalid.value));
+    var unrelated = try std.json.parseFromSlice(std.json.Value, gpa, "{\"type\":\"native_owner_error\",\"error\":\"unexpected\"}", .{});
+    defer unrelated.deinit();
+    try std.testing.expect(!try consumeMetadata(gpa, unrelated.value));
 }

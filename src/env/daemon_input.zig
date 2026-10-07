@@ -54,7 +54,10 @@ pub const Input = struct {
         var count: usize = 0;
         while (count < bytes.len) {
             var buffers = [_][]u8{bytes[count..]};
-            const size = try self.file.readStreaming(self.io, &buffers);
+            const size = self.file.readStreaming(self.io, &buffers) catch |err| switch (err) {
+                error.EndOfStream => return count,
+                else => return err,
+            };
             if (size == 0) break;
             count += size;
             self.last_seen.store(Io.Clock.awake.now(self.io).toMilliseconds(), .release);

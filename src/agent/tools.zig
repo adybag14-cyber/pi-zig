@@ -1,5 +1,6 @@
 //! Built-in coding tools: read, write, edit, bash, grep, find, ls.
 const std = @import("std");
+const tool_selection = @import("../coding_agent/tool_selection.zig");
 const tool_manager = @import("tool_manager.zig");
 const Io = std.Io;
 const builtin = @import("builtin");
@@ -106,6 +107,8 @@ pub const ToolUpdate = struct {
 pub const ToolResult = struct {
     content: []u8,
     is_error: bool,
+    /// Owner-measured execution time. Absent for calls that never execute.
+    duration_ms: ?u64 = null,
     /// Optional binary image result encoded as base64. Built-ins are text-only
     /// today, but external/future tools can return vision content losslessly.
     image_b64: ?[]u8 = null,
@@ -230,19 +233,25 @@ pub const ToolFilter = struct {
     /// Tools to exclude (applied after allow).
     exclude: ?[]const []const u8 = null,
     no_tools: bool = false,
+    /// Runtime SDK loadouts contain literal names and explicitly filter MCP.
+    allow_is_loadout: bool = false,
+    modifiers: ?[]const []const u8 = null,
+    default_activation_ctx: ?*anyopaque = null,
+    default_activation_fn: ?*const fn (?*anyopaque, []const u8) bool = null,
 
     pub fn isEnabled(self: ToolFilter, name: []const u8) bool {
         if (std.mem.startsWith(u8, name, "mcp__")) return self.isMcpEnabled(name);
         if (self.no_tools) return false;
+        var enabled = true;
         if (self.allow) |a| {
             var found = false;
             for (a) |t| {
-                if (std.mem.eql(u8, t, name)) {
+                if (if (self.allow_is_loadout) std.mem.eql(u8, t, name) else mcpPatternMatches(t, name)) {
                     found = true;
                     break;
                 }
             }
-            if (!found) return false;
+            enabled = found;
         } else if (isBuiltin(name)) {
             if (self.builtin_allow) |a| {
                 var found = false;
@@ -250,31 +259,51 @@ pub const ToolFilter = struct {
                     found = true;
                     break;
                 };
-                if (!found) return false;
+                enabled = found;
             }
         }
+        if (self.allow == null and !isBuiltin(name)) if (self.default_activation_fn) |lookup| {
+            enabled = lookup(self.default_activation_ctx, name);
+        };
+        enabled = tool_selection.enabled(enabled, name, self.modifiers);
         if (self.exclude) |ex| {
             for (ex) |t| {
-                if (std.mem.eql(u8, t, name)) return false;
+                if (mcpPatternMatches(t, name)) return false;
             }
         }
-        return true;
+        return enabled;
+    }
+
+    /// Extension definitions can shadow builtin names. Their activation is
+    /// determined by the registered definition and owner, not builtin defaults.
+    pub fn isExtensionEnabled(self: ToolFilter, name: []const u8) bool {
+        if (self.no_tools) return false;
+        var enabled = if (self.default_activation_fn) |lookup| lookup(self.default_activation_ctx, name) else true;
+        if (self.allow) |allowed| {
+            enabled = false;
+            for (allowed) |pattern| if (if (self.allow_is_loadout) std.mem.eql(u8, pattern, name) else mcpPatternMatches(pattern, name)) { enabled = true; break; };
+        }
+        enabled = tool_selection.enabled(enabled, name, self.modifiers);
+        if (self.exclude) |excluded| for (excluded) |pattern| if (mcpPatternMatches(pattern, name)) return false;
+        return enabled;
     }
 
     /// Upstream keeps MCP tools when a nonempty allowlist contains no MCP selector.
     pub fn isMcpEnabled(self: ToolFilter, name: []const u8) bool {
         if (self.no_tools) return false;
+        var enabled = true;
         if (self.allow) |allowed| {
-            var filters_mcp = allowed.len == 0;
+            var filters_mcp = self.allow_is_loadout or allowed.len == 0;
             var matches = false;
             for (allowed) |pattern| {
                 filters_mcp = filters_mcp or std.mem.startsWith(u8, pattern, "mcp__");
-                matches = matches or mcpPatternMatches(pattern, name);
+                matches = matches or if (self.allow_is_loadout) std.mem.eql(u8, pattern, name) else mcpPatternMatches(pattern, name);
             }
-            if (filters_mcp and !matches) return false;
+            enabled = !filters_mcp or matches;
         }
+        enabled = tool_selection.enabled(enabled, name, self.modifiers);
         if (self.exclude) |excluded| for (excluded) |pattern| if (mcpPatternMatches(pattern, name)) return false;
-        return true;
+        return enabled;
     }
 
     pub fn enabledNames(self: ToolFilter, gpa: std.mem.Allocator) ![]const []const u8 {

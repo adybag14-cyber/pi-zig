@@ -1565,7 +1565,7 @@ test "native runtime custom human wait live invocation abort negative close ACK 
     try std.testing.expect(started.runtime.closed and started.runtime.child.id == null);
 }
 
-const Fixture = struct {
+pub const Fixture = struct {
     tmp: std.testing.TmpDir,
     root: []u8,
     source_path: []u8,
@@ -1576,7 +1576,7 @@ const Fixture = struct {
         return initSource(source);
     }
 
-    fn initSource(extension_source: []const u8) !Fixture {
+    pub fn initSource(extension_source: []const u8) !Fixture {
         const gpa = std.testing.allocator;
         const io = std.testing.io;
         var tmp = std.testing.tmpDir(.{});
@@ -1608,7 +1608,7 @@ const Fixture = struct {
         while (try iterator.next(std.testing.io)) |entry| try std.testing.expect(!std.mem.startsWith(u8, entry.name, ".pi-zig-js-bridge-"));
     }
 
-    fn deinit(self: *Fixture) void {
+    pub fn deinit(self: *Fixture) void {
         self.environment.deinit();
         std.testing.allocator.free(self.executable);
         std.testing.allocator.free(self.source_path);
@@ -2186,4 +2186,343 @@ test "native runtime qualified registry preserves chat facade live shared provid
     try std.testing.expect(std.mem.indexOf(u8, removed, "true") != null);
 
     try fixture.noBridge();
+}
+
+test "native runtime late Host admits late tools commands schema and renderer replacement after throw and idle timers without Node" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("export default pi=>{pi.registerTool({name:'same',description:'old',parameters:{type:'object'},execute(){return {content:'old'}}});pi.registerCommand('seed',{handler(){pi.registerCommand('late',{description:'late description',argumentHint:'input',handler(){return {message:'late-visible'}}});pi.registerTool({name:'late-tool',defaultActive:false,parameters:{type:'object'},execute(){return {content:'late-tool-visible'}}});pi.registerTool({name:'same',description:'new',defaultActive:false,parameters:{type:'object',required:['new']},renderCall(){return {render(){return ['new-rendered']}}},execute(){return {content:'new'}}});return {message:'seed-visible'}}});pi.registerCommand('reject',{handler(){pi.registerCommand('after-throw',{handler(){return {message:'throw-visible'}}});pi.registerTool({name:'throw-tool',parameters:{type:'object'},execute(){return {content:'throw-tool-visible'}}});throw Error('registration-primary-throw')}});pi.registerCommand('schedule',{handler(){setTimeout(()=>{pi.registerCommand('timer-command',{handler(){return {message:'timer-visible'}}});pi.registerTool({name:'timer-tool',parameters:{type:'object'},execute(){return {content:'timer-tool-visible'}}})},20);return {message:'scheduled'}}})}");
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options(), .js_runtime_program = "missing-node" };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    const view = host.extensions.items[0].script_runtime.?;
+    try std.testing.expectEqual(@as(?bool, true), host.defaultToolActivation("same"));
+    try std.testing.expectEqual(@as(?bool, null), host.defaultToolActivation("unregistered"));
+    var seed = (try host.executeCommand("seed", "")).?;
+    defer seed.deinit(gpa);
+    try std.testing.expect(try host.synchronizeNativeMetadata());
+    try std.testing.expect(host.extensions.items[0].script_runtime.? == view);
+    try std.testing.expect(host.hasCommand("late") and host.hasTool("late-tool"));
+    try std.testing.expectEqual(@as(?bool, false), host.defaultToolActivation("late-tool"));
+    try std.testing.expectEqual(@as(?bool, false), host.defaultToolActivation("same"));
+    var late = (try host.executeCommand("late", "")).?;
+    defer late.deinit(gpa);
+    try std.testing.expectEqualStrings("late-visible", late.message.?);
+    var tool = (try host.executeTool("late-tool", "{}")).?;
+    defer tool.deinit(gpa);
+    try std.testing.expectEqualStrings("late-tool-visible", tool.content);
+    try std.testing.expect(host.extensions.items[0].tools[0].has_render_call);
+    const rendered = (try host.renderToolCall("same", "same-replaced-row", "{}", false, 80)).?;
+    defer gpa.free(rendered);
+    try std.testing.expect(std.mem.indexOf(u8, rendered, "new-rendered") != null);
+    try std.testing.expect(std.mem.indexOf(u8, host.extensions.items[0].tools[0].parameters_json, "new") != null);
+    var bridge = integration_mod.Bridge.init(&host);
+    defer bridge.deinit();
+    const schemas = try bridge.toolSchemasJson(gpa, .{});
+    defer gpa.free(schemas);
+    try std.testing.expect(std.mem.indexOf(u8, schemas, "late-tool") != null and std.mem.indexOf(u8, schemas, "required") != null);
+    const restricted = try bridge.toolSchemasJson(gpa, .{ .allow = &.{"same"} });
+    defer gpa.free(restricted);
+    try std.testing.expect(std.mem.indexOf(u8, restricted, "late-tool") == null);
+    var rejected = (try host.executeCommand("reject", "")).?;
+    defer rejected.deinit(gpa);
+    try std.testing.expect(rejected.native_invocation_failed and std.mem.indexOf(u8, rejected.message.?, "registration-primary-throw") != null);
+    _ = try host.synchronizeNativeMetadata();
+    try std.testing.expect(host.hasCommand("after-throw") and host.hasTool("throw-tool"));
+    var schedule = (try host.executeCommand("schedule", "")).?;
+    defer schedule.deinit(gpa);
+    try io.sleep(.fromMilliseconds(150), .awake);
+    _ = try host.synchronizeNativeMetadata();
+    try std.testing.expect(host.hasCommand("timer-command") and host.hasTool("timer-tool"));
+    var timer = (try host.executeCommand("timer-command", "")).?;
+    defer timer.deinit(gpa);
+    try std.testing.expectEqualStrings("timer-visible", timer.message.?);
+    try fixture.noBridge();
+}
+
+test "native runtime late Host collision aliases and tool winners retain source registration order" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("export default pi=>{pi.registerCommand('same:1',{handler(){return {message:'reserved'}}});pi.registerCommand('seed',{handler(){pi.registerCommand('same',{handler(){return {message:'first'}}});pi.registerTool({name:'collision',description:'first',defaultActive:false,parameters:{type:'object'},execute(){return {content:'first'}}});return {message:'seed'}}})}");
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "extensions/second.mjs", .data = "export default pi=>{pi.registerCommand('same',{handler(){return {message:'second'}}});pi.registerTool({name:'collision',description:'second',parameters:{type:'object'},execute(){return {content:'second'}}})}" });
+    const second = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.mjs" });
+    defer gpa.free(second);
+    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    try host.loadPath(second);
+    var seed = (try host.executeCommand("seed", "")).?;
+    defer seed.deinit(gpa);
+    _ = try host.synchronizeNativeMetadata();
+    try std.testing.expect(host.hasCommand("same:1") and host.hasCommand("same:2") and host.hasCommand("same:3"));
+    var first = (try host.executeCommand("same:2", "")).?;
+    defer first.deinit(gpa);
+    var next = (try host.executeCommand("same:3", "")).?;
+    defer next.deinit(gpa);
+    try std.testing.expectEqualStrings("first", first.message.?);
+    try std.testing.expectEqualStrings("second", next.message.?);
+    var winner = (try host.executeTool("collision", "{}")).?;
+    defer winner.deinit(gpa);
+    try std.testing.expectEqualStrings("first", winner.content);
+    try std.testing.expectEqual(@as(?bool, false), host.defaultToolActivation("collision"));
+    var bridge = integration_mod.Bridge.init(&host);
+    defer bridge.deinit();
+    const schemas = try bridge.toolSchemasJson(gpa, .{});
+    defer gpa.free(schemas);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, schemas, .{});
+    defer parsed.deinit();
+    try std.testing.expectEqual(@as(usize, 1), parsed.value.array.items.len);
+    try std.testing.expectEqualStrings("first", parsed.value.array.items[0].object.get("function").?.object.get("description").?.string);
+}
+
+test "native runtime late actual CLI seed then command and agent mock invoke without Node or shell on PATH" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('seed',{handler(){pi.registerCommand('late',{handler(){return {message:'late-cli-visible'}}});pi.registerTool({name:'late-tool',parameters:{type:'object'},execute(){pi.appendEntry('late-tool-entry',{proof:'late-tool-cli-visible'});return {content:'late-tool-cli-visible'}}});return {message:'seed-cli-visible'}}})");
+    defer fixture.deinit();
+    try fixture.tmp.dir.createDirPath(io, "home");
+    try fixture.tmp.dir.createDirPath(io, "agent");
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "agent/settings.json", .data = "{\"quietStartup\":true,\"enableInstallTelemetry\":false,\"retry\":{\"enabled\":false}}" });
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"\",\"tool_calls\":[{\"id\":\"late-tool-call\",\"name\":\"late-tool\",\"arguments\":\"{}\"}]},{\"content\":\"late-cli-turn-complete\"}]" });
+    const home = try std.fs.path.join(gpa, &.{ fixture.root, "home" });
+    defer gpa.free(home);
+    const agent = try std.fs.path.join(gpa, &.{ fixture.root, "agent" });
+    defer gpa.free(agent);
+    const mock = try std.fs.path.join(gpa, &.{ fixture.root, "mock.json" });
+    defer gpa.free(mock);
+    const session = try std.fs.path.join(gpa, &.{ fixture.root, "session.jsonl" });
+    defer gpa.free(session);
+    try fixture.environment.put("PI_AGENT_DIR", agent);
+    try fixture.environment.put("HOME", home);
+    try fixture.environment.put("USERPROFILE", home);
+    try fixture.environment.put("PI_EXTENSION_BACKEND", "native");
+    try fixture.environment.put("PI_SKIP_VERSION_CHECK", "1");
+    try fixture.environment.put("PI_TELEMETRY", "0");
+    const result = try std.process.run(gpa, io, .{
+        .argv = &.{ fixture.executable, "--offline", "--print", "--mock-script", mock, "--session", session, "--no-context-files", "--no-skills", "--no-prompt-templates", "--no-themes", "--no-builtin-tools", "--approve", "--verbose", "-e", fixture.source_path, "/seed", "/late", "invoke-the-new-tool" },
+        .cwd = .{ .path = fixture.root },
+        .environ_map = &fixture.environment,
+        .stdout_limit = .limited(1024 * 1024),
+        .stderr_limit = .limited(1024 * 1024),
+        .timeout = .{ .duration = .{ .raw = .fromSeconds(20), .clock = .awake } },
+    });
+    defer gpa.free(result.stdout);
+    defer gpa.free(result.stderr);
+    if (result.term != .exited or result.term.exited != 0) {
+        std.debug.print("CLI stderr: {s}\nstdout: {s}\n", .{ result.stderr, result.stdout });
+        return error.NativeLateCliFailed;
+    }
+    try std.testing.expect(std.mem.indexOf(u8, result.stdout, "seed-cli-visible") != null);
+    try std.testing.expect(std.mem.indexOf(u8, result.stdout, "late-cli-visible") != null);
+    try std.testing.expect(std.mem.indexOf(u8, result.stdout, "late-cli-turn-complete") != null);
+    const saved = try fixture.tmp.dir.readFileAlloc(io, "session.jsonl", gpa, .limited(1024 * 1024));
+    defer gpa.free(saved);
+    try std.testing.expect(std.mem.indexOf(u8, saved, "late-tool-cli-visible") != null);
+    try std.testing.expect(std.mem.indexOf(u8, saved, "late-tool-entry") != null);
+    try fixture.noBridge();
+}
+
+test "native runtime late group unload and reload publish authoritative source ids without stale registrations" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('primary',{handler(){return {message:'primary'}}})");
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "extensions/second.mjs", .data = "export default pi=>pi.registerCommand('seed',{handler(){pi.registerCommand('late',{handler(){return {message:'late'}}});return {message:'seed'}}})" });
+    const second = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.mjs" });
+    defer gpa.free(second);
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, io, &.{ fixture.source_path, second }, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    const view = try started.runtime.extensionView(2, second);
+    defer view.deinit();
+    const seed = try view.invokeCommand("seed", "", "{}");
+    defer gpa.free(seed);
+    const removed = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"group_remove_source\",\"ownerId\":2}", null);
+    defer gpa.free(removed);
+    var latest: ?runtime_mod.Runtime.Metadata = null;
+    defer if (latest) |record| record.deinit();
+    while (try started.runtime.peekMetadata()) |record| {
+        if (latest) |old| old.deinit();
+        latest = record;
+        started.runtime.commitMetadata(record.revision);
+    }
+    var removed_value = try std.json.parseFromSlice(std.json.Value, gpa, latest.?.bytes, .{});
+    defer removed_value.deinit();
+    try std.testing.expectEqual(@as(usize, 1), removed_value.value.object.get("extensions").?.array.items.len);
+    var request: std.Io.Writer.Allocating = .init(gpa);
+    defer request.deinit();
+    try request.writer.writeAll("{\"kind\":\"group_add_source\",\"sourcePath\":");
+    try std.json.Stringify.value(second, .{}, &request.writer);
+    try request.writer.writeByte('}');
+    const added = try started.runtime.invokeGroupRequest(1, request.written(), null);
+    defer gpa.free(added);
+    var manifest = try std.json.parseFromSlice(std.json.Value, gpa, added, .{});
+    defer manifest.deinit();
+    try std.testing.expectEqual(@as(i64, 3), manifest.value.object.get("extensionId").?.integer);
+    try std.testing.expect(std.mem.indexOf(u8, added, "\"late\"") == null);
+    while (try started.runtime.peekMetadata()) |record| {
+        if (latest) |old| old.deinit();
+        latest = record;
+        started.runtime.commitMetadata(record.revision);
+    }
+    var reloaded = try std.json.parseFromSlice(std.json.Value, gpa, latest.?.bytes, .{});
+    defer reloaded.deinit();
+    const owners = reloaded.value.object.get("extensions").?.array.items;
+    try std.testing.expectEqual(@as(usize, 2), owners.len);
+    try std.testing.expectEqual(@as(i64, 3), owners[1].object.get("extensionId").?.integer);
+    try std.testing.expectEqual(@as(usize, 1), owners[1].object.get("commands").?.array.items.len);
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, view.invokeCommand("late", "", "{}"));
+}
+
+test "native runtime late Host registration defaults distinguish model declaration from active selection" {
+    const gpa = std.testing.allocator;
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io };
+    defer host.deinit();
+    try host.loadJson("{\"name\":\"defaults\",\"tools\":[{\"name\":\"ordinary\"},{\"name\":\"inactive\",\"defaultActive\":false},{\"name\":\"model\",\"exposure\":\"model-only\"},{\"name\":\"hidden\",\"exposure\":\"hidden\"}]}", ".");
+    try std.testing.expectEqual(@as(?bool, true), host.defaultToolActivation("ordinary"));
+    try std.testing.expectEqual(@as(?bool, false), host.defaultToolActivation("inactive"));
+    try std.testing.expectEqual(@as(?bool, true), host.defaultToolActivation("model"));
+    try std.testing.expectEqual(@as(?bool, false), host.defaultToolActivation("hidden"));
+    var bridge = integration_mod.Bridge.init(&host);
+    defer bridge.deinit();
+    const explicit = try bridge.toolSchemasJson(gpa, .{ .allow = &.{ "inactive", "hidden" } });
+    defer gpa.free(explicit);
+    try std.testing.expect(std.mem.indexOf(u8, explicit, "inactive") != null);
+    try std.testing.expect(std.mem.indexOf(u8, explicit, "hidden") == null);
+    const excluded = try bridge.toolSchemasJson(gpa, .{ .exclude = &.{"inactive"} });
+    defer gpa.free(excluded);
+    try std.testing.expect(std.mem.indexOf(u8, excluded, "inactive") == null);
+}
+
+test "native runtime late registration journal records intermediate activation and same callback getActiveTools" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("export default pi=>{const tool=active=>({name:'flip',defaultActive:active,parameters:{type:'object'},execute(){return {content:'flip'}}});pi.registerTool(tool(false));pi.registerCommand('flip',{handler(){const before=pi.getActiveTools().includes('flip');pi.registerTool(tool(true));const middle=pi.getActiveTools().includes('flip');pi.registerTool(tool(false));const after=pi.getActiveTools().includes('flip');return {message:JSON.stringify({before,middle,after})}}});pi.registerCommand('inspect',{handler(){return {message:JSON.stringify(pi.getActiveTools())}}})}");
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    try host.setScriptContextJson("{\"activeTools\":[\"read\"],\"nativeToolSelection\":{}}");
+    var flipped = (try host.executeCommand("flip", "")).?;
+    defer flipped.deinit(gpa);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, flipped.message.?, .{});
+    defer parsed.deinit();
+    try std.testing.expect(!parsed.value.object.get("before").?.bool);
+    try std.testing.expect(parsed.value.object.get("middle").?.bool and parsed.value.object.get("after").?.bool);
+    _ = try host.synchronizeNativeMetadata();
+    const events = host.registrationEvents();
+    try std.testing.expectEqual(@as(usize, 3), events.len);
+    try std.testing.expect(!events[0].activate and !events[0].activated);
+    try std.testing.expect(events[1].default_active and events[1].activated);
+    try std.testing.expect(!events[2].default_active and !events[2].activated);
+    try std.testing.expectEqual(@as(?bool, false), host.defaultToolActivation("flip"));
+    var owner = @import("extensions/tool_activation.zig").Tracker.init(gpa, host.registration_owner_generation);
+    defer owner.deinit();
+    try owner.setActive(&.{"read"});
+    const copied = try gpa.dupe(@import("extensions/tool_activation.zig").Event, events);
+    defer gpa.free(copied);
+    try owner.apply(copied, .{});
+    try std.testing.expect(owner.isActive("flip"));
+    // The old Host context cannot erase an unacknowledged registration effect.
+    var retained = (try host.executeCommand("inspect", "")).?;
+    defer retained.deinit(gpa);
+    try std.testing.expect(std.mem.indexOf(u8, retained.message.?, "flip") != null);
+    try host.clearRegistrationEvents(owner.sequence);
+    try host.setScriptContextJson("{\"activeTools\":[\"read\"],\"nativeToolSelection\":{}}");
+    var reset = (try host.executeCommand("inspect", "")).?;
+    defer reset.deinit(gpa);
+    try std.testing.expect(std.mem.indexOf(u8, reset.message.?, "flip") == null);
+    try std.testing.expectEqual(@as(usize, 0), host.registrationEvents().len);
+}
+
+test "native runtime late journal respects explicit positive negative selectors during same callback replacement" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('probe',{handler(){pi.registerTool({name:'inactive',defaultActive:false,parameters:{type:'object'},execute(){}});pi.registerTool({name:'excluded',defaultActive:true,parameters:{type:'object'},execute(){}});return {message:JSON.stringify(pi.getActiveTools())}}})");
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    try host.setScriptContextJson("{\"activeTools\":[\"read\"],\"nativeToolSelection\":{\"modifiers\":[\"+inactive\",\"-excluded\"]}}");
+    var probe = (try host.executeCommand("probe", "")).?;
+    defer probe.deinit(gpa);
+    try std.testing.expect(std.mem.indexOf(u8, probe.message.?, "inactive") != null);
+    try std.testing.expect(std.mem.indexOf(u8, probe.message.?, "excluded") == null);
+    _ = try host.synchronizeNativeMetadata();
+    try std.testing.expectEqual(@as(usize, 2), host.registrationEvents().len);
+    try std.testing.expect(host.registrationEvents()[0].activated and !host.registrationEvents()[1].activated);
+}
+
+test "native runtime late journal preserves setter registration order across callbacks and tags duplicate actions" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>{const tool=name=>({name,parameters:{type:'object'},execute(){}});pi.registerCommand('mixed',{handler(){pi.registerTool(tool('before'));pi.setActiveTools([]);pi.registerTool(tool('after'));return {message:JSON.stringify(pi.getActiveTools())}}});pi.registerCommand('inspect',{handler(){return {message:JSON.stringify(pi.getActiveTools())}}})}");
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    try host.setScriptContextJson("{\"activeTools\":[\"read\"]}");
+    var mixed = (try host.executeCommand("mixed", "")).?;
+    defer mixed.deinit(gpa);
+    try std.testing.expect(std.mem.indexOf(u8, mixed.message.?, "after") != null and std.mem.indexOf(u8, mixed.message.?, "before") == null and std.mem.indexOf(u8, mixed.message.?, "read") == null);
+    try std.testing.expectEqual(@as(usize, 1), mixed.actions.items.len);
+    var action = try std.json.parseFromSlice(std.json.Value, gpa, mixed.actions.items[0].json, .{});
+    defer action.deinit();
+    try std.testing.expectEqual(@as(i64, 2), action.value.object.get("nativeSelectionSequence").?.integer);
+    _ = try host.synchronizeNativeMetadata();
+    const events = host.registrationEvents();
+    try std.testing.expectEqual(@as(usize, 3), events.len);
+    try std.testing.expectEqual(@import("extensions/tool_activation.zig").Event.Kind.selection, events[1].kind);
+    var next = (try host.executeCommand("inspect", "")).?;
+    defer next.deinit(gpa);
+    try std.testing.expect(std.mem.indexOf(u8, next.message.?, "after") != null and std.mem.indexOf(u8, next.message.?, "read") == null);
+}
+
+test "native runtime late setter matches original unknown hidden sticky excluded and deferred membership" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>{const tool=(name,extra={})=>({name,parameters:{type:'object'},execute(){},...extra});pi.registerTool(tool('sticky',{defaultActive:false}));pi.registerTool(tool('hidden',{exposure:'hidden'}));pi.registerTool(tool('excluded'));pi.registerTool(tool('deferred',{defaultActive:false,exposure:'deferred'}));pi.registerCommand('select',{handler(){pi.setActiveTools(['unknown','hidden','sticky','excluded','deferred']);return {message:JSON.stringify(pi.getActiveTools())}}})}");
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    try host.setScriptContextJson("{\"activeTools\":[\"read\"],\"allTools\":[\"read\",\"sticky\",\"hidden\",\"excluded\",\"deferred\"],\"nativeToolSelection\":{\"exclude\":[\"excluded\"]}}");
+    var selected = (try host.executeCommand("select", "")).?;
+    defer selected.deinit(gpa);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, selected.message.?, .{});
+    defer parsed.deinit();
+    try std.testing.expectEqual(@as(usize, 2), parsed.value.array.items.len);
+    try std.testing.expectEqualStrings("sticky", parsed.value.array.items[0].string);
+    try std.testing.expectEqualStrings("deferred", parsed.value.array.items[1].string);
+    _ = try host.synchronizeNativeMetadata();
+    const last = host.registrationEvents()[host.registrationEvents().len - 1];
+    try std.testing.expectEqual(@import("extensions/tool_activation.zig").Event.Kind.selection, last.kind);
+    try std.testing.expectEqual(@as(usize, 2), last.active_tools.?.len);
+    var captured = try std.json.parseFromSlice(std.json.Value, gpa, selected.actions.items[0].json, .{});
+    defer captured.deinit();
+    const actual_names = captured.value.object.get("names").?.array.items;
+    try std.testing.expectEqual(@as(usize, 2), actual_names.len);
+    try std.testing.expectEqualStrings("sticky", actual_names[0].string);
+    try std.testing.expectEqualStrings("deferred", actual_names[1].string);
+    var bridge = integration_mod.Bridge.init(&host);
+    defer bridge.deinit();
+    const declarations = try bridge.toolSchemasJson(gpa, .{ .allow = &.{ "sticky", "deferred", "hidden" } });
+    defer gpa.free(declarations);
+    try std.testing.expect(std.mem.indexOf(u8, declarations, "sticky") != null and std.mem.indexOf(u8, declarations, "deferred") != null);
+    try std.testing.expect(std.mem.indexOf(u8, declarations, "hidden") == null);
+}
+
+test "native runtime late returned user action JSON cannot spoof committed native selection sequence" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('spoof',{handler(){return {message:'returned',actionQueue:[{type:'set_active_tools',names:[],nativeSelectionSequence:123}]}}})");
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    var output = (try host.executeCommand("spoof", "")).?;
+    defer output.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 1), output.actions.items.len);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, output.actions.items[0].json, .{});
+    defer parsed.deinit();
+    try std.testing.expect(!parsed.value.object.contains("nativeSelectionSequence"));
+    try std.testing.expectEqualStrings("set_active_tools", output.actions.items[0].kind);
 }

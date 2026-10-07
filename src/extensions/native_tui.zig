@@ -247,6 +247,7 @@ fn padded(node: *Node, line: []const u8, width: usize, left: usize) ![]u8 {
     defer output.deinit(engine.gpa);
     try output.appendNTimes(engine.gpa, ' ', left);
     try output.appendSlice(engine.gpa, line);
+    try output.appendNTimes(engine.gpa, ' ', left);
     const visible = terminal_text.visibleWidth(output.items);
     if (visible < width) try output.appendNTimes(engine.gpa, ' ', width - visible);
     if (c.JS_IsUndefined(node.background)) return output.toOwnedSlice(engine.gpa);
@@ -273,60 +274,12 @@ fn blankText(source: []const u8) bool {
 }
 fn wrappedText(node: *Node, source: []const u8, width: usize, left: usize, output: *std.ArrayList([]u8)) !void {
     const content_width = @max(@as(usize, 1), width -| left * 2);
-    var paragraphs = std.mem.splitScalar(u8, source, '\n');
-    while (paragraphs.next()) |paragraph| {
-        const total = terminal_text.visibleWidth(paragraph);
-        if (total == 0) {
-            try appendOwned(node.engine, output, try padded(node, paragraph, width, left));
-            continue;
-        }
-        var start: usize = 0;
-        while (start < total) {
-            var end = @min(total, start + content_width);
-            var byte_index: usize = 0;
-            var cell: usize = 0;
-            while (byte_index < paragraph.len) {
-                if (terminal_text.extractSequence(paragraph, byte_index)) |sequence| {
-                    byte_index = sequence.end;
-                    continue;
-                }
-                const cluster = terminal_text.nextCluster(paragraph, byte_index) orelse break;
-                const after = cell + cluster.width;
-                if (cell < end and after > end) {
-                    end = if (cell > start) cell else after;
-                    break;
-                }
-                cell = after;
-                byte_index = cluster.end;
-            }
-            var next = end;
-            if (end < total) {
-                var index: usize = 0;
-                var column: usize = 0;
-                var space: ?usize = null;
-                while (index < paragraph.len) {
-                    if (terminal_text.extractSequence(paragraph, index)) |sequence| {
-                        index = sequence.end;
-                        continue;
-                    }
-                    const cluster = terminal_text.nextCluster(paragraph, index) orelse break;
-                    if (column >= end) break;
-                    if (cluster.bytes.len == 1 and cluster.bytes[0] == ' ' and column > start) space = column;
-                    column += cluster.width;
-                    index = cluster.end;
-                }
-                if (space) |boundary| {
-                    end = boundary;
-                    next = boundary + 1;
-                }
-            }
-            const fragment = try terminal_text.sliceByColumnsAlloc(node.engine.gpa, paragraph, start, end - start);
-            defer node.engine.gpa.free(fragment);
-            const visible_fragment = if (std.mem.indexOfScalar(u8, paragraph, 0x1b) == null and std.mem.endsWith(u8, fragment, "\x1b[0m")) fragment[0 .. fragment.len - 4] else fragment;
-            try appendOwned(node.engine, output, try padded(node, visible_fragment, width, left));
-            start = @max(start + 1, next);
-        }
+    const lines = try @import("native_text_wrap.zig").wrap(node.engine, source, content_width);
+    defer {
+        for (lines) |line| node.engine.gpa.free(line);
+        node.engine.gpa.free(lines);
     }
+    for (lines) |line| try appendOwned(node.engine, output, try padded(node, line, width, left));
 }
 fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
     const engine = node.engine;
@@ -683,7 +636,7 @@ test "native TUI keyboard and width helpers use native terminal rules and explic
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     try install(engine);
-    const module = try engine.evalModule("import {Text,Spacer,Key,matchesKey,parseKey,isKeyRelease,visibleWidth} from 'pi-tui';if(Key.ctrl('c')!=='ctrl+c'||Key.ctrlShiftAlt('x')!=='ctrl+shift+alt+x'||Key.question!=='?')throw Error('Key');if(!matchesKey('\\x03',Key.ctrl('c'))||parseKey('\\x1b[A')!=='up'||!isKeyRelease('\\x1b[97;1:3u'))throw Error('native keys');if(visibleWidth('界😀e\\u0301')!==5)throw Error('width');if(new Text(undefined,undefined,undefined).render(5).length!==0||new Spacer(undefined).render(5).length!==1)throw Error('default');if(new Text('\\u00a0\\u2000\\ufeff').render(5).length!==0)throw Error('Unicode whitespace');if(new Text('界😀',0,0).render(1).join('')!=='界😀')throw Error('narrow grapheme loss');", "native-tui-helpers.mjs");
+    const module = try engine.evalModule("import {Text,Spacer,Key,matchesKey,parseKey,isKeyRelease,visibleWidth} from 'pi-tui';if(Key.ctrl('c')!=='ctrl+c'||Key.ctrlShiftAlt('x')!=='ctrl+shift+alt+x'||Key.question!=='?')throw Error('Key');if(!matchesKey('\\x03',Key.ctrl('c'))||parseKey('\\x1b[A')!=='up'||!isKeyRelease('\\x1b[97;1:3u'))throw Error('native keys');if(visibleWidth('界😀e\\u0301')!==5)throw Error('width');if(new Text(undefined,undefined,undefined).render(5).length!==0||new Spacer(undefined).render(5).length!==1)throw Error('default');if(new Text('\\u00a0\\u2000\\ufeff').render(5).length!==0)throw Error('Unicode whitespace');if(new Text('界😀',0,0).render(1).join('|')!==' |界| |😀')throw Error('narrow grapheme loss');", "native-tui-helpers.mjs");
     defer engine.freeValue(module);
 }
 

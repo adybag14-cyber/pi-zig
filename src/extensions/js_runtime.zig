@@ -7,6 +7,15 @@ const Io = std.Io;
 const component_protocol = @import("component_protocol.zig");
 const renderer_protocol = @import("renderer_protocol.zig");
 const editor_protocol = @import("editor_protocol.zig");
+const widget_protocol = @import("widget_protocol.zig");
+pub const WidgetBridge = struct {
+    context: ?*anyopaque,
+    record_fn: *const fn (?*anyopaque, widget_protocol.Record, *widget_protocol.ControlQueue) anyerror!void,
+    closed_fn: *const fn (?*anyopaque, u64) anyerror!void,
+    initial_width: usize = 80,
+    initial_height: usize = 24,
+    dimensions_fn: ?*const fn (?*anyopaque) widget_protocol.Dimensions = null,
+};
 const actions_mod = @import("actions.zig");
 
 const bridge_source = @embedFile("js_bridge.mjs");
@@ -115,6 +124,7 @@ const NativeReadSession = struct {
     fn reader(self: *@This()) Io.Cancelable!void {
         defer self.runtime.rendererEnded();
         defer self.runtime.editorEnded();
+        defer self.runtime.widgetEnded();
         while (true) {
             const record = self.runtime.readRecordAllocating(std.heap.page_allocator) catch |err| {
                 self.mutex.lockUncancelable(self.runtime.io);
@@ -124,7 +134,23 @@ const NativeReadSession = struct {
                 self.wake.set(self.runtime.io);
                 return;
             };
-            const adopted = (self.runtime.dispatchEditorRecord(record) catch |err| {
+            const adopted = (self.runtime.dispatchMetadataRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            }) or (self.runtime.dispatchWidgetRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            }) or (self.runtime.dispatchEditorRecord(record) catch |err| {
                 std.heap.page_allocator.free(record);
                 self.mutex.lockUncancelable(self.runtime.io);
                 self.finished = true;
@@ -576,6 +602,17 @@ const NativeDialogs = struct {
 };
 
 pub const Runtime = struct {
+    pub const Metadata = struct {
+        revision: u64,
+        bytes: []u8,
+        pub fn deinit(self: Metadata) void {
+            std.heap.page_allocator.free(self.bytes);
+        }
+    };
+    metadata_mutex: Io.Mutex = .init,
+    metadata_records: std.ArrayList(Metadata) = .empty,
+    metadata_bytes: usize = 0,
+    metadata_received_revision: u64 = 0,
     gpa: std.mem.Allocator,
     io: Io,
     child: std.process.Child,
@@ -596,6 +633,11 @@ pub const Runtime = struct {
     editor_controls: ?*editor_protocol.ControlQueue = null,
     editor_writer_group: Io.Group = .init,
     editor_writer_started: bool = false,
+    widget_mutex: Io.Mutex = .init,
+    widget_bridge: ?WidgetBridge = null,
+    widget_controls: ?*widget_protocol.ControlQueue = null,
+    widget_writer_group: Io.Group = .init,
+    widget_writer_started: bool = false,
     renderer_bridge: ?RendererBridgeAdapter = null,
     renderer_controls: ?*renderer_protocol.ControlQueue = null,
     renderer_writer_group: Io.Group = .init,
@@ -806,7 +848,7 @@ pub const Runtime = struct {
         const bridge = try self.gpa.dupe(u8, "");
         errdefer self.gpa.free(bridge);
         const view = try self.gpa.create(Runtime);
-        view.* = .{ .gpa = self.gpa, .io = self.io, .child = self.child, .source_path = source, .node_program = program, .bridge_path = bridge, .backend = .native, .shared_owner = self, .extension_id = id };
+        view.* = .{ .gpa = self.gpa, .io = self.io, .child = self.child, .source_path = source, .node_program = program, .bridge_path = bridge, .backend = .native, .shared_owner = self, .extension_id = id, .owner_generation = self.owner_generation };
         _ = self.group_references.fetchAdd(1, .monotonic);
         return view;
     }
@@ -884,6 +926,8 @@ pub const Runtime = struct {
             self.native_read_session = null;
         }
         self.editorEnded();
+        self.widgetEnded();
+        if (self.widget_controls) |controls| std.heap.page_allocator.destroy(controls);
         if (self.editor_controls) |controls| {
             controls.deinit();
             std.heap.page_allocator.destroy(controls);
@@ -902,6 +946,8 @@ pub const Runtime = struct {
             self.renderer_controls = null;
         }
         if (self.renderer_actions_ready) self.renderer_actions.deinit();
+        for (self.metadata_records.items) |record| record.deinit();
+        self.metadata_records.deinit(std.heap.page_allocator);
         self.mutex.lockUncancelable(self.io);
         if (!self.closed) {
             self.writeLine("{\"kind\":\"shutdown\"}") catch {};
@@ -928,7 +974,102 @@ pub const Runtime = struct {
     pub fn setUiBridge(self: *Runtime, bridge: ?UiBridge) void {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
+        _ = self.swapUiBridge(bridge);
+    }
+    fn swapUiBridge(self: *Runtime, bridge: ?UiBridge) ?UiBridge {
+        self.widget_mutex.lockUncancelable(self.io);
+        defer self.widget_mutex.unlock(self.io);
+        const previous = self.ui_bridge;
         self.ui_bridge = bridge;
+        return previous;
+    }
+
+    pub fn setWidgetBridge(self: *Runtime, bridge: ?WidgetBridge) !void {
+        if (self.shared_owner) |owner| return owner.setWidgetBridge(bridge);
+        if (!self.native_group) return;
+        self.widget_mutex.lockUncancelable(self.io);
+        defer self.widget_mutex.unlock(self.io);
+        if (self.closed) return error.JavaScriptExtensionClosed;
+        if (self.widget_bridge) |old| if (bridge) |replacement| {
+            if (old.context == replacement.context and old.record_fn == replacement.record_fn and old.closed_fn == replacement.closed_fn and old.dimensions_fn == replacement.dimensions_fn) return;
+        };
+        if (self.widget_bridge) |old| {
+            self.widget_bridge = null;
+            self.stopWidgetWriter();
+            try old.closed_fn(old.context, self.owner_generation);
+        }
+        if (bridge == null) return;
+        if (self.widget_controls) |controls| std.heap.page_allocator.destroy(controls);
+        self.widget_controls = null;
+        const controls = try std.heap.page_allocator.create(widget_protocol.ControlQueue);
+        controls.* = .{ .io = self.io };
+        self.widget_controls = controls;
+        try self.widget_writer_group.concurrent(self.io, widgetControlWriter, .{self});
+        self.widget_writer_started = true;
+        self.widget_bridge = bridge;
+        const dimensions = if (bridge.?.dimensions_fn) |get| get(bridge.?.context) else widget_protocol.Dimensions{ .width = bridge.?.initial_width, .height = bridge.?.initial_height };
+        // Admit current geometry before a following session-start request can
+        // construct a factory. A scheduled writer alone does not order this.
+        var initial: Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer initial.deinit();
+        try widget_protocol.writeControl(&initial.writer, .{ .owner_generation = self.owner_generation, .width = dimensions.width, .height = dimensions.height });
+        try self.writeLine(initial.written());
+    }
+    fn stopWidgetWriter(self: *Runtime) void {
+        if (self.widget_controls) |controls| controls.stop();
+        if (self.widget_writer_started) {
+            self.widget_writer_group.cancel(self.io);
+            self.widget_writer_group.await(self.io) catch {};
+            self.widget_writer_started = false;
+        }
+    }
+    fn widgetEnded(self: *Runtime) void {
+        if (!self.native_group) return;
+        self.widget_mutex.lockUncancelable(self.io);
+        defer self.widget_mutex.unlock(self.io);
+        self.stopWidgetWriter();
+        if (self.widget_bridge) |bridge| {
+            self.widget_bridge = null;
+            bridge.closed_fn(bridge.context, self.owner_generation) catch {};
+        }
+    }
+    fn widgetControlWriter(self: *Runtime) Io.Cancelable!void {
+        const controls = self.widget_controls orelse return;
+        while (try controls.next()) |control| {
+            var writer: Io.Writer.Allocating = .init(std.heap.page_allocator);
+            defer writer.deinit();
+            widget_protocol.writeControl(&writer.writer, control) catch return;
+            self.writeLine(writer.written()) catch return;
+        }
+    }
+    fn dispatchWidgetRecord(self: *Runtime, bytes: []const u8) !bool {
+        if (self.backend != .native) return false;
+        var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+        defer arena.deinit();
+        const root = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), bytes, .{}) catch return false;
+        if (root != .object) return false;
+        const kind = root.object.get("type") orelse return false;
+        if (kind != .string or !std.mem.eql(u8, kind.string, "widget_record")) return false;
+        var record = try widget_protocol.read(std.heap.page_allocator, &root.object);
+        var transferred = false;
+        defer if (!transferred) record.deinit();
+        if (record.owner_generation != self.owner_generation) return true;
+        self.widget_mutex.lockUncancelable(self.io);
+        defer self.widget_mutex.unlock(self.io);
+        if (self.widget_bridge) |bridge| {
+            try bridge.record_fn(bridge.context, record, self.widget_controls.?);
+            transferred = true;
+        } else if (self.ui_bridge) |bridge| {
+            var projection: Io.Writer.Allocating = .init(std.heap.page_allocator);
+            defer projection.deinit();
+            try projection.writer.writeAll("{\"key\":");
+            try std.json.Stringify.value(record.key, .{}, &projection.writer);
+            try projection.writer.print(",\"nativeOwnerGeneration\":\"{d}\",\"placement\":\"{s}\",\"lines\":", .{ record.owner_generation, @tagName(record.placement) });
+            if (record.frame) |frame| try std.json.Stringify.value(frame.lines, .{}, &projection.writer) else try projection.writer.writeAll("null");
+            try projection.writer.writeByte('}');
+            try bridge.action_fn(bridge.context, std.heap.page_allocator, "setWidget", projection.written());
+        }
+        return true;
     }
 
     pub fn setEditorBridge(self: *Runtime, bridge: ?EditorBridge) !void {
@@ -1142,6 +1283,54 @@ pub const Runtime = struct {
         return if (self.renderer_actions_ready) self.renderer_actions.count() else 0;
     }
 
+    // Reader ownership ends at the FIFO. It never calls Host callbacks or
+    // reacquires the invocation mutex, so reentrant UI/owner requests cannot
+    // deadlock registration discovery.
+    fn dispatchMetadataRecord(self: *Runtime, bytes: []const u8) !bool {
+        var parsed = try std.json.parseFromSlice(std.json.Value, std.heap.page_allocator, bytes, .{});
+        defer parsed.deinit();
+        if (parsed.value != .object) return false;
+        const object = parsed.value.object;
+        const kind = object.get("type") orelse return false;
+        if (kind != .string or !std.mem.eql(u8, kind.string, "native_metadata")) return false;
+        const version = object.get("version") orelse return error.InvalidNativeMetadata;
+        if (version != .integer or version.integer != 1) return error.InvalidNativeMetadata;
+        const generation = try wireInvocationId(object.get("ownerGeneration") orelse return error.InvalidNativeMetadata);
+        if (generation != self.owner_generation) return true;
+        const revision = try wireInvocationId(object.get("revision") orelse return error.InvalidNativeMetadata);
+        const extensions = object.get("extensions") orelse return error.InvalidNativeMetadata;
+        if (revision == 0 or extensions != .array or extensions.array.items.len > 4096) return error.InvalidNativeMetadata;
+        self.metadata_mutex.lockUncancelable(self.io);
+        defer self.metadata_mutex.unlock(self.io);
+        if (revision <= self.metadata_received_revision) return true;
+        if (self.metadata_records.items.len >= 128 or bytes.len > 16 * 1024 * 1024 -| self.metadata_bytes) return error.NativeMetadataQueueLimit;
+        const owned = try std.heap.page_allocator.dupe(u8, bytes);
+        errdefer std.heap.page_allocator.free(owned);
+        try self.metadata_records.append(std.heap.page_allocator, .{ .revision = revision, .bytes = owned });
+        self.metadata_bytes += owned.len;
+        self.metadata_received_revision = revision;
+        return true;
+    }
+
+    pub fn peekMetadata(self: *Runtime) !?Metadata {
+        if (self.shared_owner) |owner| return owner.peekMetadata();
+        self.metadata_mutex.lockUncancelable(self.io);
+        defer self.metadata_mutex.unlock(self.io);
+        if (self.metadata_records.items.len == 0) return null;
+        const record = self.metadata_records.items[0];
+        return .{ .revision = record.revision, .bytes = try std.heap.page_allocator.dupe(u8, record.bytes) };
+    }
+
+    pub fn commitMetadata(self: *Runtime, revision: u64) void {
+        if (self.shared_owner) |owner| return owner.commitMetadata(revision);
+        self.metadata_mutex.lockUncancelable(self.io);
+        defer self.metadata_mutex.unlock(self.io);
+        if (self.metadata_records.items.len == 0 or self.metadata_records.items[0].revision != revision) return;
+        const record = self.metadata_records.orderedRemove(0);
+        self.metadata_bytes -= record.bytes.len;
+        record.deinit();
+    }
+
     /// Update the context exposed through ExtensionContext for later calls.
     /// The worker receives an owned snapshot on every invocation, so callers
     /// can safely update editor/model/mode state between requests.
@@ -1332,9 +1521,8 @@ pub const Runtime = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         if (self.closed) return error.JavaScriptExtensionClosed;
-        const previous_bridge = self.ui_bridge;
-        self.ui_bridge = bridge;
-        defer self.ui_bridge = previous_bridge;
+        const previous_bridge = self.swapUiBridge(bridge);
+        defer _ = self.swapUiBridge(previous_bridge);
         const previous_timeout = self.timeout_ms;
         self.timeout_ms = self.oauth_login_timeout_ms;
         defer self.timeout_ms = previous_timeout;
@@ -1375,9 +1563,8 @@ pub const Runtime = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         if (self.closed) return error.JavaScriptExtensionClosed;
-        const previous_bridge = self.ui_bridge;
-        self.ui_bridge = bridge;
-        defer self.ui_bridge = previous_bridge;
+        const previous_bridge = self.swapUiBridge(bridge);
+        defer _ = self.swapUiBridge(previous_bridge);
         const previous_timeout = self.timeout_ms;
         self.timeout_ms = self.models_refresh_timeout_ms;
         defer self.timeout_ms = previous_timeout;
@@ -1799,10 +1986,10 @@ pub const Runtime = struct {
         const previous_timeout = owner.timeout_ms;
         const previous_bridge = owner.ui_bridge;
         owner.timeout_ms = self.timeout_ms;
-        owner.ui_bridge = self.ui_bridge;
+        _ = owner.swapUiBridge(self.ui_bridge);
         defer {
             owner.timeout_ms = previous_timeout;
-            owner.ui_bridge = previous_bridge;
+            _ = owner.swapUiBridge(previous_bridge);
         }
         @atomicStore(u64, &owner.active_extension_id, self.extension_id, .release);
         defer @atomicStore(u64, &owner.active_extension_id, 0, .release);
@@ -3394,4 +3581,32 @@ test "provider stream retirement force-closes only the worker whose iterator ign
     const ping = try healthy.runtime.invokeCommand("healthy-ping", "", "{}");
     defer gpa.free(ping);
     try std.testing.expect(std.mem.indexOf(u8, ping, "healthy-worker-reused") != null);
+}
+
+test "native runtime late metadata FIFO rejects stale owners and revisions without invocation mutex reentry" {
+    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .owner_generation = 42 };
+    defer {
+        for (runtime.metadata_records.items) |record| record.deinit();
+        runtime.metadata_records.deinit(std.heap.page_allocator);
+    }
+    runtime.mutex.lockUncancelable(runtime.io);
+    defer runtime.mutex.unlock(runtime.io);
+    try std.testing.expect(try runtime.dispatchMetadataRecord("{\"type\":\"native_metadata\",\"version\":1,\"ownerGeneration\":\"41\",\"revision\":\"9\",\"extensions\":[]}"));
+    try std.testing.expect((try runtime.peekMetadata()) == null);
+    const first = "{\"type\":\"native_metadata\",\"version\":1,\"ownerGeneration\":\"42\",\"revision\":\"1\",\"extensions\":[]}";
+    try std.testing.expect(try runtime.dispatchMetadataRecord(first));
+    try std.testing.expect(try runtime.dispatchMetadataRecord(first));
+    const second = "{\"type\":\"native_metadata\",\"version\":1,\"ownerGeneration\":\"42\",\"revision\":\"2\",\"extensions\":[]}";
+    try std.testing.expect(try runtime.dispatchMetadataRecord(second));
+    const copied = (try runtime.peekMetadata()).?;
+    defer copied.deinit();
+    try std.testing.expectEqualStrings(first, copied.bytes);
+    runtime.commitMetadata(9);
+    try std.testing.expectEqual(@as(usize, 2), runtime.metadata_records.items.len);
+    runtime.commitMetadata(1);
+    const next = (try runtime.peekMetadata()).?;
+    defer next.deinit();
+    try std.testing.expectEqual(@as(u64, 2), next.revision);
+    runtime.commitMetadata(2);
+    try std.testing.expect((try runtime.peekMetadata()) == null);
 }

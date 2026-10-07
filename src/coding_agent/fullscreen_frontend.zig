@@ -163,6 +163,40 @@ test "fullscreen renderer mailbox coalesces slots sends resize and detaches befo
     try std.testing.checkAllAllocationFailures(std.testing.allocator, rendererOwnershipCase, .{});
 }
 
+fn widgetFrontendOwnershipCase(gpa: std.mem.Allocator) !void {
+    const io = std.testing.io;
+    var environ: std.process.Environ.Map = .init(gpa);
+    defer environ.deinit();
+    var bindings = keybindings.Manager.init(gpa);
+    defer bindings.deinit();
+    var buffer: [128]u8 = undefined;
+    var reader = Io.File.Reader.initStreaming(.stdin(), io, &buffer);
+    const owner = try Frontend.create(gpa, io, &environ, &reader, &bindings, .{});
+    defer owner.deinit();
+    var controls: widget_protocol.ControlQueue = .{ .io = io };
+    defer controls.stop();
+    var value = try std.json.parseFromSlice(std.json.Value, gpa, "{\"type\":\"widget_record\",\"version\":1,\"ownerGeneration\":\"3\",\"generation\":\"1\",\"sequence\":\"1\",\"width\":80,\"placement\":\"belowEditor\",\"key\":\"owned\",\"lines\":[\"ACTUAL_WIDGET:80\"]}", .{});
+    defer value.deinit();
+    var record = try widget_protocol.read(gpa, &value.value.object);
+    var transferred = false;
+    defer if (!transferred) record.deinit();
+    try Frontend.widgetRecordSink(owner, record, &controls);
+    transferred = true;
+    try owner.applyUpdates();
+    try std.testing.expectEqual(@as(usize, 1), owner.widgets.items.len);
+    try owner.draw(.{ .columns = 70, .rows = 24 }, false);
+    try std.testing.expectEqual(@as(usize, 70), controls.pending.?.width);
+    try Frontend.widgetClosed(owner, 3);
+    try std.testing.expect(owner.widget_owners.items[0].controls == null);
+    controls.stop();
+    try owner.applyUpdates();
+    try std.testing.expectEqual(@as(usize, 0), owner.widgets.items.len);
+    try owner.draw(.{ .columns = 70, .rows = 24 }, false);
+}
+test "native widget frontend frames resizing and borrowed owner retirement release every failed allocation" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, widgetFrontendOwnershipCase, .{});
+}
+
 fn componentOwnershipCase(gpa: std.mem.Allocator) !void {
     const io = std.testing.io;
     var environ: std.process.Environ.Map = .init(gpa);
@@ -303,6 +337,7 @@ const OwnedEvent = struct {
 const TextUpdate = struct { text: []u8, cursor: ?usize = null, revision: ?u64 = null };
 const ConfigUpdate = struct { bindings_json: ?[]u8, shortcuts: [][]u8, editor_padding_x: ?u8 = null };
 const editor_protocol = @import("../extensions/editor_protocol.zig");
+const widget_protocol = @import("../extensions/widget_protocol.zig");
 const Update = union(enum) {
     event: OwnedEvent,
     branch: []session.SessionEntry,
@@ -316,6 +351,7 @@ const Update = union(enum) {
     component_close: component_protocol.Fence,
     renderer: renderer_protocol.Record,
     custom_editor: editor_protocol.Record,
+    widget: widget_protocol.Record,
     fn deinit(self: *Update, gpa: std.mem.Allocator) void {
         switch (self.*) {
             .event => |*value| value.deinit(gpa),
@@ -335,6 +371,7 @@ const Update = union(enum) {
             .component => |*value| value.scene.deinit(),
             .renderer => |*record| record.deinit(),
             .custom_editor => |*record| record.deinit(),
+            .widget => |*record| record.deinit(),
             .component_close => {},
         }
     }
@@ -352,6 +389,7 @@ const RendererOwner = struct {
     closed: bool = false,
     retired: bool = false,
 };
+const WidgetOwner = struct { generation: u64, controls: ?*widget_protocol.ControlQueue, closed: bool = false, width: usize = 0, height: usize = 0 };
 pub const Frontend = struct {
     gpa: std.mem.Allocator,
     io: Io,
@@ -376,6 +414,10 @@ pub const Frontend = struct {
     renderer_record_bytes: usize = 0,
     renderer_retire_pending: bool = false,
     renderer_width: std.atomic.Value(usize) = .init(80),
+    widget_dimensions: std.atomic.Value(u64) = .init(80 | (@as(u64, 24) << 32)),
+    widget_owners: std.ArrayList(WidgetOwner) = .empty,
+    widgets: std.ArrayList(widget_protocol.Record) = .empty,
+    widget_record_bytes: usize = 0,
     stopping: bool = false,
     ready: bool = false,
     pause_depth: usize = 0,
@@ -795,6 +837,86 @@ pub const Frontend = struct {
         errdefer self.gpa.free(text);
         try self.post(.{ .notice = text });
     }
+    pub fn widgetRecordSink(raw: ?*anyopaque, record: widget_protocol.Record, controls: *widget_protocol.ControlQueue) !void {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.stopping) return error.EndOfStream;
+        const bytes = record.key.len + if (record.frame) |frame| frame.bytes else @as(usize, 0);
+        if (bytes > 4 * 1024 * 1024 - self.widget_record_bytes) return error.FrontendWidgetQueueLimit;
+        var found = false;
+        for (self.widget_owners.items) |owner| if (owner.generation == record.owner_generation) {
+            if (owner.closed) {
+                var owned = record;
+                owned.deinit();
+                return;
+            }
+            if (owner.controls != controls) return error.StaleWidgetChannel;
+            found = true;
+            break;
+        };
+        if (!found) {
+            if (self.widget_owners.items.len >= 256) return error.FrontendWidgetOwnerLimit;
+            try self.widget_owners.append(self.gpa, .{ .generation = record.owner_generation, .controls = controls });
+        }
+        for (self.updates.items) |*update| if (update.* == .widget and update.widget.owner_generation == record.owner_generation and std.mem.eql(u8, update.widget.key, record.key)) {
+            const old = update.widget;
+            if (old.sequence >= record.sequence) {
+                var owned = record;
+                owned.deinit();
+                return;
+            }
+            self.widget_record_bytes -= old.key.len + if (old.frame) |frame| frame.bytes else @as(usize, 0);
+            update.widget.deinit();
+            update.* = .{ .widget = record };
+            self.widget_record_bytes += bytes;
+            self.changed.broadcast(self.io);
+            return;
+        };
+        if (self.updates.items.len >= 4096) return error.FrontendQueueLimit;
+        try self.updates.append(self.gpa, .{ .widget = record });
+        self.widget_record_bytes += bytes;
+        self.changed.broadcast(self.io);
+    }
+    pub fn widgetDimensions(raw: ?*anyopaque) widget_protocol.Dimensions {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        const dimensions = self.widget_dimensions.load(.acquire);
+        return .{ .width = @intCast(dimensions & 0xffffffff), .height = @intCast(dimensions >> 32) };
+    }
+    pub fn widgetClosed(raw: ?*anyopaque, generation: u64) !void {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        for (self.widget_owners.items) |*owner| if (owner.generation == generation) {
+            owner.controls = null;
+            owner.closed = true;
+        };
+        self.changed.broadcast(self.io);
+    }
+    fn applyWidget(self: *Frontend, record: *widget_protocol.Record) !void {
+        self.mutex.lockUncancelable(self.io);
+        const closed = for (self.widget_owners.items) |owner| {
+            if (owner.generation == record.owner_generation) break owner.closed;
+        } else true;
+        self.mutex.unlock(self.io);
+        if (closed) return;
+        var index: usize = 0;
+        while (index < self.widgets.items.len) : (index += 1) {
+            if (!std.mem.eql(u8, self.widgets.items[index].key, record.key)) continue;
+            if (self.widgets.items[index].owner_generation == record.owner_generation and self.widgets.items[index].sequence >= record.sequence) return;
+            var old = self.widgets.orderedRemove(index);
+            old.deinit();
+            break;
+        }
+        if (record.frame != null) {
+            if (self.widgets.items.len >= 256) return error.FrontendWidgetLimit;
+            var owned = try record.clone(self.gpa);
+            errdefer owned.deinit();
+            try self.widgets.append(self.gpa, owned);
+        }
+        self.dirty = true;
+    }
+
     pub fn stop(self: *Frontend) void {
         self.mutex.lockUncancelable(self.io);
         self.stopping = true;
@@ -808,6 +930,9 @@ pub const Frontend = struct {
         for (self.updates.items) |*update| update.deinit(self.gpa);
         self.updates.deinit(self.gpa);
         self.renderer_owners.deinit(self.gpa);
+        self.widget_owners.deinit(self.gpa);
+        for (self.widgets.items) |*record| record.deinit();
+        self.widgets.deinit(self.gpa);
         for (self.commands.items) |*command| command.deinit(self.gpa);
         self.commands.deinit(self.gpa);
         if (self.anchor) |value| self.gpa.free(value.key);
@@ -940,6 +1065,7 @@ pub const Frontend = struct {
         self.updates = .empty;
         self.renderer_record_count = 0;
         self.renderer_record_bytes = 0;
+        self.widget_record_bytes = 0;
         self.custom_editor_record_count = 0;
         self.custom_editor_record_bytes = 0;
         const retire_editor = self.custom_editor_retire_pending;
@@ -953,6 +1079,19 @@ pub const Frontend = struct {
             for (updates.items) |*update| update.deinit(self.gpa);
             updates.deinit(self.gpa);
         }
+        self.mutex.lockUncancelable(self.io);
+        var widget_index: usize = 0;
+        while (widget_index < self.widgets.items.len) {
+            const closed = for (self.widget_owners.items) |owner| {
+                if (owner.generation == self.widgets.items[widget_index].owner_generation) break owner.closed;
+            } else true;
+            if (closed) {
+                var old = self.widgets.orderedRemove(widget_index);
+                old.deinit();
+                self.dirty = true;
+            } else widget_index += 1;
+        }
+        self.mutex.unlock(self.io);
         if ((updates.items.len > 0 or retire_renderers) and !self.scroll.following_end and self.anchor == null) self.anchor = try self.transcript.anchor(self.scroll.scroll_top);
         if (retire_renderers) {
             self.mutex.lockUncancelable(self.io);
@@ -1026,6 +1165,7 @@ pub const Frontend = struct {
                 try self.resizeComponent(terminal.terminalDimensions(&self.environ, .{ .columns = 80, .rows = 24 }));
             },
             .component_close => |fence| try self.removeCustomComponent(fence),
+            .widget => |*record| try self.applyWidget(record),
             .renderer => |*record| {
                 if (self.rendererOwnerActive(record.fence.owner_generation)) _ = try self.transcript.adoptRenderer(record);
             },
@@ -1113,6 +1253,15 @@ pub const Frontend = struct {
         self.component_dimensions = size;
     }
     fn draw(self: *Frontend, dimensions: terminal.Dimensions, write: bool) !void {
+        self.widget_dimensions.store(@as(u64, @intCast(@min(dimensions.columns, 16384))) | (@as(u64, @intCast(@min(dimensions.rows, 16384))) << 32), .release);
+        self.mutex.lockUncancelable(self.io);
+        for (self.widget_owners.items) |*owner| {
+            if (owner.closed or (owner.width == dimensions.columns and owner.height == dimensions.rows)) continue;
+            if (owner.controls) |controls| controls.send(.{ .owner_generation = owner.generation, .width = dimensions.columns, .height = dimensions.rows }) catch {};
+            owner.width = dimensions.columns;
+            owner.height = dimensions.rows;
+        }
+        self.mutex.unlock(self.io);
         self.renderer_width.store(dimensions.columns, .release);
         try self.resizeRenderers(dimensions.columns);
         if (self.custom_editor_frame != null and self.custom_editor_width != dimensions.columns) {
@@ -1132,16 +1281,25 @@ pub const Frontend = struct {
         defer self.gpa.free(status);
         const statuses = [_][]const u8{status};
         self.header_lines.lines = header;
-        self.above_lines.lines = self.surfaces.above;
-        self.below_lines.lines = self.surfaces.below;
+        var above: std.ArrayList([]const u8) = .empty;
+        defer above.deinit(self.gpa);
+        var below: std.ArrayList([]const u8) = .empty;
+        defer below.deinit(self.gpa);
+        try above.appendSlice(self.gpa, self.surfaces.above);
+        try below.appendSlice(self.gpa, self.surfaces.below);
+        for (self.widgets.items) |record| {
+            if (record.frame) |widget_frame| try (if (record.placement == .aboveEditor) &above else &below).appendSlice(self.gpa, widget_frame.lines);
+        }
+        self.above_lines.lines = above.items;
+        self.below_lines.lines = below.items;
         self.status_lines.lines = if (status.len > 0) &statuses else &.{};
         self.footer_lines.lines = footer;
         self.root_entries = .{
             .{ .component = self.header_lines.component(), .basis = header.len, .shrink = 0 },
             .{ .component = self.scroll.component(), .basis = 1, .grow = 1, .min_size = 1 },
-            .{ .component = self.above_lines.component(), .basis = self.surfaces.above.len },
+            .{ .component = self.above_lines.component(), .basis = above.items.len },
             .{ .component = self.editorComponent(), .basis = @min(editor_lines.items.len, @max(@as(usize, 1), dimensions.rows / 2)), .shrink = 0 },
-            .{ .component = self.below_lines.component(), .basis = self.surfaces.below.len },
+            .{ .component = self.below_lines.component(), .basis = below.items.len },
             .{ .component = self.status_lines.component(), .basis = self.status_lines.lines.len },
             .{ .component = self.footer_lines.component(), .basis = footer.len, .shrink = 0 },
         };

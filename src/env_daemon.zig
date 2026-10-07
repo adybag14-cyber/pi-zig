@@ -41,6 +41,9 @@ pub fn main(init: std.process.Init) !void {
     defer output.deinit();
     var parent_owner = try @import("durable/process_ownership.zig").ParentJob.init();
     defer parent_owner.deinit();
+    var file_workers: @import("env/file_workers.zig").Pool = .{ .io = io, .input = &input, .output = &output, .server = &server };
+    try file_workers.start();
+    defer file_workers.deinit();
     var tasks: std.Io.Group = .init;
     defer tasks.cancel(io);
     while (true) {
@@ -83,10 +86,16 @@ pub fn main(init: std.process.Init) !void {
                 delegated = true;
                 continue;
             };
+            if (request.json.value.object.get("op")) |op| if (op == .string and std.mem.eql(u8, op.string, "watch")) {
+                const watch_task = try std.heap.page_allocator.create(@import("env/daemon_watch.zig").Task);
+                errdefer std.heap.page_allocator.destroy(watch_task);
+                watch_task.* = .{ .input = &input, .output = &output, .pending = pending, .cwd = cwd, .home = home };
+                try tasks.concurrent(io, @import("env/daemon_watch.zig").Task.run, .{watch_task});
+                delegated = true;
+                continue;
+            };
         }
-        const cancel_scan = request.json.value == .object and request.json.value.object.get("op") != null and request.json.value.object.get("op").? == .string and std.mem.eql(u8, request.json.value.object.get("op").?.string, "scanLines");
-        var reply = try server.dispatch(request.json.value, request.payload, .{ .abort_flag = if (cancel_scan) &pending.aborted else null });
-        defer reply.deinit();
-        try output.sendJson(reply.kind, request.id, reply.json, reply.payload);
+        try file_workers.enqueue(pending);
+        delegated = true;
     }
 }

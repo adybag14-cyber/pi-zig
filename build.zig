@@ -212,6 +212,10 @@ pub fn build(b: *std.Build) void {
     });
     const run_exe_tests = std.Build.Step.Run.create(b, "run executable tests");
     run_exe_tests.addArtifactArg(exe_tests);
+    const activation_tests = b.addTest(.{ .root_module = exe.root_module, .use_llvm = use_llvm, .filters = &.{"native CLI activation allocation"} });
+    const run_activation_tests = b.addRunArtifact(activation_tests);
+    const activation_step = b.step("test-tool-activation-atomic", "Exercise every allocation failure before native activation and schema acknowledgement");
+    activation_step.dependOn(&run_activation_tests.step);
 
     const sqlite_persistence_tests = b.addTest(.{
         .root_module = b.createModule(.{
@@ -300,11 +304,29 @@ pub fn build(b: *std.Build) void {
     const run_env_tests = b.addRunArtifact(env_tests);
     run_env_tests.step.dependOn(&install_env_daemon.step);
     run_env_tests.step.dependOn(&install_env_fixture.step);
+    run_env_tests.step.dependOn(&install_durable_fixture.step);
+    run_env_tests.setEnvironmentVariable("PI_DURABLE_FIXTURE", durable_fixture_path);
     run_env_tests.setEnvironmentVariable("PI_TEST_ENV_DAEMON", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env.exe" else "pi-env"));
     run_env_tests.setEnvironmentVariable("PI_TEST_SSH_FIXTURE", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env-process-fixture.exe" else "pi-env-process-fixture"));
     const env_test_step = b.step("test-env", "Check native daemon framing files processes client sessions and SSH contracts");
     env_test_step.dependOn(&run_env_tests.step);
     test_step.dependOn(&run_env_tests.step);
+    const capability_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_capability_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"env capability"}, .use_llvm = use_llvm });
+    linkDurable(b, capability_tests.root_module);
+    linkQuickJs(b, capability_tests.root_module, quickjs);
+    linkSqlite(capability_tests.root_module, sqlite_lib_dir);
+    const run_capability_tests = b.addRunArtifact(capability_tests);
+    if (target.result.os.tag == .windows) if (sqlite_lib_dir) |directory| {
+        const inherited_path=b.graph.environ_map.get("PATH") orelse "";
+        run_capability_tests.setEnvironmentVariable("PATH",b.fmt("{s};{s}",.{directory,inherited_path}));
+    };
+    run_capability_tests.step.dependOn(&install_env_daemon.step);
+    run_capability_tests.step.dependOn(&install_durable_fixture.step);
+    run_capability_tests.setEnvironmentVariable("PI_TEST_ENV_DAEMON", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env.exe" else "pi-env"));
+    run_capability_tests.setEnvironmentVariable("PI_DURABLE_FIXTURE", durable_fixture_path);
+    const capability_step = b.step("test-env-capability", "Exercise shared local and remote durable storage environment capabilities");
+    capability_step.dependOn(&run_capability_tests.step);
+    test_step.dependOn(&run_capability_tests.step);
     const durable_backend_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_backend_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
@@ -639,6 +661,25 @@ pub fn build(b: *std.Build) void {
     run_native_runtime_tests.step.dependOn(b.getInstallStep());
     const native_runtime_step = b.step("test-native-runtime", "Exercise the persistent native extension runtime and host without Node");
     native_runtime_step.dependOn(&run_native_runtime_tests.step);
+    const late_registration_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_runtime_process_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native runtime late"},
+        .use_llvm = use_llvm,
+    });
+    const run_late_registration_tests = b.addRunArtifact(late_registration_tests);
+    run_late_registration_tests.step.dependOn(b.getInstallStep());
+    const late_registration_step = b.step("test-native-late-registration", "Prove late native registrations, atomic metadata allocation failures and live CLI discovery");
+    late_registration_step.dependOn(&run_late_registration_tests.step);
+    test_step.dependOn(&run_late_registration_tests.step);
+    const selection_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/tool_selection_process_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native CLI tool selection"}, .use_llvm = use_llvm,
+    });
+    const run_selection_tests = b.addRunArtifact(selection_tests);
+    run_selection_tests.step.dependOn(b.getInstallStep());
+    const selection_step = b.step("test-tool-selection-process", "Replay source tool loadouts and registration transitions in the actual native CLI without Node");
+    selection_step.dependOn(&run_selection_tests.step);
+    test_step.dependOn(&run_selection_tests.step);
     const custom_editor_runtime_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_runtime_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native runtime custom editor"},
@@ -795,6 +836,15 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_frontend_process_test.zig"), .target = target, .optimize = optimize }),
     });
     const run_fullscreen_frontend_tests = b.addRunArtifact(fullscreen_frontend_tests);
+    const late_frontend_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_frontend_process_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native late live"},
+    });
+    const run_late_frontend_tests = b.addRunArtifact(late_frontend_tests);
+    run_late_frontend_tests.step.dependOn(b.getInstallStep());
+    const late_frontend_step = b.step("test-native-late-frontend", "Prove live native late command completion and agent tool invocation through real terminal cells");
+    late_frontend_step.dependOn(&run_late_frontend_tests.step);
+    test_step.dependOn(&run_late_frontend_tests.step);
     const custom_editor_frontend_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_frontend_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"real custom editor"},
@@ -807,6 +857,7 @@ pub fn build(b: *std.Build) void {
     run_fullscreen_frontend_tests.step.dependOn(b.getInstallStep());
     if (target.result.os.tag == .macos) {
         fullscreen_frontend_tests.root_module.link_libc = true;
+        late_frontend_tests.root_module.link_libc = true;
         custom_editor_frontend_tests.root_module.link_libc = true;
     }
     if (target.result.os.tag == .windows) {
@@ -823,6 +874,8 @@ pub fn build(b: *std.Build) void {
             run_fullscreen_frontend_tests.step.dependOn(&installation.step);
             run_custom_editor_frontend_tests.step.dependOn(&installation.step);
             run_fullscreen_frontend_tests.setEnvironmentVariable(helper.environment, b.getInstallPath(.bin, b.fmt("{s}.exe", .{helper.name})));
+            run_late_frontend_tests.step.dependOn(&installation.step);
+            run_late_frontend_tests.setEnvironmentVariable(helper.environment, b.getInstallPath(.bin, b.fmt("{s}.exe", .{helper.name})));
             run_custom_editor_frontend_tests.setEnvironmentVariable(helper.environment, b.getInstallPath(.bin, b.fmt("{s}.exe", .{helper.name})));
         }
     }
@@ -942,6 +995,21 @@ pub fn build(b: *std.Build) void {
     const maintenance_test_step = b.step("test-maintenance", "Test native repository maintenance");
     maintenance_test_step.dependOn(&run_maintenance_tests.step);
     test_step.dependOn(&run_maintenance_tests.step);
+    const duration_module = b.createModule(.{
+        .root_source_file = b.path("src/latest_duration_test.zig"), .target = target, .optimize = optimize,
+    });
+    duration_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, duration_module, quickjs);
+    linkTypeScriptParser(b, duration_module, typescript_parser);
+    linkSqlite(duration_module, sqlite_lib_dir);
+    linkDurable(b, duration_module);
+    const duration_tests = b.addTest(.{ .root_module = duration_module, .use_llvm = use_llvm,
+        .filters = &.{ "latest tool duration", "parallel tool end events", "streaming external update", "agent event payload" },
+    });
+    const run_duration_tests = b.addRunArtifact(duration_tests);
+    const duration_step = b.step("test-tool-duration", "Check monotonic execution duration and lossless event/session persistence");
+    duration_step.dependOn(&run_duration_tests.step);
+    test_step.dependOn(&run_duration_tests.step);
     const azure_alias_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/azure_alias_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"Azure"},

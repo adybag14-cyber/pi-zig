@@ -20,10 +20,11 @@ const component_protocol = @import("component_protocol.zig");
 const native_group = @import("native_group.zig");
 const renderer_protocol = @import("renderer_protocol.zig");
 const editor_protocol = @import("editor_protocol.zig");
+const widget_protocol = @import("widget_protocol.zig");
 const c = engine_mod.c;
 
 const WireRecord = struct {
-    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, editor_control, shutdown };
+    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, shutdown };
     bytes: []u8,
     kind: Kind = .request,
 };
@@ -54,8 +55,11 @@ const Transport = struct {
     terminal_abort_sent: bool = false,
     next_id: u64 = 1,
     seen_ids: std.StringHashMapUnmanaged(void) = .empty,
+    metadata_revision: u64 = 0,
+    metadata_snapshot: ?[]u8 = null,
 
     fn deinit(self: *Transport) void {
+        if (self.metadata_snapshot) |snapshot| self.engine.gpa.free(snapshot);
         self.clearActive();
         for (self.records.items) |record| std.heap.page_allocator.free(record.bytes);
         self.records.deinit(std.heap.page_allocator);
@@ -90,6 +94,7 @@ const Transport = struct {
         if (std.mem.eql(u8, kind.string, "component_control")) return .component_control;
         if (std.mem.eql(u8, kind.string, "renderer_control") or std.mem.eql(u8, kind.string, "renderer_subscribe")) return .renderer_control;
         if (std.mem.eql(u8, kind.string, "editor_control") or std.mem.eql(u8, kind.string, "editor_subscribe")) return .editor_control;
+        if (std.mem.eql(u8, kind.string, "widget_control")) return .widget_control;
         return .request;
     }
 
@@ -161,6 +166,7 @@ const Transport = struct {
                 try object.put(arena.allocator(), "error", .{ .string = self.engine.last_error orelse @errorName(err) });
                 try writeRecord(self.writer, .{ .object = object });
             };
+            try self.publishMetadataSafe();
             var deadline = try timers.nextDeadline(self.engine);
             if (self.group.renderers.nextRedrawDeadline()) |redraw_due| {
                 deadline = if (deadline) |due| @min(due, redraw_due) else redraw_due;
@@ -197,13 +203,54 @@ const Transport = struct {
         if (try timers.pumpReady(self.engine)) _ = try self.engine.drainReadyJobs();
         _ = try self.group.renderers.pumpDirtyReady();
         _ = try self.group.ui.editors.pumpDirty();
+        _ = try self.group.ui.widgets.pumpDirty();
+    }
+
+    fn publishMetadataSafe(self: *Transport) !void {
+        self.publishMetadata() catch |err| {
+            var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
+            defer arena.deinit();
+            var object: std.json.ObjectMap = .empty;
+            try object.put(arena.allocator(), "type", .{ .string = "native_owner_error" });
+            try object.put(arena.allocator(), "error", .{ .string = @errorName(err) });
+            try writeRecord(self.writer, .{ .object = object });
+        };
+    }
+
+    fn publishMetadata(self: *Transport) !void {
+        if (self.group.registration_failure) |err| return err;
+        const snapshot = try self.group.manifest();
+        errdefer self.engine.gpa.free(snapshot);
+        const pending_registrations = self.group.activation.sequence != self.group.published_registration_sequence;
+        if (self.metadata_snapshot) |old| if (!pending_registrations and std.mem.eql(u8, old, snapshot)) {
+            self.engine.gpa.free(snapshot);
+            return;
+        };
+        const revision = std.math.add(u64, self.metadata_revision, 1) catch return error.NativeMetadataRevisionExhausted;
+        try self.writer.print("\x1e{{\"type\":\"native_metadata\",\"version\":1,\"ownerGeneration\":\"{d}\",\"revision\":\"{d}\",\"extensions\":", .{ self.group.renderers.owner_generation, revision });
+        try self.writer.writeAll(snapshot);
+        try self.writer.print(",\"registrationSequence\":\"{d}\",\"toolRegistrations\":[", .{self.group.activation.sequence});
+        var first = true;
+        for (self.group.registration_journal.items) |event| {
+            if (event.sequence <= self.group.published_registration_sequence) continue;
+            if (!first) try self.writer.writeByte(',');
+            first = false;
+            try std.json.Stringify.value(event, .{}, self.writer);
+        }
+        try self.writer.writeByte(']');
+        try self.writer.writeAll("}\n");
+        try self.writer.flush();
+        if (self.metadata_snapshot) |old| self.engine.gpa.free(old);
+        self.metadata_snapshot = snapshot;
+        self.metadata_revision = revision;
+        self.group.published_registration_sequence = self.group.activation.sequence;
     }
 
     fn takeControl(self: *Transport) ?WireRecord {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.records.items, 0..) |record, index| {
-            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or (self.active and record.kind == .shutdown and index == 0)) {
+            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or (self.active and record.kind == .shutdown and index == 0)) {
                 const removed = self.records.orderedRemove(index);
                 self.queued_bytes -= removed.bytes.len;
                 return removed;
@@ -233,6 +280,11 @@ const Transport = struct {
             var arena: std.heap.ArenaAllocator = .init(engine.gpa);
             defer arena.deinit();
             const request = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{});
+            if (record.kind == .widget_control) {
+                try self.widgetControl(request);
+                dispatched = true;
+                continue;
+            }
             if (record.kind == .editor_control) {
                 try self.editorControl(request);
                 dispatched = true;
@@ -319,11 +371,26 @@ const Transport = struct {
     }
     fn persistentControl(self: *Transport, kind: WireRecord.Kind, request: std.json.Value) !bool {
         switch (kind) {
+            .widget_control => try self.widgetControl(request),
             .renderer_control => try self.rendererControl(request),
             .editor_control => try self.editorControl(request),
             else => return false,
         }
         return true;
+    }
+
+    fn widgetControl(self: *Transport, request: std.json.Value) !void {
+        if (request != .object) return error.InvalidWidgetControl;
+        const control = try widget_protocol.readControl(&request.object);
+        if (control.owner_generation != self.group.ui.widgets.owner_generation) return;
+        try self.group.ui.widgets.resize(control.width, control.height);
+    }
+    fn widgetRecord(context: ?*anyopaque, record: widget_protocol.Record) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        try self.writer.writeByte(0x1e);
+        try widget_protocol.write(self.writer, record);
+        try self.writer.writeByte('\n');
+        try self.writer.flush();
     }
 
     fn editorControl(self: *Transport, request: std.json.Value) !void {
@@ -888,6 +955,8 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     defer group.deinit();
     group.renderers.owner_generation = owner_generation;
     group.ui.editors.owner_generation = owner_generation;
+    group.ui.widgets.owner_generation = owner_generation;
+    group.activation.owner_generation = owner_generation;
     const bindings = try group.add(sources[0]);
     try timers.install(engine, io);
     try bindings.installSchemas();
@@ -914,6 +983,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     var output_buffer: [8192]u8 = undefined;
     var output = std.Io.File.stdout().writerStreaming(io, &output_buffer);
     const writer = &output.interface;
+    try group.initializeActivation();
     const manifest = if (grouped) try group.manifest() else try bindings.manifestJson(sources[0]);
     defer gpa.free(manifest);
     try writer.writeAll(if (grouped) "\x1e{\"type\":\"ready\",\"group\":true,\"extensions\":" else "\x1e{\"type\":\"ready\",\"manifest\":");
@@ -925,11 +995,14 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     group.renderers.record_fn = Transport.rendererRecord;
     group.renderers.record_context = &transport;
     group.ui.editors.record_context = &transport;
+    group.ui.widgets.record_context = &transport;
+    group.ui.widgets.record_fn = Transport.widgetRecord;
     group.actions_fn = Transport.rendererActions;
     group.actions_context = &transport;
     defer {
         group.renderers.record_fn = null;
         group.ui.editors.record_fn = null;
+        group.ui.widgets.record_fn = null;
         group.actions_fn = null;
     }
     engine.host_control_context = &transport;
@@ -1014,7 +1087,11 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             // the loop's deferred cleanup must never retain a freed binding.
             transport.clearActive();
             transport.bindings = try group.selected(1);
-            group.remove(owner_id);
+            group.remove(owner_id) catch |err| {
+                try writeFailure(allocator, writer, @errorName(err));
+                return err;
+            };
+            try transport.publishMetadataSafe();
             try writer.writeAll("\x1e{\"ok\":true,\"result\":{}}\n");
             try writer.flush();
             continue;
@@ -1030,14 +1107,19 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             };
             const added_id = added.owner_id;
             loadSource(gpa, io, engine, &loader, added, path) catch |err| {
-                group.remove(added_id);
+                group.remove(added_id) catch |cleanup_error| {
+                    try writeFailure(allocator, writer, @errorName(cleanup_error));
+                    return cleanup_error;
+                };
                 try writeFailure(allocator, writer, engine.last_error orelse @errorName(err));
                 continue;
             };
+            try group.refreshOwnerActivation(added_id, group.selection_received);
             const raw_manifest = try added.manifestJson(path);
             defer gpa.free(raw_manifest);
             var manifest_value = try std.json.parseFromSliceLeaky(std.json.Value, allocator, raw_manifest, .{});
             try manifest_value.object.put(allocator, "extensionId", .{ .integer = @intCast(added_id) });
+            try transport.publishMetadataSafe();
             try writeRecord(writer, .{ .object = record: {
                 var response: std.json.ObjectMap = .empty;
                 try response.put(allocator, "ok", .{ .bool = true });
@@ -1057,6 +1139,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             else
                 try gpa.dupe(u8, "{}");
             defer gpa.free(admitted);
+            try transport.publishMetadataSafe();
             // C frames are absent from the user's JavaScript stack. Preserve
             // the original exception while naming the native invocation in
             // its wire diagnostic, as the upstream refreshModels stack does.
@@ -1079,6 +1162,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         defer gpa.free(result);
         const projected = try transport.withUpdates(result);
         defer gpa.free(projected);
+        try transport.publishMetadataSafe();
         try writer.writeAll("\x1e{\"ok\":true,\"result\":");
         try writer.writeAll(projected);
         try writer.writeAll("}\n");

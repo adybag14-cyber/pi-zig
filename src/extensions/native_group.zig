@@ -5,6 +5,7 @@ const bindings_mod = @import("native_bindings.zig");
 const native_ui = @import("native_ui.zig");
 const native_renderers = @import("native_renderers.zig");
 const abort_signal = @import("abort_signal.zig");
+const activation_mod = @import("tool_activation.zig");
 const c = engine_mod.c;
 
 pub const Entry = struct { id: u64, source: []u8, binding: *bindings_mod.Bindings };
@@ -16,6 +17,17 @@ pub const Group = struct {
     broker: bindings_mod.Bindings.InvocationBroker = .{},
     entries: std.ArrayList(Entry) = .empty,
     next_id: u64 = 1,
+    membership_revision: u64 = 0,
+    activation: activation_mod.Tracker,
+    registration_journal: std.ArrayList(activation_mod.Event) = .empty,
+    published_registration_sequence: u64 = 0,
+    selection_context: ?std.json.Parsed(std.json.Value) = null,
+    selection_received: bool = false,
+    registration_depth: usize = 0,
+    registration_failure: ?anyerror = null,
+    registration_baseline_ready: bool = false,
+    deinitializing: bool = false,
+    external_tools: std.ArrayList([]const u8) = .empty,
     actions_fn: ?*const fn (?*anyopaque, u64, []const u8) anyerror!void = null,
     actions_context: ?*anyopaque = null,
 
@@ -27,7 +39,7 @@ pub const Group = struct {
         const renderers = try native_renderers.Manager.init(engine);
         errdefer renderers.deinit();
         const self = try engine.gpa.create(Group);
-        self.* = .{ .engine = engine, .ui = ui, .renderers = renderers };
+        self.* = .{ .engine = engine, .ui = ui, .renderers = renderers, .activation = activation_mod.Tracker.init(engine.gpa, 1) };
         renderers.replay_fn = replay;
         renderers.replay_context = self;
         return self;
@@ -42,6 +54,7 @@ pub const Group = struct {
     }
 
     pub fn deinit(self: *Group) void {
+        self.deinitializing = true;
         for (self.entries.items) |entry| {
             entry.binding.deinit();
             self.engine.gpa.free(entry.source);
@@ -49,6 +62,12 @@ pub const Group = struct {
         self.entries.deinit(self.engine.gpa);
         self.renderers.deinit();
         self.ui.deinit();
+        self.activation.deinit();
+        for (self.registration_journal.items) |*event| event.deinit(self.engine.gpa);
+        self.registration_journal.deinit(self.engine.gpa);
+        if (self.selection_context) |*context| context.deinit();
+        for (self.external_tools.items) |name| self.engine.gpa.free(name);
+        self.external_tools.deinit(self.engine.gpa);
         self.engine.gpa.destroy(self);
     }
 
@@ -56,29 +75,42 @@ pub const Group = struct {
         if (self.entries.items.len >= 4096 or self.next_id >= 9_007_199_254_740_991) return error.NativeGroupExtensionLimit;
         const source = try self.engine.gpa.dupe(u8, path);
         errdefer self.engine.gpa.free(source);
-        const binding = try bindings_mod.Bindings.initShared(self.engine.gpa, self.engine, .{ .ui = self.ui, .renderers = self.renderers, .broker = &self.broker, .owner_id = self.next_id, .tool_lookup = lookupTool, .tool_context = self, .catalog_fn = catalog, .provider_catalog_fn = providerCatalog, .provider_catalog_clock = &self.provider_catalog_clock });
+        const binding = try bindings_mod.Bindings.initShared(self.engine.gpa, self.engine, .{ .ui = self.ui, .renderers = self.renderers, .broker = &self.broker, .owner_id = self.next_id, .tool_lookup = lookupTool, .tool_context = self, .catalog_fn = catalog, .provider_catalog_fn = providerCatalog, .provider_catalog_clock = &self.provider_catalog_clock, .registration_fn = registration, .active_tools_fn = activeTools, .set_active_tools_fn = setActiveTools, .selection_context_fn = selectionContext });
         errdefer binding.deinit();
         try binding.setSourcePath(path);
         try self.entries.append(self.engine.gpa, .{ .id = self.next_id, .source = source, .binding = binding });
         self.next_id += 1;
+        self.membership_revision +%= 1;
         return binding;
     }
 
     pub fn selected(self: *Group, id: u64) !*bindings_mod.Bindings {
+        if (self.deinitializing) return error.StaleNativeExtensionOwner;
         for (self.entries.items) |entry| if (entry.id == id) return entry.binding;
         return error.UnknownNativeExtensionOwner;
     }
 
-    pub fn remove(self: *Group, id: u64) void {
+    pub fn remove(self: *Group, id: u64) !void {
+        if (self.deinitializing) return error.StaleNativeExtensionOwner;
         for (self.entries.items, 0..) |entry, index| if (entry.id == id) {
+            var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
+            defer arena.deinit();
+            var names: std.ArrayList([]const u8) = .empty;
+            for (entry.binding.tool_order.items) |name| try names.append(arena.allocator(), try arena.allocator().dupe(u8, name));
             const removed = self.entries.orderedRemove(index);
+            self.membership_revision +%= 1;
             removed.binding.deinit();
             self.engine.gpa.free(removed.source);
+            for (names.items) |name| self.recordRegistration(name, self.selection_received) catch |err| {
+                self.registration_failure = err;
+                return err;
+            };
             return;
         };
     }
 
     pub fn tool(self: *Group, name: []const u8) ?c.JSValue {
+        if (self.deinitializing) return null;
         for (self.entries.items) |entry| if (entry.binding.tools.get(name)) |value| return value;
         return null;
     }
@@ -88,8 +120,289 @@ pub const Group = struct {
         return self.tool(name);
     }
 
+    fn patternMatches(pattern: []const u8, name: []const u8) bool {
+        var p: usize = 0;
+        var n: usize = 0;
+        var star: ?usize = null;
+        var retry: usize = 0;
+        while (n < name.len) {
+            if (p < pattern.len and (pattern[p] == '?' or pattern[p] == name[n])) {
+                p += 1;
+                n += 1;
+            } else if (p < pattern.len and pattern[p] == '*') {
+                star = p;
+                p += 1;
+                retry = n;
+            } else if (star) |at| {
+                p = at + 1;
+                retry += 1;
+                n = retry;
+            } else return false;
+        }
+        while (p < pattern.len and pattern[p] == '*') p += 1;
+        return p == pattern.len;
+    }
+
+    fn policyEnabled(context: ?*anyopaque, name: []const u8, default_active: bool) bool {
+        const self: *Group = @ptrCast(@alignCast(context.?));
+        const root = if (self.selection_context) |data| data.value else return default_active;
+        if (root != .object) return default_active;
+        if (root.object.get("noTools")) |value| if (value == .bool and value.bool) return false;
+        var enabled = default_active;
+        if (root.object.get("allow")) |allowed| if (allowed == .array) {
+            enabled = false;
+            for (allowed.array.items) |pattern| if (pattern == .string and patternMatches(pattern.string, name)) {
+                enabled = true;
+                break;
+            };
+        };
+        if (root.object.get("modifiers")) |modifiers| if (modifiers == .array) {
+            for (modifiers.array.items) |modifier| {
+                if (modifier != .string or modifier.string.len == 0) continue;
+                const negative = modifier.string[0] == '-';
+                const explicit = negative or modifier.string[0] == '+';
+                const candidate = if (explicit) modifier.string[1..] else modifier.string;
+                if (std.mem.eql(u8, candidate, name)) enabled = !negative;
+            }
+        };
+        if (root.object.get("exclude")) |excluded| if (excluded == .array) {
+            for (excluded.array.items) |pattern| if (pattern == .string and patternMatches(pattern.string, name)) return false;
+        };
+        return enabled;
+    }
+    fn policySelected(context: ?*anyopaque, name: []const u8) bool {
+        return policyEnabled(context, name, false);
+    }
+    fn policy(self: *Group) activation_mod.Policy {
+        return .{ .context = self, .enabled_fn = policyEnabled, .selected_fn = policySelected };
+    }
+
+    fn registration(context: ?*anyopaque, caller: *bindings_mod.Bindings, name: []const u8) !void {
+        const self: *Group = @ptrCast(@alignCast(context.?));
+        if (self.deinitializing) return error.StaleNativeExtensionOwner;
+        // The original runtime refresh callback is unbound during initial
+        // factories. Reading user default/exposure getters must wait until all
+        // factories have completed and the registry is admitted.
+        if (!self.registration_baseline_ready or caller.factory_active) return;
+        self.recordRegistration(name, self.selection_received and !caller.factory_active) catch |err| {
+            self.registration_failure = err;
+            return err;
+        };
+        self.registration_failure = null;
+    }
+
+    pub fn initializeActivation(self: *Group) !void {
+        if (self.registration_baseline_ready) return;
+        self.registration_baseline_ready = true;
+        try self.refreshOwnerActivation(null, false);
+    }
+    pub fn refreshOwnerActivation(self: *Group, owner_id: ?u64, activate: bool) !void {
+        var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
+        defer arena.deinit();
+        var names: std.ArrayList([]const u8) = .empty;
+        for (self.entries.items) |entry| {
+            if (owner_id) |owner| if (entry.id != owner) continue;
+            for (entry.binding.tool_order.items) |name| {
+                var duplicate = false;
+                for (names.items) |existing| if (std.mem.eql(u8, existing, name)) {
+                    duplicate = true;
+                    break;
+                };
+                if (!duplicate) try names.append(arena.allocator(), try arena.allocator().dupe(u8, name));
+            }
+        }
+        for (names.items) |name| try self.recordRegistration(name, activate);
+    }
+    fn recordRegistration(self: *Group, name: []const u8, activate: bool) !void {
+        if (self.registration_depth >= 64) return error.NativeRegistrationReentrancyLimit;
+        self.registration_depth += 1;
+        defer self.registration_depth -= 1;
+        if (self.registration_journal.items.len >= 4096) return error.NativeRegistrationJournalLimit;
+        for (0..64) |_| {
+            const revision = self.registrationRevision();
+            var winner: ?Entry = null;
+            var definition: ?c.JSValue = null;
+            for (self.entries.items) |entry| if (entry.binding.tools.get(name)) |value| {
+                winner = entry;
+                definition = c.JS_DupValue(self.engine.context, value);
+                break;
+            };
+            defer if (definition) |value| self.engine.freeValue(value);
+            var event: activation_mod.Event = .{
+                .owner_generation = self.activation.owner_generation,
+                .sequence = 0,
+                .owner_id = if (winner) |entry| entry.id else 0,
+                .source_path = try self.engine.gpa.dupe(u8, if (winner) |entry| entry.source else ""),
+                .name = "",
+                .registered = winner != null,
+                .activate = activate,
+            };
+            var retained = false;
+            defer if (!retained) event.deinit(self.engine.gpa);
+            event.name = try self.engine.gpa.dupe(u8, name);
+            if (definition) |value| {
+                const raw_default = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, value, "defaultActive"));
+                defer self.engine.freeValue(raw_default);
+                event.default_active = !c.JS_IsBool(raw_default) or c.JS_ToBool(self.engine.context, raw_default) != 0;
+                const exposure = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, value, "exposure"));
+                defer self.engine.freeValue(exposure);
+                event.declarable = c.JS_IsUndefined(exposure) or c.JS_IsNull(exposure);
+                if (c.JS_IsString(exposure)) {
+                    const text = try self.engine.toString(exposure);
+                    defer self.engine.gpa.free(text);
+                    event.declarable = std.mem.eql(u8, text, "direct") or std.mem.eql(u8, text, "model-only");
+                    event.hidden = std.mem.eql(u8, text, "hidden");
+                }
+            }
+            if (revision != self.registrationRevision()) continue;
+            event.sequence = std.math.add(u64, self.activation.sequence, 1) catch return error.NativeRegistrationSequenceExhausted;
+            try self.registration_journal.ensureUnusedCapacity(self.engine.gpa, 1);
+            var prepared = try self.activation.clone();
+            errdefer prepared.deinit();
+            try prepared.applyPrepared(&event, self.policy());
+            self.activation.commit(&prepared);
+            self.registration_journal.appendAssumeCapacity(event);
+            retained = true;
+            return;
+        }
+        return error.NativeRegistrationProjectionUnstable;
+    }
+
+    fn activeTools(context: ?*anyopaque) !c.JSValue {
+        const self: *Group = @ptrCast(@alignCast(context.?));
+        if (self.deinitializing) return error.StaleNativeExtensionOwner;
+        var values: std.json.Array = .init(self.engine.gpa);
+        defer values.deinit();
+        for (self.activation.active.items) |name| try values.append(.{ .string = name });
+        return self.engine.fromJsonValue(.{ .array = values });
+    }
+    fn setActiveTools(context: ?*anyopaque, caller: *bindings_mod.Bindings, value: c.JSValue) !u64 {
+        const self: *Group = @ptrCast(@alignCast(context.?));
+        if (self.deinitializing) return error.StaleNativeExtensionOwner;
+        const raw = try self.engine.stringify(value);
+        defer self.engine.gpa.free(raw);
+        var parsed = try std.json.parseFromSlice(std.json.Value, self.engine.gpa, raw, .{});
+        defer parsed.deinit();
+        if (parsed.value != .array) return error.InvalidNativeToolSelection;
+        var names: std.ArrayList([]const u8) = .empty;
+        defer names.deinit(self.engine.gpa);
+        for (parsed.value.array.items) |name| {
+            if (name != .string) return error.InvalidNativeToolSelection;
+            if (!policyEnabled(self, name.string, true)) continue;
+            // The upstream loadout ignores unknown and hidden names. Deferred
+            // and codemode tools can be explicitly selected by this API.
+            if (self.tool(name.string)) |definition| {
+                const retained = c.JS_DupValue(self.engine.context, definition);
+                defer self.engine.freeValue(retained);
+                const exposure = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, retained, "exposure"));
+                defer self.engine.freeValue(exposure);
+                if (c.JS_IsString(exposure)) {
+                    const text = try self.engine.toString(exposure);
+                    defer self.engine.gpa.free(text);
+                    if (std.mem.eql(u8, text, "hidden")) continue;
+                }
+            } else {
+                var known = false;
+                for (self.external_tools.items) |external| if (std.mem.eql(u8, external, name.string)) {
+                    known = true;
+                    break;
+                };
+                if (!known) continue;
+            }
+            try names.append(self.engine.gpa, name.string);
+        }
+        if (self.registration_journal.items.len >= 4096) return error.NativeRegistrationJournalLimit;
+        try self.registration_journal.ensureUnusedCapacity(self.engine.gpa, 1);
+        var event = try (activation_mod.Event{
+            .kind = .selection,
+            .owner_generation = self.activation.owner_generation,
+            .sequence = self.activation.sequence + 1,
+            .owner_id = caller.owner_id,
+            .source_path = caller.source_path orelse "",
+            .name = "",
+            .active_tools = names.items,
+        }).clone(self.engine.gpa);
+        errdefer event.deinit(self.engine.gpa);
+        var prepared = try self.activation.clone();
+        errdefer prepared.deinit();
+        try prepared.applyPrepared(&event, self.policy());
+        self.activation.commit(&prepared);
+        self.registration_journal.appendAssumeCapacity(event);
+        return event.sequence;
+    }
+    fn selectionContext(context: ?*anyopaque, bytes: []const u8) !void {
+        const self: *Group = @ptrCast(@alignCast(context.?));
+        if (self.deinitializing) return error.StaleNativeExtensionOwner;
+        try self.initializeActivation();
+        var parsed = try std.json.parseFromSlice(std.json.Value, self.engine.gpa, bytes, .{});
+        defer parsed.deinit();
+        if (parsed.value != .object) return error.InvalidNativeToolSelection;
+        const object = parsed.value.object;
+        var external: std.ArrayList([]const u8) = .empty;
+        var external_committed = false;
+        defer if (!external_committed) {
+            for (external.items) |name| self.engine.gpa.free(name);
+            external.deinit(self.engine.gpa);
+        };
+        const registry = object.get("allTools") orelse object.get("activeTools");
+        if (registry) |all| {
+            if (all != .array) return error.InvalidNativeToolSelection;
+            for (all.array.items) |item| {
+                const name = if (item == .string) item else if (item == .object) item.object.get("name") orelse return error.InvalidNativeToolSelection else return error.InvalidNativeToolSelection;
+                if (name != .string) return error.InvalidNativeToolSelection;
+                if (self.tool(name.string) != null) continue;
+                var duplicate = false;
+                for (external.items) |existing| if (std.mem.eql(u8, existing, name.string)) {
+                    duplicate = true;
+                    break;
+                };
+                if (duplicate) continue;
+                const owned = try self.engine.gpa.dupe(u8, name.string);
+                errdefer self.engine.gpa.free(owned);
+                try external.append(self.engine.gpa, owned);
+            }
+        }
+        const ack = if (object.get("nativeRegistrationSequence")) |value| blk: {
+            if (value == .string) break :blk try std.fmt.parseUnsigned(u64, value.string, 10);
+            if (value == .integer and value.integer >= 0) break :blk @as(u64, @intCast(value.integer));
+            return error.InvalidNativeToolSelection;
+        } else 0;
+        var new_policy: ?std.json.Parsed(std.json.Value) = null;
+        errdefer if (new_policy) |*data| data.deinit();
+        if (object.get("nativeToolSelection")) |policy_value| {
+            if (policy_value != .object) return error.InvalidNativeToolSelection;
+            const raw = try std.json.Stringify.valueAlloc(self.engine.gpa, policy_value, .{});
+            defer self.engine.gpa.free(raw);
+            new_policy = try std.json.parseFromSlice(std.json.Value, self.engine.gpa, raw, .{ .allocate = .alloc_always });
+        }
+        if (object.get("activeTools")) |active| {
+            if (active != .array) return error.InvalidNativeToolSelection;
+            var names: std.ArrayList([]const u8) = .empty;
+            defer names.deinit(self.engine.gpa);
+            for (active.array.items) |name| {
+                if (name != .string) return error.InvalidNativeToolSelection;
+                try names.append(self.engine.gpa, name.string);
+            }
+            try self.activation.reconcileContext(names.items, ack, self.registration_journal.items);
+        }
+        if (new_policy != null) {
+            if (self.selection_context) |*old| old.deinit();
+            self.selection_context = new_policy;
+        }
+        self.selection_received = true;
+        for (self.external_tools.items) |name| self.engine.gpa.free(name);
+        self.external_tools.deinit(self.engine.gpa);
+        self.external_tools = external;
+        external_committed = true;
+        while (self.registration_journal.items.len != 0 and self.registration_journal.items[0].sequence <= ack) {
+            var removed = self.registration_journal.orderedRemove(0);
+            removed.deinit(self.engine.gpa);
+        }
+    }
+
     fn providerCatalog(context: ?*anyopaque) !c.JSValue {
         const self: *Group = @ptrCast(@alignCast(context.?));
+        if (self.deinitializing) return error.StaleNativeExtensionOwner;
         const result = try self.engine.checked(c.JS_NewArray(self.engine.context));
         errdefer self.engine.freeValue(result);
         var output: u32 = 0;
@@ -113,6 +426,7 @@ pub const Group = struct {
     const CatalogCommand = struct { owner: *bindings_mod.Bindings, name: []const u8, value: c.JSValue };
     fn catalog(context: ?*anyopaque, caller: *bindings_mod.Bindings, kind: bindings_mod.Bindings.CatalogKind) !c.JSValue {
         const self: *Group = @ptrCast(@alignCast(context.?));
+        if (self.deinitializing) return error.StaleNativeExtensionOwner;
         var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
         defer arena.deinit();
         const allocator = arena.allocator();
@@ -191,6 +505,23 @@ pub const Group = struct {
     }
 
     pub fn manifest(self: *Group) ![]u8 {
+        try self.initializeActivation();
+        for (0..64) |_| {
+            const before = self.registrationRevision();
+            const raw = try self.manifestSnapshot();
+            if (before == self.registrationRevision()) return raw;
+            self.engine.gpa.free(raw);
+        }
+        return error.NativeRegistrationProjectionUnstable;
+    }
+
+    fn registrationRevision(self: *Group) u64 {
+        var revision = self.membership_revision;
+        for (self.entries.items) |entry| revision +%= entry.binding.registration_revision;
+        return revision;
+    }
+
+    fn manifestSnapshot(self: *Group) ![]u8 {
         var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
         defer arena.deinit();
         const allocator = arena.allocator();
@@ -253,7 +584,7 @@ test "native group retired owner callbacks cannot attribute late actions to surv
     try first.loadFactory("export default pi=>{globalThis.retiredApi=pi;pi.registerToolRenderer((name,next)=>next())}", "retired-owner.mjs");
     const second = try group.add("surviving-owner.mjs");
     try second.loadFactory("export default pi=>pi.registerCommand('late',{handler(){let rejected=false;try{retiredApi.appendEntry('late',{spoof:true})}catch(error){rejected=true}pi.appendEntry('live',{});return {message:String(rejected)}}})", "surviving-owner.mjs");
-    group.remove(1);
+    try group.remove(1);
     c.JS_RunGC(engine.runtime);
     const raw = try second.invokeCommand("late", "");
     defer std.testing.allocator.free(raw);
@@ -314,7 +645,7 @@ test "native group catalogs match upstream ordered first tool and collision comm
     const inspected = try second.invokeCommand("inspect-second", "");
     defer gpa.free(inspected);
     try std.testing.expect(std.mem.indexOf(u8, inspected, "read:first replacement") != null);
-    group.remove(1);
+    try group.remove(1);
     c.JS_RunGC(engine.runtime);
     const unloaded = try second.invokeCommand("inspect-second", "");
     defer gpa.free(unloaded);
@@ -389,4 +720,32 @@ test "native group owner replays dirty call and final result with actual retaine
     try std.testing.expect(group.renderers.retire("row", generation));
     try std.testing.expect(!try group.renderers.control(&resize));
     c.JS_RunGC(engine.runtime);
+}
+
+test "native group shutdown retires owner APIs before observable editor disposal and fences sibling catalogs" {
+    const gpa = std.testing.allocator;
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const group = try Group.init(engine);
+    var released = false;
+    defer if (!released) group.deinit();
+    const first = try group.add("dispose-first.mjs");
+    try first.installSchemas();
+    try first.loadFactory("export default pi=>{globalThis.firstDisposeApi=pi}", "dispose-first.mjs");
+    const second = try group.add("dispose-second.mjs");
+    try second.loadFactory("export default pi=>{globalThis.secondDisposeApi=pi}", "dispose-second.mjs");
+    const factory = try engine.eval("(()=>({getText(){return ''},setText(value){},handleInput(input){},render(){return ['dispose-owned']},dispose(){globalThis.disposeRan=true;try{firstDisposeApi.registerTool({name:'late',parameters:{type:'object'},execute(){}})}catch(e){globalThis.firstDisposeFenced=true}try{secondDisposeApi.getAllTools()}catch(e){globalThis.secondDisposeFenced=true}}}))", "dispose-factory.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(factory);
+    const draft = try engine.checked(c.JS_NewString(engine.context, ""));
+    defer engine.freeValue(draft);
+    const theme = try engine.checked(c.JS_NewObject(engine.context));
+    defer engine.freeValue(theme);
+    const keys = try engine.checked(c.JS_NewObject(engine.context));
+    defer engine.freeValue(keys);
+    try group.ui.editors.setFactory(1, factory, draft, theme, keys, 80, 24);
+    group.deinit();
+    released = true;
+    const result = try engine.eval("globalThis.disposeRan===true&&globalThis.firstDisposeFenced===true&&globalThis.secondDisposeFenced===true", "dispose-proof.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    try std.testing.expect(c.JS_ToBool(engine.context, result) != 0);
 }

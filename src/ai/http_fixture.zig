@@ -69,7 +69,10 @@ pub const PlanServer = struct {
                 var found = false;
                 while (iterator.next()) |header| {
                     if (!std.ascii.eqlIgnoreCase(header.name, expected.name)) continue;
-                    if (!std.mem.eql(u8, header.value, expected.value)) return error.UnexpectedFixtureHeader;
+                    if (!std.mem.eql(u8, header.value, expected.value)) {
+                        std.debug.print("Fixture request header mismatch: {s}\n", .{expected.name});
+                        return error.UnexpectedFixtureHeader;
+                    }
                     found = true;
                 }
                 if (!found) return error.MissingFixtureHeader;

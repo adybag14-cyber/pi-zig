@@ -1,0 +1,113 @@
+{
+  "status": "frozen",
+  "base": "e071d075da16a004dc984296b907d25befff1278",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "toolchain": "Zig 0.16.0",
+  "tests_each": 273,
+  "files": [
+    {
+      "path": "src/ai/bedrock.zig",
+      "bytes": 78001,
+      "sha256": "00b21dddf281bb95a6a3e6d47ee8dceaf910bf55860080b9962ff4ec1f4a821a"
+    },
+    {
+      "path": "src/ai/classifier.zig",
+      "bytes": 44407,
+      "sha256": "a9a80c1ec7dfc5c08196ba2b7fb69de2e6cb9c4cd451f8e415aa6f75d9b61659"
+    },
+    {
+      "path": "src/ai/context_estimate.zig",
+      "bytes": 13602,
+      "sha256": "a6f478e56dcaecda3da6185d487b2d71998bf14a63f42bd9b6233e7a4467b57b"
+    },
+    {
+      "path": "src/ai/mistral.zig",
+      "bytes": 42093,
+      "sha256": "6247ac4f2a1abd66a53ca507518c5cb66f581c1f826e1c515aa6b6c4c1dfd007"
+    },
+    {
+      "path": "src/ai/openai_responses.zig",
+      "bytes": 168982,
+      "sha256": "34a79a24d1e2106941b3e145d2bd7f184f3c8f993c2b0f9e2440fe471c3ccea2"
+    },
+    {
+      "path": "src/ai/codex_websocket.zig",
+      "bytes": 24459,
+      "sha256": "a5674cadbd5c4e57246d80142dadfacb5b717e77802de03f9ddfef7e504a944d"
+    },
+    {
+      "path": "src/ai/http_fixture.zig",
+      "bytes": 4818,
+      "sha256": "946d8350cdcfbf3ea838fd1a911a7e7cc4e74fa274e8f0a3e6b90300ded6a47a"
+    },
+    {
+      "path": "src/ai/retry.zig",
+      "bytes": 18369,
+      "sha256": "c0c42cd4f4f37a35c40350b8546cee81ef2e461729c5f0d04320074443f77141"
+    },
+    {
+      "path": "src/ai/openai_decisions.zig",
+      "bytes": 16533,
+      "sha256": "156420356763b1bef19055e09779e746b4d002def73e574cfb57764cb634e595"
+    },
+    {
+      "path": "src/ai/fixtures/context-estimate-7fb.json",
+      "bytes": 5366,
+      "sha256": "49076450054bfc9e0237e0151816564b6a7e12493b56bb62c88e0d2b879a7a28"
+    },
+    {
+      "path": "src/ai/fixtures/openai-decisions-7fb.json",
+      "bytes": 13505,
+      "sha256": "747ca6f0d3a473e42a0587327f463036efa7dd464a5d8559f509001624834ccb"
+    },
+    {
+      "path": "src/ai/catalog_source.json",
+      "bytes": 1401641,
+      "sha256": "e05588016fc39d3c61d2ed9d172e4a90c93ca72dacd2fd56c0a83c7ff58811fe"
+    },
+    {
+      "path": "src/ai/catalog_generated.zig",
+      "bytes": 3836875,
+      "sha256": "7fbeabaf11b00c699e662f22abf9aa4c4e57baae61c7ba36937f2f9222021a13"
+    },
+    {
+      "path": "src/coding_agent/live_state.zig",
+      "bytes": 208238,
+      "sha256": "2916ebb965e5cd1ea72c661c834547aa2db683b2c2d2b800e8bd8fde74d9e576"
+    },
+    {
+      "path": "src/coding_agent/assets/UPSTREAM-CHANGELOG.md",
+      "bytes": 619781,
+      "sha256": "ace48f3ccf1cba8c857559059ec93396bb258b8bb626980f418bf7a8f333002c"
+    },
+    {
+      "path": "src/latest_ai_contract_test.zig",
+      "bytes": 238,
+      "sha256": "bdf9a5dafd252f29ff1288adadd0d1aff937fe4bc96ce0a272740d704c117ffb"
+    },
+    {
+      "path": ".github/workflows/upstream-contract.yml",
+      "bytes": 1063,
+      "sha256": "0a00acd40ef39a48bb767cf954d025b863fa7fbb2347823f6ae071f5d443c5c0"
+    },
+    {
+      "path": "verification/upstream-contract/tree-7fb59f9.json",
+      "bytes": 353027,
+      "sha256": "d00e572513608921f1b78bc1ffabb3e2b766e49680973611e6dffb6a98cc1573"
+    }
+  ],
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest7fb-ai-frozen.patch",
+  "patch_sha256": "10c34e858b808f507635b4247f5f1d619a2e04d24a48ff7452330f36e48c90d6",
+  "proofs": [
+    "latest7fb-ai-windows-debug-20261007",
+    "latest7fb-ai-windows-releasesafe-20261007",
+    "latest7fb-ai-linux-debug-20261007",
+    "latest7fb-ai-linux-releasesafe-20261007",
+    "latest7fb-catalog-contract-check-20261007"
+  ],
+  "remaining": [
+    "Request-local nullable chat header deletion",
+    "Classifier hooks facade",
+    "All-platform composed graph and final native SDK parity"
+  ]
+}

@@ -5,11 +5,16 @@ pub const FileErrorCode = enum { aborted, not_found, permission_denied, not_dire
 pub const FileError = struct {
     code: FileErrorCode,
     message: []const u8,
+    message_owned: bool = false,
     path: ?[]u8 = null,
     cause: ?anyerror = null,
     pub fn deinit(self: *FileError, gpa: std.mem.Allocator) void {
         if (self.path) |path| gpa.free(path);
-        self.* = undefined;
+        if (self.message_owned) gpa.free(self.message);
+        self.path = null;
+        self.message = "";
+        self.message_owned = false;
+        self.cause = null;
     }
 };
 pub fn Result(comptime T: type) type {

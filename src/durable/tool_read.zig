@@ -45,7 +45,7 @@ fn bmp(bytes: []const u8) bool {
         else => false,
     };
 }
-fn image(reader: *filesystem.BinaryReader, size: u64, context: types.Context) !types.Result(?[]const u8) {
+fn image(reader: anytype, size: u64, context: types.Context) !types.Result(?[]const u8) {
     const result = try reader.read(0, 32, context);
     if (result == .failure) return .{ .failure = result.failure };
     const header = result.value;
@@ -68,7 +68,7 @@ fn image(reader: *filesystem.BinaryReader, size: u64, context: types.Context) !t
     }
     return .{ .value = "image/png" };
 }
-fn readOnce(reader: *filesystem.BinaryReader, info: types.FileInfo, input: Input, context: types.Context) !values.Result {
+fn readOnce(reader: anytype, info: types.FileInfo, input: Input, context: types.Context) !values.Result {
     const gpa = reader.gpa;
     const mime = try image(reader, info.size, context);
     if (mime == .failure) return values.fileFailure(gpa, mime.failure);

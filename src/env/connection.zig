@@ -43,7 +43,7 @@ pub const Connection = struct {
     next_id: u32 = 1,
     mutex: Io.Mutex = .init,
     write_mutex: Io.Mutex = .init,
-    wake: Io.Event = .unset,
+    wake_epoch: std.atomic.Value(u32) = .init(0),
     pending: std.AutoHashMapUnmanaged(u32, Pending) = .empty,
     unsolicited: Pending = .{},
     buffered: usize = 0,
@@ -93,7 +93,11 @@ pub const Connection = struct {
             self.failure = err;
         }
         self.mutex.unlock(self.io);
-        self.wake.set(self.io);
+        self.notify();
+    }
+    fn notify(self: *Connection) void {
+        _ = self.wake_epoch.fetchAdd(1, .release);
+        self.io.futexWake(u32, &self.wake_epoch.raw, std.math.maxInt(u32));
     }
     pub fn stop(self: *Connection) void {
         if (self.stopping.swap(true, .acq_rel)) return;
@@ -176,20 +180,19 @@ pub const Connection = struct {
     pub fn ready(self: *Connection, timeout_ms: u64) !void {
         const deadline = Io.Clock.awake.now(self.io).addDuration(.fromMilliseconds(@intCast(@min(timeout_ms, std.math.maxInt(i64)))));
         while (true) {
-            self.wake.reset();
             self.mutex.lockUncancelable(self.io);
             const live = self.live;
             const synced = self.synced;
+            const observed = self.wake_epoch.load(.acquire);
             self.mutex.unlock(self.io);
             if (!live) return error.ConnectionLost;
             if (synced) return;
-            try event_wait.wake(self.io, &self.wake, deadline);
+            try event_wait.changed(self.io, &self.wake_epoch, observed, deadline);
         }
     }
     fn next(self: *Connection, ticket: Ticket, timeout_ms: u64) !wire.Frame {
         const deadline = Io.Clock.awake.now(self.io).addDuration(.fromMilliseconds(@intCast(@min(timeout_ms, std.math.maxInt(i64)))));
         while (true) {
-            self.wake.reset();
             self.mutex.lockUncancelable(self.io);
             const pending = (if (ticket.id == 0) &self.unsolicited else self.pending.getPtr(ticket.id)) orelse {
                 self.mutex.unlock(self.io);
@@ -205,10 +208,11 @@ pub const Connection = struct {
             }
             const live = self.live;
             const terminal = pending.terminal;
+            const observed = self.wake_epoch.load(.acquire);
             self.mutex.unlock(self.io);
             if (!live) return error.ConnectionLost;
             if (terminal) return error.RequestSettled;
-            try event_wait.wake(self.io, &self.wake, deadline);
+            try event_wait.changed(self.io, &self.wake_epoch, observed, deadline);
         }
     }
     fn release(self: *Connection, ticket: Ticket) void {
@@ -243,7 +247,7 @@ pub const Connection = struct {
         pending.bytes += size;
         self.buffered += size;
         transferred = true;
-        self.wake.set(self.io);
+        self.notify();
     }
     fn read(self: *Connection) anyerror!void {
         defer self.fail(error.ConnectionLost);
@@ -274,7 +278,7 @@ pub const Connection = struct {
                     self.mutex.lockUncancelable(self.io);
                     self.synced = true;
                     self.mutex.unlock(self.io);
-                    self.wake.set(self.io);
+                    self.notify();
                 }
             }
             while (sync.ready and offset < count) {
@@ -416,4 +420,36 @@ test "native client streams Unicode nonzero output and cancels an entered proces
     var reused = try reuse.next(2000);
     defer reused.deinit();
     try std.testing.expectEqual(wire.Kind.result, reused.kind);
+}
+test "native client eight concurrent reply waiters keep independent absolute waits without resetting shared state" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var environ = try std.process.Environ.createMap(std.testing.environ, gpa);
+    defer environ.deinit();
+    const program = environ.get("PI_TEST_ENV_DAEMON") orelse return error.SkipZigTest;
+    const connection = try Connection.start(gpa, io, &.{program}, 93);
+    defer connection.deinit();
+    const Peer = struct {
+        fn run(peer: *Connection) anyerror!void {
+            for (0..100) |_| {
+                var ticket = try peer.begin(.{ .op = "hello", .protocol = 1 }, "", 93);
+                defer ticket.deinit();
+                var record = try ticket.next(2000);
+                defer record.deinit();
+                try std.testing.expectEqual(ticket.id, record.id);
+                try std.testing.expectEqual(wire.Kind.result, record.kind);
+            }
+        }
+    };
+    var jobs: [8]Io.Future(anyerror!void) = undefined;
+    var count: usize = 0;
+    defer for (jobs[0..count]) |*job| {
+        _ = job.cancel(io) catch {};
+    };
+    for (&jobs) |*job| {
+        job.* = try io.concurrent(Peer.run, .{connection});
+        count += 1;
+    }
+    for (&jobs) |*job| try job.await(io);
+    try std.testing.expectEqual(@as(u32, 0), connection.pending.count());
 }

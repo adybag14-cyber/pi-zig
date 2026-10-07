@@ -1,0 +1,183 @@
+{
+  "status": "frozen",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "base": "e071d075da16a004dc984296b907d25befff1278",
+  "prerequisite_patches": [
+    "remote-env-adapter-7fb59f9.patch",
+    "file-workers-fifo-7fb59f9.patch"
+  ],
+  "worktree": "C:\\Users\\adyba\\pi-zig-env-watch-20261007",
+  "toolchain": "Zig 0.16.0",
+  "files": [
+    {
+      "path": "src/durable/watch.zig",
+      "bytes": 34630,
+      "sha256": "1db78efdf1d84d50f7387527253ebaa6111fdab9081350efe6f76633d50d8281"
+    },
+    {
+      "path": "src/env/connection.zig",
+      "bytes": 20892,
+      "sha256": "47198c2a2e2481161d014ad53548d12cd772a73605c0fc2643f2a8374e10dd66"
+    },
+    {
+      "path": "src/env/event_wait.zig",
+      "bytes": 4318,
+      "sha256": "74360932a2b5fd6f2fca9d98329d78ce4e6c8fcdf2391e47347144e95f40319e"
+    },
+    {
+      "path": "src/env/root.zig",
+      "bytes": 2825,
+      "sha256": "c159e459e1fa3adfdfe3a0531e0260d97295bb9308caf17b5ed895b42dfbba4c"
+    },
+    {
+      "path": "src/env/remote_env.zig",
+      "bytes": 68318,
+      "sha256": "2b4a8f60a0405e35207338f596c780021797bb395502e3913f20aae193c76fc4"
+    },
+    {
+      "path": "src/env_daemon.zig",
+      "bytes": 5448,
+      "sha256": "4fdd319ed57e513679a9e1a503ab8f61e327abc0d19aa1433db747640bcf0d3a"
+    },
+    {
+      "path": "src/env/CONTRACT.md",
+      "bytes": 7643,
+      "sha256": "bcc1a3a6a4feaccaa209f3feab07b5bf8377b6fdacb6912bda966afa8d2b80e6"
+    },
+    {
+      "path": "src/durable/watch_linux.zig",
+      "bytes": 6061,
+      "sha256": "94dbf504925aa087ceee764b51645657232e3e117c29fa44ff44419e9177012b"
+    },
+    {
+      "path": "src/env/daemon_watch.zig",
+      "bytes": 5094,
+      "sha256": "4662b37fe1d8e8273fb2299779311c80e90cf26fe7a2817229198e10ddeab2e9"
+    },
+    {
+      "path": "src/env/remote_watch.zig",
+      "bytes": 10073,
+      "sha256": "5fb559d8566fb3a313bfa810851d3fb05e1c7b1e6566011c5f6d0e7000028755"
+    },
+    {
+      "path": "src/env/watch_test.zig",
+      "bytes": 9542,
+      "sha256": "3525a7a41feb1ef7243e9ffb0c41f1384f559fbf2b81bad2a936379e23a0569c"
+    }
+  ],
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\native-linux-watch-reconnect-7fb59f9.patch",
+  "patch_sha256": "b0c7cb06f200fc3f7644f28a83fe2cb2be0d709148692742dfc83a2f8fa7ec00",
+  "tests": [
+    {
+      "name": "watch-windows-release-safe",
+      "pid": 52440,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Doptimize=ReleaseSafe -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T10:36:00.292137Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-20261007",
+      "status": "passed",
+      "deadline_seconds": 300,
+      "started_utc": "2026-10-07T10:36:00.5962172Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:37:00.7998966Z"
+    },
+    {
+      "name": "watch-linux-release-safe",
+      "pid": 42504,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 300s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T10:36:00.292132Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-20261007",
+      "status": "passed",
+      "deadline_seconds": 310,
+      "started_utc": "2026-10-07T10:36:00.5962022Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:36:48.9642064Z"
+    },
+    {
+      "name": "watch-final-windows-debug2",
+      "pid": 53200,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-env -Doptimize=Debug -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T10:33:15.704025Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-20261007",
+      "status": "passed",
+      "deadline_seconds": 180,
+      "started_utc": "2026-10-07T10:33:16.0000091Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:33:31.2943474Z"
+    },
+    {
+      "name": "watch-final-linux-debug2",
+      "pid": 51648,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-env -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T10:33:15.703113Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T10:33:16.0023565Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:33:27.5552723Z"
+    },
+    {
+      "name": "native-watch-original-windows-daemon",
+      "pid": 46640,
+      "executable": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\watch-original-test.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\watch-original-test.exe\"",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T10:31:33.978484Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-20261007",
+      "status": "passed",
+      "deadline_seconds": 120,
+      "started_utc": "2026-10-07T10:31:34.1980277Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:31:35.5570908Z"
+    },
+    {
+      "name": "native-watch-original-linux-daemon",
+      "pid": 54988,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-env-watch-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 120s env PI_TEST_ENV_DAEMON=/tmp/pi-env-original-target-7fb59f9-20261007/debug/pi-env /tmp/pi-env-watch-20261007/watch-original-test",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T10:31:38.776316Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-20261007",
+      "status": "passed",
+      "deadline_seconds": 130,
+      "started_utc": "2026-10-07T10:31:38.9547752Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:31:40.4934216Z"
+    },
+    {
+      "name": "watch-macos-arm64-cross",
+      "pid": 51144,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build env -Dtarget=aarch64-macos -Doptimize=ReleaseSafe -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T10:36:47.388023Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-env-watch-20261007",
+      "status": "passed",
+      "deadline_seconds": 180,
+      "started_utc": "2026-10-07T10:36:47.6643111Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T10:37:04.463079Z"
+    }
+  ],
+  "known_limits": [
+    "Forced native Windows/macOS event backends pending",
+    "macOS default currently polling; native default parity not certified",
+    "Watch device/inode identity across remounts needs separate gate",
+    "Snapshot entry budget100000 versus original unbounded count",
+    "Durable concrete local ExecutionEnv storage integration pending",
+    "Complete Node daemon error text equivalence not claimed"
+  ],
+  "mainEdits": false,
+  "staged": false,
+  "committed": false,
+  "published": false,
+  "frozen_utc": "2026-10-07T10:41:59.6398522Z"
+}
