@@ -532,10 +532,8 @@ pub fn build(b: *std.Build) void {
     linkDurable(b, mcp_adapter_tests.root_module);
     linkQuickJs(b, mcp_adapter_tests.root_module, quickjs, sqlite_lib_dir);
     const run_mcp_adapter_tests = b.addRunArtifact(mcp_adapter_tests);
-    const install_mcp_adapter_cli = b.addInstallArtifact(exe, .{});
-    run_mcp_adapter_tests.step.dependOn(&install_mcp_adapter_cli.step);
     run_mcp_adapter_tests.step.dependOn(&install_mcp_adapter_probe.step);
-    run_mcp_adapter_tests.setEnvironmentVariable("PI_MCP_ADAPTER_CLI", b.getInstallPath(.bin, b.fmt("pi{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    run_mcp_adapter_tests.setEnvironmentVariable("PI_MCP_ADAPTER_CLI", b.getInstallPath(.bin, b.fmt("pi-mcp-adapter-probe{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
     run_mcp_adapter_tests.setEnvironmentVariable("PI_MCP_ADAPTER_PROBE", b.getInstallPath(.bin, b.fmt("pi-mcp-adapter-probe{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
     run_mcp_adapter_tests.setEnvironmentVariable("PI_MCP_ADAPTER_SERVER", b.getInstallPath(.bin, b.fmt("pi-mcp-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
     const mcp_adapter_step = b.step("test-mcp-adapter", "Exercise native legacy-client ownership PATH lookup and real stdio HTTP CLI gates");
