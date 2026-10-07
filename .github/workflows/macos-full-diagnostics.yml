@@ -2,7 +2,6 @@ name: macOS full graph diagnostics
 
 on:
   pull_request:
-    branches: [main]
 
 jobs:
   diagnose:
