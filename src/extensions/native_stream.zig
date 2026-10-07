@@ -10,6 +10,18 @@ pub const maximum_total_bytes = 16 * 1024 * 1024;
 
 const Queued = struct { value: c.JSValue, bytes: usize };
 const Waiter = struct { iterator: c.JSValue, resolve: c.JSValue, reject: c.JSValue };
+/// Native failure retirement does not allocate host memory. This is needed
+/// when a host OOM prevents serializing a terminal event into the public queue.
+pub fn reject(engine: *engine_mod.Engine, value: c.JSValue, failure: c.JSValue) !void {
+    const self: *Stream = @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, value, engine.event_stream_class) orelse return error.InvalidNativeEventStream));
+    self.done = true;
+    try callOne(engine, self.result_reject, failure);
+    while (self.waiting.items.len > 0) {
+        const waiter = self.waiting.orderedRemove(0);
+        defer for ([_]c.JSValue{ waiter.iterator, waiter.resolve, waiter.reject }) |item| engine.freeValue(item);
+        try callOne(engine, waiter.reject, failure);
+    }
+}
 const Stream = struct {
     engine: *engine_mod.Engine,
     assistant: bool,
@@ -166,31 +178,35 @@ fn streamOperation(self: *Stream, receiver: c.JSValue, method: c_int, value: c.J
         defer engine.freeValue(result);
         break :blk c.JS_ToBool(engine.context, result) != 0;
     };
-    if (complete) {
-        self.done = true;
-        const terminal = if (self.assistant) blk: {
+    const terminal = if (complete) blk: {
+        break :blk if (self.assistant) assistant: {
             const kind = try engine.checked(c.JS_GetPropertyStr(engine.context, value, "type"));
             defer engine.freeValue(kind);
             const text = try engine.toString(kind);
             defer engine.gpa.free(text);
-            break :blk try engine.checked(c.JS_GetPropertyStr(engine.context, value, if (std.mem.eql(u8, text, "done")) "message" else "error"));
-        } else blk: {
+            break :assistant try engine.checked(c.JS_GetPropertyStr(engine.context, value, if (std.mem.eql(u8, text, "done")) "message" else "error"));
+        } else extract: {
             var args = [_]c.JSValue{value};
-            break :blk try engine.checked(c.JS_Call(engine.context, self.extract, receiver, 1, &args));
+            break :extract try engine.checked(c.JS_Call(engine.context, self.extract, receiver, 1, &args));
         };
-        defer engine.freeValue(terminal);
+    } else c.pi_js_undefined();
+    defer engine.freeValue(terminal);
+    // Prepare native queue/delivery ownership before publishing terminal state.
+    const delivery = try iterationResult(engine, value, false);
+    defer engine.freeValue(delivery);
+    try self.events.ensureUnusedCapacity(engine.gpa, 1);
+    if (complete) {
+        self.done = true;
         try callOne(engine, self.result_resolve, terminal);
     }
     if (self.waiting.items.len > 0) {
         const waiter = self.waiting.orderedRemove(0);
         defer for ([_]c.JSValue{ waiter.iterator, waiter.resolve, waiter.reject }) |item| engine.freeValue(item);
-        const result = try iterationResult(engine, value, false);
-        defer engine.freeValue(result);
-        try callOne(engine, waiter.resolve, result);
+        try callOne(engine, waiter.resolve, delivery);
     } else {
         const retained = c.JS_DupValue(engine.context, value);
         errdefer engine.freeValue(retained);
-        try self.events.append(engine.gpa, .{ .value = retained, .bytes = encoded.len });
+        self.events.appendAssumeCapacity(.{ .value = retained, .bytes = encoded.len });
         self.queued_bytes += encoded.len;
     }
     return c.pi_js_undefined();
@@ -731,6 +747,48 @@ fn streamAllocationProbe(gpa: std.mem.Allocator) !void {
 
 test "native EventStream allocation failures release queued values pending capabilities and iterator cycles" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, streamAllocationProbe, .{});
+}
+test "native terminal admission allocation failure preserves original pending result and iterator for retry" {
+    for (0..4) |fail_index| {
+        const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+        defer engine.deinit();
+        try install(engine);
+        const target = try engine.checked(c.JS_NewObject(engine.context));
+        defer engine.freeValue(target);
+        try property(engine, target, "prototype", try engine.checked(c.JS_NewObject(engine.context)));
+        const stream = try constructValue(engine, target, true, &.{});
+        defer engine.freeValue(stream);
+        const state: *Stream = @ptrCast(@alignCast(c.JS_GetOpaque(stream, engine.event_stream_class).?));
+        const iterator = try streamOperation(state, stream, 3, stream);
+        defer engine.freeValue(iterator);
+        const iterator_state: *Iterator = @ptrCast(@alignCast(c.JS_GetOpaque(iterator, engine.event_stream_iterator_class).?));
+        const waiting = try nextIterator(iterator_state, iterator, false);
+        defer engine.freeValue(waiting);
+        const original = try engine.checked(c.JS_NewObject(engine.context));
+        defer engine.freeValue(original);
+        const event = try engine.checked(c.JS_NewObject(engine.context));
+        defer engine.freeValue(event);
+        try property(engine, event, "type", try engine.checked(c.JS_NewString(engine.context, "done")));
+        try property(engine, event, "message", c.JS_DupValue(engine.context, original));
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = fail_index });
+        engine.gpa = failing.allocator();
+        const failed = streamOperation(state, stream, 0, event);
+        engine.gpa = std.testing.allocator;
+        try std.testing.expectError(error.OutOfMemory, failed);
+        try std.testing.expect(!state.done);
+        try std.testing.expectEqual(@as(usize, 1), state.waiting.items.len);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, state.result));
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, waiting));
+        _ = try streamOperation(state, stream, 0, event);
+        const result = try engine.awaitValue(state.result);
+        defer engine.freeValue(result);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, result, original));
+        const step = try engine.awaitValue(waiting);
+        defer engine.freeValue(step);
+        const delivered = try engine.checked(c.JS_GetPropertyStr(engine.context, step, "value"));
+        defer engine.freeValue(delivered);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, delivered, event));
+    }
 }
 
 test "native EventStream producer queue overflow rejects its original result and closes after queued values" {

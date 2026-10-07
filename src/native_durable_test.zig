@@ -3,6 +3,10 @@ const engine_module = @import("extensions/engine.zig");
 const durable = @import("extensions/native_durable.zig");
 const sdk = @import("extensions/native_sdk.zig");
 const native_json = @import("durable/backend/json.zig");
+test {
+    _ = @import("extensions/native_durable_broker.zig");
+    _ = @import("extensions/native_worker.zig");
+}
 test "native durable VM stores owned numeric records and serves source ordered cursors without Node" {
     const engine = try engine_module.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();

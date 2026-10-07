@@ -438,6 +438,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     if (c.JS_NewClass(engine.runtime, node_class, &node_definition) < 0 or c.JS_NewClass(engine.runtime, constructor_class, &constructor_definition) < 0) return error.OutOfMemory;
     const exports = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(exports);
+    try @import("native_color.zig").install(engine, exports);
     const array_is_array = try components.arrayPredicate(engine);
     defer engine.freeValue(array_is_array);
     inline for (std.meta.fields(Helper)) |field| {
@@ -496,6 +497,71 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try engine.registerValueModule("@earendil-works/pi-tui", exports);
     try engine.registerValueModule("@mariozechner/pi-tui", exports);
     try engine.registerValueModule("pi-tui", exports);
+}
+
+test "native color exports preserve concrete frozen values validation and observable style reads" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    const module = try engine.evalModule(
+        \\import * as c from 'pi-tui';
+        \\const rgb=c.rgbColor(1.5,2,255), index=c.indexedColor(255), lch=c.oklchColor(.5,.2,-30);
+        \\for(const value of [rgb,index,lch,c.okhslColor(180,.5,.5),c.parseColor('#abc')])if(!Object.isFrozen(value))throw Error('unfrozen color');
+        \\if(rgb.r!==1.5||index.index!==255||lch.h!==330||c.colorToHex(c.parseColor('#abc'))!=='#aabbcc')throw Error('channels');
+        \\if(c.foregroundAnsi(rgb,'truecolor')!=='\x1b[38;2;2;2;255m'||c.backgroundAnsi(index,'truecolor')!=='\x1b[48;5;255m')throw Error('ansi');
+        \\const failures=[[()=>c.indexedColor(1.5),'ANSI color index must be an integer from 0 to 255: 1.5'],[()=>c.rgbColor('1',0,0),'r must be finite'],[()=>c.rgbColor(0,256,0),'g must be between 0 and 255: 256'],[()=>c.okhslColor(0,Infinity,-1),'s must be finite'],[()=>c.oklchColor(.5,-1,0),'c must not be negative: -1'],[()=>c.parseColor('red'),'Invalid color value: red'],[()=>c.mixColors(rgb,rgb,2),'amount must be between 0 and 1: 2']];
+        \\for(const [invoke,message]of failures){let actual;try{invoke()}catch(error){if(!(error instanceof Error))throw error;actual=error.message}if(actual!==message)throw Error(actual+' != '+message)}
+        \\const reads=[];const options={get fg(){reads.push('fg');return rgb},get bg(){reads.push('bg');return index},get bold(){reads.push('bold');return true},get dim(){reads.push('dim');return false},get italic(){reads.push('italic');return false},get underline(){reads.push('underline');return false},get inverse(){reads.push('inverse');return false},get strikethrough(){reads.push('strikethrough');return false}};
+        \\const styled=c.styleText('x',options,'truecolor');
+        \\if(styled!=='\x1b[38;2;2;2;255m\x1b[48;5;255m\x1b[1mx\x1b[22m\x1b[49m\x1b[39m')throw Error('style');
+        \\if(reads.join(',')!=='fg,fg,bg,bg,bold,dim,bold,italic,underline,inverse,strikethrough')throw Error('getter order '+reads);
+        \\const marker={};try{c.colorToRgb({get kind(){throw marker}})}catch(error){if(error!==marker)throw Error('exception identity')}
+        \\if(c.colorToRgb({kind:'other'})!==undefined)throw Error('switch fallback');
+        \\globalThis.colorRoots=[rgb,index,lch,c.mixColors(rgb,c.rgbColor(255,0,0),.5,'srgb')];
+    , "native-color-contract.mjs");
+    defer engine.freeValue(module);
+    c.JS_RunGC(engine.runtime);
+    const retained = try engine.eval("if(colorRoots[0].r!==1.5||!Object.isFrozen(colorRoots[3]))throw Error('GC roots');delete globalThis.colorRoots;", "native-color-gc.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(retained);
+    c.JS_RunGC(engine.runtime);
+}
+
+test "original color API results parser errors and all styles replay through exported native bindings" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    const fixture = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("../tui/fixtures/colors-original-7fb.json"), .{});
+    defer fixture.deinit();
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try define(engine, global, "colorOracle", try engine.fromJsonValue(fixture.value));
+    const module = try engine.evalModule(
+        \\import * as c from 'pi-tui';
+        \\function compare(expected,actual,path='root'){if(typeof expected==='number'&&typeof actual==='number'){if(Math.abs(expected-actual)>1e-10)throw Error(path+': '+expected+' != '+actual);return}if(expected&&typeof expected==='object'){if(!actual||Object.keys(expected).sort().join('|')!==Object.keys(actual).sort().join('|'))throw Error(path+' keys');for(const key of Object.keys(expected))compare(expected[key],actual[key],path+'.'+key);return}if(expected!==actual)throw Error(path+': '+expected+' != '+actual)}
+        \\for(const item of colorOracle.cases){const color=c.parseColor(item.input);compare(item.color,color,'color');compare(item.rgb,c.colorToRgb(color),'rgb');compare(item.oklch,c.colorToOklch(color),'oklch');compare(item.okhsl,c.colorToOkhsl(color),'okhsl');compare(item.hex,c.colorToHex(color),'hex');compare(item.fgTrue,c.foregroundAnsi(color,'truecolor'));compare(item.fg256,c.foregroundAnsi(color,'256color'));compare(item.bgTrue,c.backgroundAnsi(color,'truecolor'));compare(item.bg256,c.backgroundAnsi(color,'256color'));if(!Object.isFrozen(color)||Object.isFrozen(c.colorToRgb(color)))throw Error('record freeze contract')}
+        \\for(const item of colorOracle.invalid){let error=null;try{c.parseColor(item.input)}catch(caught){error=caught.message}compare(item.error,error,'invalid '+item.input)}
+        \\for(const item of colorOracle.mix){const value=c.mixColors(c.parseColor(item.first),c.parseColor(item.second),item.amount,item.space);compare(item.color,value,'mix');compare(item.rgb,c.colorToRgb(value),'mix rgb');compare(item.hex,c.colorToHex(value),'mix hex')}
+        \\for(const item of colorOracle.styles){const options=Object.fromEntries(['bold','dim','italic','underline','inverse','strikethrough'].map((name,index)=>[name,!!(item.flags&(1<<index))]));compare(item.value,c.styleTextWithAnsi('first\nsecond','\x1b[38;2;18;171;205m','\x1b[48;5;244m',options),'style '+item.flags)}delete globalThis.colorOracle;
+    , "native-color-original-all.mjs");
+    defer engine.freeValue(module);
+    c.JS_RunGC(engine.runtime);
+}
+
+test "original structural RGB exceptional magnitudes and indexed ANSI retain guest math semantics without native casts" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    const fixture = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/color-structural-original-7fb.json"), .{});
+    defer fixture.deinit();
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try define(engine, global, "structuralOracle", try engine.fromJsonValue(fixture.value));
+    const module = try engine.evalModule(
+        \\import {colorToHex,foregroundAnsi,backgroundAnsi} from 'pi-tui';
+        \\for(const item of structuralOracle.cases){const value=eval(item.input);for(const [key,actual]of [['fgTrue',foregroundAnsi(value,'truecolor')],['bgTrue',backgroundAnsi(value,'truecolor')],['fg256',foregroundAnsi(value,'256color')],...(item.hex!==undefined?[['hex',colorToHex(value)]]:[])])if(actual!==item[key])throw Error(key+' '+item.input+' '+JSON.stringify(actual)+' != '+JSON.stringify(item[key]));}delete globalThis.structuralOracle;
+    , "native-color-structural-original.mjs");
+    defer engine.freeValue(module);
+    c.JS_RunGC(engine.runtime);
 }
 
 fn themeCall(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
@@ -584,7 +650,7 @@ pub fn createTheme(engine: *engine_mod.Engine) !c.JSValue {
     inline for (.{ "fg", "bg", "bold", "dim", "italic", "underline", "inverse", "strikethrough", "getFgAnsi", "getBgAnsi", "getColorMode" }, 0..) |name, index| try define(engine, object, name, try engine.checked(c.pi_js_function_magic(engine.context, themeCall, name, if (index < 2) 2 else if (index == 10) 0 else 1, @intCast(index))));
     return object;
 }
-fn themeTrueColor(engine: *engine_mod.Engine) !bool {
+pub fn themeTrueColor(engine: *engine_mod.Engine) !bool {
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
     const process = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "process"));

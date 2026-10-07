@@ -78,6 +78,13 @@ pub const Engine = struct {
     // queue bytes, but must never call QuickJS or dispatch AbortSignal listeners.
     host_control_context: ?*anyopaque = null,
     host_control_pump: ?*const fn (*Engine) anyerror!bool = null,
+    // The notifier is synchronization-only and may be copied into worker leases.
+    // Its owner keeps the context alive until every leased worker has joined.
+    host_owner_notify_context: ?*anyopaque = null,
+    host_owner_notify: ?*const fn (?*anyopaque) void = null,
+    native_durable_control_context: ?*anyopaque = null,
+    native_durable_control_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_durable_control_deinit: ?*const fn (*Engine) void = null,
     host_scheduler_deinit: ?*const fn (*Engine) void = null,
     host_await_deadline_ms: ?i64 = null,
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
@@ -108,6 +115,7 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        self.closeDurableOwner();
         for (self.native_sdk_prototypes) |prototype| if (prototype) |value| self.freeValue(value);
         c.JS_FreeAtom(self.context, self.event_stream_async_atom);
         if (self.host_scheduler_deinit) |cleanup| cleanup(self);
@@ -496,7 +504,15 @@ pub const Engine = struct {
     /// Return a new owned result without consuming the caller's promise/value.
     pub fn pumpControls(self: *Engine) !bool {
         self.refreshUiDeadline();
-        return if (self.host_control_pump) |pump| try pump(self) else false;
+        const host_worked = if (self.host_control_pump) |pump| try pump(self) else false;
+        const durable_worked = if (self.native_durable_control_pump) |pump| try pump(self) else false;
+        return host_worked or durable_worked;
+    }
+    pub fn closeDurableOwner(self: *Engine) void {
+        if (self.native_durable_control_deinit) |cleanup| cleanup(self);
+        self.native_durable_control_context = null;
+        self.native_durable_control_pump = null;
+        self.native_durable_control_deinit = null;
     }
 
     /// Drain queued microtasks without awaiting a promise or sleeping on the
@@ -549,7 +565,7 @@ pub const Engine = struct {
                 }
                 // A native transport can settle a promise through an incoming
                 // abort or UI response even when no timer or JS job is pending.
-                if (self.host_control_pump != null and self.native_io != null) {
+                if ((self.host_control_pump != null or self.native_durable_control_pump != null) and self.native_io != null) {
                     try self.native_io.?.sleep(.fromMilliseconds(5), .awake);
                     continue;
                 }

@@ -81,7 +81,7 @@ pub fn build(b: *std.Build) void {
     });
     const catalog_tool = b.createModule(.{ .root_source_file = b.path("tools/catalog.zig"), .target = target, .optimize = optimize });
     mod.addImport("catalog_tool", catalog_tool);
-    linkQuickJs(b, mod, quickjs);
+    linkQuickJs(b, mod, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, mod, typescript_parser);
     linkDurable(b, mod);
     const sqlite_persistence_mod = b.createModule(.{
@@ -192,7 +192,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     test_mod.addImport("catalog_tool", catalog_tool);
-    linkQuickJs(b, test_mod, quickjs);
+    linkQuickJs(b, test_mod, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, test_mod, typescript_parser);
     linkSqlite(test_mod, sqlite_lib_dir, sqlite_library);
     linkDurable(b, test_mod);
@@ -281,7 +281,7 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"host SDK snapshot crosses"},
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, sdk_host_tests.root_module, quickjs);
+    linkQuickJs(b, sdk_host_tests.root_module, quickjs, sqlite_lib_dir);
     const run_sdk_host_tests = b.addRunArtifact(sdk_host_tests);
     run_sdk_host_tests.step.dependOn(&sdk_install.step);
     sdk_test_step.dependOn(&run_sdk_host_tests.step);
@@ -299,7 +299,7 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/latest_bash_output_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, latest_bash_output_tests.root_module, quickjs);
+    linkQuickJs(b, latest_bash_output_tests.root_module, quickjs, sqlite_lib_dir);
     const run_latest_bash_output_tests = b.addRunArtifact(latest_bash_output_tests);
     const latest_bash_output_step = b.step("test-latest-bash-output", "Check latest user bash ANSI stream and Android clipboard contracts");
     latest_bash_output_step.dependOn(&run_latest_bash_output_tests.step);
@@ -330,7 +330,7 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     linkDurable(b, durable_tests.root_module);
-    linkQuickJs(b, durable_tests.root_module, quickjs);
+    linkQuickJs(b, durable_tests.root_module, quickjs, sqlite_lib_dir);
     const run_durable_tests = b.addRunArtifact(durable_tests);
     run_durable_tests.step.dependOn(&install_durable_fixture.step);
     run_durable_tests.setEnvironmentVariable("PI_DURABLE_FIXTURE", durable_fixture_path);
@@ -342,7 +342,7 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"read"},
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, durable_tools_tests.root_module, quickjs);
+    linkQuickJs(b, durable_tools_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, durable_tools_tests.root_module);
     const run_durable_tools_tests = b.addRunArtifact(durable_tools_tests);
     const durable_tools_step = b.step("test-durable-tools", "Exercise bounded durable reader integration with existing native CLI tools");
@@ -389,13 +389,13 @@ pub fn build(b: *std.Build) void {
     linkDurable(b, capability_tests.root_module);
     const native_durable_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native durable VM"}, .use_llvm = use_llvm });
     linkDurable(b, native_durable_tests.root_module);
-    linkQuickJs(b, native_durable_tests.root_module, quickjs);
+    linkQuickJs(b, native_durable_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(native_durable_tests.root_module, sqlite_lib_dir, sqlite_library);
     const run_native_durable_tests = b.addRunArtifact(native_durable_tests);
     const native_durable_step = b.step("test-native-durable-vm", "Exercise native public durable VM storage and Session objects");
     native_durable_step.dependOn(&run_native_durable_tests.step);
     test_step.dependOn(&run_native_durable_tests.step);
-    linkQuickJs(b, capability_tests.root_module, quickjs);
+    linkQuickJs(b, capability_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(capability_tests.root_module, sqlite_lib_dir, sqlite_library);
     const run_capability_tests = b.addRunArtifact(capability_tests);
     if (diagnostic_tests) run_capability_tests.stdio = .inherit;
@@ -441,7 +441,7 @@ pub fn build(b: *std.Build) void {
         .filters = &.{ "durable.harness", "durable.session" },
     });
     linkSqlite(durable_harness_tests.root_module, sqlite_lib_dir, sqlite_library);
-    linkQuickJs(b, durable_harness_tests.root_module, quickjs);
+    linkQuickJs(b, durable_harness_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, durable_harness_tests.root_module);
     const run_durable_harness_tests = b.addRunArtifact(durable_harness_tests);
     const durable_harness_step = b.step("test-durable-harness", "Exercise native registry schema tool output retained invocations and committed results");
@@ -472,7 +472,7 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"durable.powershell"},
     });
     linkSqlite(durable_powershell_tests.root_module, sqlite_lib_dir, sqlite_library);
-    linkQuickJs(b, durable_powershell_tests.root_module, quickjs);
+    linkQuickJs(b, durable_powershell_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, durable_powershell_tests.root_module);
     const run_durable_powershell_tests = b.addRunArtifact(durable_powershell_tests);
     const durable_command_fixture = b.addExecutable(.{
@@ -498,7 +498,7 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"mcp.configured"},
     });
     linkDurable(b, mcp_configured_tests.root_module);
-    linkQuickJs(b, mcp_configured_tests.root_module, quickjs);
+    linkQuickJs(b, mcp_configured_tests.root_module, quickjs, sqlite_lib_dir);
     const run_mcp_configured_tests = b.addRunArtifact(mcp_configured_tests);
     const install_mcp_configured_cli = b.addInstallArtifact(exe, .{});
     run_mcp_configured_tests.step.dependOn(&install_mcp_configured_cli.step);
@@ -514,7 +514,7 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     linkDurable(b, mcp_adapter_probe.root_module);
-    linkQuickJs(b, mcp_adapter_probe.root_module, quickjs);
+    linkQuickJs(b, mcp_adapter_probe.root_module, quickjs, sqlite_lib_dir);
     const install_mcp_adapter_probe = b.addInstallArtifact(mcp_adapter_probe, .{});
     const mcp_adapter_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_adapter_integration_test.zig"), .target = target, .optimize = optimize }),
@@ -522,7 +522,7 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"mcp.adapter"},
     });
     linkDurable(b, mcp_adapter_tests.root_module);
-    linkQuickJs(b, mcp_adapter_tests.root_module, quickjs);
+    linkQuickJs(b, mcp_adapter_tests.root_module, quickjs, sqlite_lib_dir);
     const run_mcp_adapter_tests = b.addRunArtifact(mcp_adapter_tests);
     const install_mcp_adapter_cli = b.addInstallArtifact(exe, .{});
     run_mcp_adapter_tests.step.dependOn(&install_mcp_adapter_cli.step);
@@ -545,7 +545,7 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     linkDurable(b, mcp_process_tests.root_module);
-    linkQuickJs(b, mcp_process_tests.root_module, quickjs);
+    linkQuickJs(b, mcp_process_tests.root_module, quickjs, sqlite_lib_dir);
     const run_mcp_process_tests = b.addRunArtifact(mcp_process_tests);
     run_mcp_process_tests.step.dependOn(&install_mcp_fixture.step);
     const mcp_test_step = b.step("test-mcp-stdio", "Exercise real native MCP pipe framing and protocol negotiation");
@@ -553,7 +553,7 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_oauth_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, mcp_oauth_tests.root_module, quickjs);
+    linkQuickJs(b, mcp_oauth_tests.root_module, quickjs, sqlite_lib_dir);
     const run_mcp_oauth_tests = b.addRunArtifact(mcp_oauth_tests);
     const mcp_oauth_step = b.step("test-mcp-oauth", "Exercise native MCP OAuth registration and issuer contracts");
     mcp_oauth_step.dependOn(&run_mcp_oauth_tests.step);
@@ -573,14 +573,14 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
         .filters = &.{"native codemode"},
     });
-    linkQuickJs(b, codemode_tests.root_module, quickjs);
+    linkQuickJs(b, codemode_tests.root_module, quickjs, sqlite_lib_dir);
     const run_codemode_tests = b.addRunArtifact(codemode_tests);
     const codemode_step = b.step("test-codemode", "Exercise isolated native codemode user scripts and Zig host callbacks");
     codemode_step.dependOn(&run_codemode_tests.step);
     test_step.dependOn(&run_codemode_tests.step);
     const nested_module = b.createModule(.{ .root_source_file = b.path("src/codemode_nested_pipeline_test.zig"), .target = target, .optimize = optimize });
     nested_module.addImport("catalog_tool", catalog_tool);
-    linkQuickJs(b, nested_module, quickjs);
+    linkQuickJs(b, nested_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, nested_module, typescript_parser);
     linkDurable(b, nested_module);
     const nested_tests = b.addTest(.{ .root_module = nested_module, .use_llvm = use_llvm, .filters = &.{"native codemode nested pipeline"} });
@@ -601,7 +601,7 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"mcp.runtime"},
     });
     linkDurable(b, mcp_runtime_tests.root_module);
-    linkQuickJs(b, mcp_runtime_tests.root_module, quickjs);
+    linkQuickJs(b, mcp_runtime_tests.root_module, quickjs, sqlite_lib_dir);
     const run_mcp_runtime_tests = b.addRunArtifact(mcp_runtime_tests);
     const mcp_runtime_fixture = b.addExecutable(.{
         .name = "pi-mcp-runtime-fixture",
@@ -631,7 +631,7 @@ pub fn build(b: *std.Build) void {
         }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, engine_tests.root_module, quickjs);
+    linkQuickJs(b, engine_tests.root_module, quickjs, sqlite_lib_dir);
     const run_engine_tests = b.addRunArtifact(engine_tests);
     const engine_test_step = b.step("test-extension-engine", "Test the directly linked extension-language engine");
     engine_test_step.dependOn(&run_engine_tests.step);
@@ -640,7 +640,7 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/commonjs.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, commonjs_tests.root_module, quickjs);
+    linkQuickJs(b, commonjs_tests.root_module, quickjs, sqlite_lib_dir);
     const run_commonjs_tests = b.addRunArtifact(commonjs_tests);
     const commonjs_test_step = b.step("test-extension-commonjs", "Test native CommonJS cache and module ownership");
     commonjs_test_step.dependOn(&run_commonjs_tests.step);
@@ -649,7 +649,7 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_buffer.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, buffer_tests.root_module, quickjs);
+    linkQuickJs(b, buffer_tests.root_module, quickjs, sqlite_lib_dir);
     const run_buffer_tests = b.addRunArtifact(buffer_tests);
     const buffer_test_step = b.step("test-extension-buffer", "Test native extension Buffer views and encodings");
     buffer_test_step.dependOn(&run_buffer_tests.step);
@@ -658,7 +658,7 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/typebox.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, schema_tests.root_module, quickjs);
+    linkQuickJs(b, schema_tests.root_module, quickjs, sqlite_lib_dir);
     const run_schema_tests = b.addRunArtifact(schema_tests);
     const schema_test_step = b.step("test-extension-schemas", "Test native extension schema bindings");
     schema_test_step.dependOn(&run_schema_tests.step);
@@ -667,8 +667,17 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_bindings_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, binding_tests.root_module, quickjs);
+    linkQuickJs(b, binding_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, binding_tests.root_module);
+    binding_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const sdk_stream_ownership_tests = b.addTest(.{
+        .root_module = binding_tests.root_module,
+        .filters = &.{ "SDK lazy chat stream continuation", "terminal admission allocation" },
+        .use_llvm = use_llvm,
+    });
+    const sdk_stream_ownership_run = b.addRunArtifact(sdk_stream_ownership_tests);
+    const sdk_stream_ownership_step = b.step("test-sdk-stream-ownership", "Exercise SDK stream continuations and atomic terminal allocation ownership");
+    sdk_stream_ownership_step.dependOn(&sdk_stream_ownership_run.step);
     const run_binding_tests = b.addRunArtifact(binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
     binding_test_step.dependOn(&run_binding_tests.step);
@@ -677,7 +686,7 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_fs.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, filesystem_tests.root_module, quickjs);
+    linkQuickJs(b, filesystem_tests.root_module, quickjs, sqlite_lib_dir);
     const run_filesystem_tests = b.addRunArtifact(filesystem_tests);
     const filesystem_test_step = b.step("test-extension-filesystem", "Test native extension filesystem APIs");
     filesystem_test_step.dependOn(&run_filesystem_tests.step);
@@ -686,7 +695,7 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_path.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, path_tests.root_module, quickjs);
+    linkQuickJs(b, path_tests.root_module, quickjs, sqlite_lib_dir);
     const run_path_tests = b.addRunArtifact(path_tests);
     const path_test_step = b.step("test-extension-path", "Test native cross-platform extension path APIs");
     path_test_step.dependOn(&run_path_tests.step);
@@ -695,7 +704,7 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_url.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, url_tests.root_module, quickjs);
+    linkQuickJs(b, url_tests.root_module, quickjs, sqlite_lib_dir);
     const run_url_tests = b.addRunArtifact(url_tests);
     const url_test_step = b.step("test-extension-url", "Test native file URL conversion for extensions");
     url_test_step.dependOn(&run_url_tests.step);
@@ -704,7 +713,7 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/console.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, console_tests.root_module, quickjs);
+    linkQuickJs(b, console_tests.root_module, quickjs, sqlite_lib_dir);
     const run_console_tests = b.addRunArtifact(console_tests);
     const console_test_step = b.step("test-extension-console", "Test native console formatting and builtin module identity");
     console_test_step.dependOn(&run_console_tests.step);
@@ -721,7 +730,7 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/text_encoding.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, encoding_tests.root_module, quickjs);
+    linkQuickJs(b, encoding_tests.root_module, quickjs, sqlite_lib_dir);
     const run_encoding_tests = b.addRunArtifact(encoding_tests);
     const encoding_test_step = b.step("test-extension-encoding", "Test native text encoding host APIs");
     encoding_test_step.dependOn(&run_encoding_tests.step);
@@ -731,7 +740,7 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"native autocomplete"},
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, autocomplete_tests.root_module, quickjs);
+    linkQuickJs(b, autocomplete_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, autocomplete_tests.root_module, typescript_parser);
     const run_autocomplete_tests = b.addRunArtifact(autocomplete_tests);
     const autocomplete_step = b.step("test-editor-autocomplete", "Exercise native asynchronous editor providers cancellation selection and UTF16 completion positions");
@@ -742,7 +751,7 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"native editor"},
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, editor_owner_tests.root_module, quickjs);
+    linkQuickJs(b, editor_owner_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, editor_owner_tests.root_module, typescript_parser);
     const run_editor_owner_tests = b.addRunArtifact(editor_owner_tests);
     const editor_owner_step = b.step("test-custom-editor", "Exercise native editor classes persistent factories and callback owner teardown");
@@ -753,7 +762,7 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"custom editor frontend"},
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, editor_frontend_tests.root_module, quickjs);
+    linkQuickJs(b, editor_frontend_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, editor_frontend_tests.root_module, typescript_parser);
     const run_editor_frontend_tests = b.addRunArtifact(editor_frontend_tests);
     const editor_frontend_step = b.step("test-custom-editor-components", "Exercise custom editor fullscreen frame/input/snapshot ownership and close fences");
@@ -764,7 +773,7 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"renderer control arrives"},
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, renderer_control_race_tests.root_module, quickjs);
+    linkQuickJs(b, renderer_control_race_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, renderer_control_race_tests.root_module, typescript_parser);
     const run_renderer_control_race_tests = b.addRunArtifact(renderer_control_race_tests);
     const renderer_control_race_step = b.step("test-renderer-control-race", "Exercise persistent renderer controls arriving between owner pump and FIFO dequeue");
@@ -1093,7 +1102,7 @@ pub fn build(b: *std.Build) void {
         }),
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, typescript_tests.root_module, quickjs);
+    linkQuickJs(b, typescript_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, typescript_tests.root_module, typescript_parser);
     const run_typescript_tests = b.addRunArtifact(typescript_tests);
     const typescript_test_step = b.step("test-extension-typescript", "Test native extension input transformation");
@@ -1129,7 +1138,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     duration_module.addImport("catalog_tool", catalog_tool);
-    linkQuickJs(b, duration_module, quickjs);
+    linkQuickJs(b, duration_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, duration_module, typescript_parser);
     linkSqlite(duration_module, sqlite_lib_dir, sqlite_library);
     linkDurable(b, duration_module);
@@ -1202,7 +1211,8 @@ fn linkTypeScriptParser(b: *std.Build, module: *std.Build.Module, library: *std.
     module.link_libc = true;
 }
 
-fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Step.Compile) void {
+fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Step.Compile, sqlite_lib_dir: ?[]const u8) void {
+    if (sqlite_lib_dir) |directory| module.addLibraryPath(.{ .cwd_relative = directory });
     module.addIncludePath(b.path("vendor/quickjs"));
     module.addIncludePath(b.path("src/extensions"));
     module.linkLibrary(library);

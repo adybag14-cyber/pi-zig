@@ -148,6 +148,9 @@ pub const ChatImage = struct {
 pub const ChatMessage = struct {
     role: []const u8,
     content: []const u8,
+    /// SDK text-block arrays retain their wire representation even without
+    /// images. Native CLI text messages keep the default string form.
+    content_as_array: bool = false,
     /// Internal allocator-ownership marker used by context projections that
     /// synthesize summary wrappers. Provider serializers ignore this field.
     owned_content: bool = false,

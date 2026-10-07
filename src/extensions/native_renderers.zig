@@ -71,7 +71,7 @@ pub const Manager = struct {
         _ = c.JS_SetOpaque(token, handle);
         const predicate = try components.arrayPredicate(engine);
         errdefer engine.freeValue(predicate);
-        const theme = try native_tui.createTheme(engine);
+        const theme = try @import("native_theme.zig").current(engine);
         errdefer engine.freeValue(theme);
         const self = try engine.gpa.create(Manager);
         self.* = .{ .engine = engine, .token = token, .token_class = class, .array_predicate = predicate, .theme = theme };

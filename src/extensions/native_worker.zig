@@ -189,6 +189,10 @@ const Transport = struct {
                 if (failure) |err| return err;
                 return null;
             }
+            // A background owner request may have notified between pumpIdle
+            // and the wire queue reset. Drain after reset before waiting so
+            // its notification cannot be lost while stdin is otherwise idle.
+            if (self.engine.native_durable_control_pump != null and try self.engine.pumpControls()) continue;
             if (deadline) |due| {
                 const remaining = due - std.Io.Clock.awake.now(self.io).toMilliseconds();
                 if (remaining <= 0) continue;
@@ -208,6 +212,10 @@ const Transport = struct {
         _ = try self.group.ui.editors.pumpDirty();
         _ = try self.group.ui.widgets.pumpDirty();
         _ = try self.group.ui.footer_data.poll();
+    }
+    fn notifyOwner(raw: ?*anyopaque) void {
+        const self: *Transport = @ptrCast(@alignCast(raw.?));
+        self.available.set(self.io);
     }
 
     fn publishMetadataSafe(self: *Transport) !void {
@@ -955,6 +963,76 @@ test "native tool result projection preserves text images details and usage" {
     try std.testing.expect(parsed.value.object.contains("details") and parsed.value.object.contains("usage"));
 }
 
+test "native durable VM background notifier survives the wire reset and drains on owner before idle wait" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = io;
+    try timers.install(engine, io);
+    const group = try native_group.Group.init(engine);
+    defer group.deinit();
+    const binding = try group.add("durable-owner-notifier-fixture.mjs");
+    var output: std.Io.Writer.Allocating = .init(gpa);
+    defer output.deinit();
+    var transport: Transport = .{ .engine = engine, .bindings = binding, .io = io, .writer = &output.writer, .group = group };
+    defer transport.deinit();
+    const Probe = struct {
+        transport: *Transport,
+        owner: std.Thread.Id,
+        release_worker: std.Io.Event = .unset,
+        notified: std.Io.Event = .unset,
+        queued: std.atomic.Value(bool) = .init(false),
+        first_pump: bool = true,
+        reset_seen: bool = false,
+        worker_thread: std.Thread.Id = 0,
+        notify: *const fn (?*anyopaque) void,
+        notify_context: ?*anyopaque,
+        fn worker(self: *@This()) void {
+            self.release_worker.waitUncancelable(self.transport.io);
+            self.worker_thread = std.Thread.getCurrentId();
+            self.queued.store(true, .release);
+            self.notify(self.notify_context);
+            self.notified.set(self.transport.io);
+        }
+        fn pump(current: *engine_mod.Engine) !bool {
+            const self: *@This() = @ptrCast(@alignCast(current.native_durable_control_context.?));
+            try std.testing.expectEqual(self.owner, std.Thread.getCurrentId());
+            if (self.first_pump) {
+                self.first_pump = false;
+                self.release_worker.set(self.transport.io);
+                self.notified.waitUncancelable(self.transport.io);
+                try std.testing.expect(self.transport.available.isSet());
+                return false; // Notification arrives after the first drain check.
+            }
+            if (!self.queued.swap(false, .acq_rel)) return false;
+            self.reset_seen = !self.transport.available.isSet();
+            const bytes = try std.heap.page_allocator.dupe(u8, "{\"kind\":\"durable-delivered\"}");
+            errdefer std.heap.page_allocator.free(bytes);
+            try self.transport.enqueue(bytes);
+            return true;
+        }
+    };
+    engine.host_owner_notify_context = &transport;
+    engine.host_owner_notify = Transport.notifyOwner;
+    var probe: Probe = .{ .transport = &transport, .owner = std.Thread.getCurrentId(), .notify = engine.host_owner_notify.?, .notify_context = engine.host_owner_notify_context };
+    engine.native_durable_control_context = &probe;
+    engine.native_durable_control_pump = Probe.pump;
+    defer {
+        engine.native_durable_control_context = null;
+        engine.native_durable_control_pump = null;
+        engine.host_owner_notify = null;
+        engine.host_owner_notify_context = null;
+    }
+    const thread = try std.Thread.spawn(.{}, Probe.worker, .{&probe});
+    const record = (try transport.next()).?;
+    defer std.heap.page_allocator.free(record.bytes);
+    thread.join();
+    try std.testing.expect(probe.worker_thread != probe.owner);
+    try std.testing.expect(probe.reset_seen);
+    try std.testing.expectEqualStrings("{\"kind\":\"durable-delivered\"}", record.bytes);
+}
+
 fn loadSource(gpa: std.mem.Allocator, io: std.Io, engine: *engine_mod.Engine, loader: *Loader, binding: *bindings_mod.Bindings, extension_path: []const u8) !void {
     const absolute = try std.Io.Dir.cwd().realPathFileAlloc(io, extension_path, gpa);
     defer gpa.free(absolute);
@@ -1131,9 +1209,16 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     }
     engine.host_control_context = &transport;
     engine.host_control_pump = Transport.pump;
+    engine.host_owner_notify_context = &transport;
+    engine.host_owner_notify = Transport.notifyOwner;
     bindings.ui_manager.bridge = .{ .context = &transport, .request = Transport.uiRequest, .action = Transport.uiAction, .cancel = Transport.uiCancel, .component_scene = Transport.componentScene, .component_close = Transport.componentClose };
     defer bindings.ui_manager.bridge = null;
     defer {
+        // Retire and join durable workers while their notifier and transport
+        // are still alive, before dropping owner control callbacks.
+        engine.closeDurableOwner();
+        engine.host_owner_notify = null;
+        engine.host_owner_notify_context = null;
         engine.host_control_context = null;
         engine.host_control_pump = null;
     }

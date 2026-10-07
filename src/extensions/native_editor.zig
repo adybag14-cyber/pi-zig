@@ -286,7 +286,7 @@ pub fn install(engine: *engine_mod.Engine, tui_exports: c.JSValue) !void {
     defer engine.freeValue(function_prototype);
     const coding = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(coding);
-    try put(engine, coding, "VERSION", try engine.checked(c.JS_NewString(engine.context, @import("../config.zig").version)));
+    try put(engine, coding, "VERSION", try engine.checked(c.JS_NewString(engine.context, @import("../config.zig").upstream_api_version)));
     var editor_constructor = c.pi_js_undefined();
     defer engine.freeValue(editor_constructor);
     var editor_prototype = c.pi_js_undefined();
@@ -318,6 +318,7 @@ pub fn install(engine: *engine_mod.Engine, tui_exports: c.JSValue) !void {
     }
     try @import("native_sdk.zig").install(engine, coding);
     try @import("native_durable.zig").install(engine);
+    try @import("native_theme.zig").install(engine, coding);
     try engine.registerValueModule("@earendil-works/pi-coding-agent", coding);
     try engine.registerValueModule("@mariozechner/pi-coding-agent", coding);
     try engine.registerValueModule("pi-coding-agent", coding);

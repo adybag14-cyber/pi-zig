@@ -122,7 +122,7 @@ pub const Manager = struct {
         errdefer footer_data.deinit();
         var input_listeners = try terminal_input.Manager.init(engine);
         errdefer input_listeners.deinit();
-        const theme = try native_tui.createTheme(engine);
+        const theme = try @import("native_theme.zig").current(engine);
         errdefer engine.freeValue(theme);
         const keybindings = try native_tui.createKeybindings(engine);
         errdefer engine.freeValue(keybindings);
@@ -162,7 +162,7 @@ pub const Manager = struct {
             try self.footer_data.update(context);
             const resource = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "themeResource"));
             defer self.engine.freeValue(resource);
-            if (c.JS_IsObject(resource)) try native_tui.hydrateTheme(self.engine, self.theme, resource);
+            if (c.JS_IsObject(resource)) try @import("native_theme.zig").hydrate(self.engine, resource);
             const available = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "hasUI"));
             defer self.engine.freeValue(available);
             self.has_ui = c.JS_ToBool(self.engine.context, available) != 0;

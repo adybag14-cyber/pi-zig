@@ -2,6 +2,53 @@
 const std = @import("std");
 const json = @import("protocol.zig").json;
 const url = @import("../extensions/url_parser.zig");
+pub fn clientInformation(gpa: std.mem.Allocator, bytes: []const u8) !json.Owned {
+    var parsed = try json.Owned.parse(gpa, bytes);
+    errdefer parsed.deinit();
+    if (parsed.value != .object) return error.InvalidOAuthClientInformation;
+    const client_id = parsed.value.object.get("client_id") orelse return error.InvalidOAuthClientId;
+    if (client_id != .string or client_id.string.len == 0) return error.InvalidOAuthClientId;
+    if (parsed.value.object.get("client_secret")) |secret| {
+        if (secret == .null or (secret == .string and secret.string.len == 0)) _ = parsed.value.object.orderedRemove("client_secret") else if (secret != .string) return error.InvalidOAuthClientSecret;
+    }
+    for ([_][]const u8{ "client_id_issued_at", "client_secret_expires_at" }) |name| if (parsed.value.object.get(name)) |value| {
+        if (value != .float and value != .integer) _ = parsed.value.object.orderedRemove(name);
+    };
+    if (parsed.value.object.get("redirect_uris")) |redirects| {
+        if (redirects == .null) {
+            try parsed.value.object.put(parsed.arena.allocator(), "redirect_uris", .{ .array = .init(parsed.arena.allocator()) });
+        } else {
+            if (redirects != .array) return error.InvalidOAuthRedirectUris;
+            for (redirects.array.items) |redirect| if (redirect != .string) return error.InvalidOAuthRedirectUris;
+        }
+    } else try parsed.value.object.put(parsed.arena.allocator(), "redirect_uris", .{ .array = .init(parsed.arena.allocator()) });
+    return parsed;
+}
+pub fn clientInformationError(cause: anyerror) []const u8 {
+    return switch (cause) {
+        error.InvalidOAuthClientInformation => "Invalid OAuth client registration response",
+        error.InvalidOAuthClientId => "Invalid client_id",
+        error.InvalidOAuthClientSecret => "Invalid client_secret",
+        error.InvalidOAuthRedirectUris => "Invalid redirect_uris",
+        else => @errorName(cause),
+    };
+}
+
+test "mcp.runtime OAuth client registration parser retains actual original normalization and errors" {
+    const gpa = std.testing.allocator;
+    var fixture = try json.Owned.parse(gpa, @embedFile("fixtures/oauth-registration-7fb.json"));
+    defer fixture.deinit();
+    for (json.get(fixture.value, "information").?.array.items) |row| {
+        const input = try json.stringify(gpa, json.get(row, "input").?);
+        defer gpa.free(input);
+        var result = clientInformation(gpa, input) catch |cause| {
+            try std.testing.expectEqualStrings(try json.asString(json.get(row, "error").?), clientInformationError(cause));
+            continue;
+        };
+        defer result.deinit();
+        try std.testing.expect(json.equal(json.get(row, "result").?, result.value));
+    }
+}
 pub fn endpoint(gpa: std.mem.Allocator, text: []const u8) !void {
     var parsed = try url.parse(gpa, text, null);
     defer parsed.deinit(gpa);

@@ -1609,7 +1609,7 @@ pub fn buildRequestBodyConfigured(
         const add_cache_to_message = cache_anthropic and
             ((first_instruction_index != null and first_instruction_index.? == msg_index) or
                 (last_cacheable_conversation_index != null and last_cacheable_conversation_index.? == msg_index));
-        if (msg.hasImages()) {
+        if (msg.hasImages() or msg.content_as_array) {
             try w.writeAll(",\"content\":[{\"type\":\"text\",\"text\":");
             try std.json.Stringify.value(replay_content, .{}, w);
             if (add_cache_to_message) try writeAnthropicCacheControlField(w, cache_long_ttl);

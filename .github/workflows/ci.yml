@@ -83,6 +83,10 @@ jobs:
           if [[ -n "${PI_SQLITE_LIB_DIR:-}" ]]; then
             zig build test test-provider-contracts -j2 --summary all -Dsqlite-lib-dir="$PI_SQLITE_LIB_DIR"
           else
+            if [[ "${{ runner.os }}" == "macOS" ]]; then
+              export PI_CODEMODE_ALLOCATION_SHARD=0
+              export PI_CODEMODE_ALLOCATION_SHARDS=4
+            fi
             zig build test test-provider-contracts -j2 --summary all
           fi
 
@@ -100,3 +104,23 @@ jobs:
           else
             ./zig-out/bin/pi --version
           fi
+
+  codemode-allocation:
+    name: macOS codemode allocation (${{ matrix.shard }})
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Exhaustive codemode allocation shard
+        timeout-minutes: 10
+        env:
+          PI_CODEMODE_ALLOCATION_SHARD: ${{ matrix.shard }}
+          PI_CODEMODE_ALLOCATION_SHARDS: "4"
+        run: zig build test-codemode -j2 --summary all

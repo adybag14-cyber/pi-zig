@@ -27,15 +27,52 @@ pub const TokenOptions = struct {
     supported_methods: []const []const u8 = &.{},
     preferred_method: ?[]const u8 = null,
 };
+pub fn register(client: oauth_http.Client, issuer: []const u8, metadata: ?json.Value, client_metadata: json.Value, scope: ?[]const u8) !json.Owned {
+    const gpa = client.gpa;
+    var owner = try json.Owned.empty(gpa);
+    defer owner.deinit();
+    const a = owner.arena.allocator();
+    owner.value = try json.clone(a, client_metadata);
+    if (owner.value != .object) return error.InvalidOAuthClientMetadata;
+    if (json.get(owner.value, "application_type") == null or json.get(owner.value, "application_type").? == .null) {
+        var native = false;
+        if (json.get(owner.value, "redirect_uris")) |redirects| if (redirects == .array) {
+            for (redirects.array.items) |redirect| {
+                if (redirect != .string) continue;
+                var record = urls.parse(gpa, redirect.string, null) catch |cause| {
+                    if (cause == error.OutOfMemory) return cause;
+                    continue;
+                };
+                defer record.deinit(gpa);
+                const host = record.host orelse "";
+                if ((!std.mem.eql(u8, record.scheme, "http") and !std.mem.eql(u8, record.scheme, "https")) or std.mem.eql(u8, host, "localhost") or std.mem.eql(u8, host, "127.0.0.1") or std.mem.eql(u8, host, "[::1]")) native = true;
+            }
+        };
+        try owner.value.object.put(a, "application_type", .{ .string = if (native) "native" else "web" });
+    }
+    if (scope) |value| if (value.len != 0) try owner.value.object.put(a, "scope", .{ .string = try a.dupe(u8, value) });
+    if (metadata) |value| {
+        const endpoint = json.get(value, "registration_endpoint") orelse return error.OAuthDynamicRegistrationUnsupported;
+        return client.registerClient(try json.asString(endpoint), owner.value);
+    }
+    var issuer_record = try urls.parse(gpa, issuer, null);
+    defer issuer_record.deinit(gpa);
+    var endpoint = try urls.parse(gpa, "/register", &issuer_record);
+    defer endpoint.deinit(gpa);
+    const location = try urls.serialize(gpa, endpoint);
+    defer gpa.free(location);
+    return client.registerClient(location, owner.value);
+}
 fn method(options: TokenOptions) []const u8 {
+    const has_secret = if (options.client_secret) |secret| secret.len != 0 else false;
     if (options.preferred_method) |hint| if (std.mem.eql(u8, hint, "client_secret_basic") or std.mem.eql(u8, hint, "client_secret_post") or std.mem.eql(u8, hint, "none")) {
         if (options.supported_methods.len == 0) return hint;
         for (options.supported_methods) |supported| if (std.mem.eql(u8, hint, supported)) return hint;
     };
-    if (options.supported_methods.len == 0) return if (options.client_secret != null) "client_secret_basic" else "none";
-    if (options.client_secret != null) for ([_][]const u8{ "client_secret_basic", "client_secret_post" }) |candidate| for (options.supported_methods) |supported| if (std.mem.eql(u8, candidate, supported)) return candidate;
+    if (options.supported_methods.len == 0) return if (has_secret) "client_secret_basic" else "none";
+    if (has_secret) for ([_][]const u8{ "client_secret_basic", "client_secret_post" }) |candidate| for (options.supported_methods) |supported| if (std.mem.eql(u8, candidate, supported)) return candidate;
     for (options.supported_methods) |supported| if (std.mem.eql(u8, supported, "none")) return "none";
-    return if (options.client_secret != null) "client_secret_post" else "none";
+    return if (has_secret) "client_secret_post" else "none";
 }
 fn token(client: oauth_http.Client, options: TokenOptions, fields: *std.ArrayList(FormField)) !json.Owned {
     const selected = method(options);
@@ -45,6 +82,7 @@ fn token(client: oauth_http.Client, options: TokenOptions, fields: *std.ArrayLis
     var headers: [1]std.http.Header = undefined;
     if (std.mem.eql(u8, selected, "client_secret_basic")) {
         const secret = options.client_secret orelse return error.OAuthClientSecretRequired;
+        if (secret.len == 0) return error.OAuthClientSecretRequired;
         const credentials = try std.fmt.allocPrint(client.gpa, "{s}:{s}", .{ options.client_id, secret });
         defer client.gpa.free(credentials);
         const encoded = try client.gpa.alloc(u8, std.base64.standard.Encoder.calcSize(credentials.len));
@@ -55,7 +93,7 @@ fn token(client: oauth_http.Client, options: TokenOptions, fields: *std.ArrayLis
         configured.request_headers = &headers;
     } else {
         try fields.append(client.gpa, .{ .name = "client_id", .value = options.client_id });
-        if (std.mem.eql(u8, selected, "client_secret_post")) if (options.client_secret) |secret| try fields.append(client.gpa, .{ .name = "client_secret", .value = secret });
+        if (std.mem.eql(u8, selected, "client_secret_post")) if (options.client_secret) |secret| if (secret.len != 0) try fields.append(client.gpa, .{ .name = "client_secret", .value = secret });
     }
     if (options.resource) |resource| try fields.append(client.gpa, .{ .name = "resource", .value = resource });
     const body = try form(client.gpa, fields.items);
@@ -218,4 +256,30 @@ test "mcp.runtime OAuth refresh negotiates source Basic and POST client auth and
         try std.testing.expectEqualStrings("read write", try protocol.text(result.value, "scope"));
         try server.finish();
     }
+}
+
+test "mcp.runtime OAuth dynamic registration sends source application type scope and parsed client ownership" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var original = try json.Owned.parse(gpa, @embedFile("fixtures/oauth-registration-7fb.json"));
+    defer original.deinit();
+    for (json.get(original.value, "registrations").?.array.items) |row| {
+        const expected = json.get(row, "result").?;
+        const response_body = try json.stringify(gpa, expected);
+        defer gpa.free(response_body);
+        const server = try @import("../ai/http_fixture.zig").PlanServer.init(gpa, io, &.{.{ .path = "/register", .body = response_body, .expected_request_headers = &.{.{ .name = "content-type", .value = "application/json" }} }});
+        defer server.deinit();
+        const issuer = try server.url(gpa, "/tenant");
+        defer gpa.free(issuer);
+        var result = try register(.{ .gpa = gpa, .io = io }, issuer, null, json.get(row, "clientMetadata").?, "read write");
+        defer result.deinit();
+        try std.testing.expect(json.equal(expected, result.value));
+        try server.finish();
+        var sent = try json.Owned.parse(gpa, server.captured.items[0].payload);
+        defer sent.deinit();
+        try std.testing.expect(json.equal(json.get(json.get(row, "request").?, "metadata").?, sent.value));
+    }
+    var empty = try json.Owned.parse(gpa, "{}");
+    defer empty.deinit();
+    try std.testing.expectError(error.OAuthDynamicRegistrationUnsupported, register(.{ .gpa = gpa, .io = io }, "https://issuer.example", empty.value, empty.value, null));
 }

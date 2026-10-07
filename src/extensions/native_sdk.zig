@@ -299,6 +299,10 @@ fn promptJob(context: ?*c.JSContext, argc: c_int, args: [*c]c.JSValue) callconv(
         rejection = c.JS_GetException(context);
     };
     self.running = false;
+    const idle_resolve = get(engine, self.data, "promptIdleResolve") catch return c.JS_ThrowOutOfMemory(context);
+    defer engine.freeValue(idle_resolve);
+    const idle_result = c.JS_Call(context, idle_resolve, c.pi_js_undefined(), 0, null);
+    engine.freeValue(idle_result);
     const value = rejection orelse c.pi_js_undefined();
     defer if (rejection) |held| engine.freeValue(held);
     var values = [_]c.JSValue{value};
@@ -313,6 +317,16 @@ fn startPrompt(self: *State, receiver: c.JSValue, args: []const c.JSValue) !c.JS
     const result = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
     errdefer engine.freeValue(result);
     defer for (functions) |function| engine.freeValue(function);
+    if (!engine.abort_signals_ready) try @import("abort_signal.zig").install(engine);
+    const signal = try @import("abort_signal.zig").create(engine);
+    defer engine.freeValue(signal);
+    try put(engine, self.data, "promptSignal", c.JS_DupValue(engine.context, signal));
+    var idle_functions: [2]c.JSValue = undefined;
+    const idle = try engine.checked(c.JS_NewPromiseCapability(engine.context, &idle_functions));
+    defer engine.freeValue(idle);
+    defer for (idle_functions) |function| engine.freeValue(function);
+    try put(engine, self.data, "promptIdle", c.JS_DupValue(engine.context, idle));
+    try put(engine, self.data, "promptIdleResolve", c.JS_DupValue(engine.context, idle_functions[0]));
     var task = [_]c.JSValue{ receiver, args[0], if (args.len > 1) args[1] else c.pi_js_undefined(), functions[0], functions[1] };
     if (c.JS_EnqueueJob(engine.context, promptJob, task.len, &task) < 0) return error.OutOfMemory;
     self.running = true;
@@ -344,7 +358,15 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
         try put(engine, system, "content", try text(engine, ""));
         const sections = try object(engine);
         defer engine.freeValue(sections);
-        try put(engine, sections, "custom", try get(engine, self.data, "systemPrompt"));
+        try put(engine, sections, "preamble", try get(engine, self.data, "systemPrompt"));
+        const working_value = try invoke(engine, manager, "getCwd", &.{});
+        defer engine.freeValue(working_value);
+        const working = try engine.toString(working_value);
+        defer engine.gpa.free(working);
+        std.mem.replaceScalar(u8, working, '\\', '/');
+        const section_cwd = try std.fmt.allocPrint(engine.gpa, "<cwd>\n{s}\n</cwd>", .{working});
+        defer engine.gpa.free(section_cwd);
+        try put(engine, sections, "cwd", try text(engine, section_cwd));
         try put(engine, system, "sections", c.JS_DupValue(engine.context, sections));
         try put(engine, system, "timestamp", c.JS_NewInt64(engine.context, if (engine.native_io) |io| std.Io.Clock.real.now(io).toMilliseconds() else 0));
         try emitMessage(self, "message_start", system);
@@ -379,6 +401,7 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
         const options = try object(engine);
         defer engine.freeValue(options);
         try put(engine, options, "reasoning", try get(engine, self.data, "thinkingLevel"));
+        try put(engine, options, "signal", try get(engine, self.data, "promptSignal"));
         const streamed = try invoke(engine, runtime, "streamSimple", &.{ model, ctx, options });
         defer engine.freeValue(streamed);
         const stream = try engine.awaitValue(streamed);
@@ -1501,6 +1524,12 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         }
         if (operation == .abort) {
             self.aborted = true;
+            const signal = try get(engine, self.data, "promptSignal");
+            defer engine.freeValue(signal);
+            if (c.JS_IsObject(signal)) try @import("abort_signal.zig").abort(engine, signal, c.pi_js_undefined());
+            if (self.running) {
+                return get(engine, self.data, "promptIdle");
+            }
             return promise(engine, c.pi_js_undefined());
         }
         if (operation == .bindExtensions) {
@@ -1577,6 +1606,12 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
     }
     if (self.kind == .settings_manager) return settingsDispatch(self, operation, args);
     if (self.kind == .model_runtime) {
+        if (operation == .streamSimple or operation == .completeSimple) {
+            const stream = try @import("native_sdk_chat.zig").stream(engine, receiver, self.data, args);
+            if (operation == .streamSimple) return stream;
+            defer engine.freeValue(stream);
+            return invoke(engine, stream, "result", &.{});
+        }
         if (operation == .getAvailable) return @import("native_sdk_availability.zig").getAvailable(engine, receiver, args);
         if (operation == .registerNativeProvider or operation == .registerProvider or operation == .unregisterProvider) {
             const result = try modelDispatch(self, operation, args);

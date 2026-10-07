@@ -199,6 +199,7 @@ pub fn seedBuiltins(engine: *engine_mod.Engine, catalog: c.JSValue) !void {
         try sdk.put(engine, auth, "apiKey", c.JS_DupValue(engine.context, method));
         try sdk.put(engine, provider, "auth", c.JS_DupValue(engine.context, auth));
         try @import("native_sdk_operations.zig").install(engine, provider);
+        try @import("native_sdk_chat_transport.zig").install(engine, provider);
         const registered = try sdk.invoke(engine, catalog, "setProvider", &.{provider});
         engine.freeValue(registered);
     }

@@ -2,6 +2,39 @@ const std = @import("std");
 const builtin = @import("builtin");
 const http_fixture = @import("ai/http_fixture.zig");
 const EnvValue = struct { name: []const u8, value: []const u8 };
+test "native SDK builtin chat HTTP stream completion and actual session prompt match original" {
+    const response = "data: {\"id\":\"chat-sdk\",\"object\":\"chat.completion.chunk\",\"model\":\"fixture-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}]}\n\n" ++
+        "data: {\"id\":\"chat-sdk\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"SDK \"},\"finish_reason\":null}]}\n\n" ++
+        "data: {\"id\":\"chat-sdk\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"chat\"},\"finish_reason\":null}]}\n\n" ++
+        "data: {\"id\":\"chat-sdk\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":4,\"completion_tokens\":3,\"total_tokens\":7}}\n\n" ++ "data: [DONE]\n\n";
+    const replies = [_]http_fixture.Reply{
+        .{ .path = "/chat/chat/completions", .body = response, .headers = &.{.{ .name = "content-type", .value = "text/event-stream" }}, .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer fixture-key" }} },
+        .{ .path = "/chat/chat/completions", .body = response, .headers = &.{.{ .name = "content-type", .value = "text/event-stream" }} },
+        .{ .path = "/chat/chat/completions", .body = response, .headers = &.{.{ .name = "content-type", .value = "text/event-stream" }} },
+    };
+    const server = try http_fixture.PlanServer.init(std.testing.allocator, std.testing.io, &replies);
+    defer server.deinit();
+    const url = try server.url(std.testing.allocator, "/chat");
+    defer std.testing.allocator.free(url);
+    try inputCaseEnv(@embedFile("extensions/fixtures/sdk-chat-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-chat-7fb59f9.json"), &.{.{ .name = "SDK_CHAT_URL", .value = url }});
+    try server.finish();
+    try std.testing.expectEqual(@as(usize, 3), server.captured.items.len);
+}
+test "native SDK delayed chat and session abort results and settlement order match source" {
+    for (0..2) |index| {
+        const replies = [_]http_fixture.Reply{.{ .path = "/chat/completions", .body = "data: [DONE]\n\n", .delay_ms = 1000, .headers = &.{.{ .name = "content-type", .value = "text/event-stream" }}, .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer fixture-key" }} }};
+        const server = try http_fixture.PlanServer.init(std.testing.allocator, std.testing.io, &replies);
+        defer server.deinit();
+        const url = try server.url(std.testing.allocator, "");
+        defer std.testing.allocator.free(url);
+        try inputCaseEnv(if (index == 0) @embedFile("extensions/fixtures/sdk-chat-cancel-7fb59f9.input.json") else @embedFile("extensions/fixtures/sdk-session-cancel-7fb59f9.input.json"), if (index == 0) @embedFile("extensions/fixtures/sdk-chat-cancel-7fb59f9.json") else @embedFile("extensions/fixtures/sdk-session-cancel-7fb59f9.json"), &.{ .{ .name = "SDK_CHAT_URL", .value = url }, .{ .name = "SDK_CANCEL_SESSION", .value = if (index == 0) "0" else "1" } });
+        server.finish() catch |err| switch (err) {
+            error.WriteFailed, error.ConnectionResetByPeer, error.BrokenPipe, error.HttpConnectionClosing => {},
+            else => return err,
+        };
+        try std.testing.expectEqual(@as(usize, 1), server.captured.items.len);
+    }
+}
 test "native SDK resource discovery and actual inline extension startup match original" {
     try inputCase(@embedFile("extensions/fixtures/sdk-resources-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-resources-7fb59f9.json"));
 }

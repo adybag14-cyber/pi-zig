@@ -7,6 +7,8 @@ pub const APP_NAME = "pi";
 pub const CONFIG_DIR_NAME = ".pi";
 pub const AGENT_DIR_NAME = "agent";
 pub const version = "1.1.0";
+/// Package API identity exposed to Pi extensions, independent of fork releases.
+pub const upstream_api_version = "1.0.4";
 /// Upstream Pi release whose public behavior this checkpoint targets.
 pub const upstream_version = "0.84.4";
 pub const upstream_commit = "853a80d26c90a14c1886f0ebb8ffaae133ca2185";
