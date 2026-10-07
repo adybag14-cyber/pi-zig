@@ -75,7 +75,7 @@ fn validApp(app: []const u8) bool {
     for (app) |byte| if (!std.ascii.isAlphanumeric(byte) and byte != '_' and byte != '.' and byte != '+' and byte != '-') return false;
     return true;
 }
-fn whitespace(point: u21) bool {
+pub fn whitespace(point: u21) bool {
     return switch (point) {
         9...13, 32, 0xa0, 0x1680, 0x2000...0x200a, 0x2028, 0x2029, 0x202f, 0x205f, 0x3000, 0xfeff => true,
         else => false,

@@ -100,21 +100,36 @@ pub const Reporter = struct {
         return .{ .state = state, .app = "pi", .message = if (state == .working or state == .done) session_name else self.resting.message };
     }
     pub fn report(self: *Reporter, session_name: ?[]const u8) !?[]u8 {
-        const encoded = try protocol.format(self.gpa, self.current(session_name));
-        errdefer self.gpa.free(encoded);
-        if (self.last) |last| if (std.mem.eql(u8, last, encoded)) {
-            self.gpa.free(encoded);
+        const status = self.current(session_name);
+        const key = try std.json.Stringify.valueAlloc(self.gpa, status, .{});
+        errdefer self.gpa.free(key);
+        if (self.last) |last| if (std.mem.eql(u8, last, key)) {
+            self.gpa.free(key);
             return null;
         };
-        const retained = try self.gpa.dupe(u8, encoded);
+        const encoded = try protocol.format(self.gpa, status);
+        errdefer self.gpa.free(encoded);
         if (self.last) |last| self.gpa.free(last);
-        self.last = retained;
+        self.last = key;
         return encoded;
     }
 };
 fn firstLine(text: []const u8) []const u8 {
     const end = std.mem.indexOfScalar(u8, text, '\n') orelse text.len;
-    const value = std.mem.trim(u8, text[0..end], " \t\r\n");
+    var begin: usize = 0;
+    var trimmed_end = end;
+    while (begin < trimmed_end) {
+        const width = std.unicode.utf8ByteSequenceLength(text[begin]) catch break;
+        if (width > trimmed_end - begin or !protocol.whitespace(std.unicode.utf8Decode(text[begin..][0..width]) catch break)) break;
+        begin += width;
+    }
+    while (trimmed_end > begin) {
+        var previous = trimmed_end - 1;
+        while (previous > begin and text[previous] & 0xc0 == 0x80) previous -= 1;
+        if (!protocol.whitespace(std.unicode.utf8Decode(text[previous..trimmed_end]) catch break)) break;
+        trimmed_end = previous;
+    }
+    const value = text[begin..trimmed_end];
     return if (value.len == 0) "Error" else value;
 }
 test "interactive program status reports latest response and dialog precedence across compaction and abort" {
