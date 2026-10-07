@@ -268,6 +268,14 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    const program_status_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/program_status_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_program_status_tests = b.addRunArtifact(program_status_tests);
+    const program_status_step = b.step("test-program-status", "Exercise Pi program status negotiation and interactive lifecycle ownership");
+    program_status_step.dependOn(&run_program_status_tests.step);
+    test_step.dependOn(&run_program_status_tests.step);
     const sdk_process_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
