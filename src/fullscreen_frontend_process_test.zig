@@ -249,6 +249,39 @@ fn originalModuleInput(gpa: std.mem.Allocator, bytes: []const u8) ![]const u8 {
     return gpa.dupe(u8, parsed.value.input);
 }
 
+test "native MouseRegion real terminal pointer ACK precedes keyboard capture crosses overlay bounds and owner close restores input" {
+    if (!pty.supported()) return error.SkipZigTest;
+    for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
+        var fixture = try Fixture.init(mode);
+        defer fixture.deinit();
+        const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+        defer errors.close(std.testing.io);
+        const source =
+            \\import {MouseRegion,Text} from 'pi-tui';
+            \\export default pi=>{pi.registerCommand('mouse-ready',{handler(_,ctx){ctx.ui.notify('MOUSE_FIXTURE_COMMAND_READY');return {}}});pi.registerCommand('mouse',{handler(_,ctx){return ctx.ui.custom((tui,theme,keys,done)=>{const text=new Text('MOUSE_REGION_READY',0,0);const root=new MouseRegion(text,function(event){text.setText('MOUSE:'+event.type+':'+event.x+':'+event.y+(event.clickCount?':'+event.clickCount:''));return {handled:true,capture:event.type==='press',focus:true,render:event.type==='release'?true:undefined}});root.focused=false;root.handleInput=data=>{if(data==='\x1b'){done('mouse-closed');return}text.setText('MOUSE_KEY:'+data);tui.requestRender()};tui.setFocus(null);return root},{overlay:true,overlayOptions:{width:30,height:4,row:5,col:7}}).then(value=>({message:value}))}})}
+        ;
+        var child = try fixture.spawnExtension(errors, source);
+        defer child.deinit();
+        var observed = try Observer.init();
+        defer observed.deinit();
+        try observed.waitAny(&child, ">");
+        try observed.send(&child, "/mouse-ready\r", "MOUSE_FIXTURE_COMMAND_READY");
+        try observed.send(&child, "/mouse\r", "MOUSE_REGION_READY");
+        // A click and key in one input burst must settle the pointer's focus
+        // generation before that following key is sent to its owner.
+        try observed.send(&child, "\x1b[<0;10;6Mx", "MOUSE_KEY:x");
+        try observed.send(&child, "\x1b[<32;90;21M", "MOUSE:drag:82:15");
+        try observed.send(&child, "\x1b[<0;90;21m", "MOUSE:release:82:15");
+        // The dragged release must not synthesize a click. A new stationary
+        // press/release then synthesizes the Source click on its retained target.
+        try observed.send(&child, "\x1b[<0;10;6M", "MOUSE:press:2:0");
+        try observed.send(&child, "\x1b[<0;10;6m", "MOUSE:click:2:0:1");
+        try observed.send(&child, "\x1b", "mouse-closed");
+        try observed.send(&child, "after-mouse", "> after-mouse");
+        try cleanExit(&fixture, &child, &observed);
+    }
+}
+
 test "real custom editor original modal input replaces editor row changes submits resizes reloads and restores terminal" {
     if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");

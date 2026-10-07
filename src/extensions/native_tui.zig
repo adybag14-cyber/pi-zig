@@ -85,7 +85,7 @@ pub fn containsComponent(engine: *engine_mod.Engine, root: c.JSValue, target: c.
     }
     return false;
 }
-const Method = enum(c_int) { render, invalidate, setText, setLines, setBgFn, addChild, removeChild, clear };
+const Method = enum(c_int) { render, invalidate, setText, setLines, setBgFn, addChild, removeChild, clear, handleMouse };
 
 fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
@@ -188,6 +188,7 @@ fn children(engine: *engine_mod.Engine, object: c.JSValue) !c.JSValue {
 fn operation(node: *Node, object: c.JSValue, method: Method, args: []c.JSValue) !c.JSValue {
     const engine = node.engine;
     const first = if (args.len == 0) c.pi_js_undefined() else args[0];
+    if (method == .handleMouse) return @import("native_mouse.zig").containerDispatch(engine, object, first, if (node.kind == .box) @floatFromInt(try count(engine, node.padding_x, false)) else 0, if (node.kind == .box) @floatFromInt(try count(engine, node.padding_y, true)) else 0, node.kind == .box);
     if (method == .render) return render(node, object, try count(engine, first, false));
     if (method == .setText or method == .setLines or method == .setBgFn) {
         const slot = if (method == .setText) &node.text else if (method == .setLines) &node.padding_y else &node.background;
@@ -287,7 +288,7 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
     node.rendering = true;
     defer node.rendering = false;
     const revision = node.revision;
-    if (node.cache) |cache| if (node.cache_width == width) return c.JS_DupValue(engine.context, cache);
+    if (node.kind != .container and node.kind != .box) if (node.cache) |cache| if (node.cache_width == width) return c.JS_DupValue(engine.context, cache);
     var output: std.ArrayList([]u8) = .empty;
     defer {
         for (output.items) |line| engine.gpa.free(line);
@@ -329,6 +330,8 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
         const left = try count(engine, node.padding_x, false);
         const vertical = try count(engine, node.padding_y, true);
         const inner_width = @max(@as(usize, 1), width -| left * 2);
+        const mouse_children = try engine.checked(c.JS_NewArray(engine.context));
+        defer engine.freeValue(mouse_children);
         var rendered: std.ArrayList([]u8) = .empty;
         defer {
             for (rendered.items) |line| engine.gpa.free(line);
@@ -345,8 +348,22 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
             defer engine.freeValue(result);
             var frame = try components.normalizeWithPredicate(engine, result, node.array_is_array);
             defer frame.deinit();
+            const mouse_child = try engine.checked(c.JS_NewObject(engine.context));
+            var child_transferred = false;
+            defer if (!child_transferred) engine.freeValue(mouse_child);
+            try define(engine, mouse_child, "component", c.JS_DupValue(engine.context, child));
+            try define(engine, mouse_child, "height", try engine.checked(c.JS_GetPropertyStr(engine.context, result, "length")));
+            child_transferred = true;
+            if (c.JS_SetPropertyUint32(engine.context, mouse_children, @intCast(index), mouse_child) < 0) return error.JavaScriptException;
             for (frame.lines) |line| try appendOwned(engine, &rendered, try engine.gpa.dupe(u8, line));
         }
+        const mouse_layout = try engine.checked(c.JS_NewObject(engine.context));
+        var mouse_transferred = false;
+        defer if (!mouse_transferred) engine.freeValue(mouse_layout);
+        try define(engine, mouse_layout, "width", c.JS_NewFloat64(engine.context, @floatFromInt(if (node.kind == .box) inner_width else width)));
+        try define(engine, mouse_layout, "children", c.JS_DupValue(engine.context, mouse_children));
+        mouse_transferred = true;
+        try set(engine, object, "mouseLayout", mouse_layout);
         if (rendered.items.len != 0) {
             if (vertical > components.maximum_lines / 2) return error.NativeComponentFrameLimit;
             for (0..vertical) |_| try appendOwned(engine, &output, try padded(node, "", width, 0));
@@ -439,6 +456,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     const exports = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(exports);
     try @import("native_color.zig").install(engine, exports);
+    try @import("native_mouse.zig").install(engine, exports);
     const array_is_array = try components.arrayPredicate(engine);
     defer engine.freeValue(array_is_array);
     inline for (std.meta.fields(Helper)) |field| {
@@ -471,11 +489,12 @@ pub fn install(engine: *engine_mod.Engine) !void {
     inline for (.{ .{ "Text", Kind.text }, .{ "Container", Kind.container }, .{ "Box", Kind.box }, .{ "Spacer", Kind.spacer } }) |item| {
         const prototype = try engine.checked(c.JS_NewObject(engine.context));
         defer engine.freeValue(prototype);
-        inline for (.{ .{ "render", Method.render }, .{ "invalidate", Method.invalidate }, .{ "setText", Method.setText }, .{ "setLines", Method.setLines }, .{ "setCustomBgFn", Method.setBgFn }, .{ "setBgFn", Method.setBgFn }, .{ "addChild", Method.addChild }, .{ "removeChild", Method.removeChild }, .{ "clear", Method.clear } }) |operation_name| {
+        inline for (.{ .{ "render", Method.render }, .{ "invalidate", Method.invalidate }, .{ "setText", Method.setText }, .{ "setLines", Method.setLines }, .{ "setCustomBgFn", Method.setBgFn }, .{ "setBgFn", Method.setBgFn }, .{ "addChild", Method.addChild }, .{ "removeChild", Method.removeChild }, .{ "clear", Method.clear }, .{ "handleMouse", Method.handleMouse } }) |operation_name| {
             const available = operation_name[1] == .render or operation_name[1] == .invalidate or
                 (item[1] == .text and (operation_name[1] == .setText or std.mem.eql(u8, operation_name[0], "setCustomBgFn"))) or
                 (item[1] == .spacer and operation_name[1] == .setLines) or
                 ((item[1] == .container or item[1] == .box) and (operation_name[1] == .addChild or operation_name[1] == .removeChild or operation_name[1] == .clear)) or
+                ((item[1] == .container or item[1] == .box) and operation_name[1] == .handleMouse) or
                 (item[1] == .box and std.mem.eql(u8, operation_name[0], "setBgFn"));
             if (available) {
                 var data = [_]c.JSValue{c.JS_NewInt64(engine.context, node_class)};

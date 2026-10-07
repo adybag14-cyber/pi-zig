@@ -6,6 +6,8 @@ const application = @import("../tui/application.zig");
 const layout = @import("../tui/layout.zig");
 const terminal = @import("../tui/terminal.zig");
 const keys = @import("../tui/keys.zig");
+const mouse_input = @import("../tui/mouse.zig");
+const wheel_scroll = @import("../tui/wheel_scroll.zig");
 const keybindings = @import("../tui/keybindings.zig");
 const line_editor = @import("../tui/line_editor.zig");
 const Editor = @import("../tui/editor.zig").Editor;
@@ -378,6 +380,7 @@ const Update = union(enum) {
     }
 };
 pub const Options = struct {
+    fullscreen_wheel_scroll_lines: wheel_scroll.Lines = .auto,
     header: []const u8 = "pi (pi-zig)",
     status: []const u8 = "idle",
     show_hardware_cursor: bool = false,
@@ -462,6 +465,9 @@ pub const Frontend = struct {
     title_dirty: bool = false,
     component: ?component_protocol.Scene = null,
     component_controls: ?*component_protocol.ControlQueue = null,
+    mouse_sequence: u64 = 0,
+    mouse_gesture_active: bool = false,
+    wheel: wheel_scroll.Accelerator = .{},
     component_overlay_id: ?u64 = null,
     close_pending: ?component_protocol.Fence = null,
     closed_component: ?component_protocol.Fence = null,
@@ -515,6 +521,8 @@ pub const Frontend = struct {
         self.stack = .{ .axis = .vertical, .entries = &self.root_entries };
         self.app = application.Application.init(gpa, self.stack.component());
         self.app.alternate_screen = options.alternate_screen;
+        self.wheel.lines = if (options.alternate_screen) options.fullscreen_wheel_scroll_lines else .{ .fixed = 1 };
+        self.wheel.accelerate = !(builtin.os.tag == .macos and !self.environ.contains("SSH_CONNECTION") and !self.environ.contains("SSH_CLIENT") and !self.environ.contains("SSH_TTY"));
         self.app.bindings = &self.bindings;
         self.app.show_hardware_cursor = options.show_hardware_cursor;
         self.app.setFocus(self.editorComponent());
@@ -1019,6 +1027,7 @@ pub const Frontend = struct {
             var owned = scene;
             owned.deinit();
             self.component = null;
+            self.mouse_gesture_active = false;
             if (self.custom_alternate_screen) {
                 self.app.alternate_screen = false;
                 self.custom_alternate_screen = false;
@@ -1446,6 +1455,9 @@ pub const Frontend = struct {
         return self.inputFiltered(packet);
     }
     fn inputFiltered(self: *Frontend, packet: line_editor.InputDecoder.Input) !void {
+        if (packet == .key) if (mouse_input.parse(packet.key)) |event| {
+            if (self.component != null) return self.componentMouse(event, packet.key);
+        };
         if (self.component) |scene| if (scene.focus_mode == .none) return;
         if (self.component) |scene| if (scene.focused and (scene.overlay == null or !scene.overlay.?.hidden)) {
             const queue = self.component_controls orelse return error.NativeComponentChannelClosed;
@@ -1485,6 +1497,98 @@ pub const Frontend = struct {
             },
         }
         self.dirty = true;
+    }
+    fn componentMouse(self: *Frontend, raw: mouse_input.Event, bytes: []const u8) !void {
+        const scene = self.component orelse return;
+        const queue = self.component_controls orelse return error.NativeComponentChannelClosed;
+        var row: i64 = 0;
+        var column: i64 = 0;
+        var width = scene.width;
+        var height = scene.height;
+        var overlay_hit = false;
+        if (scene.overlay) |overlay| {
+            row = @intCast(overlay.row);
+            column = @intCast(overlay.column);
+            width = overlay.width;
+            height = overlay.height;
+            const visible = !overlay.hidden and raw.x >= overlay.column and raw.y >= overlay.row and raw.x - overlay.column < overlay.width and raw.y - overlay.row < overlay.height;
+            overlay_hit = visible;
+            if (!self.mouse_gesture_active and !visible) {
+                try self.app.handleInput(bytes);
+                self.dirty = true;
+                return;
+            }
+        }
+        if (self.mouse_sequence == std.math.maxInt(u64)) return error.NativeMouseSequenceLimit;
+        self.mouse_sequence += 1;
+        var event: component_protocol.Mouse = .{
+            .kind = switch (raw.kind) {
+                .press => .press,
+                .release => .release,
+                .drag => .drag,
+                .move => .move,
+                .scroll => .wheel,
+            },
+            .button = switch (raw.button) {
+                .left => .left,
+                .middle => .middle,
+                .right => .right,
+                else => .none,
+            },
+            .x = @as(i64, @intCast(raw.x)) - column,
+            .y = @as(i64, @intCast(raw.y)) - row,
+            .screen_x = @intCast(raw.x),
+            .screen_y = @intCast(raw.y),
+            .width = width,
+            .height = height,
+            .shift = raw.modifiers.shift,
+            .alt = raw.modifiers.alt,
+            .ctrl = raw.modifiers.ctrl,
+            .wheel_delta = null,
+        };
+        if (raw.kind == .scroll) {
+            const direction: i8 = if (raw.button == .wheel_up) -1 else 1;
+            const lines = self.wheel.next(direction, @floatFromInt(Io.Clock.awake.now(self.io).toMilliseconds()));
+            // The actual settings admission bounds fixed values to 1..100.
+            event.wheel_delta = @as(i64, @intFromFloat(@min(lines, 100))) * @as(i64, if (raw.modifiers.alt) 5 else 1) * direction;
+        }
+        // Source distinguishes a no-button motion from a button release.
+        if (std.mem.startsWith(u8, bytes, "\x1b[<") and bytes[bytes.len - 1] == 'M') {
+            var codes = std.mem.splitScalar(u8, bytes[3 .. bytes.len - 1], ';');
+            const code = std.fmt.parseUnsigned(u32, codes.next() orelse "", 10) catch 0;
+            if (code & 32 != 0 and code & 3 == 3 and code & 64 == 0) event.kind = .move;
+        }
+        try queue.send(.{ .gpa = self.gpa, .fence = scene.fence, .mouse_sequence = self.mouse_sequence, .kind = .{ .mouse = event } });
+        const deadline = Io.Clock.awake.now(self.io).toMilliseconds() + 5000;
+        while (Io.Clock.awake.now(self.io).toMilliseconds() < deadline) {
+            // Close callbacks may wait for this owner to remove their scene.
+            // Drain them while the pointer ACK is pending, without retaining a
+            // borrowed queue after that scene's lifetime boundary completes.
+            try self.applyUpdates();
+            const active = self.component orelse return;
+            if (!active.fence.matches(scene.fence)) return;
+            const outcome = queue.takeMouseOutcome(scene.fence, self.mouse_sequence) catch |err| {
+                if (err == error.NativeComponentChannelClosed) return;
+                return err;
+            };
+            if (outcome) |value| {
+                self.mouse_gesture_active = value.capture;
+                self.component.?.focus_mode = value.focus_mode;
+                self.component.?.focused = value.focus_mode == .custom;
+                self.component.?.target_id = value.target_id;
+                self.component.?.target_generation = value.target_generation;
+                if (!value.handled and !overlay_hit) try self.app.handleInput(bytes);
+                self.dirty = self.dirty or value.render or (!value.handled and !overlay_hit);
+                return;
+            }
+            try self.io.sleep(.fromMilliseconds(1), .awake);
+        }
+        return error.NativeMouseOutcomeTimedOut;
+    }
+    /// Caller supplies the actual admitted settings value; changing it resets
+    /// acceleration as Source does. This setter performs no terminal query.
+    pub fn setWheelScrollLines(self: *Frontend, value: wheel_scroll.Lines) void {
+        self.wheel.setLines(value);
     }
     fn finishInputBatch(self: *Frontend) void {
         self.mutex.lockUncancelable(self.io);

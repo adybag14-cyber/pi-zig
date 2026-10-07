@@ -54,7 +54,58 @@ pub const Mouse = struct {
     wheel_delta: ?i64 = null,
     click_count: ?u32 = null,
 };
+pub fn writeMouse(writer: *std.Io.Writer, value: Mouse) !void {
+    try writer.print("{{\"type\":\"{s}\",\"button\":\"{s}\",\"x\":{d},\"y\":{d},\"screenX\":{d},\"screenY\":{d},\"width\":{d},\"height\":{d},\"shift\":{},\"alt\":{},\"ctrl\":{}", .{ @tagName(value.kind), @tagName(value.button), value.x, value.y, value.screen_x, value.screen_y, value.width, value.height, value.shift, value.alt, value.ctrl });
+    if (value.wheel_delta) |delta| try writer.print(",\"wheelDelta\":{d}", .{delta});
+    if (value.click_count) |count| try writer.print(",\"clickCount\":{d}", .{count});
+    try writer.writeByte('}');
+}
+fn mouseInteger(object: *const std.json.ObjectMap, name: []const u8) !i64 {
+    const value = object.get(name) orelse return error.InvalidComponentMouse;
+    if (value != .integer) return error.InvalidComponentMouse;
+    return value.integer;
+}
+fn mouseFlag(object: *const std.json.ObjectMap, name: []const u8) !bool {
+    const value = object.get(name) orelse return false;
+    if (value != .bool) return error.InvalidComponentMouse;
+    return value.bool;
+}
+pub fn readMouse(value: std.json.Value) !Mouse {
+    if (value != .object) return error.InvalidComponentMouse;
+    const object = &value.object;
+    const kind = object.get("type") orelse return error.InvalidComponentMouse;
+    const button = object.get("button") orelse return error.InvalidComponentMouse;
+    if (kind != .string or button != .string) return error.InvalidComponentMouse;
+    var result: Mouse = .{ .kind = std.meta.stringToEnum(@FieldType(Mouse, "kind"), kind.string) orelse return error.InvalidComponentMouse, .button = std.meta.stringToEnum(@FieldType(Mouse, "button"), button.string) orelse return error.InvalidComponentMouse, .x = try mouseInteger(object, "x"), .y = try mouseInteger(object, "y"), .screen_x = try mouseInteger(object, "screenX"), .screen_y = try mouseInteger(object, "screenY"), .width = try dimension(object, "width"), .height = try dimension(object, "height"), .shift = try mouseFlag(object, "shift"), .alt = try mouseFlag(object, "alt"), .ctrl = try mouseFlag(object, "ctrl") };
+    if (object.contains("wheelDelta")) result.wheel_delta = try mouseInteger(object, "wheelDelta");
+    if (object.contains("clickCount")) {
+        const count = try mouseInteger(object, "clickCount");
+        if (count < 0 or count > std.math.maxInt(u32)) return error.InvalidComponentMouse;
+        result.click_count = @intCast(count);
+    }
+    return result;
+}
 pub const FocusMode = enum { custom, editor, none };
+pub const MouseOutcome = struct {
+    fence: Fence,
+    sequence: u64,
+    handled: bool,
+    render: bool,
+    capture: bool = false,
+    focus_mode: FocusMode = .custom,
+    target_id: u64 = 0,
+    target_generation: u64 = 0,
+};
+pub fn writeMouseOutcome(writer: *std.Io.Writer, value: MouseOutcome) !void {
+    try writer.writeAll("{\"type\":\"component_mouse_outcome\",");
+    try writeFence(writer, value.fence);
+    try writer.print(",\"mouseSequence\":\"{d}\",\"handled\":{},\"render\":{},\"capture\":{},\"focusMode\":\"{s}\",\"targetId\":\"{d}\",\"targetGeneration\":\"{d}\"}}", .{ value.sequence, value.handled, value.render, value.capture, @tagName(value.focus_mode), value.target_id, value.target_generation });
+}
+pub fn readMouseOutcome(object: *const std.json.ObjectMap) !MouseOutcome {
+    const focus = object.get("focusMode") orelse return error.InvalidComponentMouse;
+    if (focus != .string) return error.InvalidComponentMouse;
+    return .{ .fence = try readFence(object), .sequence = try optionalCapability(object, "mouseSequence"), .handled = try mouseFlag(object, "handled"), .render = try mouseFlag(object, "render"), .capture = try mouseFlag(object, "capture"), .focus_mode = std.meta.stringToEnum(FocusMode, focus.string) orelse return error.InvalidComponentMouse, .target_id = try optionalCapability(object, "targetId"), .target_generation = try optionalCapability(object, "targetGeneration") };
+}
 pub const Scene = struct {
     fence: Fence,
     width: usize,
@@ -81,6 +132,7 @@ pub const Control = struct {
     error_message: ?[]u8 = null,
     target_id: u64 = 0,
     target_generation: u64 = 0,
+    mouse_sequence: u64 = 0,
     kind: union(enum) {
         input: []u8,
         resize: struct { width: usize, height: usize },
@@ -203,11 +255,12 @@ pub fn readControl(gpa: std.mem.Allocator, object: *const std.json.ObjectMap) !C
     var value: Control = .{ .gpa = gpa, .fence = fence, .kind = .invalidate };
     value.target_id = try optionalCapability(object, "targetId");
     value.target_generation = try optionalCapability(object, "targetGeneration");
+    value.mouse_sequence = try optionalCapability(object, "mouseSequence");
     if (std.mem.eql(u8, kind.string, "input")) {
         const data = object.get("data") orelse return error.InvalidComponentControl;
         if (data != .string or data.string.len > 64 * 1024 or !std.unicode.utf8ValidateSlice(data.string)) return error.InvalidComponentControl;
         value.kind = .{ .input = try gpa.dupe(u8, data.string) };
-    } else if (std.mem.eql(u8, kind.string, "resize")) value.kind = .{ .resize = .{ .width = try dimension(object, "width"), .height = try dimension(object, "height") } } else if (std.mem.eql(u8, kind.string, "invalidate")) value.kind = .invalidate else if (std.mem.eql(u8, kind.string, "close")) value.kind = .close else if (std.mem.eql(u8, kind.string, "cancel")) value.kind = .cancel else if (std.mem.eql(u8, kind.string, "close_ack")) {
+    } else if (std.mem.eql(u8, kind.string, "mouse")) value.kind = .{ .mouse = try readMouse(object.get("mouse") orelse return error.InvalidComponentMouse) } else if (std.mem.eql(u8, kind.string, "resize")) value.kind = .{ .resize = .{ .width = try dimension(object, "width"), .height = try dimension(object, "height") } } else if (std.mem.eql(u8, kind.string, "invalidate")) value.kind = .invalidate else if (std.mem.eql(u8, kind.string, "close")) value.kind = .close else if (std.mem.eql(u8, kind.string, "cancel")) value.kind = .cancel else if (std.mem.eql(u8, kind.string, "close_ack")) {
         const success = object.get("ok") orelse return error.InvalidComponentControl;
         if (success != .bool) return error.InvalidComponentControl;
         value.kind = .{ .close_ack = success.bool };
@@ -223,6 +276,7 @@ pub fn writeControl(writer: *std.Io.Writer, value: *const Control) !void {
     try writer.writeAll("{\"kind\":\"component_control\",");
     try writeFence(writer, value.fence);
     try writer.print(",\"targetId\":\"{d}\",\"targetGeneration\":\"{d}\"", .{ value.target_id, value.target_generation });
+    if (value.kind == .mouse) try writer.print(",\"mouseSequence\":\"{d}\"", .{value.mouse_sequence});
     try writer.writeAll(",\"control\":");
     try std.json.Stringify.value(@tagName(value.kind), .{}, writer);
     switch (value.kind) {
@@ -232,7 +286,10 @@ pub fn writeControl(writer: *std.Io.Writer, value: *const Control) !void {
         },
         .resize => |size| try writer.print(",\"width\":{d},\"height\":{d}", .{ size.width, size.height }),
         .close_ack => |ok| try writer.print(",\"ok\":{s}", .{if (ok) "true" else "false"}),
-        .mouse => return error.NativeMouseControlNotSerialized,
+        .mouse => |mouse| {
+            try writer.writeAll(",\"mouse\":");
+            try writeMouse(writer, mouse);
+        },
         else => {},
     }
     if (value.error_message) |message| {
@@ -255,6 +312,7 @@ pub const ControlQueue = struct {
     closing: bool = false,
     queued_bytes: usize = 0,
     items: std.ArrayList(Control) = .empty,
+    mouse_outcomes: std.ArrayList(MouseOutcome) = .empty,
 
     pub fn init(gpa: std.mem.Allocator, io: std.Io) ControlQueue {
         return .{ .gpa = gpa, .io = io };
@@ -263,12 +321,14 @@ pub const ControlQueue = struct {
         self.stop();
         for (self.items.items) |*item| item.deinit();
         self.items.deinit(self.gpa);
+        self.mouse_outcomes.deinit(self.gpa);
     }
     pub fn reset(self: *ControlQueue, fence: ?Fence) void {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.items.items) |*item| item.deinit();
         self.items.clearRetainingCapacity();
+        self.mouse_outcomes.clearRetainingCapacity();
         self.queued_bytes = 0;
         self.active = fence;
         self.closing = false;
@@ -301,11 +361,27 @@ pub const ControlQueue = struct {
         self.queued_bytes -= value.bytes();
         return value;
     }
+    pub fn publishMouseOutcome(self: *ControlQueue, value: MouseOutcome) !void {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.stopped or self.active == null or !value.fence.matches(self.active.?)) return error.StaleNativeComponentControl;
+        if (self.mouse_outcomes.items.len >= 128) return error.NativeComponentControlLimit;
+        try self.mouse_outcomes.append(self.gpa, value);
+        self.available.broadcast(self.io);
+    }
+    pub fn takeMouseOutcome(self: *ControlQueue, fence: Fence, sequence: u64) !?MouseOutcome {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.stopped or self.active == null or !fence.matches(self.active.?)) return error.NativeComponentChannelClosed;
+        for (self.mouse_outcomes.items, 0..) |value, index| if (value.sequence == sequence and value.fence.matches(fence)) return self.mouse_outcomes.orderedRemove(index);
+        return null;
+    }
     pub fn stop(self: *ControlQueue) void {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         self.stopped = true;
         self.active = null;
+        self.mouse_outcomes.clearRetainingCapacity();
         self.available.broadcast(self.io);
     }
 };
@@ -338,4 +414,29 @@ test "component protocol validates version identities unknown controls and indep
     try std.testing.expectError(error.InvalidComponentControl, readControl(gpa, &wire.value.object));
     try wire.value.object.put(gpa, "version", .{ .integer = 2 });
     try std.testing.expectError(error.InvalidComponentVersion, readControl(gpa, &wire.value.object));
+}
+test "mouse controls preserve Source event fields and exact sequence identities while outcomes fence reset and close" {
+    const gpa = std.testing.allocator;
+    const fence: Fence = .{ .token = 1, .generation = 2, .invocation_id = 3, .component_id = 4 };
+    const control: Control = .{ .gpa = gpa, .fence = fence, .mouse_sequence = std.math.maxInt(u64), .kind = .{ .mouse = .{ .kind = .wheel, .button = .none, .x = -2, .y = 3, .screen_x = 40, .screen_y = 50, .width = 80, .height = 20, .shift = true, .alt = true, .wheel_delta = -5 } } };
+    var writer: std.Io.Writer.Allocating = .init(gpa);
+    defer writer.deinit();
+    try writeControl(&writer.writer, &control);
+    const parsed = try std.json.parseFromSlice(std.json.Value, gpa, writer.written(), .{});
+    defer parsed.deinit();
+    var decoded = try readControl(gpa, &parsed.value.object);
+    defer decoded.deinit();
+    try std.testing.expectEqual(control.mouse_sequence, decoded.mouse_sequence);
+    try std.testing.expectEqualDeep(control.kind.mouse, decoded.kind.mouse);
+    var queue = ControlQueue.init(gpa, std.testing.io);
+    defer queue.deinit();
+    queue.reset(fence);
+    const value: MouseOutcome = .{ .fence = fence, .sequence = control.mouse_sequence, .handled = true, .render = false, .capture = true, .target_generation = 7 };
+    try queue.publishMouseOutcome(value);
+    try std.testing.expect((try queue.takeMouseOutcome(fence, 5)) == null);
+    try std.testing.expectEqualDeep(value, (try queue.takeMouseOutcome(fence, control.mouse_sequence)).?);
+    try queue.publishMouseOutcome(value);
+    queue.reset(null);
+    try std.testing.expectError(error.StaleNativeComponentControl, queue.publishMouseOutcome(value));
+    try std.testing.expectError(error.NativeComponentChannelClosed, queue.takeMouseOutcome(fence, control.mouse_sequence));
 }

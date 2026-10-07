@@ -606,6 +606,14 @@ const NativeDialogs = struct {
         const session = self.componentSession(fence) orelse return;
         session.requestClose();
     }
+    fn mouseOutcome(self: *@This(), object: *const std.json.ObjectMap) !void {
+        const value = try component_protocol.readMouseOutcome(object);
+        const session = self.componentSession(value.fence) orelse return;
+        session.controls.publishMouseOutcome(value) catch |err| switch (err) {
+            error.StaleNativeComponentControl => return,
+            else => return err,
+        };
+    }
 };
 
 pub const Runtime = struct {
@@ -2212,6 +2220,10 @@ pub const Runtime = struct {
                 }
                 if (self.backend == .native and std.mem.eql(u8, type_value.string, "component_close")) {
                     try native_dialogs.closeComponent(&parsed.value.object);
+                    continue;
+                }
+                if (self.backend == .native and std.mem.eql(u8, type_value.string, "component_mouse_outcome")) {
+                    try native_dialogs.mouseOutcome(&parsed.value.object);
                     continue;
                 }
                 if (self.backend == .native and std.mem.eql(u8, type_value.string, "ui_cancel")) {

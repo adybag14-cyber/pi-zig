@@ -640,6 +640,13 @@ const Transport = struct {
         try self.writer.writeAll("}\n");
         try self.writer.flush();
     }
+    fn componentMouseOutcome(context: ?*anyopaque, value: component_protocol.MouseOutcome) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        try self.writer.writeByte(0x1e);
+        try component_protocol.writeMouseOutcome(self.writer, value);
+        try self.writer.writeByte('\n');
+        try self.writer.flush();
+    }
 };
 
 const Loader = struct {
@@ -1211,7 +1218,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     engine.host_control_pump = Transport.pump;
     engine.host_owner_notify_context = &transport;
     engine.host_owner_notify = Transport.notifyOwner;
-    bindings.ui_manager.bridge = .{ .context = &transport, .request = Transport.uiRequest, .action = Transport.uiAction, .cancel = Transport.uiCancel, .component_scene = Transport.componentScene, .component_close = Transport.componentClose };
+    bindings.ui_manager.bridge = .{ .context = &transport, .request = Transport.uiRequest, .action = Transport.uiAction, .cancel = Transport.uiCancel, .component_scene = Transport.componentScene, .component_close = Transport.componentClose, .component_mouse_outcome = Transport.componentMouseOutcome };
     defer bindings.ui_manager.bridge = null;
     defer {
         // Retire and join durable workers while their notifier and transport

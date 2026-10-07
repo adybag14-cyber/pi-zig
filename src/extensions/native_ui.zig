@@ -17,6 +17,7 @@ pub const Bridge = struct {
     cancel: *const fn (?*anyopaque, u32) anyerror!void,
     component_scene: ?*const fn (?*anyopaque, protocol.Scene) anyerror!void = null,
     component_close: ?*const fn (?*anyopaque, protocol.Fence) anyerror!void = null,
+    component_mouse_outcome: ?*const fn (?*anyopaque, protocol.MouseOutcome) anyerror!void = null,
 };
 
 const Method = enum(c_int) { select, confirm, input, editor, notify, setStatus, setTitle, setEditorText, pasteToEditor, getEditorText, setWidget, setWorkingMessage, setWorkingVisible, setHiddenThinkingLabel, custom, setEditorComponent, getEditorComponent, addAutocompleteProvider, setHeader, setFooter, setWorkingIndicator, onTerminalInput };
@@ -57,6 +58,24 @@ const Custom = struct {
     layout: ?protocol.OverlayLayout = null,
     handle_published: bool = false,
     overlay_options: ?c.JSValue = null,
+    mouse_press_target: ?c.JSValue = null,
+    mouse_capture_target: ?c.JSValue = null,
+    mouse_press_point: ?struct { x: i64, y: i64 } = null,
+    mouse_press_moved: bool = false,
+    mouse_last_click: ?struct { component: c.JSValue, x: i64, y: i64, timestamp: f64, count: u32 } = null,
+    fn clearMouseGesture(self: *Custom, engine: *engine_mod.Engine) void {
+        if (self.mouse_press_target) |value| engine.freeValue(value);
+        if (self.mouse_capture_target) |value| engine.freeValue(value);
+        self.mouse_press_target = null;
+        self.mouse_capture_target = null;
+        self.mouse_press_point = null;
+        self.mouse_press_moved = false;
+    }
+    fn releaseMouse(self: *Custom, engine: *engine_mod.Engine) void {
+        self.clearMouseGesture(engine);
+        if (self.mouse_last_click) |value| engine.freeValue(value.component);
+        self.mouse_last_click = null;
+    }
 };
 const OverlayMethod = enum(c_int) { hide, setHidden, isHidden, focus, unfocus, isFocused, getBounds, terminalColumns, terminalRows, setFocus };
 const OpeningFocus = struct { token: u64, target: ?c.JSValue = null, mode: protocol.FocusMode = .custom, explicit: bool = false, previous: ?*OpeningFocus = null };
@@ -202,7 +221,8 @@ pub const Manager = struct {
     pub fn finish(self: *Manager) void {
         while (self.pending.items.len > 0) self.cancel(self.pending.items[self.pending.items.len - 1].id) catch {};
         while (self.customs.items.len != 0) {
-            const custom_request = self.customs.pop().?;
+            var custom_request = self.customs.pop().?;
+            custom_request.releaseMouse(self.engine);
             if (custom_request.presented) self.engine.host_ui_pending -= 1;
             if (self.bridge) |bridge| if (bridge.component_close) |close| close(bridge.context, custom_request.fence) catch {};
             self.components.close(custom_request.fence.component_id, custom_request.fence.generation, c.pi_js_undefined()) catch {};
@@ -870,7 +890,8 @@ pub const Manager = struct {
         while (index < self.customs.items.len) {
             const custom_request = self.customs.items[index];
             if (c.JS_PromiseState(self.engine.context, custom_request.promise) != c.JS_PROMISE_PENDING) {
-                const removed = self.customs.orderedRemove(index);
+                var removed = self.customs.orderedRemove(index);
+                removed.releaseMouse(self.engine);
                 if (removed.presented) self.engine.host_ui_pending -= 1;
                 self.engine.freeValue(removed.promise);
                 self.engine.freeValue(removed.options);
@@ -967,9 +988,123 @@ pub const Manager = struct {
             },
             .invalidate => self.components.invalidate(fence.component_id, fence.generation) catch |err| try self.rejectCustom(fence, err),
             .close, .cancel => try self.components.complete(fence.component_id, fence.generation, c.pi_js_undefined()),
-            .mouse => return error.NativeMouseComponentNotImplemented,
+            .mouse => |event| {
+                if (selected.closing) return false;
+                if (selected.overlay) if (selected.layout) |layout| if (layout.hidden) return false;
+                const outcome = self.mouseControl(fence, control.mouse_sequence, event) catch |err| {
+                    if (err != error.NativeComponentClosed and err != error.NativeComponentClosing) try self.rejectCustom(fence, err);
+                    return true;
+                };
+                if (self.bridge) |bridge| if (bridge.component_mouse_outcome) |callback| try callback(bridge.context, outcome);
+            },
         }
         return true;
+    }
+
+    fn mouseDispatchResult(self: *Manager, fence: protocol.Fence, event: protocol.Mouse, result: c.JSValue) !bool {
+        const selected = self.findCustom(fence) orelse return error.NativeComponentClosed;
+        const overlay = selected.overlay;
+        const target = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, result, "target"));
+        defer self.engine.freeValue(target);
+        var focus_target = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, result, "focusTarget"));
+        defer self.engine.freeValue(focus_target);
+        if (c.JS_IsNull(focus_target) or c.JS_IsUndefined(focus_target)) {
+            self.engine.freeValue(focus_target);
+            focus_target = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, target, "component"));
+        }
+        if (overlay) {
+            const root = try self.rootComponent(fence);
+            defer self.engine.freeValue(root);
+            if (try native_tui.containsComponent(self.engine, root, focus_target)) {
+                self.engine.freeValue(focus_target);
+                focus_target = c.JS_DupValue(self.engine.context, root);
+            }
+        }
+        const focus = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, result, "focus"));
+        defer self.engine.freeValue(focus);
+        const current_request = self.findCustom(fence) orelse return error.NativeComponentClosed;
+        const previous_focus = if (current_request.focus_mode != .custom) c.pi_js_null() else if (current_request.focus_target) |value| c.JS_DupValue(self.engine.context, value) else try self.rootComponent(fence);
+        defer self.engine.freeValue(previous_focus);
+        const focus_changed = c.JS_IsStrictEqual(self.engine.context, focus, c.JS_NewBool(self.engine.context, true)) and !c.JS_IsStrictEqual(self.engine.context, previous_focus, focus_target);
+        const focus_again = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, result, "focus"));
+        defer self.engine.freeValue(focus_again);
+        if (c.JS_ToBool(self.engine.context, focus_again) != 0 and !c.JS_IsStrictEqual(self.engine.context, previous_focus, focus_target)) try self.changeFocus(fence, .custom, focus_target);
+        const capture = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, result, "capture"));
+        defer self.engine.freeValue(capture);
+        if (c.JS_ToBool(self.engine.context, capture) != 0) {
+            const active = self.findCustom(fence) orelse return error.NativeComponentClosed;
+            if (active.mouse_capture_target) |old| self.engine.freeValue(old);
+            active.mouse_capture_target = c.JS_DupValue(self.engine.context, target);
+        }
+        const render = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, result, "render"));
+        defer self.engine.freeValue(render);
+        if (!c.JS_IsUndefined(render) and !c.JS_IsNull(render)) return c.JS_ToBool(self.engine.context, render) != 0;
+        return focus_changed or event.kind == .press or event.kind == .click or event.kind == .drag or event.kind == .wheel;
+    }
+    fn mouseControl(self: *Manager, fence: protocol.Fence, sequence: u64, event: protocol.Mouse) !protocol.MouseOutcome {
+        const mouse = @import("native_mouse.zig");
+        const selected = self.findCustom(fence) orelse return error.NativeComponentClosed;
+        const retained = if (event.kind != .wheel) if (selected.mouse_capture_target orelse selected.mouse_press_target) |value| c.JS_DupValue(self.engine.context, value) else null else null;
+        defer if (retained) |value| self.engine.freeValue(value);
+        if (retained != null) if (selected.mouse_press_point) |point| if (point.x != event.screen_x or point.y != event.screen_y) {
+            selected.mouse_press_moved = true;
+            if (selected.mouse_last_click) |last| self.engine.freeValue(last.component);
+            selected.mouse_last_click = null;
+        };
+        const value = try mouse.eventValue(self.engine, event);
+        defer self.engine.freeValue(value);
+        const delivered = if (retained) |target| try mouse.retarget(self.engine, value, target) else c.JS_DupValue(self.engine.context, value);
+        defer self.engine.freeValue(delivered);
+        const component = if (retained) |target| try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, target, "component")) else try self.rootComponent(fence);
+        defer self.engine.freeValue(component);
+        const result = try mouse.dispatch(self.engine, component, delivered);
+        defer self.engine.freeValue(result);
+        const handled = !c.JS_IsUndefined(result);
+        var render = if (handled) try self.mouseDispatchResult(fence, event, result) else false;
+        if (handled and event.kind == .press and retained == null) {
+            const target = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, result, "target"));
+            defer self.engine.freeValue(target);
+            const active = self.findCustom(fence) orelse return error.NativeComponentClosed;
+            if (active.mouse_press_target) |old| self.engine.freeValue(old);
+            active.mouse_press_target = c.JS_DupValue(self.engine.context, target);
+            active.mouse_press_point = .{ .x = event.screen_x, .y = event.screen_y };
+            active.mouse_press_moved = false;
+        }
+        if (event.kind == .release) {
+            const active = self.findCustom(fence) orelse return error.NativeComponentClosed;
+            if (retained != null and !active.mouse_press_moved and active.mouse_press_point != null and active.mouse_press_point.?.x == event.screen_x and active.mouse_press_point.?.y == event.screen_y) {
+                const global = c.JS_GetGlobalObject(self.engine.context);
+                defer self.engine.freeValue(global);
+                const date = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, global, "Date"));
+                defer self.engine.freeValue(date);
+                const now_function = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, date, "now"));
+                defer self.engine.freeValue(now_function);
+                const now_value = try self.engine.checked(c.JS_Call(self.engine.context, now_function, date, 0, null));
+                defer self.engine.freeValue(now_value);
+                const now = try @import("native_color.zig").number(self.engine, now_value);
+                const click_owner = self.findCustom(fence) orelse return error.NativeComponentClosed;
+                var count: u32 = 1;
+                if (click_owner.mouse_last_click) |previous| if (now - previous.timestamp <= 500 and previous.x == event.screen_x and previous.y == event.screen_y and c.JS_IsStrictEqual(self.engine.context, previous.component, component)) {
+                    count = (previous.count % 3) + 1;
+                };
+                if (click_owner.mouse_last_click) |previous| self.engine.freeValue(previous.component);
+                click_owner.mouse_last_click = .{ .component = c.JS_DupValue(self.engine.context, component), .x = event.screen_x, .y = event.screen_y, .timestamp = now, .count = count };
+                var click = event;
+                click.kind = .click;
+                click.click_count = count;
+                const click_value = try mouse.eventValue(self.engine, click);
+                defer self.engine.freeValue(click_value);
+                const local_click = try mouse.retarget(self.engine, click_value, retained.?);
+                defer self.engine.freeValue(local_click);
+                const click_result = try mouse.dispatch(self.engine, component, local_click);
+                defer self.engine.freeValue(click_result);
+                if (!c.JS_IsUndefined(click_result)) render = try self.mouseDispatchResult(fence, click, click_result) or render;
+            }
+            (self.findCustom(fence) orelse return error.NativeComponentClosed).clearMouseGesture(self.engine);
+        }
+        if (render) try self.components.invalidate(fence.component_id, fence.generation);
+        const final = self.findCustom(fence) orelse return error.NativeComponentClosed;
+        return .{ .fence = fence, .sequence = sequence, .handled = handled or retained != null, .render = render, .capture = final.mouse_capture_target != null or final.mouse_press_target != null, .focus_mode = final.focus_mode, .target_id = final.focus_target_id, .target_generation = final.focus_target_generation };
     }
 
     fn inputFocused(self: *Manager, fence: protocol.Fence, data: []const u8) !void {
@@ -1515,6 +1650,119 @@ fn focusLifetimeCase(source: []const u8, finish: ?[]const u8, inspect: ?[]const 
     try std.testing.expectEqual(@as(usize, 0), manager.customs.items.len);
     try std.testing.expectEqual(@as(usize, 0), manager.components.entries.count());
     c.JS_RunGC(engine.runtime);
+}
+
+test "actual original owner mouse gesture capture outside bounds release click clock boundary and focus render ordering replay" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("abort_signal.zig").install(engine);
+    const manager = try Manager.init(engine);
+    defer manager.deinit();
+    const Receiver = struct {
+        engine: *engine_mod.Engine,
+        fn request(_: ?*anyopaque, _: u32, _: []const u8, _: []const u8) !void {}
+        fn action(_: ?*anyopaque, _: []const u8, _: []const u8) !void {}
+        fn cancel(_: ?*anyopaque, _: u32) !void {}
+        fn scene(_: ?*anyopaque, value: protocol.Scene) !void {
+            var owned = value;
+            owned.deinit();
+        }
+        fn outcome(raw: ?*anyopaque, value: protocol.MouseOutcome) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            if (value.render) {
+                const result = try self.engine.eval("mouseLog.push({render:true})", "mouse-render-observer.js", c.JS_EVAL_TYPE_GLOBAL);
+                self.engine.freeValue(result);
+            }
+        }
+    };
+    var receiver: Receiver = .{ .engine = engine };
+    manager.bridge = .{ .context = &receiver, .request = Receiver.request, .action = Receiver.action, .cancel = Receiver.cancel, .component_scene = Receiver.scene, .component_mouse_outcome = Receiver.outcome };
+    const snapshot = try engine.eval("({hasUI:true,width:100,height:24})", "mouse-owner-context.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(snapshot);
+    try manager.begin(1, snapshot, null);
+    manager.invocation_id = 1;
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try manager.defineField(global, "nativeUi", try manager.createObject());
+    const fixture = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/mouse-gesture-original-7fb.json"), .{});
+    defer fixture.deinit();
+    try manager.defineField(global, "mouseGestureOracle", try engine.fromJsonValue(fixture.value));
+    const promise = try engine.eval("globalThis.mouseLog=[];globalThis.mouseTime=1000;Date.now=()=>mouseTime;nativeUi.custom(tui=>{let focused=false;const root={get focused(){return focused},set focused(value){focused=value;if(value)mouseLog.push({focus:true})},render(){return ['mouse owner']},handleInput(){},handleMouse(event){mouseLog.push({event:{...event}});return {handled:true,capture:event.type==='press',focus:true}}};tui.setFocus(null);globalThis.mouseFinish=()=>tui.setFocus(null);return root})", "mouse-owner-original.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(promise);
+    _ = try manager.pollCustom();
+    const fence = manager.customs.items[0].fence;
+    for (fixture.value.object.get("inputs").?.array.items, 0..) |input, index| {
+        const object = input.object;
+        const time = try engine.fromJsonValue(object.get("time").?);
+        try manager.defineField(global, "mouseTime", time);
+        const event: protocol.Mouse = .{ .kind = if (object.get("release").?.bool) .release else if (object.get("button").?.integer & 32 != 0) .drag else .press, .button = .left, .x = object.get("x").?.integer, .y = object.get("y").?.integer, .screen_x = object.get("x").?.integer, .screen_y = object.get("y").?.integer, .width = 100, .height = 24 };
+        const control_value: protocol.Control = .{ .gpa = engine.gpa, .fence = fence, .mouse_sequence = index + 1, .kind = .{ .mouse = event } };
+        try std.testing.expect(try manager.componentControl(&control_value));
+        _ = try manager.pollCustom();
+        c.JS_RunGC(engine.runtime);
+    }
+    const compared = try engine.eval("if(JSON.stringify(mouseLog)!==JSON.stringify(mouseGestureOracle.log))throw Error(JSON.stringify({actual:mouseLog,expected:mouseGestureOracle.log}));", "mouse-owner-compare.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(compared);
+}
+fn mouseOwnerAllocationProbe(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    try @import("abort_signal.zig").install(engine);
+    const manager = Manager.init(engine) catch |err| return mouseAllocationError(engine, err);
+    defer manager.deinit();
+    const Receiver = struct {
+        fn request(_: ?*anyopaque, _: u32, _: []const u8, _: []const u8) !void {}
+        fn action(_: ?*anyopaque, _: []const u8, _: []const u8) !void {}
+        fn cancel(_: ?*anyopaque, _: u32) !void {}
+        fn scene(_: ?*anyopaque, value: protocol.Scene) !void {
+            var owned = value;
+            owned.deinit();
+        }
+        fn outcome(_: ?*anyopaque, _: protocol.MouseOutcome) !void {}
+    };
+    manager.bridge = .{ .request = Receiver.request, .action = Receiver.action, .cancel = Receiver.cancel, .component_scene = Receiver.scene, .component_mouse_outcome = Receiver.outcome };
+    const snapshot = engine.eval("({hasUI:true,width:100,height:24})", "mouse-allocation-context.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| return mouseAllocationError(engine, err);
+    defer engine.freeValue(snapshot);
+    manager.begin(1, snapshot, null) catch |err| return mouseAllocationError(engine, err);
+    manager.invocation_id = 1;
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    manager.defineField(global, "nativeUi", manager.createObject() catch |err| return mouseAllocationError(engine, err)) catch |err| return mouseAllocationError(engine, err);
+    const promise = engine.eval("nativeUi.custom(tui=>({focused:false,render(){return ['owner']},handleMouse(event){return {handled:true,capture:true,focus:true}},invalidate(){}}))", "mouse-owner-allocation.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| return mouseAllocationError(engine, err);
+    defer engine.freeValue(promise);
+    _ = manager.pollCustom() catch |err| return mouseAllocationError(engine, err);
+    if (manager.customs.items.len == 0) return error.OutOfMemory;
+    const fence = manager.customs.items[0].fence;
+    const value: protocol.Control = .{ .gpa = gpa, .fence = fence, .mouse_sequence = 1, .kind = .{ .mouse = .{ .kind = .press, .button = .left, .x = 1, .y = 2, .screen_x = 11, .screen_y = 12, .width = 100, .height = 24 } } };
+    _ = manager.componentControl(&value) catch |err| return mouseAllocationError(engine, err);
+    if (c.JS_PromiseState(engine.context, promise) == c.JS_PROMISE_REJECTED) {
+        const reason = c.JS_PromiseResult(engine.context, promise);
+        if (engine.captured_exception) |old| engine.freeValue(old);
+        engine.captured_exception = reason;
+        return mouseAllocationError(engine, error.JavaScriptException);
+    }
+    if (manager.components.entries.get(fence.component_id)) |entry| if (!entry.pending_success) {
+        if (entry.pending_completion) |reason| {
+            if (engine.captured_exception) |old| engine.freeValue(old);
+            engine.captured_exception = c.JS_DupValue(engine.context, reason);
+            return mouseAllocationError(engine, error.JavaScriptException);
+        }
+    };
+    if (engine.captured_exception != null) return error.OutOfMemory;
+    c.JS_RunGC(engine.runtime);
+}
+fn mouseAllocationError(engine: *engine_mod.Engine, err: anyerror) anyerror {
+    if (err == error.JavaScriptException) if (engine.captured_exception) |value| {
+        const message = engine.checked(c.JS_GetPropertyStr(engine.context, value, "message")) catch return error.OutOfMemory;
+        defer engine.freeValue(message);
+        const text = engine.toString(message) catch return error.OutOfMemory;
+        defer engine.gpa.free(text);
+        if (std.mem.indexOf(u8, text, "out of memory") != null or std.mem.indexOf(u8, text, "OutOfMemory") != null) return error.OutOfMemory;
+    };
+    return err;
+}
+test "mouse owner capture focus outcome rollback and final retirement release every induced allocation failure" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, mouseOwnerAllocationProbe, .{});
 }
 
 test "native focused opening setter failure rejects through close acknowledgement without duplicate ownership" {
