@@ -551,6 +551,30 @@ const Selector = struct {
 
     fn nextValue(self: *const Selector, key: settings_mod.EditableKey, direction: isize) ?settings_mod.EditableValue {
         if (key == .theme) return self.themeValue(direction);
+        if (key == .fullscreen_wheel_scroll_lines) {
+            var values: [7]settings_mod.EditableValue = undefined;
+            values[0] = .{ .string = "auto" };
+            var numbers: [6]i64 = .{ 1, 2, 3, 5, 10, 0 };
+            var count: usize = 5;
+            const current = self.currentValue(key);
+            if (current == .integer) {
+                var found = false;
+                for (numbers[0..count]) |value| found = found or value == current.integer;
+                if (!found) {
+                    numbers[count] = current.integer;
+                    count += 1;
+                }
+            }
+            std.mem.sort(i64, numbers[0..count], {}, std.sort.asc(i64));
+            for (numbers[0..count], 1..) |value, index| values[index] = .{ .integer = value };
+            var index: usize = 0;
+            for (values[0 .. count + 1], 0..) |value, candidate| if (valueEqual(current, value)) {
+                index = candidate;
+                break;
+            };
+            const next: usize = @intCast(@mod(@as(isize, @intCast(index)) + direction, @as(isize, @intCast(count + 1))));
+            return values[next];
+        }
         const options = staticOptions(key);
         if (options.len == 0) return null;
         const current = self.currentValue(key);
