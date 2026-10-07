@@ -62,7 +62,9 @@ pub fn validate(v: Value) !void {
                 _ = try field(outcome, "result");
             } else if (std.mem.eql(u8, kind, "failed") or std.mem.eql(u8, kind, "faulted")) {
                 _ = try field(outcome, "error");
-            } else if (std.mem.eql(u8, kind, "aborted") or std.mem.eql(u8, kind, "orphaned")) {
+            } else if (std.mem.eql(u8, kind, "aborted")) {
+                if (json.get(outcome, "reason")) |reason| _ = try json.asString(reason);
+            } else if (std.mem.eql(u8, kind, "orphaned")) {
                 _ = try field(outcome, "reason");
             } else return error.InvalidTaskOutcome;
         },

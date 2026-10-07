@@ -82,7 +82,7 @@ test "mcp.configured trusted project overrides and untrusted files never execute
     defer result.deinit(gpa);
     try std.testing.expectEqualStrings("6", result.content);
 }
-test "mcp.configured callable exposure attempts report connection failures and OAuth remains explicit unsupported" {
+test "mcp.configured callable exposure attempts admit OAuth and report actual connection failures" {
     var root = try Root.init();
     defer root.deinit();
     var arena: std.heap.ArenaAllocator = .init(gpa);
@@ -95,13 +95,14 @@ test "mcp.configured callable exposure attempts report connection failures and O
     const service = try create(&root, &env, true);
     defer service.deinit();
     try service.start();
-    try std.testing.expectEqual(@as(usize, 2), service.servers.items.len);
+    try std.testing.expectEqual(@as(usize, 3), service.servers.items.len);
     try std.testing.expectEqual(@as(usize, 3), service.diagnostics.items.len);
     var oauth = false;
-    for (service.diagnostics.items) |message| if (std.mem.indexOf(u8, message, "McpOAuthUnsupported") != null) {
-        oauth = true;
+    for (service.servers.items) |server| if (std.mem.eql(u8, server.name, "oauth")) {
+        oauth = server.auth_provider != null;
     };
     try std.testing.expect(oauth);
+    for (service.diagnostics.items) |message| try std.testing.expect(std.mem.indexOf(u8, message, "McpOAuthUnsupported") == null);
 }
 
 test "mcp.configured real deferred discovery stays callable while model declarations load ranked matches" {
@@ -740,6 +741,43 @@ test "mcp.configured actual standalone CLI runs global direct stdio tool without
     }
     try std.testing.expect(saw_result);
 }
+
+test "mcp.configured native MCP commands list actual hidden tools and dispatch standalone without Node" {
+    const fixture = try fixturePath();
+    defer gpa.free(fixture);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    try root.write(false, try document(arena.allocator(), "fixture", try stdioConfig(arena.allocator(), fixture, "hidden")));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const cli = try gpa.dupe(u8, env.get("PI_MCP_CONFIGURED_CLI") orelse return error.MissingCliFixture);
+    defer gpa.free(cli);
+    try env.put("PI_AGENT_DIR", root.path);
+    try env.put("PI_OFFLINE", "1");
+    try env.put("PATH", std.fs.path.dirname(cli).?);
+    const output = try std.process.run(gpa, io, .{ .argv = &.{ cli, "mcp", "list", "--json" }, .cwd = .{ .path = root.path }, .environ_map = &env, .stdout_limit = .limited(65536), .stderr_limit = .limited(65536), .timeout = .{ .duration = .{ .raw = .fromSeconds(20), .clock = .awake } } });
+    defer gpa.free(output.stdout);
+    defer gpa.free(output.stderr);
+    if (output.term != .exited or output.term.exited != 0) std.debug.print("MCP command {any}: {s} {s}\n", .{ output.term, output.stdout, output.stderr });
+    try std.testing.expect(output.term == .exited and output.term.exited == 0);
+    var report = try json.Owned.parse(gpa, output.stdout);
+    defer report.deinit();
+    const server = json.get(report.value, "servers").?.array.items[0];
+    try std.testing.expectEqualStrings("connected", try protocol.text(server, "state"));
+    const names = json.get(server, "tools").?.array.items;
+    try std.testing.expect(names.len > 0);
+    var saw_hidden = false;
+    for (names) |name| if (std.mem.eql(u8, name.string, "hidden")) {
+        saw_hidden = true;
+    };
+    try std.testing.expect(saw_hidden);
+    var native = try @import("mcp/cli.zig").run(gpa, .{ .context = .{ .io = io, .agent_dir = root.path, .cwd = root.path }, .environment = &env }, &.{ "login", "fixture" });
+    defer native.deinit();
+    try std.testing.expectEqual(@as(u64, 1), try json.asInteger(json.get(native.data.value, "code").?));
+    try std.testing.expect(std.mem.indexOf(u8, json.get(native.data.value, "errors").?.array.items[0].string, "does not use OAuth") != null);
+}
 test "mcp.configured actual standalone CLI static-auth HTTP direct tool and DELETE" {
     const fixture = @import("mcp/configured_http_fixture.zig");
     const server = try fixture.Server.init(gpa, io);
@@ -763,4 +801,173 @@ test "mcp.configured actual standalone CLI static-auth HTTP direct tool and DELE
         deletes += 1;
     };
     try std.testing.expectEqual(@as(usize, 1), deletes);
+}
+
+test "mcp.configured default OAuth reads stored grant refreshes once and initializes native HTTP connection" {
+    var root = try Root.init();
+    defer root.deinit();
+    const fixture = @import("ai/http_fixture.zig");
+    const server = try fixture.PlanServer.init(gpa, io, &.{
+        .{ .path = "/token", .body = "{\"access_token\":\"fresh\",\"refresh_token\":\"rotated\",\"token_type\":\"Bearer\",\"expires_in\":3600}", .payload_contains = "refresh_token=old-refresh" },
+        .{ .path = "/mcp", .body = "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{},\"serverInfo\":{\"name\":\"oauth\",\"version\":\"1\"}}}", .headers = &.{.{ .name = "content-type", .value = "application/json" }}, .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer fresh" }} },
+        .{ .path = "/mcp", .status = .accepted, .body = "", .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer fresh" }} },
+    });
+    defer server.deinit();
+    const url = try server.url(gpa, "/mcp");
+    defer gpa.free(url);
+    const endpoint = try server.url(gpa, "/token");
+    defer gpa.free(endpoint);
+    const issuer = try server.url(gpa, "/authorize");
+    defer gpa.free(issuer);
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    try root.write(false, try document(a, "oauth", try map(a, &.{ .{ "url", .{ .string = url } }, .{ "exposure", .{ .string = "direct" } } })));
+    var store = try @import("mcp/oauth_store.zig").Store.init(gpa, io, root.path);
+    defer store.deinit();
+    const serialized = try std.json.Stringify.valueAlloc(gpa, .{
+        .tokens = .{ .access_token = "old-access", .refresh_token = "old-refresh", .token_type = "Bearer" },
+        .tokensExpireAt = 0,
+        .clientInformation = .{ .client_id = "client", .redirect_uris = [_][]const u8{"http://127.0.0.1/callback"} },
+        .discovery = .{ .authorizationServerUrl = issuer, .authorizationServerMetadata = .{ .issuer = issuer, .authorization_endpoint = issuer, .token_endpoint = endpoint, .response_types_supported = [_][]const u8{"code"}, .token_endpoint_auth_methods_supported = [_][]const u8{"none"} } },
+    }, .{});
+    defer gpa.free(serialized);
+    var state = try json.Owned.parse(gpa, serialized);
+    defer state.deinit();
+    try store.save("oauth", url, state.value, null);
+    var environment = try std.testing.environ.createMap(gpa);
+    defer environment.deinit();
+    const service = try create(&root, &environment, false);
+    defer service.deinit();
+    try service.start();
+    try std.testing.expectEqual(@as(usize, 1), service.servers.items.len);
+    try std.testing.expectEqual(@as(usize, 0), service.diagnostics.items.len);
+    var saved = (try store.load("oauth", url, null)).?;
+    defer saved.deinit();
+    try std.testing.expectEqualStrings("rotated", try protocol.text(json.get(saved.value, "tokens").?, "refresh_token"));
+    try service.close();
+    try server.finish();
+    try std.testing.expectEqual(@as(usize, 3), server.captured.items.len);
+}
+
+test "mcp.configured native login timeout aborts discovery before browser prompt and joins HTTP owner" {
+    var root = try Root.init();
+    defer root.deinit();
+    var observed: std.Io.Event = .unset;
+    var release: std.Io.Event = .unset;
+    const server = try @import("ai/http_fixture.zig").PlanServer.init(gpa, io, &.{
+        .{ .path = "/mcp", .status = .unauthorized, .body = "unauthorized" },
+        .{ .path = "/.well-known/oauth-protected-resource/mcp", .body = "{}", .request_observed = &observed, .response_release = &release },
+    });
+    defer server.deinit();
+    defer release.set(io);
+    const url = try server.url(gpa, "/mcp");
+    defer gpa.free(url);
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    try root.write(false, try document(arena.allocator(), "oauth", try map(arena.allocator(), &.{.{ "url", .{ .string = url } }})));
+    var environment = try std.testing.environ.createMap(gpa);
+    defer environment.deinit();
+    const Prompt = struct {
+        fn show(_: ?*anyopaque, _: []const u8) !void {
+            return error.UnexpectedPrompt;
+        }
+        fn read(_: ?*anyopaque, _: std.mem.Allocator, _: *bool) !?[]u8 {
+            return error.UnexpectedPrompt;
+        }
+    };
+    const started = std.Io.Clock.awake.now(io).toMilliseconds();
+    var result = try @import("mcp/cli.zig").run(gpa, .{ .context = .{ .io = io, .agent_dir = root.path, .cwd = root.path }, .environment = &environment, .prompt = .{ .context = null, .show = Prompt.show, .read = Prompt.read } }, &.{ "login", "oauth", "--timeout", "0.05" });
+    defer result.deinit();
+    try std.testing.expectEqual(@as(u64, 1), try json.asInteger(json.get(result.data.value, "code").?));
+    try std.testing.expectEqualStrings("Sign-in to MCP server \"oauth\" was cancelled or not completed within 0 seconds.", json.get(result.data.value, "errors").?.array.items[0].string);
+    try std.testing.expect(std.Io.Clock.awake.now(io).toMilliseconds() - started < 1000);
+    release.set(io);
+}
+
+test "mcp.configured close aborts active sign-in and joins discovery before releasing credentials" {
+    var root = try Root.init();
+    defer root.deinit();
+    var observed: std.Io.Event = .unset;
+    var release: std.Io.Event = .unset;
+    const server = try @import("ai/http_fixture.zig").PlanServer.init(gpa, io, &.{.{ .path = "/.well-known/oauth-protected-resource/mcp", .body = "{}", .request_observed = &observed, .response_release = &release }});
+    defer server.deinit();
+    const url = try server.url(gpa, "/mcp");
+    defer gpa.free(url);
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    try root.write(false, try document(a, "oauth", try map(a, &.{.{ "url", .{ .string = url } }})));
+    var environment = try std.testing.environ.createMap(gpa);
+    defer environment.deinit();
+    const service = try create(&root, &environment, false);
+    defer service.deinit();
+    const Prompt = struct {
+        fn show(_: ?*anyopaque, _: []const u8) !void {
+            return error.UnexpectedPrompt;
+        }
+        fn read(_: ?*anyopaque, _: std.mem.Allocator, _: *bool) !?[]u8 {
+            return error.UnexpectedPrompt;
+        }
+    };
+    const Work = struct {
+        owner: *configured.Service,
+        fn run(work: *@This()) !void {
+            try work.owner.signIn("oauth", .{ .context = null, .show = Prompt.show, .read = Prompt.read }, null, 5000);
+        }
+    };
+    var work: Work = .{ .owner = service };
+    var future = try io.concurrent(Work.run, .{&work});
+    var joined = false;
+    defer if (!joined) {
+        service.close() catch {};
+        release.set(io);
+        future.cancel(io) catch {};
+    };
+    try observed.wait(io);
+    const started = std.Io.Clock.awake.now(io).toMilliseconds();
+    try service.close();
+    const result = future.await(io);
+    joined = true;
+    try std.testing.expectError(error.McpSignInCancelled, result);
+    try std.testing.expect(!service.servers.items[0].sign_in_active);
+    try std.testing.expect(std.Io.Clock.awake.now(io).toMilliseconds() - started < 1000);
+    release.set(io);
+}
+
+test "mcp.configured reconnect retires old session before new handshake and fresh GET lifetime" {
+    var root = try Root.init();
+    defer root.deinit();
+    var first_get: std.Io.Event = .unset;
+    var second_get: std.Io.Event = .unset;
+    const handshake = "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{},\"serverInfo\":{\"name\":\"reconnect\",\"version\":\"1\"}}}";
+    const server = try @import("ai/http_fixture.zig").PlanServer.init(gpa, io, &.{
+        .{ .path = "/mcp", .body = handshake, .headers = &.{ .{ .name = "content-type", .value = "application/json" }, .{ .name = "mcp-session-id", .value = "first" } } },
+        .{ .path = "/mcp", .body = "", .status = .accepted, .payload_contains = "notifications/initialized" },
+        .{ .path = "/mcp", .body = "", .status = .method_not_allowed, .request_observed = &first_get },
+        .{ .path = "/mcp", .body = "", .status = .no_content, .expected_request_headers = &.{.{ .name = "mcp-session-id", .value = "first" }} },
+        .{ .path = "/mcp", .body = handshake, .headers = &.{ .{ .name = "content-type", .value = "application/json" }, .{ .name = "mcp-session-id", .value = "second" } } },
+        .{ .path = "/mcp", .body = "", .status = .accepted, .payload_contains = "notifications/initialized" },
+        .{ .path = "/mcp", .body = "", .status = .method_not_allowed, .request_observed = &second_get },
+        .{ .path = "/mcp", .body = "", .status = .no_content, .expected_request_headers = &.{.{ .name = "mcp-session-id", .value = "second" }} },
+    });
+    defer server.deinit();
+    const url = try server.url(gpa, "/mcp");
+    defer gpa.free(url);
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    try root.write(false, try document(a, "http", try map(a, &.{ .{ "url", .{ .string = url } }, .{ "headers", try map(a, &.{.{ "Authorization", .{ .string = "Bearer static" } }}) } })));
+    var environment = try std.testing.environ.createMap(gpa);
+    defer environment.deinit();
+    const service = try create(&root, &environment, false);
+    defer service.deinit();
+    try service.start();
+    try first_get.wait(io);
+    try service.reconnect("http");
+    try second_get.wait(io);
+    try std.testing.expect(service.servers.items[0].connection.connectionState() == .ready);
+    try service.close();
+    try server.finish();
+    try std.testing.expectEqual(@as(usize, 8), server.captured.items.len);
 }

@@ -10,13 +10,33 @@ const filesystem_module = @import("../durable/filesystem.zig");
 const json = backend.json;
 const c = engine_module.c;
 const Engine = engine_module.Engine;
+pub const SessionLease = struct {
+    gpa: std.mem.Allocator,
+    value: session_module.Session,
+    refs: std.atomic.Value(usize) = .init(1),
+    pub fn retain(self: *SessionLease) *SessionLease {
+        _ = self.refs.fetchAdd(1, .monotonic);
+        return self;
+    }
+    pub fn release(self: *SessionLease) void {
+        if (self.refs.fetchSub(1, .acq_rel) == 1) {
+            self.value.deinit();
+            self.gpa.destroy(self);
+        }
+    }
+};
 const Kind = enum { memory, jsonl, sqlite, session, transaction };
-pub const Method = enum(c_int) { mintId, commit, close, conversation, entry, task, submission, submissionByRequest, document, findDocument, findLatestHeadMarker, scanConversations, scanEntries, scanTasks, scanSubmissions, scanDocuments, createRootConversation, createConversation, forkConversation, appendEntry, subscribeCommits, subscribeClose };
+pub const Method = enum(c_int) { mintId, commit, close, conversation, entry, task, submission, submissionByRequest, document, findDocument, findLatestHeadMarker, scanConversations, scanEntries, scanTasks, scanSubmissions, scanDocuments, createRootConversation, createConversation, forkConversation, appendEntry, subscribeCommits, subscribeClose, createTask };
 pub const State = struct {
     engine: *Engine,
     kind: Kind,
     memory: backend.memory.Memory,
     session: ?*session_module.Session = null,
+    session_lease: ?*SessionLease = null,
+    owner_thread: std.Thread.Id = 0,
+    foreign_publication: ?*const fn (?*anyopaque, *const session_module.Publication) anyerror!void = null,
+    foreign_publication_context: ?*anyopaque = null,
+    after_commit: ?*const fn (?*anyopaque) anyerror!void = null,
     transaction: ?*session_module.Transaction = null,
     parent: c.JSValue,
     tail: c.JSValue,
@@ -31,6 +51,7 @@ pub const State = struct {
     creation_owner: ?c.JSValue = null,
     creation_hook: ?*const fn (*Engine, c.JSValue, c.JSValue, json.Value) anyerror!void = null,
     finish_hook: ?*const fn (*Engine, c.JSValue, c.JSValue) anyerror!void = null,
+    task_creator: ?*const fn (*Engine, c.JSValue, c.JSValue, []const c.JSValue) anyerror!c.JSValue = null,
     plans: std.ArrayList(json.Owned) = .empty,
     fn storage(self: *State) !backend.Backend {
         if (self.storage_closed) return error.StorageClosed;
@@ -71,8 +92,7 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
             engine.gpa.destroy(self.filesystem.?);
         },
         .session => {
-            self.session.?.deinit();
-            engine.gpa.destroy(self.session.?);
+            self.session_lease.?.release();
         },
         .transaction => self.transaction.?.release(),
     }
@@ -287,6 +307,7 @@ pub fn install(engine: *Engine) !void {
     try sdk.put(engine, exports, "MemoryStorage", c.JS_DupValue(engine.context, ctor));
     try sdk.put(engine, exports, "createSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createSession", 1)));
     try @import("native_durable_harness.zig").install(engine, exports);
+    try @import("native_durable_tasks.zig").defineTask(engine, exports);
     if (!engine.native_module_names.contains("@earendil-works/pi-durable")) try engine.registerValueModule("@earendil-works/pi-durable", exports);
     inline for (.{ .{ "jsonl", "openNodeJsonlStorage", 0 }, .{ "sqlite", "openNodeSqliteStorage", 1 } }) |item| {
         const storage_exports = try sdk.object(engine);
@@ -379,25 +400,26 @@ pub fn sessionObject(engine: *Engine, storage: c.JSValue) !c.JSValue {
     errdefer engine.freeValue(result_object);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
-    const native = try engine.gpa.create(session_module.Session);
-    errdefer engine.gpa.destroy(native);
+    const lease = try engine.gpa.create(SessionLease);
+    errdefer engine.gpa.destroy(lease);
+    const native = &lease.value;
     const tail = try sdk.promise(engine, c.pi_js_undefined());
     errdefer engine.freeValue(tail);
-    native.* = session_module.Session.init(engine.gpa, io, store);
+    lease.* = .{ .gpa = engine.gpa, .value = session_module.Session.init(engine.gpa, io, store) };
     errdefer native.deinit();
-    self.* = .{ .engine = engine, .kind = .session, .memory = undefined, .session = native, .parent = c.JS_DupValue(engine.context, storage), .tail = tail };
+    self.* = .{ .engine = engine, .kind = .session, .memory = undefined, .session = native, .session_lease = lease, .owner_thread = std.Thread.getCurrentId(), .parent = c.JS_DupValue(engine.context, storage), .tail = tail };
     errdefer engine.freeValue(self.parent);
     _ = try native.subscribe(publication, self);
     try methods(engine, result_object, &.{ .commit, .close, .subscribeCommits, .subscribeClose });
     _ = c.JS_SetOpaque(result_object, self);
     return result_object;
 }
-fn transactionObject(engine: *Engine, native: *session_module.Transaction, parent: c.JSValue) !c.JSValue {
+pub fn transactionObject(engine: *Engine, native: *session_module.Transaction, parent: c.JSValue) !c.JSValue {
     const result_object = try engine.checked(c.JS_NewObjectClass(engine.context, engine.native_durable_class));
     errdefer engine.freeValue(result_object);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
-    try methods(engine, result_object, &.{ .createRootConversation, .createConversation, .forkConversation, .appendEntry, .conversation, .entry, .task });
+    try methods(engine, result_object, &.{ .createRootConversation, .createConversation, .forkConversation, .appendEntry, .conversation, .entry, .task, .createTask });
     self.* = .{ .engine = engine, .kind = .transaction, .memory = undefined, .transaction = native.retain(), .parent = c.JS_DupValue(engine.context, parent), .tail = c.pi_js_undefined() };
     _ = c.JS_SetOpaque(result_object, self);
     return result_object;
@@ -446,6 +468,10 @@ fn queuedContinuation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.J
         return reject(engine, err);
     };
     native_result.deinit();
+    if (self.after_commit) |flush| flush(self.foreign_publication_context) catch |err| {
+        engine.freeValue(call.returned);
+        return reject(engine, err);
+    };
     return call.returned;
 }
 pub fn sessionDispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
@@ -518,6 +544,13 @@ fn unsubscribe(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue,
 }
 fn publication(raw: ?*anyopaque, event: *const session_module.Publication, _: context_module.Context) !void {
     const self: *State = @ptrCast(@alignCast(raw.?));
+    if (self.foreign_publication) |forward| return forward(self.foreign_publication_context, event);
+    if (std.Thread.getCurrentId() != self.owner_thread) {
+        return error.VMCallbackOnWorker;
+    }
+    return deliverPublication(self, event);
+}
+pub fn deliverPublication(self: *State, event: *const session_module.Publication) !void {
     const engine = self.engine;
     if (self.commit_listeners.items.len == 0) return;
     const listeners = try duplicateListeners(engine, self.commit_listeners.items);
@@ -535,6 +568,12 @@ fn publication(raw: ?*anyopaque, event: *const session_module.Publication, _: co
 fn transactionDispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const engine = self.engine;
     const native = self.transaction.?;
+    if (operation == .createTask) {
+        if (!native.active) return error.TransactionClosed;
+        const parent = try state(engine, self.parent);
+        const create = parent.task_creator orelse return error.TaskCreatorUnavailable;
+        return create(engine, parent.creation_owner.?, receiver, args);
+    }
     const output: json.Value = switch (operation) {
         .createRootConversation => try native.createRootConversation(),
         .createConversation => try native.createConversation(null, try ownerTask(engine, argument(args, 0))),
@@ -573,6 +612,19 @@ fn transactionDispatch(self: *State, receiver: c.JSValue, operation: Method, arg
     const resolved = try jsValue(engine, output);
     defer engine.freeValue(resolved);
     return sdk.promise(engine, resolved);
+}
+/// Queues a native owner continuation on the same line as Session commits.
+pub fn enqueue(engine: *Engine, session: c.JSValue, callback: c.JSValue) !c.JSValue {
+    const self = try state(engine, session);
+    if (self.closing) return error.SessionClosed;
+    const ignored = try engine.checked(c.JS_NewCFunction(engine.context, ignore, "durable-line-settled", 0));
+    defer engine.freeValue(ignored);
+    const queued = try sdk.invoke(engine, self.tail, "then", &.{callback});
+    errdefer engine.freeValue(queued);
+    const next = try sdk.invoke(engine, queued, "then", &.{ ignored, ignored });
+    engine.freeValue(self.tail);
+    self.tail = next;
+    return queued;
 }
 fn ownerTask(engine: *Engine, options: c.JSValue) !?u64 {
     const ownership = try sdk.get(engine, options, "ownership");

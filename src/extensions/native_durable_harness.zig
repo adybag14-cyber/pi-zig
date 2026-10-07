@@ -8,9 +8,9 @@ const scans = @import("../durable/backend/source_scan.zig");
 const json = backend.json;
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
-const State = struct { engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64 = null };
-const Method = enum(c_int) { commit, close, root, conversation, createConversation, getTask, entries, fork, subscribeCommits, subscribeClose };
-fn state(engine: *Engine, receiver: c.JSValue) !*State {
+pub const State = struct { engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64 = null };
+const Method = enum(c_int) { commit, close, root, conversation, createConversation, getTask, entries, fork, subscribeCommits, subscribeClose, @"resume", waitForTask, waitForIdle, abortTask };
+pub fn state(engine: *Engine, receiver: c.JSValue) !*State {
     return @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, receiver, engine.native_durable_harness_class) orelse return error.InvalidHarnessReceiver));
 }
 fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
@@ -66,14 +66,16 @@ fn openOwned(engine: *Engine, args: []const c.JSValue) !c.JSValue {
     owner.creation_owner = c.JS_DupValue(engine.context, result);
     owner.creation_hook = created;
     owner.finish_hook = finish;
+    try @import("native_durable_tasks.zig").attach(engine, session, options, argument(args, 2));
+    owner.task_creator = @import("native_durable_tasks.zig").createTask;
     return result;
 }
-fn object(engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64) !c.JSValue {
+pub fn object(engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64) !c.JSValue {
     const result = try engine.checked(c.JS_NewObjectClass(engine.context, engine.native_durable_harness_class));
     errdefer engine.freeValue(result);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
-    const methods = if (conversation != null) &[_]Method{ .commit, .entries, .fork } else &[_]Method{ .commit, .close, .root, .conversation, .createConversation, .getTask, .subscribeCommits, .subscribeClose };
+    const methods = if (conversation != null) &[_]Method{ .commit, .entries, .fork, .waitForIdle } else &[_]Method{ .commit, .close, .root, .conversation, .createConversation, .getTask, .subscribeCommits, .subscribeClose, .@"resume", .waitForTask, .waitForIdle, .abortTask };
     for (methods) |operation| {
         const name = try engine.gpa.dupeZ(u8, @tagName(operation));
         defer engine.gpa.free(name);
@@ -94,6 +96,33 @@ fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.
 fn dispatch(engine: *Engine, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const self = try state(engine, receiver);
     const session = try durable.state(engine, self.session);
+    const tasks = @import("native_durable_tasks.zig");
+    if (operation == .@"resume") {
+        try (try tasks.getManager(engine, self.session)).@"resume"();
+        return c.pi_js_undefined();
+    }
+    if (operation == .waitForTask or operation == .waitForIdle) {
+        const owner = try tasks.getManager(engine, self.session);
+        return tasks.wait(owner, if (operation == .waitForTask) try durable.number(engine, argument(args, 0)) else null, self.conversation, argument(args, if (operation == .waitForTask) 1 else 0));
+    }
+    if (operation == .close) {
+        const result = try durable.sessionDispatch(session, self.session, .close, args);
+        errdefer engine.freeValue(result);
+        (try tasks.getManager(engine, self.session)).close();
+        return result;
+    }
+    if (operation == .abortTask) {
+        const owner = try tasks.getManager(engine, self.session);
+        try durable.checkCancellation(engine, argument(args, 1));
+        const id = try durable.number(engine, argument(args, 0));
+        var record = (try owner.lease.value.storage.readTableRecord(engine.gpa, .task, id)) orelse return error.UnknownTask;
+        defer record.deinit();
+        const terminal = std.mem.eql(u8, try json.asString(try json.required(try json.required(record.value, "state"), "status")), "terminal");
+        try owner.scheduler.abort(id);
+        const result = try sdk.text(engine, if (terminal) "terminal" else "marked");
+        defer engine.freeValue(result);
+        return sdk.promise(engine, result);
+    }
     if (operation == .subscribeCommits or operation == .subscribeClose) return sdk.invoke(engine, self.session, if (operation == .subscribeCommits) "subscribeCommits" else "subscribeClose", args);
     if (operation == .commit or operation == .close) return durable.sessionDispatchScoped(session, self.session, if (operation == .commit) .commit else .close, args, self.conversation);
     if (session.closing) return error.HarnessClosed;
@@ -323,7 +352,7 @@ fn constructorAllocationExercise(gpa: std.mem.Allocator) !void {
     try durable.install(engine);
     const storage = try durable.memoryObject(engine);
     defer engine.freeValue(storage);
-    const options = try engine.eval("({registry:{snapshot(){return{task(){return{}}}}}})", "harness-user-registry-fixture", c.JS_EVAL_TYPE_GLOBAL);
+    const options = try engine.eval("({registry:{snapshot(){return{task(){return{}},tasks(){return[]}}}}})", "harness-user-registry-fixture", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(options);
     const args = [_]c.JSValue{ storage, options, c.pi_js_undefined() };
     const harness = try openOwned(engine, &args);

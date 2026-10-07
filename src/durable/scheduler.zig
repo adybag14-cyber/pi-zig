@@ -24,7 +24,7 @@ pub const Definition = struct {
     retain: ?*const fn (?*anyopaque) void = null,
     release: ?*const fn (?*anyopaque) void = null,
 };
-const DefinitionNode = struct { definition: Definition, arena: std.heap.ArenaAllocator, generation: u64 };
+const DefinitionNode = struct { definition: Definition, arena: std.heap.ArenaAllocator, generation: u64, available: std.atomic.Value(bool) = .init(true) };
 pub const Options = struct {
     max_workers: usize = 4,
     max_phase_steps: usize = 1024,
@@ -79,6 +79,22 @@ pub const Runtime = struct {
     }
     pub fn taskId(self: Runtime) u64 {
         return self.invocation.task_id;
+    }
+    /// An owner broker detected a registry boundary before invoking a phase.
+    pub fn requeueForRegistryChange(self: Runtime) !void {
+        const Call = struct {
+            runtime: Runtime,
+            fn apply(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
+                const self_call: *@This() = @ptrCast(@alignCast(raw.?));
+                const current = (try tx.currentRecord(self_call.runtime.taskId(), .task)) orelse return error.UnknownTask;
+                if (try model.status(current) == .running) try tx.setTask(try model.withState(tx.owned.arena.allocator(), current, try model.checkpointState(tx.owned.arena.allocator(), "pending", try model.field(try model.field(current, "state"), "checkpoint"))));
+                self_call.runtime.invocation.end();
+                return .null;
+            }
+        };
+        var call: Call = .{ .runtime = self };
+        var result = try self.invocation.scheduler.session.commit(Call.apply, &call, .{}, .{});
+        result.deinit();
     }
     pub fn context(self: Runtime) types.Context {
         return .{ .abort_flag = &self.invocation.canceled };
@@ -205,6 +221,7 @@ pub const Scheduler = struct {
         const node = try self.gpa.create(DefinitionNode);
         errdefer self.gpa.destroy(node);
         node.arena = .init(self.gpa);
+        node.available = .init(true);
         errdefer node.arena.deinit();
         const a = node.arena.allocator();
         node.definition = definition;
@@ -230,7 +247,7 @@ pub const Scheduler = struct {
         var i = self.definitions.items.len;
         while (i > 0) {
             i -= 1;
-            if (std.mem.eql(u8, self.definitions.items[i].definition.name, name)) return self.definitions.items[i];
+            if (self.definitions.items[i].available.load(.acquire) and std.mem.eql(u8, self.definitions.items[i].definition.name, name)) return self.definitions.items[i];
         }
         return null;
     }
@@ -249,6 +266,11 @@ pub const Scheduler = struct {
         var result = try self.session.commit(recover, self, .{}, .{});
         result.deinit();
         try self.reconcile();
+    }
+    pub fn removeDefinition(self: *Scheduler, name: []const u8) void {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        for (self.definitions.items) |node| if (std.mem.eql(u8, node.definition.name, name)) node.available.store(false, .release);
     }
     pub fn enable(self: *Scheduler) void {
         self.enabled.store(true, .release);
@@ -549,7 +571,7 @@ pub const Scheduler = struct {
             var index = self.registry.len;
             while (index > 0) {
                 index -= 1;
-                if (std.mem.eql(u8, self.registry[index].definition.name, name)) return self.registry[index];
+                if (self.registry[index].available.load(.acquire) and std.mem.eql(u8, self.registry[index].definition.name, name)) return self.registry[index];
             }
             return null;
         }
@@ -672,7 +694,7 @@ pub const Scheduler = struct {
             if (self.failure) |err| fault = .{ .string = if (invocation.diagnostic_cause != null and invocation.diagnostic_cause.? == err and invocation.diagnostic_len > 0) invocation.diagnostic[0..invocation.diagnostic_len] else @errorName(err) } else if (self.abort_returned) fault = .{ .string = try std.fmt.allocPrint(tx.owned.arena.allocator(), "Abort handler of task {d} returned without a terminal outcome", .{invocation.task_id}) } else if (self.previous) |previous| {
                 if (json.equal(previous, checkpoint)) fault = .{ .string = try std.fmt.allocPrint(tx.owned.arena.allocator(), "Task {s} phase {s} returned without durable progress", .{ try model.text(record, "kind"), try model.text(previous, "phase") }) } else {
                     const replacement = scheduler.lookupDefinition(try model.text(record, "kind"));
-                    if (replacement != null and replacement.? != invocation.definition and (replacement.?.definition.version == invocation.definition.definition.version or (replacement.?.definition.version > invocation.definition.definition.version and replacement.?.definition.migrate != null))) {
+                    if (replacement == null or (replacement.? != invocation.definition and (replacement.?.definition.version == invocation.definition.definition.version or (replacement.?.definition.version > invocation.definition.definition.version and replacement.?.definition.migrate != null)))) {
                         invocation.end();
                         try tx.setTask(try model.withState(tx.owned.arena.allocator(), record, try model.checkpointState(tx.owned.arena.allocator(), "pending", checkpoint)));
                         return .null;

@@ -289,6 +289,43 @@ test "mcp.runtime HTTP close reuses last bearer token without refreshing after l
     try server.finish();
 }
 
+test "mcp.runtime HTTP retries one unauthorized request with its exact stale token and owned challenge" {
+    const fixture = @import("../ai/http_fixture.zig");
+    const server = try fixture.PlanServer.init(gpa, io, &.{
+        .{ .path = "/mcp", .status = .unauthorized, .body = "denied", .headers = &.{.{ .name = "www-authenticate", .value = "Bearer resource_metadata=\"https://metadata.example/mcp\"" }}, .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer old" }} },
+        .{ .path = "/mcp", .body = "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{},\"serverInfo\":{\"name\":\"retry\",\"version\":\"1\"}}}", .headers = &.{.{ .name = "content-type", .value = "application/json" }}, .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer new" }} },
+        .{ .path = "/mcp", .status = .accepted, .body = "", .expected_request_headers = &.{.{ .name = "authorization", .value = "Bearer new" }} },
+    });
+    defer server.deinit();
+    const url = try server.url(gpa, "/mcp");
+    defer gpa.free(url);
+    const Auth = struct {
+        replaced: bool = false,
+        retries: usize = 0,
+        fn token(raw: ?*anyopaque, allocator: std.mem.Allocator, _: ?*bool) !?[]u8 {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            return try allocator.dupe(u8, if (self.replaced) "new" else "old");
+        }
+        fn unauthorized(raw: ?*anyopaque, stale: ?[]const u8, challenge: ?[]const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            try std.testing.expectEqualStrings("old", stale.?);
+            try std.testing.expectEqualStrings("Bearer resource_metadata=\"https://metadata.example/mcp\"", challenge.?);
+            self.retries += 1;
+            self.replaced = true;
+        }
+    };
+    var auth: Auth = .{};
+    const transport = try http.Http.create(gpa, io, .{ .url = url, .open_get_stream = false, .auth_context = &auth, .auth_token = Auth.token, .on_unauthorized = Auth.unauthorized });
+    defer transport.deinit();
+    const client = try session.Client.create(gpa, io, transport.transport(), .{ .request_timeout_ms = 2000 });
+    defer client.deinit();
+    var initialized = try client.connect();
+    defer initialized.deinit();
+    try std.testing.expectEqual(@as(usize, 1), auth.retries);
+    try client.close();
+    try server.finish();
+}
+
 test "mcp.runtime real HTTP stalled initialize shutdown cancels socket before close returns" {
     const fixture = @import("../ai/http_fixture.zig");
     var observed: std.Io.Event = .unset;

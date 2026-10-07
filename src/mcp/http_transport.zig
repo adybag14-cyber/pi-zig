@@ -18,6 +18,7 @@ pub const Options = struct {
     on_http_error: ?*const fn (?*anyopaque, u16, []const u8) anyerror!void = null,
     auth_context: ?*anyopaque = null,
     auth_token: ?*const fn (?*anyopaque, std.mem.Allocator, ?*bool) anyerror!?[]u8 = null,
+    on_unauthorized: ?*const fn (?*anyopaque, ?[]const u8, ?[]const u8) anyerror!void = null,
 };
 pub const Http = struct {
     gpa: std.mem.Allocator,
@@ -140,6 +141,12 @@ pub const Http = struct {
             }
             return cause;
         };
+        if (body.status == 401 and self.options.on_unauthorized != null) {
+            try self.options.on_unauthorized.?(self.options.auth_context, body.token_used, body.challenge);
+            body.deinit();
+            body = Body.init(self, jsonRequestId(value));
+            _ = try self.perform(.POST, bytes, &body, null, null);
+        }
         try body.finish();
         if (jsonRequestId(value) != null and (body.status == 202 or body.status == 204)) return error.McpAcceptedWithoutResponse;
         if (jsonRequestId(value) == null and jsonMethod(value, "notifications/initialized")) try self.startGet();
@@ -168,6 +175,8 @@ pub const Http = struct {
                 if (self.last_auth_token) |previous| current = try self.gpa.dupe(u8, previous);
             }
             defer if (current) |value| self.gpa.free(value);
+            if (body.token_used) |previous| self.gpa.free(previous);
+            body.token_used = if (current) |value| try self.gpa.dupe(u8, value) else null;
             if (method != .DELETE) {
                 const retained = if (current) |value| try self.gpa.dupe(u8, value) else null;
                 self.mutex.lockUncancelable(self.io);
@@ -264,6 +273,8 @@ pub const Http = struct {
         received: bool = false,
         last_id: ?[]u8 = null,
         retry_ms: ?f64 = null,
+        token_used: ?[]u8 = null,
+        challenge: ?[]u8 = null,
         fn init(self: *Http, id: ?protocol.Value) Body {
             return .{ .transport = self, .request_id = id, .parser = sse.Parser.init(self.gpa, .{ .on_event = event, .on_id = eventId, .on_retry = eventRetry, .max_event_bytes = self.options.max_message_bytes }) };
         }
@@ -271,6 +282,8 @@ pub const Http = struct {
             self.parser.deinit();
             self.json_bytes.deinit(self.transport.gpa);
             if (self.last_id) |value| self.transport.gpa.free(value);
+            if (self.token_used) |value| self.transport.gpa.free(value);
+            if (self.challenge) |value| self.transport.gpa.free(value);
         }
         fn head(raw: ?*anyopaque, value: std.http.Client.Response.Head) !void {
             const self: *Body = @ptrCast(@alignCast(raw.?));
@@ -282,6 +295,11 @@ pub const Http = struct {
             while (iterator.next()) |header| {
                 if (std.ascii.eqlIgnoreCase(header.name, "content-type")) content_type = header.value;
                 if (std.ascii.eqlIgnoreCase(header.name, "mcp-session-id")) session_id = header.value;
+                if (std.ascii.eqlIgnoreCase(header.name, "www-authenticate")) {
+                    const retained = try self.transport.gpa.dupe(u8, header.value);
+                    if (self.challenge) |previous| self.transport.gpa.free(previous);
+                    self.challenge = retained;
+                }
             }
             if (self.status < 200 or self.status >= 300) {
                 if (self.status == 405 and self.is_get) {

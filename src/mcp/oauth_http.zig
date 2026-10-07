@@ -202,7 +202,12 @@ test "mcp.runtime OAuth failure capture allocation failures preserve prior owner
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Check.run, .{});
 }
 fn discoveryMiss(status: u16) bool {
-    return status == 404 or status == 405;
+    return (status >= 400 and status < 500) or status == 502;
+}
+test "mcp.runtime OAuth discovery miss classifications match source 4xx and 502 boundaries" {
+    for (400..500) |status| try std.testing.expect(discoveryMiss(@intCast(status)));
+    try std.testing.expect(discoveryMiss(502));
+    for ([_]u16{ 200, 302, 399, 500, 501, 503 }) |status| try std.testing.expect(!discoveryMiss(status));
 }
 pub fn discoveryUrls(gpa: std.mem.Allocator, issuer_url: []const u8) ![][]u8 {
     var issuer = try url.parse(gpa, issuer_url, null);

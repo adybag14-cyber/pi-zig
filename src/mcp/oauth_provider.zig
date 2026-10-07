@@ -5,7 +5,9 @@ const json = protocol.json;
 const store_mod = @import("oauth_store.zig");
 const flow = @import("oauth_flow.zig");
 const http = @import("oauth_http.zig");
+const authorize_mod = @import("oauth_authorize.zig");
 pub const ResolveOptions = *const fn (?*anyopaque, json.Value) anyerror!flow.TokenOptions;
+pub const ResolveFlow = *const fn (?*anyopaque, json.Value, ?[]const u8) anyerror!authorize_mod.Options;
 pub const Provider = struct {
     store: store_mod.Store,
     name: []const u8,
@@ -13,6 +15,8 @@ pub const Provider = struct {
     client: http.Client,
     options_context: ?*anyopaque,
     resolve_options: ResolveOptions,
+    resolve_flow: ?ResolveFlow = null,
+    pending_challenge: ?[]const u8 = null,
     mutex: std.Io.Mutex = .init,
     closed: bool = false,
 
@@ -24,6 +28,11 @@ pub const Provider = struct {
         self.mutex.lockUncancelable(self.store.io);
         defer self.mutex.unlock(self.store.io);
         self.closed = true;
+    }
+    pub fn removeCredentials(self: *Provider) !bool {
+        try self.mutex.lock(self.store.io);
+        defer self.mutex.unlock(self.store.io);
+        return self.store.remove(self.name, self.server_url, null);
     }
     pub fn token(self: *Provider) !?[]u8 {
         try self.mutex.lock(self.store.io);
@@ -52,6 +61,18 @@ pub const Provider = struct {
         if (self.closed) return error.McpOAuthProviderClosed;
         try self.refreshLocked(stale_token);
     }
+    pub fn unauthorizedChallenge(self: *Provider, stale_token: ?[]const u8, challenge: ?[]const u8) !void {
+        var parsed = try @import("oauth_challenge.zig").parse(self.store.gpa, challenge);
+        defer parsed.deinit();
+        const failure = json.get(parsed.value, "error");
+        if (failure != null and failure.? == .string and std.mem.eql(u8, failure.?.string, "insufficient_scope")) return error.McpOAuthAuthorizationRequired;
+        try self.mutex.lock(self.store.io);
+        defer self.mutex.unlock(self.store.io);
+        if (self.closed) return error.McpOAuthProviderClosed;
+        self.pending_challenge = challenge;
+        defer self.pending_challenge = null;
+        try self.refreshLocked(stale_token);
+    }
     fn refreshLocked(self: *Provider, stale_token: ?[]const u8) !void {
         const io = self.store.io;
         const lease = try self.store.refreshLease(self.name, self.server_url, null);
@@ -61,6 +82,15 @@ pub const Provider = struct {
         const current = accessToken(state.value);
         if (!equalOptional(current, stale_token)) return;
         const refresh_token = refreshToken(state.value) orelse return error.McpOAuthAuthorizationRequired;
+        if (self.resolve_flow) |resolve| {
+            const configured = try resolve(self.options_context, state.value, self.pending_challenge);
+            const protection = io.swapCancelProtection(.blocked);
+            defer _ = io.swapCancelProtection(protection);
+            var result = try authorize_mod.authorize(self.client.rotationSafe(), self.store, configured);
+            defer result.deinit(self.store.gpa);
+            if (result == .redirect) return error.McpOAuthAuthorizationRequired;
+            return;
+        }
         const options = try self.resolve_options(self.options_context, state.value);
         // Never discard a server's rotated credential due to caller cancellation.
         const protection = io.swapCancelProtection(.blocked);

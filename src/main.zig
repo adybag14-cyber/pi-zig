@@ -4494,6 +4494,11 @@ fn runMain(init: std.process.Init) !void {
 
     const thinking_eff = cli.thinking orelse settings.thinking_level;
 
+    if (configured_mcp != null) {
+        agent_cfg.configured_tools_json_fn = pi_zig.mcp.configured.Service.dynamicSchemas;
+        agent_cfg.configured_tool_fn = pi_zig.mcp.configured.Service.execute;
+        agent_cfg.configured_tool_exists_fn = pi_zig.mcp.configured.Service.exists;
+    }
     var live = coding.live_state.LiveState{
         .gpa = gpa,
         .io = io,
@@ -8289,34 +8294,25 @@ fn runSurfaceCommand(
     }
 
     if (std.mem.eql(u8, cmd, "mcp")) {
-        const http_mode = cmd_args.len > 0 and std.mem.eql(u8, cmd_args[0], "--url");
-        if (cmd_args.len == 0 or (http_mode and cmd_args.len != 2)) {
-            try tui.render.printLine(io, "usage: pi mcp <server-command> [args...] | pi mcp --url <http(s)-url>");
-            std.process.exit(2);
+        const mcp_agent_dir = try config.agentDir(arena, environ);
+        const mcp_cwd = try std.process.currentPathAlloc(io, arena);
+        var trust_store = try coding.trust.Store.init(gpa, io, mcp_agent_dir);
+        defer trust_store.deinit();
+        var prompt: McpCommandPrompt = .{ .io = io, .name = "", .interactive = Io.File.stdin().isTty(io) catch false };
+        if (cmd_args.len > 1) prompt.name = cmd_args[1];
+        var result = try pi_zig.mcp.cli.run(gpa, .{
+            .context = .{ .io = io, .agent_dir = mcp_agent_dir, .cwd = mcp_cwd, .project_trusted = (try trust_store.get(mcp_cwd)) orelse false },
+            .environment = environ,
+            .prompt = .{ .context = &prompt, .show = McpCommandPrompt.show, .read = McpCommandPrompt.read },
+        }, cmd_args);
+        defer result.deinit();
+        for (pi_zig.mcp.protocol.json.get(result.data.value, "logs").?.array.items) |line| try tui.render.printLine(io, line.string);
+        for (pi_zig.mcp.protocol.json.get(result.data.value, "errors").?.array.items) |line| {
+            try Io.File.stderr().writeStreamingAll(io, line.string);
+            try Io.File.stderr().writeStreamingAll(io, "\n");
         }
-        var client = pi_zig.mcp.McpClient{ .gpa = gpa, .io = io, .environ = environ };
-        defer client.deinit();
-        const connection = if (http_mode) client.connectHttp(cmd_args[1]) else client.connect(cmd_args);
-        connection catch |err| {
-            client.close();
-            const m = try std.fmt.allocPrint(arena, "mcp connect failed: {s}", .{@errorName(err)});
-            try tui.render.printLine(io, m);
-            std.process.exit(2);
-        };
-        client.listTools() catch |err| {
-            client.close();
-            const m = try std.fmt.allocPrint(arena, "mcp tools/list failed: {s}", .{@errorName(err)});
-            try tui.render.printLine(io, m);
-            std.process.exit(2);
-        };
-        if (client.tools.items.len == 0) {
-            try tui.render.printLine(io, "(no MCP tools reported)");
-        } else {
-            for (client.tools.items) |t| {
-                const line = try std.fmt.allocPrint(arena, "{s}\t{s}", .{ t.name, t.description });
-                try tui.render.printLine(io, line);
-            }
-        }
+        const exit_code = try pi_zig.mcp.protocol.json.asInteger(pi_zig.mcp.protocol.json.get(result.data.value, "code").?);
+        if (exit_code != 0) std.process.exit(@intCast(exit_code));
         return;
     }
 
@@ -8451,6 +8447,35 @@ fn runSurfaceCommand(
     try tui.render.printLine(io, unknown);
     std.process.exit(2);
 }
+
+const McpCommandPrompt = struct {
+    io: Io,
+    name: []const u8,
+    interactive: bool,
+    fn show(raw: ?*anyopaque, url: []const u8) !void {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        const message = try std.fmt.allocPrint(std.heap.page_allocator, "Sign in to MCP server \"{s}\" in your browser:\n{s}", .{ self.name, url });
+        defer std.heap.page_allocator.free(message);
+        try tui.render.printLine(self.io, message);
+        try auth.openai_codex_oauth.openBrowser(self.io, url);
+    }
+    fn read(raw: ?*anyopaque, gpa: std.mem.Allocator, aborted: *bool) !?[]u8 {
+        const self: *@This() = @ptrCast(@alignCast(raw.?));
+        if (!self.interactive) {
+            while (!@atomicLoad(bool, aborted, .acquire)) try self.io.sleep(.fromMilliseconds(5), .awake);
+            return null;
+        }
+        try Io.File.stderr().writeStreamingAll(self.io, "If the browser cannot reach this machine, paste the URL it was redirected to: ");
+        var buffer: [1024]u8 = undefined;
+        var reader = Io.File.stdin().reader(self.io, &buffer);
+        const line = reader.interface.takeDelimiterExclusive('\n') catch |cause| switch (cause) {
+            error.EndOfStream => return null,
+            else => return cause,
+        };
+        if (@atomicLoad(bool, aborted, .acquire)) return null;
+        return try gpa.dupe(u8, std.mem.trimEnd(u8, line, "\r"));
+    }
+};
 
 fn listModels(gpa: std.mem.Allocator, io: Io, query: ?[]const u8, models: []const ai.providers.ModelInfo) !void {
     const RankedModel = struct { model: ai.providers.ModelInfo, score: i32, order: usize };

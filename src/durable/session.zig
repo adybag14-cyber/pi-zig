@@ -34,6 +34,8 @@ pub const Session = struct {
     closeMutex: std.Io.Mutex = .init,
     closeOwnerThread: std.atomic.Value(std.Thread.Id) = .init(0),
     closeNotified: bool = false,
+    source_clock: ?*const fn (?*anyopaque) i64 = null,
+    source_clock_context: ?*anyopaque = null,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, storage: backend.Backend) Session {
         return .{ .gpa = gpa, .io = io, .storage = storage };
     }
@@ -377,11 +379,25 @@ pub const Transaction = struct {
         if ((try self.currentRecord(conversation_id, .conversation)) == null) return error.UnknownConversation;
         return conversation_id;
     }
-    pub fn setTask(self: *Transaction, record: Value) !void {
+    pub fn setTask(self: *Transaction, input_record: Value) !void {
+        var record = input_record;
         try self.ensureActive();
         try tasks.validate(record);
         const id = try tasks.number(record, "id");
         const a = self.allocator();
+        if (self.session.source_clock) |clock| {
+            const state = try tasks.status(record);
+            const prior = try self.currentRecord(id, .task);
+            inline for (.{ "startedAt", "endedAt" }) |name| {
+                const inherited = if (prior) |value| json.get(value, name) else null;
+                const stamp = inherited orelse json.get(record, name);
+                const needed = if (comptime std.mem.eql(u8, name, "startedAt")) state == .running else state == .terminal;
+                if (stamp != null or needed) {
+                    record = try json.clone(a, record);
+                    try record.object.put(a, name, stamp orelse Value{ .integer = clock(self.session.source_clock_context) });
+                }
+            }
+        }
         var index = self.writes.array.items.len;
         while (index > 0) {
             index -= 1;

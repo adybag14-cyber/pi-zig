@@ -53,6 +53,7 @@ pub const Engine = struct {
     native_sdk_extension_group: ?*anyopaque = null,
     native_sdk_next_runtime_id: u64 = 1,
     native_durable_harness_class: c.JSClassID = 0,
+    native_durable_runtime_class: c.JSClassID = 0,
     native_durable_uuid_last_ms: u64 = 0,
     native_durable_uuid_sequence: ?u64 = null,
     native_sdk_prototypes: [6]?c.JSValue = .{null} ** 6,

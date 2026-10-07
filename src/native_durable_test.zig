@@ -251,3 +251,192 @@ test "native durable VM Harness agent selections store names from cyclic extensi
     defer expected.deinit();
     try std.testing.expect(native_json.equal(actual.value, expected.value));
 }
+
+test "native durable VM public tasks execute phases on owner broker and fence escaped runtimes" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Task VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineTask} from '@earendil-works/pi-durable';
+        \\const order=[];let retained;
+        \\const Task=defineTask({name:'fixture.step',version:1,initial:input=>({phase:'one',n:input.n}),phases:{
+        \\ one:async(task,runtime,context)=>{retained=runtime;order.push('one');await runtime.commit(async(tx,current)=>{await tx.appendEntry(runtime.conversationId,{kind:'phase',data:{n:current.state.checkpoint.n}});return{status:'running',checkpoint:{phase:'two',n:task.input.n+1}}},context)},
+        \\ two:async(task,runtime,context)=>{order.push('two');await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:{n:task.state.checkpoint.n}}}),context)}
+        \\},abort:async(task,runtime,context)=>{await runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context)}});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return name==='fixture.step'?Task:{definition:{name}}},tasks(){return[Task]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{}},{}),root=await harness.root({});
+        \\const id=await root.commit(tx=>tx.createTask(Task,{n:4},{ownership:{kind:'conversation'}}),{});
+        \\const settled=await harness.waitForTask(id,{});await root.waitForIdle({});
+        \\let ended=false;try{await retained.commit(()=>undefined,{})}catch{ended=true}
+        \\const entries=await root.entries({},20,undefined,{});await harness.close({});
+        \\globalThis.result=JSON.stringify({id,order,outcome:settled.state.outcome,ended,entries:entries.items.map(e=>({kind:e.kind,data:e.data,byTaskId:e.byTaskId}))});
+    , "native-durable-public-task");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"id\":7,\"order\":[\"one\",\"two\"],\"outcome\":{\"status\":\"completed\",\"result\":{\"n\":5}},\"ended\":true,\"entries\":[{\"kind\":\"phase\",\"data\":{\"n\":4},\"byTaskId\":7}]}", text);
+}
+
+test "native durable VM public task abort signals the old invocation and runs a fresh abort handler" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Abort Task VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineTask} from '@earendil-works/pi-durable';
+        \\const order=[];let retained;const started=new Promise(resolve=>globalThis.startedTask=resolve);
+        \\const Task=defineTask({name:'fixture.abort',version:1,initial:()=>({phase:'hold'}),phases:{hold:async(task,runtime,context)=>{retained=runtime;order.push('run');startedTask();await new Promise(resolve=>runtime.signal.addEventListener('abort',resolve,{once:true}));order.push('signaled')}},abort:async(task,runtime,context)=>{order.push('abort');await runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context)}});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return name==='fixture.abort'?Task:{definition:{name}}},tasks(){return[Task]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{}},{}),root=await harness.root({});
+        \\const id=await root.commit(tx=>tx.createTask(Task,{}, {ownership:{kind:'conversation'}}),{});
+        \\const receipt=harness.waitForTask(id,{});await started;
+        \\const marked=await harness.abortTask(id,{}), settled=await receipt;
+        \\const terminal=await harness.abortTask(id,{});await root.waitForIdle({});
+        \\let ended=false;try{await retained.commit(()=>undefined,{})}catch{ended=true}
+        \\await harness.close({});globalThis.result=JSON.stringify({id,order,marked,terminal,outcome:settled.state.outcome,ended,signal:retained.signal.aborted});
+    , "native-durable-public-task-abort");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"id\":7,\"order\":[\"run\",\"signaled\",\"abort\"],\"marked\":\"marked\",\"terminal\":\"terminal\",\"outcome\":{\"status\":\"aborted\"},\"ended\":true,\"signal\":true}", text);
+}
+
+test "native durable VM public task memos use durable winners and lifecycle timestamps follow the harness clock" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Memo VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineTask} from '@earendil-works/pi-durable';
+        \\let observed;const Task=defineTask({name:'fixture.memo',version:1,initial:()=>({phase:'go'}),phases:{go:async(task,runtime,context)=>{
+        \\ const first=await runtime.memo('key',{winner:'first'},context),second=await runtime.memo('key',{winner:'second'},context);first.winner='detached';
+        \\ const read=await runtime.memo('key',context),record=await runtime.getTask(runtime.taskId,context),entry=await runtime.entry(999,context);
+        \\ observed={second,read,running:record.state.status,absent:entry===undefined,now:runtime.now()};
+        \\ await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:'done'}}),context)
+        \\}},abort:async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context)});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return name==='fixture.memo'?Task:{definition:{name}}},tasks(){return[Task]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{},now:()=>123},{}),root=await harness.root({});
+        \\const id=await root.commit(tx=>tx.createTask(Task,{}, {ownership:{kind:'conversation'}}),{}),receipt=await harness.waitForTask(id,{});
+        \\await harness.close({});globalThis.result=JSON.stringify({observed,memos:receipt.memos,startedAt:receipt.startedAt,endedAt:receipt.endedAt,outcome:receipt.state.outcome});
+    , "native-durable-public-task-memo");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"observed\":{\"second\":{\"winner\":\"first\"},\"read\":{\"winner\":\"first\"},\"running\":\"running\",\"absent\":true,\"now\":123},\"startedAt\":123,\"endedAt\":123,\"outcome\":{\"status\":\"completed\",\"result\":\"done\"}}", text);
+}
+
+test "native durable VM public task recovery preserves startedAt and fences runtime handles through forced GC" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Recovery VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineTask} from '@earendil-works/pi-durable';
+        \\const store=new MemoryStorage();await store.commit([{type:'conversation',value:{id:1}},{type:'task',value:{id:7,kind:'fixture.recover',version:1,conversationId:1,input:{n:9},background:false,abortRequested:false,startedAt:17,state:{status:'running',checkpoint:{phase:'go'}}}}],{});
+        \\let retained;const Task=defineTask({name:'fixture.recover',version:1,initial:()=>({phase:'go'}),phases:{go:async(task,runtime,context)=>{retained=runtime;await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:task.input.n}}),context)}},abort:async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context)});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return name==='fixture.recover'?Task:{definition:{name}}},tasks(){return[Task]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const harness=await Harness.open(store,{registry,models:{},now:()=>22},{});
+        \\const recovered=(await harness.getTask(7,{})).state.status,receipt=await harness.waitForTask(7,{});
+        \\await harness.close({});globalThis.runtimeAfterClose=retained;
+        \\globalThis.result=JSON.stringify({recovered,startedAt:receipt.startedAt,endedAt:receipt.endedAt,outcome:receipt.state.outcome});
+    , "native-durable-public-task-recovery");
+    defer engine.freeValue(output);
+    engine_module.c.JS_RunGC(engine.runtime);
+    const late = try engine.evalModule(
+        \\let ended=false;try{await runtimeAfterClose.getTask(7,{})}catch{ended=true}if(!ended)throw Error('runtime outlived invocation');globalThis.runtimeAfterClose=null;
+    , "native-durable-public-task-recovery-gc");
+    defer engine.freeValue(late);
+    engine_module.c.JS_RunGC(engine.runtime);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"recovered\":\"pending\",\"startedAt\":17,\"endedAt\":22,\"outcome\":{\"status\":\"completed\",\"result\":9}}", text);
+}
+
+test "native durable VM public tasks create owned children wait and read ordered outcomes" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Child task VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineTask} from '@earendil-works/pi-durable';
+        \\const order=[];
+        \\const abort=async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context);
+        \\const Child=defineTask({name:'fixture.child',version:1,initial:input=>({phase:'go',n:input.n}),phases:{go:async(task,runtime,context)=>{order.push('child');await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:task.input.n}}),context)}},abort});
+        \\const Parent=defineTask({name:'fixture.parent',version:1,initial:()=>({phase:'start'}),phases:{
+        \\ start:async(task,runtime,context)=>{order.push('parent');await runtime.commit(async tx=>{const child=await tx.createTask(Child,{n:8},{ownership:{kind:'task',taskId:runtime.taskId}});return{status:'waiting',checkpoint:{phase:'join',child},on:[child],policy:'allSettled'}},context)},
+        \\ join:async(task,runtime,context)=>{order.push('join');const [outcome]=await runtime.outcomes([task.state.checkpoint.child],context);await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:outcome.result+1}}),context)}
+        \\},abort});
+        \\const all=[Parent,Child],registry={subscribe(){return()=>{}},snapshot(){return{task(name){return all.find(t=>t.definition.name===name)??{definition:{name}}},tasks(){return all},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{},now:()=>41},{}),root=await harness.root({});
+        \\const id=await root.commit(tx=>tx.createTask(Parent,{}, {ownership:{kind:'conversation'}}),{}),receipt=await harness.waitForTask(id,{});
+        \\await harness.waitForIdle({});const page=await store.scanTasks({conversationId:1},10,undefined,{});
+        \\await harness.close({});globalThis.result=JSON.stringify({id,order,result:receipt.state.outcome.result,tasks:page.items.map(t=>({id:t.id,owner:t.owner,status:t.state.status,outcome:t.state.outcome}))});
+    , "native-durable-public-task-children");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"id\":7,\"order\":[\"parent\",\"child\",\"join\"],\"result\":9,\"tasks\":[{\"id\":7,\"status\":\"terminal\",\"outcome\":{\"status\":\"completed\",\"result\":9}},{\"id\":8,\"owner\":7,\"status\":\"terminal\",\"outcome\":{\"status\":\"completed\",\"result\":8}}]}", text);
+}
+
+test "native durable VM registry replacement switches phase snapshots without invoking stale handlers" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Registry task VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineTask} from '@earendil-works/pi-durable';
+        \\const order=[];let current;
+        \\const abort=async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context);
+        \\const New=defineTask({name:'fixture.replace',version:1,initial:()=>({phase:'next'}),phases:{next:async(task,runtime,context)=>{order.push('new');await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:'updated'}}),context)}},abort});
+        \\const Old=defineTask({name:'fixture.replace',version:1,initial:()=>({phase:'start'}),phases:{start:async(task,runtime,context)=>{order.push('old');await runtime.commit(()=>({status:'running',checkpoint:{phase:'next'}}),context);current=New},next(){throw Error('stale handler ran')}},abort});current=Old;
+        \\const registry={subscribe(){return()=>{}},snapshot(){const task=current;return{task(name){return name==='fixture.replace'?task:{definition:{name}}},tasks(){return[task]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const store=new MemoryStorage(),harness=await Harness.open(store,{registry,models:{}},{}),root=await harness.root({});
+        \\const id=await root.commit(tx=>tx.createTask(Old,{}, {ownership:{kind:'conversation'}}),{}),receipt=await harness.waitForTask(id,{});
+        \\await harness.close({});globalThis.result=JSON.stringify({id,order,outcome:receipt.state.outcome});
+    , "native-durable-public-task-registry");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"id\":7,\"order\":[\"old\",\"new\"],\"outcome\":{\"status\":\"completed\",\"result\":\"updated\"}}", text);
+}
+
+test "native durable VM public task migrations execute on owner before native reservation" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Migration VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineTask} from '@earendil-works/pi-durable';
+        \\const calls=[],store=new MemoryStorage();await store.commit([{type:'conversation',value:{id:1}},{type:'task',value:{id:7,kind:'fixture.migrate',version:1,conversationId:1,input:{n:3},background:false,abortRequested:false,state:{status:'pending',checkpoint:{phase:'legacy',extra:4}}}}],{});
+        \\const Task=defineTask({name:'fixture.migrate',version:2,initial:()=>({phase:'go'}),migrate(input,checkpoint,from){calls.push({input,checkpoint,from});return{input:{n:input.n+checkpoint.extra},checkpoint:{phase:'go'}}},phases:{go:async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:task.input.n}}),context)},abort:async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context)});
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return name==='fixture.migrate'?Task:{definition:{name}}},tasks(){return[Task]},installed(){return[]},sections(){return[]},tools(){return[]}}}};
+        \\const harness=await Harness.open(store,{registry,models:{},now:()=>66},{}),receipt=await harness.waitForTask(7,{});
+        \\await harness.close({});globalThis.result=JSON.stringify({calls,version:receipt.version,input:receipt.input,outcome:receipt.state.outcome});
+    , "native-durable-public-task-migration");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"calls\":[{\"input\":{\"n\":3},\"checkpoint\":{\"phase\":\"legacy\",\"extra\":4},\"from\":1}],\"version\":2,\"input\":{\"n\":7},\"outcome\":{\"status\":\"completed\",\"result\":7}}", text);
+}
