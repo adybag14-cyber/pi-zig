@@ -572,9 +572,11 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_codemode_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
         .filters = &.{"native codemode"},
+        .test_runner = lifecycle_test_runner,
     });
     linkQuickJs(b, codemode_tests.root_module, quickjs, sqlite_lib_dir);
     const run_codemode_tests = b.addRunArtifact(codemode_tests);
+    if (diagnostic_tests) run_codemode_tests.stdio = .inherit;
     const codemode_step = b.step("test-codemode", "Exercise isolated native codemode user scripts and Zig host callbacks");
     codemode_step.dependOn(&run_codemode_tests.step);
     test_step.dependOn(&run_codemode_tests.step);
@@ -583,8 +585,9 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, nested_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, nested_module, typescript_parser);
     linkDurable(b, nested_module);
-    const nested_tests = b.addTest(.{ .root_module = nested_module, .use_llvm = use_llvm, .filters = &.{"native codemode nested pipeline"} });
+    const nested_tests = b.addTest(.{ .root_module = nested_module, .use_llvm = use_llvm, .filters = &.{"native codemode nested pipeline"}, .test_runner = lifecycle_test_runner });
     const run_nested_tests = b.addRunArtifact(nested_tests);
+    if (diagnostic_tests) run_nested_tests.stdio = .inherit;
     codemode_step.dependOn(&run_nested_tests.step);
     test_step.dependOn(&run_nested_tests.step);
     const oauth_lock_fixture = b.addExecutable(.{

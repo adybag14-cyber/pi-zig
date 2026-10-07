@@ -1,0 +1,19 @@
+name: macOS checkpoint202 codemode diagnostics
+on:
+  workflow_dispatch:
+  pull_request:
+jobs:
+  diagnose:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Stream integrated codemode allocation phases
+        timeout-minutes: 10
+        env:
+          PI_CODEMODE_ALLOCATION_SHARD: "0"
+          PI_CODEMODE_ALLOCATION_SHARDS: "4"
+        run: zig build test-codemode -Ddiagnostic-tests=true -j2 --summary all
