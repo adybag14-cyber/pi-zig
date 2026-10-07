@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "inputSha256": "6857a7243906be013806c51c14669a5090f3c0b036a8cebbf87c9043654a4386",
+  "input": "import {ModelRuntime} from '@earendil-works/pi-coding-agent';const r=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async id=>id==='p'?{type:'api_key',key:'stored'}:undefined,list:async()=>[{providerId:'p',type:'api_key'}]}});const snapshot=()=>({configured:r.hasConfiguredAuth('p'),status:r.getProviderAuthStatus('p'),available:r.getAvailableSnapshot().filter(m=>m.provider==='p').map(m=>m.id)});r.registerNativeProvider({id:'p',auth:{apiKey:{check:async()=>undefined,resolve:async()=>undefined}},getModels:()=>[{id:'old',provider:'p',type:'chat'}]});await r.getAvailable();await r.getAvailable();const before=snapshot();r.registerNativeProvider({id:'p',auth:{apiKey:{check:async()=>({type:'api_key',source:'live'}),resolve:async()=>({auth:{apiKey:'key'}})}},getModels:()=>[{id:'new',provider:'p',type:'chat'}]});const immediate=snapshot();await r.getAvailable();await r.getAvailable();console.log(JSON.stringify({before,immediate,after:snapshot()}));"
+}

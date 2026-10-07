@@ -8,6 +8,7 @@ test {
     _ = @import("extensions/native_worker.zig");
     _ = @import("extensions/native_durable_observation.zig");
     _ = @import("extensions/native_durable_state.zig");
+    _ = @import("durable/backend/sqlite_source.zig");
 }
 test "native durable VM stores owned numeric records and serves source ordered cursors without Node" {
     const engine = try engine_module.Engine.init(std.testing.allocator, .{});
@@ -805,4 +806,29 @@ test "native durable VM ended invocation errors and cancellation reason preserve
     const text = try engine.toString(result);
     defer std.testing.allocator.free(text);
     try std.testing.expectEqualStrings("{\"aborted\":true,\"error\":{\"name\":\"Error\",\"error\":true,\"message\":true},\"reason\":{\"name\":\"Error\",\"error\":true,\"message\":true},\"distinct\":true}", text);
+}
+
+test "native durable VM public SQLite allocation persists only at commit and ignores storage caller cancellation" {
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try tmp.dir.realPath(std.testing.io, &buffer);
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const global = engine_module.c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "testRoot", try sdk.text(engine, buffer[0..length]));
+    errdefer std.debug.print("SQLite allocation VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {openNodeSqliteStorage} from '@earendil-works/pi-durable/storage/sqlite/node';
+        \\const context={abortSignal:AbortSignal.abort('ignored')},path=testRoot+'/allocation.sqlite';let store=await openNodeSqliteStorage(path,{walAutoCheckpointPages:0,busyTimeoutMs:50});const reserved=await store.mintId();await store.close(context);store=await openNodeSqliteStorage(path);const reused=await store.mintId(),seq=await store.commit([{type:'conversation',value:{id:1}}],context),record=await store.conversation(1,context);await store.close(context);store=await openNodeSqliteStorage(path);const next=await store.mintId();await store.close(context);globalThis.result=JSON.stringify({reserved,reused,seq,record,next});
+    , "native-durable-sqlite-allocation-policy");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"reserved\":2,\"reused\":2,\"seq\":1,\"record\":{\"id\":1},\"next\":3}", text);
 }

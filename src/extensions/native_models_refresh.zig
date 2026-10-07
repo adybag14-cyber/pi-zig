@@ -108,7 +108,7 @@ fn listenStage(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage) !void {
 fn listen(engine: *engine_mod.Engine, job: c.JSValue) !void {
     try listenStage(engine, job, .aborted);
 }
-fn race(engine: *engine_mod.Engine, operation: c.JSValue, signal: c.JSValue, provider_owner: c.JSValue) !c.JSValue {
+pub fn race(engine: *engine_mod.Engine, operation: c.JSValue, signal: c.JSValue, provider_owner: c.JSValue) !c.JSValue {
     const job = try sdk.object(engine);
     defer engine.freeValue(job);
     const result = try capability(engine, job);
@@ -387,7 +387,6 @@ fn advance(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: c.JS
             defer engine.freeValue(auth);
             const key = try sdk.get(engine, auth, "apiKey");
             defer engine.freeValue(key);
-            if (!c.JS_IsString(key)) return finish(engine, job, c.pi_js_undefined(), true);
             const output = try sdk.object(engine);
             errdefer engine.freeValue(output);
             try sdk.put(engine, output, "type", try sdk.text(engine, "api_key"));

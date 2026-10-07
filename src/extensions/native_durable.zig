@@ -25,7 +25,7 @@ pub const SessionLease = struct {
         }
     }
 };
-const Kind = enum { memory, jsonl, sqlite, session, transaction };
+const Kind = enum { memory, jsonl, sqlite, sqlite_source, session, transaction };
 pub const Method = enum(c_int) { mintId, commit, close, conversation, entry, task, submission, submissionByRequest, document, findDocument, findLatestHeadMarker, scanConversations, scanEntries, scanTasks, scanSubmissions, scanDocuments, createRootConversation, createConversation, forkConversation, appendEntry, subscribeCommits, subscribeClose, createTask, doc, snapshot, retireDoc, snapshotAsOf, unloadDocuments, watchDoc, documentState };
 pub const State = struct {
     engine: *Engine,
@@ -42,6 +42,7 @@ pub const State = struct {
     tail: c.JSValue,
     closing: bool = false,
     sqlite: ?*backend.sqlite.Sqlite = null,
+    sqlite_source: ?*backend.sqlite_source.Sqlite = null,
     jsonl: ?*backend.jsonl.Jsonl = null,
     filesystem: ?*filesystem_module.FileSystem = null,
     storage_closed: bool = false,
@@ -61,6 +62,7 @@ pub const State = struct {
             .memory => .{ .memory = &self.memory },
             .jsonl => .{ .jsonl = self.jsonl.? },
             .sqlite => .{ .sqlite = self.sqlite.? },
+            .sqlite_source => .{ .sqlite_source = self.sqlite_source.? },
             else => error.InvalidDurableStorage,
         };
     }
@@ -73,6 +75,10 @@ pub const State = struct {
             .sqlite => {
                 self.sqlite.?.deinit();
                 self.sqlite = null;
+            },
+            .sqlite_source => {
+                self.sqlite_source.?.deinit();
+                self.sqlite_source = null;
             },
             else => {},
         }
@@ -87,6 +93,7 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     switch (self.kind) {
         .memory => self.memory.deinit(),
         .sqlite => if (self.sqlite) |store| store.deinit(),
+        .sqlite_source => if (self.sqlite_source) |store| store.deinit(),
         .jsonl => {
             self.jsonl.?.deinit();
             engine.gpa.destroy(self.jsonl.?);
@@ -238,7 +245,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             const key = try backend.memory.requestKey(engine.gpa, tuple[0], tuple[1]);
             defer engine.gpa.free(key);
             var id: ?u64 = null;
-            if (self.kind == .sqlite) {
+            if (self.kind == .sqlite or self.kind == .sqlite_source) {
                 // Source SQLite's nonunique request index selects the lowest ID.
                 // Memory/JSONL instead maintain arrival order, including moves.
                 var rows = snapshot.state.rows.iterator();
@@ -342,7 +349,7 @@ fn persistentObject(engine: *Engine, is_jsonl: bool, args: []const c.JSValue) !c
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
     inline for (std.meta.fields(Method)[0..16]) |field| try sdk.put(engine, object, field.name, try engine.checked(c.pi_js_function_magic(engine.context, method, field.name, 1, @intCast(field.value))));
-    self.* = .{ .engine = engine, .kind = if (is_jsonl) .jsonl else .sqlite, .memory = undefined, .parent = c.pi_js_undefined(), .tail = c.pi_js_undefined() };
+    self.* = .{ .engine = engine, .kind = if (is_jsonl) .jsonl else .sqlite_source, .memory = undefined, .parent = c.pi_js_undefined(), .tail = c.pi_js_undefined() };
     if (is_jsonl) {
         const filesystem = try engine.gpa.create(filesystem_module.FileSystem);
         errdefer engine.gpa.destroy(filesystem);
@@ -361,16 +368,21 @@ fn persistentObject(engine: *Engine, is_jsonl: bool, args: []const c.JSValue) !c
         self.jsonl = native;
     } else {
         var busy_timeout: u64 = 5000;
+        var checkpoint_pages: u64 = 1000;
         if (!c.JS_IsUndefined(argument(args, 1))) {
             const option = try sdk.get(engine, args[1], "busyTimeoutMs");
             defer engine.freeValue(option);
             if (!c.JS_IsUndefined(option)) busy_timeout = try number(engine, option);
+            const checkpoint = try sdk.get(engine, args[1], "walAutoCheckpointPages");
+            defer engine.freeValue(checkpoint);
+            if (!c.JS_IsUndefined(checkpoint)) checkpoint_pages = try number(engine, checkpoint);
         }
         if (busy_timeout > std.math.maxInt(c_int)) return error.InvalidBusyTimeout;
-        const native = try backend.sqlite.Sqlite.open(engine.gpa, io, path, .{});
+        if (checkpoint_pages > std.math.maxInt(c_int)) return error.InvalidWalAutoCheckpoint;
+        const native = try backend.sqlite_source.Sqlite.open(engine.gpa, io, path, .{ .busy_timeout_ms = @intCast(busy_timeout), .wal_auto_checkpoint_pages = @intCast(checkpoint_pages) });
         errdefer native.deinit();
         try native.db.busyTimeout(@intCast(busy_timeout));
-        self.sqlite = native;
+        self.sqlite_source = native;
     }
     _ = c.JS_SetOpaque(object, self);
     return object;

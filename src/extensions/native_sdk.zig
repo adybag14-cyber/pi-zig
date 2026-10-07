@@ -14,6 +14,7 @@ pub const State = struct {
     next_entry: u64 = 1,
     persisted_count: u32 = 0,
     availability_sequence: u64 = 0,
+    availability_error_sequence: u64 = 0,
     runtime_id: u64 = 0,
     availability_snapshot: ?@import("native_sdk_availability.zig").Snapshot = null,
 };
@@ -113,6 +114,14 @@ const Method = enum(c_int) {
     clearQueue,
     steer,
     followUp,
+    getProvider,
+    getError,
+    getProviderAuthStatus,
+    isUsingOAuth,
+    isUsingSubscription,
+    getRegisteredProviderIds,
+    getRegisteredNativeProvider,
+    listCredentials,
 };
 const Getter = enum(c_int) { sessionId, sessionFile, sessionManager, settingsManager, modelRuntime, resourceLoader, model, thinkingLevel, messages, agent, systemPrompt, isStreaming, sessionName, session, services, cwd, diagnostics };
 
@@ -202,7 +211,7 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
         .session_manager => &.{ .getCwd, .getSessionDir, .getSessionId, .getSessionName, .getSessionFile, .getHeader, .getEntries, .getEntryCount, .getLeafId, .getLeafEntry, .getEntry, .getChildren, .getBranch, .getLabel, .getTree, .appendMessage, .appendCustomEntry, .appendSessionInfo, .appendModelChange, .appendThinkingLevelChange, .appendLabelChange, .branch, .resetLeaf, .buildSessionContext, .newSession, .setSessionFile, .isPersisted },
         .settings_manager => &.{ .getGlobalSettings, .getProjectSettings, .applyOverrides, .reload, .flush, .drainErrors, .getDefaultProvider, .getDefaultModel, .getDefaultThinkingLevel, .setDefaultThinkingLevel, .getCompactionSettings, .getRetrySettings, .getDefaultTools, .getTransport },
         .resource_loader => &.{ .reload, .getExtensions, .getSkills, .getPrompts, .getThemes, .getAgentsFiles, .getSystemPrompt, .getAppendSystemPrompt, .getSystemPromptSource, .getAppendSystemPromptSources, .extendResources },
-        .model_runtime => &.{ .registerProvider, .registerNativeProvider, .unregisterProvider, .getProviders, .getModels, .getAll, .getAvailable, .getModel, .getModelsOfType, .getModelOfType, .getAllModels, .getAllAvailable, .getAvailableOfType, .checkAuth, .getAuth, .getAvailableSnapshot, .setRuntimeApiKey, .removeRuntimeApiKey, .hasConfiguredAuth, .clearRuntimeApiKey, .refresh, .streamSimple, .completeSimple, .classify, .generateImages },
+        .model_runtime => &.{ .registerProvider, .registerNativeProvider, .unregisterProvider, .getProviders, .getProvider, .getModels, .getAll, .getAvailable, .getModel, .getModelsOfType, .getModelOfType, .getAllModels, .getAllAvailable, .getAvailableOfType, .checkAuth, .getAuth, .getAvailableSnapshot, .setRuntimeApiKey, .removeRuntimeApiKey, .hasConfiguredAuth, .clearRuntimeApiKey, .refresh, .streamSimple, .completeSimple, .classify, .generateImages, .getError, .getProviderAuthStatus, .isUsingOAuth, .isUsingSubscription, .getRegisteredProviderIds, .getRegisteredNativeProvider, .listCredentials },
         .agent_session => &.{ .subscribe, .unsubscribe, .dispose, .prompt, .abort, .bindExtensions, .getActiveToolNames, .setActiveToolsByName, .getAllTools, .setSessionName, .setThinkingLevel, .setModel, .getSessionStats, .clearQueue, .steer, .followUp, .newSession },
         .session_runtime => &.{ .newSession, .switchSession, .dispose, .setRebindSession, .setBeforeSessionInvalidate },
     };
@@ -1100,6 +1109,7 @@ fn initModelRuntime(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     const exports = engine.native_module_values.get("pi-ai") orelse return error.NativeSDKModelModuleUnavailable;
     try put(engine, data, "keys", try object(engine));
     try put(engine, data, "available", try array(engine));
+    try @import("native_sdk_auth_snapshot.zig").initialize(engine, data);
     try put(engine, data, "options", if (c.JS_IsObject(options)) c.JS_DupValue(engine.context, options) else try object(engine));
     const configured = try get(engine, data, "options");
     defer engine.freeValue(configured);
@@ -1600,6 +1610,28 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
     }
     if (self.kind == .settings_manager) return settingsDispatch(self, operation, args);
     if (self.kind == .model_runtime) {
+        if (operation == .setRuntimeApiKey or operation == .removeRuntimeApiKey or operation == .clearRuntimeApiKey) {
+            if (args.len < 1 or (operation == .setRuntimeApiKey and args.len < 2)) return error.NativeSDKMissingArgument;
+            const setting = operation == .setRuntimeApiKey;
+            return @import("native_sdk_credential_sync.zig").enqueue(engine, receiver, args[0], if (setting) args[1] else c.pi_js_undefined(), if (args.len > @as(usize, if (setting) 2 else 1)) args[if (setting) 2 else 1] else c.pi_js_undefined(), !setting);
+        }
+        const auth_query: ?@import("native_sdk_auth_snapshot.zig").Query = switch (operation) {
+            .hasConfiguredAuth => .configured,
+            .getProviderAuthStatus => .status,
+            .getError => .err,
+            .isUsingOAuth => .oauth,
+            .isUsingSubscription => .subscription,
+            .getRegisteredProviderIds => .registered_ids,
+            .getRegisteredNativeProvider => .registered_native,
+            else => null,
+        };
+        if (auth_query) |query| return @import("native_sdk_auth_snapshot.zig").query(engine, self.data, query, if (args.len > 0) args[0] else c.pi_js_undefined());
+        if (operation == .getProvider) {
+            const catalog = try get(engine, self.data, "models");
+            defer engine.freeValue(catalog);
+            return invoke(engine, catalog, "getProvider", args);
+        }
+        if (operation == .listCredentials) return @import("native_sdk_models.zig").listCredentials(engine, self.data, if (args.len > 0) args[0] else c.pi_js_undefined());
         if (operation == .refresh) return @import("native_sdk_refresh.zig").start(engine, receiver, if (args.len > 0) args[0] else c.pi_js_undefined());
         if (operation == .streamSimple or operation == .completeSimple) {
             const stream = try @import("native_sdk_chat.zig").stream(engine, receiver, self.data, args);
@@ -1611,6 +1643,11 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (operation == .registerNativeProvider or operation == .registerProvider or operation == .unregisterProvider) {
             const result = try modelDispatch(self, operation, args);
             errdefer engine.freeValue(result);
+            const id = if (operation == .registerNativeProvider) try get(engine, args[0], "id") else c.JS_DupValue(engine.context, args[0]);
+            defer engine.freeValue(id);
+            try @import("native_sdk_auth_snapshot.zig").registered(engine, self.data, id, if (operation == .registerNativeProvider) args[0] else if (args.len > 1) args[1] else c.pi_js_undefined(), operation == .registerNativeProvider, operation == .unregisterProvider);
+            try @import("native_sdk_auth_snapshot.zig").updateModels(engine, self.data);
+            if (operation == .registerNativeProvider) try @import("native_sdk_auth_snapshot.zig").markProvisional(engine, self.data, id, args[0]);
             try @import("native_sdk_availability.zig").registrationRefresh(engine, receiver);
             return result;
         }
@@ -1957,6 +1994,7 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     _ = c.JS_NewClassID(engine.runtime, &engine.native_sdk_class);
     const definition: c.JSClassDef = .{ .class_name = "Native coding SDK object", .finalizer = finalizer, .gc_mark = mark, .call = null, .exotic = null };
     if (c.JS_NewClass(engine.runtime, engine.native_sdk_class, &definition) < 0) return error.OutOfMemory;
+    try @import("native_sdk_credential_sync.zig").install(engine, exports);
     try put(engine, exports, "createAgentSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createAgentSession", 1)));
     try put(engine, exports, "createAgentSessionServices", try engine.checked(c.pi_js_function_magic(engine.context, serviceCallback, "createAgentSessionServices", 1, 0)));
     try put(engine, exports, "createAgentSessionFromServices", try engine.checked(c.pi_js_function_magic(engine.context, serviceCallback, "createAgentSessionFromServices", 1, 1)));

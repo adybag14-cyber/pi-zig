@@ -27,7 +27,7 @@ pub fn property(engine: *engine_mod.Engine, target: c.JSValue, key: c.JSValue) !
 fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     const input = if (argc > 0) args[0] else c.pi_js_undefined();
-    return (switch (magic) {
+    const result = (switch (magic) {
         0 => readCredentialOptions(engine, data[0], input, if (argc > 1) args[1] else c.pi_js_undefined()),
         1 => environment(engine, input),
         2 => builtinModels(engine, data[0], false),
@@ -35,8 +35,24 @@ fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSVal
         4 => builtinAuth(engine, data[0], input, false),
         5 => builtinAuth(engine, data[0], input, true),
         6 => modifyCredential(engine, data[0], if (argc > 0) args[0..@intCast(argc)] else &.{}),
+        7 => listCredentials(engine, data[0], input),
         else => error.NativeSDKMethodUnavailable,
-    }) catch |err| sdk.fail(engine, err);
+    }) catch |err| {
+        if (magic != 0 and magic != 7) return sdk.fail(engine, err);
+        _ = sdk.fail(engine, err);
+        const failure = c.JS_GetException(context);
+        defer engine.freeValue(failure);
+        const global = c.JS_GetGlobalObject(context);
+        defer engine.freeValue(global);
+        const promise = sdk.get(engine, global, "Promise") catch |get_error| return sdk.fail(engine, get_error);
+        defer engine.freeValue(promise);
+        return sdk.invoke(engine, promise, "reject", &.{failure}) catch |reject_error| sdk.fail(engine, reject_error);
+    };
+    if (magic == 0 or magic == 7) {
+        defer engine.freeValue(result);
+        return sdk.promise(engine, result) catch |err| sdk.fail(engine, err);
+    }
+    return result;
 }
 fn function(engine: *engine_mod.Engine, target: c.JSValue, name: [*:0]const u8, magic: c_int, captured: c.JSValue) !void {
     var data = [_]c.JSValue{captured};
@@ -47,6 +63,7 @@ pub fn credentials(engine: *engine_mod.Engine, data: c.JSValue) !c.JSValue {
     errdefer engine.freeValue(result);
     try function(engine, result, "read", 0, data);
     try function(engine, result, "modify", 6, data);
+    try function(engine, result, "list", 7, data);
     return result;
 }
 pub fn readCredential(engine: *engine_mod.Engine, data: c.JSValue, id: c.JSValue) !c.JSValue {
@@ -61,11 +78,19 @@ fn modifyCredential(engine: *engine_mod.Engine, data: c.JSValue, args: []const c
     return sdk.invoke(engine, supplied, "modify", args);
 }
 fn readCredentialOptions(engine: *engine_mod.Engine, data: c.JSValue, id: c.JSValue, operation_options: c.JSValue) !c.JSValue {
+    if (c.JS_IsObject(operation_options)) {
+        const signal = try sdk.get(engine, operation_options, "signal");
+        defer engine.freeValue(signal);
+        if (c.JS_IsObject(signal)) {
+            const checked = try sdk.invoke(engine, signal, "throwIfAborted", &.{});
+            engine.freeValue(checked);
+        }
+    }
     const keys = try sdk.get(engine, data, "keys");
     defer engine.freeValue(keys);
     const key = try property(engine, keys, id);
     defer engine.freeValue(key);
-    if (c.JS_IsString(key)) {
+    if (c.JS_IsString(key) and c.JS_ToBool(engine.context, key) == 1) {
         const value = try sdk.object(engine);
         errdefer engine.freeValue(value);
         try sdk.put(engine, value, "type", try sdk.text(engine, "api_key"));
@@ -90,6 +115,100 @@ fn readCredentialOptions(engine: *engine_mod.Engine, data: c.JSValue, id: c.JSVa
     const stored = try sdk.jsonObject(engine, raw);
     defer engine.freeValue(stored);
     return property(engine, stored, id);
+}
+pub fn listCredentials(engine: *engine_mod.Engine, data: c.JSValue, options: c.JSValue) !c.JSValue {
+    const configured = try sdk.get(engine, data, "options");
+    defer engine.freeValue(configured);
+    const supplied = try sdk.get(engine, configured, "credentials");
+    defer engine.freeValue(supplied);
+    const pending = if (c.JS_IsObject(supplied)) try sdk.invoke(engine, supplied, "list", &.{options}) else try defaultCredentialList(engine, data);
+    defer engine.freeValue(pending);
+    const adopted = try sdk.promise(engine, pending);
+    defer engine.freeValue(adopted);
+    var captured = [_]c.JSValue{ data, options };
+    const done = try engine.checked(c.JS_NewCFunctionData2(engine.context, listCompleted, "runtimeCredentialList", 1, 0, 2, &captured));
+    defer engine.freeValue(done);
+    return sdk.invoke(engine, adopted, "then", &.{done});
+}
+fn defaultCredentialList(engine: *engine_mod.Engine, data: c.JSValue) !c.JSValue {
+    const output = try sdk.array(engine);
+    errdefer engine.freeValue(output);
+    const path = try sdk.get(engine, data, "authPath");
+    defer engine.freeValue(path);
+    if (engine.native_io == null or !c.JS_IsString(path)) return output;
+    const filename = try engine.toString(path);
+    defer engine.gpa.free(filename);
+    const raw = std.Io.Dir.cwd().readFileAlloc(engine.native_io.?, filename, engine.gpa, .limited(1024 * 1024)) catch |err| switch (err) {
+        error.FileNotFound => return output,
+        else => return err,
+    };
+    defer engine.gpa.free(raw);
+    const stored = try sdk.jsonObject(engine, raw);
+    defer engine.freeValue(stored);
+    var names: [*c]c.JSPropertyEnum = null;
+    var count: u32 = 0;
+    if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, stored, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+    defer c.JS_FreePropertyEnum(engine.context, names, count);
+    for (0..count) |index| {
+        const credential = try engine.checked(c.JS_GetProperty(engine.context, stored, names[index].atom));
+        defer engine.freeValue(credential);
+        const entry = try sdk.object(engine);
+        defer engine.freeValue(entry);
+        try sdk.put(engine, entry, "providerId", try engine.checked(c.JS_AtomToString(engine.context, names[index].atom)));
+        try sdk.put(engine, entry, "type", try sdk.get(engine, credential, "type"));
+        try sdk.append(engine, output, c.JS_DupValue(engine.context, entry));
+    }
+    return output;
+}
+fn listCompleted(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    return mergeCredentialList(engine, data[0], data[1], if (argc > 0) args[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
+}
+fn mergeCredentialList(engine: *engine_mod.Engine, data: c.JSValue, options: c.JSValue, entries: c.JSValue) !c.JSValue {
+    if (c.JS_IsObject(options)) {
+        const signal = try sdk.get(engine, options, "signal");
+        defer engine.freeValue(signal);
+        if (c.JS_IsObject(signal)) {
+            const checked = try sdk.invoke(engine, signal, "throwIfAborted", &.{});
+            engine.freeValue(checked);
+        }
+    }
+    const map = try @import("native_sdk_auth_snapshot.zig").collection(engine, "Map");
+    defer engine.freeValue(map);
+    for (0..try sdk.length(engine, entries)) |index| {
+        const entry = try engine.checked(c.JS_GetPropertyUint32(engine.context, entries, @intCast(index)));
+        defer engine.freeValue(entry);
+        const id = try sdk.get(engine, entry, "providerId");
+        defer engine.freeValue(id);
+        const ignored = try sdk.invoke(engine, map, "set", &.{ id, entry });
+        engine.freeValue(ignored);
+    }
+    const keys = try sdk.get(engine, data, "keys");
+    defer engine.freeValue(keys);
+    var names: [*c]c.JSPropertyEnum = null;
+    var count: u32 = 0;
+    if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, keys, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+    defer c.JS_FreePropertyEnum(engine.context, names, count);
+    for (0..count) |index| {
+        const key = try engine.checked(c.JS_GetProperty(engine.context, keys, names[index].atom));
+        defer engine.freeValue(key);
+        if (c.JS_IsUndefined(key)) continue;
+        const id = try engine.checked(c.JS_AtomToString(engine.context, names[index].atom));
+        defer engine.freeValue(id);
+        const entry = try sdk.object(engine);
+        defer engine.freeValue(entry);
+        try sdk.put(engine, entry, "providerId", c.JS_DupValue(engine.context, id));
+        try sdk.put(engine, entry, "type", try sdk.text(engine, "api_key"));
+        const ignored = try sdk.invoke(engine, map, "set", &.{ id, entry });
+        engine.freeValue(ignored);
+    }
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const array = try sdk.get(engine, global, "Array");
+    defer engine.freeValue(array);
+    const values = try sdk.invoke(engine, map, "values", &.{});
+    defer engine.freeValue(values);
+    return sdk.invoke(engine, array, "from", &.{values});
 }
 fn environment(engine: *engine_mod.Engine, name: c.JSValue) !c.JSValue {
     const global = c.JS_GetGlobalObject(engine.context);

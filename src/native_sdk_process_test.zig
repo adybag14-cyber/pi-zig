@@ -2,6 +2,30 @@ const std = @import("std");
 const builtin = @import("builtin");
 const http_fixture = @import("ai/http_fixture.zig");
 const EnvValue = struct { name: []const u8, value: []const u8 };
+test "native SDK cached auth status and runtime key synchronization match actual source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-auth-snapshot-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-auth-snapshot-7fb59f9.json"));
+}
+test "native stored provider registration publishes source provisional configured state" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-auth-provisional-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-auth-provisional-7fb59f9.json"));
+}
+test "native OAuth subscription status and error constructor inheritance match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-oauth-status-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-oauth-status-7fb59f9.json"));
+}
+test "native SDK credential errors queued cancel and retained committed key match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-credential-sync-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-credential-sync-7fb59f9.json"));
+}
+test "native SDK active key cancellation preserves committed key and source error class" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-active-key-cancel-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-active-key-cancel-7fb59f9.json"));
+}
+test "native SDK stale availability queries preserve newest error and cached state" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-auth-races-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-auth-races-7fb59f9.json"));
+}
+test "native SDK availability shares caller or local signals across auth and store" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-auth-signals-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-auth-signals-7fb59f9.json"));
+}
+test "native Models refresh supports ambient auth with no effective API key" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-models-ambient-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-models-ambient-7fb59f9.json"));
+}
 test "native public model store graph clones and async abort identity match actual source" {
     try inputCase(@embedFile("extensions/fixtures/sdk-model-store-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-model-store-7fb59f9.json"));
 }

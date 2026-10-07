@@ -133,6 +133,7 @@ fn advance(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: c.JS
     defer engine.freeValue(catalog);
     if (stage == .catalog) {
         try sdk.put(engine, job, "result", c.JS_DupValue(engine.context, value));
+        try @import("native_sdk_auth_snapshot.zig").updateModels(engine, owner.data);
         const selected = try sdk.get(engine, options, "providers");
         defer engine.freeValue(selected);
         if (!c.JS_IsArray(selected)) {
@@ -159,9 +160,26 @@ fn advance(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: c.JS
             try sdk.put(engine, child, "sequence", try bump(engine, map, id));
             if (owner.availability_sequence >= 9007199254740991) return error.NativeSDKRevisionOverflow;
             owner.availability_sequence += 1;
+            owner.availability_error_sequence = std.math.add(u64, owner.availability_error_sequence, 1) catch return error.NativeSDKRevisionOverflow;
+            try sdk.put(engine, child, "errorSequence", c.JS_NewFloat64(engine.context, @floatFromInt(owner.availability_error_sequence)));
             const available = try sdk.invoke(engine, catalog, "getAvailable", &.{ id, options });
             defer engine.freeValue(available);
-            try sdk.append(engine, pending, try then(engine, available, child, .provider_available, .provider_failed));
+            const checked = try sdk.invoke(engine, catalog, "checkAuth", &.{ id, options });
+            defer engine.freeValue(checked);
+            const credentials = try @import("native_sdk_models.zig").credentials(engine, owner.data);
+            defer engine.freeValue(credentials);
+            const credential = try sdk.invoke(engine, credentials, "read", &.{ id, options });
+            defer engine.freeValue(credential);
+            const inputs = try sdk.array(engine);
+            defer engine.freeValue(inputs);
+            inline for (.{ available, checked, credential }) |input| try sdk.append(engine, inputs, c.JS_DupValue(engine.context, input));
+            const global = c.JS_GetGlobalObject(engine.context);
+            defer engine.freeValue(global);
+            const promise = try sdk.get(engine, global, "Promise");
+            defer engine.freeValue(promise);
+            const gathered = try sdk.invoke(engine, promise, "all", &.{inputs});
+            defer engine.freeValue(gathered);
+            try sdk.append(engine, pending, try then(engine, gathered, child, .provider_available, .provider_failed));
         }
         const global = c.JS_GetGlobalObject(engine.context);
         defer engine.freeValue(global);
@@ -181,6 +199,9 @@ fn advance(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: c.JS
         if (c.JS_ToBool(engine.context, aborted) == 1) return c.pi_js_undefined();
     }
     if (stage == .provider_failed) {
+        const error_serial = try sdk.get(engine, job, "errorSequence");
+        defer engine.freeValue(error_serial);
+        try availability.recordFailure(engine, runtime, error_serial, options, value);
         const output = try sdk.get(engine, job, "result");
         defer engine.freeValue(output);
         const errors = try sdk.get(engine, output, "errors");
@@ -205,6 +226,12 @@ fn advance(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: c.JS
     const latest = try sdk.invoke(engine, map, "get", &.{id});
     defer engine.freeValue(latest);
     if (!c.JS_IsStrictEqual(engine.context, expected, latest)) return c.pi_js_undefined();
+    const available_rows = try engine.checked(c.JS_GetPropertyUint32(engine.context, value, 0));
+    defer engine.freeValue(available_rows);
+    const auth_check = try engine.checked(c.JS_GetPropertyUint32(engine.context, value, 1));
+    defer engine.freeValue(auth_check);
+    const credential = try engine.checked(c.JS_GetPropertyUint32(engine.context, value, 2));
+    defer engine.freeValue(credential);
     const previous = try sdk.get(engine, owner.data, "available");
     defer engine.freeValue(previous);
     const candidates = try sdk.array(engine);
@@ -216,7 +243,7 @@ fn advance(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: c.JS
         defer engine.freeValue(provider);
         if (!c.JS_IsStrictEqual(engine.context, provider, id)) try sdk.append(engine, candidates, c.JS_DupValue(engine.context, row));
     }
-    for (0..try sdk.length(engine, value)) |index| try sdk.append(engine, candidates, try engine.checked(c.JS_GetPropertyUint32(engine.context, value, @intCast(index))));
+    for (0..try sdk.length(engine, available_rows)) |index| try sdk.append(engine, candidates, try engine.checked(c.JS_GetPropertyUint32(engine.context, available_rows, @intCast(index))));
     const all = try sdk.invoke(engine, catalog, "getModels", &.{});
     defer engine.freeValue(all);
     const rows = try sdk.array(engine);
@@ -241,6 +268,10 @@ fn advance(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: c.JS
             }
         }
     }
-    try availability.admit(engine, runtime, rows);
+    const error_serial = try sdk.get(engine, job, "errorSequence");
+    defer engine.freeValue(error_serial);
+    const auth_state = try @import("native_sdk_auth_snapshot.zig").prepareProvider(engine, owner.data, id, auth_check, credential);
+    defer engine.freeValue(auth_state);
+    try availability.admitAuth(engine, runtime, rows, auth_state, error_serial);
     return c.pi_js_undefined();
 }

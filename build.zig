@@ -394,6 +394,14 @@ pub fn build(b: *std.Build) void {
     const run_native_durable_tests = b.addRunArtifact(native_durable_tests);
     const native_durable_step = b.step("test-native-durable-vm", "Exercise native public durable VM storage and Session objects");
     native_durable_step.dependOn(&run_native_durable_tests.step);
+    const sqlite_source_fixture = b.addExecutable(.{
+        .name = "pi-durable-sqlite-source-fixture",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_sqlite_source_fixture.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkSqlite(sqlite_source_fixture.root_module, sqlite_lib_dir, sqlite_library);
+    const sqlite_source_fixture_step = b.step("durable-sqlite-source-fixture", "Build original SQLite interoperability fixture");
+    sqlite_source_fixture_step.dependOn(&b.addInstallArtifact(sqlite_source_fixture, .{}).step);
     test_step.dependOn(&run_native_durable_tests.step);
     linkQuickJs(b, capability_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(capability_tests.root_module, sqlite_lib_dir, sqlite_library);
@@ -690,6 +698,18 @@ pub fn build(b: *std.Build) void {
     const sdk_refresh_ownership_step = b.step("test-sdk-refresh-ownership", "Exercise provider refresh publication and cancellation allocation ownership");
     sdk_refresh_ownership_step.dependOn(&sdk_refresh_ownership_run.step);
     test_step.dependOn(&sdk_refresh_ownership_run.step);
+    const sdk_auth_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_auth_ownership_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "SDK auth snapshot key synchronization", "availability v2 auth status" },
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_auth_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, sdk_auth_tests.root_module);
+    sdk_auth_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const sdk_auth_run = b.addRunArtifact(sdk_auth_tests);
+    const sdk_auth_step = b.step("test-sdk-auth-ownership", "Exercise auth snapshot and runtime credential allocation ownership");
+    sdk_auth_step.dependOn(&sdk_auth_run.step);
+    test_step.dependOn(&sdk_auth_run.step);
     const run_binding_tests = b.addRunArtifact(binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
     binding_test_step.dependOn(&run_binding_tests.step);

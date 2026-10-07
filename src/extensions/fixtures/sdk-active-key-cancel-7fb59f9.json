@@ -1,0 +1,1 @@
+{"rejected":{"name":"CredentialSynchronizationError","instance":true,"cause":true,"key":"committed","operation":"setRuntimeApiKey"},"beforeRelease":{"configured":true,"source":"runtime"},"after":{"configured":true,"source":"environment","label":"fixture"}}

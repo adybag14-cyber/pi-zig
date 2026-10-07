@@ -5,15 +5,18 @@ pub const delta = @import("delta.zig");
 pub const memory = @import("memory.zig");
 pub const query = @import("query.zig");
 pub const sqlite = @import("sqlite.zig");
+pub const sqlite_source = @import("sqlite_source.zig");
 pub const jsonl = @import("jsonl.zig");
 pub const Backend = union(enum) {
     memory: *memory.Memory,
     sqlite: *sqlite.Sqlite,
+    sqlite_source: *sqlite_source.Sqlite,
     jsonl: *jsonl.Jsonl,
     pub fn mintId(self: Backend) !u64 {
         return switch (self) {
             .memory => |store| store.mintId(),
             .sqlite => |store| store.mintId(),
+            .sqlite_source => |store| store.mintId(),
             .jsonl => |store| store.mintId(),
         };
     }
@@ -25,6 +28,7 @@ pub const Backend = union(enum) {
                 break :blk try prepared.apply();
             },
             .sqlite => |store| store.commitAt(writes, seq),
+            .sqlite_source => |store| store.commitAt(writes, seq),
             .jsonl => |store| store.commitAt(writes, seq, .{}),
         };
     }
@@ -32,6 +36,7 @@ pub const Backend = union(enum) {
         return switch (self) {
             .memory => |store| store.state.duplicate(gpa),
             .sqlite => |store| store.snapshot(gpa),
+            .sqlite_source => |store| store.snapshot(gpa),
             .jsonl => |store| store.snapshot(gpa),
         };
     }
@@ -39,6 +44,7 @@ pub const Backend = union(enum) {
         return switch (self) {
             .memory => |store| store.readRecord(gpa, id),
             .sqlite => |store| store.readRecord(gpa, id),
+            .sqlite_source => |store| store.readRecord(gpa, id),
             .jsonl => |store| store.readRecord(gpa, id),
         };
     }
@@ -50,6 +56,7 @@ pub const Backend = union(enum) {
                 break :blk try store.readRecord(gpa, id);
             },
             .sqlite => |store| store.readTableRecord(gpa, table, id),
+            .sqlite_source => |store| store.readTableRecord(gpa, table, id),
             .jsonl => |store| store.readTableRecord(gpa, table, id),
         };
     }
@@ -57,6 +64,7 @@ pub const Backend = union(enum) {
         return switch (self) {
             .memory => |store| query.entry(gpa, store, id, conversation),
             .sqlite => |store| store.readEntry(gpa, id, conversation),
+            .sqlite_source => |store| store.readEntry(gpa, id, conversation),
             .jsonl => |store| store.readEntry(gpa, id, conversation),
         };
     }
@@ -64,6 +72,7 @@ pub const Backend = union(enum) {
         return switch (self) {
             .memory => |store| store.readDocument(gpa, id, at),
             .sqlite => |store| store.readDocument(gpa, id, at),
+            .sqlite_source => |store| store.readDocument(gpa, id, at),
             .jsonl => |store| store.readDocument(gpa, id, at),
         };
     }
@@ -71,6 +80,7 @@ pub const Backend = union(enum) {
         return switch (self) {
             .memory => |store| query.scan(gpa, store, parameters),
             .sqlite => |store| store.scan(gpa, parameters),
+            .sqlite_source => |store| store.scan(gpa, parameters),
             .jsonl => |store| store.scan(gpa, parameters),
         };
     }
