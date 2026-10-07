@@ -98,6 +98,8 @@ const Execution = struct {
         const freeze = try engine.checked(c.JS_GetPropertyStr(engine.context, object_type, "freeze"));
         defer engine.freeValue(freeze);
         var objects: std.ArrayList(c.JSValue) = .empty;
+        var seen: std.AutoHashMapUnmanaged(usize, void) = .empty;
+        defer seen.deinit(self.gpa);
         defer {
             for (objects.items) |value| engine.freeValue(value);
             objects.deinit(self.gpa);
@@ -123,14 +125,14 @@ const Execution = struct {
         }) |selector| {
             const selected = try engine.eval(selector, "codemode-intrinsic.js", c.JS_EVAL_TYPE_GLOBAL);
             defer engine.freeValue(selected);
-            try self.graphAdd(&objects, globals, selected);
+            try self.graphAdd(&objects, &seen, globals, selected);
         }
         var index: usize = 0;
         while (index < objects.items.len) : (index += 1) {
             const object = objects.items[index];
             const prototype = try engine.checked(c.JS_GetPrototype(engine.context, object));
             defer engine.freeValue(prototype);
-            try self.graphAdd(&objects, globals, prototype);
+            try self.graphAdd(&objects, &seen, globals, prototype);
             var names: [*c]c.JSPropertyEnum = null;
             var length: u32 = 0;
             if (c.JS_GetOwnPropertyNames(engine.context, &names, &length, object, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK) < 0) return error.JavaScriptException;
@@ -148,9 +150,9 @@ const Execution = struct {
                     engine.freeValue(descriptor.getter);
                     engine.freeValue(descriptor.setter);
                 }
-                try self.graphAdd(&objects, globals, descriptor.value);
-                try self.graphAdd(&objects, globals, descriptor.getter);
-                try self.graphAdd(&objects, globals, descriptor.setter);
+                try self.graphAdd(&objects, &seen, globals, descriptor.value);
+                try self.graphAdd(&objects, &seen, globals, descriptor.getter);
+                try self.graphAdd(&objects, &seen, globals, descriptor.setter);
                 if (index == 0 and descriptor.flags & c.JS_PROP_CONFIGURABLE != 0 and descriptor.flags & c.JS_PROP_TMASK == c.JS_PROP_NORMAL) {
                     if (c.JS_DefineProperty(engine.context, object, name.atom, c.pi_js_undefined(), c.pi_js_undefined(), c.pi_js_undefined(), c.JS_PROP_HAS_CONFIGURABLE | c.JS_PROP_HAS_WRITABLE) < 0) return error.JavaScriptException;
                 }
@@ -183,15 +185,16 @@ const Execution = struct {
             }
         }
     }
-    fn graphAdd(self: *Execution, objects: *std.ArrayList(c.JSValue), globals: c.JSValue, value: c.JSValue) !void {
+    fn graphAdd(self: *Execution, objects: *std.ArrayList(c.JSValue), seen: *std.AutoHashMapUnmanaged(usize, void), globals: c.JSValue, value: c.JSValue) !void {
         if (!c.JS_IsObject(value) or c.JS_IsStrictEqual(self.engine.context, value, globals)) return;
-        for (objects.items) |seen| if (c.JS_IsStrictEqual(self.engine.context, seen, value)) return;
+        const identity = @intFromPtr(c.pi_js_object_identity(value));
+        if (seen.contains(identity)) return;
         if (objects.items.len >= 8192) return error.CodemodeIntrinsicGraphLimit;
+        try seen.ensureUnusedCapacity(self.gpa, 1);
+        try objects.ensureUnusedCapacity(self.gpa, 1);
         const retained = c.JS_DupValue(self.engine.context, value);
-        objects.append(self.gpa, retained) catch |cause| {
-            self.engine.freeValue(retained);
-            return cause;
-        };
+        seen.putAssumeCapacity(identity, {});
+        objects.appendAssumeCapacity(retained);
     }
     fn parseArgument(self: *Execution, value: c.JSValue) !?json.Owned {
         if (c.JS_IsUndefined(value)) return null;
