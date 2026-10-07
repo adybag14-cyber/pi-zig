@@ -1,9 +1,15 @@
 name: macOS checkpoint202 codemode diagnostics
 on:
   workflow_dispatch:
+    inputs:
+      run_allocations:
+        description: Repeat complete eight-shard allocation proof
+        type: boolean
+        default: false
   pull_request:
 jobs:
   diagnose:
+    if: github.event_name == 'workflow_dispatch' && inputs.run_allocations
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -38,3 +44,14 @@ jobs:
           PI_CODEMODE_ALLOCATION_SHARD: "0"
           PI_CODEMODE_ALLOCATION_SHARDS: "8"
         run: zig build test test-provider-contracts -Ddiagnostic-tests=true -j2 --summary all
+  frontend:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Qualify native frontend admission and late invocation diagnostics
+        timeout-minutes: 10
+        run: zig build test-fullscreen-frontend-process -j2 --summary all
