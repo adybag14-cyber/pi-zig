@@ -5,6 +5,39 @@ const pty = @import("test_support/platform_pty.zig");
 const vt = @import("test_support/terminal_screen.zig");
 const Io = std.Io;
 
+test "native persistent terminal reports Pi program status lifecycle without prompt or assistant leakage" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    try fixture.environment.put("PI_PROGRAM_STATUS", "1");
+    try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"private-assistant-answer\",\"stream_chunks\":[\"private-assistant-answer\"],\"stream_chunk_delay_ms\":200},{\"content\":\"failure-first-line\\nprivate-error-detail\",\"stop_reason\":\"error\"}]" });
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawn(errors);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.waitInitialStartup(&child, ">");
+    _ = try child.waitFor("\x1b]7501;state=idle:app=pi", 0, 5000);
+    const first = child.output.items.len;
+    try child.send("private-user-prompt\r");
+    _ = try child.waitFor("\x1b]7501;state=working:app=pi", first, 5000);
+    _ = try child.waitFor("\x1b]7501;state=done:app=pi", first, 5000);
+    try observed.waitAny(&child, "private-assistant-answer");
+    const second = child.output.items.len;
+    try child.send("private-next-prompt\r");
+    _ = try child.waitFor("\x1b]7501;state=error:app=pi:msg=ZmFpbHVyZS1maXJzdC1saW5l", second, 5000);
+    try cleanExit(&fixture, &child, &observed);
+    try std.testing.expect(std.mem.indexOf(u8, child.output.items, "\x1b]7501;state=clear\x1b\\") != null);
+    var reports = std.mem.splitSequence(u8, child.output.items, "\x1b]7501;");
+    _ = reports.next();
+    while (reports.next()) |tail| {
+        const end = std.mem.indexOf(u8, tail, "\x1b\\") orelse return error.MissingProgramStatusTerminator;
+        try std.testing.expect(std.mem.indexOf(u8, tail[0..end], "private") == null);
+        try std.testing.expect(std.mem.indexOf(u8, tail[0..end], "cHJpdmF0ZQ") == null);
+    }
+}
+
 const Fixture = struct {
     scratch: pty.Scratch,
     environment: std.process.Environ.Map,
@@ -148,6 +181,39 @@ const persistent_ui_extension =
     \\ pi.registerCommand('footer-factory-throw',{handler(_,ctx){const original={footerOriginal:true};try{ctx.ui.setFooter(()=>{throw original})}catch(error){if(error!==original)throw Error('footer identity');ctx.ui.notify('FOOTER_FACTORY_THROW_CAUGHT')}return {}}});
     \\}
 ;
+
+test "actual native terminal OSC reports update cached Theme without leaking fragmented input into editor" {
+    if (!pty.supported()) return error.SkipZigTest;
+    // ConPTY's input layer consumes injected OSC replies. POSIX PTYs carry
+    // these bytes to the real input owner; Windows parser/cache proofs run
+    // separately without treating synthetic replies as console capabilities.
+    if (builtin.os.tag == .windows) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    try fixture.environment.put("PI_TRUE_COLOR", "1");
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnExtension(errors,
+        \\export default pi=>pi.registerCommand('theme-report',{handler(_,ctx){ctx.ui.notify('REPORT_FG:'+JSON.stringify([ctx.ui.theme.colors.text.r,ctx.ui.theme.colors.text.g,ctx.ui.theme.colors.text.b]));return {}}})
+    );
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.waitAny(&child, ">");
+    _ = try child.waitFor("\x1b]4;15;?\x07", 0, 5000);
+    try child.send("\x1b]10;rgb:aaaa/");
+    try child.send("bbbb/cccc\x1b\\\x1b]11;#010203\x07\x1b[?1;2c");
+    try observed.send(&child, "/theme-report\r", "REPORT_FG:");
+    observed.waitAny(&child, "REPORT_FG:[170,187,204]") catch |cause| {
+        const trace = try fixture.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", std.testing.allocator, .limited(65536));
+        defer std.testing.allocator.free(trace);
+        std.debug.print("Theme report owned diagnostic:\n{s}\n", .{trace});
+        return cause;
+    };
+    try std.testing.expect(!try observed.screen.contains("bbbb/cccc"));
+    try observed.send(&child, "draft", "> draft");
+    try cleanExit(&fixture, &child, &observed);
+}
 test "actual native retained header footer live context indicator and terminal input work across resize retirement" {
     if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");

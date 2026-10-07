@@ -4,6 +4,7 @@ pub const ansi = @import("ansi.zig");
 pub const render = @import("render.zig");
 pub const diff = @import("diff.zig");
 pub const terminal = @import("terminal.zig");
+pub const program_status = @import("program_status.zig");
 pub const terminal_text = @import("terminal_text.zig");
 pub const layout = @import("layout.zig");
 pub const keys = @import("keys.zig");

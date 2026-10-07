@@ -1,0 +1,88 @@
+{
+  "source": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "cases": [
+    {
+      "parts": [
+        "\u001b",
+        "]10;rgb:aaaa/",
+        "bbbb/cccc",
+        "\u0007"
+      ],
+      "steps": [
+        [],
+        [],
+        [],
+        [
+          {
+            "kind": "key",
+            "value": "\u001b]10;rgb:aaaa/bbbb/cccc\u0007"
+          }
+        ]
+      ],
+      "afterTimeout": [
+        {
+          "kind": "key",
+          "value": "\u001b]10;rgb:aaaa/bbbb/cccc\u0007"
+        }
+      ]
+    },
+    {
+      "parts": [
+        "\u001b]11;#010203\u001b",
+        "\\"
+      ],
+      "steps": [
+        [],
+        [
+          {
+            "kind": "key",
+            "value": "\u001b]11;#010203\u001b\\"
+          }
+        ]
+      ],
+      "afterTimeout": [
+        {
+          "kind": "key",
+          "value": "\u001b]11;#010203\u001b\\"
+        }
+      ]
+    },
+    {
+      "parts": [
+        "\u001b]"
+      ],
+      "steps": [
+        []
+      ],
+      "afterTimeout": [
+        {
+          "kind": "key",
+          "value": "\u001b]"
+        }
+      ]
+    },
+    {
+      "parts": [
+        "\u001b[200~",
+        "\u001b]10;#ffffff",
+        "\u001b[201~"
+      ],
+      "steps": [
+        [],
+        [],
+        [
+          {
+            "kind": "paste",
+            "value": "\u001b]10;#ffffff"
+          }
+        ]
+      ],
+      "afterTimeout": [
+        {
+          "kind": "paste",
+          "value": "\u001b]10;#ffffff"
+        }
+      ]
+    }
+  ]
+}

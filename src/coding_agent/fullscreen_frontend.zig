@@ -13,13 +13,14 @@ const line_editor = @import("../tui/line_editor.zig");
 const Editor = @import("../tui/editor.zig").Editor;
 const session = @import("../agent/session.zig");
 const agent_loop = @import("../agent/loop.zig");
+const status_reporter = @import("program_status_reporter.zig");
 const ui = @import("../extensions/ui.zig");
 const transcript_mod = @import("transcript_view.zig");
 const platform = @import("../tui/platform_terminal.zig");
 const component_protocol = @import("../extensions/component_protocol.zig");
 pub const renderer_protocol = @import("../extensions/renderer_protocol.zig");
 
-pub const CommandKind = enum { submit, complete, shortcut, clipboard, quit };
+pub const CommandKind = enum { submit, complete, shortcut, clipboard, presentation, quit };
 pub const Command = struct {
     kind: CommandKind,
     text: []u8,
@@ -350,6 +351,8 @@ const Update = union(enum) {
     notice: []u8,
     busy: bool,
     wheel_lines: wheel_scroll.Lines,
+    program_session_name: []u8,
+    program_settled: bool,
     config: ConfigUpdate,
     component: struct { scene: component_protocol.Scene, controls: *component_protocol.ControlQueue },
     component_close: component_protocol.Fence,
@@ -365,8 +368,8 @@ const Update = union(enum) {
             },
             .surface => |*value| value.deinit(),
             .text => |value| gpa.free(value.text),
-            .status, .notice => |value| gpa.free(value),
-            .busy, .wheel_lines => {},
+            .status, .notice, .program_session_name => |value| gpa.free(value),
+            .busy, .program_settled, .wheel_lines => {},
             .config => |value| {
                 if (value.bindings_json) |json| gpa.free(json);
                 for (value.shortcuts) |key| gpa.free(key);
@@ -407,6 +410,8 @@ pub const Frontend = struct {
     transcript: transcript_mod.Transcript,
     scroll: layout.ScrollView,
     app: application.Application,
+    program_status: status_reporter.Reporter,
+    program_session_name: ?[]u8 = null,
     root_entries: [7]layout.StackEntry = undefined,
     stack: layout.Stack = undefined,
     thread: ?std.Thread = null,
@@ -427,6 +432,10 @@ pub const Frontend = struct {
     terminal_input_bridge: ?script_runtime.TerminalInputBridge = null,
     terminal_input_generation: u64 = 0,
     terminal_input_calls: usize = 0,
+    terminal_report_fn: ?*const fn (?*anyopaque, []const u8) anyerror!bool = null,
+    terminal_report_context: ?*anyopaque = null,
+    terminal_report_calls: usize = 0,
+    terminal_report_pump: ?*const fn (?*anyopaque) anyerror!bool = null,
     stopping: bool = false,
     ready: bool = false,
     pause_depth: usize = 0,
@@ -513,6 +522,7 @@ pub const Frontend = struct {
             .transcript = transcript_mod.Transcript.init(gpa),
             .scroll = undefined,
             .app = undefined,
+            .program_status = status_reporter.Reporter.init(gpa),
             .header = header,
             .status = status,
             .surfaces = .{ .gpa = gpa },
@@ -599,6 +609,14 @@ pub const Frontend = struct {
         if (busy) @atomicStore(bool, &self.abort_flag, false, .release);
         try self.post(.{ .busy = busy });
     }
+    pub fn setProgramSessionName(self: *Frontend, name: []const u8) !void {
+        const copied = try self.gpa.dupe(u8, name);
+        errdefer self.gpa.free(copied);
+        try self.post(.{ .program_session_name = copied });
+    }
+    pub fn settleProgramStatus(self: *Frontend, aborted: bool) !void {
+        try self.post(.{ .program_settled = aborted });
+    }
     pub fn setStatus(self: *Frontend, status: []const u8) !void {
         const text = try self.gpa.dupe(u8, status);
         errdefer self.gpa.free(text);
@@ -678,6 +696,35 @@ pub const Frontend = struct {
         defer self.mutex.unlock(self.io);
         self.editor_observer = callback;
         self.editor_observer_context = context;
+    }
+    pub fn bindTerminalReports(self: *Frontend, callback: ?*const fn (?*anyopaque, []const u8) anyerror!bool, context: ?*anyopaque) void {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        while (self.terminal_report_calls != 0) self.changed.waitUncancelable(self.io, &self.mutex);
+        self.terminal_report_fn = callback;
+        self.terminal_report_context = context;
+    }
+    pub fn bindTerminalReportPump(self: *Frontend, callback: ?*const fn (?*anyopaque) anyerror!bool) void {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        while (self.terminal_report_calls != 0) self.changed.waitUncancelable(self.io, &self.mutex);
+        self.terminal_report_pump = callback;
+    }
+    fn pumpTerminalReports(self: *Frontend) !void {
+        self.mutex.lockUncancelable(self.io);
+        const callback = self.terminal_report_pump;
+        const context = self.terminal_report_context;
+        if (callback != null) self.terminal_report_calls += 1;
+        self.mutex.unlock(self.io);
+        if (callback) |pump| {
+            defer {
+                self.mutex.lockUncancelable(self.io);
+                self.terminal_report_calls -= 1;
+                self.changed.broadcast(self.io);
+                self.mutex.unlock(self.io);
+            }
+            if (try pump(context)) try self.queueCommand(.presentation, "");
+        }
     }
     pub fn componentSink(raw: ?*anyopaque, scene: component_protocol.Scene, controls: *component_protocol.ControlQueue) !void {
         const self: *Frontend = @ptrCast(@alignCast(raw.?));
@@ -966,6 +1013,8 @@ pub const Frontend = struct {
         self.commands.deinit(self.gpa);
         if (self.anchor) |value| self.gpa.free(value.key);
         self.app.deinit();
+        self.program_status.deinit();
+        if (self.program_session_name) |name| self.gpa.free(name);
         self.transcript.deinit();
         self.decoder.deinit();
         self.editor.deinit();
@@ -1137,7 +1186,14 @@ pub const Frontend = struct {
             };
         }
         for (updates.items) |*update| switch (update.*) {
-            .event => |event| try self.transcript.eventWithRendered(event.value, event.preformatted),
+            .event => |event| {
+                try self.transcript.eventWithRendered(event.value, event.preformatted);
+                if (event.value.kind == .agent_start) try self.program_status.handle(.agent_start);
+                if (event.value.kind == .message_end and std.mem.eql(u8, event.value.name, "assistant")) {
+                    try self.program_status.handle(.{ .assistant_end = .{ .failed = event.value.is_error, .error_message = event.value.error_message } });
+                }
+                try self.publishProgramStatus();
+            },
             .branch => |entries| try self.transcript.syncBranch(entries, if (self.anchor) |*value| value else null),
             .surface => |snapshot| {
                 self.title_dirty = if (snapshot.title) |title| if (self.surfaces.title) |previous| !std.mem.eql(u8, title, previous) else true else false;
@@ -1162,6 +1218,15 @@ pub const Frontend = struct {
             },
             .busy => |value| self.busy = value,
             .wheel_lines => |value| if (!std.meta.eql(self.wheel.lines, value)) self.wheel.setLines(value),
+            .program_session_name => |value| {
+                if (self.program_session_name) |name| self.gpa.free(name);
+                self.program_session_name = value;
+                update.* = .{ .busy = self.busy };
+            },
+            .program_settled => |aborted| {
+                try self.program_status.handle(.{ .agent_settled = aborted });
+                try self.publishProgramStatus();
+            },
             .config => |value| {
                 var bindings = keybindings.Manager.init(self.gpa);
                 if (value.bindings_json) |json| bindings.parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, json, .{ .allocate = .alloc_always });
@@ -1276,7 +1341,15 @@ pub const Frontend = struct {
             try self.publishEditor();
         };
         if (requested_close) |fence| try self.removeCustomComponent(fence);
+        try self.publishProgramStatus();
         if (updates.items.len > 0) self.dirty = true;
+    }
+    fn publishProgramStatus(self: *Frontend) !void {
+        if (try self.program_status.report(self.program_session_name)) |encoded| {
+            defer self.gpa.free(encoded);
+            const status = self.program_status.current(self.program_session_name);
+            try self.app.setProgramStatus(self.io, status);
+        }
     }
 
     fn paint(self: *Frontend) !void {
@@ -1423,6 +1496,26 @@ pub const Frontend = struct {
         self.mutex.unlock(self.io);
     }
     fn input(self: *Frontend, packet: line_editor.InputDecoder.Input) !void {
+        if (packet == .key and try self.app.consumeProgramStatusReply(self.io, packet.key)) return;
+        if (packet == .key) {
+            self.mutex.lockUncancelable(self.io);
+            const report = self.terminal_report_fn;
+            const report_context = self.terminal_report_context;
+            if (report != null) self.terminal_report_calls += 1;
+            self.mutex.unlock(self.io);
+            if (report) |callback| {
+                defer {
+                    self.mutex.lockUncancelable(self.io);
+                    self.terminal_report_calls -= 1;
+                    self.changed.broadcast(self.io);
+                    self.mutex.unlock(self.io);
+                }
+                if (try callback(report_context, packet.key)) {
+                    try self.queueCommand(.presentation, "");
+                    return;
+                }
+            }
+        }
         self.mutex.lockUncancelable(self.io);
         const input_bridge = self.terminal_input_bridge;
         if (input_bridge != null) self.terminal_input_calls += 1;
@@ -1616,12 +1709,16 @@ pub const Frontend = struct {
             if (try self.decoder.feed(byte)) |packet| {
                 try self.input(packet);
                 self.escape_started_ms = null;
+            } else if (!self.decoder.paste) {
+                self.escape_started_ms = Io.Clock.awake.now(self.io).toMilliseconds();
             }
             if (!platform.inputBuffered(self.reader) and try platform.waitInput(0) != .input) break;
         }
         if (self.dirty) try self.paint();
     }
     fn runLoop(self: *Frontend) !void {
+        self.app.program_status_owner = true;
+        self.app.program_status_override = self.environ.get("PI_PROGRAM_STATUS");
         var raw = try line_editor.RawMode.enter();
         var raw_active = true;
         defer if (raw_active) raw.leave();
@@ -1658,6 +1755,7 @@ pub const Frontend = struct {
                 self.dirty = true;
             }
             try self.applyUpdates();
+            try self.pumpTerminalReports();
             if (wanted_pause) {
                 try self.io.sleep(.fromMilliseconds(10), .awake);
                 continue;
@@ -1688,8 +1786,8 @@ pub const Frontend = struct {
                     return err;
                 };
             } else if (self.escape_started_ms) |started| {
-                if (Io.Clock.awake.now(self.io).toMilliseconds() - started >= 30) {
-                    if (self.decoder.flushEscape()) |packet| try self.input(packet);
+                if (Io.Clock.awake.now(self.io).toMilliseconds() - started >= self.decoder.pendingTimeoutMs()) {
+                    if (self.decoder.flushPending()) |packet| try self.input(packet);
                     self.escape_started_ms = null;
                 }
             }
