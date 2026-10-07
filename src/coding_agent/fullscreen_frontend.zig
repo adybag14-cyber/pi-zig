@@ -907,7 +907,7 @@ pub const Frontend = struct {
     pub fn noticeSink(raw: ?*anyopaque, bytes: []const u8) !void {
         const self: *Frontend = @ptrCast(@alignCast(raw.?));
         self.mutex.lockUncancelable(self.io);
-        const paused = self.paused;
+        const paused = self.paused and self.pause_depth > 0;
         self.mutex.unlock(self.io);
         if (paused) return Io.File.stdout().writeStreamingAll(self.io, bytes);
         const text = try self.gpa.dupe(u8, bytes);
