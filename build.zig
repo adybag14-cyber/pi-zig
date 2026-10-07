@@ -281,17 +281,6 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"host SDK snapshot crosses"},
         .use_llvm = use_llvm,
     });
-    const sdk_refresh_tests = b.addTest(.{
-        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_refresh_ownership_test.zig"), .target = target, .optimize = optimize }),
-        .use_llvm = use_llvm,
-    });
-    linkQuickJs(b, sdk_refresh_tests.root_module, quickjs, sqlite_lib_dir);
-    linkDurable(b, sdk_refresh_tests.root_module);
-    sdk_refresh_tests.root_module.addImport("catalog_tool", catalog_tool);
-    const run_sdk_refresh_tests = b.addRunArtifact(sdk_refresh_tests);
-    const sdk_refresh_step = b.step("test-sdk-refresh-ownership", "Exercise provider refresh publication cancellation and allocation ownership");
-    sdk_refresh_step.dependOn(&run_sdk_refresh_tests.step);
-    test_step.dependOn(&run_sdk_refresh_tests.step);
     linkQuickJs(b, sdk_host_tests.root_module, quickjs, sqlite_lib_dir);
     const run_sdk_host_tests = b.addRunArtifact(sdk_host_tests);
     run_sdk_host_tests.step.dependOn(&sdk_install.step);
@@ -694,11 +683,13 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"native model refresh retained publications"},
         .use_llvm = use_llvm,
     });
-    linkQuickJs(b, sdk_refresh_ownership_tests.root_module, quickjs);
+    linkQuickJs(b, sdk_refresh_ownership_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, sdk_refresh_ownership_tests.root_module);
     sdk_refresh_ownership_tests.root_module.addImport("catalog_tool", catalog_tool);
     const sdk_refresh_ownership_run = b.addRunArtifact(sdk_refresh_ownership_tests);
     const sdk_refresh_ownership_step = b.step("test-sdk-refresh-ownership", "Exercise provider refresh publication and cancellation allocation ownership");
     sdk_refresh_ownership_step.dependOn(&sdk_refresh_ownership_run.step);
+    test_step.dependOn(&sdk_refresh_ownership_run.step);
     const run_binding_tests = b.addRunArtifact(binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
     binding_test_step.dependOn(&run_binding_tests.step);
@@ -709,7 +700,7 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     theme_state_tests.root_module.addImport("catalog_tool", catalog_tool);
-    linkQuickJs(b, theme_state_tests.root_module, quickjs);
+    linkQuickJs(b, theme_state_tests.root_module, quickjs, sqlite_lib_dir);
     const run_theme_state_tests = b.addRunArtifact(theme_state_tests);
     const theme_state_step = b.step("test-theme-state", "Prove cached theme snapshot ownership and explicit empty reports without terminal I/O");
     theme_state_step.dependOn(&run_theme_state_tests.step);
