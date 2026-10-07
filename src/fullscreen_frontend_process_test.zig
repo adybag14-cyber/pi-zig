@@ -279,7 +279,7 @@ test "real custom editor original modal input replaces editor row changes submit
 
 const owned_editor_extension =
     \\import {CustomEditor} from 'pi-coding-agent';import {matchesKey} from 'pi-tui';
-    \\let disposed=0;
+    \\let disposed=0,installed=false;
     \\export default pi=>{
     \\ pi.on('session_start',(_,ctx)=>{
     \\  class OwnedEditor extends CustomEditor {
@@ -292,17 +292,18 @@ const owned_editor_extension =
     \\   }
     \\   render(width){return ['OWNED_WIDTH:'+width+' FOCUS:'+this.focused+' KEY:'+this.lastKey,...super.render(width)]}
     \\  }
-    \\  ctx.ui.setEditorComponent((tui,theme,kb)=>new OwnedEditor(tui,theme,kb));
+    \\  ctx.ui.setEditorComponent((tui,theme,kb)=>{installed=true;return new OwnedEditor(tui,theme,kb)});
     \\ });
     \\ pi.registerCommand('editor-dialog',{async handler(_,ctx){const accepted=await ctx.ui.confirm('EDITOR_MODAL','Resume owned editor?');ctx.ui.setEditorText(accepted?'modal-restored':'modal-rejected');return {}}});
     \\ pi.registerCommand('editor-inspect',{handler(_,ctx){ctx.ui.notify('EDITOR_DISPOSED:'+disposed);return {}}});
+    \\ pi.registerCommand('owned-ready',{handler(_,ctx){if(!installed)throw Error('owned editor factory not installed');ctx.ui.notify('OWNED_FIXTURE_READY:OWNER_INSTALLED');return {}}});
     \\}
 ;
 
 const autocomplete_extension =
-    \\let aborts=0;
+    \\let aborts=0,installed=false;
     \\export default pi=>{
-    \\ pi.on('session_start',(_,ctx)=>ctx.ui.addAutocompleteProvider(current=>({
+    \\ pi.on('session_start',(_,ctx)=>ctx.ui.addAutocompleteProvider(current=>{installed=true;return {
     \\  triggerCharacters:['%'],
     \\  async getSuggestions(lines,line,col,options){
     \\   const value=lines[line];if(!value.startsWith('%'))return await current.getSuggestions(lines,line,col,options);
@@ -311,8 +312,9 @@ const autocomplete_extension =
     \\   if(options.signal.aborted)return null;return {prefix:value,items:[{value:'one',label:'Plugin One'},{value:'two',label:'Plugin Two',description:'selected second'}]};
     \\  },
     \\  applyCompletion(...args){return current.applyCompletion(...args)}
-    \\ })));
+    \\ }}));
     \\ pi.registerCommand('auto-inspect',{handler(_,ctx){ctx.ui.notify('AUTO_ABORTS:'+aborts);return {}}});
+    \\ pi.registerCommand('auto-ready',{handler(_,ctx){if(!installed)throw Error('autocomplete wrapper not installed');ctx.ui.notify('AUTO_FIXTURE_READY:OWNER_INSTALLED');return {}}});
     \\}
 ;
 test "real custom editor autocomplete asynchronous wrapper dropdown selection fallback cancellation error resize and reload" {
@@ -325,6 +327,7 @@ test "real custom editor autocomplete asynchronous wrapper dropdown selection fa
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
+    try observed.acknowledgeStartup(&child, "/auto-ready\r", "AUTO_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "history-row-059", 0);
     try observed.send(&child, "%", "> %");
     try observed.wait(&child, "→ Plugin One", 0);
@@ -362,6 +365,7 @@ test "real custom editor focus modal handoff retained draft default restoration 
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
+    try observed.acknowledgeStartup(&child, "/owned-ready\r", "OWNED_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "OWNED_WIDTH:100 FOCUS:true", 0);
     try observed.send(&child, "focus-draft Ω", "> focus-draft Ω");
     try observed.send(&child, "\x07", "FOCUS:false");
@@ -848,13 +852,23 @@ const Observer = struct {
         try self.wait(child, marker, frame);
     }
     fn waitStartupCommand(self: *Observer, child: *pty.Session, after_frame: usize) !void {
+        return self.waitStartupMarker(child, "FIXTURE_READY:HEADER_EDITOR_COMMAND_ACK", after_frame);
+    }
+    fn acknowledgeStartup(self: *Observer, child: *pty.Session, command: []const u8, marker: []const u8) !void {
+        try self.waitAny(child, ">");
+        try std.testing.expect(try self.screen.contains("pi (pi-zig)"));
+        const frame = self.screen.frames;
+        try child.send(command);
+        try self.waitStartupMarker(child, marker, frame);
+    }
+    fn waitStartupMarker(self: *Observer, child: *pty.Session, marker: []const u8, after_frame: usize) !void {
         // Startup includes native-owner and bridge attachment after the first
         // header/editor frame. Its existing child budget is distinct from the
         // five-second current-cell render assertions that follow admission.
         const deadline = Io.Clock.awake.now(child.io).toMilliseconds() + 90_000;
         while (Io.Clock.awake.now(child.io).toMilliseconds() < deadline) {
             try self.drain(child);
-            if (!self.screen.synchronized_update and self.screen.frames > after_frame and try self.screen.contains("FIXTURE_READY:HEADER_EDITOR_COMMAND_ACK")) return;
+            if (!self.screen.synchronized_update and self.screen.frames > after_frame and try self.screen.contains(marker)) return;
             if (try child.exited()) break;
             try child.io.sleep(.fromMilliseconds(10), .awake);
         }

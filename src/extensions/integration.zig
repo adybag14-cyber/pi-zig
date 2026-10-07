@@ -656,6 +656,43 @@ pub const Bridge = struct {
         try self.queueEmitted(&emitted);
     }
 
+    pub fn beforeSessionSwitch(self: *Bridge, reason: []const u8, target: ?[]const u8) !bool {
+        return self.beforeSessionReplacement("session_before_switch", "reason", reason, "targetSessionFile", target);
+    }
+
+    pub fn beforeSessionFork(self: *Bridge, entry_id: []const u8) !bool {
+        return self.beforeSessionReplacement("session_before_fork", "entryId", entry_id, "position", "before");
+    }
+
+    fn beforeSessionReplacement(self: *Bridge, hook: []const u8, field: []const u8, value: []const u8, optional_field: []const u8, optional: ?[]const u8) !bool {
+        if (!self.host.hasHook(hook)) return false;
+        const gpa = self.host.gpa;
+        var payload: std.Io.Writer.Allocating = .init(gpa);
+        defer payload.deinit();
+        try payload.writer.writeAll("{\"type\":");
+        try std.json.Stringify.value(hook, .{}, &payload.writer);
+        try payload.writer.writeByte(',');
+        try std.json.Stringify.value(field, .{}, &payload.writer);
+        try payload.writer.writeByte(':');
+        try std.json.Stringify.value(value, .{}, &payload.writer);
+        if (optional) |text| {
+            try payload.writer.writeByte(',');
+            try std.json.Stringify.value(optional_field, .{}, &payload.writer);
+            try payload.writer.writeByte(':');
+            try std.json.Stringify.value(text, .{}, &payload.writer);
+        }
+        try payload.writer.writeByte('}');
+        var emitted = try self.executeHook(hook, payload.written());
+        defer emitted.deinit(gpa);
+        try self.queueEmitted(&emitted);
+        for (emitted.responses) |response| {
+            var parsed = std.json.parseFromSlice(std.json.Value, gpa, response.json, .{}) catch continue;
+            defer parsed.deinit();
+            if (parsed.value == .object) if (parsed.value.object.get("cancel")) |cancel| if (cancel == .bool and cancel.bool) return true;
+        }
+        return false;
+    }
+
     pub fn sessionShutdown(self: *Bridge, gpa: std.mem.Allocator, cwd: []const u8, session_id: []const u8, reason: []const u8) !void {
         const payload = try lifecyclePayload(gpa, cwd, session_id, reason);
         defer gpa.free(payload);

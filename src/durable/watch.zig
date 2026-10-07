@@ -270,6 +270,9 @@ pub const Watcher = struct {
         }
     };
     fn runNative(self: *Watcher) void {
+        defer if (builtin.os.tag == .macos) {
+            if (self.backend) |*backend| backend.retireOnOwnerThread();
+        };
         while (!self.closed.load(.acquire)) {
             if (self.mode.load(.acquire) == .polling) {
                 self.run();
@@ -315,7 +318,10 @@ pub const Watcher = struct {
     fn switchToPolling(self: *Watcher) void {
         if (self.mode.load(.acquire) == .polling) return;
         self.mode.store(.polling, .release);
-        if (self.backend) |*backend| backend.deinit();
+        if (self.backend) |*backend| {
+            if (builtin.os.tag == .macos) backend.retireOnOwnerThread();
+            backend.deinit();
+        }
         self.backend = null;
         self.callback(self.callback_context, .overflow) catch {};
     }
@@ -732,9 +738,25 @@ test "durable watch macOS default native stream observes immediate startup write
         try std.testing.expectEqual(@as(usize, 0), capture.errors);
         watcher.close(.{});
         watcher.close(.{});
+        try std.testing.expect(watcher.backend.?.stream == null);
+        try std.testing.expect(watcher.backend.?.runloop == null);
+        try std.testing.expect(watcher.backend.?.runloop_thread == null);
         const count = capture.count();
         try tmp.dir.writeFile(io, .{ .sub_path = name, .data = "after-close" });
         try io.sleep(.fromMilliseconds(100), .awake);
         try std.testing.expectEqual(count, capture.count());
     }
+}
+
+test "durable watch macOS unstarted stream rolls back without a run-loop owner" {
+    if (builtin.os.tag != .macos) return error.SkipZigTest;
+    const gpa = std.testing.allocator;
+    var backend = try native.Backend.init(gpa);
+    defer backend.deinit();
+    _ = try backend.add("/tmp", 0, 0);
+    try backend.prepare();
+    try std.testing.expect(backend.stream != null);
+    try std.testing.expect(backend.runloop == null);
+    try std.testing.expect(backend.runloop_thread == null);
+    try std.testing.expect(!backend.started);
 }

@@ -2686,6 +2686,9 @@ const RuntimeResourceReloadContext = struct {
             }
         }
 
+        // Client validation and rollback are finished. Retire captured contexts
+        // before any owner is replaced; failed preparation keeps them valid.
+        _ = try self.host.invalidateNativeContexts(null);
         self.ui.resetForReload();
         tui.render.resetTheme();
 
@@ -4684,6 +4687,7 @@ fn runMain(init: std.process.Init) !void {
             &live,
             &provider_name,
             &extension_host,
+            &extension_ui,
             &extension_action_runtime,
             &extension_command_steering,
             &extension_command_followups,
@@ -5168,6 +5172,7 @@ fn runMain(init: std.process.Init) !void {
                             }
                             if (session_path) |sp| if (!cli.no_session) try sess.save(io, sp);
 
+                            _ = try extension_host.invalidateNativeContexts(null);
                             sess.deinit();
                             sess = loaded;
                             loaded_owned = false;
@@ -5917,6 +5922,20 @@ fn clearRpcQueuesJson(
     return out.toOwnedSlice();
 }
 
+fn retireRpcSession(gpa: std.mem.Allocator, io: Io, cwd: []const u8, sess: *agent.session.Session, bridge: *extensions.integration.Bridge, path: ?[]const u8, no_session: bool, reason: []const u8) !void {
+    try bridge.sessionShutdown(gpa, cwd, sess.id, reason);
+    try flushFinalExtensionActions(gpa, io, sess, bridge);
+    if (path) |file| if (!no_session) try sess.save(io, file);
+    _ = try bridge.host.invalidateNativeContexts(null);
+}
+
+fn startRpcSession(runtime: *ExtensionActionRuntime, ui_controller: *extensions.ui.Controller, sess: *agent.session.Session, path: ?[]const u8, reason: []const u8) !void {
+    const live = runtime.live;
+    try syncExtensionScriptContext(runtime.host, ui_controller, "rpc", runtime.cwd, sess, if (live.provider_name) |name| name.* else null, live.model_display.*, live.thinking, runtime.trust_project, null, runtime.active_filter.*, false, live.model_catalog, live.configured_providers, path, if (path) |file| std.fs.path.dirname(file) else null);
+    try runtime.bridge.sessionStart(runtime.host.gpa, runtime.cwd, sess.id, reason);
+    try flushFinalExtensionActions(runtime.host.gpa, live.io, sess, runtime.bridge);
+}
+
 fn runRpcMode(
     gpa: std.mem.Allocator,
     io: Io,
@@ -5928,6 +5947,7 @@ fn runRpcMode(
     live: *coding.live_state.LiveState,
     provider_name: *?[]const u8,
     extension_host: *extensions.Host,
+    extension_ui: *extensions.ui.Controller,
     extension_action_runtime: *ExtensionActionRuntime,
     initial_steering: *std.ArrayList([]const u8),
     initial_followups: *std.ArrayList([]const u8),
@@ -6129,12 +6149,20 @@ fn runRpcMode(
             break;
         }
         if (std.mem.eql(u8, req.method, "new_session")) {
+            if (try extension_action_runtime.bridge.beforeSessionSwitch("new", null)) {
+                try flushFinalExtensionActions(gpa, io, sess, extension_action_runtime.bridge);
+                try coding.modes.writeRpcResponse(io, req.id, req.method, true, "{\"cancelled\":true}");
+                continue;
+            }
             const new_id = try agent.session.generateSessionId(gpa);
             defer gpa.free(new_id);
             var fresh = try agent.session.Session.init(gpa, new_id, cwd);
-            errdefer fresh.deinit();
+            var fresh_owned = true;
+            defer if (fresh_owned) fresh.deinit();
+            try retireRpcSession(gpa, io, cwd, sess, extension_action_runtime.bridge, active_session_path, no_session, "new");
             sess.deinit();
             sess.* = fresh;
+            fresh_owned = false;
             if (!no_session) {
                 if (active_session_path) |old_path| {
                     const dir = std.fs.path.dirname(old_path) orelse ".";
@@ -6144,6 +6172,7 @@ fn runRpcMode(
             agent_cfg.session_id = sess.id;
             agent_cfg.session_file = active_session_path;
             client_pool.setSessionContext(sess.id, client_pool.cache_retention);
+            try startRpcSession(extension_action_runtime, extension_ui, sess, active_session_path, "new");
             try coding.modes.writeRpcResponse(io, req.id, "new_session", true, "{\"cancelled\":false}");
             continue;
         }
@@ -6526,16 +6555,26 @@ fn runRpcMode(
                 try coding.modes.writeRpcResponse(io, req.id, req.method, false, "{\"error\":\"sessionPath required\"}");
                 continue;
             };
-            const loaded = agent.session.Session.load(gpa, io, path) catch {
+            if (try extension_action_runtime.bridge.beforeSessionSwitch("resume", path)) {
+                try flushFinalExtensionActions(gpa, io, sess, extension_action_runtime.bridge);
+                try coding.modes.writeRpcResponse(io, req.id, req.method, true, "{\"cancelled\":true}");
+                continue;
+            }
+            var loaded = agent.session.Session.load(gpa, io, path) catch {
                 try coding.modes.writeRpcResponse(io, req.id, req.method, false, "{\"error\":\"could not load session\"}");
                 continue;
             };
+            var loaded_owned = true;
+            defer if (loaded_owned) loaded.deinit();
+            try retireRpcSession(gpa, io, cwd, sess, extension_action_runtime.bridge, active_session_path, no_session, "resume");
             sess.deinit();
             sess.* = loaded;
+            loaded_owned = false;
             active_session_path = try arena.dupe(u8, path);
             agent_cfg.session_id = sess.id;
             agent_cfg.session_file = active_session_path;
             client_pool.setSessionContext(sess.id, client_pool.cache_retention);
+            try startRpcSession(extension_action_runtime, extension_ui, sess, active_session_path, "resume");
             try coding.modes.writeRpcResponse(io, req.id, req.method, true, "{\"cancelled\":false}");
             continue;
         }
@@ -6544,6 +6583,11 @@ fn runRpcMode(
                 try coding.modes.writeRpcResponse(io, req.id, req.method, false, "{\"error\":\"entryId required\"}");
                 continue;
             };
+            if (try extension_action_runtime.bridge.beforeSessionFork(entry_id)) {
+                try flushFinalExtensionActions(gpa, io, sess, extension_action_runtime.bridge);
+                try coding.modes.writeRpcResponse(io, req.id, req.method, true, "{\"cancelled\":true}");
+                continue;
+            }
             const branch = try sess.branchEntries(gpa);
             defer gpa.free(branch);
             var selected: ?*const agent.session.SessionEntry = null;
@@ -6566,7 +6610,8 @@ fn runRpcMode(
             const new_id = try agent.session.generateSessionId(gpa);
             defer gpa.free(new_id);
             var forked = try sess.fork(gpa, new_id);
-            errdefer forked.deinit();
+            var forked_owned = true;
+            defer if (forked_owned) forked.deinit();
             if (active_session_path) |old_path| try forked.setParentSession(old_path);
             if (parent_id) |parent| try forked.setTip(parent) else forked.resetTip();
             var new_path: ?[]const u8 = null;
@@ -6575,12 +6620,15 @@ fn runRpcMode(
                 new_path = try agent.session.newSessionPath(arena, dir, new_id);
                 try forked.save(io, new_path.?);
             };
+            try retireRpcSession(gpa, io, cwd, sess, extension_action_runtime.bridge, active_session_path, no_session, "fork");
             sess.deinit();
             sess.* = forked;
+            forked_owned = false;
             active_session_path = new_path;
             agent_cfg.session_id = sess.id;
             agent_cfg.session_file = active_session_path;
             client_pool.setSessionContext(sess.id, client_pool.cache_retention);
+            try startRpcSession(extension_action_runtime, extension_ui, sess, active_session_path, "fork");
             var data_writer: std.Io.Writer.Allocating = .init(arena);
             try data_writer.writer.writeAll("{\"text\":");
             try std.json.Stringify.value(editable_text, .{}, &data_writer.writer);
@@ -6592,7 +6640,8 @@ fn runRpcMode(
             const new_id = try agent.session.generateSessionId(gpa);
             defer gpa.free(new_id);
             var cloned = try sess.fork(gpa, new_id);
-            errdefer cloned.deinit();
+            var cloned_owned = true;
+            defer if (cloned_owned) cloned.deinit();
             if (active_session_path) |old_path| try cloned.setParentSession(old_path);
             var new_path: ?[]const u8 = null;
             if (!no_session) if (active_session_path) |old_path| {
@@ -6600,12 +6649,15 @@ fn runRpcMode(
                 new_path = try agent.session.newSessionPath(arena, dir, new_id);
                 try cloned.save(io, new_path.?);
             };
+            try retireRpcSession(gpa, io, cwd, sess, extension_action_runtime.bridge, active_session_path, no_session, "fork");
             sess.deinit();
             sess.* = cloned;
+            cloned_owned = false;
             active_session_path = new_path;
             agent_cfg.session_id = sess.id;
             agent_cfg.session_file = active_session_path;
             client_pool.setSessionContext(sess.id, client_pool.cache_retention);
+            try startRpcSession(extension_action_runtime, extension_ui, sess, active_session_path, "fork");
             try coding.modes.writeRpcResponse(io, req.id, req.method, true, "{\"cancelled\":false}");
             continue;
         }

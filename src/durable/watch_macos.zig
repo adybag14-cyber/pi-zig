@@ -57,6 +57,7 @@ pub const Backend = struct {
     stream: ?Stream = null,
     array: ?CFRef = null,
     runloop: ?CFRef = null,
+    runloop_thread: ?std.Thread.Id = null,
     started: bool = false,
     dirty: bool = true,
     pub fn init(gpa: std.mem.Allocator) !Backend {
@@ -76,9 +77,20 @@ pub const Backend = struct {
         if (self.array) |array| CFRelease(array);
         self.array = null;
     }
-    pub fn deinit(self: *Backend) void {
+    /// Retire scheduled streams on their run-loop owner before joining it.
+    /// Source notify 8.2 performs Stop/Invalidate/Release on that worker.
+    pub fn retireOnOwnerThread(self: *Backend) void {
+        if (self.runloop_thread) |owner| std.debug.assert(owner == std.Thread.getCurrentId());
         self.stop();
         if (self.runloop) |runloop| CFRelease(runloop);
+        self.runloop = null;
+        self.runloop_thread = null;
+    }
+    pub fn deinit(self: *Backend) void {
+        // Constructor rollback may own an unscheduled stream. Once scheduled,
+        // the worker must retire it before the caller frees callback metadata.
+        std.debug.assert(self.runloop == null and self.runloop_thread == null);
+        self.stop();
         var iterator = self.installed.iterator();
         while (iterator.next()) |entry| {
             CFRelease(entry.value_ptr.string);
@@ -155,7 +167,10 @@ pub const Backend = struct {
         try self.prepare();
         if (self.stream) |stream| {
             if (!self.started) {
-                if (self.runloop == null) self.runloop = CFRetain(CFRunLoopGetCurrent());
+                if (self.runloop == null) {
+                    self.runloop = CFRetain(CFRunLoopGetCurrent());
+                    self.runloop_thread = std.Thread.getCurrentId();
+                }
                 FSEventStreamScheduleWithRunLoop(stream, self.runloop.?, kCFRunLoopDefaultMode);
                 if (FSEventStreamStart(stream) == 0) return error.NativeWatchUnavailable;
                 self.started = true;

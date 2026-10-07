@@ -89,6 +89,10 @@ pub const Group = struct {
         for (self.entries.items) |entry| if (entry.id == id) return entry.binding;
         return error.UnknownNativeExtensionOwner;
     }
+    pub fn invalidateContexts(self: *Group, reason: []const u8) !usize {
+        for (self.entries.items) |entry| try entry.binding.invalidateContextWithReason(reason);
+        return self.entries.items.len;
+    }
 
     pub fn remove(self: *Group, id: u64) !void {
         if (self.deinitializing) return error.StaleNativeExtensionOwner;

@@ -24,7 +24,7 @@ const widget_protocol = @import("widget_protocol.zig");
 const c = engine_mod.c;
 
 const WireRecord = struct {
-    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, shutdown };
+    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, context_invalidate, shutdown };
     bytes: []u8,
     kind: Kind = .request,
 };
@@ -96,6 +96,7 @@ const Transport = struct {
         if (std.mem.eql(u8, kind.string, "editor_control") or std.mem.eql(u8, kind.string, "editor_subscribe")) return .editor_control;
         if (std.mem.eql(u8, kind.string, "widget_control")) return .widget_control;
         if (std.mem.eql(u8, kind.string, "terminal_input")) return .terminal_input;
+        if (std.mem.eql(u8, kind.string, "context_invalidate")) return .context_invalidate;
         return .request;
     }
 
@@ -253,7 +254,7 @@ const Transport = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.records.items, 0..) |record, index| {
-            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or record.kind == .terminal_input or (self.active and record.kind == .shutdown and index == 0)) {
+            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or record.kind == .terminal_input or record.kind == .context_invalidate or (self.active and record.kind == .shutdown and index == 0)) {
                 const removed = self.records.orderedRemove(index);
                 self.queued_bytes -= removed.bytes.len;
                 return removed;
@@ -283,6 +284,11 @@ const Transport = struct {
             var arena: std.heap.ArenaAllocator = .init(engine.gpa);
             defer arena.deinit();
             const request = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{});
+            if (record.kind == .context_invalidate) {
+                try self.contextInvalidate(request);
+                dispatched = true;
+                continue;
+            }
             if (record.kind == .terminal_input) {
                 try self.terminalInput(request);
                 dispatched = true;
@@ -379,6 +385,7 @@ const Transport = struct {
     }
     fn persistentControl(self: *Transport, kind: WireRecord.Kind, request: std.json.Value) !bool {
         switch (kind) {
+            .context_invalidate => try self.contextInvalidate(request),
             .terminal_input => try self.terminalInput(request),
             .widget_control => try self.widgetControl(request),
             .renderer_control => try self.rendererControl(request),
@@ -388,6 +395,23 @@ const Transport = struct {
         return true;
     }
 
+    fn contextInvalidate(self: *Transport, request: std.json.Value) !void {
+        if (request != .object) return error.InvalidContextInvalidation;
+        const id = try component_protocol.identifier(request.object.get("id") orelse return error.InvalidContextInvalidation);
+        const generation = try component_protocol.identifier(request.object.get("ownerGeneration") orelse return error.InvalidContextInvalidation);
+        if (generation != self.group.ui.widgets.owner_generation) return;
+        const message = if (request.object.get("message")) |value| if (value == .string) value.string else return error.InvalidContextInvalidation else @import("native_context_lifetime.zig").default_message;
+        if (message.len > 65536) return error.InvalidContextInvalidation;
+        const invalidated = self.group.invalidateContexts(message) catch |err| {
+            try self.writer.print("\x1e{{\"type\":\"context_invalidate_result\",\"id\":\"{d}\",\"ownerGeneration\":\"{d}\",\"ok\":false,\"error\":", .{ id, generation });
+            try std.json.Stringify.value(@errorName(err), .{}, self.writer);
+            try self.writer.writeAll("}\n");
+            try self.writer.flush();
+            return;
+        };
+        try self.writer.print("\x1e{{\"type\":\"context_invalidate_result\",\"id\":\"{d}\",\"ownerGeneration\":\"{d}\",\"ok\":true,\"invalidated\":{d}}}\n", .{ id, generation, invalidated });
+        try self.writer.flush();
+    }
     fn widgetControl(self: *Transport, request: std.json.Value) !void {
         if (request != .object) return error.InvalidWidgetControl;
         const control = try widget_protocol.readControl(&request.object);

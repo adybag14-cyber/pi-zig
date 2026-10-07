@@ -620,6 +620,12 @@ pub const Host = struct {
         if (self.native_group_runtime) |owner| try owner.setWidgetBridge(bridge);
         self.script_widget_bridge = bridge;
     }
+    /// Invalidate only after a replacement is committed and shutdown settled.
+    /// A cancelled before-switch/fork decision must not call this endpoint.
+    pub fn invalidateNativeContexts(self: *Host, reason: ?[]const u8) !usize {
+        if (self.native_group_runtime) |owner| return owner.invalidateContexts(reason);
+        return 0;
+    }
 
     fn captureRendererActions(self: *Host, extension: *const ExtensionManifest, invocation: []const u8, raw: []const u8) !void {
         if (!usesNativeRuntime(extension)) return;

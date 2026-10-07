@@ -1,5 +1,6 @@
 //! Pi extension registrations and invocation owned by Zig through the C ABI.
 const std = @import("std");
+const context_lifetime = @import("native_context_lifetime.zig");
 const engine_mod = @import("engine.zig");
 const typebox = @import("typebox.zig");
 const session_snapshot = @import("session_snapshot.zig");
@@ -94,6 +95,7 @@ pub const Bindings = struct {
     invocation_active: bool = false,
     invocation_generation: u32 = 0,
     context_epoch: u32 = 1,
+    context_guard: c.JSValue,
     context_snapshot: ?c.JSValue = null,
     source_path: ?[]u8 = null,
     invocation_signal: ?c.JSValue = null,
@@ -132,6 +134,8 @@ pub const Bindings = struct {
         _ = c.JS_SetOpaque(owner_token, owner);
         const api = try engine.checked(c.JS_NewObject(engine.context));
         errdefer engine.freeValue(api);
+        const context_guard = try context_lifetime.create(engine);
+        errdefer engine.freeValue(context_guard);
         var owner_data = [_]c.JSValue{ owner_token, c.JS_NewInt64(engine.context, owner_class) };
         defer engine.freeValue(owner_data[1]);
         inline for (std.meta.fields(Method)) |field| {
@@ -139,7 +143,7 @@ pub const Bindings = struct {
             const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, invokeRegistration, name.ptr, 2, @intCast(field.value), owner_data.len, &owner_data));
             if (c.JS_DefinePropertyValueStr(engine.context, api, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         }
-        self.* = .{ .gpa = gpa, .engine = engine, .api = api, .providers = native_providers.Providers.init(engine), .ui_manager = ui_manager, .renderers = renderers, .owner_token = owner_token, .owner_class = owner_class, .owns_services = services == null, .stream_runner = .{ .engine = engine } };
+        self.* = .{ .gpa = gpa, .engine = engine, .api = api, .providers = native_providers.Providers.init(engine), .ui_manager = ui_manager, .renderers = renderers, .owner_token = owner_token, .owner_class = owner_class, .context_guard = context_guard, .owns_services = services == null, .stream_runner = .{ .engine = engine } };
         if (services) |shared| {
             self.broker = shared.broker;
             self.owner_id = shared.owner_id;
@@ -206,6 +210,7 @@ pub const Bindings = struct {
         self.actions.deinit(self.gpa);
         self.engine.freeValue(self.api);
         self.engine.freeValue(self.owner_token);
+        self.engine.freeValue(self.context_guard);
         if (self.context_snapshot) |snapshot| self.engine.freeValue(snapshot);
         if (self.source_path) |path| self.gpa.free(path);
         const gpa = self.gpa;
@@ -831,12 +836,16 @@ pub const Bindings = struct {
         self.context_snapshot = snapshot;
     }
     pub fn invalidateContext(self: *Bindings) !void {
+        return self.invalidateContextWithReason(context_lifetime.default_message);
+    }
+    pub fn invalidateContextWithReason(self: *Bindings, reason: []const u8) !void {
         if (self.context_epoch == std.math.maxInt(u32)) return error.ExtensionContextEpochExhausted;
+        try context_lifetime.replace(self.engine, &self.context_guard, reason);
         self.context_epoch += 1;
     }
 
     fn contextFunction(self: *Bindings, name: [:0]const u8, kind: ContextMethod, snapshot: c.JSValue, generation: u32) !c.JSValue {
-        const token = c.JS_NewInt64(self.engine.context, generation);
+        const token = c.JS_DupValue(self.engine.context, self.context_guard);
         defer self.engine.freeValue(token);
         const owner_class = c.JS_NewInt64(self.engine.context, self.owner_class);
         defer self.engine.freeValue(owner_class);
@@ -860,7 +869,10 @@ pub const Bindings = struct {
     fn createModelRegistry(self: *Bindings, snapshot: c.JSValue, generation: u32) !c.JSValue {
         const registry = try self.engine.checked(c.JS_NewObject(self.engine.context));
         errdefer self.engine.freeValue(registry);
-        var data = [_]c.JSValue{ c.JS_NewInt64(self.engine.context, generation), snapshot, self.owner_token, c.JS_NewInt64(self.engine.context, self.owner_class) };
+        _ = generation;
+        var data = [_]c.JSValue{ c.JS_DupValue(self.engine.context, self.context_guard), snapshot, self.owner_token, c.JS_NewInt64(self.engine.context, self.owner_class) };
+        defer self.engine.freeValue(data[0]);
+        defer self.engine.freeValue(data[3]);
         inline for (std.meta.fields(RegistryMethod)) |field| {
             const function = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, registryCallback, field.name, 0, field.value, data.len, &data));
             try self.actionProperty(registry, field.name, function);
@@ -869,10 +881,8 @@ pub const Bindings = struct {
     }
     fn registryCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
+        context_lifetime.assertActive(engine, data[0]) catch return engine.throwCaptured();
         const self = fromOwnerData(engine, data, 2) catch |err| return publicationFailure(engine, err);
-        var generation: i64 = 0;
-        if (c.JS_ToInt64(context, &generation, data[0]) < 0) return engine.throwCaptured();
-        if (generation != self.context_epoch) return c.JS_ThrowTypeError(context, "Stale native model registry context");
         return self.registryValue(@enumFromInt(magic), self.context_snapshot orelse data[1], if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
             if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
@@ -1141,12 +1151,10 @@ pub const Bindings = struct {
     fn contextCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         const kind: ContextMethod = @enumFromInt(magic);
+        context_lifetime.assertActive(engine, data[0]) catch return engine.throwCaptured();
         const self = fromOwnerData(engine, data, if (kind == .ui or kind == .modelRegistry) 3 else 2) catch |err| return publicationFailure(engine, err);
         // UI is an owner-rooted capability captured when the context is
         // created. Its individual methods enforce invocation/owner fences.
-        var generation: i64 = 0;
-        if (c.JS_ToInt64(context, &generation, data[0]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
-        if (generation != self.context_epoch) return c.JS_ThrowTypeError(context, "Stale native extension context");
         if (kind == .ui or kind == .modelRegistry) return c.JS_DupValue(context, data[2]);
         const arguments: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
         return self.contextValue(@enumFromInt(magic), self.context_snapshot orelse data[1], arguments) catch |err| {
@@ -2227,6 +2235,64 @@ test "native header footer factories retain owner contexts footer data and resto
     const retired = try engine.eval("headerDisposed===1&&footerDisposed===1", "persistent-disposal.js", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(retired);
     try std.testing.expect(c.JS_ToBool(engine.context, retired) == 1);
+}
+
+test "native context epochs retain each original stale reason through subsequent replacements and GC" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(std.testing.allocator, engine);
+    defer bindings.deinit();
+    try bindings.loadFactory("export default pi=>pi.registerCommand('save',{handler(_,ctx){globalThis.savedContexts??=[];savedContexts.push(ctx);return {}}})", "context-replacement-reasons.mjs");
+    try bindings.setContext("{\"cwd\":\"source-context\"}");
+    const first = try bindings.invokeCommand("save", "");
+    defer engine.gpa.free(first);
+    try bindings.invalidateContextWithReason("first-source-reason");
+    const second = try bindings.invokeCommand("save", "");
+    defer engine.gpa.free(second);
+    try bindings.invalidateContextWithReason("second-source-reason");
+    c.JS_RunGC(engine.runtime);
+    const errors = try engine.eval("savedContexts.map(ctx=>{try{ctx.cwd;return 'wrong-live'}catch(error){if(!(error instanceof Error)||error.name!=='Error')throw Error('reason kind');return error.message}})", "context-replacement-original-errors.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(errors);
+    const encoded = try engine.stringify(errors);
+    defer engine.gpa.free(encoded);
+    try std.testing.expectEqualStrings("[\"first-source-reason\",\"second-source-reason\"]", encoded);
+}
+
+test "native headless UI replays actual noOpUIContext notify unsubscribe and empty action transport" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bindings = try Bindings.init(std.testing.allocator, engine);
+    defer bindings.deinit();
+    const Capture = struct {
+        actions: usize = 0,
+        requests: usize = 0,
+        fn action(raw: ?*anyopaque, _: []const u8, _: []const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.actions += 1;
+        }
+        fn request(raw: ?*anyopaque, _: u32, _: []const u8, _: []const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.requests += 1;
+        }
+        fn cancel(_: ?*anyopaque, _: u32) !void {}
+    };
+    var capture: Capture = .{};
+    bindings.ui_manager.bridge = .{ .context = &capture, .action = Capture.action, .request = Capture.request, .cancel = Capture.cancel };
+    try bindings.loadFactory("export default pi=>pi.registerCommand('headless',{handler(_,ctx){let calls=0;const ui=ctx.ui;const notify=ui.notify('headless','warning');const off=ui.onTerminalInput(()=>{calls++;return {consume:true}});const unsub=off();off();ui.setHeader(()=>{calls++;return {render(){return []}}});ui.setFooter(()=>{calls++;return {render(){return []}}});ui.setWidget('headless',()=>{calls++;return {render(){return []}}});ui.setStatus('headless','invisible');ui.setWorkingIndicator({frames:['invisible']});ui.setEditorText('invisible');return {message:JSON.stringify({notifyUndefined:notify===undefined,unsubscribeFunction:typeof off==='function',unsubscribeUndefined:unsub===undefined,factoryCalls:calls,editorText:ui.getEditorText()})}}})", "headless-source-noop.mjs");
+    try bindings.setContext("{\"mode\":\"print\",\"hasUI\":false,\"editorText\":\"ignored-headless-text\"}");
+    const result = try bindings.invokeCommand("headless", "");
+    defer engine.gpa.free(result);
+    var decoded = try std.json.parseFromSlice(std.json.Value, engine.gpa, result, .{});
+    defer decoded.deinit();
+    var original = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/headless-ui-original-7fb.json"), .{});
+    defer original.deinit();
+    const expected = try std.json.Stringify.valueAlloc(engine.gpa, original.value.object.get("result").?, .{});
+    defer engine.gpa.free(expected);
+    try std.testing.expectEqualStrings(expected, decoded.value.object.get("message").?.string);
+    try std.testing.expectEqual(@as(usize, 0), capture.actions);
+    try std.testing.expectEqual(@as(usize, 0), capture.requests);
+    try std.testing.expectEqual(@as(usize, 0), bindings.ui_manager.widgets.entries.items.len);
+    try std.testing.expectEqual(@as(usize, 0), bindings.ui_manager.terminal_input.listeners.items.len);
 }
 
 test "native Pi registration rejects mismatched flag defaults" {

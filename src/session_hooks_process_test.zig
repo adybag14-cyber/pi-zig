@@ -48,6 +48,74 @@ fn validate(items: []const std.json.Value, tree: bool) !std.json.Value {
     }
     return result;
 }
+
+test "native session replacement cancels before teardown then retires old context before new start" {
+    if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var scratch = try pty.Scratch.init(gpa, io, "session-context-lifetime");
+    defer scratch.deinit();
+    for ([_][]const u8{ "agent", "sessions" }) |dir| try scratch.dir.createDir(io, dir, .default_dir);
+    try scratch.dir.writeFile(io, .{ .sub_path = "agent/settings.json", .data = "{\"enableInstallTelemetry\":false}" });
+    try scratch.dir.writeFile(io, .{ .sub_path = "mock.json", .data = "[]" });
+    try scratch.dir.writeFile(io, .{ .sub_path = "lifetime.js", .data =
+        \\export default pi => {
+        \\  let old, starts=0, decisions=0, shutdowns=0;
+        \\  pi.on('session_start', (_event,ctx) => {
+        \\    starts++;
+        \\    if (old) {
+        \\      let message='';try { old.ui.getEditorText(); } catch(error) { message=error.message; }
+        \\      if (!message.includes('This extension ctx is stale')) throw Error('old ctx was usable');
+        \\      if(shutdowns!==1) throw Error('shutdown did not settle');
+        \\      pi.setSessionName('replacement-context-qualified');
+        \\    }
+        \\    old=ctx;
+        \\  });
+        \\  pi.on('session_before_switch', (_event,ctx) => {
+        \\    old.ui.getEditorText();ctx.ui.getEditorText();
+        \\    decisions++;return {cancel:decisions===1};
+        \\  });
+        \\  pi.on('session_shutdown', async () => {old.ui.getEditorText();await Promise.resolve();shutdowns++;});
+        \\};
+    });
+    var environment = try std.process.Environ.createMap(std.testing.environ, gpa);
+    defer environment.deinit();
+    const binary = try pty.executablePath(gpa, io, environment.get("PI_TEST_BINARY") orelse "zig-out/bin/pi");
+    defer gpa.free(binary);
+    const agent_dir = try std.fs.path.join(gpa, &.{ scratch.path, "agent" });
+    defer gpa.free(agent_dir);
+    const session_dir = try std.fs.path.join(gpa, &.{ scratch.path, "sessions" });
+    defer gpa.free(session_dir);
+    const extension_path = try std.fs.path.join(gpa, &.{ scratch.path, "lifetime.js" });
+    defer gpa.free(extension_path);
+    const mock = try std.fs.path.join(gpa, &.{ scratch.path, "mock.json" });
+    defer gpa.free(mock);
+    try environment.put("PI_AGENT_DIR", agent_dir);
+    try environment.put("PI_EXTENSION_BACKEND", "native");
+    try environment.put("PI_SKIP_VERSION_CHECK", "1");
+    try environment.put("PI_TELEMETRY", "0");
+    const stderr = try scratch.dir.createFile(io, "rpc.stderr", .{});
+    defer stderr.close(io);
+    var child = try rpc.Process.spawn(gpa, io, .{ .argv = &.{ binary, "--offline", "--mock-script", mock, "--extension", extension_path, "--session-dir", session_dir, "--mode", "rpc", "--no-context-files", "--no-skills", "--approve" }, .cwd = .{ .path = scratch.path }, .environ_map = &environment, .stdin = .pipe, .stderr = .{ .file = stderr } }, 60_000);
+    defer child.deinit();
+    var cancelled = try request(gpa, &child, "{\"id\":\"cancel\",\"type\":\"new_session\"}\n", "cancel");
+    defer cancelled.deinit();
+    try std.testing.expect((try json.field(try json.field(cancelled.value, "data"), "cancelled")).bool);
+    var replaced = try request(gpa, &child, "{\"id\":\"replace\",\"type\":\"new_session\"}\n", "replace");
+    defer replaced.deinit();
+    try std.testing.expect(!(try json.field(try json.field(replaced.value, "data"), "cancelled")).bool);
+    var state = try request(gpa, &child, "{\"id\":\"state\",\"type\":\"get_state\"}\n", "state");
+    defer state.deinit();
+    try json.text(try json.field(try json.field(state.value, "data"), "sessionName"), "replacement-context-qualified");
+    var quit = try request(gpa, &child, "{\"id\":\"quit\",\"type\":\"quit\"}\n", "quit");
+    quit.deinit();
+    child.closeInput();
+    const term = try child.wait(10_000);
+    try std.testing.expect(term == .exited and term.exited == 0);
+    const errors = try scratch.dir.readFileAlloc(io, "rpc.stderr", gpa, .limited(65536));
+    defer gpa.free(errors);
+    try std.testing.expectEqualStrings("", errors);
+}
 test "native session hooks preserve replacement usage immediate cancel actions and tree lifecycle" {
     if (comptime builtin.os.tag != .linux) return error.SkipZigTest;
     const gpa = std.testing.allocator;

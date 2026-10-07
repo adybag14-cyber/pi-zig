@@ -1,0 +1,13 @@
+{
+  "authority": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "sourcePath": "C:/Users/adyba/pi-upstream-7fb59f9-20261007/packages/coding-agent/src/core/extensions/runner.ts",
+  "sourceSha256": "2a3bd7f81623928070eb956cdac37b861a787297046f9ce7af0522ff6d41a98a",
+  "methodSha256": "49dc77296463dbdd250b0048a352b5133051d8083bcc7359283a6fdc8de89bb8",
+  "result": {
+    "notifyUndefined": true,
+    "unsubscribeFunction": true,
+    "unsubscribeUndefined": true,
+    "factoryCalls": 0,
+    "editorText": ""
+  }
+}

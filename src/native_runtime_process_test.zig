@@ -13,6 +13,71 @@ const renderer_protocol = @import("extensions/renderer_protocol.zig");
 
 const editor_protocol = @import("extensions/editor_protocol.zig");
 
+test "native runtime context invalidation control progresses during shutdown callback preserves cancelled decision and fresh contexts" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("export default pi=>{pi.registerCommand('retain',{handler(_,ctx){globalThis.oldCtx=ctx;globalThis.oldRegistry=ctx.modelRegistry;return {message:ctx.cwd}}});pi.registerCommand('probe',{handler(_,ctx){let stale;try{oldCtx.cwd;stale='live'}catch(error){if(!(error instanceof Error)||error.name!=='Error')throw Error('stale Error kind');stale=error.message}let registry;try{oldRegistry.getAll();registry='live'}catch(error){registry=error.message}return {message:stale+'|'+registry+'|'+ctx.cwd}}});pi.on('session_before_switch',()=>({cancel:true}));pi.on('session_shutdown',async(_,ctx)=>{globalThis.shutdownCtx=ctx;await ctx.ui.select('shutdown-hold',['release']);let message;try{ctx.cwd;message='wrong-live'}catch(error){if(!(error instanceof Error)||error.name!=='Error')throw Error('shutdown Error kind');message=error.message}return {message}})}");
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options(), .js_runtime_program = "missing-node" };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    try host.setScriptContextJson("{\"mode\":\"interactive\",\"hasUI\":true,\"cwd\":\"old-session\"}");
+    const runtime = host.extensions.items[0].script_runtime.?;
+    const retained = try runtime.invokeCommand("retain", "", "{}");
+    defer gpa.free(retained);
+    const cancelled = try runtime.invokeHook("session_before_switch", "{\"reason\":\"new\"}", "{}");
+    defer gpa.free(cancelled);
+    try std.testing.expect(std.mem.indexOf(u8, cancelled, "\"cancel\":true") != null);
+    // The caller leaves the epoch alone when the source before-switch hook cancels.
+    const live = try runtime.invokeCommand("probe", "", "{}");
+    defer gpa.free(live);
+    try std.testing.expect(std.mem.indexOf(u8, live, "live|live|old-session") != null);
+    const Dialog = struct {
+        entered: std.Io.Event = .unset,
+        release: std.Io.Event = .unset,
+        fn select(raw: ?*anyopaque, allocator: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.entered.set(std.testing.io);
+            try event_wait.untilSet(std.testing.io, &self.release, 5000);
+            return allocator.dupe(u8, "\"release\"");
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+    };
+    var dialog: Dialog = .{};
+    runtime.setUiBridge(.{ .context = &dialog, .request_fn = Dialog.select, .action_fn = Dialog.action });
+    const Pending = struct {
+        runtime: *runtime_mod.Runtime,
+        result: ?[]u8 = null,
+        failure: ?anyerror = null,
+        fn run(self: *@This()) void {
+            self.result = self.runtime.invokeHook("session_shutdown", "{\"reason\":\"new\"}", "{}") catch |err| {
+                self.failure = err;
+                return;
+            };
+        }
+    };
+    var pending: Pending = .{ .runtime = runtime };
+    var group: std.Io.Group = .init;
+    try group.concurrent(io, Pending.run, .{&pending});
+    defer {
+        dialog.release.set(io);
+        group.cancel(io);
+        group.await(io) catch {};
+        if (pending.result) |value| gpa.free(value);
+    }
+    try event_wait.untilSet(io, &dialog.entered, 3000);
+    try std.testing.expectEqual(@as(usize, 1), try host.invalidateNativeContexts("source-context-replaced"));
+    dialog.release.set(io);
+    try group.await(io);
+    if (pending.failure) |err| return err;
+    try std.testing.expect(std.mem.indexOf(u8, pending.result.?, "source-context-replaced") != null);
+    try host.setScriptContextJson("{\"mode\":\"interactive\",\"hasUI\":true,\"cwd\":\"new-session\"}");
+    const fresh = try runtime.invokeCommand("probe", "", "{}");
+    defer gpa.free(fresh);
+    try std.testing.expect(std.mem.indexOf(u8, fresh, "source-context-replaced|source-context-replaced|new-session") != null);
+    try fixture.noBridge();
+}
+
 test "native runtime terminal input detach wakes actual pending worker callback drains close reentry rejects late ticket and reattaches" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;

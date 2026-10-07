@@ -8,6 +8,11 @@ pub fn build(b: *std.Build) void {
     // platform choice; callers may select `-Duse-llvm=false` explicitly.
     const use_llvm = b.option(bool, "use-llvm", "Use LLVM for executables and test artifacts");
     const sqlite_lib_dir = b.option([]const u8, "sqlite-lib-dir", "Directory containing a linkable sqlite3 library");
+    const diagnostic_tests = b.option(bool, "diagnostic-tests", "Stream individual environment lifecycle tests to diagnose blocked teardown") orelse false;
+    const lifecycle_test_runner: ?std.Build.Step.Compile.TestRunner = if (diagnostic_tests) .{
+        .path = .{ .cwd_relative = b.graph.zig_lib_directory.join(b.allocator, &.{ "compiler", "test_runner.zig" }) catch @panic("OOM") },
+        .mode = .simple,
+    } else null;
 
     // The extension language is evaluated by a pinned C engine through Zig's
     // C ABI. Host behavior and bindings remain native Zig.
@@ -340,9 +345,11 @@ pub fn build(b: *std.Build) void {
     const env_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/env_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
+        .test_runner = lifecycle_test_runner,
     });
     linkDurable(b, env_tests.root_module);
     const run_env_tests = b.addRunArtifact(env_tests);
+    if (diagnostic_tests) run_env_tests.stdio = .inherit;
     run_env_tests.step.dependOn(&install_env_daemon.step);
     run_env_tests.step.dependOn(&install_env_fixture.step);
     run_env_tests.step.dependOn(&install_durable_fixture.step);
@@ -352,11 +359,12 @@ pub fn build(b: *std.Build) void {
     const env_test_step = b.step("test-env", "Check native daemon framing files processes client sessions and SSH contracts");
     env_test_step.dependOn(&run_env_tests.step);
     test_step.dependOn(&run_env_tests.step);
-    const capability_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_capability_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"env capability"}, .use_llvm = use_llvm });
+    const capability_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_capability_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"env capability"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     linkDurable(b, capability_tests.root_module);
     linkQuickJs(b, capability_tests.root_module, quickjs);
     linkSqlite(capability_tests.root_module, sqlite_lib_dir);
     const run_capability_tests = b.addRunArtifact(capability_tests);
+    if (diagnostic_tests) run_capability_tests.stdio = .inherit;
     if (target.result.os.tag == .windows) if (sqlite_lib_dir) |directory| {
         const inherited_path = b.graph.environ_map.get("PATH") orelse "";
         run_capability_tests.setEnvironmentVariable("PATH", b.fmt("{s};{s}", .{ directory, inherited_path }));
@@ -384,10 +392,12 @@ pub fn build(b: *std.Build) void {
     const durable_backend_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_backend_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
+        .test_runner = lifecycle_test_runner,
     });
     linkSqlite(durable_backend_tests.root_module, sqlite_lib_dir);
     linkDurable(b, durable_backend_tests.root_module);
     const run_durable_backend_tests = b.addRunArtifact(durable_backend_tests);
+    if (diagnostic_tests) run_durable_backend_tests.stdio = .inherit;
     const durable_backend_step = b.step("test-durable-backend", "Exercise native numeric durable transactions document history SQLite fencing and Session");
     durable_backend_step.dependOn(&run_durable_backend_tests.step);
     test_step.dependOn(&run_durable_backend_tests.step);
