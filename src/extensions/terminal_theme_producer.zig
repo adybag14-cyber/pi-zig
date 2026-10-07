@@ -4,15 +4,15 @@ const std = @import("std");
 const reports = @import("../tui/terminal_colors.zig");
 const ui = @import("ui.zig");
 const state_mod = @import("theme_state.zig");
+const Query = struct { collection: reports.Cache, deadline_ms: ?i64, delivery: enum { initial, late, none } = .initial };
 pub const Producer = struct {
     gpa: std.mem.Allocator,
     io: std.Io,
     controller: *ui.Controller,
     mutex: std.Io.Mutex = .init,
     colors: reports.Cache = .{},
-    collection: reports.Cache = .{},
+    queries: std.ArrayList(Query) = .empty,
     query_active: bool = false,
-    deadline_ms: ?i64 = null,
     mode: state_mod.ColorMode,
     stdout_is_tty: bool,
     resource: ?[]u8 = null,
@@ -23,6 +23,7 @@ pub const Producer = struct {
         return value;
     }
     pub fn deinit(self: *Producer) void {
+        self.queries.deinit(self.gpa);
         if (self.resource) |value| self.gpa.free(value);
         if (self.identity) |value| self.gpa.free(value);
     }
@@ -64,12 +65,13 @@ pub const Producer = struct {
         defer self.mutex.unlock(self.io);
         var next = self.colors;
         try next.begin();
+        var collection: reports.Cache = .{};
+        try collection.begin();
+        try self.queries.ensureUnusedCapacity(self.gpa, 1);
         try self.publish(next, self.resource, self.identity);
         self.colors = next;
-        self.collection = .{};
-        try self.collection.begin();
+        self.queries.appendAssumeCapacity(.{ .collection = collection, .deadline_ms = std.Io.Clock.awake.now(self.io).toMilliseconds() + 100 });
         self.query_active = true;
-        self.deadline_ms = std.Io.Clock.awake.now(self.io).toMilliseconds() + 100;
     }
     pub fn request(self: *Producer) !void {
         if (!self.stdout_is_tty) return;
@@ -87,37 +89,44 @@ pub const Producer = struct {
         const self: *Producer = @ptrCast(@alignCast(raw.?));
         try self.mutex.lock(self.io);
         defer self.mutex.unlock(self.io);
-        const end = self.deadline_ms orelse return false;
-        if (std.Io.Clock.awake.now(self.io).toMilliseconds() < end) return false;
         const previous = self.colors.revision;
-        try self.deliver(true);
-        self.deadline_ms = null;
+        const now = std.Io.Clock.awake.now(self.io).toMilliseconds();
+        for (0..self.queries.items.len) |index| {
+            if (self.queries.items[index].deadline_ms) |end| if (now >= end) {
+                try self.deliver(index, true);
+            };
+        }
         return self.colors.revision != previous;
     }
     pub fn finish(self: *Producer) !void {
         try self.mutex.lock(self.io);
         defer self.mutex.unlock(self.io);
-        try self.deliver(false);
+        if (self.queries.items.len == 0) return;
+        try self.deliver(0, false);
+        _ = self.queries.orderedRemove(0);
+        self.query_active = self.queries.items.len != 0;
     }
     pub fn expire(self: *Producer) !void {
         try self.mutex.lock(self.io);
         defer self.mutex.unlock(self.io);
-        try self.deliver(true);
+        if (self.queries.items.len > 0) try self.deliver(0, true);
     }
-    fn deliver(self: *Producer, keep_late: bool) !void {
-        if (!self.query_active) return;
+    fn deliver(self: *Producer, index: usize, keep_late: bool) !void {
+        const query = &self.queries.items[index];
+        if (query.delivery == .none) return;
+        const collection = query.collection;
         var next = self.colors;
         var changed = next.pending;
-        if (self.collection.foreground) |rgb| if (next.foreground == null or !std.meta.eql(next.foreground.?, rgb)) {
+        if (collection.foreground) |rgb| if (next.foreground == null or !std.meta.eql(next.foreground.?, rgb)) {
             next.foreground = rgb;
             changed = true;
         };
-        if (self.collection.background) |rgb| if (next.background == null or !std.meta.eql(next.background.?, rgb)) {
+        if (collection.background) |rgb| if (next.background == null or !std.meta.eql(next.background.?, rgb)) {
             next.background = rgb;
             changed = true;
         };
-        if (self.collection.has_palette and (!next.has_palette or !std.meta.eql(next.palette, self.collection.palette))) {
-            next.palette = self.collection.palette;
+        if (collection.has_palette and (!next.has_palette or !std.meta.eql(next.palette, collection.palette))) {
+            next.palette = collection.palette;
             next.has_palette = true;
             changed = true;
         }
@@ -128,8 +137,8 @@ pub const Producer = struct {
             try self.publish(next, self.resource, self.identity);
         }
         self.colors = next;
-        self.query_active = keep_late;
-        if (!keep_late) self.deadline_ms = null;
+        query.delivery = if (keep_late) .late else .none;
+        query.deadline_ms = null;
     }
     pub fn report(raw: ?*anyopaque, data: []const u8) !bool {
         const self: *Producer = @ptrCast(@alignCast(raw.?));
@@ -148,18 +157,22 @@ pub const Producer = struct {
         }
         if (!self.query_active) return false;
         if (end) {
-            try self.deliver(false);
+            try self.deliver(0, false);
+            _ = self.queries.orderedRemove(0);
+            self.query_active = self.queries.items.len != 0;
             return true;
         }
+        const query = &self.queries.items[0];
+        if (query.delivery == .none) return true;
         const value = osc.?;
         const duplicate = switch (value.target) {
-            .foreground => self.collection.seen_foreground,
-            .background => self.collection.seen_background,
-            .palette => |index| if (index < self.collection.seen_palette.len) self.collection.seen_palette[index] else false,
+            .foreground => query.collection.seen_foreground,
+            .background => query.collection.seen_background,
+            .palette => |index| if (index < query.collection.seen_palette.len) query.collection.seen_palette[index] else false,
         };
         if (duplicate) return true;
-        _ = try self.collection.report(value);
-        if (!self.collection.pending) try self.deliver(false);
+        _ = try query.collection.report(value);
+        if (!query.collection.pending) try self.deliver(0, false);
         return true;
     }
 };
