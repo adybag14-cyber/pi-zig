@@ -1,0 +1,20 @@
+{
+  "status": "frozen bounded constructor/color/system slice; full Theme/TUI remains incomplete",
+  "patch_sha256": "FE0459ACF3BE0E1AB0669B0C980CD25EBBCBF0866BB92978BCCB1E68975513FC",
+  "source_archive_sha256": "AFBCD60A9353FA31F5303FA3A5CE1DB5FEFFB25B70ACD932DC8F3CB0E996A964",
+  "source_paths": 19,
+  "windows_source_linux_source_match": true,
+  "windows_debug": "318 pass 2 skip",
+  "windows_rs": "318 pass 2 skip",
+  "linux_debug": "320 pass 0 skip",
+  "linux_rs": "320 pass 0 skip",
+  "windows_pty": "2 pass original examples regular/fullscreen",
+  "linux_pty": "2 pass original examples regular/fullscreen",
+  "windows_binary_sha256": "D03BD6D1A9B2A46BCC8E6B2F169CACF07B5FE96A3B1537FC8DB495D5FD651700",
+  "linux_binary_sha256": "05C74D853BA0E2534086B5602CAC4EE396FBD7F8C3EB8B84E64E7323CE3A351F",
+  "main_apply_check": "passed; SDK install preserved by following-alias context",
+  "hosted_macos": "unknown",
+  "native_default": "blocked",
+  "toolchain": "Zig 0.16.0",
+  "linux_target": "native, no target/CPU overrides, owned ZIG_LIBC config"
+}

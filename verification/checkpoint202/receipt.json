@@ -1,0 +1,64 @@
+{
+  "checkpoint": 202,
+  "status": "in_progress",
+  "parity_complete": false,
+  "release_guard": false,
+  "upstream_pin": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "latest_reviewed_commit": "f10993bc7f28145df1375f3ff39c7f5c4cfc05f0",
+  "upstream_api_version": "1.0.4",
+  "compiled_inputs": 738,
+  "source_archive_sha256": "7b1fe18e92fcd4b5f06ee3df01f780b4adeb7885ca8f637b1c9788a0abb59622",
+  "gates": [
+    {
+      "name": "checkpoint202-final-default-windows-debug-20261007",
+      "status": "passed",
+      "completed_utc": "2026-10-07T19:59:28.8050341+00:00",
+      "summary": "Build Summary: 199/199 steps succeeded; 1545/1613 tests passed (68 skipped)",
+      "log_sha256": "4a5a6dcc4b036e667159b4ce2ce97a44c7833edc297724e742641e070eb53024"
+    },
+    {
+      "name": "checkpoint202-final-cached-windows-releasesafe-20261007",
+      "status": "passed",
+      "completed_utc": "2026-10-07T20:33:33.0436331+00:00",
+      "summary": "Build Summary: 199/199 steps succeeded; 1545/1613 tests passed (68 skipped)",
+      "log_sha256": "59575806d0e082ecda74353b7968c2c5b99cf0c5a91c410fe069861ea9e0045a"
+    },
+    {
+      "name": "checkpoint202-final-default-native-linux-debug-20261007",
+      "status": "passed",
+      "completed_utc": "2026-10-07T19:58:31.1094628+00:00",
+      "summary": "Build Summary: 195/195 steps succeeded; 1734/1746 tests passed (12 skipped)",
+      "log_sha256": "c476bb571bcc233f52342b3c69256175afe14059e860e560bcb508fe0659bf73"
+    },
+    {
+      "name": "checkpoint202-final-cached-native-linux-releasesafe-20261007",
+      "status": "passed",
+      "completed_utc": "2026-10-07T20:35:25.8307222+00:00",
+      "summary": "Build Summary: 195/195 steps succeeded; 1734/1746 tests passed (12 skipped)",
+      "log_sha256": "3cb95abea55fa57d0a1c1cfbaf82b7663ec75d8ec14600e91056862eceb5075e"
+    }
+  ],
+  "scope": [
+    "All checkpoint201 source and retained local evidence",
+    "Native SDK original text chat session event and cancellation parity slice",
+    "Native Theme constructor color conversion style API and source color-system captures",
+    "Public durable owner-thread broker for asynchronous C VM continuations",
+    "Qualified native OAuth authorize DCR CIMD issuer PKCE retry and joined sign-in coordination",
+    "Intrinsic codemode traversal uses rooted object identities",
+    "Maintained contiguous exhaustive macOS allocation shards with default full allocation sweep"
+  ],
+  "retained_failed_receipts": [
+    "checkpoint202-final-default-windows-releasesafe-20261007: one silent forced native watcher failure; unchanged focused diagnostic passed; mechanism unconfirmed",
+    "checkpoint202-final-default-native-linux-releasesafe-20261007: thirty minute timeout with incomplete aggregate graph"
+  ],
+  "limitations": [
+    "Hosted macOS qualification on the final integrated source remains required",
+    "Full SDK backends models refresh session and resource lifecycle ongoing",
+    "Full durable tasks documents context orchestration and original SQLite physical format ongoing",
+    "Theme state hydration and full TUI parity ongoing",
+    "Configured live OAuth manager and public CLI in subsequent lane",
+    "Production codemode builtin models search declarations integration ongoing",
+    "Legacy repository JS host retained until full native parity passes"
+  ],
+  "created_utc": "2026-10-07T20:35:38.4189174+00:00"
+}

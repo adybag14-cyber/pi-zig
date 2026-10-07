@@ -1,0 +1,73 @@
+{
+  "status": "passed complete macOS allocation coverage",
+  "run": 37674337193,
+  "head": "587c043dfcda124acd71304b18f85a82fd12382a",
+  "ranges": [
+    {
+      "shard": 0,
+      "count": 4,
+      "start": 0,
+      "end": 505,
+      "total": 2020,
+      "job": "112973829477"
+    },
+    {
+      "shard": 0,
+      "count": 4,
+      "start": 0,
+      "end": 508,
+      "total": 2033,
+      "job": "112973829477"
+    },
+    {
+      "shard": 1,
+      "count": 4,
+      "start": 505,
+      "end": 1010,
+      "total": 2020,
+      "job": "112973828976"
+    },
+    {
+      "shard": 1,
+      "count": 4,
+      "start": 508,
+      "end": 1016,
+      "total": 2033,
+      "job": "112973828976"
+    },
+    {
+      "shard": 2,
+      "count": 4,
+      "start": 1010,
+      "end": 1515,
+      "total": 2020,
+      "job": "112973829283"
+    },
+    {
+      "shard": 2,
+      "count": 4,
+      "start": 1016,
+      "end": 1524,
+      "total": 2033,
+      "job": "112973829283"
+    },
+    {
+      "shard": 3,
+      "count": 4,
+      "start": 1515,
+      "end": 2020,
+      "total": 2020,
+      "job": "112973829305"
+    },
+    {
+      "shard": 3,
+      "count": 4,
+      "start": 1524,
+      "end": 2033,
+      "total": 2033,
+      "job": "112973829305"
+    }
+  ],
+  "production_runtime": "checkpoint200 sandbox + identity optimization; full matrix still required",
+  "skipped_allocations": 0
+}

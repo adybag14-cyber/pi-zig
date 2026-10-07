@@ -1,0 +1,196 @@
+{
+  "status": "frozen_incremental_storage_session_slice",
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "qualification_base": "fefc394b0767883feaf5ad7a623009a46257d7de",
+  "worktree": "C:\\Users\\adyba\\pi-zig-durable-harness-vm-20261007",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\durable-vm-session-additive.patch",
+  "patch_sha256": "7d3fa71653631c7cca399ab78b46e2d9417e6c79636966ebc71e81d0267defa4",
+  "patch_prerequisites": "Published fefc394 includes JSONL ENV and native SDK helpers; narrow patch independently reverse-checks against final donor",
+  "files": [
+    {
+      "path": "src/extensions/native_durable.zig",
+      "bytes": 32983,
+      "sha256": "f8091b760887954691e236bc7aef4f76652dd31f95db089b976ff7ab38c180a6"
+    },
+    {
+      "path": "src/extensions/NATIVE_DURABLE_CONTRACT.md",
+      "bytes": 3757,
+      "sha256": "b0f73440432290a670f1612a30930f64786797b47dd5c0b3434ea5c66dd916ec"
+    },
+    {
+      "path": "src/native_durable_test.zig",
+      "bytes": 10749,
+      "sha256": "3897c89478eb5e6d0b5119c4655199d7701d5db72f69331462db6b2f5b884e03"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 44896,
+      "sha256": "d23189021a017ff4273e3bb758628ad61dcb93232dafccfd602da849708a0a39"
+    },
+    {
+      "path": "src/extensions/native_editor.zig",
+      "bytes": 45481,
+      "sha256": "750d1d8f32c38492458eda70a80a2467ac73ba260a37abfdcfbd2224943f680a"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 74589,
+      "sha256": "7d291b9767f157bd1fed998e1814921f848f4bf2c49357e9709ce9598b17f895"
+    }
+  ],
+  "fmt": "all five changed Zig/build files passed fmt --check",
+  "tests": [
+    {
+      "name": "durable-vm-fefc-complete-windows-debug",
+      "pid": 64784,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-durable-vm test-durable-backend -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T17:18:54.283229Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-durable-harness-vm-20261007",
+      "status": "passed",
+      "deadline_seconds": 180,
+      "started_utc": "2026-10-07T17:18:54.6300218Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T17:18:59.5601067Z"
+    },
+    {
+      "name": "durable-vm-fefc-complete-windows-rs",
+      "pid": 50620,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-durable-vm test-durable-backend -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T17:20:02.522089Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-durable-harness-vm-20261007",
+      "status": "passed",
+      "deadline_seconds": 180,
+      "started_utc": "2026-10-07T17:20:02.8247806Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T17:20:57.5863726Z"
+    },
+    {
+      "name": "durable-vm-fefc-complete-linux-debug",
+      "pid": 56252,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-durable-vm-fefc-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /usr/bin/env PATH=/tmp/pi-durable-vm-no-host-runtime-20261007 /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-native-durable-vm test-durable-backend -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T17:19:00.079638Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-durable-harness-vm-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T17:19:00.4103083Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T17:19:05.6811861Z"
+    },
+    {
+      "name": "durable-vm-fefc-complete-linux-rs",
+      "pid": 65532,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-durable-vm-fefc-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /usr/bin/env PATH=/tmp/pi-durable-vm-no-host-runtime-20261007 /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-native-durable-vm test-durable-backend -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T17:20:02.534792Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-durable-harness-vm-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T17:20:02.8541653Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T17:21:03.1205173Z"
+    }
+  ],
+  "counts": {
+    "new_vm": "6/6 each optimization/platform, including exhaustive module/constructor GPA injection",
+    "windows": "39/43 passed; 4 skipped each optimization",
+    "linux": "41/42 passed; 1 skipped each optimization"
+  },
+  "native_runtime_paths": {
+    "windows": "SQLite + Windows + PowerShell only, Node directory excluded",
+    "linux": "empty task-owned /tmp/pi-durable-vm-no-host-runtime-20261007"
+  },
+  "original_captures": [
+    {
+      "name": "durable-session-original-corrected-authority",
+      "receipt": {
+        "name": "durable-session-original-corrected-authority",
+        "pid": 60900,
+        "executable": null,
+        "command_line": null,
+        "identity_captured": false,
+        "created_utc": null,
+        "directory": "C:\\Users\\adyba\\pi-upstream-7fb59f9-20261007",
+        "status": "passed",
+        "deadline_seconds": 120,
+        "started_utc": "2026-10-07T15:43:19.62895Z",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T15:43:19.6666825Z"
+      },
+      "stdout_sha256": "109a0a5c0770d3b5359c72e2283f02914f1b5d174dc804e0d411518e83f66876"
+    },
+    {
+      "name": "durable-cancel-fork-original-final-authority",
+      "receipt": {
+        "name": "durable-cancel-fork-original-final-authority",
+        "pid": 18332,
+        "executable": null,
+        "command_line": null,
+        "identity_captured": false,
+        "created_utc": "2026-10-07T17:05:30.821412Z",
+        "directory": "C:\\Users\\adyba\\pi-upstream-7fb59f9-20261007",
+        "status": "passed",
+        "deadline_seconds": 60,
+        "started_utc": "2026-10-07T17:05:31.0174376Z",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T17:05:31.0549731Z"
+      },
+      "stdout_sha256": "f0103646c3a871b337c19b72e7c890c5db4a14f3b31f753f24d9cefb3b358a9a"
+    },
+    {
+      "name": "durable-listeners-original-authority",
+      "receipt": {
+        "name": "durable-listeners-original-authority",
+        "pid": 53992,
+        "executable": null,
+        "command_line": null,
+        "identity_captured": false,
+        "created_utc": null,
+        "directory": "C:\\Users\\adyba\\pi-upstream-7fb59f9-20261007",
+        "status": "passed",
+        "deadline_seconds": 60,
+        "started_utc": "2026-10-07T17:09:17.3133655Z",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T17:09:17.3518163Z"
+      },
+      "stdout_sha256": "98febcde799556d4ee6ea41c9aba92db3e644ef5d44c5aa9fab6393112ca31e1"
+    },
+    {
+      "name": "durable-persistent-original-authority",
+      "receipt": {
+        "name": "durable-persistent-original-authority",
+        "pid": 57656,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --experimental-strip-types --loader file:///C:/Users/adyba/pi-zig-update-evidence-20261003/env-completion-20261007/durable-session-loader.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\durable-persistent-source-capture.mjs",
+        "identity_captured": true,
+        "created_utc": "2026-10-07T17:09:36.446552Z",
+        "directory": "C:\\Users\\adyba\\pi-upstream-7fb59f9-20261007",
+        "status": "passed",
+        "deadline_seconds": 60,
+        "started_utc": "2026-10-07T17:09:36.6947035Z",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T17:09:36.7299898Z"
+      },
+      "stdout_sha256": "b9b0ba1b1c554230e179835f8b92b9f03db60c72613d1fa6f80fb8c983eaae64"
+    }
+  ],
+  "captured_corrections": [
+    "Cancellation during a successful callback does not itself roll back staged writes",
+    "Memory/JSONL request index latest arrival; SQLite lowest matching ID and survives winner move",
+    "Special cwd descriptor realPath fails on Linux; explicit currentPathAlloc used"
+  ],
+  "limits": [
+    "Full Harness/document observer/task orchestration remains ongoing",
+    "Close waiter cancellation remains ongoing",
+    "Arbitrary JS Storage/FileSystem adapters remain ongoing",
+    "Not all exported class/error identities or negative erased IDs supported",
+    "Existing native SQLite physical schema is distinct; logical snapshots and requests do not imply original file interoperability",
+    "No macOS native execution claimed by these Windows/Linux gates"
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "status": "frozen_owner_broker_notifier_foundation",
+  "base": "fefc394 plus frozen storage/Session and Harness creation slices",
+  "prerequisites": [
+    "durable-vm-session-additive.patch sha2567d3fa71653631c7cca399ab78b46e2d9417e6c79636966ebc71e81d0267defa4",
+    "durable-harness-creation-additive.patch sha256193b9f876ddb29dcd4b6ec8330e0e276e92d75c9df32dd49a69bb20d80619865"
+  ],
+  "worktree": "C:\\Users\\adyba\\pi-zig-durable-owner-broker-20261007",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\durable-owner-broker-additive.patch",
+  "patch_sha256": "3e1818f770f2b7fde627281d8af1b677ddaf43940b982e94364f39660cdff6fc",
+  "files": [
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 46034,
+      "sha256": "edd38b2a53b4433bf9219eefb9780c18c2a1210da4ae2c511bc8399885783ed2"
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "bytes": 73868,
+      "sha256": "4ce60166f6648c104e920a80e2a82285624332c7908c27564a5d16d9ed44f15b"
+    },
+    {
+      "path": "src/extensions/native_durable_broker.zig",
+      "bytes": 19577,
+      "sha256": "80ffc9a06782df7c54d5ca9ceba9da503e74da4fa43f026456c9f56d940571c0"
+    },
+    {
+      "path": "src/extensions/NATIVE_DURABLE_BROKER.md",
+      "bytes": 3067,
+      "sha256": "db1a47f79db86258084a5e5b2e1c9273332b1fcae8a404a30c951035ce9c539b"
+    },
+    {
+      "path": "src/native_durable_test.zig",
+      "bytes": 19221,
+      "sha256": "d3472cc29d0e57f7dc3e8f61af95becee776b733cec7fe309b4b8ba37249ad82"
+    }
+  ],
+  "fmt": "all four changed Zig files passed fmt/check before gates",
+  "tests": [
+    {
+      "name": "durable-owner-broker-final-windows-debug",
+      "pid": 55412,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-durable-vm test-durable-backend -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T18:31:09.36942Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-durable-owner-broker-20261007",
+      "status": "passed",
+      "deadline_seconds": 180,
+      "started_utc": "2026-10-07T18:31:09.7705415Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T18:31:16.2675902Z"
+    },
+    {
+      "name": "durable-owner-broker-final-windows-rs",
+      "pid": 65980,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-durable-vm test-durable-backend -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T18:32:42.788006Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-durable-owner-broker-20261007",
+      "status": "passed",
+      "deadline_seconds": 180,
+      "started_utc": "2026-10-07T18:32:43.1363367Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T18:33:43.181174Z"
+    },
+    {
+      "name": "durable-owner-broker-final-linux-debug",
+      "pid": 55196,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-durable-owner-broker-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /usr/bin/env PATH=/tmp/pi-durable-vm-no-host-runtime-20261007 /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-native-durable-vm test-durable-backend -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=Debug -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T18:31:09.383328Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-durable-owner-broker-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T18:31:09.82472Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T18:31:16.4464904Z"
+    },
+    {
+      "name": "durable-owner-broker-final-linux-rs",
+      "pid": 50120,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-durable-owner-broker-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 180s /usr/bin/env PATH=/tmp/pi-durable-vm-no-host-runtime-20261007 /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test-native-durable-vm test-durable-backend -Dtarget=x86_64-linux-gnu.2.35 -Doptimize=ReleaseSafe -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --global-cache-dir /tmp/pi-env-completion-global-cache-20261007",
+      "identity_captured": true,
+      "created_utc": "2026-10-07T18:32:42.793422Z",
+      "directory": "C:\\Users\\adyba\\pi-zig-durable-owner-broker-20261007",
+      "status": "passed",
+      "deadline_seconds": 190,
+      "started_utc": "2026-10-07T18:32:43.1479279Z",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T18:33:45.0187587Z"
+    }
+  ],
+  "counts": {
+    "linux": "53/54 pass1skip Debug/ReleaseSafe",
+    "windows": "51/55 pass4skip Debug/ReleaseSafe",
+    "vm": "18/18 all four gates"
+  },
+  "proofs": [
+    "Real worker owned JSON and UTF8 replies",
+    "Actual owner-only asynchronous C VM callback via Engine.awaitValue owner pump",
+    "Stale owner generation rejection",
+    "Queued cancellation and close before joins",
+    "Close in active callback while reply cleanup retains request",
+    "GPA admission bookkeeping failure settles waiters and healthy subsequent reuse",
+    "Deterministic synchronization-only background wake between initial owner pump and wire reset, post-reset owner drain"
+  ],
+  "notifier_signature": {
+    "context": "Engine.host_owner_notify_context:?*anyopaque",
+    "call": "Engine.host_owner_notify:?*const fn(?*anyopaque)void",
+    "worker_policy": "Copy pair on owner; only event notification off-thread; context retained until joined workers"
+  },
+  "negative_prototype": "durable-owner-broker-first-debug stale-generation test crashed at constructor errdefer after publication; corrected staged cleanup, original frozen donors untouched",
+  "limits": [
+    "This is a broker/notifier foundation, not Source public task scheduler parity",
+    "Public phase/runtime adapter, task/invocation generation ledger and registry update handling remain ongoing",
+    "Native Session lifetime lease across scheduler finalization remains required before scheduler attachment",
+    "Root owns static SQLite default-distribution integration and hosted macOS qualification",
+    "Existing extension bridge cannot be switched off based on these primitive gates"
+  ]
+}
