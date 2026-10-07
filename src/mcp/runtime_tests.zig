@@ -151,7 +151,10 @@ test "mcp.runtime real stdio capabilities match actual original network client c
     var tool = try capabilities.callTool(client, "first", arguments, .{});
     defer tool.deinit();
     try std.testing.expect(json.equal(try protocol.field(oracle.value, "tool"), tool.value));
-    var progress = try client.request("progress", arguments, .{ .timeout_ms = 60, .on_progress = Capture.progressListener, .progress_context = &capture });
+    var progress = client.request("progress", arguments, .{ .timeout_ms = 60, .on_progress = Capture.progressListener, .progress_context = &capture }) catch |cause| {
+        std.debug.print("MCP progress request failed: {s}; received_frames={d}; original_callback_errors={d}; timeout_ms=60; fixture_interval_ms=25; expected_frames=5\n", .{ @errorName(cause), capture.progress.load(.acquire), capture.errors.load(.acquire) });
+        return cause;
+    };
     defer progress.deinit();
     try std.testing.expect(json.equal(try protocol.field(oracle.value, "result"), progress.value));
     try std.testing.expectEqual(@as(usize, 5), capture.progress.load(.acquire));

@@ -44,7 +44,9 @@ pub const Connection = struct {
         return .{ .gpa = gpa, .io = io, .options = options };
     }
     pub fn deinit(self: *Connection) void {
-        self.close() catch {};
+        // Failed/reentrant close leaves live callback/Borrow ownership intact;
+        // retry destruction from outside the callback after it has retired.
+        self.close() catch return;
         if (self.client) |client| client.deinit();
         if (self.lease) |lease| lease.deinit();
         self.* = undefined;
@@ -105,6 +107,7 @@ pub const Connection = struct {
             lease.deinit();
         }
         const client = try session.Client.create(self.gpa, self.io, lease.transport, self.options.client);
+        client.callback_owner = self;
         errdefer client.deinit();
         self.mutex.lockUncancelable(self.io);
         self.opening_client = client;
@@ -128,6 +131,10 @@ pub const Connection = struct {
         return .{ .owner = self, .client = client };
     }
     pub fn close(self: *Connection) !void {
+        // Consult callback-owned identity before touching this connection's
+        // locks or shutdown state. Another closer may already hold close_mutex
+        // while waiting for this callback's request/Borrow to retire.
+        if (session.Client.inOwnerCallback(self)) return error.ReentrantMcpConnectionClose;
         self.shutdown.store(true, .release);
         self.close_mutex.lockUncancelable(self.io);
         defer self.close_mutex.unlock(self.io);
@@ -138,11 +145,15 @@ pub const Connection = struct {
         self.changed.broadcast(self.io);
         self.mutex.unlock(self.io);
         if (client) |value| {
-            value.close() catch {};
+            var failure: ?anyerror = null;
+            value.close() catch |cause| {
+                failure = cause;
+            };
             self.mutex.lockUncancelable(self.io);
             self.closing_readers -= 1;
             self.changed.broadcast(self.io);
             self.mutex.unlock(self.io);
+            if (failure) |cause| return cause;
         }
         self.mutex.lockUncancelable(self.io);
         while (self.opening or self.borrowers > 0) self.changed.waitUncancelable(self.io, &self.mutex);

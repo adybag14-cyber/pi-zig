@@ -18,3 +18,4 @@ pub const content = @import("content.zig");
 test {
     std.testing.refAllDecls(@This());
 }
+pub const configured = @import("configured.zig");

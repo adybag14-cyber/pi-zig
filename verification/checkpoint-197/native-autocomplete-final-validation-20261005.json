@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "source_manifest": "native-autocomplete-freeze-20261005/freeze.json",
+  "source_hashes_unchanged": true,
+  "windows_receipt": "native-autocomplete-windows-pty-final-20261005.json",
+  "linux_receipt": "native-autocomplete-linux-frozen-final-20261005.json",
+  "linux_completed_utc": "2026-10-05T23:47:28.6511268+01:00",
+  "target": "x86_64-linux-gnu.2.35",
+  "toolchain": "Zig 0.16.0",
+  "gates": [
+    "test-editor-autocomplete",
+    "test-custom-editor-frontend",
+    "test-custom-editor-runtime",
+    "test-custom-editor-components"
+  ],
+  "captured_utc": "2026-10-05T22:48:55.9443106+00:00"
+}

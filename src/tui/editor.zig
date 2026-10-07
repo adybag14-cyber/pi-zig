@@ -70,6 +70,15 @@ pub const Editor = struct {
     pub fn setText(self: *Editor, value: []const u8) !void {
         return self.setTextAt(value, value.len);
     }
+    pub fn replaceWithUndo(self: *Editor, value: []const u8, cursor: usize) !void {
+        const replacement = try self.gpa.dupe(u8, value);
+        errdefer self.gpa.free(replacement);
+        try self.pushUndo();
+        self.text.deinit(self.gpa);
+        self.text = .fromOwnedSlice(replacement);
+        self.cursor = @min(cursor, value.len);
+        self.resetTransient();
+    }
 
     pub fn setTextAt(self: *Editor, value: []const u8, cursor: usize) !void {
         self.text.clearRetainingCapacity();
@@ -123,7 +132,9 @@ pub const Editor = struct {
     }
 
     fn pushUndo(self: *Editor) !void {
-        try self.undo_stack.append(self.gpa, .{ .text = try self.gpa.dupe(u8, self.text.items), .cursor = self.cursor });
+        const contents = try self.gpa.dupe(u8, self.text.items);
+        errdefer self.gpa.free(contents);
+        try self.undo_stack.append(self.gpa, .{ .text = contents, .cursor = self.cursor });
     }
 
     fn undo(self: *Editor) void {

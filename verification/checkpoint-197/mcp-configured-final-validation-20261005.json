@@ -1,0 +1,107 @@
+{
+  "created_utc": "2026-10-05T22:56:36.5958075+00:00",
+  "state": "all configured focused Windows/Linux Debug/ReleaseSafe terminal passed; immutable12 source unchanged",
+  "authority": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+  "worktree": "C:\\Users\\adyba\\pi-zig-mcp-configured-latest-20261005",
+  "source_manifest": "mcp-configured-frozen-source-20261005.json",
+  "source_manifest_sha256": "f389b5557862bde40c5bda07f0c3595c90c8664a44de81135abb40f4fea3c695",
+  "integration_patch": "mcp-configured-additive-lf-20261005.patch",
+  "integration_patch_sha256": "1bfc153251db161e5223cab4fb5ed78804cf278e9c293d74b71f75231fe13e3e",
+  "counts_each_windows_linux_debug_releasesafe": {
+    "steps": 11,
+    "passed": 17,
+    "total": 17
+  },
+  "linux_stage": "/tmp/pi-mcp-configured-20261005.SGrR9t",
+  "linux_source_hashes": [
+    {
+      "path": "src/mcp/configured.zig",
+      "sha256": "f307b7cfb580183d7c9bf0b8ef52c6d44f2924343e9d841cf5e1a0050d39b7c4"
+    },
+    {
+      "path": "src/mcp/agent_tools.zig",
+      "sha256": "57abbb658709d8dc49a8fe926f5cb026a9c41f29b815ff5c1aa52dc5c6e8027e"
+    },
+    {
+      "path": "src/mcp/configured_fixture.zig",
+      "sha256": "61406cc78bda9446533eaa46ceb19dd57fec0b52e79a45f563b31a7cb7449151"
+    },
+    {
+      "path": "src/mcp/configured_http_fixture.zig",
+      "sha256": "97b33f78ef54cbf32dfee8043a7cd7c2e8265334c36447109102ca07cd439df8"
+    },
+    {
+      "path": "src/mcp_configured_fixture.zig",
+      "sha256": "a0e5ccb4261381100711a47caa9cfb848e21217a04c7f8a15096719d68c947e5"
+    },
+    {
+      "path": "src/mcp_configured_test.zig",
+      "sha256": "2be089d398a12a900c49a70b303b8cc7735766d03bb3a8553c9c21cf79a20a4e"
+    },
+    {
+      "path": "src/mcp/fixtures/configured_tools_28dc.json",
+      "sha256": "f3add5fcf3e2cf3792f2234d8e38392f62d0540b72590493c49f528a8b4d2e67"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "78f76f4fe88d103fbd674d0d73ba5a6f1c6657512939ce77ca84dd8562c9c4b6"
+    },
+    {
+      "path": "src/main.zig",
+      "sha256": "dcd766ab63b3107778edafdce8f39969c327f83802684e4c93bdcc208f5dc8ce"
+    },
+    {
+      "path": "src/agent/loop.zig",
+      "sha256": "5e84b66911f7ef4da6d62c834e37d6799e435b627811433a9c18bd09e207e199"
+    },
+    {
+      "path": "src/agent/tools.zig",
+      "sha256": "c944980b50bbb32fcb35c2adb947acb04e694c9469daaec5cc6a21385b15ac8b"
+    },
+    {
+      "path": "src/mcp/root.zig",
+      "sha256": "6f3b02a424c63268d0500a6fbed51c9aecbf62c7388b688264fecf5cb7ba820b"
+    }
+  ],
+  "source_reference_loader_receipt": "mcp-configured-original-loader-receipt.json",
+  "source_reference_loader_receipt_sha256": "560ff4d1c8adf1c20c303859f748e1e62c8c663b75ba0edc95dd90a8d031e17e",
+  "jobs": [
+    {
+      "name": "mcp-configured-final-windows-debug",
+      "status": "passed",
+      "completed_utc": "2026-10-05T23:49:20.467844+01:00",
+      "identity_captured": true,
+      "receipt_sha256": "308feb89cb9a0ec355714fb4a07da5697ad9a8ce421040331095ec615b841e6e",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "7b1225f097dee28248eca52c984ed3b86d10110d2f27ef741ea8e1402ec6ce06"
+    },
+    {
+      "name": "mcp-configured-windows-releasesafe",
+      "status": "passed",
+      "completed_utc": "2026-10-05T23:55:28.3006834+01:00",
+      "identity_captured": true,
+      "receipt_sha256": "d8287544f3e6d71cc7444840196a50b712a8a5ee3794d77a868476b5b254680c",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "528f83b8fd9c92b799be90ba1d180c49b1461d5e6ed3f2f7e8f1b8eadcb74b30"
+    },
+    {
+      "name": "mcp-configured-linux-both",
+      "status": "passed",
+      "completed_utc": "2026-10-05T23:54:15.7952619+01:00",
+      "identity_captured": true,
+      "receipt_sha256": "3c30ed4ce047f7181ff648fc9a510b8479e4c1acd46be9aae12494c8c0d8c13e",
+      "stdout_sha256": "e1ccd61bcb2545a158872e16a9f8cdd0dc16267cf39d3019db8d317fd481d4d3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "mcp-configured-original-source-oracle",
+      "status": "passed",
+      "completed_utc": "2026-10-05T23:16:14.9566367+01:00",
+      "identity_captured": false,
+      "receipt_sha256": "b4c5b18c8f759cbdee78d40b238f9d53426f85968a6e62cc63ec9e32c6e094b6",
+      "stdout_sha256": "f53ca523f36a8f177878a55a931c6897578ebf7d016c1722249001e087d20a03",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "notes": "FinalZig0.16/C host only. Original Node source oracle is outside repo, data-onlyJSON tracked. Four presentation-only imports omitted transparently, tested function bodies unchanged. All limits retained in immutable manifest. Root combined full graph and hosted CI are separate authority; no macOS runtime completion claim. Earlier failures and corrections retained as developmental receipts."
+}

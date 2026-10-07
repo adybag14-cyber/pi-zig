@@ -541,8 +541,10 @@ pub const Controller = struct {
             try std.json.Stringify.value(model.display, .{}, &out.writer);
             try out.writer.writeAll(",\"provider\":");
             try std.json.Stringify.value(model.providerName(), .{}, &out.writer);
+            try out.writer.writeAll(",\"type\":");
+            try std.json.Stringify.value(@tagName(model.kind), .{}, &out.writer);
             try out.writer.writeAll(",\"api\":");
-            try std.json.Stringify.value(@tagName(model.apiKind()), .{}, &out.writer);
+            try std.json.Stringify.value(model.operation_api orelse model.apiKind().name(), .{}, &out.writer);
             try out.writer.writeAll(",\"baseUrl\":");
             if (model.base_url) |base_url| try std.json.Stringify.value(base_url, .{}, &out.writer) else try out.writer.writeAll("null");
             try out.writer.print(",\"reasoning\":{s},\"input\":[", .{if (model.reasoning) "true" else "false"});

@@ -6,6 +6,8 @@ const Editor = @import("../tui/editor.zig").Editor;
 const line_editor = @import("../tui/line_editor.zig");
 const Keybindings = @import("../tui/keybindings.zig").Manager;
 const keys = @import("../tui/keys.zig");
+const autocomplete_mod = @import("native_autocomplete.zig");
+const autocomplete_registry = @import("native_autocomplete_registry.zig");
 const c = engine_mod.c;
 
 const Node = struct {
@@ -18,6 +20,7 @@ const Node = struct {
     custom: bool,
     padding: u8 = 0,
     autocomplete_max: usize = 5,
+    autocomplete: autocomplete_mod.State = undefined,
 };
 const Constructor = struct { engine: *engine_mod.Engine, prototype: c.JSValue, node_class: c.JSClassID, custom: bool };
 const Method = enum(c_int) { getText, getExpandedText, setText, insertTextAtCursor, addToHistory, handleInput, render, invalidate, setPaddingX, getPaddingX, setAutocompleteMaxVisible, getAutocompleteMaxVisible, setAutocompleteProvider, isShowingAutocomplete, onAction };
@@ -32,10 +35,12 @@ fn put(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8, value
 fn mark(runtime: ?*c.JSRuntime, object: c.JSValue, mark_fn: ?*const c.JS_MarkFunc) callconv(.c) void {
     const node: *Node = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)) orelse return));
     for ([_]c.JSValue{ node.tui, node.theme, node.keybindings }) |value| c.JS_MarkValue(runtime, value, mark_fn);
+    node.autocomplete.mark(runtime, mark_fn);
 }
 fn finalizer(runtime: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
     const node: *Node = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)) orelse return));
     for ([_]c.JSValue{ node.tui, node.theme, node.keybindings }) |value| c.JS_FreeValueRT(runtime, value);
+    node.autocomplete.deinit(runtime);
     node.editor.deinit();
     node.bindings.deinit();
     node.engine.gpa.destroy(node);
@@ -63,6 +68,7 @@ fn construct(state: *Constructor, target: c.JSValue, args: []c.JSValue) !c.JSVal
     errdefer engine.freeValue(object);
     const node = try engine.gpa.create(Node);
     node.* = .{ .engine = engine, .editor = Editor.init(engine.gpa), .bindings = Keybindings.init(engine.gpa), .tui = c.JS_DupValue(engine.context, if (args.len > 0) args[0] else c.pi_js_undefined()), .theme = c.JS_DupValue(engine.context, if (args.len > 1) args[1] else c.pi_js_undefined()), .keybindings = c.JS_DupValue(engine.context, if (state.custom and args.len > 2) args[2] else c.pi_js_undefined()), .custom = state.custom };
+    node.autocomplete = autocomplete_mod.State.init(engine, &node.editor, object, node.tui);
     _ = c.JS_SetOpaque(object, node);
     try put(engine, object, "tui", c.JS_DupValue(engine.context, node.tui));
     try put(engine, object, "theme", c.JS_DupValue(engine.context, node.theme));
@@ -151,6 +157,7 @@ fn dispatchActions(node: *Node, object: c.JSValue, input: c.JSValue) !bool {
 }
 fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
     const engine = node.engine;
+    _ = try node.autocomplete.poll();
     const focused = try engine.checked(c.JS_GetPropertyStr(engine.context, object, "focused"));
     defer engine.freeValue(focused);
     var view = node.editor;
@@ -170,6 +177,7 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
     if (c.JS_SetPropertyUint32(engine.context, array, 0, c.JS_DupValue(engine.context, painted)) < 0) return error.JavaScriptException;
     for (lines.items, 0..) |line, i| if (c.JS_SetPropertyUint32(engine.context, array, @intCast(i + 1), try engine.checked(c.JS_NewStringLen(engine.context, line.ptr, line.len))) < 0) return error.JavaScriptException;
     if (c.JS_SetPropertyUint32(engine.context, array, @intCast(lines.items.len + 1), c.JS_DupValue(engine.context, painted)) < 0) return error.JavaScriptException;
+    try node.autocomplete.appendRows(array, lines.items.len + 2, width);
     return array;
 }
 fn methodCall(context: ?*c.JSContext, object: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -187,9 +195,12 @@ fn operation(node: *Node, object: c.JSValue, method: Method, args: []c.JSValue) 
         .getPaddingX => return c.JS_NewInt64(engine.context, node.padding),
         .getAutocompleteMaxVisible => return c.JS_NewInt64(engine.context, @intCast(node.autocomplete_max)),
         .setPaddingX => node.padding = @intCast(try count(engine, first, 3)),
-        .setAutocompleteMaxVisible => node.autocomplete_max = try count(engine, first, 4096),
-        .setAutocompleteProvider => return error.NativeEditorAutocompleteProviderNotImplemented,
-        .isShowingAutocomplete => return c.pi_js_bool(engine.context, 0),
+        .setAutocompleteMaxVisible => {
+            node.autocomplete_max = try count(engine, first, 4096);
+            node.autocomplete.max_visible = node.autocomplete_max;
+        },
+        .setAutocompleteProvider => try node.autocomplete.setProvider(first),
+        .isShowingAutocomplete => return c.pi_js_bool(engine.context, @intFromBool(node.autocomplete.showing())),
         .invalidate => {},
         .render => return render(node, object, try count(engine, first, 16384)),
         .onAction => {
@@ -202,6 +213,7 @@ fn operation(node: *Node, object: c.JSValue, method: Method, args: []c.JSValue) 
         .setText, .insertTextAtCursor, .addToHistory => {
             const text = try engine.toString(first);
             defer engine.gpa.free(text);
+            if (method != .addToHistory) try node.autocomplete.cancel();
             switch (method) {
                 .setText => try node.editor.setText(text),
                 .insertTextAtCursor => try node.editor.insert(text),
@@ -213,7 +225,8 @@ fn operation(node: *Node, object: c.JSValue, method: Method, args: []c.JSValue) 
         .handleInput => {
             const input = try engine.toString(first);
             defer engine.gpa.free(input);
-            if (keys.matchesKey(input, "tab")) {
+            if (!node.custom) if (try node.autocomplete.input(input) == .handled) return c.pi_js_undefined();
+            if (keys.matchesKey(input, "tab") and node.autocomplete.provider == null) {
                 if (try callback(node, object, "_nativeAutocomplete", &.{})) |value| {
                     engine.freeValue(value);
                     return c.pi_js_undefined();
@@ -225,6 +238,7 @@ fn operation(node: *Node, object: c.JSValue, method: Method, args: []c.JSValue) 
                     defer engine.freeValue(value);
                     if (c.JS_ToBool(engine.context, value) != 0) return c.pi_js_undefined();
                 }
+                if (try node.autocomplete.input(input) == .handled) return c.pi_js_undefined();
                 const hook: ?[*:0]const u8 = if (keys.matchesKey(input, "escape")) "onEscape" else if (keys.matchesKey(input, "ctrl+d") and node.editor.slice().len == 0) "onCtrlD" else null;
                 if (hook) |name| if (try callback(node, object, name, &.{})) |value| {
                     engine.freeValue(value);
@@ -234,6 +248,7 @@ fn operation(node: *Node, object: c.JSValue, method: Method, args: []c.JSValue) 
             }
             const previous = try engine.gpa.dupe(u8, node.editor.slice());
             defer engine.gpa.free(previous);
+            try node.autocomplete.cancel();
             const disposition = try line_editor.applyInputSequence(engine.gpa, &node.editor, &node.bindings, input, null);
             if (disposition == .submit) {
                 const text = try engine.checked(c.JS_NewStringLen(engine.context, node.editor.slice().ptr, node.editor.slice().len));
@@ -244,7 +259,10 @@ fn operation(node: *Node, object: c.JSValue, method: Method, args: []c.JSValue) 
                 try node.editor.setText("");
             }
             if (disposition == .cancel) try node.editor.setText("");
-            if (!std.mem.eql(u8, previous, node.editor.slice())) try changed(node, object);
+            if (!std.mem.eql(u8, previous, node.editor.slice())) {
+                try changed(node, object);
+                if (disposition != .submit and disposition != .cancel) try node.autocomplete.automatic();
+            }
         },
     }
     return c.pi_js_undefined();
@@ -252,6 +270,7 @@ fn operation(node: *Node, object: c.JSValue, method: Method, args: []c.JSValue) 
 
 /// Add classes to the TUI module and the coding-agent module before input loads.
 pub fn install(engine: *engine_mod.Engine, tui_exports: c.JSValue) !void {
+    if (engine.abort_signal_class == 0) try @import("abort_signal.zig").install(engine);
     var node_class: c.JSClassID = 0;
     var constructor_class: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &node_class);
@@ -301,13 +320,31 @@ pub fn install(engine: *engine_mod.Engine, tui_exports: c.JSValue) !void {
     try engine.registerValueModule("pi-coding-agent", coding);
 }
 
+fn autocompleteNode(engine: *engine_mod.Engine, component: c.JSValue) !?*Node {
+    if (!c.JS_IsObject(component)) return null;
+    const class_id = c.JS_GetClassID(component);
+    const atom = c.JS_GetClassName(engine.runtime, class_id);
+    defer c.JS_FreeAtom(engine.context, atom);
+    const name = c.JS_AtomToCString(engine.context, atom) orelse return error.OutOfMemory;
+    defer c.JS_FreeCString(engine.context, name);
+    if (!std.mem.eql(u8, std.mem.span(name), "Native Editor")) return null;
+    return @ptrCast(@alignCast(c.JS_GetOpaque(component, class_id) orelse return null));
+}
+pub fn pollAutocomplete(engine: *engine_mod.Engine, component: c.JSValue) !bool {
+    const node = (try autocompleteNode(engine, component)) orelse return false;
+    return node.autocomplete.poll();
+}
+pub fn retireAutocomplete(engine: *engine_mod.Engine, component: c.JSValue) void {
+    if (autocompleteNode(engine, component) catch null) |node| node.autocomplete.retire();
+}
+
 const protocol = @import("editor_protocol.zig");
 const OwnerToken = struct { gpa: std.mem.Allocator, manager: ?*Manager };
 fn ownerFinalizer(_: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
     const token: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)) orelse return));
     token.gpa.destroy(token);
 }
-const OwnerMethod = enum(c_int) { requestRender, onChange, onSubmit, interrupt, exit, paste_image, complete, columns, rows, setFocus };
+const OwnerMethod = enum(c_int) { requestRender, onChange, onSubmit, interrupt, exit, paste_image, complete, columns, rows, setFocus, autocompleteError };
 pub const Manager = struct {
     engine: *engine_mod.Engine,
     token: c.JSValue,
@@ -327,6 +364,11 @@ pub const Manager = struct {
     retiring: bool = false,
     creating: bool = false,
     focused: bool = true,
+    autocomplete_wrappers: std.ArrayList(autocomplete_registry.Wrapper) = .empty,
+    autocomplete_holder: ?c.JSValue = null,
+    autocomplete_snapshot: ?c.JSValue = null,
+    default_component: bool = false,
+    refreshing_autocomplete: bool = false,
     record_fn: ?*const fn (?*anyopaque, protocol.Record) anyerror!void = null,
     record_context: ?*anyopaque = null,
     pub fn init(engine: *engine_mod.Engine) !Manager {
@@ -346,11 +388,16 @@ pub const Manager = struct {
         state.manager = self;
     }
     pub fn deinit(self: *Manager) void {
+        if (self.autocomplete_holder) |holder_value| autocomplete_registry.deactivate(self.engine, holder_value);
         self.owners.clearRetainingCapacity();
         self.retire() catch {};
         const state: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(self.token, self.token_class).?));
         state.manager = null;
         self.owners.deinit(self.engine.gpa);
+        for (self.autocomplete_wrappers.items) |entry| self.engine.freeValue(entry.factory);
+        self.autocomplete_wrappers.deinit(self.engine.gpa);
+        if (self.autocomplete_holder) |value| self.engine.freeValue(value);
+        if (self.autocomplete_snapshot) |value| self.engine.freeValue(value);
         if (self.draft) |contents| self.engine.gpa.free(contents);
         self.engine.freeValue(self.token);
     }
@@ -360,6 +407,65 @@ pub const Manager = struct {
     pub fn removeOwner(self: *Manager, id: u64) void {
         _ = self.owners.remove(id);
         if (self.owner_id == id) self.retire() catch {};
+        var index: usize = 0;
+        while (index < self.autocomplete_wrappers.items.len) {
+            if (self.autocomplete_wrappers.items[index].owner_id != id) {
+                index += 1;
+                continue;
+            }
+            self.engine.freeValue(self.autocomplete_wrappers.orderedRemove(index).factory);
+        }
+        if (self.owners.count() > 0) self.refreshAutocomplete() catch {};
+    }
+    pub fn updateAutocompleteContext(self: *Manager, snapshot: c.JSValue) !void {
+        const owned = c.JS_DupValue(self.engine.context, snapshot);
+        if (self.autocomplete_snapshot) |previous| self.engine.freeValue(previous);
+        self.autocomplete_snapshot = owned;
+        if (self.autocomplete_holder) |holder_value| try autocomplete_registry.update(self.engine, holder_value, snapshot);
+    }
+    pub fn addAutocompleteProvider(self: *Manager, owner: u64, factory: c.JSValue) !void {
+        if (!self.owners.contains(owner)) return error.StaleNativeExtensionOwner;
+        if (!c.JS_IsFunction(self.engine.context, factory)) return error.InvalidAutocompleteFactory;
+        if (self.autocomplete_wrappers.items.len >= 256) return error.AutocompleteProviderLimit;
+        const owned = c.JS_DupValue(self.engine.context, factory);
+        errdefer self.engine.freeValue(owned);
+        try self.autocomplete_wrappers.append(self.engine.gpa, .{ .owner_id = owner, .factory = owned });
+        errdefer _ = self.autocomplete_wrappers.pop();
+        try self.refreshAutocomplete();
+    }
+    pub fn refreshAutocomplete(self: *Manager) !void {
+        if (self.refreshing_autocomplete) return error.AutocompleteFactoryReentry;
+        self.refreshing_autocomplete = true;
+        defer self.refreshing_autocomplete = false;
+        if (self.autocomplete_wrappers.items.len == 0) {
+            if (self.default_component) try self.retire();
+            return;
+        }
+        if (self.autocomplete_holder == null) {
+            self.autocomplete_holder = try autocomplete_registry.holder(self.engine);
+            if (self.autocomplete_snapshot) |snapshot| try autocomplete_registry.update(self.engine, self.autocomplete_holder.?, snapshot);
+        }
+        const provider = try autocomplete_registry.wrapped(self.engine, self.autocomplete_holder.?, self.autocomplete_wrappers.items);
+        defer self.engine.freeValue(provider);
+        if (self.component == null) {
+            const factory = try autocomplete_registry.defaultFactory(self.engine);
+            defer self.engine.freeValue(factory);
+            const draft_value = try self.textValue();
+            defer self.engine.freeValue(draft_value);
+            const native_tui = @import("native_tui.zig");
+            const theme = try native_tui.createTheme(self.engine);
+            defer self.engine.freeValue(theme);
+            const keybindings = try native_tui.createKeybindings(self.engine);
+            defer self.engine.freeValue(keybindings);
+            try self.setFactory(self.autocomplete_wrappers.items[0].owner_id, factory, draft_value, theme, keybindings, self.width, self.height);
+            self.engine.freeValue(self.factory.?);
+            self.factory = null;
+            self.default_component = true;
+        }
+        var args = [_]c.JSValue{provider};
+        if (try components.callMethod(self.engine, self.component.?, "setAutocompleteProvider", &args, true)) |value| self.engine.freeValue(value);
+        self.dirty = true;
+        _ = try self.pumpDirty();
     }
     fn fence(self: *Manager) protocol.Fence {
         return .{ .owner_generation = self.owner_generation, .extension_id = @max(1, self.owner_id), .editor_generation = self.generation };
@@ -403,9 +509,11 @@ pub const Manager = struct {
     pub fn retire(self: *Manager) !void {
         const current_component = self.component orelse return;
         const current_factory = self.factory;
+        retireAutocomplete(self.engine, current_component);
         // Detach before any observable dispose callback; captured methods now
         // fail their generation fence even if disposal re-enters user input.
         self.component = null;
+        self.default_component = false;
         self.factory = null;
         self.dirty = false;
         self.retiring = true;
@@ -474,6 +582,7 @@ pub const Manager = struct {
         try put(self.engine, created, "onSubmit", try self.function(.onSubmit));
         try put(self.engine, created, "onChange", try self.function(.onChange));
         try put(self.engine, created, "_nativeAutocomplete", try self.function(.complete));
+        try put(self.engine, created, "_nativeAutocompleteError", try self.function(.autocompleteError));
         inline for (.{ .{ "onEscape", OwnerMethod.interrupt }, .{ "onCtrlD", OwnerMethod.exit }, .{ "onPasteImage", OwnerMethod.paste_image } }) |field| {
             const existing = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, created, field[0]));
             defer self.engine.freeValue(existing);
@@ -499,7 +608,18 @@ pub const Manager = struct {
         };
     }
     pub fn pumpDirty(self: *Manager) !bool {
-        if (!self.dirty or self.polling) return false;
+        if (self.polling) return false;
+        // A serialized provider request can start its successor during poll.
+        // Drain and consume those ready promise jobs before the owner parks
+        // for external input; a synchronous base provider has no timer wake.
+        for (0..4) |_| {
+            if (self.component) |component_value| if (try pollAutocomplete(self.engine, component_value)) {
+                self.dirty = true;
+            };
+            if (!c.JS_IsJobPending(self.engine.runtime)) break;
+            _ = try self.engine.drainReadyJobs();
+        }
+        if (!self.dirty) return false;
         const current_component = self.component orelse return false;
         self.polling = true;
         defer self.polling = false;
@@ -583,6 +703,11 @@ fn ownerCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
     const method: OwnerMethod = @enumFromInt(magic);
     if (method == .columns or method == .rows) return c.JS_NewInt64(context, @intCast(if (method == .columns) manager.width else manager.height));
     if (method == .requestRender or method == .onChange) manager.dirty = true;
+    if (method == .autocompleteError and manager.component != null) {
+        _ = engine.checked(c.JS_Throw(context, c.JS_DupValue(context, if (argc > 0) argv[0] else c.pi_js_undefined()))) catch {};
+        const message = engine.gpa.dupe(u8, engine.last_error orelse "Autocomplete provider rejected") catch |err| return fail(engine, err);
+        manager.send(.{ .failure = message }) catch |err| return fail(engine, err);
+    }
     if (method == .setFocus) {
         const target = if (argc > 0) argv[0] else c.pi_js_null();
         if (manager.component) |component_value| {

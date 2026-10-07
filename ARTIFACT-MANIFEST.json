@@ -1,14 +1,14 @@
 {
   "schema_version": 2,
-  "checkpoint": 196,
+  "checkpoint": 197,
   "status": "in_progress",
   "parity_certified": false,
   "release_version": "1.1.0",
   "root": "pi-zig",
   "complete_inventory": "FILES.sha256",
   "continuation": "UPSTREAM-UPDATE-20261003.md",
-  "file_count_excluding_FILES_sha256": 1014,
-  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 52274672,
+  "file_count_excluding_FILES_sha256": 1047,
+  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 53106601,
   "generated_catalog": {
     "models": 1621,
     "providers": 42,
@@ -22,8 +22,8 @@
     "source_sha256": "4175d9d7df88eab214ae66cf4bd70b3e6e9a5add91a6aaae3483813c80892fee"
   },
   "zig_source": {
-    "files": 412,
-    "lines": 187569
+    "files": 423,
+    "lines": 191873
   },
   "excluded_generated_paths": [
     ".git",

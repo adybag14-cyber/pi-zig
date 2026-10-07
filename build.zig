@@ -235,6 +235,14 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    const upstream_contract_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("tools/upstream_contract.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const run_upstream_contract_tests = b.addRunArtifact(upstream_contract_tests);
+    const upstream_contract_step = b.step("test-upstream-contract", "Check whole-tree upstream drift admission and malformed identities");
+    upstream_contract_step.dependOn(&run_upstream_contract_tests.step);
+    test_step.dependOn(&run_upstream_contract_tests.step);
     const durable_fixture = b.addExecutable(.{
         .name = "pi-durable-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable/process_fixture.zig"), .target = target, .optimize = optimize, .link_libc = true }),
@@ -357,6 +365,28 @@ pub fn build(b: *std.Build) void {
     const durable_powershell_step = b.step("test-durable-powershell", "Exercise real native PowerShell argv startup fallback preparation and retained output");
     durable_powershell_step.dependOn(&run_durable_powershell_tests.step);
     test_step.dependOn(&run_durable_powershell_tests.step);
+    const mcp_configured_fixture = b.addExecutable(.{
+        .name = "pi-mcp-configured-fixture",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_configured_fixture.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const install_mcp_configured_fixture = b.addInstallArtifact(mcp_configured_fixture, .{});
+    const mcp_configured_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_configured_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"mcp.configured"},
+    });
+    linkDurable(b, mcp_configured_tests.root_module);
+    linkQuickJs(b, mcp_configured_tests.root_module, quickjs);
+    const run_mcp_configured_tests = b.addRunArtifact(mcp_configured_tests);
+    const install_mcp_configured_cli = b.addInstallArtifact(exe, .{});
+    run_mcp_configured_tests.step.dependOn(&install_mcp_configured_cli.step);
+    run_mcp_configured_tests.setEnvironmentVariable("PI_MCP_CONFIGURED_CLI", b.getInstallPath(.bin, b.fmt("pi{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    run_mcp_configured_tests.step.dependOn(&install_mcp_configured_fixture.step);
+    run_mcp_configured_tests.setEnvironmentVariable("PI_MCP_CONFIGURED_FIXTURE", b.getInstallPath(.bin, b.fmt("pi-mcp-configured-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    const mcp_configured_step = b.step("test-mcp-configured", "Exercise trusted configured native MCP direct tools and real agent execution");
+    mcp_configured_step.dependOn(&run_mcp_configured_tests.step);
+    test_step.dependOn(&run_mcp_configured_tests.step);
     const mcp_adapter_probe = b.addExecutable(.{
         .name = "pi-mcp-adapter-probe",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_adapter_fixture.zig"), .target = target, .optimize = optimize }),
@@ -547,6 +577,17 @@ pub fn build(b: *std.Build) void {
     const encoding_test_step = b.step("test-extension-encoding", "Test native text encoding host APIs");
     encoding_test_step.dependOn(&run_encoding_tests.step);
     test_step.dependOn(&run_encoding_tests.step);
+    const autocomplete_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/editor_autocomplete_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native autocomplete"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, autocomplete_tests.root_module, quickjs);
+    linkTypeScriptParser(b, autocomplete_tests.root_module, typescript_parser);
+    const run_autocomplete_tests = b.addRunArtifact(autocomplete_tests);
+    const autocomplete_step = b.step("test-editor-autocomplete", "Exercise native asynchronous editor providers cancellation selection and UTF16 completion positions");
+    autocomplete_step.dependOn(&run_autocomplete_tests.step);
+    test_step.dependOn(&run_autocomplete_tests.step);
     const editor_owner_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/editor_owner_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native editor"},
@@ -569,6 +610,17 @@ pub fn build(b: *std.Build) void {
     const editor_frontend_step = b.step("test-custom-editor-components", "Exercise custom editor fullscreen frame/input/snapshot ownership and close fences");
     editor_frontend_step.dependOn(&run_editor_frontend_tests.step);
     test_step.dependOn(&run_editor_frontend_tests.step);
+    const renderer_control_race_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/renderer_control_race_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"renderer control arrives"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, renderer_control_race_tests.root_module, quickjs);
+    linkTypeScriptParser(b, renderer_control_race_tests.root_module, typescript_parser);
+    const run_renderer_control_race_tests = b.addRunArtifact(renderer_control_race_tests);
+    const renderer_control_race_step = b.step("test-renderer-control-race", "Exercise persistent renderer controls arriving between owner pump and FIFO dequeue");
+    renderer_control_race_step.dependOn(&run_renderer_control_race_tests.step);
+    test_step.dependOn(&run_renderer_control_race_tests.step);
     const worker_process_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/native_worker_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,

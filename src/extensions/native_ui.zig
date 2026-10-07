@@ -16,7 +16,7 @@ pub const Bridge = struct {
     component_close: ?*const fn (?*anyopaque, protocol.Fence) anyerror!void = null,
 };
 
-const Method = enum(c_int) { select, confirm, input, editor, notify, setStatus, setTitle, setEditorText, pasteToEditor, getEditorText, setWidget, setWorkingMessage, setWorkingVisible, setHiddenThinkingLabel, custom, setEditorComponent, getEditorComponent };
+const Method = enum(c_int) { select, confirm, input, editor, notify, setStatus, setTitle, setEditorText, pasteToEditor, getEditorText, setWidget, setWorkingMessage, setWorkingVisible, setHiddenThinkingLabel, custom, setEditorComponent, getEditorComponent, addAutocompleteProvider };
 const Pending = struct {
     id: u32,
     generation: u32,
@@ -144,6 +144,7 @@ pub const Manager = struct {
             const available = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "hasUI"));
             defer self.engine.freeValue(available);
             self.has_ui = c.JS_ToBool(self.engine.context, available) != 0;
+            if (self.has_ui) try self.editors.updateAutocompleteContext(context);
             const text = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, context, "editorText"));
             defer self.engine.freeValue(text);
             if (c.JS_IsString(text)) {
@@ -157,6 +158,10 @@ pub const Manager = struct {
             }
             self.width = try self.snapshotDimension(context, "width", 80);
             self.height = try self.snapshotDimension(context, "height", 24);
+            if (self.has_ui and self.editors.component == null) {
+                self.editors.width = self.width;
+                self.editors.height = self.height;
+            }
         }
         if (signal) |value| self.signal = c.JS_DupValue(self.engine.context, value);
         self.active = true;
@@ -213,7 +218,7 @@ pub const Manager = struct {
         const engine = engine_mod.Engine.fromContext(context.?);
         const method: Method = @enumFromInt(magic);
         const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
-        if (method == .setEditorComponent or method == .getEditorComponent or method == .getEditorText or method == .setEditorText or method == .pasteToEditor) {
+        if (method == .setEditorComponent or method == .getEditorComponent or method == .getEditorText or method == .setEditorText or method == .pasteToEditor or method == .addAutocompleteProvider) {
             const self: *Manager = @ptrCast(@alignCast(engine.native_ui_manager orelse return fail(engine, error.StaleNativeUi)));
             if (!c.JS_IsStrictEqual(engine.context, self.token, data[0])) return fail(engine, error.StaleNativeUi);
             var owner: i64 = 0;
@@ -222,6 +227,10 @@ pub const Manager = struct {
             // Snapshot capability is independent of the shared invocation's
             // mutable hasUI state. Headless contexts never acquire editor UI.
             if (c.JS_ToBool(context, data[3]) == 0) return if (method == .getEditorText) c.JS_NewString(context, "") else c.pi_js_undefined();
+            if (method == .addAutocompleteProvider) {
+                self.editors.addAutocompleteProvider(@intCast(owner), if (args.len > 0) args[0] else c.pi_js_undefined()) catch |err| return fail(engine, err);
+                return c.pi_js_undefined();
+            }
             if (method == .getEditorText) return self.editors.textValue() catch |err| fail(engine, err);
             if (method == .setEditorText or method == .pasteToEditor) {
                 if (self.editors.component != null) {
@@ -235,6 +244,7 @@ pub const Manager = struct {
             }
             if (method == .getEditorComponent) return self.editors.getFactory(@intCast(owner)) catch |err| fail(engine, err);
             self.editors.setFactory(@intCast(owner), if (args.len > 0) args[0] else c.pi_js_undefined(), self.editor_text, self.theme, self.keybindings, self.width, self.height) catch |err| return fail(engine, err);
+            self.editors.refreshAutocomplete() catch |err| return fail(engine, err);
             return c.pi_js_undefined();
         }
         const self = current(engine, data) catch |err| return fail(engine, err);

@@ -1,6 +1,7 @@
 //! Native pi-ai event streams and acknowledged provider iteration. No host JS.
 const std = @import("std");
 const typebox = @import("typebox.zig");
+const native_models = @import("native_models.zig");
 const engine_mod = @import("engine.zig");
 const providers_mod = @import("native_providers.zig");
 const c = engine_mod.c;
@@ -309,6 +310,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try property(engine, module, "Type", try engine.checked(c.JS_GetPropertyStr(engine.context, schema_exports, "Type")));
     try property(engine, module, "EventStream", c.JS_DupValue(engine.context, constructor));
     try property(engine, module, "AssistantMessageEventStream", c.JS_DupValue(engine.context, assistant));
+    try native_models.populateExports(engine, module);
     var factory_data = [_]c.JSValue{assistant};
     try property(engine, module, "createAssistantMessageEventStream", try engine.checked(c.JS_NewCFunctionData2(engine.context, assistantFactory, "createAssistantMessageEventStream", 0, 0, 1, &factory_data)));
     try engine.registerValueModule("@earendil-works/pi-ai", module);

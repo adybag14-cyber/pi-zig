@@ -59,7 +59,21 @@ test "directory names preserve BOM and encode invalid native bytes with decoded-
     const io = std.testing.io;
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
-    try tmp.dir.writeFile(io, .{ .sub_path = "bad-\xff", .data = "original-byte-name" });
+    tmp.dir.writeFile(io, .{ .sub_path = "bad-\xff", .data = "original-byte-name" }) catch |err| switch (err) {
+        error.BadPathName => {
+            // APFS rejects this byte spelling with EILSEQ. Keep decoder proof
+            // above, verify the failed creation left no entry, and prove the
+            // same filesystem accepts and round-trips a valid Unicode name.
+            var iterator = tmp.dir.iterate();
+            try std.testing.expectEqual(@as(?std.Io.Dir.Entry, null), try iterator.next(io));
+            try tmp.dir.writeFile(io, .{ .sub_path = "valid-Ω", .data = "original-byte-name" });
+            const valid = try tmp.dir.readFileAlloc(io, "valid-Ω", gpa, .limited(64));
+            defer gpa.free(valid);
+            try std.testing.expectEqualStrings("original-byte-name", valid);
+            return;
+        },
+        else => return err,
+    };
     var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
     const length = try tmp.dir.realPath(io, &buffer);
     var server = try Server.init(gpa, io, buffer[0..length], null);

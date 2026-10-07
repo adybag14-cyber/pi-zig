@@ -13,7 +13,7 @@ const Callback = struct {
     receiver: c.JSValue,
 };
 const Pending = struct { id: []u8, callback: Callback };
-const Registration = struct { source: c.JSValue, live: c.JSValue, encoded: c.JSValue, generation: u64 };
+const Registration = struct { source: c.JSValue, live: c.JSValue, encoded: c.JSValue, generation: u64, ordinal: u64, first_ordinal: u64, native: bool };
 
 pub const Providers = struct {
     engine: *engine_mod.Engine,
@@ -21,12 +21,18 @@ pub const Providers = struct {
     callbacks: std.StringHashMapUnmanaged(Callback) = .empty,
     next_ordinal: u64 = 1,
     next_generation: u64 = 1,
+    catalog_clock: ?*u64 = null,
+    local_catalog_clock: u64 = 0,
+    removals: std.StringHashMapUnmanaged(u64) = .empty,
 
     pub fn init(engine: *engine_mod.Engine) Providers {
         return .{ .engine = engine };
     }
 
     pub fn deinit(self: *Providers) void {
+        var removals = self.removals.iterator();
+        while (removals.next()) |entry| self.engine.gpa.free(entry.key_ptr.*);
+        self.removals.deinit(self.engine.gpa);
         var registrations = self.registrations.iterator();
         while (registrations.next()) |entry| {
             self.engine.gpa.free(entry.key_ptr.*);
@@ -214,13 +220,19 @@ pub const Providers = struct {
         errdefer if (key) |owned| engine.gpa.free(owned);
         try self.callbacks.ensureUnusedCapacity(engine.gpa, @intCast(pending.items.len));
         try self.registrations.ensureUnusedCapacity(engine.gpa, 1);
+        const clock = self.catalog_clock orelse &self.local_catalog_clock;
+        if (clock.* >= maximum_safe_integer) return error.NativeProviderGenerationExhausted;
+        clock.* += 1;
+        const ordinal = clock.*;
+        const first_ordinal = if (self.registrations.get(name)) |previous| if (previous.native == replace) previous.first_ordinal else ordinal else ordinal;
         for (pending.items) |entry| self.callbacks.putAssumeCapacityNoClobber(entry.id, entry.callback);
         if (self.registrations.getPtr(name)) |previous| {
             engine.freeValue(previous.source);
             engine.freeValue(previous.live);
             engine.freeValue(previous.encoded);
-            previous.* = .{ .source = source, .live = live_config, .encoded = encoded, .generation = generation };
-        } else self.registrations.putAssumeCapacityNoClobber(key.?, .{ .source = source, .live = live_config, .encoded = encoded, .generation = generation });
+            previous.* = .{ .source = source, .live = live_config, .encoded = encoded, .generation = generation, .ordinal = ordinal, .first_ordinal = first_ordinal, .native = replace };
+        } else self.registrations.putAssumeCapacityNoClobber(key.?, .{ .source = source, .live = live_config, .encoded = encoded, .generation = generation, .ordinal = ordinal, .first_ordinal = first_ordinal, .native = replace });
+        if (self.removals.fetchRemove(name)) |removed| engine.gpa.free(removed.key);
         committed = true;
         return c.JS_DupValue(engine.context, encoded);
     }
@@ -243,6 +255,47 @@ pub const Providers = struct {
             self.engine.gpa.free(removed.key);
             self.freeCallback(removed.value);
         }
+    }
+
+    pub fn unregisterCatalog(self: *Providers, name: []const u8) !void {
+        const clock = self.catalog_clock orelse &self.local_catalog_clock;
+        if (clock.* >= maximum_safe_integer) return error.NativeProviderGenerationExhausted;
+        const key = if (self.removals.contains(name)) null else try self.engine.gpa.dupe(u8, name);
+        errdefer if (key) |owned| self.engine.gpa.free(owned);
+        try self.removals.ensureUnusedCapacity(self.engine.gpa, 1);
+        self.unregister(name);
+        clock.* += 1;
+        if (self.removals.getPtr(name)) |ordinal| ordinal.* = clock.* else self.removals.putAssumeCapacityNoClobber(key.?, clock.*);
+    }
+
+    /// Copy roots and ordering metadata before invoking any live provider getter.
+    pub fn catalogSnapshot(self: *Providers) !c.JSValue {
+        const engine = self.engine;
+        const result = try engine.checked(c.JS_NewArray(engine.context));
+        errdefer engine.freeValue(result);
+        var index: u32 = 0;
+        var registrations = self.registrations.iterator();
+        while (registrations.next()) |entry| {
+            const record = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
+            defer engine.freeValue(record);
+            try self.define(record, "name", try engine.checked(c.JS_NewStringLen(engine.context, entry.key_ptr.*.ptr, entry.key_ptr.*.len)));
+            try self.define(record, "config", c.JS_DupValue(engine.context, entry.value_ptr.live));
+            try self.define(record, "ordinal", c.JS_NewInt64(engine.context, @intCast(entry.value_ptr.ordinal)));
+            try self.define(record, "firstOrdinal", c.JS_NewInt64(engine.context, @intCast(entry.value_ptr.first_ordinal)));
+            try self.define(record, "native", c.pi_js_bool(engine.context, @intFromBool(entry.value_ptr.native)));
+            if (c.JS_SetPropertyUint32(engine.context, result, index, c.JS_DupValue(engine.context, record)) < 0) return error.JavaScriptException;
+            index += 1;
+        }
+        var removals = self.removals.iterator();
+        while (removals.next()) |entry| {
+            const record = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
+            defer engine.freeValue(record);
+            try self.define(record, "name", try engine.checked(c.JS_NewStringLen(engine.context, entry.key_ptr.*.ptr, entry.key_ptr.*.len)));
+            try self.define(record, "ordinal", c.JS_NewInt64(engine.context, @intCast(entry.value_ptr.*)));
+            if (c.JS_SetPropertyUint32(engine.context, result, index, c.JS_DupValue(engine.context, record)) < 0) return error.JavaScriptException;
+            index += 1;
+        }
+        return result;
     }
 
     pub fn invoke(self: *Providers, id: []const u8, arguments: c.JSValue) !c.JSValue {

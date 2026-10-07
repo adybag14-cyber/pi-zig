@@ -252,6 +252,11 @@ pub const AgentConfig = struct {
     /// Additional tool schemas and dispatcher supplied by a trusted runtime.
     /// `extra_tools_json` must be an OpenAI-compatible JSON tool array.
     extra_tools_json: []const u8 = "[]",
+    /// Independently owned configured native tools; lifecycle hooks retain hook_ctx.
+    configured_tools_json: []const u8 = "[]",
+    configured_tool_ctx: ?*anyopaque = null,
+    configured_tool_fn: ?ExternalToolCallStreamingFn = null,
+    configured_tool_exists_fn: ?ExternalToolExistsFn = null,
     external_tool_fn: ?ExternalToolFn = null,
     /// Streaming dispatcher used when an external runtime can deliver tool
     /// progress before the final result. The legacy dispatcher remains as a
@@ -700,7 +705,13 @@ pub fn runWithImages(
         else
             try tools.toolSchemasJsonWithOptions(gpa, config.tool_filter, .{ .experimental_strict = config.experimental_strict_tools });
         defer gpa.free(builtin_schemas);
-        const schemas = try mergeToolSchemaArrays(gpa, builtin_schemas, config.extra_tools_json);
+        const external_schemas = try mergeToolSchemaArrays(gpa, builtin_schemas, config.extra_tools_json);
+        const schemas = if (std.mem.eql(u8, config.configured_tools_json, "[]")) external_schemas else blk: {
+            defer gpa.free(external_schemas);
+            const configured_schemas = try filteredConfiguredSchemas(gpa, config.configured_tools_json, config.tool_filter);
+            defer gpa.free(configured_schemas);
+            break :blk try mergeToolSchemaArrays(gpa, external_schemas, configured_schemas);
+        };
         defer gpa.free(schemas);
 
         var delta_count = DeltaCount{};
@@ -1456,6 +1467,10 @@ fn executeExternalTool(
     progress_fn: ?ExternalToolProgressFn,
     progress_ctx: ?*anyopaque,
 ) !?tools.ToolResult {
+    if (config.configured_tool_exists_fn) |exists| if (exists(config.configured_tool_ctx, name)) {
+        const execute = config.configured_tool_fn orelse return error.ConfiguredToolDispatcherMissing;
+        return execute(config.configured_tool_ctx, allocator, tool_call_id, name, arguments_json, progress_fn orelse discardExternalToolProgress, progress_ctx, config.abort_flag);
+    };
     if (config.external_tool_call_streaming_fn) |execute_streaming| {
         const callback = progress_fn orelse discardExternalToolProgress;
         return try execute_streaming(config.hook_ctx, allocator, tool_call_id, name, arguments_json, callback, progress_ctx, config.abort_flag);
@@ -2018,8 +2033,11 @@ const PreparedInvocation = struct {
 fn prepareToolInvocation(gpa: std.mem.Allocator, config: *const AgentConfig, schemas_json: []const u8, tc: *const ai.ToolCall) !PreparedInvocation {
     var prepared = PreparedInvocation{ .arguments = tc.arguments };
     errdefer prepared.deinit(gpa);
-    const external_claims = if (config.external_tool_exists_fn) |exists| exists(config.hook_ctx, tc.name) else false;
-    if (external_claims) {
+    const configured_claims = if (config.configured_tool_exists_fn) |exists| exists(config.configured_tool_ctx, tc.name) else false;
+    const external_claims = !configured_claims and (if (config.external_tool_exists_fn) |exists| exists(config.hook_ctx, tc.name) else false);
+    if (configured_claims) {
+        // Configured schemas validate original arguments; extension preparation does not own them.
+    } else if (external_claims) {
         if (config.external_prepare_arguments_fn) |prepare_external| {
             const transformed = prepare_external(config.hook_ctx, gpa, tc.name, tc.arguments) catch |err| {
                 prepared.immediate = .{
@@ -2418,6 +2436,24 @@ fn compactSession(
 
 fn emit(handler: ?EventHandler, ctx: ?*anyopaque, event: AgentEvent) void {
     if (handler) |h| h(ctx, event);
+}
+
+fn filteredConfiguredSchemas(gpa: std.mem.Allocator, source: []const u8, filter: tools.ToolFilter) ![]u8 {
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    const parsed = try std.json.parseFromSlice(std.json.Value, a, source, .{ .allocate = .alloc_always });
+    if (parsed.value != .array) return error.InvalidToolSchemas;
+    var selected: std.json.Value = .{ .array = .init(a) };
+    for (parsed.value.array.items) |item| {
+        if (item != .object) return error.InvalidToolSchemas;
+        const function = item.object.get("function") orelse return error.InvalidToolSchemas;
+        if (function != .object) return error.InvalidToolSchemas;
+        const name = function.object.get("name") orelse return error.InvalidToolSchemas;
+        if (name != .string) return error.InvalidToolSchemas;
+        if (filter.isEnabled(name.string)) try selected.array.append(item);
+    }
+    return @import("../durable/backend/json.zig").stringify(gpa, selected);
 }
 
 fn mergeToolSchemaArrays(gpa: std.mem.Allocator, builtins_json: []const u8, extras_json: []const u8) ![]u8 {

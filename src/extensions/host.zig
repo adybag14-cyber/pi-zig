@@ -223,6 +223,8 @@ pub const CommandOutput = struct {
     thinking_level: ?[]u8 = null,
     abort: bool = false,
     is_error: bool = false,
+    /// Internal CLI admission marker; user JSON cannot author this field.
+    native_invocation_failed: bool = false,
     terminate: bool = false,
     actions: actions_mod.Batch = .{},
 
@@ -1162,7 +1164,7 @@ pub const Host = struct {
             const flags_json = try self.flagsJson(ext);
             defer self.gpa.free(flags_json);
             const raw = self.runExtension(ext, .command, registered_name, raw_arguments, flags_json) catch |err|
-                return try errorCommandOutputFmt(self.gpa, "extension command execution failed: {s}", .{@errorName(err)});
+                return try self.failedCommandOutput(ext, err, "command");
             defer self.gpa.free(raw);
             const trimmed = std.mem.trim(u8, raw, " \t\r\n");
             if (trimmed.len == 0) return CommandOutput{};
@@ -1183,6 +1185,22 @@ pub const Host = struct {
         return false;
     }
 
+    fn failedCommandOutput(self: *Host, extension: *const ExtensionManifest, failure: anyerror, kind: []const u8) !CommandOutput {
+        if (extension.script_runtime) |runtime| {
+            if (runtime.backend == .native and failure == error.JavaScriptExtensionExecutionFailed) {
+                const message = try self.gpa.dupe(u8, runtime.lastError() orelse @errorName(failure));
+                errdefer self.gpa.free(message);
+                var queue = actions_mod.Queue.init(self.gpa, self.io);
+                defer queue.deinit();
+                try self.transferRendererActions(&queue);
+                // Admit at this invocation boundary, rather than waiting for
+                // shutdown or a later unrelated invocation to drain the owner.
+                return .{ .message = message, .is_error = true, .native_invocation_failed = true, .actions = .{ .items = try queue.drain() } };
+            }
+        }
+        return errorCommandOutputFmt(self.gpa, "extension {s} execution failed: {s}", .{ kind, @errorName(failure) });
+    }
+
     pub fn executeShortcut(self: *Host, key: []const u8) !?CommandOutput {
         var index = self.extensions.items.len;
         while (index > 0) {
@@ -1200,7 +1218,7 @@ pub const Host = struct {
             const flags_json = try self.flagsJson(ext);
             defer self.gpa.free(flags_json);
             const raw = self.runExtension(ext, .shortcut, key, "{}", flags_json) catch |err|
-                return try errorCommandOutputFmt(self.gpa, "extension shortcut execution failed: {s}", .{@errorName(err)});
+                return try self.failedCommandOutput(ext, err, "shortcut");
             defer self.gpa.free(raw);
             const trimmed = std.mem.trim(u8, raw, " \t\r\n");
             if (trimmed.len == 0) return CommandOutput{};

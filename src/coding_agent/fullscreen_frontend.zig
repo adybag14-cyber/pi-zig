@@ -1045,9 +1045,14 @@ pub const Frontend = struct {
                         if (self.custom_editor_frame) |*old| old.deinit();
                         self.custom_editor_frame = record;
                         update.* = .{ .busy = self.busy };
-                        try self.editor.setTextAt(value.text, value.cursor);
-                        self.revision += 1;
-                        try self.publishEditor();
+                        // Repainting a dropdown/focus/border does not edit the
+                        // document. In particular it must not invalidate the
+                        // core Tab completion queued by this same owner frame.
+                        if (!std.mem.eql(u8, self.editor.slice(), value.text) or self.editor.cursor != value.cursor) {
+                            try self.editor.setTextAt(value.text, value.cursor);
+                            self.revision += 1;
+                            try self.publishEditor();
+                        }
                         self.custom_editor_width = value.width;
                         self.custom_editor_focused = value.focused;
                         if (self.component == null) self.app.setFocus(if (value.focused) self.editorComponent() else null);

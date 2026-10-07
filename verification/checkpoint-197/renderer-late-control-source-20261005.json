@@ -1,0 +1,28 @@
+{
+  "status": "frozen; deterministic actual pump/dequeue race passed Debug",
+  "baseline": "1665296020007c26c5c82084029c093c930bce40",
+  "source": "C:\\Users\\adyba\\pi-zig-renderer-control-repair-20261005",
+  "frozen_source": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-late-control-freeze-20261005\\final",
+  "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\renderer-late-control-freeze-20261005\\renderer-late-control.patch",
+  "files": [
+    {
+      "path": "build.zig",
+      "sha256": "e54134f5ebf4930ee5fd137d6cc071758218c8e5a3d411d1ce1f64d545fff018",
+      "bytes": 60057
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "sha256": "aef4837d05d1c3767fa21b45cc764e99529703d3439157139a8ab06585c7b416",
+      "bytes": 59647
+    },
+    {
+      "path": "src/renderer_control_race_test.zig",
+      "sha256": "c993d2b05041ab278aaaa370269c2a3bc00acd42c6ff976f90cf80c30ff8930c",
+      "bytes": 58
+    }
+  ],
+  "receipt": "native-renderer-late-control-unit-20261005.json",
+  "budgets_changed": false,
+  "macos_validation": "Awaiting root composed or hosted macOS gate",
+  "captured_utc": "2026-10-05T22:30:46.1831509+00:00"
+}

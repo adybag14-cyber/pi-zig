@@ -1,0 +1,100 @@
+{
+  "status": "frozen whole-tree structural upstream drift gate",
+  "source": "C:\\Users\\adyba\\pi-zig-upstream-drift-20261005",
+  "baseline": "1665296020007c26c5c82084029c093c930bce40",
+  "upstream": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+  "trackedUpstreamFiles": 1908,
+  "files": [
+    {
+      "path": "tools/upstream_contract.zig",
+      "sha256": "0ea06389c413a1d866e9151e02cac234dba236b4b9638276ec252aac9fbffc2b"
+    },
+    {
+      "path": "tools/maintenance.zig",
+      "sha256": "57813e5c1dafdc13c2990dcf7120139c1a8800502e2f2ac31549c2d8e26c9813"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "e23394d0d6cef4207fdd1eb1f9f22efad5a79f3cbdbec3d4e61df757aaf333a3"
+    },
+    {
+      "path": "verification/upstream-contract/tree-28dcce2.json",
+      "sha256": "79bfe75ed16bdb1b3a571eb6f27649c38b9bf53f54d22ee38b6935fb1297b71a"
+    },
+    {
+      "path": "verification/upstream-contract/README.md",
+      "sha256": "f1795ac5522643a697e233e7a502a86a6409eccbc002d8df03160210f5e40f81"
+    }
+  ],
+  "jobs": [
+    {
+      "name": "upstream-drift-real-git-windows-debug",
+      "pid": 29100,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-upstream-contract --summary all",
+      "created_utc": "2026-10-05T22:13:49.2041700Z",
+      "launched_utc": "2026-10-05T22:13:49.2012694+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-upstream-drift-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T22:13:52.4628461+00:00"
+    },
+    {
+      "name": "upstream-drift-real-git-windows-releasesafe",
+      "pid": 33480,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-upstream-contract -Doptimize=ReleaseSafe --summary all",
+      "created_utc": "2026-10-05T22:14:04.8148300Z",
+      "launched_utc": "2026-10-05T22:14:04.8122449+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-upstream-drift-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T22:14:14.5391380+00:00"
+    },
+    {
+      "name": "upstream-drift-real-git-linux-debug",
+      "pid": 40560,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-upstream-drift-source-20261005 --exec /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test upstream_contract.zig -ODebug --cache-dir /tmp/pi-upstream-drift-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T22:14:04.8981800Z",
+      "launched_utc": "2026-10-05T22:14:04.8957239+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-upstream-drift-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T22:14:08.5851017+00:00"
+    },
+    {
+      "name": "upstream-drift-real-git-linux-releasesafe",
+      "pid": 22292,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-upstream-drift-source-20261005 --exec /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig test upstream_contract.zig -OReleaseSafe --cache-dir /tmp/pi-upstream-drift-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+      "created_utc": "2026-10-05T22:14:08.5962130Z",
+      "launched_utc": "2026-10-05T22:14:08.5955744+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-upstream-drift-20261005",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-05T22:14:22.1766241+00:00"
+    }
+  ],
+  "realGitMutationProof": {
+    "status": "passed",
+    "mutatedCommit": "194f1ca3aee70344308ceaa21467d532dfb1f19f",
+    "proved": [
+      "added package",
+      "removed API",
+      "changed content",
+      "executable mode",
+      "dirty tracked source rejected"
+    ],
+    "negativeRetained": "first direct probe used wrong cwd; corrected probe above verifies gate semantics"
+  },
+  "limits": [
+    "Structural detection; unknown semantic compatibility requires captures/native review",
+    "Tracked tree only; UTF8 path requirement explicit",
+    "Different Git object format requires review"
+  ]
+}

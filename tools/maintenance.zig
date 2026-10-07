@@ -4,6 +4,7 @@ const catalog = @import("catalog.zig");
 const projections = @import("projections.zig");
 const artifacts = @import("artifacts.zig");
 const release = @import("release.zig");
+const upstream_contract = @import("upstream_contract.zig");
 const release_config = @import("release_config");
 
 const forbidden_names = [_][]const u8{
@@ -140,6 +141,26 @@ pub fn main(init: std.process.Init) !void {
         const vendors_passed = try verifyVendors(init.gpa, init.io, writer);
         try writer.flush();
         if (!languages_passed or !vendors_passed) return error.InvalidNativeReleaseSources;
+        return;
+    }
+    if (args.len == 5 and std.mem.eql(u8, args[1], "capture-upstream-contract")) {
+        const bytes = try upstream_contract.capture(init.gpa, init.io, args[2], args[3]);
+        defer init.gpa.free(bytes);
+        const file = try std.Io.Dir.cwd().createFile(init.io, args[4], .{});
+        defer file.close(init.io);
+        try file.writePositionalAll(init.io, bytes, 0);
+        try writer.writeAll("Captured immutable whole-tree upstream contract.\n");
+        try writer.flush();
+        return;
+    }
+    if (args.len == 4 and std.mem.eql(u8, args[1], "verify-upstream-contract")) {
+        const bytes = try std.Io.Dir.cwd().readFileAlloc(init.io, args[3], init.gpa, .limited(32 * 1024 * 1024));
+        defer init.gpa.free(bytes);
+        upstream_contract.verify(init.gpa, init.io, args[2], bytes, writer) catch |err| {
+            try writer.flush();
+            return err;
+        };
+        try writer.flush();
         return;
     }
     if (args.len == 2 and std.mem.eql(u8, args[1], "verify-artifacts")) {

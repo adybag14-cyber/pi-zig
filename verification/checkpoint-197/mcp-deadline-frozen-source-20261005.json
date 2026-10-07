@@ -1,0 +1,27 @@
+{
+  "created_utc": "2026-10-05T22:36:44.5415676+00:00",
+  "worktree": "C:\\Users\\adyba\\pi-zig-mcp-deadline-20261005",
+  "branch": "port/pi-mcp-deadline-20261005",
+  "base": "1665296020007c26c5c82084029c093c930bce40",
+  "authority": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+  "state": "immutable two-path deadline and callback ownership repair; Windows Debug terminal passed; Root admits for combined Windows/Linux Debug/ReleaseSafe and hosted macOS gates",
+  "files": [
+    {
+      "path": "src/mcp/session.zig",
+      "sha256": "809d4bdf5c46acfb1560fbcb596fbf09e4465c7df3162835bc8e1455ce7a2699",
+      "bytes": 33168,
+      "integration": "narrow additive patch"
+    },
+    {
+      "path": "src/mcp/runtime_tests.zig",
+      "sha256": "c047a42a2f6b7eaa81e53382bf14daf35033eb519b04ac8be8977f5a2af940ff",
+      "bytes": 31565,
+      "integration": "narrow additive patch"
+    }
+  ],
+  "changes": "Timeout observation revalidated and cause/cancel publication committed under Client mutex used by progress reset. Pending removed before callback join, refcount retains stack Pending/context through completion. Thread-local nested callback scopes prevent self-close under parallel receive-marker overwrite. Three deterministic tests plus existing real process60ms/25ms/five-frame case unchanged. Failure-only cause/frame/error diagnostics added.",
+  "constraints": "No timeout budget inflation or macOS skip. Native synchronous callback close remains explicitly rejected ReentrantMcpClose. Request return may wait for in-flight synchronous callback completion for memory safety. Hosted macOS cause not yet proven; legitimate scheduler starvation remains possible, and failure diagnostics now identify cause/frame count.",
+  "proof": "mcp-deadline-final-windows-debug.json",
+  "proof_completed_utc": "2026-10-05T23:35:32.1539342+01:00",
+  "additional_proof": "optimized/Linux donor gates pending; Parent Root will run full combined graph"
+}

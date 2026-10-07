@@ -9,6 +9,7 @@ const native_ui = @import("native_ui.zig");
 const native_stream = @import("native_stream.zig");
 const native_tui = @import("native_tui.zig");
 const native_renderers = @import("native_renderers.zig");
+const native_models = @import("native_models.zig");
 const c = engine_mod.c;
 const OwnerToken = struct { gpa: std.mem.Allocator, binding: ?*Bindings = null };
 fn ownerFinalizer(_: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
@@ -22,6 +23,7 @@ const ContextMethod = enum(c_int) {
     cwd,
     model,
     scopedModels,
+    modelRegistry,
     thinkingLevel,
     signal,
     ui,
@@ -53,7 +55,8 @@ pub const Bindings = struct {
     pub const ToolLookupFn = *const fn (?*anyopaque, []const u8) ?c.JSValue;
     pub const CatalogKind = enum { tools, commands };
     pub const CatalogFn = *const fn (?*anyopaque, *Bindings, CatalogKind) anyerror!c.JSValue;
-    pub const SharedServices = struct { ui: *native_ui.Manager, renderers: *native_renderers.Manager, broker: ?*InvocationBroker = null, owner_id: u64 = 0, tool_lookup: ?ToolLookupFn = null, tool_context: ?*anyopaque = null, catalog_fn: ?CatalogFn = null };
+    pub const ProviderCatalogFn = *const fn (?*anyopaque) anyerror!c.JSValue;
+    pub const SharedServices = struct { ui: *native_ui.Manager, renderers: *native_renderers.Manager, broker: ?*InvocationBroker = null, owner_id: u64 = 0, tool_lookup: ?ToolLookupFn = null, tool_context: ?*anyopaque = null, catalog_fn: ?CatalogFn = null, provider_catalog_fn: ?ProviderCatalogFn = null, provider_catalog_clock: ?*u64 = null };
     pub const ToolUpdateFn = *const fn (?*anyopaque, c.JSValue) anyerror!void;
     gpa: std.mem.Allocator,
     engine: *engine_mod.Engine,
@@ -69,6 +72,7 @@ pub const Bindings = struct {
     tool_lookup: ?ToolLookupFn = null,
     tool_context: ?*anyopaque = null,
     catalog_fn: ?CatalogFn = null,
+    provider_catalog_fn: ?ProviderCatalogFn = null,
     stream_runner: native_stream.Runner,
     factory_active: bool = false,
     handlers: std.StringHashMapUnmanaged(std.ArrayList(c.JSValue)) = .empty,
@@ -132,6 +136,8 @@ pub const Bindings = struct {
             self.tool_lookup = shared.tool_lookup;
             self.tool_context = shared.tool_context;
             self.catalog_fn = shared.catalog_fn;
+            self.provider_catalog_fn = shared.provider_catalog_fn;
+            self.providers.catalog_clock = shared.provider_catalog_clock;
         }
         owner.binding = self;
         try ui_manager.editors.addOwner(self.owner_id);
@@ -343,7 +349,7 @@ pub const Bindings = struct {
             const config = if (named) args[1] else args[0];
             const encoded = try self.providers.register(name, config, !named);
             if (c.JS_SetPropertyStr(self.engine.context, action, "config", encoded) < 0) return error.JavaScriptException;
-        } else self.providers.unregister(name);
+        } else try self.providers.unregisterCatalog(name);
         if (reservation) |index| {
             const retained = recipient.?.actions.orderedRemove(index);
             recipient.?.actions.appendAssumeCapacity(retained);
@@ -790,7 +796,274 @@ pub const Bindings = struct {
             var ui_data = [_]c.JSValue{ token, snapshot, object, self.owner_token, owner_class };
             return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), ui_data.len, &ui_data));
         }
+        if (kind == .modelRegistry) {
+            const registry = try self.createModelRegistry(snapshot, generation);
+            defer self.engine.freeValue(registry);
+            var registry_data = [_]c.JSValue{ token, snapshot, registry, self.owner_token, owner_class };
+            return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), registry_data.len, &registry_data));
+        }
         return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), data.len, &data));
+    }
+
+    const RegistryMethod = enum(c_int) { getAll, getAvailable, find, findOfType, getModelsOfType, getModelOfType, getAvailableOfType, getError, hasConfiguredAuth, getProvider, getRegisteredProviderConfig, getRegisteredNativeProvider, getRegisteredProviderIds };
+    fn createModelRegistry(self: *Bindings, snapshot: c.JSValue, generation: u32) !c.JSValue {
+        const registry = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        errdefer self.engine.freeValue(registry);
+        var data = [_]c.JSValue{ c.JS_NewInt64(self.engine.context, generation), snapshot, self.owner_token, c.JS_NewInt64(self.engine.context, self.owner_class) };
+        inline for (std.meta.fields(RegistryMethod)) |field| {
+            const function = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, registryCallback, field.name, 0, field.value, data.len, &data));
+            try self.actionProperty(registry, field.name, function);
+        }
+        return registry;
+    }
+    fn registryCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        const self = fromOwnerData(engine, data, 2) catch |err| return publicationFailure(engine, err);
+        var generation: i64 = 0;
+        if (c.JS_ToInt64(context, &generation, data[0]) < 0) return engine.throwCaptured();
+        if (!self.invocation_active or generation != self.invocation_generation) return c.JS_ThrowTypeError(context, "Stale native model registry context");
+        return self.registryValue(@enumFromInt(magic), data[1], if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| {
+            if (err == error.JavaScriptException) return engine.throwCaptured();
+            if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+            return c.JS_ThrowTypeError(context, "Native model registry: %s", @as([*:0]const u8, @errorName(err)));
+        };
+    }
+    fn configuredProvider(self: *Bindings, snapshot: c.JSValue, name: c.JSValue) !bool {
+        const names = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "configuredProviders"));
+        defer self.engine.freeValue(names);
+        if (!try self.providerArray(names)) return false;
+        for (0..try self.arrayLength(names)) |index| {
+            const candidate = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, names, @intCast(index)));
+            defer self.engine.freeValue(candidate);
+            if (c.JS_IsStrictEqual(self.engine.context, name, candidate)) return true;
+        }
+        return false;
+    }
+    fn arrayLength(self: *Bindings, array: c.JSValue) !u32 {
+        const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, array, "length"));
+        defer self.engine.freeValue(value);
+        var count: u32 = 0;
+        if (c.JS_ToUint32(self.engine.context, &count, value) < 0) return error.JavaScriptException;
+        if (count > 65536) return error.NativeModelCatalogLimit;
+        return count;
+    }
+    const ProviderCandidate = struct { name: []u8, ordinal: i64, first: i64, record: c.JSValue };
+    fn providerCandidates(self: *Bindings) !std.ArrayList(ProviderCandidate) {
+        const snapshot = if (self.provider_catalog_fn) |callback| try callback(self.tool_context) else try self.providers.catalogSnapshot();
+        defer self.engine.freeValue(snapshot);
+        var values: std.ArrayList(ProviderCandidate) = .empty;
+        errdefer self.freeProviderCandidates(&values);
+        for (0..try self.arrayLength(snapshot)) |index| {
+            const record = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, snapshot, @intCast(index)));
+            var retained = false;
+            defer if (!retained) self.engine.freeValue(record);
+            const name_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, record, "name"));
+            defer self.engine.freeValue(name_value);
+            const name = try self.engine.toString(name_value);
+            var name_retained = false;
+            defer if (!name_retained) self.gpa.free(name);
+            const ordinal_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, record, "ordinal"));
+            defer self.engine.freeValue(ordinal_value);
+            var ordinal: i64 = 0;
+            if (c.JS_ToInt64(self.engine.context, &ordinal, ordinal_value) < 0) return error.JavaScriptException;
+            const first_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, record, "firstOrdinal"));
+            defer self.engine.freeValue(first_value);
+            var first = ordinal;
+            if (!c.JS_IsUndefined(first_value) and c.JS_ToInt64(self.engine.context, &first, first_value) < 0) return error.JavaScriptException;
+            var existing: ?*ProviderCandidate = null;
+            for (values.items) |*candidate| if (std.mem.eql(u8, candidate.name, name)) {
+                existing = candidate;
+                break;
+            };
+            if (existing) |previous| {
+                if (ordinal <= previous.ordinal) continue;
+                const previous_native = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, previous.record, "native"));
+                defer self.engine.freeValue(previous_native);
+                const incoming_native = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, record, "native"));
+                defer self.engine.freeValue(incoming_native);
+                previous.first = if (c.JS_IsStrictEqual(self.engine.context, previous_native, incoming_native)) @min(previous.first, first) else first;
+                self.engine.freeValue(previous.record);
+                previous.record = record;
+                previous.ordinal = ordinal;
+                retained = true;
+            } else {
+                try values.append(self.gpa, .{ .name = name, .ordinal = ordinal, .first = first, .record = record });
+                retained = true;
+                name_retained = true;
+            }
+        }
+        const Order = struct {
+            fn less(_: void, a: ProviderCandidate, b: ProviderCandidate) bool {
+                return a.first < b.first;
+            }
+        };
+        std.mem.sort(ProviderCandidate, values.items, {}, Order.less);
+        return values;
+    }
+    fn freeProviderCandidates(self: *Bindings, values: *std.ArrayList(ProviderCandidate)) void {
+        for (values.items) |candidate| {
+            self.gpa.free(candidate.name);
+            self.engine.freeValue(candidate.record);
+        }
+        values.deinit(self.gpa);
+    }
+    fn modelObject(self: *Bindings, snapshot: c.JSValue, candidates: []const ProviderCandidate) !c.JSValue {
+        const exports = self.engine.native_module_values.get("@earendil-works/pi-ai") orelse return error.NativeModelsNotInstalled;
+        const factory = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, exports, "createModels"));
+        defer self.engine.freeValue(factory);
+        const models_object = try self.engine.checked(c.JS_Call(self.engine.context, factory, exports, 0, null));
+        errdefer self.engine.freeValue(models_object);
+        const models = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "models"));
+        defer self.engine.freeValue(models);
+        if (try self.providerArray(models)) {
+            // Group the snapshot without stringify: its model objects remain
+            // rooted while live provider callbacks run on this owner.
+            var names: std.ArrayList(c.JSValue) = .empty;
+            defer {
+                for (names.items) |value| self.engine.freeValue(value);
+                names.deinit(self.gpa);
+            }
+            for (0..try self.arrayLength(models)) |index| {
+                const model = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, models, @intCast(index)));
+                defer self.engine.freeValue(model);
+                const name = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, model, "provider"));
+                var retained = false;
+                defer if (!retained) self.engine.freeValue(name);
+                var found = false;
+                for (names.items) |previous| if (c.JS_IsStrictEqual(self.engine.context, previous, name)) {
+                    found = true;
+                    break;
+                };
+                if (found) continue;
+                const group = try self.engine.checked(c.JS_NewArray(self.engine.context));
+                defer self.engine.freeValue(group);
+                var output: u32 = 0;
+                for (0..try self.arrayLength(models)) |item| {
+                    const candidate = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, models, @intCast(item)));
+                    defer self.engine.freeValue(candidate);
+                    const provider = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate, "provider"));
+                    defer self.engine.freeValue(provider);
+                    if (c.JS_IsStrictEqual(self.engine.context, name, provider)) {
+                        if (c.JS_SetPropertyUint32(self.engine.context, group, output, c.JS_DupValue(self.engine.context, candidate)) < 0) return error.JavaScriptException;
+                        output += 1;
+                    }
+                }
+                const config = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
+                defer self.engine.freeValue(config);
+                try self.actionProperty(config, "models", c.JS_DupValue(self.engine.context, group));
+                const adapted = try native_models.snapshotProvider(self.engine, name, config, try self.configuredProvider(snapshot, name), false);
+                defer self.engine.freeValue(adapted);
+                try self.setModelProvider(models_object, adapted);
+                try names.append(self.gpa, name);
+                retained = true;
+            }
+        }
+        for (candidates) |candidate| {
+            const config = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate.record, "config"));
+            defer self.engine.freeValue(config);
+            const name = try self.engine.checked(c.JS_NewStringLen(self.engine.context, candidate.name.ptr, candidate.name.len));
+            defer self.engine.freeValue(name);
+            if (c.JS_IsUndefined(config)) {
+                const function = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, models_object, "deleteProvider"));
+                defer self.engine.freeValue(function);
+                var args = [_]c.JSValue{name};
+                const ignored = try self.engine.checked(c.JS_Call(self.engine.context, function, models_object, args.len, &args));
+                self.engine.freeValue(ignored);
+                continue;
+            }
+            const native = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate.record, "native"));
+            defer self.engine.freeValue(native);
+            const configured = try self.configuredProvider(snapshot, name);
+            const provider = if (c.JS_ToBool(self.engine.context, native) == 1) c.JS_DupValue(self.engine.context, config) else try native_models.snapshotProvider(self.engine, name, config, configured, true);
+            defer self.engine.freeValue(provider);
+            try self.setModelProvider(models_object, provider);
+        }
+        return models_object;
+    }
+    fn setModelProvider(self: *Bindings, object: c.JSValue, provider: c.JSValue) !void {
+        const setter = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, object, "setProvider"));
+        defer self.engine.freeValue(setter);
+        var args = [_]c.JSValue{provider};
+        const ignored = try self.engine.checked(c.JS_Call(self.engine.context, setter, object, args.len, &args));
+        self.engine.freeValue(ignored);
+    }
+    fn registryValue(self: *Bindings, method: RegistryMethod, snapshot: c.JSValue, args: []c.JSValue) !c.JSValue {
+        if (method == .getError) return self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "modelRegistryError"));
+        if (method == .hasConfiguredAuth) {
+            const provider = if (args.len > 0) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args[0], "provider")) else c.pi_js_undefined();
+            defer self.engine.freeValue(provider);
+            return c.pi_js_bool(self.engine.context, @intFromBool(try self.configuredProvider(snapshot, provider)));
+        }
+        var candidates = try self.providerCandidates();
+        defer self.freeProviderCandidates(&candidates);
+        if (method == .getRegisteredProviderConfig or method == .getRegisteredNativeProvider or method == .getRegisteredProviderIds) {
+            const result = if (method == .getRegisteredProviderIds) try self.engine.checked(c.JS_NewArray(self.engine.context)) else c.pi_js_undefined();
+            errdefer self.engine.freeValue(result);
+            var output: u32 = 0;
+            if (method == .getRegisteredProviderIds) {
+                // ModelRuntime exposes declarative registrations first, then
+                // native provider registrations, preserving each map's order.
+                for ([_]bool{ false, true }) |native_kind| for (candidates.items) |candidate| {
+                    const config = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate.record, "config"));
+                    defer self.engine.freeValue(config);
+                    if (c.JS_IsUndefined(config)) continue;
+                    const native = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate.record, "native"));
+                    defer self.engine.freeValue(native);
+                    if ((c.JS_ToBool(self.engine.context, native) == 1) != native_kind) continue;
+                    const name = try self.engine.checked(c.JS_NewStringLen(self.engine.context, candidate.name.ptr, candidate.name.len));
+                    if (c.JS_SetPropertyUint32(self.engine.context, result, output, name) < 0) return error.JavaScriptException;
+                    output += 1;
+                };
+                return result;
+            }
+            for (candidates.items) |candidate| {
+                const config = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate.record, "config"));
+                defer self.engine.freeValue(config);
+                if (c.JS_IsUndefined(config)) continue;
+                const name = try self.engine.checked(c.JS_NewStringLen(self.engine.context, candidate.name.ptr, candidate.name.len));
+                defer self.engine.freeValue(name);
+                if (method == .getRegisteredProviderIds) {
+                    if (c.JS_SetPropertyUint32(self.engine.context, result, output, c.JS_DupValue(self.engine.context, name)) < 0) return error.JavaScriptException;
+                    output += 1;
+                } else if (args.len > 0 and c.JS_IsStrictEqual(self.engine.context, name, args[0])) {
+                    const native = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, candidate.record, "native"));
+                    defer self.engine.freeValue(native);
+                    if ((c.JS_ToBool(self.engine.context, native) == 1) == (method == .getRegisteredNativeProvider)) return c.JS_DupValue(self.engine.context, config);
+                }
+            }
+            return result;
+        }
+        const models = try self.modelObject(snapshot, candidates.items);
+        defer self.engine.freeValue(models);
+        const name: [*:0]const u8 = switch (method) {
+            .getAll => "getModels",
+            .find => "getModel",
+            .findOfType, .getModelOfType => "getModelOfType",
+            .getModelsOfType => "getModelsOfType",
+            .getAvailableOfType => "getAvailableOfType",
+            .getProvider => "getProvider",
+            .getAvailable => "getModels",
+            else => unreachable,
+        };
+        const function = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, models, name));
+        defer self.engine.freeValue(function);
+        const result = try self.engine.checked(c.JS_Call(self.engine.context, function, models, if (method == .getAll or method == .getAvailable) 0 else @intCast(args.len), args.ptr));
+        if (method != .getAvailable) return result;
+        defer self.engine.freeValue(result);
+        const filtered = try self.engine.checked(c.JS_NewArray(self.engine.context));
+        errdefer self.engine.freeValue(filtered);
+        var output: u32 = 0;
+        for (0..try self.arrayLength(result)) |index| {
+            const model = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, result, @intCast(index)));
+            defer self.engine.freeValue(model);
+            const provider = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, model, "provider"));
+            defer self.engine.freeValue(provider);
+            if (try self.configuredProvider(snapshot, provider)) {
+                if (c.JS_SetPropertyUint32(self.engine.context, filtered, output, c.JS_DupValue(self.engine.context, model)) < 0) return error.JavaScriptException;
+                output += 1;
+            }
+        }
+        return filtered;
     }
 
     fn createContext(self: *Bindings) !c.JSValue {
@@ -817,10 +1090,10 @@ pub const Bindings = struct {
     fn contextCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         const kind: ContextMethod = @enumFromInt(magic);
-        const self = fromOwnerData(engine, data, if (kind == .ui) 3 else 2) catch |err| return publicationFailure(engine, err);
+        const self = fromOwnerData(engine, data, if (kind == .ui or kind == .modelRegistry) 3 else 2) catch |err| return publicationFailure(engine, err);
         // UI is an owner-rooted capability captured when the context is
         // created. Its individual methods enforce invocation/owner fences.
-        if (kind == .ui) return c.JS_DupValue(context, data[2]);
+        if (kind == .ui or kind == .modelRegistry) return c.JS_DupValue(context, data[2]);
         var generation: i64 = 0;
         if (c.JS_ToInt64(context, &generation, data[0]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
         if (!self.invocation_active or generation != self.invocation_generation) return c.JS_ThrowTypeError(context, "Stale native extension context");
@@ -852,6 +1125,7 @@ pub const Bindings = struct {
             .cwd, .getCwd => "cwd",
             .model => "model",
             .scopedModels => "scopedModels",
+            .modelRegistry => unreachable,
             .thinkingLevel => "thinkingLevel",
             .signal => unreachable,
             .ui => unreachable,

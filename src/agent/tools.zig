@@ -198,6 +198,29 @@ pub fn isBuiltin(name: []const u8) bool {
     return false;
 }
 
+fn mcpPatternMatches(pattern: []const u8, name: []const u8) bool {
+    var p: usize = 0;
+    var n: usize = 0;
+    var star: ?usize = null;
+    var retry: usize = 0;
+    while (n < name.len) {
+        if (p < pattern.len and pattern[p] == name[n]) {
+            p += 1;
+            n += 1;
+        } else if (p < pattern.len and pattern[p] == '*') {
+            star = p;
+            p += 1;
+            retry = n;
+        } else if (star) |index| {
+            p = index + 1;
+            retry += 1;
+            n = retry;
+        } else return false;
+    }
+    while (p < pattern.len and pattern[p] == '*') p += 1;
+    return p == pattern.len;
+}
+
 pub const ToolFilter = struct {
     /// If non-null, only these tools are enabled.
     allow: ?[]const []const u8 = null,
@@ -209,6 +232,7 @@ pub const ToolFilter = struct {
     no_tools: bool = false,
 
     pub fn isEnabled(self: ToolFilter, name: []const u8) bool {
+        if (std.mem.startsWith(u8, name, "mcp__")) return self.isMcpEnabled(name);
         if (self.no_tools) return false;
         if (self.allow) |a| {
             var found = false;
@@ -234,6 +258,22 @@ pub const ToolFilter = struct {
                 if (std.mem.eql(u8, t, name)) return false;
             }
         }
+        return true;
+    }
+
+    /// Upstream keeps MCP tools when a nonempty allowlist contains no MCP selector.
+    pub fn isMcpEnabled(self: ToolFilter, name: []const u8) bool {
+        if (self.no_tools) return false;
+        if (self.allow) |allowed| {
+            var filters_mcp = allowed.len == 0;
+            var matches = false;
+            for (allowed) |pattern| {
+                filters_mcp = filters_mcp or std.mem.startsWith(u8, pattern, "mcp__");
+                matches = matches or mcpPatternMatches(pattern, name);
+            }
+            if (filters_mcp and !matches) return false;
+        }
+        if (self.exclude) |excluded| for (excluded) |pattern| if (mcpPatternMatches(pattern, name)) return false;
         return true;
     }
 

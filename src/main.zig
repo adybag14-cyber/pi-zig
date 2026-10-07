@@ -1445,6 +1445,9 @@ fn applyExtensionCommandOutput(
     try moveMutableMessages(gpa, &steering, queued_steering);
     try moveMutableMessages(gpa, &followups, queued_followups);
     result.terminate = result.terminate or stop_requested or output.abort;
+    // A previously admitted sendUserMessage still schedules its turn even
+    // when the command subsequently rejects. The diagnostic was printed above.
+    if (output.native_invocation_failed and result.prompt != null) result.is_error = false;
     return result;
 }
 
@@ -3929,6 +3932,27 @@ fn runMain(init: std.process.Init) !void {
     else
         try gpa.dupe(u8, "[]");
     defer gpa.free(extension_tool_schemas);
+    var configured_mcp: ?*pi_zig.mcp.configured.Service = null;
+    defer if (configured_mcp) |service| service.deinit();
+    if (agent_dir) |directory| {
+        var reserved: std.ArrayList([]const u8) = .empty;
+        defer reserved.deinit(gpa);
+        for (extension_host.extensions.items) |extension| for (extension.tools) |tool| try reserved.append(gpa, tool.name);
+        configured_mcp = try pi_zig.mcp.configured.Service.create(gpa, io, .{
+            .agent_dir = directory,
+            .cwd = cwd,
+            .project_trusted = trust_project,
+            .environ = environ,
+            .reserved_names = reserved.items,
+        });
+        try configured_mcp.?.start();
+        for (configured_mcp.?.diagnostics.items) |message| {
+            const warning = try std.fmt.allocPrint(arena, "warning: {s}\n", .{message});
+            try std.Io.File.stderr().writeStreamingAll(io, warning);
+        }
+    }
+    const configured_mcp_schemas = if (configured_mcp) |service| try service.schemasJson() else try gpa.dupe(u8, "[]");
+    defer gpa.free(configured_mcp_schemas);
     var extension_active_tools_owned: ?[]const []const u8 = null;
     defer if (extension_active_tools_owned) |names| freeOwnedToolNames(gpa, names);
 
@@ -4148,6 +4172,10 @@ fn runMain(init: std.process.Init) !void {
         .event_observer_fn = if (extensions_active) extensions.integration.Bridge.onAgentEvent else null,
         .event_observer_ctx = if (extensions_active) &extension_bridge else null,
         .extra_tools_json = extension_tool_schemas,
+        .configured_tools_json = configured_mcp_schemas,
+        .configured_tool_ctx = configured_mcp,
+        .configured_tool_fn = if (configured_mcp != null) pi_zig.mcp.configured.Service.execute else null,
+        .configured_tool_exists_fn = if (configured_mcp != null) pi_zig.mcp.configured.Service.exists else null,
         .external_tool_fn = if (extensions_active) extensions.integration.Bridge.executeTool else null,
         .external_tool_streaming_fn = if (extensions_active) extensions.integration.Bridge.executeToolStreaming else null,
         .external_tool_call_streaming_fn = if (extensions_active) extensions.integration.Bridge.executeToolCallStreaming else null,

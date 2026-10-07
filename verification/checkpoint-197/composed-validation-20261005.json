@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "parityCertified": false,
+  "parent": "1665296020007c26c5c82084029c093c930bce40",
+  "upstream": "28dcce2ba45ce4a9efeb0f5b686f0be830fd89b9",
+  "packageVersion": "1.0.4",
+  "validation": [
+    {
+      "receipt": {
+        "name": "checkpoint197-composed-windows-debug",
+        "pid": 11396,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=Debug -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-05T22:52:25.8919420Z",
+        "launched_utc": "2026-10-05T22:52:25.8883456+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T22:55:45.7592682+00:00"
+      },
+      "summary": "Build Summary: 169/169 steps succeeded; 924/970 tests passed (46 skipped)",
+      "stderrSha256": "0db17c028dc894efdeedc28d42223a81b97728c317793d2e4439d828849ec91c"
+    },
+    {
+      "receipt": {
+        "name": "checkpoint197-resume-windows-releasesafe-20261007",
+        "pid": 47108,
+        "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+        "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test test-provider-contracts -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\\Users\\adyba\\sqlite-3.53.4-win-x64 -j2 --summary all",
+        "created_utc": "2026-10-07T09:34:44.4332920Z",
+        "launched_utc": "2026-10-07T09:34:44.4302816+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T09:42:21.3934317+00:00"
+      },
+      "summary": "Build Summary: 169/169 steps succeeded; 924/970 tests passed (46 skipped)",
+      "stderrSha256": "49ee1a68a2aa0a6bbef6461d106856d2a5007838e6d547f1bf19b421762f8c6c"
+    },
+    {
+      "receipt": {
+        "name": "checkpoint197-composed-linux-debug",
+        "pid": 3744,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-checkpoint197-composed-source-20261005 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1100s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Doptimize=Debug -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261005 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261005",
+        "created_utc": "2026-10-05T22:52:25.8916080Z",
+        "launched_utc": "2026-10-05T22:52:25.8884561+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-05T22:54:58.7133657+00:00"
+      },
+      "summary": "Build Summary: 165/165 steps succeeded; 1096/1100 tests passed (4 skipped)",
+      "stderrSha256": "7d9bd7c59a68798ac82ec1de0a231373c78c810243306daf92388fd7a2f943bf"
+    },
+    {
+      "receipt": {
+        "name": "checkpoint197-resume-linux-releasesafe-20261007",
+        "pid": 2700,
+        "executable": "C:\\Windows\\System32\\wsl.exe",
+        "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --cd /tmp/pi-checkpoint197-resume-source-20261007 --exec /usr/bin/timeout --signal=TERM --kill-after=5s 1400s /usr/bin/env PATH=/mnt/c/Users/adyba/pi-zig-toolchain-20261003/node-v24.21.0-linux-x64/bin:/usr/bin:/bin /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test test-provider-contracts -Doptimize=ReleaseSafe -Dtarget=x86_64-linux-gnu.2.35 -Dsqlite-lib-dir=/tmp/pi-foundation-b78-sqlite-lib-20261005 -j2 --summary all --cache-dir /tmp/pi-storage-composed-cache-20261007 --global-cache-dir /tmp/pi-foundation-b78-global-cache-20261007",
+        "created_utc": "2026-10-07T09:34:45.1255390Z",
+        "launched_utc": "2026-10-07T09:34:45.1222796+00:00",
+        "identity_captured": true,
+        "working_directory": "C:\\Users\\adyba\\pi-zig-update-20261003",
+        "status": "passed",
+        "exit_code": 0,
+        "completed_utc": "2026-10-07T09:51:33.1868501+00:00"
+      },
+      "summary": "Build Summary: 165/165 steps succeeded; 1096/1100 tests passed (4 skipped)",
+      "stderrSha256": "4becdf19b068ffc9886bc4c4a0dd9146c0731b1bc7bf64bbaf8c18d00ebdea67"
+    }
+  ],
+  "sourceArchiveSha256": "7f18c59f42127957b6efde5ea800397f2884f4ceed86d4a03cdb22ac82c0727d",
+  "inputsUnchanged": 589,
+  "admittedManifests": [
+    "upstream-drift-frozen-source-20261005.json",
+    "upstream-drift-workflow-validation-20261005.json",
+    "native-prethrow-cli-freeze-20261005.json",
+    "native-env-invalid-name-repair-20261005.json",
+    "renderer-late-control-source-20261005.json",
+    "mcp-deadline-frozen-source-20261005.json",
+    "mcp-callback-close-source-20261005.json",
+    "native-qualified-models-freeze-20261005.json",
+    "native-autocomplete-source-20261005.json",
+    "native-autocomplete-final-validation-20261005.json",
+    "mcp-configured-frozen-source-20261005.json",
+    "checkpoint196-hosted-terminal-20261005.json",
+    "mcp-configured-final-validation-20261005.json",
+    "native-late-tool-command-contract-20261005.txt",
+    "mcp-deadline-final-validation-20261005.json"
+  ],
+  "limits": [
+    "Whole Pi parity/default/release remains uncertified",
+    "One JS host remains; strict language guard remains active",
+    "Module contracts and admitted manifests define exact functionality and limitations; hosted results are separately recorded"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "worktree": "C:\\Users\\adyba\\pi-zig-qualified-models-20261005",
+  "paths": [
+    {
+      "path": "src/extensions/native_models.zig",
+      "before_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_sha256": "6a2e5fd820fb6cfeef690d91e79a5428c0c4f70e1f8a45060e0237652b670659",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-qualified-models-delta-20261005\\native_models.zig.patch"
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "before_sha256": "dfc769260fc8ed65dd9ad13d2991ec36dbc028a85cfdeaa02828094daa05e822",
+      "after_sha256": "abfe58a9c77422f7ede912dfe1f1abd1689f24848d8ff96e01a949c5fba78fd3",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-qualified-models-delta-20261005\\native_bindings.zig.patch"
+    },
+    {
+      "path": "src/extensions/native_providers.zig",
+      "before_sha256": "9415739472dd24200be114918e6acfedba4dd91d60f304bfdfd14e49aa6876ca",
+      "after_sha256": "6b5af83c82e0aaefdcd9dec4df9fa50f98c9d9e3d4a954e2aa52e39b985c680c",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-qualified-models-delta-20261005\\native_providers.zig.patch"
+    },
+    {
+      "path": "src/extensions/native_group.zig",
+      "before_sha256": "de2226ee990c84a5d205ce203a2848e0a40a239d182abbe74843b43e0bb75b58",
+      "after_sha256": "64e838cf362184282f9d903dbb1570c6501b809c24af882afa5e41539c933b43",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-qualified-models-delta-20261005\\native_group.zig.patch"
+    },
+    {
+      "path": "src/extensions/native_stream.zig",
+      "before_sha256": "56bd0d9e407ebd9bdbbb8f0e247dcf834c5d6fad668d1fff87666593285b8f4d",
+      "after_sha256": "692f826fbb4579cfb4f1c2a3fd4bddcd4f8cdcc6a26c9efcc935e854370b7041",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-qualified-models-delta-20261005\\native_stream.zig.patch"
+    },
+    {
+      "path": "src/extensions/ui.zig",
+      "before_sha256": "5e1b76f2bde0b5bc8d34b2a3359fa76be3b8aefc29ec40af91784b3e27c112c8",
+      "after_sha256": "03d5cc85b18f0c416966dad44e8e1b6af156f44bc858d02a47bdf990d3a9b740",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-qualified-models-delta-20261005\\ui.zig.patch"
+    },
+    {
+      "path": "src/native_runtime_process_test.zig",
+      "before_sha256": "7893c8b25f6952cbef0e0c91522d77e14be8e984a3138247f2d886983098677d",
+      "after_sha256": "924b03622c770344175d256ffb5663d4897525b127ce1bbcd3ae585371436143",
+      "patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-qualified-models-delta-20261005\\native_runtime_process_test.zig.patch"
+    }
+  ],
+  "Debug": "native-qualified-models-final-debug-20261005a PASS216+3skip (45Runtime/148bindings/23ConPTY+3skip) at22:29:36; subsequent change ignores extra getAll/getAvailable args, then zig fmt",
+  "ReleaseSafe": "native-qualified-models-final-releasesafe-20261005a terminal PASS216+3skip/20steps at22:36:37Z",
+  "source_oracle": "native-qualified-models-28dc-oracle.ts exact upstream query method bodies external harness; Node24.14 terminal PASS",
+  "bounds": [
+    "qualified catalog/query surfaces and asynchronous availability/auth check/filter callbacks only",
+    "no refresh/reauthentication/stream/complete/classify/generateImages on new facade",
+    "native createModels invokes credentialStore.read; registry facade uses authoritative configured snapshots/declarative literal keys and native ambient checks",
+    "late Host tool/command discovery remains pending"
+  ],
+  "rebased_binding_patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-qualified-models-delta-20261005\\native_bindings.main166.patch",
+  "rebased_binding_before_sha256": "fb03d3acf3b810b072180f3ca3aedafcab7eca1fd46ef270997ead93433c2275",
+  "rebased_binding_after_sha256": "5e8d58f9fd32d476e10f868293febbd018328cfa9ba38f027e8b95882ea3216d",
+  "rebased_process_patch": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-qualified-models-delta-20261005\\native_runtime_process_test.main166.patch",
+  "rebased_process_before_sha256": "2f7c1c2ccb917d24690dc1463a8fdac50de6b88df9d65656eecf23296aaebe1e",
+  "rebased_process_after_sha256": "3154a1a6b45551a8fa9a0195f2185bbd79298e0c9c2b399441737c9b3fe32031",
+  "frozen": true,
+  "final_node_oracle": "native-qualified-models-28dc-oracle.stdout.json terminal PASS9 behavior groups",
+  "source_unchanged": true
+}

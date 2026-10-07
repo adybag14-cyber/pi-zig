@@ -317,6 +317,14 @@ const Transport = struct {
             _ = try self.group.renderers.control(&control);
         }
     }
+    fn persistentControl(self: *Transport, kind: WireRecord.Kind, request: std.json.Value) !bool {
+        switch (kind) {
+            .renderer_control => try self.rendererControl(request),
+            .editor_control => try self.editorControl(request),
+            else => return false,
+        }
+        return true;
+    }
 
     fn editorControl(self: *Transport, request: std.json.Value) !void {
         if (request != .object) return error.InvalidEditorControl;
@@ -741,6 +749,69 @@ fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, transport: *
     return error.UnsupportedNativeWorkerRequest;
 }
 
+test "renderer control arrives between idle pump and FIFO dequeue and retains control identity for both slot resize and subscription" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = io;
+    try timers.install(engine, io);
+    const group = try native_group.Group.init(engine);
+    defer group.deinit();
+    const binding = try group.add("late-renderer-control.mjs");
+    try binding.installSchemas();
+    try binding.loadFactory("export default pi=>pi.registerTool({name:'late',execute(){return {}},renderCall(){return {render(width){return ['LATE_CALL:'+width]}}},renderResult(){return {render(width){return ['LATE_RESULT:'+width]}}}})", "late-renderer-control.mjs");
+    var output: std.Io.Writer.Allocating = .init(gpa);
+    defer output.deinit();
+    var transport: Transport = .{ .engine = engine, .bindings = binding, .io = io, .writer = &output.writer, .group = group };
+    defer transport.deinit();
+    group.renderers.record_fn = Transport.rendererRecord;
+    group.renderers.record_context = &transport;
+    group.renderers.subscribe(true);
+    const call = try binding.invokeRenderer(.render_tool_call, "late", "{\"toolCallId\":\"race-row\",\"args\":{},\"width\":80}");
+    defer gpa.free(call);
+    const result = try binding.invokeRenderer(.render_tool_result, "late", "{\"toolCallId\":\"race-row\",\"result\":{},\"width\":80}");
+    defer gpa.free(result);
+    const Probe = struct {
+        var injected = false;
+        var control_bytes: []const u8 = "";
+        fn pump(current_engine: *engine_mod.Engine) !bool {
+            const dispatched = try Transport.pump(current_engine);
+            if (!injected) {
+                injected = true;
+                const current: *Transport = @ptrCast(@alignCast(current_engine.host_control_context.?));
+                try current.enqueue(try std.heap.page_allocator.dupe(u8, control_bytes));
+            }
+            return dispatched;
+        }
+    };
+    engine.host_control_context = &transport;
+    engine.host_control_pump = Probe.pump;
+    defer {
+        engine.host_control_context = null;
+        engine.host_control_pump = null;
+    }
+    for ([_][]const u8{
+        "{\"kind\":\"renderer_control\",\"version\":1,\"ownerGeneration\":\"1\",\"extensionId\":\"1\",\"rowGeneration\":\"1\",\"toolCallId\":\"race-row\",\"control\":\"resize\",\"width\":55}",
+        "{\"kind\":\"renderer_subscribe\",\"version\":1,\"ownerGeneration\":\"1\",\"enabled\":false}",
+    }, 0..) |late_bytes, index| {
+        Probe.injected = false;
+        Probe.control_bytes = late_bytes;
+        const received = (try transport.next()).?;
+        defer std.heap.page_allocator.free(received.bytes);
+        try std.testing.expectEqual(WireRecord.Kind.renderer_control, received.kind);
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, received.bytes, .{});
+        defer parsed.deinit();
+        try std.testing.expect(try transport.persistentControl(received.kind, parsed.value));
+        if (index == 0) {
+            _ = try group.renderers.pumpDirty();
+            try std.testing.expect(std.mem.indexOf(u8, output.written(), "LATE_CALL:55") != null);
+            try std.testing.expect(std.mem.indexOf(u8, output.written(), "LATE_RESULT:55") != null);
+        } else try std.testing.expect(!group.renderers.subscribed);
+    }
+    try std.testing.expect(std.mem.indexOf(u8, output.written(), "\"ok\"") == null);
+}
+
 test "native tool result projection preserves text images details and usage" {
     const gpa = std.testing.allocator;
     const result = try normalizeToolResult(gpa, "{\"content\":[\"first\",{\"type\":\"text\",\"text\":\"second\"},{\"type\":\"image\",\"data\":\"YWJj\",\"mimeType\":\"image/jpeg\"}],\"details\":{\"marker\":42},\"usage\":{\"input\":1},\"addedToolNames\":[\"loaded\",\"\",3]}", "fixture");
@@ -893,10 +964,10 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             try writeFailure(allocator, writer, "InvalidWorkerRequest");
             continue;
         }
-        if (record.kind == .editor_control) {
-            try transport.editorControl(request);
-            continue;
-        }
+        // A persistent control can arrive after pumpIdle's control scan but
+        // before next() dequeues its FIFO. It remains an owner-thread control,
+        // never an ordinary invocation or an ordinary response-envelope entry.
+        if (try transport.persistentControl(record.kind, request)) continue;
         const kind = requiredText(request.object, "kind") catch |err| {
             try writeFailure(allocator, writer, @errorName(err));
             continue;

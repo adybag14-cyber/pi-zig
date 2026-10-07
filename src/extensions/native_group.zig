@@ -9,6 +9,7 @@ const c = engine_mod.c;
 
 pub const Entry = struct { id: u64, source: []u8, binding: *bindings_mod.Bindings };
 pub const Group = struct {
+    provider_catalog_clock: u64 = 0,
     engine: *engine_mod.Engine,
     ui: *native_ui.Manager,
     renderers: *native_renderers.Manager,
@@ -55,7 +56,7 @@ pub const Group = struct {
         if (self.entries.items.len >= 4096 or self.next_id >= 9_007_199_254_740_991) return error.NativeGroupExtensionLimit;
         const source = try self.engine.gpa.dupe(u8, path);
         errdefer self.engine.gpa.free(source);
-        const binding = try bindings_mod.Bindings.initShared(self.engine.gpa, self.engine, .{ .ui = self.ui, .renderers = self.renderers, .broker = &self.broker, .owner_id = self.next_id, .tool_lookup = lookupTool, .tool_context = self, .catalog_fn = catalog });
+        const binding = try bindings_mod.Bindings.initShared(self.engine.gpa, self.engine, .{ .ui = self.ui, .renderers = self.renderers, .broker = &self.broker, .owner_id = self.next_id, .tool_lookup = lookupTool, .tool_context = self, .catalog_fn = catalog, .provider_catalog_fn = providerCatalog, .provider_catalog_clock = &self.provider_catalog_clock });
         errdefer binding.deinit();
         try binding.setSourcePath(path);
         try self.entries.append(self.engine.gpa, .{ .id = self.next_id, .source = source, .binding = binding });
@@ -85,6 +86,28 @@ pub const Group = struct {
     fn lookupTool(context: ?*anyopaque, name: []const u8) ?c.JSValue {
         const self: *Group = @ptrCast(@alignCast(context.?));
         return self.tool(name);
+    }
+
+    fn providerCatalog(context: ?*anyopaque) !c.JSValue {
+        const self: *Group = @ptrCast(@alignCast(context.?));
+        const result = try self.engine.checked(c.JS_NewArray(self.engine.context));
+        errdefer self.engine.freeValue(result);
+        var output: u32 = 0;
+        for (self.entries.items) |entry| {
+            const records = try entry.binding.providers.catalogSnapshot();
+            defer self.engine.freeValue(records);
+            const count_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, records, "length"));
+            defer self.engine.freeValue(count_value);
+            var count: u32 = 0;
+            if (c.JS_ToUint32(self.engine.context, &count, count_value) < 0) return error.JavaScriptException;
+            for (0..count) |index| {
+                if (output >= 65536) return error.NativeModelProviderLimit;
+                const item = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, records, @intCast(index)));
+                if (c.JS_SetPropertyUint32(self.engine.context, result, output, item) < 0) return error.JavaScriptException;
+                output += 1;
+            }
+        }
+        return result;
     }
 
     const CatalogCommand = struct { owner: *bindings_mod.Bindings, name: []const u8, value: c.JSValue };

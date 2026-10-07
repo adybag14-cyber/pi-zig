@@ -171,6 +171,60 @@ const owned_editor_extension =
     \\ pi.registerCommand('editor-inspect',{handler(_,ctx){ctx.ui.notify('EDITOR_DISPOSED:'+disposed);return {}}});
     \\}
 ;
+
+const autocomplete_extension =
+    \\let aborts=0;
+    \\export default pi=>{
+    \\ pi.on('session_start',(_,ctx)=>ctx.ui.addAutocompleteProvider(current=>({
+    \\  triggerCharacters:['%'],
+    \\  async getSuggestions(lines,line,col,options){
+    \\   const value=lines[line];if(!value.startsWith('%'))return await current.getSuggestions(lines,line,col,options);
+    \\   if(value==='%error')throw new Error('autocomplete-original-rejection');
+    \\   await new Promise(resolve=>{const timer=setTimeout(resolve,250);options.signal.addEventListener('abort',()=>{aborts++;clearTimeout(timer);resolve()},{once:true})});
+    \\   if(options.signal.aborted)return null;return {prefix:value,items:[{value:'one',label:'Plugin One'},{value:'two',label:'Plugin Two',description:'selected second'}]};
+    \\  },
+    \\  applyCompletion(...args){return current.applyCompletion(...args)}
+    \\ })));
+    \\ pi.registerCommand('auto-inspect',{handler(_,ctx){ctx.ui.notify('AUTO_ABORTS:'+aborts);return {}}});
+    \\}
+;
+test "real custom editor autocomplete asynchronous wrapper dropdown selection fallback cancellation error resize and reload" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnEditor(errors, autocomplete_extension);
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "history-row-059", 0);
+    try observed.send(&child, "%", "> %");
+    try observed.wait(&child, "→ Plugin One", 0);
+    try observed.send(&child, "\x1b[B", "→ Plugin Two");
+    try observed.send(&child, "\t", "> two");
+    try std.testing.expect(!try observed.screen.contains("Plugin One"));
+    try observed.send(&child, "\x15/hel\t", "> /help");
+    try observed.send(&child, "\x15%cancel", "> %cancel");
+    try observed.send(&child, "\x15fresh", "> fresh");
+    try std.testing.io.sleep(.fromMilliseconds(400), .awake);
+    try observed.drain(&child);
+    try std.testing.expect(!try observed.screen.contains("Plugin One"));
+    try observed.send(&child, "\x15%error", "> %error");
+    try observed.wait(&child, "autocomplete-original-rejection", 0);
+    try observed.send(&child, "\x15%", "→ Plugin One");
+    const before_resize = observed.screen.frames;
+    try observed.screen.resize(70, 22);
+    try child.resize(70, 22);
+    try observed.wait(&child, "Plugin One", before_resize);
+    try observed.send(&child, "\x1b", "> %");
+    const before_cancel = observed.screen.frames;
+    try observed.waitAbsent(&child, "Plugin One", before_cancel -| 1);
+    try observed.send(&child, "\x15/reload\r", "Reloaded:");
+    try observed.send(&child, "%", "→ Plugin One");
+    try observed.send(&child, "\t", "> one");
+    try cleanExit(&fixture, &child, &observed);
+}
 test "real custom editor focus modal handoff retained draft default restoration and owner disposal" {
     if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");
@@ -871,5 +925,32 @@ test "real fullscreen Escape aborts a live turn without clearing the independent
     try std.testing.expect(try observed.screen.contains("> abort-draft"));
     try observed.send(&child, "\x15again\r", "second-first");
     try observed.wait(&child, "second-final", observed.screen.frames);
+    try cleanExit(&fixture, &child, &observed);
+}
+
+test "real fullscreen CLI applies native command and hook actions before throw at the live safe point" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnExtension(errors,
+        \\export default pi=>{pi.registerCommand('reject',{handler(){pi.appendEntry('command-before-one',{value:'Ω🦊'});pi.appendEntry('command-before-two',{});pi.sendUserMessage('prethrow-live-turn');throw Error('command-original-diagnostic')}});pi.on('before_agent_start',()=>{pi.appendEntry('hook-before-three',{});throw Error('hook-original-diagnostic')})}
+    );
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.wait(&child, "history-row-059", 0);
+    try observed.send(&child, "/reject\r", "command-original-diagnostic");
+    // The command's admitted user message must trigger a turn without another
+    // keyboard event, despite its later rejection.
+    try observed.wait(&child, "stream-final", 0);
+    const saved = try fixture.scratch.dir.readFileAlloc(std.testing.io, "history.jsonl", std.testing.allocator, .limited(1024 * 1024));
+    defer std.testing.allocator.free(saved);
+    const first = std.mem.indexOf(u8, saved, "command-before-one") orelse return error.MissingPrethrowCommandAction;
+    const second = std.mem.indexOf(u8, saved, "command-before-two") orelse return error.MissingPrethrowCommandAction;
+    const third = std.mem.indexOf(u8, saved, "hook-before-three") orelse return error.MissingPrethrowHookAction;
+    try std.testing.expect(first < second and second < third);
+    try std.testing.expect(std.mem.indexOf(u8, saved, "Ω🦊") != null);
     try cleanExit(&fixture, &child, &observed);
 }

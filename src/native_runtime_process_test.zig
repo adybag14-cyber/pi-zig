@@ -2138,3 +2138,52 @@ test "native runtime rejected callbacks preserve admitted action order origin an
     }
     try fixture.noBridge();
 }
+
+test "native runtime qualified registry preserves chat facade live shared provider precedence typed identity removal and stale contexts without Node" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource(
+        \\import {createModels} from '@earendil-works/pi-ai';import {createModels as alias} from 'pi-ai';
+        \\export default pi=>{if(createModels!==alias)throw Error('model alias identity');
+        \\const chat={id:'same',provider:'shared'},image={id:'same',type:'image',provider:'shared'};globalThis.firstProvider={id:'shared',auth:{apiKey:{async check(){return {type:'api_key'}}}},getModels(){return [chat]},getAllModels(){if(this!==firstProvider)throw Error('first receiver');return [chat,image]}};pi.registerProvider(firstProvider);
+        \\pi.registerProvider('named',{api:'openai-completions',apiKey:'fixture-key',models:[{id:'chat'},{id:'image',type:'image',api:'openrouter-images'},{id:'classifier',type:'classifier',api:'typesafe-system-one'}]});
+        \\pi.registerCommand('inspect',{async handler(_,ctx){const r=ctx.modelRegistry;globalThis.savedRegistry=r;if(r!==ctx.modelRegistry)throw Error('registry identity');const chats=r.getAll(),images=r.getModelsOfType('image'),classifiers=r.getModelsOfType('classifier'),available=await r.getAvailableOfType('image');return {message:JSON.stringify({chats:chats.map(m=>m.provider+'/'+m.id),images:images.map(m=>m.provider+'/'+m.id),classifiers:classifiers.map(m=>m.provider+'/'+m.id),available:available.map(m=>m.provider+'/'+m.id),identity:r.findOfType('image','shared','same')===secondImage,receiver:r.getRegisteredNativeProvider('shared')===secondProvider,configured:r.getAvailable().map(m=>m.provider+'/'+m.id)})}}});
+        \\pi.registerCommand('late',{handler(_,ctx){const model={id:'late',provider:'shared'};const replacement={id:'shared',auth:{apiKey:{check(){return {type:'api_key'}}}},getModels(){if(this!==replacement)throw Error('replacement receiver');return [model]},getAllModels(){return [model]}};pi.registerProvider(replacement);return {message:ctx.modelRegistry.getAll().map(m=>m.id).join(',')}}});
+        \\pi.registerCommand('remove',{handler(_,ctx){pi.unregisterProvider('shared');return {message:String(ctx.modelRegistry.getProvider('shared')===undefined)}}});
+        \\pi.registerCommand('stale',{handler(_,ctx){let rejected=false;try{savedRegistry.getAll()}catch(error){rejected=true}return {message:String(rejected),models:ctx.modelRegistry.getAll().map(m=>m.id)}}});
+        \\}
+    );
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "extensions/second.ts", .data = "export default pi=>{globalThis.secondImage={id:'same',type:'image',provider:'shared'};globalThis.secondProvider={id:'shared',auth:{apiKey:{async check(){return {type:'api_key'}}}},getModels(){if(this!==secondProvider)throw Error('second receiver');return [{id:'second',provider:'shared'}]},getAllModels(){return [this.getModels()[0],secondImage]}};pi.registerProvider(secondProvider);pi.registerCommand('stale',{handler(_,ctx){let rejected=false;try{savedRegistry.getAll()}catch(error){rejected=true}return {message:String(rejected),models:ctx.modelRegistry.getAll().map(m=>m.id)}}})}" });
+    const second = try std.fs.path.join(gpa, &.{ fixture.root, "extensions", "second.ts" });
+    defer gpa.free(second);
+    const started = try runtime_mod.Runtime.startNativeGroup(gpa, io, &.{ fixture.source_path, second }, fixture.options());
+    defer started.runtime.deinit();
+    defer gpa.free(started.manifest_json);
+    try started.runtime.setContextJson("{\"models\":[{\"id\":\"base-chat\",\"provider\":\"base\"},{\"id\":\"base-image\",\"provider\":\"base\",\"type\":\"image\"}],\"configuredProviders\":[\"base\",\"named\"]}");
+    const inspected = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"inspect\",\"rawArguments\":\"\"}", null);
+    defer gpa.free(inspected);
+    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, inspected, .{});
+    defer parsed.deinit();
+    var details = try std.json.parseFromSlice(std.json.Value, gpa, parsed.value.object.get("message").?.string, .{});
+    defer details.deinit();
+    try std.testing.expect(details.value.object.get("identity").?.bool and details.value.object.get("receiver").?.bool);
+    try std.testing.expectEqual(@as(usize, 3), details.value.object.get("chats").?.array.items.len);
+    try std.testing.expectEqual(@as(usize, 3), details.value.object.get("images").?.array.items.len);
+    try std.testing.expectEqual(@as(usize, 1), details.value.object.get("classifiers").?.array.items.len);
+    try std.testing.expectEqual(@as(usize, 3), details.value.object.get("available").?.array.items.len);
+    try std.testing.expectEqual(@as(usize, 2), details.value.object.get("configured").?.array.items.len);
+    const unloaded = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"group_remove_source\",\"ownerId\":2}", null);
+    defer gpa.free(unloaded);
+    const stale = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"stale\",\"rawArguments\":\"\"}", null);
+    defer gpa.free(stale);
+    try std.testing.expect(std.mem.indexOf(u8, stale, "true") != null and std.mem.indexOf(u8, stale, "same") != null and std.mem.indexOf(u8, stale, "second") == null);
+    const late = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"late\",\"rawArguments\":\"\"}", null);
+    defer gpa.free(late);
+    try std.testing.expect(std.mem.indexOf(u8, late, "late") != null and std.mem.indexOf(u8, late, "second") == null);
+    const removed = try started.runtime.invokeGroupRequest(1, "{\"kind\":\"command\",\"name\":\"remove\",\"rawArguments\":\"\"}", null);
+    defer gpa.free(removed);
+    try std.testing.expect(std.mem.indexOf(u8, removed, "true") != null);
+
+    try fixture.noBridge();
+}
