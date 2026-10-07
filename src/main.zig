@@ -4406,8 +4406,6 @@ fn runMain(init: std.process.Init) !void {
         .extra_tools_json = extension_tool_schemas,
         .configured_tools_json = configured_mcp_schemas,
         .configured_tool_ctx = configured_mcp,
-        .configured_tool_fn = if (configured_mcp != null) pi_zig.mcp.configured.Service.execute else null,
-        .configured_tool_exists_fn = if (configured_mcp != null) pi_zig.mcp.configured.Service.exists else null,
         .external_tool_fn = if (extensions_active) extensions.integration.Bridge.executeTool else null,
         .external_tool_streaming_fn = if (extensions_active) extensions.integration.Bridge.executeToolStreaming else null,
         .external_tool_call_streaming_fn = if (extensions_active) extensions.integration.Bridge.executeToolCallStreaming else null,
@@ -4416,6 +4414,15 @@ fn runMain(init: std.process.Init) !void {
         .external_tool_mode_fn = if (extensions_active) extensions.integration.Bridge.toolExecutionMode else null,
         .disable_builtin_tools = effective_no_builtin_tools,
     };
+    // Assign these callbacks after constructing the large configuration. Zig
+    // 0.16's native x86 backend can reuse AL for a later boolean initializer
+    // while this function pointer is still held in RAX, corrupting its address.
+    // Keeping each assignment complete also avoids conditional callback values
+    // sharing that initializer's register lifetime.
+    if (configured_mcp != null) {
+        agent_cfg.configured_tool_fn = pi_zig.mcp.configured.Service.execute;
+        agent_cfg.configured_tool_exists_fn = pi_zig.mcp.configured.Service.exists;
+    }
 
     const thinking_eff = cli.thinking orelse settings.thinking_level;
 

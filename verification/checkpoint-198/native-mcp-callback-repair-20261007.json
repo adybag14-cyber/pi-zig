@@ -1,0 +1,42 @@
+{
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "base": "168db17f665abf7a264a26ef1549e8d4f095425c",
+  "patch_sha256": "1201dc265f116046be22075878c510638b3eb16de2864bd4200b28a0e6d07c7e",
+  "source_sha256": "8cbceaf9f8e783feb19e4acf65334dd34bcb9a6db24715385bf08c813af8ec5f",
+  "regression": "Unmodified configured MCP standalone stdio and HTTP CLI tests fail on native x86 Debug before repair; all 17 configured MCP tests pass after repair in Windows and Linux Debug and ReleaseSafe.",
+  "cause": "Native x86 code generation overwrites AL during a subsequent boolean initializer while holding the configured function pointer in RAX; disassembly and GDB show Service.execute address 0x2458680 became 0x2458600.",
+  "validation": [
+    {
+      "platform_mode": "linux-debug",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:25:06.3351344+00:00",
+      "tests": 17,
+      "test_log_sha256": "07c06dc314eea2fb728975cb66832fceddaeedc12b911444d9962a64ee51df40"
+    },
+    {
+      "platform_mode": "linux-releasesafe",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:28:17.2848583+00:00",
+      "tests": 17,
+      "test_log_sha256": "536d77d8f67fb17afac98b35a71c0537e3332b64d83cabb2be83e302e441188d"
+    },
+    {
+      "platform_mode": "windows-debug",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:26:18.1880020+00:00",
+      "tests": 17,
+      "test_log_sha256": "9d992a6994d2ec1826a98d4862a16f19c679ffc40bf092e698494b790ec34026"
+    },
+    {
+      "platform_mode": "windows-releasesafe",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-07T14:32:10.2691990+00:00",
+      "tests": 17,
+      "test_log_sha256": "a20f6f6bc79d5327766d1db8250edbc9c907fe5bef2bda60502ce4aaa7e0d6e2"
+    }
+  ]
+}
