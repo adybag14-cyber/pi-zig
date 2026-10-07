@@ -821,7 +821,22 @@ fn supportsAdaptiveThinking(model: []const u8) bool {
         std.mem.indexOf(u8, value, "opus-5") != null or
         std.mem.indexOf(u8, value, "sonnet-4-6") != null or
         std.mem.indexOf(u8, value, "sonnet-5") != null or
+        std.mem.indexOf(u8, value, "haiku-5") != null or
         std.mem.indexOf(u8, value, "fable-5") != null;
+}
+
+test "Pi 1.1 Haiku 5 Bedrock supports adaptive xhigh thinking and explicit prompt caching" {
+    const gpa = std.testing.allocator;
+    const model = "anthropic.claude-haiku-5-5-v1:0";
+    try std.testing.expect(supportsAdaptiveThinking(model));
+    try std.testing.expect(supportsNativeXhighEffort(model));
+    try std.testing.expect(supportsPromptCaching(model));
+    const messages = [_]ai.ChatMessage{.{ .role = "user", .content = "hello" }};
+    const body = try buildRequestBody(gpa, model, &messages, "[]", .{ .thinking = .xhigh, .cache_retention = .short });
+    defer gpa.free(body);
+    try std.testing.expect(std.mem.indexOf(u8, body, "adaptive") != null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "xhigh") != null);
+    try std.testing.expect(std.mem.indexOf(u8, body, "cachePoint") != null);
 }
 
 fn supportsNativeXhighEffort(model: []const u8) bool {
@@ -831,6 +846,7 @@ fn supportsNativeXhighEffort(model: []const u8) bool {
         std.mem.indexOf(u8, value, "opus-4-8") != null or
         std.mem.indexOf(u8, value, "opus-5") != null or
         std.mem.indexOf(u8, value, "sonnet-5") != null or
+        std.mem.indexOf(u8, value, "haiku-5") != null or
         std.mem.indexOf(u8, value, "fable-5") != null;
 }
 
@@ -859,6 +875,7 @@ fn supportsPromptCaching(model: []const u8) bool {
     return std.mem.indexOf(u8, value, "fable-5") != null or
         std.mem.indexOf(u8, value, "opus-5") != null or
         std.mem.indexOf(u8, value, "sonnet-5") != null or
+        std.mem.indexOf(u8, value, "haiku-5") != null or
         std.mem.indexOf(u8, value, "-4-") != null or
         std.mem.indexOf(u8, value, "claude-3-7-sonnet") != null or
         std.mem.indexOf(u8, value, "claude-3-5-haiku") != null;
