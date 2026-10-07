@@ -378,6 +378,8 @@ pub const InputDecoder = struct {
                     self.paste = true;
                     return null;
                 }
+            } else if (value[1] == ']') {
+                if (byte != 7 and !std.mem.endsWith(u8, value, "\x1b\\")) return null;
             } else if (value[1] == 'O' and value.len < 3) return null;
         } else if (value[0] >= 0x80) {
             const length = std.unicode.utf8ByteSequenceLength(value[0]) catch 1;
@@ -393,7 +395,65 @@ pub const InputDecoder = struct {
         }
         return null;
     }
+    /// Source StdinBuffer flushes an unfinished sequence as one input after
+    /// 50 ms of inactivity; a lone Escape has its separate 10 ms deadline.
+    pub fn flushPending(self: *InputDecoder) ?Input {
+        if (self.paste or self.delivered or self.pending.items.len == 0) return null;
+        self.delivered = true;
+        return .{ .key = self.pending.items };
+    }
+    pub fn pendingTimeoutMs(self: *const InputDecoder) i64 {
+        return if (self.pending.items.len == 1 and self.pending.items[0] == 0x1b) 10 else 50;
+    }
 };
+
+test "terminal decoder preserves OSC fragments terminators and timed incomplete sequences" {
+    var decoder = InputDecoder.init(std.testing.allocator);
+    defer decoder.deinit();
+    for ([_][]const u8{ "\x1b]10;rgb:aaaa/bbbb/cccc\x07", "\x1b]11;#010203\x1b\\" }) |sequence| {
+        for (sequence, 0..) |byte, index| {
+            const packet = try decoder.feed(byte);
+            if (index + 1 == sequence.len) {
+                try std.testing.expectEqualStrings(sequence, packet.?.key);
+            } else try std.testing.expect(packet == null);
+        }
+    }
+    try std.testing.expectEqualStrings("x", (try decoder.feed('x')).?.key);
+    try std.testing.expect(try decoder.feed(0x1b) == null);
+    try std.testing.expectEqual(@as(i64, 10), decoder.pendingTimeoutMs());
+    try std.testing.expect(try decoder.feed(']') == null);
+    try std.testing.expectEqual(@as(i64, 50), decoder.pendingTimeoutMs());
+    try std.testing.expectEqualStrings("\x1b]", decoder.flushPending().?.key);
+    try std.testing.expect(decoder.flushPending() == null);
+    try std.testing.expectEqualStrings("y", (try decoder.feed('y')).?.key);
+    for ("\x1b[200~\x1b]10;#ffffff") |byte| try std.testing.expect(try decoder.feed(byte) == null);
+    try std.testing.expect(decoder.flushPending() == null);
+    for ("\x1b[201~", 0..) |byte, index| {
+        const packet = try decoder.feed(byte);
+        if (index == 5) try std.testing.expectEqualStrings("\x1b]10;#ffffff", packet.?.paste) else try std.testing.expect(packet == null);
+    }
+}
+
+test "terminal decoder replays authentic Source StdinBuffer fragmentation paste and timeout capture" {
+    const gpa = std.testing.allocator;
+    const captured = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/terminal-input-original-7fb.json"), .{});
+    defer captured.deinit();
+    for (captured.value.object.get("cases").?.array.items) |case| {
+        var decoder = InputDecoder.init(gpa);
+        defer decoder.deinit();
+        const expected = case.object.get("afterTimeout").?.array.items[0].object;
+        var delivered = false;
+        for (case.object.get("parts").?.array.items) |part| for (part.string) |byte| {
+            if (try decoder.feed(byte)) |packet| {
+                try std.testing.expect(!delivered);
+                delivered = true;
+                try std.testing.expectEqualStrings(expected.get("kind").?.string, if (packet == .key) "key" else "paste");
+                try std.testing.expectEqualStrings(expected.get("value").?.string, if (packet == .key) packet.key else packet.paste);
+            }
+        };
+        if (!delivered) try std.testing.expectEqualStrings(expected.get("value").?.string, decoder.flushPending().?.key);
+    }
+}
 
 pub fn applyInputSequence(gpa: std.mem.Allocator, editor: *Editor, bindings: *const keybindings.Manager, sequence: []const u8, shortcut: ?ShortcutHandler) !Disposition {
     if (sequence.len == 0) return .keep_editing;

@@ -110,7 +110,7 @@ const Fixture = struct {
         }, 90_000);
     }
     fn spawnLateRegistration(self: *Fixture, errors: Io.File) !pty.Session {
-        try self.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "late.mjs", .data = "export default pi=>pi.registerCommand('seed',{handler(){pi.registerCommand('late',{handler(){return {message:'late-live-command'}}});pi.registerTool({name:'late-tool',parameters:{type:'object'},execute(){pi.appendEntry('late-live-tool',{value:'late-live-tool-result'});return {content:'late-live-tool-result'}}});return {message:'late-live-seeded'}}})" });
+        try self.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "late.mjs", .data = "import fs from 'node:fs';export default pi=>pi.registerCommand('seed',{handler(){pi.registerCommand('late',{handler(){return {message:'late-live-command'}}});pi.registerTool({name:'late-tool',parameters:{type:'object'},execute(){fs.writeFileSync('late-execute-witness','entered');pi.appendEntry('late-live-tool',{value:'late-live-tool-result'});fs.writeFileSync('late-execute-witness','append-returned/result-ready');return {content:'late-live-tool-result'}}});return {message:'late-live-seeded'}}})" });
         try self.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"\",\"tool_calls\":[{\"id\":\"late-live-call\",\"name\":\"late-tool\",\"arguments\":\"{}\"}]},{\"content\":\"late-live-turn-complete\"}]" });
         const path = try std.fs.path.join(std.testing.allocator, &.{ self.scratch.path, "late.mjs" });
         defer std.testing.allocator.free(path);
@@ -148,6 +148,39 @@ const persistent_ui_extension =
     \\ pi.registerCommand('footer-factory-throw',{handler(_,ctx){const original={footerOriginal:true};try{ctx.ui.setFooter(()=>{throw original})}catch(error){if(error!==original)throw Error('footer identity');ctx.ui.notify('FOOTER_FACTORY_THROW_CAUGHT')}return {}}});
     \\}
 ;
+
+test "actual native terminal OSC reports update cached Theme without leaking fragmented input into editor" {
+    if (!pty.supported()) return error.SkipZigTest;
+    // ConPTY's input layer consumes injected OSC replies. POSIX PTYs carry
+    // these bytes to the real input owner; Windows parser/cache proofs run
+    // separately without treating synthetic replies as console capabilities.
+    if (builtin.os.tag == .windows) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    try fixture.environment.put("PI_TRUE_COLOR", "1");
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnExtension(errors,
+        \\export default pi=>pi.registerCommand('theme-report',{handler(_,ctx){ctx.ui.notify('REPORT_FG:'+JSON.stringify([ctx.ui.theme.colors.text.r,ctx.ui.theme.colors.text.g,ctx.ui.theme.colors.text.b]));return {}}})
+    );
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.waitAny(&child, ">");
+    _ = try child.waitFor("\x1b]4;15;?\x07", 0, 5000);
+    try child.send("\x1b]10;rgb:aaaa/");
+    try child.send("bbbb/cccc\x1b\\\x1b]11;#010203\x07\x1b[?1;2c");
+    try observed.send(&child, "/theme-report\r", "REPORT_FG:");
+    observed.waitAny(&child, "REPORT_FG:[170,187,204]") catch |cause| {
+        const trace = try fixture.scratch.dir.readFileAlloc(std.testing.io, "stderr.log", std.testing.allocator, .limited(65536));
+        defer std.testing.allocator.free(trace);
+        std.debug.print("Theme report owned diagnostic:\n{s}\n", .{trace});
+        return cause;
+    };
+    try std.testing.expect(!try observed.screen.contains("bbbb/cccc"));
+    try observed.send(&child, "draft", "> draft");
+    try cleanExit(&fixture, &child, &observed);
+}
 test "actual native retained header footer live context indicator and terminal input work across resize retirement" {
     if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");
@@ -207,7 +240,7 @@ test "actual untouched upstream header footer and working indicator examples ren
         defer child.deinit();
         var observed = try Observer.init();
         defer observed.deinit();
-        try observed.waitAny(&child, "shitty coding agent");
+        try observed.waitInitialStartup(&child, "shitty coding agent");
         try observed.waitAny(&child, "Indicator: custom spinner");
         try observed.send(&child, "/footer\r", "Custom footer enabled");
         try observed.waitAny(&child, "↑0 ↓0 $0.000");
@@ -226,7 +259,7 @@ test "actual untouched upstream header footer and working indicator examples ren
         const frame = observed.screen.frames;
         try observed.screen.resize(70, 22);
         try child.resize(70, 22);
-        try observed.wait(&child, "> draft", frame);
+        try observed.waitAllVisible(&child, &.{ "> draft", "shitty coding agent", "↑" }, frame);
         try std.testing.expect(try observed.screen.contains("shitty coding agent"));
         try std.testing.expect(try observed.screen.contains("↑"));
         try observed.send(&child, "\x15/footer\r", "Default footer restored");
@@ -259,7 +292,7 @@ test "real custom editor original modal input replaces editor row changes submit
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
-    try observed.wait(&child, "INSERT", 0);
+    try observed.waitInitialStartup(&child, "INSERT");
     try observed.send(&child, "modal Ω🦊", "> modal Ω🦊");
     try observed.send(&child, "\x1b", "NORMAL");
     try observed.send(&child, "hiX", "> modal ΩX🦊");
@@ -854,6 +887,23 @@ const Observer = struct {
         std.debug.print("Fullscreen cells missing {s}; frames={d}; cells:\n{s}\n", .{ marker, self.screen.frames, text });
         return error.FullscreenCellAssertionFailed;
     }
+    fn waitAllVisible(self: *Observer, child: *pty.Session, markers: []const []const u8, after_frame: usize) !void {
+        // Resized editor and persistent surfaces publish separately. Observe
+        // the complete current scene within the same five-second deadline.
+        const end = Io.Clock.awake.now(child.io).toMilliseconds() + 5000;
+        while (Io.Clock.awake.now(child.io).toMilliseconds() < end) {
+            try self.drain(child);
+            var complete = !self.screen.synchronized_update and self.screen.frames > after_frame;
+            for (markers) |marker| complete = complete and try self.screen.contains(marker);
+            if (complete) return;
+            if (try child.exited()) break;
+            try child.io.sleep(.fromMilliseconds(10), .awake);
+        }
+        const cells = try self.screen.textAlloc(std.testing.allocator);
+        defer std.testing.allocator.free(cells);
+        std.debug.print("Resized persistent scene incomplete; frames={d}; cells:\n{s}\n", .{ self.screen.frames, cells });
+        return error.ResizedPersistentSceneIncomplete;
+    }
     fn send(self: *Observer, child: *pty.Session, input: []const u8, marker: []const u8) !void {
         const frame = self.screen.frames;
         try child.send(input);
@@ -863,11 +913,27 @@ const Observer = struct {
         return self.waitStartupMarker(child, "FIXTURE_READY:HEADER_EDITOR_COMMAND_ACK", after_frame);
     }
     fn acknowledgeStartup(self: *Observer, child: *pty.Session, command: []const u8, marker: []const u8) !void {
-        try self.waitAny(child, ">");
+        try self.waitInitialStartup(child, ">");
         try std.testing.expect(try self.screen.contains("pi (pi-zig)"));
         const frame = self.screen.frames;
         try child.send(command);
         try self.waitStartupMarker(child, marker, frame);
+    }
+    fn waitInitialStartup(self: *Observer, child: *pty.Session, marker: []const u8) !void {
+        // Includes executable, VM and frontend ownership admission, using
+        // the already established child startup budget. Render assertions
+        // after admission retain their separate five-second deadlines.
+        const end = Io.Clock.awake.now(child.io).toMilliseconds() + 90_000;
+        while (Io.Clock.awake.now(child.io).toMilliseconds() < end) {
+            try self.drain(child);
+            if (!self.screen.synchronized_update and try self.screen.contains(marker)) return;
+            if (try child.exited()) break;
+            try child.io.sleep(.fromMilliseconds(10), .awake);
+        }
+        const cells = try self.screen.textAlloc(std.testing.allocator);
+        defer std.testing.allocator.free(cells);
+        std.debug.print("Native frontend startup missing {s}; cells:\n{s}\n", .{ marker, cells });
+        return error.NativeFrontendStartupNotReady;
     }
     fn waitStartupMarker(self: *Observer, child: *pty.Session, marker: []const u8, after_frame: usize) !void {
         // Startup includes native-owner and bridge attachment after the first
@@ -1232,7 +1298,17 @@ test "native late live fullscreen command discovery completion and next agent to
     try observed.send(&child, "/seed\r", "late-live-seeded");
     try observed.send(&child, "/la\t", "> /late");
     try observed.send(&child, "\r", "late-live-command");
-    try observed.send(&child, "invoke-the-new-tool\r", "late-live-turn-complete");
+    observed.send(&child, "invoke-the-new-tool\r", "late-live-turn-complete") catch |cause| {
+        for ([_][]const u8{ "late-execute-witness", "stderr.log", "history.jsonl" }) |name| {
+            const bytes = fixture.scratch.dir.readFileAlloc(std.testing.io, name, std.testing.allocator, .limited(1024 * 1024)) catch |read_cause| {
+                std.debug.print("Late tool diagnostic {s}: {s}\n", .{ name, @errorName(read_cause) });
+                continue;
+            };
+            defer std.testing.allocator.free(bytes);
+            std.debug.print("Late tool diagnostic {s}:\n{s}\n", .{ name, bytes });
+        }
+        return cause;
+    };
     const saved = try fixture.scratch.dir.readFileAlloc(std.testing.io, "history.jsonl", std.testing.allocator, .limited(1024 * 1024));
     defer std.testing.allocator.free(saved);
     try std.testing.expect(std.mem.indexOf(u8, saved, "late-live-tool-result") != null);
