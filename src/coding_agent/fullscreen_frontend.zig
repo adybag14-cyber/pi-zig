@@ -11,6 +11,7 @@ const line_editor = @import("../tui/line_editor.zig");
 const Editor = @import("../tui/editor.zig").Editor;
 const session = @import("../agent/session.zig");
 const agent_loop = @import("../agent/loop.zig");
+const status_reporter = @import("program_status_reporter.zig");
 const ui = @import("../extensions/ui.zig");
 const transcript_mod = @import("transcript_view.zig");
 const platform = @import("../tui/platform_terminal.zig");
@@ -347,6 +348,8 @@ const Update = union(enum) {
     status: []u8,
     notice: []u8,
     busy: bool,
+    program_session_name: []u8,
+    program_settled: bool,
     config: ConfigUpdate,
     component: struct { scene: component_protocol.Scene, controls: *component_protocol.ControlQueue },
     component_close: component_protocol.Fence,
@@ -362,8 +365,8 @@ const Update = union(enum) {
             },
             .surface => |*value| value.deinit(),
             .text => |value| gpa.free(value.text),
-            .status, .notice => |value| gpa.free(value),
-            .busy => {},
+            .status, .notice, .program_session_name => |value| gpa.free(value),
+            .busy, .program_settled => {},
             .config => |value| {
                 if (value.bindings_json) |json| gpa.free(json);
                 for (value.shortcuts) |key| gpa.free(key);
@@ -403,6 +406,8 @@ pub const Frontend = struct {
     transcript: transcript_mod.Transcript,
     scroll: layout.ScrollView,
     app: application.Application,
+    program_status: status_reporter.Reporter,
+    program_session_name: ?[]u8 = null,
     root_entries: [7]layout.StackEntry = undefined,
     stack: layout.Stack = undefined,
     thread: ?std.Thread = null,
@@ -510,6 +515,7 @@ pub const Frontend = struct {
             .transcript = transcript_mod.Transcript.init(gpa),
             .scroll = undefined,
             .app = undefined,
+            .program_status = status_reporter.Reporter.init(gpa),
             .header = header,
             .status = status,
             .surfaces = .{ .gpa = gpa },
@@ -593,6 +599,14 @@ pub const Frontend = struct {
     pub fn setBusy(self: *Frontend, busy: bool) !void {
         if (busy) @atomicStore(bool, &self.abort_flag, false, .release);
         try self.post(.{ .busy = busy });
+    }
+    pub fn setProgramSessionName(self: *Frontend, name: []const u8) !void {
+        const copied = try self.gpa.dupe(u8, name);
+        errdefer self.gpa.free(copied);
+        try self.post(.{ .program_session_name = copied });
+    }
+    pub fn settleProgramStatus(self: *Frontend, aborted: bool) !void {
+        try self.post(.{ .program_settled = aborted });
     }
     pub fn setStatus(self: *Frontend, status: []const u8) !void {
         const text = try self.gpa.dupe(u8, status);
@@ -990,6 +1004,8 @@ pub const Frontend = struct {
         self.commands.deinit(self.gpa);
         if (self.anchor) |value| self.gpa.free(value.key);
         self.app.deinit();
+        self.program_status.deinit();
+        if (self.program_session_name) |name| self.gpa.free(name);
         self.transcript.deinit();
         self.decoder.deinit();
         self.editor.deinit();
@@ -1160,7 +1176,13 @@ pub const Frontend = struct {
             };
         }
         for (updates.items) |*update| switch (update.*) {
-            .event => |event| try self.transcript.eventWithRendered(event.value, event.preformatted),
+            .event => |event| {
+                try self.transcript.eventWithRendered(event.value, event.preformatted);
+                if (event.value.kind == .agent_start) try self.program_status.handle(.agent_start);
+                if (event.value.kind == .message_end and std.mem.eql(u8, event.value.name, "assistant")) {
+                    try self.program_status.handle(.{ .assistant_end = .{ .failed = event.value.is_error, .error_message = event.value.error_message } });
+                }
+            },
             .branch => |entries| try self.transcript.syncBranch(entries, if (self.anchor) |*value| value else null),
             .surface => |snapshot| {
                 self.title_dirty = if (snapshot.title) |title| if (self.surfaces.title) |previous| !std.mem.eql(u8, title, previous) else true else false;
@@ -1184,6 +1206,12 @@ pub const Frontend = struct {
                 }
             },
             .busy => |value| self.busy = value,
+            .program_session_name => |value| {
+                if (self.program_session_name) |name| self.gpa.free(name);
+                self.program_session_name = value;
+                update.* = .{ .busy = self.busy };
+            },
+            .program_settled => |aborted| try self.program_status.handle(.{ .agent_settled = aborted }),
             .config => |value| {
                 var bindings = keybindings.Manager.init(self.gpa);
                 if (value.bindings_json) |json| bindings.parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, json, .{ .allocate = .alloc_always });
@@ -1298,6 +1326,11 @@ pub const Frontend = struct {
             try self.publishEditor();
         };
         if (requested_close) |fence| try self.removeCustomComponent(fence);
+        if (try self.program_status.report(self.program_session_name)) |encoded| {
+            defer self.gpa.free(encoded);
+            const status = self.program_status.current(self.program_session_name);
+            try self.app.setProgramStatus(self.io, status);
+        }
         if (updates.items.len > 0) self.dirty = true;
     }
 

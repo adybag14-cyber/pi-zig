@@ -760,7 +760,7 @@ pub fn runWithImages(
             const failed_id = try appendAssistantAttempt(gpa, sess, response);
             try sess.excludeEntryFromActiveContext(failed_id);
             response_persisted = true;
-            emit(on_event, event_ctx, .{ .kind = .message_end, .text = response.content, .name = "assistant" });
+            emit(on_event, event_ctx, .{ .kind = .message_end, .text = response.content, .name = "assistant", .is_error = responseIsError(response), .error_message = if (responseIsError(response)) responseErrorText(response) else null });
             emit(on_event, event_ctx, .{ .kind = .assistant, .text = response.content });
             response.deinit(gpa);
             try compactSession(io, sess, active_client, config, .overflow, on_event, event_ctx);
@@ -788,7 +788,7 @@ pub fn runWithImages(
             const failed_id = try appendAssistantAttempt(gpa, sess, response);
             try sess.excludeEntryFromActiveContext(failed_id);
             response_persisted = true;
-            emit(on_event, event_ctx, .{ .kind = .message_end, .text = response.content, .name = "assistant" });
+            emit(on_event, event_ctx, .{ .kind = .message_end, .text = response.content, .name = "assistant", .is_error = responseIsError(response), .error_message = if (responseIsError(response)) responseErrorText(response) else null });
             emit(on_event, event_ctx, .{ .kind = .assistant, .text = response.content });
             const delay_ms = ai.retry.delayMs(config.retry_base_delay_ms, retry_attempt);
             emit(on_event, event_ctx, .{
@@ -862,7 +862,7 @@ pub fn runWithImages(
         gpa.free(last_text);
         last_text = try gpa.dupe(u8, response.content);
         if (!response_persisted) {
-            emit(on_event, event_ctx, .{ .kind = .message_end, .text = last_text, .name = "assistant" });
+            emit(on_event, event_ctx, .{ .kind = .message_end, .text = last_text, .name = "assistant", .is_error = responseIsError(response), .error_message = if (responseIsError(response)) responseErrorText(response) else null });
             emit(on_event, event_ctx, .{ .kind = .assistant, .text = last_text });
         }
         // Actions emitted while an assistant tool call is streaming must not be
@@ -5188,10 +5188,19 @@ test "automatic retry recovers transient assistant errors and emits canonical ev
         delay_ms: u64 = 999,
         success: bool = false,
         saw_expected_error: bool = false,
+        failed_messages: usize = 0,
+        successful_messages: usize = 0,
+        message_error_preserved: bool = false,
 
         fn onEvent(raw: ?*anyopaque, event: AgentEvent) void {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
             switch (event.kind) {
+                .message_end => if (std.mem.eql(u8, event.name, "assistant")) {
+                    if (event.is_error) {
+                        self.failed_messages += 1;
+                        self.message_error_preserved = std.mem.eql(u8, event.error_message orelse "", "503 Service Unavailable");
+                    } else self.successful_messages += 1;
+                },
                 .auto_retry_start => {
                     self.starts += 1;
                     self.attempt = event.attempt;
@@ -5224,6 +5233,9 @@ test "automatic retry recovers transient assistant errors and emits canonical ev
     try std.testing.expectEqual(@as(u64, 0), probe.delay_ms);
     try std.testing.expect(probe.success);
     try std.testing.expect(probe.saw_expected_error);
+    try std.testing.expectEqual(@as(usize, 1), probe.failed_messages);
+    try std.testing.expectEqual(@as(usize, 1), probe.successful_messages);
+    try std.testing.expect(probe.message_error_preserved);
 
     var assistant_entries: usize = 0;
     for (sess.entries.items) |entry| {

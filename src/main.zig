@@ -5808,8 +5808,12 @@ fn runOneWithImages(
         .host = extension_host,
         .fullscreen = render_options.fullscreen,
     };
-    if (render_options.fullscreen) |scene| try scene.setBusy(true);
+    if (render_options.fullscreen) |scene| {
+        try scene.setProgramSessionName(sess.name);
+        try scene.setBusy(true);
+    }
     defer if (render_options.fullscreen) |scene| scene.setBusy(false) catch {};
+    defer if (render_options.fullscreen) |scene| scene.settleProgramStatus(if (agent_cfg.abort_flag) |flag| @atomicLoad(bool, flag, .acquire) else false) catch {};
     if (render_options.show_terminal_progress) try tui.render.writeAll(io, tui.terminal.progress_active_sequence);
     defer if (render_options.show_terminal_progress) tui.render.writeAll(io, tui.terminal.progress_clear_sequence) catch {};
     var result = try agent.runWithImages(gpa, io, cwd, client, sess, prompt, images, agent_cfg, ExtensionPrintEmitter.onEvent, &emitter);
@@ -5848,8 +5852,12 @@ fn runOne(
         .host = extension_host,
         .fullscreen = render_options.fullscreen,
     };
-    if (render_options.fullscreen) |scene| try scene.setBusy(true);
+    if (render_options.fullscreen) |scene| {
+        try scene.setProgramSessionName(sess.name);
+        try scene.setBusy(true);
+    }
     defer if (render_options.fullscreen) |scene| scene.setBusy(false) catch {};
+    defer if (render_options.fullscreen) |scene| scene.settleProgramStatus(if (agent_cfg.abort_flag) |flag| @atomicLoad(bool, flag, .acquire) else false) catch {};
     if (render_options.show_terminal_progress) try tui.render.writeAll(io, tui.terminal.progress_active_sequence);
     defer if (render_options.show_terminal_progress) tui.render.writeAll(io, tui.terminal.progress_clear_sequence) catch {};
     var result = try agent.run(gpa, io, cwd, client, sess, prompt, agent_cfg, ExtensionPrintEmitter.onEvent, &emitter);
