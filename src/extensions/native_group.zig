@@ -11,6 +11,7 @@ const c = engine_mod.c;
 pub const Entry = struct { id: u64, source: []u8, binding: *bindings_mod.Bindings };
 pub const Group = struct {
     provider_catalog_clock: u64 = 0,
+    sdk_availability: @import("native_sdk_availability_protocol.zig").Store = .{},
     engine: *engine_mod.Engine,
     ui: *native_ui.Manager,
     renderers: *native_renderers.Manager,
@@ -42,6 +43,7 @@ pub const Group = struct {
         self.* = .{ .engine = engine, .ui = ui, .renderers = renderers, .activation = activation_mod.Tracker.init(engine.gpa, 1) };
         renderers.replay_fn = replay;
         renderers.replay_context = self;
+        engine.native_sdk_extension_group = self;
         return self;
     }
 
@@ -55,6 +57,8 @@ pub const Group = struct {
 
     pub fn deinit(self: *Group) void {
         self.deinitializing = true;
+        self.engine.native_sdk_extension_group = null;
+        self.sdk_availability.deinit(self.engine.gpa);
         for (self.entries.items) |entry| {
             entry.binding.deinit();
             self.engine.gpa.free(entry.source);

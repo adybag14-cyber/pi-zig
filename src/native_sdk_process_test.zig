@@ -2,6 +2,12 @@ const std = @import("std");
 const builtin = @import("builtin");
 const http_fixture = @import("ai/http_fixture.zig");
 const EnvValue = struct { name: []const u8, value: []const u8 };
+test "native SDK resource discovery and actual inline extension startup match original" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-resources-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-resources-7fb59f9.json"));
+}
+test "native SDK cached availability timing and credential-aware filters match original" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-availability-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-availability-7fb59f9.json"));
+}
 test "same full SDK input executes without Node and matches original source lifecycle capture" {
     try inputCase(@embedFile("extensions/fixtures/sdk-lifecycle-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-lifecycle-7fb59f9.json"));
 }

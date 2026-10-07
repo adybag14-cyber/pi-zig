@@ -3,7 +3,7 @@ const std = @import("std");
 const engine_mod = @import("engine.zig");
 const c = engine_mod.c;
 const Kind = enum(c_int) { session_manager, settings_manager, resource_loader, model_runtime, agent_session, session_runtime };
-const State = struct {
+pub const State = struct {
     engine: *engine_mod.Engine,
     kind: Kind,
     data: c.JSValue,
@@ -13,6 +13,9 @@ const State = struct {
     aborted: bool = false,
     next_entry: u64 = 1,
     persisted_count: u32 = 0,
+    availability_sequence: u64 = 0,
+    runtime_id: u64 = 0,
+    availability_snapshot: ?@import("native_sdk_availability.zig").Snapshot = null,
 };
 const Method = enum(c_int) {
     getCwd,
@@ -157,7 +160,7 @@ pub fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
     return c.JS_ThrowTypeError(engine.context, "Native coding SDK: %s", @as([*:0]const u8, @errorName(err)));
 }
-fn state(engine: *engine_mod.Engine, value: c.JSValue) !*State {
+pub fn state(engine: *engine_mod.Engine, value: c.JSValue) !*State {
     return @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, value, engine.native_sdk_class) orelse return error.InvalidNativeSDKReceiver));
 }
 fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
@@ -166,6 +169,11 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     c.JS_FreeValueRT(runtime, self.data);
     for (self.listeners.items) |listener| c.JS_FreeValueRT(runtime, listener);
     self.listeners.deinit(engine.gpa);
+    if (engine.native_sdk_extension_group) |group_pointer| {
+        const group: *@import("native_group.zig").Group = @ptrCast(@alignCast(group_pointer));
+        group.sdk_availability.retire(self.runtime_id);
+    }
+    if (self.availability_snapshot) |*cached| cached.deinit();
     engine.gpa.destroy(self);
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
@@ -185,6 +193,11 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
     const self = try engine.gpa.create(State);
     self.* = .{ .engine = engine, .kind = kind, .data = c.JS_DupValue(engine.context, data) };
     _ = c.JS_SetOpaque(value, self);
+    if (kind == .model_runtime) {
+        if (engine.native_sdk_next_runtime_id > 9007199254740991) return error.NativeSDKRuntimeLimit;
+        self.runtime_id = engine.native_sdk_next_runtime_id;
+        engine.native_sdk_next_runtime_id += 1;
+    }
     const methods: []const Method = switch (kind) {
         .session_manager => &.{ .getCwd, .getSessionDir, .getSessionId, .getSessionName, .getSessionFile, .getHeader, .getEntries, .getEntryCount, .getLeafId, .getLeafEntry, .getEntry, .getChildren, .getBranch, .getLabel, .getTree, .appendMessage, .appendCustomEntry, .appendSessionInfo, .appendModelChange, .appendThinkingLevelChange, .appendLabelChange, .branch, .resetLeaf, .buildSessionContext, .newSession, .setSessionFile, .isPersisted },
         .settings_manager => &.{ .getGlobalSettings, .getProjectSettings, .applyOverrides, .reload, .flush, .drainErrors, .getDefaultProvider, .getDefaultModel, .getDefaultThinkingLevel, .setDefaultThinkingLevel, .getCompactionSettings, .getRetrySettings, .getDefaultTools, .getTransport },
@@ -507,7 +520,7 @@ fn emitMessage(self: *State, kind: []const u8, message: c.JSValue) !void {
     try put(self.engine, value, "message", c.JS_DupValue(self.engine.context, message));
     try emit(self, value);
 }
-fn cwd(engine: *engine_mod.Engine) ![]u8 {
+pub fn cwd(engine: *engine_mod.Engine) ![]u8 {
     if (engine.native_io) |io| {
         var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
         const directory = try std.Io.Dir.cwd().openDir(io, ".", .{});
@@ -517,7 +530,7 @@ fn cwd(engine: *engine_mod.Engine) ![]u8 {
     }
     return engine.gpa.dupe(u8, ".");
 }
-fn agentDir(engine: *engine_mod.Engine) ![]u8 {
+pub fn agentDir(engine: *engine_mod.Engine) ![]u8 {
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
     const process = try get(engine, global, "process");
@@ -938,6 +951,8 @@ fn initResources(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
 }
 fn resourcesReload(self: *State) !c.JSValue {
     const engine = self.engine;
+    try @import("native_sdk_resources.zig").reload(engine, self.data);
+    try @import("native_sdk_resources.zig").factories(engine, self.data);
     const options = try get(engine, self.data, "options");
     defer engine.freeValue(options);
     inline for (.{ .{ "skills", "skillsOverride" }, .{ "prompts", "promptsOverride" }, .{ "themes", "themesOverride" }, .{ "agentsFiles", "agentsFilesOverride" } }) |names| {
@@ -957,7 +972,7 @@ fn resourcesReload(self: *State) !c.JSValue {
     const override = try get(engine, options, "systemPromptOverride");
     defer engine.freeValue(override);
     if (c.JS_IsFunction(engine.context, override)) {
-        const base = try text(engine, "You are a helpful coding assistant.");
+        const base = try get(engine, self.data, "systemPrompt");
         defer engine.freeValue(base);
         var args = [_]c.JSValue{base};
         const result = try engine.checked(c.JS_Call(engine.context, override, options, 1, &args));
@@ -1488,7 +1503,12 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             self.aborted = true;
             return promise(engine, c.pi_js_undefined());
         }
-        if (operation == .bindExtensions) return promise(engine, c.pi_js_undefined());
+        if (operation == .bindExtensions) {
+            const resources = try get(engine, self.data, "resourceLoader");
+            defer engine.freeValue(resources);
+            try @import("native_sdk_resources.zig").emit(engine, resources, self.data, "session_start", "{\"reason\":\"startup\"}");
+            return promise(engine, c.pi_js_undefined());
+        }
         if (operation == .getActiveToolNames) {
             const value = try get(engine, self.data, "activeTools");
             defer engine.freeValue(value);
@@ -1556,7 +1576,16 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         return error.NativeSDKMethodUnavailable;
     }
     if (self.kind == .settings_manager) return settingsDispatch(self, operation, args);
-    if (self.kind == .model_runtime) return modelDispatch(self, operation, args);
+    if (self.kind == .model_runtime) {
+        if (operation == .getAvailable) return @import("native_sdk_availability.zig").getAvailable(engine, receiver, args);
+        if (operation == .registerNativeProvider or operation == .registerProvider or operation == .unregisterProvider) {
+            const result = try modelDispatch(self, operation, args);
+            errdefer engine.freeValue(result);
+            try @import("native_sdk_availability.zig").registrationRefresh(engine, receiver);
+            return result;
+        }
+        return modelDispatch(self, operation, args);
+    }
     if (self.kind == .resource_loader) {
         if (operation == .reload) return resourcesReload(self);
         const key: ?[*:0]const u8 = switch (operation) {
@@ -1570,8 +1599,8 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             else => null,
         };
         if (key) |name| return get(engine, self.data, name);
-        if (operation == .getSystemPromptSource) return c.pi_js_undefined();
-        if (operation == .getAppendSystemPromptSources) return array(engine);
+        if (operation == .getSystemPromptSource) return get(engine, self.data, "systemPromptSource");
+        if (operation == .getAppendSystemPromptSources) return get(engine, self.data, "appendSystemPromptSources");
         if (operation == .extendResources) return error.NativeSDKResourcePathExtensionsNotYetSupported;
         return error.NativeSDKMethodUnavailable;
     }

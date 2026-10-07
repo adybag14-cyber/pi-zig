@@ -2308,7 +2308,7 @@ pub const Runtime = struct {
         if (parsed.value != .object) return error.InvalidNativeExtensionRequest;
         const kind = parsed.value.object.get("kind") orelse return error.InvalidNativeExtensionRequest;
         if (kind != .string) return error.InvalidNativeExtensionRequest;
-        for ([_][]const u8{ "hook", "tool", "command", "group_add_source", "group_remove_source", "provider_method", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "render_message", "render_entry", "transform_markdown", "render_tool_call", "render_tool_result", "prepare_tool_arguments", "renderer_retire", "shutdown" }) |supported| {
+        for ([_][]const u8{ "hook", "tool", "command", "group_add_source", "group_remove_source", "sdk_availability_snapshot", "provider_method", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "render_message", "render_entry", "transform_markdown", "render_tool_call", "render_tool_result", "prepare_tool_arguments", "renderer_retire", "shutdown" }) |supported| {
             if (std.mem.eql(u8, supported, kind.string)) return;
         }
         // Keep unsupported custom-component and renderer operations out of the

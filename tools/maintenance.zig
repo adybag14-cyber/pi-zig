@@ -30,7 +30,7 @@ pub fn forbiddenImplementation(path: []const u8) bool {
 fn verifyVendors(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer) !bool {
     var failures: usize = 0;
     var files: usize = 0;
-    for ([_][]const u8{ "vendor/quickjs", "vendor/tree-sitter", "vendor/typescript-parser" }) |root| {
+    for ([_][]const u8{ "vendor/quickjs", "vendor/tree-sitter", "vendor/typescript-parser", "vendor/sqlite" }) |root| {
         const manifest_path = try std.fs.path.join(gpa, &.{ root, "UPSTREAM.json" });
         defer gpa.free(manifest_path);
         const bytes = try std.Io.Dir.cwd().readFileAlloc(io, manifest_path, gpa, .limited(1024 * 1024));
@@ -41,7 +41,11 @@ fn verifyVendors(gpa: std.mem.Allocator, io: std.Io, writer: *std.Io.Writer) !bo
         const hashes = parsed.value.object.get("files") orelse return error.InvalidVendorManifest;
         if (hashes != .object or hashes.object.count() == 0) return error.InvalidVendorManifest;
         const commit = parsed.value.object.get("commit") orelse return error.InvalidVendorManifest;
-        if (commit != .string or commit.string.len != 40) return error.InvalidVendorManifest;
+        if (commit != .string) return error.InvalidVendorManifest;
+        if (std.mem.eql(u8, root, "vendor/sqlite")) {
+            const kind = parsed.value.object.get("revision_kind") orelse return error.InvalidVendorManifest;
+            if (kind != .string or !std.mem.eql(u8, kind.string, "Fossil SHA3-256") or commit.string.len != 64) return error.InvalidVendorManifest;
+        } else if (commit.string.len != 40) return error.InvalidVendorManifest;
         for (commit.string) |byte| if (!std.ascii.isHex(byte)) return error.InvalidVendorManifest;
         const dir = try std.Io.Dir.cwd().openDir(io, root, .{ .iterate = true });
         defer dir.close(io);

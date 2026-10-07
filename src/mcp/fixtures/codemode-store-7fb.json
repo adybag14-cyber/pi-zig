@@ -1,0 +1,85 @@
+{
+  "upstream": "7fb59f995b0a1db552001a8577b234e4105d7179",
+  "cases": [
+    {
+      "entries": [
+        {
+          "type": "custom",
+          "customType": "codemode-store",
+          "data": {
+            "set": {
+              "same": "first"
+            },
+            "delete": []
+          }
+        },
+        {
+          "type": "custom",
+          "customType": "codemode-store",
+          "data": {
+            "set": {
+              "same": "winner"
+            },
+            "delete": [
+              "same"
+            ]
+          }
+        }
+      ],
+      "result": {
+        "same": "winner"
+      }
+    },
+    {
+      "entries": [
+        {
+          "type": "custom",
+          "customType": "codemode-store",
+          "data": {
+            "set": [
+              "a",
+              "b"
+            ],
+            "delete": []
+          }
+        }
+      ],
+      "result": {
+        "0": "a",
+        "1": "b"
+      }
+    },
+    {
+      "entries": [
+        {
+          "type": "custom",
+          "customType": "codemode-store",
+          "data": {
+            "set": {
+              "ignored": 1
+            },
+            "delete": [
+              1
+            ]
+          }
+        }
+      ],
+      "result": {}
+    },
+    {
+      "entries": [
+        {
+          "type": "custom",
+          "customType": "other",
+          "data": {
+            "set": {
+              "ignored": 1
+            },
+            "delete": []
+          }
+        }
+      ],
+      "result": {}
+    }
+  ]
+}

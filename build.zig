@@ -8,6 +8,19 @@ pub fn build(b: *std.Build) void {
     // platform choice; callers may select `-Duse-llvm=false` explicitly.
     const use_llvm = b.option(bool, "use-llvm", "Use LLVM for executables and test artifacts");
     const sqlite_lib_dir = b.option([]const u8, "sqlite-lib-dir", "Directory containing a linkable sqlite3 library");
+    const sqlite_library: ?*std.Build.Step.Compile = if (sqlite_lib_dir == null) blk: {
+        const library = b.addLibrary(.{
+            .name = "pi-sqlite",
+            .linkage = .static,
+            .root_module = b.createModule(.{ .target = target, .optimize = optimize, .link_libc = true }),
+        });
+        library.root_module.addIncludePath(b.path("vendor/sqlite"));
+        library.root_module.addCSourceFile(.{
+            .file = b.path("vendor/sqlite/sqlite3.c"),
+            .flags = &.{ "-std=gnu11", "-DSQLITE_THREADSAFE=1", "-DSQLITE_ENABLE_FTS5", "-DSQLITE_ENABLE_RTREE", "-DSQLITE_OMIT_LOAD_EXTENSION" },
+        });
+        break :blk library;
+    } else null;
     const diagnostic_tests = b.option(bool, "diagnostic-tests", "Stream individual environment lifecycle tests to diagnose blocked teardown") orelse false;
     const lifecycle_test_runner: ?std.Build.Step.Compile.TestRunner = if (diagnostic_tests) .{
         .path = .{ .cwd_relative = b.graph.zig_lib_directory.join(b.allocator, &.{ "compiler", "test_runner.zig" }) catch @panic("OOM") },
@@ -26,6 +39,9 @@ pub fn build(b: *std.Build) void {
         }),
     });
     quickjs.root_module.addIncludePath(b.path("vendor/quickjs"));
+    // Native public storage is installed for every extension VM. Carry SQLite
+    // through this common dependency so CLI, SDK and bindings all receive it.
+    linkSqlite(quickjs.root_module, sqlite_lib_dir, sqlite_library);
     quickjs.root_module.addCSourceFiles(.{
         .root = b.path("vendor/quickjs"),
         .files = &.{ "dtoa.c", "libregexp.c", "libunicode.c", "quickjs.c" },
@@ -128,7 +144,7 @@ pub fn build(b: *std.Build) void {
         }),
         .use_llvm = use_llvm,
     });
-    linkSqlite(sqlite_exe.root_module, sqlite_lib_dir);
+    linkSqlite(sqlite_exe.root_module, sqlite_lib_dir, sqlite_library);
     if (optimize != .Debug) sqlite_exe.root_module.strip = true;
     const install_sqlite = b.addInstallArtifact(sqlite_exe, .{});
 
@@ -150,7 +166,7 @@ pub fn build(b: *std.Build) void {
         }),
         .use_llvm = use_llvm,
     });
-    linkSqlite(sqlite_live_exe.root_module, sqlite_lib_dir);
+    linkSqlite(sqlite_live_exe.root_module, sqlite_lib_dir, sqlite_library);
     if (optimize != .Debug) sqlite_live_exe.root_module.strip = true;
     const install_sqlite_live = b.addInstallArtifact(sqlite_live_exe, .{});
 
@@ -178,7 +194,7 @@ pub fn build(b: *std.Build) void {
     test_mod.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, test_mod, quickjs);
     linkTypeScriptParser(b, test_mod, typescript_parser);
-    linkSqlite(test_mod, sqlite_lib_dir);
+    linkSqlite(test_mod, sqlite_lib_dir, sqlite_library);
     linkDurable(b, test_mod);
     const mod_tests = b.addTest(.{
         .root_module = test_mod,
@@ -200,7 +216,7 @@ pub fn build(b: *std.Build) void {
         }),
         .use_llvm = use_llvm,
     });
-    linkSqlite(sqlite_tests.root_module, sqlite_lib_dir);
+    linkSqlite(sqlite_tests.root_module, sqlite_lib_dir, sqlite_library);
     const run_sqlite_tests = std.Build.Step.Run.create(b, "run SQLite repository integration tests");
     run_sqlite_tests.addArtifactArg(sqlite_tests);
     run_sqlite_tests.setEnvironmentVariable("PI_SQLITE_REPOSITORY_TESTS", "1");
@@ -213,7 +229,7 @@ pub fn build(b: *std.Build) void {
         }),
         .use_llvm = use_llvm,
     });
-    linkSqlite(sqlite_cli_tests.root_module, sqlite_lib_dir);
+    linkSqlite(sqlite_cli_tests.root_module, sqlite_lib_dir, sqlite_library);
     const run_sqlite_cli_tests = std.Build.Step.Run.create(b, "run SQLite CLI integration tests");
     run_sqlite_cli_tests.addArtifactArg(sqlite_cli_tests);
     run_sqlite_cli_tests.setEnvironmentVariable("PI_SQLITE_REPOSITORY_TESTS", "0");
@@ -239,7 +255,7 @@ pub fn build(b: *std.Build) void {
         }),
         .use_llvm = use_llvm,
     });
-    linkSqlite(sqlite_persistence_tests.root_module, sqlite_lib_dir);
+    linkSqlite(sqlite_persistence_tests.root_module, sqlite_lib_dir, sqlite_library);
     const run_sqlite_persistence_tests = std.Build.Step.Run.create(b, "run SQLite live-persistence tests");
     run_sqlite_persistence_tests.addArtifactArg(sqlite_persistence_tests);
     run_sqlite_persistence_tests.setEnvironmentVariable("PI_SQLITE_REPOSITORY_TESTS", "1");
@@ -260,6 +276,16 @@ pub fn build(b: *std.Build) void {
     run_sdk_process_tests.step.dependOn(&sdk_install.step);
     const sdk_test_step = b.step("test-native-sdk", "Exercise source-captured programmatic SDK lifecycle without Node on PATH");
     sdk_test_step.dependOn(&run_sdk_process_tests.step);
+    const sdk_host_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_host_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"host SDK snapshot crosses"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_host_tests.root_module, quickjs);
+    const run_sdk_host_tests = b.addRunArtifact(sdk_host_tests);
+    run_sdk_host_tests.step.dependOn(&sdk_install.step);
+    sdk_test_step.dependOn(&run_sdk_host_tests.step);
+    test_step.dependOn(&run_sdk_host_tests.step);
     test_step.dependOn(&run_sdk_process_tests.step);
     const upstream_contract_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("tools/upstream_contract.zig"), .target = target, .optimize = optimize }),
@@ -361,8 +387,16 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_env_tests.step);
     const capability_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_capability_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"env capability"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     linkDurable(b, capability_tests.root_module);
+    const native_durable_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native durable VM"}, .use_llvm = use_llvm });
+    linkDurable(b, native_durable_tests.root_module);
+    linkQuickJs(b, native_durable_tests.root_module, quickjs);
+    linkSqlite(native_durable_tests.root_module, sqlite_lib_dir, sqlite_library);
+    const run_native_durable_tests = b.addRunArtifact(native_durable_tests);
+    const native_durable_step = b.step("test-native-durable-vm", "Exercise native public durable VM storage and Session objects");
+    native_durable_step.dependOn(&run_native_durable_tests.step);
+    test_step.dependOn(&run_native_durable_tests.step);
     linkQuickJs(b, capability_tests.root_module, quickjs);
-    linkSqlite(capability_tests.root_module, sqlite_lib_dir);
+    linkSqlite(capability_tests.root_module, sqlite_lib_dir, sqlite_library);
     const run_capability_tests = b.addRunArtifact(capability_tests);
     if (diagnostic_tests) run_capability_tests.stdio = .inherit;
     if (target.result.os.tag == .windows) if (sqlite_lib_dir) |directory| {
@@ -394,7 +428,7 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
         .test_runner = lifecycle_test_runner,
     });
-    linkSqlite(durable_backend_tests.root_module, sqlite_lib_dir);
+    linkSqlite(durable_backend_tests.root_module, sqlite_lib_dir, sqlite_library);
     linkDurable(b, durable_backend_tests.root_module);
     const run_durable_backend_tests = b.addRunArtifact(durable_backend_tests);
     if (diagnostic_tests) run_durable_backend_tests.stdio = .inherit;
@@ -406,7 +440,7 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
         .filters = &.{ "durable.harness", "durable.session" },
     });
-    linkSqlite(durable_harness_tests.root_module, sqlite_lib_dir);
+    linkSqlite(durable_harness_tests.root_module, sqlite_lib_dir, sqlite_library);
     linkQuickJs(b, durable_harness_tests.root_module, quickjs);
     linkDurable(b, durable_harness_tests.root_module);
     const run_durable_harness_tests = b.addRunArtifact(durable_harness_tests);
@@ -418,14 +452,14 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
         .filters = &.{"durable.scheduler"},
     });
-    linkSqlite(durable_scheduler_tests.root_module, sqlite_lib_dir);
+    linkSqlite(durable_scheduler_tests.root_module, sqlite_lib_dir, sqlite_library);
     const run_durable_scheduler_tests = b.addRunArtifact(durable_scheduler_tests);
     const durable_scheduler_fixture = b.addExecutable(.{
         .name = "pi-durable-scheduler-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_scheduler_fixture.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    linkSqlite(durable_scheduler_fixture.root_module, sqlite_lib_dir);
+    linkSqlite(durable_scheduler_fixture.root_module, sqlite_lib_dir, sqlite_library);
     const install_durable_scheduler_fixture = b.addInstallArtifact(durable_scheduler_fixture, .{});
     run_durable_scheduler_tests.step.dependOn(&install_durable_scheduler_fixture.step);
     run_durable_scheduler_tests.setEnvironmentVariable("PI_DURABLE_SCHEDULER_FIXTURE", b.getInstallPath(.bin, b.fmt("pi-durable-scheduler-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
@@ -437,7 +471,7 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
         .filters = &.{"durable.powershell"},
     });
-    linkSqlite(durable_powershell_tests.root_module, sqlite_lib_dir);
+    linkSqlite(durable_powershell_tests.root_module, sqlite_lib_dir, sqlite_library);
     linkQuickJs(b, durable_powershell_tests.root_module, quickjs);
     linkDurable(b, durable_powershell_tests.root_module);
     const run_durable_powershell_tests = b.addRunArtifact(durable_powershell_tests);
@@ -544,6 +578,23 @@ pub fn build(b: *std.Build) void {
     const codemode_step = b.step("test-codemode", "Exercise isolated native codemode user scripts and Zig host callbacks");
     codemode_step.dependOn(&run_codemode_tests.step);
     test_step.dependOn(&run_codemode_tests.step);
+    const nested_module = b.createModule(.{ .root_source_file = b.path("src/codemode_nested_pipeline_test.zig"), .target = target, .optimize = optimize });
+    nested_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, nested_module, quickjs);
+    linkTypeScriptParser(b, nested_module, typescript_parser);
+    linkDurable(b, nested_module);
+    const nested_tests = b.addTest(.{ .root_module = nested_module, .use_llvm = use_llvm, .filters = &.{"native codemode nested pipeline"} });
+    const run_nested_tests = b.addRunArtifact(nested_tests);
+    codemode_step.dependOn(&run_nested_tests.step);
+    test_step.dependOn(&run_nested_tests.step);
+    const oauth_lock_fixture = b.addExecutable(.{
+        .name = "pi-mcp-oauth-lock-fixture",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_oauth_lock_fixture.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const install_oauth_lock_fixture = b.addInstallArtifact(oauth_lock_fixture, .{});
+    const oauth_lock_fixture_step = b.step("mcp-oauth-lock-fixture", "Build native directory lease interoperability helper");
+    oauth_lock_fixture_step.dependOn(&install_oauth_lock_fixture.step);
     const mcp_runtime_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_runtime_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
@@ -1079,7 +1130,7 @@ pub fn build(b: *std.Build) void {
     duration_module.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, duration_module, quickjs);
     linkTypeScriptParser(b, duration_module, typescript_parser);
-    linkSqlite(duration_module, sqlite_lib_dir);
+    linkSqlite(duration_module, sqlite_lib_dir, sqlite_library);
     linkDurable(b, duration_module);
     const duration_tests = b.addTest(.{
         .root_module = duration_module,
@@ -1157,9 +1208,11 @@ fn linkQuickJs(b: *std.Build, module: *std.Build.Module, library: *std.Build.Ste
     module.link_libc = true;
 }
 
-fn linkSqlite(module: *std.Build.Module, library_dir: ?[]const u8) void {
-    if (library_dir) |path| module.addLibraryPath(.{ .cwd_relative = path });
-    module.linkSystemLibrary("sqlite3", .{});
+fn linkSqlite(module: *std.Build.Module, library_dir: ?[]const u8, library: ?*std.Build.Step.Compile) void {
+    if (library) |compiled| module.linkLibrary(compiled) else {
+        if (library_dir) |path| module.addLibraryPath(.{ .cwd_relative = path });
+        module.linkSystemLibrary("sqlite3", .{});
+    }
     module.link_libc = true;
 }
 fn linkDurable(b: *std.Build, module: *std.Build.Module) void {

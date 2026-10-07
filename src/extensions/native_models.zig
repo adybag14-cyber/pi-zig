@@ -513,6 +513,9 @@ fn continueJob(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: 
     const all = try get(engine, job, "all");
     defer engine.freeValue(all);
     const all_types = c.JS_ToBool(engine.context, all) == 1;
+    // Credential/auth resolution has completed. Exceptions thrown while
+    // obtaining or filtering models retain their original identity.
+    try put(engine, job, "pendingStage", c.pi_js_undefined());
     const models = try providerModels(engine, provider, all_types);
     defer engine.freeValue(models);
     const credential = try get(engine, job, "credential");

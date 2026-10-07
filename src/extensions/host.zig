@@ -1333,6 +1333,22 @@ pub const Host = struct {
         return null;
     }
 
+    /// Request a cached SDK snapshot on the worker owner thread. The returned
+    /// value belongs to the caller and has no QuickJS references. Null means
+    /// the requested runtime has not published or has been retired.
+    pub fn sdkAvailabilitySnapshot(self: *Host, gpa: std.mem.Allocator, runtime_id: u64) !?@import("native_sdk_availability_protocol.zig").Snapshot {
+        const runtime = self.native_group_runtime orelse return null;
+        if (runtime_id > 9007199254740991) return error.InvalidNativeSDKRuntime;
+        const request = if (runtime_id == 0)
+            try self.gpa.dupe(u8, "{\"kind\":\"sdk_availability_snapshot\"}")
+        else
+            try std.fmt.allocPrint(self.gpa, "{{\"kind\":\"sdk_availability_snapshot\",\"runtimeId\":{d}}}", .{runtime_id});
+        defer self.gpa.free(request);
+        const response = try runtime.invokeGroupRequest(1, request, null);
+        defer self.gpa.free(response);
+        return @import("native_sdk_availability_protocol.zig").decodeResponse(gpa, response);
+    }
+
     pub fn hasCommand(self: *const Host, name: []const u8) bool {
         if (self.script_backend == .native) {
             const resolved = self.resolvedCommandNames() catch return false;

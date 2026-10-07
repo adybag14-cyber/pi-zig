@@ -1,0 +1,31 @@
+{
+  "first": {
+    "serverUrl": "https://service.example/mcp",
+    "tokens": {
+      "access_token": "legacy"
+    }
+  },
+  "secondBefore": null,
+  "second": {
+    "serverUrl": "https://service.example/mcp",
+    "tokens": {
+      "access_token": "second"
+    },
+    "extension": true
+  },
+  "persisted": {
+    "mcp__first|https://service.example/mcp": {
+      "serverUrl": "https://service.example/mcp",
+      "tokens": {
+        "access_token": "legacy"
+      }
+    },
+    "mcp__second|https://service.example/mcp": {
+      "serverUrl": "https://service.example/mcp",
+      "tokens": {
+        "access_token": "second"
+      },
+      "extension": true
+    }
+  }
+}

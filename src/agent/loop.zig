@@ -258,6 +258,10 @@ pub const AgentConfig = struct {
     configured_tool_ctx: ?*anyopaque = null,
     configured_tool_fn: ?ExternalToolCallStreamingFn = null,
     configured_tool_exists_fn: ?ExternalToolExistsFn = null,
+    builtin_extension_ctx: ?*anyopaque = null,
+    builtin_extension_tool_fn: ?ExternalToolCallStreamingFn = null,
+    builtin_extension_exists_fn: ?ExternalToolExistsFn = null,
+    builtin_extension_schemas_fn: ?*const fn (?*anyopaque, std.mem.Allocator) anyerror![]u8 = null,
     external_tool_fn: ?ExternalToolFn = null,
     /// Streaming dispatcher used when an external runtime can deliver tool
     /// progress before the final result. The legacy dispatcher remains as a
@@ -710,7 +714,10 @@ pub fn runWithImages(
         const external_schemas = try mergeToolSchemaArrays(gpa, builtin_schemas, config.extra_tools_json);
         const dynamic_configured = if (config.configured_tools_json_fn) |get| try get(config.configured_tool_ctx, gpa) else null;
         defer if (dynamic_configured) |value| gpa.free(value);
-        const configured_json = dynamic_configured orelse config.configured_tools_json;
+        const dynamic_builtins = if (config.builtin_extension_schemas_fn) |get| try get(config.builtin_extension_ctx, gpa) else null;
+        defer if (dynamic_builtins) |value| gpa.free(value);
+        const configured_json = if (dynamic_builtins) |value| try mergeToolSchemaArrays(gpa, dynamic_configured orelse config.configured_tools_json, value) else dynamic_configured orelse config.configured_tools_json;
+        defer if (dynamic_builtins != null) gpa.free(configured_json);
         const schemas = if (std.mem.eql(u8, configured_json, "[]")) external_schemas else blk: {
             defer gpa.free(external_schemas);
             const configured_schemas = try filteredConfiguredSchemas(gpa, configured_json, config.tool_filter);
@@ -1472,6 +1479,10 @@ fn executeExternalTool(
     progress_fn: ?ExternalToolProgressFn,
     progress_ctx: ?*anyopaque,
 ) !?tools.ToolResult {
+    if (config.builtin_extension_exists_fn) |exists| if (exists(config.builtin_extension_ctx, name)) {
+        const execute = config.builtin_extension_tool_fn orelse return error.BuiltinExtensionDispatcherMissing;
+        return execute(config.builtin_extension_ctx, allocator, tool_call_id, name, arguments_json, progress_fn orelse discardExternalToolProgress, progress_ctx, config.abort_flag);
+    };
     if (config.configured_tool_exists_fn) |exists| if (exists(config.configured_tool_ctx, name)) {
         const execute = config.configured_tool_fn orelse return error.ConfiguredToolDispatcherMissing;
         return execute(config.configured_tool_ctx, allocator, tool_call_id, name, arguments_json, progress_fn orelse discardExternalToolProgress, progress_ctx, config.abort_flag);
@@ -2039,10 +2050,43 @@ const PreparedInvocation = struct {
     }
 };
 
+/// Execute a script's nested tool through the same argument preparation,
+/// schema validation, permission/before hook, dispatch and result hook as an
+/// ordinary agent call. Transcript storage remains with the outer codemode
+/// invocation; callers own the returned native result.
+pub fn executeNestedTool(
+    gpa: std.mem.Allocator,
+    io: Io,
+    cwd: []const u8,
+    initial_config: *const AgentConfig,
+    schemas_json: []const u8,
+    id: []const u8,
+    name: []const u8,
+    arguments_json: []const u8,
+    abort_flag: ?*bool,
+) !tools.ToolResult {
+    var config = initial_config.*;
+    config.abort_flag = abort_flag;
+    // The adapter supplies its permitted nested registry as this config's
+    // filter; this entrypoint preserves it through dispatch.
+    const call: ai.ToolCall = .{ .id = @constCast(id), .name = @constCast(name), .arguments = @constCast(arguments_json) };
+    var prepared = try prepareToolInvocation(gpa, &config, schemas_json, &call);
+    defer prepared.deinit(gpa);
+    if (prepared.immediate) |*result| return cloneToolResult(gpa, result);
+    const started = Io.Clock.awake.now(io);
+    var raw = executeRawTool(gpa, io, cwd, &config, &call, prepared.arguments, null, null) catch |cause| tools.ToolResult{
+        .content = try std.fmt.allocPrint(gpa, "tool execution failed: {s}", .{@errorName(cause)}),
+        .is_error = true,
+    };
+    defer raw.deinit(gpa);
+    raw.duration_ms = executionDurationMs(io, started);
+    return finalizeToolResult(gpa, io, &config, &call, prepared.arguments, &raw);
+}
+
 fn prepareToolInvocation(gpa: std.mem.Allocator, config: *const AgentConfig, schemas_json: []const u8, tc: *const ai.ToolCall) !PreparedInvocation {
     var prepared = PreparedInvocation{ .arguments = tc.arguments };
     errdefer prepared.deinit(gpa);
-    const configured_claims = if (config.configured_tool_exists_fn) |exists| exists(config.configured_tool_ctx, tc.name) else false;
+    const configured_claims = (if (config.configured_tool_exists_fn) |exists| exists(config.configured_tool_ctx, tc.name) else false) or (if (config.builtin_extension_exists_fn) |exists| exists(config.builtin_extension_ctx, tc.name) else false);
     const external_claims = !configured_claims and (if (config.external_tool_exists_fn) |exists| exists(config.hook_ctx, tc.name) else false);
     if (configured_claims) {
         // Configured schemas validate original arguments; extension preparation does not own them.

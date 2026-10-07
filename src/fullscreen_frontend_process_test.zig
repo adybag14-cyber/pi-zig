@@ -126,6 +126,7 @@ const Fixture = struct {
 
 const renderer_extension =
     \\import fs from 'node:fs';import {Type} from '@earendil-works/pi-ai';export default pi=>{
+    \\ pi.registerCommand('renderer-ready',{handler(_args,ctx){ctx.ui.notify('RENDERER_FIXTURE_READY:OWNER_INSTALLED')}});
     \\ pi.registerTool({name:'animated',label:'Animated',description:'Offline native renderer fixture',parameters:Type.Object({value:Type.String()}),
     \\  async execute(id,args,signal,update){update({content:[{type:'text',text:'partial:'+args.value}]});await new Promise(resolve=>setTimeout(resolve,500));return {content:[{type:'text',text:'done:'+args.value}]}},
     \\  renderCall(args,theme,ctx){ctx.state.label??='early';ctx.state.value=args.value;return {render(width){return ['ROW_CALL:'+ctx.state.label+':'+width+':'+ctx.state.value]}}},
@@ -398,6 +399,7 @@ test "real native renderer mailbox updates idle durable tool slots resizes and p
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
+    try observed.acknowledgeStartup(&child, "/renderer-ready\r", "RENDERER_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "history-row-059", 0);
     try observed.send(&child, "run-render\r", "ROW_RESULT:early:100:partial:seed:true");
     try std.testing.expect(!try observed.screen.contains("turn-complete"));
@@ -433,7 +435,7 @@ test "real native renderer mailbox updates idle durable tool slots resizes and p
 }
 
 const renderer_error_extension =
-    \\import {Type} from '@earendil-works/pi-ai';export default pi=>pi.registerTool({name:'animated',label:'Animated',description:'Native renderer original error',parameters:Type.Object({value:Type.String()}),execute(id,args){return {content:[{type:'text',text:'done:'+args.value}]}},renderCall(args,theme,ctx){return {render(width){return ['ERROR_CALL:'+width]}}},renderResult(result,options,theme,ctx){if(!ctx.state.scheduled){ctx.state.scheduled=true;setTimeout(()=>{ctx.state.fail=true;ctx.invalidate()},700)}return {render(width){if(ctx.state.fail)throw new Error('renderer-original-diagnostic');return ['ERROR_RESULT:'+width]}}}})
+    \\import fs from 'node:fs';import {Type} from '@earendil-works/pi-ai';export default pi=>{pi.registerCommand('renderer-ready',{handler(_args,ctx){ctx.ui.notify('RENDERER_FIXTURE_READY:OWNER_INSTALLED')}});pi.registerTool({name:'animated',label:'Animated',description:'Native renderer original error',parameters:Type.Object({value:Type.String()}),execute(id,args){return {content:[{type:'text',text:'done:'+args.value}]}},renderCall(args,theme,ctx){return {render(width){return ['ERROR_CALL:'+width]}}},renderResult(result,options,theme,ctx){if(!ctx.state.scheduled){ctx.state.scheduled=true;const ack=setInterval(()=>{if(!fs.existsSync('renderer-error-phase-ack'))return;clearInterval(ack);setTimeout(()=>{ctx.state.fail=true;ctx.invalidate()},700)},5)}return {render(width){if(ctx.state.fail){fs.writeFileSync('renderer-error-phase-fired','original-error');throw new Error('renderer-original-diagnostic')}return ['ERROR_RESULT:'+width]}}}})}
 ;
 
 test "real native renderer idle original error keeps canonical result draft and next turn usable" {
@@ -446,12 +448,18 @@ test "real native renderer idle original error keeps canonical result draft and 
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
+    try observed.acknowledgeStartup(&child, "/renderer-ready\r", "RENDERER_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "history-row-059", 0);
     try observed.send(&child, "render-error\r", "ERROR_RESULT:100");
     const initial_result_frame = observed.screen.frames;
     try observed.wait(&child, "turn-complete", 0);
     try observed.send(&child, "error-draft", "> error-draft");
+    // Admit the actual idle failure only after its initial current cells,
+    // completed turn and editor draft have all been observed. The 700 ms
+    // timer and five-second render assertion retain their original deadlines.
+    try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "renderer-error-phase-ack", .data = "observer-ready" });
     try observed.wait(&child, "renderer-original-diagnostic", initial_result_frame);
+    try waitFixtureSignal(&fixture, &child, "renderer-error-phase-fired");
     try std.testing.expect(try observed.screen.contains("done:seed"));
     try std.testing.expect(try observed.screen.contains("> error-draft"));
     try observed.send(&child, "\x15next\r", "after-reload");

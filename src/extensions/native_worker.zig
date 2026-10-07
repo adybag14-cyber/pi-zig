@@ -995,6 +995,8 @@ pub fn runSdkFileWithEnvironment(gpa: std.mem.Allocator, io: std.Io, script_path
     const group = try native_group.Group.init(engine);
     defer group.deinit();
     const binding = try group.add(script_path);
+    engine.native_sdk_extension_group = group;
+    defer engine.native_sdk_extension_group = null;
     try timers.install(engine, io);
     try binding.installSchemas();
     try node_path.install(engine, io);
@@ -1191,6 +1193,21 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             continue;
         };
         defer transport.clearActive();
+        if (grouped and std.mem.eql(u8, kind, "sdk_availability_snapshot")) {
+            const runtime_id: u64 = if (request.object.get("runtimeId")) |value| component_protocol.identifier(value) catch {
+                try writeFailure(allocator, writer, "InvalidNativeSDKRuntime");
+                continue;
+            } else 0;
+            const snapshot_json = group.sdk_availability.encode(allocator, runtime_id) catch |err| {
+                try writeFailure(allocator, writer, @errorName(err));
+                continue;
+            };
+            try writer.writeAll("\x1e{\"ok\":true,\"result\":{\"snapshot\":");
+            try writer.writeAll(snapshot_json);
+            try writer.writeAll("}}\n");
+            try writer.flush();
+            continue;
+        }
         if (grouped and std.mem.eql(u8, kind, "group_remove_source")) {
             const value = request.object.get("ownerId") orelse {
                 try writeFailure(allocator, writer, "MissingNativeExtensionOwner");

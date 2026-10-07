@@ -13,6 +13,9 @@ pub const Tool = struct {
     /// Native workers may call different tools concurrently. The callback must
     /// not access VM values and must observe its cooperative abort flag.
     execute: *const fn (?*anyopaque, std.mem.Allocator, ?Value, ?*bool) anyerror!json.Owned,
+    /// Agent adapters can return an owned marker with the exact error message;
+    /// ordinary sandbox tools keep arbitrary object results unchanged.
+    error_marker: bool = false,
 };
 pub const Options = struct {
     timeout_ms: ?u64 = 300_000,
@@ -49,6 +52,7 @@ const Execution = struct {
     deadline: ?i64,
     aborted: bool = false,
     timed_out: bool = false,
+    tool_names: std.ArrayList([]u8) = .empty,
 
     fn from(context: ?*c.JSContext) *Execution {
         const engine = engine_mod.Engine.fromContext(context.?);
@@ -192,6 +196,65 @@ const Execution = struct {
             self.engine.freeValue(retained);
             return cause;
         };
+    }
+    fn guardedGet(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const self = from(context);
+        if (argc < 2) return c.pi_js_undefined();
+        const atom = c.JS_ValueToAtom(context, argv[1]);
+        if (atom == c.JS_ATOM_NULL) return c.JS_Throw(context, c.JS_GetException(context));
+        defer c.JS_FreeAtom(context, atom);
+        const present = c.JS_HasProperty(context, argv[0], atom);
+        if (present < 0) return c.JS_Throw(context, c.JS_GetException(context));
+        if (present > 0 or !c.JS_IsString(argv[1])) return c.JS_GetProperty(context, argv[0], atom);
+        const property = self.engine.toString(argv[1]) catch |cause| return self.fail(cause);
+        defer self.gpa.free(property);
+        if (std.mem.eql(u8, property, "then") or std.mem.eql(u8, property, "toJSON")) return c.pi_js_undefined();
+        const global = c.JS_GetGlobalObject(context);
+        defer self.engine.freeValue(global);
+        const object = self.engine.checked(c.JS_GetPropertyStr(context, global, "Object")) catch |cause| return self.fail(cause);
+        defer self.engine.freeValue(object);
+        const prototype = self.engine.checked(c.JS_GetPropertyStr(context, object, "prototype")) catch |cause| return self.fail(cause);
+        defer self.engine.freeValue(prototype);
+        if (c.JS_HasProperty(context, prototype, atom) > 0) return c.pi_js_undefined();
+        const message = self.guardMessage(property) catch |cause| return self.fail(cause);
+        defer self.gpa.free(message);
+        const terminated = self.gpa.dupeZ(u8, message) catch |cause| return self.fail(cause);
+        defer self.gpa.free(terminated);
+        return c.JS_ThrowTypeError(context, "%s", terminated.ptr);
+    }
+    fn guardMessage(self: *Execution, property: []const u8) ![]u8 {
+        const wanted = try comparable(self.gpa, property);
+        defer self.gpa.free(wanted);
+        var exact: std.ArrayList([]const u8) = .empty;
+        defer exact.deinit(self.gpa);
+        var close: std.ArrayList([]const u8) = .empty;
+        defer close.deinit(self.gpa);
+        for (self.tool_names.items) |name| {
+            const candidate = try comparable(self.gpa, name);
+            defer self.gpa.free(candidate);
+            if (std.mem.eql(u8, wanted, candidate)) try exact.append(self.gpa, name) else if (wanted.len != 0 and (std.mem.indexOf(u8, candidate, wanted) != null or std.mem.indexOf(u8, wanted, candidate) != null)) try close.append(self.gpa, name);
+        }
+        var message: std.Io.Writer.Allocating = .init(self.gpa);
+        errdefer message.deinit();
+        try message.writer.print("tools.{s} does not exist.", .{property});
+        const matches = if (exact.items.len != 0) exact.items else close.items;
+        if (matches.len != 0) {
+            try message.writer.writeAll(" Did you mean ");
+            for (matches[0..@min(5, matches.len)], 0..) |name, index| {
+                if (index != 0) try message.writer.writeAll(", ");
+                try message.writer.print("tools.{s}", .{name});
+            }
+            try message.writer.writeByte('?');
+        } else if (self.tool_names.items.len <= 20) {
+            try message.writer.writeAll(" Available: ");
+            for (self.tool_names.items, 0..) |name, index| {
+                if (index != 0) try message.writer.writeAll(", ");
+                try message.writer.writeAll(name);
+            }
+            try message.writer.writeByte('.');
+        }
+        try message.writer.print(" ALL_TOOLS lists every tool; searchTools(query) finds tools by topic. Check for a member with \"{s}\" in tools.", .{property});
+        return message.toOwnedSlice();
     }
     fn parseArgument(self: *Execution, value: c.JSValue) !?json.Owned {
         if (c.JS_IsUndefined(value)) return null;
@@ -425,6 +488,17 @@ const Execution = struct {
             return true;
         };
         defer reply.deinit();
+        if (pending.work.tool.error_marker) if (json.get(reply.value, "__pi_codemode_error")) |error_value| {
+            const error_text = try json.asString(error_value);
+            const message = try self.engine.checked(c.JS_NewError(self.engine.context));
+            defer self.engine.freeValue(message);
+            if (c.JS_SetPropertyStr(self.engine.context, message, "message", c.JS_NewStringLen(self.engine.context, error_text.ptr, error_text.len)) < 0) return error.JavaScriptException;
+            var parameters = [_]c.JSValue{message};
+            const settled = try self.engine.checked(c.JS_Call(self.engine.context, pending.reject, c.pi_js_undefined(), 1, &parameters));
+            self.engine.freeValue(settled);
+            try self.completeCall(pending.record_index, "error", pending.started);
+            return true;
+        };
         const value = try self.engine.fromJsonValue(reply.value);
         defer self.engine.freeValue(value);
         var args = [_]c.JSValue{value};
@@ -460,6 +534,12 @@ fn jsWhitespace(point: u21) bool {
         else => false,
     };
 }
+fn comparable(gpa: std.mem.Allocator, value: []const u8) ![]u8 {
+    var result: std.ArrayList(u8) = .empty;
+    errdefer result.deinit(gpa);
+    for (value) |byte| if (std.ascii.isAlphanumeric(byte)) try result.append(gpa, std.ascii.toLower(byte));
+    return result.toOwnedSlice(gpa);
+}
 pub fn identifier(gpa: std.mem.Allocator, name: []const u8) ![]u8 {
     var output: std.ArrayList(u8) = .empty;
     errdefer output.deinit(gpa);
@@ -482,6 +562,8 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
     try state.result.value.object.put(a, "calls", .{ .array = .init(a) });
     state.stored = try json.clone(a, options.store);
     defer {
+        for (state.tool_names.items) |name| gpa.free(name);
+        state.tool_names.deinit(gpa);
         for (state.pending.items) |*pending| {
             @atomicStore(bool, &pending.work.aborted, true, .release);
             if (pending.work.future) |*future| {
@@ -518,15 +600,36 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
         defer gpa.free(js_name_z);
         const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, Execution.callTool, name_z, 1, @intCast(index), 0, null));
         defer engine.freeValue(function);
-        try state.put(tool_object, js_name_z, c.JS_DupValue(engine.context, function));
-        if (!std.mem.eql(u8, js_name, tool.name)) try state.put(tool_object, name_z, c.JS_DupValue(engine.context, function));
-        const info = try engine.checked(c.JS_NewObject(engine.context));
-        defer engine.freeValue(info);
-        try state.put(info, "name", try engine.checked(c.JS_NewStringLen(engine.context, js_name.ptr, js_name.len)));
-        try state.put(info, "description", try engine.checked(c.JS_NewStringLen(engine.context, tool.description.ptr, tool.description.len)));
-        if (c.JS_SetPropertyUint32(engine.context, metadata, @intCast(index), c.JS_DupValue(engine.context, info)) < 0) return error.JavaScriptException;
+        const alias_atom = c.JS_NewAtom(engine.context, js_name_z);
+        defer c.JS_FreeAtom(engine.context, alias_atom);
+        if (c.JS_HasProperty(engine.context, tool_object, alias_atom) == 0) {
+            try state.put(tool_object, js_name_z, c.JS_DupValue(engine.context, function));
+            const owned_name = try gpa.dupe(u8, js_name);
+            state.tool_names.append(gpa, owned_name) catch |cause| {
+                gpa.free(owned_name);
+                return cause;
+            };
+            const info = try engine.checked(c.JS_NewObject(engine.context));
+            defer engine.freeValue(info);
+            try state.put(info, "name", try engine.checked(c.JS_NewStringLen(engine.context, js_name.ptr, js_name.len)));
+            try state.put(info, "description", try engine.checked(c.JS_NewStringLen(engine.context, tool.description.ptr, tool.description.len)));
+            if (c.JS_SetPropertyUint32(engine.context, metadata, @intCast(state.tool_names.items.len - 1), c.JS_DupValue(engine.context, info)) < 0) return error.JavaScriptException;
+        }
+        if (!std.mem.eql(u8, js_name, tool.name)) {
+            const raw_atom = c.JS_NewAtom(engine.context, name_z);
+            defer c.JS_FreeAtom(engine.context, raw_atom);
+            if (c.JS_HasProperty(engine.context, tool_object, raw_atom) == 0) try state.put(tool_object, name_z, c.JS_DupValue(engine.context, function));
+        }
     }
-    try state.put(globals, "tools", c.JS_DupValue(engine.context, tool_object));
+    const handler = try engine.checked(c.JS_NewObject(engine.context));
+    defer engine.freeValue(handler);
+    try state.put(handler, "get", try engine.checked(c.JS_NewCFunction(engine.context, Execution.guardedGet, "get", 3)));
+    const proxy_type = try engine.checked(c.JS_GetPropertyStr(engine.context, globals, "Proxy"));
+    defer engine.freeValue(proxy_type);
+    var proxy_args = [_]c.JSValue{ tool_object, handler };
+    const guarded_tools = try engine.checked(c.JS_CallConstructor(engine.context, proxy_type, 2, &proxy_args));
+    defer engine.freeValue(guarded_tools);
+    try state.put(globals, "tools", c.JS_DupValue(engine.context, guarded_tools));
     try state.put(globals, "ALL_TOOLS", c.JS_DupValue(engine.context, metadata));
     const console = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
     defer engine.freeValue(console);
@@ -737,6 +840,21 @@ test "native codemode allocation failures join tool workers and release JSON res
         }
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Check.run, .{});
+}
+
+test "native codemode unknown tool guard matches original suggested identifier diagnostics" {
+    const gpa = std.testing.allocator;
+    const ToolFn = struct {
+        fn run(_: ?*anyopaque, allocator: std.mem.Allocator, _: ?Value, _: ?*bool) !json.Owned {
+            return json.Owned.empty(allocator);
+        }
+    };
+    var fixture = try json.Owned.parse(gpa, @embedFile("fixtures/codemode-guard-7fb.json"));
+    defer fixture.deinit();
+    var actual = try execute(gpa, std.testing.io, &.{.{ .name = "my-tool", .description = "double", .execute = ToolFn.run }}, "return tools.mytool({value:1});", .{});
+    defer actual.deinit();
+    try std.testing.expectEqualStrings(fixture.value.object.get("error").?.object.get("message").?.string, actual.value.object.get("error").?.object.get("message").?.string);
+    try std.testing.expectEqual(@as(usize, 0), actual.value.object.get("calls").?.array.items.len);
 }
 fn expectJsonEquivalent(expected: Value, actual: Value) anyerror!void {
     try std.testing.expectEqual(std.meta.activeTag(expected), std.meta.activeTag(actual));

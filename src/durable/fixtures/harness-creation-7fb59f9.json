@@ -1,0 +1,307 @@
+{
+  "root": 1,
+  "again": 1,
+  "fork": 9,
+  "independent": 16,
+  "events": [
+    [
+      "created",
+      1
+    ],
+    [
+      "init",
+      1
+    ],
+    [
+      "created",
+      9
+    ],
+    [
+      "created",
+      16
+    ]
+  ],
+  "rootEntries": [
+    {
+      "id": 8,
+      "kind": "init",
+      "conversationId": 1
+    },
+    {
+      "id": 7,
+      "kind": "hook",
+      "conversationId": 1
+    }
+  ],
+  "forkEntries": [
+    {
+      "id": 15,
+      "kind": "hook",
+      "conversationId": 9
+    },
+    {
+      "id": 7,
+      "kind": "hook",
+      "conversationId": 1
+    }
+  ],
+  "independentEntries": [
+    {
+      "id": 22,
+      "kind": "hook",
+      "conversationId": 16
+    }
+  ],
+  "documents": [
+    {
+      "record": {
+        "id": 2,
+        "kind": "pi.live",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "history": "latest",
+        "fork": "initial",
+        "createdAt": 1
+      },
+      "value": {},
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 3,
+        "kind": "pi.inbox",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "history": "latest",
+        "fork": "initial",
+        "createdAt": 1
+      },
+      "value": {
+        "items": []
+      },
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 4,
+        "kind": "pi.usage",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "history": "latest",
+        "fork": "initial",
+        "createdAt": 1
+      },
+      "value": {
+        "models": {},
+        "tools": {}
+      },
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 5,
+        "kind": "pi.provider",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "history": "latest",
+        "fork": "initial",
+        "createdAt": 1
+      },
+      "value": {
+        "sessionId": true
+      },
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 6,
+        "kind": "pi.agent",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 1
+        },
+        "history": "rewindable",
+        "fork": "asOf",
+        "createdAt": 1
+      },
+      "value": {
+        "cwd": "/fixture-Ω"
+      },
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 10,
+        "kind": "pi.agent",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 9
+        },
+        "history": "rewindable",
+        "fork": "asOf",
+        "createdAt": 2
+      },
+      "value": {
+        "cwd": "/fixture-Ω"
+      },
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 11,
+        "kind": "pi.live",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 9
+        },
+        "history": "latest",
+        "fork": "initial",
+        "createdAt": 2
+      },
+      "value": {},
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 12,
+        "kind": "pi.inbox",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 9
+        },
+        "history": "latest",
+        "fork": "initial",
+        "createdAt": 2
+      },
+      "value": {
+        "items": []
+      },
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 13,
+        "kind": "pi.usage",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 9
+        },
+        "history": "latest",
+        "fork": "initial",
+        "createdAt": 2
+      },
+      "value": {
+        "models": {},
+        "tools": {}
+      },
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 14,
+        "kind": "pi.provider",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 9
+        },
+        "history": "latest",
+        "fork": "initial",
+        "createdAt": 2
+      },
+      "value": {
+        "sessionId": true
+      },
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 17,
+        "kind": "pi.live",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 16
+        },
+        "history": "latest",
+        "fork": "initial",
+        "createdAt": 3
+      },
+      "value": {},
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 18,
+        "kind": "pi.inbox",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 16
+        },
+        "history": "latest",
+        "fork": "initial",
+        "createdAt": 3
+      },
+      "value": {
+        "items": []
+      },
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 19,
+        "kind": "pi.usage",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 16
+        },
+        "history": "latest",
+        "fork": "initial",
+        "createdAt": 3
+      },
+      "value": {
+        "models": {},
+        "tools": {}
+      },
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 20,
+        "kind": "pi.provider",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 16
+        },
+        "history": "latest",
+        "fork": "initial",
+        "createdAt": 3
+      },
+      "value": {
+        "sessionId": true
+      },
+      "version": 1
+    },
+    {
+      "record": {
+        "id": 21,
+        "kind": "pi.agent",
+        "scope": {
+          "kind": "conversation",
+          "conversationId": 16
+        },
+        "history": "rewindable",
+        "fork": "asOf",
+        "createdAt": 3
+      },
+      "value": {},
+      "version": 1
+    }
+  ]
+}

@@ -317,6 +317,7 @@ pub fn install(engine: *engine_mod.Engine, tui_exports: c.JSValue) !void {
         }
     }
     try @import("native_sdk.zig").install(engine, coding);
+    try @import("native_durable.zig").install(engine);
     try engine.registerValueModule("@earendil-works/pi-coding-agent", coding);
     try engine.registerValueModule("@mariozechner/pi-coding-agent", coding);
     try engine.registerValueModule("pi-coding-agent", coding);
