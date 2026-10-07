@@ -8,6 +8,7 @@ pub fn build(b: *std.Build) void {
     // platform choice; callers may select `-Duse-llvm=false` explicitly.
     const use_llvm = b.option(bool, "use-llvm", "Use LLVM for executables and test artifacts");
     const sqlite_lib_dir = b.option([]const u8, "sqlite-lib-dir", "Directory containing a linkable sqlite3 library");
+    const diagnostic_all_tests = b.option(bool, "diagnostic-all-tests", "Stream each test name in every test artifact to locate blocked execution") orelse false;
     const diagnostic_tests = b.option(bool, "diagnostic-tests", "Stream individual environment lifecycle tests to diagnose blocked teardown") orelse false;
     const lifecycle_test_runner: ?std.Build.Step.Compile.TestRunner = if (diagnostic_tests) .{
         .path = .{ .cwd_relative = b.graph.zig_lib_directory.join(b.allocator, &.{ "compiler", "test_runner.zig" }) catch @panic("OOM") },
@@ -161,7 +162,7 @@ pub fn build(b: *std.Build) void {
     sqlite_server_step.dependOn(&install_sqlite_live.step);
 
     const run_step = b.step("run", "Run pi");
-    const run_cmd = b.addRunArtifact(exe);
+    const run_cmd = diagnosticRun(b, diagnostic_all_tests, exe);
     run_step.dependOn(&run_cmd.step);
     run_cmd.step.dependOn(b.getInstallStep());
     if (b.args) |args| {
@@ -180,7 +181,7 @@ pub fn build(b: *std.Build) void {
     linkTypeScriptParser(b, test_mod, typescript_parser);
     linkSqlite(test_mod, sqlite_lib_dir);
     linkDurable(b, test_mod);
-    const mod_tests = b.addTest(.{
+    const mod_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = test_mod,
         .use_llvm = use_llvm,
     });
@@ -192,7 +193,7 @@ pub fn build(b: *std.Build) void {
     // artifact runs them together with their ABI/schema dependencies.
     run_mod_tests.setEnvironmentVariable("PI_SQLITE_REPOSITORY_TESTS", "0");
 
-    const sqlite_tests = b.addTest(.{
+    const sqlite_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/storage/sqlite/repository.zig"),
             .target = target,
@@ -205,7 +206,7 @@ pub fn build(b: *std.Build) void {
     run_sqlite_tests.addArtifactArg(sqlite_tests);
     run_sqlite_tests.setEnvironmentVariable("PI_SQLITE_REPOSITORY_TESTS", "1");
 
-    const sqlite_cli_tests = b.addTest(.{
+    const sqlite_cli_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/sqlite_main.zig"),
             .target = target,
@@ -219,18 +220,18 @@ pub fn build(b: *std.Build) void {
     run_sqlite_cli_tests.setEnvironmentVariable("PI_SQLITE_REPOSITORY_TESTS", "0");
     run_sqlite_cli_tests.setEnvironmentVariable("PI_SQLITE_CLI_TESTS", "1");
 
-    const exe_tests = b.addTest(.{
+    const exe_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = exe.root_module,
         .use_llvm = use_llvm,
     });
     const run_exe_tests = std.Build.Step.Run.create(b, "run executable tests");
     run_exe_tests.addArtifactArg(exe_tests);
-    const activation_tests = b.addTest(.{ .root_module = exe.root_module, .use_llvm = use_llvm, .filters = &.{"native CLI activation allocation"} });
-    const run_activation_tests = b.addRunArtifact(activation_tests);
+    const activation_tests = diagnosticTest(b, diagnostic_all_tests, .{ .root_module = exe.root_module, .use_llvm = use_llvm, .filters = &.{"native CLI activation allocation"} });
+    const run_activation_tests = diagnosticRun(b, diagnostic_all_tests, activation_tests);
     const activation_step = b.step("test-tool-activation-atomic", "Exercise every allocation failure before native activation and schema acknowledgement");
     activation_step.dependOn(&run_activation_tests.step);
 
-    const sqlite_persistence_tests = b.addTest(.{
+    const sqlite_persistence_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/sqlite_server_persistence.zig"),
             .target = target,
@@ -244,7 +245,7 @@ pub fn build(b: *std.Build) void {
     run_sqlite_persistence_tests.addArtifactArg(sqlite_persistence_tests);
     run_sqlite_persistence_tests.setEnvironmentVariable("PI_SQLITE_REPOSITORY_TESTS", "1");
 
-    const sqlite_live_tests = b.addTest(.{
+    const sqlite_live_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = sqlite_live_exe.root_module,
         .use_llvm = use_llvm,
     });
@@ -252,37 +253,37 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
-    const sdk_process_tests = b.addTest(.{
+    const sdk_process_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_sdk_process_tests = b.addRunArtifact(sdk_process_tests);
+    const run_sdk_process_tests = diagnosticRun(b, diagnostic_all_tests, sdk_process_tests);
     run_sdk_process_tests.step.dependOn(&sdk_install.step);
     const sdk_test_step = b.step("test-native-sdk", "Exercise source-captured programmatic SDK lifecycle without Node on PATH");
     sdk_test_step.dependOn(&run_sdk_process_tests.step);
     test_step.dependOn(&run_sdk_process_tests.step);
-    const upstream_contract_tests = b.addTest(.{
+    const upstream_contract_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("tools/upstream_contract.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_upstream_contract_tests = b.addRunArtifact(upstream_contract_tests);
+    const run_upstream_contract_tests = diagnosticRun(b, diagnostic_all_tests, upstream_contract_tests);
     const upstream_contract_step = b.step("test-upstream-contract", "Check whole-tree upstream drift admission and malformed identities");
     upstream_contract_step.dependOn(&run_upstream_contract_tests.step);
     test_step.dependOn(&run_upstream_contract_tests.step);
-    const latest_bash_output_tests = b.addTest(.{
+    const latest_bash_output_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/latest_bash_output_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, latest_bash_output_tests.root_module, quickjs);
-    const run_latest_bash_output_tests = b.addRunArtifact(latest_bash_output_tests);
+    const run_latest_bash_output_tests = diagnosticRun(b, diagnostic_all_tests, latest_bash_output_tests);
     const latest_bash_output_step = b.step("test-latest-bash-output", "Check latest user bash ANSI stream and Android clipboard contracts");
     latest_bash_output_step.dependOn(&run_latest_bash_output_tests.step);
     test_step.dependOn(&run_latest_bash_output_tests.step);
-    const latest_bash_process_tests = b.addTest(.{
+    const latest_bash_process_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/latest_bash_output_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_latest_bash_process_tests = b.addRunArtifact(latest_bash_process_tests);
+    const run_latest_bash_process_tests = diagnosticRun(b, diagnostic_all_tests, latest_bash_process_tests);
     run_latest_bash_process_tests.step.dependOn(b.getInstallStep());
     run_latest_bash_process_tests.setEnvironmentVariable("PI_TEST_BINARY", b.getInstallPath(.bin, b.fmt("pi{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
     const latest_bash_process_step = b.step("test-latest-bash-output-process", "Replay native RPC streaming bash sanitization and persistence");
@@ -299,26 +300,26 @@ pub fn build(b: *std.Build) void {
         run_tests.step.dependOn(&install_durable_fixture.step);
         run_tests.setEnvironmentVariable("PI_DURABLE_FIXTURE", durable_fixture_path);
     }
-    const durable_tests = b.addTest(.{
+    const durable_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkDurable(b, durable_tests.root_module);
     linkQuickJs(b, durable_tests.root_module, quickjs);
-    const run_durable_tests = b.addRunArtifact(durable_tests);
+    const run_durable_tests = diagnosticRun(b, diagnostic_all_tests, durable_tests);
     run_durable_tests.step.dependOn(&install_durable_fixture.step);
     run_durable_tests.setEnvironmentVariable("PI_DURABLE_FIXTURE", durable_fixture_path);
     const durable_step = b.step("test-durable", "Exercise native durable readers output processes and polling watch contracts");
     durable_step.dependOn(&run_durable_tests.step);
     test_step.dependOn(&run_durable_tests.step);
-    const durable_tools_tests = b.addTest(.{
+    const durable_tools_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_tools_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"read"},
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, durable_tools_tests.root_module, quickjs);
     linkDurable(b, durable_tools_tests.root_module);
-    const run_durable_tools_tests = b.addRunArtifact(durable_tools_tests);
+    const run_durable_tools_tests = diagnosticRun(b, diagnostic_all_tests, durable_tools_tests);
     const durable_tools_step = b.step("test-durable-tools", "Exercise bounded durable reader integration with existing native CLI tools");
     durable_tools_step.dependOn(&run_durable_tools_tests.step);
     test_step.dependOn(&run_durable_tools_tests.step);
@@ -342,13 +343,13 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     const install_env_fixture = b.addInstallArtifact(env_fixture, .{});
-    const env_tests = b.addTest(.{
+    const env_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/env_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
         .test_runner = lifecycle_test_runner,
     });
     linkDurable(b, env_tests.root_module);
-    const run_env_tests = b.addRunArtifact(env_tests);
+    const run_env_tests = diagnosticRun(b, diagnostic_all_tests, env_tests);
     if (diagnostic_tests) run_env_tests.stdio = .inherit;
     run_env_tests.step.dependOn(&install_env_daemon.step);
     run_env_tests.step.dependOn(&install_env_fixture.step);
@@ -359,11 +360,11 @@ pub fn build(b: *std.Build) void {
     const env_test_step = b.step("test-env", "Check native daemon framing files processes client sessions and SSH contracts");
     env_test_step.dependOn(&run_env_tests.step);
     test_step.dependOn(&run_env_tests.step);
-    const capability_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_capability_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"env capability"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
+    const capability_tests = diagnosticTest(b, diagnostic_all_tests, .{ .root_module = b.createModule(.{ .root_source_file = b.path("src/env_capability_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"env capability"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     linkDurable(b, capability_tests.root_module);
     linkQuickJs(b, capability_tests.root_module, quickjs);
     linkSqlite(capability_tests.root_module, sqlite_lib_dir);
-    const run_capability_tests = b.addRunArtifact(capability_tests);
+    const run_capability_tests = diagnosticRun(b, diagnostic_all_tests, capability_tests);
     if (diagnostic_tests) run_capability_tests.stdio = .inherit;
     if (target.result.os.tag == .windows) if (sqlite_lib_dir) |directory| {
         const inherited_path = b.graph.environ_map.get("PATH") orelse "";
@@ -376,9 +377,9 @@ pub fn build(b: *std.Build) void {
     const capability_step = b.step("test-env-capability", "Exercise shared local and remote durable storage environment capabilities");
     capability_step.dependOn(&run_capability_tests.step);
     test_step.dependOn(&run_capability_tests.step);
-    const jsonl_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_jsonl_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"durable JSONL"}, .use_llvm = use_llvm });
+    const jsonl_tests = diagnosticTest(b, diagnostic_all_tests, .{ .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_jsonl_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"durable JSONL"}, .use_llvm = use_llvm });
     linkDurable(b, jsonl_tests.root_module);
-    const run_jsonl_tests = b.addRunArtifact(jsonl_tests);
+    const run_jsonl_tests = diagnosticRun(b, diagnostic_all_tests, jsonl_tests);
     run_jsonl_tests.step.dependOn(&install_env_daemon.step);
     run_jsonl_tests.setEnvironmentVariable("PI_TEST_ENV_DAEMON", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi-env.exe" else "pi-env"));
     const jsonl_step = b.step("test-durable-jsonl", "Verify portable durable JSONL publication recovery and source-compatible scans");
@@ -389,19 +390,19 @@ pub fn build(b: *std.Build) void {
     const install_jsonl_fixture = b.addInstallArtifact(jsonl_fixture, .{});
     const jsonl_fixture_step = b.step("jsonl-fixture", "Build original/native durable JSONL interop fixture");
     jsonl_fixture_step.dependOn(&install_jsonl_fixture.step);
-    const durable_backend_tests = b.addTest(.{
+    const durable_backend_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_backend_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
         .test_runner = lifecycle_test_runner,
     });
     linkSqlite(durable_backend_tests.root_module, sqlite_lib_dir);
     linkDurable(b, durable_backend_tests.root_module);
-    const run_durable_backend_tests = b.addRunArtifact(durable_backend_tests);
+    const run_durable_backend_tests = diagnosticRun(b, diagnostic_all_tests, durable_backend_tests);
     if (diagnostic_tests) run_durable_backend_tests.stdio = .inherit;
     const durable_backend_step = b.step("test-durable-backend", "Exercise native numeric durable transactions document history SQLite fencing and Session");
     durable_backend_step.dependOn(&run_durable_backend_tests.step);
     test_step.dependOn(&run_durable_backend_tests.step);
-    const durable_harness_tests = b.addTest(.{
+    const durable_harness_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_harness_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
         .filters = &.{ "durable.harness", "durable.session" },
@@ -409,17 +410,17 @@ pub fn build(b: *std.Build) void {
     linkSqlite(durable_harness_tests.root_module, sqlite_lib_dir);
     linkQuickJs(b, durable_harness_tests.root_module, quickjs);
     linkDurable(b, durable_harness_tests.root_module);
-    const run_durable_harness_tests = b.addRunArtifact(durable_harness_tests);
+    const run_durable_harness_tests = diagnosticRun(b, diagnostic_all_tests, durable_harness_tests);
     const durable_harness_step = b.step("test-durable-harness", "Exercise native registry schema tool output retained invocations and committed results");
     durable_harness_step.dependOn(&run_durable_harness_tests.step);
     test_step.dependOn(&run_durable_harness_tests.step);
-    const durable_scheduler_tests = b.addTest(.{
+    const durable_scheduler_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_scheduler_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
         .filters = &.{"durable.scheduler"},
     });
     linkSqlite(durable_scheduler_tests.root_module, sqlite_lib_dir);
-    const run_durable_scheduler_tests = b.addRunArtifact(durable_scheduler_tests);
+    const run_durable_scheduler_tests = diagnosticRun(b, diagnostic_all_tests, durable_scheduler_tests);
     const durable_scheduler_fixture = b.addExecutable(.{
         .name = "pi-durable-scheduler-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_scheduler_fixture.zig"), .target = target, .optimize = optimize }),
@@ -432,7 +433,7 @@ pub fn build(b: *std.Build) void {
     const durable_scheduler_step = b.step("test-durable-scheduler", "Exercise native durable task recovery ownership cascades concurrent phases and late-write fences");
     durable_scheduler_step.dependOn(&run_durable_scheduler_tests.step);
     test_step.dependOn(&run_durable_scheduler_tests.step);
-    const durable_powershell_tests = b.addTest(.{
+    const durable_powershell_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_powershell_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
         .filters = &.{"durable.powershell"},
@@ -440,7 +441,7 @@ pub fn build(b: *std.Build) void {
     linkSqlite(durable_powershell_tests.root_module, sqlite_lib_dir);
     linkQuickJs(b, durable_powershell_tests.root_module, quickjs);
     linkDurable(b, durable_powershell_tests.root_module);
-    const run_durable_powershell_tests = b.addRunArtifact(durable_powershell_tests);
+    const run_durable_powershell_tests = diagnosticRun(b, diagnostic_all_tests, durable_powershell_tests);
     const durable_command_fixture = b.addExecutable(.{
         .name = "pi-durable-command-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable/command_fixture.zig"), .target = target, .optimize = optimize }),
@@ -458,14 +459,14 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     const install_mcp_configured_fixture = b.addInstallArtifact(mcp_configured_fixture, .{});
-    const mcp_configured_tests = b.addTest(.{
+    const mcp_configured_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_configured_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
         .filters = &.{"mcp.configured"},
     });
     linkDurable(b, mcp_configured_tests.root_module);
     linkQuickJs(b, mcp_configured_tests.root_module, quickjs);
-    const run_mcp_configured_tests = b.addRunArtifact(mcp_configured_tests);
+    const run_mcp_configured_tests = diagnosticRun(b, diagnostic_all_tests, mcp_configured_tests);
     const install_mcp_configured_cli = b.addInstallArtifact(exe, .{});
     run_mcp_configured_tests.step.dependOn(&install_mcp_configured_cli.step);
     run_mcp_configured_tests.setEnvironmentVariable("PI_MCP_CONFIGURED_CLI", b.getInstallPath(.bin, b.fmt("pi{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
@@ -482,14 +483,14 @@ pub fn build(b: *std.Build) void {
     linkDurable(b, mcp_adapter_probe.root_module);
     linkQuickJs(b, mcp_adapter_probe.root_module, quickjs);
     const install_mcp_adapter_probe = b.addInstallArtifact(mcp_adapter_probe, .{});
-    const mcp_adapter_tests = b.addTest(.{
+    const mcp_adapter_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_adapter_integration_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
         .filters = &.{"mcp.adapter"},
     });
     linkDurable(b, mcp_adapter_tests.root_module);
     linkQuickJs(b, mcp_adapter_tests.root_module, quickjs);
-    const run_mcp_adapter_tests = b.addRunArtifact(mcp_adapter_tests);
+    const run_mcp_adapter_tests = diagnosticRun(b, diagnostic_all_tests, mcp_adapter_tests);
     const install_mcp_adapter_cli = b.addInstallArtifact(exe, .{});
     run_mcp_adapter_tests.step.dependOn(&install_mcp_adapter_cli.step);
     run_mcp_adapter_tests.step.dependOn(&install_mcp_adapter_probe.step);
@@ -506,52 +507,52 @@ pub fn build(b: *std.Build) void {
     });
     const install_mcp_fixture = b.addInstallArtifact(mcp_fixture, .{});
     run_mcp_adapter_tests.step.dependOn(&install_mcp_fixture.step);
-    const mcp_process_tests = b.addTest(.{
+    const mcp_process_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_adapter_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkDurable(b, mcp_process_tests.root_module);
     linkQuickJs(b, mcp_process_tests.root_module, quickjs);
-    const run_mcp_process_tests = b.addRunArtifact(mcp_process_tests);
+    const run_mcp_process_tests = diagnosticRun(b, diagnostic_all_tests, mcp_process_tests);
     run_mcp_process_tests.step.dependOn(&install_mcp_fixture.step);
     const mcp_test_step = b.step("test-mcp-stdio", "Exercise real native MCP pipe framing and protocol negotiation");
-    const mcp_oauth_tests = b.addTest(.{
+    const mcp_oauth_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_oauth_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, mcp_oauth_tests.root_module, quickjs);
-    const run_mcp_oauth_tests = b.addRunArtifact(mcp_oauth_tests);
+    const run_mcp_oauth_tests = diagnosticRun(b, diagnostic_all_tests, mcp_oauth_tests);
     const mcp_oauth_step = b.step("test-mcp-oauth", "Exercise native MCP OAuth registration and issuer contracts");
     mcp_oauth_step.dependOn(&run_mcp_oauth_tests.step);
     test_step.dependOn(&run_mcp_oauth_tests.step);
-    const prompt_sections_tests = b.addTest(.{
+    const prompt_sections_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/prompt_sections_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_prompt_sections_tests = b.addRunArtifact(prompt_sections_tests);
+    const run_prompt_sections_tests = diagnosticRun(b, diagnostic_all_tests, prompt_sections_tests);
     const prompt_sections_step = b.step("test-prompt-sections", "Check native structured prompts against latest upstream captures");
     prompt_sections_step.dependOn(&run_prompt_sections_tests.step);
     test_step.dependOn(&run_prompt_sections_tests.step);
     mcp_test_step.dependOn(&run_mcp_process_tests.step);
     test_step.dependOn(&run_mcp_process_tests.step);
-    const codemode_tests = b.addTest(.{
+    const codemode_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_codemode_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
         .filters = &.{"native codemode"},
     });
     linkQuickJs(b, codemode_tests.root_module, quickjs);
-    const run_codemode_tests = b.addRunArtifact(codemode_tests);
+    const run_codemode_tests = diagnosticRun(b, diagnostic_all_tests, codemode_tests);
     const codemode_step = b.step("test-codemode", "Exercise isolated native codemode user scripts and Zig host callbacks");
     codemode_step.dependOn(&run_codemode_tests.step);
     test_step.dependOn(&run_codemode_tests.step);
-    const mcp_runtime_tests = b.addTest(.{
+    const mcp_runtime_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_runtime_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
         .filters = &.{"mcp.runtime"},
     });
     linkDurable(b, mcp_runtime_tests.root_module);
     linkQuickJs(b, mcp_runtime_tests.root_module, quickjs);
-    const run_mcp_runtime_tests = b.addRunArtifact(mcp_runtime_tests);
+    const run_mcp_runtime_tests = diagnosticRun(b, diagnostic_all_tests, mcp_runtime_tests);
     const mcp_runtime_fixture = b.addExecutable(.{
         .name = "pi-mcp-runtime-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_runtime_fixture.zig"), .target = target, .optimize = optimize }),
@@ -572,7 +573,7 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_sqlite_persistence_tests.step);
     test_step.dependOn(&run_sqlite_live_tests.step);
 
-    const engine_tests = b.addTest(.{
+    const engine_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/extensions/engine.zig"),
             .target = target,
@@ -581,187 +582,187 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, engine_tests.root_module, quickjs);
-    const run_engine_tests = b.addRunArtifact(engine_tests);
+    const run_engine_tests = diagnosticRun(b, diagnostic_all_tests, engine_tests);
     const engine_test_step = b.step("test-extension-engine", "Test the directly linked extension-language engine");
     engine_test_step.dependOn(&run_engine_tests.step);
     test_step.dependOn(&run_engine_tests.step);
-    const commonjs_tests = b.addTest(.{
+    const commonjs_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/commonjs.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, commonjs_tests.root_module, quickjs);
-    const run_commonjs_tests = b.addRunArtifact(commonjs_tests);
+    const run_commonjs_tests = diagnosticRun(b, diagnostic_all_tests, commonjs_tests);
     const commonjs_test_step = b.step("test-extension-commonjs", "Test native CommonJS cache and module ownership");
     commonjs_test_step.dependOn(&run_commonjs_tests.step);
     test_step.dependOn(&run_commonjs_tests.step);
-    const buffer_tests = b.addTest(.{
+    const buffer_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_buffer.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, buffer_tests.root_module, quickjs);
-    const run_buffer_tests = b.addRunArtifact(buffer_tests);
+    const run_buffer_tests = diagnosticRun(b, diagnostic_all_tests, buffer_tests);
     const buffer_test_step = b.step("test-extension-buffer", "Test native extension Buffer views and encodings");
     buffer_test_step.dependOn(&run_buffer_tests.step);
     test_step.dependOn(&run_buffer_tests.step);
-    const schema_tests = b.addTest(.{
+    const schema_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/typebox.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, schema_tests.root_module, quickjs);
-    const run_schema_tests = b.addRunArtifact(schema_tests);
+    const run_schema_tests = diagnosticRun(b, diagnostic_all_tests, schema_tests);
     const schema_test_step = b.step("test-extension-schemas", "Test native extension schema bindings");
     schema_test_step.dependOn(&run_schema_tests.step);
     test_step.dependOn(&run_schema_tests.step);
-    const binding_tests = b.addTest(.{
+    const binding_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_bindings_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, binding_tests.root_module, quickjs);
-    const run_binding_tests = b.addRunArtifact(binding_tests);
+    const run_binding_tests = diagnosticRun(b, diagnostic_all_tests, binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
     binding_test_step.dependOn(&run_binding_tests.step);
     test_step.dependOn(&run_binding_tests.step);
-    const filesystem_tests = b.addTest(.{
+    const filesystem_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_fs.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, filesystem_tests.root_module, quickjs);
-    const run_filesystem_tests = b.addRunArtifact(filesystem_tests);
+    const run_filesystem_tests = diagnosticRun(b, diagnostic_all_tests, filesystem_tests);
     const filesystem_test_step = b.step("test-extension-filesystem", "Test native extension filesystem APIs");
     filesystem_test_step.dependOn(&run_filesystem_tests.step);
     test_step.dependOn(&run_filesystem_tests.step);
-    const path_tests = b.addTest(.{
+    const path_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_path.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, path_tests.root_module, quickjs);
-    const run_path_tests = b.addRunArtifact(path_tests);
+    const run_path_tests = diagnosticRun(b, diagnostic_all_tests, path_tests);
     const path_test_step = b.step("test-extension-path", "Test native cross-platform extension path APIs");
     path_test_step.dependOn(&run_path_tests.step);
     test_step.dependOn(&run_path_tests.step);
-    const url_tests = b.addTest(.{
+    const url_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_url.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, url_tests.root_module, quickjs);
-    const run_url_tests = b.addRunArtifact(url_tests);
+    const run_url_tests = diagnosticRun(b, diagnostic_all_tests, url_tests);
     const url_test_step = b.step("test-extension-url", "Test native file URL conversion for extensions");
     url_test_step.dependOn(&run_url_tests.step);
     test_step.dependOn(&run_url_tests.step);
-    const console_tests = b.addTest(.{
+    const console_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/console.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, console_tests.root_module, quickjs);
-    const run_console_tests = b.addRunArtifact(console_tests);
+    const run_console_tests = diagnosticRun(b, diagnostic_all_tests, console_tests);
     const console_test_step = b.step("test-extension-console", "Test native console formatting and builtin module identity");
     console_test_step.dependOn(&run_console_tests.step);
     test_step.dependOn(&run_console_tests.step);
-    const resolver_tests = b.addTest(.{
+    const resolver_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/module_resolver.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_resolver_tests = b.addRunArtifact(resolver_tests);
+    const run_resolver_tests = diagnosticRun(b, diagnostic_all_tests, resolver_tests);
     const resolver_test_step = b.step("test-extension-resolver", "Test native extension package and file resolution");
     resolver_test_step.dependOn(&run_resolver_tests.step);
     test_step.dependOn(&run_resolver_tests.step);
-    const encoding_tests = b.addTest(.{
+    const encoding_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/text_encoding.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, encoding_tests.root_module, quickjs);
-    const run_encoding_tests = b.addRunArtifact(encoding_tests);
+    const run_encoding_tests = diagnosticRun(b, diagnostic_all_tests, encoding_tests);
     const encoding_test_step = b.step("test-extension-encoding", "Test native text encoding host APIs");
     encoding_test_step.dependOn(&run_encoding_tests.step);
     test_step.dependOn(&run_encoding_tests.step);
-    const autocomplete_tests = b.addTest(.{
+    const autocomplete_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/editor_autocomplete_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native autocomplete"},
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, autocomplete_tests.root_module, quickjs);
     linkTypeScriptParser(b, autocomplete_tests.root_module, typescript_parser);
-    const run_autocomplete_tests = b.addRunArtifact(autocomplete_tests);
+    const run_autocomplete_tests = diagnosticRun(b, diagnostic_all_tests, autocomplete_tests);
     const autocomplete_step = b.step("test-editor-autocomplete", "Exercise native asynchronous editor providers cancellation selection and UTF16 completion positions");
     autocomplete_step.dependOn(&run_autocomplete_tests.step);
     test_step.dependOn(&run_autocomplete_tests.step);
-    const editor_owner_tests = b.addTest(.{
+    const editor_owner_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/editor_owner_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native editor"},
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, editor_owner_tests.root_module, quickjs);
     linkTypeScriptParser(b, editor_owner_tests.root_module, typescript_parser);
-    const run_editor_owner_tests = b.addRunArtifact(editor_owner_tests);
+    const run_editor_owner_tests = diagnosticRun(b, diagnostic_all_tests, editor_owner_tests);
     const editor_owner_step = b.step("test-custom-editor", "Exercise native editor classes persistent factories and callback owner teardown");
     editor_owner_step.dependOn(&run_editor_owner_tests.step);
     test_step.dependOn(&run_editor_owner_tests.step);
-    const editor_frontend_tests = b.addTest(.{
+    const editor_frontend_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/editor_frontend_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"custom editor frontend"},
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, editor_frontend_tests.root_module, quickjs);
     linkTypeScriptParser(b, editor_frontend_tests.root_module, typescript_parser);
-    const run_editor_frontend_tests = b.addRunArtifact(editor_frontend_tests);
+    const run_editor_frontend_tests = diagnosticRun(b, diagnostic_all_tests, editor_frontend_tests);
     const editor_frontend_step = b.step("test-custom-editor-components", "Exercise custom editor fullscreen frame/input/snapshot ownership and close fences");
     editor_frontend_step.dependOn(&run_editor_frontend_tests.step);
     test_step.dependOn(&run_editor_frontend_tests.step);
-    const renderer_control_race_tests = b.addTest(.{
+    const renderer_control_race_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/renderer_control_race_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"renderer control arrives"},
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, renderer_control_race_tests.root_module, quickjs);
     linkTypeScriptParser(b, renderer_control_race_tests.root_module, typescript_parser);
-    const run_renderer_control_race_tests = b.addRunArtifact(renderer_control_race_tests);
+    const run_renderer_control_race_tests = diagnosticRun(b, diagnostic_all_tests, renderer_control_race_tests);
     const renderer_control_race_step = b.step("test-renderer-control-race", "Exercise persistent renderer controls arriving between owner pump and FIFO dequeue");
     renderer_control_race_step.dependOn(&run_renderer_control_race_tests.step);
     test_step.dependOn(&run_renderer_control_race_tests.step);
-    const worker_process_tests = b.addTest(.{
+    const worker_process_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/native_worker_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_worker_process_tests = b.addRunArtifact(worker_process_tests);
+    const run_worker_process_tests = diagnosticRun(b, diagnostic_all_tests, worker_process_tests);
     run_worker_process_tests.step.dependOn(b.getInstallStep());
     const worker_process_step = b.step("test-native-worker", "Exercise a real native extension process without Node on PATH");
     worker_process_step.dependOn(&run_worker_process_tests.step);
     test_step.dependOn(&run_worker_process_tests.step);
-    const native_runtime_tests = b.addTest(.{
+    const native_runtime_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_runtime_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native runtime"},
         .use_llvm = use_llvm,
     });
-    const run_native_runtime_tests = b.addRunArtifact(native_runtime_tests);
+    const run_native_runtime_tests = diagnosticRun(b, diagnostic_all_tests, native_runtime_tests);
     run_native_runtime_tests.step.dependOn(b.getInstallStep());
     const native_runtime_step = b.step("test-native-runtime", "Exercise the persistent native extension runtime and host without Node");
     native_runtime_step.dependOn(&run_native_runtime_tests.step);
-    const late_registration_tests = b.addTest(.{
+    const late_registration_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_runtime_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native runtime late"},
         .use_llvm = use_llvm,
     });
-    const run_late_registration_tests = b.addRunArtifact(late_registration_tests);
+    const run_late_registration_tests = diagnosticRun(b, diagnostic_all_tests, late_registration_tests);
     run_late_registration_tests.step.dependOn(b.getInstallStep());
     const late_registration_step = b.step("test-native-late-registration", "Prove late native registrations, atomic metadata allocation failures and live CLI discovery");
     late_registration_step.dependOn(&run_late_registration_tests.step);
     test_step.dependOn(&run_late_registration_tests.step);
-    const selection_tests = b.addTest(.{
+    const selection_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/tool_selection_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native CLI tool selection"},
         .use_llvm = use_llvm,
     });
-    const run_selection_tests = b.addRunArtifact(selection_tests);
+    const run_selection_tests = diagnosticRun(b, diagnostic_all_tests, selection_tests);
     run_selection_tests.step.dependOn(b.getInstallStep());
     const selection_step = b.step("test-tool-selection-process", "Replay source tool loadouts and registration transitions in the actual native CLI without Node");
     selection_step.dependOn(&run_selection_tests.step);
     test_step.dependOn(&run_selection_tests.step);
-    const custom_editor_runtime_tests = b.addTest(.{
+    const custom_editor_runtime_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_runtime_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native runtime custom editor"},
         .use_llvm = use_llvm,
     });
-    const run_custom_editor_runtime_tests = b.addRunArtifact(custom_editor_runtime_tests);
+    const run_custom_editor_runtime_tests = diagnosticRun(b, diagnostic_all_tests, custom_editor_runtime_tests);
     run_custom_editor_runtime_tests.step.dependOn(b.getInstallStep());
     const custom_editor_runtime_step = b.step("test-custom-editor-runtime", "Exercise original upstream modal editor input through a real native worker");
     custom_editor_runtime_step.dependOn(&run_custom_editor_runtime_tests.step);
@@ -772,22 +773,22 @@ pub fn build(b: *std.Build) void {
         .{ .name = "test-provider-oauth-protocol", .source = "src/provider_oauth_protocol_test.zig" },
         .{ .name = "test-provider-models-protocol", .source = "src/provider_models_protocol_test.zig" },
     }) |contract| {
-        const raw_tests = b.addTest(.{
+        const raw_tests = diagnosticTest(b, diagnostic_all_tests, .{
             .root_module = b.createModule(.{ .root_source_file = b.path(contract.source), .target = target, .optimize = optimize }),
             .use_llvm = use_llvm,
         });
-        const run_raw_tests = b.addRunArtifact(raw_tests);
+        const run_raw_tests = diagnosticRun(b, diagnostic_all_tests, raw_tests);
         run_raw_tests.step.dependOn(b.getInstallStep());
         run_raw_tests.setEnvironmentVariable("PI_TEST_BINARY", b.getInstallPath(.bin, if (target.result.os.tag == .windows) "pi.exe" else "pi"));
         const raw_step = b.step(contract.name, "Exercise original provider raw protocol contracts through the native worker without Node");
         raw_step.dependOn(&run_raw_tests.step);
         test_step.dependOn(&run_raw_tests.step);
     }
-    const auth_screen_tests = b.addTest(.{
+    const auth_screen_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/auth_screen_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_auth_screen_tests = b.addRunArtifact(auth_screen_tests);
+    const run_auth_screen_tests = diagnosticRun(b, diagnostic_all_tests, auth_screen_tests);
     run_auth_screen_tests.step.dependOn(b.getInstallStep());
     const auth_screen_step = b.step("test-auth-screen", "Exercise native authentication selectors through a real Linux PTY");
     auth_screen_step.dependOn(&run_auth_screen_tests.step);
@@ -798,135 +799,135 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     const install_auth_opener = b.addInstallArtifact(auth_opener, .{});
-    const auth_dialog_tests = b.addTest(.{
+    const auth_dialog_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/auth_dialog_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_auth_dialog_tests = b.addRunArtifact(auth_dialog_tests);
+    const run_auth_dialog_tests = diagnosticRun(b, diagnostic_all_tests, auth_dialog_tests);
     run_auth_dialog_tests.step.dependOn(b.getInstallStep());
     run_auth_dialog_tests.step.dependOn(&install_auth_opener.step);
     const auth_dialog_step = b.step("test-auth-dialog", "Exercise native browser and device OAuth through a real Linux PTY");
     auth_dialog_step.dependOn(&run_auth_dialog_tests.step);
     test_step.dependOn(&run_auth_dialog_tests.step);
-    const bootstrap_network_tests = b.addTest(.{
+    const bootstrap_network_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/bootstrap_network_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_bootstrap_network_tests = b.addRunArtifact(bootstrap_network_tests);
+    const run_bootstrap_network_tests = diagnosticRun(b, diagnostic_all_tests, bootstrap_network_tests);
     run_bootstrap_network_tests.step.dependOn(b.getInstallStep());
     const bootstrap_network_step = b.step("test-bootstrap-network", "Exercise bootstrap HTTP retries timeouts persistence and proxies through the native CLI");
     bootstrap_network_step.dependOn(&run_bootstrap_network_tests.step);
     test_step.dependOn(&run_bootstrap_network_tests.step);
-    const provider_retry_tests = b.addTest(.{
+    const provider_retry_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/provider_retry_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_provider_retry_tests = b.addRunArtifact(provider_retry_tests);
+    const run_provider_retry_tests = diagnosticRun(b, diagnostic_all_tests, provider_retry_tests);
     run_provider_retry_tests.step.dependOn(b.getInstallStep());
     const provider_retry_step = b.step("test-provider-retry-process", "Exercise provider retries and live RPC policy reload through the native CLI");
     provider_retry_step.dependOn(&run_provider_retry_tests.step);
     test_step.dependOn(&run_provider_retry_tests.step);
-    const project_settings_tests = b.addTest(.{
+    const project_settings_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/project_settings_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_project_settings_tests = b.addRunArtifact(project_settings_tests);
+    const run_project_settings_tests = diagnosticRun(b, diagnostic_all_tests, project_settings_tests);
     run_project_settings_tests.step.dependOn(b.getInstallStep());
     const project_settings_step = b.step("test-project-settings-process", "Exercise global and project settings through the real native PTY");
     project_settings_step.dependOn(&run_project_settings_tests.step);
     test_step.dependOn(&run_project_settings_tests.step);
-    const settings_screen_tests = b.addTest(.{
+    const settings_screen_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/settings_screen_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_settings_screen_tests = b.addRunArtifact(settings_screen_tests);
+    const run_settings_screen_tests = diagnosticRun(b, diagnostic_all_tests, settings_screen_tests);
     run_settings_screen_tests.step.dependOn(b.getInstallStep());
     const settings_screen_step = b.step("test-settings-screen-process", "Exercise settings transactions reload tree filters and quiet startup through the native PTY");
     settings_screen_step.dependOn(&run_settings_screen_tests.step);
     test_step.dependOn(&run_settings_screen_tests.step);
-    const auth_flow_tests = b.addTest(.{
+    const auth_flow_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/auth_flow_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_auth_flow_tests = b.addRunArtifact(auth_flow_tests);
+    const run_auth_flow_tests = diagnosticRun(b, diagnostic_all_tests, auth_flow_tests);
     run_auth_flow_tests.step.dependOn(b.getInstallStep());
     const auth_flow_step = b.step("test-auth-flow-process", "Exercise authentication stages sources masked keys and scoped selection through native PTY");
     auth_flow_step.dependOn(&run_auth_flow_tests.step);
     test_step.dependOn(&run_auth_flow_tests.step);
-    const auth_live_tests = b.addTest(.{
+    const auth_live_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/auth_live_process_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_auth_live_tests = b.addRunArtifact(auth_live_tests);
+    const run_auth_live_tests = diagnosticRun(b, diagnostic_all_tests, auth_live_tests);
     run_auth_live_tests.step.dependOn(b.getInstallStep());
     const auth_live_step = b.step("test-auth-live-process", "Exercise live login credential rebinding and logout fallback through native PTY and HTTP");
     auth_live_step.dependOn(&run_auth_live_tests.step);
     test_step.dependOn(&run_auth_live_tests.step);
 
-    const tree_controls_tests = b.addTest(.{
+    const tree_controls_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/tree_controls_process_test.zig"), .target = target, .optimize = optimize }),
     });
-    const run_tree_controls_tests = b.addRunArtifact(tree_controls_tests);
+    const run_tree_controls_tests = diagnosticRun(b, diagnostic_all_tests, tree_controls_tests);
     run_tree_controls_tests.step.dependOn(b.getInstallStep());
     const tree_controls_step = b.step("test-tree-controls-process", "Exercise durable tree labels, search, filters and OSC 52 through native RPC and PTY");
     tree_controls_step.dependOn(&run_tree_controls_tests.step);
     test_step.dependOn(&run_tree_controls_tests.step);
 
-    const summary_options_tests = b.addTest(.{
+    const summary_options_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/summary_options_process_test.zig"), .target = target, .optimize = optimize }),
     });
-    const run_summary_options_tests = b.addRunArtifact(summary_options_tests);
+    const run_summary_options_tests = diagnosticRun(b, diagnostic_all_tests, summary_options_tests);
     run_summary_options_tests.step.dependOn(b.getInstallStep());
     const summary_options_step = b.step("test-summary-options-process", "Exercise summary token caps and omitted affinity/cache options through native RPC, PTY and HTTP");
     summary_options_step.dependOn(&run_summary_options_tests.step);
     test_step.dependOn(&run_summary_options_tests.step);
 
-    const media_skills_tests = b.addTest(.{
+    const media_skills_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/media_skills_process_test.zig"), .target = target, .optimize = optimize }),
     });
-    const run_media_skills_tests = b.addRunArtifact(media_skills_tests);
+    const run_media_skills_tests = diagnosticRun(b, diagnostic_all_tests, media_skills_tests);
     run_media_skills_tests.step.dependOn(b.getInstallStep());
     const media_skills_step = b.step("test-media-skills-process", "Exercise image privacy, durable normalized pixels and live skill command reload through native HTTP and RPC");
     media_skills_step.dependOn(&run_media_skills_tests.step);
     test_step.dependOn(&run_media_skills_tests.step);
 
-    const compaction_policy_tests = b.addTest(.{
+    const compaction_policy_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/compaction_policy_process_test.zig"), .target = target, .optimize = optimize }),
     });
-    const run_compaction_policy_tests = b.addRunArtifact(compaction_policy_tests);
+    const run_compaction_policy_tests = diagnosticRun(b, diagnostic_all_tests, compaction_policy_tests);
     run_compaction_policy_tests.step.dependOn(b.getInstallStep());
     const compaction_policy_step = b.step("test-compaction-policy-process", "Exercise persisted token budgets, split-turn hooks and append-only compaction through native RPC");
     compaction_policy_step.dependOn(&run_compaction_policy_tests.step);
     test_step.dependOn(&run_compaction_policy_tests.step);
 
-    const branch_policy_tests = b.addTest(.{
+    const branch_policy_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/branch_policy_process_test.zig"), .target = target, .optimize = optimize }),
     });
-    const run_branch_policy_tests = b.addRunArtifact(branch_policy_tests);
+    const run_branch_policy_tests = diagnosticRun(b, diagnostic_all_tests, branch_policy_tests);
     run_branch_policy_tests.step.dependOn(b.getInstallStep());
     const branch_policy_step = b.step("test-branch-policy-process", "Exercise custom branch summaries, durable usage and labels, and skip-prompt hooks through native RPC and PTY");
     branch_policy_step.dependOn(&run_branch_policy_tests.step);
     test_step.dependOn(&run_branch_policy_tests.step);
 
-    const fullscreen_frontend_tests = b.addTest(.{
+    const fullscreen_frontend_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_frontend_process_test.zig"), .target = target, .optimize = optimize }),
     });
-    const run_fullscreen_frontend_tests = b.addRunArtifact(fullscreen_frontend_tests);
-    const late_frontend_tests = b.addTest(.{
+    const run_fullscreen_frontend_tests = diagnosticRun(b, diagnostic_all_tests, fullscreen_frontend_tests);
+    const late_frontend_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_frontend_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native late live"},
     });
-    const run_late_frontend_tests = b.addRunArtifact(late_frontend_tests);
+    const run_late_frontend_tests = diagnosticRun(b, diagnostic_all_tests, late_frontend_tests);
     run_late_frontend_tests.step.dependOn(b.getInstallStep());
     const late_frontend_step = b.step("test-native-late-frontend", "Prove live native late command completion and agent tool invocation through real terminal cells");
     late_frontend_step.dependOn(&run_late_frontend_tests.step);
     test_step.dependOn(&run_late_frontend_tests.step);
-    const custom_editor_frontend_tests = b.addTest(.{
+    const custom_editor_frontend_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_frontend_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"real custom editor"},
         .use_llvm = use_llvm,
     });
-    const run_custom_editor_frontend_tests = b.addRunArtifact(custom_editor_frontend_tests);
+    const run_custom_editor_frontend_tests = diagnosticRun(b, diagnostic_all_tests, custom_editor_frontend_tests);
     run_custom_editor_frontend_tests.step.dependOn(b.getInstallStep());
     const custom_editor_frontend_step = b.step("test-custom-editor-frontend", "Exercise custom editor input submit reload and terminal ownership in real PTY cells");
     custom_editor_frontend_step.dependOn(&run_custom_editor_frontend_tests.step);
@@ -959,12 +960,12 @@ pub fn build(b: *std.Build) void {
     fullscreen_frontend_step.dependOn(&run_fullscreen_frontend_tests.step);
     test_step.dependOn(&run_fullscreen_frontend_tests.step);
 
-    const fullscreen_frontend_components = b.addTest(.{
+    const fullscreen_frontend_components = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = test_mod,
         .filters = &.{ "coding_agent.fullscreen_frontend", "coding_agent.transcript_view", "tui.line_editor.test.fullscreen", "ai.mock.test.paced" },
         .use_llvm = use_llvm,
     });
-    const run_fullscreen_frontend_components = b.addRunArtifact(fullscreen_frontend_components);
+    const run_fullscreen_frontend_components = diagnosticRun(b, diagnostic_all_tests, fullscreen_frontend_components);
     const fullscreen_frontend_components_step = b.step("test-fullscreen-frontend-components", "Exercise retained fullscreen mailbox, surfaces, editor and transcript allocation ownership");
     fullscreen_frontend_components_step.dependOn(&run_fullscreen_frontend_components.step);
 
@@ -973,30 +974,30 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/test_support/clipboard_helper.zig"), .target = target, .optimize = optimize }),
     });
     const install_clipboard_helper = b.addInstallArtifact(clipboard_helper, .{});
-    const clipboard_copy_tests = b.addTest(.{
+    const clipboard_copy_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/clipboard_copy_process_test.zig"), .target = target, .optimize = optimize }),
     });
-    const run_clipboard_copy_tests = b.addRunArtifact(clipboard_copy_tests);
+    const run_clipboard_copy_tests = diagnosticRun(b, diagnostic_all_tests, clipboard_copy_tests);
     run_clipboard_copy_tests.step.dependOn(b.getInstallStep());
     run_clipboard_copy_tests.step.dependOn(&install_clipboard_helper.step);
     const clipboard_copy_step = b.step("test-clipboard-copy-process", "Exercise local and remote clipboard copy and extension compatibility through native PTY and clipboard fixture");
     clipboard_copy_step.dependOn(&run_clipboard_copy_tests.step);
     test_step.dependOn(&run_clipboard_copy_tests.step);
 
-    const clipboard_paste_tests = b.addTest(.{
+    const clipboard_paste_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/clipboard_paste_process_test.zig"), .target = target, .optimize = optimize }),
     });
-    const run_clipboard_paste_tests = b.addRunArtifact(clipboard_paste_tests);
+    const run_clipboard_paste_tests = diagnosticRun(b, diagnostic_all_tests, clipboard_paste_tests);
     run_clipboard_paste_tests.step.dependOn(b.getInstallStep());
     run_clipboard_paste_tests.step.dependOn(&install_clipboard_helper.step);
     const clipboard_paste_step = b.step("test-clipboard-paste-process", "Exercise keyboard image and sanitized text paste with native clipboard input and owned temp cleanup");
     clipboard_paste_step.dependOn(&run_clipboard_paste_tests.step);
     test_step.dependOn(&run_clipboard_paste_tests.step);
 
-    const session_hooks_tests = b.addTest(.{
+    const session_hooks_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/session_hooks_process_test.zig"), .target = target, .optimize = optimize }),
     });
-    const run_session_hooks_tests = b.addRunArtifact(session_hooks_tests);
+    const run_session_hooks_tests = diagnosticRun(b, diagnostic_all_tests, session_hooks_tests);
     run_session_hooks_tests.step.dependOn(b.getInstallStep());
     const session_hooks_step = b.step("test-session-hooks-process", "Exercise compaction replacement, immediate cancellation actions and tree hook persistence through native RPC and PTY");
     session_hooks_step.dependOn(&run_session_hooks_tests.step);
@@ -1007,33 +1008,33 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{ .root_source_file = b.path("src/test_support/tool_helper.zig"), .target = target, .optimize = optimize }),
     });
     const install_tool_fixture = b.addInstallArtifact(tool_fixture, .{});
-    const session_update_tests = b.addTest(.{
+    const session_update_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/session_update_process_test.zig"), .target = target, .optimize = optimize }),
     });
-    const run_session_update_tests = b.addRunArtifact(session_update_tests);
+    const run_session_update_tests = diagnosticRun(b, diagnostic_all_tests, session_update_tests);
     run_session_update_tests.step.dependOn(b.getInstallStep());
     run_session_update_tests.step.dependOn(&install_tool_fixture.step);
     const session_update_step = b.step("test-session-update-process", "Exercise startup and live resume isolation and managed self update through native PTY HTTP and package-manager fixture");
     session_update_step.dependOn(&run_session_update_tests.step);
     test_step.dependOn(&run_session_update_tests.step);
-    const model_update_tests = b.addTest(.{
+    const model_update_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/model_update_process_test.zig"), .target = target, .optimize = optimize }),
     });
-    const run_model_update_tests = b.addRunArtifact(model_update_tests);
+    const run_model_update_tests = diagnosticRun(b, diagnostic_all_tests, model_update_tests);
     run_model_update_tests.step.dependOn(b.getInstallStep());
     run_model_update_tests.step.dependOn(&install_tool_fixture.step);
     const model_update_step = b.step("test-model-update-process", "Exercise durable model selection lifecycle telemetry and native managed tool archive/cache reuse");
     model_update_step.dependOn(&run_model_update_tests.step);
     test_step.dependOn(&run_model_update_tests.step);
-    const image_processing_tests = b.addTest(.{
+    const image_processing_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/image_processing_process_test.zig"), .target = target, .optimize = optimize }),
     });
-    const run_image_processing_tests = b.addRunArtifact(image_processing_tests);
+    const run_image_processing_tests = diagnosticRun(b, diagnostic_all_tests, image_processing_tests);
     run_image_processing_tests.step.dependOn(b.getInstallStep());
     const image_processing_step = b.step("test-image-processing-process", "Exercise actual attachment read-tool and extension post-hook image normalization with native fixtures");
     image_processing_step.dependOn(&run_image_processing_tests.step);
     test_step.dependOn(&run_image_processing_tests.step);
-    const typescript_tests = b.addTest(.{
+    const typescript_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/extensions/typescript.zig"),
             .target = target,
@@ -1043,7 +1044,7 @@ pub fn build(b: *std.Build) void {
     });
     linkQuickJs(b, typescript_tests.root_module, quickjs);
     linkTypeScriptParser(b, typescript_tests.root_module, typescript_parser);
-    const run_typescript_tests = b.addRunArtifact(typescript_tests);
+    const run_typescript_tests = diagnosticRun(b, diagnostic_all_tests, typescript_tests);
     const typescript_test_step = b.step("test-extension-typescript", "Test native extension input transformation");
     typescript_test_step.dependOn(&run_typescript_tests.step);
     test_step.dependOn(&run_typescript_tests.step);
@@ -1062,12 +1063,12 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     }));
-    const run_maintenance = b.addRunArtifact(maintenance);
+    const run_maintenance = diagnosticRun(b, diagnostic_all_tests, maintenance);
     if (b.args) |args| run_maintenance.addArgs(args);
     const maintenance_step = b.step("maintenance", "Run native repository maintenance commands");
     maintenance_step.dependOn(&run_maintenance.step);
-    const maintenance_tests = b.addTest(.{ .root_module = maintenance.root_module, .use_llvm = use_llvm });
-    const run_maintenance_tests = b.addRunArtifact(maintenance_tests);
+    const maintenance_tests = diagnosticTest(b, diagnostic_all_tests, .{ .root_module = maintenance.root_module, .use_llvm = use_llvm });
+    const run_maintenance_tests = diagnosticRun(b, diagnostic_all_tests, maintenance_tests);
     const maintenance_test_step = b.step("test-maintenance", "Test native repository maintenance");
     maintenance_test_step.dependOn(&run_maintenance_tests.step);
     test_step.dependOn(&run_maintenance_tests.step);
@@ -1081,67 +1082,82 @@ pub fn build(b: *std.Build) void {
     linkTypeScriptParser(b, duration_module, typescript_parser);
     linkSqlite(duration_module, sqlite_lib_dir);
     linkDurable(b, duration_module);
-    const duration_tests = b.addTest(.{
+    const duration_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = duration_module,
         .use_llvm = use_llvm,
         .filters = &.{ "latest tool duration", "parallel tool end events", "streaming external update", "agent event payload" },
     });
-    const run_duration_tests = b.addRunArtifact(duration_tests);
+    const run_duration_tests = diagnosticRun(b, diagnostic_all_tests, duration_tests);
     const duration_step = b.step("test-tool-duration", "Check monotonic execution duration and lossless event/session persistence");
     duration_step.dependOn(&run_duration_tests.step);
     test_step.dependOn(&run_duration_tests.step);
-    const azure_alias_tests = b.addTest(.{
+    const azure_alias_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/azure_alias_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"Azure"},
         .use_llvm = use_llvm,
     });
-    const run_azure_alias_tests = b.addRunArtifact(azure_alias_tests);
+    const run_azure_alias_tests = diagnosticRun(b, diagnostic_all_tests, azure_alias_tests);
     const azure_alias_step = b.step("test-azure-aliases", "Check Azure identity compatibility across models settings and credentials");
     azure_alias_step.dependOn(&run_azure_alias_tests.step);
     test_step.dependOn(&run_azure_alias_tests.step);
-    const fullscreen_key_tests = b.addTest(.{
+    const fullscreen_key_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/fullscreen_key_routing_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
     });
-    const run_fullscreen_key_tests = b.addRunArtifact(fullscreen_key_tests);
+    const run_fullscreen_key_tests = diagnosticRun(b, diagnostic_all_tests, fullscreen_key_tests);
     const fullscreen_key_step = b.step("test-fullscreen-keys", "Check editor and transcript navigation through real native components");
     fullscreen_key_step.dependOn(&run_fullscreen_key_tests.step);
 
-    const classifier_tests = b.addTest(.{
+    const classifier_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = test_mod,
         .use_llvm = use_llvm,
         .filters = &.{"classifier"},
     });
-    const run_classifier_tests = b.addRunArtifact(classifier_tests);
+    const run_classifier_tests = diagnosticRun(b, diagnostic_all_tests, classifier_tests);
     const classifier_test_step = b.step("test-classifier", "Test native classifier contracts");
     classifier_test_step.dependOn(&run_classifier_tests.step);
     // Behavioral replacement for the retired Python source-text audits.
-    const provider_contract_tests = b.addTest(.{
+    const provider_contract_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = test_mod,
         .use_llvm = use_llvm,
         .filters = &.{ "extensions.provider_", "extensions.models_store", "auth.storage" },
     });
-    const run_provider_contract_tests = b.addRunArtifact(provider_contract_tests);
+    const run_provider_contract_tests = diagnosticRun(b, diagnostic_all_tests, provider_contract_tests);
     const provider_contract_step = b.step("test-provider-contracts", "Exercise provider ownership OAuth refresh model publication and stream contracts");
     provider_contract_step.dependOn(&run_provider_contract_tests.step);
     provider_contract_step.dependOn(&run_binding_tests.step);
     provider_contract_step.dependOn(&run_worker_process_tests.step);
-    const tool_schema_tests = b.addTest(.{
+    const tool_schema_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = test_mod,
         .use_llvm = use_llvm,
         .filters = &.{ "tool schema", "native Unicode schema regexp" },
     });
-    const run_tool_schema_tests = b.addRunArtifact(tool_schema_tests);
+    const run_tool_schema_tests = diagnosticRun(b, diagnostic_all_tests, tool_schema_tests);
     const tool_schema_step = b.step("test-tool-schemas", "Verify native tool schemas against real tuple and record shapes");
     tool_schema_step.dependOn(&run_tool_schema_tests.step);
-    const catalog_projection_tests = b.addTest(.{
+    const catalog_projection_tests = diagnosticTest(b, diagnostic_all_tests, .{
         .root_module = test_mod,
         .filters = &.{"native catalog projection"},
         .use_llvm = use_llvm,
     });
-    const run_catalog_projection_tests = b.addRunArtifact(catalog_projection_tests);
+    const run_catalog_projection_tests = diagnosticRun(b, diagnostic_all_tests, catalog_projection_tests);
     const catalog_projection_step = b.step("test-catalog-projection", "Check native catalog projection against the prior generator");
     catalog_projection_step.dependOn(&run_catalog_projection_tests.step);
+}
+
+fn diagnosticTest(b: *std.Build, diagnostic: bool, options: std.Build.TestOptions) *std.Build.Step.Compile {
+    var configured = options;
+    if (diagnostic) configured.test_runner = .{
+        .path = .{ .cwd_relative = b.graph.zig_lib_directory.join(b.allocator, &.{ "compiler", "test_runner.zig" }) catch @panic("OOM") },
+        .mode = .simple,
+    };
+    return b.addTest(configured);
+}
+
+fn diagnosticRun(b: *std.Build, diagnostic: bool, artifact: *std.Build.Step.Compile) *std.Build.Step.Run {
+    const run = b.addRunArtifact(artifact);
+    if (diagnostic and artifact.kind == .@"test") run.stdio = .inherit;
+    return run;
 }
 
 fn linkTypeScriptParser(b: *std.Build, module: *std.Build.Module, library: *std.Build.Step.Compile) void {
