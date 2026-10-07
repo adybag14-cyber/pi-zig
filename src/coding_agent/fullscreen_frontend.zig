@@ -349,6 +349,7 @@ const Update = union(enum) {
     status: []u8,
     notice: []u8,
     busy: bool,
+    wheel_lines: wheel_scroll.Lines,
     config: ConfigUpdate,
     component: struct { scene: component_protocol.Scene, controls: *component_protocol.ControlQueue },
     component_close: component_protocol.Fence,
@@ -365,7 +366,7 @@ const Update = union(enum) {
             .surface => |*value| value.deinit(),
             .text => |value| gpa.free(value.text),
             .status, .notice => |value| gpa.free(value),
-            .busy => {},
+            .busy, .wheel_lines => {},
             .config => |value| {
                 if (value.bindings_json) |json| gpa.free(json);
                 for (value.shortcuts) |key| gpa.free(key);
@@ -1160,6 +1161,7 @@ pub const Frontend = struct {
                 }
             },
             .busy => |value| self.busy = value,
+            .wheel_lines => |value| if (!std.meta.eql(self.wheel.lines, value)) self.wheel.setLines(value),
             .config => |value| {
                 var bindings = keybindings.Manager.init(self.gpa);
                 if (value.bindings_json) |json| bindings.parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, json, .{ .allocate = .alloc_always });
@@ -1587,8 +1589,8 @@ pub const Frontend = struct {
     }
     /// Caller supplies the actual admitted settings value; changing it resets
     /// acceleration as Source does. This setter performs no terminal query.
-    pub fn setWheelScrollLines(self: *Frontend, value: wheel_scroll.Lines) void {
-        self.wheel.setLines(value);
+    pub fn setWheelScrollLines(self: *Frontend, value: wheel_scroll.Lines) !void {
+        try self.post(.{ .wheel_lines = value });
     }
     fn finishInputBatch(self: *Frontend) void {
         self.mutex.lockUncancelable(self.io);

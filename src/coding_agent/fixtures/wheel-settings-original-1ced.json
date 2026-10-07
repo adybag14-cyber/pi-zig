@@ -1,0 +1,80 @@
+{
+  "source": "1cedd32724abfcb0915f76cc61b6827e2c16dbad",
+  "method": "\tgetFullscreenWheelScrollLines() {\n\t\tconst lines = this.settings.fullscreenWheelScrollLines;\n\t\treturn typeof lines === \"number\" && Number.isFinite(lines)\n\t\t\t? Math.max(1, Math.min(100, Math.floor(lines)))\n\t\t\t: \"auto\";\n\t}\n",
+  "rows": [
+    {
+      "input": "absent",
+      "result": "auto"
+    },
+    {
+      "input": "null",
+      "json": "null",
+      "result": "auto"
+    },
+    {
+      "input": "auto",
+      "json": "\"auto\"",
+      "result": "auto"
+    },
+    {
+      "input": "3",
+      "json": "\"3\"",
+      "result": "auto"
+    },
+    {
+      "input": "true",
+      "json": "true",
+      "result": "auto"
+    },
+    {
+      "input": "-10",
+      "json": "-10",
+      "result": 1
+    },
+    {
+      "input": "0",
+      "json": "0",
+      "result": 1
+    },
+    {
+      "input": "1",
+      "json": "1",
+      "result": 1
+    },
+    {
+      "input": "1.9",
+      "json": "1.9",
+      "result": 1
+    },
+    {
+      "input": "3.9",
+      "json": "3.9",
+      "result": 3
+    },
+    {
+      "input": "100",
+      "json": "100",
+      "result": 100
+    },
+    {
+      "input": "1000",
+      "json": "1000",
+      "result": 100
+    },
+    {
+      "input": "NaN",
+      "json": null,
+      "result": "auto"
+    },
+    {
+      "input": "Infinity",
+      "json": null,
+      "result": "auto"
+    },
+    {
+      "input": "-Infinity",
+      "json": null,
+      "result": "auto"
+    }
+  ]
+}

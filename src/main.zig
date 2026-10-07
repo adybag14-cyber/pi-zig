@@ -4844,7 +4844,7 @@ fn runMain(init: std.process.Init) !void {
     if (use_persistent_scene) {
         const header = try std.fmt.allocPrint(gpa, "pi (pi-zig) {s} · {s}/{s}", .{ config.version, provider_name orelse "mock", model orelse "mock" });
         defer gpa.free(header);
-        frontend = try coding.fullscreen_frontend.Frontend.start(gpa, io, environ, &extension_stdin_reader, &terminal_keybindings, .{ .header = header, .show_hardware_cursor = interactive_render.show_hardware_cursor, .editor_padding_x = interactive_render.editor_padding_x, .alternate_screen = use_fullscreen_scene });
+        frontend = try coding.fullscreen_frontend.Frontend.start(gpa, io, environ, &extension_stdin_reader, &terminal_keybindings, .{ .header = header, .show_hardware_cursor = interactive_render.show_hardware_cursor, .editor_padding_x = interactive_render.editor_padding_x, .alternate_screen = use_fullscreen_scene, .fullscreen_wheel_scroll_lines = settings.fullscreen_wheel_scroll_lines orelse .auto });
         component_frontend_owner.persistent = frontend;
         interactive_render.fullscreen = frontend;
         agent_cfg.abort_flag = &frontend.?.abort_flag;
@@ -5029,6 +5029,7 @@ fn runMain(init: std.process.Init) !void {
             defer shortcut_keys.deinit(gpa);
             for (extension_host.extensions.items) |extension| for (extension.shortcuts) |shortcut| try shortcut_keys.append(gpa, shortcut.key);
             try scene.updateConfigPadded(&terminal_keybindings, shortcut_keys.items, interactive_render.editor_padding_x);
+            try scene.setWheelScrollLines(if (use_fullscreen_scene) settings.fullscreen_wheel_scroll_lines orelse .auto else .{ .fixed = 1 });
         }
         try syncExtensionScriptContext(
             &extension_host,

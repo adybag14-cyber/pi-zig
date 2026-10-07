@@ -137,6 +137,32 @@ pub const MermaidMode = enum {
 
 pub const TerminalImageProtocol = enum { kitty, iterm2, none };
 
+test "fullscreen wheel setting replays original finite floor clamp and nonnumeric auto policy" {
+    const gpa = std.testing.allocator;
+    const original = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/wheel-settings-original-1ced.json"), .{});
+    defer original.deinit();
+    for (original.value.object.get("rows").?.array.items) |row| {
+        const encoded = row.object.get("json") orelse continue;
+        if (encoded == .null) continue;
+        const text = try std.fmt.allocPrint(gpa, "{{\"fullscreenWheelScrollLines\":{s}}}", .{encoded.string});
+        defer gpa.free(text);
+        var value = try parse(gpa, text);
+        defer value.deinit(gpa);
+        const actual = value.fullscreen_wheel_scroll_lines orelse .auto;
+        const expected = row.object.get("result").?;
+        if (expected == .string) try std.testing.expect(actual == .auto) else {
+            try std.testing.expect(actual == .fixed);
+            try std.testing.expectEqual(@as(f64, @floatFromInt(expected.integer)), actual.fixed);
+        }
+    }
+    var global = try parse(gpa, "{\"fullscreenWheelScrollLines\":7}");
+    defer global.deinit(gpa);
+    var project = try parse(gpa, "{\"fullscreenWheelScrollLines\":\"auto\"}");
+    defer project.deinit(gpa);
+    try mergeInto(gpa, &global, project);
+    try std.testing.expect(global.fullscreen_wheel_scroll_lines.? == .auto);
+}
+
 pub const Settings = struct {
     pub fn effectiveTuiMode(self: Settings) TuiMode {
         return self.tui_mode orelse .fullscreen;
@@ -213,6 +239,7 @@ pub const Settings = struct {
     tui_mode: ?TuiMode = null,
     fullscreen_exit_output: ?FullscreenExitOutput = null,
     fullscreen_scrollbar: ?FullscreenScrollbar = null,
+    fullscreen_wheel_scroll_lines: ?@import("../tui/wheel_scroll.zig").Lines = null,
     fullscreen_copy_on_select: ?bool = null,
     /// Anonymous install/update ping. Environment PI_TELEMETRY remains authoritative.
     enable_install_telemetry: ?bool = null,
@@ -648,6 +675,7 @@ pub const EditableKey = enum {
     tui_mode,
     fullscreen_exit_output,
     fullscreen_scrollbar,
+    fullscreen_wheel_scroll_lines,
     enable_install_telemetry,
     http_idle_timeout_ms,
     websocket_connect_timeout_ms,
@@ -813,6 +841,7 @@ fn applyEditableMutation(arena: std.mem.Allocator, root: *std.json.ObjectMap, mu
             try root.put(arena, "fullscreenScrollbar", value);
             _ = root.orderedRemove("fullscreen_scrollbar");
         },
+        .fullscreen_wheel_scroll_lines => try root.put(arena, "fullscreenWheelScrollLines", value),
         .enable_install_telemetry => {
             try root.put(arena, "enableInstallTelemetry", value);
             _ = root.orderedRemove("enable_install_telemetry");
@@ -988,6 +1017,11 @@ fn editableMatches(settings: Settings, mutation: EditableMutation) bool {
             .string => |v| FullscreenScrollbar.parse(v) != null and settings.fullscreen_scrollbar != null and settings.fullscreen_scrollbar.? == FullscreenScrollbar.parse(v).?,
             else => false,
         },
+        .fullscreen_wheel_scroll_lines => switch (mutation.value) {
+            .string => |value| std.mem.eql(u8, value, "auto") and settings.fullscreen_wheel_scroll_lines != null and settings.fullscreen_wheel_scroll_lines.? == .auto,
+            .integer => |value| value >= 1 and value <= 100 and settings.fullscreen_wheel_scroll_lines != null and settings.fullscreen_wheel_scroll_lines.? == .fixed and settings.fullscreen_wheel_scroll_lines.?.fixed == @as(f64, @floatFromInt(value)),
+            else => false,
+        },
         .enable_install_telemetry => switch (mutation.value) {
             .boolean => |v| settings.enable_install_telemetry != null and settings.enable_install_telemetry.? == v,
             else => false,
@@ -1083,6 +1117,7 @@ pub fn isEditableExplicit(settings: Settings, key: EditableKey) bool {
         .tui_mode => settings.tui_mode != null,
         .fullscreen_exit_output => settings.fullscreen_exit_output != null,
         .fullscreen_scrollbar => settings.fullscreen_scrollbar != null,
+        .fullscreen_wheel_scroll_lines => settings.fullscreen_wheel_scroll_lines != null,
         .enable_install_telemetry => settings.enable_install_telemetry != null,
         .http_idle_timeout_ms => settings.http_idle_timeout_ms != null,
         .websocket_connect_timeout_ms => settings.websocket_connect_timeout_ms != null,
@@ -1197,6 +1232,9 @@ fn removeEditableMutation(root: *std.json.ObjectMap, key: EditableKey) void {
         .fullscreen_scrollbar => {
             _ = root.orderedRemove("fullscreenScrollbar");
             _ = root.orderedRemove("fullscreen_scrollbar");
+        },
+        .fullscreen_wheel_scroll_lines => {
+            _ = root.orderedRemove("fullscreenWheelScrollLines");
         },
         .enable_install_telemetry => {
             _ = root.orderedRemove("enableInstallTelemetry");
@@ -1609,6 +1647,14 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
     if (parsed.value.object.get("fullscreenScrollbar") orelse parsed.value.object.get("fullscreen_scrollbar")) |v| {
         if (v == .string) s.fullscreen_scrollbar = FullscreenScrollbar.parse(v.string);
     }
+    if (parsed.value.object.get("fullscreenWheelScrollLines")) |v| {
+        const number: ?f64 = switch (v) {
+            .integer => |value| @floatFromInt(value),
+            .float => |value| value,
+            else => null,
+        };
+        s.fullscreen_wheel_scroll_lines = if (number) |value| if (std.math.isFinite(value)) .{ .fixed = @max(1, @min(100, @floor(value))) } else .auto else .auto;
+    }
     if (parsed.value.object.get("enableInstallTelemetry") orelse parsed.value.object.get("enable_install_telemetry")) |v| {
         if (v == .bool) s.enable_install_telemetry = v.bool;
     }
@@ -1912,6 +1958,7 @@ fn mergeIntoScoped(gpa: std.mem.Allocator, dst: *Settings, src: Settings, includ
     if (src.tui_mode) |mode| dst.tui_mode = mode;
     if (src.fullscreen_exit_output) |mode| dst.fullscreen_exit_output = mode;
     if (src.fullscreen_scrollbar) |mode| dst.fullscreen_scrollbar = mode;
+    if (src.fullscreen_wheel_scroll_lines) |lines| dst.fullscreen_wheel_scroll_lines = lines;
     if (src.fullscreen_copy_on_select) |enabled| dst.fullscreen_copy_on_select = enabled;
     if (include_global_only) {
         if (src.enable_install_telemetry) |enabled| dst.enable_install_telemetry = enabled;
