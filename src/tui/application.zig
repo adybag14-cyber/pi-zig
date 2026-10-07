@@ -261,6 +261,20 @@ pub const Application = struct {
         self.started = false;
     }
 
+    /// A native dialog takes input and paint ownership while the same terminal
+    /// remains live. Preserve its negotiated status support and cached report.
+    pub fn suspendPresentation(self: *Application, io: Io) !void {
+        if (!self.started) return;
+        try writeAll(io, if (self.alternate_screen) leave_sequence else mouse_disable ++ terminal.bracketed_paste_disable ++ terminal.show_cursor);
+        self.started = false;
+    }
+    pub fn resumePresentation(self: *Application, io: Io) !void {
+        if (self.started) return;
+        try writeAll(io, if (self.alternate_screen) enter_sequence else terminal.hide_cursor ++ terminal.bracketed_paste_enable ++ mouse_enable);
+        self.clock_io = io;
+        self.started = true;
+    }
+
     pub fn setProgramStatus(self: *Application, io: Io, status: program_status.Status) !void {
         if (try self.program_status_protocol.set(status)) |bytes| {
             defer self.gpa.free(bytes);

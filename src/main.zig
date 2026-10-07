@@ -3133,6 +3133,7 @@ const ComponentFrontendOwner = struct {
         if (self.temporary) |owner| {
             self.controller.bindEditorFrontend(null, null);
             self.controller.bindFrontend(null, null, null);
+            self.controller.bindDialogStatus(null, null);
             tui.render.bindFrontend(null, null, null);
             owner.deinit();
             self.temporary = null;
@@ -3152,6 +3153,7 @@ const ComponentFrontendOwner = struct {
             owner.bindTerminalReportPump(extensions.terminal_theme_producer.Producer.pump);
             try self.terminal_theme.request();
             self.controller.bindFrontend(Frontend.surfaceSink, Frontend.modalObserver, owner);
+            self.controller.bindDialogStatus(Frontend.dialogStatus, owner);
             self.controller.bindEditorFrontend(Frontend.editorSink, owner);
             owner.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, self.controller);
             tui.render.bindFrontend(Frontend.noticeSink, Frontend.renderModalObserver, owner);
@@ -4851,6 +4853,7 @@ fn runMain(init: std.process.Init) !void {
         extension_ui.bindComponentScenes(null, null, null);
         extension_ui.bindEditorFrontend(null, null);
         extension_ui.bindFrontend(null, null, null);
+        extension_ui.bindDialogStatus(null, null);
         tui.render.bindFrontend(null, null, null);
         scene.deinit();
     };
@@ -4876,6 +4879,7 @@ fn runMain(init: std.process.Init) !void {
         agent_cfg.abort_flag = &frontend.?.abort_flag;
         extension_bridge.setAbortFlag(agent_cfg.abort_flag);
         extension_ui.bindFrontend(coding.fullscreen_frontend.Frontend.surfaceSink, coding.fullscreen_frontend.Frontend.modalObserver, frontend);
+        extension_ui.bindDialogStatus(coding.fullscreen_frontend.Frontend.dialogStatus, frontend);
         extension_ui.bindEditorFrontend(coding.fullscreen_frontend.Frontend.editorSink, frontend);
         frontend.?.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, &extension_ui);
         frontend.?.bindTerminalReports(extensions.terminal_theme_producer.Producer.report, &terminal_theme);

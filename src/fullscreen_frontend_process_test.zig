@@ -5,6 +5,28 @@ const pty = @import("test_support/platform_pty.zig");
 const vt = @import("test_support/terminal_screen.zig");
 const Io = std.Io;
 
+test "native extension confirm reports permission title while modal owns input and restores idle status" {
+    if (!pty.supported()) return error.SkipZigTest;
+    var fixture = try Fixture.init("fullscreen");
+    defer fixture.deinit();
+    try fixture.environment.put("PI_PROGRAM_STATUS", "1");
+    const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+    defer errors.close(std.testing.io);
+    var child = try fixture.spawnExtension(errors, "export default pi=>pi.registerCommand('permission',{async handler(_,ctx){const accepted=await ctx.ui.confirm('Permission title','private permission body');return {message:'PERMISSION_DONE:'+accepted}}})");
+    defer child.deinit();
+    var observed = try Observer.init();
+    defer observed.deinit();
+    try observed.waitInitialStartup(&child, ">");
+    const start = child.output.items.len;
+    try child.send("/permission\r");
+    _ = try child.waitFor("\x1b]7501;state=blocked:app=pi:kind=permission:msg=UGVybWlzc2lvbiB0aXRsZQ==", start, 5000);
+    try observed.waitAny(&child, "Permission title");
+    try child.send("n\r");
+    try observed.waitAny(&child, "PERMISSION_DONE:false");
+    _ = try child.waitFor("\x1b]7501;state=idle:app=pi", start, 5000);
+    try cleanExit(&fixture, &child, &observed);
+}
+
 test "native persistent terminal reports Pi program status lifecycle without prompt or assistant leakage" {
     if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");

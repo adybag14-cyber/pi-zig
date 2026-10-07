@@ -49,6 +49,8 @@ fn ownershipCase(gpa: std.mem.Allocator) !void {
     try scene.postEvent(.{ .kind = .message_update, .text = "owned update" });
     try scene.setEditorText("draft Ω", null, null);
     try scene.setStatus("provider/model");
+    try Frontend.dialogStatus(scene, .start, "confirm", "Owned title Ω");
+    try Frontend.dialogStatus(scene, .end, "confirm", "Owned title Ω");
     try scene.updateConfigPadded(&bindings, &.{"alt+x"}, 2);
     try scene.applyUpdates();
     try std.testing.expectEqual(@as(u8, 2), scene.editor_padding_x);
@@ -353,6 +355,7 @@ const Update = union(enum) {
     wheel_lines: wheel_scroll.Lines,
     program_session_name: []u8,
     program_settled: bool,
+    program_dialog: struct { title: []u8, kind: ?@import("../tui/program_status.zig").Kind },
     config: ConfigUpdate,
     component: struct { scene: component_protocol.Scene, controls: *component_protocol.ControlQueue },
     component_close: component_protocol.Fence,
@@ -370,6 +373,7 @@ const Update = union(enum) {
             .text => |value| gpa.free(value.text),
             .status, .notice, .program_session_name => |value| gpa.free(value),
             .busy, .program_settled, .wheel_lines => {},
+            .program_dialog => |value| gpa.free(value.title),
             .config => |value| {
                 if (value.bindings_json) |json| gpa.free(json);
                 for (value.shortcuts) |key| gpa.free(key);
@@ -616,6 +620,15 @@ pub const Frontend = struct {
     }
     pub fn settleProgramStatus(self: *Frontend, aborted: bool) !void {
         try self.post(.{ .program_settled = aborted });
+    }
+    pub fn dialogStatus(raw: ?*anyopaque, event: ui.PromptEvent, method: []const u8, title: []const u8) !void {
+        const self: *Frontend = @ptrCast(@alignCast(raw.?));
+        const copied = try self.gpa.dupe(u8, title);
+        errdefer self.gpa.free(copied);
+        try self.post(.{ .program_dialog = .{
+            .title = copied,
+            .kind = if (event == .end) null else if (std.mem.eql(u8, method, "confirm")) .permission else .question,
+        } });
     }
     pub fn setStatus(self: *Frontend, status: []const u8) !void {
         const text = try self.gpa.dupe(u8, status);
@@ -1227,6 +1240,10 @@ pub const Frontend = struct {
                 try self.program_status.handle(.{ .agent_settled = aborted });
                 try self.publishProgramStatus();
             },
+            .program_dialog => |value| {
+                try self.program_status.setBlocked("extension-dialog", if (value.kind) |kind| .{ .kind = kind, .message = value.title } else null);
+                try self.publishProgramStatus();
+            },
             .config => |value| {
                 var bindings = keybindings.Manager.init(self.gpa);
                 if (value.bindings_json) |json| bindings.parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, json, .{ .allocate = .alloc_always });
@@ -1737,7 +1754,7 @@ pub const Frontend = struct {
             self.mutex.unlock(self.io);
             if (stopping) break;
             if (wanted_pause and !self.paused) {
-                try self.app.stop(self.io);
+                try self.app.suspendPresentation(self.io);
                 raw.leave();
                 raw_active = false;
                 self.mutex.lockUncancelable(self.io);
@@ -1747,7 +1764,7 @@ pub const Frontend = struct {
             } else if (!wanted_pause and self.paused) {
                 raw = try line_editor.RawMode.enter();
                 raw_active = true;
-                try self.app.start(self.io);
+                try self.app.resumePresentation(self.io);
                 self.app.invalidatePaint();
                 self.mutex.lockUncancelable(self.io);
                 self.paused = false;

@@ -28,6 +28,7 @@ pub const WidgetPlacement = enum { above_editor, below_editor };
 pub const PromptEvent = enum { start, end };
 pub const PromptEventFn = *const fn (?*anyopaque, PromptEvent, []const u8) void;
 pub const ModalObserverFn = *const fn (?*anyopaque, PromptEvent, ?anyerror) anyerror!void;
+pub const DialogStatusFn = *const fn (?*anyopaque, PromptEvent, []const u8, []const u8) anyerror!void;
 pub const SurfaceSinkFn = *const fn (?*anyopaque, SurfaceSnapshot) anyerror!void;
 pub const EditorSinkFn = *const fn (?*anyopaque, []const u8) anyerror!void;
 
@@ -172,6 +173,8 @@ pub const Controller = struct {
     prompt_event_ctx: ?*anyopaque = null,
     modal_observer_fn: ?ModalObserverFn = null,
     modal_observer_ctx: ?*anyopaque = null,
+    dialog_status_fn: ?DialogStatusFn = null,
+    dialog_status_ctx: ?*anyopaque = null,
     surface_sink_fn: ?SurfaceSinkFn = null,
     surface_sink_ctx: ?*anyopaque = null,
     editor_sink_fn: ?EditorSinkFn = null,
@@ -254,6 +257,10 @@ pub const Controller = struct {
         self.prompt_event_ctx = context;
     }
 
+    pub fn bindDialogStatus(self: *Controller, callback: ?DialogStatusFn, context: ?*anyopaque) void {
+        self.dialog_status_fn = callback;
+        self.dialog_status_ctx = context;
+    }
     pub fn bindFrontend(self: *Controller, sink: ?SurfaceSinkFn, observer: ?ModalObserverFn, context: ?*anyopaque) void {
         self.surface_sink_fn = sink;
         self.surface_sink_ctx = context;
@@ -876,13 +883,21 @@ pub const Controller = struct {
         self.state_mutex.unlock(self.io);
         if (!ui_available) return allocator.dupe(u8, if (std.mem.eql(u8, method, "confirm")) "false" else "null");
         if (self.modal_observer_fn) |callback| try callback(self.modal_observer_ctx, .start, null);
+        var modal_ended = false;
+        errdefer if (!modal_ended) if (self.modal_observer_fn) |callback| callback(self.modal_observer_ctx, .end, error.DialogStatusFailed) catch {};
+        const title_value = parsed.value.object.get("title");
+        const title = if (title_value) |value| if (value == .string) value.string else "" else "";
+        if (self.dialog_status_fn) |callback| try callback(self.dialog_status_ctx, .start, method, title);
+        defer if (self.dialog_status_fn) |callback| callback(self.dialog_status_ctx, .end, method, title) catch {};
         if (self.prompt_event_fn) |callback| callback(self.prompt_event_ctx, .start, method);
         defer if (self.prompt_event_fn) |callback| callback(self.prompt_event_ctx, .end, method);
         const result = self.dispatchDialog(allocator, reader.?, method, &parsed.value.object) catch |err| {
+            modal_ended = true;
             if (self.modal_observer_fn) |callback| callback(self.modal_observer_ctx, .end, err) catch {};
             return err;
         };
         errdefer allocator.free(result);
+        modal_ended = true;
         if (self.modal_observer_fn) |callback| try callback(self.modal_observer_ctx, .end, null);
         return result;
     }
