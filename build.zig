@@ -668,6 +668,7 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, binding_tests.root_module, quickjs);
+    linkDurable(b, binding_tests.root_module);
     const run_binding_tests = b.addRunArtifact(binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
     binding_test_step.dependOn(&run_binding_tests.step);
