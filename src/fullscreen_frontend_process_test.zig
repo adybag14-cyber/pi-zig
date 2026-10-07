@@ -851,7 +851,14 @@ const Observer = struct {
         }
         const text = try self.screen.textAlloc(std.testing.allocator);
         defer std.testing.allocator.free(text);
-        std.debug.print("Fullscreen cells missing {s}; frames={d}; cells:\n{s}\n", .{ marker, self.screen.frames, text });
+        const raw = child.output.items;
+        std.debug.print("Fullscreen cells missing {s}; after={d}; frames={d}; synchronized={}; parser={s}; pending={s}; marker_visible={}; consumed={d}/{d}; last_begin={any}; last_end={any}; raw_marker={any}; cells:\n{s}\n", .{
+            marker,                     after_frame,                                 self.screen.frames,                          self.screen.synchronized_update,
+            @tagName(self.screen.mode), self.screen.sequence.items,                  try self.screen.contains(marker),            self.consumed,
+            raw.len,                    std.mem.lastIndexOf(u8, raw, "\x1b[?2026h"), std.mem.lastIndexOf(u8, raw, "\x1b[?2026l"), std.mem.lastIndexOf(u8, raw, marker),
+            text,
+        });
+        std.debug.print("Fullscreen final output bytes: {any}\n", .{raw[raw.len - @min(raw.len, 768) ..]});
         return error.FullscreenCellAssertionFailed;
     }
     fn waitAllVisible(self: *Observer, child: *pty.Session, markers: []const []const u8, after_frame: usize) !void {
