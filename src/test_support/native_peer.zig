@@ -28,6 +28,24 @@ pub const Peer = struct {
         self.actions.deinit(self.gpa);
         self.gpa.destroy(self);
     }
+    /// Group startup carries admitted context before extension evaluation.
+    pub fn startGroup(gpa: std.mem.Allocator, io: Io, binary: []const u8, sources: []const []const u8, context: std.json.Value, errors: Io.File) !*Peer {
+        const self = try gpa.create(Peer);
+        errdefer gpa.destroy(self);
+        var env: std.process.Environ.Map = .init(gpa);
+        defer env.deinit();
+        try env.put("PATH", std.fs.path.dirname(binary).?);
+        const child = try std.process.spawn(io, .{ .argv = &.{ binary, "--internal-native-extension-group-worker" }, .environ_map = &env, .stdin = .pipe, .stdout = .pipe, .stderr = .{ .file = errors }, .create_no_window = true });
+        self.* = .{ .gpa = gpa, .io = io, .child = child, .reader = undefined };
+        errdefer {
+            self.stop();
+            if (self.child.stdin) |file| file.close(io);
+            if (self.child.stdout) |file| file.close(io);
+        }
+        self.reader = self.child.stdout.?.readerStreaming(io, &self.buffer);
+        try self.send(.{ .kind = "load_group", .ownerGeneration = "1", .sources = sources, .context = context });
+        return self;
+    }
     fn stop(self: *Peer) void {
         if (self.closed) return;
         self.closed = true;

@@ -13,6 +13,35 @@ const renderer_protocol = @import("extensions/renderer_protocol.zig");
 
 const editor_protocol = @import("extensions/editor_protocol.zig");
 
+test "native runtime admitted keybindings and strict Theme files are installed before factory evaluation without Node" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("export default pi=>{}");
+    defer fixture.deinit();
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "partial-theme.json", .data = "{\"name\":\"partial\",\"colors\":{\"muted\":1,\"text\":\"\",\"thinkingXhigh\":2,\"selectedBg\":3}}" });
+    const theme_path = try std.fs.path.join(gpa, &.{ fixture.root, "partial-theme.json" });
+    defer gpa.free(theme_path);
+    const quoted = try std.json.Stringify.valueAlloc(gpa, theme_path, .{});
+    defer gpa.free(quoted);
+    const fixture_source = try std.fmt.allocPrint(gpa, "import{{getKeybindings}}from'pi-tui';import{{loadThemeFromPath}}from'pi-coding-agent';const keys=getKeybindings();if(!keys.matches('\\x19','tui.select.confirm')||keys.matches('\\r','tui.select.confirm'))throw Error('keybindings not admitted before factory');let rejected=false;try{{loadThemeFromPath({s},'truecolor')}}catch(error){{if(!error.message.includes('Missing required color tokens:'))throw error;rejected=true}}if(!rejected)throw Error('strict files not admitted before factory');export default pi=>pi.registerCommand('boot-proof',{{handler(){{return{{message:'BOOT_KEY_AND_THEME_READY'}}}}}});", .{quoted});
+    defer gpa.free(fixture_source);
+    try std.Io.Dir.cwd().writeFile(io, .{ .sub_path = fixture.source_path, .data = fixture_source });
+    const errors = try fixture.tmp.dir.createFile(io, "bootstrap-stderr.log", .{});
+    defer errors.close(io);
+    const binary = try @import("test_support/pty.zig").executablePath(gpa, io, if (builtin.os.tag == .windows) "zig-out/bin/pi.exe" else "zig-out/bin/pi");
+    defer gpa.free(binary);
+    const parsed = try std.json.parseFromSlice(std.json.Value, gpa, "{\"keybindingsConfig\":{\"tui.select.confirm\":\"ctrl+y\"},\"kittyActive\":true,\"strictThemeValidation\":true}", .{});
+    defer parsed.deinit();
+    const peer = try @import("test_support/native_peer.zig").Peer.startGroup(gpa, io, binary, &.{fixture.source_path}, parsed.value, errors);
+    defer peer.deinit();
+    const ready = try peer.record();
+    defer ready.deinit();
+    try std.testing.expectEqualStrings("ready", ready.value.object.get("type").?.string);
+    const manifest = ready.value.object.get("extensions").?.array.items[0];
+    const commands = manifest.object.get("commands").?.array.items;
+    try std.testing.expectEqualStrings("boot-proof", commands[0].object.get("name").?.string);
+}
+
 test "native runtime editor factory receives source Theme callbacks and retains live palette through resize and retirement without Node" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;

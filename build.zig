@@ -687,6 +687,14 @@ pub fn build(b: *std.Build) void {
     const strict_theme_run = b.addRunArtifact(strict_theme_tests);
     b.step("test-theme-file-admission", "Replay Source optional theme validation and context admission").dependOn(&strict_theme_run.step);
     test_step.dependOn(&strict_theme_run.step);
+    const keybindings_manager_module = b.createModule(.{ .root_source_file = b.path("src/keybindings_manager_test.zig"), .target = target, .optimize = optimize });
+    keybindings_manager_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, keybindings_manager_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, keybindings_manager_module);
+    const keybindings_manager_tests = b.addTest(.{ .root_module = keybindings_manager_module, .use_llvm = use_llvm, .filters = &.{"Source6fb public KeybindingsManager"} });
+    const keybindings_manager_run = b.addRunArtifact(keybindings_manager_tests);
+    b.step("test-keybindings-manager", "Replay Source public keybinding manager and admitted runtime context").dependOn(&keybindings_manager_run.step);
+    test_step.dependOn(&keybindings_manager_run.step);
     test_step.dependOn(&run_nested_tests.step);
     const oauth_lock_fixture = b.addExecutable(.{
         .name = "pi-mcp-oauth-lock-fixture",

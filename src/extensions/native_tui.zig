@@ -464,6 +464,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     defer engine.freeValue(exports);
     try @import("native_color.zig").install(engine, exports);
     try @import("native_mouse.zig").install(engine, exports);
+    try @import("native_keybindings.zig").install(engine, exports);
     try define(engine, exports, "CURSOR_MARKER", try engine.checked(c.JS_NewString(engine.context, @import("../tui/cursor_markers.zig").cursor)));
     const array_is_array = try components.arrayPredicate(engine);
     defer engine.freeValue(array_is_array);
@@ -768,32 +769,8 @@ pub fn hydrateTheme(engine: *engine_mod.Engine, target: c.JSValue, resource: c.J
     };
     try define(engine, target, "_nativeDim", c.JS_DupValue(engine.context, faint));
 }
-fn keybindingCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
-    const engine = engine_mod.Engine.fromContext(context.?);
-    return keybindingOperation(engine, magic, if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
-}
-fn keybindingOperation(engine: *engine_mod.Engine, magic: c_int, args: []c.JSValue) !c.JSValue {
-    const action_index: usize = if (magic == 0) 1 else 0;
-    const action = try engine.toString(if (args.len > action_index) args[action_index] else c.pi_js_undefined());
-    defer engine.gpa.free(action);
-    const binding: []const []const u8 = if (std.mem.eql(u8, action, "tui.select.confirm")) &.{"enter"} else if (std.mem.eql(u8, action, "tui.select.cancel")) &.{ "escape", "ctrl+c" } else if (std.mem.eql(u8, action, "tui.select.up")) &.{"up"} else if (std.mem.eql(u8, action, "tui.select.down")) &.{"down"} else if (std.mem.eql(u8, action, "tui.select.pageUp")) &.{"pageUp"} else if (std.mem.eql(u8, action, "tui.select.pageDown")) &.{"pageDown"} else @import("../tui/keybindings.zig").defaultKeysForAction(action);
-    if (magic != 0) {
-        const array = try engine.checked(c.JS_NewArray(engine.context));
-        errdefer engine.freeValue(array);
-        for (binding, 0..) |key, index| if (c.JS_SetPropertyUint32(engine.context, array, @intCast(index), try engine.checked(c.JS_NewStringLen(engine.context, key.ptr, key.len))) < 0) return error.JavaScriptException;
-        return array;
-    }
-    const input = try engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined());
-    defer engine.gpa.free(input);
-    for (binding) |key| if (keys.matchesKey(input, key)) return c.pi_js_bool(engine.context, 1);
-    return c.pi_js_bool(engine.context, 0);
-}
 pub fn createKeybindings(engine: *engine_mod.Engine) !c.JSValue {
-    const object = try engine.checked(c.JS_NewObject(engine.context));
-    errdefer engine.freeValue(object);
-    try define(engine, object, "matches", try engine.checked(c.pi_js_function_magic(engine.context, keybindingCall, "matches", 2, 0)));
-    try define(engine, object, "getKeys", try engine.checked(c.pi_js_function_magic(engine.context, keybindingCall, "getKeys", 1, 1)));
-    return object;
+    return @import("native_keybindings.zig").getEditor(engine);
 }
 
 test "native hydrated theme methods replay actual original ANSI color modes dim tokens and unknown errors" {

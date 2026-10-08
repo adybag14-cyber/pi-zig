@@ -808,7 +808,7 @@ pub const Bindings = struct {
         const snapshot = try self.parseJson(source, "extension-context");
         errdefer self.engine.freeValue(snapshot);
         if (!c.JS_IsObject(snapshot) or c.JS_IsArray(snapshot)) return error.InvalidExtensionContext;
-        inline for (.{ "hasUI", "idle", "projectTrusted", "hasPendingMessages", "strictThemeValidation" }) |name| {
+        inline for (.{ "hasUI", "idle", "projectTrusted", "hasPendingMessages", "strictThemeValidation", "kittyActive" }) |name| {
             const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, name));
             defer self.engine.freeValue(value);
             if (!c.JS_IsUndefined(value) and !c.JS_IsBool(value)) return error.InvalidExtensionContext;
@@ -831,10 +831,14 @@ pub const Bindings = struct {
         const settings = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "settings"));
         defer self.engine.freeValue(settings);
         if (!c.JS_IsUndefined(settings) and (!c.JS_IsObject(settings) or c.JS_IsArray(settings))) return error.InvalidExtensionContext;
+        const keybindings_config = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "keybindingsConfig"));
+        defer self.engine.freeValue(keybindings_config);
+        if (!c.JS_IsUndefined(keybindings_config) and (!c.JS_IsObject(keybindings_config) or c.JS_IsArray(keybindings_config))) return error.InvalidExtensionContext;
         const strict_theme = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "strictThemeValidation"));
         defer self.engine.freeValue(strict_theme);
         if (self.selection_context_fn) |receive| try receive(self.tool_context, source);
         if (!c.JS_IsUndefined(strict_theme)) try @import("native_theme.zig").setStrictFileValidation(self.engine, c.JS_ToBool(self.engine.context, strict_theme) != 0);
+        try @import("native_keybindings.zig").hydrateAdmittedConfig(self.engine, snapshot);
         if (self.context_snapshot) |old| self.engine.freeValue(old);
         self.context_snapshot = snapshot;
     }
