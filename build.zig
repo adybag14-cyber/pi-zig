@@ -655,6 +655,15 @@ pub fn build(b: *std.Build) void {
     b.step("test-codemode-structured-results", "Replay original arbitrary structured fields across the tool protocol").dependOn(&b.addRunArtifact(structured_result_tests).step);
     codemode_step.dependOn(&codemode_models_run.step);
     test_step.dependOn(&codemode_models_run.step);
+    const mcp_activation_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_activation_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const mcp_activation_run = b.addRunArtifact(mcp_activation_tests);
+    b.step("test-mcp-activation", "Replay upstream preconnection builtin activation and unreachable warnings").dependOn(&mcp_activation_run.step);
+    test_step.dependOn(&mcp_activation_run.step);
+    const loadout_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/codemode_loadout_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native codemode loadout"} });
+    const loadout_run = b.addRunArtifact(loadout_tests);
+    b.step("test-codemode-loadout", "Replay Source catalog budgets mode preparation and namespace grouping").dependOn(&loadout_run.step);
+    codemode_step.dependOn(&loadout_run.step);
+    test_step.dependOn(&loadout_run.step);
     const model_owner_module = b.createModule(.{ .root_source_file = b.path("src/native_model_owner_transport_test.zig"), .target = target, .optimize = optimize });
     model_owner_module.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, model_owner_module, quickjs, sqlite_lib_dir);

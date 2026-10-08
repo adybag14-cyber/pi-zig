@@ -162,3 +162,93 @@ test "native codemode nested pipeline builtin callbacks declare and execute in t
     };
     try std.testing.expect(found);
 }
+
+test "native codemode nested pipeline prepareLoadout rewrites provider declarations without changing nested activation" {
+    const gpa = std.testing.allocator;
+    const json = @import("mcp/protocol.zig").json;
+    var session = try @import("agent/session.zig").Session.init(gpa, "loadout", ".");
+    defer session.deinit();
+    var runtime: builtin.Runtime = .{ .io = std.testing.io, .cwd = ".", .session = &session, .loadout_mode = .only };
+    var config: agent.AgentConfig = .{ .disable_builtin_tools = true, .tool_filter = .{ .allow = &.{ "codemode", "read" } }, .extra_tools_json = "[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"description\":\"Read a file\",\"parameters\":{\"type\":\"object\",\"properties\":{}}}}]" };
+    const builtin_schemas = try builtin.Runtime.schemasForRuntime(&runtime, gpa, &config);
+    defer gpa.free(builtin_schemas);
+    const schemas = try std.fmt.allocPrint(gpa, "[{s},{s}]", .{ config.extra_tools_json[1 .. config.extra_tools_json.len - 1], builtin_schemas[1 .. builtin_schemas.len - 1] });
+    defer gpa.free(schemas);
+    const only = try builtin.Runtime.prepareLoadout(&runtime, gpa, &config, schemas);
+    defer gpa.free(only);
+    var parsed = try json.Owned.parse(gpa, only);
+    defer parsed.deinit();
+    try std.testing.expectEqual(@as(usize, 1), parsed.value.array.items.len);
+    const definition = try @import("mcp/protocol.zig").field(parsed.value.array.items[0], "function");
+    try std.testing.expectEqualStrings("codemode", try @import("mcp/protocol.zig").text(definition, "name"));
+    try std.testing.expect(std.mem.indexOf(u8, try @import("mcp/protocol.zig").text(definition, "description"), "Read a file") != null);
+    try std.testing.expect(config.tool_filter.isEnabled("read"));
+    runtime.loadout_mode = .on;
+    const on = try builtin.Runtime.prepareLoadout(&runtime, gpa, &config, schemas);
+    defer gpa.free(on);
+    try std.testing.expect(std.mem.indexOf(u8, on, "Codemode: `tools.read(args)`") != null);
+    config.tool_filter.no_tools = true;
+    const inactive = try builtin.Runtime.prepareLoadout(&runtime, gpa, &config, schemas);
+    defer gpa.free(inactive);
+    try std.testing.expectEqualStrings(schemas, inactive);
+}
+
+test "native codemode nested pipeline provider receives only projection while tools remain callable" {
+    const gpa = std.testing.allocator;
+    const ai = @import("ai/root.zig");
+    const MockModel = @import("ai/mock.zig").MockModel;
+    const State = struct {
+        mock: *MockModel,
+        calls: usize = 0,
+        fn complete(raw: *anyopaque, allocator: std.mem.Allocator, messages: []const ai.ChatMessage, schemas: []const u8) anyerror!ai.ModelResponse {
+            const self: *@This() = @ptrCast(@alignCast(raw));
+            self.calls += 1;
+            var parsed = try @import("mcp/protocol.zig").json.Owned.parse(allocator, schemas);
+            defer parsed.deinit();
+            try std.testing.expectEqual(@as(usize, 1), parsed.value.array.items.len);
+            const function = parsed.value.array.items[0].object.get("function").?;
+            try std.testing.expectEqualStrings("codemode", function.object.get("name").?.string);
+            try std.testing.expect(std.mem.indexOf(u8, function.object.get("description").?.string, "Read fixture") != null);
+            return self.mock.client().complete(allocator, messages, schemas);
+        }
+    };
+    var mock = try MockModel.loadFromJson(gpa, "[{\"content\":\"done\"}]");
+    defer mock.deinit(gpa);
+    var state: State = .{ .mock = &mock };
+    var session = try @import("agent/session.zig").Session.init(gpa, "provider-loadout", ".");
+    defer session.deinit();
+    var runtime: builtin.Runtime = .{ .io = std.testing.io, .cwd = ".", .session = &session, .loadout_mode = .only };
+    const config: agent.AgentConfig = .{ .auto_compaction_enabled = false, .disable_builtin_tools = true, .tool_filter = .{ .allow = &.{ "codemode", "read" } }, .extra_tools_json = "[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"description\":\"Read fixture\",\"parameters\":{\"type\":\"object\"}}}]", .builtin_extension_ctx = &runtime, .builtin_extension_schemas_runtime_fn = builtin.Runtime.schemasForRuntime, .builtin_extension_prepare_loadout_fn = builtin.Runtime.prepareLoadout };
+    var result = try agent.run(gpa, std.testing.io, ".", .{ .ptr = &state, .completeFn = State.complete }, &session, "go", config, null, null);
+    defer result.deinit(gpa);
+    try std.testing.expectEqual(@as(usize, 1), state.calls);
+    try std.testing.expect(config.tool_filter.isEnabled("read"));
+}
+
+test "native codemode nested pipeline MCP codemode servers leave the description unchanged after connection" {
+    const gpa = std.testing.allocator;
+    const configured = @import("mcp/configured.zig");
+    const json = @import("mcp/protocol.zig").json;
+    var loaded = try json.Owned.parse(gpa, "{}");
+    defer loaded.deinit();
+    var environment: std.process.Environ.Map = .init(gpa);
+    defer environment.deinit();
+    var service: configured.Service = .{ .gpa = gpa, .io = std.testing.io, .loaded = loaded, .environment = environment, .cwd = ".", .output_root = ".", .reserved = &.{} };
+    defer service.descriptors.deinit(gpa);
+    var server: configured.Server = .{ .owner = &service, .name = "docs", .config = .null, .connection = undefined, .timeout_ms = 60_000, .auth_arena = .init(gpa) };
+    defer server.auth_arena.deinit();
+    var session = try @import("agent/session.zig").Session.init(gpa, "mcp-stable-description", ".");
+    defer session.deinit();
+    var runtime: builtin.Runtime = .{ .io = std.testing.io, .cwd = ".", .session = &session, .configured = &service };
+    const config: agent.AgentConfig = .{ .disable_builtin_tools = true, .tool_filter = .{ .allow = &.{"codemode"} } };
+    const schemas = try builtin.Runtime.schemasForRuntime(&runtime, gpa, &config);
+    defer gpa.free(schemas);
+    const before = try builtin.Runtime.prepareLoadout(&runtime, gpa, &config, schemas);
+    defer gpa.free(before);
+    var tool = try json.Owned.parse(gpa, "{\"type\":\"function\",\"function\":{\"name\":\"mcp__docs__lookup\",\"description\":\"Waited tools must not change catalog\",\"parameters\":{\"type\":\"object\"}}}");
+    defer tool.deinit();
+    try service.descriptors.append(gpa, .{ .server = &server, .raw_name = "lookup", .name = "mcp__docs__lookup", .schema = tool.value, .exposure = .codemode });
+    const after = try builtin.Runtime.prepareLoadout(&runtime, gpa, &config, schemas);
+    defer gpa.free(after);
+    try std.testing.expectEqualStrings(before, after);
+}

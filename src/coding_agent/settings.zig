@@ -176,6 +176,8 @@ pub const Settings = struct {
     /// Persistent model-cycle scope. CLI --models overrides this list for one
     /// run; Ctrl+S appends a newly persisted default when the scope is non-empty.
     enabled_models: ?[]const []const u8 = null,
+    codemode_mode: ?@import("../mcp/codemode_loadout.zig").Mode = null,
+    codemode_inline_budget: ?f64 = null,
     max_turns: usize = 16,
     /// Tracks whether maxTurns was present so a project can explicitly override
     /// a non-default global value back to the upstream default of 16.
@@ -1487,6 +1489,22 @@ pub fn parse(gpa: std.mem.Allocator, raw: []const u8) !Settings {
     var s: Settings = .{};
     errdefer s.deinit(gpa);
 
+    if (parsed.value.object.get("codemode")) |value| if (value == .object) {
+        if (value.object.get("mode")) |mode| if (mode == .string) {
+            s.codemode_mode = if (std.mem.eql(u8, mode.string, "only")) .only else .on;
+        };
+        if (value.object.get("inlineBudget")) |budget| {
+            const number: ?f64 = switch (budget) {
+                .integer => @floatFromInt(budget.integer),
+                .float => budget.float,
+                else => null,
+            };
+            if (number) |n| if (std.math.isFinite(n) and n >= 0) {
+                s.codemode_inline_budget = n;
+            };
+        }
+    };
+
     // Accept upstream keys (defaultModel/defaultProvider) and short aliases
     if (parsed.value.object.get("model") orelse parsed.value.object.get("defaultModel") orelse parsed.value.object.get("default_model")) |v| {
         if (v == .string) s.model = try gpa.dupe(u8, v.string);
@@ -1955,6 +1973,8 @@ fn mergeIntoScoped(gpa: std.mem.Allocator, dst: *Settings, src: Settings, includ
     if (src.show_hardware_cursor) |show| dst.show_hardware_cursor = show;
     if (src.mermaid_mode) |mode| dst.mermaid_mode = mode;
     if (src.warning_anthropic_extra_usage) |enabled| dst.warning_anthropic_extra_usage = enabled;
+    if (src.codemode_mode) |mode| dst.codemode_mode = mode;
+    if (src.codemode_inline_budget) |budget| dst.codemode_inline_budget = budget;
     if (src.tui_mode) |mode| dst.tui_mode = mode;
     if (src.fullscreen_exit_output) |mode| dst.fullscreen_exit_output = mode;
     if (src.fullscreen_scrollbar) |mode| dst.fullscreen_scrollbar = mode;
@@ -2822,4 +2842,23 @@ test "extended interactive settings parse merge format and scoped persistence" {
     try std.testing.expectEqual(@as(usize, 32), inherited.max_turns);
     try std.testing.expectError(error.ProjectNotTrusted, setEditableScoped(gpa, io, agent_dir, cwd, false, .project, .output_pad, .{ .integer = 0 }));
     try std.testing.expectError(error.GlobalOnlySetting, setEditableScoped(gpa, io, agent_dir, cwd, true, .project, .enable_install_telemetry, .{ .boolean = false }));
+}
+
+test "codemode settings admit finite nonnegative budgets and preserve per-key project precedence" {
+    const gpa = std.testing.allocator;
+    var global = try parse(gpa, "{\"codemode\":{\"mode\":\"only\",\"inlineBudget\":12.5}}");
+    defer global.deinit(gpa);
+    var project = try parse(gpa, "{\"codemode\":{\"inlineBudget\":0}}");
+    defer project.deinit(gpa);
+    var merged: Settings = .{};
+    defer merged.deinit(gpa);
+    try mergeInto(gpa, &merged, global);
+    try mergeIntoScoped(gpa, &merged, project, false);
+    try std.testing.expectEqual(@as(?@import("../mcp/codemode_loadout.zig").Mode, .only), merged.codemode_mode);
+    try std.testing.expectEqual(@as(?f64, 0), merged.codemode_inline_budget);
+    for ([_][]const u8{ "{\"codemode\":{\"inlineBudget\":-1}}", "{\"codemode\":{\"inlineBudget\":\"10\"}}", "{\"codemode\":null}" }) |bytes| {
+        var rejected = try parse(gpa, bytes);
+        defer rejected.deinit(gpa);
+        try std.testing.expectEqual(@as(?f64, null), rejected.codemode_inline_budget);
+    }
 }

@@ -264,6 +264,8 @@ pub const AgentConfig = struct {
     builtin_extension_exists_fn: ?ExternalToolExistsFn = null,
     builtin_extension_schemas_fn: ?*const fn (?*anyopaque, std.mem.Allocator) anyerror![]u8 = null,
     builtin_extension_schemas_runtime_fn: ?*const fn (?*anyopaque, std.mem.Allocator, *const AgentConfig) anyerror![]u8 = null,
+    /// Applies active builtin loadout hooks after the complete schema merge.
+    builtin_extension_prepare_loadout_fn: ?*const fn (?*anyopaque, std.mem.Allocator, *const AgentConfig, []const u8) anyerror![]u8 = null,
     external_tool_fn: ?ExternalToolFn = null,
     /// Streaming dispatcher used when an external runtime can deliver tool
     /// progress before the final result. The legacy dispatcher remains as a
@@ -720,12 +722,14 @@ pub fn runWithImages(
         defer if (dynamic_builtins) |value| gpa.free(value);
         const configured_json = if (dynamic_builtins) |value| try mergeToolSchemaArrays(gpa, dynamic_configured orelse config.configured_tools_json, value) else dynamic_configured orelse config.configured_tools_json;
         defer if (dynamic_builtins != null) gpa.free(configured_json);
-        const schemas = if (std.mem.eql(u8, configured_json, "[]")) external_schemas else blk: {
+        const merged_schemas = if (std.mem.eql(u8, configured_json, "[]")) external_schemas else blk: {
             defer gpa.free(external_schemas);
             const configured_schemas = try filteredConfiguredSchemas(gpa, configured_json, config.tool_filter);
             defer gpa.free(configured_schemas);
             break :blk try mergeToolSchemaArrays(gpa, external_schemas, configured_schemas);
         };
+        defer gpa.free(merged_schemas);
+        const schemas = if (config.builtin_extension_prepare_loadout_fn) |prepare| try prepare(config.builtin_extension_ctx, gpa, &config, merged_schemas) else try gpa.dupe(u8, merged_schemas);
         defer gpa.free(schemas);
 
         var delta_count = DeltaCount{};
