@@ -68,6 +68,12 @@ pub fn defaultKeysForAction(id: []const u8) []const []const u8 {
     if (std.mem.eql(u8, id, "app.interrupt")) return &.{"escape"};
     if (std.mem.eql(u8, id, "tui.editor.historyPrevious")) return &.{"up"};
     if (std.mem.eql(u8, id, "tui.editor.historyNext")) return &.{"down"};
+    if (std.mem.eql(u8, id, "tui.select.up")) return &.{"up"};
+    if (std.mem.eql(u8, id, "tui.select.down")) return &.{"down"};
+    if (std.mem.eql(u8, id, "tui.select.pageUp")) return &.{"pageup"};
+    if (std.mem.eql(u8, id, "tui.select.pageDown")) return &.{"pagedown"};
+    if (std.mem.eql(u8, id, "tui.select.confirm")) return &.{"enter"};
+    if (std.mem.eql(u8, id, "tui.select.cancel")) return &.{ "escape", "ctrl+c" };
     return &.{};
 }
 
@@ -122,6 +128,23 @@ pub const Manager = struct {
                 if (std.mem.eql(u8, normalized, normalized_input)) return true;
             }
         }
+        return false;
+    }
+
+    /// Match a named TUI action against a complete raw terminal sequence.
+    /// Explicit empty arrays disable defaults and overrides retain Source order.
+    pub fn matchesActionName(self: *const Manager, action: []const u8, sequence: []const u8) bool {
+        if (self.parsed) |parsed| if (parsed.value == .object) if (parsed.value.object.get(action)) |value| {
+            return switch (value) {
+                .string => |key| @import("keys.zig").matchesKey(sequence, key),
+                .array => |array| blk: {
+                    for (array.items) |item| if (item == .string and @import("keys.zig").matchesKey(sequence, item.string)) break :blk true;
+                    break :blk false;
+                },
+                else => false,
+            };
+        };
+        for (defaultKeysForAction(action)) |key| if (@import("keys.zig").matchesKey(sequence, key)) return true;
         return false;
     }
 
@@ -268,6 +291,23 @@ pub fn normalizeKey(input: []const u8, out: *[96]u8) ?[]const u8 {
         pos += 1;
     }
     return out[0..pos];
+}
+
+test "named selection keybindings accept raw terminal sequences configurable arrays and explicit disable" {
+    var manager = Manager.init(std.testing.allocator);
+    defer manager.deinit();
+    try std.testing.expect(manager.matchesActionName("tui.select.up", "\x1b[A"));
+    try std.testing.expect(manager.matchesActionName("tui.select.confirm", "\r"));
+    try std.testing.expect(manager.matchesActionName("tui.select.cancel", "\x1b"));
+    try std.testing.expect(manager.matchesActionName("tui.select.cancel", "\x03"));
+    try std.testing.expect(!manager.matchesActionName("tui.select.up", "k"));
+    manager.parsed = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, "{\"tui.select.up\":[\"ctrl+k\",\"alt+up\"],\"tui.select.cancel\":[],\"tui.select.confirm\":\"ctrl+y\"}", .{});
+    try std.testing.expect(!manager.matchesActionName("tui.select.up", "\x1b[A"));
+    try std.testing.expect(manager.matchesActionName("tui.select.up", "\x0b"));
+    try std.testing.expect(manager.matchesActionName("tui.select.up", "\x1b[1;3A"));
+    try std.testing.expect(!manager.matchesActionName("tui.select.cancel", "\x1b"));
+    try std.testing.expect(manager.matchesActionName("tui.select.confirm", "\x19"));
+    try std.testing.expect(!manager.matchesActionName("tui.select.confirm", "\r"));
 }
 
 test "keybinding defaults normalize modifier order" {
