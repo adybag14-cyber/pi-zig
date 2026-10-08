@@ -613,6 +613,16 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, codemode_tests.root_module, quickjs, sqlite_lib_dir);
     const run_codemode_tests = b.addRunArtifact(codemode_tests);
     const codemode_step = b.step("test-codemode", "Exercise isolated native codemode user scripts and Zig host callbacks");
+    const discovery_process_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/codemode_discovery_process_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const discovery_process_run = b.addRunArtifact(discovery_process_tests);
+    discovery_process_run.step.dependOn(&b.addInstallArtifact(exe, .{}).step);
+    discovery_process_run.setEnvironmentVariable("PI_CODEMODE_BINARY", b.getInstallPath(.bin, b.fmt("pi{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    b.step("test-codemode-discovery-process", "Exercise real CLI discovery and nested native tools without Node").dependOn(&discovery_process_run.step);
+    codemode_step.dependOn(&discovery_process_run.step);
+    test_step.dependOn(&discovery_process_run.step);
+    const discovery_tests = b.addTest(.{ .root_module = codemode_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native codemode discovery"} });
+    const discovery_run = b.addRunArtifact(discovery_tests);
+    b.step("test-codemode-discovery", "Replay source session discovery globals").dependOn(&discovery_run.step);
     codemode_step.dependOn(&run_codemode_tests.step);
     test_step.dependOn(&run_codemode_tests.step);
     const nested_module = b.createModule(.{ .root_source_file = b.path("src/codemode_nested_pipeline_test.zig"), .target = target, .optimize = optimize });

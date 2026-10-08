@@ -86,6 +86,27 @@ pub fn schema(a: std.mem.Allocator, server: []const u8, model_name: []const u8, 
     try result.object.put(a, "function", function);
     return result;
 }
+/// Discovery metadata stays separate from the provider-facing function schema.
+pub fn codemodeMetadata(a: std.mem.Allocator, server: []const u8, configuration: Value, initialized: Value, tool: Value) !Value {
+    const namespace_name = try std.fmt.allocPrint(a, "mcp__{s}", .{server});
+    for (namespace_name) |*byte| if (byte.* == '-') { byte.* = '_'; };
+    var namespace: Value = .{ .object = .empty };
+    try namespace.object.put(a, "name", .{ .string = namespace_name });
+    for ([_]struct { source: Value, key: []const u8 }{ .{ .source = configuration, .key = "description" }, .{ .source = initialized, .key = "instructions" } }) |field| {
+        if (json.get(field.source, field.key)) |text| if (text == .string) {
+            const trimmed = try trimJs(text.string);
+            if (trimmed.len > 0) try namespace.object.put(a, field.key, .{ .string = try a.dupe(u8, trimmed) });
+        };
+    }
+    var result_schema = try json.Owned.parse(a, "{\"type\":\"object\",\"properties\":{\"content\":{\"type\":\"array\",\"items\":{\"type\":\"object\"}},\"isError\":{\"type\":\"boolean\"},\"_meta\":{\"type\":\"object\"}},\"required\":[\"content\"]}");
+    defer result_schema.deinit();
+    var output = try json.clone(a, result_schema.value);
+    if (json.get(tool, "outputSchema")) |structured| if (structured == .object) try output.object.getPtr("properties").?.object.put(a, "structuredContent", try json.clone(a, structured));
+    var metadata: Value = .{ .object = .empty };
+    try metadata.object.put(a, "namespace", namespace);
+    try metadata.object.put(a, "outputSchema", output);
+    return metadata;
+}
 fn size(a: std.mem.Allocator, n: f64) ![]u8 {
     if (n < 1024) return std.fmt.allocPrint(a, "{d}B", .{n});
     return std.fmt.allocPrint(a, "{d:.1}{s}", .{ n / @as(f64, if (n < 1024 * 1024) 1024 else 1024 * 1024), if (n < 1024 * 1024) "KB" else "MB" });

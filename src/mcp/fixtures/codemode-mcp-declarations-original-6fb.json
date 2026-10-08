@@ -1,0 +1,119 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "isError": {
+            "type": "boolean"
+          },
+          "_meta": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
+      "type": "CallToolResult",
+      "sample": "Find records\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__dev_radius__lookup(args: { [key: string]: unknown; }): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "structuredContent": {},
+          "isError": {
+            "type": "boolean"
+          },
+          "_meta": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
+      "type": "CallToolResult",
+      "sample": "Find records\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__dev_radius__lookup(args: { [key: string]: unknown; }): Promise<CallToolResult>; };\n```"
+    },
+    {
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "structuredContent": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "isError": {
+            "type": "boolean"
+          },
+          "_meta": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
+      "type": "CallToolResult<{ value: number; }>",
+      "sample": "Find records\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__dev_radius__lookup(args: { [key: string]: unknown; }): Promise<CallToolResult<{ value: number; }>>; };\n```"
+    },
+    {
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "structuredContent": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isError": {
+            "type": "boolean"
+          },
+          "_meta": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
+      "type": "CallToolResult<Array<string>>",
+      "sample": "Find records\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { mcp__dev_radius__lookup(args: { [key: string]: unknown; }): Promise<CallToolResult<Array<string>>>; };\n```"
+    }
+  ]
+}

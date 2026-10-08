@@ -5,10 +5,12 @@ const engine_mod = @import("../extensions/engine.zig");
 const c = engine_mod.c;
 const json = @import("protocol.zig").json;
 const Value = json.Value;
+const discovery = @import("codemode_discovery.zig");
 
 pub const Tool = struct {
     name: []const u8,
     description: []const u8 = "",
+    discovery_metadata: ?discovery.Tool = null,
     context: ?*anyopaque = null,
     /// Native workers may call different tools concurrently. The callback must
     /// not access VM values and must observe its cooperative abort flag.
@@ -19,6 +21,7 @@ pub const Tool = struct {
     error_marker: bool = false,
 };
 pub const Options = struct {
+    enable_discovery: bool = false,
     timeout_ms: ?u64 = 300_000,
     memory_limit: usize = 256 * 1024 * 1024,
     abort_flag: ?*bool = null,
@@ -56,6 +59,7 @@ const Execution = struct {
     aborted: bool = false,
     timed_out: bool = false,
     tool_names: std.ArrayList([]u8) = .empty,
+    discovery_tools: []const discovery.Tool = &.{},
 
     fn from(context: ?*c.JSContext) *Execution {
         const engine = engine_mod.Engine.fromContext(context.?);
@@ -83,6 +87,108 @@ const Execution = struct {
     }
     fn put(self: *Execution, object: c.JSValue, name: [:0]const u8, value: c.JSValue) !void {
         if (c.JS_DefinePropertyValueStr(self.engine.context, object, name.ptr, value, c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
+    }
+    fn discoveryError(self: *Execution, message: [:0]const u8) anyerror!c.JSValue {
+        const value = try self.engine.checked(c.JS_NewError(self.engine.context));
+        var transferred = false;
+        errdefer if (!transferred) self.engine.freeValue(value);
+        try self.put(value, "message", try self.engine.checked(c.JS_NewString(self.engine.context, message)));
+        transferred = true;
+        _ = c.JS_Throw(self.engine.context, value);
+        return error.JavaScriptException;
+    }
+    fn discoveryValue(self: *Execution, kind: c_int, argc: c_int, argv: [*c]c.JSValue) !c.JSValue {
+        const context = self.engine.context;
+        if (argc == 0 or !c.JS_IsString(argv[0])) return self.discoveryError(switch (kind) {
+            0 => "searchTools() expects a query string",
+            1 => "describeTool() expects a tool name",
+            else => "describeNamespace() expects a namespace name",
+        });
+        const name = try self.engine.toString(argv[0]);
+        defer self.gpa.free(name);
+        if (kind == 1) {
+            const index = try discovery.findTool(self.gpa, self.discovery_tools, name) orelse return c.pi_js_undefined();
+            const sample = self.discovery_tools[index].sample;
+            return self.engine.checked(c.JS_NewStringLen(context, sample.ptr, sample.len));
+        }
+        if (kind == 2) {
+            var namespace: ?discovery.Namespace = null;
+            const result = try self.engine.checked(c.JS_NewObject(context));
+            errdefer self.engine.freeValue(result);
+            const names = try self.engine.checked(c.JS_NewArray(context));
+            defer self.engine.freeValue(names);
+            var index: u32 = 0;
+            for (self.discovery_tools) |tool| if (tool.namespace) |info| {
+                if (!try discovery.namespaceMatches(self.gpa, info.name, name)) continue;
+                if (namespace == null) namespace = info;
+                const id = try discovery.identifier(self.gpa, tool.name);
+                defer self.gpa.free(id);
+                if (c.JS_SetPropertyUint32(context, names, index, c.JS_NewStringLen(context, id.ptr, id.len)) < 0) return error.JavaScriptException;
+                index += 1;
+            };
+            const info = namespace orelse {
+                self.engine.freeValue(result);
+                return c.pi_js_undefined();
+            };
+            try self.put(result, "name", try self.engine.checked(c.JS_NewStringLen(context, info.name.ptr, info.name.len)));
+            if (info.description.len > 0) try self.put(result, "description", try self.engine.checked(c.JS_NewStringLen(context, info.description.ptr, info.description.len)));
+            if (info.instructions.len > 0) try self.put(result, "instructions", try self.engine.checked(c.JS_NewStringLen(context, info.instructions.ptr, info.instructions.len)));
+            try self.put(result, "tools", c.JS_DupValue(context, names));
+            return result;
+        }
+        var limit: usize = 8;
+        var namespace: ?[]u8 = null;
+        defer if (namespace) |value| self.gpa.free(value);
+        if (argc > 1 and !c.JS_IsUndefined(argv[1]) and !c.JS_IsNull(argv[1])) {
+            const requested = try self.engine.checked(c.JS_GetPropertyStr(context, argv[1], "limit"));
+            defer self.engine.freeValue(requested);
+            if (!c.JS_IsUndefined(requested) and !c.JS_IsNull(requested)) {
+                if (!c.JS_IsNumber(requested)) return self.discoveryError("searchTools() limit must be a positive integer");
+                var number: f64 = undefined;
+                if (c.JS_ToFloat64(context, &number, requested) < 0) return error.JavaScriptException;
+                if (!std.math.isFinite(number) or number <= 0 or @floor(number) != number) return self.discoveryError("searchTools() limit must be a positive integer");
+                limit = @intFromFloat(@min(number, @as(f64, @floatFromInt(self.discovery_tools.len))));
+            }
+            const requested_namespace = try self.engine.checked(c.JS_GetPropertyStr(context, argv[1], "namespace"));
+            defer self.engine.freeValue(requested_namespace);
+            if (!c.JS_IsUndefined(requested_namespace) and !c.JS_IsNull(requested_namespace)) {
+                if (!c.JS_IsString(requested_namespace)) return self.discoveryError("searchTools() namespace must be a string");
+                namespace = try self.engine.toString(requested_namespace);
+            }
+        }
+        const matches = try discovery.rank(self.gpa, self.discovery_tools, name, limit, namespace);
+        defer self.gpa.free(matches);
+        const result = try self.engine.checked(c.JS_NewArray(context));
+        errdefer self.engine.freeValue(result);
+        for (matches, 0..) |match, index| {
+            const tool_index = (try discovery.findTool(self.gpa, self.discovery_tools, match.name)).?;
+            const tool = self.discovery_tools[tool_index];
+            const id = try discovery.identifier(self.gpa, tool.name);
+            defer self.gpa.free(id);
+            const value = try self.engine.checked(c.JS_NewObject(context));
+            defer self.engine.freeValue(value);
+            try self.put(value, "name", try self.engine.checked(c.JS_NewStringLen(context, id.ptr, id.len)));
+            try self.put(value, "description", try self.engine.checked(c.JS_NewStringLen(context, tool.sample.ptr, tool.sample.len)));
+            if (c.JS_SetPropertyUint32(context, result, @intCast(index), c.JS_DupValue(context, value)) < 0) return error.JavaScriptException;
+        }
+        return result;
+    }
+    fn discover(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const self = from(context);
+        var callbacks: [2]c.JSValue = undefined;
+        const promise = self.engine.checked(c.JS_NewPromiseCapability(context, &callbacks)) catch |cause| return self.fail(cause);
+        defer for (callbacks) |value| self.engine.freeValue(value);
+        var rejected = false;
+        const value = self.discoveryValue(magic, argc, argv) catch |cause| blk: {
+            rejected = true;
+            _ = self.fail(cause);
+            break :blk c.JS_GetException(context);
+        };
+        defer self.engine.freeValue(value);
+        var parameters = [_]c.JSValue{value};
+        const settled = c.JS_Call(context, callbacks[@intFromBool(rejected)], c.pi_js_undefined(), 1, &parameters);
+        self.engine.freeValue(settled);
+        return promise;
     }
     fn overrideGet(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         return c.JS_DupValue(context, data[2]);
@@ -566,6 +672,9 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
     var state: Execution = .{ .gpa = gpa, .io = io, .engine = engine, .tools = tools, .options = options, .result = try json.Owned.empty(gpa), .stored = .{ .object = .empty }, .deadline = if (options.timeout_ms) |timeout| std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(timeout, std.math.maxInt(i64)))) else null };
     errdefer state.result.deinit();
     const a = state.result.arena.allocator();
+    const discovery_tools = try a.alloc(discovery.Tool, tools.len);
+    for (tools, discovery_tools) |tool, *metadata| metadata.* = tool.discovery_metadata orelse .{ .name = tool.name, .description = tool.description, .sample = tool.description };
+    state.discovery_tools = discovery_tools;
     state.result.value = .{ .object = .empty };
     try state.result.value.object.put(a, "output", .{ .array = .init(a) });
     try state.result.value.object.put(a, "calls", .{ .array = .init(a) });
@@ -621,7 +730,8 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
             const info = try engine.checked(c.JS_NewObject(engine.context));
             defer engine.freeValue(info);
             try state.put(info, "name", try engine.checked(c.JS_NewStringLen(engine.context, js_name.ptr, js_name.len)));
-            try state.put(info, "description", try engine.checked(c.JS_NewStringLen(engine.context, tool.description.ptr, tool.description.len)));
+            const detail = if (options.enable_discovery) discovery_tools[index].sample else tool.description;
+            try state.put(info, "description", try engine.checked(c.JS_NewStringLen(engine.context, detail.ptr, detail.len)));
             if (c.JS_SetPropertyUint32(engine.context, metadata, @intCast(state.tool_names.items.len - 1), c.JS_DupValue(engine.context, info)) < 0) return error.JavaScriptException;
         }
         if (!std.mem.eql(u8, js_name, tool.name)) {
@@ -640,6 +750,7 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
     defer engine.freeValue(guarded_tools);
     try state.put(globals, "tools", c.JS_DupValue(engine.context, guarded_tools));
     try state.put(globals, "ALL_TOOLS", c.JS_DupValue(engine.context, metadata));
+    if (options.enable_discovery) inline for (.{ "searchTools", "describeTool", "describeNamespace" }, 0..) |name, index| try state.put(globals, name, try engine.checked(c.JS_NewCFunctionData2(engine.context, Execution.discover, name, 1, index, 0, null)));
     const console = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
     defer engine.freeValue(console);
     inline for (.{ "log", "info", "warn", "error", "debug" }) |name| try state.put(console, name, try engine.checked(c.JS_NewCFunction(engine.context, Execution.consoleCall, name, 0)));
@@ -865,6 +976,67 @@ test "native codemode unknown tool guard matches original suggested identifier d
     try std.testing.expectEqualStrings(fixture.value.object.get("error").?.object.get("message").?.string, actual.value.object.get("error").?.object.get("message").?.string);
     try std.testing.expectEqual(@as(usize, 0), actual.value.object.get("calls").?.array.items.len);
 }
+test "native codemode discovery globals replay original ranked metadata namespace aliases and async errors" {
+    const gpa = std.testing.allocator;
+    var original = try json.Owned.parse(gpa, @embedFile("fixtures/codemode-discovery-original-6fb.json"));
+    defer original.deinit();
+    const original_tools = json.get(original.value, "tools").?.array.items;
+    const samples = json.get(original.value, "samples").?.object;
+    const info = json.get(original.value, "namespace").?.object;
+    const Callback = struct {
+        fn call(_: ?*anyopaque, allocator: std.mem.Allocator, _: ?Value, _: ?*bool) !json.Owned {
+            return json.Owned.empty(allocator);
+        }
+    };
+    var tools: [2]Tool = undefined;
+    for (original_tools, &tools, 0..) |value, *tool, index| {
+        const name = value.object.get("name").?.string;
+        tool.* = .{ .name = name, .description = value.object.get("description").?.string, .execute = Callback.call, .discovery_metadata = .{
+            .name = name,
+            .description = value.object.get("description").?.string,
+            .sample = samples.get(name).?.string,
+            .parameters = value.object.get("parameters").?,
+            .namespace = if (index == 0) .{ .name = info.get("name").?.string, .description = info.get("description").?.string, .instructions = info.get("instructions").?.string } else null,
+        } };
+    }
+    for (json.get(original.value, "rows").?.array.items) |row| {
+        const args = try json.stringify(gpa, row.object.get("args").?);
+        defer gpa.free(args);
+        const code = try std.fmt.allocPrint(gpa, "try{{const value=await {s}(...{s});text({{result:value??null,undefined:value===undefined}})}}catch(error){{text({{error:{{name:error.name,message:error.message}}}})}}", .{ row.object.get("name").?.string, args });
+        defer gpa.free(code);
+        var result = try execute(gpa, std.testing.io, &tools, code, .{ .enable_discovery = true });
+        defer result.deinit();
+        const output = result.value.object.get("output").?.array.items;
+        try std.testing.expectEqual(@as(usize, 1), output.len);
+        var actual = try json.Owned.parse(gpa, output[0].object.get("text").?.string);
+        defer actual.deinit();
+        if (row.object.get("error")) |expected| try expectJsonEquivalent(expected, actual.value.object.get("error").?) else {
+            try expectJsonEquivalent(row.object.get("result").?, actual.value.object.get("result").?);
+            try std.testing.expectEqual(row.object.get("undefined").?.bool, actual.value.object.get("undefined").?.bool);
+        }
+        try std.testing.expectEqual(@as(usize, 0), result.value.object.get("calls").?.array.items.len);
+    }
+}
+
+test "native codemode discovery allocation failures release metadata promises errors and namespace values" {
+    const Check = struct {
+        fn call(_: ?*anyopaque, gpa: std.mem.Allocator, _: ?Value, _: ?*bool) !json.Owned {
+            return json.Owned.empty(gpa);
+        }
+        fn run(gpa: std.mem.Allocator) !void {
+            const tool: Tool = .{ .name = "mcp__repo__issues-list", .description = "repository issues", .execute = call, .discovery_metadata = .{
+                .name = "mcp__repo__issues-list",
+                .description = "repository issues",
+                .sample = "issue declaration",
+                .namespace = .{ .name = "mcp__repo", .description = "Repository", .instructions = "issue tracker" },
+            } };
+            var result = try execute(gpa, std.testing.io, &.{tool}, "text(await searchTools('issues'));text(await describeTool('mcp__repo__issues_list'));text(await describeNamespace('repo'));try{await searchTools(4)}catch(error){text(error.message)}", .{ .enable_discovery = true });
+            defer result.deinit();
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Check.run, .{});
+}
+
 fn expectJsonEquivalent(expected: Value, actual: Value) anyerror!void {
     try std.testing.expectEqual(std.meta.activeTag(expected), std.meta.activeTag(actual));
     switch (expected) {

@@ -1,0 +1,79 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "input": {},
+      "result": ""
+    },
+    {
+      "input": {
+        "tools": [
+          {
+            "name": "read-file",
+            "description": " Read a file ",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ]
+            },
+            "outputSchema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "result": "declare const tools: {\n  /** Read a file */\n  read_file(args: { path: string; }): Promise<string>;\n};"
+    },
+    {
+      "input": {
+        "tools": [
+          {
+            "name": "comment",
+            "description": " First\r\n\nlast */ ",
+            "inputSchema": true
+          }
+        ],
+        "globals": [
+          {
+            "name": "text",
+            "description": "Print text",
+            "signature": "(value: unknown): void"
+          },
+          {
+            "name": "models.list",
+            "description": "List models",
+            "inputSchema": {
+              "type": "string"
+            },
+            "outputSchema": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          {
+            "name": "image",
+            "signature": "(data: string): void"
+          },
+          {
+            "name": "models.get",
+            "signature": "(provider: string, id: string): unknown"
+          },
+          {
+            "name": "store.set",
+            "inputSchema": false,
+            "outputSchema": true
+          }
+        ]
+      },
+      "result": "declare const tools: {\n  /**\n   * First\n   *\n   * last *\\/\n   */\n  comment(args: unknown): Promise<unknown>;\n};\n\n/** Print text */\ndeclare function text(value: unknown): void;\n\ndeclare function image(data: string): void;\n\ndeclare const models: {\n  /** List models */\n  list(args: string): Promise<Array<{ [key: string]: unknown; }>>;\n  get(provider: string, id: string): unknown;\n};\n\ndeclare const store: {\n  set(args: never): Promise<unknown>;\n};"
+    }
+  ]
+}
