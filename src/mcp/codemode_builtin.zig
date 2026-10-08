@@ -59,10 +59,28 @@ pub const Runtime = struct {
         defer gpa.free(builtin);
         try appendSchemas(a, &registry.value, builtin, initial.tool_filter, false);
         try appendSchemas(a, &registry.value, initial.extra_tools_json, initial.tool_filter, false);
+        if (self.host) |host| for (registry.value.array.items) |*schema| {
+            const name_ = try protocol.text(try protocol.field(schema.*, "function"), "name");
+            for (host.extensions.items) |extension| for (extension.tools) |tool| {
+                if (!std.mem.eql(u8, tool.name, name_)) continue;
+                if (tool.discovery_json) |bytes| {
+                    var metadata = try json.Owned.parse(a, bytes);
+                    defer metadata.deinit();
+                    var fields = metadata.value.object.iterator();
+                    while (fields.next()) |field| try schema.object.put(a, try a.dupe(u8, field.key_ptr.*), try json.clone(a, field.value_ptr.*));
+                }
+                break;
+            };
+        };
         if (self.configured) |service| {
             for (service.descriptors.items) |descriptor| {
                 if (descriptor.exposure == .direct and !initial.tool_filter.isMcpEnabled(descriptor.name)) continue;
-                try registry.value.array.append(try json.clone(a, descriptor.schema));
+                var schema = try json.clone(a, descriptor.schema);
+                if (descriptor.codemode_metadata) |metadata| {
+                    var fields = metadata.object.iterator();
+                    while (fields.next()) |field| try schema.object.put(a, try a.dupe(u8, field.key_ptr.*), try json.clone(a, field.value_ptr.*));
+                }
+                try registry.value.array.append(schema);
             }
         }
         var entries: std.ArrayList(adapter.Entry) = .empty;
@@ -79,7 +97,28 @@ pub const Runtime = struct {
             };
             if (duplicate) continue;
             try names.append(gpa, tool_name);
-            try entries.append(gpa, .{ .name = tool_name, .description = if (json.get(definition, "description")) |value| try json.asString(value) else "", .structured_result = std.mem.startsWith(u8, tool_name, "mcp__") });
+            var namespace: ?@import("codemode_discovery.zig").Namespace = null;
+            const namespace_value = json.get(schema, "namespace") orelse json.get(definition, "namespace");
+            if (namespace_value) |value| if (value == .object) {
+                if (json.get(value, "name")) |name_value| if (name_value == .string) {
+                    namespace = .{
+                        .name = name_value.string,
+                        .description = if (json.get(value, "description")) |entry| if (entry == .string) entry.string else "" else "",
+                        .instructions = if (json.get(value, "instructions")) |entry| if (entry == .string) entry.string else "" else "",
+                    };
+                };
+            };
+            var guidelines: std.ArrayList([]const u8) = .empty;
+            if (json.get(schema, "promptGuidelines") orelse json.get(definition, "promptGuidelines")) |value| if (value == .array) for (value.array.items) |item| if (item == .string) try guidelines.append(a, item.string);
+            try entries.append(gpa, .{
+                .name = tool_name,
+                .description = if (json.get(definition, "description")) |value| try json.asString(value) else "",
+                .structured_result = std.mem.startsWith(u8, tool_name, "mcp__"),
+                .parameters = json.get(definition, "parameters") orelse .null,
+                .output_schema = json.get(schema, "outputSchema") orelse json.get(definition, "outputSchema"),
+                .namespace = namespace,
+                .prompt_guidelines = guidelines.items,
+            });
         }
         const schemas = try json.stringify(gpa, registry.value);
         defer gpa.free(schemas);
@@ -89,7 +128,7 @@ pub const Runtime = struct {
         invocation.config.tool_filter = .{ .allow = names.items, .allow_is_loadout = true };
         var store = try adapter.loadBranchStore(gpa, self.session);
         defer store.deinit();
-        return try adapter.execute(gpa, self.io, code, .{ .context = &invocation, .invoke = Invocation.call, .entries = entries.items, .call_id = id, .store = store.value, .append_context = self.session, .append_store = adapter.appendBranchStore, .output_root = self.output_root }, aborted);
+        return try adapter.execute(gpa, self.io, code, .{ .enable_discovery = true, .context = &invocation, .invoke = Invocation.call, .entries = entries.items, .call_id = id, .store = store.value, .append_context = self.session, .append_store = adapter.appendBranchStore, .output_root = self.output_root }, aborted);
     }
     fn appendSchemas(a: std.mem.Allocator, target: *json.Value, bytes: []const u8, filter: tools.ToolFilter, configured_all: bool) !void {
         var parsed = try json.Owned.parse(a, bytes);

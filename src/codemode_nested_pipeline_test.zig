@@ -2,6 +2,23 @@ const std = @import("std");
 const agent = @import("agent/loop.zig");
 const tools = @import("agent/tools.zig");
 const builtin = @import("mcp/codemode_builtin.zig");
+test "native codemode nested pipeline MCP discovery metadata matches selected original namespace and schemas" {
+    const gpa = std.testing.allocator;
+    const json = @import("mcp/protocol.zig").json;
+    var captured = try json.Owned.parse(gpa, @embedFile("mcp/fixtures/codemode-mcp-metadata-6fb.json"));
+    defer captured.deinit();
+    for (json.get(captured.value, "rows").?.array.items) |row| {
+        var result = try json.Owned.empty(gpa);
+        defer result.deinit();
+        result.value = try @import("mcp/agent_tools.zig").codemodeMetadata(result.arena.allocator(), json.get(row, "server").?.string, json.get(row, "configuration").?, json.get(row, "initialized").?, json.get(row, "tool").?);
+        const expected = try json.stringify(gpa, json.get(row, "expected").?);
+        defer gpa.free(expected);
+        const actual = try json.stringify(gpa, result.value);
+        defer gpa.free(actual);
+        if (!json.equal(json.get(row, "expected").?, result.value)) std.debug.print("Expected metadata: {s}\nActual metadata: {s}\n", .{ expected, actual });
+        try std.testing.expect(json.equal(json.get(row, "expected").?, result.value));
+    }
+}
 
 test "native codemode nested pipeline builtin activation requires explicit selection retains modifiers and no-tools" {
     var config: agent.AgentConfig = .{};
@@ -52,7 +69,7 @@ test "native codemode nested pipeline real builtin runtime executes current agen
     config.builtin_extension_runtime_fn = builtin.Runtime.execute;
     config.builtin_extension_exists_fn = builtin.Runtime.exists;
     config.builtin_extension_schemas_fn = builtin.Runtime.declareSchemas;
-    var mock = try @import("ai/mock.zig").MockModel.loadFromJson(gpa, "[{\"content\":\"run\",\"tool_calls\":[{\"id\":\"outer\",\"name\":\"codemode\",\"arguments\":\"{\\\"code\\\":\\\"store('persisted', await tools.echo({})); return load('persisted');\\\"}\"}]},{\"content\":\"done\"}]");
+    var mock = try @import("ai/mock.zig").MockModel.loadFromJson(gpa, "[{\"content\":\"run\",\"tool_calls\":[{\"id\":\"outer\",\"name\":\"codemode\",\"arguments\":\"{\\\"code\\\":\\\"const listed=await searchTools('echo');if(listed.length!==1||listed[0].name!=='echo')throw Error('discovery');const doc=await describeTool('echo');if(!doc.includes('echo(args:'))throw Error('declaration');store('persisted', await tools.echo({})); return load('persisted');\\\"}\"}]},{\"content\":\"done\"}]");
     defer mock.deinit(gpa);
     var result = try agent.run(gpa, std.testing.io, ".", mock.client(), &session, "run", config, null, null);
     defer result.deinit(gpa);

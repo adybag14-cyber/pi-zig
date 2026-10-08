@@ -1,0 +1,199 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "schema": true,
+      "type": "unknown",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: unknown): Promise<string>; };\n```"
+    },
+    {
+      "schema": false,
+      "type": "never",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: never): Promise<string>; };\n```"
+    },
+    {
+      "schema": {},
+      "type": "unknown",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: unknown): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "type": "string"
+      },
+      "type": "string",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: string): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "enum": [
+          "x",
+          "x",
+          3,
+          null
+        ]
+      },
+      "type": "\"x\" | 3 | null",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: \"x\" | 3 | null): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "type": "string | number",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: string | number): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "allOf": [
+          {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          {
+            "type": "object"
+          }
+        ]
+      },
+      "type": "(string | null) & { [key: string]: unknown; }",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: (string | null) & { [key: string]: unknown; }): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "type": "string | null",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: string | null): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        }
+      },
+      "type": "Array<number>",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: Array<number>): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "type": "array",
+        "prefixItems": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "type": "[string, boolean]",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: [string, boolean]): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "z": {
+            "type": "number"
+          },
+          "a": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "a"
+        ]
+      },
+      "type": "{ a: string; z?: number; }",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: { a: string; z?: number; }): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "string",
+            "description": "hello\nworld"
+          },
+          "with space": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "type": "{\n  \"with space\"?: Array<boolean>;\n  // hello\n  // world\n  x?: string;\n}",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: {\n  \"with space\"?: Array<boolean>;\n  // hello\n  // world\n  x?: string;\n}): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "$defs": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "$ref": "#/$defs/value"
+      },
+      "type": "string",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: string): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "$defs": {
+          "value": {
+            "$ref": "#/$defs/value"
+          }
+        },
+        "$ref": "#/$defs/value"
+      },
+      "type": "unknown",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: unknown): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "$ref": "https://invalid/schema"
+      },
+      "type": "unknown",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: unknown): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "number"
+        }
+      },
+      "type": "{ [key: string]: number; }",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: { [key: string]: number; }): Promise<string>; };\n```"
+    },
+    {
+      "schema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "type": "{}",
+      "sample": "Sample description\n\ncodemode tool declaration:\n```ts\ndeclare const tools: { sample_tool(args: {}): Promise<string>; };\n```"
+    }
+  ]
+}

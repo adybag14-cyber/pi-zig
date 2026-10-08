@@ -1,0 +1,92 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "server": "dev-radius",
+      "configuration": {
+        "description": "  Repository tools ﻿"
+      },
+      "initialized": {
+        "instructions": "  Track issues\ncarefully 　"
+      },
+      "tool": {
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "expected": {
+        "namespace": {
+          "name": "mcp__dev_radius",
+          "description": "Repository tools",
+          "instructions": "Track issues\ncarefully"
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "structuredContent": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              }
+            },
+            "isError": {
+              "type": "boolean"
+            },
+            "_meta": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      }
+    },
+    {
+      "server": "empty",
+      "configuration": {
+        "description": " "
+      },
+      "initialized": {},
+      "tool": {},
+      "expected": {
+        "namespace": {
+          "name": "mcp__empty"
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "isError": {
+              "type": "boolean"
+            },
+            "_meta": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "content"
+          ]
+        }
+      }
+    }
+  ]
+}

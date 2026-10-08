@@ -1570,6 +1570,7 @@ pub const Bindings = struct {
             const mode = raw.object.get("executionMode") orelse std.json.Value{ .string = "parallel" };
             try tool.put(allocator, "executionMode", if (mode == .string and std.mem.eql(u8, mode.string, "sequential")) mode else std.json.Value{ .string = "parallel" });
             try tool.put(allocator, "hasRenderCall", .{ .bool = try self.functionProperty(definition, "renderCall") });
+            for ([_][]const u8{ "namespace", "promptGuidelines", "outputSchema" }) |field| if (raw.object.get(field)) |value| try tool.put(allocator, field, value);
             try tool.put(allocator, "hasRenderResult", .{ .bool = try self.functionProperty(definition, "renderResult") });
             try tool.put(allocator, "hasPrepareArguments", .{ .bool = try self.functionProperty(definition, "prepareArguments") });
             const shell = raw.object.get("renderShell") orelse std.json.Value{ .string = "default" };

@@ -152,6 +152,7 @@ pub const ExtensionTool = struct {
     name: []const u8,
     description: []const u8,
     parameters_json: []const u8,
+    discovery_json: ?[]const u8 = null,
     execution_mode: ToolExecutionMode = .parallel,
     has_render_call: bool = false,
     has_render_result: bool = false,
@@ -165,6 +166,7 @@ pub const ExtensionTool = struct {
         gpa.free(self.name);
         gpa.free(self.description);
         gpa.free(self.parameters_json);
+        if (self.discovery_json) |value| gpa.free(value);
         self.* = undefined;
     }
 };
@@ -966,6 +968,11 @@ pub const Host = struct {
                     break :blk try stringifyValue(self.gpa, value);
                 } else try self.gpa.dupe(u8, "{\"type\":\"object\",\"properties\":{}}");
                 errdefer self.gpa.free(parameters_json);
+                var discovery_fields: std.json.ObjectMap = .empty;
+                defer discovery_fields.deinit(self.gpa);
+                for ([_][]const u8{ "namespace", "promptGuidelines", "outputSchema" }) |field| if (tool_value.object.get(field)) |value| try discovery_fields.put(self.gpa, field, value);
+                const discovery_json = if (discovery_fields.count() > 0) try stringifyValue(self.gpa, .{ .object = discovery_fields }) else null;
+                errdefer if (discovery_json) |value| self.gpa.free(value);
                 const execution_mode: ToolExecutionMode = if (tool_value.object.get("executionMode")) |mode| blk: {
                     if (mode != .string) return error.InvalidManifest;
                     if (std.mem.eql(u8, mode.string, "sequential")) break :blk .sequential;
@@ -991,6 +998,7 @@ pub const Host = struct {
                     .name = try self.gpa.dupe(u8, tool_name.string),
                     .description = try self.gpa.dupe(u8, description),
                     .parameters_json = parameters_json,
+                    .discovery_json = discovery_json,
                     .execution_mode = execution_mode,
                     .has_render_call = has_render_call,
                     .has_render_result = has_render_result,

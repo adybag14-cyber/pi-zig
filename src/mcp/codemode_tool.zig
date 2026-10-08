@@ -49,9 +49,14 @@ pub const Entry = struct {
     name: []const u8,
     description: []const u8,
     structured_result: bool = false,
+    parameters: Value = .null,
+    output_schema: ?Value = null,
+    namespace: ?@import("codemode_discovery.zig").Namespace = null,
+    prompt_guidelines: []const []const u8 = &.{},
 };
 pub const Invoke = *const fn (?*anyopaque, std.mem.Allocator, []const u8, []const u8, []const u8, ?*bool) anyerror!tools.ToolResult;
 pub const Options = struct {
+    enable_discovery: bool = false,
     context: ?*anyopaque,
     invoke: Invoke,
     entries: []const Entry,
@@ -106,13 +111,28 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, code: []const u8, options: Op
     defer gpa.free(calls);
     const descriptions = try gpa.alloc(sandbox.Tool, options.entries.len);
     defer gpa.free(descriptions);
+    var metadata_arena: std.heap.ArenaAllocator = .init(gpa);
+    defer metadata_arena.deinit();
     var sequence: std.atomic.Value(u64) = .init(0);
     for (options.entries, calls, descriptions) |entry, *call, *description| {
         call.* = .{ .options = &options, .entry = entry, .sequence = &sequence };
         description.* = .{ .name = entry.name, .description = entry.description, .context = call, .execute = Call.run, .execute_sequenced = Call.runSequenced, .error_marker = true };
+        if (options.enable_discovery) {
+            const a = metadata_arena.allocator();
+            var prose: std.ArrayList([]const u8) = .empty;
+            try prose.append(a, std.mem.trim(u8, entry.description, " \t\r\n"));
+            for (entry.prompt_guidelines) |guideline| if (std.mem.trim(u8, guideline, " \t\r\n").len > 0) try prose.append(a, try std.fmt.allocPrint(a, "- {s}", .{std.mem.trim(u8, guideline, " \t\r\n")}));
+            const text = if (prose.items.len == 1) prose.items[0] else try std.fmt.allocPrint(a, "{s}\n\n{s}", .{ prose.items[0], try std.mem.join(a, "\n", prose.items[1..]) });
+            const output = entry.output_schema orelse blk: {
+                var value: Value = .{ .object = .empty };
+                try value.object.put(a, "type", .{ .string = "string" });
+                break :blk value;
+            };
+            description.discovery_metadata = .{ .name = entry.name, .description = entry.description, .sample = try @import("codemode_declarations.zig").sample(a, entry.name, text, entry.parameters, output), .parameters = entry.parameters, .namespace = entry.namespace };
+        }
     }
     const started = std.Io.Clock.awake.now(io).toMilliseconds();
-    var result = try sandbox.execute(gpa, io, descriptions, parsed.code, .{ .abort_flag = abort_flag, .timeout_ms = parsed.timeout_ms orelse 300_000, .store = options.store });
+    var result = try sandbox.execute(gpa, io, descriptions, parsed.code, .{ .enable_discovery = options.enable_discovery, .abort_flag = abort_flag, .timeout_ms = parsed.timeout_ms orelse 300_000, .store = options.store });
     defer result.deinit();
     const ok = result.value.object.get("ok").?.bool;
     if (ok) if (options.append_store) |append| {

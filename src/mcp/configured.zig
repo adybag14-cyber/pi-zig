@@ -23,7 +23,7 @@ const oauth_signin = @import("oauth_signin.zig");
 const oauth_challenge = @import("oauth_challenge.zig");
 
 pub const Options = struct { agent_dir: []const u8, cwd: []const u8, project_trusted: bool = false, environ: *const std.process.Environ.Map, reserved_names: []const []const u8 = &.{}, output_root: ?[]const u8 = null, max_servers: usize = 64, provider_token_context: ?*anyopaque = null, provider_token: ?*const fn (?*anyopaque, std.mem.Allocator, []const u8) anyerror!?[]u8 = null, management_all: bool = false };
-pub const Descriptor = struct { server: *Server, raw_name: []const u8, name: []const u8, schema: Value, exposure: config.Exposure = .direct, loaded: bool = false };
+pub const Descriptor = struct { server: *Server, raw_name: []const u8, name: []const u8, schema: Value, codemode_metadata: ?Value = null, exposure: config.Exposure = .direct, loaded: bool = false };
 pub const Server = struct {
     owner: *Service,
     name: []const u8,
@@ -341,7 +341,8 @@ pub const Service = struct {
             defer self.gpa.free(name);
             if (self.taken(name)) return error.DuplicateMcpToolName;
             const schema = try projection.schema(a, server.name, name, item);
-            try self.descriptors.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, raw_name), .name = try a.dupe(u8, name), .schema = schema, .exposure = exposure });
+            const metadata = try projection.codemodeMetadata(a, server.name, server.config, initialized, item);
+            try self.descriptors.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, raw_name), .name = try a.dupe(u8, name), .schema = schema, .codemode_metadata = metadata, .exposure = exposure });
         }
     }
     fn taken(self: *Service, name: []const u8) bool {
