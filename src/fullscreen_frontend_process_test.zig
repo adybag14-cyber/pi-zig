@@ -413,6 +413,42 @@ test "native MouseRegion real terminal pointer ACK precedes keyboard capture cro
     }
 }
 
+test "Source6fb public Input real native modal preserves UTF16 edits paste undo cursor cells and restoration" {
+    if (!pty.supported()) return error.SkipZigTest;
+    for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
+        var fixture = try Fixture.init(mode);
+        defer fixture.deinit();
+        const settings = try std.fmt.allocPrint(std.testing.allocator, "{{\"tuiMode\":\"{s}\",\"showHardwareCursor\":false,\"quietStartup\":true,\"enableInstallTelemetry\":false}}", .{mode});
+        defer std.testing.allocator.free(settings);
+        try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "agent/settings.json", .data = settings });
+        const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+        defer errors.close(std.testing.io);
+        const source =
+            \\import{Input}from'pi-tui';export default pi=>pi.registerCommand('public-input',{async handler(_,ctx){const value=await ctx.ui.custom((tui,theme,keys,done)=>{const input=new Input({prompt:'NATIVE_INPUT:',placeholder:'PLACEHOLDER'});input.setValue('界😀');input.onSubmit=text=>done(text);input.onEscape=()=>done('CANCELLED');return input},{overlay:true,overlayOptions:{width:40,height:3,row:5,col:7}});return{message:'PUBLIC_INPUT_DONE:'+JSON.stringify(value)}}})
+        ;
+        var child = try fixture.spawnExtension(errors, source);
+        defer child.deinit();
+        var observed = try Observer.init();
+        defer observed.deinit();
+        try observed.waitInitialStartup(&child, ">");
+        try observed.send(&child, "/public-input\r", "NATIVE_INPUT:界😀");
+        var reverse = false;
+        for (observed.screen.cells()) |cell| if (cell.scalar == '界') { reverse = reverse or cell.reverse; };
+        try std.testing.expect(reverse and !observed.screen.cursor_visible);
+        try std.testing.expect(std.mem.indexOf(u8, child.output.items, "\x1b_pi:") == null);
+        try observed.send(&child, "a", "NATIVE_INPUT:a界😀");
+        try observed.send(&child, "\x1b[Db", "NATIVE_INPUT:ba界😀");
+        try observed.send(&child, "\x05\x1b[200~ \tZ\r\n\x1b[201~", "ba界😀     Z");
+        try observed.send(&child, "q", "ba界😀     Zq");
+        try observed.send(&child, "\x1f", "ba界😀     Z");
+        try observed.send(&child, "\r", "PUBLIC_INPUT_DONE:\"ba界😀     Z\"");
+        try observed.send(&child, "/public-input\r", "NATIVE_INPUT:界😀");
+        try observed.send(&child, "\x1b", "PUBLIC_INPUT_DONE:\"CANCELLED\"");
+        try observed.send(&child, "after-public-input", "> after-public-input");
+        try cleanExit(&fixture, &child, &observed);
+    }
+}
+
 test "native Source1ced fake cursor paints focused and unfocused real cells with hardware disabled" {
     if (!pty.supported()) return error.SkipZigTest;
     for ([_][]const u8{ "regular", "fullscreen" }) |mode| {

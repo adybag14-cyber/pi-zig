@@ -386,7 +386,7 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
     return result;
 }
 
-const Helper = enum(c_int) { visibleWidth, matchesKey, parseKey, isKeyRelease, isKeyRepeat, decodePrintableKey, setKittyProtocolActive, isKittyProtocolActive, truncateToWidth, renderFakeCursor };
+const Helper = enum(c_int) { visibleWidth, matchesKey, parseKey, isKeyRelease, isKeyRepeat, decodePrintableKey, decodeKittyPrintable, setKittyProtocolActive, isKittyProtocolActive, truncateToWidth, renderFakeCursor };
 fn helperCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return helper(engine, @enumFromInt(magic), if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
@@ -405,6 +405,12 @@ fn helper(engine: *engine_mod.Engine, method: Helper, args: []c.JSValue) !c.JSVa
         return c.pi_js_undefined();
     }
     if (args.len == 0 or !c.JS_IsString(args[0])) return error.InvalidNativeTuiText;
+    if (method == .visibleWidth) {
+        const units = try @import("native_utf16.zig").unitsAlloc(engine, args[0]);
+        defer engine.gpa.free(units);
+        const width = try @import("../tui/utf16_terminal.zig").visibleWidth(engine.gpa, units);
+        return engine.checked(c.JS_NewInt64(engine.context, @intCast(width)));
+    }
     const text = try engine.toString(args[0]);
     defer engine.gpa.free(text);
     return switch (method) {
@@ -417,7 +423,6 @@ fn helper(engine: *engine_mod.Engine, method: Helper, args: []c.JSValue) !c.JSVa
             defer engine.gpa.free(clipped);
             break :blk try engine.checked(c.JS_NewStringLen(engine.context, clipped.ptr, clipped.len));
         },
-        .visibleWidth => engine.checked(c.JS_NewInt64(engine.context, @intCast(terminal_text.visibleWidth(text)))),
         .matchesKey => blk: {
             if (args.len < 2 or !c.JS_IsString(args[1])) return error.InvalidNativeTuiKey;
             const name = try engine.toString(args[1]);
@@ -432,6 +437,7 @@ fn helper(engine: *engine_mod.Engine, method: Helper, args: []c.JSValue) !c.JSVa
             defer engine.gpa.free(name);
             break :blk try engine.checked(c.JS_NewStringLen(engine.context, name.ptr, name.len));
         },
+        .decodeKittyPrintable => try @import("native_input.zig").decodeKittyPrintable(engine, text),
         .decodePrintableKey => blk: {
             const decoded = try keys.decodePrintableKey(engine.gpa, text) orelse break :blk c.pi_js_undefined();
             defer engine.gpa.free(decoded);
@@ -465,12 +471,18 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try @import("native_color.zig").install(engine, exports);
     try @import("native_mouse.zig").install(engine, exports);
     try @import("native_keybindings.zig").install(engine, exports);
+    try @import("native_input.zig").install(engine, exports);
     try define(engine, exports, "CURSOR_MARKER", try engine.checked(c.JS_NewString(engine.context, @import("../tui/cursor_markers.zig").cursor)));
     const array_is_array = try components.arrayPredicate(engine);
     defer engine.freeValue(array_is_array);
     inline for (std.meta.fields(Helper)) |field| {
         const name: [:0]const u8 = field.name;
-        try define(engine, exports, name.ptr, try engine.checked(c.pi_js_function_magic(engine.context, helperCall, name.ptr, if (field.value == @intFromEnum(Helper.renderFakeCursor)) 1 else 2, @intCast(field.value))));
+        const arity: c_int = switch (@as(Helper, @enumFromInt(field.value))) {
+            .matchesKey, .truncateToWidth => 2,
+            .isKittyProtocolActive => 0,
+            else => 1,
+        };
+        try define(engine, exports, name.ptr, try engine.checked(c.pi_js_function_magic(engine.context, helperCall, name.ptr, arity, @intCast(field.value))));
     }
     const key = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(key);

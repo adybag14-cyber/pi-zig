@@ -889,6 +889,24 @@ pub fn build(b: *std.Build) void {
     const sdk_session_manager_run = b.addRunArtifact(sdk_session_manager_tests);
     b.step("test-sdk-session-manager", "Exercise Source session manager identities projections and allocation ownership").dependOn(&sdk_session_manager_run.step);
     test_step.dependOn(&sdk_session_manager_run.step);
+    const native_input_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_input_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "Source6fb public Input", "native JS UTF16" },
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, native_input_tests.root_module, quickjs, sqlite_lib_dir);
+    const run_native_input_tests = b.addRunArtifact(native_input_tests);
+    const unicode_width_generator = b.addExecutable(.{ .name = "unicode-width-generator", .root_module = b.createModule(.{ .root_source_file = b.path("tools/unicode_width.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const check_unicode_width = b.addRunArtifact(unicode_width_generator);
+    check_unicode_width.addArg("--check");
+    check_unicode_width.setCwd(b.path("."));
+    check_unicode_width.has_side_effects = true;
+    b.step("check-unicode-width", "Verify pinned Source Unicode17 width capture and generated native width tables").dependOn(&check_unicode_width.step);
+    const native_input_step = b.step("test-native-input", "Replay Source public Input UTF16 values callbacks and rendering");
+    native_input_step.dependOn(&run_native_input_tests.step);
+    native_input_step.dependOn(&check_unicode_width.step);
+    test_step.dependOn(&run_native_input_tests.step);
+    test_step.dependOn(&check_unicode_width.step);
     const run_binding_tests = b.addRunArtifact(binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
     const cursor_boundary_tests = b.addTest(.{
