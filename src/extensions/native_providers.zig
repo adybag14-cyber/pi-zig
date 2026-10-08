@@ -207,6 +207,14 @@ pub const Providers = struct {
         };
         const encoded = try self.walk(source, c.pi_js_undefined(), name, "", generation, &active, &pending);
         errdefer engine.freeValue(encoded);
+        // Native providers are registered by object identity. Their root
+        // methods receive that object as `this`; named configuration methods
+        // continue to receive the merged configuration snapshot.
+        if (replace) for (pending.items) |*entry| {
+            if (std.mem.indexOfScalar(u8, entry.callback.path, '.') != null) continue;
+            engine.freeValue(entry.callback.receiver);
+            entry.callback.receiver = c.JS_DupValue(engine.context, config);
+        };
         const json = try engine.stringify(encoded);
         defer engine.gpa.free(json);
         // Publication update closures mutate the extension's original object.
@@ -302,6 +310,30 @@ pub const Providers = struct {
         const pending = try self.invokeUnsettled(id, arguments);
         defer self.engine.freeValue(pending);
         return self.engine.awaitValue(pending);
+    }
+    /// Owner-thread stack lease. Copy roots before a getter/callback can mutate
+    /// registrations; never retain a hash-map slot across extension execution.
+    pub const Invocation = struct {
+        engine: *engine_mod.Engine,
+        provider: []u8,
+        path: []u8,
+        generation: u64,
+        function: c.JSValue,
+        receiver: c.JSValue,
+        pub fn deinit(self: *Invocation) void {
+            self.engine.gpa.free(self.provider);
+            self.engine.gpa.free(self.path);
+            self.engine.freeValue(self.function);
+            self.engine.freeValue(self.receiver);
+        }
+    };
+    pub fn captureInvocation(self: *Providers, id: []const u8, provider: []const u8, generation: u64) !Invocation {
+        try self.validate(id, provider, generation);
+        const entry = self.callbacks.get(id) orelse return error.UnknownNativeProviderCallback;
+        const owned_provider = try self.engine.gpa.dupe(u8, entry.provider);
+        errdefer self.engine.gpa.free(owned_provider);
+        const owned_path = try self.engine.gpa.dupe(u8, entry.path);
+        return .{ .engine = self.engine, .provider = owned_provider, .path = owned_path, .generation = entry.generation, .function = c.JS_DupValue(self.engine.context, entry.function), .receiver = c.JS_DupValue(self.engine.context, entry.receiver) };
     }
 
     pub fn currentModelsUnsettled(self: *Providers, provider: []const u8, require_getter: bool) !c.JSValue {

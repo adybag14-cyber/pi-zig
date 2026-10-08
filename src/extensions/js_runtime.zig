@@ -1680,6 +1680,22 @@ pub const Runtime = struct {
     ) ![]u8 {
         return self.invokeProviderMethodWithTimeout(callback_id, args_json, append_signal, abort_flag, null);
     }
+    pub fn invokeProviderTypedOperation(self: *Runtime, callback_id: []const u8, provider: []const u8, generation: u64, operation: @import("native_provider_operations.zig").Operation, model_json: []const u8, context_json: []const u8, options_json: []const u8, auth_rewrites_model: bool, abort_flag: ?*bool) ![]u8 {
+        if (self.backend != .native or callback_id.len == 0 or provider.len == 0 or generation == 0 or generation > 9_007_199_254_740_991) return error.InvalidNativeTypedProviderRequest;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        const model = try std.json.parseFromSliceLeaky(std.json.Value, a, model_json, .{});
+        const context = try std.json.parseFromSliceLeaky(std.json.Value, a, context_json, .{});
+        const options = try std.json.parseFromSliceLeaky(std.json.Value, a, options_json, .{});
+        if (model != .object or context != .object or options != .object) return error.InvalidNativeTypedProviderRequest;
+        const request = try std.json.Stringify.valueAlloc(a, .{ .kind = "provider_typed_operation", .version = 1, .ownerGeneration = try std.fmt.allocPrint(a, "{d}", .{self.owner_generation}), .callbackId = callback_id, .providerName = provider, .callbackGeneration = generation, .operation = @tagName(operation), .model = model, .modelContext = context, .options = options, .authRewritesModel = auth_rewrites_model }, .{});
+        // This operation is single-use; an uncertain provider response is not
+        // replayed on a different callback or worker generation.
+        if (self.shared_owner) |owner| return owner.invokeGroupRequest(self.extension_id, request, abort_flag);
+        if (self.native_group) return self.invokeGroupRequest(self.extension_id, request, abort_flag);
+        return error.NativeTypedProviderRequiresGroupOwner;
+    }
 
     pub fn invokeProviderMethodWithTimeout(
         self: *Runtime,
@@ -2379,7 +2395,7 @@ pub const Runtime = struct {
         if (parsed.value != .object) return error.InvalidNativeExtensionRequest;
         const kind = parsed.value.object.get("kind") orelse return error.InvalidNativeExtensionRequest;
         if (kind != .string) return error.InvalidNativeExtensionRequest;
-        for ([_][]const u8{ "hook", "tool", "command", "group_add_source", "group_remove_source", "sdk_availability_snapshot", "sdk_model_bridge", "provider_method", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "render_message", "render_entry", "transform_markdown", "render_tool_call", "render_tool_result", "prepare_tool_arguments", "renderer_retire", "shutdown" }) |supported| {
+        for ([_][]const u8{ "hook", "tool", "command", "group_add_source", "group_remove_source", "sdk_availability_snapshot", "sdk_model_bridge", "provider_method", "provider_typed_operation", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "render_message", "render_entry", "transform_markdown", "render_tool_call", "render_tool_result", "prepare_tool_arguments", "renderer_retire", "shutdown" }) |supported| {
             if (std.mem.eql(u8, supported, kind.string)) return;
         }
         // Keep unsupported custom-component and renderer operations out of the

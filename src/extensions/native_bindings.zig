@@ -2037,6 +2037,28 @@ pub const Bindings = struct {
         try self.mergeActions(result);
         return self.engine.stringify(result);
     }
+    /// Main's typed provider broker admits the exact descriptor generation and
+    /// builds its signal/model roots here, never from a context JSON snapshot.
+    pub fn invokeProviderTypedOperation(self: *Bindings, id: []const u8, provider: []const u8, generation: u64, operation: @import("native_provider_operations.zig").Operation, model_json: []const u8, context_json: []const u8, options_json: []const u8, auth_rewrites_model: bool, aborted: bool) ![]u8 {
+        try self.beginActions();
+        defer self.finishInvocation();
+        const model = try self.parseJson(model_json, "native-typed-provider-model");
+        defer self.engine.freeValue(model);
+        const context = try self.parseJson(context_json, "native-typed-provider-context");
+        defer self.engine.freeValue(context);
+        const options = try self.parseJson(options_json, "native-typed-provider-options");
+        defer self.engine.freeValue(options);
+        const signal = if (self.invocation_signal) |value| c.JS_DupValue(self.engine.context, value) else try abort_signal.create(self.engine);
+        defer self.engine.freeValue(signal);
+        if (aborted) try abort_signal.abort(self.engine, signal, c.pi_js_undefined());
+        const value = try @import("native_provider_operations.zig").invoke(self.engine, &self.providers, id, provider, generation, operation, model, context, options, signal, auth_rewrites_model);
+        defer self.engine.freeValue(value);
+        const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
+        defer self.engine.freeValue(result);
+        try self.actionProperty(result, "value", c.JS_DupValue(self.engine.context, value));
+        try self.mergeActions(result);
+        return self.engine.stringify(result);
+    }
 
     pub fn invokeTool(self: *Bindings, name: []const u8, call_id: []const u8, args_json: []const u8) ![]u8 {
         try self.beginActions();
@@ -2690,6 +2712,7 @@ test "native provider getters preserve exceptions and nested action order" {
 }
 
 test {
+    _ = @import("native_provider_operations.zig");
     _ = @import("abort_signal.zig");
     _ = @import("timers.zig");
     _ = @import("text_decoder.zig");

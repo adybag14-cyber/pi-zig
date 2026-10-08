@@ -13,6 +13,35 @@ const renderer_protocol = @import("extensions/renderer_protocol.zig");
 
 const editor_protocol = @import("extensions/editor_protocol.zig");
 
+test "native runtime typed provider owner exact model receiver signal generation without Node" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/typed-provider-owner-6fb2e78.txt") ++ "\nexport default pi=>pi.registerProvider(provider);\n");
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    const extension = host.extensions.items[0];
+    const runtime = extension.script_runtime.?;
+    var config = try std.json.parseFromSlice(std.json.Value, gpa, extension.providers[0].config_json, .{});
+    defer config.deinit();
+    var actual: std.json.Array = .init(gpa);
+    defer actual.deinit();
+    var retained: [3]?std.json.Parsed(std.json.Value) = .{null} ** 3;
+    defer for (&retained) |*value| if (value.*) |*parsed| parsed.deinit();
+    for ([_]@import("extensions/native_provider_operations.zig").Operation{ .classify, .generate_images, .classify }, 0..) |operation, index| {
+        const path = if (operation == .classify) "classify" else "generateImages";
+        const descriptor = try @import("extensions/provider_method_ref.zig").ProviderMethodRef.fromJson(config.value.object.get(path).?);
+        const result = try runtime.invokeProviderTypedOperation(descriptor.callback_id, "owned", descriptor.generation, operation, if (index == 2) "{\"id\":\"same\",\"baseUrl\":\"https://auth.invalid\"}" else "{\"id\":\"same\",\"baseUrl\":\"https://fixture.invalid\"}", if (operation == .classify) "{\"state\":{},\"questions\":{}}" else "{\"input\":[]}", if (index == 2) "{\"apiKey\":\"fixture-key\",\"headers\":{\"X-Auth\":\"one\"},\"env\":{\"AUTH_ENV\":\"yes\",\"REWRITE\":\"yes\"}}" else "{\"apiKey\":\"fixture-key\",\"headers\":{\"X-Auth\":\"one\"},\"env\":{\"AUTH_ENV\":\"yes\"}}", index == 2, null);
+        defer gpa.free(result);
+        retained[index] = try std.json.parseFromSlice(std.json.Value, gpa, result, .{});
+        try actual.append(retained[index].?.value.object.get("value").?);
+        try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, runtime.invokeProviderTypedOperation(descriptor.callback_id, "owned", descriptor.generation + 1, operation, "{}", "{}", "{}", false, null));
+    }
+    const actual_json = try std.json.Stringify.valueAlloc(gpa, actual.items, .{});
+    defer gpa.free(actual_json);
+    try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("extensions/fixtures/typed-provider-owner-6fb2e78.json"), "\r\n"), actual_json);
+}
+
 test "native runtime admitted keybindings and strict Theme files are installed before factory evaluation without Node" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;

@@ -152,7 +152,14 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, code: []const u8, options: Op
         }
     }
     const started = std.Io.Clock.awake.now(io).toMilliseconds();
-    var result = try sandbox.execute(gpa, io, descriptions, parsed.code, .{ .model_runtime = options.model_runtime, .model_call_id = options.call_id, .progress_context = &updates, .progress = if (options.progress != null) Updates.emit else null, .enable_discovery = options.enable_discovery, .abort_flag = abort_flag, .timeout_ms = parsed.timeout_ms orelse 300_000, .store = options.store });
+    var model_runtime = options.model_runtime;
+    if (model_runtime) |runtime| if (runtime.acquire) |acquire| {
+        model_runtime = try acquire(runtime.context, gpa);
+    };
+    defer if (model_runtime) |runtime| if (runtime.release) |release| {
+        release(runtime.context, gpa);
+    };
+    var result = try sandbox.execute(gpa, io, descriptions, parsed.code, .{ .model_runtime = model_runtime, .model_call_id = options.call_id, .progress_context = &updates, .progress = if (options.progress != null) Updates.emit else null, .enable_discovery = options.enable_discovery, .abort_flag = abort_flag, .timeout_ms = parsed.timeout_ms orelse 300_000, .store = options.store });
     defer result.deinit();
     const ok = result.value.object.get("ok").?.bool;
     if (ok) if (options.append_store) |append| {
@@ -279,6 +286,47 @@ fn toolUsage(value: Value) !tools.ToolUsage {
         @field(result.cost, field[1]) = try json.asNumber(number);
     };
     return result;
+}
+test "native codemode typed owner program acquires once releases success failure and retains private context" {
+    const Models = @import("codemode_models.zig");
+    const State = struct {
+        acquired: usize = 0,
+        released: usize = 0,
+        calls: usize = 0,
+        const Self = @This();
+        const Lease = struct { state: *Self };
+        fn acquire(raw: ?*anyopaque, gpa: std.mem.Allocator) !Models.Runtime {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            const lease = try gpa.create(Lease);
+            lease.* = .{ .state = self };
+            self.acquired += 1;
+            return .{ .context = lease, .invoke = invoke, .release = release };
+        }
+        fn release(raw: ?*anyopaque, gpa: std.mem.Allocator) void {
+            const lease: *Lease = @ptrCast(@alignCast(raw.?));
+            lease.state.released += 1;
+            gpa.destroy(lease);
+        }
+        fn invoke(raw: ?*anyopaque, gpa: std.mem.Allocator, _: Models.Operation, _: Value, _: ?*bool) !json.Owned {
+            const lease: *Lease = @ptrCast(@alignCast(raw.?));
+            lease.state.calls += 1;
+            return json.Owned.parse(gpa, "[]");
+        }
+        fn forbidden(_: ?*anyopaque, _: std.mem.Allocator, _: Models.Operation, _: Value, _: ?*bool) !json.Owned {
+            return error.UnadmittedOwnerUsed;
+        }
+        fn tool(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8, _: []const u8, _: ?*bool) !tools.ToolResult {
+            return error.UnexpectedToolCall;
+        }
+    };
+    var state: State = .{};
+    for ([_][]const u8{ "await models.getModelsOfType('image');await models.getModelsOfType('classifier');return 1;", "await models.getModelsOfType('image');throw Error('fixture failure');" }) |code| {
+        var result = try execute(std.testing.allocator, std.testing.io, code, .{ .context = null, .invoke = State.tool, .entries = &.{}, .call_id = "lease", .model_runtime = .{ .context = &state, .invoke = State.forbidden, .acquire = State.acquire } }, null);
+        defer result.deinit(std.testing.allocator);
+        try std.testing.expectEqual(state.acquired, state.released);
+    }
+    try std.testing.expectEqual(@as(usize, 2), state.acquired);
+    try std.testing.expectEqual(@as(usize, 3), state.calls);
 }
 fn usageCounter(value: Value) !u64 {
     const number = try json.asNumber(value);

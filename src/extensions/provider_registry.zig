@@ -13,6 +13,7 @@ const runtime_config = @import("../coding_agent/runtime_config.zig");
 const live_state = @import("../coding_agent/live_state.zig");
 const js_runtime = @import("js_runtime.zig");
 const provider_method_ref = @import("../provider_method_ref.zig");
+const typed_catalog = @import("provider_typed_catalog.zig");
 
 const CallbackOwner = struct {
     callback_id: []u8,
@@ -44,6 +45,7 @@ const Registration = struct {
     name: []u8,
     config_json: []u8,
     models_file: models_file_mod.ModelsFile,
+    typed: typed_catalog.Catalog,
     replaces_models: bool,
     resolved: []runtime_config.ResolvedRuntime,
     runtime_configs: []live_state.RuntimeProviderConfig,
@@ -55,6 +57,7 @@ const Registration = struct {
         environ: *const std.process.Environ.Map,
         agent_dir: ?[]const u8,
         baseline_catalog: []const providers.ModelInfo,
+        baseline_all_catalog: []const providers.ModelInfo,
         name: []const u8,
         incoming_json: []const u8,
         config_json: []const u8,
@@ -87,7 +90,11 @@ const Registration = struct {
             if (callback_owners.len > 0) gpa.free(callback_owners);
         }
 
-        const document = try providerDocument(gpa, name, config.value);
+        var typed = try typed_catalog.Catalog.init(gpa, name, config.value, baseline_all_catalog);
+        errdefer typed.deinit();
+        var document_arena: std.heap.ArenaAllocator = .init(gpa);
+        defer document_arena.deinit();
+        const document = try providerDocument(gpa, name, try typed_catalog.chatConfig(document_arena.allocator(), config.value));
         defer gpa.free(document);
         var models_file = try models_file_mod.parseFromSlice(gpa, document);
         errdefer models_file.deinit();
@@ -135,6 +142,7 @@ const Registration = struct {
             .name = owned_name,
             .config_json = try gpa.dupe(u8, config_json),
             .models_file = models_file,
+            .typed = typed,
             .replaces_models = replaces_models,
             .resolved = resolved,
             .runtime_configs = configs,
@@ -149,6 +157,7 @@ const Registration = struct {
         for (self.callback_owners) |*owner| owner.deinit(self.gpa);
         if (self.callback_owners.len > 0) self.gpa.free(self.callback_owners);
         self.models_file.deinit();
+        self.typed.deinit();
         self.gpa.free(self.name);
         self.gpa.free(self.config_json);
         self.* = undefined;
@@ -168,9 +177,11 @@ pub const Registry = struct {
     environ: *const std.process.Environ.Map,
     agent_dir: ?[]const u8,
     baseline_catalog: []const providers.ModelInfo,
+    baseline_all_catalog: []const providers.ModelInfo,
     baseline_runtimes: []const live_state.RuntimeProviderConfig,
     registrations: std.ArrayList(Registration) = .empty,
     catalog_snapshot: []providers.ModelInfo = &.{},
+    all_catalog_snapshot: []providers.ModelInfo = &.{},
     runtime_snapshot: []live_state.RuntimeProviderConfig = &.{},
     owns_snapshots: bool = false,
 
@@ -188,10 +199,21 @@ pub const Registry = struct {
             .environ = environ,
             .agent_dir = agent_dir,
             .baseline_catalog = baseline_catalog,
+            .baseline_all_catalog = baseline_catalog,
             .baseline_runtimes = baseline_runtimes,
             .catalog_snapshot = @constCast(baseline_catalog),
+            .all_catalog_snapshot = @constCast(baseline_catalog),
             .runtime_snapshot = @constCast(baseline_runtimes),
         };
+    }
+
+    /// Both catalogs come from the same actual CLI configuration and dynamic
+    /// provider snapshot. No SDK runtime or arbitrary latest registry is used.
+    pub fn initAll(gpa: std.mem.Allocator, io: Io, environ: *const std.process.Environ.Map, agent_dir: ?[]const u8, baseline_catalog: []const providers.ModelInfo, baseline_all_catalog: []const providers.ModelInfo, baseline_runtimes: []const live_state.RuntimeProviderConfig) Registry {
+        var result = init(gpa, io, environ, agent_dir, baseline_catalog, baseline_runtimes);
+        result.baseline_all_catalog = baseline_all_catalog;
+        result.all_catalog_snapshot = @constCast(baseline_all_catalog);
+        return result;
     }
 
     pub fn deinit(self: *Registry) void {
@@ -200,6 +222,7 @@ pub const Registry = struct {
         }
         if (self.owns_snapshots) {
             if (self.catalog_snapshot.len > 0) self.gpa.free(self.catalog_snapshot);
+            if (self.all_catalog_snapshot.len > 0) self.gpa.free(self.all_catalog_snapshot);
             if (self.runtime_snapshot.len > 0) self.gpa.free(self.runtime_snapshot);
         }
         for (self.registrations.items) |*registration| registration.deinit();
@@ -209,6 +232,9 @@ pub const Registry = struct {
 
     pub fn catalog(self: *const Registry) []const providers.ModelInfo {
         return self.catalog_snapshot;
+    }
+    pub fn allCatalog(self: *const Registry) []const providers.ModelInfo {
+        return self.all_catalog_snapshot;
     }
 
     pub fn runtimes(self: *const Registry) []const live_state.RuntimeProviderConfig {
@@ -257,6 +283,7 @@ pub const Registry = struct {
             self.environ,
             self.agent_dir,
             self.baseline_catalog,
+            self.baseline_all_catalog,
             name,
             config_json,
             effective_json,
@@ -583,6 +610,7 @@ pub const Registry = struct {
             self.environ,
             self.agent_dir,
             self.baseline_catalog,
+            self.baseline_all_catalog,
             name,
             patch.written(),
             effective,
@@ -741,9 +769,11 @@ pub const Registry = struct {
         if (self.registrations.items.len == 0) {
             if (self.owns_snapshots) {
                 if (self.catalog_snapshot.len > 0) self.gpa.free(self.catalog_snapshot);
+                if (self.all_catalog_snapshot.len > 0) self.gpa.free(self.all_catalog_snapshot);
                 if (self.runtime_snapshot.len > 0) self.gpa.free(self.runtime_snapshot);
             }
             self.catalog_snapshot = @constCast(self.baseline_catalog);
+            self.all_catalog_snapshot = @constCast(self.baseline_all_catalog);
             self.runtime_snapshot = @constCast(self.baseline_runtimes);
             self.owns_snapshots = false;
             return;
@@ -761,6 +791,21 @@ pub const Registry = struct {
         }
 
         var runtime_list: std.ArrayList(live_state.RuntimeProviderConfig) = .empty;
+        var all_models: std.ArrayList(providers.ModelInfo) = .empty;
+        errdefer all_models.deinit(self.gpa);
+        for (self.baseline_all_catalog) |model| {
+            const index = self.findIndex(model.providerName());
+            if (index != null and self.registrations.items[index.?].replaces_models) continue;
+            var effective = model;
+            if (index) |at| if (self.registrations.items[at].typed.base_url) |base| {
+                effective.base_url = base;
+            };
+            try all_models.append(self.gpa, effective);
+        }
+        for (self.registrations.items) |registration| if (registration.replaces_models) {
+            try all_models.appendSlice(self.gpa, registration.models_file.model_infos);
+            try all_models.appendSlice(self.gpa, registration.typed.models);
+        };
         errdefer runtime_list.deinit(self.gpa);
         for (self.baseline_runtimes) |runtime| {
             if (!self.providerRegistered(runtime.id)) try runtime_list.append(self.gpa, runtime);
@@ -771,12 +816,16 @@ pub const Registry = struct {
         errdefer if (next_models.len > 0) self.gpa.free(next_models);
         const next_runtimes = try runtime_list.toOwnedSlice(self.gpa);
         errdefer if (next_runtimes.len > 0) self.gpa.free(next_runtimes);
+        const next_all_models = try all_models.toOwnedSlice(self.gpa);
+        errdefer if (next_all_models.len > 0) self.gpa.free(next_all_models);
 
         if (self.owns_snapshots) {
             if (self.catalog_snapshot.len > 0) self.gpa.free(self.catalog_snapshot);
+            if (self.all_catalog_snapshot.len > 0) self.gpa.free(self.all_catalog_snapshot);
             if (self.runtime_snapshot.len > 0) self.gpa.free(self.runtime_snapshot);
         }
         self.catalog_snapshot = next_models;
+        self.all_catalog_snapshot = next_all_models;
         self.runtime_snapshot = next_runtimes;
         self.owns_snapshots = true;
     }
