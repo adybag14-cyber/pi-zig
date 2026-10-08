@@ -9,6 +9,8 @@ src/ai/catalog_source.json text eol=lf
 vendor/** -text
 # Preserve pinned upstream source bytes; vendor hashes govern these files.
 vendor/** -whitespace
+# Official Unicode data remains byte-identical to the pinned input hashes.
+src/tui/unicode17/*.txt -whitespace
 src/extensions/*.c text eol=lf
 src/extensions/*.h text eol=lf
 src/extensions/fixtures/*.input.json whitespace=cr-at-eol

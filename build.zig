@@ -695,6 +695,19 @@ pub fn build(b: *std.Build) void {
     const keybindings_manager_run = b.addRunArtifact(keybindings_manager_tests);
     b.step("test-keybindings-manager", "Replay Source public keybinding manager and admitted runtime context").dependOn(&keybindings_manager_run.step);
     test_step.dependOn(&keybindings_manager_run.step);
+    const utf16_input_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/utf16_input_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const utf16_input_run = b.addRunArtifact(utf16_input_tests);
+    const unicode_generator = b.addExecutable(.{ .name = "unicode-graphemes-generator", .root_module = b.createModule(.{ .root_source_file = b.path("tools/unicode_graphemes.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const unicode_check = b.addRunArtifact(unicode_generator);
+    unicode_check.addArg("--check");
+    unicode_check.setCwd(b.path("."));
+    unicode_check.has_side_effects = true;
+    b.step("check-unicode-graphemes", "Verify pinned Unicode17 inputs and generated tables").dependOn(&unicode_check.step);
+    const utf16_step = b.step("test-tui-utf16-input", "Replay Source UTF16 input state and official grapheme conformance");
+    utf16_step.dependOn(&utf16_input_run.step);
+    utf16_step.dependOn(&unicode_check.step);
+    test_step.dependOn(&utf16_input_run.step);
+    test_step.dependOn(&unicode_check.step);
     test_step.dependOn(&run_nested_tests.step);
     const oauth_lock_fixture = b.addExecutable(.{
         .name = "pi-mcp-oauth-lock-fixture",
