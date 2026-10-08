@@ -9,5 +9,6 @@ JSValue pi_js_bool(JSContext *context, int value);
 JSValue pi_js_int32(JSContext *context, int32_t value);
 JSModuleDef *pi_js_module(JSValue value);
 void *pi_js_object_identity(JSValue value);
+JSValue pi_js_module_value(JSContext *context, JSModuleDef *module);
 JSValue pi_js_function_magic(JSContext *context, JSCFunctionMagic *function, const char *name, int length, int magic);
 #endif

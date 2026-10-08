@@ -1150,3 +1150,48 @@ test "native durable VM executable builtin document predicates and initial forks
     defer std.testing.allocator.free(text);
     try std.testing.expectEqualStrings("{\"definitions\":[{\"kind\":\"pi.live\",\"version\":1,\"scope\":\"conversation\",\"history\":\"latest\",\"fork\":\"initial\"},{\"kind\":\"pi.inbox\",\"version\":1,\"scope\":\"conversation\",\"history\":\"latest\",\"fork\":\"initial\"},{\"kind\":\"pi.usage\",\"version\":1,\"scope\":\"conversation\",\"history\":\"latest\",\"fork\":\"initial\"},{\"kind\":\"pi.provider\",\"version\":1,\"scope\":\"conversation\",\"history\":\"latest\",\"fork\":\"initial\"}],\"predicates\":{\"live\":[true,false,false,true,true],\"inbox\":[true,false],\"usage\":true,\"provider\":true},\"parent\":[{\"tools\":[{\"callId\":\"a\",\"name\":\"echo\",\"status\":\"running\",\"output\":\"partial\"}]},{\"items\":[{\"id\":99,\"mode\":\"steer\",\"content\":{\"content\":\"queued\"}}]},{\"models\":{\"p/m\":{\"input\":1}},\"tools\":{}}],\"children\":[{},{\"items\":[]},{\"models\":{},\"tools\":{}}],\"provider\":{\"parent\":true,\"child\":true,\"fresh\":true},\"agent\":{\"cwd\":\"/parent\"}}", text);
 }
+comptime {
+    _ = @import("extensions/native_structured_clone.zig");
+}
+comptime {
+    _ = @import("extensions/native_tool_validation.zig");
+}
+comptime {
+    _ = @import("extensions/native_schema_formats.zig");
+}
+
+test "native durable VM null reporter coalesces callbacks and missing report memo and task args reject without native traps" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Null reporter args VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineTask} from '@earendil-works/pi-durable';
+        \\const reason={owned:true},Task=defineTask({name:'fixture.arguments',version:1,initial:()=>({phase:'go'}),phases:{go:async(task,runtime,context)=>{runtime.report();let memo,create;try{await runtime.memo()}catch(error){memo=error.name}await runtime.commit(async tx=>{try{await tx.createTask()}catch(error){create=error.name}},context);await runtime.hooks.each('before',handler=>handler());const agent=await runtime.agent(context);await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:{memo,create,tools:agent.tools.length}}}),context)}},abort:async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context)}),extension={name:'fixture',tools:[{name:'echo',parameters:{type:'object'},execute(){}}],wraps:[{tool:'echo',wrap(){throw reason}}],hooks:[{task:Task.definition.name,handlers:{before(){throw reason}}}]},registry={subscribe(){return()=>{}},snapshot(){return{installed:()=>[extension],extension:()=>extension,tasks:()=>[Task],task(name){return name===Task.definition.name?Task:{definition:{name}}}}}},harness=await Harness.open(new MemoryStorage(),{registry,models:{},onReport:null},{}),root=await harness.root({}),id=await root.commit(tx=>tx.createTask(Task,{},{ownership:{kind:'conversation'}}),{}),done=await harness.waitForTask(id,{});await root.waitForIdle({});await harness.close({});const reports=[],other=await Harness.open(new MemoryStorage(),{registry,models:{},onReport:error=>reports.push(error===undefined?'missing':error===reason?'reason':'wrong')},{}),otherRoot=await other.root({}),otherId=await otherRoot.commit(tx=>tx.createTask(Task,{},{ownership:{kind:'conversation'}}),{}),otherDone=await other.waitForTask(otherId,{});await otherRoot.waitForIdle({});await other.close({});globalThis.result=JSON.stringify({first:done.state.outcome,second:otherDone.state.outcome,reports});
+        \\
+    , "native-durable-null-reporter-args-source");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"first\":{\"status\":\"completed\",\"result\":{\"memo\":\"TypeError\",\"create\":\"TypeError\",\"tools\":0}},\"second\":{\"status\":\"completed\",\"result\":{\"memo\":\"TypeError\",\"create\":\"TypeError\",\"tools\":0}},\"reports\":[\"missing\",\"reason\",\"reason\"]}", text);
+}
+
+test "native durable VM String normalization C allocator callback preserves all four Unicode forms" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const output = try engine.eval("JSON.stringify(['e\\u0301'.normalize('NFC'),'\\u00e9'.normalize('NFD'),'\\ufb01'.normalize('NFKC'),'\\u2460'.normalize('NFKD'),'\\u1100\\u1161'.normalize(),''.normalize()])", "native-string-normalization-abi", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(output);
+    const text = try engine.toString(output);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings("[\"\xc3\xa9\",\"e\xcc\x81\",\"fi\",\"1\",\"\xea\xb0\x80\",\"\"]", text);
+}
+test "native durable VM String locale comparison normalizes both operands through correctly typed allocator callbacks" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const result = try engine.eval("'\\u00e9'.localeCompare('e\\u0301') === 0 && 'e\\u0301'.localeCompare('\\u00e9') === 0", "native-string-locale-normalization-abi", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    try std.testing.expect(engine_module.c.JS_ToBool(engine.context, result) != 0);
+}

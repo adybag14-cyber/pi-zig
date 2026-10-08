@@ -122,7 +122,7 @@ fn values(engine: *Engine, map: c.JSValue) !c.JSValue {
     return sdk.invoke(engine, array, "from", &.{iterator});
 }
 fn report(engine: *Engine, callback: c.JSValue, failure: c.JSValue) !void {
-    if (c.JS_IsUndefined(callback)) return;
+    if (c.JS_IsUndefined(callback) or c.JS_IsNull(callback)) return;
     var args = [_]c.JSValue{failure};
     const result = try engine.checked(c.JS_Call(engine.context, callback, c.pi_js_undefined(), 1, &args));
     engine.freeValue(result);

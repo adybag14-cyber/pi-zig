@@ -48239,7 +48239,7 @@ static JSValue js_string_localeCompare(JSContext *ctx, JSValueConst this_val,
 
     // TODO(bnoordhuis) skip normalization when input is latin1
     an = unicode_normalize(&ts, as, an, UNICODE_NFC, ctx,
-                           (DynBufReallocFunc *)js_realloc);
+                           js_dbuf_realloc);
     if (an == -1)
         goto exception;
     js_free(ctx, as);
@@ -48247,7 +48247,7 @@ static JSValue js_string_localeCompare(JSContext *ctx, JSValueConst this_val,
 
     // TODO(bnoordhuis) skip normalization when input is latin1
     bn = unicode_normalize(&ts, bs, bn, UNICODE_NFC, ctx,
-                           (DynBufReallocFunc *)js_realloc);
+                           js_dbuf_realloc);
     if (bn == -1)
         goto exception;
     js_free(ctx, bs);
@@ -48339,6 +48339,12 @@ static JSValue JS_NewUTF32String(JSContext *ctx, const uint32_t *buf, int len)
     return JS_EXCEPTION;
 }
 
+/* Keep the DynBuf callback's declared function type across the C ABI. */
+static void *js_unicode_normalize_realloc(void *opaque, void *ptr, size_t size)
+{
+    return js_realloc_rt((JSRuntime *)opaque, ptr, size);
+}
+
 static JSValue js_string_normalize(JSContext *ctx, JSValueConst this_val,
                                    int argc, JSValueConst *argv)
 {
@@ -48389,7 +48395,7 @@ static JSValue js_string_normalize(JSContext *ctx, JSValueConst this_val,
     }
 
     out_len = unicode_normalize(&out_buf, buf, buf_len, n_type,
-                                ctx->rt, (DynBufReallocFunc *)js_realloc_rt);
+                                ctx->rt, js_unicode_normalize_realloc);
     js_free(ctx, buf);
     if (out_len < 0)
         return JS_EXCEPTION;

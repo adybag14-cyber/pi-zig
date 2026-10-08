@@ -754,14 +754,7 @@ pub const Bindings = struct {
     pub fn installSchemas(self: *Bindings) !void {
         try native_stream.install(self.engine);
         try native_tui.install(self.engine);
-        if (self.engine.native_module_names.contains("typebox")) return;
-        const types = try typebox.create(self.engine);
-        defer self.engine.freeValue(types);
-        const exports = try self.engine.checked(c.JS_NewObject(self.engine.context));
-        defer self.engine.freeValue(exports);
-        if (c.JS_DefinePropertyValueStr(self.engine.context, exports, "Type", c.JS_DupValue(self.engine.context, types), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
-        try self.engine.registerValueModule("typebox", exports);
-        try self.engine.registerValueModule("@sinclair/typebox", exports);
+        try typebox.install(self.engine);
     }
 
     pub fn loadFactory(self: *Bindings, source: []const u8, filename: [:0]const u8) !void {

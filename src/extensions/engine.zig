@@ -102,6 +102,7 @@ pub const Engine = struct {
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
     native_module_names: std.StringHashMapUnmanaged(void) = .empty,
     native_module_values: std.StringHashMapUnmanaged(c.JSValue) = .empty,
+    native_namespace_counter: u64 = 0,
     commonjs_cache: c.JSValue,
     source_loader: ?SourceLoader = null,
 
@@ -236,6 +237,27 @@ pub const Engine = struct {
     /// The engine duplicates exports; the caller retains its original value.
     pub fn registerValueModule(self: *Engine, name: []const u8, exports: c.JSValue) !void {
         _ = try self.createValueModule(name, exports);
+    }
+    /// Native namespaces use the engine's real ESM exotic object, including its
+    /// readonly bindings and descriptors. No JavaScript shim is evaluated.
+    pub fn valueNamespace(self: *Engine, exports: c.JSValue) !c.JSValue {
+        self.native_namespace_counter += 1;
+        const name = try std.fmt.allocPrint(self.gpa, "pi-native:namespace/{d}", .{self.native_namespace_counter});
+        defer self.gpa.free(name);
+        const module = try self.createValueModule(name, exports);
+        const value = c.pi_js_module_value(self.context, module);
+        var consumed = false;
+        errdefer if (!consumed) self.freeValue(value);
+        if (c.JS_ResolveModule(self.context, value) < 0) {
+            self.captureException(self.context);
+            return error.JavaScriptException;
+        }
+        consumed = true;
+        const pending = try self.checked(c.JS_EvalFunction(self.context, value));
+        defer self.freeValue(pending);
+        const settled = try self.awaitValue(pending);
+        self.freeValue(settled);
+        return self.checked(c.JS_GetModuleNamespace(self.context, module));
     }
 
     fn createValueModule(self: *Engine, name: []const u8, exports: c.JSValue) !*c.JSModuleDef {

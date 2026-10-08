@@ -766,6 +766,7 @@ fn loadDefinitions(self: *Manager) !void {
     }
 }
 pub fn createTask(engine: *Engine, _: c.JSValue, transaction: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    if (args.len < 3) return error.InvalidCreateTaskArguments;
     const tx = try durable.state(engine, transaction);
     const token = args[0];
     const definition = try sdk.get(engine, token, "definition");
@@ -922,7 +923,7 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
         defer engine.freeValue(bound);
         try durable.checkCancellation(engine, bound);
         if (operation == .waitForTask) {
-            const pending = try wait(owner, try durable.number(engine, args[0]), null, bound);
+            const pending = try wait(owner, try durable.number(engine, if (args.len > 0) args[0] else c.pi_js_undefined()), null, bound);
             defer engine.freeValue(pending);
             var data = [_]c.JSValue{receiver};
             const fulfilled = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeWaitSettled, 1, 0, data.len, &data));
@@ -1004,8 +1005,8 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
     if (operation == .report) {
         const callback = try sdk.get(engine, owner.options, "onReport");
         defer engine.freeValue(callback);
-        if (c.JS_IsUndefined(callback)) return c.pi_js_undefined();
-        var values = [_]c.JSValue{args[0]};
+        if (c.JS_IsUndefined(callback) or c.JS_IsNull(callback)) return c.pi_js_undefined();
+        var values = [_]c.JSValue{if (args.len > 0) args[0] else c.pi_js_undefined()};
         return engine.checked(c.JS_Call(engine.context, callback, c.pi_js_undefined(), 1, &values));
     }
     const arguments = try sdk.array(engine);
@@ -1141,7 +1142,7 @@ fn hooksSettledOwned(engine: *Engine, failure: c.JSValue, rejected: bool, data: 
         if (c.JS_ToBool(engine.context, aborted) != 0) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, failure)));
         const report = try sdk.get(engine, runtime.entry.manager.options, "onReport");
         defer engine.freeValue(report);
-        if (!c.JS_IsUndefined(report)) {
+        if (!c.JS_IsUndefined(report) and !c.JS_IsNull(report)) {
             var args = [_]c.JSValue{failure};
             const ignored = try engine.checked(c.JS_Call(engine.context, report, c.pi_js_undefined(), 1, &args));
             engine.freeValue(ignored);
@@ -1176,6 +1177,7 @@ fn runtimeReadOwned(engine: *Engine, receiver: c.JSValue, args: c.JSValue, opera
     try active(self);
     const owner = self.entry.manager;
     const length = try sdk.length(engine, args);
+    if (operation == .memo and length < 2) return error.InvalidMemoArguments;
     const first = try engine.checked(c.JS_GetPropertyUint32(engine.context, args, 0));
     defer engine.freeValue(first);
     const context_index: u32 = if (operation == .memo) @intCast(length - 1) else if (operation == .entry and !c.JS_IsNumber(first)) 2 else 1;
