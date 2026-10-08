@@ -1,3 +1,12 @@
+test "native SDK Source session fork exact discovery read-only header bound and recent cwd filtering" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-session-files-discovery-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-session-files-discovery-6fb2e78.json"));
+}
+test "native SDK Source file and memory branch extraction preserves labels compaction references and delayed files" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-session-files-branch-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-session-files-branch-6fb2e78.json"));
+}
+test "native SDK Source file sessions preserve delayed writes overrides explicit paths empty files and repairs" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-session-files-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-session-files-6fb2e78.json"));
+}
 test "native SDK SessionManager Source retained identity compaction edits branches and public migration helpers" {
     try inputCase(@embedFile("extensions/fixtures/sdk-session-manager-options-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-session-manager-options-6fb2e78.json"));
 }

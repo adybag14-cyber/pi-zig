@@ -229,7 +229,7 @@ fn uuid(engine: *engine_mod.Engine) !c.JSValue {
     defer engine.gpa.free(raw);
     return sdk.text(engine, raw);
 }
-fn normalizePath(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
+pub fn normalizePath(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
     if (c.JS_ToBool(engine.context, value) != 1) return c.JS_DupValue(engine.context, value);
     const raw = try engine.toString(value);
     defer engine.gpa.free(raw);

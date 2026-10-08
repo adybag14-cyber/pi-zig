@@ -45,8 +45,11 @@ fn publicDispatch(engine: *engine_mod.Engine, method: Public, args: []const c.JS
     return context;
 }
 pub fn parseEntries(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
+    return parseLines(engine, value, true);
+}
+pub fn parseLines(engine: *engine_mod.Engine, value: c.JSValue, trim_outer: bool) !c.JSValue {
     const std = @import("std");
-    const trimmed = try sdk.invoke(engine, value, "trim", &.{});
+    const trimmed = if (trim_outer) try sdk.invoke(engine, value, "trim", &.{}) else c.JS_DupValue(engine.context, value);
     defer engine.freeValue(trimmed);
     const raw = try engine.toString(trimmed);
     defer engine.gpa.free(raw);

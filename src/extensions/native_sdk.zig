@@ -13,6 +13,7 @@ pub const State = struct {
     aborted: bool = false,
     next_entry: u64 = 1,
     persisted_count: u32 = 0,
+    session_flushed: bool = false,
     availability_sequence: u64 = 0,
     availability_error_sequence: u64 = 0,
     runtime_id: u64 = 0,
@@ -774,7 +775,16 @@ pub fn length(engine: *engine_mod.Engine, value: c.JSValue) !u32 {
 pub fn append(engine: *engine_mod.Engine, values: c.JSValue, value: c.JSValue) !void {
     if (c.JS_SetPropertyUint32(engine.context, values, try length(engine, values), value) < 0) return error.JavaScriptException;
 }
-fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persistent: bool) !c.JSValue {
+pub fn resolveSdkPath(engine: *engine_mod.Engine, value: c.JSValue) ![]u8 {
+    const normalized = try @import("native_sdk_settings.zig").normalizePath(engine, value);
+    defer engine.freeValue(normalized);
+    const path = try engine.toString(normalized);
+    defer engine.gpa.free(path);
+    const base = try cwd(engine);
+    defer engine.gpa.free(base);
+    return @import("node_path.zig").resolve(engine.gpa, base, &.{path}, if (@import("builtin").os.tag == .windows) .win32 else .posix);
+}
+pub fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persistent: bool) !c.JSValue {
     const data = try object(engine);
     defer engine.freeValue(data);
     var has_imported_header = false;
@@ -793,10 +803,10 @@ fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persistent: 
         }
         if (has_imported_header) _ = try @import("native_sdk_session_projection.zig").migrate(engine, args[2]);
     }
-    const current = if (args.len > 0 and c.JS_IsString(args[0])) try engine.toString(args[0]) else try cwd(engine);
+    const current = if (args.len > 0 and c.JS_IsString(args[0])) if (engine.native_io != null) try resolveSdkPath(engine, args[0]) else try engine.toString(args[0]) else try cwd(engine);
     defer engine.gpa.free(current);
     try put(engine, data, "cwd", try text(engine, current));
-    const directory = if (!persistent) try engine.gpa.dupe(u8, "") else if (args.len > 1 and c.JS_IsString(args[1])) try engine.toString(args[1]) else blk: {
+    const directory = if (!persistent) try engine.gpa.dupe(u8, "") else if (args.len > 1 and c.JS_IsString(args[1]) and c.JS_ToBool(engine.context, args[1]) == 1) try engine.toString(args[1]) else blk: {
         const root = try agentDir(engine);
         defer engine.gpa.free(root);
         const encoded = try encodeCwd(engine, current);
@@ -907,7 +917,7 @@ fn indexSessionEntry(engine: *engine_mod.Engine, data: c.JSValue, row: c.JSValue
         }
     }
 }
-fn rebuildSessionIndex(engine: *engine_mod.Engine, data: c.JSValue) !void {
+pub fn rebuildSessionIndex(engine: *engine_mod.Engine, data: c.JSValue) !void {
     inline for (.{ "entryIndex", "sessionLabels", "sessionLabelTimes" }) |field| try put(engine, data, field, try @import("native_sdk_auth_snapshot.zig").collection(engine, "Map"));
     const entries = try get(engine, data, "entries");
     defer engine.freeValue(entries);
@@ -917,7 +927,7 @@ fn rebuildSessionIndex(engine: *engine_mod.Engine, data: c.JSValue) !void {
         try indexSessionEntry(engine, data, row);
     }
 }
-fn encodeCwd(engine: *engine_mod.Engine, input: []const u8) ![]u8 {
+pub fn encodeCwd(engine: *engine_mod.Engine, input: []const u8) ![]u8 {
     const start: usize = if (input.len > 0 and (input[0] == '/' or input[0] == '\\')) 1 else 0;
     const result = try std.fmt.allocPrint(engine.gpa, "--{s}--", .{input[start..]});
     for (result) |*byte| if (byte.* == '/' or byte.* == '\\' or byte.* == ':') {
@@ -955,6 +965,9 @@ pub fn commitEntry(self: *State, value: c.JSValue) !c.JSValue {
 }
 fn persist(self: *State) !void {
     const engine = self.engine;
+    const enabled = try get(engine, self.data, "persistent");
+    defer engine.freeValue(enabled);
+    if (c.JS_ToBool(engine.context, enabled) != 1) return;
     const path = try get(engine, self.data, "sessionFile");
     defer engine.freeValue(path);
     if (!c.JS_IsString(path)) return;
@@ -973,12 +986,12 @@ fn persist(self: *State) !void {
         defer engine.gpa.free(name);
         if (std.mem.eql(u8, name, "assistant") or std.mem.eql(u8, name, "user")) has_assistant = true;
     }
-    if (!has_assistant) return;
+    if (!self.session_flushed and !has_assistant) return;
     var output: std.Io.Writer.Allocating = .init(engine.gpa);
     defer output.deinit();
     const header = try get(engine, self.data, "header");
     defer engine.freeValue(header);
-    if (self.persisted_count == 0) {
+    if (!self.session_flushed) {
         const raw_header = try engine.stringify(header);
         defer engine.gpa.free(raw_header);
         try output.writer.writeAll(raw_header);
@@ -996,7 +1009,7 @@ fn persist(self: *State) !void {
     const filename = try engine.toString(path);
     defer engine.gpa.free(filename);
     const io = engine.native_io orelse return error.NativeSDKRequiresIO;
-    if (self.persisted_count == 0) {
+    if (!self.session_flushed) {
         const file = try std.Io.Dir.cwd().createFile(io, filename, .{ .exclusive = true });
         defer file.close(io);
         try file.writeStreamingAll(io, output.written());
@@ -1007,6 +1020,7 @@ fn persist(self: *State) !void {
         try file.writePositionalAll(io, output.written(), info.size);
     }
     self.persisted_count = count;
+    self.session_flushed = true;
 }
 pub fn findEntry(self: *State, id: c.JSValue) !c.JSValue {
     const engine = self.engine;
@@ -1604,37 +1618,7 @@ fn modelDispatch(self: *State, operation: Method, args: []const c.JSValue) !c.JS
     return error.NativeSDKMethodUnavailable;
 }
 fn openManager(engine: *engine_mod.Engine, args: []const c.JSValue) !c.JSValue {
-    if (args.len == 0 or !c.JS_IsString(args[0])) return error.NativeSDKMissingArgument;
-    const path = try engine.toString(args[0]);
-    defer engine.gpa.free(path);
-    const raw = try std.Io.Dir.cwd().readFileAlloc(engine.native_io orelse return error.NativeSDKRequiresIO, path, engine.gpa, .limited(16 * 1024 * 1024));
-    defer engine.gpa.free(raw);
-    var lines = std.mem.splitScalar(u8, raw, '\n');
-    const header = try jsonObject(engine, lines.next() orelse return error.InvalidSessionFile);
-    defer engine.freeValue(header);
-    const header_cwd = try get(engine, header, "cwd");
-    defer engine.freeValue(header_cwd);
-    const session_dir = try text(engine, std.fs.path.dirname(path) orelse ".");
-    defer engine.freeValue(session_dir);
-    const manager = try initManager(engine, &.{ header_cwd, session_dir }, false);
-    errdefer engine.freeValue(manager);
-    const target = try state(engine, manager);
-    try put(engine, target.data, "header", c.JS_DupValue(engine.context, header));
-    try put(engine, target.data, "sessionFile", c.JS_DupValue(engine.context, args[0]));
-    try put(engine, target.data, "sessionDir", c.JS_DupValue(engine.context, session_dir));
-    try put(engine, target.data, "persistent", c.pi_js_bool(engine.context, 1));
-    const entries = try get(engine, target.data, "entries");
-    defer engine.freeValue(entries);
-    while (lines.next()) |line| {
-        if (std.mem.trim(u8, line, " \r\t").len == 0) continue;
-        const row = try jsonObject(engine, line);
-        defer engine.freeValue(row);
-        try append(engine, entries, c.JS_DupValue(engine.context, row));
-        try put(engine, target.data, "leafId", try get(engine, row, "id"));
-    }
-    target.persisted_count = try length(engine, entries);
-    try rebuildSessionIndex(engine, target.data);
-    return manager;
+    return @import("native_sdk_session_files.zig").open(engine, args);
 }
 fn queueTypedOperation(engine: *engine_mod.Engine, data: c.JSValue, model: c.JSValue, context: c.JSValue, options: c.JSValue, images: bool) !c.JSValue {
     var capabilities: [2]c.JSValue = undefined;
@@ -2016,15 +2000,24 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             engine.freeValue(self.data);
             self.data = c.JS_DupValue(engine.context, fresh.data);
             self.persisted_count = 0;
+            self.session_flushed = false;
             return get(engine, self.data, "sessionFile");
         }
         if (operation == .setSessionFile) {
-            const replacement = try openManager(engine, &.{first});
+            const working = try get(engine, self.data, "cwd");
+            defer engine.freeValue(working);
+            const directory = try get(engine, self.data, "sessionDir");
+            defer engine.freeValue(directory);
+            const persistent = try get(engine, self.data, "persistent");
+            defer engine.freeValue(persistent);
+            const replacement = try @import("native_sdk_session_files.zig").openMode(engine, &.{ first, directory, working }, c.JS_ToBool(engine.context, persistent) == 1);
             defer engine.freeValue(replacement);
             const fresh = try state(engine, replacement);
             engine.freeValue(self.data);
             self.data = c.JS_DupValue(engine.context, fresh.data);
+            try put(engine, self.data, "sessionDir", c.JS_DupValue(engine.context, directory));
             self.persisted_count = fresh.persisted_count;
+            self.session_flushed = fresh.session_flushed;
             return c.pi_js_undefined();
         }
         if (operation == .branch or operation == .resetLeaf) {
@@ -2307,9 +2300,11 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
                 if (c.JS_DefinePropertyValueStr(engine.context, proto, name, function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
             }
             try @import("native_sdk_session_mutations.zig").install(engine, proto);
+            try @import("native_sdk_session_branch.zig").install(engine, proto);
         }
         if (item[0] == .model_registry) try @import("native_sdk_model_registry.zig").install(engine, proto);
         if (item[0] == .session_manager) inline for (.{ .{ "inMemory", 0 }, .{ "create", 1 }, .{ "open", 2 } }) |operation| try put(engine, ctor, operation[0], try engine.checked(c.pi_js_function_magic(engine.context, staticMethod, operation[0], 1, operation[1])));
+        if (item[0] == .session_manager) try @import("native_sdk_session_discovery.zig").install(engine, ctor);
         if (item[0] == .settings_manager) inline for (.{ .{ "inMemory", 100 }, .{ "create", 101 }, .{ "fromStorage", 102 } }) |operation| try put(engine, ctor, operation[0], try engine.checked(c.pi_js_function_magic(engine.context, staticMethod, operation[0], 1, operation[1])));
         if (item[0] == .model_runtime) try put(engine, ctor, "create", try engine.checked(c.pi_js_function_magic(engine.context, staticMethod, "create", 1, 300)));
         try put(engine, exports, item[1], c.JS_DupValue(engine.context, ctor));
