@@ -270,6 +270,10 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    const theme_schema_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/theme_schema_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const run_theme_schema_tests = b.addRunArtifact(theme_schema_tests);
+    b.step("test-theme-schema", "Replay current upstream strict theme validation").dependOn(&run_theme_schema_tests.step);
+    test_step.dependOn(&run_theme_schema_tests.step);
     const mistral_header_tests = b.addTest(.{ .root_module = test_mod, .use_llvm = use_llvm, .filters = &.{ "ai.http_fetch", "ai.mistral" } });
     const run_mistral_header_tests = b.addRunArtifact(mistral_header_tests);
     const mistral_header_step = b.step("test-mistral-header-timeout", "Exercise source Mistral header deadlines and caller cancellation");

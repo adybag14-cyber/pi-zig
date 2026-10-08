@@ -2525,6 +2525,7 @@ const RuntimeResourceReloadContext = struct {
         errdefer deinitPromptTemplateSlice(gpa, new_prompts);
 
         var new_themes = pi_zig.themes.Registry.init(gpa, self.io);
+        new_themes.validate_user_themes = true;
         errdefer new_themes.deinit();
         if (!self.cli.no_themes) for (top_resources.themes.items) |path| try new_themes.loadPath(path);
         if (!self.cli.no_themes) for (package_resources.themes.items) |path| try new_themes.loadPath(path);
@@ -3352,6 +3353,7 @@ fn runMain(init: std.process.Init) !void {
     // original loader. `--no-themes` disables discovery but explicit --theme
     // paths remain enabled. The selected settings theme feeds the native renderer.
     var theme_registry = pi_zig.themes.Registry.init(gpa, io);
+    theme_registry.validate_user_themes = true;
     defer theme_registry.deinit();
     defer tui.render.resetTheme();
     if (!cli.no_themes) for (top_level_resources.themes.items) |theme_path| {
@@ -8411,8 +8413,16 @@ fn runSurfaceCommand(
             try tui.render.printLine(io, "usage: pi theme <theme.json>");
             std.process.exit(2);
         }
-        var th = try pi_zig.themes.loadFile(gpa, io, cmd_args[0]);
-        defer th.deinit(gpa);
+        var registry = pi_zig.themes.Registry.init(gpa, io);
+        defer registry.deinit();
+        registry.validate_user_themes = true;
+        try registry.loadPath(cmd_args[0]);
+        if (registry.diagnostics.items.len > 0) {
+            try tui.render.printLine(io, registry.diagnostics.items[0].message);
+            std.process.exit(2);
+        }
+        if (registry.themes.items.len == 0) return error.ThemeNotFound;
+        const th = registry.themes.items[0];
         const sample = try pi_zig.themes.wrap(th.accent_sgr, th.name, arena);
         try tui.render.printLine(io, sample);
         return;

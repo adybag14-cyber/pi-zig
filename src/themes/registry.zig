@@ -23,6 +23,7 @@ pub const Registry = struct {
     themes: std.ArrayList(theme_mod.Theme) = .empty,
     sources: std.ArrayList([]u8) = .empty,
     diagnostics: std.ArrayList(Diagnostic) = .empty,
+    validate_user_themes: bool = false,
 
     pub fn init(gpa: std.mem.Allocator, io: Io) Registry {
         return .{ .gpa = gpa, .io = io };
@@ -61,6 +62,20 @@ pub const Registry = struct {
     }
 
     fn loadThemeFile(self: *Registry, path: []const u8) !void {
+        if (self.validate_user_themes) {
+            const raw = try std.Io.Dir.cwd().readFileAlloc(self.io, path, self.gpa, .limited(1024 * 1024));
+            defer self.gpa.free(raw);
+            const parsed = std.json.parseFromSlice(std.json.Value, self.gpa, raw, .{}) catch {
+                try self.addDiagnostic(.invalid, path, "Invalid theme JSON");
+                return;
+            };
+            defer parsed.deinit();
+            if (try @import("theme_schema.zig").diagnosticAlloc(self.gpa, path, parsed.value)) |message| {
+                defer self.gpa.free(message);
+                try self.addDiagnostic(.invalid, path, message);
+                return;
+            }
+        }
         var loaded = theme_mod.loadFile(self.gpa, self.io, path) catch |err| {
             const message = try std.fmt.allocPrint(self.gpa, "failed to load theme: {s}", .{@errorName(err)});
             defer self.gpa.free(message);
