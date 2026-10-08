@@ -1,0 +1,554 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "global": {
+        "custom": {
+          "nested": {
+            "a": 1,
+            "b": 2
+          }
+        },
+        "defaultTools": [
+          "read",
+          "+codemode"
+        ]
+      },
+      "project": {
+        "custom": {
+          "nested": {
+            "b": 3,
+            "c": 4
+          }
+        },
+        "defaultTools": [
+          "-read",
+          "+bash"
+        ]
+      },
+      "trusted": true,
+      "result": {
+        "custom": {
+          "nested": {
+            "a": 1,
+            "b": 3,
+            "c": 4
+          }
+        },
+        "defaultTools": [
+          "read",
+          "+codemode",
+          "-read",
+          "+bash"
+        ]
+      }
+    },
+    {
+      "global": {
+        "custom": {
+          "nested": {
+            "a": 1,
+            "b": 2
+          }
+        },
+        "defaultTools": [
+          "read",
+          "+codemode"
+        ]
+      },
+      "project": {
+        "custom": {
+          "nested": {
+            "b": 3,
+            "c": 4
+          }
+        },
+        "defaultTools": [
+          "-read",
+          "+bash"
+        ]
+      },
+      "trusted": false,
+      "result": {
+        "custom": {
+          "nested": {
+            "a": 1,
+            "b": 2
+          }
+        },
+        "defaultTools": [
+          "read",
+          "+codemode"
+        ]
+      }
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read",
+          "write"
+        ]
+      },
+      "project": {
+        "defaultTools": []
+      },
+      "trusted": true,
+      "result": {
+        "defaultTools": [
+          "read",
+          "write"
+        ]
+      }
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read",
+          "write"
+        ]
+      },
+      "project": {
+        "defaultTools": []
+      },
+      "trusted": false,
+      "result": {
+        "defaultTools": [
+          "read",
+          "write"
+        ]
+      }
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read"
+        ]
+      },
+      "project": {
+        "defaultTools": [
+          "bash"
+        ]
+      },
+      "trusted": true,
+      "result": {
+        "defaultTools": [
+          "bash"
+        ]
+      }
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read"
+        ]
+      },
+      "project": {
+        "defaultTools": [
+          "bash"
+        ]
+      },
+      "trusted": false,
+      "result": {
+        "defaultTools": [
+          "read"
+        ]
+      }
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read"
+        ]
+      },
+      "project": {
+        "defaultTools": null
+      },
+      "trusted": true,
+      "result": {
+        "defaultTools": null
+      }
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read"
+        ]
+      },
+      "project": {
+        "defaultTools": null
+      },
+      "trusted": false,
+      "result": {
+        "defaultTools": [
+          "read"
+        ]
+      }
+    },
+    {
+      "global": {
+        "queueMode": "all",
+        "websockets": false,
+        "skills": {
+          "enableSkillCommands": false,
+          "customDirectories": [
+            "x"
+          ]
+        },
+        "retry": {
+          "maxDelayMs": 123,
+          "provider": {
+            "maxRetryDelayMs": null
+          }
+        }
+      },
+      "project": {},
+      "trusted": true,
+      "result": {
+        "skills": [
+          "x"
+        ],
+        "retry": {
+          "provider": {
+            "maxRetryDelayMs": 123
+          }
+        },
+        "steeringMode": "all",
+        "transport": "sse",
+        "enableSkillCommands": false
+      }
+    },
+    {
+      "global": {
+        "queueMode": "all",
+        "websockets": false,
+        "skills": {
+          "enableSkillCommands": false,
+          "customDirectories": [
+            "x"
+          ]
+        },
+        "retry": {
+          "maxDelayMs": 123,
+          "provider": {
+            "maxRetryDelayMs": null
+          }
+        }
+      },
+      "project": {},
+      "trusted": false,
+      "result": {
+        "skills": [
+          "x"
+        ],
+        "retry": {
+          "provider": {
+            "maxRetryDelayMs": 123
+          }
+        },
+        "steeringMode": "all",
+        "transport": "sse",
+        "enableSkillCommands": false
+      }
+    },
+    {
+      "global": {
+        "queueMode": "all",
+        "steeringMode": "one",
+        "websockets": true,
+        "transport": "auto",
+        "skills": {
+          "customDirectories": []
+        },
+        "retry": {
+          "maxDelayMs": 123,
+          "provider": {
+            "maxRetryDelayMs": 77
+          }
+        }
+      },
+      "project": {},
+      "trusted": true,
+      "result": {
+        "queueMode": "all",
+        "steeringMode": "one",
+        "websockets": true,
+        "transport": "auto",
+        "retry": {
+          "provider": {
+            "maxRetryDelayMs": 77
+          }
+        }
+      }
+    },
+    {
+      "global": {
+        "queueMode": "all",
+        "steeringMode": "one",
+        "websockets": true,
+        "transport": "auto",
+        "skills": {
+          "customDirectories": []
+        },
+        "retry": {
+          "maxDelayMs": 123,
+          "provider": {
+            "maxRetryDelayMs": 77
+          }
+        }
+      },
+      "project": {},
+      "trusted": false,
+      "result": {
+        "queueMode": "all",
+        "steeringMode": "one",
+        "websockets": true,
+        "transport": "auto",
+        "retry": {
+          "provider": {
+            "maxRetryDelayMs": 77
+          }
+        }
+      }
+    },
+    {
+      "global": {
+        "retry": {
+          "maxDelayMs": 13,
+          "provider": [
+            1,
+            2
+          ]
+        }
+      },
+      "project": {},
+      "trusted": true,
+      "result": {
+        "retry": {
+          "provider": {
+            "0": 1,
+            "1": 2,
+            "maxRetryDelayMs": 13
+          }
+        }
+      }
+    },
+    {
+      "global": {
+        "retry": {
+          "maxDelayMs": 13,
+          "provider": [
+            1,
+            2
+          ]
+        }
+      },
+      "project": {},
+      "trusted": false,
+      "result": {
+        "retry": {
+          "provider": {
+            "0": 1,
+            "1": 2,
+            "maxRetryDelayMs": 13
+          }
+        }
+      }
+    },
+    {
+      "global": [
+        "x",
+        "y"
+      ],
+      "project": {},
+      "trusted": true,
+      "result": {
+        "0": "x",
+        "1": "y"
+      }
+    },
+    {
+      "global": [
+        "x",
+        "y"
+      ],
+      "project": {},
+      "trusted": false,
+      "result": {
+        "0": "x",
+        "1": "y"
+      }
+    },
+    {
+      "global": {
+        "custom": [
+          1,
+          2
+        ]
+      },
+      "project": {
+        "custom": {
+          "value": 3
+        }
+      },
+      "trusted": true,
+      "result": {
+        "custom": {
+          "value": 3
+        }
+      }
+    },
+    {
+      "global": {
+        "custom": [
+          1,
+          2
+        ]
+      },
+      "project": {
+        "custom": {
+          "value": 3
+        }
+      },
+      "trusted": false,
+      "result": {
+        "custom": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "global": {
+        "custom": {
+          "value": 3
+        }
+      },
+      "project": {
+        "custom": [
+          1,
+          2
+        ]
+      },
+      "trusted": true,
+      "result": {
+        "custom": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "global": {
+        "custom": {
+          "value": 3
+        }
+      },
+      "project": {
+        "custom": [
+          1,
+          2
+        ]
+      },
+      "trusted": false,
+      "result": {
+        "custom": {
+          "value": 3
+        }
+      }
+    },
+    {
+      "global": {},
+      "project": {
+        "__proto__": {
+          "hidden": true
+        },
+        "safe": 1
+      },
+      "trusted": true,
+      "result": {
+        "safe": 1
+      }
+    },
+    {
+      "global": {},
+      "project": {
+        "__proto__": {
+          "hidden": true
+        },
+        "safe": 1
+      },
+      "trusted": false,
+      "result": {}
+    },
+    {
+      "global": {
+        "__proto__": {
+          "kept": 1
+        }
+      },
+      "project": {
+        "__proto__": {
+          "second": 2
+        }
+      },
+      "trusted": true,
+      "result": {
+        "__proto__": {
+          "kept": 1,
+          "second": 2
+        }
+      }
+    },
+    {
+      "global": {
+        "__proto__": {
+          "kept": 1
+        }
+      },
+      "project": {
+        "__proto__": {
+          "second": 2
+        }
+      },
+      "trusted": false,
+      "result": {
+        "__proto__": {
+          "kept": 1
+        }
+      }
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 25
+        }
+      },
+      "project": {
+        "codemode": null
+      },
+      "trusted": true,
+      "result": {
+        "codemode": null
+      }
+    },
+    {
+      "global": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 25
+        }
+      },
+      "project": {
+        "codemode": null
+      },
+      "trusted": false,
+      "result": {
+        "codemode": {
+          "mode": "only",
+          "inlineBudget": 25
+        }
+      }
+    }
+  ]
+}

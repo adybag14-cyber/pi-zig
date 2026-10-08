@@ -1,0 +1,569 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "global": {},
+      "project": {},
+      "result": null
+    },
+    {
+      "global": {},
+      "project": {
+        "defaultTools": []
+      },
+      "result": []
+    },
+    {
+      "global": {},
+      "project": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "result": [
+        "read",
+        "bash",
+        "edit",
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {},
+      "project": {
+        "defaultTools": [
+          "bash"
+        ]
+      },
+      "result": [
+        "bash"
+      ]
+    },
+    {
+      "global": {},
+      "project": {
+        "defaultTools": [
+          "-read",
+          "+foo"
+        ]
+      },
+      "result": [
+        "bash",
+        "edit",
+        "write",
+        "foo"
+      ]
+    },
+    {
+      "global": {},
+      "project": {
+        "defaultTools": null
+      },
+      "result": []
+    },
+    {
+      "global": {},
+      "project": {
+        "defaultTools": [
+          12,
+          "+codemode"
+        ]
+      },
+      "result": [
+        "read",
+        "bash",
+        "edit",
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {},
+      "project": {
+        "defaultTools": [
+          "write",
+          "+codemode"
+        ]
+      },
+      "result": [
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read",
+          "write"
+        ]
+      },
+      "project": {},
+      "result": [
+        "read",
+        "write"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read",
+          "write"
+        ]
+      },
+      "project": {
+        "defaultTools": []
+      },
+      "result": [
+        "read",
+        "write"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read",
+          "write"
+        ]
+      },
+      "project": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "result": [
+        "read",
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read",
+          "write"
+        ]
+      },
+      "project": {
+        "defaultTools": [
+          "bash"
+        ]
+      },
+      "result": [
+        "bash"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read",
+          "write"
+        ]
+      },
+      "project": {
+        "defaultTools": [
+          "-read",
+          "+foo"
+        ]
+      },
+      "result": [
+        "write",
+        "foo"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read",
+          "write"
+        ]
+      },
+      "project": {
+        "defaultTools": null
+      },
+      "result": []
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read",
+          "write"
+        ]
+      },
+      "project": {
+        "defaultTools": [
+          12,
+          "+codemode"
+        ]
+      },
+      "result": [
+        "read",
+        "bash",
+        "edit",
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "read",
+          "write"
+        ]
+      },
+      "project": {
+        "defaultTools": [
+          "write",
+          "+codemode"
+        ]
+      },
+      "result": [
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "project": {},
+      "result": [
+        "read",
+        "bash",
+        "edit",
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "project": {
+        "defaultTools": []
+      },
+      "result": [
+        "read",
+        "bash",
+        "edit",
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "project": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "result": [
+        "read",
+        "bash",
+        "edit",
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "project": {
+        "defaultTools": [
+          "bash"
+        ]
+      },
+      "result": [
+        "bash"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "project": {
+        "defaultTools": [
+          "-read",
+          "+foo"
+        ]
+      },
+      "result": [
+        "bash",
+        "edit",
+        "write",
+        "codemode",
+        "foo"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "project": {
+        "defaultTools": null
+      },
+      "result": []
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "project": {
+        "defaultTools": [
+          12,
+          "+codemode"
+        ]
+      },
+      "result": [
+        "read",
+        "bash",
+        "edit",
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "project": {
+        "defaultTools": [
+          "write",
+          "+codemode"
+        ]
+      },
+      "result": [
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": []
+      },
+      "project": {},
+      "result": []
+    },
+    {
+      "global": {
+        "defaultTools": []
+      },
+      "project": {
+        "defaultTools": []
+      },
+      "result": []
+    },
+    {
+      "global": {
+        "defaultTools": []
+      },
+      "project": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "result": [
+        "read",
+        "bash",
+        "edit",
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": []
+      },
+      "project": {
+        "defaultTools": [
+          "bash"
+        ]
+      },
+      "result": [
+        "bash"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": []
+      },
+      "project": {
+        "defaultTools": [
+          "-read",
+          "+foo"
+        ]
+      },
+      "result": [
+        "bash",
+        "edit",
+        "write",
+        "foo"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": []
+      },
+      "project": {
+        "defaultTools": null
+      },
+      "result": []
+    },
+    {
+      "global": {
+        "defaultTools": []
+      },
+      "project": {
+        "defaultTools": [
+          12,
+          "+codemode"
+        ]
+      },
+      "result": [
+        "read",
+        "bash",
+        "edit",
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": []
+      },
+      "project": {
+        "defaultTools": [
+          "write",
+          "+codemode"
+        ]
+      },
+      "result": [
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": null
+      },
+      "project": {},
+      "result": []
+    },
+    {
+      "global": {
+        "defaultTools": null
+      },
+      "project": {
+        "defaultTools": []
+      },
+      "result": []
+    },
+    {
+      "global": {
+        "defaultTools": null
+      },
+      "project": {
+        "defaultTools": [
+          "+codemode"
+        ]
+      },
+      "result": [
+        "read",
+        "bash",
+        "edit",
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": null
+      },
+      "project": {
+        "defaultTools": [
+          "bash"
+        ]
+      },
+      "result": [
+        "bash"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": null
+      },
+      "project": {
+        "defaultTools": [
+          "-read",
+          "+foo"
+        ]
+      },
+      "result": [
+        "bash",
+        "edit",
+        "write",
+        "foo"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": null
+      },
+      "project": {
+        "defaultTools": null
+      },
+      "result": []
+    },
+    {
+      "global": {
+        "defaultTools": null
+      },
+      "project": {
+        "defaultTools": [
+          12,
+          "+codemode"
+        ]
+      },
+      "result": [
+        "read",
+        "bash",
+        "edit",
+        "write",
+        "codemode"
+      ]
+    },
+    {
+      "global": {
+        "defaultTools": null
+      },
+      "project": {
+        "defaultTools": [
+          "write",
+          "+codemode"
+        ]
+      },
+      "result": [
+        "write",
+        "codemode"
+      ]
+    }
+  ]
+}

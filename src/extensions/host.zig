@@ -440,6 +440,7 @@ pub const Host = struct {
     activation_explicit_selection: bool = false,
     native_tool_selection: tool_activation.Selection = .{},
     script_context_json: ?[]u8 = null,
+    settings_snapshot_json: ?[]u8 = null,
     ui_prompt_mutex: Io.Mutex = .init,
     ui_prompt_drain_mutex: Io.Mutex = .init,
     ui_prompt_events: std.ArrayList(DeferredUiPrompt) = .empty,
@@ -598,6 +599,7 @@ pub const Host = struct {
         }
         if (self.last_hook.len > 0) self.gpa.free(self.last_hook);
         if (self.script_context_json) |context| self.gpa.free(context);
+        if (self.settings_snapshot_json) |settings| self.gpa.free(settings);
         for (self.ui_prompt_events.items) |event| {
             std.heap.page_allocator.free(event.hook);
             std.heap.page_allocator.free(event.method);

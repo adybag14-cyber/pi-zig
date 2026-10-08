@@ -51,7 +51,7 @@ pub const Runtime = struct {
     pub fn prepareLoadout(raw: ?*anyopaque, gpa: std.mem.Allocator, config: *const loop.AgentConfig, schemas: []const u8) ![]u8 {
         if (!exists(raw, "codemode") or !isActive(config)) return gpa.dupe(u8, schemas);
         const self: *@This() = @ptrCast(@alignCast(raw.?));
-        var registry = try self.registryFor(gpa, config);
+        var registry = try self.registryFor(gpa, config, false);
         defer registry.deinit();
         var declared = try json.Owned.parse(gpa, schemas);
         defer declared.deinit();
@@ -74,11 +74,10 @@ pub const Runtime = struct {
                     else => continue,
                 };
             };
-            if (self.configured) |service| for (service.descriptors.items) |descriptor| if (std.mem.eql(u8, descriptor.name, name)) {
-                tool.exposure = switch (descriptor.exposure) {
+            if (self.configured) |service| if (service.exposureOf(name)) |exposure| {
+                tool.exposure = switch (exposure) {
                     .direct => .direct,
-                    .codemode => .deferred,
-                    .deferred => .deferred,
+                    .codemode, .deferred => .deferred,
                     .hidden => continue,
                 };
             };
@@ -127,7 +126,8 @@ pub const Runtime = struct {
         var input = try json.Owned.parse(gpa, arguments);
         defer input.deinit();
         const code = try protocol.text(input.value, "code");
-        var registry = try self.registryFor(gpa, initial);
+        if (self.configured) |service| try service.awaitForScript(code, aborted);
+        var registry = try self.registryFor(gpa, initial, false);
         defer registry.deinit();
         const a = registry.arena.allocator();
         var entries: std.ArrayList(adapter.Entry) = .empty;
@@ -193,7 +193,7 @@ pub const Runtime = struct {
         };
         return true;
     }
-    fn registryFor(self: *@This(), gpa: std.mem.Allocator, initial: *const loop.AgentConfig) !json.Owned {
+    fn registryFor(self: *@This(), gpa: std.mem.Allocator, initial: *const loop.AgentConfig, wait_for_connections: bool) !json.Owned {
         var registry = try json.Owned.empty(gpa);
         errdefer registry.deinit();
         const a = registry.arena.allocator();
@@ -229,10 +229,17 @@ pub const Runtime = struct {
             };
         };
         if (self.configured) |service| {
-            for (service.descriptors.items) |descriptor| {
-                if (descriptor.exposure == .hidden or (descriptor.exposure == .direct and !initial.tool_filter.isMcpEnabled(descriptor.name))) continue;
-                var schema = try json.clone(a, descriptor.schema);
-                if (descriptor.codemode_metadata) |metadata| {
+            const snapshot = try service.codemodeSchemasJson(wait_for_connections);
+            defer service.gpa.free(snapshot);
+            var catalog = try json.Owned.parse(a, snapshot);
+            defer catalog.deinit();
+            for (catalog.value.array.items) |descriptor| {
+                const exposure = try protocol.text(descriptor, "exposure");
+                const original = try protocol.field(descriptor, "schema");
+                const name = try protocol.text(try protocol.field(original, "function"), "name");
+                if (std.mem.eql(u8, exposure, "hidden") or (std.mem.eql(u8, exposure, "direct") and !initial.tool_filter.isMcpEnabled(name))) continue;
+                var schema = try json.clone(a, original);
+                if (json.get(descriptor, "metadata")) |metadata| {
                     var fields = metadata.object.iterator();
                     while (fields.next()) |field| try schema.object.put(a, try a.dupe(u8, field.key_ptr.*), try json.clone(a, field.value_ptr.*));
                 }

@@ -15,6 +15,7 @@ pub const inline_files = @import("inline_files.zig");
 pub const initial_message = @import("initial_message.zig");
 pub const repl_completion = @import("repl_completion.zig");
 pub const settings = @import("settings.zig");
+pub const extension_settings = @import("extension_settings.zig");
 pub const update = @import("update.zig");
 pub const slash = @import("slash.zig");
 pub const live_state = @import("live_state.zig");

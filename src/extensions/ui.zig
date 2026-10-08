@@ -135,6 +135,8 @@ fn writeModelSnapshot(writer: *std.Io.Writer, model: providers.ModelInfo) !void 
 
 pub const ContextOptions = struct {
     strict_theme_validation: ?bool = null,
+    settings_json: ?[]const u8 = null,
+    runtime_bound: ?bool = null,
     admit_keybindings: bool = false,
     kitty_active: ?bool = null,
     /// Null leaves the controller's cached presentation state bound as-is.
@@ -664,6 +666,14 @@ pub const Controller = struct {
         errdefer out.deinit();
         try out.writer.writeAll("{\"mode\":");
         try std.json.Stringify.value(options.mode, .{}, &out.writer);
+        if (options.runtime_bound) |bound| try out.writer.print(",\"nativeRuntimeBound\":{}", .{bound});
+        if (options.settings_json) |settings| {
+            var parsed_settings = try std.json.parseFromSlice(std.json.Value, allocator, settings, .{});
+            defer parsed_settings.deinit();
+            if (parsed_settings.value != .object) return error.InvalidExtensionContext;
+            try out.writer.writeAll(",\"settings\":");
+            try std.json.Stringify.value(parsed_settings.value, .{}, &out.writer);
+        }
         if (options.strict_theme_validation) |enabled| try out.writer.print(",\"strictThemeValidation\":{}", .{enabled});
         if (options.kitty_active) |active| try out.writer.print(",\"kittyActive\":{}", .{active});
         if (options.admit_keybindings) {

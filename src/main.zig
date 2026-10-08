@@ -1781,7 +1781,7 @@ fn collectExtensionContextTools(
                 declared = extensions.integration.Bridge.isToolDeclared(tool, filter);
                 break :registry;
             };
-            if (!registered) declared = (!disable_builtin_tools and agent.tools.isBuiltin(name) and filter.isEnabled(name)) or (std.mem.startsWith(u8, name, "mcp__") and filter.isEnabled(name));
+            if (!registered) declared = (!disable_builtin_tools and agent.tools.isBuiltin(name) and filter.isEnabled(name)) or (std.mem.startsWith(u8, name, "mcp__") and filter.isEnabled(name)) or ((std.mem.eql(u8, name, "codemode") or std.mem.eql(u8, name, "tool_search")) and pi_zig.mcp.codemode_builtin.Runtime.isNamedBuiltinActive(filter, name));
             if (declared) try names.append(allocator, name);
         }
         return names.toOwnedSlice(allocator);
@@ -1799,6 +1799,16 @@ fn collectExtensionContextTools(
             if (active_only and hidden) continue;
             if (!active_only or filter.isEnabled(name)) try names.append(allocator, name);
         }
+    }
+    for ([_][]const u8{ "codemode", "tool_search" }) |name| {
+        if (host.hasTool(name)) continue;
+        if (active_only and !pi_zig.mcp.codemode_builtin.Runtime.isNamedBuiltinActive(filter, name)) continue;
+        var duplicate = false;
+        for (names.items) |existing| if (std.mem.eql(u8, existing, name)) {
+            duplicate = true;
+            break;
+        };
+        if (!duplicate) try names.append(allocator, name);
     }
     for (host.extensions.items) |extension| {
         for (extension.tools) |tool| {
@@ -2039,6 +2049,8 @@ fn syncExtensionScriptContext(
         if (footer_models.available) |models| host.gpa.free(models);
     };
     const context = try ui_controller.contextJson(host.gpa, .{
+        .runtime_bound = true,
+        .settings_json = host.settings_snapshot_json,
         .strict_theme_validation = true,
         .admit_keybindings = true,
         .kitty_active = tui.keys.isKittyProtocolActive(),
@@ -2491,6 +2503,20 @@ const RuntimeResourceReloadContext = struct {
             .script_widget_bridge = self.host.script_widget_bridge,
         };
         errdefer new_host.deinit();
+        new_host.settings_snapshot_json = try gpa.dupe(u8, fresh_settings.source_json orelse "{}");
+        if (self.host.script_context_json) |previous| {
+            const json = pi_zig.mcp.protocol.json;
+            var snapshot = try json.Owned.parse(gpa, previous);
+            defer snapshot.deinit();
+            var settings_snapshot = try json.Owned.parse(gpa, new_host.settings_snapshot_json.?);
+            defer settings_snapshot.deinit();
+            try snapshot.value.object.put(snapshot.arena.allocator(), "nativeRuntimeBound", .{ .bool = false });
+            try snapshot.value.object.put(snapshot.arena.allocator(), "settings", try json.clone(snapshot.arena.allocator(), settings_snapshot.value));
+            const startup_context = try json.stringify(gpa, snapshot.value);
+            defer gpa.free(startup_context);
+            try new_host.setScriptContextJson(startup_context);
+        }
+
         if (!self.cli.no_extensions) for (top_resources.extensions.items) |path| try new_host.loadPath(path);
         if (!self.cli.no_extensions) for (package_resources.extensions.items) |path| try new_host.loadPath(path);
         for (self.cli.extensions.items) |source| try self.loadExplicitExtension(&new_host, source, fresh_settings.npm_command);
@@ -3884,9 +3910,12 @@ fn runMain(init: std.process.Init) !void {
         .script_ui_bridge = extension_ui.bridge(),
         .script_backend = extension_backend,
         .native_runtime_options = .{ .executable = native_extension_executable, .environ_map = environ },
+        .settings_snapshot_json = try gpa.dupe(u8, settings.source_json orelse "{}"),
     };
     defer extension_host.deinit();
     const initial_worker_context = try extension_ui.contextJson(gpa, .{
+        .runtime_bound = false,
+        .settings_json = extension_host.settings_snapshot_json,
         .strict_theme_validation = true,
         .admit_keybindings = true,
         .kitty_active = tui.keys.isKittyProtocolActive(),
@@ -4321,7 +4350,17 @@ fn runMain(init: std.process.Init) !void {
             active_tool_filter.modifiers = modifiers.items;
         }
         if (decision.warning) |warning| try std.Io.File.stderr().writeStreamingAll(io, try std.fmt.allocPrint(arena, "warning: {s}\n", .{warning}));
-        try configured_mcp.?.start();
+        configured_mcp.?.notice_context = &extension_ui;
+        configured_mcp.?.notice_fn = extensions.ui.Controller.persistentAction;
+        configured_mcp.?.builtin_search_registered = !extension_host.hasTool("tool_search");
+        configured_mcp.?.search_active_context = &active_tool_filter;
+        configured_mcp.?.search_active_fn = struct {
+            fn active(raw: ?*anyopaque) bool {
+                const filter: *const agent.tools.ToolFilter = @ptrCast(@alignCast(raw.?));
+                return pi_zig.mcp.codemode_builtin.Runtime.isNamedBuiltinActive(filter.*, "tool_search");
+            }
+        }.active;
+        try configured_mcp.?.startBackground();
         for (configured_mcp.?.diagnostics.items) |message| {
             const warning = try std.fmt.allocPrint(arena, "warning: {s}\n", .{message});
             try std.Io.File.stderr().writeStreamingAll(io, warning);

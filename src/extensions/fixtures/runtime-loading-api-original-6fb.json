@@ -1,0 +1,101 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "method": "getActiveTools",
+      "error": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+        "prototype": true
+      }
+    },
+    {
+      "method": "getAllTools",
+      "error": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+        "prototype": true
+      }
+    },
+    {
+      "method": "getCommands",
+      "error": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+        "prototype": true
+      }
+    },
+    {
+      "method": "getSettings",
+      "error": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+        "prototype": true
+      }
+    },
+    {
+      "method": "getSessionName",
+      "error": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+        "prototype": true
+      }
+    },
+    {
+      "method": "getThinkingLevel",
+      "error": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+        "prototype": true
+      }
+    },
+    {
+      "method": "setSessionName",
+      "error": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+        "prototype": true
+      }
+    },
+    {
+      "method": "setThinkingLevel",
+      "error": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+        "prototype": true
+      }
+    },
+    {
+      "method": "setActiveTools",
+      "error": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+        "prototype": true
+      }
+    },
+    {
+      "method": "sendUserMessage",
+      "error": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+        "prototype": true
+      }
+    },
+    {
+      "method": "appendEntry",
+      "error": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+        "prototype": true
+      }
+    },
+    {
+      "method": "setLabel",
+      "error": {
+        "name": "Error",
+        "message": "Extension runtime not initialized. Action methods cannot be called during extension loading.",
+        "prototype": true
+      }
+    }
+  ]
+}

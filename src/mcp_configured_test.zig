@@ -1013,3 +1013,73 @@ test "mcp.configured reconnect retires old session before new handshake and fres
     try server.finish();
     try std.testing.expectEqual(@as(usize, 8), server.captured.items.len);
 }
+
+test "mcp.configured background direct readiness skips a stalled non-direct server and shutdown retires both" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var stalled = try stdioConfig(a, program, "codemode");
+    try stalled.object.put(a, "args", .{ .array = .init(a) });
+    try stalled.object.getPtr("args").?.array.append(.{ .string = "--stall" });
+    const servers = try map(a, &.{ .{ "slow", stalled }, .{ "fast", try stdioConfig(a, program, "direct") } });
+    try root.write(false, try map(a, &.{.{ "mcpServers", servers }}));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const service = try create(&root, &env, false);
+    defer service.deinit();
+    try service.startBackground();
+    _ = try service.startup.?.waitContext(service.findServer("fast").?, .none);
+    const schemas = try configured.Service.dynamicSchemas(service, gpa);
+    defer gpa.free(schemas);
+    try std.testing.expect(std.mem.indexOf(u8, schemas, "mcp__fast__double") != null);
+    try std.testing.expect(std.mem.indexOf(u8, schemas, "mcp__slow__double") == null);
+    try service.awaitForScript("text(await tools.read({path:'input.txt'}));", null);
+    try service.close();
+    try std.testing.expect(service.closing.load(.acquire));
+}
+
+test "mcp.configured background direct timeout reports original notice once and never blocks an unrelated script" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var stalled = try stdioConfig(a, program, "direct");
+    try stalled.object.put(a, "args", .{ .array = .init(a) });
+    try stalled.object.getPtr("args").?.array.append(.{ .string = "--stall" });
+    try root.write(false, try document(a, "slow", stalled));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const service = try create(&root, &env, false);
+    defer service.deinit();
+    const Notice = struct {
+        calls: usize = 0,
+        fn emit(raw: ?*anyopaque, method: []const u8, arguments: []const u8) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.calls += 1;
+            try std.testing.expectEqualStrings("notify", method);
+            var value = try json.Owned.parse(gpa, arguments);
+            defer value.deinit();
+            try std.testing.expectEqualStrings("info", value.value.object.get("type").?.string);
+            try std.testing.expectEqualStrings("MCP servers are still connecting; their tools become available once connected.", value.value.object.get("message").?.string);
+        }
+    };
+    var notice: Notice = .{};
+    service.notice_context = &notice;
+    service.notice_fn = Notice.emit;
+    service.startup_wait_ms = 1;
+    try service.startBackground();
+    const first = try configured.Service.dynamicSchemas(service, gpa);
+    defer gpa.free(first);
+    const second = try configured.Service.dynamicSchemas(service, gpa);
+    defer gpa.free(second);
+    try std.testing.expectEqual(@as(usize, 1), notice.calls);
+    try service.awaitForScript("text(await tools.read({path:'input.txt'}));", null);
+    try service.close();
+}
