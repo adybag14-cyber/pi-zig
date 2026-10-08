@@ -1251,7 +1251,10 @@ fn settleWaiters(self: *Manager) !void {
             value = try messageError(self.engine, "Harness is closed");
             rejected = true;
         } else if (waiter.id) |id| {
-            var record = try self.lease.value.storage.readTableRecord(self.engine.gpa, .task, id);
+            var record = switch (try readWaiterTask(&self.lease.value, self.engine.gpa, id)) {
+                .busy => continue,
+                .record => |item| item,
+            };
             defer if (record) |*item| item.deinit();
             if (record) |item| {
                 const state = try json.required(item.value, "state");
@@ -1273,6 +1276,60 @@ fn settleWaiters(self: *Manager) !void {
         self.engine.freeValue(waiter.context);
         _ = self.waiters.orderedRemove(index);
     }
+}
+const WaiterRecord = union(enum) { busy, record: ?json.Owned };
+fn readWaiterTask(session: *session_mod.Session, gpa: std.mem.Allocator, id: u64) !WaiterRecord {
+    const on_owner = session.ownerThread.load(.acquire) == std.Thread.getCurrentId();
+    if (!on_owner and !session.mutex.tryLock()) return .busy;
+    defer if (!on_owner) session.mutex.unlock(session.io);
+    return .{ .record = try session.storage.readTableRecord(gpa, .task, id) };
+}
+
+test "native durable VM waiter snapshot skips a worker barrier and detaches before later commits or owner callbacks" {
+    const gpa = std.testing.allocator;
+    var store = try backend.memory.Memory.init(gpa);
+    defer store.deinit();
+    var session = session_mod.Session.init(gpa, std.testing.io, .{ .memory = &store });
+    defer session.deinit();
+    var first = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":1,\"state\":{\"status\":\"terminal\",\"result\":{\"version\":1}}}}]");
+    defer first.deinit();
+    _ = try store.commit(first.value);
+    const Barrier = struct {
+        session: *session_mod.Session,
+        locked: std.atomic.Value(bool) = .init(false),
+        release: std.atomic.Value(bool) = .init(false),
+        fn worker(self: *@This()) void {
+            self.session.mutex.lockUncancelable(self.session.io);
+            self.locked.store(true, .release);
+            while (!self.release.load(.acquire)) std.atomic.spinLoopHint();
+            self.session.mutex.unlock(self.session.io);
+        }
+    };
+    var barrier: Barrier = .{ .session = &session };
+    const thread = try std.Thread.spawn(.{}, Barrier.worker, .{&barrier});
+    var joined = false;
+    defer if (!joined) {
+        barrier.release.store(true, .release);
+        thread.join();
+    };
+    while (!barrier.locked.load(.acquire)) std.atomic.spinLoopHint();
+    try std.testing.expectEqual(.busy, std.meta.activeTag(try readWaiterTask(&session, gpa, 1)));
+    barrier.release.store(true, .release);
+    thread.join();
+    joined = true;
+    var snapshot = (try readWaiterTask(&session, gpa, 1)).record.?;
+    defer snapshot.deinit();
+    try std.testing.expect(session.mutex.tryLock());
+    session.ownerThread.store(std.Thread.getCurrentId(), .release);
+    var owner = try readWaiterTask(&session, gpa, 1);
+    owner.record.?.deinit();
+    session.ownerThread.store(0, .release);
+    session.mutex.unlock(session.io);
+    for (0..128) |version| {
+        first.value.array.items[0].object.getPtr("value").?.object.getPtr("state").?.object.getPtr("result").?.object.getPtr("version").?.* = .{ .integer = @intCast(version + 2) };
+        _ = try store.commit(first.value);
+    }
+    try std.testing.expectEqual(@as(u64, 1), try json.asInteger(try json.required(try json.required(try json.required(snapshot.value, "state"), "result"), "version")));
 }
 pub fn defineTask(engine: *Engine, exports: c.JSValue) !void {
     try sdk.put(engine, exports, "defineTask", try engine.checked(c.JS_NewCFunction(engine.context, define, "defineTask", 1)));
