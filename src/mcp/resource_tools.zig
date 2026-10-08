@@ -153,6 +153,24 @@ test "MCP resource adapter client pages replay original validation cursor normal
     }
 }
 
+test "MCP resource adapter discovery checks original tools capability truthiness while failed resource lists stay connected" {
+    const gpa = std.testing.allocator;
+    var corpus = try json.Owned.parse(gpa, @embedFile("fixtures/mcp-resource-connect-counts-original-6fb.json"));
+    defer corpus.deinit();
+    for ((try protocol.field(corpus.value, "rows")).array.items) |row| {
+        var offers = try json.Owned.empty(gpa);
+        defer offers.deinit();
+        offers.value = .{ .object = .empty };
+        if (json.get(row, "tools")) |value| try offers.value.object.put(offers.arena.allocator(), "tools", try json.clone(offers.arena.allocator(), value));
+        var called = false;
+        for ((try protocol.field(row, "calls")).array.items) |call| if (std.mem.eql(u8, try json.asString(call), "tools/list")) {
+            called = true;
+        };
+        try std.testing.expectEqual(called, @import("capabilities.zig").offersTools(offers.value));
+        try std.testing.expectEqualStrings("connected", try protocol.text(row, "state"));
+    }
+}
+
 test "MCP resource adapter replays original binary text MIME decoding image bytes and saved files" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;

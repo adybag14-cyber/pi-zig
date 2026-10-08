@@ -11,8 +11,10 @@ fn emit(io: std.Io, gpa: std.mem.Allocator, value: Value) !void {
 }
 pub fn main(init: std.process.Init) !void {
     const args = try init.minimal.args.toSlice(init.arena.allocator());
-    const resource_mode = args.len > 1 and (std.mem.eql(u8, args[1], "--resources") or std.mem.eql(u8, args[1], "--resources-no-templates"));
+    const resource_mode = args.len > 1 and (std.mem.eql(u8, args[1], "--resources") or std.mem.eql(u8, args[1], "--resources-no-templates") or std.mem.eql(u8, args[1], "--resources-failed-lists") or std.mem.eql(u8, args[1], "--resources-false-tools"));
     const no_templates = args.len > 1 and std.mem.eql(u8, args[1], "--resources-no-templates");
+    const failed_lists = args.len > 1 and std.mem.eql(u8, args[1], "--resources-failed-lists");
+    const false_tools = args.len > 1 and std.mem.eql(u8, args[1], "--resources-false-tools");
     if (args.len > 1 and std.mem.eql(u8, args[1], "--stall")) {
         try init.io.sleep(.fromSeconds(3600), .awake);
         return;
@@ -34,7 +36,15 @@ pub fn main(init: std.process.Init) !void {
         if (std.mem.eql(u8, method, "initialize")) {
             var value = try json.Owned.parse(init.gpa, if (resource_mode) "{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{\"resources\":{}},\"serverInfo\":{\"name\":\"resources\",\"version\":\"1\"}}" else "{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{\"tools\":{}},\"serverInfo\":{\"name\":\"configured\",\"version\":\"1\"}}");
             defer value.deinit();
+            if (false_tools) try value.value.object.getPtr("capabilities").?.object.put(value.arena.allocator(), "tools", .{ .bool = false });
             result = try json.clone(a, value.value);
+        } else if (failed_lists and (std.mem.eql(u8, method, "resources/list") or std.mem.eql(u8, method, "resources/templates/list"))) {
+            var remote = try json.Owned.parse(init.gpa, "{\"code\":-32042,\"message\":\"Original initial resource listing failure\"}");
+            defer remote.deinit();
+            var response = try protocol.response(init.gpa, id, remote.value, true);
+            defer response.deinit();
+            try emit(init.io, init.gpa, response.value);
+            continue;
         } else if (std.mem.eql(u8, method, "resources/templates/list") and no_templates) {
             var remote = try json.Owned.parse(init.gpa, "{\"code\":-32601,\"message\":\"Templates are not implemented\"}");
             defer remote.deinit();

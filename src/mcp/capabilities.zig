@@ -5,6 +5,18 @@ const protocol = @import("protocol.zig");
 const json = protocol.json;
 const Value = protocol.Value;
 pub const List = enum { tools, resources, resource_templates, prompts };
+pub fn offersTools(offers: Value) bool {
+    const value = json.get(offers, "tools") orelse return false;
+    return switch (value) {
+        .null => false,
+        .bool => value.bool,
+        .integer => value.integer != 0,
+        .float => value.float != 0 and !std.math.isNan(value.float),
+        .number_string => (json.asNumber(value) catch return true) != 0,
+        .string => value.string.len != 0,
+        .array, .object => true,
+    };
+}
 fn method(kind: List) []const u8 {
     return switch (kind) {
         .tools => "tools/list",
