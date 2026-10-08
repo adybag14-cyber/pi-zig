@@ -1,3 +1,6 @@
+test "native SDK SessionManager Source retained identity compaction edits branches and public migration helpers" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-session-manager-options-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-session-manager-options-6fb2e78.json"));
+}
 const std = @import("std");
 const builtin = @import("builtin");
 test "native SDK private session contexts retain exact registry affinity and reject stale getters" {

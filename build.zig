@@ -878,6 +878,17 @@ pub fn build(b: *std.Build) void {
     const sdk_settings_run = b.addRunArtifact(sdk_settings_tests);
     b.step("test-sdk-settings-ownership", "Exercise SDK settings persistence and ownership against Source").dependOn(&sdk_settings_run.step);
     test_step.dependOn(&sdk_settings_run.step);
+    const sdk_session_manager_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_manager_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK session manager"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_session_manager_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, sdk_session_manager_tests.root_module);
+    sdk_session_manager_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const sdk_session_manager_run = b.addRunArtifact(sdk_session_manager_tests);
+    b.step("test-sdk-session-manager", "Exercise Source session manager identities projections and allocation ownership").dependOn(&sdk_session_manager_run.step);
+    test_step.dependOn(&sdk_session_manager_run.step);
     const run_binding_tests = b.addRunArtifact(binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
     const cursor_boundary_tests = b.addTest(.{

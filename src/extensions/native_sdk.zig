@@ -22,6 +22,7 @@ pub const State = struct {
 const Method = enum(c_int) {
     getCwd,
     getSessionDir,
+    usesDefaultSessionDir,
     getSessionId,
     getSessionName,
     getSessionFile,
@@ -44,6 +45,8 @@ const Method = enum(c_int) {
     branch,
     resetLeaf,
     buildSessionContext,
+    buildContextEntries,
+    buildSessionProjection,
     newSession,
     isPersisted,
     switchSession,
@@ -180,6 +183,19 @@ pub fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
     return c.JS_ThrowTypeError(engine.context, "Native coding SDK: %s", @as([*:0]const u8, @errorName(err)));
 }
+pub fn sourceError(engine: *engine_mod.Engine, message: []const u8) !c.JSValue {
+    const value = try engine.checked(c.JS_NewError(engine.context));
+    defer engine.freeValue(value);
+    try put(engine, value, "message", try text(engine, message));
+    return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value)));
+}
+fn missingEntry(self: *State, id: c.JSValue) !c.JSValue {
+    const raw = try self.engine.toString(id);
+    defer self.engine.gpa.free(raw);
+    const message = try std.fmt.allocPrint(self.engine.gpa, "Entry {s} not found", .{raw});
+    defer self.engine.gpa.free(message);
+    return sourceError(self.engine, message);
+}
 pub fn state(engine: *engine_mod.Engine, value: c.JSValue) !*State {
     return @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, value, engine.native_sdk_class) orelse return error.InvalidNativeSDKReceiver));
 }
@@ -303,7 +319,7 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
         engine.native_sdk_next_runtime_id += 1;
     }
     const methods: []const Method = switch (kind) {
-        .session_manager => &.{ .getCwd, .getSessionDir, .getSessionId, .getSessionName, .getSessionFile, .getHeader, .getEntries, .getEntryCount, .getLeafId, .getLeafEntry, .getEntry, .getChildren, .getBranch, .getLabel, .getTree, .appendMessage, .appendCustomEntry, .appendSessionInfo, .appendModelChange, .appendThinkingLevelChange, .appendLabelChange, .branch, .resetLeaf, .buildSessionContext, .newSession, .setSessionFile, .isPersisted },
+        .session_manager => &.{},
         .settings_manager => &.{},
         .model_registry => &.{},
         .resource_loader => &.{ .reload, .getExtensions, .getSkills, .getPrompts, .getThemes, .getAgentsFiles, .getSystemPrompt, .getAppendSystemPrompt, .getSystemPromptSource, .getAppendSystemPromptSources, .extendResources },
@@ -718,7 +734,7 @@ pub fn agentDir(engine: *engine_mod.Engine) ![]u8 {
     return std.fs.path.join(engine.gpa, &.{ base, ".pi", "agent" });
 }
 var ids = std.atomic.Value(u64).init(1);
-fn identifier(engine: *engine_mod.Engine, prefix: []const u8) !c.JSValue {
+pub fn identifier(engine: *engine_mod.Engine, prefix: []const u8) !c.JSValue {
     if (std.mem.eql(u8, prefix, "session")) {
         var bytes: [16]u8 = undefined;
         if (engine.native_io) |io| std.Io.random(io, &bytes) else {
@@ -761,6 +777,22 @@ pub fn append(engine: *engine_mod.Engine, values: c.JSValue, value: c.JSValue) !
 fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persistent: bool) !c.JSValue {
     const data = try object(engine);
     defer engine.freeValue(data);
+    var has_imported_header = false;
+    if (!persistent and args.len > 2 and c.JS_IsArray(args[2])) {
+        for (0..try length(engine, args[2])) |index| {
+            const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, args[2], @intCast(index)));
+            defer engine.freeValue(row);
+            const typ = try get(engine, row, "type");
+            defer engine.freeValue(typ);
+            const label = try text(engine, "session");
+            defer engine.freeValue(label);
+            if (c.JS_IsStrictEqual(engine.context, typ, label)) {
+                has_imported_header = true;
+                break;
+            }
+        }
+        if (has_imported_header) _ = try @import("native_sdk_session_projection.zig").migrate(engine, args[2]);
+    }
     const current = if (args.len > 0 and c.JS_IsString(args[0])) try engine.toString(args[0]) else try cwd(engine);
     defer engine.gpa.free(current);
     try put(engine, data, "cwd", try text(engine, current));
@@ -782,21 +814,51 @@ fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persistent: 
     try put(engine, header, "version", c.JS_NewInt32(engine.context, 3));
     try put(engine, header, "id", try identifier(engine, "session"));
     const options_index: usize = if (persistent) 2 else 1;
-    if (args.len > options_index and c.JS_IsObject(args[options_index])) {
+    if (!has_imported_header and args.len > options_index and c.JS_IsObject(args[options_index])) {
         const chosen = try get(engine, args[options_index], "id");
         defer engine.freeValue(chosen);
         if (!c.JS_IsUndefined(chosen)) {
-            if (!c.JS_IsString(chosen)) return error.InvalidSessionId;
             const raw = try engine.toString(chosen);
             defer engine.gpa.free(raw);
-            if (raw.len == 0 or !std.ascii.isAlphanumeric(raw[0]) or !std.ascii.isAlphanumeric(raw[raw.len - 1])) return error.InvalidSessionId;
-            for (raw) |byte| if (!std.ascii.isAlphanumeric(byte) and byte != '.' and byte != '_' and byte != '-') return error.InvalidSessionId;
-            try put(engine, header, "id", c.JS_DupValue(engine.context, chosen));
+            var valid = raw.len > 0 and std.ascii.isAlphanumeric(raw[0]) and std.ascii.isAlphanumeric(raw[raw.len - 1]);
+            for (raw) |byte| if (!std.ascii.isAlphanumeric(byte) and byte != '.' and byte != '_' and byte != '-') {
+                valid = false;
+                break;
+            };
+            if (!valid) {
+                const ignored = try sourceError(engine, "Session id must be non-empty, contain only alphanumeric characters, '-', '_', and '.', and start and end with an alphanumeric character");
+                engine.freeValue(ignored);
+            }
+            if (!c.JS_IsNull(chosen)) try put(engine, header, "id", c.JS_DupValue(engine.context, chosen));
         }
     }
     try put(engine, header, "timestamp", try timestamp(engine));
     try put(engine, header, "cwd", try text(engine, current));
+    try put(engine, header, "parentSession", if (args.len > options_index and c.JS_IsObject(args[options_index])) try get(engine, args[options_index], "parentSession") else c.pi_js_undefined());
     try put(engine, data, "header", c.JS_DupValue(engine.context, header));
+    if (!persistent and args.len > 2 and c.JS_IsArray(args[2])) {
+        const imported = try array(engine);
+        defer engine.freeValue(imported);
+        var loaded_header = false;
+        for (0..try length(engine, args[2])) |index| {
+            const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, args[2], @intCast(index)));
+            defer engine.freeValue(row);
+            const typ = try get(engine, row, "type");
+            defer engine.freeValue(typ);
+            const kind = try engine.toString(typ);
+            defer engine.gpa.free(kind);
+            if (std.mem.eql(u8, kind, "session")) {
+                if (!loaded_header) {
+                    try put(engine, data, "header", c.JS_DupValue(engine.context, row));
+                    loaded_header = true;
+                }
+            } else {
+                try append(engine, imported, c.JS_DupValue(engine.context, row));
+                try put(engine, data, "leafId", try get(engine, row, "id"));
+            }
+        }
+        try put(engine, data, "entries", c.JS_DupValue(engine.context, imported));
+    }
     if (persistent) {
         const id = try get(engine, header, "id");
         defer engine.freeValue(id);
@@ -816,7 +878,44 @@ fn initManager(engine: *engine_mod.Engine, args: []const c.JSValue, persistent: 
         try put(engine, data, "sessionFile", try text(engine, path));
         if (engine.native_io) |io| try std.Io.Dir.cwd().createDirPath(io, directory);
     }
+    try rebuildSessionIndex(engine, data);
     return new(engine, .session_manager, data);
+}
+fn indexSessionEntry(engine: *engine_mod.Engine, data: c.JSValue, row: c.JSValue) !void {
+    const index = try get(engine, data, "entryIndex");
+    defer engine.freeValue(index);
+    const id = try get(engine, row, "id");
+    defer engine.freeValue(id);
+    const added = try invoke(engine, index, "set", &.{ id, row });
+    engine.freeValue(added);
+    const typ = try get(engine, row, "type");
+    defer engine.freeValue(typ);
+    const label_type = try text(engine, "label");
+    defer engine.freeValue(label_type);
+    if (c.JS_IsStrictEqual(engine.context, typ, label_type)) {
+        const target = try get(engine, row, "targetId");
+        defer engine.freeValue(target);
+        const label = try get(engine, row, "label");
+        defer engine.freeValue(label);
+        const stamp = try get(engine, row, "timestamp");
+        defer engine.freeValue(stamp);
+        inline for (.{ .{ "sessionLabels", label }, .{ "sessionLabelTimes", stamp } }) |field| {
+            const map = try get(engine, data, field[0]);
+            defer engine.freeValue(map);
+            const result = if (c.JS_ToBool(engine.context, label) == 1) try invoke(engine, map, "set", &.{ target, field[1] }) else try invoke(engine, map, "delete", &.{target});
+            engine.freeValue(result);
+        }
+    }
+}
+fn rebuildSessionIndex(engine: *engine_mod.Engine, data: c.JSValue) !void {
+    inline for (.{ "entryIndex", "sessionLabels", "sessionLabelTimes" }) |field| try put(engine, data, field, try @import("native_sdk_auth_snapshot.zig").collection(engine, "Map"));
+    const entries = try get(engine, data, "entries");
+    defer engine.freeValue(entries);
+    for (0..try length(engine, entries)) |i| {
+        const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, entries, @intCast(i)));
+        defer engine.freeValue(row);
+        try indexSessionEntry(engine, data, row);
+    }
 }
 fn encodeCwd(engine: *engine_mod.Engine, input: []const u8) ![]u8 {
     const start: usize = if (input.len > 0 and (input[0] == '/' or input[0] == '\\')) 1 else 0;
@@ -826,23 +925,30 @@ fn encodeCwd(engine: *engine_mod.Engine, input: []const u8) ![]u8 {
     };
     return result;
 }
-fn entry(self: *State, kind: []const u8) !c.JSValue {
+pub fn entry(self: *State, kind: []const u8) !c.JSValue {
     const engine = self.engine;
     const result = try object(engine);
     errdefer engine.freeValue(result);
     try put(engine, result, "type", try text(engine, kind));
+    if (std.mem.eql(u8, kind, "custom") or std.mem.eql(u8, kind, "custom_message")) {
+        try put(engine, result, "customType", c.pi_js_undefined());
+        if (std.mem.eql(u8, kind, "custom")) try put(engine, result, "data", c.pi_js_undefined()) else {
+            inline for (.{ "content", "display", "details" }) |field| try put(engine, result, field, c.pi_js_undefined());
+        }
+    }
     try put(engine, result, "id", try identifier(engine, "entry"));
-    try put(engine, result, "timestamp", try timestamp(engine));
     try put(engine, result, "parentId", try get(engine, self.data, "leafId"));
+    try put(engine, result, "timestamp", try timestamp(engine));
     return result;
 }
-fn commitEntry(self: *State, value: c.JSValue) !c.JSValue {
+pub fn commitEntry(self: *State, value: c.JSValue) !c.JSValue {
     const engine = self.engine;
     const entries = try get(engine, self.data, "entries");
     defer engine.freeValue(entries);
     const id = try get(engine, value, "id");
     errdefer engine.freeValue(id);
     try append(engine, entries, c.JS_DupValue(engine.context, value));
+    try indexSessionEntry(engine, self.data, value);
     try put(engine, self.data, "leafId", c.JS_DupValue(engine.context, id));
     try persist(self);
     return id;
@@ -902,24 +1008,13 @@ fn persist(self: *State) !void {
     }
     self.persisted_count = count;
 }
-fn findEntry(self: *State, id: c.JSValue) !c.JSValue {
+pub fn findEntry(self: *State, id: c.JSValue) !c.JSValue {
     const engine = self.engine;
-    const names = try engine.toString(id);
-    defer engine.gpa.free(names);
-    const entries = try get(engine, self.data, "entries");
-    defer engine.freeValue(entries);
-    for (0..try length(engine, entries)) |i| {
-        const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, entries, @intCast(i)));
-        defer engine.freeValue(row);
-        const candidate = try get(engine, row, "id");
-        defer engine.freeValue(candidate);
-        const value = try engine.toString(candidate);
-        defer engine.gpa.free(value);
-        if (std.mem.eql(u8, names, value)) return c.JS_DupValue(engine.context, row);
-    }
-    return c.pi_js_undefined();
+    const index = try get(engine, self.data, "entryIndex");
+    defer engine.freeValue(index);
+    return invoke(engine, index, "get", &.{id});
 }
-fn branchEntries(self: *State, from: c.JSValue) !c.JSValue {
+pub fn branchEntries(self: *State, from: c.JSValue) !c.JSValue {
     const engine = self.engine;
     var held: std.ArrayList(c.JSValue) = .empty;
     defer {
@@ -946,29 +1041,9 @@ fn branchEntries(self: *State, from: c.JSValue) !c.JSValue {
 }
 fn labelFor(self: *State, id: c.JSValue) !c.JSValue {
     const engine = self.engine;
-    const rows = try get(engine, self.data, "entries");
-    defer engine.freeValue(rows);
-    var result = c.pi_js_undefined();
-    errdefer engine.freeValue(result);
-    for (0..try length(engine, rows)) |i| {
-        const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, @intCast(i)));
-        defer engine.freeValue(row);
-        const typ = try get(engine, row, "type");
-        defer engine.freeValue(typ);
-        const name = try engine.toString(typ);
-        defer engine.gpa.free(name);
-        if (!std.mem.eql(u8, name, "label")) continue;
-        const target = try get(engine, row, "targetId");
-        defer engine.freeValue(target);
-        if (!c.JS_IsStrictEqual(engine.context, target, id)) continue;
-        engine.freeValue(result);
-        result = try get(engine, row, "label");
-        if (c.JS_IsNull(result)) {
-            engine.freeValue(result);
-            result = c.pi_js_undefined();
-        }
-    }
-    return result;
+    const labels = try get(engine, self.data, "sessionLabels");
+    defer engine.freeValue(labels);
+    return invoke(engine, labels, "get", &.{id});
 }
 fn sessionTree(self: *State) !c.JSValue {
     const engine = self.engine;
@@ -981,13 +1056,16 @@ fn sessionTree(self: *State) !c.JSValue {
         defer engine.freeValue(row);
         const node = try object(engine);
         defer engine.freeValue(node);
-        try put(engine, node, "entry", try clone(engine, row));
+        try put(engine, node, "entry", c.JS_DupValue(engine.context, row));
         try put(engine, node, "children", try array(engine));
         const id = try get(engine, row, "id");
         defer engine.freeValue(id);
         const label = try labelFor(self, id);
         defer engine.freeValue(label);
-        if (!c.JS_IsUndefined(label)) try put(engine, node, "label", c.JS_DupValue(engine.context, label));
+        try put(engine, node, "label", c.JS_DupValue(engine.context, label));
+        const times = try get(engine, self.data, "sessionLabelTimes");
+        defer engine.freeValue(times);
+        try put(engine, node, "labelTimestamp", try invoke(engine, times, "get", &.{id}));
         try append(engine, nodes, c.JS_DupValue(engine.context, node));
     }
     const roots = try array(engine);
@@ -999,8 +1077,10 @@ fn sessionTree(self: *State) !c.JSValue {
         defer engine.freeValue(row);
         const parent = try get(engine, row, "parentId");
         defer engine.freeValue(parent);
+        const self_id = try get(engine, row, "id");
+        defer engine.freeValue(self_id);
         var attached = false;
-        if (c.JS_IsString(parent)) for (0..try length(engine, nodes)) |j| {
+        if (c.JS_IsString(parent) and !c.JS_IsStrictEqual(engine.context, self_id, parent)) for (0..try length(engine, nodes)) |j| {
             const other = try engine.checked(c.JS_GetPropertyUint32(engine.context, nodes, @intCast(j)));
             defer engine.freeValue(other);
             const other_entry = try get(engine, other, "entry");
@@ -1016,7 +1096,32 @@ fn sessionTree(self: *State) !c.JSValue {
         };
         if (!attached) try append(engine, roots, c.JS_DupValue(engine.context, node));
     }
+    const compare = try engine.checked(c.JS_NewCFunction(engine.context, compareSessionNodes, "compareSessionNodes", 2));
+    defer engine.freeValue(compare);
+    for (0..try length(engine, nodes)) |index| {
+        const node = try engine.checked(c.JS_GetPropertyUint32(engine.context, nodes, @intCast(index)));
+        defer engine.freeValue(node);
+        const children = try get(engine, node, "children");
+        defer engine.freeValue(children);
+        const sorted = try invoke(engine, children, "sort", &.{compare});
+        engine.freeValue(sorted);
+    }
     return roots;
+}
+fn compareSessionNodes(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    if (argc < 2) return c.JS_NewInt32(engine.context, 0);
+    var numbers: [2]f64 = undefined;
+    for (0..2) |index| {
+        const row = get(engine, args[index], "entry") catch |err| return fail(engine, err);
+        defer engine.freeValue(row);
+        const stamp = get(engine, row, "timestamp") catch |err| return fail(engine, err);
+        defer engine.freeValue(stamp);
+        const number = @import("native_sdk_session_projection.zig").dateTime(engine, stamp) catch |err| return fail(engine, err);
+        defer engine.freeValue(number);
+        if (c.JS_ToFloat64(engine.context, &numbers[index], number) < 0) return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+    }
+    return c.JS_NewFloat64(engine.context, numbers[0] - numbers[1]);
 }
 
 pub fn jsonObject(engine: *engine_mod.Engine, source: []const u8) !c.JSValue {
@@ -1528,6 +1633,7 @@ fn openManager(engine: *engine_mod.Engine, args: []const c.JSValue) !c.JSValue {
         try put(engine, target.data, "leafId", try get(engine, row, "id"));
     }
     target.persisted_count = try length(engine, entries);
+    try rebuildSessionIndex(engine, target.data);
     return manager;
 }
 fn queueTypedOperation(engine: *engine_mod.Engine, data: c.JSValue, model: c.JSValue, context: c.JSValue, options: c.JSValue, images: bool) !c.JSValue {
@@ -1818,6 +1924,23 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         return error.NativeSDKMethodUnavailable;
     }
     if (self.kind == .session_manager) {
+        if (operation == .usesDefaultSessionDir) {
+            const working = try get(engine, self.data, "cwd");
+            defer engine.freeValue(working);
+            const raw = try engine.toString(working);
+            defer engine.gpa.free(raw);
+            const encoded = try encodeCwd(engine, raw);
+            defer engine.gpa.free(encoded);
+            const root = try agentDir(engine);
+            defer engine.gpa.free(root);
+            const path = try std.fs.path.join(engine.gpa, &.{ root, "sessions", encoded });
+            defer engine.gpa.free(path);
+            const expected = try text(engine, path);
+            defer engine.freeValue(expected);
+            const actual = try get(engine, self.data, "sessionDir");
+            defer engine.freeValue(actual);
+            return c.pi_js_bool(engine.context, @intFromBool(c.JS_IsStrictEqual(engine.context, actual, expected)));
+        }
         if (operation == .isPersisted) return get(engine, self.data, "persistent");
         if (operation == .getTree) return sessionTree(self);
         if (operation == .getLabel) return labelFor(self, first);
@@ -1833,7 +1956,15 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
                 defer engine.freeValue(typ);
                 const value = try engine.toString(typ);
                 defer engine.gpa.free(value);
-                if (std.mem.eql(u8, value, "session_info")) return get(engine, row, "name");
+                if (std.mem.eql(u8, value, "session_info")) {
+                    const name = try get(engine, row, "name");
+                    defer engine.freeValue(name);
+                    if (c.JS_IsUndefined(name) or c.JS_IsNull(name)) return c.pi_js_undefined();
+                    const trimmed = try invoke(engine, name, "trim", &.{});
+                    if (c.JS_ToBool(engine.context, trimmed) == 1) return trimmed;
+                    engine.freeValue(trimmed);
+                    return c.pi_js_undefined();
+                }
             }
             return c.pi_js_undefined();
         }
@@ -1848,8 +1979,9 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         };
         if (simple) |name| {
             const value = try get(engine, self.data, name);
+            if (operation != .getEntries) return value;
             defer engine.freeValue(value);
-            return clone(engine, value);
+            return invoke(engine, value, "slice", &.{});
         }
         if (operation == .getSessionId) {
             const header = try get(engine, self.data, "header");
@@ -1857,23 +1989,19 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             return get(engine, header, "id");
         }
         if (operation == .getEntryCount) {
-            const rows = try get(engine, self.data, "entries");
-            defer engine.freeValue(rows);
-            return c.JS_NewInt32(engine.context, @intCast(try length(engine, rows)));
+            const index = try get(engine, self.data, "entryIndex");
+            defer engine.freeValue(index);
+            return get(engine, index, "size");
         }
         if (operation == .getEntry or operation == .getLeafEntry) {
             const id = if (operation == .getEntry) c.JS_DupValue(engine.context, first) else try get(engine, self.data, "leafId");
             defer engine.freeValue(id);
-            const value = try findEntry(self, id);
-            defer engine.freeValue(value);
-            return clone(engine, value);
+            return findEntry(self, id);
         }
         if (operation == .getBranch) {
             const id = if (c.JS_IsString(first)) c.JS_DupValue(engine.context, first) else try get(engine, self.data, "leafId");
             defer engine.freeValue(id);
-            const value = try branchEntries(self, id);
-            defer engine.freeValue(value);
-            return clone(engine, value);
+            return branchEntries(self, id);
         }
         if (operation == .newSession) {
             const working = try get(engine, self.data, "cwd");
@@ -1882,7 +2010,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             defer engine.freeValue(directory);
             const persistent = try get(engine, self.data, "persistent");
             defer engine.freeValue(persistent);
-            const created = try initManager(engine, &.{ working, directory }, c.JS_ToBool(engine.context, persistent) == 1);
+            const created = if (c.JS_ToBool(engine.context, persistent) == 1) try initManager(engine, &.{ working, directory, first }, true) else try initManager(engine, &.{ working, first }, false);
             defer engine.freeValue(created);
             const fresh = try state(engine, created);
             engine.freeValue(self.data);
@@ -1903,7 +2031,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             if (operation == .branch) {
                 const found = try findEntry(self, first);
                 defer engine.freeValue(found);
-                if (c.JS_IsUndefined(found)) return error.InvalidSessionEntry;
+                if (c.JS_IsUndefined(found)) return missingEntry(self, first);
             }
             try put(engine, self.data, "leafId", if (operation == .branch) c.JS_DupValue(engine.context, first) else c.pi_js_null());
             return c.pi_js_undefined();
@@ -1918,46 +2046,24 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
                 defer engine.freeValue(row);
                 const parent = try get(engine, row, "parentId");
                 defer engine.freeValue(parent);
-                if (c.JS_IsStrictEqual(engine.context, parent, first)) try append(engine, output, try clone(engine, row));
+                if (c.JS_IsStrictEqual(engine.context, parent, first)) try append(engine, output, c.JS_DupValue(engine.context, row));
             }
             return output;
         }
-        if (operation == .buildSessionContext) {
-            const result = try object(engine);
-            errdefer engine.freeValue(result);
-            const id = try get(engine, self.data, "leafId");
-            defer engine.freeValue(id);
-            const path = try branchEntries(self, id);
+        if (operation == .buildSessionContext or operation == .buildSessionProjection or operation == .buildContextEntries) {
+            const leaf = try get(engine, self.data, "leafId");
+            defer engine.freeValue(leaf);
+            const path = try branchEntries(self, leaf);
             defer engine.freeValue(path);
-            const messages = try array(engine);
-            defer engine.freeValue(messages);
-            var thinking: c.JSValue = try text(engine, "off");
-            defer engine.freeValue(thinking);
-            var model = c.pi_js_null();
-            defer engine.freeValue(model);
-            for (0..try length(engine, path)) |i| {
-                const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, path, @intCast(i)));
-                defer engine.freeValue(row);
-                const typ = try get(engine, row, "type");
-                defer engine.freeValue(typ);
-                const name = try engine.toString(typ);
-                defer engine.gpa.free(name);
-                if (std.mem.eql(u8, name, "message")) {
-                    try append(engine, messages, try get(engine, row, "message"));
-                } else if (std.mem.eql(u8, name, "thinking_level_change")) {
-                    engine.freeValue(thinking);
-                    thinking = try get(engine, row, "thinkingLevel");
-                } else if (std.mem.eql(u8, name, "model_change")) {
-                    engine.freeValue(model);
-                    model = try object(engine);
-                    try put(engine, model, "provider", try get(engine, row, "provider"));
-                    try put(engine, model, "modelId", try get(engine, row, "modelId"));
-                }
-            }
-            try put(engine, result, "messages", c.JS_DupValue(engine.context, messages));
-            try put(engine, result, "thinkingLevel", c.JS_DupValue(engine.context, thinking));
-            try put(engine, result, "model", c.JS_DupValue(engine.context, model));
-            return result;
+            const projection = @import("native_sdk_session_projection.zig");
+            if (operation == .buildContextEntries) return projection.contextEntries(engine, path);
+            const result = try projection.project(engine, path);
+            if (operation == .buildSessionProjection) return result;
+            defer engine.freeValue(result);
+            const context = try object(engine);
+            errdefer engine.freeValue(context);
+            inline for (.{ "messages", "thinkingLevel", "model" }) |field| try put(engine, context, field, try get(engine, result, field));
+            return context;
         }
         const kind: ?[]const u8 = switch (operation) {
             .appendMessage => "message",
@@ -1972,18 +2078,39 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             const row = try entry(self, name);
             defer engine.freeValue(row);
             switch (operation) {
-                .appendMessage => try put(engine, row, "message", try clone(engine, first)),
+                .appendMessage => try put(engine, row, "message", c.JS_DupValue(engine.context, first)),
                 .appendCustomEntry => {
                     try put(engine, row, "customType", c.JS_DupValue(engine.context, first));
-                    if (args.len > 1) try put(engine, row, "data", try clone(engine, second));
+                    try put(engine, row, "data", c.JS_DupValue(engine.context, second));
                 },
-                .appendSessionInfo => try put(engine, row, "name", c.JS_DupValue(engine.context, first)),
+                .appendSessionInfo => {
+                    const raw = try engine.toString(first);
+                    defer engine.gpa.free(raw);
+                    var cleaned: std.Io.Writer.Allocating = .init(engine.gpa);
+                    defer cleaned.deinit();
+                    var newline = false;
+                    for (raw) |byte| {
+                        if (byte == '\r' or byte == '\n') {
+                            if (!newline) try cleaned.writer.writeByte(' ');
+                            newline = true;
+                        } else {
+                            try cleaned.writer.writeByte(byte);
+                            newline = false;
+                        }
+                    }
+                    const value = try text(engine, cleaned.written());
+                    defer engine.freeValue(value);
+                    try put(engine, row, "name", try invoke(engine, value, "trim", &.{}));
+                },
                 .appendModelChange => {
                     try put(engine, row, "provider", c.JS_DupValue(engine.context, first));
                     try put(engine, row, "modelId", c.JS_DupValue(engine.context, second));
                 },
                 .appendThinkingLevelChange => try put(engine, row, "thinkingLevel", c.JS_DupValue(engine.context, first)),
                 .appendLabelChange => {
+                    const found = try findEntry(self, first);
+                    defer engine.freeValue(found);
+                    if (c.JS_IsUndefined(found)) return missingEntry(self, first);
                     try put(engine, row, "targetId", c.JS_DupValue(engine.context, first));
                     try put(engine, row, "label", c.JS_DupValue(engine.context, second));
                 },
@@ -2143,6 +2270,7 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     const definition: c.JSClassDef = .{ .class_name = "Native coding SDK object", .finalizer = finalizer, .gc_mark = mark, .call = null, .exotic = null };
     if (c.JS_NewClass(engine.runtime, engine.native_sdk_class, &definition) < 0) return error.OutOfMemory;
     try @import("native_sdk_credential_sync.zig").install(engine, exports);
+    try @import("native_sdk_session_projection.zig").install(engine, exports);
     try put(engine, exports, "VIRTUAL_MODEL_STATE_ENTRY", try text(engine, "pi.virtual-model-state"));
     try put(engine, exports, "createAgentSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createAgentSession", 1)));
     try put(engine, exports, "createAgentSessionServices", try engine.checked(c.pi_js_function_magic(engine.context, serviceCallback, "createAgentSessionServices", 1, 0)));
@@ -2165,6 +2293,21 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
         defer engine.freeValue(ctor);
         _ = c.JS_SetConstructorBit(engine.context, ctor, true);
         if (c.JS_SetConstructor(engine.context, ctor, proto) < 0) return error.JavaScriptException;
+        if (item[0] == .session_manager) {
+            const operations: []const Method = &.{ .getCwd, .getSessionDir, .usesDefaultSessionDir, .getSessionId, .getSessionName, .getSessionFile, .getHeader, .getEntries, .getEntryCount, .getLeafId, .getLeafEntry, .getEntry, .getChildren, .getBranch, .getLabel, .getTree, .appendMessage, .appendCustomEntry, .appendSessionInfo, .appendModelChange, .appendThinkingLevelChange, .appendLabelChange, .branch, .resetLeaf, .buildSessionContext, .buildContextEntries, .buildSessionProjection, .newSession, .setSessionFile, .isPersisted };
+            for (operations) |operation| {
+                const name = try engine.gpa.dupeZ(u8, @tagName(operation));
+                defer engine.gpa.free(name);
+                const arity: c_int = switch (operation) {
+                    .appendModelChange, .appendCustomEntry, .appendLabelChange => 2,
+                    .getEntry, .getChildren, .getBranch, .getLabel, .appendMessage, .appendSessionInfo, .appendThinkingLevelChange, .branch, .newSession, .setSessionFile => 1,
+                    else => 0,
+                };
+                const function = try engine.checked(c.pi_js_function_magic(engine.context, method, name, arity, @intFromEnum(operation)));
+                if (c.JS_DefinePropertyValueStr(engine.context, proto, name, function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+            }
+            try @import("native_sdk_session_mutations.zig").install(engine, proto);
+        }
         if (item[0] == .model_registry) try @import("native_sdk_model_registry.zig").install(engine, proto);
         if (item[0] == .session_manager) inline for (.{ .{ "inMemory", 0 }, .{ "create", 1 }, .{ "open", 2 } }) |operation| try put(engine, ctor, operation[0], try engine.checked(c.pi_js_function_magic(engine.context, staticMethod, operation[0], 1, operation[1])));
         if (item[0] == .settings_manager) inline for (.{ .{ "inMemory", 100 }, .{ "create", 101 }, .{ "fromStorage", 102 } }) |operation| try put(engine, ctor, operation[0], try engine.checked(c.pi_js_function_magic(engine.context, staticMethod, operation[0], 1, operation[1])));
