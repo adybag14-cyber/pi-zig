@@ -1083,3 +1083,56 @@ test "mcp.configured background direct timeout reports original notice once and 
     try service.awaitForScript("text(await tools.read({path:'input.txt'}));", null);
     try service.close();
 }
+
+test "mcp.configured background shutdown cancels a pending reconnect factory before lifecycle retirement" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    try root.write(false, try document(arena.allocator(), "fixture", try stdioConfig(arena.allocator(), program, "direct")));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const service = try create(&root, &env, false);
+    defer service.deinit();
+    try service.startBackground();
+    try service.awaitStartup();
+    const Probe = struct {
+        entered: std.Io.Event = .unset,
+        cleaned: std.atomic.Value(bool) = .init(false),
+        fn factory(raw: ?*anyopaque, _: std.mem.Allocator, operation_io: std.Io, _: usize) !@import("mcp/connection.zig").Lease {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            defer self.cleaned.store(true, .release);
+            self.entered.set(operation_io);
+            try operation_io.sleep(.fromSeconds(3600), .awake);
+            return error.UnexpectedReconnectRelease;
+        }
+    };
+    var probe: Probe = .{};
+    const server = service.findServer("fixture").?;
+    server.connection.options.factory = Probe.factory;
+    server.connection.options.factory_context = &probe;
+    var reconnecting = try io.concurrent(configured.Service.reconnect, .{ service, "fixture" });
+    var joined = false;
+    defer if (!joined) reconnecting.cancel(io) catch {};
+    try probe.entered.wait(io);
+    var queued = try io.concurrent(configured.Service.reconnect, .{ service, "fixture" });
+    var queued_joined = false;
+    defer if (!queued_joined) queued.cancel(io) catch {};
+    server.lifecycle_mutex.lockUncancelable(io);
+    while (server.reconnect_callers < 2) server.lifecycle_changed.waitUncancelable(io, &server.lifecycle_mutex);
+    server.lifecycle_mutex.unlock(io);
+    try service.close();
+    try std.testing.expectError(error.McpConnectionClosed, queued.await(io));
+    queued_joined = true;
+    reconnecting.await(io) catch |cause| switch (cause) {
+        error.Canceled, error.McpConnectionClosed => {},
+        else => return cause,
+    };
+    joined = true;
+    try std.testing.expect(probe.cleaned.load(.acquire));
+    try std.testing.expect(!server.reconnect_active);
+    try std.testing.expectEqual(@as(usize, 0), server.reconnect_callers);
+    try std.testing.expect(server.connection.connectionState() == .closed);
+}

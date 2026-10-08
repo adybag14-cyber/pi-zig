@@ -40,6 +40,9 @@ pub const Server = struct {
     sign_in_active: bool = false,
     sign_in_aborted: bool = false,
     lifecycle_mutex: std.Io.Mutex = .init,
+    lifecycle_changed: std.Io.Condition = .init,
+    reconnect_active: bool = false,
+    reconnect_callers: usize = 0,
     fn authToken(raw: ?*anyopaque, gpa: std.mem.Allocator, _: ?*bool) !?[]u8 {
         const self: *Server = @ptrCast(@alignCast(raw.?));
         if (self.auth_provider) |*provider| return provider.token();
@@ -680,11 +683,7 @@ pub const Service = struct {
     }
     pub fn close(self: *Service) !void {
         for (self.servers.items) |server| {
-            server.connection.mutex.lockUncancelable(self.io);
-            const client = server.connection.opening_client orelse server.connection.client;
-            const reentrant = if (client) |value| value.inCallback() else false;
-            server.connection.mutex.unlock(self.io);
-            if (reentrant) return error.ReentrantMcpConfiguredClose;
+            if (server.connection.inOwnerCallback()) return error.ReentrantMcpConfiguredClose;
         }
         self.closing.store(true, .release);
         for (self.servers.items) |server| {
@@ -693,13 +692,15 @@ pub const Service = struct {
             while (server.sign_in_active) server.sign_in_changed.waitUncancelable(self.io, &server.sign_in_mutex);
             server.sign_in_mutex.unlock(self.io);
         }
+        // Close the stable connection before waiting for discovery's lifecycle caller.
+        if (self.startup) |pool| pool.close();
+        for (self.servers.items) |server| try server.connection.close();
         for (self.servers.items) |server| {
             server.lifecycle_mutex.lockUncancelable(self.io);
-            defer server.lifecycle_mutex.unlock(self.io);
-            try server.connection.close();
+            while (server.reconnect_callers != 0) server.lifecycle_changed.waitUncancelable(self.io, &server.lifecycle_mutex);
+            server.lifecycle_mutex.unlock(self.io);
             if (server.auth_provider) |*provider| provider.close();
         }
-        if (self.startup) |pool| pool.close();
     }
     pub fn findServer(self: *Service, name: []const u8) ?*Server {
         for (self.servers.items) |server| if (std.mem.eql(u8, server.name, name)) return server;
@@ -708,20 +709,51 @@ pub const Service = struct {
     pub fn reconnect(self: *Service, name: []const u8) !void {
         const server = self.findServer(name) orelse return error.McpServerNotFound;
         try server.lifecycle_mutex.lock(self.io);
-        defer server.lifecycle_mutex.unlock(self.io);
-        if (self.closing.load(.acquire)) return error.McpConnectionClosed;
+        if (self.closing.load(.acquire)) {
+            server.lifecycle_mutex.unlock(self.io);
+            return error.McpConnectionClosed;
+        }
+        server.reconnect_callers += 1;
+        server.lifecycle_changed.broadcast(self.io);
+        server.lifecycle_mutex.unlock(self.io);
+        defer {
+            server.lifecycle_mutex.lockUncancelable(self.io);
+            server.reconnect_callers -= 1;
+            server.lifecycle_changed.broadcast(self.io);
+            server.lifecycle_mutex.unlock(self.io);
+        }
+        try server.lifecycle_mutex.lock(self.io);
+        while (server.reconnect_active and !self.closing.load(.acquire)) server.lifecycle_changed.wait(self.io, &server.lifecycle_mutex) catch |cause| {
+            server.lifecycle_mutex.unlock(self.io);
+            return cause;
+        };
+        if (self.closing.load(.acquire)) {
+            server.lifecycle_mutex.unlock(self.io);
+            return error.McpConnectionClosed;
+        }
+        server.reconnect_active = true;
+        server.lifecycle_mutex.unlock(self.io);
+        defer {
+            server.lifecycle_mutex.lockUncancelable(self.io);
+            server.reconnect_active = false;
+            server.lifecycle_changed.broadcast(self.io);
+            server.lifecycle_mutex.unlock(self.io);
+        }
         if (self.startup) |pool| pool.retireContext(server);
         const settings = server.connection.options;
-        try server.connection.close();
-        server.connection.deinit();
-        server.connection = connection.Connection.init(self.gpa, self.io, settings);
+        try server.connection.reset(settings, &self.closing);
+        if (self.closing.load(.acquire)) return error.McpConnectionClosed;
         self.catalog_mutex.lockUncancelable(self.io);
         var index: usize = 0;
         while (index < self.descriptors.items.len) {
             if (self.descriptors.items[index].server == server) _ = self.descriptors.orderedRemove(index) else index += 1;
         }
         self.catalog_mutex.unlock(self.io);
-        try self.discover(server);
+        if (self.startup) |pool| {
+            try pool.add(server, fetchDiscovery, (try config.toolExposure(server.config, "")) == .direct);
+            _ = try pool.waitContext(server, .none);
+            try self.promoteReady();
+        } else try self.discover(server);
     }
     pub fn signIn(self: *Service, name: []const u8, prompt: oauth_signin.Prompt, flag: ?*bool, timeout_ms: u64) !void {
         const server = self.findServer(name) orelse return error.McpServerNotFound;
