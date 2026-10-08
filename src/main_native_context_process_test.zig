@@ -13,13 +13,17 @@ test "native main context actual CLI applies strict theme admission before exten
     const directory = buffer[0..length];
     try scratch.dir.createDir(io, "agent", .default_dir);
     try scratch.dir.createDir(io, "home", .default_dir);
+    try scratch.dir.writeFile(io, .{ .sub_path = "agent/settings.json", .data = "{\"custom\":{\"nested\":{\"value\":7}},\"queueMode\":\"one-at-a-time\",\"codemode\":{\"mode\":\"only\",\"inlineBudget\":0}}" });
     try scratch.dir.writeFile(io, .{ .sub_path = "agent/keybindings.json", .data = "{\"tui.select.confirm\":\"ctrl+y\",\"tui.select.cancel\":[]}" });
     try scratch.dir.writeFile(io, .{ .sub_path = "partial.json", .data = "{\"name\":\"partial\",\"colors\":{\"muted\":1,\"text\":\"\",\"thinkingXhigh\":2,\"selectedBg\":3}}" });
     const path = try std.fs.path.join(gpa, &.{ directory, "partial.json" });
     defer gpa.free(path);
     const path_json = try std.json.Stringify.valueAlloc(gpa, path, .{});
     defer gpa.free(path_json);
-    const source = try std.fmt.allocPrint(gpa, "import {{loadThemeFromPath}} from '@earendil-works/pi-coding-agent';import {{getKeybindings}} from '@earendil-works/pi-tui';const keys=getKeybindings();if(!keys.matches('\\x19','tui.select.confirm')||keys.matches('\\r','tui.select.confirm'))throw Error('Missing CLI keybindings bootstrap');let strict=false;try{{loadThemeFromPath({s})}}catch(error){{strict=error.name==='Error'&&String(error.message).includes('Missing required color tokens:')&&String(error.message).includes('- accent')}}if(!strict)throw Error('Missing CLI strict theme bootstrap');export default pi=>pi.registerTool({{name:'bootstrap',description:'Bootstrap proof',parameters:{{type:'object',properties:{{}}}},execute(){{return {{content:[{{type:'text',text:'STRICT_BOOTSTRAP_OK'}}]}}}}}});", .{path_json});
+    const source = try std.fmt.allocPrint(gpa,
+        \\import {{loadThemeFromPath}} from '@earendil-works/pi-coding-agent';import {{getKeybindings}} from '@earendil-works/pi-tui';const keys=getKeybindings();if(!keys.matches('\x19','tui.select.confirm')||keys.matches('\r','tui.select.confirm'))throw Error('Missing CLI keybindings bootstrap');let strict=false;try{{loadThemeFromPath({s})}}catch(error){{strict=error.name==='Error'&&String(error.message).includes('Missing required color tokens:')&&String(error.message).includes('- accent')}}if(!strict)throw Error('Missing CLI strict theme bootstrap');
+        \\export default pi=>{{let unbound=false;try{{pi.getSettings()}}catch(error){{unbound=error.name==='Error'&&error.message==='Extension runtime not initialized. Action methods cannot be called during extension loading.'}}if(!unbound)throw Error('Missing Source factory runtime fence');pi.registerTool({{name:'bootstrap',description:'Bootstrap proof',parameters:{{type:'object',properties:{{}}}},execute(){{const settings=pi.getSettings();if(settings.custom?.nested?.value!==7||settings.steeringMode!=='one-at-a-time'||'queueMode' in settings||settings.codemode.mode!=='only')throw Error('Lost live CLI settings snapshot');settings.custom.nested.value=99;if(pi.getSettings().custom.nested.value!==7)throw Error('Shared CLI settings snapshot');return {{content:[{{type:'text',text:'STRICT_BOOTSTRAP_OK'}}]}}}}}});}};
+    , .{path_json});
     defer gpa.free(source);
     try scratch.dir.writeFile(io, .{ .sub_path = "extension.mjs", .data = source });
     try scratch.dir.writeFile(io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"\",\"tool_calls\":[{\"id\":\"proof\",\"name\":\"bootstrap\",\"arguments\":\"{}\"}]},{\"content\":\"done\"}]" });

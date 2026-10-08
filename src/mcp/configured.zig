@@ -16,6 +16,7 @@ const tools = @import("../agent/tools.zig");
 const startup = @import("../durable/startup.zig");
 const Resolver = @import("../coding_agent/config_value.zig").Resolver;
 const tool_search = @import("tool_search.zig");
+const startup_pool = @import("configured_startup.zig");
 const oauth_store = @import("oauth_store.zig");
 const oauth_provider = @import("oauth_provider.zig");
 const oauth_authorize = @import("oauth_authorize.zig");
@@ -241,6 +242,15 @@ pub const Service = struct {
     reserved: []const []const u8,
     closing: std.atomic.Value(bool) = .init(false),
     started: bool = false,
+    startup: ?*startup_pool.Pool = null,
+    catalog_mutex: std.Io.Mutex = .init,
+    waited_for_direct_startup: bool = false,
+    startup_wait_ms: i64 = 10_000,
+    notice_context: ?*anyopaque = null,
+    notice_fn: ?*const fn (?*anyopaque, []const u8, []const u8) anyerror!void = null,
+    builtin_search_registered: bool = false,
+    search_active_context: ?*anyopaque = null,
+    search_active_fn: ?*const fn (?*anyopaque) bool = null,
     credentials: ?oauth_store.Store = null,
     provider_token_context: ?*anyopaque = null,
     provider_token: ?*const fn (?*anyopaque, std.mem.Allocator, []const u8) anyerror!?[]u8 = null,
@@ -316,16 +326,54 @@ pub const Service = struct {
             };
         }
     }
-    fn discover(self: *Service, server: *Server) !void {
+    /// Connections begin immediately; their owned DTOs are promoted on the service line.
+    pub fn startBackground(self: *Service) !void {
+        if (self.started) return;
+        const pool = try self.gpa.create(startup_pool.Pool);
+        pool.* = .{ .gpa = self.gpa, .io = self.io };
+        self.startup = pool;
+        self.started = true;
+        for (self.servers.items) |server| {
+            var direct = (try config.toolExposure(server.config, "")) == .direct;
+            if (json.get(server.config, "toolExposure")) |overrides| if (overrides == .object) for (overrides.object.values()) |value| if (value == .string and std.mem.eql(u8, value.string, "direct")) {
+                direct = true;
+            };
+            try pool.add(server, fetchDiscovery, direct);
+        }
+    }
+    fn fetchDiscovery(raw: *anyopaque) !json.Owned {
+        const server: *Server = @ptrCast(@alignCast(raw));
+        const self = server.owner;
         const borrow = try server.connection.acquire();
         defer borrow.release();
+        var result = try json.Owned.empty(self.gpa);
+        errdefer result.deinit();
+        const a = result.arena.allocator();
+        result.value = .{ .object = .empty };
         const initialized = borrow.client.initialized.?.value;
+        try result.value.object.put(a, "initialized", try json.clone(a, initialized));
         const offers = try protocol.field(initialized, "capabilities");
-        if (json.get(offers, "tools") == null) return;
-        var listed = try capabilities.listAll(borrow.client, .tools, .{ .timeout_ms = server.timeout_ms });
-        defer listed.deinit();
+        var listed: json.Value = .{ .array = .init(a) };
+        if (json.get(offers, "tools") != null) {
+            var found = try capabilities.listAll(borrow.client, .tools, .{ .timeout_ms = server.timeout_ms });
+            defer found.deinit();
+            listed = try json.clone(a, found.value);
+        }
+        try result.value.object.put(a, "tools", listed);
+        return result;
+    }
+    fn discover(self: *Service, server: *Server) !void {
+        var result = try fetchDiscovery(server);
+        defer result.deinit();
+        self.catalog_mutex.lockUncancelable(self.io);
+        defer self.catalog_mutex.unlock(self.io);
+        try self.publishDiscovery(server, result.value);
+    }
+    fn publishDiscovery(self: *Service, server: *Server, result: json.Value) !void {
+        const initialized = try protocol.field(result, "initialized");
+        const listed = try protocol.field(result, "tools");
         const a = self.loaded.arena.allocator();
-        for (listed.value.array.items) |item| {
+        for (listed.array.items) |item| {
             const raw_name = try protocol.text(item, "name");
             const exposure = try config.toolExposure(server.config, raw_name);
             if (exposure == .hidden) continue;
@@ -345,17 +393,67 @@ pub const Service = struct {
             try self.descriptors.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, raw_name), .name = try a.dupe(u8, name), .schema = schema, .codemode_metadata = metadata, .exposure = exposure });
         }
     }
+    pub fn promoteReady(self: *Service) !void {
+        const pool = self.startup orelse return;
+        self.catalog_mutex.lockUncancelable(self.io);
+        defer self.catalog_mutex.unlock(self.io);
+        while (pool.takeReady()) |delivery| {
+            var result = delivery.value;
+            defer if (result) |*value| value.deinit();
+            const server: *Server = @ptrCast(@alignCast(delivery.context));
+            if (delivery.cause) |cause| {
+                if (cause == error.OutOfMemory or cause == error.Canceled or self.closing.load(.acquire)) return cause;
+                try self.diagnostic(server.name, @errorName(cause));
+            } else try self.publishDiscovery(server, result.?.value);
+        }
+    }
+    fn awaitStartupAbort(self: *Service, flag: ?*const bool) !void {
+        if (self.startup) |pool| _ = try pool.waitAbort(flag);
+        try self.promoteReady();
+    }
+    pub fn awaitStartup(self: *Service) !void {
+        if (self.startup) |pool| _ = try pool.wait(false, .none);
+        try self.promoteReady();
+    }
+    pub fn awaitForScript(self: *Service, code: []const u8, aborted: ?*const bool) !void {
+        if (self.startup) |pool| for (self.servers.items) |server| {
+            if (try startup_pool.scriptNeedsServer(self.gpa, code, server.name)) _ = try pool.waitContextAbort(server, aborted);
+        };
+        try self.promoteReady();
+    }
+    fn awaitDirectStartup(self: *Service) !void {
+        self.catalog_mutex.lockUncancelable(self.io);
+        const already = self.waited_for_direct_startup;
+        self.waited_for_direct_startup = true;
+        self.catalog_mutex.unlock(self.io);
+        if (!already) {
+            if (self.startup) |pool| {
+                const ready = try pool.wait(true, .{ .duration = .{ .raw = .fromMilliseconds(self.startup_wait_ms), .clock = .awake } });
+                if (!ready) if (self.notice_fn) |notice| try notice(self.notice_context, "notify", "{\"message\":\"MCP servers are still connecting; their tools become available once connected.\",\"type\":\"info\"}");
+            }
+        }
+        try self.promoteReady();
+    }
+    pub fn exposureOf(self: *Service, name: []const u8) ?config.Exposure {
+        self.catalog_mutex.lockUncancelable(self.io);
+        defer self.catalog_mutex.unlock(self.io);
+        for (self.descriptors.items) |descriptor| if (std.mem.eql(u8, descriptor.name, name)) return descriptor.exposure;
+        return null;
+    }
     fn taken(self: *Service, name: []const u8) bool {
         for (self.reserved) |existing| if (std.mem.eql(u8, existing, name)) return true;
         for (self.descriptors.items) |descriptor| if (std.mem.eql(u8, descriptor.name, name)) return true;
         return false;
     }
     pub fn schemasJson(self: *Service) ![]u8 {
+        try self.promoteReady();
+        self.catalog_mutex.lockUncancelable(self.io);
+        defer self.catalog_mutex.unlock(self.io);
         var owned = try json.Owned.empty(self.gpa);
         defer owned.deinit();
         owned.value = .{ .array = .init(owned.arena.allocator()) };
         for (self.descriptors.items) |descriptor| if (descriptor.exposure == .direct or descriptor.loaded) try owned.value.array.append(descriptor.schema);
-        if (self.hasDeferred()) {
+        if (self.hasDeferred() and (if (self.search_active_fn) |active| active(self.search_active_context) else true)) {
             var schema = try json.Owned.parse(self.gpa, "{\"type\":\"function\",\"function\":{\"name\":\"tool_search\",\"description\":\"Searches deferred tool metadata with BM25 and exposes matching tools for the next model call.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"},\"limit\":{\"type\":\"number\"}},\"required\":[\"query\"]}}}");
             defer schema.deinit();
             const function = schema.value.object.getPtr("function").?;
@@ -369,26 +467,55 @@ pub const Service = struct {
         return json.stringify(self.gpa, owned.value);
     }
     fn hasDeferred(self: *const Service) bool {
+        if (self.builtin_search_registered) return true;
         for (self.descriptors.items) |descriptor| if (descriptor.exposure == .deferred) return true;
         return false;
     }
     pub fn dynamicSchemas(raw: ?*anyopaque, gpa: std.mem.Allocator) ![]u8 {
         const self: *Service = @ptrCast(@alignCast(raw.?));
+        try self.awaitDirectStartup();
         const bytes = try self.schemasJson();
         defer self.gpa.free(bytes);
         return gpa.dupe(u8, bytes);
     }
     /// The complete callable registry, separately from model declarations.
     pub fn registrySchemasJson(self: *Service) ![]u8 {
+        try self.promoteReady();
+        self.catalog_mutex.lockUncancelable(self.io);
+        defer self.catalog_mutex.unlock(self.io);
         var owned = try json.Owned.empty(self.gpa);
         defer owned.deinit();
         owned.value = .{ .array = .init(owned.arena.allocator()) };
         for (self.descriptors.items) |descriptor| try owned.value.array.append(descriptor.schema);
         return json.stringify(self.gpa, owned.value);
     }
+    /// Each DTO owns schema and discovery metadata; no mutable catalog storage escapes.
+    pub fn codemodeSchemasJson(self: *Service, wait_for_connections: bool) ![]u8 {
+        if (wait_for_connections) try self.awaitStartup() else try self.promoteReady();
+        self.catalog_mutex.lockUncancelable(self.io);
+        defer self.catalog_mutex.unlock(self.io);
+        var owned = try json.Owned.empty(self.gpa);
+        defer owned.deinit();
+        const a = owned.arena.allocator();
+        owned.value = .{ .array = .init(a) };
+        for (self.descriptors.items) |descriptor| {
+            var entry: json.Value = .{ .object = .empty };
+            try entry.object.put(a, "schema", try json.clone(a, descriptor.schema));
+            try entry.object.put(a, "exposure", .{ .string = @tagName(descriptor.exposure) });
+            if (descriptor.codemode_metadata) |metadata| try entry.object.put(a, "metadata", try json.clone(a, metadata));
+            try owned.value.array.append(entry);
+        }
+        return json.stringify(self.gpa, owned.value);
+    }
     /// Returned array storage is owned; names borrow this Service. Allocation
     /// completes before loadout mutation, so failed searches activate nothing.
     pub fn searchAndLoad(self: *Service, query: []const u8, limit: usize) ![]const []const u8 {
+        try self.awaitStartup();
+        self.catalog_mutex.lockUncancelable(self.io);
+        defer self.catalog_mutex.unlock(self.io);
+        return self.searchAndLoadLocked(query, limit);
+    }
+    fn searchAndLoadLocked(self: *Service, query: []const u8, limit: usize) ![]const []const u8 {
         var documents: std.ArrayList(tool_search.Document) = .empty;
         defer {
             for (documents.items) |document| self.gpa.free(document.text);
@@ -411,6 +538,12 @@ pub const Service = struct {
         return names;
     }
     fn searchResult(self: *Service, gpa: std.mem.Allocator, arguments: []const u8) !tools.ToolResult {
+        return self.searchResultAbort(gpa, arguments, null);
+    }
+    fn searchResultAbort(self: *Service, gpa: std.mem.Allocator, arguments: []const u8, aborted: ?*const bool) !tools.ToolResult {
+        try self.awaitStartupAbort(aborted);
+        self.catalog_mutex.lockUncancelable(self.io);
+        defer self.catalog_mutex.unlock(self.io);
         var parsed = try json.Owned.parse(gpa, arguments);
         defer parsed.deinit();
         const query = try protocol.text(parsed.value, "query");
@@ -421,7 +554,7 @@ pub const Service = struct {
             if (!std.math.isFinite(number) or number <= 0 or @floor(number) != number) return .{ .content = try gpa.dupe(u8, "limit must be a positive integer"), .is_error = true };
             limit = @intFromFloat(@min(number, @as(f64, @floatFromInt(self.descriptors.items.len))));
         }
-        const selected = try self.searchAndLoad(query, limit);
+        const selected = try self.searchAndLoadLocked(query, limit);
         defer self.gpa.free(selected);
         errdefer for (self.descriptors.items) |*descriptor| for (selected) |name| if (std.mem.eql(u8, name, descriptor.name)) {
             descriptor.loaded = false;
@@ -456,7 +589,16 @@ pub const Service = struct {
         errdefer gpa.free(details);
         return .{ .content = try text.toOwnedSlice(), .is_error = false, .details_json = details, .added_tool_names = names };
     }
+    fn descriptorForName(self: *Service, name: []const u8) !?Descriptor {
+        try self.promoteReady();
+        self.catalog_mutex.lockUncancelable(self.io);
+        defer self.catalog_mutex.unlock(self.io);
+        for (self.descriptors.items) |descriptor| if (std.mem.eql(u8, descriptor.name, name)) return descriptor;
+        return null;
+    }
     pub fn owns(self: *Service, name: []const u8) bool {
+        self.catalog_mutex.lockUncancelable(self.io);
+        defer self.catalog_mutex.unlock(self.io);
         if (std.mem.eql(u8, name, "tool_search")) return self.hasDeferred();
         for (self.descriptors.items) |descriptor| if (std.mem.eql(u8, descriptor.name, name)) return true;
         return false;
@@ -467,8 +609,8 @@ pub const Service = struct {
     }
     pub fn execute(raw: ?*anyopaque, gpa: std.mem.Allocator, _: []const u8, name: []const u8, arguments: []const u8, progress: agent.ExternalToolProgressFn, progress_context: ?*anyopaque, abort_flag: ?*bool) !?tools.ToolResult {
         const self: *Service = @ptrCast(@alignCast(raw.?));
-        if (std.mem.eql(u8, name, "tool_search") and self.hasDeferred()) return try self.searchResult(gpa, arguments);
-        for (self.descriptors.items) |descriptor| if (std.mem.eql(u8, descriptor.name, name)) {
+        if (std.mem.eql(u8, name, "tool_search") and self.owns(name)) return try self.searchResultAbort(gpa, arguments, abort_flag);
+        if (try self.descriptorForName(name)) |descriptor| {
             const server = descriptor.server;
             const borrow = try server.connection.acquire();
             defer borrow.release();
@@ -533,7 +675,7 @@ pub const Service = struct {
             };
             defer reply.deinit();
             return try projection.convert(gpa, self.io, self.output_root, server.name, descriptor.raw_name, reply.value);
-        };
+        }
         return null;
     }
     pub fn close(self: *Service) !void {
@@ -557,6 +699,7 @@ pub const Service = struct {
             try server.connection.close();
             if (server.auth_provider) |*provider| provider.close();
         }
+        if (self.startup) |pool| pool.close();
     }
     pub fn findServer(self: *Service, name: []const u8) ?*Server {
         for (self.servers.items) |server| if (std.mem.eql(u8, server.name, name)) return server;
@@ -567,14 +710,17 @@ pub const Service = struct {
         try server.lifecycle_mutex.lock(self.io);
         defer server.lifecycle_mutex.unlock(self.io);
         if (self.closing.load(.acquire)) return error.McpConnectionClosed;
+        if (self.startup) |pool| pool.retireContext(server);
         const settings = server.connection.options;
         try server.connection.close();
         server.connection.deinit();
         server.connection = connection.Connection.init(self.gpa, self.io, settings);
+        self.catalog_mutex.lockUncancelable(self.io);
         var index: usize = 0;
         while (index < self.descriptors.items.len) {
             if (self.descriptors.items[index].server == server) _ = self.descriptors.orderedRemove(index) else index += 1;
         }
+        self.catalog_mutex.unlock(self.io);
         try self.discover(server);
     }
     pub fn signIn(self: *Service, name: []const u8, prompt: oauth_signin.Prompt, flag: ?*bool, timeout_ms: u64) !void {
@@ -672,6 +818,11 @@ pub const Service = struct {
     }
     pub fn deinit(self: *Service) void {
         self.close() catch return;
+        if (self.startup) |pool| {
+            pool.deinit();
+            self.gpa.destroy(pool);
+            self.startup = null;
+        }
         for (self.servers.items) |server| {
             server.connection.deinit();
             server.auth_arena.deinit();

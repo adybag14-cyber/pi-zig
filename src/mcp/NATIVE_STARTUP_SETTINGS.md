@@ -1,0 +1,13 @@
+# Native MCP startup and CLI settings admission
+
+Authority is Pi source `6fb2e7815167e6b19006fc526d1a5d0f5f998787` (1.1.0), with Zig 0.16.0 pinned. This is a scoped implementation record, not full Pi/MCP certification.
+
+Configured MCP startup admits one owned discovery producer per enabled server. Producers return native-owned JSON DTOs; catalog publication, schema serialization and deferred-tool activation use the service line. Direct-server startup has the original first-prompt ten-second bound and information notice. Non-direct discovery does not block the first prompt. Codemode waits use the original textual server-name/discovery-helper check, including its comment/string and ASCII-boundary behavior. Canceling a selected script/search wait leaves the background producer owned and running. Reconnect retires the exact producer before replacing its connection; service shutdown joins owned producers before destroying their contexts.
+
+The CLI and extension API share one admitted settings snapshot. Unknown fields, scoped nested merges, migrations and `defaultTools` modifier composition are compared against actual upstream getters. The settings parser preserves large finite JSON numeric budgets and the difference between missing and invalid project values. Replacement strings/arrays are allocated before old ownership is released, with induced-allocation-failure coverage.
+
+Initial CLI and reload contexts carry the settings snapshot plus a private runtime-admission flag. Runtime API calls reject with the original Error during unbound extension loading; module-level theme/keybinding admission remains separate. Bound contexts expose settings through hooks and tools. The loading Error constructor lookup follows the current realm's Error constructor. The readiness flag is not a substitute for the private SDK/model owner leases.
+
+Actual native Windows process tests cover an unrelated stalled MCP child, direct readiness, the one-time timeout notice, selected waits, settings mutation isolation and source loading errors without Node on PATH. Native pool tests cover owned claim-once results, exact producer retirement, cancellation and allocation failures. Broader platform qualification must use a frozen source image.
+
+Remaining contracts include complete MCP resources/prompts/notification/reload routing, connection replacement/caller lifetime races, idle discovery UI publication, dynamic settings/action observation, complete extension API identity and external tool routing. These are tracked work; this file does not claim full parity or authorize the production legacy-bridge removal.

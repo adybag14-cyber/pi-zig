@@ -260,6 +260,25 @@ pub const Bindings = struct {
     }
 
     fn registration(self: *Bindings, method: Method, args: []c.JSValue) !c.JSValue {
+        const runtime_method = switch (method) {
+            .getActiveTools, .getAllTools, .getCommands, .getSettings, .getSessionName, .getThinkingLevel, .setSessionName, .setThinkingLevel, .setActiveTools, .sendUserMessage, .appendEntry, .setLabel => true,
+            else => false,
+        };
+        if (runtime_method) {
+            var unbound = self.factory_active;
+            if (self.context_snapshot) |snapshot| {
+                const bound = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "nativeRuntimeBound"));
+                defer self.engine.freeValue(bound);
+                if (c.JS_IsBool(bound)) unbound = c.JS_ToBool(self.engine.context, bound) == 0;
+            }
+            if (unbound) {
+                const message = try self.engine.checked(c.JS_NewString(self.engine.context, "Extension runtime not initialized. Action methods cannot be called during extension loading."));
+                defer self.engine.freeValue(message);
+                const reason = try @import("native_js_values.zig").builtin(self.engine, "Error", &.{message});
+                return self.engine.checked(c.JS_Throw(self.engine.context, reason));
+            }
+        }
+
         // Increment before entering observable getters: partial registrations
         // admitted before an exception still require authoritative projection.
         if (@intFromEnum(method) <= @intFromEnum(Method.registerToolRenderer) and method != .getFlag) {
@@ -807,7 +826,7 @@ pub const Bindings = struct {
         const snapshot = try self.parseJson(source, "extension-context");
         errdefer self.engine.freeValue(snapshot);
         if (!c.JS_IsObject(snapshot) or c.JS_IsArray(snapshot)) return error.InvalidExtensionContext;
-        inline for (.{ "hasUI", "idle", "projectTrusted", "hasPendingMessages", "strictThemeValidation", "kittyActive" }) |name| {
+        inline for (.{ "hasUI", "idle", "projectTrusted", "hasPendingMessages", "strictThemeValidation", "kittyActive", "nativeRuntimeBound" }) |name| {
             const value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, name));
             defer self.engine.freeValue(value);
             if (!c.JS_IsUndefined(value) and !c.JS_IsBool(value)) return error.InvalidExtensionContext;
@@ -2434,7 +2453,7 @@ test "native readonly API catalogs settings and action updates are copied withou
     const bindings = try Bindings.init(std.testing.allocator, engine);
     defer bindings.deinit();
     try bindings.loadFactory(
-        "export default pi=>{if(pi.getActiveTools().length||pi.getAllTools().length||pi.getCommands().length||pi.getThinkingLevel()!=='off')throw Error('initial API');" ++
+        "export default pi=>{for(const method of ['getActiveTools','getAllTools','getCommands','getSettings','getSessionName','getThinkingLevel','setSessionName','setThinkingLevel','setActiveTools','sendUserMessage','appendEntry','setLabel']){let rejected=false;try{pi[method]()}catch(error){rejected=error.name==='Error'&&error.message==='Extension runtime not initialized. Action methods cannot be called during extension loading.'}if(!rejected)throw Error('unbound '+method)}" ++
             "pi.registerTool({name:'read',description:'extension read',parameters:{type:'object',properties:{value:{type:'string',__piOptional:true}}},execute(){return {content:'read'}}});" ++
             "pi.registerCommand('inspect',{description:'native inspection',handler:()=>{const tools=pi.getAllTools(),settings=pi.getSettings(),commands=pi.getCommands();const own=tools.find(t=>t.name==='read');if(own.description!=='extension read'||own.parameters.properties.value.__piOptional!==undefined||own.source!=='extension')throw Error('tool projection');own.parameters.type='changed';settings.nested.value=9;commands[0].name='changed';if(pi.getAllTools().find(t=>t.name==='read').parameters.type!=='object'||pi.getSettings().nested.value!==1||pi.getCommands().some(c=>c.name==='changed'))throw Error('snapshot mutation');" ++
             "if(pi.getSessionName()!=='initial'||pi.getThinkingLevel()!=='low')throw Error('initial metadata');pi.setSessionName('updated');pi.setThinkingLevel('high');pi.setActiveTools([]);return {name:pi.getSessionName(),level:pi.getThinkingLevel(),active:pi.getActiveTools(),tools:pi.getAllTools().map(t=>t.name),path:pi.getCommands().find(c=>c.name==='inspect').sourceInfo.path};}});};",
@@ -2798,4 +2817,19 @@ test "native metadata projection releases rooted DTO values on every allocation 
         }
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+}
+
+test "native loading runtime API errors match original Source before binding" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const binding = try Bindings.init(std.testing.allocator, engine);
+    defer binding.deinit();
+    var parsed = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/runtime-loading-api-original-6fb.json"), .{});
+    defer parsed.deinit();
+    const data = try engine.fromJsonValue(parsed.value);
+    defer engine.freeValue(data);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    if (c.JS_SetPropertyStr(engine.context, global, "originalLoadingApi", c.JS_DupValue(engine.context, data)) < 0) return error.JavaScriptException;
+    try binding.loadFactory("export default pi=>{for(const row of originalLoadingApi.rows){let actual;try{pi[row.method]();actual={result:'returned'}}catch(error){actual={error:{name:error.name,message:error.message,prototype:Object.getPrototypeOf(error)===Error.prototype}}}const expected={...row};delete expected.method;if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error('loading API '+row.method)}};", "loading-runtime-original.mjs");
 }

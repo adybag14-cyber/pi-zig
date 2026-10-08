@@ -1,0 +1,466 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "originalBuiltHelperSha256": "0583ebee146ba0ef2c42402726b3a16e3ce235b8209b11c4f54f6f613a59580b",
+  "rows": [
+    {
+      "server": "dev-radius",
+      "code": "",
+      "needed": false
+    },
+    {
+      "server": "dev-radius",
+      "code": "tools.read({path:\"a\"})",
+      "needed": false
+    },
+    {
+      "server": "dev-radius",
+      "code": "mcp__dev_radius.run()",
+      "needed": true
+    },
+    {
+      "server": "dev-radius",
+      "code": "tools[\"mcp__dev_radius__double\"]({})",
+      "needed": true
+    },
+    {
+      "server": "dev-radius",
+      "code": "searchTools()",
+      "needed": true
+    },
+    {
+      "server": "dev-radius",
+      "code": "xsearchTools()",
+      "needed": false
+    },
+    {
+      "server": "dev-radius",
+      "code": "searchToolsx()",
+      "needed": false
+    },
+    {
+      "server": "dev-radius",
+      "code": "_searchTools",
+      "needed": false
+    },
+    {
+      "server": "dev-radius",
+      "code": "searchTools_",
+      "needed": false
+    },
+    {
+      "server": "dev-radius",
+      "code": "$searchTools",
+      "needed": true
+    },
+    {
+      "server": "dev-radius",
+      "code": "$searchTools$",
+      "needed": true
+    },
+    {
+      "server": "dev-radius",
+      "code": "// ALL_TOOLS",
+      "needed": true
+    },
+    {
+      "server": "dev-radius",
+      "code": "\"describeNamespace\"",
+      "needed": true
+    },
+    {
+      "server": "dev-radius",
+      "code": "const not_describeTool_more = 1",
+      "needed": false
+    },
+    {
+      "server": "dev-radius",
+      "code": "ésearchTools",
+      "needed": true
+    },
+    {
+      "server": "dev-radius",
+      "code": "searchToolsé",
+      "needed": true
+    },
+    {
+      "server": "dev-radius",
+      "code": "ALL_TOOLS2",
+      "needed": false
+    },
+    {
+      "server": "dev-radius",
+      "code": "2ALL_TOOLS",
+      "needed": false
+    },
+    {
+      "server": "dev-radius",
+      "code": "\\bALL_TOOLS\\b",
+      "needed": false
+    },
+    {
+      "server": "dev-radius",
+      "code": "mcp__dev-radius",
+      "needed": false
+    },
+    {
+      "server": "dev-radius",
+      "code": "mcp__dev_radius_not_real",
+      "needed": true
+    },
+    {
+      "server": "dev-radius",
+      "code": "mcp__other",
+      "needed": false
+    },
+    {
+      "server": "dev-radius",
+      "code": "await describeTool(\"mcp__x__y\")",
+      "needed": true
+    },
+    {
+      "server": "other",
+      "code": "",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "tools.read({path:\"a\"})",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "mcp__dev_radius.run()",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "tools[\"mcp__dev_radius__double\"]({})",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "searchTools()",
+      "needed": true
+    },
+    {
+      "server": "other",
+      "code": "xsearchTools()",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "searchToolsx()",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "_searchTools",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "searchTools_",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "$searchTools",
+      "needed": true
+    },
+    {
+      "server": "other",
+      "code": "$searchTools$",
+      "needed": true
+    },
+    {
+      "server": "other",
+      "code": "// ALL_TOOLS",
+      "needed": true
+    },
+    {
+      "server": "other",
+      "code": "\"describeNamespace\"",
+      "needed": true
+    },
+    {
+      "server": "other",
+      "code": "const not_describeTool_more = 1",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "ésearchTools",
+      "needed": true
+    },
+    {
+      "server": "other",
+      "code": "searchToolsé",
+      "needed": true
+    },
+    {
+      "server": "other",
+      "code": "ALL_TOOLS2",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "2ALL_TOOLS",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "\\bALL_TOOLS\\b",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "mcp__dev-radius",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "mcp__dev_radius_not_real",
+      "needed": false
+    },
+    {
+      "server": "other",
+      "code": "mcp__other",
+      "needed": true
+    },
+    {
+      "server": "other",
+      "code": "await describeTool(\"mcp__x__y\")",
+      "needed": true
+    },
+    {
+      "server": "dev_radius",
+      "code": "",
+      "needed": false
+    },
+    {
+      "server": "dev_radius",
+      "code": "tools.read({path:\"a\"})",
+      "needed": false
+    },
+    {
+      "server": "dev_radius",
+      "code": "mcp__dev_radius.run()",
+      "needed": true
+    },
+    {
+      "server": "dev_radius",
+      "code": "tools[\"mcp__dev_radius__double\"]({})",
+      "needed": true
+    },
+    {
+      "server": "dev_radius",
+      "code": "searchTools()",
+      "needed": true
+    },
+    {
+      "server": "dev_radius",
+      "code": "xsearchTools()",
+      "needed": false
+    },
+    {
+      "server": "dev_radius",
+      "code": "searchToolsx()",
+      "needed": false
+    },
+    {
+      "server": "dev_radius",
+      "code": "_searchTools",
+      "needed": false
+    },
+    {
+      "server": "dev_radius",
+      "code": "searchTools_",
+      "needed": false
+    },
+    {
+      "server": "dev_radius",
+      "code": "$searchTools",
+      "needed": true
+    },
+    {
+      "server": "dev_radius",
+      "code": "$searchTools$",
+      "needed": true
+    },
+    {
+      "server": "dev_radius",
+      "code": "// ALL_TOOLS",
+      "needed": true
+    },
+    {
+      "server": "dev_radius",
+      "code": "\"describeNamespace\"",
+      "needed": true
+    },
+    {
+      "server": "dev_radius",
+      "code": "const not_describeTool_more = 1",
+      "needed": false
+    },
+    {
+      "server": "dev_radius",
+      "code": "ésearchTools",
+      "needed": true
+    },
+    {
+      "server": "dev_radius",
+      "code": "searchToolsé",
+      "needed": true
+    },
+    {
+      "server": "dev_radius",
+      "code": "ALL_TOOLS2",
+      "needed": false
+    },
+    {
+      "server": "dev_radius",
+      "code": "2ALL_TOOLS",
+      "needed": false
+    },
+    {
+      "server": "dev_radius",
+      "code": "\\bALL_TOOLS\\b",
+      "needed": false
+    },
+    {
+      "server": "dev_radius",
+      "code": "mcp__dev-radius",
+      "needed": false
+    },
+    {
+      "server": "dev_radius",
+      "code": "mcp__dev_radius_not_real",
+      "needed": true
+    },
+    {
+      "server": "dev_radius",
+      "code": "mcp__other",
+      "needed": false
+    },
+    {
+      "server": "dev_radius",
+      "code": "await describeTool(\"mcp__x__y\")",
+      "needed": true
+    },
+    {
+      "server": "A_9",
+      "code": "",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "tools.read({path:\"a\"})",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "mcp__dev_radius.run()",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "tools[\"mcp__dev_radius__double\"]({})",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "searchTools()",
+      "needed": true
+    },
+    {
+      "server": "A_9",
+      "code": "xsearchTools()",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "searchToolsx()",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "_searchTools",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "searchTools_",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "$searchTools",
+      "needed": true
+    },
+    {
+      "server": "A_9",
+      "code": "$searchTools$",
+      "needed": true
+    },
+    {
+      "server": "A_9",
+      "code": "// ALL_TOOLS",
+      "needed": true
+    },
+    {
+      "server": "A_9",
+      "code": "\"describeNamespace\"",
+      "needed": true
+    },
+    {
+      "server": "A_9",
+      "code": "const not_describeTool_more = 1",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "ésearchTools",
+      "needed": true
+    },
+    {
+      "server": "A_9",
+      "code": "searchToolsé",
+      "needed": true
+    },
+    {
+      "server": "A_9",
+      "code": "ALL_TOOLS2",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "2ALL_TOOLS",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "\\bALL_TOOLS\\b",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "mcp__dev-radius",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "mcp__dev_radius_not_real",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "mcp__other",
+      "needed": false
+    },
+    {
+      "server": "A_9",
+      "code": "await describeTool(\"mcp__x__y\")",
+      "needed": true
+    }
+  ]
+}
