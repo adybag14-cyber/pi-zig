@@ -209,7 +209,10 @@ pub fn trimJs(text: []const u8) []const u8 {
     var leading = true;
     while (iterator.nextCodepoint()) |point| {
         const whitespace = (point >= 9 and point <= 13) or point == 0x20 or point == 0xa0 or point == 0x1680 or (point >= 0x2000 and point <= 0x200a) or point == 0x2028 or point == 0x2029 or point == 0x202f or point == 0x205f or point == 0x3000 or point == 0xfeff;
-        if (leading and whitespace) begin = iterator.i else if (!whitespace) { leading = false; end = iterator.i; }
+        if (leading and whitespace) begin = iterator.i else if (!whitespace) {
+            leading = false;
+            end = iterator.i;
+        }
     }
     return text[begin..@max(begin, end)];
 }

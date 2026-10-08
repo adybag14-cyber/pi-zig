@@ -433,7 +433,9 @@ test "Source6fb public Input real native modal preserves UTF16 edits paste undo 
         try observed.waitInitialStartup(&child, ">");
         try observed.send(&child, "/public-input\r", "NATIVE_INPUT:界😀");
         var reverse = false;
-        for (observed.screen.cells()) |cell| if (cell.scalar == '界') { reverse = reverse or cell.reverse; };
+        for (observed.screen.cells()) |cell| if (cell.scalar == '界') {
+            reverse = reverse or cell.reverse;
+        };
         try std.testing.expect(reverse and !observed.screen.cursor_visible);
         try std.testing.expect(std.mem.indexOf(u8, child.output.items, "\x1b_pi:") == null);
         try observed.send(&child, "a", "NATIVE_INPUT:a界😀");

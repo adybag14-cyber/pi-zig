@@ -53,10 +53,17 @@ pub fn main(init: std.process.Init) !void {
         }
         try writer.writeAll("};\n");
     }
+    const terminated = try init.gpa.dupeZ(u8, output.written());
+    defer init.gpa.free(terminated);
+    var ast = try std.zig.Ast.parse(init.gpa, terminated, .zig);
+    defer ast.deinit(init.gpa);
+    if (ast.errors.len != 0) return error.InvalidGeneratedUnicodeZig;
+    const formatted = try ast.renderAlloc(init.gpa);
+    defer init.gpa.free(formatted);
     const destination = "src/tui/unicode17/generated_graphemes.zig";
     if (args.len == 2) {
         const old = try std.Io.Dir.cwd().readFileAlloc(init.io, destination, init.gpa, .limited(4 * 1024 * 1024));
         defer init.gpa.free(old);
-        if (!std.mem.eql(u8, old, output.written())) return error.StaleUnicodeProjection;
-    } else try std.Io.Dir.cwd().writeFile(init.io, .{ .sub_path = destination, .data = output.written() });
+        if (!std.mem.eql(u8, old, formatted)) return error.StaleUnicodeProjection;
+    } else try std.Io.Dir.cwd().writeFile(init.io, .{ .sub_path = destination, .data = formatted });
 }
