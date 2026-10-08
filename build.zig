@@ -970,6 +970,15 @@ pub fn build(b: *std.Build) void {
     const run_native_list_tests = b.addRunArtifact(native_list_tests);
     b.step("test-native-lists", "Replay Source public SelectList and SettingsList callbacks layout and lifecycle").dependOn(&run_native_list_tests.step);
     test_step.dependOn(&run_native_list_tests.step);
+    const native_layout_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_layout_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Source6fb public Text"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, native_layout_tests.root_module, quickjs, sqlite_lib_dir);
+    const native_layout_run = b.addRunArtifact(native_layout_tests);
+    b.step("test-native-layout", "Replay original public component layouts caches and callback lifecycle").dependOn(&native_layout_run.step);
+    test_step.dependOn(&native_layout_run.step);
     const native_input_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_input_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{ "Source6fb public Input", "native JS UTF16" },

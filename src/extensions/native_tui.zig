@@ -553,6 +553,9 @@ pub fn install(engine: *engine_mod.Engine) !void {
         try define(engine, constructor, "name", try engine.checked(c.JS_NewString(engine.context, item[0])));
         try define(engine, exports, item[0], c.JS_DupValue(engine.context, constructor));
     }
+    try @import("native_text_component.zig").install(engine, exports);
+    try @import("native_box_component.zig").install(engine, exports);
+    try @import("native_spacer_component.zig").install(engine, exports);
     try @import("native_editor.zig").install(engine, exports);
     try engine.registerValueModule("@earendil-works/pi-tui", exports);
     try engine.registerValueModule("@mariozechner/pi-tui", exports);

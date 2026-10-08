@@ -413,6 +413,32 @@ test "native MouseRegion real terminal pointer ACK precedes keyboard capture cro
     }
 }
 
+test "Source6fb public Text Box Spacer real native modal updates cache padding columns and restores both terminal modes" {
+    if (!pty.supported()) return error.SkipZigTest;
+    for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
+        var fixture = try Fixture.init(mode);
+        defer fixture.deinit();
+        const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+        defer errors.close(std.testing.io);
+        const source =
+            \\import{Text,Box,Spacer}from'pi-tui';export default pi=>pi.registerCommand('layout-proof',{async handler(_,ctx){const result=await ctx.ui.custom((tui,theme,keys,done)=>{const text=new Text('NATIVE_LAYOUT:one界😀 words',1,1,line=>'\x1b[41m'+line+'\x1b[49m'),spacer=new Spacer(1),box=new Box(2,1,line=>'\x1b[42m'+line+'\x1b[49m');box.addChild(text);box.addChild(spacer);box.handleInput=data=>{if(data==='c'){text.setText('NATIVE_LAYOUT:two界😀 words');box.setBgFn(line=>'\x1b[44m'+line+'\x1b[49m')}else if(data==='p'){text.setPaddingX(0);text.setText('NATIVE_LAYOUT:padding')}else if(data==='\x1b'){const textCached=text.render(20)===text.render(20),boxCached=box.render(60)===box.render(60),spacerFresh=spacer.render(20)!==spacer.render(20);done({textCached,boxCached,spacerFresh})}tui.requestRender()};return box},{overlay:true,overlayOptions:{width:60,height:14,row:4,col:5}});return{message:'LAYOUT_DONE:'+JSON.stringify(result)}}})
+        ;
+        var child = try fixture.spawnExtension(errors, source);
+        defer child.deinit();
+        var observed = try Observer.init();
+        defer observed.deinit();
+        try observed.waitInitialStartup(&child, ">");
+        try observed.send(&child, "/layout-proof\r", "NATIVE_LAYOUT:one界😀 words");
+        try std.testing.expectEqual(@as(u21, 'N'), observed.screen.cells()[6 * observed.screen.columns + 8].scalar);
+        try observed.send(&child, "c", "NATIVE_LAYOUT:two界😀 words");
+        try observed.send(&child, "p", "NATIVE_LAYOUT:padding");
+        try std.testing.expectEqual(@as(u21, 'N'), observed.screen.cells()[6 * observed.screen.columns + 7].scalar);
+        try observed.send(&child, "\x1b", "LAYOUT_DONE:{\"textCached\":true,\"boxCached\":true,\"spacerFresh\":true}");
+        try observed.send(&child, "after-layout-proof", "> after-layout-proof");
+        try cleanExit(&fixture, &child, &observed);
+    }
+}
+
 test "Source6fb public SelectList SettingsList real native modal filters changes delegates submenu and restores both terminal modes" {
     if (!pty.supported()) return error.SkipZigTest;
     for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
