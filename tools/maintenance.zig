@@ -2,6 +2,7 @@
 const std = @import("std");
 const catalog = @import("catalog.zig");
 const projections = @import("projections.zig");
+const config_schemas = @import("config_schemas.zig");
 const artifacts = @import("artifacts.zig");
 const release = @import("release.zig");
 const upstream_contract = @import("upstream_contract.zig");
@@ -213,6 +214,16 @@ pub fn main(init: std.process.Init) !void {
         try writer.flush();
         return;
     }
+    if ((args.len == 5 or args.len == 6) and std.mem.eql(u8, args[1], "project-config-schemas")) {
+        const check = args.len == 6;
+        if (check and !std.mem.eql(u8, args[5], "--check")) return error.InvalidSchemaProjectionArgument;
+        const archive = try std.Io.Dir.cwd().readFileAlloc(init.io, args[2], init.gpa, .limited(256 * 1024 * 1024));
+        defer init.gpa.free(archive);
+        try config_schemas.project(init.gpa, init.io, archive, args[3], args[4], check);
+        try writer.writeAll(if (check) "Published configuration schema projection check passed.\n" else "Projected archive-bound published configuration schemas.\n");
+        try writer.flush();
+        return;
+    }
     if (args.len >= 2 and std.mem.eql(u8, args[1], "catalog")) {
         if (!(args.len == 2 or (args.len == 3 and std.mem.eql(u8, args[2], "--check")) or (args.len == 4 and std.mem.eql(u8, args[2], "--output")))) return error.InvalidMaintenanceArguments;
         const source = try std.Io.Dir.cwd().readFileAlloc(init.io, "src/ai/catalog_source.json", init.gpa, .limited(16 * 1024 * 1024));
@@ -252,7 +263,8 @@ pub fn main(init: std.process.Init) !void {
     try writer.writeAll("usage: pi-maintenance audit-source | audit-structure | verify-vendors | catalog [--check | --output <path>]\n" ++
         "       pi-maintenance import-changelog <upstream-checkout> <expected-commit>\n" ++
         "       pi-maintenance artifact-manifest <checkpoint> | verify-artifacts | verify-release [tag]\n" ++
-        "       pi-maintenance import-catalog <catalog-json> <version> <commit> <source-archive> <revision> <destination>\n");
+        "       pi-maintenance import-catalog <catalog-json> <version> <commit> <source-archive> <revision> <destination>\n" ++
+        "       pi-maintenance project-config-schemas <source-archive> <commit> <destination> [--check]\n");
     try writer.flush();
     if (args.len > 1) std.process.exit(2);
 }
