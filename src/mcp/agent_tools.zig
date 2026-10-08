@@ -89,7 +89,9 @@ pub fn schema(a: std.mem.Allocator, server: []const u8, model_name: []const u8, 
 /// Discovery metadata stays separate from the provider-facing function schema.
 pub fn codemodeMetadata(a: std.mem.Allocator, server: []const u8, configuration: Value, initialized: Value, tool: Value) !Value {
     const namespace_name = try std.fmt.allocPrint(a, "mcp__{s}", .{server});
-    for (namespace_name) |*byte| if (byte.* == '-') { byte.* = '_'; };
+    for (namespace_name) |*byte| if (byte.* == '-') {
+        byte.* = '_';
+    };
     var namespace: Value = .{ .object = .empty };
     try namespace.object.put(a, "name", .{ .string = namespace_name });
     for ([_]struct { source: Value, key: []const u8 }{ .{ .source = configuration, .key = "description" }, .{ .source = initialized, .key = "instructions" } }) |field| {
