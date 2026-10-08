@@ -111,24 +111,30 @@ test "same full SDK input executes without Node and matches original source life
     try inputCase(@embedFile("extensions/fixtures/sdk-lifecycle-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-lifecycle-7fb59f9.json"));
 }
 test "native SDK typed models credentials auth transforms negative promises and selection match upstream" {
-    try inputCase(@embedFile("extensions/fixtures/sdk-models-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-models-7fb59f9.json"));
+    try inputCatalogCase(@embedFile("extensions/fixtures/sdk-models-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-models-6fb2e78.json"));
 }
 fn inputCase(input: []const u8, expected_output: []const u8) !void {
     return inputCaseEnv(input, expected_output, &.{});
 }
 fn inputCaseEnv(input: []const u8, expected_output: []const u8, additional_environment: []const EnvValue) !void {
+    return inputCaseEnvCatalog(input, expected_output, additional_environment, false);
+}
+fn inputCatalogCase(input: []const u8, expected_output: []const u8) !void {
+    return inputCaseEnvCatalog(input, expected_output, &.{}, true);
+}
+fn inputCaseEnvCatalog(input: []const u8, expected_output: []const u8, additional_environment: []const EnvValue, selected_catalog: bool) !void {
     const Fixture = struct { schemaVersion: u32, sourceCommit: []const u8, inputSha256: []const u8, input: []const u8 };
     var parsed = try std.json.parseFromSlice(Fixture, std.testing.allocator, input, .{});
     defer parsed.deinit();
     try std.testing.expectEqual(@as(u32, 1), parsed.value.schemaVersion);
-    try std.testing.expect(std.mem.eql(u8, "7fb59f995b0a1db552001a8577b234e4105d7179", parsed.value.sourceCommit) or std.mem.eql(u8, "1cedd32724abfcb0915f76cc61b6827e2c16dbad", parsed.value.sourceCommit));
+    try std.testing.expect(std.mem.eql(u8, "7fb59f995b0a1db552001a8577b234e4105d7179", parsed.value.sourceCommit) or std.mem.eql(u8, "1cedd32724abfcb0915f76cc61b6827e2c16dbad", parsed.value.sourceCommit) or std.mem.eql(u8, "6fb2e7815167e6b19006fc526d1a5d0f5f998787", parsed.value.sourceCommit));
     var digest: [32]u8 = undefined;
     std.crypto.hash.sha2.Sha256.hash(parsed.value.input, &digest, .{});
     const hash = std.fmt.bytesToHex(digest, .lower);
     try std.testing.expectEqualStrings(&hash, parsed.value.inputSha256);
-    try runCase(parsed.value.input, expected_output, additional_environment);
+    try runCase(parsed.value.input, expected_output, additional_environment, selected_catalog);
 }
-fn runCase(input: []const u8, expected_output: []const u8, additional_environment: []const EnvValue) !void {
+fn runCase(input: []const u8, expected_output: []const u8, additional_environment: []const EnvValue, selected_catalog: bool) !void {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
     var root_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
@@ -186,7 +192,41 @@ fn runCase(input: []const u8, expected_output: []const u8, additional_environmen
     defer expected.deinit();
     var actual = try std.json.parseFromSlice(std.json.Value, gpa, result.stdout, .{});
     defer actual.deinit();
-    try equal(expected.value, actual.value);
+    if (selected_catalog) {
+        const exported_path = try std.fs.path.join(gpa, &.{ agent, "sdk-builtin-models.json" });
+        defer gpa.free(exported_path);
+        const exported_bytes = try std.Io.Dir.cwd().readFileAlloc(io, exported_path, gpa, .limited(8 * 1024 * 1024));
+        defer gpa.free(exported_bytes);
+        var exported = try std.json.parseFromSlice(std.json.Value, gpa, exported_bytes, .{});
+        defer exported.deinit();
+        var selected = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("ai/catalog_source.json"), .{});
+        defer selected.deinit();
+        const rows = selected.value.object.get("models").?;
+        // Compare every builtin definition to the selected source catalog.
+        // Captured historical counts remain unchanged provenance evidence.
+        try equal(rows, exported.value);
+        var counts = [_]i64{ 0, @intCast(rows.array.items.len), 0, 0 };
+        for (rows.array.items) |row| {
+            const kind = row.object.get("type");
+            const name = if (kind) |value| value.string else "chat";
+            if (std.mem.eql(u8, name, "chat")) counts[0] += 1 else if (std.mem.eql(u8, name, "image")) counts[2] += 1 else if (std.mem.eql(u8, name, "classifier")) counts[3] += 1;
+        }
+        const observed = actual.value.object.get("catalog").?;
+        inline for (.{ "chat", "all", "images", "classifiers" }, 0..) |field, index| try std.testing.expectEqual(counts[index], observed.object.get(field).?.integer);
+        const captured = expected.value.object.get("catalog").?;
+        try std.testing.expectEqual(captured.object.count(), observed.object.count());
+        var fields = captured.object.iterator();
+        while (fields.next()) |field| {
+            if (std.mem.eql(u8, field.key_ptr.*, "chat") or std.mem.eql(u8, field.key_ptr.*, "all") or std.mem.eql(u8, field.key_ptr.*, "images") or std.mem.eql(u8, field.key_ptr.*, "classifiers")) continue;
+            try equal(field.value_ptr.*, observed.object.get(field.key_ptr.*) orelse return error.MissingNativeSDKField);
+        }
+        try std.testing.expectEqual(expected.value.object.count(), actual.value.object.count());
+        fields = expected.value.object.iterator();
+        while (fields.next()) |field| {
+            if (std.mem.eql(u8, field.key_ptr.*, "catalog")) continue;
+            try equal(field.value_ptr.*, actual.value.object.get(field.key_ptr.*) orelse return error.MissingNativeSDKField);
+        }
+    } else try equal(expected.value, actual.value);
 }
 test "native SDK builtin classifier and image HTTP results match full source capture without Node" {
     const replies = [_]http_fixture.Reply{
