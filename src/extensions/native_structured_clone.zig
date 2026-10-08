@@ -6,33 +6,37 @@ const Engine = engine_mod.Engine;
 const c = engine_mod.c;
 const Pair = struct { source: c.JSValue, target: c.JSValue };
 pub fn clone(engine: *Engine, value: c.JSValue) !c.JSValue {
+    if (engine.dom_exception_class == 0) try @import("dom_exception.zig").install(engine);
     var seen: std.ArrayList(Pair) = .empty;
     defer seen.deinit(engine.gpa);
     return copy(engine, value, &seen);
 }
 fn dataCloneError(engine: *Engine, value: c.JSValue) !c.JSValue {
+    return engine.checked(c.JS_Throw(engine.context, try cloneFailureValue(engine, value)));
+}
+fn cloneFailureValue(engine: *Engine, value: c.JSValue) !c.JSValue {
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
-    const string = try values.get(engine, global, "String");
-    defer engine.freeValue(string);
-    var description_args = [_]c.JSValue{value};
-    const description = try engine.checked(c.JS_Call(engine.context, string, c.pi_js_undefined(), 1, &description_args));
-    defer engine.freeValue(description);
-    const name = try engine.toString(description);
+    const name = if (c.JS_IsObject(value) and !c.JS_IsFunction(engine.context, value)) blk: {
+        const atom = c.JS_GetClassName(engine.runtime, c.JS_GetClassID(value));
+        defer c.JS_FreeAtom(engine.context, atom);
+        const class = try engine.checked(c.JS_AtomToString(engine.context, atom));
+        defer engine.freeValue(class);
+        const class_name = try engine.toString(class);
+        defer engine.gpa.free(class_name);
+        break :blk try std.fmt.allocPrint(engine.gpa, "#<{s}>", .{class_name});
+    } else blk: {
+        const string = try values.get(engine, global, "String");
+        defer engine.freeValue(string);
+        var description_args = [_]c.JSValue{value};
+        const description = try engine.checked(c.JS_Call(engine.context, string, c.pi_js_undefined(), 1, &description_args));
+        defer engine.freeValue(description);
+        break :blk try engine.toString(description);
+    };
     defer engine.gpa.free(name);
     const message = try std.fmt.allocPrint(engine.gpa, "{s} could not be cloned.", .{name});
     defer engine.gpa.free(message);
-    const constructor = try values.get(engine, global, "Error");
-    defer engine.freeValue(constructor);
-    const text = try engine.checked(c.JS_NewStringLen(engine.context, message.ptr, message.len));
-    defer engine.freeValue(text);
-    var args = [_]c.JSValue{text};
-    const failure = try engine.checked(c.JS_CallConstructor(engine.context, constructor, 1, &args));
-    var consumed = false;
-    errdefer if (!consumed) engine.freeValue(failure);
-    if (c.JS_DefinePropertyValueStr(engine.context, failure, "name", c.JS_NewString(engine.context, "DataCloneError"), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
-    consumed = true;
-    return engine.checked(c.JS_Throw(engine.context, failure));
+    return @import("dom_exception.zig").create(engine, message, "DataCloneError");
 }
 fn serialized(engine: *Engine, value: c.JSValue) !c.JSValue {
     var size: usize = 0;
@@ -180,4 +184,33 @@ fn allocationExercise(gpa: std.mem.Allocator) !void {
 }
 test "native durable VM argument cloning unwinds every GPA allocation failure with cyclic values and buffers" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationExercise, .{});
+}
+test "native durable VM structured clone failures use DOMException identity without wrapping getter thrown DataCloneError names" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    if (engine.dom_exception_class == 0) try @import("dom_exception.zig").install(engine);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try values.put(engine, global, "nativeClone", try engine.checked(c.JS_NewCFunction(engine.context, cloned, "nativeClone", 1)));
+    const output = try engine.evalModule(
+        \\const output=[];for(const value of [Symbol('x'),function bad(){},new WeakMap()])try{nativeClone(value)}catch(error){output.push({name:error.name,message:error.message,dom:error instanceof DOMException,ordinary:error instanceof Error,prototype:Object.getPrototypeOf(error)===DOMException.prototype,tag:Object.prototype.toString.call(error),code:error.code})}const raw=new Error('raw');raw.name='DataCloneError';let getter;try{nativeClone({get value(){throw raw}})}catch(error){getter={identity:error===raw,dom:error instanceof DOMException,ordinary:error instanceof Error,name:error.name}}globalThis.result=JSON.stringify({output,getter});
+    , "native-clone-domexception-source");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-clone-domexception-result", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings("{\"output\":[{\"name\":\"DataCloneError\",\"message\":\"Symbol(x) could not be cloned.\",\"dom\":true,\"ordinary\":true,\"prototype\":true,\"tag\":\"[object DOMException]\",\"code\":25},{\"name\":\"DataCloneError\",\"message\":\"function bad(){} could not be cloned.\",\"dom\":true,\"ordinary\":true,\"prototype\":true,\"tag\":\"[object DOMException]\",\"code\":25},{\"name\":\"DataCloneError\",\"message\":\"#<WeakMap> could not be cloned.\",\"dom\":true,\"ordinary\":true,\"prototype\":true,\"tag\":\"[object DOMException]\",\"code\":25}],\"getter\":{\"identity\":true,\"dom\":false,\"ordinary\":true,\"name\":\"DataCloneError\"}}", text);
+}
+fn cloneFailureAllocationExercise(gpa: std.mem.Allocator) !void {
+    const engine = try Engine.init(gpa, .{});
+    defer engine.deinit();
+    const value = try engine.eval("Symbol('fixture')", "clone-error-allocation-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(value);
+    if (engine.dom_exception_class == 0) try @import("dom_exception.zig").install(engine);
+    const result = try cloneFailureValue(engine, value);
+    defer engine.freeValue(result);
+}
+test "native durable VM generated structured clone DOMException failure unwinds every GPA allocation" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, cloneFailureAllocationExercise, .{});
 }
