@@ -1,5 +1,48 @@
 # Active Pi upstream update
 
+## Checkpoint210 - 8 October 2026
+
+Status: active migration; incomplete Pi 1.x parity. The target is upstream
+`6fb2e7815167e6b19006fc526d1a5d0f5f998787`, package 1.1.0. The latest release is
+v1.1.0, published 7 October; the target main commit is newer. The catalog is
+1,653 models / 42 providers. Zig 0.16.0 stays pinned.
+
+The source head `0fdb6e667c7920de2eaf4487303e627c01059900` is qualified locally
+against the complete `test` and `test-provider-contracts` graphs:
+
+| Platform | Debug | ReleaseSafe | Build steps |
+| --- | --- | --- | --- |
+| Windows x64 | 2,190 passed / 71 skipped | 2,190 passed / 71 skipped | 255 |
+| Native Linux x64 | 2,382 passed / 12 skipped | 2,382 passed / 12 skipped | 251 |
+
+The [local receipt](verification/checkpoint-210/local-qualified.json) records
+terminal results and log digests. Its [compiled-input inventory](verification/checkpoint-210/compiled-inputs.json)
+contains 953 verified source hashes. Documentation/inventory updates after that
+head do not change those compiled inputs. Hosted checks must qualify their own
+exact commit before any merge or release certification.
+
+This checkpoint adds source-backed discovery/declaration behavior, the Codemode
+model facade and accounting, owner-scoped model transport, initial CLI keybinding
+and strict theme admission, private SDK session/model-registry/settings ownership,
+and structured-result marker handling. The durable waiter path now reads owned
+snapshots under the Session line and services late waiters without waiting for an
+unrelated transaction to release that line. The earlier concurrent memory-read
+crash and the intermediate publication-only liveness limitation are preserved in
+external development evidence; the final checkpoint passes the complete graphs.
+
+Native implementation remains unfinished. Remaining work includes the CLI's
+all-kind model adapter, complete SDK/AgentSession and durable workflows, full
+schema validation/coercion, UI word navigation and remaining component contracts,
+MCP lifecycle/resources/prompts/reload behavior, extension API identity and
+runtime admission details, and exact-head hosted macOS qualification. Additional
+component candidates are being developed and validated independently; this
+checkpoint does not certify them. The legacy bridge and the older full-parity
+certification marker remain until the required native gates pass. Inventory
+regeneration never sets the parity guard to true.
+
+The sections below retain earlier checkpoint history.
+
+
 Status: in progress. This file does not certify parity or a release.
 
 Checkpoint 198 reviews upstream `7fb59f995b0a1db552001a8577b234e4105d7179`
