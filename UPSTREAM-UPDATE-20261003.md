@@ -17,8 +17,11 @@ against the complete `test` and `test-provider-contracts` graphs:
 
 The [local receipt](verification/checkpoint-210/local-qualified.json) records
 terminal results and log digests. Its [compiled-input inventory](verification/checkpoint-210/compiled-inputs.json)
-contains 953 verified source hashes. Documentation/inventory updates after that
-head do not change those compiled inputs. Hosted checks must qualify their own
+contains 953 verified source hashes. The initial documentation/inventory update preserves those compiled inputs.
+A subsequent formatter/generator repair is recorded in
+[its follow-up receipt](verification/checkpoint-210/formatting-follow-up.json);
+the native generator reproduces canonical Zig, whole-tree formatting passes,
+and all 44 affected Unicode/Codemode tests pass. Hosted checks must qualify their own
 exact commit before any merge or release certification.
 
 This checkpoint adds source-backed discovery/declaration behavior, the Codemode
