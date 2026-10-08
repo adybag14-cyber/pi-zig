@@ -653,6 +653,15 @@ pub fn build(b: *std.Build) void {
     b.step("test-codemode-models", "Compare model globals against original registry behavior and concurrency").dependOn(&codemode_models_run.step);
     codemode_step.dependOn(&codemode_models_run.step);
     test_step.dependOn(&codemode_models_run.step);
+    const model_owner_module = b.createModule(.{ .root_source_file = b.path("src/native_model_owner_transport_test.zig"), .target = target, .optimize = optimize });
+    model_owner_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, model_owner_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, model_owner_module);
+    linkTypeScriptParser(b, model_owner_module, typescript_parser);
+    const model_owner_tests = b.addTest(.{ .root_module = model_owner_module, .use_llvm = use_llvm, .filters = &.{"native model owner transport"} });
+    const model_owner_run = b.addRunArtifact(model_owner_tests);
+    b.step("test-model-owner-transport", "Exercise exact model registry leases over the native worker protocol").dependOn(&model_owner_run.step);
+    test_step.dependOn(&model_owner_run.step);
     test_step.dependOn(&run_nested_tests.step);
     const oauth_lock_fixture = b.addExecutable(.{
         .name = "pi-mcp-oauth-lock-fixture",

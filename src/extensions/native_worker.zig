@@ -48,6 +48,7 @@ const Transport = struct {
     active_id: []const u8 = "",
     active_tool_call_id: ?[]const u8 = null,
     active_signal: ?c.JSValue = null,
+    active_abort: std.atomic.Value(bool) = .init(false),
     stream_updates: bool = false,
     updates: std.ArrayList([]u8) = .empty,
     terminal: bool = false,
@@ -278,6 +279,7 @@ const Transport = struct {
     }
 
     fn abortActive(self: *Transport, reason: std.json.Value) !void {
+        self.active_abort.store(true, .release);
         const signal = self.active_signal orelse return;
         const value = try self.engine.fromJsonValue(reason);
         defer self.engine.freeValue(value);
@@ -522,6 +524,7 @@ const Transport = struct {
         self.active_tool_call_id = if (request.get("toolCallId")) |value| if (value == .string) value.string else null else null;
         self.bindings.ui_manager.invocation_id = std.fmt.parseUnsigned(u64, owned_id, 10) catch 0;
         self.active_signal = try abort_signal.create(self.engine);
+        self.active_abort.store(false, .release);
         self.active = true;
         self.stream_updates = if (request.get("streamUpdates")) |value| value == .bool and value.bool else false;
         if (request.get("aborted")) |value| if (value == .bool and value.bool) try self.abortActive(request.get("abortReason") orelse std.json.Value{ .string = "Operation aborted" });
@@ -827,6 +830,24 @@ pub fn normalizeToolResult(gpa: std.mem.Allocator, raw: []const u8, tool_name: [
 
 fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, transport: *Transport, object: std.json.ObjectMap) ![]u8 {
     const kind = try requiredText(object, "kind");
+    if (std.mem.eql(u8, kind, "sdk_model_bridge")) {
+        const bridge = @import("native_sdk_model_bridge.zig");
+        const version = object.get("version") orelse return error.InvalidNativeModelBridgeRequest;
+        if (version != .integer or version.integer != 1) return error.InvalidNativeModelBridgeRequest;
+        const owner = try component_protocol.identifier(object.get("ownerGeneration") orelse return error.InvalidNativeModelBridgeRequest);
+        if (owner != transport.group.renderers.owner_generation) return error.NativeModelBridgeOwnerRetired;
+        const lease_value = object.get("lease") orelse return error.InvalidNativeModelBridgeRequest;
+        if (lease_value != .object) return error.InvalidNativeModelBridgeRequest;
+        const lease: bridge.Lease = .{
+            .generation = try component_protocol.identifier(lease_value.object.get("generation") orelse return error.InvalidNativeModelBridgeRequest),
+            .runtime_id = try component_protocol.identifier(lease_value.object.get("runtimeId") orelse return error.InvalidNativeModelBridgeRequest),
+        };
+        const operation = std.meta.stringToEnum(bridge.Operation, try requiredText(object, "operation")) orelse return error.InvalidNativeModelBridgeRequest;
+        const bytes = try encoded(gpa, object.get("request") orelse return error.InvalidNativeModelBridgeRequest);
+        defer gpa.free(bytes);
+        const deadline = if (object.get("deadlineMs")) |value| if (value == .integer) value.integer else return error.InvalidNativeModelBridgeRequest else null;
+        return bridge.dispatchJson(bindings.engine, gpa, lease, operation, bytes, .{ .request_id = std.fmt.parseUnsigned(u64, transport.active_id, 10) catch return error.InvalidNativeInvocationId, .abort_flag = &transport.active_abort, .deadline_ms = deadline });
+    }
     const snapshot = try encoded(gpa, object.get("context") orelse std.json.Value{ .object = .empty });
     defer gpa.free(snapshot);
     try bindings.setContext(snapshot);
@@ -894,6 +915,70 @@ fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, transport: *
     return error.UnsupportedNativeWorkerRequest;
 }
 
+test "native model owner transport dispatches only explicit live leases and scopes abort to the invocation" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    const sdk = @import("native_sdk.zig");
+    const model_bridge = @import("native_sdk_model_bridge.zig");
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = io;
+    try timers.install(engine, io);
+    const group = try native_group.Group.init(engine);
+    defer group.deinit();
+    const binding = try group.add("model-owner.mjs");
+    try binding.installSchemas();
+    const input = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/sdk-model-bridge-6fb2e78.input.json"), .{});
+    defer input.deinit();
+    const evaluated = try engine.evalModule(input.value.object.get("input").?.string, "model-owner-source.mjs");
+    defer engine.freeValue(evaluated);
+    const settled = try engine.awaitValue(evaluated);
+    defer engine.freeValue(settled);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const runtime = try sdk.get(engine, global, "bridgeRuntime");
+    defer engine.freeValue(runtime);
+    const lease = try model_bridge.admit(engine, runtime, 41);
+    var output: std.Io.Writer.Allocating = .init(gpa);
+    defer output.deinit();
+    var transport: Transport = .{ .engine = engine, .bindings = binding, .io = io, .writer = &output.writer, .group = group };
+    defer transport.deinit();
+    engine.host_control_context = &transport;
+    engine.host_control_pump = Transport.pump;
+    defer {
+        engine.host_control_context = null;
+        engine.host_control_pump = null;
+    }
+    const runtime_id = try std.fmt.allocPrint(gpa, "{d}", .{lease.runtime_id});
+    defer gpa.free(runtime_id);
+    const bytes = try std.json.Stringify.valueAlloc(gpa, .{ .kind = "sdk_model_bridge", .version = 1, .ownerGeneration = "1", .lease = .{ .generation = "41", .runtimeId = runtime_id }, .operation = "query", .request = .{ .method = "getAllModels", .args = .{"bridge"} } }, .{});
+    defer gpa.free(bytes);
+    var request = try std.json.parseFromSlice(std.json.Value, gpa, bytes, .{});
+    defer request.deinit();
+    try transport.start(request.value.object, "7");
+    const response = try invoke(gpa, binding, &transport, request.value.object);
+    defer gpa.free(response);
+    const parsed = try std.json.parseFromSlice(std.json.Value, gpa, response, .{});
+    defer parsed.deinit();
+    try std.testing.expectEqualStrings("complete", parsed.value.object.get("status").?.string);
+    try std.testing.expectEqual(@as(i64, 7), parsed.value.object.get("requestId").?.integer);
+    try std.testing.expectEqual(@as(usize, 3), parsed.value.object.get("result").?.array.items.len);
+    try transport.abortActive(.{ .string = "only request seven" });
+    const aborted = try invoke(gpa, binding, &transport, request.value.object);
+    defer gpa.free(aborted);
+    const abort_result = try std.json.parseFromSlice(std.json.Value, gpa, aborted, .{});
+    defer abort_result.deinit();
+    try std.testing.expectEqualStrings("aborted", abort_result.value.object.get("status").?.string);
+    transport.clearActive();
+    try transport.start(request.value.object, "8");
+    try std.testing.expect(!transport.active_abort.load(.acquire));
+    try request.value.object.put(gpa, "ownerGeneration", .{ .string = "2" });
+    try std.testing.expectError(error.NativeModelBridgeOwnerRetired, invoke(gpa, binding, &transport, request.value.object));
+    try request.value.object.put(gpa, "ownerGeneration", .{ .string = "1" });
+    try model_bridge.retire(engine, lease);
+    try std.testing.expectError(error.RetiredNativeSDKModelLease, invoke(gpa, binding, &transport, request.value.object));
+    try std.testing.expectError(error.DuplicateNativeInvocationId, transport.start(request.value.object, "7"));
+}
 test "renderer control arrives between idle pump and FIFO dequeue and retains control identity for both slot resize and subscription" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;

@@ -42,6 +42,8 @@ pub const EditorBridge = struct {
 };
 
 pub const Backend = enum { legacy, native };
+pub const NativeModelLease = struct { generation: u64, runtime_id: u64 };
+pub const NativeModelOperation = enum { query, classify, generate_images };
 
 fn privateFilePermissions() std.Io.File.Permissions {
     if (@hasDecl(std.Io.File.Permissions, "fromMode")) return std.Io.File.Permissions.fromMode(0o600);
@@ -861,6 +863,40 @@ pub const Runtime = struct {
         return self.exchangeWithUpdatesUnlocked(encoded, invocation_id, abort_flag, null, null);
     }
 
+    /// Invoke one explicitly admitted registry on this exact worker owner.
+    pub fn invokeNativeModelBridge(self: *Runtime, lease: NativeModelLease, operation: NativeModelOperation, request_json: []const u8, abort_flag: ?*bool, deadline_ms: ?i64) ![]u8 {
+        if (self.backend != .native or lease.generation == 0 or lease.runtime_id == 0) return error.InvalidNativeModelBridgeRequest;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        const payload = try std.json.parseFromSliceLeaky(std.json.Value, a, request_json, .{});
+        if (payload != .object) return error.InvalidNativeModelBridgeRequest;
+        const bytes = try std.json.Stringify.valueAlloc(a, .{
+            .kind = "sdk_model_bridge",
+            .version = 1,
+            .ownerGeneration = try std.fmt.allocPrint(a, "{d}", .{self.owner_generation}),
+            .lease = .{ .generation = try std.fmt.allocPrint(a, "{d}", .{lease.generation}), .runtimeId = try std.fmt.allocPrint(a, "{d}", .{lease.runtime_id}) },
+            .operation = @tagName(operation),
+            .request = payload,
+            .deadlineMs = deadline_ms,
+        }, .{ .emit_null_optional_fields = false });
+        // The invocation sequence is single-use. An uncertain response must
+        // never cause an automatic replay of a provider side effect.
+        if (self.shared_owner) |owner| return owner.invokeGroupRequest(self.extension_id, bytes, abort_flag);
+        if (self.native_group) return self.invokeGroupRequest(self.extension_id, bytes, abort_flag);
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.closed) return error.JavaScriptExtensionClosed;
+        const invocation_id = self.next_invocation_id;
+        self.next_invocation_id +%= 1;
+        if (self.next_invocation_id == 0) self.next_invocation_id = 1;
+        var request = try std.json.parseFromSliceLeaky(std.json.Value, a, bytes, .{});
+        try request.object.put(a, "invocationId", .{ .string = try std.fmt.allocPrint(a, "{d}", .{invocation_id}) });
+        try request.object.put(a, "abortable", .{ .bool = true });
+        if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) try request.object.put(a, "aborted", .{ .bool = true });
+        try request.object.put(a, "context", if (self.context_json) |context| try std.json.parseFromSliceLeaky(std.json.Value, a, context, .{}) else .{ .object = .empty });
+        return self.exchangeWithUpdatesUnlocked(try std.json.Stringify.valueAlloc(a, request, .{}), invocation_id, abort_flag, null, null);
+    }
     /// Extension views own only metadata/context. One group owner retains all
     /// pipe handles, reader state, invocation ordering and process cleanup.
     pub fn extensionView(self: *Runtime, id: u64, source_path: []const u8) !*Runtime {
@@ -2320,7 +2356,7 @@ pub const Runtime = struct {
         if (parsed.value != .object) return error.InvalidNativeExtensionRequest;
         const kind = parsed.value.object.get("kind") orelse return error.InvalidNativeExtensionRequest;
         if (kind != .string) return error.InvalidNativeExtensionRequest;
-        for ([_][]const u8{ "hook", "tool", "command", "group_add_source", "group_remove_source", "sdk_availability_snapshot", "provider_method", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "render_message", "render_entry", "transform_markdown", "render_tool_call", "render_tool_result", "prepare_tool_arguments", "renderer_retire", "shutdown" }) |supported| {
+        for ([_][]const u8{ "hook", "tool", "command", "group_add_source", "group_remove_source", "sdk_availability_snapshot", "sdk_model_bridge", "provider_method", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "render_message", "render_entry", "transform_markdown", "render_tool_call", "render_tool_result", "prepare_tool_arguments", "renderer_retire", "shutdown" }) |supported| {
             if (std.mem.eql(u8, supported, kind.string)) return;
         }
         // Keep unsupported custom-component and renderer operations out of the
@@ -2586,6 +2622,14 @@ fn wireInvocationId(value: std.json.Value) !u64 {
     };
 }
 
+test "native model owner transport host rejects unsupported invalid and closed registry requests before IO" {
+    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source.mjs"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .closed = true };
+    try std.testing.expectError(error.InvalidNativeModelBridgeRequest, runtime.invokeNativeModelBridge(.{ .generation = 0, .runtime_id = 1 }, .query, "{}", null, null));
+    try std.testing.expectError(error.InvalidNativeModelBridgeRequest, runtime.invokeNativeModelBridge(.{ .generation = 41, .runtime_id = 1 }, .query, "[]", null, null));
+    try std.testing.expectError(error.JavaScriptExtensionClosed, runtime.invokeNativeModelBridge(.{ .generation = 41, .runtime_id = 1 }, .query, "{\"method\":\"getModelsOfType\",\"args\":[\"chat\"]}", null, null));
+    runtime.backend = .legacy;
+    try std.testing.expectError(error.InvalidNativeModelBridgeRequest, runtime.invokeNativeModelBridge(.{ .generation = 41, .runtime_id = 1 }, .query, "{}", null, null));
+}
 test "native runtime wire invocation identity accepts exact strings and integers without float coercion" {
     try std.testing.expectEqual(@as(u64, 42), try wireInvocationId(.{ .string = "42" }));
     try std.testing.expectEqual(@as(u64, 42), try wireInvocationId(.{ .integer = 42 }));
