@@ -13,7 +13,7 @@
   "stderrSha256": "CBDF3A29B68C62D72F061000E82BCA9796539C4E2F0F51590E76C444FF44751F",
   "parityCertified": false,
   "fullMatrixColdBuildDeadlineMinutes": 45,
-  "fullMatrixPerTestDeadline": "180s",
+  "fullMatrixPerTestDeadline": "600s",
   "fullMatrixTimeoutEvidence": [
     "checkpoint210-hosted-ubuntu-565ea.log",
     "checkpoint210-hosted-windows-565ea.log",
@@ -21,5 +21,6 @@
   ],
   "macAssertionRepair": "registry-dispatch-follow-up.json: per-dispatch registry refresh; deterministic regression reproduced before repair; all four scoped modes passed; exact macOS hosted rerun pending",
   "publicationLocalGate": "checkpoint210-registry75-publication-windows-debug-20261009",
-  "publicationGateStderrSha256": "2FAB326CF5DA223E6F2042147FACFD7C5260BA2F1AE6BBFAB8A403BDABB4EEED"
+  "publicationGateStderrSha256": "2FAB326CF5DA223E6F2042147FACFD7C5260BA2F1AE6BBFAB8A403BDABB4EEED",
+  "sdkAllocationDeadlineEvidence": "Hosted ebecf Ubuntu: 2381 passed, 12 skipped, three SDK ownership sweeps timed out at 180s; original full checkpoint210 successful summaries include 3m and 4m allocation binaries. All injection cases remain enabled; dedicated codemode shard deadline stays 180s."
 }

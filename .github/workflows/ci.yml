@@ -77,7 +77,9 @@ jobs:
             export PI_CODEMODE_ALLOCATION_SHARD=0
             export PI_CODEMODE_ALLOCATION_SHARDS=8
           fi
-          zig build test test-provider-contracts -j2 --test-timeout 180s --summary all
+          # SDK ownership sweeps passed in three to four minutes in the frozen
+          # full qualification; keep every injected allocation case enabled.
+          zig build test test-provider-contracts -j2 --test-timeout 600s --summary all
 
       - name: Qualify macOS native environment lifecycle (ReleaseSafe)
         if: runner.os == 'macOS'
