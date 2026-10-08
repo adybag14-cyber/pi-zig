@@ -783,6 +783,14 @@ pub fn build(b: *std.Build) void {
     const cursor_boundary_step = b.step("test-cursor-boundaries", "Replay actual Source cursor overlays Input graphemes and allocator boundaries");
     cursor_boundary_step.dependOn(&run_cursor_boundary_tests.step);
     test_step.dependOn(&run_cursor_boundary_tests.step);
+    const dialog_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_dialog_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
+        .use_llvm = use_llvm,
+    });
+    const run_dialog_tests = b.addRunArtifact(dialog_tests);
+    const dialog_test_step = b.step("test-native-dialog", "Compare extension selector/input state with original Source and allocator failures");
+    dialog_test_step.dependOn(&run_dialog_tests.step);
+    test_step.dependOn(&run_dialog_tests.step);
     binding_test_step.dependOn(&run_binding_tests.step);
     test_step.dependOn(&run_binding_tests.step);
     const theme_state_tests = b.addTest(.{

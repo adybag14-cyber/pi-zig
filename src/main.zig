@@ -3853,6 +3853,10 @@ fn runMain(init: std.process.Init) !void {
     );
     defer extension_ui.deinit();
     extension_ui.bindClipboardEnvironment(environ);
+    var terminal_keybindings = if (agent_dir) |dir| tui.keybindings.Manager.load(gpa, io, dir) catch tui.keybindings.Manager.init(gpa) else tui.keybindings.Manager.init(gpa);
+    defer terminal_keybindings.deinit();
+    extension_ui.bindKeybindings(&terminal_keybindings);
+    defer extension_ui.bindKeybindings(null);
     const terminal_capabilities = tui.terminal_image.detectCapabilities(tui.terminal_image.environmentFromMap(environ), build_options.os.tag == .windows, false);
     var terminal_theme = try extensions.terminal_theme_producer.Producer.init(gpa, io, &extension_ui, if (terminal_capabilities.true_color) .truecolor else .@"256color", Io.File.stdout().isTty(io) catch false);
     defer terminal_theme.deinit();
@@ -4832,8 +4836,6 @@ fn runMain(init: std.process.Init) !void {
 
     var terminal_editor = tui.editor.Editor.init(gpa);
     defer terminal_editor.deinit();
-    var terminal_keybindings = if (agent_dir) |dir| tui.keybindings.Manager.load(gpa, io, dir) catch tui.keybindings.Manager.init(gpa) else tui.keybindings.Manager.init(gpa);
-    defer terminal_keybindings.deinit();
     runtime_reload_context.keybindings = &terminal_keybindings;
     // Keep the ordinary interactive terminal raw between commands. A temporary
     // custom scene or standard dialog borrows this mode and restores it, rather

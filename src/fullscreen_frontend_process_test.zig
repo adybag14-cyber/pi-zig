@@ -21,10 +21,51 @@ test "native extension confirm reports permission title while modal owns input a
     try child.send("/permission\r");
     _ = try child.waitFor("\x1b]7501;state=blocked:app=pi:kind=permission:msg=UGVybWlzc2lvbiB0aXRsZQ==", start, 5000);
     try observed.waitAny(&child, "Permission title");
-    try child.send("n\r");
+    try child.send("\x1b[B\r");
     try observed.waitAny(&child, "PERMISSION_DONE:false");
     _ = try child.waitFor("\x1b]7501;state=idle:app=pi", start, 5000);
     try cleanExit(&fixture, &child, &observed);
+}
+
+test "actual native extension dialogs use Source selector Escape cancel default Yes navigation and empty input" {
+    if (!pty.supported()) return error.SkipZigTest;
+    for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
+        var fixture = try Fixture.init(mode);
+        defer fixture.deinit();
+        const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+        defer errors.close(std.testing.io);
+        const source =
+            \\export default pi=>{pi.registerCommand('confirm',{async handler(_,ctx){const value=await ctx.ui.confirm('CONFIRM_DIALOG_TITLE','Message');return {message:'CONFIRM_RESULT:'+value}}});pi.registerCommand('select',{async handler(_,ctx){const value=await ctx.ui.select('SELECT_DIALOG_TITLE',['alpha','beta']);return {message:'SELECT_RESULT:'+value}}});pi.registerCommand('input',{async handler(_,ctx){const value=await ctx.ui.input('INPUT_DIALOG_TITLE','SOURCE_IGNORES_PLACEHOLDER');return {message:'INPUT_RESULT:'+JSON.stringify(value)}}})}
+        ;
+        var child = try fixture.spawnExtension(errors, source);
+        defer child.deinit();
+        var observed = try Observer.init();
+        defer observed.deinit();
+        try observed.waitInitialStartup(&child, ">");
+        try child.send("/confirm\r");
+        try observed.waitAny(&child, "CONFIRM_DIALOG_TITLE");
+        try child.send("\x1b");
+        try observed.waitAny(&child, "CONFIRM_RESULT:false");
+        try child.send("/confirm\r");
+        try observed.waitAny(&child, "CONFIRM_DIALOG_TITLE");
+        try child.send("\r");
+        try observed.waitAny(&child, "CONFIRM_RESULT:true");
+        try child.send("/select\r");
+        try observed.waitAny(&child, "SELECT_DIALOG_TITLE");
+        try child.send("j\r");
+        try observed.waitAny(&child, "SELECT_RESULT:beta");
+        try child.send("/input\r");
+        try observed.waitAny(&child, "INPUT_DIALOG_TITLE");
+        try std.testing.expect(!try observed.screen.contains("SOURCE_IGNORES_PLACEHOLDER"));
+        try child.send("\r");
+        try observed.waitAny(&child, "INPUT_RESULT:\"\"");
+        try child.send("/input\r");
+        try observed.waitAny(&child, "INPUT_DIALOG_TITLE");
+        try child.send("a界\x1b[DZ\r");
+        try observed.waitAny(&child, "INPUT_RESULT:\"aZ界\"");
+        try observed.send(&child, "after-dialog", "> after-dialog");
+        try cleanExit(&fixture, &child, &observed);
+    }
 }
 
 test "native persistent terminal reports Pi program status lifecycle without prompt or assistant leakage" {
@@ -223,7 +264,9 @@ test "actual native terminal OSC reports update cached Theme without leaking fra
     defer observed.deinit();
     try observed.waitAny(&child, ">");
     _ = try child.waitFor("\x1b]4;15;?\x07", 0, 5000);
-    try child.send("\x1b]10;rgb:aaaa/");
+    // Answer startup status/keyboard negotiation's first owed DA before the
+    // color reports. The later DA below belongs to the color query batch.
+    try child.send("\x1b[?1;2c\x1b]10;rgb:aaaa/");
     try child.send("bbbb/cccc\x1b\\\x1b]11;#010203\x07\x1b[?1;2c");
     try observed.send(&child, "/theme-report\r", "REPORT_FG:");
     observed.waitAny(&child, "REPORT_FG:[170,187,204]") catch |cause| {

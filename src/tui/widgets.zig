@@ -345,6 +345,7 @@ pub const Input = struct {
         const styled = try styleAlloc(gpa, self.normal_sgr, content);
         defer gpa.free(styled);
         const line = try padAlloc(gpa, styled, width);
+        errdefer gpa.free(line);
         const items = try gpa.alloc([]u8, 1);
         items[0] = line;
         return .{ .items = items };
