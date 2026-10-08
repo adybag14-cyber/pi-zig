@@ -144,7 +144,7 @@ pub const MistralClient = struct {
         var live = LiveWriter.init(gpa, on_delta, delta_ctx, streaming, self.abort_flag);
         live.attachBuffer();
         defer live.deinit();
-        const result = http_fetch.fetchControlled(&http_client, .{
+        const result = http_fetch.fetchHeadersControlled(&http_client, .{
             .location = .{ .url = url },
             .method = .POST,
             .payload = payload,
@@ -844,4 +844,22 @@ test "Mistral provider-neutral tool choice is serialized" {
     const body = try buildRequestBody(gpa, "m", &.{.{ .role = "user", .content = "x" }}, "[]", .{ .tool_choice = .none });
     defer gpa.free(body);
     try std.testing.expect(std.mem.indexOf(u8, body, "\"tool_choice\":\"none\"") != null);
+}
+
+test "Mistral native stream remains live beyond the response header timeout" {
+    const fixture = @import("http_fixture.zig");
+    const gpa = std.testing.allocator;
+    const body = "data: {\"choices\":[{\"delta\":{\"content\":\"long-thinking-answer\"},\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]\n\n";
+    const server = try fixture.PlanServer.init(gpa, std.testing.io, &.{.{ .path = "/chat/completions", .body = body, .body_delay_ms = 250 }});
+    defer server.deinit();
+    const url = try server.url(gpa, "");
+    defer gpa.free(url);
+    var provider: MistralClient = .{ .gpa = gpa, .io = std.testing.io, .api_key = "test", .base_url = url, .model = "mistral-small-latest", .provider_retry = .{ .timeout_ms = 100, .max_retries = 0 } };
+    const Handler = struct {
+        fn delta(_: ?*anyopaque, _: ai.StreamDelta) void {}
+    };
+    var result = try provider.client().completeStreaming(gpa, &.{.{ .role = "user", .content = "hello" }}, "[]", Handler.delta, null);
+    defer result.deinit(gpa);
+    try std.testing.expectEqualStrings("long-thinking-answer", result.content);
+    try server.finish();
 }

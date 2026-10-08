@@ -6,6 +6,7 @@ pub const Reply = struct {
     status: std.http.Status = .ok,
     headers: []const std.http.Header = &.{},
     delay_ms: u32 = 0,
+    body_delay_ms: u32 = 0,
     payload_contains: ?[]const u8 = null,
     expected_request_headers: []const std.http.Header = &.{},
     request_observed: ?*std.Io.Event = null,
@@ -94,7 +95,15 @@ pub const PlanServer = struct {
             defer headers.deinit(self.gpa);
             try headers.append(self.gpa, .{ .name = "content-type", .value = "application/json" });
             try headers.appendSlice(self.gpa, reply.headers);
-            try request.respond(reply.body, .{ .status = reply.status, .keep_alive = false, .extra_headers = headers.items });
+            if (reply.body_delay_ms > 0) {
+                var buffer: [256]u8 = undefined;
+                var response = try request.respondStreaming(&buffer, .{ .content_length = reply.body.len, .respond_options = .{ .status = reply.status, .keep_alive = false, .extra_headers = headers.items } });
+                try request.server.out.flush();
+                try self.io.sleep(.fromMilliseconds(reply.body_delay_ms), .awake);
+                try response.writer.writeAll(reply.body);
+                try response.end();
+                try request.server.out.flush();
+            } else try request.respond(reply.body, .{ .status = reply.status, .keep_alive = false, .extra_headers = headers.items });
         }
     }
 };

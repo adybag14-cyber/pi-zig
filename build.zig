@@ -268,6 +268,11 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    const mistral_header_tests = b.addTest(.{ .root_module = test_mod, .use_llvm = use_llvm, .filters = &.{ "ai.http_fetch", "ai.mistral" } });
+    const run_mistral_header_tests = b.addRunArtifact(mistral_header_tests);
+    const mistral_header_step = b.step("test-mistral-header-timeout", "Exercise source Mistral header deadlines and caller cancellation");
+    mistral_header_step.dependOn(&run_mistral_header_tests.step);
+    test_step.dependOn(&run_mistral_header_tests.step);
     const wheel_settings_tests = b.addTest(.{ .root_module = test_mod, .use_llvm = use_llvm, .filters = &.{ "fullscreen wheel setting", "coding_agent.settings_tui" } });
     const run_wheel_settings_tests = b.addRunArtifact(wheel_settings_tests);
     const wheel_settings_step = b.step("test-wheel-settings", "Exercise source wheel setting admission persistence and UI choices");
