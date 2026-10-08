@@ -253,7 +253,7 @@ fn created(engine: *Engine, owner: c.JSValue, transaction: c.JSValue, record: js
             try initial.object.put(a, "models", .{ .object = .empty });
             try initial.object.put(a, "tools", .{ .object = .empty });
         }
-        if (std.mem.eql(u8, kind, "pi.provider")) try initial.object.put(a, "sessionId", .{ .string = try uuid(self, a) });
+        if (std.mem.eql(u8, kind, "pi.provider")) try initial.object.put(a, "sessionId", .{ .string = try uuid(self.engine, a) });
         var content: json.Value = .{ .object = .empty };
         try content.object.put(a, "version", .{ .integer = 1 });
         try content.object.put(a, "kind", .{ .string = "base" });
@@ -356,19 +356,19 @@ fn finish(engine: *Engine, _: c.JSValue, transaction: c.JSValue) !void {
     };
     @memcpy(native.writes.array.items, ordered);
 }
-fn uuid(self: *State, a: std.mem.Allocator) ![]u8 {
-    const io = self.engine.native_io orelse return error.DurableIOUnavailable;
+pub fn uuid(engine: *Engine, a: std.mem.Allocator) ![]u8 {
+    const io = engine.native_io orelse return error.DurableIOUnavailable;
     var bytes: [16]u8 = undefined;
     try io.randomSecure(&bytes);
     const now: u64 = @intCast(@max(0, std.Io.Clock.real.now(io).toMilliseconds()));
     if (now > 0xffffffffffff) return error.UuidTimestampOutOfRange;
-    self.engine.native_durable_uuid_last_ms = @max(now, self.engine.native_durable_uuid_last_ms);
-    const sequence = if (self.engine.native_durable_uuid_sequence) |previous| blk: {
+    engine.native_durable_uuid_last_ms = @max(now, engine.native_durable_uuid_last_ms);
+    const sequence = if (engine.native_durable_uuid_sequence) |previous| blk: {
         if (previous == (1 << 41) - 1) return error.UuidSequenceExhausted;
         break :blk previous + 1;
     } else (@as(u64, bytes[1]) << 32) | (@as(u64, bytes[2]) << 24) | (@as(u64, bytes[3]) << 16) | (@as(u64, bytes[4]) << 8) | bytes[5];
-    self.engine.native_durable_uuid_sequence = sequence;
-    for (0..6) |index| bytes[index] = @truncate(self.engine.native_durable_uuid_last_ms >> @as(u6, @intCast((5 - index) * 8)));
+    engine.native_durable_uuid_sequence = sequence;
+    for (0..6) |index| bytes[index] = @truncate(engine.native_durable_uuid_last_ms >> @as(u6, @intCast((5 - index) * 8)));
     bytes[6] = 0x70 | @as(u8, @intCast((sequence >> 37) & 0xf));
     bytes[7] = @truncate(sequence >> 29);
     bytes[8] = 0x80 | @as(u8, @intCast((sequence >> 23) & 0x3f));

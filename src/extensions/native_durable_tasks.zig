@@ -36,9 +36,10 @@ const Entry = struct {
     }
 };
 const Runtime = struct { entry: *Entry, session: c.JSValue, signal: c.JSValue, context: c.JSValue, agent: c.JSValue, snapshot: c.JSValue };
-const RuntimeMethod = enum(c_int) { getTask, outcomes, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc, agent, env, context };
+const RuntimeMethod = enum(c_int) { getTask, outcomes, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc, agent, env, context, sleep, waitForTask };
 const Waiter = struct { id: ?u64, conversation: ?u64, resolve: c.JSValue, reject: c.JSValue, context: c.JSValue };
 const Signal = struct { entry: *Entry, value: c.JSValue, context: c.JSValue };
+const Sleeper = struct { runtime: c.JSValue, until: f64, context: c.JSValue, resolve: c.JSValue, reject: c.JSValue };
 pub const Manager = struct {
     engine: *Engine,
     hub: *Hub,
@@ -58,6 +59,7 @@ pub const Manager = struct {
     signals: std.ArrayList(Signal) = .empty,
     watches: std.ArrayList(struct { entry: *Entry, value: c.JSValue }) = .empty,
     contexts: std.AutoHashMapUnmanaged(u64, ?@import("native_durable_context_view.zig").Cache) = .empty,
+    sleepers: std.ArrayList(Sleeper) = .empty,
     next_invocation: u64 = 1,
     generation: u64,
     refs: std.atomic.Value(usize) = .init(1),
@@ -134,11 +136,12 @@ pub const Manager = struct {
         self.signals.deinit(self.engine.gpa);
         self.watches.deinit(self.engine.gpa);
         self.contexts.deinit(self.engine.gpa);
+        self.sleepers.deinit(self.engine.gpa);
         self.lease.release();
         self.engine.gpa.destroy(self);
     }
     fn driver(self: *Manager) void {
-        self.last_count = self.scheduler.drive() catch |err| {
+        self.last_count = self.scheduler.driveRefilling() catch |err| {
             self.driver_failure = err;
             self.finished.store(true, .release);
             if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
@@ -297,6 +300,35 @@ pub const Manager = struct {
             }
         }
     }
+    fn pollSleepers(self: *Manager) !void {
+        if (self.sleepers.items.len == 0) return;
+        try self.updateClock();
+        const now: f64 = @floatFromInt(Manager.nativeClock(self));
+        var index = self.sleepers.items.len;
+        while (index > 0) {
+            index -= 1;
+            const sleeper = self.sleepers.items[index];
+            const runtime = runtimeState(self.engine, sleeper.runtime).?;
+            const signal = try sdk.get(self.engine, sleeper.context, "abortSignal");
+            defer self.engine.freeValue(signal);
+            const aborted = try sdk.get(self.engine, signal, "aborted");
+            defer self.engine.freeValue(aborted);
+            const ended = self.closed or !runtime.entry.runtime.isActive();
+            const canceled = c.JS_ToBool(self.engine.context, aborted) != 0;
+            if (!ended and !canceled and !(sleeper.until - now <= 0)) continue;
+            _ = self.sleepers.orderedRemove(index);
+            runtime.entry.runtime.resumeWait();
+            defer self.engine.freeValue(sleeper.runtime);
+            defer self.engine.freeValue(sleeper.context);
+            defer self.engine.freeValue(sleeper.resolve);
+            defer self.engine.freeValue(sleeper.reject);
+            const failure = if (canceled) try sdk.get(self.engine, signal, "reason") else if (ended) try endedError(self.engine, runtime.entry.runtime.taskId()) else c.pi_js_undefined();
+            defer self.engine.freeValue(failure);
+            var args = [_]c.JSValue{failure};
+            const ignored = try self.engine.checked(c.JS_Call(self.engine.context, if (ended or canceled) sleeper.reject else sleeper.resolve, c.pi_js_undefined(), 1, &args));
+            self.engine.freeValue(ignored);
+        }
+    }
     fn invoke(native: *NativeDefinition, runtime: *scheduling.Runtime, record: json.Value, is_abort: bool) !void {
         const self = native.manager;
         const entry = try self.engine.gpa.create(Entry);
@@ -410,6 +442,7 @@ const Hub = struct {
             if (!manager.closed) try manager.refreshRegistry();
             try Manager.deliver(manager);
             try manager.pollSignals();
+            try manager.pollSleepers();
             if (try manager.broker.drain(Manager.dispatch, manager)) worked = true;
             if (manager.thread != null and manager.finished.load(.acquire)) {
                 manager.thread.?.join();
@@ -481,6 +514,14 @@ const Hub = struct {
                 engine.freeValue(waiter.context);
             }
             manager.waiters.clearRetainingCapacity();
+            for (manager.sleepers.items) |sleeper| {
+                runtimeState(engine, sleeper.runtime).?.entry.runtime.resumeWait();
+                engine.freeValue(sleeper.runtime);
+                engine.freeValue(sleeper.context);
+                engine.freeValue(sleeper.resolve);
+                engine.freeValue(sleeper.reject);
+            }
+            manager.sleepers.clearRetainingCapacity();
             manager.release();
         }
         self.managers.deinit(engine.gpa);
@@ -732,6 +773,9 @@ fn active(self: *Runtime) !void {
 fn endedError(engine: *Engine, task_id: u64) !c.JSValue {
     const message = try std.fmt.allocPrint(engine.gpa, "Task {d} invocation has ended", .{task_id});
     defer engine.gpa.free(message);
+    return messageError(engine, message);
+}
+fn messageError(engine: *Engine, message: []const u8) !c.JSValue {
     const text = try sdk.text(engine, message);
     defer engine.freeValue(text);
     const global = c.JS_GetGlobalObject(engine.context);
@@ -749,6 +793,38 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
     const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
     try active(self);
     const owner = self.entry.manager;
+    if (operation == .sleep or operation == .waitForTask) {
+        const context = if (args.len > 1) args[1] else c.pi_js_undefined();
+        const bound = try @import("native_durable_context.zig").withAbortSignal(engine, self.signal, context);
+        defer engine.freeValue(bound);
+        try durable.checkCancellation(engine, bound);
+        if (operation == .waitForTask) {
+            const pending = try wait(owner, try durable.number(engine, args[0]), null, bound);
+            defer engine.freeValue(pending);
+            var data = [_]c.JSValue{receiver};
+            const fulfilled = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeWaitSettled, 1, 0, data.len, &data));
+            defer engine.freeValue(fulfilled);
+            const rejected = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeWaitSettled, 1, 1, data.len, &data));
+            defer engine.freeValue(rejected);
+            self.entry.runtime.suspendWait();
+            errdefer self.entry.runtime.resumeWait();
+            return sdk.invoke(engine, pending, "then", &.{ fulfilled, rejected });
+        }
+        var until: f64 = 0;
+        if (c.JS_ToFloat64(engine.context, &until, if (args.len > 0) args[0] else c.pi_js_undefined()) < 0) return error.JavaScriptException;
+        try owner.updateClock();
+        if (until - @as(f64, @floatFromInt(Manager.nativeClock(owner))) <= 0) return sdk.promise(engine, c.pi_js_undefined());
+        var functions: [2]c.JSValue = undefined;
+        const pending = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
+        errdefer {
+            engine.freeValue(pending);
+            engine.freeValue(functions[0]);
+            engine.freeValue(functions[1]);
+        }
+        try owner.sleepers.append(engine.gpa, .{ .runtime = c.JS_DupValue(engine.context, receiver), .until = until, .context = c.JS_DupValue(engine.context, bound), .resolve = functions[0], .reject = functions[1] });
+        self.entry.runtime.suspendWait();
+        return pending;
+    }
     if (operation == .env) {
         const build = try sdk.get(engine, owner.options, "env");
         defer engine.freeValue(build);
@@ -819,6 +895,14 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
 }
 fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();
+}
+fn runtimeWaitSettled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, rejected: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const runtime = runtimeState(engine, data[0]) orelse return durable.reject(engine, error.InvalidTaskRuntime);
+    runtime.entry.runtime.resumeWait();
+    const value = if (argc > 0) argv[0] else c.pi_js_undefined();
+    if (rejected != 0) return c.JS_Throw(context, c.JS_DupValue(context, value));
+    return c.JS_DupValue(context, value);
 }
 fn runtimeConversation(engine: *Engine, runtime: *Runtime) !u64 {
     var record = (try runtime.entry.manager.lease.value.storage.readTableRecord(engine.gpa, .task, runtime.entry.runtime.taskId())) orelse return error.UnknownTask;
@@ -1112,7 +1196,7 @@ fn runtimeCommitQueued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.
     return c.pi_js_undefined();
 }
 pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c.JSValue {
-    if (self.closed) return error.HarnessClosed;
+    if (self.closed) return self.engine.checked(c.JS_Throw(self.engine.context, try messageError(self.engine, "Harness is closed")));
     try durable.checkCancellation(self.engine, context);
     var functions: [2]c.JSValue = undefined;
     const promise = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &functions));
@@ -1128,8 +1212,7 @@ pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c
 fn settleWaiters(self: *Manager) !void {
     // Scheduler.idle acquires the native Session line. A worker can be waiting
     // for the owner to finish a transaction, so inspect only after it exits.
-    if (self.thread != null) return;
-    if (!self.closed and self.contexts.count() != 0) {
+    if (self.thread == null and !self.closed and self.contexts.count() != 0) {
         try self.updateClock();
         const now = Manager.nativeClock(self);
         const settings = try @import("native_durable_agent.zig").runtimeSettings(self.engine, self.options);
@@ -1156,16 +1239,34 @@ fn settleWaiters(self: *Manager) !void {
         index -= 1;
         const waiter = self.waiters.items[index];
         var value = c.pi_js_undefined();
-        if (waiter.id) |id| {
-            var record = (try self.lease.value.storage.readTableRecord(self.engine.gpa, .task, id)) orelse return error.UnknownTask;
-            defer record.deinit();
-            const state = try json.required(record.value, "state");
-            if (!std.mem.eql(u8, try json.asString(try json.required(state, "status")), "terminal")) continue;
-            value = try durable.jsValue(self.engine, record.value);
-        } else if (!try self.scheduler.idle(waiter.conversation)) continue;
+        var rejected = false;
+        const signal = if (c.JS_IsUndefined(waiter.context) or c.JS_IsNull(waiter.context)) c.pi_js_undefined() else try sdk.get(self.engine, waiter.context, "abortSignal");
+        defer self.engine.freeValue(signal);
+        const aborted = if (c.JS_IsUndefined(signal) or c.JS_IsNull(signal)) c.pi_js_bool(self.engine.context, 0) else try sdk.get(self.engine, signal, "aborted");
+        defer self.engine.freeValue(aborted);
+        if (c.JS_ToBool(self.engine.context, aborted) != 0) {
+            value = try sdk.get(self.engine, signal, "reason");
+            rejected = true;
+        } else if (self.closed) {
+            value = try messageError(self.engine, "Harness is closed");
+            rejected = true;
+        } else if (waiter.id) |id| {
+            var record = try self.lease.value.storage.readTableRecord(self.engine.gpa, .task, id);
+            defer if (record) |*item| item.deinit();
+            if (record) |item| {
+                const state = try json.required(item.value, "state");
+                if (!std.mem.eql(u8, try json.asString(try json.required(state, "status")), "terminal")) continue;
+                value = try durable.jsValue(self.engine, item.value);
+            } else {
+                const message = try std.fmt.allocPrint(self.engine.gpa, "Task {d} does not exist", .{id});
+                defer self.engine.gpa.free(message);
+                value = try messageError(self.engine, message);
+                rejected = true;
+            }
+        } else if (self.thread != null or !try self.scheduler.idle(waiter.conversation)) continue;
         defer self.engine.freeValue(value);
         var args = [_]c.JSValue{value};
-        const result = try self.engine.checked(c.JS_Call(self.engine.context, waiter.resolve, c.pi_js_undefined(), 1, &args));
+        const result = try self.engine.checked(c.JS_Call(self.engine.context, if (rejected) waiter.reject else waiter.resolve, c.pi_js_undefined(), 1, &args));
         self.engine.freeValue(result);
         self.engine.freeValue(waiter.resolve);
         self.engine.freeValue(waiter.reject);
