@@ -11,6 +11,7 @@ const capabilities = @import("capabilities.zig");
 const stdio = @import("stdio_transport.zig");
 const http = @import("http_transport.zig");
 const projection = @import("agent_tools.zig");
+const resource_tools = @import("resource_tools.zig");
 const agent = @import("../agent/loop.zig");
 const tools = @import("../agent/tools.zig");
 const startup = @import("../durable/startup.zig");
@@ -24,7 +25,8 @@ const oauth_signin = @import("oauth_signin.zig");
 const oauth_challenge = @import("oauth_challenge.zig");
 
 pub const Options = struct { agent_dir: []const u8, cwd: []const u8, project_trusted: bool = false, environ: *const std.process.Environ.Map, reserved_names: []const []const u8 = &.{}, output_root: ?[]const u8 = null, max_servers: usize = 64, provider_token_context: ?*anyopaque = null, provider_token: ?*const fn (?*anyopaque, std.mem.Allocator, []const u8) anyerror!?[]u8 = null, management_all: bool = false };
-pub const Descriptor = struct { server: *Server, raw_name: []const u8, name: []const u8, schema: Value, codemode_metadata: ?Value = null, exposure: config.Exposure = .direct, loaded: bool = false };
+pub const ParameterIdentity = enum { remote_json, resource_list, resource_read };
+pub const Descriptor = struct { server: *Server, raw_name: []const u8, name: []const u8, schema: Value, codemode_metadata: ?Value = null, exposure: config.Exposure = .direct, loaded: bool = false, resource: bool = false, definition_id: u64, parameter_identity: ParameterIdentity = .remote_json };
 pub const Server = struct {
     owner: *Service,
     name: []const u8,
@@ -43,6 +45,7 @@ pub const Server = struct {
     lifecycle_changed: std.Io.Condition = .init,
     reconnect_active: bool = false,
     reconnect_callers: usize = 0,
+    has_resources: bool = false,
     fn authToken(raw: ?*anyopaque, gpa: std.mem.Allocator, _: ?*bool) !?[]u8 {
         const self: *Server = @ptrCast(@alignCast(raw.?));
         if (self.auth_provider) |*provider| return provider.token();
@@ -195,7 +198,7 @@ test "mcp.configured search allocation failures restore activation and release a
             defer service.descriptors.deinit(a);
             var server: Server = .{ .owner = &service, .name = "fixture", .config = .null, .connection = undefined, .timeout_ms = 60_000, .auth_arena = .init(a) };
             defer server.auth_arena.deinit();
-            try service.descriptors.append(a, .{ .server = &server, .raw_name = "double", .name = "mcp__fixture__double", .schema = schema.value, .exposure = .deferred });
+            try service.descriptors.append(a, .{ .server = &server, .raw_name = "double", .name = "mcp__fixture__double", .schema = schema.value, .exposure = .deferred, .definition_id = 1 });
             var result = service.searchResult(a, "{\"query\":\"double value\"}") catch |err| {
                 try std.testing.expect(!service.descriptors.items[0].loaded);
                 const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(a.ptr));
@@ -241,6 +244,10 @@ pub const Service = struct {
     output_root: []const u8,
     servers: std.ArrayList(*Server) = .empty,
     descriptors: std.ArrayList(Descriptor) = .empty,
+    next_definition_id: u64 = 1,
+    call_mutex: std.Io.Mutex = .init,
+    calls_retired: std.Io.Condition = .init,
+    active_calls: usize = 0,
     diagnostics: std.ArrayList([]const u8) = .empty,
     reserved: []const []const u8,
     closing: std.atomic.Value(bool) = .init(false),
@@ -309,7 +316,7 @@ pub const Service = struct {
             server.* = .{ .owner = self, .name = name, .config = value, .timeout_ms = timeout_ms, .connection = undefined, .auth_arena = .init(gpa) };
             errdefer server.auth_arena.deinit();
             if (usesOAuth(value)) server.auth_provider = .{ .store = self.credentials.?, .name = name, .server_url = try protocol.text(value, "url"), .client = .{ .gpa = gpa, .io = io, .timeout_ms = 15_000 }, .options_context = server, .resolve_options = Server.unusedTokenOptions, .resolve_flow = Server.resolveFlow };
-            server.connection = connection.Connection.init(gpa, io, .{ .factory = Server.createTransport, .factory_context = server, .client = .{ .version = "1.0.4", .request_timeout_ms = timeout_ms } });
+            server.connection = connection.Connection.init(gpa, io, .{ .factory = Server.createTransport, .factory_context = server, .client = .{ .name = "pi", .version = @import("../config.zig").version, .request_timeout_ms = timeout_ms } });
             errdefer server.connection.deinit();
             try self.servers.append(gpa, server);
         }
@@ -374,6 +381,7 @@ pub const Service = struct {
     }
     fn publishDiscovery(self: *Service, server: *Server, result: json.Value) !void {
         const initialized = try protocol.field(result, "initialized");
+        server.has_resources = json.get(try protocol.field(initialized, "capabilities"), "resources") != null;
         const listed = try protocol.field(result, "tools");
         const a = self.loaded.arena.allocator();
         for (listed.array.items) |item| {
@@ -393,8 +401,61 @@ pub const Service = struct {
             if (self.taken(name)) return error.DuplicateMcpToolName;
             const schema = try projection.schema(a, server.name, name, item);
             const metadata = try projection.codemodeMetadata(a, server.name, server.config, initialized, item);
-            try self.descriptors.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, raw_name), .name = try a.dupe(u8, name), .schema = schema, .codemode_metadata = metadata, .exposure = exposure });
+            try self.descriptors.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, raw_name), .name = try a.dupe(u8, name), .schema = schema, .codemode_metadata = metadata, .exposure = exposure, .definition_id = try self.allocateDefinitionId() });
         }
+        try self.syncResourceTools();
+    }
+    /// Runs on the catalog line, publishing the widest visible server exposure.
+    fn syncResourceTools(self: *Service) !void {
+        var selected: ?*Server = null;
+        var exposure: config.Exposure = .hidden;
+        for (self.servers.items) |server| {
+            if (!server.has_resources) continue;
+            const candidate = try config.serverExposure(server.config);
+            if (candidate == .hidden) continue;
+            if (selected == null or exposureRank(candidate) < exposureRank(exposure)) {
+                selected = server;
+                exposure = candidate;
+            }
+        }
+        var metadata = try json.Owned.parse(self.gpa, @embedFile("resource_tool_metadata.json"));
+        defer metadata.deinit();
+        const a = self.loaded.arena.allocator();
+        for (metadata.value.array.items) |definition| {
+            const name = try protocol.text(definition, "name");
+            var existing: ?*Descriptor = null;
+            for (self.descriptors.items) |*descriptor| if (descriptor.resource and std.mem.eql(u8, descriptor.name, name)) {
+                existing = descriptor;
+                break;
+            };
+            if (existing) |descriptor| {
+                if (descriptor.exposure != exposure) descriptor.definition_id = try self.allocateDefinitionId();
+                if (descriptor.exposure == .direct and exposure != .direct) descriptor.loaded = false;
+                descriptor.exposure = exposure;
+                if (selected) |server| descriptor.server = server;
+                continue;
+            }
+            const server = selected orelse continue;
+            if (self.taken(name)) continue;
+            var item = try json.clone(a, definition);
+            try item.object.put(a, "inputSchema", try protocol.field(item, "parameters"));
+            const schema = try projection.schema(a, "", name, item);
+            try self.descriptors.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, name), .name = try a.dupe(u8, name), .schema = schema, .exposure = exposure, .resource = true, .definition_id = try self.allocateDefinitionId(), .parameter_identity = if (std.mem.eql(u8, name, "read_mcp_resource")) .resource_read else .resource_list });
+        }
+    }
+    fn allocateDefinitionId(self: *Service) !u64 {
+        if (self.next_definition_id == std.math.maxInt(u64)) return error.McpDefinitionIdentityExhausted;
+        const id = self.next_definition_id;
+        self.next_definition_id += 1;
+        return id;
+    }
+    fn exposureRank(exposure: config.Exposure) u8 {
+        return switch (exposure) {
+            .direct => 0,
+            .codemode => 1,
+            .deferred => 2,
+            .hidden => 3,
+        };
     }
     pub fn promoteReady(self: *Service) !void {
         const pool = self.startup orelse return;
@@ -610,10 +671,81 @@ pub const Service = struct {
         const self: *Service = @ptrCast(@alignCast(raw.?));
         return self.owns(name);
     }
+    fn invokeResource(raw: ?*anyopaque, gpa: std.mem.Allocator, operation: resource_tools.Operation, input: ?[]const u8, flag: ?*const bool) !resource_tools.Reply {
+        const server: *Server = @ptrCast(@alignCast(raw.?));
+        const borrow = try server.connection.acquire();
+        defer borrow.release();
+        const Remote = struct {
+            gpa: std.mem.Allocator,
+            value: ?json.Owned = null,
+            fn retain(raw_error: ?*anyopaque, value: Value) !void {
+                const self: *@This() = @ptrCast(@alignCast(raw_error.?));
+                var owned = try json.Owned.empty(self.gpa);
+                errdefer owned.deinit();
+                owned.value = try json.clone(owned.arena.allocator(), value);
+                if (self.value) |*old| old.deinit();
+                self.value = owned;
+            }
+        };
+        var remote: Remote = .{ .gpa = gpa };
+        defer if (remote.value) |*value| value.deinit();
+        const options: session.RequestOptions = .{ .context = .{ .abort_flag = if (flag) |value| @constCast(value) else null }, .timeout_ms = server.timeout_ms, .on_remote_error = Remote.retain, .remote_error_context = &remote };
+        const templates = operation == .templates_page or operation == .all_templates;
+        const requested = switch (operation) {
+            .resources_page, .templates_page => capabilities.listPage(borrow.client, if (templates) .resource_templates else .resources, input, options),
+            .all_resources, .all_templates => capabilities.listAll(borrow.client, if (templates) .resource_templates else .resources, options),
+            .read => capabilities.readResource(borrow.client, input.?, options),
+        };
+        const value = requested catch |cause| {
+            if (cause != error.McpRemoteError or remote.value == null) return cause;
+            const code = json.get(remote.value.?.value, "code");
+            if (templates and code != null and (try json.asNumber(code.?)) == -32601) {
+                return .{ .value = try json.Owned.parse(gpa, if (operation == .all_templates) "[]" else "{\"resourceTemplates\":[]}") };
+            }
+            const message = try protocol.text(remote.value.?.value, "message");
+            const retained = remote.value.?;
+            remote.value = null;
+            return .{ .value = retained, .error_message = message };
+        };
+        return .{ .value = value };
+    }
+    fn executeResource(self: *Service, gpa: std.mem.Allocator, name: []const u8, arguments: []const u8, flag: ?*bool) !tools.ToolResult {
+        // Resource tools consult the current complete resource-server registry.
+        try self.awaitStartupAbort(flag);
+        var servers: std.ArrayList(resource_tools.Server) = .empty;
+        defer servers.deinit(gpa);
+        {
+            self.catalog_mutex.lockUncancelable(self.io);
+            defer self.catalog_mutex.unlock(self.io);
+            for (self.servers.items) |server| {
+                if (!server.has_resources or (try config.serverExposure(server.config)) == .hidden) continue;
+                try servers.append(gpa, .{ .name = server.name, .timeout_ms = server.timeout_ms, .context = server, .invoke = invokeResource });
+            }
+        }
+        var parsed = try json.Owned.parse(gpa, arguments);
+        defer parsed.deinit();
+        var result = try resource_tools.execute(gpa, self.io, servers.items, name, parsed.value, flag);
+        defer result.value.deinit();
+        return resource_tools.toToolResult(gpa, self.io, self.output_root, name, &result);
+    }
     pub fn execute(raw: ?*anyopaque, gpa: std.mem.Allocator, _: []const u8, name: []const u8, arguments: []const u8, progress: agent.ExternalToolProgressFn, progress_context: ?*anyopaque, abort_flag: ?*bool) !?tools.ToolResult {
         const self: *Service = @ptrCast(@alignCast(raw.?));
+        try self.call_mutex.lock(self.io);
+        if (self.closing.load(.acquire)) {
+            self.call_mutex.unlock(self.io);
+            return error.McpConnectionClosed;
+        }
+        self.active_calls += 1;
+        self.call_mutex.unlock(self.io);
+        defer {
+            self.call_mutex.lockUncancelable(self.io);
+            self.active_calls -= 1;
+            self.calls_retired.broadcast(self.io);
+            self.call_mutex.unlock(self.io);
+        }
         if (std.mem.eql(u8, name, "tool_search") and self.owns(name)) return try self.searchResultAbort(gpa, arguments, abort_flag);
         if (try self.descriptorForName(name)) |descriptor| {
+            if (descriptor.resource) return try self.executeResource(gpa, name, arguments, abort_flag);
             const server = descriptor.server;
             const borrow = try server.connection.acquire();
             defer borrow.release();
@@ -677,7 +809,7 @@ pub const Service = struct {
                 return .{ .content = text, .is_error = true, .details_json = try json.stringify(gpa, details) };
             };
             defer reply.deinit();
-            return try projection.convert(gpa, self.io, self.output_root, server.name, descriptor.raw_name, reply.value);
+            return try projection.convertWithOptions(gpa, self.io, self.output_root, server.name, descriptor.raw_name, reply.value, server.has_resources);
         }
         return null;
     }
@@ -701,6 +833,9 @@ pub const Service = struct {
             server.lifecycle_mutex.unlock(self.io);
             if (server.auth_provider) |*provider| provider.close();
         }
+        self.call_mutex.lockUncancelable(self.io);
+        while (self.active_calls != 0) self.calls_retired.waitUncancelable(self.io, &self.call_mutex);
+        self.call_mutex.unlock(self.io);
     }
     pub fn findServer(self: *Service, name: []const u8) ?*Server {
         for (self.servers.items) |server| if (std.mem.eql(u8, server.name, name)) return server;
@@ -743,12 +878,16 @@ pub const Service = struct {
         const settings = server.connection.options;
         try server.connection.reset(settings, &self.closing);
         if (self.closing.load(.acquire)) return error.McpConnectionClosed;
-        self.catalog_mutex.lockUncancelable(self.io);
-        var index: usize = 0;
-        while (index < self.descriptors.items.len) {
-            if (self.descriptors.items[index].server == server) _ = self.descriptors.orderedRemove(index) else index += 1;
+        {
+            self.catalog_mutex.lockUncancelable(self.io);
+            defer self.catalog_mutex.unlock(self.io);
+            var index: usize = 0;
+            while (index < self.descriptors.items.len) {
+                if (self.descriptors.items[index].server == server and !self.descriptors.items[index].resource) _ = self.descriptors.orderedRemove(index) else index += 1;
+            }
+            server.has_resources = false;
+            try self.syncResourceTools();
         }
-        self.catalog_mutex.unlock(self.io);
         if (self.startup) |pool| {
             try pool.add(server, fetchDiscovery, (try config.toolExposure(server.config, "")) == .direct);
             _ = try pool.waitContext(server, .none);
