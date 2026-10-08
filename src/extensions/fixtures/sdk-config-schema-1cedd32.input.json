@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "1cedd32724abfcb0915f76cc61b6827e2c16dbad",
+  "inputSha256": "247bac2227ae14db49ebff9409b030adbc67db98cca2780d77b5a86d2f47ce7e",
+  "input": "import {ModelRuntime} from '@earendil-works/pi-coding-agent';import fs from 'node:fs';import path from 'node:path';\nconst dir=process.env.SDK_CONFIG_DIR,file=path.join(dir,'models.json');fs.mkdirSync(dir,{recursive:true});const result=[];\nconst cases=[{},null,{providers:[]},{providers:{p:{models:[{}]}}},{providers:{p:{models:[{id:4,reasoning:'x',cost:{},input:['audio'],promptCache:{short:0,long:-1},inputLimits:{images:{resize:{jpegQuality:101,maxWidth:0,maxBytes:1.5}}}}]}}},{providers:{p:{oauth:'wrong',headers:{a:3},compat:4}}},{providers:{p:{models:[{id:'emoji😀',name:'😀',api:'openai-completions',baseUrl:'https://fixture.invalid'}],unknown:{accepted:true}}}},{providers:{p:{models:[{id:'m',api:'openai-completions',baseUrl:'https://fixture.invalid',samplingParams:{deep:{accepted:true}}}]}}}];\ntry{for(const value of cases){fs.writeFileSync(file,JSON.stringify(value));const runtime=await ModelRuntime.create({modelsPath:file,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});result.push({error:runtime.getError()?.split(file).join('<file>'),count:runtime.getModels('p').length})}console.log(JSON.stringify(result))}finally{fs.unlinkSync(file)}"
+}

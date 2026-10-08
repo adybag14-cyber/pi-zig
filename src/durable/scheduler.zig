@@ -43,6 +43,7 @@ const Invocation = struct {
     mode: Mode,
     active: std.atomic.Value(bool) = .init(true),
     canceled: std.atomic.Value(bool) = .init(false),
+    suspended_waits: std.atomic.Value(usize) = .init(0),
     refs: std.atomic.Value(usize) = .init(1),
     cause: ?anyerror = null,
     diagnostic_cause: ?anyerror = null,
@@ -83,6 +84,13 @@ pub const Runtime = struct {
     /// Public facades retain one invocation across all its running phases.
     pub fn isActive(self: Runtime) bool {
         return self.invocation.active.load(.acquire);
+    }
+    pub fn suspendWait(self: Runtime) void {
+        _ = self.invocation.suspended_waits.fetchAdd(1, .acq_rel);
+    }
+    pub fn resumeWait(self: Runtime) void {
+        const previous = self.invocation.suspended_waits.fetchSub(1, .acq_rel);
+        std.debug.assert(previous > 0);
     }
     /// An owner broker detected a registry boundary before invoking a phase.
     pub fn requeueForRegistryChange(self: Runtime) !void {
@@ -567,10 +575,86 @@ pub const Scheduler = struct {
         }
         return error.SchedulerBatchLimit;
     }
+    /// The VM owner can suspend one handler while it admits other work. Refill
+    /// free worker slots so children created by a running handler can execute.
+    /// The original bounded drive() keeps its one-batch semantics for callers.
+    pub fn driveRefilling(self: *Scheduler) !usize {
+        if (self.driving.swap(true, .acq_rel)) return error.ConcurrentSchedulerDrive;
+        defer self.driving.store(false, .release);
+        if (!self.enabled.load(.acquire)) return 0;
+        if (self.closing.load(.acquire)) return error.SchedulerClosed;
+        const ActiveWorker = struct { thread: std.Thread, invocation: *Invocation };
+        var workers: std.ArrayList(ActiveWorker) = .empty;
+        defer workers.deinit(self.gpa);
+        try workers.ensureTotalCapacity(self.gpa, self.options.max_workers);
+        errdefer {
+            for (workers.items) |worker_entry| worker_entry.invocation.canceled.store(true, .release);
+            for (workers.items) |worker_entry| worker_entry.thread.join();
+        }
+        var failed: std.AutoHashMapUnmanaged(u64, void) = .empty;
+        defer failed.deinit(self.gpa);
+        var count: usize = 0;
+        while (true) {
+            var index = workers.items.len;
+            while (index > 0) {
+                index -= 1;
+                const worker_entry = workers.items[index];
+                if (worker_entry.invocation.active.load(.acquire)) continue;
+                worker_entry.thread.join();
+                _ = workers.orderedRemove(index);
+                if (worker_entry.invocation.cause) |cause| {
+                    try failed.put(self.gpa, worker_entry.invocation.task_id, {});
+                    try self.reports.append(self.gpa, .{ .task_id = worker_entry.invocation.task_id, .cause = cause });
+                }
+            }
+            try self.reconcile();
+            var executing: usize = 0;
+            for (workers.items) |worker_entry| if (worker_entry.invocation.suspended_waits.load(.acquire) == 0) {
+                executing += 1;
+            };
+            if (!self.closing.load(.acquire) and executing < self.options.max_workers) {
+                self.mutex.lockUncancelable(self.io);
+                const registry = self.gpa.dupe(*DefinitionNode, self.definitions.items) catch |err| {
+                    self.mutex.unlock(self.io);
+                    return err;
+                };
+                self.mutex.unlock(self.io);
+                defer self.gpa.free(registry);
+                const in_flight = try self.gpa.alloc(u64, workers.items.len);
+                defer self.gpa.free(in_flight);
+                for (workers.items, in_flight) |worker_entry, *id| id.* = worker_entry.invocation.task_id;
+                var batch: Batch = .{ .scheduler = self, .registry = registry, .limit = self.options.max_workers - executing, .excluded = &failed, .in_flight = in_flight };
+                defer batch.list.deinit(self.gpa);
+                try batch.list.ensureTotalCapacity(self.gpa, batch.limit);
+                try workers.ensureUnusedCapacity(self.gpa, batch.limit);
+                var result = self.session.commit(Batch.reserve, &batch, .{}, .{}) catch |err| {
+                    for (batch.list.items) |invocation| invocation.end();
+                    return err;
+                };
+                result.deinit();
+                for (batch.list.items) |invocation| {
+                    const thread = std.Thread.spawn(.{}, worker, .{invocation}) catch |err| {
+                        invocation.end();
+                        invocation.cause = err;
+                        try failed.put(self.gpa, invocation.task_id, {});
+                        try self.reports.append(self.gpa, .{ .task_id = invocation.task_id, .cause = err });
+                        continue;
+                    };
+                    workers.appendAssumeCapacity(.{ .thread = thread, .invocation = invocation });
+                    count += 1;
+                }
+            }
+            if (workers.items.len == 0) return count;
+            try self.io.sleep(.fromMilliseconds(5), .awake);
+        }
+    }
     const Batch = struct {
         scheduler: *Scheduler,
         registry: []const *DefinitionNode,
         list: std.ArrayList(*Invocation) = .empty,
+        limit: usize = 0,
+        excluded: ?*const std.AutoHashMapUnmanaged(u64, void) = null,
+        in_flight: []const u64 = &.{},
         fn lookup(self: *const @This(), name: []const u8) ?*DefinitionNode {
             var index = self.registry.len;
             while (index > 0) {
@@ -591,7 +675,19 @@ pub const Scheduler = struct {
             while (rows.next()) |item| if (item.value_ptr.table == .task and try model.live(item.value_ptr.record)) try ids.append(scheduler.gpa, item.key_ptr.*);
             std.mem.sort(u64, ids.items, {}, std.sort.asc(u64));
             for (ids.items) |id| {
-                if (self.list.items.len == scheduler.options.max_workers or scheduler.closing.load(.acquire)) break;
+                if (self.list.items.len == (if (self.limit == 0) scheduler.options.max_workers else self.limit) or scheduler.closing.load(.acquire)) break;
+                if (self.excluded) |excluded| if (excluded.contains(id)) continue;
+                // end() may run before the old worker leaves its final Step;
+                // never readmit that task until its owned thread is joined.
+                if (std.mem.indexOfScalar(u64, self.in_flight, id) != null) continue;
+                scheduler.mutex.lockUncancelable(scheduler.io);
+                var already_active = false;
+                for (scheduler.invocations.items) |invocation| if (invocation.task_id == id and invocation.active.load(.acquire)) {
+                    already_active = true;
+                    break;
+                };
+                scheduler.mutex.unlock(scheduler.io);
+                if (already_active) continue;
                 var record = try graph.task(id);
                 const s = try model.status(record);
                 if (s == .completing) continue;

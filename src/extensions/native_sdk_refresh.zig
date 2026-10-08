@@ -87,6 +87,9 @@ pub fn start(engine: *engine_mod.Engine, runtime: c.JSValue, options: c.JSValue)
     if (c.JS_IsUndefined(allow) or c.JS_IsNull(allow)) try sdk.put(engine, copied, "allowNetwork", c.pi_js_bool(engine.context, @intFromBool(try networkEnabled(engine))));
     try sdk.put(engine, job, "options", c.JS_DupValue(engine.context, copied));
     const owner = try sdk.state(engine, runtime);
+    const selected = try sdk.get(engine, copied, "providers");
+    defer engine.freeValue(selected);
+    try @import("native_sdk_provider_composer.zig").reload(engine, owner.data, selected);
     const catalog = try sdk.get(engine, owner.data, "models");
     defer engine.freeValue(catalog);
     const pending = try sdk.invoke(engine, catalog, "refresh", &.{copied});

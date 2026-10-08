@@ -16,6 +16,7 @@ const render = @import("../tui/render.zig");
 const line_editor = @import("../tui/line_editor.zig");
 const Editor = @import("../tui/editor.zig").Editor;
 const Keybindings = @import("../tui/keybindings.zig").Manager;
+const native_dialog = @import("native_dialog.zig");
 pub const component_protocol = @import("component_protocol.zig");
 pub const ComponentSceneFn = *const fn (?*anyopaque, component_protocol.Scene, *component_protocol.ControlQueue) anyerror!void;
 pub const ComponentCloseFn = *const fn (?*anyopaque, component_protocol.Fence) anyerror!void;
@@ -28,6 +29,7 @@ pub const WidgetPlacement = enum { above_editor, below_editor };
 pub const PromptEvent = enum { start, end };
 pub const PromptEventFn = *const fn (?*anyopaque, PromptEvent, []const u8) void;
 pub const ModalObserverFn = *const fn (?*anyopaque, PromptEvent, ?anyerror) anyerror!void;
+pub const DialogStatusFn = *const fn (?*anyopaque, PromptEvent, []const u8, []const u8) anyerror!void;
 pub const SurfaceSinkFn = *const fn (?*anyopaque, SurfaceSnapshot) anyerror!void;
 pub const EditorSinkFn = *const fn (?*anyopaque, []const u8) anyerror!void;
 
@@ -167,11 +169,14 @@ pub const Controller = struct {
     has_ui: bool,
     width: usize = 80,
     reader: ?*Io.File.Reader = null,
+    dialog_keybindings: ?*const Keybindings = null,
     clipboard_options: coding_clipboard.Options = .{},
     prompt_event_fn: ?PromptEventFn = null,
     prompt_event_ctx: ?*anyopaque = null,
     modal_observer_fn: ?ModalObserverFn = null,
     modal_observer_ctx: ?*anyopaque = null,
+    dialog_status_fn: ?DialogStatusFn = null,
+    dialog_status_ctx: ?*anyopaque = null,
     surface_sink_fn: ?SurfaceSinkFn = null,
     surface_sink_ctx: ?*anyopaque = null,
     editor_sink_fn: ?EditorSinkFn = null,
@@ -254,6 +259,23 @@ pub const Controller = struct {
         self.prompt_event_ctx = context;
     }
 
+    pub fn bindDialogStatus(self: *Controller, callback: ?DialogStatusFn, context: ?*anyopaque) void {
+        self.dialog_status_fn = callback;
+        self.dialog_status_ctx = context;
+    }
+
+    /// Borrowed from the interactive owner; clear after all dialogs have ended.
+    pub fn bindKeybindings(self: *Controller, bindings: ?*const Keybindings) void {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        self.dialog_keybindings = bindings;
+    }
+
+    fn dialogBindings(self: *Controller) ?*const Keybindings {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        return self.dialog_keybindings;
+    }
     pub fn bindFrontend(self: *Controller, sink: ?SurfaceSinkFn, observer: ?ModalObserverFn, context: ?*anyopaque) void {
         self.surface_sink_fn = sink;
         self.surface_sink_ctx = context;
@@ -876,13 +898,21 @@ pub const Controller = struct {
         self.state_mutex.unlock(self.io);
         if (!ui_available) return allocator.dupe(u8, if (std.mem.eql(u8, method, "confirm")) "false" else "null");
         if (self.modal_observer_fn) |callback| try callback(self.modal_observer_ctx, .start, null);
+        var modal_ended = false;
+        errdefer if (!modal_ended) if (self.modal_observer_fn) |callback| callback(self.modal_observer_ctx, .end, error.DialogStatusFailed) catch {};
+        const title_value = parsed.value.object.get("title");
+        const title = if (title_value) |value| if (value == .string) value.string else "" else "";
+        if (self.dialog_status_fn) |callback| try callback(self.dialog_status_ctx, .start, method, title);
+        defer if (self.dialog_status_fn) |callback| callback(self.dialog_status_ctx, .end, method, title) catch {};
         if (self.prompt_event_fn) |callback| callback(self.prompt_event_ctx, .start, method);
         defer if (self.prompt_event_fn) |callback| callback(self.prompt_event_ctx, .end, method);
         const result = self.dispatchDialog(allocator, reader.?, method, &parsed.value.object) catch |err| {
+            modal_ended = true;
             if (self.modal_observer_fn) |callback| callback(self.modal_observer_ctx, .end, err) catch {};
             return err;
         };
         errdefer allocator.free(result);
+        modal_ended = true;
         if (self.modal_observer_fn) |callback| try callback(self.modal_observer_ctx, .end, null);
         return result;
     }
@@ -994,55 +1024,35 @@ pub const Controller = struct {
         const title = try requiredString(object, "title");
         const options_value = object.get("options") orelse return error.InvalidExtensionUiRequest;
         if (options_value != .array) return error.InvalidExtensionUiRequest;
-        try render.printLine(self.io, title);
+        const options = try self.gpa.alloc([]const u8, options_value.array.items.len);
+        defer self.gpa.free(options);
         for (options_value.array.items, 0..) |item, index| {
             if (item != .string) return error.InvalidExtensionUiRequest;
-            var line: std.Io.Writer.Allocating = .init(self.gpa);
-            defer line.deinit();
-            try line.writer.print("  {d}. {s}", .{ index + 1, item.string });
-            try render.printLine(self.io, line.written());
+            options[index] = item.string;
         }
-        if (options_value.array.items.len == 0) return allocator.dupe(u8, "null");
-
-        while (true) {
-            const answer = try self.readDialogLine(reader, "Select (blank cancels): ", "");
-            defer self.gpa.free(answer);
-            const trimmed = std.mem.trim(u8, answer, " \t\r\n");
-            if (trimmed.len == 0) return allocator.dupe(u8, "null");
-            if (std.fmt.parseUnsigned(usize, trimmed, 10)) |choice| {
-                if (choice >= 1 and choice <= options_value.array.items.len) return jsonString(allocator, options_value.array.items[choice - 1].string);
-            } else |_| {}
-            for (options_value.array.items) |item| if (std.ascii.eqlIgnoreCase(trimmed, item.string)) return jsonString(allocator, item.string);
-            try render.printLine(self.io, "Choose an option number or press Enter to cancel.");
-        }
+        var model = native_dialog.Model.init(self.gpa, .select, options, self.dialogBindings());
+        defer model.deinit();
+        try native_dialog.run(self.gpa, self.io, reader, &model, title);
+        return if (model.cancelled) allocator.dupe(u8, "null") else jsonString(allocator, options[model.selected]);
     }
 
     fn requestConfirm(self: *Controller, allocator: std.mem.Allocator, reader: *Io.File.Reader, object: *const std.json.ObjectMap) ![]u8 {
         const title = try requiredString(object, "title");
         const message = try requiredString(object, "message");
-        try render.printLine(self.io, title);
-        try render.printLine(self.io, message);
-        const answer = try self.readDialogLine(reader, "Confirm [y/N]: ", "");
-        defer self.gpa.free(answer);
-        const trimmed = std.mem.trim(u8, answer, " \t\r\n");
-        const yes = std.ascii.eqlIgnoreCase(trimmed, "y") or std.ascii.eqlIgnoreCase(trimmed, "yes");
-        return allocator.dupe(u8, if (yes) "true" else "false");
+        const combined_title = try std.fmt.allocPrint(self.gpa, "{s}\n{s}", .{ title, message });
+        defer self.gpa.free(combined_title);
+        var model = native_dialog.Model.init(self.gpa, .select, &.{ "Yes", "No" }, self.dialogBindings());
+        defer model.deinit();
+        try native_dialog.run(self.gpa, self.io, reader, &model, combined_title);
+        return allocator.dupe(u8, if (!model.cancelled and model.selected == 0) "true" else "false");
     }
 
     fn requestInput(self: *Controller, allocator: std.mem.Allocator, reader: *Io.File.Reader, object: *const std.json.ObjectMap) ![]u8 {
         const title = try requiredString(object, "title");
-        const placeholder = optionalString(object, "placeholder") orelse "";
-        try render.printLine(self.io, title);
-        if (placeholder.len > 0) {
-            var line: std.Io.Writer.Allocating = .init(self.gpa);
-            defer line.deinit();
-            try line.writer.print("({s})", .{placeholder});
-            try render.printLine(self.io, line.written());
-        }
-        const answer = try self.readDialogLine(reader, "> ", "");
-        defer self.gpa.free(answer);
-        if (answer.len == 0) return allocator.dupe(u8, "null");
-        return jsonString(allocator, answer);
+        var model = native_dialog.Model.init(self.gpa, .input, &.{}, self.dialogBindings());
+        defer model.deinit();
+        try native_dialog.run(self.gpa, self.io, reader, &model, title);
+        return if (model.cancelled) allocator.dupe(u8, "null") else jsonString(allocator, model.input.editor.slice());
     }
 
     fn requestEditor(self: *Controller, allocator: std.mem.Allocator, reader: *Io.File.Reader, object: *const std.json.ObjectMap) ![]u8 {

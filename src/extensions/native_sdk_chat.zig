@@ -23,6 +23,49 @@ fn startJob(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) callconv(.c) 
     return c.pi_js_undefined();
 }
 fn start(engine: *engine_mod.Engine, runtime: c.JSValue, data: c.JSValue, model: c.JSValue, context: c.JSValue, options: c.JSValue, output: c.JSValue) !void {
+    if (try @import("native_sdk_virtual.zig").isVirtual(engine, model)) {
+        const route_options = try sdk.object(engine);
+        defer engine.freeValue(route_options);
+        try sdk.put(engine, route_options, "reason", try sdk.text(engine, "direct"));
+        const requested = if (c.JS_IsObject(options)) try sdk.get(engine, options, "reasoning") else c.pi_js_undefined();
+        defer engine.freeValue(requested);
+        try sdk.put(engine, route_options, "thinkingLevel", if (c.JS_IsUndefined(requested) or c.JS_IsNull(requested)) try sdk.text(engine, "off") else c.JS_DupValue(engine.context, requested));
+        if (c.JS_IsObject(options)) try sdk.put(engine, route_options, "signal", try sdk.get(engine, options, "signal"));
+        const messages = try sdk.get(engine, context, "messages");
+        defer engine.freeValue(messages);
+        const pending = try @import("native_sdk_virtual.zig").resolve(engine, data, model, messages, route_options);
+        defer engine.freeValue(pending);
+        const route = try engine.awaitValue(pending);
+        defer engine.freeValue(route);
+        const target = try sdk.get(engine, route, "model");
+        defer engine.freeValue(target);
+        const routed_options = try sdk.object(engine);
+        defer engine.freeValue(routed_options);
+        try models.copy(engine, routed_options, options);
+        const target_provider = try sdk.get(engine, target, "provider");
+        defer engine.freeValue(target_provider);
+        const selected_provider = try sdk.get(engine, model, "provider");
+        defer engine.freeValue(selected_provider);
+        if (!c.JS_IsStrictEqual(engine.context, target_provider, selected_provider)) inline for (.{ "apiKey", "headers", "env" }) |field| {
+            const atom = c.JS_NewAtom(engine.context, field);
+            defer c.JS_FreeAtom(engine.context, atom);
+            if (c.JS_DeleteProperty(engine.context, routed_options, atom, 0) < 0) return error.JavaScriptException;
+        };
+        const level = try sdk.get(engine, route, "thinkingLevel");
+        defer engine.freeValue(level);
+        const off = try sdk.text(engine, "off");
+        defer engine.freeValue(off);
+        try sdk.put(engine, routed_options, "reasoning", if (c.JS_IsStrictEqual(engine.context, level, off)) c.pi_js_undefined() else c.JS_DupValue(engine.context, level));
+        const budget = try sdk.get(engine, routed_options, "maxTokens");
+        defer engine.freeValue(budget);
+        const limit = try sdk.get(engine, target, "maxTokens");
+        defer engine.freeValue(limit);
+        var requested_budget: f64 = 0;
+        var maximum: f64 = 0;
+        if (c.JS_ToFloat64(engine.context, &requested_budget, budget) < 0 or c.JS_ToFloat64(engine.context, &maximum, limit) < 0) return error.JavaScriptException;
+        if (c.JS_ToBool(engine.context, budget) == 1 and maximum > 0) try sdk.put(engine, routed_options, "maxTokens", c.JS_NewFloat64(engine.context, @min(requested_budget, maximum)));
+        return start(engine, runtime, data, target, context, routed_options, output);
+    }
     const kind = try sdk.get(engine, model, "type");
     defer engine.freeValue(kind);
     const chat = try sdk.text(engine, "chat");

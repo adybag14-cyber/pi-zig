@@ -1,0 +1,1 @@
+{"resolved":{"auth":{"apiKey":"literal","headers":{"X-Caller":"caller","X-Header":"definition","X-Only-Override":"yes","X-Template":"request"}},"source":"configured API key"},"extended":{"auth":{"apiKey":"extension","headers":{"X-Header":"extension-model","X-Only-Override":"yes","X-Template":"request"}},"source":"configured API key"},"identity":true}

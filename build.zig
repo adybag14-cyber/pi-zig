@@ -1,6 +1,8 @@
 const std = @import("std");
 
 pub fn build(b: *std.Build) void {
+    const install_schemas = b.addInstallDirectory(.{ .source_dir = b.path("schemas"), .install_dir = .prefix, .install_subdir = "share/pi/schemas" });
+    b.getInstallStep().dependOn(&install_schemas.step);
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
     // Zig 0.16's self-hosted backend is useful for large validation builds and
@@ -268,6 +270,16 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    const theme_schema_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/theme_schema_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const run_theme_schema_tests = b.addRunArtifact(theme_schema_tests);
+    theme_schema_tests.root_module.link_libc = true;
+    b.step("test-theme-schema", "Replay current upstream strict theme validation").dependOn(&run_theme_schema_tests.step);
+    test_step.dependOn(&run_theme_schema_tests.step);
+    const mistral_header_tests = b.addTest(.{ .root_module = test_mod, .use_llvm = use_llvm, .filters = &.{ "ai.http_fetch", "ai.mistral" } });
+    const run_mistral_header_tests = b.addRunArtifact(mistral_header_tests);
+    const mistral_header_step = b.step("test-mistral-header-timeout", "Exercise source Mistral header deadlines and caller cancellation");
+    mistral_header_step.dependOn(&run_mistral_header_tests.step);
+    test_step.dependOn(&run_mistral_header_tests.step);
     const wheel_settings_tests = b.addTest(.{ .root_module = test_mod, .use_llvm = use_llvm, .filters = &.{ "fullscreen wheel setting", "coding_agent.settings_tui" } });
     const run_wheel_settings_tests = b.addRunArtifact(wheel_settings_tests);
     const wheel_settings_step = b.step("test-wheel-settings", "Exercise source wheel setting admission persistence and UI choices");
@@ -749,8 +761,46 @@ pub fn build(b: *std.Build) void {
     const sdk_auth_step = b.step("test-sdk-auth-ownership", "Exercise auth snapshot and runtime credential allocation ownership");
     sdk_auth_step.dependOn(&sdk_auth_run.step);
     test_step.dependOn(&sdk_auth_run.step);
+    const sdk_config_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_config_ownership_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "SDK immutable model configuration", "SDK config template references" },
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_config_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, sdk_config_tests.root_module);
+    sdk_config_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const sdk_config_run = b.addRunArtifact(sdk_config_tests);
+    b.step("test-sdk-config-ownership", "Exercise immutable SDK configuration allocation ownership").dependOn(&sdk_config_run.step);
+    test_step.dependOn(&sdk_config_run.step);
+    const sdk_virtual_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_virtual_ownership_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK virtual catalog routing filtering stream"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_virtual_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, sdk_virtual_tests.root_module);
+    sdk_virtual_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const sdk_virtual_run = b.addRunArtifact(sdk_virtual_tests);
+    b.step("test-sdk-virtual-ownership", "Exercise virtual routing allocation ownership").dependOn(&sdk_virtual_run.step);
+    test_step.dependOn(&sdk_virtual_run.step);
     const run_binding_tests = b.addRunArtifact(binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
+    const cursor_boundary_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/cursor_boundary_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
+        .use_llvm = use_llvm,
+    });
+    const run_cursor_boundary_tests = b.addRunArtifact(cursor_boundary_tests);
+    const cursor_boundary_step = b.step("test-cursor-boundaries", "Replay actual Source cursor overlays Input graphemes and allocator boundaries");
+    cursor_boundary_step.dependOn(&run_cursor_boundary_tests.step);
+    test_step.dependOn(&run_cursor_boundary_tests.step);
+    const dialog_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_dialog_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
+        .use_llvm = use_llvm,
+    });
+    const run_dialog_tests = b.addRunArtifact(dialog_tests);
+    const dialog_test_step = b.step("test-native-dialog", "Compare extension selector/input state with original Source and allocator failures");
+    dialog_test_step.dependOn(&run_dialog_tests.step);
+    test_step.dependOn(&run_dialog_tests.step);
     binding_test_step.dependOn(&run_binding_tests.step);
     test_step.dependOn(&run_binding_tests.step);
     const theme_state_tests = b.addTest(.{

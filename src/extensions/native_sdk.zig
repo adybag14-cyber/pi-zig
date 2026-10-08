@@ -76,6 +76,10 @@ const Method = enum(c_int) {
     registerProvider,
     registerNativeProvider,
     unregisterProvider,
+    registerVirtualModel,
+    unregisterVirtualModel,
+    resolveModel,
+    getPhysicalModel,
     getProviders,
     getModels,
     getAll,
@@ -211,7 +215,7 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
         .session_manager => &.{ .getCwd, .getSessionDir, .getSessionId, .getSessionName, .getSessionFile, .getHeader, .getEntries, .getEntryCount, .getLeafId, .getLeafEntry, .getEntry, .getChildren, .getBranch, .getLabel, .getTree, .appendMessage, .appendCustomEntry, .appendSessionInfo, .appendModelChange, .appendThinkingLevelChange, .appendLabelChange, .branch, .resetLeaf, .buildSessionContext, .newSession, .setSessionFile, .isPersisted },
         .settings_manager => &.{ .getGlobalSettings, .getProjectSettings, .applyOverrides, .reload, .flush, .drainErrors, .getDefaultProvider, .getDefaultModel, .getDefaultThinkingLevel, .setDefaultThinkingLevel, .getCompactionSettings, .getRetrySettings, .getDefaultTools, .getTransport },
         .resource_loader => &.{ .reload, .getExtensions, .getSkills, .getPrompts, .getThemes, .getAgentsFiles, .getSystemPrompt, .getAppendSystemPrompt, .getSystemPromptSource, .getAppendSystemPromptSources, .extendResources },
-        .model_runtime => &.{ .registerProvider, .registerNativeProvider, .unregisterProvider, .getProviders, .getProvider, .getModels, .getAll, .getAvailable, .getModel, .getModelsOfType, .getModelOfType, .getAllModels, .getAllAvailable, .getAvailableOfType, .checkAuth, .getAuth, .getAvailableSnapshot, .setRuntimeApiKey, .removeRuntimeApiKey, .hasConfiguredAuth, .clearRuntimeApiKey, .refresh, .streamSimple, .completeSimple, .classify, .generateImages, .getError, .getProviderAuthStatus, .isUsingOAuth, .isUsingSubscription, .getRegisteredProviderIds, .getRegisteredNativeProvider, .listCredentials },
+        .model_runtime => &.{ .registerProvider, .registerNativeProvider, .unregisterProvider, .registerVirtualModel, .unregisterVirtualModel, .resolveModel, .getPhysicalModel, .getProviders, .getProvider, .getModels, .getAll, .getAvailable, .getModel, .getModelsOfType, .getModelOfType, .getAllModels, .getAllAvailable, .getAvailableOfType, .checkAuth, .getAuth, .getAvailableSnapshot, .setRuntimeApiKey, .removeRuntimeApiKey, .hasConfiguredAuth, .clearRuntimeApiKey, .refresh, .streamSimple, .completeSimple, .classify, .generateImages, .getError, .getProviderAuthStatus, .isUsingOAuth, .isUsingSubscription, .getRegisteredProviderIds, .getRegisteredNativeProvider, .listCredentials },
         .agent_session => &.{ .subscribe, .unsubscribe, .dispose, .prompt, .abort, .bindExtensions, .getActiveToolNames, .setActiveToolsByName, .getAllTools, .setSessionName, .setThinkingLevel, .setModel, .getSessionStats, .clearQueue, .steer, .followUp, .newSession },
         .session_runtime => &.{ .newSession, .switchSession, .dispose, .setRebindSession, .setBeforeSessionInvalidate },
     };
@@ -409,9 +413,41 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
         try put(engine, ctx, "tools", try get(engine, self.data, "customTools"));
         const options = try object(engine);
         defer engine.freeValue(options);
-        try put(engine, options, "reasoning", try get(engine, self.data, "thinkingLevel"));
-        try put(engine, options, "signal", try get(engine, self.data, "promptSignal"));
-        const streamed = try invoke(engine, runtime, "streamSimple", &.{ model, ctx, options });
+        const selected_level = try get(engine, self.data, "thinkingLevel");
+        defer engine.freeValue(selected_level);
+        const signal = try get(engine, self.data, "promptSignal");
+        defer engine.freeValue(signal);
+        var routing_error: ?anyerror = null;
+        const projection = if (try @import("native_sdk_virtual.zig").isVirtual(engine, model)) projected: {
+            break :projected @import("native_sdk_virtual.zig").sessionProjection(engine, runtime, manager, model, messages, selected_level, signal) catch |err| {
+                routing_error = err;
+                break :projected c.pi_js_undefined();
+            };
+        } else c.pi_js_undefined();
+        defer engine.freeValue(projection);
+        const request_model = if (c.JS_IsObject(projection)) try get(engine, projection, "model") else c.JS_DupValue(engine.context, model);
+        defer engine.freeValue(request_model);
+        const request_level = if (c.JS_IsObject(projection)) try get(engine, projection, "thinkingLevel") else c.JS_DupValue(engine.context, selected_level);
+        defer engine.freeValue(request_level);
+        if (c.JS_IsObject(projection)) {
+            const state_entry = try get(engine, projection, "stateEntry");
+            defer engine.freeValue(state_entry);
+            if (c.JS_IsObject(state_entry)) {
+                const appended = try event(self, "entry_appended");
+                defer engine.freeValue(appended);
+                try put(engine, appended, "entry", c.JS_DupValue(engine.context, state_entry));
+                try emit(self, appended);
+            }
+        }
+        try put(engine, options, "reasoning", c.JS_DupValue(engine.context, request_level));
+        try put(engine, options, "signal", c.JS_DupValue(engine.context, signal));
+        const streamed = if (routing_error) |err| failed: {
+            const exports = engine.native_module_values.get("pi-ai") orelse return error.NativeSDKModelModuleUnavailable;
+            const output = try invoke(engine, exports, "createAssistantMessageEventStream", &.{});
+            errdefer engine.freeValue(output);
+            try @import("native_sdk_chat.zig").finishError(engine, model, output, err);
+            break :failed output;
+        } else try invoke(engine, runtime, "streamSimple", &.{ request_model, ctx, options });
         defer engine.freeValue(streamed);
         const stream = try engine.awaitValue(streamed);
         defer engine.freeValue(stream);
@@ -473,6 +509,7 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
             if (self.aborted or self.disposed) break;
             return error.NativeSDKProviderStreamMissingMessage;
         }
+        if (c.JS_IsObject(projection)) try put(engine, final, "thinkingLevel", c.JS_DupValue(engine.context, request_level));
         try append(engine, messages, c.JS_DupValue(engine.context, final));
         const assistant_id = try invoke(engine, manager, "appendMessage", &.{final});
         engine.freeValue(assistant_id);
@@ -544,6 +581,7 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
     try emit(self, end);
     const settled = try event(self, "agent_settled");
     defer engine.freeValue(settled);
+    try put(engine, settled, "aborted", c.pi_js_bool(engine.context, @intFromBool(self.aborted)));
     try emit(self, settled);
 }
 fn emitMessage(self: *State, kind: []const u8, message: c.JSValue) !void {
@@ -1132,6 +1170,7 @@ fn initModelRuntime(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     defer engine.freeValue(catalog);
     try put(engine, data, "models", c.JS_DupValue(engine.context, catalog));
     try @import("native_sdk_models.zig").seedBuiltins(engine, catalog);
+    try @import("native_sdk_provider_composer.zig").initialize(engine, data);
     return new(engine, .model_runtime, data);
 }
 fn providerModels(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -1292,24 +1331,8 @@ fn modelDispatch(self: *State, operation: Method, args: []const c.JSValue) !c.JS
     if (operation == .registerNativeProvider) return invoke(engine, catalog, "setProvider", args);
     if (operation == .registerProvider) {
         if (args.len != 2 or !c.JS_IsString(args[0]) or !c.JS_IsObject(args[1])) return error.NativeSDKInvalidProviderConfig;
-        const provider = try object(engine);
+        const provider = try @import("native_sdk_provider_composer.zig").extensionProvider(engine, self.data, args[0], args[1]);
         defer engine.freeValue(provider);
-        try put(engine, provider, "id", c.JS_DupValue(engine.context, args[0]));
-        const models = try get(engine, args[1], "models");
-        defer engine.freeValue(models);
-        if (!c.JS_IsArray(models)) return error.NativeSDKInvalidProviderConfig;
-        var data = [_]c.JSValue{ models, args[0] };
-        const model_getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, providerModels, "getModels", 0, 0, 2, &data));
-        defer engine.freeValue(model_getter);
-        try put(engine, provider, "getModels", c.JS_DupValue(engine.context, model_getter));
-        try put(engine, provider, "getAllModels", c.JS_DupValue(engine.context, model_getter));
-        const streamer = try get(engine, args[1], "streamSimple");
-        defer engine.freeValue(streamer);
-        if (c.JS_IsFunction(engine.context, streamer)) try put(engine, provider, "streamSimple", c.JS_DupValue(engine.context, streamer));
-        const authentication = try get(engine, args[1], "auth");
-        defer engine.freeValue(authentication);
-        try put(engine, provider, "auth", if (c.JS_IsObject(authentication)) c.JS_DupValue(engine.context, authentication) else try object(engine));
-        try @import("native_sdk_operations.zig").install(engine, provider);
         return invoke(engine, catalog, "setProvider", &.{provider});
     }
     if (operation == .unregisterProvider) return invoke(engine, catalog, "deleteProvider", args);
@@ -1631,6 +1654,10 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             defer engine.freeValue(catalog);
             return invoke(engine, catalog, "getProvider", args);
         }
+        if (operation == .registerVirtualModel and args.len > 0) return @import("native_sdk_virtual.zig").register(engine, receiver, args[0]);
+        if (operation == .unregisterVirtualModel and args.len > 1) return @import("native_sdk_virtual.zig").unregister(engine, receiver, args[0], args[1]);
+        if (operation == .resolveModel and args.len > 2) return @import("native_sdk_virtual.zig").resolve(engine, self.data, args[0], args[1], args[2]);
+        if (operation == .getPhysicalModel and args.len > 1) return @import("native_sdk_virtual.zig").physical(engine, self.data, args[0], args[1]);
         if (operation == .listCredentials) return @import("native_sdk_models.zig").listCredentials(engine, self.data, if (args.len > 0) args[0] else c.pi_js_undefined());
         if (operation == .refresh) return @import("native_sdk_refresh.zig").start(engine, receiver, if (args.len > 0) args[0] else c.pi_js_undefined());
         if (operation == .streamSimple or operation == .completeSimple) {
@@ -1646,8 +1673,15 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             const id = if (operation == .registerNativeProvider) try get(engine, args[0], "id") else c.JS_DupValue(engine.context, args[0]);
             defer engine.freeValue(id);
             try @import("native_sdk_auth_snapshot.zig").registered(engine, self.data, id, if (operation == .registerNativeProvider) args[0] else if (args.len > 1) args[1] else c.pi_js_undefined(), operation == .registerNativeProvider, operation == .unregisterProvider);
+            try @import("native_sdk_provider_composer.zig").recompose(engine, self.data, id);
             try @import("native_sdk_auth_snapshot.zig").updateModels(engine, self.data);
-            if (operation == .registerNativeProvider) try @import("native_sdk_auth_snapshot.zig").markProvisional(engine, self.data, id, args[0]);
+            if (operation != .unregisterProvider) {
+                const catalog = try get(engine, self.data, "models");
+                defer engine.freeValue(catalog);
+                const provider = try invoke(engine, catalog, "getProvider", &.{id});
+                defer engine.freeValue(provider);
+                try @import("native_sdk_auth_snapshot.zig").markProvisional(engine, self.data, id, provider);
+            }
             try @import("native_sdk_availability.zig").registrationRefresh(engine, receiver);
             return result;
         }
@@ -1995,6 +2029,7 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     const definition: c.JSClassDef = .{ .class_name = "Native coding SDK object", .finalizer = finalizer, .gc_mark = mark, .call = null, .exotic = null };
     if (c.JS_NewClass(engine.runtime, engine.native_sdk_class, &definition) < 0) return error.OutOfMemory;
     try @import("native_sdk_credential_sync.zig").install(engine, exports);
+    try put(engine, exports, "VIRTUAL_MODEL_STATE_ENTRY", try text(engine, "pi.virtual-model-state"));
     try put(engine, exports, "createAgentSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createAgentSession", 1)));
     try put(engine, exports, "createAgentSessionServices", try engine.checked(c.pi_js_function_magic(engine.context, serviceCallback, "createAgentSessionServices", 1, 0)));
     try put(engine, exports, "createAgentSessionFromServices", try engine.checked(c.pi_js_function_magic(engine.context, serviceCallback, "createAgentSessionFromServices", 1, 1)));

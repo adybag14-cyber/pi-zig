@@ -1,7 +1,40 @@
 const std = @import("std");
 const builtin = @import("builtin");
+test "native SDK virtual session user continuation branch state and physical responses match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-virtual-session-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-virtual-session-6fb2e78.json"));
+}
+test "native SDK virtual routing reentry retired definitions cancellation and credentials match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-virtual-races-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-virtual-races-6fb2e78.json"));
+}
+test "native SDK virtual catalog routing canonical targets filters and direct streams match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-virtual-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-virtual-6fb2e78.json"));
+}
+test "native SDK request headers preserve model provider and configured precedence and resolution identity" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-model-headers-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-model-headers-1cedd32.json"));
+}
 const http_fixture = @import("ai/http_fixture.zig");
 const EnvValue = struct { name: []const u8, value: []const u8 };
+test "native SDK 1.1 settled event includes actual abort request flag" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-settled-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-settled-1cedd32.json"));
+}
+test "native SDK models JSONC immutable load reload composition and errors match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-model-config-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-model-config-1cedd32.json"));
+}
+test "native SDK models schema validation ordering unions and bounded diagnostics match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-config-schema-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-config-schema-6fb2e78.json"));
+}
+test "native SDK configured auth templates request environment and headers match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-config-auth-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-config-auth-1cedd32.json"));
+}
+test "native SDK config native extension precedence dynamic rows reload and restoration match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-config-overlays-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-config-overlays-1cedd32.json"));
+}
+test "native SDK auth caller abort credential errors and live callbacks match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-auth-resolution-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-auth-resolution-1cedd32.json"));
+}
+test "native SDK OAuth auth validity floor rotation and cancellation match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-auth-oauth-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-auth-oauth-1cedd32.json"));
+}
 test "native SDK cached auth status and runtime key synchronization match actual source" {
     try inputCase(@embedFile("extensions/fixtures/sdk-auth-snapshot-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-auth-snapshot-7fb59f9.json"));
 }
@@ -87,24 +120,30 @@ test "same full SDK input executes without Node and matches original source life
     try inputCase(@embedFile("extensions/fixtures/sdk-lifecycle-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-lifecycle-7fb59f9.json"));
 }
 test "native SDK typed models credentials auth transforms negative promises and selection match upstream" {
-    try inputCase(@embedFile("extensions/fixtures/sdk-models-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-models-7fb59f9.json"));
+    try inputCatalogCase(@embedFile("extensions/fixtures/sdk-models-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-models-6fb2e78.json"));
 }
 fn inputCase(input: []const u8, expected_output: []const u8) !void {
     return inputCaseEnv(input, expected_output, &.{});
 }
 fn inputCaseEnv(input: []const u8, expected_output: []const u8, additional_environment: []const EnvValue) !void {
+    return inputCaseEnvCatalog(input, expected_output, additional_environment, false);
+}
+fn inputCatalogCase(input: []const u8, expected_output: []const u8) !void {
+    return inputCaseEnvCatalog(input, expected_output, &.{}, true);
+}
+fn inputCaseEnvCatalog(input: []const u8, expected_output: []const u8, additional_environment: []const EnvValue, selected_catalog: bool) !void {
     const Fixture = struct { schemaVersion: u32, sourceCommit: []const u8, inputSha256: []const u8, input: []const u8 };
     var parsed = try std.json.parseFromSlice(Fixture, std.testing.allocator, input, .{});
     defer parsed.deinit();
     try std.testing.expectEqual(@as(u32, 1), parsed.value.schemaVersion);
-    try std.testing.expectEqualStrings("7fb59f995b0a1db552001a8577b234e4105d7179", parsed.value.sourceCommit);
+    try std.testing.expect(std.mem.eql(u8, "7fb59f995b0a1db552001a8577b234e4105d7179", parsed.value.sourceCommit) or std.mem.eql(u8, "1cedd32724abfcb0915f76cc61b6827e2c16dbad", parsed.value.sourceCommit) or std.mem.eql(u8, "6fb2e7815167e6b19006fc526d1a5d0f5f998787", parsed.value.sourceCommit));
     var digest: [32]u8 = undefined;
     std.crypto.hash.sha2.Sha256.hash(parsed.value.input, &digest, .{});
     const hash = std.fmt.bytesToHex(digest, .lower);
     try std.testing.expectEqualStrings(&hash, parsed.value.inputSha256);
-    try runCase(parsed.value.input, expected_output, additional_environment);
+    try runCase(parsed.value.input, expected_output, additional_environment, selected_catalog);
 }
-fn runCase(input: []const u8, expected_output: []const u8, additional_environment: []const EnvValue) !void {
+fn runCase(input: []const u8, expected_output: []const u8, additional_environment: []const EnvValue, selected_catalog: bool) !void {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
     var root_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
@@ -140,6 +179,7 @@ fn runCase(input: []const u8, expected_output: []const u8, additional_environmen
     try environment.put("HOME", home);
     try environment.put("USERPROFILE", home);
     try environment.put("PI_OFFLINE", "1");
+    try environment.put("SDK_CONFIG_DIR", workspace);
     for (additional_environment) |entry| try environment.put(entry.name, entry.value);
     const result = try std.process.run(gpa, io, .{
         .argv = &.{ binary, script },
@@ -161,7 +201,41 @@ fn runCase(input: []const u8, expected_output: []const u8, additional_environmen
     defer expected.deinit();
     var actual = try std.json.parseFromSlice(std.json.Value, gpa, result.stdout, .{});
     defer actual.deinit();
-    try equal(expected.value, actual.value);
+    if (selected_catalog) {
+        const exported_path = try std.fs.path.join(gpa, &.{ agent, "sdk-builtin-models.json" });
+        defer gpa.free(exported_path);
+        const exported_bytes = try std.Io.Dir.cwd().readFileAlloc(io, exported_path, gpa, .limited(8 * 1024 * 1024));
+        defer gpa.free(exported_bytes);
+        var exported = try std.json.parseFromSlice(std.json.Value, gpa, exported_bytes, .{});
+        defer exported.deinit();
+        var selected = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("ai/catalog_source.json"), .{});
+        defer selected.deinit();
+        const rows = selected.value.object.get("models").?;
+        // Compare every builtin definition to the selected source catalog.
+        // Captured historical counts remain unchanged provenance evidence.
+        try equal(rows, exported.value);
+        var counts = [_]i64{ 0, @intCast(rows.array.items.len), 0, 0 };
+        for (rows.array.items) |row| {
+            const kind = row.object.get("type");
+            const name = if (kind) |value| value.string else "chat";
+            if (std.mem.eql(u8, name, "chat")) counts[0] += 1 else if (std.mem.eql(u8, name, "image")) counts[2] += 1 else if (std.mem.eql(u8, name, "classifier")) counts[3] += 1;
+        }
+        const observed = actual.value.object.get("catalog").?;
+        inline for (.{ "chat", "all", "images", "classifiers" }, 0..) |field, index| try std.testing.expectEqual(counts[index], observed.object.get(field).?.integer);
+        const captured = expected.value.object.get("catalog").?;
+        try std.testing.expectEqual(captured.object.count(), observed.object.count());
+        var fields = captured.object.iterator();
+        while (fields.next()) |field| {
+            if (std.mem.eql(u8, field.key_ptr.*, "chat") or std.mem.eql(u8, field.key_ptr.*, "all") or std.mem.eql(u8, field.key_ptr.*, "images") or std.mem.eql(u8, field.key_ptr.*, "classifiers")) continue;
+            try equal(field.value_ptr.*, observed.object.get(field.key_ptr.*) orelse return error.MissingNativeSDKField);
+        }
+        try std.testing.expectEqual(expected.value.object.count(), actual.value.object.count());
+        fields = expected.value.object.iterator();
+        while (fields.next()) |field| {
+            if (std.mem.eql(u8, field.key_ptr.*, "catalog")) continue;
+            try equal(field.value_ptr.*, actual.value.object.get(field.key_ptr.*) orelse return error.MissingNativeSDKField);
+        }
+    } else try equal(expected.value, actual.value);
 }
 test "native SDK builtin classifier and image HTTP results match full source capture without Node" {
     const replies = [_]http_fixture.Reply{

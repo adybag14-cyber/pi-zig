@@ -2525,6 +2525,7 @@ const RuntimeResourceReloadContext = struct {
         errdefer deinitPromptTemplateSlice(gpa, new_prompts);
 
         var new_themes = pi_zig.themes.Registry.init(gpa, self.io);
+        new_themes.validate_user_themes = true;
         errdefer new_themes.deinit();
         if (!self.cli.no_themes) for (top_resources.themes.items) |path| try new_themes.loadPath(path);
         if (!self.cli.no_themes) for (package_resources.themes.items) |path| try new_themes.loadPath(path);
@@ -3132,6 +3133,7 @@ const ComponentFrontendOwner = struct {
         if (self.temporary) |owner| {
             self.controller.bindEditorFrontend(null, null);
             self.controller.bindFrontend(null, null, null);
+            self.controller.bindDialogStatus(null, null);
             tui.render.bindFrontend(null, null, null);
             owner.deinit();
             self.temporary = null;
@@ -3151,6 +3153,7 @@ const ComponentFrontendOwner = struct {
             owner.bindTerminalReportPump(extensions.terminal_theme_producer.Producer.pump);
             try self.terminal_theme.request();
             self.controller.bindFrontend(Frontend.surfaceSink, Frontend.modalObserver, owner);
+            self.controller.bindDialogStatus(Frontend.dialogStatus, owner);
             self.controller.bindEditorFrontend(Frontend.editorSink, owner);
             owner.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, self.controller);
             tui.render.bindFrontend(Frontend.noticeSink, Frontend.renderModalObserver, owner);
@@ -3352,6 +3355,7 @@ fn runMain(init: std.process.Init) !void {
     // original loader. `--no-themes` disables discovery but explicit --theme
     // paths remain enabled. The selected settings theme feeds the native renderer.
     var theme_registry = pi_zig.themes.Registry.init(gpa, io);
+    theme_registry.validate_user_themes = true;
     defer theme_registry.deinit();
     defer tui.render.resetTheme();
     if (!cli.no_themes) for (top_level_resources.themes.items) |theme_path| {
@@ -3849,6 +3853,10 @@ fn runMain(init: std.process.Init) !void {
     );
     defer extension_ui.deinit();
     extension_ui.bindClipboardEnvironment(environ);
+    var terminal_keybindings = if (agent_dir) |dir| tui.keybindings.Manager.load(gpa, io, dir) catch tui.keybindings.Manager.init(gpa) else tui.keybindings.Manager.init(gpa);
+    defer terminal_keybindings.deinit();
+    extension_ui.bindKeybindings(&terminal_keybindings);
+    defer extension_ui.bindKeybindings(null);
     const terminal_capabilities = tui.terminal_image.detectCapabilities(tui.terminal_image.environmentFromMap(environ), build_options.os.tag == .windows, false);
     var terminal_theme = try extensions.terminal_theme_producer.Producer.init(gpa, io, &extension_ui, if (terminal_capabilities.true_color) .truecolor else .@"256color", Io.File.stdout().isTty(io) catch false);
     defer terminal_theme.deinit();
@@ -4828,8 +4836,6 @@ fn runMain(init: std.process.Init) !void {
 
     var terminal_editor = tui.editor.Editor.init(gpa);
     defer terminal_editor.deinit();
-    var terminal_keybindings = if (agent_dir) |dir| tui.keybindings.Manager.load(gpa, io, dir) catch tui.keybindings.Manager.init(gpa) else tui.keybindings.Manager.init(gpa);
-    defer terminal_keybindings.deinit();
     runtime_reload_context.keybindings = &terminal_keybindings;
     // Keep the ordinary interactive terminal raw between commands. A temporary
     // custom scene or standard dialog borrows this mode and restores it, rather
@@ -4849,6 +4855,7 @@ fn runMain(init: std.process.Init) !void {
         extension_ui.bindComponentScenes(null, null, null);
         extension_ui.bindEditorFrontend(null, null);
         extension_ui.bindFrontend(null, null, null);
+        extension_ui.bindDialogStatus(null, null);
         tui.render.bindFrontend(null, null, null);
         scene.deinit();
     };
@@ -4874,6 +4881,7 @@ fn runMain(init: std.process.Init) !void {
         agent_cfg.abort_flag = &frontend.?.abort_flag;
         extension_bridge.setAbortFlag(agent_cfg.abort_flag);
         extension_ui.bindFrontend(coding.fullscreen_frontend.Frontend.surfaceSink, coding.fullscreen_frontend.Frontend.modalObserver, frontend);
+        extension_ui.bindDialogStatus(coding.fullscreen_frontend.Frontend.dialogStatus, frontend);
         extension_ui.bindEditorFrontend(coding.fullscreen_frontend.Frontend.editorSink, frontend);
         frontend.?.bindEditorObserver(extensions.ui.Controller.frontendEditorSnapshot, &extension_ui);
         frontend.?.bindTerminalReports(extensions.terminal_theme_producer.Producer.report, &terminal_theme);
@@ -8411,8 +8419,16 @@ fn runSurfaceCommand(
             try tui.render.printLine(io, "usage: pi theme <theme.json>");
             std.process.exit(2);
         }
-        var th = try pi_zig.themes.loadFile(gpa, io, cmd_args[0]);
-        defer th.deinit(gpa);
+        var registry = pi_zig.themes.Registry.init(gpa, io);
+        defer registry.deinit();
+        registry.validate_user_themes = true;
+        try registry.loadPath(cmd_args[0]);
+        if (registry.diagnostics.items.len > 0) {
+            try tui.render.printLine(io, registry.diagnostics.items[0].message);
+            std.process.exit(2);
+        }
+        if (registry.themes.items.len == 0) return error.ThemeNotFound;
+        const th = registry.themes.items[0];
         const sample = try pi_zig.themes.wrap(th.accent_sgr, th.name, arena);
         try tui.render.printLine(io, sample);
         return;

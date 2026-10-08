@@ -321,7 +321,11 @@ pub fn install(engine: *Engine) !void {
     try sdk.put(engine, exports, "MemoryStorage", c.JS_DupValue(engine.context, ctor));
     try sdk.put(engine, exports, "createSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createSession", 1)));
     try @import("native_durable_harness.zig").install(engine, exports);
+    try @import("native_durable_registry.zig").installHelpers(engine, exports);
+    try @import("native_durable_agent.zig").install(engine, exports);
     try @import("native_durable_tasks.zig").defineTask(engine, exports);
+    try @import("native_durable_entries.zig").install(engine, exports);
+    try @import("native_durable_builtin_documents.zig").install(engine, exports);
     try @import("native_durable_documents.zig").install(engine, exports);
     if (!engine.native_module_names.contains("@earendil-works/pi-durable")) try engine.registerValueModule("@earendil-works/pi-durable", exports);
     inline for (.{ .{ "jsonl", "openNodeJsonlStorage", 0 }, .{ "sqlite", "openNodeSqliteStorage", 1 } }) |item| {
@@ -635,9 +639,22 @@ fn transactionDispatch(self: *State, receiver: c.JSValue, operation: Method, arg
             break :blk try native.createConversation(parent.value, try ownerTask(engine, argument(args, 2)));
         },
         .appendEntry => blk: {
-            var draft = try owned(engine, argument(args, 1));
+            const typed = !c.JS_IsNumber(argument(args, 0));
+            const value = argument(args, if (typed) 2 else 1);
+            const copied = if (typed) try sdk.object(engine) else c.JS_DupValue(engine.context, value);
+            defer engine.freeValue(copied);
+            if (typed) {
+                const global = c.JS_GetGlobalObject(engine.context);
+                defer engine.freeValue(global);
+                const object = try sdk.get(engine, global, "Object");
+                defer engine.freeValue(object);
+                const assigned = try sdk.invoke(engine, object, "assign", &.{ copied, value });
+                engine.freeValue(assigned);
+                try sdk.put(engine, copied, "kind", try sdk.get(engine, args[0], "kind"));
+            }
+            var draft = try owned(engine, copied);
             defer draft.deinit();
-            break :blk try native.appendEntry(try number(engine, argument(args, 0)), draft.value);
+            break :blk try native.appendEntry(try number(engine, argument(args, if (typed) 1 else 0)), draft.value);
         },
         .entry => blk: {
             const typed = !c.JS_IsNumber(argument(args, 0));

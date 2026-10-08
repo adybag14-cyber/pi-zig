@@ -11,7 +11,7 @@ pub fn collection(engine: *engine_mod.Engine, kind: [*:0]const u8) !c.JSValue {
     return engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null));
 }
 pub fn initialize(engine: *engine_mod.Engine, data: c.JSValue) !void {
-    inline for (.{ "authSnapshot", "registeredNative", "registeredExtensions" }) |name| try sdk.put(engine, data, name, try collection(engine, "Map"));
+    inline for (.{ "authSnapshot", "registeredNative", "registeredExtensions", "virtualModels" }) |name| try sdk.put(engine, data, name, try collection(engine, "Map"));
     inline for (.{ "configuredProviders", "storedProviders" }) |name| try sdk.put(engine, data, name, try collection(engine, "Set"));
     try sdk.put(engine, data, "availabilityError", c.pi_js_undefined());
 }
@@ -25,14 +25,41 @@ pub fn contains(engine: *engine_mod.Engine, data: c.JSValue, field: [*:0]const u
 pub fn query(engine: *engine_mod.Engine, data: c.JSValue, kind: Query, id: c.JSValue) !c.JSValue {
     if (kind == .configured) return c.pi_js_bool(engine.context, @intFromBool(try contains(engine, data, "configuredProviders", id)));
     if (kind == .err) {
+        const errors = try sdk.array(engine);
+        defer engine.freeValue(errors);
+        const config = try sdk.get(engine, data, "modelConfig");
+        defer engine.freeValue(config);
+        if (c.JS_IsObject(config)) {
+            const failure = try sdk.get(engine, config, "error");
+            defer engine.freeValue(failure);
+            if (c.JS_ToBool(engine.context, failure) == 1) try sdk.append(engine, errors, c.JS_DupValue(engine.context, failure));
+        }
+        const composition = try sdk.get(engine, data, "compositionErrors");
+        defer engine.freeValue(composition);
+        if (c.JS_IsObject(composition)) {
+            const iterator = try sdk.invoke(engine, composition, "values", &.{});
+            defer engine.freeValue(iterator);
+            const global = c.JS_GetGlobalObject(engine.context);
+            defer engine.freeValue(global);
+            const constructor = try sdk.get(engine, global, "Array");
+            defer engine.freeValue(constructor);
+            const messages = try sdk.invoke(engine, constructor, "from", &.{iterator});
+            defer engine.freeValue(messages);
+            for (0..try sdk.length(engine, messages)) |index| try sdk.append(engine, errors, try engine.checked(c.JS_GetPropertyUint32(engine.context, messages, @intCast(index))));
+        }
         const failure = try sdk.get(engine, data, "availabilityError");
         defer engine.freeValue(failure);
-        if (c.JS_IsUndefined(failure)) return c.pi_js_undefined();
-        const text = try engine.toString(failure);
-        defer engine.gpa.free(text);
-        const message = try @import("std").fmt.allocPrint(engine.gpa, "Availability refresh: {s}", .{text});
-        defer engine.gpa.free(message);
-        return sdk.text(engine, message);
+        if (!c.JS_IsUndefined(failure)) {
+            const text = try engine.toString(failure);
+            defer engine.gpa.free(text);
+            const message = try @import("std").fmt.allocPrint(engine.gpa, "Availability refresh: {s}", .{text});
+            defer engine.gpa.free(message);
+            try sdk.append(engine, errors, try sdk.text(engine, message));
+        }
+        if (try sdk.length(engine, errors) == 0) return c.pi_js_undefined();
+        const separator = try sdk.text(engine, "\n\n");
+        defer engine.freeValue(separator);
+        return sdk.invoke(engine, errors, "join", &.{separator});
     }
     if (kind == .registered_native) {
         const map = try sdk.get(engine, data, "registeredNative");
@@ -73,6 +100,12 @@ pub fn query(engine: *engine_mod.Engine, data: c.JSValue, kind: Query, id: c.JSV
         defer engine.freeValue(keys);
         const key = try @import("native_sdk_models.zig").property(engine, keys, id);
         defer engine.freeValue(key);
+        if (c.JS_IsUndefined(key) and !try contains(engine, data, "storedProviders", id)) {
+            if (try @import("native_sdk_provider_composer.zig").configuredStatus(engine, data, id)) |status| {
+                engine.freeValue(value);
+                return status;
+            }
+        }
         const source: ?[]const u8 = if (!c.JS_IsUndefined(key)) "runtime" else if (try contains(engine, data, "storedProviders", id)) "stored" else if (c.JS_IsObject(check)) "environment" else null;
         try sdk.put(engine, value, "configured", c.pi_js_bool(engine.context, @intFromBool(source != null)));
         if (source) |label| {
@@ -112,7 +145,26 @@ pub fn registered(engine: *engine_mod.Engine, data: c.JSValue, id: c.JSValue, pr
     if (!remove) {
         const map = try sdk.get(engine, data, if (native) "registeredNative" else "registeredExtensions");
         defer engine.freeValue(map);
-        const ignored = try sdk.invoke(engine, map, "set", &.{ id, provider });
+        const effective = if (native) c.JS_DupValue(engine.context, provider) else try sdk.object(engine);
+        defer engine.freeValue(effective);
+        if (!native) {
+            const previous = try sdk.invoke(engine, map, "get", &.{id});
+            defer engine.freeValue(previous);
+            try @import("native_sdk_models.zig").copy(engine, effective, previous);
+            var names: [*c]c.JSPropertyEnum = null;
+            var count: u32 = 0;
+            if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, provider, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+            defer c.JS_FreePropertyEnum(engine.context, names, count);
+            for (0..count) |index| {
+                const value = try engine.checked(c.JS_GetProperty(engine.context, provider, names[index].atom));
+                if (c.JS_IsUndefined(value)) {
+                    engine.freeValue(value);
+                    continue;
+                }
+                if (c.JS_DefinePropertyValue(engine.context, effective, names[index].atom, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+            }
+        }
+        const ignored = try sdk.invoke(engine, map, "set", &.{ id, effective });
         engine.freeValue(ignored);
     }
 }
@@ -134,7 +186,11 @@ pub fn updateModels(engine: *engine_mod.Engine, data: c.JSValue) !void {
     try sdk.put(engine, data, "available", c.JS_DupValue(engine.context, available));
 }
 pub fn markProvisional(engine: *engine_mod.Engine, data: c.JSValue, id: c.JSValue, provider: c.JSValue) !void {
-    if (!try contains(engine, data, "storedProviders", id)) return;
+    const status = try @import("native_sdk_provider_composer.zig").configuredStatus(engine, data, id);
+    defer if (status) |value| engine.freeValue(value);
+    const configured_value = if (status) |value| try sdk.get(engine, value, "configured") else c.pi_js_undefined();
+    defer engine.freeValue(configured_value);
+    if (!try contains(engine, data, "storedProviders", id) and c.JS_ToBool(engine.context, configured_value) != 1) return;
     const configured = try sdk.get(engine, data, "configuredProviders");
     defer engine.freeValue(configured);
     const added = try sdk.invoke(engine, configured, "add", &.{id});

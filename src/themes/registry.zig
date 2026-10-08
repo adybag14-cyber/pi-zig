@@ -23,6 +23,7 @@ pub const Registry = struct {
     themes: std.ArrayList(theme_mod.Theme) = .empty,
     sources: std.ArrayList([]u8) = .empty,
     diagnostics: std.ArrayList(Diagnostic) = .empty,
+    validate_user_themes: bool = false,
 
     pub fn init(gpa: std.mem.Allocator, io: Io) Registry {
         return .{ .gpa = gpa, .io = io };
@@ -61,6 +62,26 @@ pub const Registry = struct {
     }
 
     fn loadThemeFile(self: *Registry, path: []const u8) !void {
+        if (self.validate_user_themes) {
+            const raw = std.Io.Dir.cwd().readFileAlloc(self.io, path, self.gpa, .limited(1024 * 1024)) catch |cause| {
+                if (cause == error.OutOfMemory) return cause;
+                const message = try std.fmt.allocPrint(self.gpa, "failed to load theme: {s}", .{@errorName(cause)});
+                defer self.gpa.free(message);
+                try self.addDiagnostic(.invalid, path, message);
+                return;
+            };
+            defer self.gpa.free(raw);
+            const parsed = std.json.parseFromSlice(std.json.Value, self.gpa, raw, .{}) catch {
+                try self.addDiagnostic(.invalid, path, "Invalid theme JSON");
+                return;
+            };
+            defer parsed.deinit();
+            if (try @import("theme_schema.zig").diagnosticAlloc(self.gpa, path, parsed.value)) |message| {
+                defer self.gpa.free(message);
+                try self.addDiagnostic(.invalid, path, message);
+                return;
+            }
+        }
         var loaded = theme_mod.loadFile(self.gpa, self.io, path) catch |err| {
             const message = try std.fmt.allocPrint(self.gpa, "failed to load theme: {s}", .{@errorName(err)});
             defer self.gpa.free(message);
@@ -204,4 +225,31 @@ test "theme registry reports missing explicit path" {
     var registry = Registry.init(std.testing.allocator, std.testing.io);
     defer registry.deinit();
     try std.testing.expectError(error.ThemePathNotFound, registry.loadPath("definitely-missing-theme.json"));
+}
+
+test "strict user theme admission rejects invalid siblings while accepting actual latest schema documents" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    const original = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/theme-validation-original-6fb.json"), .{});
+    defer original.deinit();
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var valid: ?std.json.Value = null;
+    for (original.value.object.get("cases").?.array.items) |item| if (item.object.get("ok").?.bool) {
+        valid = item.object.get("value").?;
+        break;
+    };
+    const bytes = try std.json.Stringify.valueAlloc(gpa, valid orelse return error.MissingValidOriginalTheme, .{});
+    defer gpa.free(bytes);
+    try tmp.dir.writeFile(io, .{ .sub_path = "valid.json", .data = bytes });
+    try tmp.dir.writeFile(io, .{ .sub_path = "invalid.json", .data = "{\"name\":\"partial\",\"colors\":{\"accent\":\"#ffffff\"}}" });
+    var path: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try tmp.dir.realPath(io, &path);
+    var registry = Registry.init(gpa, io);
+    defer registry.deinit();
+    registry.validate_user_themes = true;
+    try registry.loadPath(path[0..length]);
+    try std.testing.expectEqual(@as(usize, 1), registry.themes.items.len);
+    try std.testing.expectEqual(@as(usize, 1), registry.diagnostics.items.len);
+    try std.testing.expect(std.mem.indexOf(u8, registry.diagnostics.items[0].message, "Invalid theme") != null);
 }

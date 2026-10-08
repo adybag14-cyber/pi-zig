@@ -261,6 +261,20 @@ pub const Application = struct {
         self.started = false;
     }
 
+    /// A native dialog takes input and paint ownership while the same terminal
+    /// remains live. Preserve its negotiated status support and cached report.
+    pub fn suspendPresentation(self: *Application, io: Io) !void {
+        if (!self.started) return;
+        try writeAll(io, if (self.alternate_screen) leave_sequence else mouse_disable ++ terminal.bracketed_paste_disable ++ terminal.show_cursor);
+        self.started = false;
+    }
+    pub fn resumePresentation(self: *Application, io: Io) !void {
+        if (self.started) return;
+        try writeAll(io, if (self.alternate_screen) enter_sequence else terminal.hide_cursor ++ terminal.bracketed_paste_enable ++ mouse_enable);
+        self.clock_io = io;
+        self.started = true;
+    }
+
     pub fn setProgramStatus(self: *Application, io: Io, status: program_status.Status) !void {
         if (try self.program_status_protocol.set(status)) |bytes| {
             defer self.gpa.free(bytes);
@@ -633,6 +647,7 @@ pub const Application = struct {
         // The retained frame owns the bytes from this point, including partial
         // overlay/search/padding work. Failed paint must clear that same owner.
         errdefer self.clearCurrentFrames();
+        try @import("cursor_markers.zig").resolveLines(self.gpa, self.current_frame.?.lines.items, self.show_hardware_cursor);
 
         for (self.overlays.items) |entry| try self.renderOverlay(entry, width, height);
         const frame = &self.current_frame.?;
@@ -657,6 +672,7 @@ pub const Application = struct {
         const position = overlayPosition(entry.options.placement, width, height, overlay_width, overlay_height);
         var overlay_frame = try layout.renderFrame(self.gpa, entry.component, overlay_width, overlay_height);
         errdefer overlay_frame.deinit(self.gpa);
+        try @import("cursor_markers.zig").resolveLines(self.gpa, overlay_frame.lines.items, self.show_hardware_cursor);
         try self.composite(&overlay_frame, position.x, position.y, width, height);
         try self.overlay_frames.append(self.gpa, .{ .id = entry.id, .x = position.x, .y = position.y, .frame = overlay_frame });
     }
@@ -906,7 +922,7 @@ fn padLineAlloc(gpa: std.mem.Allocator, line: []const u8, width: usize) ![]u8 {
 }
 
 fn composeLineAlloc(gpa: std.mem.Allocator, base: []const u8, overlay: []const u8, column: usize, width: usize) ![]u8 {
-    const before = try terminal_text.sliceByColumnsAlloc(gpa, base, 0, column);
+    const before = try terminal_text.sliceBeforeColumnsAlloc(gpa, base, column);
     defer gpa.free(before);
     const clipped = try terminal_text.truncateAlloc(gpa, overlay, width -| column, .{ .ellipsis = "", .reset_style = false });
     defer gpa.free(clipped);
@@ -1189,4 +1205,51 @@ test "alternate-screen lifecycle sequences include paste mouse and cursor restor
     try std.testing.expect(std.mem.indexOf(u8, enter_sequence, terminal.bracketed_paste_enable) != null);
     try std.testing.expect(std.mem.indexOf(u8, enter_sequence, "\x1b[?1006h") != null);
     try std.testing.expect(std.mem.endsWith(u8, leave_sequence, terminal.alternate_screen_leave));
+}
+
+test "actual Source1ced overlay boundaries retain surviving APC cursor and discard covered wide glyph cursor" {
+    try replayCursorBoundaries(@embedFile("fixtures/cursor-boundary-original-1ced.json"));
+}
+
+test "expanded actual Source1ced APC boundary corpus covers leading and trailing wide joined and combining cursors" {
+    try replayCursorBoundaries(@embedFile("fixtures/cursor-boundary-expanded-original-1ced.json"));
+}
+
+fn replayCursorBoundaries(raw: []const u8) !void {
+    const gpa = std.testing.allocator;
+    const fixture = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
+    defer fixture.deinit();
+    for (fixture.value.object.get("boundaries").?.array.items) |item| {
+        const line = item.object.get("line").?.string;
+        const before_end: usize = @intCast(item.object.get("beforeEnd").?.integer);
+        const after_start: usize = @intCast(item.object.get("afterStart").?.integer);
+        const after_len: usize = @intCast(item.object.get("afterLen").?.integer);
+        const actual = try composeLineAlloc(gpa, line, "XXXXX"[0 .. after_start - before_end], before_end, after_start + after_len);
+        defer gpa.free(actual);
+        const expected = try std.fmt.allocPrint(gpa, "{s}{s}{s}", .{ item.object.get("before").?.string, "XXXXX"[0 .. after_start - before_end], item.object.get("after").?.string });
+        defer gpa.free(expected);
+        const marker_actual = std.mem.indexOf(u8, actual, widgets.cursor_marker);
+        const marker_expected = std.mem.indexOf(u8, expected, widgets.cursor_marker);
+        if ((marker_expected != null) != (marker_actual != null)) std.debug.print("Cursor boundary mismatch: beforeEnd={d},afterStart={d},afterLen={d}; line={any}; expected={any}; actual={any}\n", .{ before_end, after_start, after_len, line, expected, actual });
+        try std.testing.expectEqual(marker_expected != null, marker_actual != null);
+        if (marker_actual) |at| try std.testing.expectEqual(terminal_text.visibleWidth(expected[0..marker_expected.?]), terminal_text.visibleWidth(actual[0..at]));
+    }
+}
+
+test "regular and alternate compositor resolve focused hardware cursor and unfocused fake cursor before overlay" {
+    const gpa = std.testing.allocator;
+    const markers = @import("cursor_markers.zig");
+    var root = layout.StaticLines{ .lines = &.{"a" ++ markers.cursor ++ markers.fake_start ++ "界" ++ markers.fake_end ++ "z " ++ markers.fake_start ++ "x" ++ markers.fake_end} };
+    for ([_]bool{ false, true }) |alternate| for ([_]bool{ false, true }) |hardware| {
+        var app = Application.init(gpa, root.component());
+        defer app.deinit();
+        app.alternate_screen = alternate;
+        app.show_hardware_cursor = hardware;
+        const frame = try app.render(12, 3);
+        try std.testing.expectEqual(@as(usize, 1), frame.cursor.?.column);
+        try std.testing.expectEqual(@as(usize, 0), frame.cursor.?.row);
+        try std.testing.expect(std.mem.indexOf(u8, frame.lines[0], markers.fake_start) == null);
+        try std.testing.expect(std.mem.indexOf(u8, frame.lines[0], "\x1b[7mx\x1b[27m") != null);
+        try std.testing.expectEqual(!hardware, std.mem.indexOf(u8, frame.lines[0], "\x1b[7m界\x1b[27m") != null);
+    };
 }

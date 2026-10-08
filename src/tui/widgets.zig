@@ -8,7 +8,7 @@ const mouse = @import("mouse.zig");
 const Editor = @import("editor.zig").Editor;
 const EditorAction = @import("editor.zig").Action;
 
-pub const cursor_marker = "\x1b_pi:c\x07";
+pub const cursor_marker = @import("cursor_markers.zig").cursor;
 
 pub const VoidCallback = struct {
     context: ?*anyopaque = null,
@@ -298,19 +298,24 @@ pub const Input = struct {
         const available = @max(@as(usize, 1), width -| prefix_width);
         var content: []u8 = undefined;
 
-        if (self.editor.slice().len == 0 and !self.focused and self.placeholder.len > 0) {
+        if (self.editor.slice().len == 0 and self.placeholder.len > 0) {
             const placeholder = try terminal_text.truncateAlloc(gpa, self.placeholder, available, .{});
             defer gpa.free(placeholder);
-            const styled = try styleAlloc(gpa, self.placeholder_sgr, placeholder);
-            defer gpa.free(styled);
-            content = try std.fmt.allocPrint(gpa, "{s}{s}", .{ self.prefix, styled });
+            const cluster = terminal_text.nextCluster(placeholder, 0);
+            const at_cursor = if (cluster) |grapheme| grapheme.bytes else " ";
+            const rest = if (cluster) |grapheme| placeholder[grapheme.end..] else "";
+            const styled_cursor = try styleAlloc(gpa, self.placeholder_sgr, at_cursor);
+            defer gpa.free(styled_cursor);
+            const styled_rest = try styleAlloc(gpa, self.placeholder_sgr, rest);
+            defer gpa.free(styled_rest);
+            content = try std.fmt.allocPrint(gpa, "{s}{s}{s}{s}{s}{s}", .{ self.prefix, if (self.focused) cursor_marker else "", @import("cursor_markers.zig").fake_start, styled_cursor, @import("cursor_markers.zig").fake_end, styled_rest });
         } else {
             const source = self.editor.slice();
             const cursor = @min(self.editor.cursor, source.len);
             const before_source = source[0..cursor];
             const after_source = source[cursor..];
             const before_width = terminal_text.visibleWidth(before_source);
-            const cursor_reserve: usize = if (self.focused) 1 else 0;
+            const cursor_reserve: usize = 1;
             const visible_capacity = available -| cursor_reserve;
             const start_column = before_width -| visible_capacity;
             var before = try terminal_text.sliceByColumnsAlloc(gpa, before_source, start_column, visible_capacity);
@@ -331,12 +336,16 @@ pub const Input = struct {
                 after = try gpa.alloc(u8, cells);
                 @memset(after, '*');
             }
-            content = try std.fmt.allocPrint(gpa, "{s}{s}{s}{s}", .{ self.prefix, before, if (self.focused) cursor_marker else "", after });
+            const cluster = terminal_text.nextCluster(after, 0);
+            const at_cursor = if (cluster) |grapheme| grapheme.bytes else " ";
+            const rest = if (cluster) |grapheme| after[grapheme.end..] else "";
+            content = try std.fmt.allocPrint(gpa, "{s}{s}{s}{s}{s}{s}{s}", .{ self.prefix, before, if (self.focused) cursor_marker else "", @import("cursor_markers.zig").fake_start, at_cursor, @import("cursor_markers.zig").fake_end, rest });
         }
         defer gpa.free(content);
         const styled = try styleAlloc(gpa, self.normal_sgr, content);
         defer gpa.free(styled);
         const line = try padAlloc(gpa, styled, width);
+        errdefer gpa.free(line);
         const items = try gpa.alloc([]u8, 1);
         items[0] = line;
         return .{ .items = items };
@@ -934,4 +943,23 @@ test "cancellable loader advances and consumes escape" {
     loader.tick();
     try loader.component().handleInput("\x1b");
     try std.testing.expect(loader.cancelled);
+}
+
+test "actual Source1ced input fake cursor spans whole graphemes and survives unfocused placeholders" {
+    const gpa = std.testing.allocator;
+    const fixture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/cursor-boundary-original-1ced.json"), .{});
+    defer fixture.deinit();
+    for (fixture.value.object.get("inputs").?.array.items) |item| {
+        var input = Input.init(gpa);
+        defer input.deinit();
+        input.prefix = item.object.get("prompt").?.string;
+        input.placeholder = item.object.get("placeholder").?.string;
+        input.placeholder_sgr = null;
+        input.focused = item.object.get("focused").?.bool;
+        try input.setValue(item.object.get("value").?.string);
+        input.editor.cursor = 0;
+        var lines = try input.component().render(gpa, 12);
+        defer lines.deinit(gpa);
+        try std.testing.expectEqualStrings(item.object.get("expected").?.string, lines.items[0]);
+    }
 }

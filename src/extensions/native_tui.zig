@@ -386,12 +386,19 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
     return result;
 }
 
-const Helper = enum(c_int) { visibleWidth, matchesKey, parseKey, isKeyRelease, isKeyRepeat, decodePrintableKey, setKittyProtocolActive, isKittyProtocolActive, truncateToWidth };
+const Helper = enum(c_int) { visibleWidth, matchesKey, parseKey, isKeyRelease, isKeyRepeat, decodePrintableKey, setKittyProtocolActive, isKittyProtocolActive, truncateToWidth, renderFakeCursor };
 fn helperCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return helper(engine, @enumFromInt(magic), if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
 }
 fn helper(engine: *engine_mod.Engine, method: Helper, args: []c.JSValue) !c.JSValue {
+    if (method == .renderFakeCursor) {
+        const text = try engine.toString(if (args.len > 0) args[0] else c.pi_js_undefined());
+        defer engine.gpa.free(text);
+        const wrapped = try std.fmt.allocPrint(engine.gpa, "{s}{s}{s}", .{ @import("../tui/cursor_markers.zig").fake_start, text, @import("../tui/cursor_markers.zig").fake_end });
+        defer engine.gpa.free(wrapped);
+        return engine.checked(c.JS_NewStringLen(engine.context, wrapped.ptr, wrapped.len));
+    }
     if (method == .isKittyProtocolActive) return c.pi_js_bool(engine.context, @intFromBool(keys.isKittyProtocolActive()));
     if (method == .setKittyProtocolActive) {
         keys.setKittyProtocolActive(args.len != 0 and c.JS_ToBool(engine.context, args[0]) != 0);
@@ -457,11 +464,12 @@ pub fn install(engine: *engine_mod.Engine) !void {
     defer engine.freeValue(exports);
     try @import("native_color.zig").install(engine, exports);
     try @import("native_mouse.zig").install(engine, exports);
+    try define(engine, exports, "CURSOR_MARKER", try engine.checked(c.JS_NewString(engine.context, @import("../tui/cursor_markers.zig").cursor)));
     const array_is_array = try components.arrayPredicate(engine);
     defer engine.freeValue(array_is_array);
     inline for (std.meta.fields(Helper)) |field| {
         const name: [:0]const u8 = field.name;
-        try define(engine, exports, name.ptr, try engine.checked(c.pi_js_function_magic(engine.context, helperCall, name.ptr, 2, @intCast(field.value))));
+        try define(engine, exports, name.ptr, try engine.checked(c.pi_js_function_magic(engine.context, helperCall, name.ptr, if (field.value == @intFromEnum(Helper.renderFakeCursor)) 1 else 2, @intCast(field.value))));
     }
     const key = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(key);
@@ -985,4 +993,15 @@ test "native TUI child proxy setters and background callbacks throw the original
     try install(engine);
     const module = try engine.evalModule("import {Text,Container} from 'pi-tui';const original={original:true};const container=new Container();container.children=new Proxy([],{set(){throw original}});let caught=false;try{container.addChild({render(){return []}})}catch(error){if(error!==original)throw Error('child setter identity');caught=true}if(!caught)throw Error('setter missing');const text=new Text('content',0,0,()=>{throw original});caught=false;try{text.render(8)}catch(error){if(error!==original)throw Error('background identity');caught=true}if(!caught)throw Error('background missing');", "native-tui-original-setters.mjs");
     defer engine.freeValue(module);
+}
+
+test "native public fake cursor helper preserves coercion exceptions aliases and rooting across GC" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    const module = try engine.evalModule("import {renderFakeCursor,CURSOR_MARKER} from 'pi-tui';import * as alias from '@mariozechner/pi-tui';if(alias.renderFakeCursor!==renderFakeCursor||renderFakeCursor.length!==1||CURSOR_MARKER!=='\\x1b_pi:c\\x07')throw Error('exports');const start='\\x1b_pi:fc\\x07',end='\\x1b_pi:/fc\\x07';for(const value of [undefined,null,42,'界','👨‍👩‍👧‍👦'])if(renderFakeCursor(value)!==start+String(value)+end)throw Error('coercion');const original={};try{renderFakeCursor({toString(){throw original}});throw Error('missing throw')}catch(e){if(e!==original)throw e}globalThis.retainedCursor=renderFakeCursor('held');", "cursor-helper-original.mjs");
+    defer engine.freeValue(module);
+    c.JS_RunGC(engine.runtime);
+    const checked = try engine.eval("if(globalThis.retainedCursor!=='\\x1b_pi:fc\\x07held\\x1b_pi:/fc\\x07')throw Error('root');", "cursor-helper-gc.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(checked);
 }

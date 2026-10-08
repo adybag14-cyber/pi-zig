@@ -1,0 +1,540 @@
+{
+  "source": [
+    {
+      "path": "packages/tui/src/utils.ts",
+      "sha256": "6e22ed5385c08965a46f01d6ec9686cb0eada95e34b9dc0f9a5e85d28f8f512a"
+    },
+    {
+      "path": "packages/tui/src/tui.ts",
+      "sha256": "206519884c4cb27096d00048a2fc4e8a0c404714e548c8dd5b62c38060d3b240"
+    },
+    {
+      "path": "packages/tui/src/components/input.ts",
+      "sha256": "0ad90bf7464e4da90e75596007b365edc45fcb371c4dbee563d4122b13247a11"
+    }
+  ],
+  "boundaries": [
+    {
+      "line": "abc\u001b_pi:c\u0007def",
+      "beforeEnd": 0,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "",
+      "beforeWidth": 0,
+      "after": "\u001b_pi:c\u0007def",
+      "afterWidth": 3
+    },
+    {
+      "line": "abc\u001b_pi:c\u0007def",
+      "beforeEnd": 2,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "ab",
+      "beforeWidth": 2,
+      "after": "\u001b_pi:c\u0007def",
+      "afterWidth": 3
+    },
+    {
+      "line": "abc\u001b_pi:c\u0007def",
+      "beforeEnd": 3,
+      "afterStart": 4,
+      "afterLen": 2,
+      "before": "abc",
+      "beforeWidth": 3,
+      "after": "ef",
+      "afterWidth": 2
+    },
+    {
+      "line": "abc\u001b_pi:c\u0007def",
+      "beforeEnd": 2,
+      "afterStart": 2,
+      "afterLen": 4,
+      "before": "ab",
+      "beforeWidth": 2,
+      "after": "c\u001b_pi:c\u0007def",
+      "afterWidth": 4
+    },
+    {
+      "line": "abc\u001b_pi:c\u0007def",
+      "beforeEnd": 3,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "abc",
+      "beforeWidth": 3,
+      "after": "\u001b_pi:c\u0007def",
+      "afterWidth": 3
+    },
+    {
+      "line": "\u001b_pi:c\u0007abcdef",
+      "beforeEnd": 0,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "",
+      "beforeWidth": 0,
+      "after": "def",
+      "afterWidth": 3
+    },
+    {
+      "line": "\u001b_pi:c\u0007abcdef",
+      "beforeEnd": 2,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "\u001b_pi:c\u0007ab",
+      "beforeWidth": 2,
+      "after": "def",
+      "afterWidth": 3
+    },
+    {
+      "line": "\u001b_pi:c\u0007abcdef",
+      "beforeEnd": 3,
+      "afterStart": 4,
+      "afterLen": 2,
+      "before": "\u001b_pi:c\u0007abc",
+      "beforeWidth": 3,
+      "after": "ef",
+      "afterWidth": 2
+    },
+    {
+      "line": "\u001b_pi:c\u0007abcdef",
+      "beforeEnd": 2,
+      "afterStart": 2,
+      "afterLen": 4,
+      "before": "\u001b_pi:c\u0007ab",
+      "beforeWidth": 2,
+      "after": "cdef",
+      "afterWidth": 4
+    },
+    {
+      "line": "\u001b_pi:c\u0007abcdef",
+      "beforeEnd": 3,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "\u001b_pi:c\u0007abc",
+      "beforeWidth": 3,
+      "after": "def",
+      "afterWidth": 3
+    },
+    {
+      "line": "ab\u001b_pi:c\u0007界ef",
+      "beforeEnd": 0,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "",
+      "beforeWidth": 0,
+      "after": "ef",
+      "afterWidth": 2
+    },
+    {
+      "line": "ab\u001b_pi:c\u0007界ef",
+      "beforeEnd": 2,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "ab",
+      "beforeWidth": 2,
+      "after": "ef",
+      "afterWidth": 2
+    },
+    {
+      "line": "ab\u001b_pi:c\u0007界ef",
+      "beforeEnd": 3,
+      "afterStart": 4,
+      "afterLen": 2,
+      "before": "ab",
+      "beforeWidth": 2,
+      "after": "ef",
+      "afterWidth": 2
+    },
+    {
+      "line": "ab\u001b_pi:c\u0007界ef",
+      "beforeEnd": 2,
+      "afterStart": 2,
+      "afterLen": 4,
+      "before": "ab",
+      "beforeWidth": 2,
+      "after": "\u001b_pi:c\u0007界ef",
+      "afterWidth": 4
+    },
+    {
+      "line": "ab\u001b_pi:c\u0007界ef",
+      "beforeEnd": 3,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "ab",
+      "beforeWidth": 2,
+      "after": "ef",
+      "afterWidth": 2
+    },
+    {
+      "line": "ab界\u001b_pi:c\u0007ef",
+      "beforeEnd": 0,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "",
+      "beforeWidth": 0,
+      "after": "\u001b_pi:c\u0007ef",
+      "afterWidth": 2
+    },
+    {
+      "line": "ab界\u001b_pi:c\u0007ef",
+      "beforeEnd": 2,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "ab",
+      "beforeWidth": 2,
+      "after": "\u001b_pi:c\u0007ef",
+      "afterWidth": 2
+    },
+    {
+      "line": "ab界\u001b_pi:c\u0007ef",
+      "beforeEnd": 3,
+      "afterStart": 4,
+      "afterLen": 2,
+      "before": "ab",
+      "beforeWidth": 2,
+      "after": "\u001b_pi:c\u0007ef",
+      "afterWidth": 2
+    },
+    {
+      "line": "ab界\u001b_pi:c\u0007ef",
+      "beforeEnd": 2,
+      "afterStart": 2,
+      "afterLen": 4,
+      "before": "ab",
+      "beforeWidth": 2,
+      "after": "界\u001b_pi:c\u0007ef",
+      "afterWidth": 4
+    },
+    {
+      "line": "ab界\u001b_pi:c\u0007ef",
+      "beforeEnd": 3,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "ab",
+      "beforeWidth": 2,
+      "after": "\u001b_pi:c\u0007ef",
+      "afterWidth": 2
+    },
+    {
+      "line": "ab\u001b[31m\u001b_pi:c\u0007cdef",
+      "beforeEnd": 0,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "",
+      "beforeWidth": 0,
+      "after": "\u001b[31mdef",
+      "afterWidth": 3
+    },
+    {
+      "line": "ab\u001b[31m\u001b_pi:c\u0007cdef",
+      "beforeEnd": 2,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "ab",
+      "beforeWidth": 2,
+      "after": "\u001b[31mdef",
+      "afterWidth": 3
+    },
+    {
+      "line": "ab\u001b[31m\u001b_pi:c\u0007cdef",
+      "beforeEnd": 3,
+      "afterStart": 4,
+      "afterLen": 2,
+      "before": "ab\u001b[31m\u001b_pi:c\u0007c",
+      "beforeWidth": 3,
+      "after": "\u001b[31mef",
+      "afterWidth": 2
+    },
+    {
+      "line": "ab\u001b[31m\u001b_pi:c\u0007cdef",
+      "beforeEnd": 2,
+      "afterStart": 2,
+      "afterLen": 4,
+      "before": "ab",
+      "beforeWidth": 2,
+      "after": "\u001b_pi:c\u0007\u001b[31mcdef",
+      "afterWidth": 4
+    },
+    {
+      "line": "ab\u001b[31m\u001b_pi:c\u0007cdef",
+      "beforeEnd": 3,
+      "afterStart": 3,
+      "afterLen": 3,
+      "before": "ab\u001b[31m\u001b_pi:c\u0007c",
+      "beforeWidth": 3,
+      "after": "\u001b[31mdef",
+      "afterWidth": 3
+    }
+  ],
+  "inputs": [
+    {
+      "value": "",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007 \u001b_pi:/fc\u0007         "
+    },
+    {
+      "value": "",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "hint",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007h\u001b_pi:/fc\u0007int      "
+    },
+    {
+      "value": "",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "界x",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007界\u001b_pi:/fc\u0007x       "
+    },
+    {
+      "value": "",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007 \u001b_pi:/fc\u0007         "
+    },
+    {
+      "value": "",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "hint",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007h\u001b_pi:/fc\u0007int      "
+    },
+    {
+      "value": "",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "界x",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007界\u001b_pi:/fc\u0007x       "
+    },
+    {
+      "value": "abc",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007a\u001b_pi:/fc\u0007bc       "
+    },
+    {
+      "value": "abc",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "hint",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007a\u001b_pi:/fc\u0007bc       "
+    },
+    {
+      "value": "abc",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "界x",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007a\u001b_pi:/fc\u0007bc       "
+    },
+    {
+      "value": "abc",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007a\u001b_pi:/fc\u0007bc       "
+    },
+    {
+      "value": "abc",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "hint",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007a\u001b_pi:/fc\u0007bc       "
+    },
+    {
+      "value": "abc",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "界x",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007a\u001b_pi:/fc\u0007bc       "
+    },
+    {
+      "value": "a界b",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007a\u001b_pi:/fc\u0007界b      "
+    },
+    {
+      "value": "a界b",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "hint",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007a\u001b_pi:/fc\u0007界b      "
+    },
+    {
+      "value": "a界b",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "界x",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007a\u001b_pi:/fc\u0007界b      "
+    },
+    {
+      "value": "a界b",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007a\u001b_pi:/fc\u0007界b      "
+    },
+    {
+      "value": "a界b",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "hint",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007a\u001b_pi:/fc\u0007界b      "
+    },
+    {
+      "value": "a界b",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "界x",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007a\u001b_pi:/fc\u0007界b      "
+    },
+    {
+      "value": "éx",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007é\u001b_pi:/fc\u0007x        "
+    },
+    {
+      "value": "éx",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "hint",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007é\u001b_pi:/fc\u0007x        "
+    },
+    {
+      "value": "éx",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "界x",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007é\u001b_pi:/fc\u0007x        "
+    },
+    {
+      "value": "éx",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007é\u001b_pi:/fc\u0007x        "
+    },
+    {
+      "value": "éx",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "hint",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007é\u001b_pi:/fc\u0007x        "
+    },
+    {
+      "value": "éx",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "界x",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007é\u001b_pi:/fc\u0007x        "
+    },
+    {
+      "value": "👨‍👩‍👧‍👦x",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007👨‍👩‍👧‍👦\u001b_pi:/fc\u0007x       "
+    },
+    {
+      "value": "👨‍👩‍👧‍👦x",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "hint",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007👨‍👩‍👧‍👦\u001b_pi:/fc\u0007x       "
+    },
+    {
+      "value": "👨‍👩‍👧‍👦x",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "界x",
+      "focused": false,
+      "width": 12,
+      "expected": "> \u001b_pi:fc\u0007👨‍👩‍👧‍👦\u001b_pi:/fc\u0007x       "
+    },
+    {
+      "value": "👨‍👩‍👧‍👦x",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007👨‍👩‍👧‍👦\u001b_pi:/fc\u0007x       "
+    },
+    {
+      "value": "👨‍👩‍👧‍👦x",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "hint",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007👨‍👩‍👧‍👦\u001b_pi:/fc\u0007x       "
+    },
+    {
+      "value": "👨‍👩‍👧‍👦x",
+      "cursor": 0,
+      "prompt": "> ",
+      "placeholder": "界x",
+      "focused": true,
+      "width": 12,
+      "expected": "> \u001b_pi:c\u0007\u001b_pi:fc\u0007👨‍👩‍👧‍👦\u001b_pi:/fc\u0007x       "
+    }
+  ]
+}

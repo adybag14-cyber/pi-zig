@@ -9,7 +9,7 @@ const json = backend.json;
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
 pub const State = struct { engine: *Engine, session: c.JSValue, options: c.JSValue, conversation: ?u64 = null };
-const Method = enum(c_int) { commit, close, root, conversation, createConversation, getTask, entries, fork, subscribeCommits, subscribeClose, @"resume", waitForTask, waitForIdle, abortTask, snapshot, snapshotAsOf, unloadDocuments, watchDoc, documentState };
+const Method = enum(c_int) { commit, close, root, conversation, createConversation, getTask, entries, fork, subscribeCommits, subscribeClose, @"resume", waitForTask, waitForIdle, abortTask, snapshot, snapshotAsOf, unloadDocuments, watchDoc, documentState, resolveAgent, agent, configure, context };
 pub fn state(engine: *Engine, receiver: c.JSValue) !*State {
     return @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, receiver, engine.native_durable_harness_class) orelse return error.InvalidHarnessReceiver));
 }
@@ -75,7 +75,7 @@ pub fn object(engine: *Engine, session: c.JSValue, options: c.JSValue, conversat
     errdefer engine.freeValue(result);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
-    const methods = if (conversation != null) &[_]Method{ .commit, .entries, .fork, .waitForIdle } else &[_]Method{ .commit, .close, .root, .conversation, .createConversation, .getTask, .subscribeCommits, .subscribeClose, .@"resume", .waitForTask, .waitForIdle, .abortTask, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc, .documentState };
+    const methods = if (conversation != null) &[_]Method{ .commit, .entries, .fork, .waitForIdle, .agent, .configure, .context } else &[_]Method{ .commit, .close, .root, .conversation, .createConversation, .getTask, .subscribeCommits, .subscribeClose, .@"resume", .waitForTask, .waitForIdle, .abortTask, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc, .documentState, .resolveAgent };
     for (methods) |operation| {
         const name = try engine.gpa.dupeZ(u8, @tagName(operation));
         defer engine.gpa.free(name);
@@ -96,6 +96,30 @@ fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.
 fn dispatch(engine: *Engine, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const self = try state(engine, receiver);
     const session = try durable.state(engine, self.session);
+    if (operation == .context) {
+        const options = argument(args, 1);
+        const at = if (c.JS_IsUndefined(options)) c.pi_js_undefined() else try sdk.get(engine, options, "at");
+        defer engine.freeValue(at);
+        const id = c.JS_NewInt64(engine.context, @intCast(self.conversation.?));
+        defer engine.freeValue(id);
+        return @import("native_durable_context_view.zig").queued(engine, self.session, id, argument(args, 0), at);
+    }
+    if (operation == .agent or operation == .resolveAgent) {
+        const id = if (self.conversation) |id| c.JS_NewInt64(engine.context, @intCast(id)) else c.JS_DupValue(engine.context, argument(args, 0));
+        defer engine.freeValue(id);
+        return @import("native_durable_agent.zig").resolveConversation(engine, self.session, self.options, id, if (operation == .agent) c.pi_js_undefined() else argument(args, 1), argument(args, if (operation == .agent) 0 else 2));
+    }
+    if (operation == .configure) {
+        const id = c.JS_NewInt64(engine.context, @intCast(self.conversation.?));
+        defer engine.freeValue(id);
+        const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+        const token = try sdk.get(engine, exports, "AgentDoc");
+        defer engine.freeValue(token);
+        var captures = [_]c.JSValue{ id, argument(args, 0), token };
+        const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, configureCallback, 1, 0, captures.len, &captures));
+        defer engine.freeValue(callback);
+        return durable.sessionDispatchScoped(session, self.session, .commit, &.{ callback, argument(args, 1) }, self.conversation);
+    }
     if (operation == .documentState) return durable.sessionDispatch(session, self.session, .documentState, args);
     if (operation == .watchDoc) return durable.sessionDispatch(session, self.session, .watchDoc, args);
     if (operation == .unloadDocuments) return durable.sessionDispatch(session, self.session, .unloadDocuments, args);
@@ -142,6 +166,11 @@ fn dispatch(engine: *Engine, receiver: c.JSValue, operation: Method, args: []con
         else => unreachable,
     });
     return durable.sessionDispatch(session, self.session, .commit, &.{ callback, context });
+}
+fn configureCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    if (argc == 0) return durable.reject(engine, error.TransactionRequired);
+    return @import("native_durable_agent.zig").configureOwned(engine, argv[0], data[0], data[1], data[2]) catch |err| durable.reject(engine, err);
 }
 fn onLine(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
@@ -224,7 +253,7 @@ fn created(engine: *Engine, owner: c.JSValue, transaction: c.JSValue, record: js
             try initial.object.put(a, "models", .{ .object = .empty });
             try initial.object.put(a, "tools", .{ .object = .empty });
         }
-        if (std.mem.eql(u8, kind, "pi.provider")) try initial.object.put(a, "sessionId", .{ .string = try uuid(self, a) });
+        if (std.mem.eql(u8, kind, "pi.provider")) try initial.object.put(a, "sessionId", .{ .string = try uuid(self.engine, a) });
         var content: json.Value = .{ .object = .empty };
         try content.object.put(a, "version", .{ .integer = 1 });
         try content.object.put(a, "kind", .{ .string = "base" });
@@ -263,12 +292,12 @@ fn configurePlan(engine: *Engine, tx: *durable.State, conversation: u64, change:
     }
     return error.AgentDocumentPlanUnavailable;
 }
-fn agentChange(engine: *Engine, change: c.JSValue) !json.Owned {
+pub fn agentChange(engine: *Engine, change: c.JSValue) !json.Owned {
     var result = try json.Owned.empty(engine.gpa);
     errdefer result.deinit();
     const a = result.arena.allocator();
     result.value = .{ .object = .empty };
-    for ([_][:0]const u8{ "model", "thinkingLevel", "instructions", "cwd", "extensions", "tools" }) |name| {
+    for ([_][:0]const u8{ "model", "thinkingLevel", "extensions", "tools", "instructions", "cwd" }) |name| {
         const input = try sdk.get(engine, change, name.ptr);
         defer engine.freeValue(input);
         if (c.JS_IsUndefined(input)) continue;
@@ -327,19 +356,19 @@ fn finish(engine: *Engine, _: c.JSValue, transaction: c.JSValue) !void {
     };
     @memcpy(native.writes.array.items, ordered);
 }
-fn uuid(self: *State, a: std.mem.Allocator) ![]u8 {
-    const io = self.engine.native_io orelse return error.DurableIOUnavailable;
+pub fn uuid(engine: *Engine, a: std.mem.Allocator) ![]u8 {
+    const io = engine.native_io orelse return error.DurableIOUnavailable;
     var bytes: [16]u8 = undefined;
     try io.randomSecure(&bytes);
     const now: u64 = @intCast(@max(0, std.Io.Clock.real.now(io).toMilliseconds()));
     if (now > 0xffffffffffff) return error.UuidTimestampOutOfRange;
-    self.engine.native_durable_uuid_last_ms = @max(now, self.engine.native_durable_uuid_last_ms);
-    const sequence = if (self.engine.native_durable_uuid_sequence) |previous| blk: {
+    engine.native_durable_uuid_last_ms = @max(now, engine.native_durable_uuid_last_ms);
+    const sequence = if (engine.native_durable_uuid_sequence) |previous| blk: {
         if (previous == (1 << 41) - 1) return error.UuidSequenceExhausted;
         break :blk previous + 1;
     } else (@as(u64, bytes[1]) << 32) | (@as(u64, bytes[2]) << 24) | (@as(u64, bytes[3]) << 16) | (@as(u64, bytes[4]) << 8) | bytes[5];
-    self.engine.native_durable_uuid_sequence = sequence;
-    for (0..6) |index| bytes[index] = @truncate(self.engine.native_durable_uuid_last_ms >> @as(u6, @intCast((5 - index) * 8)));
+    engine.native_durable_uuid_sequence = sequence;
+    for (0..6) |index| bytes[index] = @truncate(engine.native_durable_uuid_last_ms >> @as(u6, @intCast((5 - index) * 8)));
     bytes[6] = 0x70 | @as(u8, @intCast((sequence >> 37) & 0xf));
     bytes[7] = @truncate(sequence >> 29);
     bytes[8] = 0x80 | @as(u8, @intCast((sequence >> 23) & 0x3f));

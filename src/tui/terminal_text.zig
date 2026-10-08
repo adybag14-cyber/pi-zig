@@ -426,8 +426,20 @@ pub fn truncateAlloc(gpa: std.mem.Allocator, bytes: []const u8, max_width: usize
 /// controls preceding the first selected cluster are retained so style/link
 /// state remains reproducible in the returned fragment.
 pub fn sliceByColumnsAlloc(gpa: std.mem.Allocator, bytes: []const u8, start_column: usize, max_width: usize) ![]u8 {
+    return sliceColumnsAlloc(gpa, bytes, start_column, max_width, false);
+}
+
+/// Source extractSegments buffers every control in the before segment until
+/// the following grapheme is admitted; its after segment preserves APC eagerly.
+pub fn sliceBeforeColumnsAlloc(gpa: std.mem.Allocator, bytes: []const u8, max_width: usize) ![]u8 {
+    return sliceColumnsAlloc(gpa, bytes, 0, max_width, true);
+}
+
+fn sliceColumnsAlloc(gpa: std.mem.Allocator, bytes: []const u8, start_column: usize, max_width: usize, before: bool) ![]u8 {
     var prefix_controls: std.ArrayList(u8) = .empty;
     defer prefix_controls.deinit(gpa);
+    var pending_apc: std.ArrayList(u8) = .empty;
+    defer pending_apc.deinit(gpa);
     var out: std.ArrayList(u8) = .empty;
     errdefer out.deinit(gpa);
     var current: usize = 0;
@@ -436,30 +448,66 @@ pub fn sliceByColumnsAlloc(gpa: std.mem.Allocator, bytes: []const u8, start_colu
     var index: usize = 0;
     while (index < bytes.len) {
         if (extractSequence(bytes, index)) |sequence| {
-            if (started) try out.appendSlice(gpa, sequence.bytes) else try prefix_controls.appendSlice(gpa, sequence.bytes);
+            if (sequence.kind == .apc) {
+                // APC positions belong to a cell boundary, not to tracked
+                // styling. Keep an after-boundary marker, never move a marker
+                // from the overwritten prefix into the surviving suffix.
+                if (current >= start_column and current - start_column < max_width) {
+                    // A marker preceding a wide glyph survives only when the
+                    // entire glyph survives. Hold it until that admission.
+                    if (before) try pending_apc.appendSlice(gpa, sequence.bytes) else try out.appendSlice(gpa, sequence.bytes);
+                }
+            } else if (started) try out.appendSlice(gpa, sequence.bytes) else try prefix_controls.appendSlice(gpa, sequence.bytes);
             index = sequence.end;
             continue;
         }
         const cluster = nextCluster(bytes, index) orelse break;
         const cluster_end = current + cluster.width;
-        if (!started and cluster_end > start_column) {
+        if (current >= start_column and current - start_column >= max_width) {
+            pending_apc.clearRetainingCapacity();
+            break;
+        }
+        if (!started and current >= start_column and cluster.width <= max_width - (current - start_column)) {
             started = true;
+            selected = current - start_column;
             try out.appendSlice(gpa, prefix_controls.items);
         }
         if (started) {
-            if (selected + cluster.width > max_width) break;
+            if (selected + cluster.width > max_width) {
+                pending_apc.clearRetainingCapacity();
+                break;
+            }
+            try out.appendSlice(gpa, pending_apc.items);
+            pending_apc.clearRetainingCapacity();
             try out.appendSlice(gpa, cluster.bytes);
             selected += cluster.width;
-        }
+        } else pending_apc.clearRetainingCapacity();
         current = cluster_end;
         index = cluster.end;
     }
+    // A pending before marker without a following admitted grapheme is dropped.
     if (started) {
         const close = activeOsc8Close(out.items);
         if (close.len > 0) try out.appendSlice(gpa, close);
         try out.appendSlice(gpa, "\x1b[0m");
     }
     return out.toOwnedSlice(gpa);
+}
+
+fn cursorBoundaryAllocationProbe(gpa: std.mem.Allocator) !void {
+    const marker = @import("cursor_markers.zig").cursor;
+    const line = "ab\x1b[31m" ++ marker ++ "界ef" ++ marker;
+    for (0..7) |width| {
+        const before = try sliceBeforeColumnsAlloc(gpa, line, width);
+        defer gpa.free(before);
+        const after = try sliceByColumnsAlloc(gpa, line, 0, width);
+        defer gpa.free(after);
+        const shifted = try sliceByColumnsAlloc(gpa, line, 3, width);
+        defer gpa.free(shifted);
+    }
+}
+test "Source before and after APC cursor boundaries release every allocation failure" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, cursorBoundaryAllocationProbe, .{});
 }
 
 test "Unicode terminal widths cover controls CJK emoji and marks" {

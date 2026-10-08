@@ -58,6 +58,7 @@ pub const Protocol = struct {
             if (value == .device_attributes and self.owed_attributes > 0) {
                 self.owed_attributes -= 1;
                 if (self.owed_attributes == 0) self.query_pending = false;
+                return .{ .consumed = true };
             }
         }
         return .{ .consumed = false };
@@ -179,10 +180,11 @@ test "program status support handshake caches reports fences DA restarts and cle
     try std.testing.expectEqualStrings("\x1b]7501;state=clear\x1b\\", stopped);
     const second = try protocol.start(null);
     defer gpa.free(second);
-    _ = try protocol.response("\x1b[?1;2c");
+    try std.testing.expect((try protocol.response("\x1b[?1;2c")).consumed);
     try std.testing.expect(protocol.query_pending);
-    _ = try protocol.response("\x1b[?1;2c");
+    try std.testing.expect((try protocol.response("\x1b[?1;2c")).consumed);
     try std.testing.expect(!protocol.query_pending);
+    try std.testing.expect(!(try protocol.response("\x1b[?1;2c")).consumed);
     try std.testing.expect((try protocol.response(query)).report == null);
     try std.testing.expect(!protocol.supported);
     const forced = try protocol.start("1");
