@@ -791,6 +791,14 @@ pub fn build(b: *std.Build) void {
     const sdk_virtual_run = b.addRunArtifact(sdk_virtual_tests);
     b.step("test-sdk-virtual-ownership", "Exercise virtual routing allocation ownership").dependOn(&sdk_virtual_run.step);
     test_step.dependOn(&sdk_virtual_run.step);
+    const sdk_model_bridge_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_model_bridge_test.zig"), .target = target, .optimize = optimize });
+    sdk_model_bridge_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, sdk_model_bridge_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, sdk_model_bridge_module);
+    const sdk_model_bridge_tests = b.addTest(.{ .root_module = sdk_model_bridge_module, .use_llvm = use_llvm, .filters = &.{"SDK model bridge"} });
+    const sdk_model_bridge_run = b.addRunArtifact(sdk_model_bridge_tests);
+    b.step("test-sdk-model-bridge", "Exercise owner-only generation-leased model operations and cancellation").dependOn(&sdk_model_bridge_run.step);
+    test_step.dependOn(&sdk_model_bridge_run.step);
     const run_binding_tests = b.addRunArtifact(binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
     const cursor_boundary_tests = b.addTest(.{
@@ -801,6 +809,14 @@ pub fn build(b: *std.Build) void {
     const cursor_boundary_step = b.step("test-cursor-boundaries", "Replay actual Source cursor overlays Input graphemes and allocator boundaries");
     cursor_boundary_step.dependOn(&run_cursor_boundary_tests.step);
     test_step.dependOn(&run_cursor_boundary_tests.step);
+    const theme_constructor_module = b.createModule(.{ .root_source_file = b.path("src/theme_constructor_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, theme_constructor_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, theme_constructor_module);
+    theme_constructor_module.addImport("catalog_tool", catalog_tool);
+    const theme_constructor_tests = b.addTest(.{ .root_module = theme_constructor_module, .use_llvm = use_llvm, .filters = &.{"Source6fb Theme constructor"} });
+    const theme_constructor_run = b.addRunArtifact(theme_constructor_tests);
+    b.step("test-theme-constructor-6fb", "Replay selected Source Theme constructors fallback slots and retained colors").dependOn(&theme_constructor_run.step);
+    test_step.dependOn(&theme_constructor_run.step);
     const dialog_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_dialog_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
         .use_llvm = use_llvm,

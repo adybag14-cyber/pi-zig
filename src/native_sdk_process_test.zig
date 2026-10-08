@@ -1,5 +1,9 @@
 const std = @import("std");
 const builtin = @import("builtin");
+test "native SDK selected API version and current source lifecycle are independent of CLI certification" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-lifecycle-version-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-lifecycle-version-6fb2e78.json"));
+}
+
 test "native SDK virtual session user continuation branch state and physical responses match source" {
     try inputCase(@embedFile("extensions/fixtures/sdk-virtual-session-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-virtual-session-6fb2e78.json"));
 }

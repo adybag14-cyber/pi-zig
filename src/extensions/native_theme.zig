@@ -73,14 +73,99 @@ const OwnNames = struct {
 fn snapshot(engine: *engine_mod.Engine, source: c.JSValue) !c.JSValue {
     const result = try object(engine);
     errdefer engine.freeValue(result);
-    if (c.JS_IsNull(source) or c.JS_IsUndefined(source)) return result;
-    const names = try OwnNames.init(engine, source);
-    defer names.deinit();
-    for (names.values[0..names.length]) |entry| {
-        const value = try engine.checked(c.JS_GetProperty(engine.context, source, entry.atom));
+    try spreadInto(engine, result, source);
+    return result;
+}
+fn spreadInto(engine: *engine_mod.Engine, result: c.JSValue, source: c.JSValue) !void {
+    if (c.JS_IsNull(source) or c.JS_IsUndefined(source)) return;
+    const boxed = try engine.checked(c.JS_ToObject(engine.context, source));
+    defer engine.freeValue(boxed);
+    var names: [*c]c.JSPropertyEnum = null;
+    var length: u32 = 0;
+    if (c.JS_GetOwnPropertyNames(engine.context, &names, &length, boxed, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK) < 0) {
+        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+        return error.JavaScriptException;
+    }
+    defer c.JS_FreePropertyEnum(engine.context, names, length);
+    for (names[0..length]) |entry| {
+        var descriptor: c.JSPropertyDescriptor = undefined;
+        const present = c.JS_GetOwnProperty(engine.context, &descriptor, boxed, entry.atom);
+        if (present < 0) {
+            _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+            return error.JavaScriptException;
+        }
+        if (present == 0) continue;
+        defer engine.freeValue(descriptor.value);
+        defer engine.freeValue(descriptor.getter);
+        defer engine.freeValue(descriptor.setter);
+        if (descriptor.flags & c.JS_PROP_ENUMERABLE == 0) continue;
+        const value = try engine.checked(c.JS_GetProperty(engine.context, boxed, entry.atom));
         if (c.JS_DefinePropertyValue(engine.context, result, entry.atom, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
+}
+fn withTokenFallbacks(engine: *engine_mod.Engine, module: c.JSValue, values: c.JSValue) !c.JSValue {
+    const result = try snapshot(engine, values);
+    errdefer engine.freeValue(result);
+    const descriptors = try get(engine, module, "tokenDescriptors");
+    defer engine.freeValue(descriptors);
+    const names = try OwnNames.init(engine, descriptors);
+    defer names.deinit();
+    const fallback_atom = c.JS_NewAtom(engine.context, "fallback");
+    defer c.JS_FreeAtom(engine.context, fallback_atom);
+    for (names.values[0..names.length]) |entry| {
+        const descriptor = try engine.checked(c.JS_GetProperty(engine.context, descriptors, entry.atom));
+        defer engine.freeValue(descriptor);
+        const has = c.JS_HasProperty(engine.context, descriptor, fallback_atom);
+        if (has < 0) {
+            _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+            return error.JavaScriptException;
+        }
+        if (has == 0) continue;
+        const selected = try engine.checked(c.JS_GetProperty(engine.context, result, entry.atom));
+        defer engine.freeValue(selected);
+        if (!c.JS_IsUndefined(selected)) continue;
+        const fallback_key = try get(engine, descriptor, "fallback");
+        defer engine.freeValue(fallback_key);
+        const key_atom = c.JS_ValueToAtom(engine.context, fallback_key);
+        if (key_atom == c.JS_ATOM_NULL) {
+            _ = try engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context)));
+            return error.JavaScriptException;
+        }
+        defer c.JS_FreeAtom(engine.context, key_atom);
+        const replacement = try engine.checked(c.JS_GetProperty(engine.context, result, key_atom));
+        defer engine.freeValue(replacement);
+        if (c.JS_IsUndefined(replacement)) {
+            const token_value = try engine.checked(c.JS_AtomToValue(engine.context, entry.atom));
+            defer engine.freeValue(token_value);
+            const token = try engine.toString(token_value);
+            defer engine.gpa.free(token);
+            const repeated = try get(engine, descriptor, "fallback");
+            defer engine.freeValue(repeated);
+            const base = try engine.toString(repeated);
+            defer engine.gpa.free(base);
+            const message = try std.fmt.allocPrint(engine.gpa, "Theme token {s} has unresolved fallback {s}", .{ token, base });
+            defer engine.gpa.free(message);
+            return color_api.throwError(engine, message);
+        }
+        if (c.JS_SetProperty(engine.context, result, entry.atom, c.JS_DupValue(engine.context, replacement)) < 0) return error.JavaScriptException;
+    }
     return result;
+}
+fn splitTokenColors(engine: *engine_mod.Engine, module: c.JSValue, values: c.JSValue, fg: c.JSValue, bg: c.JSValue) !void {
+    const descriptors = try get(engine, module, "tokenDescriptors");
+    defer engine.freeValue(descriptors);
+    const names = try OwnNames.init(engine, values);
+    defer names.deinit();
+    for (names.values[0..names.length]) |entry| {
+        const descriptor = try engine.checked(c.JS_GetProperty(engine.context, descriptors, entry.atom));
+        defer engine.freeValue(descriptor);
+        const slot = try get(engine, descriptor, "slot");
+        defer engine.freeValue(slot);
+        const name = try engine.toString(slot);
+        defer engine.gpa.free(name);
+        const value = try engine.checked(c.JS_GetProperty(engine.context, values, entry.atom));
+        if (c.JS_SetProperty(engine.context, if (std.mem.eql(u8, name, "background")) bg else fg, entry.atom, value) < 0) return error.JavaScriptException;
+    }
 }
 fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const node: *Node = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
@@ -125,16 +210,6 @@ fn constructorCall(context: ?*c.JSContext, function: c.JSValue, target: c.JSValu
     if (flags & c.JS_CALL_FLAG_CONSTRUCTOR == 0) return c.JS_ThrowTypeError(context, "Class constructor Theme cannot be invoked without 'new'");
     const state: *Constructor = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
     return construct(state, target, if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
-}
-fn fallback(engine: *engine_mod.Engine, values: c.JSValue, token: [*:0]const u8, base: [*:0]const u8) !void {
-    const selected = try get(engine, values, token);
-    defer engine.freeValue(selected);
-    if (c.JS_IsUndefined(selected) or c.JS_IsNull(selected)) try put(engine, values, token, try get(engine, values, base));
-}
-fn fallbackFrom(engine: *engine_mod.Engine, target: c.JSValue, source: c.JSValue, token: [*:0]const u8, base: [*:0]const u8) !void {
-    const value = try get(engine, source, token);
-    defer engine.freeValue(value);
-    try put(engine, target, token, if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) try get(engine, source, base) else c.JS_DupValue(engine.context, value));
 }
 fn addTokens(node: *Node, values: c.JSValue, background: bool, average: *f64, count: *usize) !void {
     const engine = node.engine;
@@ -196,12 +271,16 @@ fn construct(state: *Constructor, target: c.JSValue, args: []const c.JSValue) !c
     defer engine.freeValue(set);
     var set_args = [_]c.JSValue{dim_value};
     node.dim = try engine.checked(c.JS_CallConstructor(engine.context, set, 1, &set_args));
-    const fg = try snapshot(engine, arg(args, 0));
+    const merged = try snapshot(engine, arg(args, 0));
+    defer engine.freeValue(merged);
+    try spreadInto(engine, merged, arg(args, 1));
+    const resolved_tokens = try withTokenFallbacks(engine, state.module, merged);
+    defer engine.freeValue(resolved_tokens);
+    const fg = try object(engine);
     defer engine.freeValue(fg);
-    const bg = try snapshot(engine, arg(args, 1));
+    const bg = try object(engine);
     defer engine.freeValue(bg);
-    inline for (.{ .{ "scrollbarTrack", "muted" }, .{ "scrollbarThumb", "text" }, .{ "thinkingMax", "thinkingXhigh" }, .{ "searchMatchText", "text" } }) |pair| try fallbackFrom(engine, fg, arg(args, 0), pair[0], pair[1]);
-    try fallbackFrom(engine, bg, arg(args, 1), "searchMatchBg", "selectedBg");
+    try splitTokenColors(engine, state.module, resolved_tokens, fg, bg);
     var fg_average: f64 = 0;
     var bg_average: f64 = 0;
     var fg_count: usize = 0;
@@ -713,6 +792,8 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     }
     const module = try object(engine);
     defer engine.freeValue(module);
+    const token_json = @embedFile("../themes/fixtures/theme-tokens-original-6fb.json");
+    try put(engine, module, "tokenDescriptors", try engine.checked(c.JS_ParseJSON(engine.context, token_json.ptr, token_json.len, "theme-tokens-original-6fb.json")));
     try put(engine, module, "chalkEnabled", c.JS_NewBool(engine.context, try supportsModifiers(engine, null)));
     try put(engine, module, "terminal", try object(engine));
     try put(engine, module, "pending", c.JS_NewBool(engine.context, false));
@@ -968,8 +1049,8 @@ pub fn loadByName(engine: *engine_mod.Engine, name: []const u8, color_mode: ?Col
     const existing = try invoke(engine, registered, "get", &args);
     if (!c.JS_IsUndefined(existing)) return existing;
     engine.freeValue(existing);
-    if (std.mem.eql(u8, name, "dark")) return fromJson(engine, @embedFile("../themes/fixtures/dark-original-7fb.json"), null, color_mode);
-    if (std.mem.eql(u8, name, "light")) return fromJson(engine, @embedFile("../themes/fixtures/light-original-7fb.json"), null, color_mode);
+    if (std.mem.eql(u8, name, "dark")) return fromJson(engine, @embedFile("../themes/fixtures/dark-original-6fb.json"), null, color_mode);
+    if (std.mem.eql(u8, name, "light")) return fromJson(engine, @embedFile("../themes/fixtures/light-original-6fb.json"), null, color_mode);
     const message = try std.fmt.allocPrint(engine.gpa, "Theme not found: {s}", .{name});
     defer engine.gpa.free(message);
     return color_api.throwError(engine, message);
@@ -1148,29 +1229,16 @@ pub fn fromJson(engine: *engine_mod.Engine, raw_json: []const u8, source_path: ?
     }
     const values = try get(engine, json, "colors");
     defer engine.freeValue(values);
-    const with_fallbacks = try snapshot(engine, values);
-    defer engine.freeValue(with_fallbacks);
-    inline for (.{ .{ "scrollbarTrack", "muted" }, .{ "scrollbarThumb", "text" }, .{ "thinkingMax", "thinkingXhigh" }, .{ "searchMatchBg", "selectedBg" }, .{ "searchMatchText", "text" } }) |pair| try fallbackFrom(engine, with_fallbacks, values, pair[0], pair[1]);
     const vars_value = try get(engine, json, "vars");
     defer engine.freeValue(vars_value);
     const vars = if (c.JS_IsUndefined(vars_value)) try object(engine) else c.JS_DupValue(engine.context, vars_value);
     defer engine.freeValue(vars);
-    const fg = try object(engine);
-    defer engine.freeValue(fg);
-    const bg = try object(engine);
-    defer engine.freeValue(bg);
-    const names = try OwnNames.init(engine, with_fallbacks);
+    const resolved_values = try object(engine);
+    defer engine.freeValue(resolved_values);
+    const names = try OwnNames.init(engine, values);
     defer names.deinit();
     for (names.values[0..names.length]) |entry| {
-        const token = try engine.checked(c.JS_AtomToValue(engine.context, entry.atom));
-        defer engine.freeValue(token);
-        const name = try engine.toString(token);
-        defer engine.gpa.free(name);
-        var background = false;
-        inline for (.{ "selectedBg", "searchMatchBg", "userMessageBg", "customMessageBg", "toolPendingBg", "toolSuccessBg", "toolErrorBg" }) |bg_name| if (std.mem.eql(u8, name, bg_name)) {
-            background = true;
-        };
-        const value = try engine.checked(c.JS_GetProperty(engine.context, with_fallbacks, entry.atom));
+        const value = try engine.checked(c.JS_GetProperty(engine.context, values, entry.atom));
         defer engine.freeValue(value);
         var visited: std.StringHashMapUnmanaged(void) = .empty;
         defer {
@@ -1179,8 +1247,17 @@ pub fn fromJson(engine: *engine_mod.Engine, raw_json: []const u8, source_path: ?
             visited.deinit(engine.gpa);
         }
         const resolved = try resolve(engine, value, vars, &visited);
-        if (c.JS_DefinePropertyValue(engine.context, if (background) bg else fg, entry.atom, resolved, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+        if (c.JS_DefinePropertyValue(engine.context, resolved_values, entry.atom, resolved, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
+    const module = try moduleState(engine);
+    defer engine.freeValue(module);
+    const with_fallbacks = try withTokenFallbacks(engine, module, resolved_values);
+    defer engine.freeValue(with_fallbacks);
+    const fg = try object(engine);
+    defer engine.freeValue(fg);
+    const bg = try object(engine);
+    defer engine.freeValue(bg);
+    try splitTokenColors(engine, module, with_fallbacks, fg, bg);
     const options = try object(engine);
     defer engine.freeValue(options);
     try put(engine, options, "name", try get(engine, json, "name"));
@@ -1201,11 +1278,11 @@ pub fn loadFile(engine: *engine_mod.Engine, io: std.Io, path: []const u8, color_
     return fromJson(engine, content, path, color_mode);
 }
 
-test "actual original Theme constructor defaults dim cache terminal replacement and styles replay on native VM" {
+test "actual Source6fb Theme constructor defaults dim cache terminal replacement and styles replay on native VM" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     try @import("native_tui.zig").install(engine);
-    const fixture = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/theme-constructor-original-7fb.json"), .{});
+    const fixture = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/theme-constructor-original-6fb.json"), .{});
     defer fixture.deinit();
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
@@ -1216,12 +1293,45 @@ test "actual original Theme constructor defaults dim cache terminal replacement 
         \\for(const item of themeOracle.cases){setTerminalColors({});const input=item.input,theme=new Theme(input.fg,input.bg,input.mode,input.options);const observe=()=>({appearance:theme.appearance,fg:Object.fromEntries(Object.keys(item.before.fg).map(key=>[key,theme.getFgAnsi(key)])),bg:Object.fromEntries(Object.keys(item.before.bg).map(key=>[key,theme.getBgAnsi(key)])),colors:theme.colors,colorsFrozen:Object.isFrozen(theme.colors),valuesFrozen:Object.values(theme.colors).every(Object.isFrozen),sameColors:theme.colors===theme.colors,fgText:theme.fg('accent','x\ny'),bgText:theme.bg('selectedBg','x'),style:theme.style('x\ny',{fg:'accent',bg:'selectedBg',bold:true}),thinking:['off','minimal','low','medium','high','xhigh','max','invalid'].map(level=>theme.getThinkingBorderColor(level)('x')),bash:theme.getBashModeBorderColor()('x')});compare(item.before,observe(),item.name+'/'+item.variant+'/'+input.mode+'/before');const old=theme.colors;setTerminalColors({foreground:{r:20,g:30,b:40},background:{r:180,g:170,b:160}});compare(item.after,observe(),'after');compare(item.oldColors,old,'retained-old');if((old!==theme.colors)!==item.changedColors)throw Error('cache identity');globalThis.retainedTheme=theme;}
         \\const marker={};let threw=false;try{new Theme({}, {},'truecolor',{get name(){throw marker}})}catch(error){threw=error===marker}if(!threw)throw Error('constructor exception identity');
         \\const theme=retainedTheme;for(const invoke of [()=>theme.fg('missing','x'),()=>theme.bg('accent','x'),()=>theme.getFgAnsi('selectedBg')]){let message;try{invoke()}catch(error){message=error.message}if(!message?.startsWith('Unknown theme color: '))throw Error('token partition '+message)}
+        \\globalThis.Theme=Theme;for(const item of themeOracle.structural){let result;try{result=new Function(item.source)()}catch(error){if(error.name!==item.errorName)throw Error('structural error kind '+item.source+': '+error.name+' != '+item.errorName);if(item.errorName==='Error'&&error.message!==item.errorMessage)throw Error('fallback diagnostic '+error.message);continue}if(item.errorName)throw Error('missing structural exception '+item.source);compare(item.result,result,'structural:'+item.source)}delete globalThis.Theme;
     , "native-theme-constructor-original.mjs");
     defer engine.freeValue(module);
     c.JS_RunGC(engine.runtime);
     const retained = try engine.eval("if(retainedTheme.getThinkingBorderColor('max')('x').length===0)throw Error('retained');delete globalThis.retainedTheme;delete globalThis.themeOracle;", "native-theme-retained.js", c.JS_EVAL_TYPE_GLOBAL);
     defer engine.freeValue(retained);
     c.JS_RunGC(engine.runtime);
+}
+
+test "Source6fb Theme constructor descriptor fallback values and exact unresolved diagnostics match original helper" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("native_tui.zig").install(engine);
+    const imported = try engine.evalModule("import {Theme} from 'pi-coding-agent';", "source6-fallback-import.mjs");
+    defer engine.freeValue(imported);
+    const module = try moduleState(engine);
+    defer engine.freeValue(module);
+    const fixture = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("../themes/fixtures/theme-validation-original-6fb.json"), .{});
+    defer fixture.deinit();
+    for (fixture.value.object.get("fallbacks").?.array.items) |item| {
+        const values = try engine.fromJsonValue(item.object.get("values").?);
+        defer engine.freeValue(values);
+        if (item.object.get("result")) |expected| {
+            const result = try withTokenFallbacks(engine, module, values);
+            defer engine.freeValue(result);
+            const actual = try engine.stringify(result);
+            defer engine.gpa.free(actual);
+            const wanted = try std.json.Stringify.valueAlloc(engine.gpa, expected, .{});
+            defer engine.gpa.free(wanted);
+            try std.testing.expectEqualStrings(wanted, actual);
+        } else {
+            try std.testing.expectError(error.JavaScriptException, withTokenFallbacks(engine, module, values));
+            const message = try get(engine, engine.captured_exception.?, "message");
+            defer engine.freeValue(message);
+            const actual = try engine.toString(message);
+            defer engine.gpa.free(actual);
+            try std.testing.expectEqualStrings(item.object.get("message").?.string, actual);
+        }
+    }
 }
 
 test "native Theme JSON resolves actual OKHSL builtins and preserves variable cycle missing and parse failures" {
@@ -1285,6 +1395,23 @@ fn allocationProbe(gpa: std.mem.Allocator) !void {
 }
 test "native Theme allocation failures release maps colors constructor state and failed variable resolution" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationProbe, .{});
+}
+
+fn source6ConstructorAllocationProbe(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    try @import("native_tui.zig").install(engine);
+    const module = engine.evalModule(
+        \\import {Theme} from 'pi-coding-agent';const fg={muted:1,text:'',thinkingXhigh:2,accent:3};Object.defineProperty(fg,Symbol(),{enumerable:true,get(){return 7}});globalThis.source6Retained=new Theme(fg,{selectedBg:4,accent:5},'truecolor');if(source6Retained.getFgAnsi('accent')!=='\x1b[38;5;5m')throw Error('slot');try{new Theme({text:'',thinkingXhigh:2},{selectedBg:4},'truecolor');throw Error('missing fallback exception')}catch(e){if(e.message!=='Theme token scrollbarTrack has unresolved fallback muted')throw e}
+    , "source6-theme-constructor-allocation.mjs") catch |err| return allocationError(engine, err);
+    defer engine.freeValue(module);
+    c.JS_RunGC(engine.runtime);
+    const result = engine.eval("if(!source6Retained.colors.accent)throw Error('retained');delete globalThis.source6Retained;", "source6-theme-retained.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| return allocationError(engine, err);
+    defer engine.freeValue(result);
+    c.JS_RunGC(engine.runtime);
+}
+test "Source6fb Theme constructor spread fallback error and retained metadata release all allocation failures" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, source6ConstructorAllocationProbe, .{});
 }
 
 test "actual Chalk 6 source nested modifier CRLF and color support enablement replay through Theme" {
