@@ -134,6 +134,9 @@ fn writeModelSnapshot(writer: *std.Io.Writer, model: providers.ModelInfo) !void 
 }
 
 pub const ContextOptions = struct {
+    strict_theme_validation: ?bool = null,
+    admit_keybindings: bool = false,
+    kitty_active: ?bool = null,
     /// Null leaves the controller's cached presentation state bound as-is.
     theme_state: ?@import("theme_state.zig").State = null,
     mode: []const u8,
@@ -158,6 +161,40 @@ pub const ContextOptions = struct {
     session_file: ?[]const u8 = null,
     session_dir: ?[]const u8 = null,
 };
+test "native main context carries admitted key overrides kitty and strict files only when explicitly bound" {
+    const gpa = std.testing.allocator;
+    var controller = try Controller.init(gpa, std.testing.io, false, 80);
+    defer controller.deinit();
+    const standalone = try controller.contextJson(gpa, .{ .mode = "print", .cwd = "/standalone", .session_id = "sdk" });
+    defer gpa.free(standalone);
+    const before = try std.json.parseFromSlice(std.json.Value, gpa, standalone, .{});
+    defer before.deinit();
+    try std.testing.expect(!before.value.object.contains("strictThemeValidation"));
+    try std.testing.expect(!before.value.object.contains("keybindingsConfig"));
+    try std.testing.expect(!before.value.object.contains("kittyActive"));
+    var bindings = Keybindings.init(gpa);
+    defer bindings.deinit();
+    bindings.parsed = try std.json.parseFromSlice(std.json.Value, gpa, "{\"tui.select.confirm\":\"alt+x\",\"tui.select.cancel\":[]}", .{ .allocate = .alloc_always });
+    controller.bindKeybindings(&bindings);
+    defer controller.bindKeybindings(null);
+    const admitted = try controller.contextJson(gpa, .{ .mode = "tui", .cwd = "/cli", .session_id = "session", .strict_theme_validation = true, .admit_keybindings = true, .kitty_active = true });
+    defer gpa.free(admitted);
+    const after = try std.json.parseFromSlice(std.json.Value, gpa, admitted, .{});
+    defer after.deinit();
+    try std.testing.expect(after.value.object.get("strictThemeValidation").?.bool);
+    try std.testing.expect(after.value.object.get("kittyActive").?.bool);
+    const configuration = after.value.object.get("keybindingsConfig").?.object;
+    try std.testing.expectEqual(@as(usize, 2), configuration.count());
+    try std.testing.expectEqualStrings("alt+x", configuration.get("tui.select.confirm").?.string);
+    try std.testing.expectEqual(@as(usize, 0), configuration.get("tui.select.cancel").?.array.items.len);
+    controller.bindKeybindings(null);
+    const empty = try controller.contextJson(gpa, .{ .mode = "print", .cwd = "/cli", .session_id = "session", .strict_theme_validation = true, .admit_keybindings = true, .kitty_active = false });
+    defer gpa.free(empty);
+    const cleared = try std.json.parseFromSlice(std.json.Value, gpa, empty, .{});
+    defer cleared.deinit();
+    try std.testing.expectEqual(@as(usize, 0), cleared.value.object.get("keybindingsConfig").?.object.count());
+    try std.testing.expect(!cleared.value.object.get("kittyActive").?.bool);
+}
 
 /// Native registration callbacks must use the same initial selection policy
 /// as the owner, before a newly registered tool appears in the next snapshot.
@@ -627,6 +664,14 @@ pub const Controller = struct {
         errdefer out.deinit();
         try out.writer.writeAll("{\"mode\":");
         try std.json.Stringify.value(options.mode, .{}, &out.writer);
+        if (options.strict_theme_validation) |enabled| try out.writer.print(",\"strictThemeValidation\":{}", .{enabled});
+        if (options.kitty_active) |active| try out.writer.print(",\"kittyActive\":{}", .{active});
+        if (options.admit_keybindings) {
+            try out.writer.writeAll(",\"keybindingsConfig\":");
+            if (self.dialog_keybindings) |bindings| {
+                if (bindings.parsed) |parsed| try std.json.Stringify.value(parsed.value, .{}, &out.writer) else try out.writer.writeAll("{}");
+            } else try out.writer.writeAll("{}");
+        }
         if (options.theme_state) |state| {
             try @import("theme_state.zig").validate(allocator, state);
             try out.writer.writeAll(",\"themeState\":");

@@ -2039,6 +2039,9 @@ fn syncExtensionScriptContext(
         if (footer_models.available) |models| host.gpa.free(models);
     };
     const context = try ui_controller.contextJson(host.gpa, .{
+        .strict_theme_validation = true,
+        .admit_keybindings = true,
+        .kitty_active = tui.keys.isKittyProtocolActive(),
         .mode = mode,
         .cwd = cwd,
         .session_id = sess.id,
@@ -3876,6 +3879,23 @@ fn runMain(init: std.process.Init) !void {
         .native_runtime_options = .{ .executable = native_extension_executable, .environ_map = environ },
     };
     defer extension_host.deinit();
+    const initial_worker_context = try extension_ui.contextJson(gpa, .{
+        .strict_theme_validation = true,
+        .admit_keybindings = true,
+        .kitty_active = tui.keys.isKittyProtocolActive(),
+        .mode = extension_mode,
+        .cwd = cwd,
+        .session_id = sess.id,
+        .session_name = if (sess.name.len > 0) sess.name else null,
+        .provider = provider_name,
+        .model_id = model,
+        .thinking_level = cli.thinking orelse settings.thinking_level,
+        .project_trusted = trust_project,
+        .session_file = session_path,
+        .session_dir = session_dir,
+    });
+    defer gpa.free(initial_worker_context);
+    try extension_host.setScriptContextJson(initial_worker_context);
     if (!cli.no_extensions) for (top_level_resources.extensions.items) |extension_path| {
         extension_host.loadPath(extension_path) catch |err| {
             const warning = try std.fmt.allocPrint(arena, "warning: top-level extension {s} could not be loaded: {s}", .{ extension_path, @errorName(err) });

@@ -651,6 +651,8 @@ pub fn build(b: *std.Build) void {
     const codemode_models_tests = b.addTest(.{ .root_module = codemode_models_module, .use_llvm = use_llvm, .filters = &.{"native codemode models"} });
     const codemode_models_run = b.addRunArtifact(codemode_models_tests);
     b.step("test-codemode-models", "Compare model globals against original registry behavior and concurrency").dependOn(&codemode_models_run.step);
+    const structured_result_tests = b.addTest(.{ .root_module = codemode_models_module, .use_llvm = use_llvm, .filters = &.{"native codemode models structured"} });
+    b.step("test-codemode-structured-results", "Replay original arbitrary structured fields across the tool protocol").dependOn(&b.addRunArtifact(structured_result_tests).step);
     codemode_step.dependOn(&codemode_models_run.step);
     test_step.dependOn(&codemode_models_run.step);
     const model_owner_module = b.createModule(.{ .root_source_file = b.path("src/native_model_owner_transport_test.zig"), .target = target, .optimize = optimize });
@@ -662,6 +664,29 @@ pub fn build(b: *std.Build) void {
     const model_owner_run = b.addRunArtifact(model_owner_tests);
     b.step("test-model-owner-transport", "Exercise exact model registry leases over the native worker protocol").dependOn(&model_owner_run.step);
     test_step.dependOn(&model_owner_run.step);
+    const main_context_module = b.createModule(.{ .root_source_file = b.path("src/main_native_context_test.zig"), .target = target, .optimize = optimize });
+    main_context_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, main_context_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, main_context_module);
+    linkTypeScriptParser(b, main_context_module, typescript_parser);
+    const main_context_tests = b.addTest(.{ .root_module = main_context_module, .use_llvm = use_llvm, .filters = &.{"native main context"} });
+    const main_context_run = b.addRunArtifact(main_context_tests);
+    b.step("test-main-native-context", "Verify admitted startup keybindings and theme validation context").dependOn(&main_context_run.step);
+    test_step.dependOn(&main_context_run.step);
+    const main_context_process_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/main_native_context_process_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const main_context_process_run = b.addRunArtifact(main_context_process_tests);
+    main_context_process_run.step.dependOn(&b.addInstallArtifact(exe, .{}).step);
+    main_context_process_run.setEnvironmentVariable("PI_MAIN_CONTEXT_BINARY", b.getInstallPath(.bin, b.fmt("pi{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    b.step("test-main-native-context-process", "Prove CLI validation bootstrap precedes extension registration without Node").dependOn(&main_context_process_run.step);
+    test_step.dependOn(&main_context_process_run.step);
+    const strict_theme_module = b.createModule(.{ .root_source_file = b.path("src/strict_theme_validation_test.zig"), .target = target, .optimize = optimize });
+    strict_theme_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, strict_theme_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, strict_theme_module);
+    const strict_theme_tests = b.addTest(.{ .root_module = strict_theme_module, .use_llvm = use_llvm, .filters = &.{"Source6fb strict Theme"} });
+    const strict_theme_run = b.addRunArtifact(strict_theme_tests);
+    b.step("test-theme-file-admission", "Replay Source optional theme validation and context admission").dependOn(&strict_theme_run.step);
+    test_step.dependOn(&strict_theme_run.step);
     test_step.dependOn(&run_nested_tests.step);
     const oauth_lock_fixture = b.addExecutable(.{
         .name = "pi-mcp-oauth-lock-fixture",

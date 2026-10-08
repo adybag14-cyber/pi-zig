@@ -92,7 +92,8 @@ const Call = struct {
             var details = try json.Owned.parse(gpa, result.details_json.?);
             defer details.deinit();
             if (json.get(details.value, "structuredContent")) |value| {
-                output.value = try json.clone(a, value);
+                output.value = .{ .object = .empty };
+                try output.value.object.put(a, "__pi_codemode_value", try json.clone(a, value));
                 return output;
             }
         }
@@ -101,7 +102,8 @@ const Call = struct {
             try output.value.object.put(a, "__pi_codemode_error", .{ .string = try a.dupe(u8, result.content) });
             return output;
         }
-        output.value = .{ .string = try a.dupe(u8, result.content) };
+        output.value = .{ .object = .empty };
+        try output.value.object.put(a, "__pi_codemode_value", .{ .string = try a.dupe(u8, result.content) });
         return output;
     }
 };
@@ -134,7 +136,7 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, code: []const u8, options: Op
     var sequence: std.atomic.Value(u64) = .init(0);
     for (options.entries, calls, descriptions) |entry, *call, *description| {
         call.* = .{ .options = &options, .entry = entry, .sequence = &sequence };
-        description.* = .{ .name = entry.name, .description = entry.description, .context = call, .execute = Call.run, .execute_sequenced = Call.runSequenced, .error_marker = true };
+        description.* = .{ .name = entry.name, .description = entry.description, .context = call, .execute = Call.run, .execute_sequenced = Call.runSequenced, .error_marker = true, .success_envelope = true };
         if (options.enable_discovery) {
             const a = metadata_arena.allocator();
             var prose: std.ArrayList([]const u8) = .empty;

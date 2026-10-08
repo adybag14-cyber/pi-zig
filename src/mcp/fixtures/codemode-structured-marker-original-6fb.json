@@ -1,0 +1,34 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "code": "text(await tools.echo({}));",
+  "value": {
+    "__pi_codemode_error": "ordinary data",
+    "__pi_codemode_value": {
+      "nested": true
+    },
+    "value": 7
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Script completed\nWall time 0.1 seconds\nOutput:\n"
+      },
+      {
+        "type": "text",
+        "text": "{\"__pi_codemode_error\":\"ordinary data\",\"__pi_codemode_value\":{\"nested\":true},\"value\":7}"
+      }
+    ],
+    "details": {
+      "calls": [
+        {
+          "id": "outer/1",
+          "name": "echo",
+          "args": "{}",
+          "status": "ok",
+          "durationMs": 0.024900000000002365
+        }
+      ]
+    }
+  }
+}

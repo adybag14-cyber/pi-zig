@@ -851,7 +851,9 @@ pub const Host = struct {
             try request.writer.writeByte('}');
             raw_manifest = try existing.invokeGroupRequest(1, request.written(), null);
         } else {
-            const started = try js_runtime.Runtime.startNativeGroup(self.gpa, self.io, &.{source_path}, self.native_runtime_options);
+            var startup_options = self.native_runtime_options;
+            startup_options.startup_context_json = self.script_context_json orelse startup_options.startup_context_json;
+            const started = try js_runtime.Runtime.startNativeGroup(self.gpa, self.io, &.{source_path}, startup_options);
             group = started.runtime;
             created = true;
             var parsed = std.json.parseFromSlice(std.json.Value, self.gpa, started.manifest_json, .{}) catch |err| {

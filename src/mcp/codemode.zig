@@ -20,6 +20,7 @@ pub const Tool = struct {
     /// Agent adapters can return an owned marker with the exact error message;
     /// ordinary sandbox tools keep arbitrary object results unchanged.
     error_marker: bool = false,
+    success_envelope: bool = false,
 };
 pub const Options = struct {
     model_runtime: ?models.Runtime = null,
@@ -676,7 +677,8 @@ const Execution = struct {
             return true;
         };
         defer reply.deinit();
-        if (pending.work.tool.error_marker) if (json.get(reply.value, "__pi_codemode_error")) |error_value| {
+        const success_value = if (pending.work.tool.success_envelope) json.get(reply.value, "__pi_codemode_value") else null;
+        if (pending.work.tool.error_marker and success_value == null) if (json.get(reply.value, "__pi_codemode_error")) |error_value| {
             const error_text = try json.asString(error_value);
             const message = try self.engine.checked(c.JS_NewError(self.engine.context));
             defer self.engine.freeValue(message);
@@ -687,7 +689,7 @@ const Execution = struct {
             try self.completeCall(pending.record_index, "error", pending.started);
             return true;
         };
-        const value = if (pending.work.model_operation == .getModelOfType and reply.value == .null) c.pi_js_undefined() else try self.engine.fromJsonValue(reply.value);
+        const value = if (pending.work.model_operation == .getModelOfType and reply.value == .null) c.pi_js_undefined() else try self.engine.fromJsonValue(success_value orelse reply.value);
         defer self.engine.freeValue(value);
         var args = [_]c.JSValue{value};
         const settled = try self.engine.checked(c.JS_Call(self.engine.context, pending.resolve, c.pi_js_undefined(), 1, &args));

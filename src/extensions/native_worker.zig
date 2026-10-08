@@ -1147,7 +1147,7 @@ fn loadSource(gpa: std.mem.Allocator, io: std.Io, engine: *engine_mod.Engine, lo
 }
 
 pub fn run(gpa: std.mem.Allocator, io: std.Io, extension_path: []const u8) !void {
-    return runOwner(gpa, io, &.{extension_path}, null, false, 1);
+    return runOwner(gpa, io, &.{extension_path}, null, false, 1, null);
 }
 
 /// Native programmatic embedding entrypoint. It evaluates a user SDK module
@@ -1237,10 +1237,12 @@ pub fn runGroup(gpa: std.mem.Allocator, io: std.Io) !void {
     }
     const owner_generation = if (parsed.value.object.get("ownerGeneration")) |value| try component_protocol.identifier(value) else 1;
     if (owner_generation > 9_007_199_254_740_991) return error.InvalidRendererIdentity;
-    return runOwner(gpa, io, paths, &input, true, owner_generation);
+    const context = parsed.value.object.get("context");
+    if (context) |value| if (value != .object) return error.InvalidNativeGroupStartup;
+    return runOwner(gpa, io, paths, &input, true, owner_generation, context);
 }
 
-fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, initial_input: ?*std.Io.File.Reader, grouped: bool, owner_generation: u64) !void {
+fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, initial_input: ?*std.Io.File.Reader, grouped: bool, owner_generation: u64, startup_context: ?std.json.Value) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();
     var loader: Loader = .{ .io = io, .engine = engine };
@@ -1261,8 +1263,11 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     try console.install(engine, io);
     try text_encoding.install(engine);
     try text_decoder.install(engine);
+    const bootstrap = if (startup_context) |value| try encoded(gpa, value) else null;
+    defer if (bootstrap) |bytes| gpa.free(bytes);
     for (sources, 0..) |extension_path, index| {
         const source_binding = if (index == 0) bindings else try group.add(extension_path);
+        if (bootstrap) |bytes| try source_binding.setContext(bytes);
         const loaded_factory = loadSource(gpa, io, engine, &loader, source_binding, extension_path);
         loaded_factory catch |err| {
             if (engine.last_error) |message| {

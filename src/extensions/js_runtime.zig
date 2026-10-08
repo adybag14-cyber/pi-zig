@@ -44,6 +44,12 @@ pub const EditorBridge = struct {
 pub const Backend = enum { legacy, native };
 pub const NativeModelLease = struct { generation: u64, runtime_id: u64 };
 pub const NativeModelOperation = enum { query, classify, generate_images };
+pub fn validateNativeModelReply(gpa: std.mem.Allocator, bytes: []const u8, lease: NativeModelLease, request_id: u64) !void {
+    const Header = struct { version: u32, requestId: u64, generation: u64, runtimeId: u64 };
+    const header = std.json.parseFromSlice(Header, gpa, bytes, .{ .ignore_unknown_fields = true }) catch |cause| return if (cause == error.OutOfMemory) cause else error.InvalidNativeModelBridgeResponse;
+    defer header.deinit();
+    if (header.value.version != 1 or header.value.requestId != request_id or header.value.generation != lease.generation or header.value.runtimeId != lease.runtime_id) return error.InvalidNativeModelBridgeResponse;
+}
 
 fn privateFilePermissions() std.Io.File.Permissions {
     if (@hasDecl(std.Io.File.Permissions, "fromMode")) return std.Io.File.Permissions.fromMode(0o600);
@@ -719,6 +725,8 @@ pub const Runtime = struct {
         // explicitly select an installed pi binary instead of the test runner.
         executable: ?[]const u8 = null,
         environ_map: ?*const std.process.Environ.Map = null,
+        /// Group workers admit this object before evaluating extension input.
+        startup_context_json: ?[]const u8 = null,
     };
 
     pub fn start(
@@ -738,6 +746,7 @@ pub const Runtime = struct {
 
     pub fn startNativeGroup(gpa: std.mem.Allocator, io: Io, source_paths: []const []const u8, options: NativeOptions) !Started {
         if (source_paths.len == 0 or source_paths.len > 4096) return error.InvalidNativeExtensionGroup;
+        if (options.startup_context_json) |context| try validateObjectJson(gpa, context);
         const runtime = try spawnNativeRuntimeConfigured(gpa, io, source_paths[0], options, true);
         const generation = native_owner_generation.fetchAdd(1, .monotonic);
         if (generation == 0 or generation > 9_007_199_254_740_991) {
@@ -750,6 +759,10 @@ pub const Runtime = struct {
         const written: ?anyerror = blk: {
             startup.writer.print("{{\"kind\":\"load_group\",\"ownerGeneration\":\"{d}\",\"sources\":", .{generation}) catch break :blk error.OutOfMemory;
             std.json.Stringify.value(source_paths, .{}, &startup.writer) catch break :blk error.OutOfMemory;
+            if (options.startup_context_json) |context| {
+                startup.writer.writeAll(",\"context\":") catch break :blk error.OutOfMemory;
+                startup.writer.writeAll(context) catch break :blk error.OutOfMemory;
+            }
             startup.writer.writeByte('}') catch break :blk error.OutOfMemory;
             if (startup.written().len > runtime.max_line_bytes) break :blk error.NativeGroupStartupTooLarge;
             runtime.writeLine(startup.written()) catch |err| break :blk err;
@@ -860,7 +873,14 @@ pub const Runtime = struct {
             try request.object.put(allocator, "context", context);
         }
         const encoded = try std.json.Stringify.valueAlloc(allocator, request, .{});
-        return self.exchangeWithUpdatesUnlocked(encoded, invocation_id, abort_flag, null, null);
+        const response = try self.exchangeWithUpdatesUnlocked(encoded, invocation_id, abort_flag, null, null);
+        errdefer self.gpa.free(response);
+        if (request.object.get("kind")) |kind| if (kind == .string and std.mem.eql(u8, kind.string, "sdk_model_bridge")) {
+            const lease = request.object.get("lease") orelse return error.InvalidNativeModelBridgeRequest;
+            if (lease != .object) return error.InvalidNativeModelBridgeRequest;
+            try validateNativeModelReply(self.gpa, response, .{ .generation = try component_protocol.identifier(lease.object.get("generation") orelse return error.InvalidNativeModelBridgeRequest), .runtime_id = try component_protocol.identifier(lease.object.get("runtimeId") orelse return error.InvalidNativeModelBridgeRequest) }, invocation_id);
+        };
+        return response;
     }
 
     /// Invoke one explicitly admitted registry on this exact worker owner.
@@ -895,7 +915,10 @@ pub const Runtime = struct {
         try request.object.put(a, "abortable", .{ .bool = true });
         if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) try request.object.put(a, "aborted", .{ .bool = true });
         try request.object.put(a, "context", if (self.context_json) |context| try std.json.parseFromSliceLeaky(std.json.Value, a, context, .{}) else .{ .object = .empty });
-        return self.exchangeWithUpdatesUnlocked(try std.json.Stringify.valueAlloc(a, request, .{}), invocation_id, abort_flag, null, null);
+        const response = try self.exchangeWithUpdatesUnlocked(try std.json.Stringify.valueAlloc(a, request, .{}), invocation_id, abort_flag, null, null);
+        errdefer self.gpa.free(response);
+        try validateNativeModelReply(self.gpa, response, lease, invocation_id);
+        return response;
     }
     /// Extension views own only metadata/context. One group owner retains all
     /// pipe handles, reader state, invocation ordering and process cleanup.
@@ -2629,6 +2652,17 @@ test "native model owner transport host rejects unsupported invalid and closed r
     try std.testing.expectError(error.JavaScriptExtensionClosed, runtime.invokeNativeModelBridge(.{ .generation = 41, .runtime_id = 1 }, .query, "{\"method\":\"getModelsOfType\",\"args\":[\"chat\"]}", null, null));
     runtime.backend = .legacy;
     try std.testing.expectError(error.InvalidNativeModelBridgeRequest, runtime.invokeNativeModelBridge(.{ .generation = 41, .runtime_id = 1 }, .query, "{}", null, null));
+}
+test "native main context model responses require exact version request and registry identities including full uint64" {
+    const gpa = std.testing.allocator;
+    const lease: NativeModelLease = .{ .generation = std.math.maxInt(u64), .runtime_id = 1 };
+    const bytes = "{\"version\":1,\"requestId\":7,\"generation\":18446744073709551615,\"runtimeId\":1,\"status\":\"complete\",\"result\":{\"version\":99}}";
+    try validateNativeModelReply(gpa, bytes, lease, 7);
+    try std.testing.expectError(error.InvalidNativeModelBridgeResponse, validateNativeModelReply(gpa, bytes, lease, 8));
+    try std.testing.expectError(error.InvalidNativeModelBridgeResponse, validateNativeModelReply(gpa, bytes, .{ .generation = lease.generation - 1, .runtime_id = 1 }, 7));
+    try std.testing.expectError(error.InvalidNativeModelBridgeResponse, validateNativeModelReply(gpa, bytes, .{ .generation = lease.generation, .runtime_id = 2 }, 7));
+    try std.testing.expectError(error.InvalidNativeModelBridgeResponse, validateNativeModelReply(gpa, "{\"version\":2,\"requestId\":7,\"generation\":41,\"runtimeId\":1}", .{ .generation = 41, .runtime_id = 1 }, 7));
+    try std.testing.expectError(error.InvalidNativeModelBridgeResponse, validateNativeModelReply(gpa, "{\"version\":1,\"requestId\":7.5,\"generation\":41,\"runtimeId\":1}", .{ .generation = 41, .runtime_id = 1 }, 7));
 }
 test "native runtime wire invocation identity accepts exact strings and integers without float coercion" {
     try std.testing.expectEqual(@as(u64, 42), try wireInvocationId(.{ .string = "42" }));

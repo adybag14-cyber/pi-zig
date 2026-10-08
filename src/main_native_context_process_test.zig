@@ -1,0 +1,46 @@
+//! The CLI must admit its validator before extension module/factory evaluation.
+const std = @import("std");
+test "native main context actual CLI applies strict theme admission before extension factory without Node" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var inherited = try std.testing.environ.createMap(gpa);
+    defer inherited.deinit();
+    const binary = inherited.get("PI_MAIN_CONTEXT_BINARY") orelse return error.MissingMainContextBinary;
+    var scratch = std.testing.tmpDir(.{});
+    defer scratch.cleanup();
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try scratch.dir.realPath(io, &buffer);
+    const directory = buffer[0..length];
+    try scratch.dir.createDir(io, "agent", .default_dir);
+    try scratch.dir.createDir(io, "home", .default_dir);
+    try scratch.dir.writeFile(io, .{ .sub_path = "partial.json", .data = "{\"name\":\"partial\",\"colors\":{\"muted\":1,\"text\":\"\",\"thinkingXhigh\":2,\"selectedBg\":3}}" });
+    const path = try std.fs.path.join(gpa, &.{ directory, "partial.json" });
+    defer gpa.free(path);
+    const path_json = try std.json.Stringify.valueAlloc(gpa, path, .{});
+    defer gpa.free(path_json);
+    const source = try std.fmt.allocPrint(gpa, "import {{loadThemeFromPath}} from '@earendil-works/pi-coding-agent';let strict=false;try{{loadThemeFromPath({s})}}catch(error){{strict=error.name==='Error'&&String(error.message).includes('Missing required color tokens:')&&String(error.message).includes('- accent')}}if(!strict)throw Error('Missing CLI strict theme bootstrap');export default pi=>pi.registerTool({{name:'bootstrap',description:'Bootstrap proof',parameters:{{type:'object',properties:{{}}}},execute(){{return {{content:[{{type:'text',text:'STRICT_BOOTSTRAP_OK'}}]}}}}}});", .{path_json});
+    defer gpa.free(source);
+    try scratch.dir.writeFile(io, .{ .sub_path = "extension.mjs", .data = source });
+    try scratch.dir.writeFile(io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"\",\"tool_calls\":[{\"id\":\"proof\",\"name\":\"bootstrap\",\"arguments\":\"{}\"}]},{\"content\":\"done\"}]" });
+    var environment: std.process.Environ.Map = .init(gpa);
+    defer environment.deinit();
+    try environment.put("PATH", std.fs.path.dirname(binary).?);
+    try environment.put("SystemRoot", "C:/Windows");
+    try environment.put("WINDIR", "C:/Windows");
+    try environment.put("PI_SKIP_VERSION_CHECK", "1");
+    try environment.put("PI_TELEMETRY", "0");
+    try environment.put("PI_EXTENSION_BACKEND", "native");
+    const home = try std.fs.path.join(gpa, &.{ directory, "home" });
+    defer gpa.free(home);
+    const agent = try std.fs.path.join(gpa, &.{ directory, "agent" });
+    defer gpa.free(agent);
+    try environment.put("HOME", home);
+    try environment.put("USERPROFILE", home);
+    try environment.put("PI_AGENT_DIR", agent);
+    const result = try std.process.run(gpa, io, .{ .argv = &.{ binary, "-p", "--mode", "json", "--mock-script", "mock.json", "--tools", "bootstrap", "--extension", "extension.mjs", "--no-context-files", "--no-skills", "--no-themes", "--no-prompt-templates", "--approve", "bootstrap" }, .cwd = .{ .path = directory }, .environ_map = &environment, .stdout_limit = .limited(1024 * 1024), .stderr_limit = .limited(1024 * 1024), .timeout = .{ .duration = .{ .raw = .fromSeconds(30), .clock = .awake } } });
+    defer gpa.free(result.stdout);
+    defer gpa.free(result.stderr);
+    if (result.term != .exited or result.term.exited != 0 or std.mem.indexOf(u8, result.stdout, "STRICT_BOOTSTRAP_OK") == null) std.debug.print("CLI context stdout:\n{s}\nstderr:\n{s}\n", .{ result.stdout, result.stderr });
+    try std.testing.expect(result.term == .exited and result.term.exited == 0);
+    try std.testing.expect(std.mem.indexOf(u8, result.stdout, "STRICT_BOOTSTRAP_OK") != null);
+}

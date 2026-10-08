@@ -210,3 +210,26 @@ test "native codemode models allocation failures release queued workers canonica
     };
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Check.run, .{});
 }
+test "native codemode models structured tool fields named like protocol markers remain ordinary source data" {
+    const gpa = std.testing.allocator;
+    var captured = try json.Owned.parse(gpa, @embedFile("mcp/fixtures/codemode-structured-marker-original-6fb.json"));
+    defer captured.deinit();
+    const Probe = struct {
+        fn call(raw: ?*anyopaque, allocator: std.mem.Allocator, _: []const u8, _: []const u8, _: []const u8, _: ?*bool) !@import("agent/tools.zig").ToolResult {
+            const value: *json.Value = @ptrCast(@alignCast(raw.?));
+            const content = try allocator.dupe(u8, "shown");
+            errdefer allocator.free(content);
+            var fields: std.json.ObjectMap = .empty;
+            defer fields.deinit(allocator);
+            try fields.put(allocator, "structuredContent", value.*);
+            return .{ .content = content, .is_error = false, .details_json = try json.stringify(allocator, .{ .object = fields }) };
+        }
+    };
+    var value = json.get(captured.value, "value").?;
+    var result = try @import("mcp/codemode_tool.zig").execute(gpa, std.testing.io, json.get(captured.value, "code").?.string, .{ .context = &value, .invoke = Probe.call, .entries = &.{.{ .name = "echo", .description = "Echo", .structured_result = true }}, .call_id = "outer" }, null);
+    defer result.deinit(gpa);
+    try std.testing.expect(!result.is_error);
+    const marker = "Output:\n";
+    const offset = (std.mem.indexOf(u8, result.content, marker) orelse return error.MissingOutputHeader) + marker.len;
+    try std.testing.expectEqualStrings(json.get(json.get(json.get(captured.value, "result").?, "content").?.array.items[1], "text").?.string, result.content[offset..]);
+}

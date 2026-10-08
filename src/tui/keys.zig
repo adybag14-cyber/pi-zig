@@ -11,14 +11,14 @@ pub const modifier_num_lock: u16 = 128;
 pub const lock_mask: u16 = modifier_caps_lock | modifier_num_lock;
 pub const supported_modifier_mask: u16 = modifier_shift | modifier_alt | modifier_ctrl | modifier_super;
 
-var kitty_protocol_active: bool = false;
+var kitty_protocol_active: std.atomic.Value(bool) = .init(false);
 
 pub fn setKittyProtocolActive(active: bool) void {
-    kitty_protocol_active = active;
+    kitty_protocol_active.store(active, .release);
 }
 
 pub fn isKittyProtocolActive() bool {
-    return kitty_protocol_active;
+    return kitty_protocol_active.load(.acquire);
 }
 
 pub const EventType = enum {
@@ -104,7 +104,7 @@ pub const ParseOptions = struct {
 pub fn parseOptionsFromEnvironment(environ: *const std.process.Environ.Map) ParseOptions {
     const has_wt = environ.get("WT_SESSION") != null;
     const ssh = environ.get("SSH_CONNECTION") != null or environ.get("SSH_CLIENT") != null or environ.get("SSH_TTY") != null;
-    return .{ .kitty_active = kitty_protocol_active, .windows_terminal = has_wt and !ssh };
+    return .{ .kitty_active = isKittyProtocolActive(), .windows_terminal = has_wt and !ssh };
 }
 
 const ParsedSequence = struct {
@@ -407,7 +407,7 @@ pub fn parseKeyWithOptions(data: []const u8, options: ParseOptions) ?ParsedKey {
 }
 
 pub fn parseKey(data: []const u8) ?ParsedKey {
-    return parseKeyWithOptions(data, .{ .kitty_active = kitty_protocol_active });
+    return parseKeyWithOptions(data, .{ .kitty_active = isKittyProtocolActive() });
 }
 
 fn namedKeyId(key: NamedKey) []const u8 {
@@ -518,7 +518,7 @@ test "6fb key parsing and matching replay authentic Source shifted symbol and mo
 }
 
 pub fn matchesKey(data: []const u8, key_id: []const u8) bool {
-    return matchesKeyWithOptions(data, key_id, .{ .kitty_active = kitty_protocol_active });
+    return matchesKeyWithOptions(data, key_id, .{ .kitty_active = isKittyProtocolActive() });
 }
 
 pub fn isKeyRelease(data: []const u8) bool {

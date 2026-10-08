@@ -1207,6 +1207,9 @@ fn resolve(engine: *engine_mod.Engine, value: c.JSValue, vars: c.JSValue, visite
     return resolve(engine, selected, vars, visited);
 }
 pub fn fromJson(engine: *engine_mod.Engine, raw_json: []const u8, source_path: ?[]const u8, color_mode: ?ColorMode) !c.JSValue {
+    return fromJsonWithValidation(engine, raw_json, source_path, color_mode, false);
+}
+fn fromJsonWithValidation(engine: *engine_mod.Engine, raw_json: []const u8, source_path: ?[]const u8, color_mode: ?ColorMode, strict: bool) !c.JSValue {
     const input = if (std.mem.startsWith(u8, raw_json, "\xef\xbb\xbf")) raw_json[3..] else raw_json;
     const input_z = try engine.gpa.dupeZ(u8, input);
     defer engine.gpa.free(input_z);
@@ -1220,6 +1223,13 @@ pub fn fromJson(engine: *engine_mod.Engine, raw_json: []const u8, source_path: ?
         return color_api.throwError(engine, message);
     };
     defer engine.freeValue(json);
+    if (strict) {
+        const parsed = try std.json.parseFromSlice(std.json.Value, engine.gpa, input, .{});
+        defer parsed.deinit();
+        const diagnostic = try @import("../themes/theme_schema.zig").diagnosticAlloc(engine.gpa, label, parsed.value);
+        defer if (diagnostic) |message| engine.gpa.free(message);
+        if (diagnostic) |message| return color_api.throwError(engine, message);
+    }
     const colors_atom = c.JS_NewAtom(engine.context, "colors");
     defer c.JS_FreeAtom(engine.context, colors_atom);
     if (!c.JS_IsObject(json) or c.JS_HasProperty(engine.context, json, colors_atom) <= 0) {
@@ -1275,7 +1285,22 @@ pub fn fromJson(engine: *engine_mod.Engine, raw_json: []const u8, source_path: ?
 pub fn loadFile(engine: *engine_mod.Engine, io: std.Io, path: []const u8, color_mode: ?ColorMode) !c.JSValue {
     const content = try std.Io.Dir.cwd().readFileAlloc(io, path, engine.gpa, .limited(4 * 1024 * 1024));
     defer engine.gpa.free(content);
-    return fromJson(engine, content, path, color_mode);
+    return fromJsonWithValidation(engine, content, path, color_mode, try strictFileValidation(engine));
+}
+
+/// Main enables the same global file validator that upstream Main installs.
+/// Direct programmatic Theme construction remains unvalidated.
+pub fn setStrictFileValidation(engine: *engine_mod.Engine, strict: bool) !void {
+    const module = try moduleState(engine);
+    defer engine.freeValue(module);
+    try put(engine, module, "strictFileValidation", c.JS_NewBool(engine.context, strict));
+}
+fn strictFileValidation(engine: *engine_mod.Engine) !bool {
+    const module = try moduleState(engine);
+    defer engine.freeValue(module);
+    const strict = try get(engine, module, "strictFileValidation");
+    defer engine.freeValue(strict);
+    return c.JS_ToBool(engine.context, strict) != 0;
 }
 
 test "actual Source6fb Theme constructor defaults dim cache terminal replacement and styles replay on native VM" {
@@ -1367,6 +1392,96 @@ test "native Theme JSON resolves actual OKHSL builtins and preserves variable cy
     const loaded = try loadFile(engine, std.testing.io, "src/themes/fixtures/dark-original-7fb.json", .@"256color");
     defer engine.freeValue(loaded);
     c.JS_RunGC(engine.runtime);
+}
+
+test "Source6fb strict Theme file validation matches actual opt-in Source loader corpus" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("native_tui.zig").install(engine);
+    const fixture = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/strict-theme-file-original-6fb.json"), .{});
+    defer fixture.deinit();
+    var scratch = std.testing.tmpDir(.{});
+    defer scratch.cleanup();
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const root_length = try scratch.dir.realPath(std.testing.io, &path_buffer);
+    for (fixture.value.object.get("fileCases").?.array.items) |item| {
+        const label = item.object.get("label").?.string;
+        try scratch.dir.writeFile(std.testing.io, .{ .sub_path = label, .data = item.object.get("raw").?.string });
+        const path = try std.fs.path.join(engine.gpa, &.{ path_buffer[0..root_length], label });
+        defer engine.gpa.free(path);
+        try setStrictFileValidation(engine, item.object.get("strict").?.bool);
+        if (item.object.get("errorMessage")) |expected| {
+            const rejected = loadFile(engine, std.testing.io, path, .truecolor);
+            if (rejected) |unexpected| {
+                engine.freeValue(unexpected);
+                std.debug.print("Source strict file unexpectedly admitted: {s}, strict={any}\n", .{ label, item.object.get("strict").?.bool });
+                return error.StrictThemeAdmissionDidNotReject;
+            } else |err| try std.testing.expectEqual(error.JavaScriptException, err);
+            const message = try get(engine, engine.captured_exception.?, "message");
+            defer engine.freeValue(message);
+            const actual = try engine.toString(message);
+            defer engine.gpa.free(actual);
+            const wanted = try std.mem.replaceOwned(u8, engine.gpa, expected.string, label, path);
+            defer engine.gpa.free(wanted);
+            try std.testing.expectEqualStrings(wanted, actual);
+        } else {
+            const value = try loadFile(engine, std.testing.io, path, .truecolor);
+            defer engine.freeValue(value);
+            const name = try get(engine, value, "name");
+            defer engine.freeValue(name);
+            const actual = try engine.toString(name);
+            defer engine.gpa.free(actual);
+            try std.testing.expectEqualStrings(item.object.get("name").?.string, actual);
+            const concrete = try get(engine, value, "colors");
+            defer engine.freeValue(concrete);
+            const names = try OwnNames.init(engine, concrete);
+            defer names.deinit();
+            try std.testing.expectEqual(@as(u32, @intCast(item.object.get("colors").?.integer)), names.length);
+        }
+    }
+}
+
+test "Source6fb strict Theme context admission retains absent flag rejects malformed and never validates constructors" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bindings = try @import("native_bindings.zig").Bindings.init(engine.gpa, engine);
+    defer bindings.deinit();
+    const partial = "{\"name\":\"partial\",\"colors\":{\"muted\":1,\"text\":\"\",\"thinkingXhigh\":2,\"selectedBg\":3}}";
+    try bindings.setContext("{\"strictThemeValidation\":true}");
+    try std.testing.expect(try strictFileValidation(engine));
+    try bindings.setContext("{}");
+    try std.testing.expect(try strictFileValidation(engine));
+    try std.testing.expectError(error.InvalidExtensionContext, bindings.setContext("{\"strictThemeValidation\":1}"));
+    try std.testing.expect(try strictFileValidation(engine));
+    const programmatic = try fromJson(engine, partial, null, .truecolor);
+    defer engine.freeValue(programmatic);
+    try std.testing.expectError(error.JavaScriptException, fromJsonWithValidation(engine, partial, "partial.json", .truecolor, true));
+    try bindings.setContext("{\"strictThemeValidation\":false}");
+    try std.testing.expect(!try strictFileValidation(engine));
+}
+
+fn strictAdmissionAllocationProbe(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const bindings = @import("native_bindings.zig").Bindings.init(gpa, engine) catch |err| return allocationError(engine, err);
+    defer bindings.deinit();
+    bindings.setContext("{\"strictThemeValidation\":true}") catch |err| return allocationError(engine, err);
+    const result = fromJsonWithValidation(engine, "{\"name\":\"partial\",\"colors\":{\"muted\":1,\"text\":\"\",\"thinkingXhigh\":2,\"selectedBg\":3}}", "partial.json", .truecolor, try strictFileValidation(engine)) catch |err| {
+        const mapped = allocationError(engine, err);
+        if (mapped != error.JavaScriptException) return mapped;
+        const message = get(engine, engine.captured_exception.?, "message") catch |failure| return allocationError(engine, failure);
+        defer engine.freeValue(message);
+        const text_ = engine.toString(message) catch |failure| return allocationError(engine, failure);
+        defer gpa.free(text_);
+        if (!std.mem.startsWith(u8, text_, "Invalid theme \"partial.json\":\n\nMissing required color tokens:")) return error.UnexpectedStrictThemeDiagnostic;
+        return;
+    };
+    engine.freeValue(result);
+    return error.StrictThemeAdmissionDidNotReject;
+}
+test "Source6fb strict Theme admission context file diagnostics and roots release all allocation failures" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, strictAdmissionAllocationProbe, .{});
 }
 
 fn allocationError(engine: *engine_mod.Engine, err: anyerror) anyerror {
