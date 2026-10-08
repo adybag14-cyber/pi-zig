@@ -7,8 +7,8 @@
   "root": "pi-zig",
   "complete_inventory": "FILES.sha256",
   "continuation": "UPSTREAM-UPDATE-20261003.md",
-  "file_count_excluding_FILES_sha256": 1479,
-  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 73397145,
+  "file_count_excluding_FILES_sha256": 1480,
+  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 73399247,
   "generated_catalog": {
     "models": 1653,
     "providers": 42,

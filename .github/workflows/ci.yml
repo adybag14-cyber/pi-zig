@@ -69,13 +69,15 @@ jobs:
 
       - name: Test
         shell: bash
-        timeout-minutes: 20
+        # This gate cold-compiles the complete test graph. Bound individual
+        # test execution as well as the whole build, as local qualification does.
+        timeout-minutes: 45
         run: |
           if [[ "${{ runner.os }}" == "macOS" ]]; then
             export PI_CODEMODE_ALLOCATION_SHARD=0
             export PI_CODEMODE_ALLOCATION_SHARDS=8
           fi
-          zig build test test-provider-contracts -j2 --summary all
+          zig build test test-provider-contracts -j2 --test-timeout 180s --summary all
 
       - name: Qualify macOS native environment lifecycle (ReleaseSafe)
         if: runner.os == 'macOS'
@@ -106,8 +108,11 @@ jobs:
           version: 0.16.0
           use-cache: false
       - name: Exhaustive codemode allocation shard
-        timeout-minutes: 10
+        # This target runs the two exhaustive ownership tests. The complete
+        # codemode, CLI and model suites still run in the OS matrix above.
+        # Allow cold compilation separately from the per-test hang deadline.
+        timeout-minutes: 20
         env:
           PI_CODEMODE_ALLOCATION_SHARD: ${{ matrix.shard }}
           PI_CODEMODE_ALLOCATION_SHARDS: "8"
-        run: zig build test-codemode -j2 --summary all
+        run: zig build test-codemode-allocation -j2 --test-timeout 180s --summary all

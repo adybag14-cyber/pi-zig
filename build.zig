@@ -623,6 +623,12 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"native codemode"},
     });
     linkQuickJs(b, codemode_tests.root_module, quickjs, sqlite_lib_dir);
+    const codemode_allocation_tests = b.addTest(.{
+        .root_module = codemode_tests.root_module,
+        .use_llvm = use_llvm,
+        .filters = &.{"native codemode allocation failures"},
+    });
+    b.step("test-codemode-allocation", "Exhaustively check codemode allocation ownership without repeating CLI and model suites").dependOn(&b.addRunArtifact(codemode_allocation_tests).step);
     const run_codemode_tests = b.addRunArtifact(codemode_tests);
     const codemode_step = b.step("test-codemode", "Exercise isolated native codemode user scripts and Zig host callbacks");
     const discovery_process_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/codemode_discovery_process_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });

@@ -1,0 +1,23 @@
+{
+  "status": "locally validated focused allocation target; hosted qualification pending",
+  "sourceHead": "565ea05599313be43b7bde4602b68b539611dbf8",
+  "failedHostedRun": 37853535682,
+  "failedHostedJob": 113572708753,
+  "failure": "ten-minute shard step timeout while running the complete codemode suite",
+  "change": "Dedicated test-codemode-allocation target filters both exhaustive allocation ownership tests; full codemode and CLI/model tests remain in the OS test matrix",
+  "allocationShards": 8,
+  "perTestDeadline": "180s",
+  "stepDeadlineMinutes": 20,
+  "localJob": "checkpoint210-dedicated-allocation-windows-debug-20261008",
+  "localResult": "7/7 build steps; 3/3 tests passed; shard 3/8 completed both ranges [757,1010)/2020 and [763,1017)/2035",
+  "stderrSha256": "CBDF3A29B68C62D72F061000E82BCA9796539C4E2F0F51590E76C444FF44751F",
+  "parityCertified": false,
+  "fullMatrixColdBuildDeadlineMinutes": 45,
+  "fullMatrixPerTestDeadline": "180s",
+  "fullMatrixTimeoutEvidence": [
+    "checkpoint210-hosted-ubuntu-565ea.log",
+    "checkpoint210-hosted-windows-565ea.log",
+    "checkpoint210-hosted-macos-565ea.log"
+  ],
+  "unresolvedMacAssertion": "registry replacement phase snapshots invoked a stale handler; repair under investigation before qualification"
+}
