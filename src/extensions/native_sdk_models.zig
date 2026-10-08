@@ -468,6 +468,38 @@ fn typedRequest(engine: *engine_mod.Engine, data: c.JSValue, model: c.JSValue, c
     return engine.awaitValue(pending);
 }
 
+pub fn throwError(engine: *engine_mod.Engine, code_text: []const u8, message_text: []const u8) !c.JSValue {
+    const exports = engine.native_module_values.get("pi-ai") orelse return error.NativeSDKModelModuleUnavailable;
+    const constructor = try sdk.get(engine, exports, "ModelsError");
+    defer engine.freeValue(constructor);
+    const code = try sdk.text(engine, code_text);
+    defer engine.freeValue(code);
+    const message = try sdk.text(engine, message_text);
+    defer engine.freeValue(message);
+    var arguments = [_]c.JSValue{ code, message };
+    const failure = try engine.checked(c.JS_CallConstructor(engine.context, constructor, arguments.len, &arguments));
+    defer engine.freeValue(failure);
+    return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, failure)));
+}
+pub fn assertChat(engine: *engine_mod.Engine, model: c.JSValue) !void {
+    const kind = try sdk.get(engine, model, "type");
+    defer engine.freeValue(kind);
+    const chat = try sdk.text(engine, "chat");
+    defer engine.freeValue(chat);
+    if (c.JS_IsUndefined(kind) or c.JS_IsStrictEqual(engine.context, kind, chat)) return;
+    const provider = try sdk.get(engine, model, "provider");
+    defer engine.freeValue(provider);
+    const id = try sdk.get(engine, model, "id");
+    defer engine.freeValue(id);
+    const p = try engine.toString(provider);
+    defer engine.gpa.free(p);
+    const m = try engine.toString(id);
+    defer engine.gpa.free(m);
+    const message = try std.fmt.allocPrint(engine.gpa, "Model {s}/{s} is not a chat model", .{ p, m });
+    defer engine.gpa.free(message);
+    const ignored = try throwError(engine, "provider", message);
+    engine.freeValue(ignored);
+}
 pub fn request(engine: *engine_mod.Engine, data: c.JSValue, model: c.JSValue, context: c.JSValue, input_options: c.JSValue, method: [*:0]const u8) !c.JSValue {
     const pending_auth = try resolveAuth(engine, data, model, input_options);
     defer engine.freeValue(pending_auth);
@@ -529,5 +561,16 @@ pub fn request(engine: *engine_mod.Engine, data: c.JSValue, model: c.JSValue, co
     defer engine.freeValue(catalog);
     const provider = try sdk.invoke(engine, catalog, "getProvider", &.{id});
     defer engine.freeValue(provider);
+    if (std.mem.eql(u8, std.mem.span(method), "fetchDeferred") or std.mem.eql(u8, std.mem.span(method), "cancelDeferred")) {
+        const implementation = try sdk.get(engine, provider, method);
+        defer engine.freeValue(implementation);
+        if (c.JS_ToBool(engine.context, implementation) != 1) {
+            const name = try engine.toString(id);
+            defer engine.gpa.free(name);
+            const message = try std.fmt.allocPrint(engine.gpa, "Provider {s} does not support deferred responses", .{name});
+            defer engine.gpa.free(message);
+            return throwError(engine, "provider", message);
+        }
+    }
     return sdk.invoke(engine, provider, method, &.{ request_model, context, options });
 }

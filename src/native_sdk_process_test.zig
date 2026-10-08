@@ -1,9 +1,20 @@
 const std = @import("std");
 const builtin = @import("builtin");
+test "native SDK private session contexts retain exact registry affinity and reject stale getters" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-private-context-models-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-private-context-models-6fb2e78.json"));
+}
+test "native SDK SettingsManager storage queue scoped merge trust failures reload and migration match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-settings-storage-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-settings-storage-6fb2e78.json"));
+}
 test "native SDK selected API version and current source lifecycle are independent of CLI certification" {
     try inputCase(@embedFile("extensions/fixtures/sdk-lifecycle-version-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-lifecycle-version-6fb2e78.json"));
 }
-
+test "native SDK SettingsManager getter facade defaults overrides mutations and isolation match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-settings-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-settings-6fb2e78.json"));
+}
+test "native SDK API streams and deferred fetch cancel auth and error contracts match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-stream-modes-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-stream-modes-6fb2e78.json"));
+}
 test "native SDK virtual session user continuation branch state and physical responses match source" {
     try inputCase(@embedFile("extensions/fixtures/sdk-virtual-session-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-virtual-session-6fb2e78.json"));
 }

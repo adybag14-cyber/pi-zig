@@ -63,7 +63,11 @@ pub const Engine = struct {
     native_durable_uuid_last_ms: u64 = 0,
     native_durable_uuid_sequence: ?u64 = null,
     native_sdk_model_bridge_registry: ?c.JSValue = null,
-    native_sdk_prototypes: [6]?c.JSValue = .{null} ** 6,
+    native_sdk_model_bridge_lease_class: c.JSClassID = 0,
+    native_sdk_next_session_generation: u64 = 1,
+    native_sdk_prototypes: [7]?c.JSValue = .{null} ** 7,
+    native_weak_ref_constructor: ?c.JSValue = null,
+    native_weak_ref_deref: ?c.JSValue = null,
     native_console_stdout: bool = false,
     text_encoder_class: c.JSClassID = 0,
     text_decoder_class: c.JSClassID = 0,
@@ -109,22 +113,40 @@ pub const Engine = struct {
         c.JS_SetMemoryLimit(runtime, options.memory_limit);
         c.JS_SetMaxStackSize(runtime, options.stack_limit);
         const context = c.JS_NewContext(runtime) orelse return error.OutOfMemory;
+        errdefer c.JS_FreeContext(context);
         const commonjs_cache = c.JS_NewObjectProto(context, c.pi_js_null());
         if (c.JS_IsException(commonjs_cache)) {
-            c.JS_FreeContext(context);
             return error.OutOfMemory;
         }
+        errdefer c.JS_FreeValue(context, commonjs_cache);
         self.* = .{ .gpa = gpa, .runtime = runtime, .context = context, .options = options, .commonjs_cache = commonjs_cache };
         c.JS_SetContextOpaque(context, self);
         c.JS_SetRuntimeOpaque(runtime, self);
         c.JS_SetInterruptHandler(runtime, interrupt, self);
         c.JS_SetModuleLoaderFunc(runtime, null, moduleLoader, self);
+        // Capture pristine intrinsics before any extension input executes.
+        // Lease affinity must not depend on mutable globals/prototypes.
+        const global = c.JS_GetGlobalObject(context);
+        defer self.freeValue(global);
+        const weak_ctor = c.JS_GetPropertyStr(context, global, "WeakRef");
+        const weak_proto = c.JS_GetPropertyStr(context, weak_ctor, "prototype");
+        defer self.freeValue(weak_proto);
+        const weak_deref = c.JS_GetPropertyStr(context, weak_proto, "deref");
+        if (c.JS_IsException(weak_ctor) or c.JS_IsException(weak_proto) or c.JS_IsException(weak_deref)) {
+            self.freeValue(weak_ctor);
+            self.freeValue(weak_deref);
+            return error.OutOfMemory;
+        }
+        self.native_weak_ref_constructor = weak_ctor;
+        self.native_weak_ref_deref = weak_deref;
         return self;
     }
 
     pub fn deinit(self: *Engine) void {
         self.closeDurableOwner();
         for (self.native_sdk_prototypes) |prototype| if (prototype) |value| self.freeValue(value);
+        if (self.native_weak_ref_constructor) |value| self.freeValue(value);
+        if (self.native_weak_ref_deref) |value| self.freeValue(value);
         c.JS_FreeAtom(self.context, self.event_stream_async_atom);
         if (self.host_scheduler_deinit) |cleanup| cleanup(self);
         if (self.captured_exception) |exception| self.freeValue(exception);

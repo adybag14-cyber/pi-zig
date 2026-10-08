@@ -49,7 +49,7 @@ pub fn merge(engine: *engine_mod.Engine, base: c.JSValue, changed: c.JSValue) !c
     }
     return result;
 }
-fn definition(engine: *engine_mod.Engine, rows: c.JSValue, id: c.JSValue, kind: c.JSValue) !c.JSValue {
+pub fn definition(engine: *engine_mod.Engine, rows: c.JSValue, id: c.JSValue, kind: c.JSValue) !c.JSValue {
     if (!c.JS_IsArray(rows)) return c.pi_js_undefined();
     for (0..try sdk.length(engine, rows)) |index| {
         const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, @intCast(index)));
