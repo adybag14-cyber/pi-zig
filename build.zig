@@ -916,6 +916,13 @@ pub fn build(b: *std.Build) void {
     native_input_step.dependOn(&check_unicode_width.step);
     test_step.dependOn(&run_native_input_tests.step);
     test_step.dependOn(&check_unicode_width.step);
+    const sdk_session_files_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_files_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"SDK session files"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_session_files_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, sdk_session_files_tests.root_module);
+    sdk_session_files_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const sdk_session_files_run = b.addRunArtifact(sdk_session_files_tests);
+    b.step("test-sdk-session-files", "Exercise Source file session open repair persistence and allocation ownership").dependOn(&sdk_session_files_run.step);
+    test_step.dependOn(&sdk_session_files_run.step);
     const run_binding_tests = b.addRunArtifact(binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
     const cursor_boundary_tests = b.addTest(.{
