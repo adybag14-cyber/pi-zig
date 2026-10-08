@@ -9,6 +9,7 @@ test {
     _ = @import("extensions/native_durable_observation.zig");
     _ = @import("extensions/native_durable_state.zig");
     _ = @import("durable/backend/sqlite_source.zig");
+    _ = @import("extensions/native_durable_registry.zig");
 }
 test "native durable VM stores owned numeric records and serves source ordered cursors without Node" {
     const engine = try engine_module.Engine.init(std.testing.allocator, .{});
@@ -927,4 +928,177 @@ test "native durable VM checkpoint predicates run after final Runtime state vali
     const text = try engine.toString(result);
     defer std.testing.allocator.free(text);
     try std.testing.expectEqualStrings("{\"status\":\"completed\",\"result\":{\"failed\":true,\"calls\":0,\"value\":{\"n\":1}}}", text);
+}
+
+test "native durable VM registry core publishes stable snapshots retains code identity and rejects collisions atomically" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    // Executable input task tokens supply the Registry core's injected builtin lane.
+    // This fixture does not certify production builtin workflows.
+    const builtins = try engine.eval("['pi.generation','pi.tool','pi.compaction'].map(name=>({definition:{name,version:1,initial(){return{phase:'go'}},phases:{go(){}},abort(){}}}))", "registry-builtin-token-input-fixture", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(builtins);
+    const registry = try @import("extensions/native_durable_registry.zig").create(engine, builtins);
+    defer engine.freeValue(registry);
+    const global = engine_module.c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "registry", engine_module.c.JS_DupValue(engine.context, registry));
+    errdefer std.debug.print("Registry core VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\const first=registry.snapshot(),events=[],listener=()=>events.push(registry.snapshot().installed().map(e=>e.name));registry.subscribe(listener);registry.subscribe(listener);
+        \\const schema={type:'object',[Symbol.for('fixture.schema')]:true},tool={name:'echo',parameters:schema,execute:()=>7},section={key:'details',render:()=>''},task={definition:{name:'fixture.task',version:1,initial:()=>({phase:'go'}),phases:{go(){}},abort(){}}},extension={name:'fixture',tools:[tool],sections:[section],tasks:[task]};
+        \\registry.install(extension);const second=registry.snapshot(),same=second===registry.snapshot(),identity=second.extension('fixture')===extension&&second.task('fixture.task')===task&&second.tools()[0].tool===tool&&second.tools()[0].tool.parameters===schema&&second.sections()[0].section===section;let collision;try{registry.install({name:'conflict',tasks:[task]})}catch(error){collision=error.message}const unchanged=registry.snapshot()===second;
+        \\const replacement={name:'fixture',tools:[{name:'echo',parameters:schema,execute:()=>8}]};registry.install(replacement);registry.uninstall({name:'missing'});const third=registry.snapshot();registry.uninstall(extension);const builtinNames=registry.snapshot().tasks().map(task=>task.definition.name);globalThis.result=JSON.stringify({first:first.installed().length,same,identity,collision,unchanged,old:first!==second&&second.extension('fixture')===extension,replaced:third.extension('fixture')===replacement,events,builtinNames});
+    , "native-durable-registry-core");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"first\":0,\"same\":true,\"identity\":true,\"collision\":\"Task fixture.task of extension conflict is already installed\",\"unchanged\":true,\"old\":true,\"replaced\":true,\"events\":[[\"fixture\"],[\"fixture\"],[]],\"builtinNames\":[\"pi.generation\",\"pi.tool\",\"pi.compaction\"]}", text);
+}
+
+test "native durable VM public registry helpers retain unrestricted callbacks schemas and hook references" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const output = try engine.evalModule(
+        \\import {defineTask,defineExtension,defineTool,section,hook,wrapTool,wrapSection} from '@earendil-works/pi-durable';
+        \\const callback=()=>17,schema={type:'object',[Symbol.for('fixture.schema')]:true},tool={name:'tool',parameters:schema,execute:callback},extension={name:'extension',tools:[tool]},task=defineTask({name:'task',version:1,initial:()=>({phase:'go'}),phases:{go:callback},abort:callback}),handlers={before:callback},one=section('details',callback),two=section('plain',callback,{tag:false}),registered=hook(task,handlers),wrappedTool=wrapTool(tool,callback),wrappedSection=wrapSection('details',callback);
+        \\globalThis.result=JSON.stringify({tool:defineTool(tool)===tool,extension:defineExtension(extension)===extension,schema:defineTool(tool).parameters===schema,section:one.render===callback&&!Object.hasOwn(one,'tag'),tag:two.tag,hook:registered.task==='task'&&registered.handlers===handlers,wrapTool:wrappedTool.tool==='tool'&&wrappedTool.wrap===callback,wrapSection:wrappedSection.section==='details'&&wrappedSection.wrap===callback});
+    , "native-durable-registry-helpers");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"tool\":true,\"extension\":true,\"schema\":true,\"section\":true,\"tag\":false,\"hook\":true,\"wrapTool\":true,\"wrapSection\":true}", text);
+}
+
+test "native durable VM public AgentDoc configure normalizes extension names clears nulls and retains fork history" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Agent configure VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {createSession,MemoryStorage,AgentDoc,configure,defineExtension,defineTool} from '@earendil-works/pi-durable';
+        \\const session=createSession(new MemoryStorage()),extension=defineExtension({name:'fixture',hooks:[{handlers:{cycle:null}}]}),tool=defineTool({name:'echo',execute:()=>1});extension.hooks[0].handlers.cycle=extension;let root,anchor;
+        \\await session.commit(async tx=>{root=await tx.createRootConversation();await configure(tx,root.id,{model:{provider:'fixture',modelId:'model'},thinkingLevel:'low',extensions:[extension],tools:[tool],instructions:'first',cwd:'/Ω'});anchor=await tx.appendEntry(root.id,{kind:'anchor'})},{});
+        \\const first=await session.snapshot(AgentDoc,root.id,{});await session.commit(async tx=>{await configure(tx,root.id,{model:null,thinkingLevel:undefined,extensions:{add:[extension],remove:[]},tools:{remove:[tool]},instructions:null})},{});const second=await session.snapshot(AgentDoc,root.id,{}),historical=await session.snapshotAsOf(AgentDoc,root.id,anchor.id,{});await session.close({});globalThis.result=JSON.stringify({first,second,historical});
+    , "native-durable-agent-configure");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"first\":{\"model\":{\"provider\":\"fixture\",\"modelId\":\"model\"},\"thinkingLevel\":\"low\",\"extensions\":[\"fixture\"],\"tools\":[\"echo\"],\"instructions\":\"first\",\"cwd\":\"/Ω\"},\"second\":{\"thinkingLevel\":\"low\",\"extensions\":{\"add\":[\"fixture\"],\"remove\":[]},\"tools\":{\"remove\":[\"echo\"]},\"cwd\":\"/Ω\"},\"historical\":{\"model\":{\"provider\":\"fixture\",\"modelId\":\"model\"},\"thinkingLevel\":\"low\",\"extensions\":[\"fixture\"],\"tools\":[\"echo\"],\"instructions\":\"first\",\"cwd\":\"/Ω\"}}", text);
+}
+
+test "native durable VM Runtime settings merge defaults preserve explicit undefined and remain passive after end" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Runtime settings VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineTask,DEFAULT_RETRY_POLICY,DEFAULT_COMPACTION_POLICY,DEFAULT_PROGRESS_POLICY} from '@earendil-works/pi-durable';
+        \\let retained;const Task=defineTask({name:'fixture.settings',version:1,initial:()=>({phase:'go'}),phases:{go:async(task,runtime,context)=>{retained=runtime;await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:runtime.settings}}),context)}},abort:async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context)}),extension={name:'fixture'},settings={extensions:[extension],stream:{temperature:0},retry:{maxRetries:undefined},compaction:{reserveTokens:99},progress:{partialIntervalMs:undefined,outputIntervalMs:0},toolExecution:'sequential',contextRetentionMs:0};
+        \\const registry={subscribe(){return()=>{}},snapshot(){return{task(name){return name===Task.definition.name?Task:{definition:{name}}},tasks(){return[Task]},installed(){return[]},sections(){return[]},tools(){return[]}}}},harness=await Harness.open(new MemoryStorage(),{registry,models:{},settings},{}),root=await harness.root({}),id=await root.commit(tx=>tx.createTask(Task,{},{ownership:{kind:'conversation'}}),{}),done=await harness.waitForTask(id,{});await root.waitForIdle({});const first=retained.settings,second=retained.settings;const output={result:done.state.outcome.result,settings:first,fresh:first!==second,extension:first.extensions[0]===extension,undefined:Object.hasOwn(first.retry,'maxRetries')&&first.retry.maxRetries===undefined,defaults:{retry:DEFAULT_RETRY_POLICY,compaction:DEFAULT_COMPACTION_POLICY,progress:DEFAULT_PROGRESS_POLICY}};await harness.close({});globalThis.result=JSON.stringify(output);
+    , "native-durable-runtime-settings");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"result\":{\"extensions\":[{\"name\":\"fixture\"}],\"stream\":{\"temperature\":0},\"retry\":{\"enabled\":true,\"baseDelayMs\":2000,\"maxAgentDelayMs\":60000},\"compaction\":{\"enabled\":true,\"reserveTokens\":99,\"keepRecentTokens\":20000,\"backgroundTokens\":32768},\"progress\":{\"partialIntervalMs\":100,\"outputIntervalMs\":0},\"toolExecution\":\"sequential\",\"steeringMode\":\"one-at-a-time\",\"followUpMode\":\"one-at-a-time\",\"contextRetentionMs\":0},\"settings\":{\"extensions\":[{\"name\":\"fixture\"}],\"stream\":{\"temperature\":0},\"retry\":{\"enabled\":true,\"baseDelayMs\":2000,\"maxAgentDelayMs\":60000},\"compaction\":{\"enabled\":true,\"reserveTokens\":99,\"keepRecentTokens\":20000,\"backgroundTokens\":32768},\"progress\":{\"partialIntervalMs\":100,\"outputIntervalMs\":0},\"toolExecution\":\"sequential\",\"steeringMode\":\"one-at-a-time\",\"followUpMode\":\"one-at-a-time\",\"contextRetentionMs\":0},\"fresh\":true,\"extension\":true,\"undefined\":true,\"defaults\":{\"retry\":{\"enabled\":true,\"maxRetries\":3,\"baseDelayMs\":2000,\"maxAgentDelayMs\":60000},\"compaction\":{\"enabled\":true,\"reserveTokens\":16384,\"keepRecentTokens\":20000,\"backgroundTokens\":32768},\"progress\":{\"partialIntervalMs\":100,\"outputIntervalMs\":100}}}", text);
+}
+
+test "native durable VM public agent selections wrappers cached phase resolution and mutable policy defaults match source" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer {
+        const step = engine.eval("globalThis.stage", "stage", engine_module.c.JS_EVAL_TYPE_GLOBAL) catch unreachable;
+        defer engine.freeValue(step);
+        const value = engine.toString(step) catch unreachable;
+        defer std.testing.allocator.free(value);
+        std.debug.print("Agent resolution VM failure at {s}: {s}\n", .{ value, engine.last_error orelse "no VM diagnostic" });
+    }
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineTask,DEFAULT_PROGRESS_POLICY,DEFAULT_RETRY_POLICY,configure} from '@earendil-works/pi-durable';
+        \\const events=[],reports=[],schema={type:'object'},one={name:'echo',parameters:schema,execute:()=>1},two={name:'echo',parameters:schema,execute:()=>2},gone={name:'gone',parameters:schema,execute:()=>3};
+        \\const a={name:'a',tools:[one,gone],sections:[{key:'base',render:()=> 'a'}]},b={name:'b',tools:[two],sections:[{key:'base',render:()=> 'b'}]},w={name:'w',wraps:[{tool:'echo',wrap(tool){events.push(['wrap',this===w.wraps[0],tool===two]);return {...tool,execute:()=>tool.execute()+10}}},{tool:'gone',wrap(){throw new Error('drop gone')}},{section:'base',wrap(section){return {...section,key:'renamed'}}},{tool:'absent',wrap(){throw new Error('unused')}}]};
+        \\let retained;
+        \\const Task=defineTask({name:'fixture.agent',version:1,initial:()=>({phase:'go'}),phases:{go:async(task,runtime,context)=>{retained=runtime;const first=await runtime.agent(context);await runtime.commit(async tx=>{await configure(tx,runtime.conversationId,{instructions:'later'})},context);const second=await runtime.agent(context);await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:{same:first===second,instructions:second.instructions,tool:second.tools[0].execute()}}}),context)}},abort:async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context)});
+        \\const extensions=[a,b,w],builtins=['pi.generation','pi.tool','pi.compaction'].map(name=>({definition:{name}})),tasks=[...builtins,Task];let current={installed:()=>extensions,extension:name=>extensions.find(e=>e.name===name),tools:()=>[],sections:()=>[],tasks:()=>[Task],task:name=>tasks.find(t=>t.definition.name===name)};const registry={subscribe(){return()=>{}},snapshot(){return current}};
+        \\const harness=await Harness.open(new MemoryStorage(),{registry,models:{},onReport:error=>reports.push(error.message)},{}),root=await harness.root({});
+        \\globalThis.stage="configure";await root.configure({extensions:[b,a,b,w],tools:[gone,one,one],instructions:'hello',model:{provider:'p',modelId:'m'},cwd:'/Ω'},{});
+        \\globalThis.stage="initial";const initial=await root.agent({});
+        \\await root.configure({extensions:{add:[b,w],remove:[a]},tools:null,instructions:'phase'},{});
+        \\globalThis.stage="selected";const selected=await root.agent({}),id=await root.commit(tx=>tx.createTask(Task,{},{ownership:{kind:'conversation'}}),{}),done=await harness.waitForTask(id,{});await root.waitForIdle({});
+        \\const later=await root.agent({});DEFAULT_PROGRESS_POLICY.partialIntervalMs=17;DEFAULT_PROGRESS_POLICY.extra=99;DEFAULT_RETRY_POLICY.maxRetries=8;const dynamic=retained.settings;await new Promise(resolve=>{if(retained.signal.aborted)resolve();else retained.signal.addEventListener('abort',resolve,{once:true})});let ended;try{await retained.agent({})}catch(error){ended={name:error.name,message:error.message===`Task ${id} invocation has ended`}}await harness.close({});
+        \\globalThis.result=JSON.stringify({initial:{extensions:initial.extensions.map(e=>e.name),tools:initial.tools.map(t=>t.name),tool:initial.tools[0].execute(),sections:initial.sections.map(s=>s.key),render:initial.sections.at(-1).render(),thinking:initial.thinkingLevel,model:initial.model,cwd:initial.cwd},selected:{extensions:selected.extensions.map(e=>e.name),tools:selected.tools.map(t=>t.name)},done:done.state.outcome.result,later:later.instructions,events,reports,dynamic:{progress:dynamic.progress,retry:dynamic.retry.maxRetries},ended});
+        \\
+        \\
+    , "native-durable-agent-resolution-source");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"initial\":{\"extensions\":[\"b\",\"a\",\"w\"],\"tools\":[\"echo\"],\"tool\":11,\"sections\":[\"instructions\"],\"render\":\"hello\",\"thinking\":\"off\",\"model\":{\"provider\":\"p\",\"modelId\":\"m\"},\"cwd\":\"/Ω\"},\"selected\":{\"extensions\":[\"b\",\"w\"],\"tools\":[\"echo\"]},\"done\":{\"same\":true,\"instructions\":\"phase\",\"tool\":12},\"later\":\"later\",\"events\":[[\"wrap\",true,false],[\"wrap\",true,true],[\"wrap\",true,true],[\"wrap\",true,true]],\"reports\":[\"drop gone\",\"Wrapper renamed base to renamed\",\"Wrapper renamed base to renamed\",\"Wrapper renamed base to renamed\",\"Wrapper renamed base to renamed\"],\"dynamic\":{\"progress\":{\"partialIntervalMs\":17,\"outputIntervalMs\":100},\"retry\":8},\"ended\":{\"name\":\"Error\",\"message\":true}}", text);
+}
+
+test "native durable VM runtime hooks await selected handlers bind receivers report errors and env reads committed cwd" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Runtime hooks env VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineTask,configure} from '@earendil-works/pi-durable';
+        \\const order=[],reports=[],trace={},envs=[];let retained,harness;
+        \\const one={label:'one',async before(value){await Promise.resolve();order.push([this===one,value]);return 7}},two={before(){throw trace}},three={before:'ignored',after(){order.push('after')}};
+        \\const Task=defineTask({name:'fixture.hooks',version:1,initial:()=>({phase:'go'}),phases:{go:async(task,runtime,context)=>{retained=runtime;await runtime.hooks.each('before',handler=>handler('call'));await runtime.hooks.each('after',handler=>handler());const first=await runtime.env(context);await runtime.commit(async tx=>{await configure(tx,runtime.conversationId,{cwd:'/next'})},context);const second=await runtime.env(context);await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:{first:first.cwd,second:second.cwd,same:first===second}}}),context)}},abort:async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context)});
+        \\const extension={name:'hooks',hooks:[{task:'fixture.other',handlers:two},{task:Task.definition.name,handlers:one},{task:Task.definition.name,handlers:two},{task:Task.definition.name,handlers:three}]},builtins=['pi.generation','pi.tool','pi.compaction'].map(name=>({definition:{name}})),registry={subscribe(){return()=>{}},snapshot(){return{installed:()=>[extension],extension:name=>name===extension.name?extension:undefined,tasks:()=>[Task],task:name=>name===Task.definition.name?Task:builtins.find(t=>t.definition.name===name)}}};
+        \\harness=await Harness.open(new MemoryStorage(),{registry,models:{},onReport:error=>reports.push(error===trace),env:async(request,context)=>{envs.push({id:request.conversationId,cwd:request.cwd,read:request.read===harness,signal:context.abortSignal instanceof AbortSignal});await Promise.resolve();return{cwd:request.cwd}}},{});
+        \\const root=await harness.root({}, {agent:{cwd:'/first'}}),id=await root.commit(tx=>tx.createTask(Task,{},{ownership:{kind:'conversation'}}),{}),done=await harness.waitForTask(id,{});await root.waitForIdle({});await new Promise(resolve=>{if(retained.signal.aborted)resolve();else retained.signal.addEventListener('abort',resolve,{once:true})});let ended;try{await retained.hooks.each('before',handler=>handler('late'))}catch(error){ended=error.message===`Task ${id} invocation has ended`}await harness.close({});globalThis.result=JSON.stringify({order,reports,envs,done:done.state.outcome.result,ended});
+        \\
+        \\
+    , "native-durable-runtime-hooks-env-source");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"order\":[[true,\"call\"],\"after\"],\"reports\":[true],\"envs\":[{\"id\":1,\"cwd\":\"/first\",\"read\":true,\"signal\":true},{\"id\":1,\"cwd\":\"/next\",\"read\":true,\"signal\":true}],\"done\":{\"first\":\"/first\",\"second\":\"/next\",\"same\":false},\"ended\":true}", text);
+}
+
+test "native durable VM committed context derives cutoff edits resets fork visibility tool order and runtime immutability" {
+    const engine = try engine_module.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    errdefer std.debug.print("Context view VM failure: {s}\n", .{engine.last_error orelse "no VM diagnostic"});
+    const output = try engine.evalModule(
+        \\import {Harness,MemoryStorage,defineTask} from '@earendil-works/pi-durable';
+        \\const summarize=view=>({keys:Object.keys(view),kinds:view.entries.map(e=>e.kind),head:view.head?.kind,contributions:view.contributions.map(m=>m.map(x=>x.role)),messages:view.messages.map(m=>({role:m.role,content:m.content,toolCallId:m.toolCallId,details:m.details})),frozen:view.entries.every(Object.isFrozen)&&view.contributions.every(c=>Object.isFrozen(c)&&c.every(Object.isFrozen)),outer:!Object.isFrozen(view.entries)&&!Object.isFrozen(view.messages),alias:view.contributions.flat().every(m=>view.messages.includes(m)||m.role==='toolResult')});
+        \\const Task=defineTask({name:'fixture.context',version:1,initial:()=>({phase:'go'}),phases:{go:async(task,runtime,context)=>{const view=await runtime.context(runtime.conversationId,context),same=await runtime.context(runtime.conversationId,context);await runtime.commit(async tx=>{await tx.appendEntry(runtime.conversationId,{kind:'added',model:[{role:'user',content:'added',timestamp:10}]})},context);const extended=await runtime.context(runtime.conversationId,context);await runtime.commit(async tx=>{await tx.appendEntry(runtime.conversationId,{kind:'omit',edits:[{target:view.entries[0].id,action:'omit'}]})},context);const edited=await runtime.context(runtime.conversationId,context),backward=await runtime.context(runtime.conversationId,context,{at:view.entries.at(-1).id});await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:{view:summarize(view),sameEntry:view.entries[0]===same.entries[0],sameMessage:view.messages[0]===same.messages[0],sameContribution:view.contributions[0]===same.contributions[0],extendedEntry:view.entries[0]===extended.entries[0],extendedContribution:view.contributions[0]===extended.contributions[0],editedContribution:edited.contributions[0]!==extended.contributions[0],edited:summarize(edited),backward:summarize(backward)}}}),context)}},abort:async(task,runtime,context)=>runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),context)}),builtins=['pi.generation','pi.tool','pi.compaction'].map(name=>({definition:{name}})),registry={subscribe(){return()=>{}},snapshot(){return{installed:()=>[],extension(){},tasks:()=>[Task],task:name=>name===Task.definition.name?Task:builtins.find(t=>t.definition.name===name)}}};
+        \\const harness=await Harness.open(new MemoryStorage(),{registry,models:{}},{}),root=await harness.root({}),empty=summarize(await root.context({}));let user,assistant,tail;
+        \\await root.commit(async tx=>{user=await tx.appendEntry(root.id,{kind:'pi.user',model:[{role:'user',content:'first',timestamp:1}]});assistant=await tx.appendEntry(root.id,{kind:'pi.assistant',model:[{role:'assistant',content:[{type:'toolCall',id:'a',name:'echo',arguments:{}},{type:'toolCall',id:'b',name:'echo',arguments:{}}],stopReason:'toolUse',timestamp:2}]});await tx.appendEntry(root.id,{kind:'pi.tool-result',model:[{role:'toolResult',toolCallId:'b',toolName:'echo',content:[{type:'text',text:'B'}],isError:false,timestamp:3}]});await tx.appendEntry(root.id,{kind:'pi.tool-result',model:[{role:'toolResult',toolCallId:'a',toolName:'echo',content:[{type:'text',text:'A'}],isError:false,timestamp:4}]});await tx.appendEntry(root.id,{kind:'orphan',model:[{role:'toolResult',toolCallId:'x',toolName:'echo',content:[],isError:false,timestamp:5}]});await tx.appendEntry(root.id,{kind:'error',model:[{role:'assistant',content:[],stopReason:'error',timestamp:6}]});tail=await tx.appendEntry(root.id,{kind:'edit',edits:[{target:user.id,action:'replace',messages:[{role:'user',content:'edited',timestamp:7}]}]})},{});
+        \\const cutoff=summarize(await root.context({}, {at:assistant.id})),full=summarize(await root.context({}));const fork=await root.fork(assistant.id,{ownership:{kind:'ownerless'}},{}),forked=summarize(await fork.context({}));
+        \\await root.commit(async tx=>{await tx.appendEntry(root.id,{kind:'reset',head:'self',model:[{role:'user',content:'new',timestamp:8}]});await tx.appendEntry(root.id,{kind:'system',model:[{role:'system',content:'instructions',timestamp:9}]})},{});const reset=summarize(await root.context({})),id=await root.commit(tx=>tx.createTask(Task,{},{ownership:{kind:'conversation'}}),{}),done=await harness.waitForTask(id,{});await root.waitForIdle({});let invalid;try{await root.context({}, {at:99999})}catch(error){invalid=error.message===`Entry 99999 is not visible from conversation ${root.id}`}await harness.close({});globalThis.result=JSON.stringify({empty,cutoff,full,forked,reset,runtime:done.state.outcome.result,invalid});
+        \\
+        \\
+    , "native-durable-context-view-source");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-durable-result", engine_module.c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer std.testing.allocator.free(text);
+    try std.testing.expectEqualStrings("{\"empty\":{\"keys\":[\"head\",\"entries\",\"contributions\",\"messages\"],\"kinds\":[],\"contributions\":[],\"messages\":[],\"frozen\":true,\"outer\":true,\"alias\":true},\"cutoff\":{\"keys\":[\"head\",\"entries\",\"contributions\",\"messages\"],\"kinds\":[\"pi.user\",\"pi.assistant\"],\"contributions\":[[\"user\"],[\"assistant\"]],\"messages\":[{\"role\":\"user\",\"content\":\"first\"},{\"role\":\"assistant\",\"content\":[{\"type\":\"toolCall\",\"id\":\"a\",\"name\":\"echo\",\"arguments\":{}},{\"type\":\"toolCall\",\"id\":\"b\",\"name\":\"echo\",\"arguments\":{}}]},{\"role\":\"toolResult\",\"content\":[{\"type\":\"text\",\"text\":\"Tool result unavailable: history ends before this call completed.\"}],\"toolCallId\":\"a\",\"details\":{\"reason\":\"missing_result\"}},{\"role\":\"toolResult\",\"content\":[{\"type\":\"text\",\"text\":\"Tool result unavailable: history ends before this call completed.\"}],\"toolCallId\":\"b\",\"details\":{\"reason\":\"missing_result\"}}],\"frozen\":false,\"outer\":true,\"alias\":true},\"full\":{\"keys\":[\"head\",\"entries\",\"contributions\",\"messages\"],\"kinds\":[\"pi.user\",\"pi.assistant\",\"pi.tool-result\",\"pi.tool-result\",\"orphan\",\"error\",\"edit\"],\"contributions\":[[\"user\"],[\"assistant\"],[\"toolResult\"],[\"toolResult\"],[\"toolResult\"],[],[]],\"messages\":[{\"role\":\"user\",\"content\":\"edited\"},{\"role\":\"assistant\",\"content\":[{\"type\":\"toolCall\",\"id\":\"a\",\"name\":\"echo\",\"arguments\":{}},{\"type\":\"toolCall\",\"id\":\"b\",\"name\":\"echo\",\"arguments\":{}}]},{\"role\":\"toolResult\",\"content\":[{\"type\":\"text\",\"text\":\"A\"}],\"toolCallId\":\"a\"},{\"role\":\"toolResult\",\"content\":[{\"type\":\"text\",\"text\":\"B\"}],\"toolCallId\":\"b\"}],\"frozen\":false,\"outer\":true,\"alias\":true},\"forked\":{\"keys\":[\"head\",\"entries\",\"contributions\",\"messages\"],\"kinds\":[\"pi.user\",\"pi.assistant\"],\"contributions\":[[\"user\"],[\"assistant\"]],\"messages\":[{\"role\":\"user\",\"content\":\"first\"},{\"role\":\"assistant\",\"content\":[{\"type\":\"toolCall\",\"id\":\"a\",\"name\":\"echo\",\"arguments\":{}},{\"type\":\"toolCall\",\"id\":\"b\",\"name\":\"echo\",\"arguments\":{}}]},{\"role\":\"toolResult\",\"content\":[{\"type\":\"text\",\"text\":\"Tool result unavailable: history ends before this call completed.\"}],\"toolCallId\":\"a\",\"details\":{\"reason\":\"missing_result\"}},{\"role\":\"toolResult\",\"content\":[{\"type\":\"text\",\"text\":\"Tool result unavailable: history ends before this call completed.\"}],\"toolCallId\":\"b\",\"details\":{\"reason\":\"missing_result\"}}],\"frozen\":false,\"outer\":true,\"alias\":true},\"reset\":{\"keys\":[\"head\",\"entries\",\"contributions\",\"messages\"],\"kinds\":[\"reset\",\"system\"],\"head\":\"reset\",\"contributions\":[[\"user\"],[\"system\"]],\"messages\":[{\"role\":\"system\",\"content\":\"instructions\"},{\"role\":\"user\",\"content\":\"new\"}],\"frozen\":false,\"outer\":true,\"alias\":true},\"runtime\":{\"view\":{\"keys\":[\"head\",\"entries\",\"contributions\",\"messages\"],\"kinds\":[\"reset\",\"system\"],\"head\":\"reset\",\"contributions\":[[\"user\"],[\"system\"]],\"messages\":[{\"role\":\"system\",\"content\":\"instructions\"},{\"role\":\"user\",\"content\":\"new\"}],\"frozen\":true,\"outer\":true,\"alias\":true},\"sameEntry\":true,\"sameMessage\":true,\"sameContribution\":true,\"extendedEntry\":true,\"extendedContribution\":true,\"editedContribution\":true,\"edited\":{\"keys\":[\"head\",\"entries\",\"contributions\",\"messages\"],\"kinds\":[\"reset\",\"system\",\"added\",\"omit\"],\"head\":\"reset\",\"contributions\":[[],[\"system\"],[\"user\"],[]],\"messages\":[{\"role\":\"system\",\"content\":\"instructions\"},{\"role\":\"user\",\"content\":\"added\"}],\"frozen\":true,\"outer\":true,\"alias\":true},\"backward\":{\"keys\":[\"head\",\"entries\",\"contributions\",\"messages\"],\"kinds\":[\"reset\",\"system\"],\"head\":\"reset\",\"contributions\":[[\"user\"],[\"system\"]],\"messages\":[{\"role\":\"system\",\"content\":\"instructions\"},{\"role\":\"user\",\"content\":\"new\"}],\"frozen\":true,\"outer\":true,\"alias\":true}},\"invalid\":true}", text);
 }

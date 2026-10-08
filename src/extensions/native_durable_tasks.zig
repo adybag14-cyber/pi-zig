@@ -35,8 +35,8 @@ const Entry = struct {
         }
     }
 };
-const Runtime = struct { entry: *Entry, session: c.JSValue, signal: c.JSValue, context: c.JSValue };
-const RuntimeMethod = enum(c_int) { getTask, outcomes, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc };
+const Runtime = struct { entry: *Entry, session: c.JSValue, signal: c.JSValue, context: c.JSValue, agent: c.JSValue, snapshot: c.JSValue };
+const RuntimeMethod = enum(c_int) { getTask, outcomes, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc, agent, env, context };
 const Waiter = struct { id: ?u64, conversation: ?u64, resolve: c.JSValue, reject: c.JSValue, context: c.JSValue };
 const Signal = struct { entry: *Entry, value: c.JSValue, context: c.JSValue };
 pub const Manager = struct {
@@ -57,6 +57,7 @@ pub const Manager = struct {
     waiters: std.ArrayList(Waiter) = .empty,
     signals: std.ArrayList(Signal) = .empty,
     watches: std.ArrayList(struct { entry: *Entry, value: c.JSValue }) = .empty,
+    contexts: std.AutoHashMapUnmanaged(u64, ?@import("native_durable_context_view.zig").Cache) = .empty,
     next_invocation: u64 = 1,
     generation: u64,
     refs: std.atomic.Value(usize) = .init(1),
@@ -132,6 +133,7 @@ pub const Manager = struct {
         self.waiters.deinit(self.engine.gpa);
         self.signals.deinit(self.engine.gpa);
         self.watches.deinit(self.engine.gpa);
+        self.contexts.deinit(self.engine.gpa);
         self.lease.release();
         self.engine.gpa.destroy(self);
     }
@@ -380,6 +382,9 @@ pub const Manager = struct {
     pub fn close(self: *Manager) void {
         if (self.closed) return;
         self.closed = true;
+        var contexts = self.contexts.valueIterator();
+        while (contexts.next()) |slot| if (slot.*) |cached| self.engine.freeValue(cached.view);
+        self.contexts.clearRetainingCapacity();
         for (self.watches.items) |watch| {
             if (sdk.invoke(self.engine, watch.value, "stop", &.{})) |stopped| self.engine.freeValue(stopped) else |_| {}
             self.engine.freeValue(watch.value);
@@ -644,6 +649,8 @@ fn runtimeFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void 
     c.JS_FreeValueRT(runtime, self.session);
     c.JS_FreeValueRT(runtime, self.signal);
     c.JS_FreeValueRT(runtime, self.context);
+    c.JS_FreeValueRT(runtime, self.agent);
+    c.JS_FreeValueRT(runtime, self.snapshot);
     self.entry.release();
     engine.gpa.destroy(self);
 }
@@ -653,6 +660,8 @@ fn runtimeMark(runtime: ?*c.JSRuntime, value: c.JSValue, mark: ?*const c.JS_Mark
     c.JS_MarkValue(runtime, self.session, mark);
     c.JS_MarkValue(runtime, self.signal, mark);
     c.JS_MarkValue(runtime, self.context, mark);
+    c.JS_MarkValue(runtime, self.agent, mark);
+    c.JS_MarkValue(runtime, self.snapshot, mark);
 }
 fn runtimeObject(self: *Manager, entry: *Entry, record: json.Value) !c.JSValue {
     const engine = self.engine;
@@ -682,14 +691,35 @@ fn runtimeObject(self: *Manager, entry: *Entry, record: json.Value) !c.JSValue {
     try sdk.put(engine, object, "signal", c.JS_DupValue(engine.context, signal));
     try sdk.put(engine, object, "taskId", c.JS_NewInt64(engine.context, @intCast(entry.runtime.taskId())));
     try sdk.put(engine, object, "conversationId", c.JS_NewInt64(engine.context, @intCast(try json.asInteger(try json.required(record, "conversationId")))));
-    try sdk.put(engine, object, "registry", c.JS_DupValue(engine.context, self.snapshot));
+    const registry_atom = c.JS_NewAtom(engine.context, "registry");
+    defer c.JS_FreeAtom(engine.context, registry_atom);
+    var registry_data = [_]c.JSValue{self.snapshot};
+    const registry_getter = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeRegistryGetter, 0, 0, registry_data.len, &registry_data));
+    if (c.JS_DefinePropertyGetSet(engine.context, object, registry_atom, registry_getter, c.pi_js_undefined(), c.JS_PROP_ENUMERABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     try sdk.put(engine, object, "models", try sdk.get(engine, self.options, "models"));
+    const settings_atom = c.JS_NewAtom(engine.context, "settings");
+    defer c.JS_FreeAtom(engine.context, settings_atom);
+    const settings_getter = try engine.checked(c.JS_NewCFunction(engine.context, runtimeSettingsGetter, "get settings", 0));
+    if (c.JS_DefinePropertyGetSet(engine.context, object, settings_atom, settings_getter, c.pi_js_undefined(), c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
     try sdk.put(engine, object, "commit", try engine.checked(c.JS_NewCFunction(engine.context, runtimeCommit, "commit", 2)));
+    const hooks = try sdk.object(engine);
+    defer engine.freeValue(hooks);
+    var hook_data = [_]c.JSValue{object};
+    try sdk.put(engine, hooks, "each", try engine.checked(c.JS_NewCFunctionData(engine.context, hooksEach, 2, 0, hook_data.len, &hook_data)));
+    try sdk.put(engine, object, "hooks", c.JS_DupValue(engine.context, hooks));
     inline for (std.meta.fields(RuntimeMethod)) |operation| try sdk.put(engine, object, operation.name, try engine.checked(c.pi_js_function_magic(engine.context, runtimeMethod, operation.name, 2, @intCast(operation.value))));
-    runtime.* = .{ .entry = entry.retain(), .session = c.JS_DupValue(engine.context, self.session), .signal = signal, .context = invocation_context };
+    runtime.* = .{ .entry = entry.retain(), .session = c.JS_DupValue(engine.context, self.session), .signal = signal, .context = invocation_context, .agent = c.pi_js_undefined(), .snapshot = c.JS_DupValue(engine.context, self.snapshot) };
     _ = c.JS_SetOpaque(object, runtime);
     if (!existing) self.signals.appendAssumeCapacity(.{ .entry = entry.retain(), .value = c.JS_DupValue(engine.context, signal), .context = c.JS_DupValue(engine.context, invocation_context) });
     return object;
+}
+fn runtimeRegistryGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    return c.JS_DupValue(context, data[0]);
+}
+fn runtimeSettingsGetter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const self = runtimeState(engine, receiver) orelse return durable.reject(engine, error.InvalidTaskRuntime);
+    return @import("native_durable_agent.zig").runtimeSettings(engine, self.entry.manager.options) catch |err| durable.reject(engine, err);
 }
 fn active(self: *Runtime) !void {
     if (!self.entry.runtime.isActive() or self.entry.manager.closed) {
@@ -719,6 +749,41 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
     const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
     try active(self);
     const owner = self.entry.manager;
+    if (operation == .env) {
+        const build = try sdk.get(engine, owner.options, "env");
+        defer engine.freeValue(build);
+        if (c.JS_IsUndefined(build)) return sdk.promise(engine, c.pi_js_undefined());
+        const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+        const token = try sdk.get(engine, exports, "AgentDoc");
+        defer engine.freeValue(token);
+        const id = c.JS_NewInt64(engine.context, @intCast(try runtimeConversation(engine, self)));
+        defer engine.freeValue(id);
+        const context = if (args.len == 0) c.pi_js_undefined() else args[0];
+        const pending = try @import("native_durable_documents.zig").snapshot(engine, self.session, &.{ token, id, context });
+        defer engine.freeValue(pending);
+        var captures = [_]c.JSValue{ receiver, build, id, context };
+        const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeEnvResolved, 1, 0, captures.len, &captures));
+        defer engine.freeValue(callback);
+        return sdk.invoke(engine, pending, "then", &.{callback});
+    }
+    if (operation == .agent) {
+        if (c.JS_IsUndefined(self.agent)) {
+            var record = (try owner.lease.value.storage.readTableRecord(engine.gpa, .task, self.entry.runtime.taskId())) orelse return error.UnknownTask;
+            defer record.deinit();
+            const id = try durable.jsValue(engine, try json.required(record.value, "conversationId"));
+            defer engine.freeValue(id);
+            // Resolution uses the snapshot admitted for this phase, even if a
+            // later registry publication refreshes the manager before first use.
+            const pending = try @import("native_durable_agent.zig").resolveConversation(engine, self.session, owner.options, id, self.snapshot, self.context);
+            errdefer engine.freeValue(pending);
+            const ignored = try engine.checked(c.JS_NewCFunction(engine.context, ignoreAgentFailure, "observe-agent-failure", 0));
+            defer engine.freeValue(ignored);
+            const observed = try sdk.invoke(engine, pending, "catch", &.{ignored});
+            engine.freeValue(observed);
+            self.agent = pending;
+        }
+        return @import("native_durable_context.zig").awaitWithContext(engine, self.agent, if (args.len == 0) c.pi_js_undefined() else args[0]);
+    }
     if (operation == .snapshot or operation == .snapshotAsOf or operation == .watchDoc) {
         const session = try durable.state(engine, self.session);
         const pending = try durable.sessionDispatch(session, self.session, switch (operation) {
@@ -751,6 +816,131 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
     const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeReadQueued, 0, @intFromEnum(operation), data.len, &data));
     defer engine.freeValue(callback);
     return durable.enqueue(engine, self.session, callback);
+}
+fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    return c.pi_js_undefined();
+}
+fn runtimeConversation(engine: *Engine, runtime: *Runtime) !u64 {
+    var record = (try runtime.entry.manager.lease.value.storage.readTableRecord(engine.gpa, .task, runtime.entry.runtime.taskId())) orelse return error.UnknownTask;
+    defer record.deinit();
+    return @intCast(try json.asInteger(try json.required(record.value, "conversationId")));
+}
+fn runtimeEnvResolved(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return runtimeEnvResolvedOwned(engine, if (argc == 0) c.pi_js_undefined() else argv[0], data) catch |err| durable.reject(engine, err);
+}
+fn runtimeEnvResolvedOwned(engine: *Engine, state: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
+    const runtime = runtimeState(engine, data[0]) orelse return error.InvalidTaskRuntime;
+    try active(runtime);
+    try durable.checkCancellation(engine, data[3]);
+    const request = try sdk.object(engine);
+    defer engine.freeValue(request);
+    try sdk.put(engine, request, "conversationId", c.JS_DupValue(engine.context, data[2]));
+    if (!c.JS_IsUndefined(state)) {
+        const cwd = try sdk.get(engine, state, "cwd");
+        defer engine.freeValue(cwd);
+        if (!c.JS_IsUndefined(cwd)) try sdk.put(engine, request, "cwd", c.JS_DupValue(engine.context, cwd));
+    }
+    const native = try durable.state(engine, runtime.session);
+    try sdk.put(engine, request, "read", c.JS_DupValue(engine.context, native.creation_owner.?));
+    var arguments = [_]c.JSValue{ request, data[3] };
+    return engine.checked(c.JS_Call(engine.context, data[1], c.pi_js_undefined(), arguments.len, &arguments));
+}
+fn hooksEach(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return hooksEachOwned(engine, data[0], argv[0..@intCast(argc)]) catch |err| durable.rejectedPromise(engine, err);
+}
+fn hooksEachOwned(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    const runtime = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
+    const agent = try runtimeMethodOwned(engine, receiver, .agent, &.{runtime.context});
+    defer engine.freeValue(agent);
+    var captures = [_]c.JSValue{ receiver, if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined() };
+    const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, hooksSelected, 1, 0, captures.len, &captures));
+    defer engine.freeValue(callback);
+    return sdk.invoke(engine, agent, "then", &.{callback});
+}
+fn hooksSelected(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return hooksSelectedOwned(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), data) catch |err| durable.reject(engine, err);
+}
+fn hooksSelectedOwned(engine: *Engine, agent: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
+    const runtime = runtimeState(engine, data[0]) orelse return error.InvalidTaskRuntime;
+    const definition = try sdk.get(engine, runtime.entry.manager.definitions.items[runtime.entry.definition].token, "definition");
+    defer engine.freeValue(definition);
+    const task_name = try sdk.get(engine, definition, "name");
+    defer engine.freeValue(task_name);
+    const handlers = try sdk.array(engine);
+    defer engine.freeValue(handlers);
+    const extensions = try sdk.get(engine, agent, "extensions");
+    defer engine.freeValue(extensions);
+    for (0..try sdk.length(engine, extensions)) |index| {
+        const extension = try engine.checked(c.JS_GetPropertyUint32(engine.context, extensions, @intCast(index)));
+        defer engine.freeValue(extension);
+        const hooks = try sdk.get(engine, extension, "hooks");
+        defer engine.freeValue(hooks);
+        if (c.JS_IsUndefined(hooks)) continue;
+        for (0..try sdk.length(engine, hooks)) |hook_index| {
+            const hook = try engine.checked(c.JS_GetPropertyUint32(engine.context, hooks, @intCast(hook_index)));
+            defer engine.freeValue(hook);
+            const name = try sdk.get(engine, hook, "task");
+            defer engine.freeValue(name);
+            if (c.JS_IsStrictEqual(engine.context, name, task_name)) try sdk.append(engine, handlers, try sdk.get(engine, hook, "handlers"));
+        }
+    }
+    return hooksNext(engine, data[0], data[1], data[2], handlers, 0);
+}
+fn hooksNext(engine: *Engine, receiver: c.JSValue, name: c.JSValue, invoke: c.JSValue, handlers: c.JSValue, start: usize) anyerror!c.JSValue {
+    var index = start;
+    while (index < try sdk.length(engine, handlers)) : (index += 1) {
+        const handler = try engine.checked(c.JS_GetPropertyUint32(engine.context, handlers, @intCast(index)));
+        defer engine.freeValue(handler);
+        const key = try engine.toString(name);
+        defer engine.gpa.free(key);
+        const atom = c.JS_NewAtomLen(engine.context, key.ptr, key.len);
+        defer c.JS_FreeAtom(engine.context, atom);
+        const callback = try engine.checked(c.JS_GetProperty(engine.context, handler, atom));
+        defer engine.freeValue(callback);
+        if (!c.JS_IsFunction(engine.context, callback)) continue;
+        const bound = try sdk.invoke(engine, callback, "bind", &.{handler});
+        defer engine.freeValue(bound);
+        var arguments = [_]c.JSValue{bound};
+        const raw = c.JS_Call(engine.context, invoke, c.pi_js_undefined(), 1, &arguments);
+        const pending = if (c.JS_IsException(raw)) blk: {
+            _ = engine.checked(raw) catch {};
+            break :blk durable.rejectedPromise(engine, error.JavaScriptException);
+        } else blk: {
+            defer engine.freeValue(raw);
+            break :blk try sdk.promise(engine, raw);
+        };
+        defer engine.freeValue(pending);
+        var captures = [_]c.JSValue{ receiver, name, invoke, handlers, c.JS_NewInt64(engine.context, @intCast(index + 1)) };
+        const fulfilled = try engine.checked(c.JS_NewCFunctionData(engine.context, hooksSettled, 1, 0, captures.len, &captures));
+        defer engine.freeValue(fulfilled);
+        const rejected = try engine.checked(c.JS_NewCFunctionData(engine.context, hooksSettled, 1, 1, captures.len, &captures));
+        defer engine.freeValue(rejected);
+        return sdk.invoke(engine, pending, "then", &.{ fulfilled, rejected });
+    }
+    return c.pi_js_undefined();
+}
+fn hooksSettled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, rejected: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return hooksSettledOwned(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), rejected != 0, data) catch |err| durable.reject(engine, err);
+}
+fn hooksSettledOwned(engine: *Engine, failure: c.JSValue, rejected: bool, data: [*c]c.JSValue) !c.JSValue {
+    if (rejected) {
+        const runtime = runtimeState(engine, data[0]) orelse return error.InvalidTaskRuntime;
+        const aborted = try sdk.get(engine, runtime.signal, "aborted");
+        defer engine.freeValue(aborted);
+        if (c.JS_ToBool(engine.context, aborted) != 0) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, failure)));
+        const report = try sdk.get(engine, runtime.entry.manager.options, "onReport");
+        defer engine.freeValue(report);
+        if (!c.JS_IsUndefined(report)) {
+            var args = [_]c.JSValue{failure};
+            const ignored = try engine.checked(c.JS_Call(engine.context, report, c.pi_js_undefined(), 1, &args));
+            engine.freeValue(ignored);
+        }
+    }
+    return hooksNext(engine, data[0], data[1], data[2], data[3], @intCast(try durable.number(engine, data[4])));
 }
 fn runtimeWatchAdopted(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
@@ -785,6 +975,15 @@ fn runtimeReadOwned(engine: *Engine, receiver: c.JSValue, args: c.JSValue, opera
     const context = try engine.checked(c.JS_GetPropertyUint32(engine.context, args, context_index));
     defer engine.freeValue(context);
     try durable.checkCancellation(engine, context);
+    if (operation == .context) {
+        const options = try engine.checked(c.JS_GetPropertyUint32(engine.context, args, 2));
+        defer engine.freeValue(options);
+        const at = if (c.JS_IsUndefined(options)) c.pi_js_undefined() else try sdk.get(engine, options, "at");
+        defer engine.freeValue(at);
+        const slot = try owner.contexts.getOrPut(engine.gpa, try durable.number(engine, first));
+        if (!slot.found_existing) slot.value_ptr.* = null;
+        return @import("native_durable_context_view.zig").read(engine, self.session, first, context, at, slot.value_ptr);
+    }
     const store = owner.lease.value.storage;
     if (operation == .getTask) {
         var record = (try store.readTableRecord(engine.gpa, .task, try durable.number(engine, first))) orelse return c.pi_js_undefined();
@@ -927,7 +1126,31 @@ pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c
     return promise;
 }
 fn settleWaiters(self: *Manager) !void {
+    // Scheduler.idle acquires the native Session line. A worker can be waiting
+    // for the owner to finish a transaction, so inspect only after it exits.
     if (self.thread != null) return;
+    if (!self.closed and self.contexts.count() != 0) {
+        try self.updateClock();
+        const now = Manager.nativeClock(self);
+        const settings = try @import("native_durable_agent.zig").runtimeSettings(self.engine, self.options);
+        defer self.engine.freeValue(settings);
+        const retention_value = try sdk.get(self.engine, settings, "contextRetentionMs");
+        defer self.engine.freeValue(retention_value);
+        var retention: f64 = 0;
+        if (c.JS_ToFloat64(self.engine.context, &retention, retention_value) < 0) return error.JavaScriptException;
+        var contexts = self.contexts.iterator();
+        while (contexts.next()) |entry| if (entry.value_ptr.*) |*cached| {
+            const expired = if (cached.idle_since) |since| @as(f64, @floatFromInt(now - since)) >= retention else false;
+            if (expired or (retention <= 0 and try self.scheduler.idle(entry.key_ptr.*))) {
+                self.engine.freeValue(cached.view);
+                entry.value_ptr.* = null;
+            } else if (!try self.scheduler.idle(entry.key_ptr.*)) {
+                cached.idle_since = null;
+            } else if (cached.idle_since == null) {
+                cached.idle_since = now;
+            }
+        };
+    }
     var index = self.waiters.items.len;
     while (index > 0) {
         index -= 1;

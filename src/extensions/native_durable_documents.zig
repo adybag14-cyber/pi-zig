@@ -165,8 +165,18 @@ pub const Drafts = struct {
         const tx = self.owner.transaction.?;
         if (std.Thread.getCurrentId() != tx.ownerThread) return error.VMCallbackOnWorker;
         for (self.items.items) |doc| {
-            const write_index = doc.write_index orelse continue;
-            const content = tx.writes.array.items[write_index].object.getPtr("content").?;
+            if (doc.write_index == null) continue;
+            const doc_id = try json.asInteger(try json.required(doc.record.value, "id"));
+            var matched: ?*json.Value = null;
+            for (tx.writes.array.items) |*write| {
+                const tag = try json.asString(try json.required(write.*, "type"));
+                if (!std.mem.eql(u8, tag, "document.change")) continue;
+                if (try json.asInteger(try json.required(write.*, "id")) == doc_id) {
+                    matched = write.object.getPtr("content");
+                    break;
+                }
+            }
+            const content = matched orelse continue;
             if (!std.mem.eql(u8, try json.asString(try json.required(content.*, "kind")), "delta")) continue;
             const predicate = try sdk.get(engine, doc.definition, "checkpointWhen");
             defer engine.freeValue(predicate);

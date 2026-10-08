@@ -321,6 +321,8 @@ pub fn install(engine: *Engine) !void {
     try sdk.put(engine, exports, "MemoryStorage", c.JS_DupValue(engine.context, ctor));
     try sdk.put(engine, exports, "createSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createSession", 1)));
     try @import("native_durable_harness.zig").install(engine, exports);
+    try @import("native_durable_registry.zig").installHelpers(engine, exports);
+    try @import("native_durable_agent.zig").install(engine, exports);
     try @import("native_durable_tasks.zig").defineTask(engine, exports);
     try @import("native_durable_documents.zig").install(engine, exports);
     if (!engine.native_module_names.contains("@earendil-works/pi-durable")) try engine.registerValueModule("@earendil-works/pi-durable", exports);
