@@ -961,6 +961,15 @@ pub fn build(b: *std.Build) void {
         tui_word_step.dependOn(&check.step);
         test_step.dependOn(&check.step);
     }
+    const native_list_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_list_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Source6fb public SelectList"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, native_list_tests.root_module, quickjs, sqlite_lib_dir);
+    const run_native_list_tests = b.addRunArtifact(native_list_tests);
+    b.step("test-native-lists", "Replay Source public SelectList and SettingsList callbacks layout and lifecycle").dependOn(&run_native_list_tests.step);
+    test_step.dependOn(&run_native_list_tests.step);
     const native_input_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_input_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{ "Source6fb public Input", "native JS UTF16" },

@@ -413,6 +413,35 @@ test "native MouseRegion real terminal pointer ACK precedes keyboard capture cro
     }
 }
 
+test "Source6fb public SelectList SettingsList real native modal filters changes delegates submenu and restores both terminal modes" {
+    if (!pty.supported()) return error.SkipZigTest;
+    for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
+        var fixture = try Fixture.init(mode);
+        defer fixture.deinit();
+        const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+        defer errors.close(std.testing.io);
+        const source =
+            \\import{SelectList,SettingsList,Input}from'pi-tui';export default pi=>pi.registerCommand('lists-proof',{async handler(_,ctx){const result=await ctx.ui.custom((tui,theme,keys,done)=>{let stage='select',selection='alpha',changed='none';const listTheme={selectedText:x=>x,description:x=>x,scrollInfo:x=>x,noMatch:x=>x},select=new SelectList([{value:'alpha',label:'Alpha'},{value:'beta',label:'Beta'}],2,listTheme),settingsTheme={cursor:'→ ',label:x=>x,value:x=>x,description:x=>x,hint:x=>x};let settings;const items=[{id:'alpha',label:'Alpha',currentValue:'one',values:['one','two']},{id:'beta',label:'Beta',currentValue:'one',values:['one','two'],description:'Native settings description with wrapped words'},{id:'sub',label:'Submenu',currentValue:'old',submenu(value,close){const input=new Input({prompt:'SUBMENU_NATIVE:'});input.setValue(value);input.onSubmit=value=>close(value);input.onEscape=()=>close();return input}}];settings=new SettingsList(items,3,settingsTheme,(id,value)=>{changed=id+':'+value},()=>done({selection,beta:items[1].currentValue,sub:items[2].currentValue,query:settings.searchInput.getValue()}),{enableSearch:true});select.onSelectionChange=item=>{selection=item.value};select.onSelect=item=>{selection=item.value;stage='settings'};select.onCancel=()=>done(null);return{render(width){return stage==='select'?['LIST_SELECT:'+selection,...select.render(width)]:['LIST_SETTINGS:'+changed,...settings.render(width)]},handleInput(data){(stage==='select'?select:settings).handleInput(data);tui.requestRender()},handleMouse(event){return(stage==='select'?select:settings).handleMouse(event)},invalidate(){select.invalidate();settings.invalidate()}}},{overlay:true,overlayOptions:{width:60,height:15,row:4,col:5}});return{message:'LISTS_DONE:'+JSON.stringify(result)}}})
+        ;
+        var child = try fixture.spawnExtension(errors, source);
+        defer child.deinit();
+        var observed = try Observer.init();
+        defer observed.deinit();
+        try observed.waitInitialStartup(&child, ">");
+        try observed.send(&child, "/lists-proof\r", "LIST_SELECT:alpha");
+        try observed.send(&child, "\x1b[B", "LIST_SELECT:beta");
+        try observed.send(&child, "\r", "LIST_SETTINGS:none");
+        try observed.send(&child, "bet", "> bet");
+        try observed.send(&child, "\r", "LIST_SETTINGS:beta:two");
+        try observed.send(&child, "\x15sub", "> sub");
+        try observed.send(&child, "\r", "SUBMENU_NATIVE:old");
+        try observed.send(&child, "\x05\x15chosen\r", "LIST_SETTINGS:sub:chosen");
+        try observed.send(&child, "\x1b", "LISTS_DONE:{\"selection\":\"beta\",\"beta\":\"two\",\"sub\":\"chosen\",\"query\":\"sub\"}");
+        try observed.send(&child, "after-lists-proof", "> after-lists-proof");
+        try cleanExit(&fixture, &child, &observed);
+    }
+}
+
 test "Source6fb public Input real native word modifiers preserve all dictionary scripts and restoration" {
     if (!pty.supported()) return error.SkipZigTest;
     const gpa = std.testing.allocator;

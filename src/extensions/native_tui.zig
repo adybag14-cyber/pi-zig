@@ -386,7 +386,7 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
     return result;
 }
 
-const Helper = enum(c_int) { visibleWidth, matchesKey, parseKey, isKeyRelease, isKeyRepeat, decodePrintableKey, decodeKittyPrintable, setKittyProtocolActive, isKittyProtocolActive, truncateToWidth, renderFakeCursor };
+const Helper = enum(c_int) { visibleWidth, matchesKey, parseKey, isKeyRelease, isKeyRepeat, decodePrintableKey, decodeKittyPrintable, setKittyProtocolActive, isKittyProtocolActive, truncateToWidth, wrapTextWithAnsi, renderFakeCursor };
 fn helperCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
     return helper(engine, @enumFromInt(magic), if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
@@ -411,18 +411,35 @@ fn helper(engine: *engine_mod.Engine, method: Helper, args: []c.JSValue) !c.JSVa
         const width = try @import("../tui/utf16_terminal.zig").visibleWidth(engine.gpa, units);
         return engine.checked(c.JS_NewInt64(engine.context, @intCast(width)));
     }
+    if (method == .wrapTextWithAnsi) {
+        const units = try @import("native_utf16.zig").unitsAlloc(engine, args[0]);
+        defer engine.gpa.free(units);
+        var width: f64 = 0;
+        if (c.JS_ToFloat64(engine.context, &width, if (args.len > 1) args[1] else c.pi_js_undefined()) < 0) return @import("native_js_values.zig").capture(engine);
+        const lines = try @import("native_utf16_wrap.zig").wrap(engine, units, width);
+        defer {
+            for (lines) |line| engine.gpa.free(line);
+            engine.gpa.free(lines);
+        }
+        const result = try @import("native_js_values.zig").array(engine);
+        errdefer engine.freeValue(result);
+        for (lines, 0..) |line, index| if (c.JS_SetPropertyUint32(engine.context, result, @intCast(index), try @import("native_utf16.zig").string(engine, line)) < 0) return @import("native_js_values.zig").capture(engine);
+        return result;
+    }
+    if (method == .truncateToWidth) {
+        const units = try @import("native_utf16.zig").unitsAlloc(engine, args[0]);
+        defer engine.gpa.free(units);
+        var width: f64 = 0;
+        if (c.JS_ToFloat64(engine.context, &width, if (args.len > 1) args[1] else c.pi_js_undefined()) < 0) return @import("native_js_values.zig").capture(engine);
+        const ellipsis = if (args.len > 2 and !c.JS_IsUndefined(args[2])) try @import("native_utf16.zig").unitsAlloc(engine, args[2]) else try engine.gpa.dupe(u16, std.unicode.utf8ToUtf16LeStringLiteral("..."));
+        defer engine.gpa.free(ellipsis);
+        const clipped = try @import("../tui/utf16_terminal.zig").truncateOptionsAlloc(engine.gpa, units, width, ellipsis, args.len > 3 and c.JS_ToBool(engine.context, args[3]) != 0);
+        defer engine.gpa.free(clipped);
+        return @import("native_utf16.zig").string(engine, clipped);
+    }
     const text = try engine.toString(args[0]);
     defer engine.gpa.free(text);
     return switch (method) {
-        .truncateToWidth => blk: {
-            const width = try count(engine, if (args.len > 1) args[1] else c.pi_js_undefined(), false);
-            if (width == 0) break :blk try engine.checked(c.JS_NewString(engine.context, ""));
-            const ellipsis = if (args.len > 2 and !c.JS_IsUndefined(args[2])) try engine.toString(args[2]) else try engine.gpa.dupe(u8, "...");
-            defer engine.gpa.free(ellipsis);
-            const clipped = try terminal_text.truncateAlloc(engine.gpa, text, width, .{ .ellipsis = ellipsis, .pad = args.len > 3 and c.JS_ToBool(engine.context, args[3]) != 0 });
-            defer engine.gpa.free(clipped);
-            break :blk try engine.checked(c.JS_NewStringLen(engine.context, clipped.ptr, clipped.len));
-        },
         .matchesKey => blk: {
             if (args.len < 2 or !c.JS_IsString(args[1])) return error.InvalidNativeTuiKey;
             const name = try engine.toString(args[1]);
@@ -472,13 +489,16 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try @import("native_mouse.zig").install(engine, exports);
     try @import("native_keybindings.zig").install(engine, exports);
     try @import("native_input.zig").install(engine, exports);
+    try @import("native_select_list.zig").install(engine, exports);
+    try @import("native_fuzzy.zig").install(engine, exports);
+    try @import("native_settings_list.zig").install(engine, exports);
     try define(engine, exports, "CURSOR_MARKER", try engine.checked(c.JS_NewString(engine.context, @import("../tui/cursor_markers.zig").cursor)));
     const array_is_array = try components.arrayPredicate(engine);
     defer engine.freeValue(array_is_array);
     inline for (std.meta.fields(Helper)) |field| {
         const name: [:0]const u8 = field.name;
         const arity: c_int = switch (@as(Helper, @enumFromInt(field.value))) {
-            .matchesKey, .truncateToWidth => 2,
+            .matchesKey, .truncateToWidth, .wrapTextWithAnsi => 2,
             .isKittyProtocolActive => 0,
             else => 1,
         };
