@@ -5,25 +5,31 @@ const sdk = @import("native_sdk.zig");
 const models = @import("native_sdk_models.zig");
 const engine_mod = @import("engine.zig");
 const c = engine_mod.c;
+pub const Mode = enum(c_int) { simple, api, deferred };
 
 pub fn stream(engine: *engine_mod.Engine, runtime: c.JSValue, data: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    return streamMode(engine, runtime, data, args, .simple);
+}
+pub fn streamMode(engine: *engine_mod.Engine, runtime: c.JSValue, data: c.JSValue, args: []const c.JSValue, mode: Mode) !c.JSValue {
     if (args.len < 2) return error.NativeSDKMissingArgument;
     const exports = engine.native_module_values.get("pi-ai") orelse return error.NativeSDKModelModuleUnavailable;
     const output = try sdk.invoke(engine, exports, "createAssistantMessageEventStream", &.{});
     errdefer engine.freeValue(output);
-    var task = [_]c.JSValue{ runtime, data, args[0], args[1], if (args.len > 2) args[2] else c.pi_js_undefined(), output };
+    var task = [_]c.JSValue{ runtime, data, args[0], args[1], if (args.len > 2) args[2] else c.pi_js_undefined(), output, c.JS_NewInt32(engine.context, @intFromEnum(mode)) };
     if (c.JS_EnqueueJob(engine.context, startJob, task.len, &task) < 0) return error.OutOfMemory;
     return output;
 }
 fn startJob(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
-    start(engine, args[0], args[1], args[2], args[3], args[4], args[5]) catch |err| {
+    var mode: i32 = 0;
+    if (c.JS_ToInt32(context, &mode, args[6]) < 0) return sdk.fail(engine, error.JavaScriptException);
+    start(engine, args[0], args[1], args[2], args[3], args[4], args[5], @enumFromInt(mode)) catch |err| {
         finishError(engine, args[2], args[5], err) catch |failure| return retireFailure(engine, args[5], failure);
     };
     return c.pi_js_undefined();
 }
-fn start(engine: *engine_mod.Engine, runtime: c.JSValue, data: c.JSValue, model: c.JSValue, context: c.JSValue, options: c.JSValue, output: c.JSValue) !void {
-    if (try @import("native_sdk_virtual.zig").isVirtual(engine, model)) {
+fn start(engine: *engine_mod.Engine, runtime: c.JSValue, data: c.JSValue, model: c.JSValue, context: c.JSValue, options: c.JSValue, output: c.JSValue, mode: Mode) !void {
+    if (mode == .simple and try @import("native_sdk_virtual.zig").isVirtual(engine, model)) {
         const route_options = try sdk.object(engine);
         defer engine.freeValue(route_options);
         try sdk.put(engine, route_options, "reason", try sdk.text(engine, "direct"));
@@ -64,14 +70,10 @@ fn start(engine: *engine_mod.Engine, runtime: c.JSValue, data: c.JSValue, model:
         var maximum: f64 = 0;
         if (c.JS_ToFloat64(engine.context, &requested_budget, budget) < 0 or c.JS_ToFloat64(engine.context, &maximum, limit) < 0) return error.JavaScriptException;
         if (c.JS_ToBool(engine.context, budget) == 1 and maximum > 0) try sdk.put(engine, routed_options, "maxTokens", c.JS_NewFloat64(engine.context, @min(requested_budget, maximum)));
-        return start(engine, runtime, data, target, context, routed_options, output);
+        return start(engine, runtime, data, target, context, routed_options, output, mode);
     }
-    const kind = try sdk.get(engine, model, "type");
-    defer engine.freeValue(kind);
-    const chat = try sdk.text(engine, "chat");
-    defer engine.freeValue(chat);
-    if (!c.JS_IsUndefined(kind) and !c.JS_IsStrictEqual(engine.context, kind, chat)) return error.NativeSDKNotChatModel;
-    const source = try models.request(engine, data, model, context, options, "streamSimple");
+    try models.assertChat(engine, model);
+    const source = try models.request(engine, data, model, context, options, if (mode == .api) "stream" else if (mode == .deferred) "fetchDeferred" else "streamSimple");
     defer engine.freeValue(source);
     const settled = try engine.awaitValue(source);
     defer engine.freeValue(settled);
@@ -81,6 +83,30 @@ fn start(engine: *engine_mod.Engine, runtime: c.JSValue, data: c.JSValue, model:
     const iterator = try engine.checked(c.JS_Call(engine.context, iterator_fn, settled, 0, null));
     defer engine.freeValue(iterator);
     try pull(engine, runtime, model, output, iterator);
+}
+pub fn cancel(engine: *engine_mod.Engine, data: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    if (args.len < 2) return error.NativeSDKMissingArgument;
+    var capture = [_]c.JSValue{ data, args[0], args[1], if (args.len > 2) args[2] else c.pi_js_undefined() };
+    const begin = try engine.checked(c.JS_NewCFunctionData2(engine.context, cancelCallback, "sdkCancelDeferred", 1, 0, capture.len, &capture));
+    defer engine.freeValue(begin);
+    const start_promise = try sdk.promise(engine, c.pi_js_undefined());
+    defer engine.freeValue(start_promise);
+    return sdk.invoke(engine, start_promise, "then", &.{begin});
+}
+fn cancelCallback(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, magic: c_int, capture: [*c]c.JSValue) callconv(.c) c.JSValue {
+    if (magic == 1) return c.pi_js_undefined();
+    const engine = engine_mod.Engine.fromContext(context.?);
+    return cancelRequest(engine, capture) catch |err| sdk.fail(engine, err);
+}
+fn cancelRequest(engine: *engine_mod.Engine, capture: [*c]c.JSValue) !c.JSValue {
+    try models.assertChat(engine, capture[1]);
+    const operation = try models.request(engine, capture[0], capture[1], capture[2], capture[3], "cancelDeferred");
+    defer engine.freeValue(operation);
+    const pending = try sdk.promise(engine, operation);
+    defer engine.freeValue(pending);
+    const done = try engine.checked(c.JS_NewCFunctionData2(engine.context, cancelCallback, "sdkDeferredCancelled", 1, 1, 0, null));
+    defer engine.freeValue(done);
+    return sdk.invoke(engine, pending, "then", &.{done});
 }
 fn pull(engine: *engine_mod.Engine, runtime: c.JSValue, model: c.JSValue, output: c.JSValue, iterator: c.JSValue) !void {
     const pending = try sdk.invoke(engine, iterator, "next", &.{});

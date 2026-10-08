@@ -64,6 +64,12 @@ const State = struct {
             if (operation == .classify) if (json.get(items[1], "state")) |state| {
                 if (json.get(state, "reason")) |reason| try result.value.object.put(a, "stopReason", try json.clone(a, reason));
                 if (json.get(state, "error")) |message| try result.value.object.put(a, "errorMessage", try json.clone(a, message));
+                if (json.get(state, "markers")) |markers| if (markers == .bool and markers.bool) {
+                    try result.value.object.put(a, "__pi_codemode_error", .{ .string = "ordinary model data" });
+                    var nested: json.Value = .{ .object = .empty };
+                    try nested.object.put(a, "nested", .{ .bool = true });
+                    try result.value.object.put(a, "__pi_codemode_value", nested);
+                };
             };
             return result;
         }
@@ -107,7 +113,7 @@ test "native codemode models adapter matches complete upstream execution usage s
     const gpa = std.testing.allocator;
     var captured = try json.Owned.parse(gpa, @embedFile("mcp/fixtures/codemode-models-original-6fb.json"));
     defer captured.deinit();
-    var full = try json.Owned.parse(gpa, @embedFile("mcp/fixtures/codemode-models-execute-original-6fb.json"));
+    var full = try json.Owned.parse(gpa, @embedFile("mcp/fixtures/codemode-models-metadata-original-6fb.json"));
     defer full.deinit();
     const adapter = @import("mcp/codemode_tool.zig");
     const Probe = struct {

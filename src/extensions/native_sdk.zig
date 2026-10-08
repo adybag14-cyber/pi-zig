@@ -2,7 +2,7 @@
 const std = @import("std");
 const engine_mod = @import("engine.zig");
 const c = engine_mod.c;
-const Kind = enum(c_int) { session_manager, settings_manager, resource_loader, model_runtime, agent_session, session_runtime };
+const Kind = enum(c_int) { session_manager, settings_manager, resource_loader, model_runtime, agent_session, session_runtime, model_registry };
 pub const State = struct {
     engine: *engine_mod.Engine,
     kind: Kind,
@@ -16,6 +16,7 @@ pub const State = struct {
     availability_sequence: u64 = 0,
     availability_error_sequence: u64 = 0,
     runtime_id: u64 = 0,
+    model_lease_anchor: ?c.JSValue = null,
     availability_snapshot: ?@import("native_sdk_availability.zig").Snapshot = null,
 };
 const Method = enum(c_int) {
@@ -100,6 +101,11 @@ const Method = enum(c_int) {
     refresh,
     streamSimple,
     completeSimple,
+    stream,
+    complete,
+    streamDeferred,
+    fetchDeferred,
+    cancelDeferred,
     classify,
     generateImages,
     subscribe,
@@ -125,6 +131,7 @@ const Method = enum(c_int) {
     isUsingSubscription,
     getRegisteredProviderIds,
     getRegisteredNativeProvider,
+    getRegisteredProviderConfig,
     listCredentials,
 };
 const Getter = enum(c_int) { sessionId, sessionFile, sessionManager, settingsManager, modelRuntime, resourceLoader, model, thinkingLevel, messages, agent, systemPrompt, isStreaming, sessionName, session, services, cwd, diagnostics };
@@ -179,6 +186,10 @@ pub fn state(engine: *engine_mod.Engine, value: c.JSValue) !*State {
 fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const engine: *engine_mod.Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
     const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_sdk_class) orelse return));
+    if (self.model_lease_anchor) |anchor| {
+        @import("native_sdk_model_bridge.zig").invalidateAnchorRT(engine, runtime, anchor);
+        c.JS_FreeValueRT(runtime, anchor);
+    }
     c.JS_FreeValueRT(runtime, self.data);
     for (self.listeners.items) |listener| c.JS_FreeValueRT(runtime, listener);
     self.listeners.deinit(engine.gpa);
@@ -193,7 +204,87 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
     const engine: *engine_mod.Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
     const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_sdk_class) orelse return));
     c.JS_MarkValue(runtime, self.data, marker);
+    if (self.model_lease_anchor) |anchor| c.JS_MarkValue(runtime, anchor, marker);
     for (self.listeners.items) |listener| c.JS_MarkValue(runtime, listener, marker);
+}
+/// Read only while the actual SDK State is owned/live on this Engine. Capture
+/// the returned POD in a private binding callback; never keep an unrooted State
+/// pointer or treat a user-editable context JSON value as admission authority.
+pub fn sessionModelLease(self: *State) !@import("native_sdk_model_bridge.zig").Lease {
+    if (self.kind != .agent_session) return error.InvalidNativeSDKSession;
+    if (self.disposed) return error.NativeSDKDisposed;
+    return @import("native_sdk_model_bridge.zig").anchorLease(self.engine, self.model_lease_anchor orelse return error.NativeSDKModelLeaseUnavailable);
+}
+/// Only trusted private State.data from the SDK factory/emit path is accepted
+/// here. This is not a decoder for extension/transport context snapshots.
+pub fn sessionDataModelLease(engine: *engine_mod.Engine, data: c.JSValue) !@import("native_sdk_model_bridge.zig").Lease {
+    const anchor = try get(engine, data, "_sdkModelLeaseAnchor");
+    defer engine.freeValue(anchor);
+    return @import("native_sdk_model_bridge.zig").anchorLease(engine, anchor);
+}
+/// Trusted factory State.data only. Caller owns the returned session root.
+pub fn sessionDataSessionValue(engine: *engine_mod.Engine, data: c.JSValue) !c.JSValue {
+    const value = try get(engine, data, "_sdkSessionValue");
+    errdefer engine.freeValue(value);
+    const owner = try state(engine, value);
+    if (owner.kind != .agent_session) return error.InvalidNativeSDKSession;
+    return value;
+}
+pub fn modelRegistryLease(engine: *engine_mod.Engine, value: c.JSValue) !@import("native_sdk_model_bridge.zig").Lease {
+    const owner = try state(engine, value);
+    if (owner.kind != .model_registry) return error.InvalidNativeSDKModelRegistry;
+    return @import("native_sdk_model_bridge.zig").anchorLease(engine, owner.model_lease_anchor orelse return error.NativeSDKModelLeaseUnavailable);
+}
+pub fn newModelRegistry(engine: *engine_mod.Engine, runtime: c.JSValue) !c.JSValue {
+    const data = try object(engine);
+    defer engine.freeValue(data);
+    try put(engine, data, "modelRuntime", c.JS_DupValue(engine.context, runtime));
+    const value = try new(engine, .model_registry, data);
+    errdefer engine.freeValue(value);
+    try put(engine, value, "runtime", c.JS_DupValue(engine.context, runtime));
+    try attachSessionModelLease(try state(engine, value));
+    return value;
+}
+fn attachSessionModelLease(self: *State) !void {
+    const engine = self.engine;
+    const runtime = try get(engine, self.data, "modelRuntime");
+    defer engine.freeValue(runtime);
+    const pointer = c.JS_GetOpaque(runtime, engine.native_sdk_class) orelse return;
+    const owner: *State = @ptrCast(@alignCast(pointer));
+    // Preserve ordinary SDK construction for supplied unbranded runtimes, but
+    // leave the owner bridge unavailable instead of choosing another runtime.
+    if (owner.kind != .model_runtime) return;
+    const bridge = @import("native_sdk_model_bridge.zig");
+    var generation: u64 = 0;
+    while (true) {
+        generation = engine.native_sdk_next_session_generation;
+        if (generation > 9007199254740991) return error.NativeSDKSessionLimit;
+        engine.native_sdk_next_session_generation += 1;
+        if (try bridge.generationAvailable(engine, runtime, generation)) break;
+    }
+    const anchor = try bridge.admitAnchored(engine, runtime, generation);
+    errdefer {
+        bridge.invalidateAnchorRT(engine, engine.runtime, anchor.value);
+        engine.freeValue(anchor.value);
+    }
+    try put(engine, self.data, "_sdkModelLeaseAnchor", c.JS_DupValue(engine.context, anchor.value));
+    self.model_lease_anchor = anchor.value;
+}
+fn retireSessionModelLease(self: *State) !void {
+    const anchor = self.model_lease_anchor orelse return;
+    const bridge = @import("native_sdk_model_bridge.zig");
+    const lease = bridge.anchorLease(self.engine, anchor) catch null;
+    // Invalidate before any allocation or owner Map call can fail.
+    bridge.invalidateAnchorRT(self.engine, self.engine.runtime, anchor);
+    self.model_lease_anchor = null;
+    defer self.engine.freeValue(anchor);
+    try put(self.engine, self.data, "_sdkModelLeaseAnchor", c.pi_js_undefined());
+    if (lease) |value| try bridge.retire(self.engine, value);
+}
+fn retireNativeSessionValue(engine: *engine_mod.Engine, value: c.JSValue) !void {
+    const pointer = c.JS_GetOpaque(value, engine.native_sdk_class) orelse return;
+    const owner: *State = @ptrCast(@alignCast(pointer));
+    if (owner.kind == .agent_session) try retireSessionModelLease(owner);
 }
 fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = engine_mod.Engine.fromContext(context.?);
@@ -213,9 +304,10 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
     }
     const methods: []const Method = switch (kind) {
         .session_manager => &.{ .getCwd, .getSessionDir, .getSessionId, .getSessionName, .getSessionFile, .getHeader, .getEntries, .getEntryCount, .getLeafId, .getLeafEntry, .getEntry, .getChildren, .getBranch, .getLabel, .getTree, .appendMessage, .appendCustomEntry, .appendSessionInfo, .appendModelChange, .appendThinkingLevelChange, .appendLabelChange, .branch, .resetLeaf, .buildSessionContext, .newSession, .setSessionFile, .isPersisted },
-        .settings_manager => &.{ .getGlobalSettings, .getProjectSettings, .applyOverrides, .reload, .flush, .drainErrors, .getDefaultProvider, .getDefaultModel, .getDefaultThinkingLevel, .setDefaultThinkingLevel, .getCompactionSettings, .getRetrySettings, .getDefaultTools, .getTransport },
+        .settings_manager => &.{},
+        .model_registry => &.{},
         .resource_loader => &.{ .reload, .getExtensions, .getSkills, .getPrompts, .getThemes, .getAgentsFiles, .getSystemPrompt, .getAppendSystemPrompt, .getSystemPromptSource, .getAppendSystemPromptSources, .extendResources },
-        .model_runtime => &.{ .registerProvider, .registerNativeProvider, .unregisterProvider, .registerVirtualModel, .unregisterVirtualModel, .resolveModel, .getPhysicalModel, .getProviders, .getProvider, .getModels, .getAll, .getAvailable, .getModel, .getModelsOfType, .getModelOfType, .getAllModels, .getAllAvailable, .getAvailableOfType, .checkAuth, .getAuth, .getAvailableSnapshot, .setRuntimeApiKey, .removeRuntimeApiKey, .hasConfiguredAuth, .clearRuntimeApiKey, .refresh, .streamSimple, .completeSimple, .classify, .generateImages, .getError, .getProviderAuthStatus, .isUsingOAuth, .isUsingSubscription, .getRegisteredProviderIds, .getRegisteredNativeProvider, .listCredentials },
+        .model_runtime => &.{ .registerProvider, .registerNativeProvider, .unregisterProvider, .registerVirtualModel, .unregisterVirtualModel, .resolveModel, .getPhysicalModel, .getProviders, .getProvider, .getModels, .getAll, .getAvailable, .getModel, .getModelsOfType, .getModelOfType, .getAllModels, .getAllAvailable, .getAvailableOfType, .checkAuth, .getAuth, .getAvailableSnapshot, .setRuntimeApiKey, .removeRuntimeApiKey, .hasConfiguredAuth, .clearRuntimeApiKey, .refresh, .streamSimple, .completeSimple, .stream, .complete, .streamDeferred, .fetchDeferred, .cancelDeferred, .classify, .generateImages, .getError, .getProviderAuthStatus, .isUsingOAuth, .isUsingSubscription, .getRegisteredProviderIds, .getRegisteredNativeProvider, .getRegisteredProviderConfig, .listCredentials },
         .agent_session => &.{ .subscribe, .unsubscribe, .dispose, .prompt, .abort, .bindExtensions, .getActiveToolNames, .setActiveToolsByName, .getAllTools, .setSessionName, .setThinkingLevel, .setModel, .getSessionStats, .clearQueue, .steer, .followUp, .newSession },
         .session_runtime => &.{ .newSession, .switchSession, .dispose, .setRebindSession, .setBeforeSessionInvalidate },
     };
@@ -973,7 +1065,7 @@ fn initSettings(engine: *engine_mod.Engine, args: []const c.JSValue, persistent:
     defer engine.freeValue(data);
     var global = try object(engine);
     defer engine.freeValue(global);
-    var project = try object(engine);
+    const project = try object(engine);
     defer engine.freeValue(project);
     if (persistent) {
         const working = if (args.len > 0 and c.JS_IsString(args[0])) try engine.toString(args[0]) else try cwd(engine);
@@ -984,23 +1076,25 @@ fn initSettings(engine: *engine_mod.Engine, args: []const c.JSValue, persistent:
         defer engine.gpa.free(global_path);
         const project_path = try std.fs.path.join(engine.gpa, &.{ working, ".pi", "settings.json" });
         defer engine.gpa.free(project_path);
-        const loaded_global = try loadJsonFile(engine, global_path);
-        engine.freeValue(global);
-        global = loaded_global;
-        const loaded_project = try loadJsonFile(engine, project_path);
-        engine.freeValue(project);
-        project = loaded_project;
         try put(engine, data, "settingsPath", try text(engine, global_path));
         try put(engine, data, "projectPath", try text(engine, project_path));
     } else if (args.len > 0 and c.JS_IsObject(args[0])) {
-        const loaded_global = try clone(engine, args[0]);
+        const loaded_global = try @import("native_sdk_settings.zig").clone(engine, args[0]);
         engine.freeValue(global);
         global = loaded_global;
     }
     try put(engine, data, "global", c.JS_DupValue(engine.context, global));
     try put(engine, data, "project", c.JS_DupValue(engine.context, project));
-    try put(engine, data, "settings", try merge(engine, global, project));
+    try put(engine, data, "settings", try @import("native_sdk_settings.zig").deepMerge(engine, global, project, 0));
     try put(engine, data, "errors", try array(engine));
+    try @import("native_sdk_settings_storage.zig").initialize(engine, data, c.pi_js_undefined(), if (persistent and args.len > 2) args[2] else if (!persistent and args.len > 1) args[1] else c.pi_js_undefined(), global);
+    return new(engine, .settings_manager, data);
+}
+fn initSettingsFromStorage(engine: *engine_mod.Engine, args: []const c.JSValue) !c.JSValue {
+    if (args.len == 0 or !c.JS_IsObject(args[0])) return error.NativeSDKMissingArgument;
+    const data = try object(engine);
+    defer engine.freeValue(data);
+    try @import("native_sdk_settings_storage.zig").initialize(engine, data, args[0], if (args.len > 1) args[1] else c.pi_js_undefined(), c.pi_js_undefined());
     return new(engine, .settings_manager, data);
 }
 fn initResources(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
@@ -1054,6 +1148,8 @@ fn resourcesReload(self: *State) !c.JSValue {
 
 fn settingsDispatch(self: *State, operation: Method, args: []const c.JSValue) !c.JSValue {
     const engine = self.engine;
+    if (operation == .flush) return @import("native_sdk_settings_storage.zig").flush(engine, self.data);
+    if (operation == .reload) return @import("native_sdk_settings_storage.zig").reload(engine, self.data);
     const first = if (args.len > 0) args[0] else c.pi_js_undefined();
     if (operation == .getGlobalSettings or operation == .getProjectSettings) {
         const value = try get(engine, self.data, if (operation == .getGlobalSettings) "global" else "project");
@@ -1063,7 +1159,7 @@ fn settingsDispatch(self: *State, operation: Method, args: []const c.JSValue) !c
     if (operation == .applyOverrides) {
         const old = try get(engine, self.data, "settings");
         defer engine.freeValue(old);
-        try put(engine, self.data, "settings", try merge(engine, old, first));
+        try put(engine, self.data, "settings", try @import("native_sdk_settings.zig").deepMerge(engine, old, first, 0));
         return c.pi_js_undefined();
     }
     if (operation == .setDefaultThinkingLevel) {
@@ -1109,7 +1205,7 @@ fn settingsDispatch(self: *State, operation: Method, args: []const c.JSValue) !c
         defer engine.freeValue(global);
         const project = try get(engine, self.data, "project");
         defer engine.freeValue(project);
-        try put(engine, self.data, "settings", try merge(engine, global, project));
+        try put(engine, self.data, "settings", try @import("native_sdk_settings.zig").deepMerge(engine, global, project, 0));
         return promise(engine, c.pi_js_undefined());
     }
     const data = try get(engine, self.data, "settings");
@@ -1303,6 +1399,11 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     try put(engine, data, "agent", c.JS_DupValue(engine.context, agent));
     const session = try new(engine, .agent_session, data);
     defer engine.freeValue(session);
+    const session_owner = try state(engine, session);
+    try put(engine, data, "_sdkSessionValue", c.JS_DupValue(engine.context, session));
+    try put(engine, data, "modelRegistry", try newModelRegistry(engine, runtime));
+    try attachSessionModelLease(session_owner);
+    errdefer if (session_owner.model_lease_anchor) |anchor| @import("native_sdk_model_bridge.zig").invalidateAnchorRT(engine, engine.runtime, anchor);
     const result = try object(engine);
     errdefer engine.freeValue(result);
     try put(engine, result, "session", c.JS_DupValue(engine.context, session));
@@ -1466,6 +1567,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         defer engine.freeValue(previous);
         if (operation == .dispose) {
             try runtimeHook(self, "invalidate", &.{});
+            try retireNativeSessionValue(engine, previous);
             const completed = try invoke(engine, previous, "dispose", &.{});
             engine.freeValue(completed);
             self.disposed = true;
@@ -1501,6 +1603,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             const settled_abort = try engine.awaitValue(aborted);
             engine.freeValue(settled_abort);
             try runtimeHook(self, "invalidate", &.{});
+            try retireNativeSessionValue(engine, previous);
             const detached = try invoke(engine, previous, "dispose", &.{});
             engine.freeValue(detached);
             var values = [_]c.JSValue{options};
@@ -1545,6 +1648,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (operation == .dispose) {
             self.disposed = true;
             self.aborted = true;
+            try retireSessionModelLease(self);
             for (self.listeners.items) |listener| engine.freeValue(listener);
             self.listeners.clearRetainingCapacity();
             return c.pi_js_undefined();
@@ -1617,6 +1721,8 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             const path = try invoke(engine, manager, "newSession", args);
             engine.freeValue(path);
             try put(engine, self.data, "messages", try array(engine));
+            try retireSessionModelLease(self);
+            try attachSessionModelLease(self);
             return promise(engine, c.pi_js_bool(engine.context, 1));
         }
         if (operation == .getSessionStats) {
@@ -1633,6 +1739,11 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
     }
     if (self.kind == .settings_manager) return settingsDispatch(self, operation, args);
     if (self.kind == .model_runtime) {
+        if (operation == .getRegisteredProviderConfig) {
+            const extensions = try get(engine, self.data, "registeredExtensions");
+            defer engine.freeValue(extensions);
+            return invoke(engine, extensions, "get", args);
+        }
         if (operation == .setRuntimeApiKey or operation == .removeRuntimeApiKey or operation == .clearRuntimeApiKey) {
             if (args.len < 1 or (operation == .setRuntimeApiKey and args.len < 2)) return error.NativeSDKMissingArgument;
             const setting = operation == .setRuntimeApiKey;
@@ -1660,11 +1771,12 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (operation == .getPhysicalModel and args.len > 1) return @import("native_sdk_virtual.zig").physical(engine, self.data, args[0], args[1]);
         if (operation == .listCredentials) return @import("native_sdk_models.zig").listCredentials(engine, self.data, if (args.len > 0) args[0] else c.pi_js_undefined());
         if (operation == .refresh) return @import("native_sdk_refresh.zig").start(engine, receiver, if (args.len > 0) args[0] else c.pi_js_undefined());
-        if (operation == .streamSimple or operation == .completeSimple) {
-            const stream = try @import("native_sdk_chat.zig").stream(engine, receiver, self.data, args);
-            if (operation == .streamSimple) return stream;
-            defer engine.freeValue(stream);
-            return invoke(engine, stream, "result", &.{});
+        if (operation == .cancelDeferred) return @import("native_sdk_chat.zig").cancel(engine, self.data, args);
+        if (operation == .streamSimple or operation == .completeSimple or operation == .stream or operation == .complete or operation == .streamDeferred or operation == .fetchDeferred) {
+            const output = try @import("native_sdk_chat.zig").streamMode(engine, receiver, self.data, args, if (operation == .stream or operation == .complete) .api else if (operation == .streamDeferred or operation == .fetchDeferred) .deferred else .simple);
+            if (operation == .streamSimple or operation == .stream or operation == .streamDeferred) return output;
+            defer engine.freeValue(output);
+            return invoke(engine, output, "result", &.{});
         }
         if (operation == .getAvailable) return @import("native_sdk_availability.zig").getAvailable(engine, receiver, args);
         if (operation == .registerNativeProvider or operation == .registerProvider or operation == .unregisterProvider) {
@@ -1902,6 +2014,7 @@ fn constructor(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JS
         .settings_manager => initSettings(engine, args, false),
         .resource_loader => initResources(engine, if (args.len > 0) args[0] else c.pi_js_undefined()),
         .model_runtime => initModelRuntime(engine, if (args.len > 0) args[0] else c.pi_js_undefined()),
+        .model_registry => newModelRegistry(engine, if (args.len > 0) args[0] else c.pi_js_undefined()),
         .agent_session, .session_runtime => error.NativeSDKUseSessionFactory,
     }) catch |err| fail(engine, err);
 }
@@ -2014,6 +2127,7 @@ fn staticMethod(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.J
         2 => openManager(engine, args),
         100 => initSettings(engine, args, false),
         101 => initSettings(engine, args, true),
+        102 => initSettingsFromStorage(engine, args),
         300 => initModelRuntime(engine, if (args.len > 0) args[0] else c.pi_js_undefined()),
         else => error.NativeSDKMethodUnavailable,
     }) catch |err| return fail(engine, err);
@@ -2035,16 +2149,25 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try put(engine, exports, "createAgentSessionFromServices", try engine.checked(c.pi_js_function_magic(engine.context, serviceCallback, "createAgentSessionFromServices", 1, 1)));
     try put(engine, exports, "createAgentSessionRuntime", try engine.checked(c.JS_NewCFunction(engine.context, createRuntime, "createAgentSessionRuntime", 2)));
     try put(engine, exports, "getAgentDir", try engine.checked(c.JS_NewCFunction(engine.context, getAgentDirectory, "getAgentDir", 0)));
-    inline for (.{ .{ Kind.session_manager, "SessionManager" }, .{ Kind.settings_manager, "SettingsManager" }, .{ Kind.resource_loader, "DefaultResourceLoader" }, .{ Kind.model_runtime, "ModelRuntime" }, .{ Kind.agent_session, "AgentSession" }, .{ Kind.session_runtime, "AgentSessionRuntime" } }) |item| {
+    inline for (.{ .{ Kind.session_manager, "SessionManager" }, .{ Kind.settings_manager, "SettingsManager" }, .{ Kind.resource_loader, "DefaultResourceLoader" }, .{ Kind.model_runtime, "ModelRuntime" }, .{ Kind.agent_session, "AgentSession" }, .{ Kind.session_runtime, "AgentSessionRuntime" }, .{ Kind.model_registry, "ModelRegistry" } }) |item| {
         const proto = try object(engine);
         defer engine.freeValue(proto);
+        if (item[0] == .settings_manager) {
+            inline for (.{ Method.applyOverrides, Method.reload, Method.flush, Method.drainErrors }) |operation| {
+                const name = @tagName(operation);
+                const function = try engine.checked(c.pi_js_function_magic(engine.context, method, name, if (operation == .applyOverrides) 1 else 0, @intFromEnum(operation)));
+                if (c.JS_DefinePropertyValueStr(engine.context, proto, name, function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+            }
+            try @import("native_sdk_settings.zig").install(engine, proto);
+        }
         engine.native_sdk_prototypes[@as(usize, @intCast(@intFromEnum(item[0])))] = c.JS_DupValue(engine.context, proto);
         const ctor = try engine.checked(c.JS_NewCFunctionData2(engine.context, constructorData, item[1], 1, @intFromEnum(item[0]), 0, null));
         defer engine.freeValue(ctor);
         _ = c.JS_SetConstructorBit(engine.context, ctor, true);
         if (c.JS_SetConstructor(engine.context, ctor, proto) < 0) return error.JavaScriptException;
+        if (item[0] == .model_registry) try @import("native_sdk_model_registry.zig").install(engine, proto);
         if (item[0] == .session_manager) inline for (.{ .{ "inMemory", 0 }, .{ "create", 1 }, .{ "open", 2 } }) |operation| try put(engine, ctor, operation[0], try engine.checked(c.pi_js_function_magic(engine.context, staticMethod, operation[0], 1, operation[1])));
-        if (item[0] == .settings_manager) inline for (.{ .{ "inMemory", 100 }, .{ "create", 101 } }) |operation| try put(engine, ctor, operation[0], try engine.checked(c.pi_js_function_magic(engine.context, staticMethod, operation[0], 1, operation[1])));
+        if (item[0] == .settings_manager) inline for (.{ .{ "inMemory", 100 }, .{ "create", 101 }, .{ "fromStorage", 102 } }) |operation| try put(engine, ctor, operation[0], try engine.checked(c.pi_js_function_magic(engine.context, staticMethod, operation[0], 1, operation[1])));
         if (item[0] == .model_runtime) try put(engine, ctor, "create", try engine.checked(c.pi_js_function_magic(engine.context, staticMethod, "create", 1, 300)));
         try put(engine, exports, item[1], c.JS_DupValue(engine.context, ctor));
     }

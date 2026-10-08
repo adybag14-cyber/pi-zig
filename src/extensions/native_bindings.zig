@@ -52,6 +52,10 @@ const ContextMethod = enum(c_int) {
 };
 
 pub const Bindings = struct {
+    /// Owner-only capabilities captured from the SDK session's private data.
+    /// JSON context snapshots cannot create or replace this admission.
+    pub const SdkContext = struct { session: c.JSValue, registry: c.JSValue, manager: c.JSValue, lease: @import("native_sdk_model_bridge.zig").Lease };
+    pub const SavedSdkContext = struct { context: ?SdkContext, snapshot: ?c.JSValue };
     pub const InvocationBroker = struct { active: ?*Bindings = null };
     pub const ToolLookupFn = *const fn (?*anyopaque, []const u8) ?c.JSValue;
     pub const CatalogKind = enum { tools, commands };
@@ -97,6 +101,7 @@ pub const Bindings = struct {
     context_epoch: u32 = 1,
     context_guard: c.JSValue,
     context_snapshot: ?c.JSValue = null,
+    sdk_context: ?SdkContext = null,
     source_path: ?[]u8 = null,
     invocation_signal: ?c.JSValue = null,
     tool_update_fn: ?ToolUpdateFn = null,
@@ -212,6 +217,7 @@ pub const Bindings = struct {
         self.engine.freeValue(self.owner_token);
         self.engine.freeValue(self.context_guard);
         if (self.context_snapshot) |snapshot| self.engine.freeValue(snapshot);
+        if (self.sdk_context) |scope| self.freeSdkContext(scope);
         if (self.source_path) |path| self.gpa.free(path);
         const gpa = self.gpa;
         gpa.destroy(self);
@@ -847,23 +853,58 @@ pub const Bindings = struct {
         self.context_epoch += 1;
     }
 
-    fn contextFunction(self: *Bindings, name: [:0]const u8, kind: ContextMethod, snapshot: c.JSValue, generation: u32) !c.JSValue {
+    pub fn pushSdkContext(self: *Bindings, scope: SdkContext) !SavedSdkContext {
+        const sdk = @import("native_sdk.zig");
+        const state = try sdk.state(self.engine, scope.session);
+        const admitted = try sdk.sessionModelLease(state);
+        if (admitted.generation != scope.lease.generation or admitted.runtime_id != scope.lease.runtime_id) return error.InvalidNativeSDKModelLease;
+        if (!c.JS_IsObject(scope.registry) or !c.JS_IsObject(scope.manager)) return error.InvalidNativeSDKContext;
+        const registry_lease = try sdk.modelRegistryLease(self.engine, scope.registry);
+        if (registry_lease.runtime_id != admitted.runtime_id) return error.InvalidNativeSDKContext;
+        const registry = try sdk.get(self.engine, state.data, "modelRegistry");
+        defer self.engine.freeValue(registry);
+        const manager = try sdk.get(self.engine, state.data, "sessionManager");
+        defer self.engine.freeValue(manager);
+        if (!c.JS_IsStrictEqual(self.engine.context, registry, scope.registry) or !c.JS_IsStrictEqual(self.engine.context, manager, scope.manager)) return error.InvalidNativeSDKContext;
+        const previous: SavedSdkContext = .{ .context = self.sdk_context, .snapshot = if (self.context_snapshot) |value| c.JS_DupValue(self.engine.context, value) else null };
+        self.sdk_context = .{ .session = c.JS_DupValue(self.engine.context, scope.session), .registry = c.JS_DupValue(self.engine.context, scope.registry), .manager = c.JS_DupValue(self.engine.context, scope.manager), .lease = scope.lease };
+        return previous;
+    }
+    fn freeSdkContext(self: *Bindings, scope: SdkContext) void {
+        self.engine.freeValue(scope.session);
+        self.engine.freeValue(scope.registry);
+        self.engine.freeValue(scope.manager);
+    }
+    pub fn restoreSdkContext(self: *Bindings, saved: SavedSdkContext) void {
+        if (self.sdk_context) |scope| self.freeSdkContext(scope);
+        self.sdk_context = saved.context;
+        if (self.context_snapshot) |snapshot| self.engine.freeValue(snapshot);
+        self.context_snapshot = saved.snapshot;
+    }
+    fn contextFunction(self: *Bindings, name: [:0]const u8, kind: ContextMethod, snapshot: c.JSValue, generation: u32) anyerror!c.JSValue {
         const token = c.JS_DupValue(self.engine.context, self.context_guard);
         defer self.engine.freeValue(token);
         const owner_class = c.JS_NewInt64(self.engine.context, self.owner_class);
         defer self.engine.freeValue(owner_class);
-        var data = [_]c.JSValue{ token, snapshot, self.owner_token, owner_class };
-        if (kind == .ui) {
-            const object = try self.ui_manager.createObject();
-            defer self.engine.freeValue(object);
-            var ui_data = [_]c.JSValue{ token, snapshot, object, self.owner_token, owner_class };
-            return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), ui_data.len, &ui_data));
+        var session = c.pi_js_undefined();
+        var lease_generation = c.pi_js_undefined();
+        var runtime_id = c.pi_js_undefined();
+        defer {
+            self.engine.freeValue(session);
+            self.engine.freeValue(lease_generation);
+            self.engine.freeValue(runtime_id);
         }
-        if (kind == .modelRegistry) {
-            const registry = try self.createModelRegistry(snapshot, generation);
-            defer self.engine.freeValue(registry);
-            var registry_data = [_]c.JSValue{ token, snapshot, registry, self.owner_token, owner_class };
-            return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), registry_data.len, &registry_data));
+        if (self.sdk_context) |scope| {
+            session = c.JS_DupValue(self.engine.context, scope.session);
+            lease_generation = try self.engine.checked(c.JS_NewBigUint64(self.engine.context, scope.lease.generation));
+            runtime_id = try self.engine.checked(c.JS_NewBigUint64(self.engine.context, scope.lease.runtime_id));
+        }
+        var data = [_]c.JSValue{ token, snapshot, self.owner_token, owner_class, session, lease_generation, runtime_id };
+        if (kind == .ui or kind == .modelRegistry or kind == .sessionManager) {
+            const object = if (kind == .ui) try self.ui_manager.createObject() else if (kind == .modelRegistry) if (self.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.registry) else try self.createModelRegistry(snapshot, generation) else if (self.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.manager) else try self.contextValue(.sessionManager, snapshot, &.{});
+            defer self.engine.freeValue(object);
+            var ui_data = [_]c.JSValue{ token, snapshot, object, self.owner_token, owner_class, session, lease_generation, runtime_id };
+            return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), ui_data.len, &ui_data));
         }
         return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), data.len, &data));
     }
@@ -1155,15 +1196,39 @@ pub const Bindings = struct {
         const engine = engine_mod.Engine.fromContext(context.?);
         const kind: ContextMethod = @enumFromInt(magic);
         context_lifetime.assertActive(engine, data[0]) catch return engine.throwCaptured();
-        const self = fromOwnerData(engine, data, if (kind == .ui or kind == .modelRegistry) 3 else 2) catch |err| return publicationFailure(engine, err);
+        const cached = kind == .ui or kind == .modelRegistry or kind == .sessionManager;
+        const self = fromOwnerData(engine, data, if (cached) 3 else 2) catch |err| return publicationFailure(engine, err);
+        const session_offset: usize = if (cached) 5 else 4;
+        if (!c.JS_IsUndefined(data[session_offset])) {
+            const sdk = @import("native_sdk.zig");
+            var generation: u64 = 0;
+            var runtime_id: u64 = 0;
+            if (c.JS_ToBigUint64(context, &generation, data[session_offset + 1]) < 0 or c.JS_ToBigUint64(context, &runtime_id, data[session_offset + 2]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+            const state = sdk.state(engine, data[session_offset]) catch return self.staleSdkContext();
+            const lease = sdk.sessionModelLease(state) catch return self.staleSdkContext();
+            if (lease.generation != generation or lease.runtime_id != runtime_id) return self.staleSdkContext();
+        }
         // UI is an owner-rooted capability captured when the context is
         // created. Its individual methods enforce invocation/owner fences.
-        if (kind == .ui or kind == .modelRegistry) return c.JS_DupValue(context, data[2]);
+        if (cached) return c.JS_DupValue(context, data[2]);
         const arguments: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
-        return self.contextValue(@enumFromInt(magic), self.context_snapshot orelse data[1], arguments) catch |err| {
+        const snapshot = if (!c.JS_IsUndefined(data[session_offset])) data[1] else self.context_snapshot orelse data[1];
+        return self.contextValue(@enumFromInt(magic), snapshot, arguments) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
             return c.JS_ThrowTypeError(context, "Native extension context failed: %s", @as([*:0]const u8, @errorName(err)));
         };
+    }
+    fn staleSdkContext(self: *Bindings) c.JSValue {
+        const exception = self.engine.checked(c.JS_NewError(self.engine.context)) catch return c.JS_ThrowOutOfMemory(self.engine.context);
+        const message = self.engine.checked(c.JS_NewString(self.engine.context, context_lifetime.default_message)) catch {
+            self.engine.freeValue(exception);
+            return c.JS_ThrowOutOfMemory(self.engine.context);
+        };
+        if (c.JS_DefinePropertyValueStr(self.engine.context, exception, "message", message, c.JS_PROP_C_W_E) < 0) {
+            self.engine.freeValue(exception);
+            return c.JS_Throw(self.engine.context, c.JS_GetException(self.engine.context));
+        }
+        return c.JS_Throw(self.engine.context, exception);
     }
 
     fn contextValue(self: *Bindings, kind: ContextMethod, snapshot: c.JSValue, args: []c.JSValue) !c.JSValue {

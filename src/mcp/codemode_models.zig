@@ -34,7 +34,8 @@ fn describe(a: std.mem.Allocator, value: ?Value) ![]const u8 {
         .object => if (item.object.count() == 0) "{}" else std.fmt.allocPrint(a, "{{ {s}{s} }}", .{ try std.mem.join(a, ", ", item.object.keys()[0..@min(6, item.object.count())]), if (item.object.count() > 6) ", ..." else "" }),
     };
 }
-fn errorResult(gpa: std.mem.Allocator, message: []const u8) !json.Owned {
+fn errorResult(gpa: std.mem.Allocator, failed: *bool, message: []const u8) !json.Owned {
+    failed.* = true;
     var result = try json.Owned.empty(gpa);
     errdefer result.deinit();
     const a = result.arena.allocator();
@@ -105,7 +106,17 @@ pub fn combineUsage(a: std.mem.Allocator, first: Value, second: Value) !Value {
     try result.object.put(a, "cost", cost);
     return result;
 }
+pub const Outcome = struct { value: json.Owned, is_error: bool };
 pub fn execute(gpa: std.mem.Allocator, runtime: Runtime, operation: Operation, args: Value, aborted: ?*bool) !json.Owned {
+    var failed = false;
+    return executeInternal(gpa, runtime, operation, args, aborted, &failed);
+}
+pub fn executeOutcome(gpa: std.mem.Allocator, runtime: Runtime, operation: Operation, args: Value, aborted: ?*bool) !Outcome {
+    var failed = false;
+    const value = try executeInternal(gpa, runtime, operation, args, aborted, &failed);
+    return .{ .value = value, .is_error = failed };
+}
+fn executeInternal(gpa: std.mem.Allocator, runtime: Runtime, operation: Operation, args: Value, aborted: ?*bool, failed: *bool) !json.Owned {
     var arena: std.heap.ArenaAllocator = .init(gpa);
     defer arena.deinit();
     const a = arena.allocator();
@@ -114,11 +125,11 @@ pub fn execute(gpa: std.mem.Allocator, runtime: Runtime, operation: Operation, a
         if (operation == .getModelOfType and (!isString(argument(args, 1)) or !isString(argument(args, 2)))) {
             var values: std.ArrayList([]const u8) = .empty;
             if (args == .array) for (args.array.items) |value| try values.append(a, try describe(a, value));
-            return errorResult(gpa, try std.fmt.allocPrint(a, "models.getModelOfType(type, provider, id) expects three strings, got ({s}). The provider and the id are separate arguments, for example models.getModelOfType(\"classifier\", \"typesafe\", \"jev-latest\").", .{try std.mem.join(a, ", ", values.items)}));
+            return errorResult(gpa, failed, try std.fmt.allocPrint(a, "models.getModelOfType(type, provider, id) expects three strings, got ({s}). The provider and the id are separate arguments, for example models.getModelOfType(\"classifier\", \"typesafe\", \"jev-latest\").", .{try std.mem.join(a, ", ", values.items)}));
         }
-        if (!isString(first) or (!std.mem.eql(u8, first.?.string, "chat") and !std.mem.eql(u8, first.?.string, "image") and !std.mem.eql(u8, first.?.string, "classifier"))) return errorResult(gpa, try std.fmt.allocPrint(a, "Unknown model type {s}. Use \"chat\", \"image\", or \"classifier\".", .{if (first) |value| try json.stringify(a, value) else "undefined"}));
+        if (!isString(first) or (!std.mem.eql(u8, first.?.string, "chat") and !std.mem.eql(u8, first.?.string, "image") and !std.mem.eql(u8, first.?.string, "classifier"))) return errorResult(gpa, failed, try std.fmt.allocPrint(a, "Unknown model type {s}. Use \"chat\", \"image\", or \"classifier\".", .{if (first) |value| try json.stringify(a, value) else "undefined"}));
         const provider = argument(args, 1);
-        if (provider != null and provider.? != .null and provider.? != .string) return errorResult(gpa, "provider must be a string");
+        if (provider != null and provider.? != .null and provider.? != .string) return errorResult(gpa, failed, "provider must be a string");
         var result = try runtime.invoke(runtime.context, gpa, operation, args, aborted);
         errdefer result.deinit();
         if (result.value == .array) {
@@ -133,7 +144,7 @@ pub fn execute(gpa: std.mem.Allocator, runtime: Runtime, operation: Operation, a
     const kind: []const u8 = if (operation == .classify) "classifier" else "image";
     const name: []const u8 = if (operation == .classify) "models.classify" else "models.generateImages";
     const hint = try std.fmt.allocPrint(a, "List the {s} models you can use with models.getAvailableOfType(\"{s}\").", .{ kind, kind });
-    if (first == null or first.? != .object or !isString(json.get(first.?, "provider")) or !isString(json.get(first.?, "id"))) return errorResult(gpa, try std.fmt.allocPrint(a, "{s}() expects {s} {s} model as its first argument, got {s}.{s} {s}", .{ name, article(kind), kind, try describe(a, first), if (first == null or first.? == .null) " models.getModelOfType() returns undefined for an unknown provider or id." else "", hint }));
+    if (first == null or first.? != .object or !isString(json.get(first.?, "provider")) or !isString(json.get(first.?, "id"))) return errorResult(gpa, failed, try std.fmt.allocPrint(a, "{s}() expects {s} {s} model as its first argument, got {s}.{s} {s}", .{ name, article(kind), kind, try describe(a, first), if (first == null or first.? == .null) " models.getModelOfType() returns undefined for an unknown provider or id." else "", hint }));
     const provider = json.get(first.?, "provider").?;
     const id = json.get(first.?, "id").?;
     var lookup: Value = .{ .array = .init(a) };
@@ -146,12 +157,12 @@ pub fn execute(gpa: std.mem.Allocator, runtime: Runtime, operation: Operation, a
             lookup.array.items[0] = .{ .string = other };
             var candidate = try runtime.invoke(runtime.context, gpa, .getModelOfType, lookup, aborted);
             defer candidate.deinit();
-            if (candidate.value != .null) return errorResult(gpa, try std.fmt.allocPrint(a, "\"{s}/{s}\" is {s} {s} model, not {s} {s} model. {s}", .{ provider.string, id.string, article(other), other, article(kind), kind, hint }));
+            if (candidate.value != .null) return errorResult(gpa, failed, try std.fmt.allocPrint(a, "\"{s}/{s}\" is {s} {s} model, not {s} {s} model. {s}", .{ provider.string, id.string, article(other), other, article(kind), kind, hint }));
         }
-        return errorResult(gpa, try std.fmt.allocPrint(a, "Unknown {s} model \"{s}/{s}\". {s}", .{ kind, provider.string, id.string, hint }));
+        return errorResult(gpa, failed, try std.fmt.allocPrint(a, "Unknown {s} model \"{s}/{s}\". {s}", .{ kind, provider.string, id.string, hint }));
     }
     const context = argument(args, 1);
-    if (try contextProblem(a, operation, context)) |problem| return errorResult(gpa, if (operation == .classify) try std.fmt.allocPrint(a, "models.classify() {s}. Expected context: {s}. See \"Classify\" in {s}.", .{ problem, classifier_shape, runtime.docs_path }) else try std.fmt.allocPrint(a, "models.generateImages() {s}. Expected context: {{ input: [{{ type: \"text\", text: <prompt> }}, ...optional {{ type: \"image\", data: <base64>, mimeType }} references] }}. See \"Generate images\" in {s}.", .{ problem, runtime.docs_path }));
+    if (try contextProblem(a, operation, context)) |problem| return errorResult(gpa, failed, if (operation == .classify) try std.fmt.allocPrint(a, "models.classify() {s}. Expected context: {s}. See \"Classify\" in {s}.", .{ problem, classifier_shape, runtime.docs_path }) else try std.fmt.allocPrint(a, "models.generateImages() {s}. Expected context: {{ input: [{{ type: \"text\", text: <prompt> }}, ...optional {{ type: \"image\", data: <base64>, mimeType }} references] }}. See \"Generate images\" in {s}.", .{ problem, runtime.docs_path }));
     var checked: Value = .{ .array = .init(a) };
     try checked.array.appendSlice(&.{ canonical.value, context.? });
     if (runtime.admitted) |notify| try notify(runtime.admitted_context, canonical.value);

@@ -191,6 +191,11 @@ pub fn emit(engine: *engine_mod.Engine, resources: c.JSValue, session_data: c.JS
     const ids = try sdk.get(engine, owner.data, "extensionOwnerIds");
     defer engine.freeValue(ids);
     if (!c.JS_IsArray(ids)) return;
+    const session = try sdk.sessionDataSessionValue(engine, session_data);
+    defer engine.freeValue(session);
+    const lease = try sdk.sessionDataModelLease(engine, session_data);
+    const registry = try sdk.get(engine, session_data, "modelRegistry");
+    defer engine.freeValue(registry);
     const context = try sdk.object(engine);
     defer engine.freeValue(context);
     const manager = try sdk.get(engine, session_data, "sessionManager");
@@ -212,6 +217,8 @@ pub fn emit(engine: *engine_mod.Engine, resources: c.JSValue, session_data: c.JS
         var integer: i64 = 0;
         if (c.JS_ToInt64(engine.context, &integer, id) < 0) return error.JavaScriptException;
         const binding = try group.selected(@intCast(integer));
+        const saved = try binding.pushSdkContext(.{ .session = session, .registry = registry, .manager = manager, .lease = lease });
+        defer binding.restoreSdkContext(saved);
         try binding.setContext(raw);
         const result = try binding.invokeHook(event, payload);
         defer engine.gpa.free(result);

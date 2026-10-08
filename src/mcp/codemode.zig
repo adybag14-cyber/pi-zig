@@ -62,7 +62,15 @@ const Work = struct {
             var runtime = self.model_runtime.?;
             runtime.admitted_context = self;
             runtime.admitted = modelAdmitted;
-            return models.execute(self.gpa, runtime, operation, self.args.?.value, &self.aborted);
+            var outcome = try models.executeOutcome(self.gpa, runtime, operation, self.args.?.value, &self.aborted);
+            if (outcome.is_error) return outcome.value;
+            defer outcome.value.deinit();
+            var result = try json.Owned.empty(self.gpa);
+            errdefer result.deinit();
+            const a = result.arena.allocator();
+            result.value = .{ .object = .empty };
+            try result.value.object.put(a, "__pi_codemode_value", try json.clone(a, outcome.value.value));
+            return result;
         }
         if (self.tool.execute_sequenced) |callback| return callback(self.tool.context, self.gpa, if (self.args) |args| args.value else null, &self.aborted, self.sequence);
         return self.tool.execute(self.tool.context, self.gpa, if (self.args) |args| args.value else null, &self.aborted);
@@ -424,7 +432,7 @@ const Execution = struct {
             .classify => "models.classify",
             .generateImages => "models.generateImages",
         };
-        return self.enqueue(.{ .name = name, .execute = Work.noop, .error_marker = true }, args, operation) catch |cause| self.fail(cause);
+        return self.enqueue(.{ .name = name, .execute = Work.noop, .error_marker = true, .success_envelope = true }, args, operation) catch |cause| self.fail(cause);
     }
     fn enqueue(self: *Execution, tool: Tool, args: ?json.Owned, operation: ?models.Operation) !c.JSValue {
         const context = self.engine.context;
@@ -689,19 +697,20 @@ const Execution = struct {
             try self.completeCall(pending.record_index, "error", pending.started);
             return true;
         };
-        const value = if (pending.work.model_operation == .getModelOfType and reply.value == .null) c.pi_js_undefined() else try self.engine.fromJsonValue(success_value orelse reply.value);
+        const payload = success_value orelse reply.value;
+        const value = if (pending.work.model_operation == .getModelOfType and payload == .null) c.pi_js_undefined() else try self.engine.fromJsonValue(payload);
         defer self.engine.freeValue(value);
         var args = [_]c.JSValue{value};
         const settled = try self.engine.checked(c.JS_Call(self.engine.context, pending.resolve, c.pi_js_undefined(), 1, &args));
         self.engine.freeValue(settled);
-        const stop = json.get(reply.value, "stopReason");
+        const stop = json.get(payload, "stopReason");
         const status: []const u8 = if (pending.work.limited() and stop != null and stop.? == .string) if (std.mem.eql(u8, stop.?.string, "stop")) "ok" else if (std.mem.eql(u8, stop.?.string, "aborted")) "cancelled" else "error" else "ok";
         try self.completeCall(pending.record_index, status, pending.started);
         if (pending.work.limited()) {
             const a = self.result.arena.allocator();
             if (pending.record_index) |record_index| {
                 const record = &self.result.value.object.getPtr("calls").?.array.items[record_index];
-                if (json.get(reply.value, "errorMessage")) |message| if (message == .string and message.string.len > 0) {
+                if (json.get(payload, "errorMessage")) |message| if (message == .string and message.string.len > 0) {
                     var iterator = (try std.unicode.Wtf8View.init(message.string)).iterator();
                     var units: usize = 0;
                     var end: usize = 0;
@@ -711,13 +720,13 @@ const Execution = struct {
                     }
                     try record.object.put(a, "error", .{ .string = if (units > 500) try std.fmt.allocPrint(a, "{s}...", .{message.string[0..end]}) else try a.dupe(u8, message.string) });
                 };
-                if (json.get(reply.value, "usage")) |usage| {
+                if (json.get(payload, "usage")) |usage| {
                     if (json.get(usage, "cost")) |cost| if (json.get(cost, "total")) |total| try record.object.put(a, "cost", try json.clone(a, total));
                     const combined = if (self.result.value.object.get("usage")) |previous| try models.combineUsage(a, previous, usage) else try json.clone(a, usage);
                     try self.result.value.object.put(a, "usage", combined);
                 }
             }
-            if (pending.work.model_operation == .generateImages) if (json.get(reply.value, "output")) |blocks| if (blocks == .array) {
+            if (pending.work.model_operation == .generateImages) if (json.get(payload, "output")) |blocks| if (blocks == .array) {
                 var count: i64 = 0;
                 for (blocks.array.items) |block| if (json.get(block, "type")) |kind| {
                     if (kind == .string and std.mem.eql(u8, kind.string, "image")) count += 1;

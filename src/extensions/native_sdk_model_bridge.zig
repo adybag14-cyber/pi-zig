@@ -7,6 +7,10 @@ const engine_mod = @import("engine.zig");
 const signals = @import("abort_signal.zig");
 const c = engine_mod.c;
 pub const Lease = struct { generation: u64, runtime_id: u64 };
+/// VM value is owner-only; callers retaining it must mark/free it like any
+/// other QuickJS value. The POD lease alone may cross the transport boundary.
+pub const Anchor = struct { lease: Lease, value: c.JSValue };
+const Admission = struct { engine: *engine_mod.Engine, lease: Lease, live: bool = true, weak: bool, target: c.JSValue };
 pub const Operation = enum { query, classify, generate_images };
 pub const Control = struct {
     request_id: u64 = 0,
@@ -23,6 +27,58 @@ const Frame = struct {
     previous_context: ?*anyopaque,
     previous_pump: ?*const fn (*engine_mod.Engine) anyerror!bool,
 };
+fn admissionFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    const engine: *engine_mod.Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
+    const record: *Admission = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_sdk_model_bridge_lease_class) orelse return));
+    c.JS_FreeValueRT(runtime, record.target);
+    engine.gpa.destroy(record);
+}
+fn admissionMark(runtime: ?*c.JSRuntime, value: c.JSValue, mark: ?*const c.JS_MarkFunc) callconv(.c) void {
+    const engine: *engine_mod.Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
+    const record: *Admission = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_sdk_model_bridge_lease_class) orelse return));
+    c.JS_MarkValue(runtime, record.target, mark);
+}
+fn ensureAdmissionClass(engine: *engine_mod.Engine) !void {
+    if (engine.native_sdk_model_bridge_lease_class != 0) return;
+    var id: c.JSClassID = 0;
+    _ = c.JS_NewClassID(engine.runtime, &id);
+    const definition: c.JSClassDef = .{ .class_name = "Owned SDK model lease", .finalizer = admissionFinalizer, .gc_mark = admissionMark, .call = null, .exotic = null };
+    if (c.JS_NewClass(engine.runtime, id, &definition) < 0) return error.OutOfMemory;
+    engine.native_sdk_model_bridge_lease_class = id;
+}
+fn admission(engine: *engine_mod.Engine, value: c.JSValue) !*Admission {
+    return @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_sdk_model_bridge_lease_class) orelse return error.InvalidNativeSDKModelLease));
+}
+fn makeAdmission(engine: *engine_mod.Engine, runtime: c.JSValue, lease: Lease, weak: bool) !c.JSValue {
+    try ensureAdmissionClass(engine);
+    const target = if (weak) weak_target: {
+        const constructor = engine.native_weak_ref_constructor orelse return error.NativeSDKWeakIntrinsicUnavailable;
+        var args = [_]c.JSValue{runtime};
+        break :weak_target try engine.checked(c.JS_CallConstructor(engine.context, constructor, 1, &args));
+    } else c.JS_DupValue(engine.context, runtime);
+    errdefer engine.freeValue(target);
+    if (weak and !c.JS_IsWeakRef(target)) return error.InvalidNativeSDKWeakAdmission;
+    const record = try engine.gpa.create(Admission);
+    errdefer engine.gpa.destroy(record);
+    const value = try engine.checked(c.JS_NewObjectProtoClass(engine.context, c.pi_js_null(), engine.native_sdk_model_bridge_lease_class));
+    record.* = .{ .engine = engine, .lease = lease, .weak = weak, .target = target };
+    _ = c.JS_SetOpaque(value, record);
+    return value;
+}
+/// Finalizer-safe: only native state and RT reference counts are touched. It
+/// never calls Map methods, user code, or an API requiring a live JSContext.
+pub fn invalidateAnchorRT(engine: *engine_mod.Engine, runtime: ?*c.JSRuntime, value: c.JSValue) void {
+    const record: *Admission = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_sdk_model_bridge_lease_class) orelse return));
+    record.live = false;
+    const target = record.target;
+    record.target = c.pi_js_undefined();
+    c.JS_FreeValueRT(runtime, target);
+}
+pub fn anchorLease(engine: *engine_mod.Engine, value: c.JSValue) !Lease {
+    const record = try admission(engine, value);
+    if (!record.live) return error.RetiredNativeSDKModelLease;
+    return record.lease;
+}
 fn registry(engine: *engine_mod.Engine) !c.JSValue {
     if (engine.native_sdk_model_bridge_registry) |value| return c.JS_DupValue(engine.context, value);
     const result = try sdk.object(engine);
@@ -38,6 +94,14 @@ fn key(engine: *engine_mod.Engine, lease: Lease) !c.JSValue {
     return sdk.text(engine, text);
 }
 pub fn admit(engine: *engine_mod.Engine, runtime: c.JSValue, generation: u64) !Lease {
+    const anchored = try admitRecord(engine, runtime, generation, false);
+    defer engine.freeValue(anchored.value);
+    return anchored.lease;
+}
+pub fn admitAnchored(engine: *engine_mod.Engine, runtime: c.JSValue, generation: u64) !Anchor {
+    return admitRecord(engine, runtime, generation, true);
+}
+fn admitRecord(engine: *engine_mod.Engine, runtime: c.JSValue, generation: u64, weak: bool) !Anchor {
     const owner = try sdk.state(engine, runtime);
     if (owner.kind != .model_runtime or generation == 0 or owner.runtime_id == 0) return error.InvalidNativeSDKModelLease;
     const lease: Lease = .{ .generation = generation, .runtime_id = owner.runtime_id };
@@ -52,9 +116,36 @@ pub fn admit(engine: *engine_mod.Engine, runtime: c.JSValue, generation: u64) !L
     if (c.JS_ToBool(engine.context, old) == 1) return error.RetiredNativeSDKModelLease;
     const live = try sdk.get(engine, stored, "live");
     defer engine.freeValue(live);
-    const added = try sdk.invoke(engine, live, "set", &.{ id, runtime });
+    const previous = try sdk.invoke(engine, live, "get", &.{id});
+    if (c.JS_IsObject(previous)) {
+        errdefer engine.freeValue(previous);
+        const record = try admission(engine, previous);
+        if (!record.live) return error.RetiredNativeSDKModelLease;
+        if (record.lease.generation != lease.generation or record.lease.runtime_id != lease.runtime_id) return error.InvalidNativeSDKModelLease;
+        return .{ .lease = lease, .value = previous };
+    }
+    engine.freeValue(previous);
+    const value = try makeAdmission(engine, runtime, lease, weak);
+    errdefer engine.freeValue(value);
+    const added = try sdk.invoke(engine, live, "set", &.{ id, value });
     engine.freeValue(added);
-    return lease;
+    return .{ .lease = lease, .value = value };
+}
+pub fn generationAvailable(engine: *engine_mod.Engine, runtime: c.JSValue, generation: u64) !bool {
+    const owner = try sdk.state(engine, runtime);
+    if (owner.kind != .model_runtime or generation == 0) return false;
+    const stored = try registry(engine);
+    defer engine.freeValue(stored);
+    const id = try key(engine, .{ .generation = generation, .runtime_id = owner.runtime_id });
+    defer engine.freeValue(id);
+    inline for (.{ "live", "retired" }) |field| {
+        const collection = try sdk.get(engine, stored, field);
+        defer engine.freeValue(collection);
+        const found = try sdk.invoke(engine, collection, "has", &.{id});
+        defer engine.freeValue(found);
+        if (c.JS_ToBool(engine.context, found) == 1) return false;
+    }
+    return true;
 }
 pub fn retire(engine: *engine_mod.Engine, lease: Lease) !void {
     if (lease.generation == 0 or lease.runtime_id == 0) return error.InvalidNativeSDKModelLease;
@@ -68,6 +159,9 @@ pub fn retire(engine: *engine_mod.Engine, lease: Lease) !void {
     engine.freeValue(marked);
     const live = try sdk.get(engine, stored, "live");
     defer engine.freeValue(live);
+    const value = try sdk.invoke(engine, live, "get", &.{id});
+    defer engine.freeValue(value);
+    if (c.JS_IsObject(value)) invalidateAnchorRT(engine, engine.runtime, value);
     const deleted = try sdk.invoke(engine, live, "delete", &.{id});
     engine.freeValue(deleted);
 }
@@ -79,7 +173,26 @@ fn lookup(engine: *engine_mod.Engine, lease: Lease) !c.JSValue {
     defer engine.freeValue(live);
     const id = try key(engine, lease);
     defer engine.freeValue(id);
-    return sdk.invoke(engine, live, "get", &.{id});
+    const value = try sdk.invoke(engine, live, "get", &.{id});
+    defer engine.freeValue(value);
+    if (!c.JS_IsObject(value)) return c.pi_js_undefined();
+    const record = try admission(engine, value);
+    if (!record.live or record.lease.generation != lease.generation or record.lease.runtime_id != lease.runtime_id) return c.pi_js_undefined();
+    const target = if (record.weak) try engine.checked(c.JS_Call(engine.context, engine.native_weak_ref_deref orelse return error.NativeSDKWeakIntrinsicUnavailable, record.target, 0, null)) else c.JS_DupValue(engine.context, record.target);
+    errdefer engine.freeValue(target);
+    if (!c.JS_IsObject(target)) {
+        engine.freeValue(target);
+        return c.pi_js_undefined();
+    }
+    const owner = try sdk.state(engine, target);
+    if (owner.kind != .model_runtime or owner.runtime_id != lease.runtime_id) return error.InvalidNativeSDKModelLease;
+    return target;
+}
+/// Owner-thread only. Returns an owned QuickJS value, never a transport DTO.
+pub fn borrowRuntime(engine: *engine_mod.Engine, lease: Lease) !c.JSValue {
+    const value = try lookup(engine, lease);
+    if (!c.JS_IsObject(value)) return error.RetiredNativeSDKModelLease;
+    return value;
 }
 fn check(engine: *engine_mod.Engine, frame: *Frame) !void {
     if (frame.status != .complete) return error.NativeSDKModelOperationStopped;
