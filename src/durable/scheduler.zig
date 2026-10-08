@@ -31,6 +31,7 @@ pub const Options = struct {
     callback_context: ?*anyopaque = null,
     settle_outcome: ?*const fn (?*anyopaque, *Transaction, Value, Value) anyerror!void = null,
     withdraw_inputs: ?*const fn (?*anyopaque, *Transaction, u64) anyerror!void = null,
+    poll_reads: ?*const fn (?*anyopaque, *session_mod.Session) anyerror!void = null,
 };
 pub const Report = struct { task_id: u64, cause: anyerror };
 pub const Blocked = enum { missing_task, task_too_old, migration_failed };
@@ -335,6 +336,7 @@ pub const Scheduler = struct {
     }
     fn reconcileLine(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
         const self: *Scheduler = @ptrCast(@alignCast(raw.?));
+        if (self.options.poll_reads) |poll| try poll(self.options.callback_context, tx.session);
         const view = try self.session.storage.snapshot(self.gpa);
         defer view.destroy(self.gpa);
         const a = view.arena.allocator();

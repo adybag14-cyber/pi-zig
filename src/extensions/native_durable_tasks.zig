@@ -40,6 +40,8 @@ const RuntimeMethod = enum(c_int) { getTask, outcomes, entry, now, report, memo,
 const Waiter = struct { id: ?u64, conversation: ?u64, resolve: c.JSValue, reject: c.JSValue, context: c.JSValue };
 const Signal = struct { entry: *Entry, value: c.JSValue, context: c.JSValue };
 const Sleeper = struct { runtime: c.JSValue, until: f64, context: c.JSValue, resolve: c.JSValue, reject: c.JSValue };
+const ReadQuery = struct { id: u64, generation: u64, owner_generation: u64 };
+const ReadReply = struct { query: ReadQuery, record: ?json.Owned };
 pub const Manager = struct {
     engine: *Engine,
     hub: *Hub,
@@ -56,6 +58,12 @@ pub const Manager = struct {
     events: std.ArrayList(Event) = .empty,
     mutex: std.Io.Mutex = .init,
     waiters: std.ArrayList(Waiter) = .empty,
+    terminal_tasks: std.AutoHashMapUnmanaged(u64, json.Owned) = .empty,
+    missing_tasks: std.AutoHashMapUnmanaged(u64, void) = .empty,
+    pending_reads: std.AutoHashMapUnmanaged(u64, u64) = .empty,
+    read_queries: std.ArrayList(ReadQuery) = .empty,
+    read_replies: std.ArrayList(ReadReply) = .empty,
+    next_read_generation: u64 = 1,
     signals: std.ArrayList(Signal) = .empty,
     watches: std.ArrayList(struct { entry: *Entry, value: c.JSValue }) = .empty,
     contexts: std.AutoHashMapUnmanaged(u64, ?@import("native_durable_context_view.zig").Cache) = .empty,
@@ -133,6 +141,14 @@ pub const Manager = struct {
         self.events.deinit(std.heap.page_allocator);
         self.ledger.deinit(std.heap.page_allocator);
         self.waiters.deinit(self.engine.gpa);
+        var terminal = self.terminal_tasks.valueIterator();
+        while (terminal.next()) |item| item.deinit();
+        self.terminal_tasks.deinit(self.engine.gpa);
+        self.missing_tasks.deinit(self.engine.gpa);
+        self.pending_reads.deinit(self.engine.gpa);
+        self.read_queries.deinit(std.heap.page_allocator);
+        for (self.read_replies.items) |*reply| if (reply.record) |*record| record.deinit();
+        self.read_replies.deinit(std.heap.page_allocator);
         self.signals.deinit(self.engine.gpa);
         self.watches.deinit(self.engine.gpa);
         self.contexts.deinit(self.engine.gpa);
@@ -259,8 +275,113 @@ pub const Manager = struct {
             var event = self.events.orderedRemove(0);
             self.mutex.unlock(self.lease.value.io);
             defer event.changes.deinit();
+            try self.cachePublication(event.changes.value);
             const parent = try durable.state(self.engine, self.session);
             try durable.deliverPublication(parent, &.{ .seq = event.seq, .changes = event.changes.value });
+        }
+    }
+    fn cachePublication(self: *Manager, changes: json.Value) !void {
+        // The owner sees an immutable, owned committed publication. Retain
+        // terminal task records for reads while the scheduler is committing.
+        // This also prevents a fixed-period owner poll from starving behind
+        // the refill driver's repeated Session transactions.
+        for (changes.array.items) |change| {
+            if (!std.mem.eql(u8, try json.asString(try json.required(change, "type")), "task")) continue;
+            const record = try json.required(change, "value");
+            const id = try json.asInteger(try json.required(record, "id"));
+            // A serialized publication supersedes any earlier requested read.
+            self.retireRead(id);
+            _ = self.missing_tasks.remove(id);
+            const status = try json.asString(try json.required(try json.required(record, "state"), "status"));
+            if (!std.mem.eql(u8, status, "terminal")) {
+                if (self.terminal_tasks.fetchRemove(id)) |removed| {
+                    var previous = removed.value;
+                    previous.deinit();
+                }
+                continue;
+            }
+            var waiting = false;
+            for (self.waiters.items) |waiter| if (waiter.id == id) {
+                waiting = true;
+                break;
+            };
+            if (!waiting) continue;
+            var snapshot = try json.Owned.empty(self.engine.gpa);
+            errdefer snapshot.deinit();
+            snapshot.value = try json.clone(snapshot.arena.allocator(), record);
+            const entry = try self.terminal_tasks.getOrPut(self.engine.gpa, id);
+            if (entry.found_existing) entry.value_ptr.deinit();
+            entry.value_ptr.* = snapshot;
+        }
+    }
+    fn requestWaiterRead(self: *Manager, id: u64) !void {
+        if (self.pending_reads.contains(id)) return;
+        try self.pending_reads.ensureUnusedCapacity(self.engine.gpa, 1);
+        const query: ReadQuery = .{ .id = id, .generation = self.next_read_generation, .owner_generation = self.generation };
+        self.mutex.lockUncancelable(self.lease.value.io);
+        defer self.mutex.unlock(self.lease.value.io);
+        try self.read_queries.append(std.heap.page_allocator, query);
+        self.pending_reads.putAssumeCapacity(id, query.generation);
+        self.next_read_generation += 1;
+    }
+    fn retireRead(self: *Manager, id: u64) void {
+        _ = self.pending_reads.remove(id);
+        self.mutex.lockUncancelable(self.lease.value.io);
+        defer self.mutex.unlock(self.lease.value.io);
+        var index = self.read_queries.items.len;
+        while (index > 0) {
+            index -= 1;
+            if (self.read_queries.items[index].id == id) _ = self.read_queries.orderedRemove(index);
+        }
+    }
+    fn pollReads(raw: ?*anyopaque, session: *session_mod.Session) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        std.debug.assert(session == &self.lease.value);
+        // The scheduler calls this on its existing serialized Session line.
+        // It touches native owned DTOs only; it never calls the language VM.
+        while (true) {
+            self.mutex.lockUncancelable(self.lease.value.io);
+            if (self.read_queries.items.len == 0) {
+                self.mutex.unlock(self.lease.value.io);
+                return;
+            }
+            self.read_replies.ensureUnusedCapacity(std.heap.page_allocator, 1) catch |err| {
+                self.mutex.unlock(self.lease.value.io);
+                return err;
+            };
+            const query = self.read_queries.orderedRemove(0);
+            self.mutex.unlock(self.lease.value.io);
+            if (query.owner_generation != self.generation) continue;
+            const record = try session.storage.readTableRecord(std.heap.page_allocator, .task, query.id);
+            self.mutex.lockUncancelable(self.lease.value.io);
+            self.read_replies.appendAssumeCapacity(.{ .query = query, .record = record });
+            self.mutex.unlock(self.lease.value.io);
+        }
+    }
+    fn drainReads(self: *Manager) !void {
+        while (true) {
+            self.mutex.lockUncancelable(self.lease.value.io);
+            if (self.read_replies.items.len == 0) {
+                self.mutex.unlock(self.lease.value.io);
+                return;
+            }
+            var reply = self.read_replies.orderedRemove(0);
+            self.mutex.unlock(self.lease.value.io);
+            defer if (reply.record) |*record| record.deinit();
+            if (reply.query.owner_generation != self.generation) continue;
+            const generation = self.pending_reads.get(reply.query.id) orelse continue;
+            if (generation != reply.query.generation) continue;
+            _ = self.pending_reads.remove(reply.query.id);
+            if (reply.record) |record| {
+                const id = try json.asInteger(try json.required(record.value, "id"));
+                if (id != reply.query.id) return error.InvalidWaiterReadIdentity;
+                const status = try json.asString(try json.required(try json.required(record.value, "state"), "status"));
+                if (!std.mem.eql(u8, status, "terminal")) continue;
+                const entry = try self.terminal_tasks.getOrPut(self.engine.gpa, id);
+                if (entry.found_existing) entry.value_ptr.deinit();
+                entry.value_ptr.* = record;
+                reply.record = null;
+            } else try self.missing_tasks.put(self.engine.gpa, reply.query.id, {});
         }
     }
     fn pollSignals(self: *Manager) !void {
@@ -458,6 +579,7 @@ const Hub = struct {
                 var event = manager.events.orderedRemove(0);
                 manager.mutex.unlock(manager.lease.value.io);
                 defer event.changes.deinit();
+                try manager.cachePublication(event.changes.value);
                 const parent = try durable.state(engine, manager.session);
                 try durable.deliverPublication(parent, &.{ .seq = event.seq, .changes = event.changes.value });
                 worked = true;
@@ -473,6 +595,7 @@ const Hub = struct {
                 }
             }
             manager.mutex.unlock(manager.lease.value.io);
+            try manager.drainReads();
             try settleWaiters(manager);
             if (!manager.closed and manager.thread == null and manager.enabled and manager.last_count > 0) try manager.start();
         }
@@ -555,7 +678,7 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     errdefer engine.freeValue(snapshot);
     const clock_callback = try sdk.get(engine, options, "now");
     errdefer engine.freeValue(clock_callback);
-    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = c.JS_DupValue(engine.context, context), .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{}), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
+    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = c.JS_DupValue(engine.context, context), .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
     owner.next_generation += 1;
     errdefer {
         self.closed = true;
@@ -1251,8 +1374,19 @@ fn settleWaiters(self: *Manager) !void {
             value = try messageError(self.engine, "Harness is closed");
             rejected = true;
         } else if (waiter.id) |id| {
-            var record = switch (try readWaiterTask(&self.lease.value, self.engine.gpa, id)) {
-                .busy => continue,
+            // A scheduler commit can swap and free the Memory backend state.
+            // The owner must not block on the Session line: a worker holding it
+            // can itself be awaiting an owner-VM transaction callback.
+            var record = if (self.missing_tasks.contains(id)) @as(?json.Owned, null) else if (self.terminal_tasks.get(id)) |cached| blk: {
+                var copy = try json.Owned.empty(self.engine.gpa);
+                errdefer copy.deinit();
+                copy.value = try json.clone(copy.arena.allocator(), cached.value);
+                break :blk @as(?json.Owned, copy);
+            } else switch (try readWaiterTask(&self.lease.value, self.engine.gpa, id)) {
+                .busy => {
+                    try self.requestWaiterRead(id);
+                    continue;
+                },
                 .record => |item| item,
             };
             defer if (record) |*item| item.deinit();
@@ -1275,6 +1409,21 @@ fn settleWaiters(self: *Manager) !void {
         self.engine.freeValue(waiter.reject);
         self.engine.freeValue(waiter.context);
         _ = self.waiters.orderedRemove(index);
+        if (waiter.id) |id| {
+            var waiting = false;
+            for (self.waiters.items) |remaining| if (remaining.id == id) {
+                waiting = true;
+                break;
+            };
+            if (!waiting) if (self.terminal_tasks.fetchRemove(id)) |removed| {
+                var retired = removed.value;
+                retired.deinit();
+            };
+            if (!waiting) {
+                _ = self.missing_tasks.remove(id);
+                self.retireRead(id);
+            }
+        }
     }
 }
 const WaiterRecord = union(enum) { busy, record: ?json.Owned };
@@ -1333,6 +1482,236 @@ test "native durable VM waiter snapshot skips a worker barrier and detaches befo
 }
 pub fn defineTask(engine: *Engine, exports: c.JSValue) !void {
     try sdk.put(engine, exports, "defineTask", try engine.checked(c.JS_NewCFunction(engine.context, define, "defineTask", 1)));
+}
+fn publicationWaiterExercise(gpa: std.mem.Allocator, with_worker: bool) !void {
+    const engine = try Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session_value = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session_value);
+    const options = try engine.eval("({registry:{snapshot(){return{tasks(){return[]}}}}})", "publication-waiter-options", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(options);
+    try attach(engine, session_value, options, c.pi_js_undefined());
+    const manager = try getManager(engine, session_value);
+    var first = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":1,\"kind\":\"fixture\",\"version\":1,\"state\":{\"status\":\"terminal\",\"outcome\":{\"status\":\"completed\",\"result\":42}}}}]");
+    defer first.deinit();
+    _ = try manager.lease.value.storage.commitAt(first.value, null);
+    var promises: [2]c.JSValue = .{ c.pi_js_undefined(), c.pi_js_undefined() };
+    defer for (promises) |promise| engine.freeValue(promise);
+    for (&promises) |*promise| {
+        var functions: [2]c.JSValue = undefined;
+        promise.* = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
+        manager.waiters.append(gpa, .{ .id = 1, .conversation = null, .resolve = functions[0], .reject = functions[1], .context = c.pi_js_undefined() }) catch |err| {
+            engine.freeValue(functions[0]);
+            engine.freeValue(functions[1]);
+            return err;
+        };
+    }
+    try manager.cachePublication(first.value);
+    try std.testing.expectEqual(@as(usize, 1), manager.terminal_tasks.count());
+    // The publication DTO owns its contents independently of the source event.
+    first.value.array.items[0].object.getPtr("value").?.object.getPtr("version").?.* = .{ .integer = 99 };
+    const Barrier = struct {
+        session: *session_mod.Session,
+        locked: std.atomic.Value(bool) = .init(false),
+        release: std.atomic.Value(bool) = .init(false),
+        fn run(self: *@This()) void {
+            self.session.mutex.lockUncancelable(self.session.io);
+            self.locked.store(true, .release);
+            while (!self.release.load(.acquire)) std.atomic.spinLoopHint();
+            self.session.mutex.unlock(self.session.io);
+        }
+    };
+    var barrier: Barrier = .{ .session = &manager.lease.value };
+    var thread: ?std.Thread = null;
+    defer if (thread) |worker_thread| {
+        barrier.release.store(true, .release);
+        worker_thread.join();
+    };
+    if (with_worker) {
+        thread = try std.Thread.spawn(.{}, Barrier.run, .{&barrier});
+        while (!barrier.locked.load(.acquire)) std.atomic.spinLoopHint();
+    }
+    try settleWaiters(manager);
+    try std.testing.expectEqual(@as(usize, 0), manager.waiters.items.len);
+    try std.testing.expectEqual(@as(usize, 0), manager.terminal_tasks.count());
+    for (promises) |promise| {
+        try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(engine.context, promise));
+        const result = c.JS_PromiseResult(engine.context, promise);
+        defer engine.freeValue(result);
+        const version = try sdk.get(engine, result, "version");
+        defer engine.freeValue(version);
+        var number: i64 = 0;
+        try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt64(engine.context, &number, version));
+        try std.testing.expectEqual(@as(i64, 1), number);
+    }
+}
+test "native durable VM committed terminal publications settle all joins behind a held worker line and retire owned snapshots" {
+    try publicationWaiterExercise(std.testing.allocator, true);
+}
+test "native durable VM committed terminal publication DTO cache and multiple waiter settlement unwind every GPA failure" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, publicationWaiterExercise, .{false});
+}
+fn appendTestWaiter(manager: *Manager, id: u64, context: c.JSValue) !c.JSValue {
+    var functions: [2]c.JSValue = undefined;
+    const promise = try manager.engine.checked(c.JS_NewPromiseCapability(manager.engine.context, &functions));
+    errdefer {
+        manager.engine.freeValue(promise);
+        manager.engine.freeValue(functions[0]);
+        manager.engine.freeValue(functions[1]);
+    }
+    const owned_context = c.JS_DupValue(manager.engine.context, context);
+    errdefer manager.engine.freeValue(owned_context);
+    try manager.waiters.append(manager.engine.gpa, .{ .id = id, .conversation = null, .resolve = functions[0], .reject = functions[1], .context = owned_context });
+    return promise;
+}
+fn lateWaiterExercise(gpa: std.mem.Allocator, with_worker: bool) !void {
+    const engine = try Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session_value = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session_value);
+    const options = try engine.eval("({registry:{snapshot(){return{tasks(){return[]}}}}})", "late-waiter-options", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(options);
+    try attach(engine, session_value, options, c.pi_js_undefined());
+    const manager = try getManager(engine, session_value);
+    var first = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":1,\"kind\":\"fixture\",\"version\":1,\"state\":{\"status\":\"terminal\",\"outcome\":{\"status\":\"completed\",\"result\":42}}}}]");
+    defer first.deinit();
+    _ = try manager.lease.value.storage.commitAt(first.value, null);
+    try manager.cachePublication(first.value);
+    try std.testing.expectEqual(@as(usize, 0), manager.terminal_tasks.count());
+    const signal = try sdk.object(engine);
+    defer engine.freeValue(signal);
+    try sdk.put(engine, signal, "aborted", c.pi_js_bool(engine.context, 0));
+    const context = try sdk.object(engine);
+    defer engine.freeValue(context);
+    try sdk.put(engine, context, "abortSignal", c.JS_DupValue(engine.context, signal));
+    const canceled = try appendTestWaiter(manager, 1, context);
+    defer engine.freeValue(canceled);
+    const Service = struct {
+        manager: *Manager,
+        locked: std.atomic.Value(bool) = .init(false),
+        command: std.atomic.Value(u32) = .init(0),
+        processed: std.atomic.Value(u32) = .init(0),
+        release: std.atomic.Value(bool) = .init(false),
+        failure: ?anyerror = null,
+        fn callback(raw: ?*anyopaque, tx: *session_mod.Transaction, _: @import("../durable/types.zig").Context) !json.Value {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.locked.store(true, .release);
+            while (!self.release.load(.acquire)) {
+                const next = self.command.load(.acquire);
+                if (next != self.processed.load(.acquire)) {
+                    try Manager.pollReads(self.manager, tx.session);
+                    self.processed.store(next, .release);
+                } else std.atomic.spinLoopHint();
+            }
+            return .null;
+        }
+        fn run(self: *@This()) void {
+            var result = self.manager.lease.value.commit(callback, self, .{}, .{}) catch |err| {
+                self.failure = err;
+                self.locked.store(true, .release);
+                return;
+            };
+            result.deinit();
+        }
+        fn service(self: *@This(), number: u32, worker: bool) !void {
+            if (worker) {
+                self.command.store(number, .release);
+                while (self.processed.load(.acquire) != number) std.atomic.spinLoopHint();
+            } else try Manager.pollReads(self.manager, &self.manager.lease.value);
+        }
+    };
+    var service: Service = .{ .manager = manager };
+    var thread: ?std.Thread = null;
+    defer if (thread) |worker| {
+        service.release.store(true, .release);
+        worker.join();
+    };
+    if (with_worker) {
+        thread = try std.Thread.spawn(.{}, Service.run, .{&service});
+        while (!service.locked.load(.acquire)) std.atomic.spinLoopHint();
+    } else manager.lease.value.mutex.lockUncancelable(manager.lease.value.io);
+    defer if (!with_worker) manager.lease.value.mutex.unlock(manager.lease.value.io);
+    try settleWaiters(manager);
+    try std.testing.expectEqual(@as(usize, 1), manager.pending_reads.count());
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, canceled));
+    try service.service(1, with_worker);
+    if (with_worker) {
+        // Another Session can reuse the same task id and local read generation.
+        // A reply from this owner must still be rejected by that owner.
+        const other_storage = try durable.memoryObject(engine);
+        defer engine.freeValue(other_storage);
+        const other_session = try durable.sessionObject(engine, other_storage);
+        defer engine.freeValue(other_session);
+        try attach(engine, other_session, options, c.pi_js_undefined());
+        const other = try getManager(engine, other_session);
+        var other_writes = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":1,\"kind\":\"fixture\",\"version\":2,\"state\":{\"status\":\"terminal\",\"outcome\":{\"status\":\"completed\",\"result\":84}}}}]");
+        defer other_writes.deinit();
+        _ = try other.lease.value.storage.commitAt(other_writes.value, null);
+        const foreign_wait = try appendTestWaiter(other, 1, c.pi_js_undefined());
+        defer engine.freeValue(foreign_wait);
+        try other.requestWaiterRead(1);
+        var foreign_copy = try json.Owned.empty(std.heap.page_allocator);
+        var foreign_consumed = false;
+        errdefer if (!foreign_consumed) foreign_copy.deinit();
+        foreign_copy.value = try json.clone(foreign_copy.arena.allocator(), first.value.array.items[0].object.get("value").?);
+        try other.read_replies.append(std.heap.page_allocator, .{ .query = .{ .id = 1, .generation = 1, .owner_generation = manager.generation }, .record = foreign_copy });
+        foreign_consumed = true;
+        try other.drainReads();
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, foreign_wait));
+        other.lease.value.mutex.lockUncancelable(other.lease.value.io);
+        defer other.lease.value.mutex.unlock(other.lease.value.io);
+        try Manager.pollReads(other, &other.lease.value);
+        try other.drainReads();
+        try settleWaiters(other);
+        const result = c.JS_PromiseResult(engine.context, foreign_wait);
+        defer engine.freeValue(result);
+        const version = try sdk.get(engine, result, "version");
+        defer engine.freeValue(version);
+        var number: i64 = 0;
+        try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt64(engine.context, &number, version));
+        try std.testing.expectEqual(@as(i64, 2), number);
+    }
+    try sdk.put(engine, signal, "aborted", c.pi_js_bool(engine.context, 1));
+    try settleWaiters(manager);
+    try std.testing.expectEqual(c.JS_PROMISE_REJECTED, c.JS_PromiseState(engine.context, canceled));
+    const current = try appendTestWaiter(manager, 1, c.pi_js_undefined());
+    defer engine.freeValue(current);
+    try settleWaiters(manager);
+    // The previous generation's already-owned reply must not settle a newly
+    // registered waiter, even for the same task in the same Session.
+    try manager.drainReads();
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, current));
+    try std.testing.expectEqual(@as(usize, 1), manager.pending_reads.count());
+    try service.service(2, with_worker);
+    try manager.drainReads();
+    try settleWaiters(manager);
+    try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(engine.context, current));
+    try std.testing.expectEqual(@as(usize, 0), manager.pending_reads.count());
+    try std.testing.expectEqual(@as(usize, 0), manager.terminal_tasks.count());
+    try std.testing.expectEqual(@as(usize, 0), manager.missing_tasks.count());
+    const missing = try appendTestWaiter(manager, 99999, c.pi_js_undefined());
+    defer engine.freeValue(missing);
+    try settleWaiters(manager);
+    try service.service(3, with_worker);
+    try manager.drainReads();
+    try settleWaiters(manager);
+    try std.testing.expectEqual(c.JS_PROMISE_REJECTED, c.JS_PromiseState(engine.context, missing));
+    try std.testing.expectEqual(@as(usize, 0), manager.pending_reads.count());
+    try std.testing.expectEqual(@as(usize, 0), manager.missing_tasks.count());
+}
+test "native durable VM late terminal waiters progress behind worker line and reject retired read generations" {
+    try lateWaiterExercise(std.testing.allocator, true);
+}
+test "native durable VM late waiter read queries replies and cancellation unwind every GPA failure" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, lateWaiterExercise, .{false});
 }
 fn migrationKey(allocator: std.mem.Allocator, input: json.Value, checkpoint: json.Value, from: u64) ![]u8 {
     var values = [_]json.Value{ input, checkpoint, .{ .integer = @intCast(from) } };
