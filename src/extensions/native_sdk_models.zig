@@ -478,18 +478,22 @@ pub fn request(engine: *engine_mod.Engine, data: c.JSValue, model: c.JSValue, co
     defer engine.freeValue(authentication);
     const options = try sdk.object(engine);
     defer engine.freeValue(options);
-    try copy(engine, options, authentication);
     try copy(engine, options, input_options);
+    const explicit_key = if (c.JS_IsObject(input_options)) try sdk.get(engine, input_options, "apiKey") else c.pi_js_undefined();
+    defer engine.freeValue(explicit_key);
+    try sdk.put(engine, options, "apiKey", if (c.JS_IsUndefined(explicit_key) or c.JS_IsNull(explicit_key)) try sdk.get(engine, authentication, "apiKey") else c.JS_DupValue(engine.context, explicit_key));
     const initial_headers = try sdk.get(engine, authentication, "headers");
     defer engine.freeValue(initial_headers);
     const added_headers = if (c.JS_IsObject(input_options)) try sdk.get(engine, input_options, "headers") else c.pi_js_undefined();
     defer engine.freeValue(added_headers);
-    var headers = try mergedHeaders(engine, initial_headers, added_headers);
+    var headers = try @import("native_sdk_model_headers.zig").merge(engine, initial_headers, added_headers);
     defer engine.freeValue(headers);
     const transform = try sdk.get(engine, options, "transformHeaders");
     defer engine.freeValue(transform);
     if (c.JS_IsFunction(engine.context, transform)) {
-        var values = [_]c.JSValue{headers};
+        const transform_input = if (c.JS_IsUndefined(headers) or c.JS_IsNull(headers)) try sdk.object(engine) else c.JS_DupValue(engine.context, headers);
+        defer engine.freeValue(transform_input);
+        var values = [_]c.JSValue{transform_input};
         const pending = try engine.checked(c.JS_Call(engine.context, transform, c.pi_js_undefined(), 1, &values));
         defer engine.freeValue(pending);
         const transformed = try engine.awaitValue(pending);
@@ -497,15 +501,28 @@ pub fn request(engine: *engine_mod.Engine, data: c.JSValue, model: c.JSValue, co
         headers = transformed;
     }
     try sdk.put(engine, options, "headers", c.JS_DupValue(engine.context, headers));
+    const auth_env = try sdk.get(engine, resolved, "env");
+    defer engine.freeValue(auth_env);
+    const input_env = if (c.JS_IsObject(input_options)) try sdk.get(engine, input_options, "env") else c.pi_js_undefined();
+    defer engine.freeValue(input_env);
+    const env = if (c.JS_ToBool(engine.context, auth_env) == 1 or c.JS_ToBool(engine.context, input_env) == 1) try sdk.object(engine) else c.pi_js_undefined();
+    defer engine.freeValue(env);
+    if (c.JS_IsObject(env)) {
+        try copy(engine, env, auth_env);
+        try copy(engine, env, input_env);
+    }
+    try sdk.put(engine, options, "env", c.JS_DupValue(engine.context, env));
     const atom = c.JS_NewAtom(engine.context, "transformHeaders");
     defer c.JS_FreeAtom(engine.context, atom);
     if (c.JS_DeleteProperty(engine.context, options, atom, 0) < 0) return error.JavaScriptException;
-    const request_model = try sdk.object(engine);
-    defer engine.freeValue(request_model);
-    try copy(engine, request_model, model);
     const base = try sdk.get(engine, authentication, "baseUrl");
     defer engine.freeValue(base);
-    if (c.JS_IsString(base)) try sdk.put(engine, request_model, "baseUrl", c.JS_DupValue(engine.context, base));
+    const request_model = if (c.JS_ToBool(engine.context, base) == 1) try sdk.object(engine) else c.JS_DupValue(engine.context, model);
+    defer engine.freeValue(request_model);
+    if (c.JS_ToBool(engine.context, base) == 1) {
+        try copy(engine, request_model, model);
+        try sdk.put(engine, request_model, "baseUrl", c.JS_DupValue(engine.context, base));
+    }
     const id = try sdk.get(engine, model, "provider");
     defer engine.freeValue(id);
     const catalog = try sdk.get(engine, data, "models");

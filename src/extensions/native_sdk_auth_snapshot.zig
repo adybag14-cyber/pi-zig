@@ -11,7 +11,7 @@ pub fn collection(engine: *engine_mod.Engine, kind: [*:0]const u8) !c.JSValue {
     return engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null));
 }
 pub fn initialize(engine: *engine_mod.Engine, data: c.JSValue) !void {
-    inline for (.{ "authSnapshot", "registeredNative", "registeredExtensions" }) |name| try sdk.put(engine, data, name, try collection(engine, "Map"));
+    inline for (.{ "authSnapshot", "registeredNative", "registeredExtensions", "virtualModels" }) |name| try sdk.put(engine, data, name, try collection(engine, "Map"));
     inline for (.{ "configuredProviders", "storedProviders" }) |name| try sdk.put(engine, data, name, try collection(engine, "Set"));
     try sdk.put(engine, data, "availabilityError", c.pi_js_undefined());
 }

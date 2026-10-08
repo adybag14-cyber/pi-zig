@@ -534,6 +534,11 @@ fn builtinProvider(engine: *engine_mod.Engine, data: c.JSValue, id: c.JSValue) !
     return c.pi_js_undefined();
 }
 fn prepare(engine: *engine_mod.Engine, data: c.JSValue, config: c.JSValue, id: c.JSValue, errors: c.JSValue) !c.JSValue {
+    const base = try preparePhysical(engine, data, config, id, errors);
+    defer engine.freeValue(base);
+    return @import("native_sdk_virtual.zig").withModels(engine, data, id, base);
+}
+fn preparePhysical(engine: *engine_mod.Engine, data: c.JSValue, config: c.JSValue, id: c.JSValue, errors: c.JSValue) !c.JSValue {
     const providers = try sdk.get(engine, config, "providers");
     defer engine.freeValue(providers);
     const settings = try models.property(engine, providers, id);
@@ -646,7 +651,7 @@ pub fn reload(engine: *engine_mod.Engine, data: c.JSValue, selected: c.JSValue) 
             const ignored = try sdk.invoke(engine, ids, "add", &.{id});
             engine.freeValue(ignored);
         }
-        inline for (.{ "registeredNative", "modelConfig", "registeredExtensions" }) |field| {
+        inline for (.{ "registeredNative", "modelConfig", "registeredExtensions", "virtualModels" }) |field| {
             const map = if (comptime std.mem.eql(u8, field, "modelConfig")) try sdk.get(engine, config, "providers") else try sdk.get(engine, data, field);
             defer engine.freeValue(map);
             const names = if (comptime std.mem.eql(u8, field, "modelConfig")) try keys(engine, map) else try mapKeys(engine, map);

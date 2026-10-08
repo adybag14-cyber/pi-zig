@@ -762,6 +762,17 @@ pub fn build(b: *std.Build) void {
     const sdk_config_run = b.addRunArtifact(sdk_config_tests);
     b.step("test-sdk-config-ownership", "Exercise immutable SDK configuration allocation ownership").dependOn(&sdk_config_run.step);
     test_step.dependOn(&sdk_config_run.step);
+    const sdk_virtual_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_virtual_ownership_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK virtual catalog routing filtering stream"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_virtual_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, sdk_virtual_tests.root_module);
+    sdk_virtual_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const sdk_virtual_run = b.addRunArtifact(sdk_virtual_tests);
+    b.step("test-sdk-virtual-ownership", "Exercise virtual routing allocation ownership").dependOn(&sdk_virtual_run.step);
+    test_step.dependOn(&sdk_virtual_run.step);
     const run_binding_tests = b.addRunArtifact(binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
     binding_test_step.dependOn(&run_binding_tests.step);

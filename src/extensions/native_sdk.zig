@@ -76,6 +76,10 @@ const Method = enum(c_int) {
     registerProvider,
     registerNativeProvider,
     unregisterProvider,
+    registerVirtualModel,
+    unregisterVirtualModel,
+    resolveModel,
+    getPhysicalModel,
     getProviders,
     getModels,
     getAll,
@@ -211,7 +215,7 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
         .session_manager => &.{ .getCwd, .getSessionDir, .getSessionId, .getSessionName, .getSessionFile, .getHeader, .getEntries, .getEntryCount, .getLeafId, .getLeafEntry, .getEntry, .getChildren, .getBranch, .getLabel, .getTree, .appendMessage, .appendCustomEntry, .appendSessionInfo, .appendModelChange, .appendThinkingLevelChange, .appendLabelChange, .branch, .resetLeaf, .buildSessionContext, .newSession, .setSessionFile, .isPersisted },
         .settings_manager => &.{ .getGlobalSettings, .getProjectSettings, .applyOverrides, .reload, .flush, .drainErrors, .getDefaultProvider, .getDefaultModel, .getDefaultThinkingLevel, .setDefaultThinkingLevel, .getCompactionSettings, .getRetrySettings, .getDefaultTools, .getTransport },
         .resource_loader => &.{ .reload, .getExtensions, .getSkills, .getPrompts, .getThemes, .getAgentsFiles, .getSystemPrompt, .getAppendSystemPrompt, .getSystemPromptSource, .getAppendSystemPromptSources, .extendResources },
-        .model_runtime => &.{ .registerProvider, .registerNativeProvider, .unregisterProvider, .getProviders, .getProvider, .getModels, .getAll, .getAvailable, .getModel, .getModelsOfType, .getModelOfType, .getAllModels, .getAllAvailable, .getAvailableOfType, .checkAuth, .getAuth, .getAvailableSnapshot, .setRuntimeApiKey, .removeRuntimeApiKey, .hasConfiguredAuth, .clearRuntimeApiKey, .refresh, .streamSimple, .completeSimple, .classify, .generateImages, .getError, .getProviderAuthStatus, .isUsingOAuth, .isUsingSubscription, .getRegisteredProviderIds, .getRegisteredNativeProvider, .listCredentials },
+        .model_runtime => &.{ .registerProvider, .registerNativeProvider, .unregisterProvider, .registerVirtualModel, .unregisterVirtualModel, .resolveModel, .getPhysicalModel, .getProviders, .getProvider, .getModels, .getAll, .getAvailable, .getModel, .getModelsOfType, .getModelOfType, .getAllModels, .getAllAvailable, .getAvailableOfType, .checkAuth, .getAuth, .getAvailableSnapshot, .setRuntimeApiKey, .removeRuntimeApiKey, .hasConfiguredAuth, .clearRuntimeApiKey, .refresh, .streamSimple, .completeSimple, .classify, .generateImages, .getError, .getProviderAuthStatus, .isUsingOAuth, .isUsingSubscription, .getRegisteredProviderIds, .getRegisteredNativeProvider, .listCredentials },
         .agent_session => &.{ .subscribe, .unsubscribe, .dispose, .prompt, .abort, .bindExtensions, .getActiveToolNames, .setActiveToolsByName, .getAllTools, .setSessionName, .setThinkingLevel, .setModel, .getSessionStats, .clearQueue, .steer, .followUp, .newSession },
         .session_runtime => &.{ .newSession, .switchSession, .dispose, .setRebindSession, .setBeforeSessionInvalidate },
     };
@@ -409,9 +413,41 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
         try put(engine, ctx, "tools", try get(engine, self.data, "customTools"));
         const options = try object(engine);
         defer engine.freeValue(options);
-        try put(engine, options, "reasoning", try get(engine, self.data, "thinkingLevel"));
-        try put(engine, options, "signal", try get(engine, self.data, "promptSignal"));
-        const streamed = try invoke(engine, runtime, "streamSimple", &.{ model, ctx, options });
+        const selected_level = try get(engine, self.data, "thinkingLevel");
+        defer engine.freeValue(selected_level);
+        const signal = try get(engine, self.data, "promptSignal");
+        defer engine.freeValue(signal);
+        var routing_error: ?anyerror = null;
+        const projection = if (try @import("native_sdk_virtual.zig").isVirtual(engine, model)) projected: {
+            break :projected @import("native_sdk_virtual.zig").sessionProjection(engine, runtime, manager, model, messages, selected_level, signal) catch |err| {
+                routing_error = err;
+                break :projected c.pi_js_undefined();
+            };
+        } else c.pi_js_undefined();
+        defer engine.freeValue(projection);
+        const request_model = if (c.JS_IsObject(projection)) try get(engine, projection, "model") else c.JS_DupValue(engine.context, model);
+        defer engine.freeValue(request_model);
+        const request_level = if (c.JS_IsObject(projection)) try get(engine, projection, "thinkingLevel") else c.JS_DupValue(engine.context, selected_level);
+        defer engine.freeValue(request_level);
+        if (c.JS_IsObject(projection)) {
+            const state_entry = try get(engine, projection, "stateEntry");
+            defer engine.freeValue(state_entry);
+            if (c.JS_IsObject(state_entry)) {
+                const appended = try event(self, "entry_appended");
+                defer engine.freeValue(appended);
+                try put(engine, appended, "entry", c.JS_DupValue(engine.context, state_entry));
+                try emit(self, appended);
+            }
+        }
+        try put(engine, options, "reasoning", c.JS_DupValue(engine.context, request_level));
+        try put(engine, options, "signal", c.JS_DupValue(engine.context, signal));
+        const streamed = if (routing_error) |err| failed: {
+            const exports = engine.native_module_values.get("pi-ai") orelse return error.NativeSDKModelModuleUnavailable;
+            const output = try invoke(engine, exports, "createAssistantMessageEventStream", &.{});
+            errdefer engine.freeValue(output);
+            try @import("native_sdk_chat.zig").finishError(engine, model, output, err);
+            break :failed output;
+        } else try invoke(engine, runtime, "streamSimple", &.{ request_model, ctx, options });
         defer engine.freeValue(streamed);
         const stream = try engine.awaitValue(streamed);
         defer engine.freeValue(stream);
@@ -473,6 +509,7 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
             if (self.aborted or self.disposed) break;
             return error.NativeSDKProviderStreamMissingMessage;
         }
+        if (c.JS_IsObject(projection)) try put(engine, final, "thinkingLevel", c.JS_DupValue(engine.context, request_level));
         try append(engine, messages, c.JS_DupValue(engine.context, final));
         const assistant_id = try invoke(engine, manager, "appendMessage", &.{final});
         engine.freeValue(assistant_id);
@@ -1617,6 +1654,10 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             defer engine.freeValue(catalog);
             return invoke(engine, catalog, "getProvider", args);
         }
+        if (operation == .registerVirtualModel and args.len > 0) return @import("native_sdk_virtual.zig").register(engine, receiver, args[0]);
+        if (operation == .unregisterVirtualModel and args.len > 1) return @import("native_sdk_virtual.zig").unregister(engine, receiver, args[0], args[1]);
+        if (operation == .resolveModel and args.len > 2) return @import("native_sdk_virtual.zig").resolve(engine, self.data, args[0], args[1], args[2]);
+        if (operation == .getPhysicalModel and args.len > 1) return @import("native_sdk_virtual.zig").physical(engine, self.data, args[0], args[1]);
         if (operation == .listCredentials) return @import("native_sdk_models.zig").listCredentials(engine, self.data, if (args.len > 0) args[0] else c.pi_js_undefined());
         if (operation == .refresh) return @import("native_sdk_refresh.zig").start(engine, receiver, if (args.len > 0) args[0] else c.pi_js_undefined());
         if (operation == .streamSimple or operation == .completeSimple) {
@@ -1988,6 +2029,7 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     const definition: c.JSClassDef = .{ .class_name = "Native coding SDK object", .finalizer = finalizer, .gc_mark = mark, .call = null, .exotic = null };
     if (c.JS_NewClass(engine.runtime, engine.native_sdk_class, &definition) < 0) return error.OutOfMemory;
     try @import("native_sdk_credential_sync.zig").install(engine, exports);
+    try put(engine, exports, "VIRTUAL_MODEL_STATE_ENTRY", try text(engine, "pi.virtual-model-state"));
     try put(engine, exports, "createAgentSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createAgentSession", 1)));
     try put(engine, exports, "createAgentSessionServices", try engine.checked(c.pi_js_function_magic(engine.context, serviceCallback, "createAgentSessionServices", 1, 0)));
     try put(engine, exports, "createAgentSessionFromServices", try engine.checked(c.pi_js_function_magic(engine.context, serviceCallback, "createAgentSessionFromServices", 1, 1)));

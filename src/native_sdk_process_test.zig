@@ -1,5 +1,14 @@
 const std = @import("std");
 const builtin = @import("builtin");
+test "native SDK virtual session user continuation branch state and physical responses match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-virtual-session-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-virtual-session-6fb2e78.json"));
+}
+test "native SDK virtual routing reentry retired definitions cancellation and credentials match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-virtual-races-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-virtual-races-6fb2e78.json"));
+}
+test "native SDK virtual catalog routing canonical targets filters and direct streams match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-virtual-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-virtual-6fb2e78.json"));
+}
 test "native SDK request headers preserve model provider and configured precedence and resolution identity" {
     try inputCase(@embedFile("extensions/fixtures/sdk-model-headers-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-model-headers-1cedd32.json"));
 }
@@ -12,7 +21,7 @@ test "native SDK models JSONC immutable load reload composition and errors match
     try inputCase(@embedFile("extensions/fixtures/sdk-model-config-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-model-config-1cedd32.json"));
 }
 test "native SDK models schema validation ordering unions and bounded diagnostics match source" {
-    try inputCase(@embedFile("extensions/fixtures/sdk-config-schema-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-config-schema-1cedd32.json"));
+    try inputCase(@embedFile("extensions/fixtures/sdk-config-schema-6fb2e78.input.json"), @embedFile("extensions/fixtures/sdk-config-schema-6fb2e78.json"));
 }
 test "native SDK configured auth templates request environment and headers match source" {
     try inputCase(@embedFile("extensions/fixtures/sdk-config-auth-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-config-auth-1cedd32.json"));

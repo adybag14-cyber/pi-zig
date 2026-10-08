@@ -64,7 +64,9 @@ fn errorLine(out: *Report, path: []const u8, message: []const u8) !void {
     try out.writer.print("  - {s}: {s}\n", .{ if (path.len == 0) "root" else path, message });
 }
 fn childPath(gpa: std.mem.Allocator, parent: []const u8, key: []const u8) ![]u8 {
-    return if (parent.len == 0) gpa.dupe(u8, key) else std.fmt.allocPrint(gpa, "{s}.{s}", .{ parent, key });
+    const result = if (parent.len == 0) try gpa.dupe(u8, key) else try std.fmt.allocPrint(gpa, "{s}.{s}", .{ parent, key });
+    std.mem.replaceScalar(u8, result, '/', '.');
+    return result;
 }
 pub fn validate(gpa: std.mem.Allocator, schema: std.json.Value, value: std.json.Value, path: []const u8, output: *std.Io.Writer, depth: usize) anyerror!void {
     var report: Report = .{ .writer = output };
@@ -74,6 +76,20 @@ fn walk(gpa: std.mem.Allocator, schema: std.json.Value, value: std.json.Value, p
     if (depth > 64) return error.NativeSDKModelSchemaDepth;
     if (schema != .object) return;
     const object = schema.object;
+    if (object.get("enum")) |allowed| if (allowed == .array) {
+        var matches = false;
+        for (allowed.array.items) |candidate| {
+            matches = matches or switch (candidate) {
+                .string => value == .string and std.mem.eql(u8, candidate.string, value.string),
+                .bool => value == .bool and candidate.bool == value.bool,
+                .null => value == .null,
+                .integer => value == .integer and candidate.integer == value.integer,
+                .float => value == .float and candidate.float == value.float,
+                else => false,
+            };
+        }
+        if (!matches) return errorLine(output, path, "must be equal to one of the allowed values");
+    };
     if (object.get("anyOf")) |branches| {
         if (branches == .array) {
             var failures: std.Io.Writer.Allocating = .init(gpa);
@@ -244,7 +260,7 @@ pub fn load(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
         },
     };
     defer parsed.deinit();
-    var schema = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/model-config-1cedd32.schema.json"), .{});
+    var schema = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("fixtures/model-config-6fb2e78.schema.json"), .{});
     defer schema.deinit();
     var errors: std.Io.Writer.Allocating = .init(engine.gpa);
     defer errors.deinit();
