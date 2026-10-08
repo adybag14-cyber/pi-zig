@@ -496,6 +496,10 @@ pub const Manager = struct {
         const entry = found orelse return error.StaleTaskInvocation;
         defer entry.release();
         if (identity.owner_generation != self.generation or self.closed) return error.StaleTaskOwner;
+        // One broker drain can serve consecutive phases before the outer pump
+        // runs again. Refresh at this boundary before admitting an old token.
+        try self.refreshRegistry();
+        if (self.closed) return error.StaleTaskOwner;
         const token = self.definitions.items[entry.definition].token;
         const task_record = try json.required(payload, "record");
         const kind = try sdk.text(self.engine, try json.asString(try json.required(task_record, "kind")));
@@ -1482,6 +1486,61 @@ test "native durable VM waiter snapshot skips a worker barrier and detaches befo
 }
 pub fn defineTask(engine: *Engine, exports: c.JSValue) !void {
     try sdk.put(engine, exports, "defineTask", try engine.checked(c.JS_NewCFunction(engine.context, define, "defineTask", 1)));
+}
+
+test "native durable VM phase dispatch refreshes replacement registry without relying on another outer owner pump" {
+    const gpa = std.testing.allocator;
+    const engine = try Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const options = try engine.eval(
+        \\globalThis.registryBoundaryStale=false;
+        \\const old={definition:{name:'fixture.boundary',version:1,phases:{next(){registryBoundaryStale=true}},abort(){}}},replacement={definition:{name:'fixture.boundary',version:1,phases:{next(){}},abort(){}}};
+        \\globalThis.registryBoundaryTokens={old,replacement,current:old};
+        \\({registry:{snapshot(){const token=registryBoundaryTokens.current;return{tasks(){return[token]},task(){return token},installed(){return[]},tools(){return[]},sections(){return[]}}}}});
+    , "registry-boundary-options", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(options);
+    const context = try sdk.object(engine);
+    defer engine.freeValue(context);
+    try attach(engine, session, options, context);
+    const manager = try getManager(engine, session);
+    var seed = try json.Owned.parse(gpa, "[{\"type\":\"conversation\",\"value\":{\"id\":1}},{\"type\":\"task\",\"value\":{\"id\":7,\"kind\":\"fixture.boundary\",\"version\":1,\"conversationId\":1,\"input\":{},\"background\":false,\"abortRequested\":false,\"state\":{\"status\":\"running\",\"checkpoint\":{\"phase\":\"next\"}}}}]");
+    defer seed.deinit();
+    _ = try manager.lease.value.storage.commitAt(seed.value, null);
+    const Invocation = std.meta.Child(@FieldType(scheduling.Runtime, "invocation"));
+    const invocation = try gpa.create(Invocation);
+    invocation.* = .{ .scheduler = &manager.scheduler, .task_id = 7, .conversation_id = 1, .definition = manager.scheduler.definitions.items[0], .mode = .run };
+    manager.scheduler.invocations.append(gpa, invocation) catch |err| {
+        gpa.destroy(invocation);
+        return err;
+    };
+    const entry = try gpa.create(Entry);
+    entry.* = .{ .manager = manager.retain(), .runtime = (scheduling.Runtime{ .invocation = invocation }).retain(), .generation = 1, .definition = 0, .refs = .init(1) };
+    manager.ledger.append(std.heap.page_allocator, entry) catch |err| {
+        entry.release();
+        return err;
+    };
+    // Simulate the next request arriving in the same Broker.drain call after
+    // the prior phase replaced the registry. No Hub.pump refresh occurs here.
+    const changed = try engine.eval("registryBoundaryTokens.current=registryBoundaryTokens.replacement", "registry-boundary-replacement", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(changed);
+    var payload = try json.Owned.parse(gpa, "{\"record\":{\"id\":7,\"kind\":\"fixture.boundary\",\"version\":1,\"conversationId\":1,\"input\":{},\"background\":false,\"abortRequested\":false,\"state\":{\"status\":\"running\",\"checkpoint\":{\"phase\":\"next\"}}},\"abort\":false}");
+    defer payload.deinit();
+    const canceled = std.atomic.Value(bool).init(false);
+    var reply = try Manager.dispatch(manager, .{ .owner_generation = manager.generation, .task_id = 7, .invocation_generation = 1 }, payload.value, &canceled);
+    reply.deinit();
+    const stale = try engine.eval("registryBoundaryStale", "registry-boundary-stale-result", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(stale);
+    try std.testing.expect(c.JS_ToBool(engine.context, stale) == 0);
+    try std.testing.expect(!invocation.active.load(.acquire));
+    var record = (try manager.lease.value.storage.readTableRecord(gpa, .task, 7)).?;
+    defer record.deinit();
+    try std.testing.expectEqualStrings("pending", try json.asString(try json.required(try json.required(record.value, "state"), "status")));
 }
 fn publicationWaiterExercise(gpa: std.mem.Allocator, with_worker: bool) !void {
     const engine = try Engine.init(gpa, .{});
