@@ -22,3 +22,5 @@ test {
 }
 pub const configured = @import("configured.zig");
 pub const tool_search = @import("tool_search.zig");
+
+pub const activation = @import("activation.zig");

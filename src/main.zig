@@ -2753,6 +2753,13 @@ const RuntimeResourceReloadContext = struct {
             pool.setRuntimeProviders(self.provider_registry.runtimes());
         }
         self.live.agent_cfg.tool_filter = self.active_filter.*;
+        if (self.live.agent_cfg.builtin_extension_runtime_fn == pi_zig.mcp.codemode_builtin.Runtime.execute) {
+            if (self.live.agent_cfg.builtin_extension_ctx) |codemode_context| {
+                const codemode: *pi_zig.mcp.codemode_builtin.Runtime = @ptrCast(@alignCast(codemode_context));
+                codemode.loadout_mode = fresh_settings.codemode_mode orelse .on;
+                codemode.inline_budget = fresh_settings.codemode_inline_budget orelse 3000;
+            }
+        }
         self.live.agent_cfg.max_turns = fresh_settings.max_turns;
         self.live.agent_cfg.auto_compaction_enabled = fresh_settings.compaction_enabled orelse true;
         self.live.agent_cfg.compaction_reserve_tokens = fresh_settings.compaction_reserve_tokens orelse 16_384;
@@ -4294,6 +4301,26 @@ fn runMain(init: std.process.Init) !void {
             .environ = environ,
             .reserved_names = reserved.items,
         });
+        const discovery_activation = pi_zig.mcp.activation;
+        const needs = discovery_activation.configuredNeeds(configured_mcp.?.loaded.value);
+        var eligible = active_tool_filter;
+        eligible.default_activation_ctx = null;
+        eligible.default_activation_fn = null;
+        const decision = discovery_activation.decide(needs, .{
+            .has_codemode = !extension_host.hasTool("codemode") and eligible.isEnabled("codemode"),
+            .has_search = !extension_host.hasTool("tool_search") and eligible.isEnabled("tool_search"),
+            .active_codemode = pi_zig.mcp.codemode_builtin.Runtime.isActive(&.{ .tool_filter = active_tool_filter }),
+            .active_search = pi_zig.mcp.codemode_builtin.Runtime.isNamedBuiltinActive(active_tool_filter, "tool_search"),
+            .auto_enable_codemode = if (configured_mcp.?.loaded.value.object.get("autoEnableCodemode")) |value| value.bool else true,
+        });
+        if (decision.activate_codemode or decision.activate_search) {
+            var modifiers: std.ArrayList([]const u8) = .empty;
+            try modifiers.appendSlice(arena, active_tool_filter.modifiers orelse &.{});
+            if (decision.activate_codemode) try modifiers.append(arena, "+codemode");
+            if (decision.activate_search) try modifiers.append(arena, "+tool_search");
+            active_tool_filter.modifiers = modifiers.items;
+        }
+        if (decision.warning) |warning| try std.Io.File.stderr().writeStreamingAll(io, try std.fmt.allocPrint(arena, "warning: {s}\n", .{warning}));
         try configured_mcp.?.start();
         for (configured_mcp.?.diagnostics.items) |message| {
             const warning = try std.fmt.allocPrint(arena, "warning: {s}\n", .{message});
@@ -4537,6 +4564,9 @@ fn runMain(init: std.process.Init) !void {
     agent_cfg.builtin_extension_runtime_fn = pi_zig.mcp.codemode_builtin.Runtime.execute;
     agent_cfg.builtin_extension_exists_fn = pi_zig.mcp.codemode_builtin.Runtime.exists;
     agent_cfg.builtin_extension_schemas_runtime_fn = pi_zig.mcp.codemode_builtin.Runtime.schemasForRuntime;
+    agent_cfg.builtin_extension_prepare_loadout_fn = pi_zig.mcp.codemode_builtin.Runtime.prepareLoadout;
+    codemode_runtime.loadout_mode = settings.codemode_mode orelse .on;
+    codemode_runtime.inline_budget = settings.codemode_inline_budget orelse 3000;
     // 0.16's native x86 backend can reuse AL for a later boolean initializer
     // while this function pointer is still held in RAX, corrupting its address.
     // Keeping each assignment complete also avoids conditional callback values

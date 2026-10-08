@@ -159,6 +159,7 @@ pub const ExtensionTool = struct {
     has_prepare_arguments: bool = false,
     render_shell_self: bool = false,
     default_active: bool = true,
+    exposure: enum { direct, model_only, codemode, deferred, hidden } = .direct,
     model_declarable: bool = true,
     model_hidden: bool = false,
 
@@ -1007,6 +1008,7 @@ pub const Host = struct {
                     .has_prepare_arguments = has_prepare_arguments,
                     .render_shell_self = render_shell_self,
                     .default_active = default_active,
+                    .exposure = if (tool_value.object.get("exposure")) |value| (if (std.mem.eql(u8, value.string, "model-only")) .model_only else if (std.mem.eql(u8, value.string, "codemode")) .codemode else if (std.mem.eql(u8, value.string, "deferred")) .deferred else if (std.mem.eql(u8, value.string, "hidden")) .hidden else .direct) else .direct,
                     .model_declarable = model_declarable,
                     .model_hidden = model_hidden,
                 });
