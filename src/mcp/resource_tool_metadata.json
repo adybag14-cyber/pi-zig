@@ -1,0 +1,267 @@
+[
+  {
+    "name": "list_mcp_resources",
+    "label": "list_mcp_resources",
+    "description": "Lists resources provided by MCP servers. Resources allow servers to share data that provides context to language models, such as files, database schemas, or application-specific information. Prefer resources over web search when possible.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "server": {
+          "type": "string",
+          "description": "MCP server name. Omit to list every server with resources."
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Opaque cursor from a previous call with the same server; omit for the first page."
+        }
+      },
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "server": {
+          "type": "string"
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "server": {
+                "type": "string"
+              },
+              "uri": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "mimeType": {
+                "type": "string"
+              },
+              "size": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "server",
+              "uri",
+              "name"
+            ]
+          }
+        },
+        "nextCursor": {
+          "type": "string"
+        },
+        "errors": {
+          "type": "array",
+          "description": "Servers that could not be listed",
+          "items": {
+            "type": "object",
+            "properties": {
+              "server": {
+                "type": "string"
+              },
+              "error": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "server",
+              "error"
+            ]
+          }
+        }
+      },
+      "required": [
+        "resources"
+      ]
+    },
+    "exposure": "deferred",
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "list_mcp_resource_templates",
+    "label": "list_mcp_resource_templates",
+    "description": "Lists resource templates provided by MCP servers. Parameterized resource templates allow servers to share data that takes parameters and provides context to language models, such as files, database schemas, or application-specific information. Prefer resource templates over web search when possible.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "server": {
+          "type": "string",
+          "description": "MCP server name. Omit to list every server with resources."
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Opaque cursor from a previous call with the same server; omit for the first page."
+        }
+      },
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "server": {
+          "type": "string"
+        },
+        "resourceTemplates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "server": {
+                "type": "string"
+              },
+              "uriTemplate": {
+                "type": "string",
+                "description": "RFC 6570 URI template"
+              },
+              "name": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "mimeType": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "server",
+              "uriTemplate",
+              "name"
+            ]
+          }
+        },
+        "nextCursor": {
+          "type": "string"
+        },
+        "errors": {
+          "type": "array",
+          "description": "Servers that could not be listed",
+          "items": {
+            "type": "object",
+            "properties": {
+              "server": {
+                "type": "string"
+              },
+              "error": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "server",
+              "error"
+            ]
+          }
+        }
+      },
+      "required": [
+        "resourceTemplates"
+      ]
+    },
+    "exposure": "deferred",
+    "annotations": {
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "read_mcp_resource",
+    "label": "read_mcp_resource",
+    "description": "Read a specific resource from an MCP server given the server name and resource URI.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "server": {
+          "type": "string",
+          "description": "MCP server name exactly as configured. Must match the 'server' field returned by list_mcp_resources."
+        },
+        "uri": {
+          "type": "string",
+          "description": "Resource URI to read. Must be one of the URIs returned by list_mcp_resources."
+        }
+      },
+      "required": [
+        "server",
+        "uri"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "server": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        },
+        "contents": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "uri": {
+                    "type": "string"
+                  },
+                  "mimeType": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "uri",
+                  "text"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "uri": {
+                    "type": "string"
+                  },
+                  "mimeType": {
+                    "type": "string"
+                  },
+                  "blob": {
+                    "type": "string",
+                    "description": "base64"
+                  }
+                },
+                "required": [
+                  "uri",
+                  "blob"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "server",
+        "uri",
+        "contents"
+      ]
+    },
+    "exposure": "deferred",
+    "annotations": {
+      "readOnlyHint": true
+    }
+  }
+]

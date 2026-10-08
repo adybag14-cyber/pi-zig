@@ -56,6 +56,102 @@ fn execute(service: *configured.Service, name: []const u8, args: []const u8) !to
     return (try configured.Service.execute(service, gpa, "owned-call", name, args, discard, null, null)) orelse error.MissingConfiguredTool;
 }
 
+test "mcp.configured resource-only servers expose native global tools with pagination remote errors and absent templates" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var configuration = try stdioConfig(a, program, "direct");
+    var args: Value = .{ .array = .init(a) };
+    try args.array.append(.{ .string = "--resources-no-templates" });
+    try configuration.object.put(a, "args", args);
+    // Tool-specific overrides do not suppress server resources.
+    try configuration.object.put(a, "toolExposure", try map(a, &.{.{ "*", .{ .string = "hidden" } }}));
+    try root.write(false, try document(a, "native", configuration));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const service = try create(&root, &env, false);
+    defer service.deinit();
+    try service.start();
+    try std.testing.expectEqual(@as(usize, 3), service.descriptors.items.len);
+    try std.testing.expect(service.owns("list_mcp_resources"));
+    try std.testing.expect(service.owns("list_mcp_resource_templates"));
+    try std.testing.expect(service.owns("read_mcp_resource"));
+    try std.testing.expectEqual(@import("mcp/config.zig").Exposure.direct, service.exposureOf("list_mcp_resources").?);
+    var listed = try execute(service, "list_mcp_resources", "{}");
+    defer listed.deinit(gpa);
+    var details = try json.Owned.parse(gpa, listed.details_json.?);
+    defer details.deinit();
+    const resources = try protocol.field(try protocol.field(details.value, "structuredContent"), "resources");
+    try std.testing.expectEqual(@as(usize, 2), resources.array.items.len);
+    try std.testing.expectEqualStrings("file:///second", try protocol.text(resources.array.items[1], "name"));
+    try std.testing.expect(json.get(resources.array.items[0], "icons") == null);
+    try std.testing.expect(json.get(resources.array.items[0], "_meta") == null);
+    var page = try execute(service, "list_mcp_resources", "{\"server\":\"native\"}");
+    defer page.deinit(gpa);
+    try std.testing.expect(std.mem.indexOf(u8, page.content, "nextCursor") != null);
+    var templates = try execute(service, "list_mcp_resource_templates", "{}");
+    defer templates.deinit(gpa);
+    try std.testing.expectEqualStrings("{\"resourceTemplates\":[]}", templates.content);
+    var template_page = try execute(service, "list_mcp_resource_templates", "{\"server\":\"native\"}");
+    defer template_page.deinit(gpa);
+    try std.testing.expectEqualStrings("{\"server\":\"native\",\"resourceTemplates\":[]}", template_page.content);
+    var read = try execute(service, "read_mcp_resource", "{\"server\":\"native\",\"uri\":\"file:///first\"}");
+    defer read.deinit(gpa);
+    try std.testing.expectEqualStrings("Native resource contents", read.content);
+    var remote = try execute(service, "read_mcp_resource", "{\"server\":\"native\",\"uri\":\"fail\"}");
+    defer remote.deinit(gpa);
+    try std.testing.expect(remote.is_error);
+    try std.testing.expectEqualStrings("Original resource failure", remote.content);
+}
+
+test "mcp.configured shutdown joins admitted resource callers before server catalog destruction" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var configuration = try stdioConfig(a, program, "direct");
+    var args: Value = .{ .array = .init(a) };
+    try args.array.append(.{ .string = "--resources" });
+    try configuration.object.put(a, "args", args);
+    try root.write(false, try document(a, "native", configuration));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const service = try create(&root, &env, false);
+    defer service.deinit();
+    try service.start();
+    const server = service.findServer("native").?;
+    const observed = try server.connection.acquire();
+    var borrowed = true;
+    defer if (borrowed) observed.release();
+    var calling = try io.concurrent(execute, .{ service, "read_mcp_resource", "{\"server\":\"native\",\"uri\":\"slow\"}" });
+    var joined = false;
+    defer if (!joined) {
+        if (calling.cancel(io)) |result| {
+            var owned = result;
+            owned.deinit(gpa);
+        } else |_| {}
+    };
+    for (0..1000) |_| {
+        if (observed.client.pendingCount() > 0) break;
+        try io.sleep(.fromMilliseconds(1), .awake);
+    }
+    try std.testing.expect(observed.client.pendingCount() > 0);
+    observed.release();
+    borrowed = false;
+    try service.close();
+    try std.testing.expectError(error.McpConnectionClosed, calling.await(io));
+    joined = true;
+    try std.testing.expectEqual(@as(usize, 0), service.active_calls);
+    try std.testing.expectError(error.McpConnectionClosed, execute(service, "read_mcp_resource", "{}"));
+}
+
 test "mcp.configured trusted project overrides and untrusted files never execute" {
     const program = try fixturePath();
     defer gpa.free(program);

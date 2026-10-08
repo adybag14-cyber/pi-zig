@@ -550,6 +550,13 @@ pub fn build(b: *std.Build) void {
     });
     linkDurable(b, mcp_configured_tests.root_module);
     linkQuickJs(b, mcp_configured_tests.root_module, quickjs, sqlite_lib_dir);
+    const resource_adapter_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/mcp_resource_tools_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"MCP resource adapter"}, .use_llvm = use_llvm });
+    linkQuickJs(b, resource_adapter_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, resource_adapter_tests.root_module);
+    resource_adapter_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const resource_adapter_run = b.addRunArtifact(resource_adapter_tests);
+    b.step("test-mcp-resource-tools", "Replay Source resource listing reading and model output contracts").dependOn(&resource_adapter_run.step);
+    test_step.dependOn(&resource_adapter_run.step);
     const run_mcp_configured_tests = b.addRunArtifact(mcp_configured_tests);
     const install_mcp_configured_cli = b.addInstallArtifact(exe, .{});
     run_mcp_configured_tests.step.dependOn(&install_mcp_configured_cli.step);

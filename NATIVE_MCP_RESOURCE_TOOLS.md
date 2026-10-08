@@ -1,0 +1,13 @@
+# Native MCP resource tools
+
+This additive slice follows Pi commit `6fb2e7815167e6b19006fc526d1a5d0f5f998787` (Pi 1.1.0). It implements `list_mcp_resources`, `list_mcp_resource_templates`, and `read_mcp_resource` in Zig, using the retained native MCP client and transports. This document does not certify complete Pi or MCP parity.
+
+The tools use initialized server resource capabilities and the widest visible server exposure. Tool-specific exposure overrides do not change resource visibility. Resource-only servers work without the tools capability. A missing templates method returns an empty list; other remote failures retain their original message. Resource lists normalize omitted names, terminal cursors, app filtering, icons, and metadata according to the upstream client and resource adapters.
+
+All-server requests admit concurrent native operations before joining them, and publish results in server-name order. Each operation owns its result and retirement state. Service shutdown closes connections and joins admitted callers before destroying server storage. Definition IDs belong to the native service owner. The two list tools share a parameter identity key, while the read tool has a separate key; these keys are metadata for a private binding, not JSON capabilities.
+
+Executable comparisons include upstream resource-tool results and schemas, client page validation, Unicode whitespace, 41,616 ICU comparisons over permitted ASCII server names, and 108 binary/MIME cases. Binary checks compare saved file bytes and extensions, text decoding, image payloads, and model-facing text. Independent native tests cover concurrent admission, cancellation propagation, allocation failure cleanup, real stdio pagination, optional templates, remote errors, and shutdown with a stalled resource request.
+
+The implementation reuses the native Buffer-compatible base64 decoder and the existing MCP model-content converter. Configured clients report the current application version rather than a stale literal. Host implementation remains Zig/C; the upstream JavaScript programs used to obtain comparison data are external evidence, not a repository runtime dependency.
+
+Remaining work includes notification-driven catalog refresh, resource counts and idle UI updates, read-only HTTP retry/session replacement semantics, exact upstream error classes and local-validation messages, prompt integration, and the private canonical ToolInfo/schema binding. Complete native defaults and removal of the legacy extension bridge remain gated on the broader parity work. Local development passes do not qualify a different source snapshot or a hosted platform; frozen-source validation receipts are recorded separately.
