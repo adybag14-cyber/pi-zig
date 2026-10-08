@@ -108,6 +108,13 @@ pub const Manager = struct {
         var parsed = std.json.parseFromSlice(std.json.Value, gpa, raw, .{ .allocate = .alloc_always }) catch return error.InvalidKeybindingsJson;
         errdefer parsed.deinit();
         if (parsed.value != .object) return error.InvalidKeybindingsJson;
+        var index: usize = 0;
+        while (index < parsed.value.object.count()) {
+            const id = parsed.value.object.keys()[index];
+            if (std.mem.eql(u8, id, "$schema") or !validBindingValue(parsed.value.object.values()[index])) {
+                _ = parsed.value.object.orderedRemove(id);
+            } else index += 1;
+        }
         return .{ .gpa = gpa, .parsed = parsed };
     }
 
@@ -209,6 +216,40 @@ pub const Manager = struct {
     }
 };
 
+pub fn validBindingValue(value: std.json.Value) bool {
+    return switch (value) {
+        .string => |key| validKeyId(key),
+        .array => |array| blk: {
+            for (array.items) |item| if (item != .string or !validKeyId(item.string)) break :blk false;
+            break :blk true;
+        },
+        else => false,
+    };
+}
+pub fn validKeyId(id: []const u8) bool {
+    var remaining = id;
+    var seen: u8 = 0;
+    var count: u8 = 0;
+    while (true) {
+        var consumed = false;
+        inline for (.{ "ctrl+", "shift+", "alt+", "super+" }, 0..) |prefix, index| {
+            if (!consumed and std.mem.startsWith(u8, remaining, prefix)) {
+                const bit: u8 = @as(u8, 1) << @intCast(index);
+                if (seen & bit != 0) return false;
+                seen |= bit;
+                count += 1;
+                remaining = remaining[prefix.len..];
+                consumed = true;
+            }
+        }
+        if (!consumed) break;
+    }
+    if (count > 4 or remaining.len == 0) return false;
+    if (remaining.len == 1) return std.ascii.isLower(remaining[0]) or std.ascii.isDigit(remaining[0]) or std.mem.indexOfScalar(u8, "`-=[]\\;',./!@#$%^&*()_+|~{}:<>?", remaining[0]) != null;
+    for ([_][]const u8{ "escape", "esc", "enter", "return", "tab", "space", "backspace", "delete", "insert", "clear", "home", "end", "pageUp", "pageDown", "up", "down", "left", "right", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12" }) |name| if (std.mem.eql(u8, remaining, name)) return true;
+    return false;
+}
+
 fn valueMatches(value: std.json.Value, normalized_input: []const u8) bool {
     switch (value) {
         .string => |key| {
@@ -258,17 +299,27 @@ pub fn normalizeKey(input: []const u8, out: *[96]u8) ?[]const u8 {
     var shift = false;
     var alt = false;
     var super = false;
-    var base: ?[]const u8 = null;
-    var it = std.mem.splitScalar(u8, input, '+');
-    while (it.next()) |part_raw| {
-        const part = std.mem.trim(u8, part_raw, " \t\r\n");
-        if (part.len == 0) return null;
-        if (std.ascii.eqlIgnoreCase(part, "ctrl")) ctrl = true else if (std.ascii.eqlIgnoreCase(part, "shift")) shift = true else if (std.ascii.eqlIgnoreCase(part, "alt")) alt = true else if (std.ascii.eqlIgnoreCase(part, "super")) super = true else {
-            if (base != null) return null;
-            base = part;
-        }
+    var base_value = input;
+    while (true) {
+        if (std.ascii.startsWithIgnoreCase(base_value, "ctrl+")) {
+            if (ctrl) return null;
+            ctrl = true;
+            base_value = base_value[5..];
+        } else if (std.ascii.startsWithIgnoreCase(base_value, "shift+")) {
+            if (shift) return null;
+            shift = true;
+            base_value = base_value[6..];
+        } else if (std.ascii.startsWithIgnoreCase(base_value, "alt+")) {
+            if (alt) return null;
+            alt = true;
+            base_value = base_value[4..];
+        } else if (std.ascii.startsWithIgnoreCase(base_value, "super+")) {
+            if (super) return null;
+            super = true;
+            base_value = base_value[6..];
+        } else break;
     }
-    var base_value = base orelse return null;
+    if (base_value.len == 0 or (std.mem.indexOfScalar(u8, base_value, '+') != null and !std.mem.eql(u8, base_value, "+"))) return null;
     if (std.ascii.eqlIgnoreCase(base_value, "esc")) base_value = "escape";
     if (std.ascii.eqlIgnoreCase(base_value, "return")) base_value = "enter";
 
@@ -308,6 +359,27 @@ test "named selection keybindings accept raw terminal sequences configurable arr
     try std.testing.expect(!manager.matchesActionName("tui.select.cancel", "\x1b"));
     try std.testing.expect(manager.matchesActionName("tui.select.confirm", "\x19"));
     try std.testing.expect(!manager.matchesActionName("tui.select.confirm", "\r"));
+}
+
+test "current keybinding value schema replays actual TypeBox validation and drops invalid configured values" {
+    var normalized: [96]u8 = undefined;
+    try std.testing.expectEqualStrings("ctrl++", normalizeKey("ctrl++", &normalized).?);
+    try std.testing.expect(normalizeKey("ctrl+ctrl+c", &normalized) == null);
+    const gpa = std.testing.allocator;
+    const capture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/keybinding-schema-6fb-original.json"), .{});
+    defer capture.deinit();
+    for (capture.value.object.get("rows").?.array.items) |row| try std.testing.expectEqual(row.object.get("result").?.bool, validBindingValue(row.object.get("input").?));
+    var scratch = std.testing.tmpDir(.{});
+    defer scratch.cleanup();
+    try scratch.dir.writeFile(std.testing.io, .{ .sub_path = "keybindings.json", .data = "{\"$schema\":\"schema.json\",\"tui.select.up\":[\"up\",3],\"tui.select.cancel\":[],\"tui.select.confirm\":\"ctrl++\"}" });
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const len = try scratch.dir.realPath(std.testing.io, &buffer);
+    var manager = try Manager.load(gpa, std.testing.io, buffer[0..len]);
+    defer manager.deinit();
+    try std.testing.expect(manager.matchesActionName("tui.select.up", "\x1b[A"));
+    try std.testing.expect(!manager.matchesActionName("tui.select.cancel", "\x1b"));
+    try std.testing.expect(manager.matchesActionName("tui.select.confirm", "\x1b[61:43;6u"));
+    try std.testing.expect(manager.parsed.?.value.object.get("$schema") == null);
 }
 
 test "keybinding defaults normalize modifier order" {
