@@ -46,6 +46,8 @@ pub const Server = struct {
     reconnect_active: bool = false,
     reconnect_callers: usize = 0,
     has_resources: bool = false,
+    resources_count: usize = 0,
+    resource_templates_count: usize = 0,
     fn authToken(raw: ?*anyopaque, gpa: std.mem.Allocator, _: ?*bool) !?[]u8 {
         const self: *Server = @ptrCast(@alignCast(raw.?));
         if (self.auth_provider) |*provider| return provider.token();
@@ -351,6 +353,47 @@ pub const Service = struct {
             try pool.add(server, fetchDiscovery, direct);
         }
     }
+    pub const ResourceCounts = struct { resources: usize = 0, templates: usize = 0 };
+    pub fn resourceCounts(server: *Server) anyerror!ResourceCounts {
+        const self = server.owner;
+        const ResourceJob = struct {
+            server: *Server,
+            operation: resource_tools.Operation,
+            reply: ?resource_tools.Reply = null,
+            cause: ?anyerror = null,
+            future: ?std.Io.Future(void) = null,
+            fn run(job: *@This()) void {
+                job.reply = invokeResource(job.server, job.server.owner.gpa, job.operation, null, null) catch |cause| {
+                    job.cause = cause;
+                    return;
+                };
+            }
+            fn deinit(job: *@This(), operation_io: std.Io) void {
+                if (job.future) |*future| future.cancel(operation_io);
+                if (job.reply) |*reply| reply.value.deinit();
+            }
+            fn count(job: *@This()) !usize {
+                if (job.cause) |cause| if (cause == error.OutOfMemory) return error.OutOfMemory;
+                const reply = job.reply orelse return 0;
+                if (reply.error_message != null) return 0;
+                var count_value: usize = 0;
+                for (reply.value.value.array.items) |item| if (!resource_tools.isApp(item)) {
+                    count_value += 1;
+                };
+                return count_value;
+            }
+        };
+        var resource_jobs = [_]ResourceJob{ .{ .server = server, .operation = .all_resources }, .{ .server = server, .operation = .all_templates } };
+        defer for (&resource_jobs) |*job| job.deinit(self.io);
+        for (&resource_jobs) |*job| {
+            job.future = try self.io.concurrent(ResourceJob.run, .{job});
+        }
+        for (&resource_jobs) |*job| {
+            job.future.?.await(self.io);
+            job.future = null;
+        }
+        return .{ .resources = try resource_jobs[0].count(), .templates = try resource_jobs[1].count() };
+    }
     fn fetchDiscovery(raw: *anyopaque) !json.Owned {
         const server: *Server = @ptrCast(@alignCast(raw));
         const self = server.owner;
@@ -363,13 +406,25 @@ pub const Service = struct {
         const initialized = borrow.client.initialized.?.value;
         try result.value.object.put(a, "initialized", try json.clone(a, initialized));
         const offers = try protocol.field(initialized, "capabilities");
+        var counts_future: ?std.Io.Future(anyerror!ResourceCounts) = null;
+        defer if (counts_future) |*future| {
+            _ = future.cancel(self.io) catch {};
+        };
+        if (json.get(offers, "resources") != null) counts_future = try self.io.concurrent(resourceCounts, .{server});
         var listed: json.Value = .{ .array = .init(a) };
-        if (json.get(offers, "tools") != null) {
+        if (capabilities.offersTools(offers)) {
             var found = try capabilities.listAll(borrow.client, .tools, .{ .timeout_ms = server.timeout_ms });
             defer found.deinit();
             listed = try json.clone(a, found.value);
         }
         try result.value.object.put(a, "tools", listed);
+        const counts = if (counts_future) |*future| blk: {
+            const fetched = future.await(self.io);
+            counts_future = null;
+            break :blk try fetched;
+        } else ResourceCounts{};
+        try result.value.object.put(a, "resourcesCount", .{ .integer = @intCast(counts.resources) });
+        try result.value.object.put(a, "resourceTemplatesCount", .{ .integer = @intCast(counts.templates) });
         return result;
     }
     fn discover(self: *Service, server: *Server) !void {
@@ -382,6 +437,8 @@ pub const Service = struct {
     fn publishDiscovery(self: *Service, server: *Server, result: json.Value) !void {
         const initialized = try protocol.field(result, "initialized");
         server.has_resources = json.get(try protocol.field(initialized, "capabilities"), "resources") != null;
+        server.resources_count = @intCast(try json.asInteger(try protocol.field(result, "resourcesCount")));
+        server.resource_templates_count = @intCast(try json.asInteger(try protocol.field(result, "resourceTemplatesCount")));
         const listed = try protocol.field(result, "tools");
         const a = self.loaded.arena.allocator();
         for (listed.array.items) |item| {

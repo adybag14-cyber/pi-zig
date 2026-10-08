@@ -77,6 +77,8 @@ test "mcp.configured resource-only servers expose native global tools with pagin
     defer service.deinit();
     try service.start();
     try std.testing.expectEqual(@as(usize, 3), service.descriptors.items.len);
+    try std.testing.expectEqual(@as(usize, 2), service.findServer("native").?.resources_count);
+    try std.testing.expectEqual(@as(usize, 0), service.findServer("native").?.resource_templates_count);
     try std.testing.expect(service.owns("list_mcp_resources"));
     try std.testing.expect(service.owns("list_mcp_resource_templates"));
     try std.testing.expect(service.owns("read_mcp_resource"));
@@ -150,6 +152,52 @@ test "mcp.configured shutdown joins admitted resource callers before server cata
     joined = true;
     try std.testing.expectEqual(@as(usize, 0), service.active_calls);
     try std.testing.expectError(error.McpConnectionClosed, execute(service, "read_mcp_resource", "{}"));
+}
+
+test "mcp.configured failed initial resource lists keep reading available and false tools capabilities skip discovery" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    for ([_][]const u8{ "--resources-failed-lists", "--resources-false-tools" }) |mode| {
+        var root = try Root.init();
+        defer root.deinit();
+        var arena: std.heap.ArenaAllocator = .init(gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        var configuration = try stdioConfig(a, program, "direct");
+        var args: Value = .{ .array = .init(a) };
+        try args.array.append(.{ .string = mode });
+        try configuration.object.put(a, "args", args);
+        try root.write(false, try document(a, "native", configuration));
+        var env = try std.testing.environ.createMap(gpa);
+        defer env.deinit();
+        const service = try create(&root, &env, false);
+        defer service.deinit();
+        try service.start();
+        try std.testing.expectEqual(@as(usize, 0), service.diagnostics.items.len);
+        const server = service.findServer("native").?;
+        try std.testing.expect(server.has_resources);
+        try std.testing.expectEqual(@as(usize, 3), service.descriptors.items.len);
+        try std.testing.expectEqual(@as(usize, if (std.mem.eql(u8, mode, "--resources-failed-lists")) 0 else 2), server.resources_count);
+        var read = try execute(service, "read_mcp_resource", "{\"server\":\"native\",\"uri\":\"file:///first\"}");
+        defer read.deinit(gpa);
+        try std.testing.expectEqualStrings("Native resource contents", read.content);
+        const cli = try gpa.dupe(u8, env.get("PI_MCP_CONFIGURED_CLI") orelse return error.MissingCliFixture);
+        defer gpa.free(cli);
+        try env.put("PI_AGENT_DIR", root.path);
+        try env.put("PI_OFFLINE", "1");
+        try env.put("PATH", std.fs.path.dirname(cli).?);
+        const output = try std.process.run(gpa, io, .{ .argv = &.{ cli, "mcp", "list", "--json" }, .cwd = .{ .path = root.path }, .environ_map = &env, .stdout_limit = .limited(65536), .stderr_limit = .limited(65536), .timeout = .{ .duration = .{ .raw = .fromSeconds(20), .clock = .awake } } });
+        defer gpa.free(output.stdout);
+        defer gpa.free(output.stderr);
+        try std.testing.expect(output.term == .exited and output.term.exited == 0);
+        var report = try json.Owned.parse(gpa, output.stdout);
+        defer report.deinit();
+        const row = (try protocol.field(report.value, "servers")).array.items[0];
+        try std.testing.expectEqualStrings("connected", try protocol.text(row, "state"));
+        try std.testing.expectEqual(@as(usize, 0), (try protocol.field(row, "tools")).array.items.len);
+        try std.testing.expectEqual(@as(f64, if (std.mem.eql(u8, mode, "--resources-failed-lists")) 0 else 2), try json.asNumber(try protocol.field(row, "resources")));
+        try std.testing.expectEqual(@as(f64, if (std.mem.eql(u8, mode, "--resources-failed-lists")) 0 else 1), try json.asNumber(try protocol.field(row, "resourceTemplates")));
+    }
 }
 
 test "mcp.configured trusted project overrides and untrusted files never execute" {
