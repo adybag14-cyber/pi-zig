@@ -348,6 +348,42 @@ test "native MouseRegion real terminal pointer ACK precedes keyboard capture cro
     }
 }
 
+test "native Source1ced fake cursor paints focused and unfocused real cells with hardware disabled" {
+    if (!pty.supported()) return error.SkipZigTest;
+    for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
+        var fixture = try Fixture.init(mode);
+        defer fixture.deinit();
+        const settings = try std.fmt.allocPrint(std.testing.allocator, "{{\"tuiMode\":\"{s}\",\"showHardwareCursor\":false,\"quietStartup\":true,\"enableInstallTelemetry\":false}}", .{mode});
+        defer std.testing.allocator.free(settings);
+        try fixture.scratch.dir.writeFile(std.testing.io, .{ .sub_path = "agent/settings.json", .data = settings });
+        const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+        defer errors.close(std.testing.io);
+        const source =
+            \\import {renderFakeCursor,CURSOR_MARKER} from 'pi-tui';
+            \\export default pi=>pi.registerCommand('cursor-proof',{handler(_,ctx){return ctx.ui.custom((tui,theme,keys,done)=>({focused:true,render(){return ['CURSOR_FOCUSED:'+CURSOR_MARKER+renderFakeCursor('界')+':END','CURSOR_UNFOCUSED:'+renderFakeCursor('Ω')+':END']},handleInput(data){if(data==='\x1b')done('cursor-closed')},invalidate(){}}),{overlay:true,overlayOptions:{width:40,height:3,row:5,col:7}}).then(value=>({message:value}))}})
+        ;
+        var child = try fixture.spawnExtension(errors, source);
+        defer child.deinit();
+        var observed = try Observer.init();
+        defer observed.deinit();
+        try observed.waitAny(&child, ">");
+        try observed.send(&child, "/cursor-proof\r", "CURSOR_FOCUSED:界:END");
+        try observed.waitAny(&child, "CURSOR_UNFOCUSED:Ω:END");
+        var focused = false;
+        var unfocused = false;
+        for (observed.screen.cells()) |cell| {
+            if (cell.scalar == '界') focused = focused or cell.reverse;
+            if (cell.scalar == 'Ω') unfocused = unfocused or cell.reverse;
+        }
+        try std.testing.expect(focused and unfocused);
+        try std.testing.expect(!observed.screen.cursor_visible);
+        try std.testing.expect(std.mem.indexOf(u8, child.output.items, "\x1b_pi:") == null);
+        try observed.send(&child, "\x1b", "cursor-closed");
+        try observed.send(&child, "after-cursor", "> after-cursor");
+        try cleanExit(&fixture, &child, &observed);
+    }
+}
+
 test "real custom editor original modal input replaces editor row changes submits resizes reloads and restores terminal" {
     if (!pty.supported()) return error.SkipZigTest;
     var fixture = try Fixture.init("fullscreen");

@@ -1,7 +1,7 @@
 //! Native VT cell model for inspecting bytes emitted by a real PTY child.
 const std = @import("std");
 
-pub const Cell = struct { scalar: u21 = ' ', continuation: bool = false };
+pub const Cell = struct { scalar: u21 = ' ', continuation: bool = false, reverse: bool = false };
 pub const Screen = struct {
     gpa: std.mem.Allocator,
     columns: usize,
@@ -15,6 +15,7 @@ pub const Screen = struct {
     saved_column: usize = 0,
     wrap_pending: bool = false,
     cursor_visible: bool = true,
+    reverse: bool = false,
     frames: usize = 0,
     synchronized_update: bool = false,
     enters: usize = 0,
@@ -155,8 +156,8 @@ pub const Screen = struct {
             self.column = 0;
             self.lineFeed();
         }
-        self.cells()[self.row * self.columns + self.column] = .{ .scalar = scalar };
-        if (width == 2 and self.column + 1 < self.columns) self.cells()[self.row * self.columns + self.column + 1] = .{ .continuation = true };
+        self.cells()[self.row * self.columns + self.column] = .{ .scalar = scalar, .reverse = self.reverse };
+        if (width == 2 and self.column + 1 < self.columns) self.cells()[self.row * self.columns + self.column + 1] = .{ .continuation = true, .reverse = self.reverse };
         self.column += width;
         if (self.column >= self.columns) {
             self.column = self.columns - 1;
@@ -201,6 +202,19 @@ pub const Screen = struct {
         }
         const n = @max(@as(usize, 1), parameter(sequence, 0, 1));
         switch (final) {
+            'm' => {
+                var fields = std.mem.splitScalar(u8, sequence, ';');
+                while (fields.next()) |field| switch (std.fmt.parseUnsigned(usize, field, 10) catch 0) {
+                    0, 27 => self.reverse = false,
+                    7 => self.reverse = true,
+                    38, 48, 58 => {
+                        const kind = fields.next() orelse break;
+                        const count: usize = if (std.mem.eql(u8, kind, "2")) 3 else 1;
+                        for (0..count) |_| _ = fields.next();
+                    },
+                    else => {},
+                };
+            },
             'H', 'f' => {
                 self.row = @min(self.rows - 1, n - 1);
                 self.column = @min(self.columns - 1, @max(@as(usize, 1), parameter(sequence, 1, 1)) - 1);

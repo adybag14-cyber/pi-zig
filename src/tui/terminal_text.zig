@@ -436,13 +436,20 @@ pub fn sliceByColumnsAlloc(gpa: std.mem.Allocator, bytes: []const u8, start_colu
     var index: usize = 0;
     while (index < bytes.len) {
         if (extractSequence(bytes, index)) |sequence| {
-            if (started) try out.appendSlice(gpa, sequence.bytes) else try prefix_controls.appendSlice(gpa, sequence.bytes);
+            if (sequence.kind == .apc) {
+                // APC positions belong to a cell boundary, not to tracked
+                // styling. Keep an after-boundary marker, never move a marker
+                // from the overwritten prefix into the surviving suffix.
+                if (current >= start_column and current - start_column < max_width) {
+                    if (start_column == 0 and !started) try prefix_controls.appendSlice(gpa, sequence.bytes) else try out.appendSlice(gpa, sequence.bytes);
+                }
+            } else if (started) try out.appendSlice(gpa, sequence.bytes) else try prefix_controls.appendSlice(gpa, sequence.bytes);
             index = sequence.end;
             continue;
         }
         const cluster = nextCluster(bytes, index) orelse break;
         const cluster_end = current + cluster.width;
-        if (!started and cluster_end > start_column) {
+        if (!started and current >= start_column and cluster.width <= max_width) {
             started = true;
             try out.appendSlice(gpa, prefix_controls.items);
         }

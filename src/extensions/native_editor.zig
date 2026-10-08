@@ -161,9 +161,8 @@ fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
     _ = try node.autocomplete.poll();
     const focused = try engine.checked(c.JS_GetPropertyStr(engine.context, object, "focused"));
     defer engine.freeValue(focused);
-    var view = node.editor;
-    if (!c.JS_IsUndefined(focused) and c.JS_ToBool(engine.context, focused) == 0) view.cursor = std.math.maxInt(usize);
-    var lines = try line_editor.renderEditorLinesPadded(engine.gpa, &view, @max(3, width), node.padding);
+    const view = node.editor;
+    var lines = try line_editor.renderEditorLinesFocused(engine.gpa, &view, @max(3, width), node.padding, c.JS_IsUndefined(focused) or c.JS_ToBool(engine.context, focused) != 0);
     defer lines.deinit(engine.gpa);
     const array = try engine.checked(c.JS_NewArray(engine.context));
     errdefer engine.freeValue(array);

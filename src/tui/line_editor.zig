@@ -484,6 +484,10 @@ pub fn renderEditorLines(gpa: std.mem.Allocator, editor: *const Editor, width_ra
 }
 
 pub fn renderEditorLinesPadded(gpa: std.mem.Allocator, editor: *const Editor, width_raw: usize, padding_x: u8) !@import("layout.zig").RenderedLines {
+    return renderEditorLinesFocused(gpa, editor, width_raw, padding_x, true);
+}
+
+pub fn renderEditorLinesFocused(gpa: std.mem.Allocator, editor: *const Editor, width_raw: usize, padding_x: u8, focused: bool) !@import("layout.zig").RenderedLines {
     const width = @max(@as(usize, 3), width_raw);
     const padding = @min(@min(@as(usize, padding_x), 3), (width - 3) / 2);
     const content_width = width - 2 - 2 * padding;
@@ -500,12 +504,15 @@ pub fn renderEditorLinesPadded(gpa: std.mem.Allocator, editor: *const Editor, wi
     var index: usize = 0;
     const text = editor.slice();
     while (index < text.len) {
-        const length = std.unicode.utf8ByteSequenceLength(text[index]) catch 1;
-        const end = @min(text.len, index + length);
+        const cluster = @import("terminal_text.zig").nextCluster(text, index) orelse break;
+        const end = cluster.end;
         const bytes = text[index..end];
         const cell_width = @import("terminal_text.zig").visibleWidth(bytes);
         if (text[index] == '\n' or (column > 0 and column + cell_width > content_width)) {
-            if (text[index] == '\n' and editor.cursor == index) try line.appendSlice(gpa, @import("widgets.zig").cursor_marker);
+            if (text[index] == '\n' and editor.cursor == index) {
+                if (focused) try line.appendSlice(gpa, @import("widgets.zig").cursor_marker);
+                try @import("cursor_markers.zig").appendFake(gpa, &line, " ");
+            }
             try appendEditorLine(gpa, &lines, line.items);
             line.clearRetainingCapacity();
             try line.appendNTimes(gpa, ' ', padding);
@@ -516,8 +523,10 @@ pub fn renderEditorLinesPadded(gpa: std.mem.Allocator, editor: *const Editor, wi
                 continue;
             }
         }
-        if (editor.cursor == index) try line.appendSlice(gpa, @import("widgets.zig").cursor_marker);
-        try line.appendSlice(gpa, bytes);
+        if (editor.cursor == index) {
+            if (focused) try line.appendSlice(gpa, @import("widgets.zig").cursor_marker);
+            try @import("cursor_markers.zig").appendFake(gpa, &line, bytes);
+        } else try line.appendSlice(gpa, bytes);
         column += cell_width;
         index = end;
     }
@@ -528,7 +537,8 @@ pub fn renderEditorLinesPadded(gpa: std.mem.Allocator, editor: *const Editor, wi
             try line.appendNTimes(gpa, ' ', padding);
             try line.appendSlice(gpa, "  ");
         }
-        try line.appendSlice(gpa, @import("widgets.zig").cursor_marker);
+        if (focused) try line.appendSlice(gpa, @import("widgets.zig").cursor_marker);
+        try @import("cursor_markers.zig").appendFake(gpa, &line, " ");
     }
     try appendEditorLine(gpa, &lines, line.items);
     return .{ .items = try lines.toOwnedSlice(gpa) };
@@ -1076,4 +1086,31 @@ test "Windows right click requests non-interrupting clipboard paste" {
         try std.testing.expect(!windowsRightClickPasteEnabled("vscode"));
         try std.testing.expect(!windowsRightClickPasteEnabled(" VSCode \r\n"));
     }
+}
+
+fn cursorAllocationProbe(gpa: std.mem.Allocator) !void {
+    var editor = Editor.init(gpa);
+    defer editor.deinit();
+    try editor.setText("a👨‍👩‍👧‍👦界\nb");
+    editor.cursor = 1;
+    for ([_]bool{ false, true }) |focused| {
+        var lines = try renderEditorLinesFocused(gpa, &editor, 8, 1, focused);
+        defer lines.deinit(gpa);
+        try @import("cursor_markers.zig").resolveLines(gpa, lines.items, true);
+    }
+}
+test "editor fake cursor owns grapheme frames and releases every failed allocator boundary" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, cursorAllocationProbe, .{});
+}
+test "unfocused editor retains fake cursor without emitting hardware cursor marker" {
+    const gpa = std.testing.allocator;
+    var editor = Editor.init(gpa);
+    defer editor.deinit();
+    try editor.setText("👨‍👩‍👧‍👦x");
+    editor.cursor = 0;
+    var lines = try renderEditorLinesFocused(gpa, &editor, 20, 0, false);
+    defer lines.deinit(gpa);
+    const markers = @import("cursor_markers.zig");
+    try std.testing.expect(std.mem.indexOf(u8, lines.items[0], markers.cursor) == null);
+    try std.testing.expect(std.mem.indexOf(u8, lines.items[0], markers.fake_start ++ "👨‍👩‍👧‍👦" ++ markers.fake_end) != null);
 }
