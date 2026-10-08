@@ -783,6 +783,14 @@ pub fn build(b: *std.Build) void {
     const sdk_virtual_run = b.addRunArtifact(sdk_virtual_tests);
     b.step("test-sdk-virtual-ownership", "Exercise virtual routing allocation ownership").dependOn(&sdk_virtual_run.step);
     test_step.dependOn(&sdk_virtual_run.step);
+    const sdk_model_bridge_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_model_bridge_test.zig"), .target = target, .optimize = optimize });
+    sdk_model_bridge_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, sdk_model_bridge_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, sdk_model_bridge_module);
+    const sdk_model_bridge_tests = b.addTest(.{ .root_module = sdk_model_bridge_module, .use_llvm = use_llvm, .filters = &.{"SDK model bridge"} });
+    const sdk_model_bridge_run = b.addRunArtifact(sdk_model_bridge_tests);
+    b.step("test-sdk-model-bridge", "Exercise owner-only generation-leased model operations and cancellation").dependOn(&sdk_model_bridge_run.step);
+    test_step.dependOn(&sdk_model_bridge_run.step);
     const run_binding_tests = b.addRunArtifact(binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
     const cursor_boundary_tests = b.addTest(.{

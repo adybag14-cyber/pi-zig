@@ -62,6 +62,7 @@ pub const Engine = struct {
     native_durable_registry_snapshot_class: c.JSClassID = 0,
     native_durable_uuid_last_ms: u64 = 0,
     native_durable_uuid_sequence: ?u64 = null,
+    native_sdk_model_bridge_registry: ?c.JSValue = null,
     native_sdk_prototypes: [6]?c.JSValue = .{null} ** 6,
     native_console_stdout: bool = false,
     text_encoder_class: c.JSClassID = 0,
@@ -132,6 +133,7 @@ pub const Engine = struct {
         var values = self.native_module_values.valueIterator();
         while (values.next()) |value| self.freeValue(value.*);
         self.native_module_values.deinit(self.gpa);
+        if (self.native_sdk_model_bridge_registry) |value| self.freeValue(value);
         self.freeValue(self.commonjs_cache);
         c.JS_FreeContext(self.context);
         c.JS_FreeRuntime(self.runtime);
