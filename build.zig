@@ -934,6 +934,20 @@ pub fn build(b: *std.Build) void {
     const sdk_session_manager_run = b.addRunArtifact(sdk_session_manager_tests);
     b.step("test-sdk-session-manager", "Exercise Source session manager identities projections and allocation ownership").dependOn(&sdk_session_manager_run.step);
     test_step.dependOn(&sdk_session_manager_run.step);
+    const tui_word_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/tui_word_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const run_tui_word_tests = b.addRunArtifact(tui_word_tests);
+    const tui_word_step = b.step("test-tui-words", "Replay Source word rules dictionaries and signed UTF16 cursor boundaries");
+    tui_word_step.dependOn(&run_tui_word_tests.step);
+    test_step.dependOn(&run_tui_word_tests.step);
+    inline for (.{ .{ "unicode-words-generator", "tools/unicode_words.zig" }, .{ "word-language-data-generator", "tools/word_language_data.zig" }, .{ "word-normalization-data-generator", "tools/word_normalization_data.zig" } }) |item| {
+        const generator = b.addExecutable(.{ .name = item[0], .root_module = b.createModule(.{ .root_source_file = b.path(item[1]), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+        const check = b.addRunArtifact(generator);
+        check.addArg("--check");
+        check.setCwd(b.path("."));
+        check.has_side_effects = true;
+        tui_word_step.dependOn(&check.step);
+        test_step.dependOn(&check.step);
+    }
     const native_input_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_input_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{ "Source6fb public Input", "native JS UTF16" },

@@ -14,3 +14,6 @@ src/tui/unicode17/*.txt -whitespace
 src/extensions/*.c text eol=lf
 src/extensions/*.h text eol=lf
 src/extensions/fixtures/*.input.json whitespace=cr-at-eol
+
+# ICU dictionary and break-rule inputs retain their pinned upstream bytes.
+src/tui/icu78/*.txt -whitespace
