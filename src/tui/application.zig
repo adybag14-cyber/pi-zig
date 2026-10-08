@@ -908,7 +908,7 @@ fn padLineAlloc(gpa: std.mem.Allocator, line: []const u8, width: usize) ![]u8 {
 }
 
 fn composeLineAlloc(gpa: std.mem.Allocator, base: []const u8, overlay: []const u8, column: usize, width: usize) ![]u8 {
-    const before = try terminal_text.sliceByColumnsAlloc(gpa, base, 0, column);
+    const before = try terminal_text.sliceBeforeColumnsAlloc(gpa, base, column);
     defer gpa.free(before);
     const clipped = try terminal_text.truncateAlloc(gpa, overlay, width -| column, .{ .ellipsis = "", .reset_style = false });
     defer gpa.free(clipped);
@@ -1194,8 +1194,16 @@ test "alternate-screen lifecycle sequences include paste mouse and cursor restor
 }
 
 test "actual Source1ced overlay boundaries retain surviving APC cursor and discard covered wide glyph cursor" {
+    try replayCursorBoundaries(@embedFile("fixtures/cursor-boundary-original-1ced.json"));
+}
+
+test "expanded actual Source1ced APC boundary corpus covers leading and trailing wide joined and combining cursors" {
+    try replayCursorBoundaries(@embedFile("fixtures/cursor-boundary-expanded-original-1ced.json"));
+}
+
+fn replayCursorBoundaries(raw: []const u8) !void {
     const gpa = std.testing.allocator;
-    const fixture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/cursor-boundary-original-1ced.json"), .{});
+    const fixture = try std.json.parseFromSlice(std.json.Value, gpa, raw, .{});
     defer fixture.deinit();
     for (fixture.value.object.get("boundaries").?.array.items) |item| {
         const line = item.object.get("line").?.string;
@@ -1208,6 +1216,7 @@ test "actual Source1ced overlay boundaries retain surviving APC cursor and disca
         defer gpa.free(expected);
         const marker_actual = std.mem.indexOf(u8, actual, widgets.cursor_marker);
         const marker_expected = std.mem.indexOf(u8, expected, widgets.cursor_marker);
+        if ((marker_expected != null) != (marker_actual != null)) std.debug.print("Cursor boundary mismatch: beforeEnd={d},afterStart={d},afterLen={d}; line={any}; expected={any}; actual={any}\n", .{ before_end, after_start, after_len, line, expected, actual });
         try std.testing.expectEqual(marker_expected != null, marker_actual != null);
         if (marker_actual) |at| try std.testing.expectEqual(terminal_text.visibleWidth(expected[0..marker_expected.?]), terminal_text.visibleWidth(actual[0..at]));
     }

@@ -775,6 +775,14 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&sdk_virtual_run.step);
     const run_binding_tests = b.addRunArtifact(binding_tests);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
+    const cursor_boundary_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/cursor_boundary_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
+        .use_llvm = use_llvm,
+    });
+    const run_cursor_boundary_tests = b.addRunArtifact(cursor_boundary_tests);
+    const cursor_boundary_step = b.step("test-cursor-boundaries", "Replay actual Source cursor overlays Input graphemes and allocator boundaries");
+    cursor_boundary_step.dependOn(&run_cursor_boundary_tests.step);
+    test_step.dependOn(&run_cursor_boundary_tests.step);
     binding_test_step.dependOn(&run_binding_tests.step);
     test_step.dependOn(&run_binding_tests.step);
     const theme_state_tests = b.addTest(.{
