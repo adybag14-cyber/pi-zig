@@ -1,36 +1,28 @@
 # pi-zig
 
 The Pi 1.x update is in progress on this branch, targeting upstream commit
-`6100fe5a8358709a26050b8da97ccd188ae93101` (package version 1.0.2).
-See [the active update record](UPSTREAM-UPDATE-20261003.md) for completed gates
-and remaining ports. Final Zig 0.16.0 stays pinned. The linked C extension
-engine and Zig host are being validated before replacing production discovery's
-legacy Node bridge; remaining Python/JavaScript fixtures are also being ported.
-This branch does not yet certify complete Pi 1.x parity or an all-Zig/C tree.
+`6fb2e7815167e6b19006fc526d1a5d0f5f998787` (package version 1.1.0), newer than
+[the v1.1.0 release](https://github.com/earendil-works/pi/releases/tag/v1.1.0).
+Zig **0.16.0** remains pinned. Repository implementation work uses Zig and narrow
+linked C dependencies; user-authored JavaScript/TypeScript extension compatibility
+is part of the native runtime migration.
 
-The explicit native extension backend now covers persistent tool/hook/provider
-calls, owner-thread cancellation, timer refresh, DOMException, Buffer/text
-encoding, and directory handles. Standard UI requests and retained UI actions
-have native worker tests; custom component factories and broader asynchronous
-host operations remain incomplete. Production discovery still uses Node.
+The checked-in catalog contains 1,653 models across 42 providers. The CLI and
+extension API package version are 1.1.0. Full Pi 1.x parity and release
+certification remain incomplete, and production extension discovery retains its
+legacy Node bridge while native parity and lifecycle work continues.
 
-Four Python process fixtures are replaced by native Zig authentication, OAuth,
-bootstrap-network and provider-retry fixtures, including real Linux PTYs and
-live RPC settings reload. Fifteen Python scripts and five JavaScript files
-remain, and the strict language audit continues to reject them. The native
-Application has Ctrl+Home/End transcript routing and Home/End editor routing,
-but the fullscreen CLI still needs its persistent Application/ScrollView
-frontend. Component tests do not certify that missing CLI integration.
+The frozen checkpoint210 source passes the full local test and provider-contract
+graphs in Windows and native Linux Debug and ReleaseSafe. Windows passes 2,190
+tests with 71 skips per mode; Linux passes 2,382 with 12 skips per mode. All 953
+compiled source hashes were rechecked after validation. These results describe
+that exact source checkpoint; hosted CI and the unfinished native migration have
+separate qualification requirements.
 
-Fresh validation of the frozen `6100fe5a` checkpoint passes 69 Windows build
-steps, 385 dedicated tests with five skips, and 1,117 primary-module tests with
-28 skips. Windows and Linux x64 GNU ReleaseSafe builds pass; the isolated
-offline Windows CLI smoke and all four native Linux process fixtures pass
-against that fresh Linux candidate. Formatting, catalog regeneration, all 107
-vendor digests and structural checks pass. Language/release checks correctly
-reject the remaining 20 files and incomplete parity metadata. See the
-[source-scoped checkpoint record](verification/checkpoint-189/checkpoint-6100-integration-20261005.json).
-Hosted validation of this checkpoint is separate from historical `c24fa85` CI.
+See [the active update record](UPSTREAM-UPDATE-20261003.md) and
+[checkpoint210 evidence](verification/checkpoint-210/local-qualified.json) for
+scope, remaining work and source-bound validation. Historical checkpoint records
+remain available under `verification/`.
 
 `pi-zig` is a native Zig 0.16 rewrite of the Pi coding-agent and AI runtime. It
 implements provider, model, session, extension, tool, RPC, TUI, storage,
