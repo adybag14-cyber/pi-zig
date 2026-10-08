@@ -544,6 +544,7 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
     try emit(self, end);
     const settled = try event(self, "agent_settled");
     defer engine.freeValue(settled);
+    try put(engine, settled, "aborted", c.pi_js_bool(engine.context, @intFromBool(self.aborted)));
     try emit(self, settled);
 }
 fn emitMessage(self: *State, kind: []const u8, message: c.JSValue) !void {
@@ -1132,6 +1133,7 @@ fn initModelRuntime(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     defer engine.freeValue(catalog);
     try put(engine, data, "models", c.JS_DupValue(engine.context, catalog));
     try @import("native_sdk_models.zig").seedBuiltins(engine, catalog);
+    try @import("native_sdk_provider_composer.zig").initialize(engine, data);
     return new(engine, .model_runtime, data);
 }
 fn providerModels(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -1292,24 +1294,8 @@ fn modelDispatch(self: *State, operation: Method, args: []const c.JSValue) !c.JS
     if (operation == .registerNativeProvider) return invoke(engine, catalog, "setProvider", args);
     if (operation == .registerProvider) {
         if (args.len != 2 or !c.JS_IsString(args[0]) or !c.JS_IsObject(args[1])) return error.NativeSDKInvalidProviderConfig;
-        const provider = try object(engine);
+        const provider = try @import("native_sdk_provider_composer.zig").extensionProvider(engine, self.data, args[0], args[1]);
         defer engine.freeValue(provider);
-        try put(engine, provider, "id", c.JS_DupValue(engine.context, args[0]));
-        const models = try get(engine, args[1], "models");
-        defer engine.freeValue(models);
-        if (!c.JS_IsArray(models)) return error.NativeSDKInvalidProviderConfig;
-        var data = [_]c.JSValue{ models, args[0] };
-        const model_getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, providerModels, "getModels", 0, 0, 2, &data));
-        defer engine.freeValue(model_getter);
-        try put(engine, provider, "getModels", c.JS_DupValue(engine.context, model_getter));
-        try put(engine, provider, "getAllModels", c.JS_DupValue(engine.context, model_getter));
-        const streamer = try get(engine, args[1], "streamSimple");
-        defer engine.freeValue(streamer);
-        if (c.JS_IsFunction(engine.context, streamer)) try put(engine, provider, "streamSimple", c.JS_DupValue(engine.context, streamer));
-        const authentication = try get(engine, args[1], "auth");
-        defer engine.freeValue(authentication);
-        try put(engine, provider, "auth", if (c.JS_IsObject(authentication)) c.JS_DupValue(engine.context, authentication) else try object(engine));
-        try @import("native_sdk_operations.zig").install(engine, provider);
         return invoke(engine, catalog, "setProvider", &.{provider});
     }
     if (operation == .unregisterProvider) return invoke(engine, catalog, "deleteProvider", args);
@@ -1646,8 +1632,15 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             const id = if (operation == .registerNativeProvider) try get(engine, args[0], "id") else c.JS_DupValue(engine.context, args[0]);
             defer engine.freeValue(id);
             try @import("native_sdk_auth_snapshot.zig").registered(engine, self.data, id, if (operation == .registerNativeProvider) args[0] else if (args.len > 1) args[1] else c.pi_js_undefined(), operation == .registerNativeProvider, operation == .unregisterProvider);
+            try @import("native_sdk_provider_composer.zig").recompose(engine, self.data, id);
             try @import("native_sdk_auth_snapshot.zig").updateModels(engine, self.data);
-            if (operation == .registerNativeProvider) try @import("native_sdk_auth_snapshot.zig").markProvisional(engine, self.data, id, args[0]);
+            if (operation != .unregisterProvider) {
+                const catalog = try get(engine, self.data, "models");
+                defer engine.freeValue(catalog);
+                const provider = try invoke(engine, catalog, "getProvider", &.{id});
+                defer engine.freeValue(provider);
+                try @import("native_sdk_auth_snapshot.zig").markProvisional(engine, self.data, id, provider);
+            }
             try @import("native_sdk_availability.zig").registrationRefresh(engine, receiver);
             return result;
         }

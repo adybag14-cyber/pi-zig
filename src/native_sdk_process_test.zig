@@ -1,7 +1,31 @@
 const std = @import("std");
 const builtin = @import("builtin");
+test "native SDK request headers preserve model provider and configured precedence and resolution identity" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-model-headers-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-model-headers-1cedd32.json"));
+}
 const http_fixture = @import("ai/http_fixture.zig");
 const EnvValue = struct { name: []const u8, value: []const u8 };
+test "native SDK 1.1 settled event includes actual abort request flag" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-settled-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-settled-1cedd32.json"));
+}
+test "native SDK models JSONC immutable load reload composition and errors match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-model-config-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-model-config-1cedd32.json"));
+}
+test "native SDK models schema validation ordering unions and bounded diagnostics match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-config-schema-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-config-schema-1cedd32.json"));
+}
+test "native SDK configured auth templates request environment and headers match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-config-auth-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-config-auth-1cedd32.json"));
+}
+test "native SDK config native extension precedence dynamic rows reload and restoration match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-config-overlays-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-config-overlays-1cedd32.json"));
+}
+test "native SDK auth caller abort credential errors and live callbacks match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-auth-resolution-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-auth-resolution-1cedd32.json"));
+}
+test "native SDK OAuth auth validity floor rotation and cancellation match source" {
+    try inputCase(@embedFile("extensions/fixtures/sdk-auth-oauth-1cedd32.input.json"), @embedFile("extensions/fixtures/sdk-auth-oauth-1cedd32.json"));
+}
 test "native SDK cached auth status and runtime key synchronization match actual source" {
     try inputCase(@embedFile("extensions/fixtures/sdk-auth-snapshot-7fb59f9.input.json"), @embedFile("extensions/fixtures/sdk-auth-snapshot-7fb59f9.json"));
 }
@@ -97,7 +121,7 @@ fn inputCaseEnv(input: []const u8, expected_output: []const u8, additional_envir
     var parsed = try std.json.parseFromSlice(Fixture, std.testing.allocator, input, .{});
     defer parsed.deinit();
     try std.testing.expectEqual(@as(u32, 1), parsed.value.schemaVersion);
-    try std.testing.expectEqualStrings("7fb59f995b0a1db552001a8577b234e4105d7179", parsed.value.sourceCommit);
+    try std.testing.expect(std.mem.eql(u8, "7fb59f995b0a1db552001a8577b234e4105d7179", parsed.value.sourceCommit) or std.mem.eql(u8, "1cedd32724abfcb0915f76cc61b6827e2c16dbad", parsed.value.sourceCommit));
     var digest: [32]u8 = undefined;
     std.crypto.hash.sha2.Sha256.hash(parsed.value.input, &digest, .{});
     const hash = std.fmt.bytesToHex(digest, .lower);
@@ -140,6 +164,7 @@ fn runCase(input: []const u8, expected_output: []const u8, additional_environmen
     try environment.put("HOME", home);
     try environment.put("USERPROFILE", home);
     try environment.put("PI_OFFLINE", "1");
+    try environment.put("SDK_CONFIG_DIR", workspace);
     for (additional_environment) |entry| try environment.put(entry.name, entry.value);
     const result = try std.process.run(gpa, io, .{
         .argv = &.{ binary, script },

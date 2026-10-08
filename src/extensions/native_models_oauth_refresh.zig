@@ -33,6 +33,9 @@ fn typeIsOAuth(engine: *engine_mod.Engine, value: c.JSValue) !bool {
     return c.JS_IsStrictEqual(engine.context, kind, expected);
 }
 fn expired(engine: *engine_mod.Engine, value: c.JSValue) !bool {
+    return expiredWithin(engine, value, 0);
+}
+pub fn expiredWithin(engine: *engine_mod.Engine, value: c.JSValue, minimum: f64) !bool {
     const expiry = try sdk.get(engine, value, "expires");
     defer engine.freeValue(expiry);
     var deadline: f64 = undefined;
@@ -45,7 +48,7 @@ fn expired(engine: *engine_mod.Engine, value: c.JSValue) !bool {
     defer engine.freeValue(time);
     var now: f64 = undefined;
     if (c.JS_ToFloat64(engine.context, &now, time) < 0) return error.JavaScriptException;
-    return now >= deadline;
+    return now + minimum >= deadline;
 }
 fn cleanup(engine: *engine_mod.Engine, job: c.JSValue) !void {
     const listener = try sdk.get(engine, job, "listener");
@@ -60,12 +63,15 @@ fn cleanup(engine: *engine_mod.Engine, job: c.JSValue) !void {
     try sdk.put(engine, job, "listener", c.pi_js_undefined());
 }
 pub fn resolve(engine: *engine_mod.Engine, store: c.JSValue, provider: c.JSValue, credential: c.JSValue, signal: c.JSValue) !c.JSValue {
+    return resolveWithMinimum(engine, store, provider, credential, signal, 0);
+}
+pub fn resolveWithMinimum(engine: *engine_mod.Engine, store: c.JSValue, provider: c.JSValue, credential: c.JSValue, signal: c.JSValue, minimum: f64) !c.JSValue {
     const auth = try sdk.get(engine, provider, "auth");
     defer engine.freeValue(auth);
     const oauth = try sdk.get(engine, auth, "oauth");
     defer engine.freeValue(oauth);
     if (!c.JS_IsObject(oauth)) return sdk.promise(engine, c.pi_js_undefined());
-    if (!try expired(engine, credential)) return sdk.promise(engine, credential);
+    if (!try expiredWithin(engine, credential, minimum)) return sdk.promise(engine, credential);
     const aborted = try sdk.get(engine, signal, "aborted");
     defer engine.freeValue(aborted);
     if (c.JS_ToBool(engine.context, aborted) == 1) return sdk.promise(engine, c.pi_js_undefined());
@@ -75,6 +81,7 @@ pub fn resolve(engine: *engine_mod.Engine, store: c.JSValue, provider: c.JSValue
     try sdk.put(engine, job, "id", try sdk.get(engine, provider, "id"));
     try sdk.put(engine, job, "oauth", c.JS_DupValue(engine.context, oauth));
     try sdk.put(engine, job, "signal", c.JS_DupValue(engine.context, signal));
+    try sdk.put(engine, job, "minimum", c.JS_NewFloat64(engine.context, minimum));
     const wait = try signals.create(engine);
     defer engine.freeValue(wait);
     try sdk.put(engine, job, "wait", c.JS_DupValue(engine.context, wait));
@@ -129,7 +136,11 @@ fn advance(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: c.JS
         defer engine.freeValue(signal);
         const checked = try sdk.invoke(engine, signal, "throwIfAborted", &.{});
         engine.freeValue(checked);
-        if (!try typeIsOAuth(engine, value) or !try expired(engine, value)) return c.pi_js_undefined();
+        const minimum_value = try sdk.get(engine, job, "minimum");
+        defer engine.freeValue(minimum_value);
+        var minimum: f64 = 0;
+        if (c.JS_ToFloat64(engine.context, &minimum, minimum_value) < 0) return error.JavaScriptException;
+        if (!try typeIsOAuth(engine, value) or !try expiredWithin(engine, value, minimum)) return c.pi_js_undefined();
         const global = c.JS_GetGlobalObject(engine.context);
         defer engine.freeValue(global);
         const constructor = try sdk.get(engine, global, "AbortSignal");

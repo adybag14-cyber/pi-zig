@@ -29,13 +29,14 @@ fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSVal
     const input = if (argc > 0) args[0] else c.pi_js_undefined();
     const result = (switch (magic) {
         0 => readCredentialOptions(engine, data[0], input, if (argc > 1) args[1] else c.pi_js_undefined()),
-        1 => environment(engine, input),
+        1 => environment(engine, data[0], input),
         2 => builtinModels(engine, data[0], false),
         3 => builtinModels(engine, data[0], true),
         4 => builtinAuth(engine, data[0], input, false),
         5 => builtinAuth(engine, data[0], input, true),
         6 => modifyCredential(engine, data[0], if (argc > 0) args[0..@intCast(argc)] else &.{}),
         7 => listCredentials(engine, data[0], input),
+        8 => fileExists(engine, input),
         else => error.NativeSDKMethodUnavailable,
     }) catch |err| {
         if (magic != 0 and magic != 7) return sdk.fail(engine, err);
@@ -77,7 +78,7 @@ fn modifyCredential(engine: *engine_mod.Engine, data: c.JSValue, args: []const c
     if (!c.JS_IsObject(supplied)) return error.NativeSDKCredentialModifyUnavailable;
     return sdk.invoke(engine, supplied, "modify", args);
 }
-fn readCredentialOptions(engine: *engine_mod.Engine, data: c.JSValue, id: c.JSValue, operation_options: c.JSValue) !c.JSValue {
+pub fn readCredentialOptions(engine: *engine_mod.Engine, data: c.JSValue, id: c.JSValue, operation_options: c.JSValue) !c.JSValue {
     if (c.JS_IsObject(operation_options)) {
         const signal = try sdk.get(engine, operation_options, "signal");
         defer engine.freeValue(signal);
@@ -210,7 +211,14 @@ fn mergeCredentialList(engine: *engine_mod.Engine, data: c.JSValue, options: c.J
     defer engine.freeValue(values);
     return sdk.invoke(engine, array, "from", &.{values});
 }
-fn environment(engine: *engine_mod.Engine, name: c.JSValue) !c.JSValue {
+fn environment(engine: *engine_mod.Engine, options: c.JSValue, name: c.JSValue) !c.JSValue {
+    const overlay = if (c.JS_IsObject(options)) try sdk.get(engine, options, "env") else c.pi_js_undefined();
+    defer engine.freeValue(overlay);
+    if (c.JS_IsObject(overlay)) {
+        const value = try property(engine, overlay, name);
+        defer engine.freeValue(value);
+        if (c.JS_ToBool(engine.context, value) == 1) return sdk.promise(engine, value);
+    }
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
     const process = try sdk.get(engine, global, "process");
@@ -337,84 +345,46 @@ pub fn seedBuiltins(engine: *engine_mod.Engine, catalog: c.JSValue) !void {
     }
 }
 
-pub fn resolveAuth(engine: *engine_mod.Engine, data: c.JSValue, input: c.JSValue, overrides: c.JSValue) !c.JSValue {
-    const opts = if (c.JS_IsObject(overrides)) c.JS_DupValue(engine.context, overrides) else try sdk.object(engine);
-    defer engine.freeValue(opts);
-    const initial_signal = try sdk.get(engine, opts, "signal");
-    defer engine.freeValue(initial_signal);
-    if (c.JS_IsObject(initial_signal)) {
-        const checked = try sdk.invoke(engine, initial_signal, "throwIfAborted", &.{});
-        engine.freeValue(checked);
-    }
-    const id = if (c.JS_IsString(input)) c.JS_DupValue(engine.context, input) else try sdk.get(engine, input, "provider");
-    defer engine.freeValue(id);
-    const catalog = try sdk.get(engine, data, "models");
-    defer engine.freeValue(catalog);
-    const provider = try sdk.invoke(engine, catalog, "getProvider", &.{id});
-    defer engine.freeValue(provider);
-    if (!c.JS_IsObject(provider)) return c.pi_js_undefined();
-    const authentication = try sdk.get(engine, provider, "auth");
-    defer engine.freeValue(authentication);
-    const api = try sdk.get(engine, authentication, "apiKey");
-    defer engine.freeValue(api);
-    const requested = try sdk.get(engine, opts, "apiKey");
-    defer engine.freeValue(requested);
-    const credential = if (!c.JS_IsUndefined(requested)) explicit: {
-        const value = try sdk.object(engine);
-        errdefer engine.freeValue(value);
-        try sdk.put(engine, value, "type", try sdk.text(engine, "api_key"));
-        try sdk.put(engine, value, "key", c.JS_DupValue(engine.context, requested));
-        break :explicit value;
-    } else loaded: {
-        const pending = try readCredential(engine, data, id);
-        defer engine.freeValue(pending);
-        break :loaded try engine.awaitValue(pending);
-    };
-    defer engine.freeValue(credential);
-    if (c.JS_IsObject(credential)) {
-        const kind = try sdk.get(engine, credential, "type");
-        defer engine.freeValue(kind);
-        const expected = try sdk.text(engine, "api_key");
-        defer engine.freeValue(expected);
-        if (!c.JS_IsStrictEqual(engine.context, kind, expected)) return c.pi_js_undefined();
-    }
-    if (!c.JS_IsObject(api)) return c.pi_js_undefined();
-    const parameters = try sdk.object(engine);
-    defer engine.freeValue(parameters);
-    try sdk.put(engine, parameters, "credential", c.JS_DupValue(engine.context, credential));
-    const ctx = try sdk.object(engine);
-    defer engine.freeValue(ctx);
-    try function(engine, ctx, "env", 1, data);
-    try sdk.put(engine, parameters, "ctx", c.JS_DupValue(engine.context, ctx));
-    const signal = try sdk.get(engine, opts, "signal");
-    defer engine.freeValue(signal);
-    if (c.JS_IsObject(signal)) {
-        const checked = try sdk.invoke(engine, signal, "throwIfAborted", &.{});
-        engine.freeValue(checked);
-        try sdk.put(engine, parameters, "signal", c.JS_DupValue(engine.context, signal));
-    } else {
-        const global = c.JS_GetGlobalObject(engine.context);
-        defer engine.freeValue(global);
-        const ctor = try sdk.get(engine, global, "AbortController");
-        defer engine.freeValue(ctor);
-        const controller = try engine.checked(c.JS_CallConstructor(engine.context, ctor, 0, null));
-        defer engine.freeValue(controller);
-        try sdk.put(engine, parameters, "signal", try sdk.get(engine, controller, "signal"));
-    }
-    const pending = try sdk.invoke(engine, api, "resolve", &.{parameters});
-    defer engine.freeValue(pending);
-    const result = try engine.awaitValue(pending);
+pub fn authContext(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
+    const result = try sdk.object(engine);
     errdefer engine.freeValue(result);
-    if (c.JS_IsObject(result) and c.JS_IsObject(input)) {
-        const resolved = try sdk.get(engine, result, "auth");
-        defer engine.freeValue(resolved);
+    try function(engine, result, "env", 1, options);
+    try function(engine, result, "fileExists", 8, options);
+    return result;
+}
+pub fn resolveAuth(engine: *engine_mod.Engine, data: c.JSValue, input: c.JSValue, overrides: c.JSValue) !c.JSValue {
+    return @import("native_sdk_auth_resolution.zig").start(engine, data, input, overrides);
+}
+pub fn finishAuth(engine: *engine_mod.Engine, job: c.JSValue, value: c.JSValue) !c.JSValue {
+    if (!c.JS_IsObject(value)) return c.JS_DupValue(engine.context, value);
+    const result = try sdk.object(engine);
+    errdefer engine.freeValue(result);
+    try copy(engine, result, value);
+    const original_auth = try sdk.get(engine, value, "auth");
+    defer engine.freeValue(original_auth);
+    const auth = try sdk.object(engine);
+    defer engine.freeValue(auth);
+    try copy(engine, auth, original_auth);
+    try sdk.put(engine, result, "auth", c.JS_DupValue(engine.context, auth));
+    const input = try sdk.get(engine, job, "input");
+    defer engine.freeValue(input);
+    if (c.JS_IsObject(input)) {
         const headers = try sdk.get(engine, input, "headers");
         defer engine.freeValue(headers);
-        const previous = try sdk.get(engine, resolved, "headers");
+        const previous = try sdk.get(engine, auth, "headers");
         defer engine.freeValue(previous);
-        if (c.JS_IsObject(headers) or c.JS_IsObject(previous)) try sdk.put(engine, resolved, "headers", try mergedHeaders(engine, previous, headers));
+        if (c.JS_IsObject(headers) or c.JS_IsObject(previous)) try sdk.put(engine, auth, "headers", try @import("native_sdk_model_headers.zig").merge(engine, previous, headers));
     }
     return result;
+}
+fn fileExists(engine: *engine_mod.Engine, input: c.JSValue) !c.JSValue {
+    const path = try engine.toString(input);
+    defer engine.gpa.free(path);
+    var exists = true;
+    std.Io.Dir.cwd().access(engine.native_io orelse return error.NativeSDKRequiresIO, path, .{}) catch {
+        exists = false;
+    };
+    return sdk.promise(engine, c.pi_js_bool(engine.context, @intFromBool(exists)));
 }
 pub fn mergedHeaders(engine: *engine_mod.Engine, base: c.JSValue, updates: c.JSValue) !c.JSValue {
     const result = try sdk.object(engine);
@@ -499,7 +469,9 @@ fn typedRequest(engine: *engine_mod.Engine, data: c.JSValue, model: c.JSValue, c
 }
 
 pub fn request(engine: *engine_mod.Engine, data: c.JSValue, model: c.JSValue, context: c.JSValue, input_options: c.JSValue, method: [*:0]const u8) !c.JSValue {
-    const resolved = try resolveAuth(engine, data, model, input_options);
+    const pending_auth = try resolveAuth(engine, data, model, input_options);
+    defer engine.freeValue(pending_auth);
+    const resolved = try engine.awaitValue(pending_auth);
     defer engine.freeValue(resolved);
     if (!c.JS_IsObject(resolved)) return error.NativeSDKProviderNotConfigured;
     const authentication = try sdk.get(engine, resolved, "auth");
