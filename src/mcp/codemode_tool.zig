@@ -56,6 +56,9 @@ pub const Entry = struct {
 };
 pub const Invoke = *const fn (?*anyopaque, std.mem.Allocator, []const u8, []const u8, []const u8, ?*bool) anyerror!tools.ToolResult;
 pub const Options = struct {
+    model_runtime: ?@import("codemode_models.zig").Runtime = null,
+    progress_context: ?*anyopaque = null,
+    progress: ?*const fn (?*anyopaque, []const u8) void = null,
     enable_discovery: bool = false,
     context: ?*anyopaque,
     invoke: Invoke,
@@ -103,6 +106,21 @@ const Call = struct {
     }
 };
 pub fn execute(gpa: std.mem.Allocator, io: std.Io, code: []const u8, options: Options, abort_flag: ?*bool) !tools.ToolResult {
+    const Updates = struct {
+        allocator: std.mem.Allocator,
+        options: *const Options,
+        fn emit(raw: ?*anyopaque, calls: Value) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            const notify = self.options.progress orelse return;
+            var object: std.json.ObjectMap = .empty;
+            defer object.deinit(self.allocator);
+            try object.put(self.allocator, "calls", calls);
+            const bytes = try json.stringify(self.allocator, .{ .object = object });
+            defer self.allocator.free(bytes);
+            notify(self.options.progress_context, bytes);
+        }
+    };
+    var updates: Updates = .{ .allocator = gpa, .options = &options };
     const parsed = source_format.parse(gpa, code) catch |cause| {
         if (cause == error.OutOfMemory) return cause;
         return .{ .content = try source_format.diagnosticForInput(gpa, code, cause), .is_error = true };
@@ -132,7 +150,7 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, code: []const u8, options: Op
         }
     }
     const started = std.Io.Clock.awake.now(io).toMilliseconds();
-    var result = try sandbox.execute(gpa, io, descriptions, parsed.code, .{ .enable_discovery = options.enable_discovery, .abort_flag = abort_flag, .timeout_ms = parsed.timeout_ms orelse 300_000, .store = options.store });
+    var result = try sandbox.execute(gpa, io, descriptions, parsed.code, .{ .model_runtime = options.model_runtime, .model_call_id = options.call_id, .progress_context = &updates, .progress = if (options.progress != null) Updates.emit else null, .enable_discovery = options.enable_discovery, .abort_flag = abort_flag, .timeout_ms = parsed.timeout_ms orelse 300_000, .store = options.store });
     defer result.deinit();
     const ok = result.value.object.get("ok").?.bool;
     if (ok) if (options.append_store) |append| {
@@ -146,6 +164,18 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, code: []const u8, options: Op
         try item.object.put(a, "type", .{ .string = "text" });
         try item.object.put(a, "text", .{ .string = if (value == .string) value.string else try json.stringify(a, value) });
         try output.append(item);
+    };
+    if (result.value.object.get("generatedImages")) |count| if (count.integer > 0) {
+        var shown = false;
+        for (output.items) |item| if (json.get(item, "type")) |kind| {
+            if (kind == .string and std.mem.eql(u8, kind.string, "image")) shown = true;
+        };
+        if (!shown) {
+            var item: Value = .{ .object = .empty };
+            try item.object.put(a, "type", .{ .string = "text" });
+            try item.object.put(a, "text", .{ .string = try std.fmt.allocPrint(a, "Note: models.generateImages() returned {d} image{s} that the script did not show. Show each image block of result.output with image(block).", .{ count.integer, if (count.integer == 1) "" else "s" }) });
+            try output.append(item);
+        }
     };
     var text: std.Io.Writer.Allocating = .init(gpa);
     defer text.deinit();
@@ -234,7 +264,24 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, code: []const u8, options: Op
         break :blk object;
     } });
     errdefer gpa.free(details);
-    return .{ .content = content, .is_error = !ok, .details_json = details, .images = try images.toOwnedSlice(gpa) };
+    return .{ .content = content, .is_error = !ok, .details_json = details, .images = try images.toOwnedSlice(gpa), .usage = if (result.value.object.get("usage")) |usage| try toolUsage(usage) else null };
+}
+fn toolUsage(value: Value) !tools.ToolUsage {
+    var result: tools.ToolUsage = .{};
+    inline for (.{ .{ "input", "input" }, .{ "output", "output" }, .{ "cacheRead", "cache_read" }, .{ "cacheWrite", "cache_write" }, .{ "totalTokens", "total_tokens" } }) |field| if (json.get(value, field[0])) |number| {
+        @field(result, field[1]) = try usageCounter(number);
+    };
+    if (json.get(value, "cacheWrite1h")) |number| result.cache_write_1h = try usageCounter(number);
+    if (json.get(value, "reasoning")) |number| result.reasoning = try usageCounter(number);
+    if (json.get(value, "cost")) |cost| inline for (.{ .{ "input", "input" }, .{ "output", "output" }, .{ "cacheRead", "cache_read" }, .{ "cacheWrite", "cache_write" }, .{ "total", "total" } }) |field| if (json.get(cost, field[0])) |number| {
+        @field(result.cost, field[1]) = try json.asNumber(number);
+    };
+    return result;
+}
+fn usageCounter(value: Value) !u64 {
+    const number = try json.asNumber(value);
+    if (!std.math.isFinite(number) or number < 0 or @floor(number) != number or number >= 18_446_744_073_709_551_616.0) return error.InvalidModelUsage;
+    return @intFromFloat(number);
 }
 fn utf16Units(text: []const u8) u64 {
     var iterator = std.unicode.Wtf8View.initUnchecked(text).iterator();

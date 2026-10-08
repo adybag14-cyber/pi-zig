@@ -6,6 +6,7 @@ const c = engine_mod.c;
 const json = @import("protocol.zig").json;
 const Value = json.Value;
 const discovery = @import("codemode_discovery.zig");
+const models = @import("codemode_models.zig");
 
 pub const Tool = struct {
     name: []const u8,
@@ -21,6 +22,10 @@ pub const Tool = struct {
     error_marker: bool = false,
 };
 pub const Options = struct {
+    model_runtime: ?models.Runtime = null,
+    model_call_id: []const u8 = "codemode",
+    progress_context: ?*anyopaque = null,
+    progress: ?*const fn (?*anyopaque, Value) anyerror!void = null,
     enable_discovery: bool = false,
     timeout_ms: ?u64 = 300_000,
     memory_limit: usize = 256 * 1024 * 1024,
@@ -35,13 +40,34 @@ const Work = struct {
     aborted: bool = false,
     done: std.atomic.Value(bool) = .init(false),
     future: ?std.Io.Future(anyerror!json.Owned) = null,
+    model_operation: ?models.Operation = null,
+    model_runtime: ?models.Runtime = null,
+    model_ref: ?[]u8 = null,
+    model_admitted: std.atomic.Value(bool) = .init(false),
+    fn modelAdmitted(raw: ?*anyopaque, canonical: Value) !void {
+        const self: *Work = @ptrCast(@alignCast(raw.?));
+        self.model_ref = try std.fmt.allocPrint(self.gpa, "{s}/{s}", .{ json.get(canonical, "provider").?.string, json.get(canonical, "id").?.string });
+        self.model_admitted.store(true, .release);
+    }
+    fn noop(_: ?*anyopaque, _: std.mem.Allocator, _: ?Value, _: ?*bool) anyerror!json.Owned {
+        return error.UnreachableModelTool;
+    }
+    fn limited(self: *const Work) bool {
+        return self.model_operation == .classify or self.model_operation == .generateImages;
+    }
     fn run(self: *Work) anyerror!json.Owned {
         defer self.done.store(true, .release);
+        if (self.model_operation) |operation| {
+            var runtime = self.model_runtime.?;
+            runtime.admitted_context = self;
+            runtime.admitted = modelAdmitted;
+            return models.execute(self.gpa, runtime, operation, self.args.?.value, &self.aborted);
+        }
         if (self.tool.execute_sequenced) |callback| return callback(self.tool.context, self.gpa, if (self.args) |args| args.value else null, &self.aborted, self.sequence);
         return self.tool.execute(self.tool.context, self.gpa, if (self.args) |args| args.value else null, &self.aborted);
     }
 };
-const Pending = struct { index: usize, work: *Work, resolve: c.JSValue, reject: c.JSValue, started: i64, record_index: usize };
+const Pending = struct { work: *Work, resolve: c.JSValue, reject: c.JSValue, started: i64, record_index: ?usize };
 const Execution = struct {
     gpa: std.mem.Allocator,
     io: std.Io,
@@ -60,6 +86,7 @@ const Execution = struct {
     timed_out: bool = false,
     tool_names: std.ArrayList([]u8) = .empty,
     discovery_tools: []const discovery.Tool = &.{},
+    model_call_count: usize = 0,
 
     fn from(context: ?*c.JSContext) *Execution {
         const engine = engine_mod.Engine.fromContext(context.?);
@@ -380,6 +407,26 @@ const Execution = struct {
     fn callTool(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
         const self = from(context);
         const args = self.parseArgument(if (argc > 0) argv[0] else c.pi_js_undefined()) catch |cause| return self.fail(cause);
+        return self.enqueue(self.tools[@intCast(magic)], args, null) catch |cause| self.fail(cause);
+    }
+    fn callModel(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const self = from(context);
+        const array = self.engine.checked(c.JS_NewArray(context)) catch |cause| return self.fail(cause);
+        defer self.engine.freeValue(array);
+        for (0..@intCast(argc)) |index| if (c.JS_SetPropertyUint32(context, array, @intCast(index), c.JS_DupValue(context, argv[index])) < 0) return self.fail(error.JavaScriptException);
+        const args = self.parseArgument(array) catch |cause| return self.fail(cause);
+        const operation: models.Operation = @enumFromInt(magic);
+        const name: []const u8 = switch (operation) {
+            .getModelsOfType => "models.getModelsOfType",
+            .getAvailableOfType => "models.getAvailableOfType",
+            .getModelOfType => "models.getModelOfType",
+            .classify => "models.classify",
+            .generateImages => "models.generateImages",
+        };
+        return self.enqueue(.{ .name = name, .execute = Work.noop, .error_marker = true }, args, operation) catch |cause| self.fail(cause);
+    }
+    fn enqueue(self: *Execution, tool: Tool, args: ?json.Owned, operation: ?models.Operation) !c.JSValue {
+        const context = self.engine.context;
         var owned_args = args;
         defer if (owned_args) |*value| value.deinit();
         var functions: [2]c.JSValue = undefined;
@@ -389,26 +436,33 @@ const Execution = struct {
             self.engine.freeValue(promise);
             return self.fail(cause);
         };
-        work.* = .{ .gpa = self.gpa, .tool = self.tools[@intCast(magic)], .args = owned_args };
+        work.* = .{ .gpa = self.gpa, .tool = tool, .args = owned_args, .model_operation = operation, .model_runtime = self.options.model_runtime };
         owned_args = null;
         const started = self.now();
-        self.recordCall(work.tool.name, "cancelled", started) catch |cause| {
+        var record_index: ?usize = null;
+        if (operation == null) self.recordCall(work.tool.name, "cancelled", started) catch |cause| {
             if (work.args) |*value| value.deinit();
             self.gpa.destroy(work);
             for (functions) |value| self.engine.freeValue(value);
             self.engine.freeValue(promise);
             return self.fail(cause);
         };
-        const record_index = self.result.value.object.getPtr("calls").?.array.items.len - 1;
-        work.sequence = record_index + 1;
-        self.pending.append(self.gpa, .{ .index = @intCast(magic), .work = work, .resolve = functions[0], .reject = functions[1], .started = started, .record_index = record_index }) catch |cause| {
+        if (operation == null) {
+            record_index = self.result.value.object.getPtr("calls").?.array.items.len - 1;
+            work.sequence = record_index.? + 1;
+        }
+        self.pending.append(self.gpa, .{ .work = work, .resolve = functions[0], .reject = functions[1], .started = started, .record_index = record_index }) catch |cause| {
             if (work.args) |*value| value.deinit();
             self.gpa.destroy(work);
             for (functions) |value| self.engine.freeValue(value);
             self.engine.freeValue(promise);
             return self.fail(cause);
         };
-        work.future = self.io.concurrent(Work.run, .{work}) catch |cause| {
+        var active: usize = 0;
+        for (self.pending.items) |pending| if (pending.work != work and pending.work.limited() and pending.work.future != null and !pending.work.done.load(.acquire)) {
+            active += 1;
+        };
+        if (!work.limited() or active < 4) work.future = self.io.concurrent(Work.run, .{work}) catch |cause| {
             _ = self.pending.pop();
             if (work.args) |*value| value.deinit();
             self.gpa.destroy(work);
@@ -576,8 +630,26 @@ const Execution = struct {
     fn dispatch(self: *Execution) !bool {
         if (self.pending.items.len == 0) return false;
         var selected: ?usize = null;
+        var active: usize = 0;
+        for (self.pending.items) |pending| if (pending.work.limited() and pending.work.future != null and !pending.work.done.load(.acquire)) {
+            active += 1;
+        };
         for (self.pending.items, 0..) |*pending, index| {
-            if (pending.work.future == null) pending.work.future = try self.io.concurrent(Work.run, .{pending.work});
+            if (pending.work.future == null and (!pending.work.limited() or active < 4)) {
+                pending.work.future = try self.io.concurrent(Work.run, .{pending.work});
+                if (pending.work.limited()) active += 1;
+            }
+            if (pending.record_index == null and pending.work.model_admitted.load(.acquire)) {
+                try self.recordCall(pending.work.tool.name, "running", pending.started);
+                pending.record_index = self.result.value.object.getPtr("calls").?.array.items.len - 1;
+                self.model_call_count += 1;
+                const a = self.result.arena.allocator();
+                const record = &self.result.value.object.getPtr("calls").?.array.items[pending.record_index.?];
+                try record.object.put(a, "id", .{ .string = try std.fmt.allocPrint(a, "{s}/{s}/{d}", .{ self.options.model_call_id, pending.work.tool.name, self.model_call_count }) });
+                try record.object.put(a, "args", .{ .string = try a.dupe(u8, pending.work.model_ref.?) });
+                _ = record.object.swapRemove("durationMs");
+                if (self.options.progress) |notify| try notify(self.options.progress_context, self.result.value.object.get("calls").?);
+            }
             if (pending.work.done.load(.acquire) and selected == null) selected = index;
         }
         const index = selected orelse {
@@ -587,6 +659,7 @@ const Execution = struct {
         const pending = self.pending.orderedRemove(index);
         defer {
             if (pending.work.args) |*args| args.deinit();
+            if (pending.work.model_ref) |reference| self.gpa.free(reference);
             self.gpa.destroy(pending.work);
             self.engine.freeValue(pending.resolve);
             self.engine.freeValue(pending.reject);
@@ -614,15 +687,48 @@ const Execution = struct {
             try self.completeCall(pending.record_index, "error", pending.started);
             return true;
         };
-        const value = try self.engine.fromJsonValue(reply.value);
+        const value = if (pending.work.model_operation == .getModelOfType and reply.value == .null) c.pi_js_undefined() else try self.engine.fromJsonValue(reply.value);
         defer self.engine.freeValue(value);
         var args = [_]c.JSValue{value};
         const settled = try self.engine.checked(c.JS_Call(self.engine.context, pending.resolve, c.pi_js_undefined(), 1, &args));
         self.engine.freeValue(settled);
-        try self.completeCall(pending.record_index, "ok", pending.started);
+        const stop = json.get(reply.value, "stopReason");
+        const status: []const u8 = if (pending.work.limited() and stop != null and stop.? == .string) if (std.mem.eql(u8, stop.?.string, "stop")) "ok" else if (std.mem.eql(u8, stop.?.string, "aborted")) "cancelled" else "error" else "ok";
+        try self.completeCall(pending.record_index, status, pending.started);
+        if (pending.work.limited()) {
+            const a = self.result.arena.allocator();
+            if (pending.record_index) |record_index| {
+                const record = &self.result.value.object.getPtr("calls").?.array.items[record_index];
+                if (json.get(reply.value, "errorMessage")) |message| if (message == .string and message.string.len > 0) {
+                    var iterator = (try std.unicode.Wtf8View.init(message.string)).iterator();
+                    var units: usize = 0;
+                    var end: usize = 0;
+                    while (iterator.nextCodepoint()) |point| {
+                        units += if (point > 0xffff) @as(usize, 2) else 1;
+                        if (units <= 497) end = iterator.i;
+                    }
+                    try record.object.put(a, "error", .{ .string = if (units > 500) try std.fmt.allocPrint(a, "{s}...", .{message.string[0..end]}) else try a.dupe(u8, message.string) });
+                };
+                if (json.get(reply.value, "usage")) |usage| {
+                    if (json.get(usage, "cost")) |cost| if (json.get(cost, "total")) |total| try record.object.put(a, "cost", try json.clone(a, total));
+                    const combined = if (self.result.value.object.get("usage")) |previous| try models.combineUsage(a, previous, usage) else try json.clone(a, usage);
+                    try self.result.value.object.put(a, "usage", combined);
+                }
+            }
+            if (pending.work.model_operation == .generateImages) if (json.get(reply.value, "output")) |blocks| if (blocks == .array) {
+                var count: i64 = 0;
+                for (blocks.array.items) |block| if (json.get(block, "type")) |kind| {
+                    if (kind == .string and std.mem.eql(u8, kind.string, "image")) count += 1;
+                };
+                const previous = if (self.result.value.object.get("generatedImages")) |value_| value_.integer else 0;
+                try self.result.value.object.put(a, "generatedImages", .{ .integer = previous + count });
+            };
+            if (self.options.progress) |notify| try notify(self.options.progress_context, self.result.value.object.get("calls").?);
+        }
         return true;
     }
-    fn completeCall(self: *Execution, index: usize, status: []const u8, started: i64) !void {
+    fn completeCall(self: *Execution, optional_index: ?usize, status: []const u8, started: i64) !void {
+        const index = optional_index orelse return;
         const a = self.result.arena.allocator();
         const record = &self.result.value.object.getPtr("calls").?.array.items[index];
         try record.object.put(a, "status", .{ .string = status });
@@ -691,6 +797,7 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
                 } else |_| {}
             }
             if (pending.work.args) |*args| args.deinit();
+            if (pending.work.model_ref) |reference| gpa.free(reference);
             gpa.destroy(pending.work);
             engine.freeValue(pending.resolve);
             engine.freeValue(pending.reject);
@@ -750,6 +857,12 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
     defer engine.freeValue(guarded_tools);
     try state.put(globals, "tools", c.JS_DupValue(engine.context, guarded_tools));
     try state.put(globals, "ALL_TOOLS", c.JS_DupValue(engine.context, metadata));
+    if (options.model_runtime != null) {
+        const model_object = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
+        defer engine.freeValue(model_object);
+        inline for (std.meta.fields(models.Operation)) |field| try state.put(model_object, field.name, try engine.checked(c.JS_NewCFunctionData2(engine.context, Execution.callModel, field.name, 0, field.value, 0, null)));
+        try state.put(globals, "models", c.JS_DupValue(engine.context, model_object));
+    }
     if (options.enable_discovery) inline for (.{ "searchTools", "describeTool", "describeNamespace" }, 0..) |name, index| try state.put(globals, name, try engine.checked(c.JS_NewCFunctionData2(engine.context, Execution.discover, name, 1, index, 0, null)));
     const console = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
     defer engine.freeValue(console);

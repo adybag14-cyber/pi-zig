@@ -645,6 +645,14 @@ pub fn build(b: *std.Build) void {
     const nested_tests = b.addTest(.{ .root_module = nested_module, .use_llvm = use_llvm, .filters = &.{"native codemode nested pipeline"} });
     const run_nested_tests = b.addRunArtifact(nested_tests);
     codemode_step.dependOn(&run_nested_tests.step);
+    const codemode_models_module = b.createModule(.{ .root_source_file = b.path("src/codemode_models_test.zig"), .target = target, .optimize = optimize });
+    codemode_models_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, codemode_models_module, quickjs, sqlite_lib_dir);
+    const codemode_models_tests = b.addTest(.{ .root_module = codemode_models_module, .use_llvm = use_llvm, .filters = &.{"native codemode models"} });
+    const codemode_models_run = b.addRunArtifact(codemode_models_tests);
+    b.step("test-codemode-models", "Compare model globals against original registry behavior and concurrency").dependOn(&codemode_models_run.step);
+    codemode_step.dependOn(&codemode_models_run.step);
+    test_step.dependOn(&codemode_models_run.step);
     test_step.dependOn(&run_nested_tests.step);
     const oauth_lock_fixture = b.addExecutable(.{
         .name = "pi-mcp-oauth-lock-fixture",

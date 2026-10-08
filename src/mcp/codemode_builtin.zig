@@ -14,6 +14,7 @@ pub const Runtime = struct {
     configured: ?*configured.Service = null,
     output_root: ?[]const u8 = null,
     host: ?*@import("../extensions/host.zig").Host = null,
+    model_runtime: ?@import("codemode_models.zig").Runtime = null,
     pub fn exists(raw: ?*anyopaque, name: []const u8) bool {
         if (!std.mem.eql(u8, name, "codemode")) return false;
         const self: *@This() = @ptrCast(@alignCast(raw.?));
@@ -44,7 +45,7 @@ pub const Runtime = struct {
     pub fn declareSchemas(_: ?*anyopaque, gpa: std.mem.Allocator) ![]u8 {
         return gpa.dupe(u8, "[{\"type\":\"function\",\"function\":{\"name\":\"codemode\",\"description\":\"Run JavaScript that calls the available tools.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"string\",\"description\":\"Raw JavaScript source.\"}},\"required\":[\"code\"]}}}]");
     }
-    pub fn execute(raw: ?*anyopaque, gpa: std.mem.Allocator, initial: *const loop.AgentConfig, id: []const u8, name: []const u8, arguments: []const u8, _: loop.ExternalToolProgressFn, _: ?*anyopaque, aborted: ?*bool) !?tools.ToolResult {
+    pub fn execute(raw: ?*anyopaque, gpa: std.mem.Allocator, initial: *const loop.AgentConfig, id: []const u8, name: []const u8, arguments: []const u8, progress: loop.ExternalToolProgressFn, progress_context: ?*anyopaque, aborted: ?*bool) !?tools.ToolResult {
         if (!exists(raw, name)) return null;
         if (!isActive(initial)) return .{ .content = try gpa.dupe(u8, "Tool codemode is not active"), .is_error = true };
         const self: *@This() = @ptrCast(@alignCast(raw.?));
@@ -128,7 +129,16 @@ pub const Runtime = struct {
         invocation.config.tool_filter = .{ .allow = names.items, .allow_is_loadout = true };
         var store = try adapter.loadBranchStore(gpa, self.session);
         defer store.deinit();
-        return try adapter.execute(gpa, self.io, code, .{ .enable_discovery = true, .context = &invocation, .invoke = Invocation.call, .entries = entries.items, .call_id = id, .store = store.value, .append_context = self.session, .append_store = adapter.appendBranchStore, .output_root = self.output_root }, aborted);
+        const Updates = struct {
+            callback: loop.ExternalToolProgressFn,
+            context: ?*anyopaque,
+            fn emit(update_raw: ?*anyopaque, bytes: []const u8) void {
+                const updates: *@This() = @ptrCast(@alignCast(update_raw.?));
+                updates.callback(updates.context, .{ .content = "", .details_json = bytes });
+            }
+        };
+        var updates: Updates = .{ .callback = progress, .context = progress_context };
+        return try adapter.execute(gpa, self.io, code, .{ .model_runtime = self.model_runtime, .progress_context = &updates, .progress = Updates.emit, .enable_discovery = true, .context = &invocation, .invoke = Invocation.call, .entries = entries.items, .call_id = id, .store = store.value, .append_context = self.session, .append_store = adapter.appendBranchStore, .output_root = self.output_root }, aborted);
     }
     fn appendSchemas(a: std.mem.Allocator, target: *json.Value, bytes: []const u8, filter: tools.ToolFilter, configured_all: bool) !void {
         var parsed = try json.Owned.parse(a, bytes);

@@ -7,10 +7,16 @@ pub const Runtime = struct {
     context: ?*anyopaque,
     invoke: *const fn (?*anyopaque, std.mem.Allocator, Operation, Value, ?*bool) anyerror!json.Owned,
     docs_path: []const u8 = "docs/codemode.md",
+    admitted_context: ?*anyopaque = null,
+    admitted: ?*const fn (?*anyopaque, Value) anyerror!void = null,
 };
 const classifier_shape = "{ state: { ... }, images?: [{ type: \"image\", data: <base64>, mimeType }], questions: { <id>: { type: \"choice\", instructions, criteria: { <label>: <meaning> } } | { type: \"score\", instructions, criteria: [<lowest level>, ..., <highest level>] } | { type: \"bool\", instructions, criteria: { true: <meaning>, false: <meaning> } } } }";
-fn argument(args: Value, index: usize) ?Value { return if (args == .array and index < args.array.items.len) args.array.items[index] else null; }
-fn isString(value: ?Value) bool { return value != null and value.? == .string; }
+fn argument(args: Value, index: usize) ?Value {
+    return if (args == .array and index < args.array.items.len) args.array.items[index] else null;
+}
+fn isString(value: ?Value) bool {
+    return value != null and value.? == .string;
+}
 fn strings(value: Value) bool {
     const values = if (value == .array) value.array.items else if (value == .object) value.object.values() else return false;
     if (values.len == 0) return false;
@@ -20,8 +26,11 @@ fn strings(value: Value) bool {
 fn describe(a: std.mem.Allocator, value: ?Value) ![]const u8 {
     const item = value orelse return "undefined";
     return switch (item) {
-        .null => "null", .string => "a string", .array => if (item.array.items.len == 0) "an empty array" else "an array",
-        .bool => "a boolean", .integer, .float, .number_string => "a number",
+        .null => "null",
+        .string => "a string",
+        .array => if (item.array.items.len == 0) "an empty array" else "an array",
+        .bool => "a boolean",
+        .integer, .float, .number_string => "a number",
         .object => if (item.object.count() == 0) "{}" else std.fmt.allocPrint(a, "{{ {s}{s} }}", .{ try std.mem.join(a, ", ", item.object.keys()[0..@min(6, item.object.count())]), if (item.object.count() > 6) ", ..." else "" }),
     };
 }
@@ -75,7 +84,27 @@ fn contextProblem(a: std.mem.Allocator, operation: Operation, value: ?Value) !?[
     }
     return null;
 }
-fn article(kind: []const u8) []const u8 { return if (std.mem.eql(u8, kind, "image")) "an" else "a"; }
+fn article(kind: []const u8) []const u8 {
+    return if (std.mem.eql(u8, kind, "image")) "an" else "a";
+}
+pub fn combineUsage(a: std.mem.Allocator, first: Value, second: Value) !Value {
+    var result: Value = .{ .object = .empty };
+    for ([_][]const u8{ "input", "output", "cacheRead", "cacheWrite", "cacheWrite1h", "reasoning", "totalTokens" }) |key| {
+        const left = json.get(first, key);
+        const right = json.get(second, key);
+        if ((std.mem.eql(u8, key, "cacheWrite1h") or std.mem.eql(u8, key, "reasoning")) and left == null and right == null) continue;
+        const sum = (if (left) |value| try json.asNumber(value) else 0) + (if (right) |value| try json.asNumber(value) else 0);
+        try result.object.put(a, key, .{ .float = sum });
+    }
+    var cost: Value = .{ .object = .empty };
+    for ([_][]const u8{ "input", "output", "cacheRead", "cacheWrite", "total" }) |key| {
+        const left = json.get(json.get(first, "cost") orelse .null, key);
+        const right = json.get(json.get(second, "cost") orelse .null, key);
+        try cost.object.put(a, key, .{ .float = (if (left) |value| try json.asNumber(value) else 0) + (if (right) |value| try json.asNumber(value) else 0) });
+    }
+    try result.object.put(a, "cost", cost);
+    return result;
+}
 pub fn execute(gpa: std.mem.Allocator, runtime: Runtime, operation: Operation, args: Value, aborted: ?*bool) !json.Owned {
     var arena: std.heap.ArenaAllocator = .init(gpa);
     defer arena.deinit();
@@ -93,8 +122,12 @@ pub fn execute(gpa: std.mem.Allocator, runtime: Runtime, operation: Operation, a
         var result = try runtime.invoke(runtime.context, gpa, operation, args, aborted);
         errdefer result.deinit();
         if (result.value == .array) {
-            for (result.value.array.items) |*model| if (model.* == .object) { _ = model.object.swapRemove("headers"); };
-        } else if (result.value == .object) { _ = result.value.object.swapRemove("headers"); }
+            for (result.value.array.items) |*model| if (model.* == .object) {
+                _ = model.object.swapRemove("headers");
+            };
+        } else if (result.value == .object) {
+            _ = result.value.object.swapRemove("headers");
+        }
         return result;
     }
     const kind: []const u8 = if (operation == .classify) "classifier" else "image";
@@ -121,6 +154,7 @@ pub fn execute(gpa: std.mem.Allocator, runtime: Runtime, operation: Operation, a
     if (try contextProblem(a, operation, context)) |problem| return errorResult(gpa, if (operation == .classify) try std.fmt.allocPrint(a, "models.classify() {s}. Expected context: {s}. See \"Classify\" in {s}.", .{ problem, classifier_shape, runtime.docs_path }) else try std.fmt.allocPrint(a, "models.generateImages() {s}. Expected context: {{ input: [{{ type: \"text\", text: <prompt> }}, ...optional {{ type: \"image\", data: <base64>, mimeType }} references] }}. See \"Generate images\" in {s}.", .{ problem, runtime.docs_path }));
     var checked: Value = .{ .array = .init(a) };
     try checked.array.appendSlice(&.{ canonical.value, context.? });
+    if (runtime.admitted) |notify| try notify(runtime.admitted_context, canonical.value);
     return runtime.invoke(runtime.context, gpa, operation, checked, aborted);
 }
 test "native codemode models exact source catalog errors contexts and canonical private lookup" {
