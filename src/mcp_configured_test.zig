@@ -55,6 +55,81 @@ fn create(root: *Root, env: *const std.process.Environ.Map, trusted: bool) !*con
 fn execute(service: *configured.Service, name: []const u8, args: []const u8) !tools.ToolResult {
     return (try configured.Service.execute(service, gpa, "owned-call", name, args, discard, null, null)) orelse error.MissingConfiguredTool;
 }
+test "mcp.configured live notification refresh retains withdrawn metadata and replaces offered schema identities" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var configuration = try stdioConfig(a, program, "direct");
+    var args: Value = .{ .array = .init(a) };
+    try args.array.append(.{ .string = "--notify-refresh" });
+    try configuration.object.put(a, "args", args);
+    try root.write(false, try document(a, "native", configuration));
+    var environment = try std.testing.environ.createMap(gpa);
+    defer environment.deinit();
+    const service = try create(&root, &environment, false);
+    defer service.deinit();
+    try service.start();
+    const old_parameter = service.descriptors.items[1].parameter_id;
+    const trigger_parameter = service.descriptors.items[0].parameter_id;
+    var reply = try execute(service, "mcp__native__trigger", "{}");
+    defer reply.deinit(gpa);
+    try std.testing.expectEqualStrings("ok", reply.content);
+    const deadline = std.Io.Clock.awake.now(io).toMilliseconds() + 5000;
+    while (!service.owns("mcp__native__new")) {
+        if (std.Io.Clock.awake.now(io).toMilliseconds() >= deadline) return error.NotificationRefreshTimeout;
+        try io.sleep(.fromMilliseconds(2), .awake);
+    }
+    service.catalog_mutex.lockUncancelable(io);
+    defer service.catalog_mutex.unlock(io);
+    try std.testing.expectEqual(@as(usize, 3), service.descriptors.items.len);
+    try std.testing.expect(trigger_parameter != service.descriptors.items[0].parameter_id);
+    try std.testing.expectEqual(old_parameter, service.descriptors.items[1].parameter_id);
+    try std.testing.expectEqual(@as(@TypeOf(service.descriptors.items[1].exposure), .hidden), service.descriptors.items[1].exposure);
+    try std.testing.expectEqual(service.descriptors.items[0].namespace_id, service.descriptors.items[2].namespace_id);
+}
+
+test "mcp.configured shutdown cancels an admitted live list refresh and retires its exact connection borrow" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var configuration = try stdioConfig(a, program, "direct");
+    var args: Value = .{ .array = .init(a) };
+    try args.array.append(.{ .string = "--notify-stall" });
+    try configuration.object.put(a, "args", args);
+    try root.write(false, try document(a, "native", configuration));
+    var environment = try std.testing.environ.createMap(gpa);
+    defer environment.deinit();
+    const service = try create(&root, &environment, false);
+    defer service.deinit();
+    try service.start();
+    var reply = try execute(service, "mcp__native__trigger", "{}");
+    defer reply.deinit(gpa);
+    const server = service.findServer("native").?;
+    const deadline = std.Io.Clock.awake.now(io).toMilliseconds() + 5000;
+    while (true) {
+        const borrow = try server.connection.acquire();
+        borrow.client.mutex.lockUncancelable(io);
+        const pending = borrow.client.pending.count();
+        borrow.client.mutex.unlock(io);
+        borrow.release();
+        if (pending != 0) break;
+        if (std.Io.Clock.awake.now(io).toMilliseconds() >= deadline) return error.NotificationAdmissionTimeout;
+        try io.sleep(.fromMilliseconds(2), .awake);
+    }
+    try service.close();
+    try std.testing.expectEqual(@as(usize, 0), server.connection.borrowers);
+    try std.testing.expectEqual(@as(usize, 0), service.active_calls);
+    try std.testing.expectEqual(@as(@TypeOf(server.connection.state), .closed), server.connection.state);
+}
+
 test "mcp.configured naming matches original bulk collisions duplicates and historical reservations" {
     const program = try fixturePath();
     defer gpa.free(program);

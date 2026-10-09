@@ -15,6 +15,9 @@ pub fn main(init: std.process.Init) !void {
     const no_templates = args.len > 1 and std.mem.eql(u8, args[1], "--resources-no-templates");
     const failed_lists = args.len > 1 and std.mem.eql(u8, args[1], "--resources-failed-lists");
     const false_tools = args.len > 1 and std.mem.eql(u8, args[1], "--resources-false-tools");
+    const notify_stall = args.len > 1 and std.mem.eql(u8, args[1], "--notify-stall");
+    const notify_refresh = notify_stall or (args.len > 1 and std.mem.eql(u8, args[1], "--notify-refresh"));
+    var refreshed = false;
     if (args.len > 1 and std.mem.eql(u8, args[1], "--stall")) {
         try init.io.sleep(.fromSeconds(3600), .awake);
         return;
@@ -82,6 +85,15 @@ pub fn main(init: std.process.Init) !void {
             result = .{ .object = .empty };
             try result.object.put(a, "contents", contents);
         } else if (std.mem.eql(u8, method, "tools/list")) {
+            if (notify_refresh) {
+                if (notify_stall and refreshed) continue;
+                var value = try json.Owned.parse(init.gpa, if (refreshed) "{\"tools\":[{\"name\":\"trigger\",\"inputSchema\":{}},{\"name\":\"new\",\"inputSchema\":{}}]}" else "{\"tools\":[{\"name\":\"trigger\",\"inputSchema\":{}},{\"name\":\"old\",\"inputSchema\":{}}]}");
+                defer value.deinit();
+                var response = try protocol.response(init.gpa, id, value.value, false);
+                defer response.deinit();
+                try emit(init.io, init.gpa, response.value);
+                continue;
+            }
             if (args.len > 1 and std.mem.startsWith(u8, args[1], "--names-")) {
                 const names: []const []const u8 = if (std.mem.eql(u8, args[1], "--names-collisions")) &.{ "a-b", "a_b" } else if (std.mem.eql(u8, args[1], "--names-duplicates")) &.{ "plain", "plain" } else if (std.mem.eql(u8, args[1], "--names-new")) &.{ "a_b", "plain" } else &.{ "a-b", "plain" };
                 var listed: Value = .{ .array = .init(a) };
@@ -107,6 +119,12 @@ pub fn main(init: std.process.Init) !void {
             var contents: Value = .{ .array = .init(a) };
             var text: []const u8 = "ok";
             var failure = false;
+            if (notify_refresh and std.mem.eql(u8, name, "trigger")) {
+                refreshed = true;
+                var notification = try protocol.request(init.gpa, null, "notifications/tools/list_changed", null);
+                defer notification.deinit();
+                try emit(init.io, init.gpa, notification.value);
+            }
             if (std.mem.eql(u8, name, "remote")) {
                 var remote = try json.Owned.parse(init.gpa, "{\"code\":-32042,\"message\":\"Original remote message\",\"data\":{\"detail\":7}}");
                 defer remote.deinit();

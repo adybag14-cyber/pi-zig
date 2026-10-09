@@ -60,6 +60,65 @@ pub const Server = struct {
     has_resources: bool = false,
     resources_count: usize = 0,
     resource_templates_count: usize = 0,
+    discovery: ?json.Owned = null,
+    refresh_mutex: std.Io.Mutex = .init,
+    refresh_group: std.Io.Group = .init,
+    fn notified(raw: ?*anyopaque, client: *session.Client, method: []const u8, _: ?Value) !void {
+        const self: *Server = @ptrCast(@alignCast(raw.?));
+        const kind: enum { tools, resources } = if (std.mem.eql(u8, method, "notifications/tools/list_changed")) .tools else if (std.mem.eql(u8, method, "notifications/resources/list_changed")) .resources else return;
+        self.refresh_mutex.lockUncancelable(self.owner.io);
+        defer self.refresh_mutex.unlock(self.owner.io);
+        if (self.owner.closing.load(.acquire) or !self.connection.isCurrent(client)) return;
+        const borrow = self.connection.pinCallbackClient(client) orelse return;
+        self.refresh_group.concurrent(self.owner.io, refresh, .{ self, borrow, kind == .resources }) catch |err| {
+            borrow.release();
+            return err;
+        };
+    }
+    fn refresh(self: *Server, borrow: connection.Borrow, resources: bool) void {
+        defer borrow.release();
+        self.refreshInner(borrow.client, resources) catch |err| {
+            if (self.owner.closing.load(.acquire) or err == error.Canceled) return;
+            self.owner.catalog_mutex.lockUncancelable(self.owner.io);
+            defer self.owner.catalog_mutex.unlock(self.owner.io);
+            if (!self.connection.isCurrent(borrow.client)) return;
+            self.owner.diagnostic(self.name, @errorName(err)) catch {};
+        };
+    }
+    fn refreshInner(self: *Server, client: *session.Client, resources: bool) !void {
+        const service = self.owner;
+        var candidate = try json.Owned.empty(service.gpa);
+        defer candidate.deinit();
+        {
+            service.catalog_mutex.lockUncancelable(service.io);
+            defer service.catalog_mutex.unlock(service.io);
+            if (service.closing.load(.acquire) or !self.connection.isCurrent(client)) return;
+            const previous = self.discovery orelse return;
+            candidate.value = try json.clone(candidate.arena.allocator(), previous.value);
+        }
+        const a = candidate.arena.allocator();
+        if (resources) {
+            const counts = try Service.resourceCounts(self);
+            try candidate.value.object.put(a, "resourcesCount", .{ .integer = @intCast(counts.resources) });
+            try candidate.value.object.put(a, "resourceTemplatesCount", .{ .integer = @intCast(counts.templates) });
+        } else {
+            var listed = try capabilities.listAll(client, .tools, .{ .timeout_ms = self.timeout_ms });
+            defer listed.deinit();
+            try candidate.value.object.put(a, "tools", try json.clone(a, listed.value));
+        }
+        service.catalog_mutex.lockUncancelable(service.io);
+        defer service.catalog_mutex.unlock(service.io);
+        if (service.closing.load(.acquire) or !self.connection.isCurrent(client)) return;
+        // Resource and tool notifications can finish in either order. Update
+        // only the field this request fetched before rebuilding definitions.
+        if (self.discovery) |current| {
+            inline for (.{ "tools", "resourcesCount", "resourceTemplatesCount" }) |key| {
+                const fetched = if (comptime std.mem.eql(u8, key, "tools")) !resources else resources;
+                if (!fetched) try candidate.value.object.put(a, key, try json.clone(a, try protocol.field(current.value, key)));
+            }
+        }
+        try service.publishDiscovery(self, candidate.value);
+    }
     fn authToken(raw: ?*anyopaque, gpa: std.mem.Allocator, _: ?*bool) !?[]u8 {
         const self: *Server = @ptrCast(@alignCast(raw.?));
         if (self.auth_provider) |*provider| return provider.token();
@@ -216,6 +275,7 @@ test "mcp.configured refresh every allocation failure preserves committed metada
             }
             var server: Server = .{ .owner = &service, .name = "native", .config = .{ .object = .empty }, .connection = undefined, .timeout_ms = 1000, .auth_arena = .init(a) };
             defer server.auth_arena.deinit();
+            defer if (server.discovery) |*discovery| discovery.deinit();
             try service.servers.append(a, &server);
             var initial = try json.Owned.parse(a, "{\"initialized\":{\"capabilities\":{\"tools\":{}}},\"tools\":[{\"name\":\"old\",\"inputSchema\":{}},{\"name\":\"retained\",\"inputSchema\":{}}],\"resourcesCount\":0,\"resourceTemplatesCount\":0}");
             defer initial.deinit();
@@ -374,7 +434,7 @@ pub const Service = struct {
             server.* = .{ .owner = self, .name = name, .config = value, .timeout_ms = timeout_ms, .connection = undefined, .auth_arena = .init(gpa) };
             errdefer server.auth_arena.deinit();
             if (usesOAuth(value)) server.auth_provider = .{ .store = self.credentials.?, .name = name, .server_url = try protocol.text(value, "url"), .client = .{ .gpa = gpa, .io = io, .timeout_ms = 15_000 }, .options_context = server, .resolve_options = Server.unusedTokenOptions, .resolve_flow = Server.resolveFlow };
-            server.connection = connection.Connection.init(gpa, io, .{ .factory = Server.createTransport, .factory_context = server, .client = .{ .name = "pi", .version = @import("../config.zig").version, .request_timeout_ms = timeout_ms } });
+            server.connection = connection.Connection.init(gpa, io, .{ .factory = Server.createTransport, .factory_context = server, .client = .{ .name = "pi", .version = @import("../config.zig").version, .request_timeout_ms = timeout_ms, .context = server, .on_client_notification = Server.notified } });
             errdefer server.connection.deinit();
             try self.servers.append(gpa, server);
         }
@@ -491,6 +551,9 @@ pub const Service = struct {
         try self.publishDiscovery(server, result.value);
     }
     fn publishDiscovery(self: *Service, server: *Server, result: json.Value) !void {
+        var discovery = try json.Owned.empty(self.gpa);
+        errdefer discovery.deinit();
+        discovery.value = try json.clone(discovery.arena.allocator(), result);
         const initialized = try protocol.field(result, "initialized");
         const has_resources = json.get(try protocol.field(initialized, "capabilities"), "resources") != null;
         const resources_count: usize = @intCast(try json.asInteger(try protocol.field(result, "resourcesCount")));
@@ -589,6 +652,8 @@ pub const Service = struct {
         self.descriptors = ordered;
         ordered = .empty;
         committed = true;
+        if (server.discovery) |*previous| previous.deinit();
+        server.discovery = discovery;
     }
     /// Runs on the catalog line, publishing the widest visible server exposure.
     fn syncResourceTools(self: *Service) !void {
@@ -1016,6 +1081,11 @@ pub const Service = struct {
         }
         self.closing.store(true, .release);
         for (self.servers.items) |server| {
+            server.refresh_mutex.lockUncancelable(self.io);
+            server.refresh_mutex.unlock(self.io);
+            server.refresh_group.cancel(self.io);
+        }
+        for (self.servers.items) |server| {
             @atomicStore(bool, &server.sign_in_aborted, true, .release);
             server.sign_in_mutex.lockUncancelable(self.io);
             while (server.sign_in_active) server.sign_in_changed.waitUncancelable(self.io, &server.sign_in_mutex);
@@ -1194,6 +1264,7 @@ pub const Service = struct {
         }
         for (self.servers.items) |server| {
             server.connection.deinit();
+            if (server.discovery) |*discovery| discovery.deinit();
             server.auth_arena.deinit();
             if (server.challenge) |challenge| self.gpa.free(challenge);
             self.gpa.destroy(server);
