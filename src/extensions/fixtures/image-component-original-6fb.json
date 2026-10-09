@@ -1,0 +1,632 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "protocol null width 0",
+      "value": {
+        "first": [
+          ""
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": [
+          [
+            true,
+            "[Image: pixel.png [image/png] 20x10]"
+          ],
+          [
+            true,
+            "[Image: pixel.png [image/png] 20x10]"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "protocol null width 1",
+      "value": {
+        "first": [
+          "\u001b[0m.\u001b[0m"
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": [
+          [
+            true,
+            "[Image: pixel.png [image/png] 20x10]"
+          ],
+          [
+            true,
+            "[Image: pixel.png [image/png] 20x10]"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "protocol null width 5",
+      "value": {
+        "first": [
+          "<[\u001b[0m...\u001b[0m"
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": [
+          [
+            true,
+            "[Image: pixel.png [image/png] 20x10]"
+          ],
+          [
+            true,
+            "[Image: pixel.png [image/png] 20x10]"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "protocol null width 12",
+      "value": {
+        "first": [
+          "<[Image: \u001b[0m...\u001b[0m"
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": [
+          [
+            true,
+            "[Image: pixel.png [image/png] 20x10]"
+          ],
+          [
+            true,
+            "[Image: pixel.png [image/png] 20x10]"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "protocol null width 80",
+      "value": {
+        "first": [
+          "<[Image: pixel.png [image/png] 20x10]>"
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": [
+          [
+            true,
+            "[Image: pixel.png [image/png] 20x10]"
+          ],
+          [
+            true,
+            "[Image: pixel.png [image/png] 20x10]"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "protocol kitty width 0",
+      "value": {
+        "first": [
+          "\u001b_Ga=T,f=100,q=2,C=1,c=1,r=1,i=77;iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u001b\\"
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "protocol kitty width 1",
+      "value": {
+        "first": [
+          "\u001b_Ga=T,f=100,q=2,C=1,c=1,r=1,i=77;iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u001b\\"
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "protocol kitty width 5",
+      "value": {
+        "first": [
+          "\u001b_Ga=T,f=100,q=2,C=1,c=3,r=1,i=77;iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u001b\\"
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "protocol kitty width 12",
+      "value": {
+        "first": [
+          "\u001b_Ga=T,f=100,q=2,C=1,c=10,r=3,i=77;iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u001b\\",
+          "",
+          ""
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "protocol kitty width 80",
+      "value": {
+        "first": [
+          "\u001b_Ga=T,f=100,q=2,C=1,c=60,r=15,i=77;iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u001b\\",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "protocol iterm2 width 0",
+      "value": {
+        "first": [
+          "\u001b]1337;File=inline=1;size=24;width=1;height=auto:iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u0007"
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "protocol iterm2 width 1",
+      "value": {
+        "first": [
+          "\u001b]1337;File=inline=1;size=24;width=1;height=auto:iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u0007"
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "protocol iterm2 width 5",
+      "value": {
+        "first": [
+          "\u001b]1337;File=inline=1;size=24;width=3;height=auto:iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u0007"
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "protocol iterm2 width 12",
+      "value": {
+        "first": [
+          "",
+          "",
+          "\u001b[2A\u001b]1337;File=inline=1;size=24;width=10;height=auto:iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u0007"
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "protocol iterm2 width 80",
+      "value": {
+        "first": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "\u001b[14A\u001b]1337;File=inline=1;size=24;width=60;height=auto:iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u0007"
+        ],
+        "same": true,
+        "invalidated": true,
+        "imageId": 77,
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "shape constructor and ordinary fields",
+      "value": {
+        "fields": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "imageId",
+          "pngData",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "dimensions": {
+          "widthPx": 800,
+          "heightPx": 600
+        },
+        "name": "Image",
+        "length": 3,
+        "prototype": [
+          {
+            "name": "constructor",
+            "length": 3,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "getImageId",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "invalidate",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "render",
+            "length": 1,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "explicit dimensions identity and options",
+      "value": {
+        "identity": true,
+        "first": [
+          "[Image: x [image/jpeg] 23x45]"
+        ],
+        "after": [
+          "[Image: changed [image/jpeg\u001b[0m...\u001b[0m"
+        ],
+        "original": false,
+        "options": false
+      }
+    },
+    {
+      "name": "derived new target",
+      "value": {
+        "instance": true,
+        "prototype": true,
+        "lines": [
+          "[Image: [image/jp\u001b[0m...\u001b[0m"
+        ]
+      }
+    },
+    {
+      "name": "borrowed receiver",
+      "value": {
+        "first": [
+          "[Image: borrowed \u001b[0m...\u001b[0m"
+        ],
+        "same": true,
+        "keys": [
+          "base64Data",
+          "mimeType",
+          "dimensions",
+          "theme",
+          "options",
+          "cachedLines",
+          "cachedWidth"
+        ],
+        "get": 99
+      }
+    },
+    {
+      "name": "kitty conversion and existing instance retains PNG",
+      "value": {
+        "lines": [
+          "\u001b_Ga=T,f=100,q=2,C=1,c=18,r=5,i=81;iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u001b\\",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "after": [
+          "\u001b_Ga=T,f=100,q=2,C=1,c=18,r=5,i=81;iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u001b\\",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "calls": [
+          [
+            "jpeg-data",
+            "image/jpeg"
+          ]
+        ],
+        "png": true,
+        "dimensions": {
+          "widthPx": 800,
+          "heightPx": 600
+        }
+      }
+    },
+    {
+      "name": "null conversion shared cache retry after setter",
+      "value": {
+        "initial": [
+          "[Image: [image/jp\u001b[0m...\u001b[0m"
+        ],
+        "retried": [
+          "\u001b_Ga=T,f=100,q=2,C=1,c=18,r=5,i=1073741824;iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u001b\\",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "cachedCalls": 1,
+        "calls": 2,
+        "png": true
+      }
+    },
+    {
+      "name": "LRU conversion cache evicts oldest",
+      "value": [
+        "key0",
+        "key1",
+        "key2",
+        "key3",
+        "key4",
+        "key5",
+        "key6",
+        "key7",
+        "key8",
+        "key9",
+        "key10",
+        "key11",
+        "key12",
+        "key13",
+        "key14",
+        "key15",
+        "key16",
+        "key17",
+        "key18",
+        "key19",
+        "key20",
+        "key21",
+        "key22",
+        "key23",
+        "key24",
+        "key25",
+        "key26",
+        "key27",
+        "key28",
+        "key29",
+        "key30",
+        "key31",
+        "key32",
+        "key0"
+      ]
+    },
+    {
+      "name": "transcoder raw exception identity",
+      "value": true
+    },
+    {
+      "name": "fallback raw exception identity",
+      "value": true
+    },
+    {
+      "name": "options null preserves constructor throw",
+      "error": "TypeError"
+    },
+    {
+      "name": "automatic image ID uses Math.random",
+      "value": {
+        "id": 1073741824,
+        "lines": [
+          "\u001b_Ga=T,f=100,q=2,C=1,c=6,r=2,i=1073741824;iVBORw0KGgoAAAAAAAAAAAAAABQAAAAK\u001b\\",
+          ""
+        ]
+      }
+    }
+  ]
+}

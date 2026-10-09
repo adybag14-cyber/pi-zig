@@ -1184,6 +1184,11 @@ pub fn build(b: *std.Build) void {
     const tui_public_slice_run = b.addRunArtifact(tui_public_slice_tests);
     b.step("test-native-tui-public-source", "Replay implemented Source public TUI behavior slices").dependOn(&tui_public_slice_run.step);
     test_step.dependOn(&tui_public_slice_run.step);
+    const tui_public_process_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_tui_public_process_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const tui_public_process_run = b.addRunArtifact(tui_public_process_tests);
+    tui_public_process_run.step.dependOn(&sdk_install.step);
+    b.step("test-native-tui-public-process", "Replay public TUI components and callback lifecycle in actual no-Node worker").dependOn(&tui_public_process_run.step);
+    test_step.dependOn(&tui_public_process_run.step);
     const dialog_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_dialog_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
         .use_llvm = use_llvm,

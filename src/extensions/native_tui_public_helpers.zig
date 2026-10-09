@@ -180,7 +180,8 @@ fn regex(engine: *js.Engine, pattern: []const u8, flags: []const u8) !c.JSValue 
     defer engine.freeValue(text);
     const flag_text = try v.text(engine, flags);
     defer engine.freeValue(flag_text);
-    return js.builtin(engine, "RegExp", &.{ text, flag_text });
+    var arguments = [_]c.JSValue{ text, flag_text };
+    return engine.checked(c.JS_CallConstructor(engine.context, engine.intrinsic_regexp_constructor, arguments.len, &arguments));
 }
 pub fn install(engine: *js.Engine, exports: c.JSValue) !void {
     const symbol = try js.global(engine, "Symbol");

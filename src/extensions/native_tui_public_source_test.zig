@@ -1,6 +1,42 @@
 const std = @import("std");
 const js = @import("native_js_values.zig");
 const c = js.c;
+test "Source6fb public TUI slice helper regex literals ignore replaced global constructor" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("node_buffer.zig").install(engine);
+    const replace = try engine.eval("globalThis.RegExp=function(){throw Error('global RegExp constructor used for literal')};", "tui-literal-global-input.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(replace);
+    const exports = try js.object(engine);
+    defer engine.freeValue(exports);
+    try @import("native_tui_public_helpers.zig").install(engine, exports);
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    try js.define(engine, root, "literalHelperApi", c.JS_DupValue(engine.context, exports));
+    const bytes = @embedFile("fixtures/tui-helper-literal-regexp-original-6fb.json");
+    try js.define(engine, root, "literalHelperSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "tui-helper-literal-regexp-original-6fb.json")));
+    const result = try engine.eval("const value={scheme:literalHelperApi.parseTerminalColorSchemeReport('\\x1b[?997;2n'),status:literalHelperApi.formatProgramStatus({state:'blocked',app:'pi',kind:'question',message:' a\\x00b '})};if(JSON.stringify(value)!==JSON.stringify(literalHelperSource.value))throw Error(JSON.stringify({value,expected:literalHelperSource.value}));", "tui-literal-global-result.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(result);
+}
+test "Source6fb public TUI slice Image protocol rendering identity transcoder retry and bounded cache" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator);
+    defer environment.deinit();
+    try @import("native_process.zig").install(engine, std.testing.io, &environment, &.{"tui-image-component"});
+    try @import("native_tui.zig").install(engine);
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    const bytes = @embedFile("fixtures/image-component-original-6fb.json");
+    try js.define(engine, root, "imageComponentSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "image-component-original-6fb.json")));
+    const result = engine.evalModule("import{Image,setImageTranscoder,setCapabilities,setCellDimensions}from'pi-tui';\n" ++ @embedFile("fixtures/image-component-original-6fb.input.js") ++
+        \\for(let i=0;i<imageComponentSource.cases.length;i++){const actual=imageComponentResults[i],expected=imageComponentSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
+    , "tui-image-component-original.mjs") catch |err| {
+        if (engine.last_error) |message| std.debug.print("Native Image component: {s}\n", .{message});
+        return err;
+    };
+    engine.freeValue(result);
+}
 test "Source6fb public TUI slice guards color scheme status UTF8 and public LaTeX entry point" {
     const engine = try js.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
