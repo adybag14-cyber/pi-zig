@@ -270,6 +270,14 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    const catalog_wire_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_tool_catalog_wire_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"private native catalog"} });
+    catalog_wire_tests.root_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, catalog_wire_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, catalog_wire_tests.root_module, typescript_parser);
+    linkDurable(b, catalog_wire_tests.root_module);
+    const run_catalog_wire_tests = b.addRunArtifact(catalog_wire_tests);
+    b.step("test-native-tool-catalog-wire", "Exercise private native catalog admission and lifetime control").dependOn(&run_catalog_wire_tests.step);
+    test_step.dependOn(&run_catalog_wire_tests.step);
     const theme_schema_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/theme_schema_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
     const run_theme_schema_tests = b.addRunArtifact(theme_schema_tests);
     theme_schema_tests.root_module.link_libc = true;

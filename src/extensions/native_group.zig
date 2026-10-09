@@ -36,6 +36,7 @@ pub const Group = struct {
     actions_context: ?*anyopaque = null,
     native_tool_catalog_fn: ?NativeToolCatalogFn = null,
     native_tool_catalog_context: ?*anyopaque = null,
+    native_wire_catalog_state: ?*anyopaque = null,
     native_tool_catalog_cache: tool_catalog.Cache,
 
     pub fn init(engine: *engine_mod.Engine) !*Group {
@@ -79,6 +80,7 @@ pub const Group = struct {
         for (self.external_tools.items) |name| self.engine.gpa.free(name);
         self.external_tools.deinit(self.engine.gpa);
         self.native_tool_catalog_cache.deinit();
+        @import("native_tool_catalog_wire.zig").deinit(self);
         self.engine.gpa.destroy(self);
     }
 
