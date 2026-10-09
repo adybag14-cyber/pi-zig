@@ -304,7 +304,7 @@ pub const Manager = struct {
     }
     fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
-        @import("native_async_scope.zig").requireLive(engine) catch |err| return fail(engine, err);
+        @import("native_async_scope.zig").requireOwnedUiLive(engine) catch |err| return fail(engine, err);
         const method: Method = @enumFromInt(magic);
         const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
         if (method == .onTerminalInput or method == .notify or method == .setStatus or method == .setTitle or method == .setWorkingIndicator or method == .setWorkingMessage or method == .setWorkingVisible or method == .setHiddenThinkingLabel or method == .setHeader or method == .setFooter or method == .setWidget or method == .setEditorComponent or method == .getEditorComponent or method == .getEditorText or method == .setEditorText or method == .pasteToEditor or method == .addAutocompleteProvider) {

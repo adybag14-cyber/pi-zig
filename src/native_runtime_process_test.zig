@@ -12,6 +12,101 @@ const component_protocol = @import("extensions/component_protocol.zig");
 const renderer_protocol = @import("extensions/renderer_protocol.zig");
 
 const editor_protocol = @import("extensions/editor_protocol.zig");
+test "native runtime SDK UI stale event keeps a separately retained genuine Main UI service without SDK fallback" {
+    const gpa = std.testing.allocator;
+    const input = @embedFile("extensions/fixtures/sdk-retained-main-ui-6fb2e78.txt");
+    var fixture = try Fixture.initSource(input);
+    defer fixture.deinit();
+    const cwd = try std.json.Stringify.valueAlloc(gpa, fixture.root, .{});
+    defer gpa.free(cwd);
+    const fixture_body = try std.mem.replaceOwned(u8, gpa, input, "__SDK_UI_CWD__", cwd);
+    defer gpa.free(fixture_body);
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/native.ts", .data = fixture_body });
+    const Ui = struct {
+        calls: usize = 0,
+        fn request(raw: ?*anyopaque, allocator: std.mem.Allocator, method: []const u8, args: []const u8) ![]u8 {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            try std.testing.expectEqualStrings("input", method);
+            var parsed = try @import("mcp/protocol.zig").json.Owned.parse(allocator, args);
+            defer parsed.deinit();
+            try std.testing.expectEqualStrings("retained-main", parsed.value.object.get("title").?.string);
+            try std.testing.expectEqualStrings("hint", parsed.value.object.get("placeholder").?.string);
+            self.calls += 1;
+            return allocator.dupe(u8, "\"Main:retained-main\"");
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+    };
+    var ui: Ui = .{};
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    host.setScriptUiBridge(.{ .context = &ui, .request_fn = Ui.request, .action_fn = Ui.action });
+    try host.loadPath(fixture.source_path);
+    try host.setScriptContextJson("{\"nativeRuntimeBound\":true,\"hasUI\":true,\"mode\":\"interactive\"}");
+    var result = (try host.executeCommand("sdk-retained-main-ui", "")).?;
+    defer result.deinit(gpa);
+    var actual = try @import("mcp/protocol.zig").json.Owned.parse(gpa, result.message orelse return error.SDKRetainedMainUiResultMissing);
+    defer actual.deinit();
+    var expected = try @import("mcp/protocol.zig").json.Owned.parse(gpa, @embedFile("extensions/fixtures/sdk-retained-main-ui-6fb2e78.json"));
+    defer expected.deinit();
+    if (!@import("mcp/protocol.zig").json.equal(expected.value, actual.value)) {
+        std.debug.print("SDK retained Main UI actual {s}\n", .{result.message.?});
+        return error.SDKRetainedMainUiSourceMismatch;
+    }
+    try std.testing.expectEqual(@as(usize, 1), ui.calls);
+    try fixture.noBridge();
+}
+test "native runtime SDK UI event completion retains its original live SDK timer capability without Node" {
+    const gpa = std.testing.allocator;
+    const input = @embedFile("extensions/fixtures/sdk-live-event-timer-6fb2e78.txt");
+    var fixture = try Fixture.initSource(input);
+    defer fixture.deinit();
+    const cwd = try std.json.Stringify.valueAlloc(gpa, fixture.root, .{});
+    defer gpa.free(cwd);
+    const fixture_body = try std.mem.replaceOwned(u8, gpa, input, "__SDK_UI_CWD__", cwd);
+    defer gpa.free(fixture_body);
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/native.ts", .data = fixture_body });
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    var result = (try host.executeCommand("sdk-timer-result", "")).?;
+    defer result.deinit(gpa);
+    var actual = try @import("mcp/protocol.zig").json.Owned.parse(gpa, result.message orelse return error.SDKTimerResultMissing);
+    defer actual.deinit();
+    var expected = try @import("mcp/protocol.zig").json.Owned.parse(gpa, @embedFile("extensions/fixtures/sdk-live-event-timer-6fb2e78.json"));
+    defer expected.deinit();
+    if (!@import("mcp/protocol.zig").json.equal(expected.value, actual.value)) {
+        std.debug.print("SDK timer actual {s}\n", .{result.message.?});
+        return error.SDKTimerSourceMismatch;
+    }
+    try fixture.noBridge();
+}
+test "native runtime SDK UI retains original session services and reflects rebinding mode with Source prompt boundaries without Node" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/sdk-ui-context-6fb2e78.txt"));
+    defer fixture.deinit();
+    const directory = try std.json.Stringify.valueAlloc(gpa, fixture.root, .{});
+    defer gpa.free(directory);
+    const sdk_ui_fixture_source = try std.mem.replaceOwned(u8, gpa, @embedFile("extensions/fixtures/sdk-ui-context-6fb2e78.txt"), "__SDK_UI_CWD__", directory);
+    defer gpa.free(sdk_ui_fixture_source);
+    try fixture.tmp.dir.writeFile(std.testing.io, .{ .sub_path = "extensions/native.ts", .data = sdk_ui_fixture_source });
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    var output = (try host.executeCommand("sdk-ui-result", "")).?;
+    defer output.deinit(gpa);
+    var actual = @import("mcp/protocol.zig").json.Owned.parse(gpa, output.message orelse return error.SDKUiResultMissing) catch |err| {
+        std.debug.print("SDK UI command failed: {s}\n", .{output.message.?});
+        return err;
+    };
+    defer actual.deinit();
+    var expected = try @import("mcp/protocol.zig").json.Owned.parse(gpa, @embedFile("extensions/fixtures/sdk-ui-context-6fb2e78.json"));
+    defer expected.deinit();
+    if (!@import("mcp/protocol.zig").json.equal(expected.value, actual.value)) {
+        std.debug.print("SDK UI actual {s}\n", .{output.message.?});
+        return error.SDKUiSourceMismatch;
+    }
+    try fixture.noBridge();
+}
 fn findTypedMarker(gpa: std.mem.Allocator, value: std.json.Value, marker: []const u8) anyerror!?@import("mcp/protocol.zig").json.Owned {
     switch (value) {
         .string => |text| if (std.mem.indexOf(u8, text, marker)) |start| {

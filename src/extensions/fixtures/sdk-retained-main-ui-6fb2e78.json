@@ -1,0 +1,29 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "observations": {
+    "ctxError": {
+      "name": "Error",
+      "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+    },
+    "registryError": {
+      "name": "Error",
+      "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+    },
+    "rawMain": "Main:retained-main",
+    "piError": {
+      "name": "Error",
+      "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+    }
+  },
+  "rawSdkValue": "SDK:after-dispose",
+  "calls": [
+    {
+      "title": "retained-main",
+      "placeholder": "hint",
+      "signal": true,
+      "receiver": true
+    }
+  ],
+  "mainMode": "interactive",
+  "errors": []
+}

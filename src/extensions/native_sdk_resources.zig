@@ -191,14 +191,20 @@ fn tableMap(engine: *engine_mod.Engine, table: std.StringHashMapUnmanaged(c.JSVa
     return result;
 }
 pub fn emit(engine: *engine_mod.Engine, resources: c.JSValue, session_data: c.JSValue, event: []const u8, payload: []const u8) !void {
-    const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return));
+    const pending = try emitAsync(engine, resources, session_data, event, payload);
+    defer engine.freeValue(pending);
+    const result = try engine.awaitValueOnly(pending);
+    engine.freeValue(result);
+}
+pub fn emitAsync(engine: *engine_mod.Engine, resources: c.JSValue, session_data: c.JSValue, event: []const u8, payload: []const u8) !c.JSValue {
+    const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return sdk.promise(engine, c.pi_js_undefined())));
     const owner = try sdk.state(engine, resources);
     const ids = try sdk.get(engine, owner.data, "extensionOwnerIds");
     defer engine.freeValue(ids);
-    if (!c.JS_IsArray(ids)) return;
+    if (!c.JS_IsArray(ids)) return sdk.promise(engine, c.pi_js_undefined());
     const session = try sdk.sessionDataSessionValue(engine, session_data);
     defer engine.freeValue(session);
-    const lease = try sdk.sessionDataModelLease(engine, session_data);
+    const lease = if ((try sdk.state(engine, session)).disposed) null else try sdk.sessionDataModelLease(engine, session_data);
     const registry = try sdk.get(engine, session_data, "modelRegistry");
     defer engine.freeValue(registry);
     const context = try sdk.object(engine);
@@ -212,22 +218,24 @@ pub fn emit(engine: *engine_mod.Engine, resources: c.JSValue, session_data: c.JS
     try sdk.put(engine, context, "thinkingLevel", try sdk.get(engine, session_data, "thinkingLevel"));
     try sdk.put(engine, context, "activeTools", try sdk.get(engine, session_data, "activeTools"));
     try sdk.put(engine, context, "systemPrompt", try sdk.get(engine, session_data, "systemPrompt"));
-    try sdk.put(engine, context, "mode", try sdk.text(engine, "sdk"));
-    try sdk.put(engine, context, "idle", c.pi_js_bool(engine.context, 1));
+    try sdk.put(engine, context, "mode", try @import("native_sdk_ui_context.zig").mode(engine, session));
+    try sdk.put(engine, context, "hasUI", c.pi_js_bool(engine.context, @intFromBool(try @import("native_sdk_ui_context.zig").hasUI(engine, session))));
+    try sdk.put(engine, context, "idle", c.pi_js_bool(engine.context, @intFromBool(!(try sdk.state(engine, session)).running)));
     const raw = try engine.stringify(context);
     defer engine.gpa.free(raw);
+    var pending: ?c.JSValue = null;
+    errdefer if (pending) |value| engine.freeValue(value);
     for (0..try sdk.length(engine, ids)) |index| {
         const id = try engine.checked(c.JS_GetPropertyUint32(engine.context, ids, @intCast(index)));
         defer engine.freeValue(id);
         var integer: i64 = 0;
         if (c.JS_ToInt64(engine.context, &integer, id) < 0) return error.JavaScriptException;
         const binding = try group.selected(@intCast(integer));
-        const saved = try binding.pushSdkContext(.{ .session = session, .registry = registry, .manager = manager, .lease = lease });
-        defer binding.restoreSdkContext(saved);
-        try binding.setContext(raw);
-        const result = try binding.invokeHook(event, payload);
-        defer engine.gpa.free(result);
+        const next = try @import("native_sdk_events.zig").emitOne(engine, binding, session, if (lease) |live| .{ .session = session, .registry = registry, .manager = manager, .lease = live } else null, raw, event, payload, pending);
+        if (pending) |value| engine.freeValue(value);
+        pending = next;
     }
+    return pending orelse try sdk.promise(engine, c.pi_js_undefined());
 }
 fn flag(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8) !bool {
     const value = try sdk.get(engine, object, name);

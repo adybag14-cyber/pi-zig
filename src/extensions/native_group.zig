@@ -66,6 +66,7 @@ pub const Group = struct {
     }
 
     pub fn deinit(self: *Group) void {
+        @import("native_sdk_events.zig").deinit(self.engine);
         self.deinitializing = true;
         for (self.sdk_scopes.items) |scope| scope.retired = true;
         self.engine.native_sdk_extension_group = null;

@@ -1761,10 +1761,12 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             return promise(engine, c.pi_js_undefined());
         }
         if (operation == .bindExtensions) {
+            const session = try sessionDataSessionValue(engine, self.data);
+            defer engine.freeValue(session);
+            try @import("native_sdk_ui_context.zig").bind(engine, session, first);
             const resources = try get(engine, self.data, "resourceLoader");
             defer engine.freeValue(resources);
-            try @import("native_sdk_resources.zig").emit(engine, resources, self.data, "session_start", "{\"reason\":\"startup\"}");
-            return promise(engine, c.pi_js_undefined());
+            return @import("native_sdk_resources.zig").emitAsync(engine, resources, self.data, "session_start", "{\"reason\":\"startup\"}");
         }
         if (operation == .getActiveToolNames) {
             const value = try get(engine, self.data, "activeTools");
@@ -2264,6 +2266,7 @@ fn staticMethod(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.J
     return result;
 }
 pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
+    try @import("native_async_scope.zig").install(engine);
     if (engine.native_sdk_class != 0) return;
     _ = c.JS_NewClassID(engine.runtime, &engine.native_sdk_class);
     const definition: c.JSClassDef = .{ .class_name = "Native coding SDK object", .finalizer = finalizer, .gc_mark = mark, .call = null, .exotic = null };

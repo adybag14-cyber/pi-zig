@@ -145,6 +145,15 @@ pub const Bindings = struct {
     }
     pub fn retireTicket(self: *Bindings) void {
         self.finishInvocation();
+        self.clearInvocationRoots();
+    }
+    pub fn retireSdkScope(self: *Bindings) void {
+        self.invocation_active = false;
+        if (self.broker) |broker| if (broker.active == self) { broker.active = null; };
+        self.clearInvocationOptions();
+        self.clearInvocationRoots();
+    }
+    fn clearInvocationRoots(self: *Bindings) void {
         for (self.actions.items) |action| self.engine.freeValue(action);
         self.actions.deinit(self.gpa);
         self.actions = .empty;
@@ -341,13 +350,28 @@ pub const Bindings = struct {
     }
 
     fn fromOwnerData(engine: *engine_mod.Engine, data: [*c]c.JSValue, offset: usize) !*Bindings {
-        try @import("native_async_scope.zig").requireLive(engine);
+        if (!@import("native_async_scope.zig").isSdkScope(engine)) try @import("native_async_scope.zig").requireLive(engine);
+        const binding = resolveOwnerData(engine, data, offset) catch |err| {
+            // A retired SDK scope retains its original canonical stale reason
+            // even after its native owner token has detached the Binding.
+            try @import("native_async_scope.zig").requireLive(engine);
+            return err;
+        };
+        try @import("native_async_scope.zig").requireBindingLive(engine, binding.sdk_resource_owner);
+        return binding;
+    }
+    fn resolveOwnerData(engine: *engine_mod.Engine, data: [*c]c.JSValue, offset: usize) !*Bindings {
         var class: i64 = 0;
         if (c.JS_ToInt64(engine.context, &class, data[offset + 1]) < 0) return error.JavaScriptException;
         const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(data[offset], @intCast(class)) orelse return error.StaleNativeExtensionOwner));
         const binding = owner.binding orelse return error.StaleNativeExtensionOwner;
         if (binding.engine != engine) return error.NativeExtensionOwnerMismatch;
         return binding;
+    }
+    pub fn liveOwner(engine: *engine_mod.Engine, token: c.JSValue, class: c.JSClassID) ?*Bindings {
+        const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(token, class) orelse return null));
+        const binding = owner.binding orelse return null;
+        return if (binding.engine == engine) binding else null;
     }
 
     fn freeTable(self: *Bindings, table: *std.StringHashMapUnmanaged(c.JSValue)) void {
@@ -1185,7 +1209,7 @@ pub const Bindings = struct {
         }
         var data = [_]c.JSValue{ token, snapshot, self.owner_token, owner_class, session, lease_generation, runtime_id };
         if (kind == .ui or kind == .modelRegistry or kind == .sessionManager) {
-            const object = if (kind == .ui) try self.ui_manager.createObject() else if (kind == .modelRegistry) if (self.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.registry) else try self.createModelRegistry(snapshot, generation) else if (self.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.manager) else try self.contextValue(.sessionManager, snapshot, &.{});
+            const object = if (kind == .ui) if (self.sdk_context) |scope| try @import("native_sdk_ui_context.zig").current(self.engine, scope.session) else try self.ui_manager.createObject() else if (kind == .modelRegistry) if (self.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.registry) else try self.createModelRegistry(snapshot, generation) else if (self.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.manager) else try self.contextValue(.sessionManager, snapshot, &.{});
             defer self.engine.freeValue(object);
             var ui_data = [_]c.JSValue{ token, snapshot, object, self.owner_token, owner_class, session, lease_generation, runtime_id };
             return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), ui_data.len, &ui_data));
@@ -1455,6 +1479,28 @@ pub const Bindings = struct {
         return filtered;
     }
 
+    fn staleContext(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        @import("native_async_scope.zig").throwMessage(engine, context_lifetime.default_message) catch |err| return publicationFailure(engine, err);
+        return c.pi_js_undefined();
+    }
+    fn createStaleContext(self: *Bindings) !c.JSValue {
+        const context = try self.engine.checked(c.JS_NewObject(self.engine.context));
+        errdefer self.engine.freeValue(context);
+        inline for (std.meta.fields(ContextMethod)) |field| {
+            const kind: ContextMethod = @enumFromInt(field.value);
+            if (@intFromEnum(kind) <= @intFromEnum(ContextMethod.getSystemPrompt)) {
+                const function = try self.engine.checked(c.JS_NewCFunction(self.engine.context, staleContext, field.name, 0));
+                const status = if (@intFromEnum(kind) <= @intFromEnum(ContextMethod.sessionManager)) getter: {
+                    const atom = c.JS_NewAtom(self.engine.context, field.name);
+                    defer c.JS_FreeAtom(self.engine.context, atom);
+                    break :getter c.JS_DefinePropertyGetSet(self.engine.context, context, atom, function, c.pi_js_undefined(), c.JS_PROP_ENUMERABLE);
+                } else c.JS_DefinePropertyValueStr(self.engine.context, context, field.name, function, c.JS_PROP_C_W_E);
+                if (status < 0) return error.JavaScriptException;
+            }
+        }
+        return context;
+    }
     fn createContext(self: *Bindings) !c.JSValue {
         const snapshot = if (self.context_snapshot) |value| c.JS_DupValue(self.engine.context, value) else try self.engine.checked(c.JS_NewObject(self.engine.context));
         defer self.engine.freeValue(snapshot);
@@ -1491,6 +1537,15 @@ pub const Bindings = struct {
             const state = sdk.state(engine, data[session_offset]) catch return self.staleSdkContext();
             const lease = sdk.sessionModelLease(state) catch return self.staleSdkContext();
             if (lease.generation != generation or lease.runtime_id != runtime_id) return self.staleSdkContext();
+            if (kind == .ui or kind == .mode or kind == .hasUI) {
+                const ui = @import("native_sdk_ui_context.zig");
+                return (switch (kind) {
+                    .ui => ui.current(engine, data[session_offset]),
+                    .mode => ui.mode(engine, data[session_offset]),
+                    .hasUI => c.pi_js_bool(context, @intFromBool(ui.hasUI(engine, data[session_offset]) catch |err| return publicationFailure(engine, err))),
+                    else => unreachable,
+                }) catch |err| return publicationFailure(engine, err);
+            }
         }
         // UI is an owner-rooted capability captured when the context is
         // created. Its individual methods enforce invocation/owner fences.
@@ -1562,11 +1617,6 @@ pub const Bindings = struct {
             .hasUI, .isProjectTrusted, .hasPendingMessages => return c.pi_js_bool(self.engine.context, c.JS_ToBool(self.engine.context, value)),
             .mode => {
                 if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewString(self.engine.context, "print"));
-                if (c.JS_IsString(value)) {
-                    const mode = try self.engine.toString(value);
-                    defer self.gpa.free(mode);
-                    if (std.mem.eql(u8, mode, "interactive")) return self.engine.checked(c.JS_NewString(self.engine.context, "tui"));
-                }
             },
             .thinkingLevel => if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewString(self.engine.context, "off")),
             .getSystemPrompt => if (c.JS_IsUndefined(value)) return self.engine.checked(c.JS_NewString(self.engine.context, "")),
@@ -1739,7 +1789,10 @@ pub const Bindings = struct {
             var args = [_]c.JSValue{ event, context };
             const promise = try self.engine.checked(c.JS_Call(self.engine.context, handler, c.pi_js_undefined(), args.len, &args));
             defer self.engine.freeValue(promise);
-            const value = try self.engine.awaitValue(promise);
+            const value = if (self.sdk_context != null)
+                try self.engine.awaitValueOnly(promise)
+            else
+                try self.engine.awaitValue(promise);
             defer self.engine.freeValue(value);
             if (!c.JS_IsObject(value) or c.JS_IsArray(value)) continue;
             var names: [*c]c.JSPropertyEnum = null;
@@ -1789,6 +1842,135 @@ pub const Bindings = struct {
         }
         try self.mergeActions(result);
         return self.engine.stringify(result);
+    }
+
+    /// SDK emit follows JavaScript await boundaries without recursively running
+    /// unrelated jobs on a native stack. The handler list is snapshotted once.
+    pub fn invokeSdkHookPromise(self: *Bindings, name: []const u8, payload_json: []const u8, session: c.JSValue, stale: bool) !c.JSValue {
+        try self.beginActions();
+        const sdk = @import("native_sdk.zig");
+        const state = try sdk.object(self.engine);
+        defer self.engine.freeValue(state);
+        try sdk.put(self.engine, state, "session", c.JS_DupValue(self.engine.context, session));
+        try sdk.put(self.engine, state, "ownerToken", c.JS_DupValue(self.engine.context, self.owner_token));
+        try sdk.put(self.engine, state, "ownerClass", c.JS_NewInt64(self.engine.context, self.owner_class));
+        try sdk.put(self.engine, state, "extensionPath", try sdk.text(self.engine, self.source_path orelse ""));
+        try sdk.put(self.engine, state, "promiseThen", c.JS_DupValue(self.engine.context, self.ui_manager.components.promise_then));
+        const accepts_results = std.mem.eql(u8, name, "session_before_switch") or std.mem.eql(u8, name, "session_before_fork") or std.mem.eql(u8, name, "session_before_compact") or std.mem.eql(u8, name, "session_before_tree");
+        try sdk.put(self.engine, state, "acceptResults", c.pi_js_bool(self.engine.context, @intFromBool(accepts_results)));
+        const event = try self.parseJson(payload_json, "sdk-extension-hook");
+        defer self.engine.freeValue(event);
+        try sdk.put(self.engine, event, "type", try sdk.text(self.engine, name));
+        try sdk.put(self.engine, state, "event", c.JS_DupValue(self.engine.context, event));
+        try sdk.put(self.engine, state, "context", if (stale) try self.createStaleContext() else try self.createContext());
+        try sdk.put(self.engine, state, "result", try sdk.object(self.engine));
+        try sdk.put(self.engine, state, "index", c.JS_NewInt32(self.engine.context, 0));
+        const handlers = try sdk.array(self.engine);
+        defer self.engine.freeValue(handlers);
+        if (self.handlers.get(name)) |list| for (list.items) |handler| try sdk.append(self.engine, handlers, c.JS_DupValue(self.engine.context, handler));
+        try sdk.put(self.engine, state, "handlers", c.JS_DupValue(self.engine.context, handlers));
+        var functions: [2]c.JSValue = undefined;
+        const pending = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &functions));
+        errdefer self.engine.freeValue(pending);
+        defer for (functions) |function| self.engine.freeValue(function);
+        try sdk.put(self.engine, state, "resolve", c.JS_DupValue(self.engine.context, functions[0]));
+        try sdk.put(self.engine, state, "reject", c.JS_DupValue(self.engine.context, functions[1]));
+        var data = [_]c.JSValue{ self.owner_token, c.JS_NewInt64(self.engine.context, self.owner_class), state };
+        defer self.engine.freeValue(data[1]);
+        try sdk.put(self.engine, state, "next", try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, sdkHookNext, "sdkHookNext", 1, 0, data.len, &data)));
+        try sdk.put(self.engine, state, "failed", try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, sdkHookNext, "sdkHookFailed", 1, 1, data.len, &data)));
+        try advanceSdkHook(self.engine, state, c.pi_js_undefined(), false);
+        return pending;
+    }
+    fn sdkHookNext(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        // Housekeeping survives owner retirement; user-facing callbacks retain
+        // their original guarded context and Pi owner tokens.
+        advanceSdkHook(engine, data[2], if (argc > 0) argv[0] else c.pi_js_undefined(), magic != 0) catch |err| {
+            const exception = publicationFailure(engine, err);
+            _ = exception;
+            const reason = c.JS_GetException(context);
+            defer engine.freeValue(reason);
+            const sdk = @import("native_sdk.zig");
+            const ignored = sdk.invoke(engine, data[2], "reject", &.{reason}) catch return engine.throwCaptured();
+            engine.freeValue(ignored);
+        };
+        return c.pi_js_undefined();
+    }
+    fn reportSdkHookError(engine: *engine_mod.Engine, state: c.JSValue, reason: c.JSValue) !void {
+        const sdk = @import("native_sdk.zig");
+        const session = try sdk.get(engine, state, "session");
+        defer engine.freeValue(session);
+        const actual = try sdk.state(engine, session);
+        const listener = try sdk.get(engine, actual.data, "extension_onError");
+        defer engine.freeValue(listener);
+        if (c.JS_ToBool(engine.context, listener) != 1) return;
+        const event = try sdk.get(engine, state, "event");
+        defer engine.freeValue(event);
+        const report = try sdk.object(engine);
+        defer engine.freeValue(report);
+        try sdk.put(engine, report, "extensionPath", try sdk.get(engine, state, "extensionPath"));
+        try sdk.put(engine, report, "event", try sdk.get(engine, event, "type"));
+        const is_error = c.JS_IsError(reason);
+        const message = if (is_error) try sdk.get(engine, reason, "message") else text: {
+            const value = try engine.toString(reason);
+            defer engine.gpa.free(value);
+            break :text try sdk.text(engine, value);
+        };
+        try sdk.put(engine, report, "error", message);
+        try sdk.put(engine, report, "stack", if (is_error) try sdk.get(engine, reason, "stack") else c.pi_js_undefined());
+        var args = [_]c.JSValue{report};
+        const ignored = try engine.checked(c.JS_Call(engine.context, listener, c.pi_js_undefined(), args.len, &args));
+        engine.freeValue(ignored);
+    }
+    fn advanceSdkHook(engine: *engine_mod.Engine, state: c.JSValue, previous: c.JSValue, rejected: bool) !void {
+        const sdk = @import("native_sdk.zig");
+        if (rejected) try reportSdkHookError(engine, state, previous);
+        const result = try sdk.get(engine, state, "result");
+        defer engine.freeValue(result);
+        const accepts_results = try sdk.get(engine, state, "acceptResults");
+        defer engine.freeValue(accepts_results);
+        if (!rejected and c.JS_ToBool(engine.context, accepts_results) == 1 and c.JS_IsObject(previous) and !c.JS_IsArray(previous)) {
+            var names: [*c]c.JSPropertyEnum = null;
+            var count: u32 = 0;
+            if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, previous, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY) < 0) return error.JavaScriptException;
+            defer c.JS_FreePropertyEnum(engine.context, names, count);
+            for (names[0..count]) |entry| if (c.JS_DefinePropertyValue(engine.context, result, entry.atom, try engine.checked(c.JS_GetProperty(engine.context, previous, entry.atom)), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+        }
+        const handlers = try sdk.get(engine, state, "handlers");
+        defer engine.freeValue(handlers);
+        const index_value = try sdk.get(engine, state, "index");
+        defer engine.freeValue(index_value);
+        var index: u32 = 0;
+        if (c.JS_ToUint32(engine.context, &index, index_value) < 0) return error.JavaScriptException;
+        if (index == try sdk.length(engine, handlers)) {
+            var owner_data = [_]c.JSValue{ try sdk.get(engine, state, "ownerToken"), try sdk.get(engine, state, "ownerClass") };
+            defer for (owner_data) |root| engine.freeValue(root);
+            const binding = resolveOwnerData(engine, &owner_data, 0) catch null;
+            if (binding) |owner| if (owner.invocation_active) try owner.mergeActions(result);
+            const ignored = try sdk.invoke(engine, state, "resolve", &.{result});
+            engine.freeValue(ignored);
+            return;
+        }
+        try sdk.put(engine, state, "index", c.JS_NewInt64(engine.context, index + 1));
+        const handler = try engine.checked(c.JS_GetPropertyUint32(engine.context, handlers, index));
+        defer engine.freeValue(handler);
+        var args = [_]c.JSValue{ try sdk.get(engine, state, "event"), try sdk.get(engine, state, "context") };
+        defer for (args) |value| engine.freeValue(value);
+        const value = engine.checked(c.JS_Call(engine.context, handler, c.pi_js_undefined(), args.len, &args)) catch |err| {
+            if (err != error.JavaScriptException) return err;
+            const reason = engine.captured_exception orelse return err;
+            return advanceSdkHook(engine, state, reason, true);
+        };
+        defer engine.freeValue(value);
+        const promise = if (c.JS_PromiseState(engine.context, value) == c.JS_PROMISE_NOT_A_PROMISE) try sdk.promise(engine, value) else c.JS_DupValue(engine.context, value);
+        defer engine.freeValue(promise);
+        var callbacks = [_]c.JSValue{ try sdk.get(engine, state, "next"), try sdk.get(engine, state, "failed") };
+        defer for (callbacks) |callback| engine.freeValue(callback);
+        const promise_then = try sdk.get(engine, state, "promiseThen");
+        defer engine.freeValue(promise_then);
+        const chained = try engine.checked(c.JS_Call(engine.context, promise_then, promise, callbacks.len, &callbacks));
+        engine.freeValue(chained);
     }
 
     pub fn invokeCommand(self: *Bindings, name: []const u8, raw: []const u8) ![]u8 {

@@ -53,6 +53,11 @@ pub const Engine = struct {
     host_ui_pending: usize = 0,
     native_io: ?std.Io = null,
     native_async_scope: ?*anyopaque = null,
+    native_sdk_noop_ui: ?c.JSValue = null,
+    native_sdk_events: ?*anyopaque = null,
+    native_sdk_events_deinit: ?*const fn (*Engine) void = null,
+    native_sdk_event_retire_owner: ?*const fn (*Engine, u64) void = null,
+    native_sdk_default_admission: ?*const fn (*Engine, u64) anyerror!void = null,
     native_sdk_class: c.JSClassID = 0,
     native_durable_class: c.JSClassID = 0,
     native_models_store_class: c.JSClassID = 0,
@@ -61,8 +66,6 @@ pub const Engine = struct {
     native_sdk_resource_retire_pending: ?*anyopaque = null,
     native_sdk_resource_owner_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_sdk_resource_owner_deinit: ?*const fn (*Engine) void = null,
-    native_sdk_event_retire_owner: ?*const fn (*Engine, u64) void = null,
-    native_sdk_default_admission: ?*const fn (*Engine, u64) anyerror!void = null,
     native_sdk_next_runtime_id: u64 = 1,
     native_durable_harness_class: c.JSClassID = 0,
     native_durable_runtime_class: c.JSClassID = 0,
@@ -184,9 +187,11 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        if (self.native_sdk_events_deinit) |cleanup| cleanup(self);
         if (self.native_sdk_resource_owner_deinit) |cleanup| cleanup(self);
         self.closeDurableOwner();
         @import("native_async_scope.zig").deinit(self);
+        if (self.native_sdk_noop_ui) |value| self.freeValue(value);
         for (self.native_sdk_prototypes) |prototype| if (prototype) |value| self.freeValue(value);
         if (self.native_weak_ref_constructor) |value| self.freeValue(value);
         if (self.native_weak_ref_deref) |value| self.freeValue(value);
@@ -669,6 +674,14 @@ pub const Engine = struct {
     }
 
     pub fn awaitValue(self: *Engine, value: c.JSValue) !c.JSValue {
+        return self.awaitValueImpl(value, true);
+    }
+    /// A nested SDK event must stop at its own result. Draining unrelated
+    /// continuations here can dispose its original session before it returns.
+    pub fn awaitValueOnly(self: *Engine, value: c.JSValue) !c.JSValue {
+        return self.awaitValueImpl(value, false);
+    }
+    fn awaitValueImpl(self: *Engine, value: c.JSValue, drain_ready_jobs: bool) !c.JSValue {
         defer self.finishJob();
         const previous_deadline = self.host_await_deadline_ms;
         defer self.host_await_deadline_ms = previous_deadline;
@@ -676,7 +689,7 @@ pub const Engine = struct {
             if (self.options.host_await_timeout_ms > 0) self.host_await_deadline_ms = std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(self.options.host_await_timeout_ms, std.math.maxInt(i64))));
         }
         var jobs: usize = 0;
-        while (c.JS_PromiseState(self.context, value) == c.JS_PROMISE_PENDING or c.JS_IsJobPending(self.runtime)) {
+        while (c.JS_PromiseState(self.context, value) == c.JS_PROMISE_PENDING or (drain_ready_jobs and c.JS_IsJobPending(self.runtime))) {
             self.refreshUiDeadline();
             if (self.native_io) |io| if (self.host_await_deadline_ms) |limit| {
                 if (std.Io.Clock.awake.now(io).toMilliseconds() >= limit) return error.NativeHostPromiseTimeout;

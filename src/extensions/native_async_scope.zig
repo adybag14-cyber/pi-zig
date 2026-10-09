@@ -4,6 +4,7 @@ const std = @import("std");
 const engine_mod = @import("engine.zig");
 const c = engine_mod.c;
 const Callback = *const fn (?*anyopaque) void;
+const Validate = *const fn (*engine_mod.Engine, ?*anyopaque) anyerror!void;
 const Token = struct {
     gpa: std.mem.Allocator,
     context: ?*anyopaque,
@@ -11,6 +12,10 @@ const Token = struct {
     deactivate: Callback,
     live: bool = true,
     enabled: bool = true,
+    failure_message: ?[]u8 = null,
+    owner: ?c.JSValue = null,
+    validate: ?Validate = null,
+    sdk_scope: bool = false,
 };
 const State = struct {
     engine: *engine_mod.Engine,
@@ -30,15 +35,20 @@ fn record(engine: *engine_mod.Engine, value: c.JSValue) ?*Token {
     return @ptrCast(@alignCast(c.JS_GetOpaque(value, s.class)));
 }
 fn finalize(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
-    _ = runtime;
     const token: *Token = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
+    if (token.failure_message) |message| token.gpa.free(message);
+    if (token.owner) |owner| c.JS_FreeValueRT(runtime, owner);
     token.gpa.destroy(token);
+}
+fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
+    const token: *Token = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    if (token.owner) |owner| c.JS_MarkValue(runtime, owner, marker);
 }
 pub fn install(engine: *engine_mod.Engine) !void {
     if (state(engine) != null) return;
     var class: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &class);
-    const definition: c.JSClassDef = .{ .class_name = "Native private async scope", .finalizer = finalize };
+    const definition: c.JSClassDef = .{ .class_name = "Native private async scope", .finalizer = finalize, .gc_mark = mark };
     if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
     const s = try engine.gpa.create(State);
     s.* = .{ .engine = engine, .gpa = engine.gpa, .class = class, .current = c.pi_js_undefined() };
@@ -74,6 +84,56 @@ pub fn retire(engine: *engine_mod.Engine, value: c.JSValue) void {
 pub fn disable(engine: *engine_mod.Engine, value: c.JSValue) void {
     if (record(engine, value)) |token| token.enabled = false;
 }
+pub fn bindOwner(engine: *engine_mod.Engine, value: c.JSValue, owner: c.JSValue, validate: Validate) void {
+    const token = record(engine, value).?;
+    if (token.owner) |previous| engine.freeValue(previous);
+    token.owner = c.JS_DupValue(engine.context, owner);
+    token.validate = validate;
+}
+pub fn markSdk(engine: *engine_mod.Engine, value: c.JSValue) void {
+    record(engine, value).?.sdk_scope = true;
+}
+/// A separately owned Main capability keeps its own native owner validation;
+/// it does not borrow an SDK default session or change the current token.
+pub fn requireBindingLive(engine: *engine_mod.Engine, sdk_owner: bool) !void {
+    if (state(engine)) |s| {
+        if (s.failed) return error.OutOfMemory;
+        if (!sdk_owner) if (record(engine, s.current)) |token| if (token.sdk_scope) return;
+    }
+    try requireLive(engine);
+}
+/// Called only after native UI data has validated its original owner/fence.
+pub fn requireOwnedUiLive(engine: *engine_mod.Engine) !void {
+    if (state(engine)) |s| {
+        if (s.failed) return error.OutOfMemory;
+        if (record(engine, s.current)) |token| if (token.sdk_scope) return;
+    }
+    try requireLive(engine);
+}
+pub fn isSdkScope(engine: *engine_mod.Engine) bool {
+    if (state(engine)) |s| if (record(engine, s.current)) |token| return token.sdk_scope;
+    return false;
+}
+pub fn throwMessage(engine: *engine_mod.Engine, message: []const u8) !void {
+    const exception = try engine.checked(c.JS_NewError(engine.context));
+    const text = engine.checked(c.JS_NewStringLen(engine.context, message.ptr, message.len)) catch |err| {
+        engine.freeValue(exception);
+        return err;
+    };
+    if (c.JS_DefinePropertyValueStr(engine.context, exception, "message", text, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) {
+        engine.freeValue(exception);
+        return error.JavaScriptException;
+    }
+    _ = try engine.checked(c.JS_Throw(engine.context, exception));
+    return error.JavaScriptException;
+}
+pub fn denyWithMessage(engine: *engine_mod.Engine, value: c.JSValue, message: []const u8) !void {
+    const token = record(engine, value) orelse return error.InvalidNativeAsyncScope;
+    const owned = try token.gpa.dupe(u8, message);
+    if (token.failure_message) |previous| token.gpa.free(previous);
+    token.failure_message = owned;
+    token.enabled = false;
+}
 pub fn capture(engine: *engine_mod.Engine) c.JSValue {
     return if (state(engine)) |s| c.JS_DupValue(engine.context, s.current) else c.pi_js_undefined();
 }
@@ -83,7 +143,16 @@ pub fn isActive(engine: *engine_mod.Engine) bool {
 pub fn requireLive(engine: *engine_mod.Engine) !void {
     const s = state(engine) orelse return;
     if (s.failed) return error.OutOfMemory;
-    if (record(engine, s.current)) |token| if (!token.live or !token.enabled) return error.RetiredNativeAsyncScope;
+    if (record(engine, s.current)) |token| {
+        if (token.live and token.enabled) {
+            if (token.validate) |validate| try validate(engine, token.context);
+            return;
+        }
+        if (token.failure_message) |message| {
+            return throwMessage(engine, message);
+        }
+        return error.RetiredNativeAsyncScope;
+    }
 }
 fn switchTo(s: *State, value: c.JSValue) void {
     if (c.JS_IsStrictEqual(s.engine.context, s.current, value)) return;

@@ -85,7 +85,7 @@ jobs:
           fi
           # SDK ownership sweeps passed in three to four minutes in the frozen
           # full qualification; keep every injected allocation case enabled.
-          zig build test test-provider-contracts -j2 --test-timeout 600s --summary all
+          zig build test test-provider-contracts -Dsdk-ui-allocation-range=0 -j2 --test-timeout 600s --summary all
 
       - name: Complete exhaustive SDK and model allocation ranges
         shell: bash
@@ -97,10 +97,11 @@ jobs:
         run: |
           # Range zero ran in the full graph. Every remaining failure index
           # runs here on this same OS, including model worker ownership;
-          # no allocation case is sampled or skipped.
+          # SDK UI range zero also ran in the full graph; finish ranges one
+          # through seven here. No allocation case is sampled or skipped.
           for shard in 1 2 3 4 5 6 7; do
             export PI_SDK_ALLOCATION_SHARD="$shard"
-            zig build test-sdk-allocation-shard -j1 --test-timeout 180s --summary all
+            zig build test-sdk-allocation-shard test-native-sdk-ui -Dsdk-ui-allocation-range="$shard" -j1 --test-timeout 600s --summary all
           done
 
       - name: Qualify macOS native environment lifecycle (ReleaseSafe)
