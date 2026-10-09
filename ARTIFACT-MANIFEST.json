@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "checkpoint": 228,
+  "checkpoint": 229,
   "status": "in_progress",
   "parity_certified": false,
   "release_version": "1.1.0",
@@ -8,7 +8,7 @@
   "complete_inventory": "FILES.sha256",
   "continuation": "UPSTREAM-UPDATE-20261003.md",
   "file_count_excluding_FILES_sha256": 1749,
-  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 132148345,
+  "total_bytes_excluding_FILES_sha256_and_ARTIFACT_MANIFEST": 132175334,
   "generated_catalog": {
     "models": 1653,
     "providers": 42,
@@ -23,7 +23,7 @@
   },
   "zig_source": {
     "files": 684,
-    "lines": 287118
+    "lines": 287520
   },
   "excluded_generated_paths": [
     ".git",
