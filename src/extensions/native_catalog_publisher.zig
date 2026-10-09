@@ -9,6 +9,8 @@ pub const Source = struct {
     build: *const fn (?*anyopaque, std.mem.Allocator, Features) anyerror!json.Owned,
     subscribe: *const fn (?*anyopaque, *std.Io.Event) anyerror!void,
     unsubscribe: *const fn (?*anyopaque, *std.Io.Event) void,
+    registration_allowed: ?*const fn (?*anyopaque, []const u8) bool = null,
+    native_tool_activatable: ?*const fn (?*anyopaque, []const u8) bool = null,
 };
 pub const Publisher = struct {
     gpa: std.mem.Allocator,

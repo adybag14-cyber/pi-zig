@@ -12,13 +12,33 @@ const source =
     \\ pi.registerCommand('next-tool',{handler(){pi.registerTool(tool('new'));return {message:'NEW:'+JSON.stringify(pi.getActiveTools())}}});
     \\ pi.registerCommand('reverse',{handler(){pi.setActiveTools(['sticky','always']);return {message:'REVERSE:'+JSON.stringify(pi.getActiveTools())}}});
     \\ pi.registerCommand('sdk-select',{handler(){pi.setActiveTools(['unknown','hidden','sticky','deferred']);return {message:'SDK:'+JSON.stringify(pi.getActiveTools())}}});
+    \\ pi.registerCommand('select-native',{handler(){pi.setActiveTools(['codemode','tool_search','read','unknown']);return {message:'NATIVE:'+JSON.stringify(pi.getActiveTools())}}});
     \\ pi.registerCommand('hide-always',{handler(){pi.registerTool({...tool('always'),exposure:'hidden'});return {message:'HIDE:'+JSON.stringify(pi.getActiveTools())}}});
     \\}
 ;
 const Case = struct { args: []const []const u8 = &.{}, prompts: []const []const u8, expected: []const []const u8, builtins: bool = false };
+fn sourceActivationMarkers(gpa: std.mem.Allocator, source_rows: std.json.Value, name: []const u8) ![2][]u8 {
+    for (source_rows.object.get("rows").?.array.items) |row| {
+        if (!std.mem.eql(u8, row.object.get("name").?.string, name)) continue;
+        const encoded = try std.json.Stringify.valueAlloc(gpa, row.object.get("after").?, .{});
+        defer gpa.free(encoded);
+        const first = try std.fmt.allocPrint(gpa, "NATIVE:{s}", .{encoded});
+        errdefer gpa.free(first);
+        return .{ first, try std.fmt.allocPrint(gpa, "SNAP:{s}", .{encoded}) };
+    }
+    return error.MissingOriginalActivationCase;
+}
 test "native CLI tool selection matches source defaults modifiers SDK ordering visibility and registration transitions" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
+    var original = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("extensions/fixtures/main-tool-activation-original-eba.json"), .{});
+    defer original.deinit();
+    const original_native = try sourceActivationMarkers(gpa, original.value, "builtin-disabled");
+    defer for (original_native) |marker| gpa.free(marker);
+    const original_none = try sourceActivationMarkers(gpa, original.value, "all-disabled");
+    defer for (original_none) |marker| gpa.free(marker);
+    const original_excluded = try sourceActivationMarkers(gpa, original.value, "exclude-native");
+    defer for (original_excluded) |marker| gpa.free(marker);
     var fixture = try Fixture.initSource(source);
     defer fixture.deinit();
     try fixture.tmp.dir.createDirPath(io, "agent");
@@ -46,6 +66,9 @@ test "native CLI tool selection matches source defaults modifiers SDK ordering v
         .{ .args = &.{ "--tools", "+deferred" }, .prompts = &.{"/probe"}, .expected = &.{"SNAP:[\"always\"]"} },
         .{ .prompts = &.{ "/hide-always", "/probe" }, .expected = &.{ "HIDE:[]", "SNAP:[]" } },
         .{ .prompts = &.{"/probe"}, .expected = &.{"SNAP:[\"read\",\"bash\",\"edit\",\"write\",\"always\"]"}, .builtins = true },
+        .{ .prompts = &.{ "/select-native", "/probe" }, .expected = &original_native },
+        .{ .args = &.{"--no-tools"}, .prompts = &.{ "/select-native", "/probe" }, .expected = &original_none },
+        .{ .args = &.{ "--exclude-tools", "read,codemode" }, .prompts = &.{ "/select-native", "/probe" }, .expected = &original_excluded },
     };
     for (cases, 0..) |case, index| {
         var argv: std.ArrayList([]const u8) = .empty;

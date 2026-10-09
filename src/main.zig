@@ -731,7 +731,14 @@ fn buildActiveToolSelection(
         names.deinit(gpa);
     }
     for (requested) |name| {
-        if (!knownExtensionTool(host, name)) continue;
+        if (host.native_catalog_source) |source| {
+            if (source.registration_allowed) |allowed| if (!allowed(source.context, name)) continue;
+            if (!host.hasTool(name)) {
+                if (source.native_tool_activatable) |activatable| {
+                    if (!activatable(source.context, name)) continue;
+                } else if (!knownExtensionTool(host, name)) continue;
+            }
+        } else if (!knownExtensionTool(host, name)) continue;
         var duplicate = false;
         for (names.items) |existing| {
             if (std.mem.eql(u8, existing, name)) {
@@ -4147,14 +4154,16 @@ fn runMain(init: std.process.Init) !void {
     // tool set between turns through pi.setActiveTools().
     const tool_selection = coding.tool_selection;
     const cli_uses_modifiers = if (cli.tools) |names| tool_selection.usesModifiers(names) else false;
-    const effective_no_builtin_tools = cli.no_builtin_tools and !cli_uses_modifiers;
+    // Source noTools controls the initial loadout. Builtin implementations
+    // remain registered and may be selected explicitly or by setActiveTools.
+    const effective_no_builtin_tools = false;
     const selected_from_disabled = if (cli_uses_modifiers and cli.no_tools) try tool_selection.apply(arena, &.{}, cli.tools.?) else null;
     var active_tool_filter = agent.tools.ToolFilter{
         .allow = if (cli_uses_modifiers) selected_from_disabled else cli.tools,
         .builtin_allow = if (cli.no_builtin_tools or cli.no_tools) &.{} else if (cli_uses_modifiers or cli.tools == null) (settings.tools orelse &coding.tool_selection.default_tool_names) else null,
         .modifiers = if (cli_uses_modifiers) cli.tools else null,
         .exclude = cli.exclude_tools,
-        .no_tools = cli.no_tools and !cli_uses_modifiers,
+        .no_tools = cli.no_tools and !cli_uses_modifiers and cli.tools == null,
     };
     const registration_tool_filter = active_tool_filter;
     main_catalog_source.allowed_names = registration_tool_filter.allow orelse if (cli.no_tools) &.{} else null;

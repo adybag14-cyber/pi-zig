@@ -13,7 +13,29 @@ pub const State = struct {
     allowed_names: ?[]const []const u8 = null,
     excluded_names: []const []const u8 = &.{},
     pub fn source(self: *State) publisher.Source {
-        return .{ .context = self, .build = build, .subscribe = subscribe, .unsubscribe = unsubscribe };
+        return .{ .context = self, .build = build, .subscribe = subscribe, .unsubscribe = unsubscribe, .registration_allowed = registrationAllowed, .native_tool_activatable = nativeToolActivatable };
+    }
+    fn registrationAllowed(raw: ?*anyopaque, name: []const u8) bool {
+        const self: *State = @ptrCast(@alignCast(raw.?));
+        const matches = @import("../mcp/config.zig").matches;
+        for (self.excluded_names) |pattern| if (matches(pattern, name)) return false;
+        const allowed = self.allowed_names orelse return true;
+        var filters_mcp = allowed.len == 0;
+        for (allowed) |pattern| {
+            if (matches(pattern, name)) return true;
+            filters_mcp = filters_mcp or std.mem.startsWith(u8, pattern, "mcp__");
+        }
+        const mcp = std.mem.startsWith(u8, name, "mcp__") or std.mem.eql(u8, name, "list_mcp_resources") or std.mem.eql(u8, name, "list_mcp_resource_templates") or std.mem.eql(u8, name, "read_mcp_resource");
+        return !filters_mcp and mcp;
+    }
+    fn nativeToolActivatable(raw: ?*anyopaque, name: []const u8) bool {
+        const self: *State = @ptrCast(@alignCast(raw.?));
+        for ([_][]const u8{ "read", "bash", "powershell", "edit", "write", "grep", "find", "ls", "codemode", "tool_search" }) |builtin| if (std.mem.eql(u8, name, builtin)) return true;
+        self.mutex.lockUncancelable(self.io);
+        const service = self.service;
+        self.mutex.unlock(self.io);
+        if (service) |mcp| if (mcp.exposureOf(name)) |exposure| return exposure != .hidden;
+        return false;
     }
     pub fn deinit(self: *State) void {
         std.debug.assert(self.subscribers.items.len == 0);

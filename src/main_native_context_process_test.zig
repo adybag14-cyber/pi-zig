@@ -62,4 +62,20 @@ test "native main context actual CLI applies strict theme admission before exten
     if (filtered.term != .exited or filtered.term.exited != 0 or std.mem.indexOf(u8, filtered.stdout, "FILTERED_REGISTRY_OK") == null) std.debug.print("filtered CLI stdout:\n{s}\nstderr:\n{s}\n", .{ filtered.stdout, filtered.stderr });
     try std.testing.expect(filtered.term == .exited and filtered.term.exited == 0);
     try std.testing.expect(std.mem.indexOf(u8, filtered.stdout, "FILTERED_REGISTRY_OK") != null);
+    // Source SDK and CLI accept explicit selection on top of either disabled
+    // default. The registry policy remains the explicit allowlist.
+    const selected_source = try std.mem.replaceOwned(u8, gpa, filtered_source, "pi.setActiveTools(['bootstrap'])", "pi.setActiveTools(['read','bootstrap'])");
+    defer gpa.free(selected_source);
+    try scratch.dir.writeFile(io, .{ .sub_path = "selected.mjs", .data = selected_source });
+    try scratch.dir.writeFile(io, .{ .sub_path = "optin.txt", .data = "NATIVE_READ_OPTIN_OK" });
+    try scratch.dir.writeFile(io, .{ .sub_path = "selected-mock.json", .data = "[{\"content\":\"\",\"tool_calls\":[{\"id\":\"proof\",\"name\":\"bootstrap\",\"arguments\":\"{}\"}]},{\"content\":\"\",\"tool_calls\":[{\"id\":\"read-proof\",\"name\":\"read\",\"arguments\":\"{\\\"path\\\":\\\"optin.txt\\\"}\"}]},{\"content\":\"done\"}]" });
+    for ([_][]const u8{ "--no-tools", "--no-builtin-tools" }) |disabled| {
+        const selected = try std.process.run(gpa, io, .{ .argv = &.{ binary, "-p", "--mode", "json", "--mock-script", "selected-mock.json", disabled, "--tools", "read,bootstrap", "--extension", "selected.mjs", "--no-context-files", "--no-skills", "--no-themes", "--no-prompt-templates", "--approve", "bootstrap" }, .cwd = .{ .path = directory }, .environ_map = &environment, .stdout_limit = .limited(1024 * 1024), .stderr_limit = .limited(1024 * 1024), .timeout = .{ .duration = .{ .raw = .fromSeconds(30), .clock = .awake } } });
+        defer gpa.free(selected.stdout);
+        defer gpa.free(selected.stderr);
+        if (selected.term != .exited or selected.term.exited != 0 or std.mem.indexOf(u8, selected.stdout, "FILTERED_REGISTRY_OK") == null) std.debug.print("selected CLI {s} stdout:\n{s}\nstderr:\n{s}\n", .{ disabled, selected.stdout, selected.stderr });
+        try std.testing.expect(selected.term == .exited and selected.term.exited == 0);
+        try std.testing.expect(std.mem.indexOf(u8, selected.stdout, "FILTERED_REGISTRY_OK") != null);
+        try std.testing.expect(std.mem.indexOf(u8, selected.stdout, "NATIVE_READ_OPTIN_OK") != null);
+    }
 }
