@@ -583,11 +583,16 @@ pub const Bindings = struct {
         const value = try @import("native_values.zig").object(self.engine);
         errdefer self.engine.freeValue(value);
         const path = self.source_path orelse "";
+        const source_kind = if (std.mem.startsWith(u8, path, "builtin:")) "builtin" else if (path.len >= 2 and path[0] == '<' and path[path.len - 1] == '>') named: {
+            const inner = path[1 .. path.len - 1];
+            const end = std.mem.indexOfScalar(u8, inner, ':') orelse inner.len;
+            break :named if (end == 0) "temporary" else inner[0..end];
+        } else "temporary";
         try @import("native_tool_info.zig").putData(self.engine, value, "path", try self.engine.checked(c.JS_NewStringLen(self.engine.context, path.ptr, path.len)));
-        try @import("native_tool_info.zig").putData(self.engine, value, "source", try self.engine.checked(c.JS_NewString(self.engine.context, "temporary")));
+        try @import("native_tool_info.zig").putData(self.engine, value, "source", try self.engine.checked(c.JS_NewStringLen(self.engine.context, source_kind.ptr, source_kind.len)));
         try @import("native_tool_info.zig").putData(self.engine, value, "scope", try self.engine.checked(c.JS_NewString(self.engine.context, "temporary")));
         try @import("native_tool_info.zig").putData(self.engine, value, "origin", try self.engine.checked(c.JS_NewString(self.engine.context, "top-level")));
-        try @import("native_tool_info.zig").putData(self.engine, value, "baseDir", c.pi_js_undefined());
+        if (!(std.mem.startsWith(u8, path, "<") or std.mem.startsWith(u8, path, "builtin:"))) try @import("native_tool_info.zig").putData(self.engine, value, "baseDir", c.pi_js_undefined());
         self.source_info_value = value;
         return value;
     }

@@ -18,6 +18,7 @@ pub const State = struct {
     availability_error_sequence: u64 = 0,
     runtime_id: u64 = 0,
     model_lease_anchor: ?c.JSValue = null,
+    tool_catalog: ?*@import("native_sdk_tool_catalog.zig").State = null,
     availability_snapshot: ?@import("native_sdk_availability.zig").Snapshot = null,
 };
 const Method = enum(c_int) {
@@ -121,6 +122,7 @@ const Method = enum(c_int) {
     getActiveToolNames,
     setActiveToolsByName,
     getAllTools,
+    getToolDefinition,
     setSessionName,
     setThinkingLevel,
     setModel,
@@ -207,6 +209,7 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
         @import("native_sdk_model_bridge.zig").invalidateAnchorRT(engine, runtime, anchor);
         c.JS_FreeValueRT(runtime, anchor);
     }
+    if (self.tool_catalog) |catalog| catalog.deinit(runtime);
     c.JS_FreeValueRT(runtime, self.data);
     for (self.listeners.items) |listener| c.JS_FreeValueRT(runtime, listener);
     self.listeners.deinit(engine.gpa);
@@ -221,6 +224,7 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
     const engine: *engine_mod.Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
     const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_sdk_class) orelse return));
     c.JS_MarkValue(runtime, self.data, marker);
+    if (self.tool_catalog) |catalog| catalog.mark(runtime, marker);
     if (self.model_lease_anchor) |anchor| c.JS_MarkValue(runtime, anchor, marker);
     for (self.listeners.items) |listener| c.JS_MarkValue(runtime, listener, marker);
 }
@@ -288,6 +292,7 @@ fn attachSessionModelLease(self: *State) !void {
     self.model_lease_anchor = anchor.value;
 }
 fn retireSessionModelLease(self: *State) !void {
+    if (self.tool_catalog) |catalog| catalog.retire();
     const anchor = self.model_lease_anchor orelse return;
     const bridge = @import("native_sdk_model_bridge.zig");
     const lease = bridge.anchorLease(self.engine, anchor) catch null;
@@ -325,7 +330,7 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
         .model_registry => &.{},
         .resource_loader => &.{ .reload, .getExtensions, .getSkills, .getPrompts, .getThemes, .getAgentsFiles, .getSystemPrompt, .getAppendSystemPrompt, .getSystemPromptSource, .getAppendSystemPromptSources, .extendResources },
         .model_runtime => &.{ .registerProvider, .registerNativeProvider, .unregisterProvider, .registerVirtualModel, .unregisterVirtualModel, .resolveModel, .getPhysicalModel, .getProviders, .getProvider, .getModels, .getAll, .getAvailable, .getModel, .getModelsOfType, .getModelOfType, .getAllModels, .getAllAvailable, .getAvailableOfType, .checkAuth, .getAuth, .getAvailableSnapshot, .setRuntimeApiKey, .removeRuntimeApiKey, .hasConfiguredAuth, .clearRuntimeApiKey, .refresh, .streamSimple, .completeSimple, .stream, .complete, .streamDeferred, .fetchDeferred, .cancelDeferred, .classify, .generateImages, .getError, .getProviderAuthStatus, .isUsingOAuth, .isUsingSubscription, .getRegisteredProviderIds, .getRegisteredNativeProvider, .getRegisteredProviderConfig, .listCredentials },
-        .agent_session => &.{ .subscribe, .unsubscribe, .dispose, .prompt, .abort, .bindExtensions, .getActiveToolNames, .setActiveToolsByName, .getAllTools, .setSessionName, .setThinkingLevel, .setModel, .getSessionStats, .clearQueue, .steer, .followUp, .newSession },
+        .agent_session => &.{ .subscribe, .unsubscribe, .dispose, .prompt, .abort, .bindExtensions, .getActiveToolNames, .setActiveToolsByName, .getAllTools, .getToolDefinition, .setSessionName, .setThinkingLevel, .setModel, .getSessionStats, .clearQueue, .steer, .followUp, .newSession },
         .session_runtime => &.{ .newSession, .switchSession, .dispose, .setRebindSession, .setBeforeSessionInvalidate },
     };
     for (methods) |operation| {
@@ -1523,6 +1528,7 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     try put(engine, data, "modelRegistry", try newModelRegistry(engine, runtime));
     try attachSessionModelLease(session_owner);
     errdefer if (session_owner.model_lease_anchor) |anchor| @import("native_sdk_model_bridge.zig").invalidateAnchorRT(engine, engine.runtime, anchor);
+    try @import("native_sdk_tool_catalog.zig").initialize(session_owner, opts);
     const result = try object(engine);
     errdefer engine.freeValue(result);
     try put(engine, result, "session", c.JS_DupValue(engine.context, session));
@@ -1645,7 +1651,7 @@ fn typedOperationJob(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) call
 
 fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const engine = self.engine;
-    if (self.disposed and operation != .dispose) return error.NativeSDKDisposed;
+    if (self.disposed and operation != .dispose and !(self.kind == .agent_session and (operation == .getAllTools or operation == .getToolDefinition))) return error.NativeSDKDisposed;
     const first = if (args.len > 0) args[0] else c.pi_js_undefined();
     const second = if (args.len > 1) args[1] else c.pi_js_undefined();
     if (self.kind == .session_runtime) {
@@ -1769,10 +1775,9 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             return c.pi_js_undefined();
         }
         if (operation == .getAllTools) {
-            const value = try get(engine, self.data, "customTools");
-            defer engine.freeValue(value);
-            return c.JS_DupValue(engine.context, value);
+            return @import("native_sdk_tool_catalog.zig").sessionRows(self);
         }
+        if (operation == .getToolDefinition) return @import("native_sdk_tool_catalog.zig").getDefinition(self, first);
         if (operation == .setSessionName) {
             const manager = try get(engine, self.data, "sessionManager");
             defer engine.freeValue(manager);

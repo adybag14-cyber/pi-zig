@@ -561,6 +561,14 @@ pub const Group = struct {
         // selected() and the rooted API owner token provide actual runtime
         // membership. Context JSON cannot choose a foreign metadata owner.
         if (try self.selected(caller.owner_id) != caller) return error.StaleNativeExtensionOwner;
+        if (caller.sdk_context != null) {
+            // Actual SDK scope takes precedence over Main's native producer
+            // and JSON context, and owns its complete extension/custom map.
+            var sink = try tool_catalog.CatalogSink.init(&self.native_tool_catalog_cache);
+            defer sink.deinit();
+            try @import("native_sdk_tool_catalog.zig").feed(caller, &sink);
+            return sink.finish();
+        }
         // Snapshot original definition/source references before ANY metadata
         // getters run. No raw Bindings pointer survives a reentrant unload.
         var registrations: std.ArrayList(ToolCatalogRegistration) = .empty;
@@ -738,6 +746,216 @@ test "native group ToolInfo schema and metadata references match actual Source S
     const text = try std.json.Stringify.valueAlloc(engine.gpa, parsed.value, .{});
     defer engine.gpa.free(text);
     try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("../durable/fixtures/sdk-toolinfo-schema-identity-1ced.json"), "\r\n "), text);
+}
+
+test "native group ToolInfo actual SDK session A and B catalogs preserve Source definitions scopes sources and override order without Main fallback" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try Group.init(engine);
+    defer group.deinit();
+    const outside = try group.add("<outside>");
+    try outside.installSchemas();
+    try outside.loadFactory("export default pi=>pi.registerTool({name:'outside',description:'foreign Main tool',parameters:{type:'object'},execute(){return{content:[]}}})", "<outside>");
+    const RejectMain = struct {
+        fn call(_: ?*anyopaque, _: *bindings_mod.Bindings, _: *tool_catalog.CatalogSink) !void {
+            return error.MainCatalogMustNotServeSDK;
+        }
+    };
+    try group.setNativeToolCatalog(null, RejectMain.call);
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const path_length = try tmp.dir.realPath(std.testing.io, &path_buffer);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try vm.put(engine, global, "fixtureCwd", try engine.checked(c.JS_NewStringLen(engine.context, path_buffer[0..path_length].ptr, path_length)));
+    const output = engine.evalModule(
+        \\import {createAgentSession,SessionManager,SettingsManager,DefaultResourceLoader} from '@earendil-works/pi-coding-agent';
+        \\import * as Type from 'typebox';
+        \\const cwd=fixtureCwd,output=[],definitions={},sessions={},phase=[];
+        \\const names=['collision','own','hidden','onlyA','onlyB'],excluded=['mcp__*','list_mcp_resources','list_mcp_resource_templates','read_mcp_resource'];
+        \\function inspect(rows,tag){const own=rows.find(t=>t.name==='own'),original=definitions[tag].own;return{names:rows.map(t=>t.name),descriptions:rows.map(t=>t.description),sources:rows.map(t=>({name:t.name,keys:Object.keys(t.sourceInfo),path:t.sourceInfo.path,source:t.sourceInfo.source,scope:t.sourceInfo.scope,origin:t.sourceInfo.origin})),parameters:own.parameters===original.parameters,guidelines:own.promptGuidelines===original.promptGuidelines,namespace:own.namespace===original.namespace,annotationsCopy:own.annotations!==original.annotations,nested:own.annotations.nested===original.annotations.nested,kind:Object.getOwnPropertyDescriptor(own.parameters,'~kind').enumerable===false}}
+        \\for(const tag of ['A','B']){
+        \\ const parameters=Type.Object({value:Type.String()}),own={name:'own',description:'custom-'+tag,parameters,promptGuidelines:['guide-'+tag],namespace:{name:'namespace-'+tag},annotations:{readOnlyHint:true,nested:{value:tag}},execute:async()=>({content:[]})},collision={name:'collision',description:'custom-collision-'+tag,parameters,execute:async()=>({content:[]})},hidden={name:'hidden',description:'hidden-'+tag,parameters,exposure:'hidden',execute:async()=>({content:[]})};definitions[tag]={own,collision,hidden};
+        \\ const settings=SettingsManager.inMemory({defaultTools:[]}),loader=new DefaultResourceLoader({cwd,agentDir:cwd,settingsManager:settings,noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true,noContextFiles:true,extensionFactories:[{name:tag,factory:pi=>{pi.registerTool({name:'collision',description:'extension-collision-'+tag,parameters:Type.Object({extension:Type.String()}),execute:async()=>({content:[]})});pi.registerTool({name:'only'+tag,description:'extension-only-'+tag,parameters:Type.Object({extension:Type.String()}),execute:async()=>({content:[]})});pi.on('session_start',()=>{const first=pi.getAllTools(),second=pi.getAllTools(),a=first.find(t=>t.name==='own'),b=second.find(t=>t.name==='own');phase.push({tag,...inspect(first,tag),fresh:first!==second&&a!==b,sourceStable:a.sourceInfo===b.sourceInfo,annotationRows:a.annotations!==b.annotations})})}}]});await loader.reload();
+        \\ const {session}=await createAgentSession({cwd,agentDir:cwd,settingsManager:settings,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),model:{id:'fixture',name:'Fixture',api:'openai-responses',provider:'fixture',baseUrl:'https://example.invalid',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:8192,maxTokens:1024},tools:names,excludeTools:excluded,noTools:'builtin',customTools:[collision,own,hidden]});sessions[tag]=session;
+        \\}
+        \\try{
+        \\ for(const tag of ['A','B']){const session=sessions[tag],first=session.getAllTools(),second=session.getAllTools(),a=first.find(t=>t.name==='own'),b=second.find(t=>t.name==='own');output.push({tag,...inspect(first,tag),fresh:first!==second&&a!==b,sourceStable:a.sourceInfo===b.sourceInfo,definition:session.getToolDefinition('own')===definitions[tag].own});await session.bindExtensions({})}
+        \\ output.push({phases:phase});const a=sessions.A.getAllTools().find(t=>t.name==='own'),b=sessions.B.getAllTools().find(t=>t.name==='own');output.push({separateParameters:a.parameters!==b.parameters,separateSources:a.sourceInfo!==b.sourceInfo});
+        \\ const original=definitions.A.own;original.name='renamed';const renamed=sessions.A.getAllTools().find(t=>t.name==='renamed');output.push({renamedExposure:renamed.exposure,originalKey:sessions.A.getToolDefinition('own')===original,newKey:sessions.A.getToolDefinition('renamed')===undefined});
+        \\}finally{sessions.A.dispose();sessions.B.dispose()}
+        \\globalThis.result=JSON.stringify(output);
+    , "actual-sdk-toolinfo-ab-source") catch |err| {
+        std.debug.print("Actual SDK ToolInfo A/B failure: {s}\n", .{engine.last_error orelse @errorName(err)});
+        return err;
+    };
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "actual-sdk-toolinfo-ab-result", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("../durable/fixtures/sdk-toolinfo-actual-ab-1ced.json"), "\r\n "), text);
+}
+
+test "native group ToolInfo SDK private lease rejects retirement and ignores forged JSON and foreign Main metadata" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try Group.init(engine);
+    defer group.deinit();
+    const binding = try group.add("<sdk-private-probe>");
+    try binding.installSchemas();
+    try binding.loadFactory("export default pi=>pi.registerCommand('catalog',{handler(){try{return{names:pi.getAllTools().map(t=>t.name)}}catch(error){return{rejected:true}}}})", "<sdk-private-probe>");
+    const Main = struct {
+        calls: usize = 0,
+        fn call(raw: ?*anyopaque, _: *bindings_mod.Bindings, _: *tool_catalog.CatalogSink) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.calls += 1;
+            return error.MainMustNotServeSDK;
+        }
+    };
+    var main: Main = .{};
+    try group.setNativeToolCatalog(&main, Main.call);
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const path_length = try tmp.dir.realPath(std.testing.io, &path_buffer);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try vm.put(engine, global, "fixtureCwd", try engine.checked(c.JS_NewStringLen(engine.context, path_buffer[0..path_length].ptr, path_length)));
+    const namespace = try engine.evalModule(
+        \\import {createAgentSession,SessionManager,SettingsManager,DefaultResourceLoader} from '@earendil-works/pi-coding-agent';
+        \\const cwd=fixtureCwd,settings=SettingsManager.inMemory({defaultTools:[]}),loader=new DefaultResourceLoader({cwd,agentDir:cwd,settingsManager:settings,noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true,noContextFiles:true});await loader.reload();
+        \\const make=async name=>(await createAgentSession({cwd,agentDir:cwd,settingsManager:settings,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),tools:['sdk_A','sdk_B'],customTools:[{name,description:name,parameters:{type:'object'},execute(){return{content:[]}}}],model:{id:'fixture',provider:'fixture',api:'openai-responses',name:'Fixture',baseUrl:'https://example.invalid',input:['text'],contextWindow:8192,maxTokens:1024,cost:{input:0,output:0,cacheRead:0,cacheWrite:0}}})).session;
+        \\export const a=await make('sdk_A'),b=await make('sdk_B');
+    , "actual-sdk-private-toolinfo-lease");
+    defer engine.freeValue(namespace);
+    const sdk_mod = @import("native_sdk.zig");
+    const a = try vm.get(engine, namespace, "a");
+    defer engine.freeValue(a);
+    const b = try vm.get(engine, namespace, "b");
+    defer engine.freeValue(b);
+    const a_owner = try sdk_mod.state(engine, a);
+    const b_owner = try sdk_mod.state(engine, b);
+    const a_registry = try vm.get(engine, a_owner.data, "modelRegistry");
+    defer engine.freeValue(a_registry);
+    const a_manager = try vm.get(engine, a_owner.data, "sessionManager");
+    defer engine.freeValue(a_manager);
+    const b_registry = try vm.get(engine, b_owner.data, "modelRegistry");
+    defer engine.freeValue(b_registry);
+    const b_manager = try vm.get(engine, b_owner.data, "sessionManager");
+    defer engine.freeValue(b_manager);
+    const a_lease = try sdk_mod.sessionModelLease(a_owner);
+    const b_lease = try sdk_mod.sessionModelLease(b_owner);
+    try std.testing.expectError(error.InvalidNativeSDKModelLease, binding.pushSdkContext(.{ .session = a, .registry = a_registry, .manager = a_manager, .lease = b_lease }));
+    try std.testing.expectError(error.InvalidNativeSDKContext, binding.pushSdkContext(.{ .session = a, .registry = b_registry, .manager = b_manager, .lease = a_lease }));
+    const saved = try binding.pushSdkContext(.{ .session = a, .registry = a_registry, .manager = a_manager, .lease = a_lease });
+    defer binding.restoreSdkContext(saved);
+    try binding.setContext("{\"mode\":\"sdk\",\"allTools\":[{\"name\":\"sdk_B\",\"parameters\":{\"type\":\"object\"}}],\"sdkModelLease\":{\"runtime_id\":99999,\"generation\":99999}}");
+    const first = try binding.invokeCommand("catalog", "");
+    defer engine.gpa.free(first);
+    try std.testing.expectEqualStrings("{\"names\":[\"sdk_A\"]}", first);
+    try std.testing.expectEqual(@as(usize, 1), group.native_tool_catalog_cache.scopes.count());
+    const disposed = try vm.invoke(engine, a, "dispose", &.{});
+    engine.freeValue(disposed);
+    try std.testing.expectEqual(@as(usize, 0), group.native_tool_catalog_cache.scopes.count());
+    const retired = try binding.invokeCommand("catalog", "");
+    defer engine.gpa.free(retired);
+    try std.testing.expectEqualStrings("{\"rejected\":true}", retired);
+    const passive = try vm.invoke(engine, a, "getAllTools", &.{});
+    defer engine.freeValue(passive);
+    try std.testing.expectEqual(@as(usize, 1), try vm.length(engine, passive));
+    try std.testing.expectEqual(@as(usize, 0), main.calls);
+    const b_disposed = try vm.invoke(engine, b, "dispose", &.{});
+    engine.freeValue(b_disposed);
+}
+
+test "native group ToolInfo actual SDK private snapshots unwind every admitted query allocation without losing definitions or leases" {
+    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    const engine = try engine_mod.Engine.init(failing.allocator(), .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try Group.init(engine);
+    defer group.deinit();
+    const binding = try group.add("<sdk-gpa-probe>");
+    try binding.installSchemas();
+    var tmp = std.testing.tmpDir(.{});
+    defer tmp.cleanup();
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try tmp.dir.realPath(std.testing.io, &path_buffer);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try vm.put(engine, global, "fixtureCwd", try engine.checked(c.JS_NewStringLen(engine.context, path_buffer[0..length].ptr, length)));
+    const namespace = try engine.evalModule(
+        \\import {createAgentSession,SessionManager,SettingsManager,DefaultResourceLoader} from '@earendil-works/pi-coding-agent';
+        \\import * as Type from 'typebox';
+        \\const cwd=fixtureCwd,settings=SettingsManager.inMemory({defaultTools:[]});export const loader=new DefaultResourceLoader({cwd,agentDir:cwd,settingsManager:settings,noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true,noContextFiles:true,extensionFactories:[{name:'gpa',factory:pi=>{const tool={name:'sdk_ext',description:'owned extension',parameters:Type.Object({extension:Type.String()}),execute(){return{content:[]}}};pi.registerTool(tool);pi.registerCommand('bump',{handler(){pi.registerTool(tool);return{}}})}}]});await loader.reload();
+        \\export const definition={name:'sdk_gpa',description:'owned',parameters:Type.Object({value:Type.String()}),promptGuidelines:['owned'],namespace:{name:'owned'},annotations:{nested:{retained:true}},execute(){return{content:[]}}};
+        \\export const session=(await createAgentSession({cwd,agentDir:cwd,settingsManager:settings,resourceLoader:loader,sessionManager:SessionManager.inMemory(cwd),tools:['sdk_gpa','sdk_ext'],customTools:[definition],model:{id:'fixture',provider:'fixture',api:'openai-responses',name:'Fixture',baseUrl:'https://example.invalid',input:['text'],contextWindow:8192,maxTokens:1024,cost:{input:0,output:0,cacheRead:0,cacheWrite:0}}})).session;
+    , "actual-sdk-toolinfo-query-gpa");
+    defer engine.freeValue(namespace);
+    const sdk_mod = @import("native_sdk.zig");
+    const session = try vm.get(engine, namespace, "session");
+    defer engine.freeValue(session);
+    const owner = try sdk_mod.state(engine, session);
+    const loader = try vm.get(engine, namespace, "loader");
+    defer engine.freeValue(loader);
+    const loader_owner = try sdk_mod.state(engine, loader);
+    const ids = try vm.get(engine, loader_owner.data, "extensionOwnerIds");
+    defer engine.freeValue(ids);
+    const id_value = try engine.checked(c.JS_GetPropertyUint32(engine.context, ids, 0));
+    defer engine.freeValue(id_value);
+    var extension_id: i64 = 0;
+    if (c.JS_ToInt64(engine.context, &extension_id, id_value) < 0) return error.JavaScriptException;
+    const extension = try group.selected(@intCast(extension_id));
+    const registry = try vm.get(engine, owner.data, "modelRegistry");
+    defer engine.freeValue(registry);
+    const manager = try vm.get(engine, owner.data, "sessionManager");
+    defer engine.freeValue(manager);
+    const lease = try sdk_mod.sessionModelLease(owner);
+    const saved = try binding.pushSdkContext(.{ .session = session, .registry = registry, .manager = manager, .lease = lease });
+    defer binding.restoreSdkContext(saved);
+    const Query = struct {
+        fn run(actual: *Group, caller: *bindings_mod.Bindings) !void {
+            actual.native_tool_catalog_cache.deinit();
+            actual.native_tool_catalog_cache = .init(actual.engine);
+            var sink = try tool_catalog.CatalogSink.init(&actual.native_tool_catalog_cache);
+            defer sink.deinit();
+            try @import("native_sdk_tool_catalog.zig").feed(caller, &sink);
+            const rows = try sink.finish();
+            defer actual.engine.freeValue(rows);
+            try std.testing.expectEqual(@as(usize, 2), try vm.length(actual.engine, rows));
+        }
+    };
+    try Query.run(group, binding);
+    var completed = false;
+    var failures: usize = 0;
+    for (0..1024) |offset| {
+        const changed = try extension.invokeCommand("bump", "");
+        engine.gpa.free(changed);
+        failing.has_induced_failure = false;
+        failing.fail_index = failing.alloc_index + offset;
+        Query.run(group, binding) catch |err| {
+            failing.fail_index = std.math.maxInt(usize);
+            try std.testing.expect(failing.has_induced_failure);
+            try std.testing.expect(err == error.OutOfMemory or err == error.JavaScriptException);
+            try std.testing.expectEqual(lease, try sdk_mod.sessionModelLease(owner));
+            try std.testing.expectEqual(@as(usize, 2), owner.tool_catalog.?.records.items.len);
+            failures += 1;
+            continue;
+        };
+        failing.fail_index = std.math.maxInt(usize);
+        try std.testing.expect(!failing.has_induced_failure);
+        completed = true;
+        break;
+    }
+    failing.fail_index = std.math.maxInt(usize);
+    try std.testing.expect(completed and failures != 0);
+    try Query.run(group, binding);
+    const disposed = try vm.invoke(engine, session, "dispose", &.{});
+    engine.freeValue(disposed);
 }
 
 test "native group retains real resolver base component state identity and action origin across extension callbacks" {
