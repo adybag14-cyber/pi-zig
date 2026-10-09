@@ -131,6 +131,11 @@ pub fn main(init: std.process.Init) !void {
     var buffer: [4096]u8 = undefined;
     var stdout = std.Io.File.stdout().writer(init.io, &buffer);
     const writer = &stdout.interface;
+    if (args.len >= 3 and std.mem.eql(u8, args[1], "hash-files")) {
+        try artifacts.writeFileDigests(init.io, args[2..], writer);
+        try writer.flush();
+        return;
+    }
     if ((args.len == 2 or args.len == 3) and std.mem.eql(u8, args[1], "verify-release")) {
         const manifest = try std.Io.Dir.cwd().readFileAlloc(init.io, "ARTIFACT-MANIFEST.json", init.gpa, .limited(1024 * 1024));
         defer init.gpa.free(manifest);

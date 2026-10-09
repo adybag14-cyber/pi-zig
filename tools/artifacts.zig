@@ -98,6 +98,19 @@ fn writeFile(io: std.Io, path: []const u8, bytes: []const u8) !void {
     try file.writePositionalAll(io, bytes, 0);
 }
 
+pub fn writeFileDigests(io: std.Io, paths: []const []const u8, writer: *std.Io.Writer) !void {
+    for (paths) |path| {
+        const digest = digestFile(io, path) catch |err| switch (err) {
+            error.FileNotFound => {
+                try writer.print("missing  {s}\n", .{path});
+                continue;
+            },
+            else => return err,
+        };
+        try writer.print("{s}  {s}\n", .{ digest.hex, path });
+    }
+}
+
 pub fn generate(gpa: std.mem.Allocator, io: std.Io, checkpoint: u32, writer: *std.Io.Writer) !void {
     var arena = std.heap.ArenaAllocator.init(gpa);
     defer arena.deinit();
