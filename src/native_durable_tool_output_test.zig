@@ -130,7 +130,7 @@ test "native durable v2 nested result definition and live checkpoints match actu
     defer engine.freeValue(arity);
     var arity_value: i32 = 0;
     try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(engine.context, &arity_value, arity));
-    try std.testing.expectEqual(@as(i32, @intCast(source.value.object.get("nested").?.object.get("arity").?.integer)), arity_value);
+    try std.testing.expectEqual(@as(i32, @intCast(try json.asInteger(source.value.object.get("nested").?.object.get("arity").?))), arity_value);
     inline for (.{ "kind", "version", "scope", "family" }) |name| {
         const actual = try vm.get(engine, definition, name);
         defer engine.freeValue(actual);
@@ -159,4 +159,38 @@ test "native durable v2 nested result definition and live checkpoints match actu
         defer engine.freeValue(actual);
         try std.testing.expectEqual(row.object.get("result").?.bool, c.JS_ToBool(engine.context, actual) != 0);
     }
+}
+test "native durable v2 awaited continuations preserve intrinsic Promise and raw thrown identity" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var intrinsics = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer intrinsics.deinit(engine);
+    const inputs = try engine.eval("globalThis.original={identity:7};({value:{then(resolve){resolve(21)}},fulfilled:value=>value*2,rejected:error=>error,throwing:()=>{throw original},check:error=>error===original})", "await-inputs", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(inputs);
+    const patched = try engine.eval("Promise.resolve=()=>{throw Error('mutable global resolve')};Promise.prototype.then=()=>{throw Error('mutable prototype then')}", "await-overrides", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(patched);
+    const value = try vm.get(engine, inputs, "value");
+    defer engine.freeValue(value);
+    const fulfilled = try vm.get(engine, inputs, "fulfilled");
+    defer engine.freeValue(fulfilled);
+    const rejected = try vm.get(engine, inputs, "rejected");
+    defer engine.freeValue(rejected);
+    const pending = try intrinsics.chain(engine, value, fulfilled, rejected);
+    defer engine.freeValue(pending);
+    const result = try engine.awaitValue(pending);
+    defer engine.freeValue(result);
+    var number: i32 = 0;
+    try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(engine.context, &number, result));
+    try std.testing.expectEqual(@as(i32, 42), number);
+    const throwing = try vm.get(engine, inputs, "throwing");
+    defer engine.freeValue(throwing);
+    const failed = try intrinsics.chain(engine, c.pi_js_undefined(), throwing, rejected);
+    defer engine.freeValue(failed);
+    const identity_check = try vm.get(engine, inputs, "check");
+    defer engine.freeValue(identity_check);
+    const caught = try intrinsics.chain(engine, failed, fulfilled, identity_check);
+    defer engine.freeValue(caught);
+    const same = try engine.awaitValue(caught);
+    defer engine.freeValue(same);
+    try std.testing.expect(c.JS_ToBool(engine.context, same) != 0);
 }

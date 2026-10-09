@@ -44,6 +44,10 @@ pub const Cache = struct {
     /// Owned error text, or null for a valid result. Getter order matches the
     /// Source's structuredOutputError, including the error-result exception.
     pub fn failure(self: *Cache, tool: c.JSValue, result: c.JSValue) !?[]u8 {
+        const generation = self.engine.native_allocation_generation;
+        return self.failureOwned(tool, result) catch |err| return self.engine.nativeAllocationError(err, generation);
+    }
+    fn failureOwned(self: *Cache, tool: c.JSValue, result: c.JSValue) !?[]u8 {
         const engine = self.engine;
         const schema = try vm.get(engine, tool, "structuredOutputSchema");
         defer engine.freeValue(schema);
@@ -60,8 +64,8 @@ pub const Cache = struct {
             defer engine.freeValue(name_value);
             const name = try engine.toString(name_value);
             defer engine.gpa.free(name);
-            if (c.JS_IsUndefined(schema)) return std.fmt.allocPrint(engine.gpa, "Tool {s} returned structuredOutput but declares no structuredOutputSchema", .{name});
-            return std.fmt.allocPrint(engine.gpa, "Tool {s} returned no structuredOutput", .{name});
+            if (c.JS_IsUndefined(schema)) return try std.fmt.allocPrint(engine.gpa, "Tool {s} returned structuredOutput but declares no structuredOutputSchema", .{name});
+            return try std.fmt.allocPrint(engine.gpa, "Tool {s} returned no structuredOutput", .{name});
         }
         const compiled = try self.get(schema);
         defer engine.freeValue(compiled);
@@ -90,7 +94,7 @@ pub const Cache = struct {
         defer engine.freeValue(name_value);
         const name = try engine.toString(name_value);
         defer engine.gpa.free(name);
-        return std.fmt.allocPrint(engine.gpa, "Tool {s} returned structuredOutput that does not match its schema: {s}: {s}", .{ name, if (normalized.len == 0) "root" else normalized, message });
+        return try std.fmt.allocPrint(engine.gpa, "Tool {s} returned structuredOutput that does not match its schema: {s}: {s}", .{ name, if (normalized.len == 0) "root" else normalized, message });
     }
 };
 
