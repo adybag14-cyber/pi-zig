@@ -19,8 +19,83 @@ extern "kernel32" fn GetOverlappedResult(HANDLE, *Overlapped, *u32, i32) callcon
 extern "kernel32" fn CancelIoEx(HANDLE, *Overlapped) callconv(.winapi) i32;
 extern "kernel32" fn CloseHandle(HANDLE) callconv(.winapi) i32;
 extern "kernel32" fn GetLastError() callconv(.winapi) u32;
-extern "kernel32" fn GetCurrentProcess() callconv(.winapi) HANDLE;
-extern "kernel32" fn GetProcessHandleCount(HANDLE, *u32) callconv(.winapi) i32;
+// The test process has other Io workers, so its total handle count can change
+// while this backend runs. Audit these exact owned handles and operations.
+const HandleKind = enum { directory, event };
+const HandleAudit = struct {
+    const Record = struct {
+        handle: HANDLE,
+        kind: HandleKind,
+        close_attempted: bool = false,
+        close_succeeded: bool = false,
+        pending: ?*Overlapped = null,
+        armed: usize = 0,
+        retired: usize = 0,
+        cancellation_waits: usize = 0,
+    };
+    records: std.ArrayList(Record) = .empty,
+    invalid_use: bool = false,
+    fn deinit(self: *HandleAudit) void {
+        self.records.deinit(std.testing.allocator);
+    }
+    fn created(self: *HandleAudit, handle: HANDLE, kind: HandleKind) !usize {
+        const index = self.records.items.len;
+        try self.records.append(std.testing.allocator, .{ .handle = handle, .kind = kind });
+        return index;
+    }
+    fn check(self: *const HandleAudit) !void {
+        if (self.invalid_use) return error.InvalidOwnedWatchHandleUse;
+        for (self.records.items) |record| {
+            if (!record.close_attempted) return error.OwnedWatchHandleNotRetired;
+            if (!record.close_succeeded) return error.OwnedWatchHandleCloseFailed;
+            if (record.pending != null or record.armed != record.retired) return error.OwnedWatchOperationNotRetired;
+        }
+    }
+};
+const AuditTicket = if (builtin.is_test) ?struct { owner: *HandleAudit, index: usize } else void;
+threadlocal var active_audit: ?*HandleAudit = null;
+fn auditCreated(handle: HANDLE, kind: HandleKind) !AuditTicket {
+    if (builtin.is_test) {
+        if (active_audit) |audit| return .{ .owner = audit, .index = try audit.created(handle, kind) };
+        return null;
+    }
+}
+fn closeOwned(handle: HANDLE, ticket: AuditTicket) void {
+    const success = CloseHandle(handle) != 0;
+    if (builtin.is_test) if (ticket) |owned| {
+        const record = &owned.owner.records.items[owned.index];
+        if (record.handle != handle or record.close_attempted or record.pending != null) owned.owner.invalid_use = true;
+        record.close_attempted = true;
+        record.close_succeeded = success;
+    };
+}
+fn auditArmed(directory: AuditTicket, event: AuditTicket, overlapped: *Overlapped) void {
+    if (builtin.is_test) if (directory) |owned| {
+        const record = &owned.owner.records.items[owned.index];
+        const peer = event orelse {
+            owned.owner.invalid_use = true;
+            return;
+        };
+        const event_record = &peer.owner.records.items[peer.index];
+        if (peer.owner != owned.owner or record.kind != .directory or event_record.kind != .event or record.close_attempted or event_record.close_attempted or record.pending != null or overlapped.event != event_record.handle) owned.owner.invalid_use = true;
+        record.pending = overlapped;
+        record.armed += 1;
+    };
+}
+fn auditRetired(ticket: AuditTicket, overlapped: *Overlapped, success: bool, status: u32, cancellation_wait: bool) void {
+    if (builtin.is_test) if (ticket) |owned| {
+        const record = &owned.owner.records.items[owned.index];
+        // Cancellation or a completed overflow both retire the exact request;
+        // IO_INCOMPLETE, invalid handles and other failures do not prove that.
+        if (record.close_attempted or record.pending != overlapped or (!success and status != 995 and status != 1022)) {
+            owned.owner.invalid_use = true;
+            return;
+        }
+        record.pending = null;
+        record.retired += 1;
+        if (cancellation_wait) record.cancellation_waits += 1;
+    };
+}
 const State = struct {
     handle: HANDLE,
     event: HANDLE,
@@ -29,6 +104,8 @@ const State = struct {
     parent: []u8,
     file_name: ?[]u8,
     pending: bool = false,
+    handle_ticket: AuditTicket,
+    event_ticket: AuditTicket,
     fn arm(self: *State) !void {
         _ = ResetEvent(self.event);
         self.overlapped = .{ .event = self.event };
@@ -36,6 +113,7 @@ const State = struct {
         // creation/security changes, and never access/read notifications.
         if (ReadDirectoryChangesW(self.handle, &self.buffer, self.buffer.len, 0, 0x15f, null, &self.overlapped, null) == 0) return error.NativeWatchUnavailable;
         self.pending = true;
+        auditArmed(self.handle_ticket, self.event_ticket, &self.overlapped);
     }
     fn deinit(self: *State, gpa: std.mem.Allocator) void {
         if (self.pending) {
@@ -43,10 +121,11 @@ const State = struct {
             var completed: u32 = 0;
             // The kernel must retire this exact operation before its buffer,
             // OVERLAPPED and event are freed. No borrowed process is involved.
-            _ = GetOverlappedResult(self.handle, &self.overlapped, &completed, 1);
+            const retired = GetOverlappedResult(self.handle, &self.overlapped, &completed, 1) != 0;
+            if (builtin.is_test) auditRetired(self.handle_ticket, &self.overlapped, retired, if (retired) 0 else GetLastError(), true);
         }
-        _ = CloseHandle(self.handle);
-        _ = CloseHandle(self.event);
+        closeOwned(self.handle, self.handle_ticket);
+        closeOwned(self.event, self.event_ticket);
         gpa.free(self.parent);
         if (self.file_name) |name| gpa.free(name);
         gpa.destroy(self);
@@ -94,12 +173,16 @@ pub const Backend = struct {
             2, 3, 5, 267 => return false,
             else => return error.NativeWatchUnavailable,
         };
-        errdefer _ = CloseHandle(handle);
+        var handle_ticket: AuditTicket = if (builtin.is_test) null else {};
+        errdefer closeOwned(handle, handle_ticket);
+        handle_ticket = try auditCreated(handle, .directory);
         const event = CreateEventW(null, 1, 0, null) orelse return error.NativeWatchUnavailable;
-        errdefer _ = CloseHandle(event);
+        var event_ticket: AuditTicket = if (builtin.is_test) null else {};
+        errdefer closeOwned(event, event_ticket);
+        event_ticket = try auditCreated(event, .event);
         const state = try self.gpa.create(State);
         errdefer self.gpa.destroy(state);
-        state.* = .{ .handle = handle, .event = event, .overlapped = .{ .event = event }, .parent = parent, .file_name = file_name };
+        state.* = .{ .handle = handle, .event = event, .overlapped = .{ .event = event }, .parent = parent, .file_name = file_name, .handle_ticket = handle_ticket, .event_ticket = event_ticket };
         const owned = try self.gpa.dupe(u8, path);
         errdefer self.gpa.free(owned);
         // Publish registry ownership before arming the kernel operation.
@@ -118,6 +201,7 @@ pub const Backend = struct {
             if (GetOverlappedResult(state.handle, &state.overlapped, &count, 0) == 0) switch (GetLastError()) {
                 996 => continue, // ERROR_IO_INCOMPLETE
                 1022 => { // ERROR_NOTIFY_ENUM_DIR: coverage needs a rescan
+                    auditRetired(state.handle_ticket, &state.overlapped, false, 1022, false);
                     state.pending = false;
                     try sink.overflow();
                     try state.arm();
@@ -125,6 +209,7 @@ pub const Backend = struct {
                 },
                 else => return error.NativeWatchUnavailable,
             };
+            auditRetired(state.handle_ticket, &state.overlapped, true, 0, false);
             state.pending = false;
             if (count == 0) try sink.overflow();
             var offset: usize = 0;
@@ -171,13 +256,46 @@ test "durable watch Windows native kernel handles retire through cancellation an
     defer tmp.cleanup();
     var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
     const length = try tmp.dir.realPath(std.testing.io, &buffer);
-    // Warm up the operation before comparing process handle counts.
+    var audit: HandleAudit = .{};
+    defer audit.deinit();
+    try audit.records.ensureTotalCapacity(std.testing.allocator, 1024);
+    try std.testing.expect(active_audit == null);
+    active_audit = &audit;
+    defer active_audit = null;
     try allocationProbe(std.testing.allocator, buffer[0..length]);
-    var before: u32 = 0;
-    try std.testing.expect(GetProcessHandleCount(GetCurrentProcess(), &before) != 0);
     try std.testing.checkAllAllocationFailures(std.testing.allocator, allocationProbe, .{buffer[0..length]});
     for (0..100) |_| try allocationProbe(std.testing.allocator, buffer[0..length]);
-    var after: u32 = 0;
-    try std.testing.expect(GetProcessHandleCount(GetCurrentProcess(), &after) != 0);
-    try std.testing.expectEqual(before, after);
+    try audit.check();
+    var directories: usize = 0;
+    var events: usize = 0;
+    var canceled: usize = 0;
+    for (audit.records.items) |record| {
+        if (record.kind == .directory) directories += 1 else events += 1;
+        canceled += record.cancellation_waits;
+    }
+    try std.testing.expect(directories >= 101 and events >= 101 and canceled >= 101);
+}
+
+test "durable watch Windows owned handle audit detects a leak even when an unrelated handle closes" {
+    if (builtin.os.tag != .windows) return error.SkipZigTest;
+    var audit: HandleAudit = .{};
+    defer audit.deinit();
+    const unrelated = CreateEventW(null, 1, 0, null) orelse return error.NativeWatchUnavailable;
+    var unrelated_closed = false;
+    defer if (!unrelated_closed) {
+        _ = CloseHandle(unrelated);
+    };
+    const retained = CreateEventW(null, 1, 0, null) orelse {
+        return error.NativeWatchUnavailable;
+    };
+    var ticket: AuditTicket = null;
+    var retained_closed = false;
+    defer if (!retained_closed) closeOwned(retained, ticket);
+    ticket = .{ .owner = &audit, .index = try audit.created(retained, .event) };
+    try std.testing.expect(CloseHandle(unrelated) != 0);
+    unrelated_closed = true;
+    try std.testing.expectError(error.OwnedWatchHandleNotRetired, audit.check());
+    closeOwned(retained, ticket);
+    retained_closed = true;
+    try audit.check();
 }
