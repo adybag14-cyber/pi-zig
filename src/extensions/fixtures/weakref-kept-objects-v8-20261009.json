@@ -1,0 +1,14 @@
+{
+  "authority": "ECMAScript WeakRef kept objects observed in current V8",
+  "node": "24.14.0",
+  "v8": "13.6.233.17-node.41",
+  "results": {
+    "constructorSameJob": true,
+    "constructorMicrotask": true,
+    "constructorAfterTurns": true,
+    "derefSameJob": true,
+    "derefMicrotask": true,
+    "derefAfterTurns": true,
+    "symbolSameJob": true
+  }
+}

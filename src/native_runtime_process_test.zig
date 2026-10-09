@@ -129,6 +129,262 @@ test "native runtime typed Main actual builtin classifier image wire and private
     }
     try fixture.noBridge();
 }
+
+test "native runtime typed Main four native callbacks cross a real admission barrier and match Source" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/typed-ticket-concurrency-6fb2e78.txt"));
+    defer fixture.deinit();
+    const session = try runTypedMainCli(&fixture, "const model=await models.getModelOfType('classifier','ticket','same');const results=await Promise.all([1,2,3,4].map(id=>models.classify(model,{state:{id},questions:{q:{type:'bool',instructions:'q',criteria:{true:'yes',false:'no'}}}})));text('MAIN_TYPED_TICKETS:'+JSON.stringify(results));", null);
+    defer gpa.free(session);
+    var actual = try typedSessionValue(gpa, session, "MAIN_TYPED_TICKETS:");
+    defer actual.deinit();
+    var expected = try @import("mcp/protocol.zig").json.Owned.parse(gpa, @embedFile("extensions/fixtures/typed-ticket-concurrency-6fb2e78.json"));
+    defer expected.deinit();
+    try std.testing.expect(@import("mcp/protocol.zig").json.equal(expected.value.object.get("results").?, actual.value));
+    try fixture.noBridge();
+}
+
+test "native runtime typed Main native auth base URL rewrite preserves canonical symbols and catalog without Node" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/native-provider-auth-rewrite-6fb2e78.txt"));
+    defer fixture.deinit();
+    const session = try runTypedMainCli(&fixture, "const selected=await models.getModelOfType('classifier','bound-native','same');selected.baseUrl='https://attacker.invalid';selected.headers={'X-Private':'attacker'};const classified=await models.classify(selected,{state:{},questions:{q:{type:'bool',instructions:'q',criteria:{true:'yes',false:'no'}}}});const after=await models.getModelOfType('classifier','bound-native','same');text('MAIN_AUTH_REWRITE:'+JSON.stringify({classified,catalogBaseUrl:after.baseUrl}));", null);
+    defer gpa.free(session);
+    var actual = try typedSessionValue(gpa, session, "MAIN_AUTH_REWRITE:");
+    defer actual.deinit();
+    var expected = try @import("mcp/protocol.zig").json.Owned.parse(gpa, @embedFile("extensions/fixtures/native-provider-auth-rewrite-6fb2e78.json"));
+    defer expected.deinit();
+    try std.testing.expect(@import("mcp/protocol.zig").json.equal(expected.value, actual.value));
+    try fixture.noBridge();
+}
+
+test "native runtime typed tickets four real admissions preserve A B views and one abort without Node" {
+    try exerciseTypedTicketProcess(.one_abort);
+}
+test "native runtime typed tickets owner retirement drops four private scopes and blocks late actions without Node" {
+    try exerciseTypedTicketProcess(.owner_retire);
+}
+test "native runtime typed tickets cancelling one task retires only its scope and preserves the shared owner without Node" {
+    try exerciseTypedTicketProcess(.cancel_one);
+}
+const TypedTicketProcessMode = enum { one_abort, owner_retire, cancel_one };
+fn exerciseTypedTicketProcess(mode: TypedTicketProcessMode) !void {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/typed-ticket-concurrency-6fb2e78.txt"));
+    defer fixture.deinit();
+    const UiCapture = struct {
+        messages: std.ArrayList([]u8) = .empty,
+        mutex: std.Io.Mutex = .init,
+        fn request(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            return error.UnexpectedTicketDialog;
+        }
+        fn action(raw: ?*anyopaque, allocator: std.mem.Allocator, method: []const u8, arguments: []const u8) !void {
+            _ = allocator;
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            if (!std.mem.eql(u8, method, "notify")) return error.UnexpectedTicketUiAction;
+            var parsed = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, arguments, .{});
+            defer parsed.deinit();
+            const message = try std.testing.allocator.dupe(u8, parsed.value.object.get("message").?.string);
+            errdefer std.testing.allocator.free(message);
+            self.mutex.lockUncancelable(std.testing.io);
+            defer self.mutex.unlock(std.testing.io);
+            try self.messages.append(std.testing.allocator, message);
+        }
+    };
+    var ui: UiCapture = .{};
+    var ui_a: UiCapture = .{};
+    var ui_b: UiCapture = .{};
+    defer {
+        for ([_]*UiCapture{ &ui, &ui_a, &ui_b }) |capture| {
+            for (capture.messages.items) |message| gpa.free(message);
+            capture.messages.deinit(gpa);
+        }
+    }
+    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    host.setScriptUiBridge(.{ .context = &ui, .request_fn = UiCapture.request, .action_fn = UiCapture.action });
+    try host.loadPath(fixture.source_path);
+    try host.setScriptContextJson("{\"nativeRuntimeBound\":true,\"hasUI\":true,\"settings\":{\"marker\":\"base\"}}");
+    var captured_ui = (try host.executeCommand("ticket-capture-ui", "")).?;
+    defer captured_ui.deinit(gpa);
+    const extension = host.extensions.items[0];
+    var config = try std.json.parseFromSlice(std.json.Value, gpa, extension.providers[0].config_json, .{});
+    defer config.deinit();
+    const descriptor = try @import("extensions/provider_method_ref.zig").ProviderMethodRef.fromJson(config.value.object.get("classify").?);
+    var views: [4]?*runtime_mod.Runtime = .{null} ** 4;
+    defer for (views) |view| if (view) |runtime| runtime.deinit();
+    const Call = struct {
+        runtime: *runtime_mod.Runtime = undefined,
+        callback: []const u8 = "",
+        generation: u64 = 0,
+        id: usize = 0,
+        aborted: bool = false,
+        late: bool = false,
+        group: std.Io.Group = .init,
+        done: std.Io.Event = .unset,
+        result: ?[]u8 = null,
+        failure: ?anyerror = null,
+        fn run(self: *@This()) void {
+            defer self.done.set(std.testing.io);
+            var buffer: [96]u8 = undefined;
+            const context = std.fmt.bufPrint(&buffer, "{{\"state\":{{\"id\":{d},\"late\":{}}},\"questions\":{{}}}}", .{ self.id, self.late }) catch unreachable;
+            self.result = self.runtime.invokeProviderTypedOperation(self.callback, "ticket", self.generation, .classify, "{\"id\":\"same\",\"provider\":\"ticket\",\"api\":\"fixture\"}", context, "{}", false, &self.aborted) catch |err| {
+                self.failure = err;
+                return;
+            };
+        }
+    };
+    var calls: [4]Call = .{Call{}} ** 4;
+    defer for (calls) |call| if (call.result) |result| gpa.free(result);
+    defer {
+        for (&calls) |*call| {
+            call.group.cancel(io);
+            call.group.await(io) catch {};
+        }
+    }
+    for (&calls, &views, 0..) |*call, *view, index| {
+        view.* = try extension.script_runtime.?.pinView();
+        const snapshot = try std.json.Stringify.valueAlloc(gpa, .{ .nativeRuntimeBound = true, .hasUI = true, .settings = .{ .marker = if (index % 2 == 0) "A" else "B" } }, .{});
+        defer gpa.free(snapshot);
+        try view.*.?.setContextJson(snapshot);
+        view.*.?.setUiBridge(.{ .context = if (index % 2 == 0) &ui_a else &ui_b, .request_fn = UiCapture.request, .action_fn = UiCapture.action });
+        call.* = .{ .runtime = view.*.?, .callback = descriptor.callback_id, .generation = descriptor.generation, .id = index + 1, .late = mode == .owner_retire or (mode == .cancel_one and index == 1) };
+        try call.group.concurrent(io, Call.run, .{call});
+    }
+    var admitted: i64 = 0;
+    const deadline = std.Io.Clock.awake.now(io).toMilliseconds() + 5000;
+    while (admitted != 4 and std.Io.Clock.awake.now(io).toMilliseconds() < deadline) {
+        var state = (try host.executeCommand("ticket-state", "")).?;
+        defer state.deinit(gpa);
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, state.message.?, .{});
+        defer parsed.deinit();
+        admitted = parsed.value.object.get("started").?.integer;
+        if (admitted != 4) try io.sleep(.fromMilliseconds(5), .awake);
+    }
+    try std.testing.expectEqual(@as(i64, 4), admitted);
+    for (&calls) |*call| try std.testing.expect(!call.done.isSet());
+    const catalog_ack = try publishTypedTicketCatalog(host.native_group_runtime.?, 1);
+    defer gpa.free(catalog_ack);
+    // Later view mutations cannot replace either authority captured at begin.
+    try views[0].?.setContextJson("{\"nativeRuntimeBound\":true,\"hasUI\":true,\"settings\":{\"marker\":\"CHANGED\"}}");
+    views[0].?.setUiBridge(.{ .context = &ui, .request_fn = UiCapture.request, .action_fn = UiCapture.action });
+    switch (mode) {
+        .one_abort => @atomicStore(bool, &calls[1].aborted, true, .release),
+        .cancel_one => {
+            calls[1].group.cancel(io);
+            try calls[1].group.await(io);
+        },
+        .owner_retire => {
+            _ = try host.invalidateNativeContexts(null);
+            for (&calls) |*call| try event_wait.untilSet(io, &call.done, 10_000);
+        },
+    }
+    var released = (try host.executeCommand("ticket-release", "")).?;
+    defer released.deinit(gpa);
+    for (&calls) |*call| try event_wait.untilSet(io, &call.done, 10_000);
+    for (&calls) |*call| try call.group.await(io);
+    for (calls, 0..) |call, index| {
+        if (mode == .owner_retire) {
+            try std.testing.expectEqual(error.NativeTypedProviderTicketRetired, call.failure.?);
+            continue;
+        }
+        if (mode == .cancel_one and index == 1) {
+            try std.testing.expectEqual(error.Canceled, call.failure.?);
+            continue;
+        }
+        if (call.failure) |err| return err;
+        var result = try std.json.parseFromSlice(std.json.Value, gpa, call.result.?, .{});
+        defer result.deinit();
+        const value = result.value.object.get("value").?;
+        if (index == 1) {
+            try std.testing.expectEqualStrings("aborted", value.object.get("stopReason").?.string);
+            continue;
+        }
+        try std.testing.expectEqualStrings(if (index % 2 == 0) "A" else "B", value.object.get("marker").?.string);
+        try std.testing.expect(value.object.get("canonical").?.bool and value.object.get("receiver").?.bool);
+        try std.testing.expect(value.object.get("catalogVisible").?.bool);
+        try std.testing.expectEqual(@as(i64, @intCast(index + 1)), value.object.get("id").?.integer);
+        const action = result.value.object.get("actionQueue").?.array.items[0];
+        var id_buffer: [16]u8 = undefined;
+        try std.testing.expectEqualStrings(try std.fmt.bufPrint(&id_buffer, "{d}", .{index + 1}), action.object.get("name").?.string);
+    }
+    const expected_late: i64 = if (mode == .owner_retire) 4 else if (mode == .cancel_one) 1 else 0;
+    const late_deadline = std.Io.Clock.awake.now(io).toMilliseconds() + 5000;
+    while (true) {
+        var state = (try host.executeCommand("ticket-state", "")).?;
+        defer state.deinit(gpa);
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, state.message.?, .{});
+        defer parsed.deinit();
+        const late_count = parsed.value.object.get("lateBookkeeping").?.integer;
+        if (late_count != expected_late and std.Io.Clock.awake.now(io).toMilliseconds() < late_deadline) {
+            try io.sleep(.fromMilliseconds(5), .awake);
+            continue;
+        }
+        try std.testing.expectEqual(expected_late, late_count);
+        try std.testing.expectEqual(expected_late, parsed.value.object.get("lateBlocked").?.integer);
+        try std.testing.expectEqual(expected_late, parsed.value.object.get("lateUiBlocked").?.integer);
+        try std.testing.expectEqual(if (mode == .owner_retire) @as(i64, 4) else 1, parsed.value.object.get("aborts").?.integer);
+        try std.testing.expectEqual(if (mode == .owner_retire) @as(i64, 0) else 3, parsed.value.object.get("finished").?.integer);
+        break;
+    }
+    try std.testing.expectEqual(@as(usize, 0), ui.messages.items.len);
+    try std.testing.expectEqual(if (mode == .owner_retire) @as(usize, 0) else 2, ui_a.messages.items.len);
+    try std.testing.expectEqual(if (mode == .owner_retire) @as(usize, 0) else 1, ui_b.messages.items.len);
+    for ([_][]const u8{ "A:1", "A:3", "B:4" }) |expected| {
+        if (mode == .owner_retire) break;
+        var found = false;
+        const messages = if (expected[0] == 'A') ui_a.messages.items else ui_b.messages.items;
+        for (messages) |message| if (std.mem.eql(u8, expected, message)) {
+            found = true;
+            break;
+        };
+        try std.testing.expect(found);
+    }
+    try fixture.noBridge();
+}
+
+fn publishTypedTicketCatalog(owner: *runtime_mod.Runtime, version: u32) ![]u8 {
+    const gpa = std.testing.allocator;
+    var catalog_source = try std.json.parseFromSlice(std.json.Value, gpa, "{\"owners\":[{\"key\":\"91\",\"generation\":\"1\",\"records\":[{\"definitionId\":\"10\",\"parameterId\":\"20\",\"parameterIdentity\":\"remote_json\",\"metadata\":{\"name\":\"remote\",\"description\":\"remote fixture\"},\"parameters\":{\"type\":\"object\",\"properties\":{\"value\":{\"type\":\"string\"}}},\"sourceInfo\":{\"path\":\"builtin:mcp\"},\"sourceInfoId\":\"1\"}]}]}", .{});
+    defer catalog_source.deinit();
+    const generation = try std.fmt.allocPrint(gpa, "{d}", .{owner.owner_generation});
+    defer gpa.free(generation);
+    const frame = try std.json.Stringify.valueAlloc(gpa, .{ .kind = "native_tool_catalog", .version = version, .ownerGeneration = generation, .catalog = catalog_source.value }, .{});
+    defer gpa.free(frame);
+    return owner.invokeGroupRequest(1, frame, null);
+}
+
+test "native runtime private catalog control acknowledges FIFO identity and isolates rejected updates from public context without Node" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('catalog-probe',{handler(){const remote=pi.getAllTools().find(tool=>tool.name==='remote');if(remote)globalThis.oldSchema??=remote.parameters;return {message:JSON.stringify({found:!!remote,description:remote?.description,same:!remote||oldSchema===remote.parameters})}}})");
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    try host.setScriptContextJson("{\"nativeRuntimeBound\":true,\"catalog\":{\"owners\":[{\"key\":\"91\",\"generation\":\"999\",\"records\":[]}]}}");
+    var before = (try host.executeCommand("catalog-probe", "")).?;
+    defer before.deinit(gpa);
+    try std.testing.expectEqualStrings("{\"found\":false,\"same\":true}", before.message.?);
+    const owner = host.native_group_runtime.?;
+    for (0..2) |_| {
+        const ack = try publishTypedTicketCatalog(owner, 1);
+        defer gpa.free(ack);
+        var value = try std.json.parseFromSlice(std.json.Value, gpa, ack, .{});
+        defer value.deinit();
+        try std.testing.expect(value.value.object.get("acknowledged").?.bool);
+        try std.testing.expectEqual(owner.owner_generation, try @import("extensions/component_protocol.zig").identifier(value.value.object.get("ownerGeneration").?));
+        var after = (try host.executeCommand("catalog-probe", "")).?;
+        defer after.deinit(gpa);
+        try std.testing.expectEqualStrings("{\"found\":true,\"description\":\"remote fixture\",\"same\":true}", after.message.?);
+    }
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, publishTypedTicketCatalog(owner, 2));
+    try std.testing.expect(!owner.closed);
+    var retained = (try host.executeCommand("catalog-probe", "")).?;
+    defer retained.deinit(gpa);
+    try std.testing.expectEqualStrings("{\"found\":true,\"description\":\"remote fixture\",\"same\":true}", retained.message.?);
+    try fixture.noBridge();
+}
 test "native runtime typed provider owner admits getters only after binding and private auth canonical callback matches Source" {
     const gpa = std.testing.allocator;
     var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/native-provider-binding-6fb2e78.txt"));

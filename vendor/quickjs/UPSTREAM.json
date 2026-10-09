@@ -4,8 +4,8 @@
   "commit": "6d46d07d04041b40f4f49eaa7fdebe44c314c699",
   "license": "MIT",
   "files": {
-    "quickjs.c": "6a96f80bce1b11184f5dc61ce82d9dea230b83be47e314f4bcb638b3c00c211c",
-    "quickjs.h": "747a77444ff04a910b57ca51dd998d7ee46895b1b9592d7d6051fd180317c44d",
+    "quickjs.c": "b8eddc1cb39016431052d6cee1a42a37706239363b6201bd23fc33f3003aa20a",
+    "quickjs.h": "49c3a7a9a4e168c9e0bbbc2ea5f10a294f13dc37e9ff379afbb66864fe654d15",
     "dtoa.c": "a8d2cf2d04db406e0c16acdd95ab0e709d309902865722f41dac07a1ba5676af",
     "dtoa.h": "1c4a4540c0038632c8a4c225472fbc21bd476fb35c4da4a857a11965b58231b9",
     "libregexp.c": "af13e996abb1767fe0cdfda123c45b811d53688d403a2ac47142e97bf79f1fae",
@@ -23,15 +23,45 @@
     "builtin-iterator-zip-keyed.h": "24446c6157a043cfeb0b0255c7892f5146809bd3098c70028bfa1ee5311b91f4",
     "builtin-iterator-zip.h": "fdaef760ecce82c1f8b62dca8d0d424ae05ef88a0037e32221858ab7ac8994c9",
     "LICENSE": "96f73f9d2a16c21a36b418f06073be26e7d6d5e7c1bc99756b21a4f2c74ef171",
-    "NATIVE_ABI_FIXES.md": "9df829319534f33c73ce89d199655d8827d855d19250403f360bf42bf2d637e6"
+    "NATIVE_ABI_FIXES.md": "9df829319534f33c73ce89d199655d8827d855d19250403f360bf42bf2d637e6",
+    "NATIVE_WEAKREF_KEPT_OBJECTS.md": "328e1d5cc7a07d54fe5790db8a2b11e7e4b6696e607e4f13a0a452ccfa41d049",
+    "NATIVE_ASYNC_CONTEXT.md": "38b87e3888e114f7a4a11ccd87512a94b1f5e206d69d508400af328236880f36"
   },
   "local_patches": [
     {
       "file": "quickjs.c",
       "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
-      "patched_sha256": "6a96f80bce1b11184f5dc61ce82d9dea230b83be47e314f4bcb638b3c00c211c",
+      "patched_sha256": "b8eddc1cb39016431052d6cee1a42a37706239363b6201bd23fc33f3003aa20a",
       "reason": "Use correctly typed DynBuf allocator adapters for normalize and localeCompare",
       "provenance": "NATIVE_ABI_FIXES.md"
+    },
+    {
+      "patched_sha256": "b8eddc1cb39016431052d6cee1a42a37706239363b6201bd23fc33f3003aa20a",
+      "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
+      "reason": "Keep WeakRef constructor and deref targets through a complete native job checkpoint",
+      "provenance": "NATIVE_WEAKREF_KEPT_OBJECTS.md",
+      "file": "quickjs.c"
+    },
+    {
+      "patched_sha256": "49c3a7a9a4e168c9e0bbbc2ea5f10a294f13dc37e9ff379afbb66864fe654d15",
+      "upstream_sha256": "747a77444ff04a910b57ca51dd998d7ee46895b1b9592d7d6051fd180317c44d",
+      "reason": "Expose the owner-only JS_ClearKeptObjects host checkpoint API",
+      "provenance": "NATIVE_WEAKREF_KEPT_OBJECTS.md",
+      "file": "quickjs.h"
+    },
+    {
+      "provenance": "NATIVE_ASYNC_CONTEXT.md",
+      "patched_sha256": "b8eddc1cb39016431052d6cee1a42a37706239363b6201bd23fc33f3003aa20a",
+      "upstream_sha256": "9fd0e0e68856d165e2872140ac38889845b53eb1bc55150f8598a53eb86948f5",
+      "file": "quickjs.c",
+      "reason": "Capture private native execution context at job and promise reaction registration"
+    },
+    {
+      "provenance": "NATIVE_ASYNC_CONTEXT.md",
+      "patched_sha256": "49c3a7a9a4e168c9e0bbbc2ea5f10a294f13dc37e9ff379afbb66864fe654d15",
+      "upstream_sha256": "747a77444ff04a910b57ca51dd998d7ee46895b1b9592d7d6051fd180317c44d",
+      "file": "quickjs.h",
+      "reason": "Expose native owner-only execution context setter and job hooks"
     }
   ]
 }

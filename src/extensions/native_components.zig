@@ -210,6 +210,9 @@ pub const Manager = struct {
         self.engine.freeValue(self.array_is_array);
         for ([_]c.JSValue{ self.promise_type, self.promise_resolve, self.promise_then }) |value| self.engine.freeValue(value);
     }
+    pub fn forkInvocation(self: *const Manager) Manager {
+        return .{ .engine = self.engine, .array_is_array = c.JS_DupValue(self.engine.context, self.array_is_array), .promise_type = c.JS_DupValue(self.engine.context, self.promise_type), .promise_resolve = c.JS_DupValue(self.engine.context, self.promise_resolve), .promise_then = c.JS_DupValue(self.engine.context, self.promise_then), .handle_class = self.handle_class, .generation = self.generation, .completion_bridge = self.completion_bridge };
+    }
 
     fn freeEntry(self: *Manager, entry: *Entry) void {
         if (entry.component) |component| self.engine.freeValue(component);

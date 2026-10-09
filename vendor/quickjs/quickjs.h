@@ -1151,6 +1151,9 @@ JS_EXTERN JSValue JS_PromiseThen(JSContext *ctx, JSValueConst promise,
 JS_EXTERN JSPromiseStateEnum JS_PromiseState(JSContext *ctx,
                                              JSValueConst promise);
 JS_EXTERN JSValue JS_PromiseResult(JSContext *ctx, JSValueConst promise);
+/* Host checkpoint after an execution job and its microtasks have completed.
+   WeakRef construction and successful deref keep their target until here. */
+JS_EXTERN void JS_ClearKeptObjects(JSRuntime *rt);
 JS_EXTERN bool JS_IsPromise(JSValueConst val);
 JS_EXTERN void JS_PromiseMarkAsHandled(JSContext *ctx, JSValueConst promise);
 JS_EXTERN JSValue JS_NewSettledPromise(JSContext *ctx, bool is_reject, JSValueConst value);
@@ -1246,6 +1249,13 @@ JS_EXTERN JSValue JS_GetModulePrivateValue(JSContext *ctx, JSModuleDef *m);
 typedef JSValue JSJobFunc(JSContext *ctx, int argc, JSValueConst *argv);
 JS_EXTERN int JS_EnqueueJob(JSContext *ctx, JSJobFunc *job_func,
                             int argc, JSValueConst *argv);
+/* Pi embedder-only execution context. Values never enter the JS namespace.
+   Reactions capture registration context, including intrinsic async/await. */
+typedef void JSExecutionContextHook(JSContext *ctx, bool before,
+                                    JSValueConst execution_context, void *opaque);
+JS_EXTERN void JS_SetExecutionContext(JSRuntime *rt, JSValueConst value);
+JS_EXTERN void JS_SetExecutionContextHook(JSRuntime *rt,
+                                         JSExecutionContextHook *hook, void *opaque);
 
 JS_EXTERN bool JS_IsJobPending(JSRuntime *rt);
 JS_EXTERN JSContext *JS_GetPendingJobContext(JSRuntime *rt);

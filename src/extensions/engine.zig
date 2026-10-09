@@ -52,6 +52,7 @@ pub const Engine = struct {
     native_ui_manager: ?*anyopaque = null,
     host_ui_pending: usize = 0,
     native_io: ?std.Io = null,
+    native_async_scope: ?*anyopaque = null,
     native_sdk_class: c.JSClassID = 0,
     native_durable_class: c.JSClassID = 0,
     native_models_store_class: c.JSClassID = 0,
@@ -176,6 +177,7 @@ pub const Engine = struct {
 
     pub fn deinit(self: *Engine) void {
         self.closeDurableOwner();
+        @import("native_async_scope.zig").deinit(self);
         for (self.native_sdk_prototypes) |prototype| if (prototype) |value| self.freeValue(value);
         if (self.native_weak_ref_constructor) |value| self.freeValue(value);
         if (self.native_weak_ref_deref) |value| self.freeValue(value);
@@ -223,6 +225,7 @@ pub const Engine = struct {
     }
 
     pub fn beginInvocation(self: *Engine) void {
+        self.finishJob();
         self.interrupts = 0;
         self.cancelled.store(false, .release);
         if (self.last_error) |message| self.gpa.free(message);
@@ -635,6 +638,7 @@ pub const Engine = struct {
     /// Drain queued microtasks without awaiting a promise or sleeping on the
     /// host scheduler. Used by the persistent owner's idle event loop.
     pub fn drainReadyJobs(self: *Engine) !bool {
+        defer self.finishJob();
         var jobs: usize = 0;
         while (c.JS_IsJobPending(self.runtime)) {
             if (jobs >= self.options.job_budget) return error.JavaScriptJobLimit;
@@ -654,6 +658,7 @@ pub const Engine = struct {
     }
 
     pub fn awaitValue(self: *Engine, value: c.JSValue) !c.JSValue {
+        defer self.finishJob();
         const previous_deadline = self.host_await_deadline_ms;
         defer self.host_await_deadline_ms = previous_deadline;
         if (self.native_io) |io| {
@@ -677,6 +682,9 @@ pub const Engine = struct {
                 return error.JavaScriptException;
             }
             if (status == 0) {
+                // The promise may span another timer/I/O turn. The current
+                // job's complete microtask checkpoint ends before that turn.
+                self.finishJob();
                 if (self.host_pump) |pump| {
                     if (try pump(self)) continue;
                 }
@@ -700,6 +708,12 @@ pub const Engine = struct {
             c.JS_PROMISE_FULFILLED => c.JS_PromiseResult(self.context, value),
             else => c.JS_DupValue(self.context, value),
         };
+    }
+
+    /// Host job checkpoint, never a checkpoint between promise microtasks.
+    /// Pending jobs retain construction/deref targets until the queue drains.
+    pub fn finishJob(self: *Engine) void {
+        if (!c.JS_IsJobPending(self.runtime) and !@import("native_async_scope.zig").isActive(self)) c.JS_ClearKeptObjects(self.runtime);
     }
 
     fn captureException(self: *Engine, context: *c.JSContext) void {

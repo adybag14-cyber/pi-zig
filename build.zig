@@ -873,6 +873,27 @@ pub fn build(b: *std.Build) void {
     const typed_registry_run = b.addRunArtifact(typed_registry_tests);
     b.step("test-typed-registry-owner", "Exercise actual Main registry snapshots and generation admission").dependOn(&typed_registry_run.step);
     test_step.dependOn(&typed_registry_run.step);
+    const weakref_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_weakref_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native WeakRef"}, .use_llvm = use_llvm });
+    linkQuickJs(b, weakref_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, weakref_tests.root_module);
+    weakref_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const weakref_run = b.addRunArtifact(weakref_tests);
+    b.step("test-native-weakref", "Compare WeakRef kept objects with actual V8 job checkpoints").dependOn(&weakref_run.step);
+    test_step.dependOn(&weakref_run.step);
+    const async_scope_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_scope_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    linkQuickJs(b, async_scope_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, async_scope_tests.root_module);
+    async_scope_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const async_scope_run = b.addRunArtifact(async_scope_tests);
+    b.step("test-native-async-scope", "Prove four private promise and timer execution scopes").dependOn(&async_scope_run.step);
+    test_step.dependOn(&async_scope_run.step);
+    const provider_ticket_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_provider_tickets_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native provider tickets"}, .use_llvm = use_llvm });
+    linkQuickJs(b, provider_ticket_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, provider_ticket_tests.root_module);
+    provider_ticket_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const provider_ticket_run = b.addRunArtifact(provider_ticket_tests);
+    b.step("test-native-provider-tickets", "Prove four admitted native callbacks and private async invocation ownership").dependOn(&provider_ticket_run.step);
+    test_step.dependOn(&provider_ticket_run.step);
     const sdk_stream_ownership_tests = b.addTest(.{
         .root_module = binding_tests.root_module,
         .filters = &.{ "SDK lazy chat stream continuation", "terminal admission allocation" },
@@ -1234,6 +1255,16 @@ pub fn build(b: *std.Build) void {
     typed_main_process_run.step.dependOn(b.getInstallStep());
     b.step("test-typed-main-process", "Exercise actual Main typed registry and classifier/image/native callbacks without Node").dependOn(&typed_main_process_run.step);
     test_step.dependOn(&typed_main_process_run.step);
+    const typed_ticket_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime typed tickets"}, .use_llvm = use_llvm });
+    const typed_ticket_process_run = b.addRunArtifact(typed_ticket_process_tests);
+    typed_ticket_process_run.step.dependOn(b.getInstallStep());
+    b.step("test-native-ticket-process", "Prove four real callback admissions with isolated snapshots and individual abort").dependOn(&typed_ticket_process_run.step);
+    test_step.dependOn(&typed_ticket_process_run.step);
+    const catalog_control_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime private catalog control"}, .use_llvm = use_llvm });
+    const catalog_control_process_run = b.addRunArtifact(catalog_control_process_tests);
+    catalog_control_process_run.step.dependOn(b.getInstallStep());
+    b.step("test-native-catalog-control-process", "Prove private catalog FIFO acknowledgement and rollback on a real native worker").dependOn(&catalog_control_process_run.step);
+    test_step.dependOn(&catalog_control_process_run.step);
     const late_registration_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_runtime_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native runtime late"},

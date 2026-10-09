@@ -176,6 +176,8 @@ pub const State = struct {
             return failure(gpa, self.io, row, operation, message, false);
         }
         const authentication = try json.required(prepared.value, "auth");
+        const auth_base_url = json.get(authentication, "baseUrl");
+        const rewrites_model = if (auth_base_url) |value| auth.truthy(value) else false;
         const key = if (json.get(authentication, "apiKey")) |value| if (value == .string) value.string else "" else "";
         var request_options = try json.Owned.empty(gpa);
         defer request_options.deinit();
@@ -188,9 +190,14 @@ pub const State = struct {
         const body = try json.stringify(gpa, context);
         defer gpa.free(body);
         if (row.callback) |callback| {
-            const model = try json.stringify(gpa, row.value);
+            const request_model = if (rewrites_model) rewritten: {
+                var value = try json.clone(options_allocator, row.value);
+                try value.object.put(options_allocator, "baseUrl", try json.clone(options_allocator, auth_base_url.?));
+                break :rewritten value;
+            } else row.value;
+            const model = try json.stringify(gpa, request_model);
             defer gpa.free(model);
-            const envelope = try callback.runtime.invokeProviderTypedOperation(callback.callback_id, callback.provider, callback.generation, if (operation == .classify) .classify else .generate_images, model, body, options, false, aborted);
+            const envelope = try callback.runtime.invokeProviderTypedOperation(callback.callback_id, callback.provider, callback.generation, if (operation == .classify) .classify else .generate_images, model, body, options, rewrites_model, aborted);
             defer gpa.free(envelope);
             if (self.actions) |accept| try accept(self.actions_context, gpa, row, callback.runtime.source_path, envelope);
             var response = try json.Owned.parse(gpa, envelope);
@@ -201,6 +208,8 @@ pub const State = struct {
             return result;
         }
         if (row.native_mode) return failure(gpa, self.io, row, operation, if (operation == .classify) try std.fmt.allocPrint(request_options.arena.allocator(), "Provider {s} does not support classification", .{row.info.providerName()}) else try std.fmt.allocPrint(request_options.arena.allocator(), "Provider {s} does not support image generation", .{row.info.providerName()}), false);
+        var request_info = row.info;
+        if (rewrites_model) request_info.base_url = try json.asString(auth_base_url.?);
         var headers: std.ArrayList(metadata.Header) = .empty;
         defer headers.deinit(gpa);
         if (json.get(authentication, "headers")) |value| if (value == .object) {
@@ -211,7 +220,7 @@ pub const State = struct {
             var converted: std.ArrayList(classifier.Header) = .empty;
             defer converted.deinit(gpa);
             for (headers.items) |header| try converted.append(gpa, .{ .name = header.name, .value = header.value });
-            var client: classifier.Client = .{ .io = self.io, .model = try classifier.Model.fromInfo(row.info), .api_key = key, .environ = &self.environ, .proxy_url = self.proxy_url, .headers = converted.items, .abort_flag = aborted, .fetch_override = self.classifier_fetch };
+            var client: classifier.Client = .{ .io = self.io, .model = try classifier.Model.fromInfo(request_info), .api_key = key, .environ = &self.environ, .proxy_url = self.proxy_url, .headers = converted.items, .abort_flag = aborted, .fetch_override = self.classifier_fetch };
             var response = try client.classify(gpa, body);
             defer response.deinit(gpa);
             return classifierValue(gpa, response);
@@ -222,7 +231,7 @@ pub const State = struct {
             const kind = try json.asString(try json.required(block, "type"));
             if (std.mem.eql(u8, kind, "text")) try input.append(gpa, .{ .text = try json.asString(try json.required(block, "text")) }) else try input.append(gpa, .{ .image = .{ .mime_type = try json.asString(try json.required(block, "mimeType")), .data = try json.asString(try json.required(block, "data")) } });
         }
-        var client = try images.Client.fromModel(self.io, row.info, key);
+        var client = try images.Client.fromModel(self.io, request_info, key);
         client.gpa = gpa;
         client.environ = &self.environ;
         client.proxy_url = self.proxy_url;
