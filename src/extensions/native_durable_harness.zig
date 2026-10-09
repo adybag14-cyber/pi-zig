@@ -297,22 +297,22 @@ pub fn agentChange(engine: *Engine, change: c.JSValue) !json.Owned {
     errdefer result.deinit();
     const a = result.arena.allocator();
     result.value = .{ .object = .empty };
-    for ([_][:0]const u8{ "model", "thinkingLevel", "extensions", "tools", "instructions", "cwd" }) |name| {
+    for ([_][:0]const u8{ "model", "thinkingLevel", "extensions", "tools", "modelTools", "instructions", "cwd" }) |name| {
         const input = try sdk.get(engine, change, name.ptr);
         defer engine.freeValue(input);
         if (c.JS_IsUndefined(input)) continue;
         if (c.JS_IsNull(input)) {
             try result.value.object.put(a, name, .null);
-        } else if (std.mem.eql(u8, name, "extensions") or std.mem.eql(u8, name, "tools")) {
+        } else if (std.mem.eql(u8, name, "extensions") or std.mem.eql(u8, name, "tools") or std.mem.eql(u8, name, "modelTools")) {
             if (c.JS_IsArray(input)) {
                 try result.value.object.put(a, name, try names(engine, a, input));
             } else {
                 var selection: json.Value = .{ .object = .empty };
                 for ([_][:0]const u8{ "add", "remove" }) |field| {
-                    if (std.mem.eql(u8, name, "tools") and std.mem.eql(u8, field, "add")) continue;
+                    if (!std.mem.eql(u8, name, "extensions") and std.mem.eql(u8, field, "add")) continue;
                     const list = try sdk.get(engine, input, field.ptr);
                     defer engine.freeValue(list);
-                    if (!c.JS_IsUndefined(list) or std.mem.eql(u8, name, "tools")) try selection.object.put(a, field, try names(engine, a, list));
+                    if (!c.JS_IsUndefined(list) or !std.mem.eql(u8, name, "extensions")) try selection.object.put(a, field, try names(engine, a, list));
                 }
                 try result.value.object.put(a, name, selection);
             }

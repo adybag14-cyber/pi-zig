@@ -109,6 +109,61 @@ fn includes(engine: *Engine, array: c.JSValue, value: c.JSValue) !bool {
     defer engine.freeValue(result);
     return c.JS_ToBool(engine.context, result) != 0;
 }
+fn callerTools(engine: *Engine, enabled: c.JSValue, caller: []const u8) !c.JSValue {
+    const result = try sdk.array(engine);
+    errdefer engine.freeValue(result);
+    const name = try sdk.text(engine, caller);
+    defer engine.freeValue(name);
+    for (0..try sdk.length(engine, enabled)) |index| {
+        const tool = try at(engine, enabled, index);
+        defer engine.freeValue(tool);
+        const callers = try sdk.get(engine, tool, "callers");
+        defer engine.freeValue(callers);
+        const allowed = if (c.JS_IsUndefined(callers)) true else blk: {
+            const selected = try sdk.invoke(engine, callers, "includes", &.{name});
+            defer engine.freeValue(selected);
+            break :blk c.JS_ToBool(engine.context, selected) != 0;
+        };
+        if (allowed) try sdk.append(engine, result, c.JS_DupValue(engine.context, tool));
+    }
+    return result;
+}
+fn filterTools(engine: *Engine, tools: c.JSValue, filter: c.JSValue) !c.JSValue {
+    if (c.JS_IsUndefined(filter)) return c.JS_DupValue(engine.context, tools);
+    const result = try sdk.array(engine);
+    errdefer engine.freeValue(result);
+    if (c.JS_IsArray(filter)) {
+        const used = try sdk.array(engine);
+        defer engine.freeValue(used);
+        for (0..try sdk.length(engine, filter)) |index| {
+            const name = try at(engine, filter, index);
+            defer engine.freeValue(name);
+            if (try includes(engine, used, name)) continue;
+            try sdk.append(engine, used, c.JS_DupValue(engine.context, name));
+            for (0..try sdk.length(engine, tools)) |tool_index| {
+                const tool = try at(engine, tools, tool_index);
+                defer engine.freeValue(tool);
+                const tool_name = try sdk.get(engine, tool, "name");
+                defer engine.freeValue(tool_name);
+                if (c.JS_IsStrictEqual(engine.context, name, tool_name)) {
+                    try sdk.append(engine, result, c.JS_DupValue(engine.context, tool));
+                    break;
+                }
+            }
+        }
+    } else {
+        const removed = try sdk.get(engine, filter, "remove");
+        defer engine.freeValue(removed);
+        for (0..try sdk.length(engine, tools)) |index| {
+            const tool = try at(engine, tools, index);
+            defer engine.freeValue(tool);
+            const name = try sdk.get(engine, tool, "name");
+            defer engine.freeValue(name);
+            if (!try includes(engine, removed, name)) try sdk.append(engine, result, c.JS_DupValue(engine.context, tool));
+        }
+    }
+    return result;
+}
 fn at(engine: *Engine, array: c.JSValue, index: usize) !c.JSValue {
     return engine.checked(c.JS_GetPropertyUint32(engine.context, array, @intCast(index)));
 }
@@ -275,6 +330,14 @@ pub fn resolve(engine: *Engine, state: c.JSValue, snapshot: c.JSValue, resolved_
             if (!try includes(engine, remove, name)) try sdk.append(engine, filtered, c.JS_DupValue(engine.context, tool));
         }
     }
+    const model_candidates = try callerTools(engine, filtered, "model");
+    defer engine.freeValue(model_candidates);
+    const model_filter = try field(engine, state, "modelTools");
+    defer engine.freeValue(model_filter);
+    const offered = try filterTools(engine, model_candidates, model_filter);
+    defer engine.freeValue(offered);
+    const callable = try callerTools(engine, filtered, "tools");
+    defer engine.freeValue(callable);
     const agent_sections = try values(engine, sections);
     defer engine.freeValue(agent_sections);
     const instructions = try field(engine, state, "instructions");
@@ -296,7 +359,8 @@ pub fn resolve(engine: *Engine, state: c.JSValue, snapshot: c.JSValue, resolved_
     defer engine.freeValue(thinking);
     try sdk.put(engine, result, "thinkingLevel", if (c.JS_IsUndefined(thinking) or c.JS_IsNull(thinking)) try sdk.text(engine, "off") else c.JS_DupValue(engine.context, thinking));
     try sdk.put(engine, result, "extensions", c.JS_DupValue(engine.context, extensions));
-    try sdk.put(engine, result, "tools", c.JS_DupValue(engine.context, filtered));
+    try sdk.put(engine, result, "tools", c.JS_DupValue(engine.context, offered));
+    try sdk.put(engine, result, "callable", c.JS_DupValue(engine.context, callable));
     try sdk.put(engine, result, "sections", c.JS_DupValue(engine.context, agent_sections));
     if (!c.JS_IsUndefined(instructions)) try sdk.put(engine, result, "instructions", c.JS_DupValue(engine.context, instructions));
     const cwd = try field(engine, state, "cwd");
@@ -384,4 +448,50 @@ fn applyChange(engine: *Engine, draft: c.JSValue, change: c.JSValue) !void {
             _ = try engine.checked(c.JS_Throw(engine.context, failure));
         }
     }
+}
+
+test "native durable VM eba model and tools callers match actual Source selection order and definition identity" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const captured = try engine.checked(c.JS_ParseJSON(engine.context, @embedFile("../durable/fixtures/durable-tool-callers-eba.json"), @embedFile("../durable/fixtures/durable-tool-callers-eba.json").len, "actual-eba-callers"));
+    defer engine.freeValue(captured);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "callerFixture", c.JS_DupValue(engine.context, captured));
+    const Callback = struct {
+        fn run(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const owner = Engine.fromContext(context.?);
+            if (argc < 2) return durable.reject(owner, error.ExpectedCallerFixture);
+            const resolved = settings(owner, c.pi_js_undefined()) catch |err| return durable.reject(owner, err);
+            defer owner.freeValue(resolved);
+            return resolve(owner, argv[0], argv[1], resolved, c.pi_js_undefined()) catch |err| durable.reject(owner, err);
+        }
+    };
+    try sdk.put(engine, global, "nativeResolveCallerFixture", try engine.checked(c.JS_NewCFunction(engine.context, Callback.run, "resolve", 2)));
+    const result = engine.evalModule(
+        \\const base=callerFixture.base;
+        \\const extension={name:'base',tools:base};
+        \\const snapshot={installed:()=>[extension],extension:name=>name==='base'?extension:undefined};
+        \\for(const row of callerFixture.cases.filter(c=>c.name.startsWith('selection-'))){
+        \\ const agent=nativeResolveCallerFixture(row.state??undefined,snapshot);
+        \\ for(const field of ['tools','callable'])if(JSON.stringify(agent[field].map(t=>t.name))!==JSON.stringify(row[field]))throw Error(row.name+':'+field);
+        \\ if(![...agent.tools,...agent.callable].every(t=>base.includes(t)))throw Error('definition identity');
+        \\}
+        \\const replacement={name:'default',callers:['tools']},wrapped={name:'both',callers:['model']};
+        \\const extensions=[extension,{name:'override',tools:[replacement],wraps:[{tool:'both',wrap:()=>wrapped}]}];
+        \\const overridden=nativeResolveCallerFixture(undefined,{installed:()=>extensions,extension:name=>extensions.find(e=>e.name===name)});
+        \\const expected=callerFixture.cases.find(c=>c.name==='override-wrap');
+        \\for(const field of ['tools','callable'])if(JSON.stringify(overridden[field].map(t=>t.name))!==JSON.stringify(expected[field]))throw Error('override '+field);
+        \\if(overridden.callable[0]!==replacement||overridden.tools[0]!==wrapped)throw Error('wrapped identity');
+        \\for(const callers of [null,3,'model']){
+        \\ const odd={name:'base',tools:[{name:'odd',callers}]};const source=callerFixture.cases.find(c=>c.name==='odd-'+String(callers));
+        \\ let actual;try{actual=nativeResolveCallerFixture(undefined,{installed:()=>[odd],extension:()=>odd});}catch(error){if(error.name!==source.error)throw error;continue;}
+        \\ if(source.error||JSON.stringify(actual.tools.map(t=>t.name))!==JSON.stringify(source.tools)||JSON.stringify(actual.callable.map(t=>t.name))!==JSON.stringify(source.callable))throw Error('odd callers');
+        \\}
+    , "eba-actual-caller-fixture") catch |err| {
+        std.debug.print("Actual Source callers: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
 }
