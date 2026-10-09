@@ -468,13 +468,42 @@ pub const Scheduler = struct {
         result.deinit();
         try self.reconcile();
     }
+    /// Validate direct task ownership on the mutation line. A nested caller's
+    /// cleanup preserves a restart mark and then waits for actual settlement.
+    pub fn abortOwned(self: *Scheduler, owner_id: u64, id: u64) !bool {
+        const Owned = struct {
+            scheduler: *Scheduler,
+            owner_id: u64,
+            id: u64,
+            fn apply(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
+                const call: *@This() = @ptrCast(@alignCast(raw.?));
+                const record = (try tx.currentRecord(call.id, .task)) orelse return error.TaskNotOwned;
+                const owner = json.get(record, "owner") orelse return error.TaskNotOwned;
+                if (try json.asInteger(owner) != call.owner_id) return error.TaskNotOwned;
+                if (try model.status(record) == .terminal) return .{ .bool = true };
+                var abort_call: AbortCall = .{ .scheduler = call.scheduler, .id = call.id, .keep_restart = true };
+                _ = try AbortCall.apply(&abort_call, tx, .{});
+                return .{ .bool = false };
+            }
+        };
+        var call: Owned = .{ .scheduler = self, .owner_id = owner_id, .id = id };
+        var result = try self.session.commit(Owned.apply, &call, .{}, .{});
+        defer result.deinit();
+        const terminal = result.value.value.bool;
+        if (!terminal) try self.reconcile();
+        return terminal;
+    }
     const AbortCall = struct {
         scheduler: *Scheduler,
         id: u64,
+        keep_restart: bool = false,
         fn apply(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
             var record = (try tx.currentRecord(self.id, .task)) orelse return error.UnknownTask;
             if (try model.status(record) == .terminal) return .null;
+            if (self.keep_restart) if (json.get(record, "abortReason")) |reason| {
+                if (reason == .string and std.mem.eql(u8, reason.string, "restart")) return .null;
+            };
             var active = false;
             self.scheduler.mutex.lockUncancelable(self.scheduler.io);
             for (self.scheduler.invocations.items) |invocation| if (invocation.task_id == self.id and invocation.active.load(.acquire)) {
@@ -511,6 +540,7 @@ pub const Scheduler = struct {
                 }
             }
             record = try json.clone(tx.owned.arena.allocator(), record);
+            _ = record.object.orderedRemove("abortReason");
             try record.object.put(tx.owned.arena.allocator(), "abortRequested", .{ .bool = true });
             try tx.setTask(record);
             return .null;
@@ -716,7 +746,7 @@ pub const Scheduler = struct {
                     }
                 }
                 if (blocked) |reason| {
-                    if (mode == .abort) {
+                    if (mode == .abort and json.get(record, "abortReason") == null) {
                         const terminal = try model.withState(tx.owned.arena.allocator(), record, try model.outcomeState(tx.owned.arena.allocator(), "terminal", try model.makeOutcome(tx.owned.arena.allocator(), "orphaned", .{ .string = @tagName(reason) })));
                         try tx.setTask(terminal);
                         try scheduler.settle(tx, terminal);

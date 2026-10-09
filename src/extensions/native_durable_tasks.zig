@@ -36,7 +36,7 @@ const Entry = struct {
     }
 };
 const Runtime = struct { entry: *Entry, session: c.JSValue, signal: c.JSValue, context: c.JSValue, agent: c.JSValue, snapshot: c.JSValue };
-const RuntimeMethod = enum(c_int) { getTask, outcomes, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc, agent, env, context, sleep, waitForTask };
+const RuntimeMethod = enum(c_int) { getTask, outcomes, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc, agent, env, context, sleep, waitForTask, abortOwned };
 const Waiter = struct { id: ?u64, conversation: ?u64, resolve: c.JSValue, reject: c.JSValue, context: c.JSValue };
 const Signal = struct { entry: *Entry, value: c.JSValue, context: c.JSValue };
 const Sleeper = struct { runtime: c.JSValue, until: f64, context: c.JSValue, resolve: c.JSValue, reject: c.JSValue };
@@ -1019,7 +1019,36 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
     var data = [_]c.JSValue{ receiver, arguments };
     const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeReadQueued, 0, @intFromEnum(operation), data.len, &data));
     defer engine.freeValue(callback);
-    return durable.enqueue(engine, self.session, callback);
+    const queued = try durable.enqueue(engine, self.session, callback);
+    if (operation != .abortOwned) return queued;
+    defer engine.freeValue(queued);
+    const bound = try @import("native_durable_context.zig").withAbortSignal(engine, self.signal, if (args.len > 1) args[1] else c.pi_js_undefined());
+    defer engine.freeValue(bound);
+    var after_data = [_]c.JSValue{ receiver, if (args.len > 0) args[0] else c.pi_js_undefined(), bound };
+    const marked = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeAbortOwnedMarked, 1, 0, after_data.len, &after_data));
+    defer engine.freeValue(marked);
+    // A child must still commit while its caller waits. Only the mark belongs
+    // on the Session line; adopting its terminal wait into tail deadlocks it.
+    return sdk.invoke(engine, queued, "then", &.{marked});
+}
+fn runtimeAbortOwnedMarked(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return runtimeAbortOwnedMarkedValue(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), data) catch |err| durable.reject(engine, err);
+}
+fn runtimeAbortOwnedMarkedValue(engine: *Engine, terminal: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
+    if (c.JS_ToBool(engine.context, terminal) != 0) return c.pi_js_undefined();
+    const runtime = runtimeState(engine, data[0]) orelse return error.InvalidTaskRuntime;
+    const owner = runtime.entry.manager;
+    const pending = try wait(owner, try durable.number(engine, data[1]), null, data[2]);
+    defer engine.freeValue(pending);
+    var capture = [_]c.JSValue{data[0]};
+    const fulfilled = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeAbortOwnedSettled, 1, 0, capture.len, &capture));
+    defer engine.freeValue(fulfilled);
+    const rejected = try engine.checked(c.JS_NewCFunctionData(engine.context, runtimeAbortOwnedSettled, 1, 1, capture.len, &capture));
+    defer engine.freeValue(rejected);
+    runtime.entry.runtime.suspendWait();
+    errdefer runtime.entry.runtime.resumeWait();
+    return sdk.invoke(engine, pending, "then", &.{ fulfilled, rejected });
 }
 fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();
@@ -1187,7 +1216,7 @@ fn runtimeReadOwned(engine: *Engine, receiver: c.JSValue, args: c.JSValue, opera
     const context_index: u32 = if (operation == .memo) @intCast(length - 1) else if (operation == .entry and !c.JS_IsNumber(first)) 2 else 1;
     const context = try engine.checked(c.JS_GetPropertyUint32(engine.context, args, context_index));
     defer engine.freeValue(context);
-    try durable.checkCancellation(engine, context);
+    if (operation != .abortOwned) try durable.checkCancellation(engine, context);
     if (operation == .context) {
         const options = try engine.checked(c.JS_GetPropertyUint32(engine.context, args, 2));
         defer engine.freeValue(options);
@@ -1198,6 +1227,31 @@ fn runtimeReadOwned(engine: *Engine, receiver: c.JSValue, args: c.JSValue, opera
         return @import("native_durable_context_view.zig").read(engine, self.session, first, context, at, slot.value_ptr);
     }
     const store = &owner.lease.value.storage;
+    if (operation == .abortOwned) {
+        const bound = try @import("native_durable_context.zig").withAbortSignal(engine, self.signal, context);
+        defer engine.freeValue(bound);
+        const id = try durable.number(engine, first);
+        // Source first reads and validates the owner. Its in-memory read can
+        // succeed despite caller cancellation, and a terminal child is a noop.
+        var record = try store.readTableRecord(engine.gpa, .task, id);
+        defer if (record) |*value| value.deinit();
+        const owned = if (record) |value| if (json.get(value.value, "owner")) |owner_id| try json.asInteger(owner_id) == self.entry.runtime.taskId() else false else false;
+        if (!owned) {
+            const message = try std.fmt.allocPrint(engine.gpa, "Task {d} is not owned by task {d}", .{ id, self.entry.runtime.taskId() });
+            defer engine.gpa.free(message);
+            return engine.checked(c.JS_Throw(engine.context, try messageError(engine, message)));
+        }
+        if (std.mem.eql(u8, try json.asString(try json.required(try json.required(record.?.value, "state"), "status")), "terminal")) return c.pi_js_bool(engine.context, 1);
+        try durable.checkCancellation(engine, bound);
+        const terminal = owner.scheduler.abortOwned(self.entry.runtime.taskId(), id) catch |err| {
+            if (err != error.TaskNotOwned) return err;
+            const message = try std.fmt.allocPrint(engine.gpa, "Task {d} is not owned by task {d}", .{ id, self.entry.runtime.taskId() });
+            defer engine.gpa.free(message);
+            return engine.checked(c.JS_Throw(engine.context, try messageError(engine, message)));
+        };
+        try Manager.deliver(owner);
+        return c.pi_js_bool(engine.context, if (terminal) 1 else 0);
+    }
     if (operation == .getTask) {
         var record = (try store.readTableRecord(engine.gpa, .task, try durable.number(engine, first))) orelse return c.pi_js_undefined();
         defer record.deinit();
@@ -1269,6 +1323,13 @@ fn runtimeReadOwned(engine: *Engine, receiver: c.JSValue, args: c.JSValue, opera
         return durable.jsValue(engine, value.value);
     }
     return error.UnknownRuntimeOperation;
+}
+fn runtimeAbortOwnedSettled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, rejected: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const runtime = runtimeState(engine, data[0]) orelse return durable.reject(engine, error.InvalidTaskRuntime);
+    runtime.entry.runtime.resumeWait();
+    if (rejected != 0) return c.JS_Throw(context, c.JS_DupValue(context, if (argc > 0) argv[0] else c.pi_js_undefined()));
+    return c.pi_js_undefined();
 }
 fn runtimeCommit(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
@@ -1788,6 +1849,91 @@ test "native durable VM late terminal waiters progress behind worker line and re
 }
 test "native durable VM late waiter read queries replies and cancellation unwind every GPA failure" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, lateWaiterExercise, .{false});
+}
+
+test "native durable VM runtime abortOwned uses real fixture task handlers and matches actual Source direct ownership and terminal cleanup" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const builtins = try sdk.array(engine);
+    defer engine.freeValue(builtins);
+    // This kernel fixture runs genuine custom task handlers. It does not claim
+    // native Harness builtin-task availability or synthesize builtin tokens.
+    const registry = try @import("native_durable_registry.zig").create(engine, builtins);
+    defer engine.freeValue(registry);
+    const options = try sdk.object(engine);
+    defer engine.freeValue(options);
+    try sdk.put(engine, options, "registry", c.JS_DupValue(engine.context, registry));
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "ownedKernelSession", c.JS_DupValue(engine.context, session));
+    try sdk.put(engine, global, "ownedKernelRegistry", c.JS_DupValue(engine.context, registry));
+    const source = @embedFile("../durable/fixtures/durable-abort-owned-eba.json");
+    try sdk.put(engine, global, "ownedKernelSource", try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-abort-owned")));
+    const setup = try engine.evalModule(
+        \\import{defineTask}from'@earendil-works/pi-durable';
+        \\globalThis.ownedKernelRows=[];
+        \\const Child=defineTask({name:'fixture.owned-child',version:1,initial:()=>({phase:'work'}),phases:{work:async(_,runtime)=>{await new Promise((_,reject)=>{if(runtime.signal.aborted)reject(runtime.signal.reason);else runtime.signal.addEventListener('abort',()=>reject(runtime.signal.reason),{once:true})})}},abort:async(_,runtime,ctx)=>{await runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),ctx)}});
+        \\const Parent=defineTask({name:'fixture.owner',version:1,initial:()=>({phase:'work'}),phases:{work:async(_,runtime,ctx)=>{try{
+        \\ globalThis.ownedParentRuntime=runtime;
+        \\ for(const[name,id]of[['foreign',ownedForeignId],['missing',999]]){try{await runtime.abortOwned(id,ctx);ownedKernelRows.push({name,unexpected:true})}catch(error){ownedKernelRows.push({name,message:error.message})}}
+        \\ let child;await runtime.commit(async tx=>{child=await tx.createTask(Child,null,{ownership:{kind:'task',taskId:runtime.taskId}})},ctx);globalThis.ownedChildId=child;
+        \\ const result=await runtime.abortOwned(child,ctx),record=await runtime.getTask(child,ctx);
+        \\ ownedKernelRows.push({name:'owned-live',undefinedResult:result===undefined,status:record.state.status,outcome:record.state.outcome.status,owner:record.owner===runtime.taskId});
+        \\ ownedKernelRows.push({name:'owned-terminal',undefinedResult:await runtime.abortOwned(child,ctx)===undefined});
+        \\ const controller=new AbortController();controller.abort({canceled:true});const ignored=await runtime.abortOwned(child,{...ctx,abortSignal:controller.signal});ownedKernelRows.push({name:'canceled-terminal-read',undefinedResult:ignored===undefined});
+        \\ await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:null}}),ctx);
+        \\}catch(error){globalThis.ownedParentFailure=String(error?.stack??error);throw error}}}});
+        \\ownedKernelRegistry.install({name:'actual-fixture-tasks',tasks:[Parent,Child]});
+        \\await ownedKernelSession.commit(tx=>tx.createRootConversation(),{});
+        \\globalThis.ownedForeignId=await ownedKernelSession.commit(tx=>tx.createTask(Child,null,{conversationId:1,ownership:{kind:'conversation'}}),{});
+        \\globalThis.ownedParentId=await ownedKernelSession.commit(tx=>tx.createTask(Parent,null,{conversationId:1,ownership:{kind:'conversation'}}),{});
+    , "actual-owned-kernel-setup.mjs");
+    engine.freeValue(setup);
+    const fixture_context = try sdk.object(engine);
+    defer engine.freeValue(fixture_context);
+    try attach(engine, session, options, fixture_context);
+    const manager = try getManager(engine, session);
+    const id = try sdk.get(engine, global, "ownedParentId");
+    defer engine.freeValue(id);
+    const pending = try wait(manager, try durable.number(engine, id), null, fixture_context);
+    defer engine.freeValue(pending);
+    const settled = engine.awaitValue(pending) catch |err| {
+        std.debug.print("Actual Source abortOwned: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(settled);
+    const inspected = try durable.owned(engine, settled);
+    defer {
+        var data = inspected;
+        data.deinit();
+    }
+    const outcome = try json.required(try json.required(inspected.value, "state"), "outcome");
+    if (!std.mem.eql(u8, try json.asString(try json.required(outcome, "status")), "completed")) {
+        const encoded = try engine.stringify(settled);
+        defer engine.gpa.free(encoded);
+        std.debug.print("Owned task settled without completion: {s}\n", .{encoded});
+        const phase_error = try sdk.get(engine, global, "ownedParentFailure");
+        defer engine.freeValue(phase_error);
+        const text = try engine.toString(phase_error);
+        defer engine.gpa.free(text);
+        std.debug.print("Owned task original VM failure: {s}; native diagnostic: {s}\n", .{ text, engine.last_error orelse "none" });
+        return error.OwnedTaskDidNotComplete;
+    }
+    const compare = engine.evalModule(
+        \\for(const row of ownedKernelRows)if(row.message)row.message=row.message.replaceAll(String(ownedForeignId),'$FOREIGN').replaceAll(String(ownedParentId),'$PARENT');
+        \\const source=ownedKernelSource.cases.filter(row=>!['retired-runtime','reports'].includes(row.name));
+        \\if(JSON.stringify(ownedKernelRows)!==JSON.stringify(source))throw Error(JSON.stringify({actual:ownedKernelRows,source}));
+    , "actual-owned-kernel-compare.mjs") catch |err| {
+        std.debug.print("Actual Source abortOwned comparison: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(compare);
 }
 fn migrationKey(allocator: std.mem.Allocator, input: json.Value, checkpoint: json.Value, from: u64) ![]u8 {
     var values = [_]json.Value{ input, checkpoint, .{ .integer = @intCast(from) } };

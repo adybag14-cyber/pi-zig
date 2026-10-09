@@ -1,0 +1,36 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "name": "foreign",
+      "message": "Task $FOREIGN is not owned by task $PARENT"
+    },
+    {
+      "name": "missing",
+      "message": "Task 999 is not owned by task $PARENT"
+    },
+    {
+      "name": "owned-live",
+      "undefinedResult": true,
+      "status": "terminal",
+      "outcome": "aborted",
+      "owner": true
+    },
+    {
+      "name": "owned-terminal",
+      "undefinedResult": true
+    },
+    {
+      "name": "canceled-terminal-read",
+      "undefinedResult": true
+    },
+    {
+      "name": "retired-runtime",
+      "message": "Task $PARENT invocation has ended"
+    },
+    {
+      "name": "reports",
+      "count": 0
+    }
+  ]
+}

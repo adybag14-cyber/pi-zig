@@ -432,7 +432,7 @@ pub fn sessionObject(engine: *Engine, storage: c.JSValue) !c.JSValue {
     errdefer engine.freeValue(tail);
     lease.* = .{ .gpa = engine.gpa, .value = session_module.Session.init(engine.gpa, io, store) };
     errdefer native.deinit();
-    self.* = .{ .engine = engine, .kind = .session, .memory = undefined, .session = native, .session_lease = lease, .owner_thread = std.Thread.getCurrentId(), .parent = c.JS_DupValue(engine.context, storage), .tail = tail };
+    self.* = .{ .engine = engine, .kind = .session, .memory = undefined, .session = native, .session_lease = lease, .owner_thread = std.Thread.getCurrentId(), .parent = c.JS_DupValue(engine.context, storage), .tail = tail, .task_creator = @import("native_durable_tasks.zig").createTask };
     errdefer engine.freeValue(self.parent);
     _ = try native.subscribe(publication, self);
     try methods(engine, result_object, &.{ .commit, .close, .subscribeCommits, .subscribeClose, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc, .documentState });
@@ -626,7 +626,7 @@ fn transactionDispatch(self: *State, receiver: c.JSValue, operation: Method, arg
         if (!native.active) return error.TransactionClosed;
         const parent = try state(engine, self.parent);
         const create = parent.task_creator orelse return error.TaskCreatorUnavailable;
-        return create(engine, parent.creation_owner.?, receiver, args);
+        return create(engine, parent.creation_owner orelse c.pi_js_undefined(), receiver, args);
     }
     const output: json.Value = switch (operation) {
         .createRootConversation => try native.createRootConversation(),
