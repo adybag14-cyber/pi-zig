@@ -1,0 +1,242 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "reuse",
+      "id": 8,
+      "trace": [
+        [
+          "request",
+          7,
+          "request"
+        ]
+      ],
+      "live": {},
+      "inbox": {
+        "items": []
+      }
+    },
+    {
+      "scenario": "conflict",
+      "failure": {
+        "name": "Error",
+        "message": "Request request already identifies a submission of type input"
+      },
+      "trace": [
+        [
+          "request",
+          7,
+          "request"
+        ]
+      ],
+      "live": {},
+      "inbox": {
+        "items": []
+      }
+    },
+    {
+      "scenario": "busy-write",
+      "id": 10,
+      "trace": [
+        [
+          "request",
+          7,
+          "request"
+        ],
+        [
+          "doc",
+          "live",
+          7
+        ],
+        [
+          "create",
+          {
+            "conversationId": 7,
+            "requestId": "request",
+            "type": "write",
+            "status": "queued"
+          }
+        ],
+        [
+          "doc",
+          "inbox",
+          7
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 9,
+          "inputs": []
+        }
+      },
+      "inbox": {
+        "items": [
+          {
+            "id": 10,
+            "mode": "write",
+            "entry": {
+              "kind": "custom",
+              "head": 4,
+              "model": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "idle-write",
+      "id": 11,
+      "trace": [
+        [
+          "request",
+          7,
+          "request"
+        ],
+        [
+          "doc",
+          "live",
+          7
+        ],
+        [
+          "head",
+          7
+        ],
+        [
+          "doc",
+          "inbox",
+          7
+        ],
+        [
+          "append",
+          7,
+          {
+            "kind": "custom",
+            "head": 4,
+            "model": []
+          },
+          10
+        ],
+        [
+          "create",
+          {
+            "conversationId": 7,
+            "requestId": "request",
+            "type": "write",
+            "status": "done",
+            "entry": 10
+          }
+        ]
+      ],
+      "live": {},
+      "inbox": {
+        "items": []
+      }
+    },
+    {
+      "scenario": "stale-write",
+      "id": 10,
+      "trace": [
+        [
+          "request",
+          7,
+          "request"
+        ],
+        [
+          "doc",
+          "live",
+          7
+        ],
+        [
+          "head",
+          7
+        ],
+        [
+          "doc",
+          "inbox",
+          7
+        ],
+        [
+          "create",
+          {
+            "conversationId": 7,
+            "requestId": "request",
+            "type": "write",
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ]
+      ],
+      "live": {},
+      "inbox": {
+        "items": []
+      }
+    },
+    {
+      "scenario": "queued-write",
+      "id": 10,
+      "trace": [
+        [
+          "request",
+          7,
+          "request"
+        ],
+        [
+          "doc",
+          "live",
+          7
+        ],
+        [
+          "head",
+          7
+        ],
+        [
+          "doc",
+          "inbox",
+          7
+        ],
+        [
+          "create",
+          {
+            "conversationId": 7,
+            "requestId": "request",
+            "type": "write",
+            "status": "queued"
+          }
+        ],
+        [
+          "append",
+          7,
+          {
+            "kind": "custom",
+            "model": []
+          },
+          11
+        ],
+        [
+          "place",
+          1,
+          11
+        ],
+        [
+          "append",
+          7,
+          {
+            "kind": "custom",
+            "head": 4,
+            "model": []
+          },
+          12
+        ],
+        [
+          "place",
+          10,
+          12
+        ]
+      ],
+      "live": {},
+      "inbox": {
+        "items": []
+      }
+    }
+  ]
+}

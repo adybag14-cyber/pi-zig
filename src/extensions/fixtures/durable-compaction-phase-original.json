@@ -1,0 +1,247 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "no-model",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "failed",
+              "error": {
+                "message": "No model is configured",
+                "detail": {
+                  "reason": "no_model"
+                }
+              }
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "state": {
+        "status": "terminal",
+        "outcome": {
+          "status": "failed",
+          "error": {
+            "message": "No model is configured",
+            "detail": {
+              "reason": "no_model"
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": "missing-model",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "failed",
+              "error": {
+                "message": "Model p/m is not available",
+                "detail": {
+                  "reason": "no_model"
+                }
+              }
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "state": {
+        "status": "terminal",
+        "outcome": {
+          "status": "failed",
+          "error": {
+            "message": "Model p/m is not available",
+            "detail": {
+              "reason": "no_model"
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": "nothing",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {}
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "state": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {}
+        }
+      }
+    },
+    {
+      "scenario": "decline",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {}
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "state": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {}
+        }
+      }
+    },
+    {
+      "scenario": "abort",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "aborted"
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "state": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted"
+        }
+      }
+    },
+    {
+      "scenario": "retry",
+      "trace": [
+        [
+          "sleep",
+          10,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "summarize",
+              "attempt": 2,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "thinkingLevel": "off",
+              "streamOptions": {},
+              "maxTokens": 50,
+              "tail": 9,
+              "firstKept": 4
+            }
+          }
+        ]
+      ],
+      "live": {
+        "compactions": [
+          {
+            "taskId": 7,
+            "reason": "manual",
+            "blocking": false,
+            "attempt": 2
+          }
+        ]
+      },
+      "state": {
+        "status": "running",
+        "checkpoint": {
+          "phase": "summarize",
+          "attempt": 2,
+          "model": {
+            "provider": "p",
+            "modelId": "m"
+          },
+          "thinkingLevel": "off",
+          "streamOptions": {},
+          "maxTokens": 50,
+          "tail": 9,
+          "firstKept": 4
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,1488 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "variants": [
+    [],
+    [
+      {
+        "id": 1,
+        "mode": "steer",
+        "content": "s1"
+      },
+      {
+        "id": 2,
+        "mode": "followUp",
+        "content": "f1"
+      },
+      {
+        "id": 3,
+        "mode": "steer",
+        "content": "s2"
+      },
+      {
+        "id": 4,
+        "mode": "followUp",
+        "content": "f2"
+      }
+    ],
+    [
+      {
+        "id": 1,
+        "mode": "write",
+        "entry": {
+          "kind": "custom",
+          "head": 2
+        }
+      },
+      {
+        "id": 2,
+        "mode": "write",
+        "entry": {
+          "kind": "custom",
+          "head": "self"
+        }
+      },
+      {
+        "id": 3,
+        "mode": "steer",
+        "content": "later"
+      },
+      {
+        "id": 4,
+        "mode": "write",
+        "entry": {
+          "kind": "custom",
+          "head": 3
+        }
+      }
+    ]
+  ],
+  "rows": [
+    {
+      "variant": 0,
+      "at": "final",
+      "steeringMode": "all",
+      "followUpMode": "all",
+      "result": {
+        "users": [],
+        "reset": false
+      },
+      "trace": [],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 3,
+        "steeringMode": "all",
+        "followUpMode": "all"
+      }
+    },
+    {
+      "variant": 0,
+      "at": "final",
+      "steeringMode": "all",
+      "followUpMode": "one",
+      "result": {
+        "users": [],
+        "reset": false
+      },
+      "trace": [],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 3,
+        "steeringMode": "all",
+        "followUpMode": "one"
+      }
+    },
+    {
+      "variant": 0,
+      "at": "final",
+      "steeringMode": "one",
+      "followUpMode": "all",
+      "result": {
+        "users": [],
+        "reset": false
+      },
+      "trace": [],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 3,
+        "steeringMode": "one",
+        "followUpMode": "all"
+      }
+    },
+    {
+      "variant": 0,
+      "at": "final",
+      "steeringMode": "one",
+      "followUpMode": "one",
+      "result": {
+        "users": [],
+        "reset": false
+      },
+      "trace": [],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 3,
+        "steeringMode": "one",
+        "followUpMode": "one"
+      }
+    },
+    {
+      "variant": 0,
+      "at": "postTools",
+      "steeringMode": "all",
+      "followUpMode": "all",
+      "result": {
+        "users": [],
+        "reset": false
+      },
+      "trace": [],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 3,
+        "steeringMode": "all",
+        "followUpMode": "all"
+      }
+    },
+    {
+      "variant": 0,
+      "at": "postTools",
+      "steeringMode": "all",
+      "followUpMode": "one",
+      "result": {
+        "users": [],
+        "reset": false
+      },
+      "trace": [],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 3,
+        "steeringMode": "all",
+        "followUpMode": "one"
+      }
+    },
+    {
+      "variant": 0,
+      "at": "postTools",
+      "steeringMode": "one",
+      "followUpMode": "all",
+      "result": {
+        "users": [],
+        "reset": false
+      },
+      "trace": [],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 3,
+        "steeringMode": "one",
+        "followUpMode": "all"
+      }
+    },
+    {
+      "variant": 0,
+      "at": "postTools",
+      "steeringMode": "one",
+      "followUpMode": "one",
+      "result": {
+        "users": [],
+        "reset": false
+      },
+      "trace": [],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 3,
+        "steeringMode": "one",
+        "followUpMode": "one"
+      }
+    },
+    {
+      "variant": 1,
+      "at": "final",
+      "steeringMode": "all",
+      "followUpMode": "all",
+      "result": {
+        "users": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "reset": false
+      },
+      "trace": [
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "s1",
+                "timestamp": 5
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "place",
+          1,
+          10
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "f1",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          2,
+          11
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "s2",
+                "timestamp": 5
+              }
+            ]
+          },
+          12
+        ],
+        [
+          "place",
+          3,
+          12
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "f2",
+                "timestamp": 5
+              }
+            ]
+          },
+          13
+        ],
+        [
+          "place",
+          4,
+          13
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 3,
+        "steeringMode": "all",
+        "followUpMode": "all"
+      }
+    },
+    {
+      "variant": 1,
+      "at": "final",
+      "steeringMode": "all",
+      "followUpMode": "one",
+      "result": {
+        "users": [
+          1,
+          2,
+          3
+        ],
+        "reset": false
+      },
+      "trace": [
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "s1",
+                "timestamp": 5
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "place",
+          1,
+          10
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "f1",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          2,
+          11
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "s2",
+                "timestamp": 5
+              }
+            ]
+          },
+          12
+        ],
+        [
+          "place",
+          3,
+          12
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": [
+            {
+              "id": 4,
+              "mode": "followUp",
+              "content": "f2"
+            }
+          ]
+        },
+        "head": 3,
+        "steeringMode": "all",
+        "followUpMode": "one"
+      }
+    },
+    {
+      "variant": 1,
+      "at": "final",
+      "steeringMode": "one",
+      "followUpMode": "all",
+      "result": {
+        "users": [
+          1,
+          2,
+          4
+        ],
+        "reset": false
+      },
+      "trace": [
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "s1",
+                "timestamp": 5
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "place",
+          1,
+          10
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "f1",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          2,
+          11
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "f2",
+                "timestamp": 5
+              }
+            ]
+          },
+          12
+        ],
+        [
+          "place",
+          4,
+          12
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": [
+            {
+              "id": 3,
+              "mode": "steer",
+              "content": "s2"
+            }
+          ]
+        },
+        "head": 3,
+        "steeringMode": "one",
+        "followUpMode": "all"
+      }
+    },
+    {
+      "variant": 1,
+      "at": "final",
+      "steeringMode": "one",
+      "followUpMode": "one",
+      "result": {
+        "users": [
+          1,
+          2
+        ],
+        "reset": false
+      },
+      "trace": [
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "s1",
+                "timestamp": 5
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "place",
+          1,
+          10
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "f1",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          2,
+          11
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": [
+            {
+              "id": 3,
+              "mode": "steer",
+              "content": "s2"
+            },
+            {
+              "id": 4,
+              "mode": "followUp",
+              "content": "f2"
+            }
+          ]
+        },
+        "head": 3,
+        "steeringMode": "one",
+        "followUpMode": "one"
+      }
+    },
+    {
+      "variant": 1,
+      "at": "postTools",
+      "steeringMode": "all",
+      "followUpMode": "all",
+      "result": {
+        "users": [
+          1,
+          3
+        ],
+        "reset": false
+      },
+      "trace": [
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "s1",
+                "timestamp": 5
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "place",
+          1,
+          10
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "s2",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          3,
+          11
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": [
+            {
+              "id": 2,
+              "mode": "followUp",
+              "content": "f1"
+            },
+            {
+              "id": 4,
+              "mode": "followUp",
+              "content": "f2"
+            }
+          ]
+        },
+        "head": 3,
+        "steeringMode": "all",
+        "followUpMode": "all"
+      }
+    },
+    {
+      "variant": 1,
+      "at": "postTools",
+      "steeringMode": "all",
+      "followUpMode": "one",
+      "result": {
+        "users": [
+          1,
+          3
+        ],
+        "reset": false
+      },
+      "trace": [
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "s1",
+                "timestamp": 5
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "place",
+          1,
+          10
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "s2",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          3,
+          11
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": [
+            {
+              "id": 2,
+              "mode": "followUp",
+              "content": "f1"
+            },
+            {
+              "id": 4,
+              "mode": "followUp",
+              "content": "f2"
+            }
+          ]
+        },
+        "head": 3,
+        "steeringMode": "all",
+        "followUpMode": "one"
+      }
+    },
+    {
+      "variant": 1,
+      "at": "postTools",
+      "steeringMode": "one",
+      "followUpMode": "all",
+      "result": {
+        "users": [
+          1
+        ],
+        "reset": false
+      },
+      "trace": [
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "s1",
+                "timestamp": 5
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "place",
+          1,
+          10
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": [
+            {
+              "id": 2,
+              "mode": "followUp",
+              "content": "f1"
+            },
+            {
+              "id": 3,
+              "mode": "steer",
+              "content": "s2"
+            },
+            {
+              "id": 4,
+              "mode": "followUp",
+              "content": "f2"
+            }
+          ]
+        },
+        "head": 3,
+        "steeringMode": "one",
+        "followUpMode": "all"
+      }
+    },
+    {
+      "variant": 1,
+      "at": "postTools",
+      "steeringMode": "one",
+      "followUpMode": "one",
+      "result": {
+        "users": [
+          1
+        ],
+        "reset": false
+      },
+      "trace": [
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "s1",
+                "timestamp": 5
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "place",
+          1,
+          10
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": [
+            {
+              "id": 2,
+              "mode": "followUp",
+              "content": "f1"
+            },
+            {
+              "id": 3,
+              "mode": "steer",
+              "content": "s2"
+            },
+            {
+              "id": 4,
+              "mode": "followUp",
+              "content": "f2"
+            }
+          ]
+        },
+        "head": 3,
+        "steeringMode": "one",
+        "followUpMode": "one"
+      }
+    },
+    {
+      "variant": 2,
+      "at": "final",
+      "steeringMode": "all",
+      "followUpMode": "all",
+      "result": {
+        "users": [
+          3
+        ],
+        "reset": true
+      },
+      "trace": [
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          7,
+          {
+            "kind": "custom",
+            "head": "self"
+          },
+          10
+        ],
+        [
+          "place",
+          2,
+          10
+        ],
+        [
+          "settle",
+          4,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "later",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          3,
+          11
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 10,
+        "steeringMode": "all",
+        "followUpMode": "all"
+      }
+    },
+    {
+      "variant": 2,
+      "at": "final",
+      "steeringMode": "all",
+      "followUpMode": "one",
+      "result": {
+        "users": [
+          3
+        ],
+        "reset": true
+      },
+      "trace": [
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          7,
+          {
+            "kind": "custom",
+            "head": "self"
+          },
+          10
+        ],
+        [
+          "place",
+          2,
+          10
+        ],
+        [
+          "settle",
+          4,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "later",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          3,
+          11
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 10,
+        "steeringMode": "all",
+        "followUpMode": "one"
+      }
+    },
+    {
+      "variant": 2,
+      "at": "final",
+      "steeringMode": "one",
+      "followUpMode": "all",
+      "result": {
+        "users": [
+          3
+        ],
+        "reset": true
+      },
+      "trace": [
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          7,
+          {
+            "kind": "custom",
+            "head": "self"
+          },
+          10
+        ],
+        [
+          "place",
+          2,
+          10
+        ],
+        [
+          "settle",
+          4,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "later",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          3,
+          11
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 10,
+        "steeringMode": "one",
+        "followUpMode": "all"
+      }
+    },
+    {
+      "variant": 2,
+      "at": "final",
+      "steeringMode": "one",
+      "followUpMode": "one",
+      "result": {
+        "users": [
+          3
+        ],
+        "reset": true
+      },
+      "trace": [
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          7,
+          {
+            "kind": "custom",
+            "head": "self"
+          },
+          10
+        ],
+        [
+          "place",
+          2,
+          10
+        ],
+        [
+          "settle",
+          4,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "later",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          3,
+          11
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 10,
+        "steeringMode": "one",
+        "followUpMode": "one"
+      }
+    },
+    {
+      "variant": 2,
+      "at": "postTools",
+      "steeringMode": "all",
+      "followUpMode": "all",
+      "result": {
+        "users": [
+          3
+        ],
+        "reset": true
+      },
+      "trace": [
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          7,
+          {
+            "kind": "custom",
+            "head": "self"
+          },
+          10
+        ],
+        [
+          "place",
+          2,
+          10
+        ],
+        [
+          "settle",
+          4,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "later",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          3,
+          11
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 10,
+        "steeringMode": "all",
+        "followUpMode": "all"
+      }
+    },
+    {
+      "variant": 2,
+      "at": "postTools",
+      "steeringMode": "all",
+      "followUpMode": "one",
+      "result": {
+        "users": [
+          3
+        ],
+        "reset": true
+      },
+      "trace": [
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          7,
+          {
+            "kind": "custom",
+            "head": "self"
+          },
+          10
+        ],
+        [
+          "place",
+          2,
+          10
+        ],
+        [
+          "settle",
+          4,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "later",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          3,
+          11
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 10,
+        "steeringMode": "all",
+        "followUpMode": "one"
+      }
+    },
+    {
+      "variant": 2,
+      "at": "postTools",
+      "steeringMode": "one",
+      "followUpMode": "all",
+      "result": {
+        "users": [
+          3
+        ],
+        "reset": true
+      },
+      "trace": [
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          7,
+          {
+            "kind": "custom",
+            "head": "self"
+          },
+          10
+        ],
+        [
+          "place",
+          2,
+          10
+        ],
+        [
+          "settle",
+          4,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "later",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          3,
+          11
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 10,
+        "steeringMode": "one",
+        "followUpMode": "all"
+      }
+    },
+    {
+      "variant": 2,
+      "at": "postTools",
+      "steeringMode": "one",
+      "followUpMode": "one",
+      "result": {
+        "users": [
+          3
+        ],
+        "reset": true
+      },
+      "trace": [
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          7,
+          {
+            "kind": "custom",
+            "head": "self"
+          },
+          10
+        ],
+        [
+          "place",
+          2,
+          10
+        ],
+        [
+          "settle",
+          4,
+          {
+            "status": "unanswered",
+            "reason": "stale"
+          }
+        ],
+        [
+          "append",
+          {
+            "kind": "pi.user"
+          },
+          7,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "later",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          3,
+          11
+        ]
+      ],
+      "boundary": {
+        "conversationId": 7,
+        "inbox": {
+          "items": []
+        },
+        "head": 10,
+        "steeringMode": "one",
+        "followUpMode": "one"
+      }
+    }
+  ]
+}

@@ -1,0 +1,278 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "prior": {},
+      "optional": {},
+      "total": {
+        "input": 2,
+        "output": 4,
+        "cacheRead": 6,
+        "cacheWrite": 8,
+        "totalTokens": 20,
+        "cost": {
+          "input": 0.2,
+          "output": 0.4,
+          "cacheRead": 0.6,
+          "cacheWrite": 0.8,
+          "total": 2
+        }
+      }
+    },
+    {
+      "prior": {
+        "cacheWrite1h": 2,
+        "reasoning": 3
+      },
+      "optional": {},
+      "total": {
+        "input": 2,
+        "output": 4,
+        "cacheRead": 6,
+        "cacheWrite": 8,
+        "totalTokens": 20,
+        "cost": {
+          "input": 0.2,
+          "output": 0.4,
+          "cacheRead": 0.6,
+          "cacheWrite": 0.8,
+          "total": 2
+        },
+        "cacheWrite1h": 2,
+        "reasoning": 3
+      }
+    },
+    {
+      "prior": {},
+      "optional": {
+        "cacheWrite1h": 7
+      },
+      "total": {
+        "input": 2,
+        "output": 4,
+        "cacheRead": 6,
+        "cacheWrite": 8,
+        "totalTokens": 20,
+        "cost": {
+          "input": 0.2,
+          "output": 0.4,
+          "cacheRead": 0.6,
+          "cacheWrite": 0.8,
+          "total": 2
+        },
+        "cacheWrite1h": 7
+      }
+    },
+    {
+      "prior": {
+        "cacheWrite1h": 2,
+        "reasoning": 3
+      },
+      "optional": {
+        "cacheWrite1h": 7
+      },
+      "total": {
+        "input": 2,
+        "output": 4,
+        "cacheRead": 6,
+        "cacheWrite": 8,
+        "totalTokens": 20,
+        "cost": {
+          "input": 0.2,
+          "output": 0.4,
+          "cacheRead": 0.6,
+          "cacheWrite": 0.8,
+          "total": 2
+        },
+        "cacheWrite1h": 9,
+        "reasoning": 3
+      }
+    },
+    {
+      "prior": {},
+      "optional": {
+        "reasoning": 9
+      },
+      "total": {
+        "input": 2,
+        "output": 4,
+        "cacheRead": 6,
+        "cacheWrite": 8,
+        "totalTokens": 20,
+        "cost": {
+          "input": 0.2,
+          "output": 0.4,
+          "cacheRead": 0.6,
+          "cacheWrite": 0.8,
+          "total": 2
+        },
+        "reasoning": 9
+      }
+    },
+    {
+      "prior": {
+        "cacheWrite1h": 2,
+        "reasoning": 3
+      },
+      "optional": {
+        "reasoning": 9
+      },
+      "total": {
+        "input": 2,
+        "output": 4,
+        "cacheRead": 6,
+        "cacheWrite": 8,
+        "totalTokens": 20,
+        "cost": {
+          "input": 0.2,
+          "output": 0.4,
+          "cacheRead": 0.6,
+          "cacheWrite": 0.8,
+          "total": 2
+        },
+        "cacheWrite1h": 2,
+        "reasoning": 12
+      }
+    },
+    {
+      "prior": {},
+      "optional": {
+        "cacheWrite1h": 0,
+        "reasoning": 0
+      },
+      "total": {
+        "input": 2,
+        "output": 4,
+        "cacheRead": 6,
+        "cacheWrite": 8,
+        "totalTokens": 20,
+        "cost": {
+          "input": 0.2,
+          "output": 0.4,
+          "cacheRead": 0.6,
+          "cacheWrite": 0.8,
+          "total": 2
+        },
+        "cacheWrite1h": 0,
+        "reasoning": 0
+      }
+    },
+    {
+      "prior": {
+        "cacheWrite1h": 2,
+        "reasoning": 3
+      },
+      "optional": {
+        "cacheWrite1h": 0,
+        "reasoning": 0
+      },
+      "total": {
+        "input": 2,
+        "output": 4,
+        "cacheRead": 6,
+        "cacheWrite": 8,
+        "totalTokens": 20,
+        "cost": {
+          "input": 0.2,
+          "output": 0.4,
+          "cacheRead": 0.6,
+          "cacheWrite": 0.8,
+          "total": 2
+        },
+        "cacheWrite1h": 2,
+        "reasoning": 3
+      }
+    }
+  ],
+  "records": [
+    {
+      "key": "p/m",
+      "document": {
+        "models": {
+          "p/m": {
+            "input": 2,
+            "output": 4,
+            "cacheRead": 6,
+            "cacheWrite": 8,
+            "totalTokens": 20,
+            "cost": {
+              "input": 0.2,
+              "output": 0.4,
+              "cacheRead": 0.6,
+              "cacheWrite": 0.8,
+              "total": 2
+            },
+            "reasoning": 3
+          }
+        },
+        "tools": {}
+      },
+      "trace": [
+        [
+          true,
+          7
+        ],
+        [
+          true,
+          7
+        ]
+      ],
+      "own": true,
+      "prototypeIsUsage": false
+    },
+    {
+      "key": "toString",
+      "document": {
+        "models": {
+          "toString": {
+            "input": 2,
+            "output": 4,
+            "cacheRead": 6,
+            "cacheWrite": 8,
+            "totalTokens": 20,
+            "cost": {
+              "input": 0.2,
+              "output": 0.4,
+              "cacheRead": 0.6,
+              "cacheWrite": 0.8,
+              "total": 2
+            },
+            "reasoning": 3
+          }
+        },
+        "tools": {}
+      },
+      "trace": [
+        [
+          true,
+          7
+        ],
+        [
+          true,
+          7
+        ]
+      ],
+      "own": true,
+      "prototypeIsUsage": false
+    },
+    {
+      "key": "__proto__",
+      "document": {
+        "models": {},
+        "tools": {}
+      },
+      "trace": [
+        [
+          true,
+          7
+        ],
+        [
+          true,
+          7
+        ]
+      ],
+      "own": false,
+      "prototypeIsUsage": true
+    }
+  ]
+}
