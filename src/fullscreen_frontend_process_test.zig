@@ -255,6 +255,7 @@ const persistent_ui_extension =
     \\  ctx.ui.setFooter((tui,theme,data)=>{const off=data.onBranchChange(()=>tui.requestRender());return {render(width){return ['PERSISTENT_FOOTER:'+width+':'+ctx.sessionManager.getSessionId()+':'+data.getExtensionStatuses().get('lane')]},dispose(){off();footer++}}});
     \\  unsubscribe=ctx.ui.onTerminalInput(data=>{if(data.startsWith('\x1b[200~')){ctx.ui.notify('PASTE_MARKERS_OBSERVED');return {data:data.replace('paste-original','paste-transformed')}}return data==='!'?{consume:true}:data==='x'?{data:'Ω'}:undefined});
     \\ });
+    \\ pi.registerCommand('persistent-ready',{handler(_,ctx){ctx.ui.notify('PERSISTENT_FIXTURE_READY:OWNER_INSTALLED');return {}}});
     \\ pi.registerCommand('restore-surfaces',{handler(_,ctx){ctx.ui.setHeader(undefined);ctx.ui.setFooter(undefined);unsubscribe();ctx.ui.notify('SURFACES_DISPOSED:'+header+':'+footer);return {}}});
     \\ pi.registerCommand('indicator',{handler(_,ctx){ctx.ui.setWorkingIndicator({frames:['CUSTOM_INDICATOR'],intervalMs:40});return {}}});
     \\ pi.registerCommand('footer-factory-throw',{handler(_,ctx){const original={footerOriginal:true};try{ctx.ui.setFooter(()=>{throw original})}catch(error){if(error!==original)throw Error('footer identity');ctx.ui.notify('FOOTER_FACTORY_THROW_CAUGHT')}return {}}});
@@ -305,6 +306,10 @@ test "actual native retained header footer live context indicator and terminal i
     defer child.deinit();
     var observed = try Observer.init();
     defer observed.deinit();
+    try observed.waitInitialStartup(&child, ">");
+    const admitted_frame = observed.screen.frames;
+    try child.send("/persistent-ready\r");
+    try observed.waitStartupMarker(&child, "PERSISTENT_FIXTURE_READY:OWNER_INSTALLED", admitted_frame);
     try observed.wait(&child, "PERSISTENT_HEADER:100:", 0);
     try observed.wait(&child, "PERSISTENT_FOOTER:100:fullscreen-history:alive", 0);
     try observed.send(&child, "x!", "> Ω");
@@ -1658,7 +1663,17 @@ test "native late live fullscreen command discovery completion and next agent to
     try observed.send(&child, "/seed\r", "late-live-seeded");
     try observed.send(&child, "/la\t", "> /late");
     try observed.send(&child, "\r", "late-live-command");
+    const turn_started_ms = Io.Clock.awake.now(child.io).toMilliseconds();
     observed.send(&child, "invoke-the-new-tool\r", "late-live-turn-complete") catch |cause| {
+        std.debug.print("Late tool PTY diagnostic elapsedMs={d} bytes={d} consumed={d} synchronized={any} frames={d} rawFinalMarker={any}; bounded raw tail:\n{s}\n", .{
+            Io.Clock.awake.now(child.io).toMilliseconds() - turn_started_ms,
+            child.output.items.len,
+            observed.consumed,
+            observed.screen.synchronized_update,
+            observed.screen.frames,
+            std.mem.indexOf(u8, child.output.items, "late-live-turn-complete") != null,
+            child.output.items[child.output.items.len - @min(child.output.items.len, 16384) ..],
+        });
         for ([_][]const u8{ "late-execute-witness", "stderr.log", "history.jsonl" }) |name| {
             const bytes = fixture.scratch.dir.readFileAlloc(std.testing.io, name, std.testing.allocator, .limited(1024 * 1024)) catch |read_cause| {
                 std.debug.print("Late tool diagnostic {s}: {s}\n", .{ name, @errorName(read_cause) });
