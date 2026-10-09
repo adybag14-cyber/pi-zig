@@ -576,7 +576,12 @@ test "Source6fb public Input real native modal preserves UTF16 edits paste undo 
         try observed.send(&child, "\x1b[Db", "NATIVE_INPUT:ba界😀");
         try observed.send(&child, "\x05\x1b[200~ \tZ\r\n\x1b[201~", "ba界😀     Z");
         try observed.send(&child, "q", "ba界😀     Zq");
-        try observed.send(&child, "\x1f", "ba界😀     Z");
+        // The actual app overrides standalone TUI undo to Ctrl+Z on Windows.
+        // A prefix match for Z would also accept the still-visible Zq frame.
+        const undo_frame = observed.screen.frames;
+        try child.send(if (builtin.os.tag == .windows) "\x1a" else "\x1f");
+        try observed.waitAbsent(&child, "ba界😀     Zq", undo_frame);
+        try std.testing.expect(try observed.screen.contains("NATIVE_INPUT:ba界😀     Z"));
         try observed.send(&child, "\r", "PUBLIC_INPUT_DONE:\"ba界😀     Z\"");
         try observed.send(&child, "/public-input\r", "NATIVE_INPUT:界😀");
         try observed.send(&child, "\x1b", "PUBLIC_INPUT_DONE:\"CANCELLED\"");
