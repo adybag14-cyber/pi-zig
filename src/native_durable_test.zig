@@ -3,6 +3,7 @@ const engine_module = @import("extensions/engine.zig");
 const durable = @import("extensions/native_durable.zig");
 const sdk = @import("extensions/native_sdk.zig");
 const native_json = @import("durable/backend/json.zig");
+
 test {
     _ = @import("extensions/native_durable_broker.zig");
     _ = @import("extensions/native_worker.zig");
@@ -1158,6 +1159,10 @@ comptime {
 }
 comptime {
     _ = @import("extensions/native_schema_formats.zig");
+}
+comptime {
+    _ = @import("extensions/native_tool_info.zig");
+    _ = @import("extensions/native_tool_catalog.zig");
 }
 
 test "native durable VM null reporter coalesces callbacks and missing report memo and task args reject without native traps" {

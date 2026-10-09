@@ -1063,6 +1063,18 @@ pub fn build(b: *std.Build) void {
     const theme_state_step = b.step("test-theme-state", "Prove cached theme snapshot ownership and explicit empty reports without terminal I/O");
     theme_state_step.dependOn(&run_theme_state_tests.step);
     test_step.dependOn(&run_theme_state_tests.step);
+    const toolinfo_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_bindings_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "ToolInfo", "native catalog", "canonical builtin schemas" },
+        .use_llvm = use_llvm,
+    });
+    toolinfo_tests.root_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, toolinfo_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, toolinfo_tests.root_module);
+    const run_toolinfo_tests = b.addRunArtifact(toolinfo_tests);
+    const toolinfo_test_step = b.step("test-native-toolinfo", "Check source ToolInfo references and owned native catalog generations");
+    toolinfo_test_step.dependOn(&run_toolinfo_tests.step);
+    test_step.dependOn(&run_toolinfo_tests.step);
     const filesystem_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_fs.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
