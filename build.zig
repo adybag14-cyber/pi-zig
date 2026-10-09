@@ -1270,6 +1270,8 @@ pub fn build(b: *std.Build) void {
     });
     const run_native_runtime_tests = b.addRunArtifact(native_runtime_tests);
     run_native_runtime_tests.step.dependOn(b.getInstallStep());
+    run_native_runtime_tests.step.dependOn(&install_mcp_configured_fixture.step);
+    run_native_runtime_tests.setEnvironmentVariable("PI_MCP_CONFIGURED_FIXTURE", b.getInstallPath(.bin, b.fmt("pi-mcp-configured-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
     const typed_owner_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime typed provider owner"}, .use_llvm = use_llvm });
     const typed_owner_process_run = b.addRunArtifact(typed_owner_process_tests);
     typed_owner_process_run.step.dependOn(b.getInstallStep());
