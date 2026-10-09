@@ -37,3 +37,36 @@ pub fn handOver(engine: *Engine, live: c.JSValue, from: c.JSValue, to: c.JSValue
     defer engine.freeValue(owner);
     if (c.JS_IsStrictEqual(engine.context, owner, from)) try @import("native_tool_info.zig").putData(engine, run, "taskId", c.JS_DupValue(engine.context, to));
 }
+const awaiting = @import("native_durable_await.zig");
+pub fn startRun(engine: *Engine, intrinsics: *awaiting.Intrinsics, tx: c.JSValue, conversation: c.JSValue, live: c.JSValue, inputs: c.JSValue, generation_token: c.JSValue) !c.JSValue {
+    if (c.JS_IsUndefined(generation_token)) return error.GenerationTaskUnavailable;
+    const state = try vm.object(engine);
+    defer engine.freeValue(state);
+    try @import("native_tool_info.zig").putData(engine, state, "live", c.JS_DupValue(engine.context, live));
+    try @import("native_tool_info.zig").putData(engine, state, "inputs", c.JS_DupValue(engine.context, inputs));
+    const input = try vm.object(engine);
+    defer engine.freeValue(input);
+    const options = try vm.object(engine);
+    defer engine.freeValue(options);
+    const ownership = try vm.object(engine);
+    defer engine.freeValue(ownership);
+    try @import("native_tool_info.zig").putData(engine, ownership, "kind", try engine.checked(c.JS_NewString(engine.context, "conversation")));
+    try @import("native_tool_info.zig").putData(engine, options, "ownership", c.JS_DupValue(engine.context, ownership));
+    try @import("native_tool_info.zig").putData(engine, options, "conversationId", c.JS_DupValue(engine.context, conversation));
+    const pending = try vm.invoke(engine, tx, "createTask", &.{ generation_token, input, options });
+    defer engine.freeValue(pending);
+    return awaiting.continueWith(started, engine, intrinsics, state, pending, 0);
+}
+fn started(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !c.JSValue {
+    if (rejected) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value)));
+    const live = try vm.get(engine, state, "live");
+    defer engine.freeValue(live);
+    const inputs = try vm.get(engine, state, "inputs");
+    defer engine.freeValue(inputs);
+    const run = try vm.object(engine);
+    defer engine.freeValue(run);
+    try @import("native_tool_info.zig").putData(engine, run, "taskId", c.JS_DupValue(engine.context, value));
+    try @import("native_tool_info.zig").putData(engine, run, "inputs", c.JS_DupValue(engine.context, inputs));
+    try @import("native_tool_info.zig").putData(engine, live, "run", c.JS_DupValue(engine.context, run));
+    return c.pi_js_undefined();
+}

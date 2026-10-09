@@ -488,7 +488,7 @@ pub fn transactionObject(engine: *Engine, native: *session_module.Transaction, p
     errdefer engine.freeValue(result_object);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
-    try methods(engine, result_object, &.{ .createRootConversation, .createConversation, .forkConversation, .appendEntry, .conversation, .entry, .task, .submission, .submissionByRequest, .latestHeadMarker, .createSubmission, .placeSubmission, .settleSubmission, .createTask, .doc, .retireDoc });
+    try methods(engine, result_object, &.{ .createRootConversation, .createConversation, .forkConversation, .appendEntry, .conversation, .entry, .task, .submission, .submissionByRequest, .latestHeadMarker, .scanEntries, .createSubmission, .placeSubmission, .settleSubmission, .createTask, .doc, .retireDoc });
     self.* = .{ .engine = engine, .kind = .transaction, .memory = undefined, .transaction = native.retain(), .parent = c.JS_DupValue(engine.context, parent), .tail = c.pi_js_undefined() };
     _ = c.JS_SetOpaque(result_object, self);
     return result_object;
@@ -756,6 +756,13 @@ fn transactionDispatch(self: *State, receiver: c.JSValue, operation: Method, arg
         return create(engine, parent.creation_owner orelse c.pi_js_undefined(), receiver, args);
     }
     const output: json.Value = switch (operation) {
+        .scanEntries => blk: {
+            var query = try owned(engine, argument(args, 0));
+            defer query.deinit();
+            const limit = if (c.JS_IsUndefined(argument(args, 1))) 100 else try number(engine, argument(args, 1));
+            const conversation = if (json.get(query.value, "conversationId")) |value| try json.asInteger(value) else null;
+            break :blk try native.scan(.{ .table = .entry, .filters = query.value, .limit = limit, .conversationId = conversation });
+        },
         .submission => (try native.readRecord(.submission, try number(engine, argument(args, 0)))) orelse return sdk.promise(engine, c.pi_js_undefined()),
         .submissionByRequest => blk: {
             const request = try engine.toString(argument(args, 1));

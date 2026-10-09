@@ -451,6 +451,12 @@ pub fn build(b: *std.Build) void {
     linkTypeScriptParser(b, durable_tool_output_tests.root_module, typescript_parser);
     const durable_tool_output_run = b.addRunArtifact(durable_tool_output_tests);
     b.step("test-native-durable-tool-output", "Replay actual Durable v2 structured output and independent schema cache contracts").dependOn(&durable_tool_output_run.step);
+    const generation_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_tool_output_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable v2 generation", "native durable v2 prompt"} });
+    linkQuickJs(b, generation_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, generation_tests.root_module);
+    linkTypeScriptParser(b, generation_tests.root_module, typescript_parser);
+    const generation_run = b.addRunArtifact(generation_tests);
+    b.step("test-native-durable-generation", "Compare native generation phases and prompt planning with upstream").dependOn(&generation_run.step);
     test_step.dependOn(&durable_tool_output_run.step);
     const sqlite_source_fixture = b.addExecutable(.{
         .name = "pi-durable-sqlite-source-fixture",

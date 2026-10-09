@@ -1,0 +1,1 @@
+(?:^(Throttling error|Service unavailable):)|(?:rate limit)|(?:too many requests)

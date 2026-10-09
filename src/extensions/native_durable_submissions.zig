@@ -88,7 +88,13 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
         try put(engine, state, "live", value);
         const draft = try scope.get(state, "draft");
         const busy = !c.JS_IsUndefined(try scope.get(value, "run"));
-        if (busy and try equals(engine, try scope.get(draft, "type"), "input") and try equals(engine, try scope.get(draft, "whenBusy"), "reject")) return error.ConversationBusy;
+        if (busy and try equals(engine, try scope.get(draft, "type"), "input") and try equals(engine, try scope.get(draft, "whenBusy"), "reject")) {
+            const exports = engine.native_module_values.get("@earendil-works/pi-durable") orelse return error.DurableModuleUnavailable;
+            const constructor = try scope.get(exports, "ConversationBusy");
+            var args = [_]c.JSValue{try scope.get(state, "conversation")};
+            const exception = try engine.checked(c.JS_CallConstructor(engine.context, constructor, 1, &args));
+            return engine.checked(c.JS_Throw(engine.context, exception));
+        }
         if (busy) return createQueued(engine, state);
         var captured = try intrinsics(&scope, state);
         const pending = try scope.own(try @import("native_durable_inbox.zig").prepare(engine, &captured, try scope.get(state, "tx"), try scope.get(state, "conversation"), try scope.get(state, "modes"), try scope.get(state, "inboxToken")));
@@ -110,7 +116,11 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
     if (stage == 5) return appendQueued(engine, state, value);
     if (stage == 6) {
         const users = try scope.get(value, "users");
-        if (try vm.length(engine, users) > 0) return error.SubmissionStartRunNotWired;
+        if (try vm.length(engine, users) > 0) {
+            var captured_intrinsics = try intrinsics(&scope, state);
+            const pending = try scope.own(try @import("native_durable_generation_live.zig").startRun(engine, &captured_intrinsics, try scope.get(state, "tx"), try scope.get(state, "conversation"), try scope.get(state, "live"), users, try scope.get(state, "generationToken")));
+            return wait(engine, state, pending, 11);
+        }
         return vm.get(engine, state, "id");
     }
     if (stage == 7) {
@@ -120,6 +130,22 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
         return wait(engine, state, pending, 8);
     }
     if (stage == 8) return vm.get(engine, value, "id");
+    if (stage == 9) {
+        const record = try scope.own(try createRecord(engine, &scope, state, "placed"));
+        try put(engine, record, "entry", try scope.get(value, "id"));
+        const pending = try scope.invoke(try scope.get(state, "tx"), "createSubmission", &.{record});
+        return wait(engine, state, pending, 10);
+    }
+    if (stage == 10) {
+        const id = try scope.get(value, "id");
+        try put(engine, state, "id", id);
+        const inputs = try scope.own(try vm.array(engine));
+        try js.push(engine, inputs, id);
+        var captured_intrinsics = try intrinsics(&scope, state);
+        const pending = try scope.own(try @import("native_durable_generation_live.zig").startRun(engine, &captured_intrinsics, try scope.get(state, "tx"), try scope.get(state, "conversation"), try scope.get(state, "live"), inputs, try scope.get(state, "generationToken")));
+        return wait(engine, state, pending, 11);
+    }
+    if (stage == 11) return vm.get(engine, state, "id");
     return error.InvalidSubmissionContinuation;
 }
 fn createRecord(engine: *Engine, scope: *Scope, state: c.JSValue, status: [:0]const u8) !c.JSValue {
@@ -158,7 +184,16 @@ fn placeIdle(engine: *Engine, state: c.JSValue) !c.JSValue {
         const pending = try scope.invoke(tx, "appendEntry", &.{ conversation, entry });
         return wait(engine, state, pending, 7);
     }
-    return error.SubmissionInputAdmissionNotWired;
+    const message = try scope.own(try vm.object(engine));
+    try put(engine, message, "role", try scope.text("user"));
+    try put(engine, message, "content", try scope.get(draft, "content"));
+    try put(engine, message, "timestamp", try scope.get(state, "now"));
+    const model = try scope.own(try vm.array(engine));
+    try js.push(engine, model, message);
+    const entry = try scope.own(try vm.object(engine));
+    try put(engine, entry, "model", model);
+    const pending = try scope.invoke(tx, "appendEntry", &.{ try scope.get(state, "userToken"), conversation, entry });
+    return wait(engine, state, pending, 9);
 }
 fn appendQueued(engine: *Engine, state: c.JSValue, inbox: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };

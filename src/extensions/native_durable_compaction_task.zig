@@ -197,6 +197,21 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
         return wait(engine, state, pending, 15);
     }
     if (stage == 15) return finishSummary(engine, state, value);
+    if (stage == 16) {
+        try put(engine, state, "createdTask", value);
+        const pending = try scope.invoke(try scope.get(state, "tx"), "doc", &.{ try scope.get(state, "liveToken"), try scope.get(state, "conversation") });
+        return wait(engine, state, pending, 17);
+    }
+    if (stage == 17) {
+        const status = try scope.own(try vm.object(engine));
+        const id = try scope.get(state, "createdTask");
+        try put(engine, status, "taskId", id);
+        try put(engine, status, "reason", try scope.get(try scope.get(state, "input"), "reason"));
+        try put(engine, status, "blocking", c.pi_js_bool(engine.context, @intFromBool(!c.JS_IsUndefined(try scope.get(state, "owner")))));
+        try put(engine, status, "attempt", c.JS_NewInt32(engine.context, 1));
+        try @import("native_durable_compaction_status.zig").add(engine, value, status);
+        return c.JS_DupValue(engine.context, id);
+    }
     return error.InvalidCompactionContinuation;
 }
 pub fn retry(engine: *Engine, intrinsics: *awaiting.Intrinsics, runtime: c.JSValue, context: c.JSValue, live_token: c.JSValue, checkpoint: c.JSValue) !c.JSValue {
@@ -568,4 +583,21 @@ fn finishSummary(engine: *Engine, state: c.JSValue, live: c.JSValue) !c.JSValue 
     try put(engine, next, "status", try scope.text("terminal"));
     try put(engine, next, "outcome", outcome);
     return next;
+}
+pub fn createCompaction(engine: *Engine, intrinsics: *awaiting.Intrinsics, tx: c.JSValue, conversation: c.JSValue, input: c.JSValue, owner: c.JSValue, compaction_token: c.JSValue, live_token: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const state = try scope.own(try createState(engine, intrinsics, c.pi_js_undefined(), c.pi_js_undefined(), live_token, c.pi_js_undefined()));
+    inline for (.{ .{ "tx", tx }, .{ "conversation", conversation }, .{ "input", input }, .{ "owner", owner } }) |field| try put(engine, state, field[0], field[1]);
+    const ownership = try scope.own(try vm.object(engine));
+    try put(engine, ownership, "kind", try scope.text(if (c.JS_IsUndefined(owner)) "conversation" else "task"));
+    if (!c.JS_IsUndefined(owner)) try put(engine, ownership, "taskId", owner);
+    const options = try scope.own(try vm.object(engine));
+    try put(engine, options, "ownership", ownership);
+    try put(engine, options, "conversationId", conversation);
+    const reason = try scope.get(input, "reason");
+    const manual = try scope.text("manual");
+    try put(engine, options, "background", c.pi_js_bool(engine.context, @intFromBool(c.JS_IsUndefined(owner) and !c.JS_IsStrictEqual(engine.context, reason, manual))));
+    const pending = try scope.invoke(tx, "createTask", &.{ compaction_token, input, options });
+    return wait(engine, state, pending, 16);
 }
