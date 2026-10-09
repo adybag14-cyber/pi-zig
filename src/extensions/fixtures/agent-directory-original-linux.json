@@ -1,0 +1,44 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "platform": "linux",
+  "canonical": "PI_CODING_AGENT_DIR",
+  "home": "/home/agent-fixture",
+  "rows": [
+    {
+      "value": null,
+      "result": "/home/agent-fixture/.pi/agent"
+    },
+    {
+      "value": "",
+      "result": "/home/agent-fixture/.pi/agent"
+    },
+    {
+      "value": "relative agent",
+      "result": "relative agent"
+    },
+    {
+      "value": "relative/../agent",
+      "result": "relative/../agent"
+    },
+    {
+      "value": "~",
+      "result": "/home/agent-fixture"
+    },
+    {
+      "value": "~/custom",
+      "result": "/home/agent-fixture/custom"
+    },
+    {
+      "value": "~/a/../b",
+      "result": "/home/agent-fixture/b"
+    },
+    {
+      "value": " spaced ",
+      "result": " spaced "
+    },
+    {
+      "value": "/mnt/c/tmp/agent",
+      "result": "/mnt/c/tmp/agent"
+    }
+  ]
+}

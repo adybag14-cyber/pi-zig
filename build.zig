@@ -904,6 +904,13 @@ pub fn build(b: *std.Build) void {
     linkDurable(b, sdk_public_tests.root_module);
     sdk_public_tests.root_module.addImport("catalog_tool", catalog_tool);
     const sdk_public_run = b.addRunArtifact(sdk_public_tests);
+    const agent_directory_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_agent_directory_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"agent directory contract"}, .use_llvm = use_llvm });
+    linkQuickJs(b, agent_directory_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, agent_directory_tests.root_module);
+    agent_directory_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const agent_directory_run = b.addRunArtifact(agent_directory_tests);
+    b.step("test-native-agent-directory", "Compare canonical CLI and SDK agent-directory configuration against upstream").dependOn(&agent_directory_run.step);
+    test_step.dependOn(&agent_directory_run.step);
     b.step("test-native-sdk-public-session", "Replay actual Source SDK session mutations and observable effects").dependOn(&sdk_public_run.step);
     test_step.dependOn(&sdk_public_run.step);
     const sdk_ui_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_ui_context_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK UI"}, .use_llvm = use_llvm });

@@ -1,0 +1,44 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "platform": "win32",
+  "canonical": "PI_CODING_AGENT_DIR",
+  "home": "C:\\Users\\agent-fixture",
+  "rows": [
+    {
+      "value": null,
+      "result": "C:\\Users\\agent-fixture\\.pi\\agent"
+    },
+    {
+      "value": "",
+      "result": "C:\\Users\\agent-fixture\\.pi\\agent"
+    },
+    {
+      "value": "relative agent",
+      "result": "relative agent"
+    },
+    {
+      "value": "relative/../agent",
+      "result": "relative/../agent"
+    },
+    {
+      "value": "~",
+      "result": "C:\\Users\\agent-fixture"
+    },
+    {
+      "value": "~/custom",
+      "result": "C:\\Users\\agent-fixture\\custom"
+    },
+    {
+      "value": "~/a/../b",
+      "result": "C:\\Users\\agent-fixture\\b"
+    },
+    {
+      "value": " spaced ",
+      "result": " spaced "
+    },
+    {
+      "value": "/mnt/c/tmp/agent",
+      "result": "C:\\tmp\\agent"
+    }
+  ]
+}

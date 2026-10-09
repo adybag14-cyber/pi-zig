@@ -7874,7 +7874,7 @@ fn runUpdateCommand(
     }
 
     const agent_dir = config.agentDir(arena, environ) catch {
-        try tui.render.printLine(io, "error: cannot resolve agent dir (set HOME/USERPROFILE or PI_AGENT_DIR)");
+        try tui.render.printLine(io, "error: cannot resolve agent dir (set HOME/USERPROFILE or PI_CODING_AGENT_DIR)");
         std.process.exit(2);
     };
     config.ensureDir(io, agent_dir) catch {};
@@ -8131,7 +8131,7 @@ fn runPackageCommand(
 ) !void {
     if (std.mem.eql(u8, cmd, "update")) return runUpdateCommand(gpa, io, environ, arena, cmd_args);
     const agent_dir = config.agentDir(arena, environ) catch {
-        try tui.render.printLine(io, "error: cannot resolve agent dir (set HOME/USERPROFILE or PI_AGENT_DIR)");
+        try tui.render.printLine(io, "error: cannot resolve agent dir (set HOME/USERPROFILE or PI_CODING_AGENT_DIR)");
         std.process.exit(2);
     };
     config.ensureDir(io, agent_dir) catch {};

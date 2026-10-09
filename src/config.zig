@@ -15,7 +15,8 @@ pub const upstream_commit = "853a80d26c90a14c1886f0ebb8ffaae133ca2185";
 pub const upstream_package_name = "@earendil-works/pi-coding-agent";
 pub const identity = "pi (pi-zig) coding agent " ++ version;
 
-pub const ENV_AGENT_DIR = "PI_AGENT_DIR";
+pub const ENV_AGENT_DIR = "PI_CODING_AGENT_DIR";
+pub const ENV_AGENT_DIR_LEGACY = "PI_AGENT_DIR";
 pub const ENV_SESSION_DIR = "PI_SESSION_DIR";
 pub const ENV_MOCK_SCRIPT = "PI_MOCK_SCRIPT";
 pub const ENV_MODEL = "PI_MODEL";
@@ -45,9 +46,18 @@ pub fn configDir(gpa: std.mem.Allocator, environ: *const std.process.Environ.Map
     return try std.fs.path.join(gpa, &.{ home, CONFIG_DIR_NAME });
 }
 
-/// ~/.pi/agent (or PI_AGENT_DIR)
+/// Upstream's canonical override takes precedence over the existing fork alias.
 pub fn agentDir(gpa: std.mem.Allocator, environ: *const std.process.Environ.Map) ![]u8 {
-    if (environ.get(ENV_AGENT_DIR)) |d| return try gpa.dupe(u8, d);
+    for ([_][]const u8{ ENV_AGENT_DIR, ENV_AGENT_DIR_LEGACY }) |name| {
+        if (environ.get(name)) |directory| if (directory.len != 0) {
+            const normalized = try @import("coding_agent/path_utils.zig").normalizePath(gpa, environ, directory, .{});
+            if (std.mem.startsWith(u8, directory, "~/") or (builtin.os.tag == .windows and std.mem.startsWith(u8, directory, "~\\"))) {
+                defer gpa.free(normalized);
+                return std.fs.path.resolve(gpa, &.{normalized});
+            }
+            return normalized;
+        };
+    }
     const home = homeDir(environ) orelse return error.NoHomeDir;
     return try std.fs.path.join(gpa, &.{ home, CONFIG_DIR_NAME, AGENT_DIR_NAME });
 }

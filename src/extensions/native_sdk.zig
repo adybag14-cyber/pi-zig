@@ -767,10 +767,16 @@ pub fn agentDir(engine: *engine_mod.Engine) ![]u8 {
         const env = try get(engine, process, "env");
         defer engine.freeValue(env);
         if (c.JS_IsObject(env)) {
-            const configured = try get(engine, env, "PI_AGENT_DIR");
-            defer engine.freeValue(configured);
-            if (c.JS_IsString(configured)) return engine.toString(configured);
-            const home = try get(engine, env, "HOME");
+            inline for (.{ "PI_CODING_AGENT_DIR", "PI_AGENT_DIR" }) |name| {
+                const configured = try get(engine, env, name);
+                defer engine.freeValue(configured);
+                if (c.JS_IsString(configured) and c.JS_ToBool(engine.context, configured) != 0) {
+                    const normalized = try @import("native_sdk_settings.zig").normalizePath(engine, configured);
+                    defer engine.freeValue(normalized);
+                    return engine.toString(normalized);
+                }
+            }
+            const home = try get(engine, env, if (@import("builtin").os.tag == .windows) "USERPROFILE" else "HOME");
             defer engine.freeValue(home);
             if (c.JS_IsString(home)) {
                 const path = try engine.toString(home);

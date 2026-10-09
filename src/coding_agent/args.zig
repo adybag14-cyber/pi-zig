@@ -397,7 +397,8 @@ pub fn printHelp(writer: anytype) !void {
         \\Env:
         \\  OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY, GEMINI_API_KEY,
         \\  PI_API_KEY, PI_MODEL, PI_PROVIDER, OPENAI_BASE_URL, PI_MOCK_SCRIPT,
-        \\  PI_AGENT_DIR, PI_SESSION_DIR, GROQ_API_KEY, OPENROUTER_API_KEY, XAI_API_KEY
+        \\  PI_CODING_AGENT_DIR (legacy: PI_AGENT_DIR), PI_SESSION_DIR,
+        \\  GROQ_API_KEY, OPENROUTER_API_KEY, XAI_API_KEY
         \\
         \\Interactive slash commands:
         \\  /help /quit /exit /session /new /name /model /thinking /compact /export /share
