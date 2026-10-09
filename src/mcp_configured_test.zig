@@ -55,6 +55,42 @@ fn create(root: *Root, env: *const std.process.Environ.Map, trusted: bool) !*con
 fn execute(service: *configured.Service, name: []const u8, args: []const u8) !tools.ToolResult {
     return (try configured.Service.execute(service, gpa, "owned-call", name, args, discard, null, null)) orelse error.MissingConfiguredTool;
 }
+fn parentCatalogSnapshotExercise(allocator: std.mem.Allocator, service: *configured.Service) !void {
+    const snapshots = @import("extensions/native_catalog_snapshot.zig");
+    var snapshot = try snapshots.init(allocator);
+    defer snapshot.deinit();
+    try snapshots.appendMcp(&snapshot, service, .{ .key = 2, .generation = 7 }, .{ .key = 1, .generation = 3 });
+    const owners = (try protocol.field(snapshot.value, "owners")).array.items;
+    try std.testing.expectEqual(@as(usize, 2), owners.len);
+    const records = (try protocol.field(owners[1], "records")).array.items;
+    try std.testing.expectEqual(@as(usize, 2), records.len);
+    try std.testing.expectEqualStrings("deferred", try protocol.text(try protocol.field(records[0], "metadata"), "exposure"));
+    try std.testing.expectEqualStrings("1", try protocol.text(records[0], "sourceOwnerKey"));
+    try std.testing.expectEqualStrings("builtin:mcp", try protocol.text(try protocol.field(records[0], "sourceInfo"), "path"));
+    try std.testing.expectEqual(service.descriptors.items[0].parameter_body_id, try @import("extensions/component_protocol.zig").identifier(try protocol.field(records[0], "parameterBodyId")));
+}
+test "mcp.configured private parent snapshot copies native schema lifetimes and releases every failed clone" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var configuration = try stdioConfig(a, program, "codemode");
+    var args: Value = .{ .array = .init(a) };
+    try args.array.append(.{ .string = "--names-old" });
+    try configuration.object.put(a, "args", args);
+    try root.write(false, try document(a, "native", configuration));
+    var environment = try std.testing.environ.createMap(gpa);
+    defer environment.deinit();
+    const service = try create(&root, &environment, false);
+    defer service.deinit();
+    try service.start();
+    try parentCatalogSnapshotExercise(gpa, service);
+    try std.testing.checkAllAllocationFailures(gpa, parentCatalogSnapshotExercise, .{service});
+}
+
 test "mcp.configured live notification refresh retains withdrawn metadata and replaces offered schema identities" {
     const program = try fixturePath();
     defer gpa.free(program);

@@ -9,6 +9,7 @@ const renderer_protocol = @import("renderer_protocol.zig");
 const editor_protocol = @import("editor_protocol.zig");
 const widget_protocol = @import("widget_protocol.zig");
 const context_invalidation = @import("context_invalidation_protocol.zig");
+const native_catalog_broker = @import("native_catalog_broker.zig");
 pub const WidgetBridge = struct {
     context: ?*anyopaque,
     record_fn: *const fn (?*anyopaque, widget_protocol.Record, *widget_protocol.ControlQueue) anyerror!void,
@@ -140,6 +141,7 @@ const NativeReadSession = struct {
         defer self.runtime.editorEnded();
         defer self.runtime.widgetEnded();
         defer self.runtime.context_invalidation_broker.close(self.runtime.io);
+        defer self.runtime.catalog_broker.close(self.runtime.io);
         while (true) {
             const record = self.runtime.readRecordAllocating(std.heap.page_allocator) catch |err| {
                 self.mutex.lockUncancelable(self.runtime.io);
@@ -684,6 +686,7 @@ pub const Runtime = struct {
     terminal_input_result: ?TerminalInputResult = null,
     terminal_input_closed: bool = false,
     context_invalidation_broker: context_invalidation.Broker = .{},
+    catalog_broker: native_catalog_broker.Broker = .{},
     renderer_bridge: ?RendererBridgeAdapter = null,
     renderer_controls: ?*renderer_protocol.ControlQueue = null,
     renderer_writer_group: Io.Group = .init,
@@ -1016,6 +1019,9 @@ pub const Runtime = struct {
             return;
         }
         if (self.native_group and self.group_references.fetchSub(1, .acq_rel) != 1) return;
+        self.catalog_broker.close(self.io);
+        self.catalog_broker.serial.lockUncancelable(self.io);
+        self.catalog_broker.serial.unlock(self.io);
         self.context_invalidation_broker.close(self.io);
         self.context_invalidation_broker.serial.lockUncancelable(self.io);
         self.context_invalidation_broker.serial.unlock(self.io);
@@ -1086,6 +1092,22 @@ pub const Runtime = struct {
             try writer.writer.writeAll(",\"message\":");
             try std.json.Stringify.value(message, .{}, &writer.writer);
         }
+        try writer.writer.writeByte('}');
+        try self.writeLine(writer.written());
+        return broker.wait(self.io);
+    }
+    pub fn admitNativeToolCatalog(self: *Runtime, catalog: std.json.Value) !void {
+        if (self.shared_owner) |owner| return owner.admitNativeToolCatalog(catalog);
+        if (self.backend != .native or !self.native_group) return error.NativeCatalogControlUnavailable;
+        const broker = &self.catalog_broker;
+        broker.serial.lockUncancelable(self.io);
+        defer broker.serial.unlock(self.io);
+        const id = try broker.begin(self.io);
+        defer broker.finish(self.io);
+        var writer: Io.Writer.Allocating = .init(std.heap.page_allocator);
+        defer writer.deinit();
+        try writer.writer.print("{{\"kind\":\"native_tool_catalog\",\"version\":1,\"controlId\":\"{d}\",\"ownerGeneration\":\"{d}\",\"catalog\":", .{ id, self.owner_generation });
+        try std.json.Stringify.value(catalog, .{}, &writer.writer);
         try writer.writer.writeByte('}');
         try self.writeLine(writer.written());
         return broker.wait(self.io);
@@ -1204,6 +1226,10 @@ pub const Runtime = struct {
         if (root != .object) return false;
         const kind = root.object.get("type") orelse return false;
         if (kind != .string) return false;
+        if (std.mem.eql(u8, kind.string, "native_tool_catalog_result")) {
+            try self.catalog_broker.accept(self.io, self.owner_generation, &root.object);
+            return true;
+        }
         if (std.mem.eql(u8, kind.string, "context_invalidate_result")) {
             try self.context_invalidation_broker.accept(self.io, self.owner_generation, &root.object);
             return true;

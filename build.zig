@@ -1259,6 +1259,11 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&typed_owner_process_run.step);
     const native_runtime_step = b.step("test-native-runtime", "Exercise the persistent native extension runtime and host without Node");
     native_runtime_step.dependOn(&run_native_runtime_tests.step);
+    const catalog_control_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{ "native runtime private catalog", "native catalog control" }, .use_llvm = use_llvm });
+    const catalog_control_run = b.addRunArtifact(catalog_control_tests);
+    catalog_control_run.step.dependOn(&install_mcp_configured_cli.step);
+    b.step("test-native-catalog-control", "Exercise catalog updates during ordinary managed callbacks").dependOn(&catalog_control_run.step);
+    test_step.dependOn(&catalog_control_run.step);
     const typed_main_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime typed Main"}, .use_llvm = use_llvm });
     const typed_main_process_run = b.addRunArtifact(typed_main_process_tests);
     typed_main_process_run.step.dependOn(b.getInstallStep());

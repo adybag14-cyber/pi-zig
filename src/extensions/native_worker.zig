@@ -475,7 +475,8 @@ const Transport = struct {
     }
     fn applyNativeToolCatalog(self: *Transport, request: std.json.Value) !void {
         if (request != .object) return error.InvalidNativeToolCatalogControl;
-        const id = try component_protocol.identifier(request.object.get("invocationId") orelse return error.InvalidNativeToolCatalogControl);
+        const control_id = request.object.get("controlId");
+        const id = try component_protocol.identifier(control_id orelse request.object.get("invocationId") orelse return error.InvalidNativeToolCatalogControl);
         const failure: ?anyerror = outcome: {
             const version = request.object.get("version") orelse break :outcome error.InvalidNativeToolCatalogVersion;
             if (version != .integer or version.integer != 1) break :outcome error.InvalidNativeToolCatalogVersion;
@@ -484,6 +485,16 @@ const Transport = struct {
             @import("native_tool_catalog_wire.zig").apply(self.engine, self.group, request.object) catch |err| break :outcome err;
             break :outcome null;
         };
+        if (control_id != null) {
+            try self.writer.print("\x1e{{\"type\":\"native_tool_catalog_result\",\"id\":\"{d}\",\"ownerGeneration\":\"{d}\",\"ok\":{s}", .{ id, self.group.renderers.owner_generation, if (failure == null) "true" else "false" });
+            if (failure) |err| {
+                try self.writer.writeAll(",\"error\":");
+                try std.json.Stringify.value(@errorName(err), .{}, self.writer);
+            }
+            try self.writer.writeAll("}\n");
+            try self.writer.flush();
+            return;
+        }
         try self.writer.print("\x1e{{\"ok\":{s},\"invocationId\":\"{d}\",", .{ if (failure == null) "true" else "false", id });
         if (failure) |err| {
             try self.writer.writeAll("\"error\":");
