@@ -338,7 +338,11 @@ fn primitive(engine: *Engine, object: c.JSValue, operation: Method, arg: c.JSVal
             defer engine.freeValue(value);
             if ((operation == .moveWordBackwards and cursor == 0) or (operation == .moveWordForwards and cursor >= try integer(engine, value, "length"))) return;
             try setLast(engine, object, null);
-            return error.WordSegmentationUnavailable;
+            const units = try utf16.unitsAlloc(engine, value);
+            defer engine.gpa.free(units);
+            const words = @import("../tui/utf16_words.zig");
+            const target = if (operation == .moveWordBackwards) try words.findBackwardAlloc(engine.gpa, units, cursor) else try words.findForwardAlloc(engine.gpa, units, cursor);
+            try setCursor(engine, object, target);
         },
         .deleteWordBackwards, .deleteWordForward => {
             const left = operation == .deleteWordBackwards;
@@ -673,7 +677,7 @@ fn allocationProbe(gpa: std.mem.Allocator) !void {
     defer engine.deinit();
     @import("native_tui.zig").install(engine) catch |err| return allocationError(engine, err);
     const result = engine.evalModule(
-        \\import{Input}from'pi-tui';const input=new Input({placeholder:'a界',placeholderStyle(text){return '['+text+']'}});input.focused=true;input.render(5);input.setValue('😀abc');input.handleInput('\x05');input.handleInput('\x7f');input.deleteToLineStart();input.yank();input.handleInput('\x01');input.deleteToLineEnd();input.yank();input.setValue('x');input.yankPop();input.undo();input.handleInput('\x1b[200~a\t');input.handleInput('b\r\n\x1b[201~');input.render(9);input.handleMouse({type:'press',button:'left',x:4,y:0});globalThis.retainedInput=input;
+        \\import{Input}from'pi-tui';const input=new Input({placeholder:'a界',placeholderStyle(text){return '['+text+']'}});input.focused=true;input.render(5);input.setValue('😀abc');input.handleInput('\x05');input.handleInput('\x7f');input.deleteToLineStart();input.yank();input.handleInput('\x01');input.deleteToLineEnd();input.yank();input.setValue('x');input.yankPop();input.undo();input.handleInput('\x1b[200~a\t');input.handleInput('b\r\n\x1b[201~');input.render(9);input.handleMouse({type:'press',button:'left',x:4,y:0});input.setValue('中文测试 ภาษาไทยภาษาอังกฤษ');input.handleInput('\x05');input.handleInput('\x1bb');input.handleInput('\x1bd');input.undo();globalThis.retainedInput=input;
     , "input-allocation.mjs") catch |err| return allocationError(engine, err);
     defer engine.freeValue(result);
     c.JS_RunGC(engine.runtime);
@@ -700,6 +704,44 @@ test "Source6fb public Input exported CSI-u and visible width helpers use origin
         \\import{decodeKittyPrintable,visibleWidth}from'pi-tui';if(decodeKittyPrintable.length!==1||visibleWidth.length!==1)throw Error('helper arity');for(const item of inputDecoderFixture.cases){const actual=decodeKittyPrintable(item.data);if((actual===undefined?null:actual.codePointAt(0))!==item.codepoint)throw Error('decoder '+JSON.stringify(item))}for(const item of inputWidthFixture.cases){const text=String.fromCharCode(...item.units);if(visibleWidth(text)!==item.visibleWidth)throw Error('visible width '+JSON.stringify(item));}
     , "input-public-helpers.mjs");
     engine.freeValue(result);
+}
+test "Source6fb public Input word modifiers deletions undo and yank match all original cursor snapshots" {
+    @import("../tui/keys.zig").setKittyProtocolActive(false);
+    defer @import("../tui/keys.zig").setKittyProtocolActive(false);
+    const gpa = std.testing.allocator;
+    const engine = try Engine.init(gpa, .{});
+    defer engine.deinit();
+    try @import("native_tui.zig").install(engine);
+    const installed = try engine.evalModule(
+        \\import{Input,setKittyProtocolActive}from'pi-tui';const fromUnits=units=>String.fromCharCode(...units),units=text=>Array.from({length:text.length},(_,i)=>text.charCodeAt(i));const snapshot=input=>({value:units(input.getValue()),cursor:input.cursor,last:input.lastAction,undo:input.undoStack.stack.map(item=>({value:units(item.value),cursor:item.cursor})),kill:input.killRing.ring.map(units)});globalThis.replayInputWord=item=>{setKittyProtocolActive(item.kitty);const input=new Input();input.setValue(fromUnits(item.units));input.cursor=item.cursor;input.handleInput(item.key);const actual=[snapshot(input)];input.undo();actual.push(snapshot(input));input.yank();actual.push(snapshot(input));const expected=[item.first,item.afterUndo,item.afterYank];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({key:item.key,cursor:item.cursor,units:item.units,actual,expected}));};
+    , "input-word-replay.mjs");
+    defer engine.freeValue(installed);
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    const replay = try js.get(engine, root, "replayInputWord");
+    defer engine.freeValue(replay);
+    const fixture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/input-words-original-6fb.json"), .{});
+    defer fixture.deinit();
+    for (fixture.value.object.get("cases").?.array.items, 0..) |item, index| {
+        var encoded: std.Io.Writer.Allocating = .init(gpa);
+        defer encoded.deinit();
+        try std.json.Stringify.value(item, .{}, &encoded.writer);
+        const value = try engine.checked(c.JS_ParseJSON(engine.context, encoded.written().ptr, encoded.written().len, "input-word-case.json"));
+        defer engine.freeValue(value);
+        const result = js.call(engine, replay, c.pi_js_undefined(), &.{value}) catch |err| {
+            std.debug.print("Input word case {d}; source record {s}\n", .{ index, encoded.written() });
+            if (engine.captured_exception) |exception| {
+                const message = c.JS_ToCString(engine.context, exception);
+                if (message != null) {
+                    defer c.JS_FreeCString(engine.context, message);
+                    std.debug.print("Original VM failure: {s}\n", .{std.mem.span(message)});
+                }
+            }
+            return err;
+        };
+        engine.freeValue(result);
+        if (index % 64 == 0) c.JS_RunGC(engine.runtime);
+    }
 }
 fn invokeVoid(engine: *Engine, object: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !void {
     const result = try js.invoke(engine, object, name, args);

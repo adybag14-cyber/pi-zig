@@ -24,12 +24,58 @@ pub fn install(engine: *engine_mod.Engine) !void {
 pub fn create(engine: *engine_mod.Engine) !c.JSValue {
     const object = try engine.checked(c.JS_NewObject(engine.context));
     errdefer engine.freeValue(object);
+    try sdk.put(engine, object, "InvalidLiteralValue", try @import("native_typebox_errors.zig").literalConstructor(engine));
     inline for (std.meta.fields(Kind)) |field| {
         const name: [:0]const u8 = field.name;
         const function = try engine.checked(c.pi_js_function_magic(engine.context, construct, if (field.value == @intFromEnum(Kind.Object)) "_Object_" else if (field.value == @intFromEnum(Kind.Array)) "_Array_" else name.ptr, if (field.value == @intFromEnum(Kind.Array) or field.value == @intFromEnum(Kind.Literal) or field.value == @intFromEnum(Kind.Record)) 2 else 1, @intCast(field.value)));
         if (c.JS_DefinePropertyValueStr(engine.context, object, name.ptr, function, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     }
     return object;
+}
+
+pub fn literalSchema(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
+    var args = [_]c.JSValue{value};
+    return engine.checked(construct(engine.context, c.pi_js_undefined(), 1, &args, @intFromEnum(Kind.Literal)));
+}
+
+/// Evaluate the literal set used by Enum and finite template patterns. The
+/// pinned evaluator drops duplicate literal alternatives before conversion.
+pub fn evaluateLiteralValues(engine: *engine_mod.Engine, values: c.JSValue) !c.JSValue {
+    var choices: std.ArrayList(c.JSValue) = .empty;
+    defer {
+        for (choices.items) |choice| engine.freeValue(choice);
+        choices.deinit(engine.gpa);
+    }
+    for (0..try sdk.length(engine, values)) |index| {
+        const value = try engine.checked(c.JS_GetPropertyUint32(engine.context, values, @intCast(index)));
+        defer engine.freeValue(value);
+        const literal = try literalSchema(engine, value);
+        var duplicate = false;
+        for (choices.items) |choice| {
+            const prior = try sdk.get(engine, choice, "const");
+            defer engine.freeValue(prior);
+            if (c.JS_IsStrictEqual(engine.context, prior, value)) duplicate = true;
+        }
+        if (duplicate) {
+            engine.freeValue(literal);
+        } else choices.append(engine.gpa, literal) catch |err| {
+            engine.freeValue(literal);
+            return err;
+        };
+    }
+    if (choices.items.len == 1) return c.JS_DupValue(engine.context, choices.items[0]);
+    const result = try sdk.object(engine);
+    errdefer engine.freeValue(result);
+    if (choices.items.len == 0) {
+        try sdk.put(engine, result, "not", try sdk.object(engine));
+    } else {
+        const array = try sdk.array(engine);
+        defer engine.freeValue(array);
+        for (choices.items, 0..) |choice, index| if (c.JS_SetPropertyUint32(engine.context, array, @intCast(index), c.JS_DupValue(engine.context, choice)) < 0) return error.JavaScriptException;
+        try sdk.put(engine, result, "anyOf", c.JS_DupValue(engine.context, array));
+    }
+    if (c.JS_DefinePropertyValueStr(engine.context, result, "~kind", c.JS_NewString(engine.context, if (choices.items.len == 0) "Never" else "Union"), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
+    return result;
 }
 
 fn put(context: ?*c.JSContext, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) bool {
@@ -76,7 +122,24 @@ fn construct(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVa
             successful = successful and copyProperties(context, result, first, false);
         },
         .Literal => {
-            const name: [*:0]const u8 = if (c.JS_IsNull(first)) "null" else if (c.JS_IsBool(first)) "boolean" else if (c.JS_IsNumber(first)) "number" else "string";
+            var finite = false;
+            if (c.JS_IsNumber(first)) {
+                var number: f64 = 0;
+                if (c.JS_ToFloat64(context, &number, first) < 0) {
+                    c.JS_FreeValue(context, result);
+                    return c.JS_Throw(context, c.JS_GetException(context));
+                }
+                finite = std.math.isFinite(number);
+            }
+            if (!c.JS_IsBigInt(first) and !c.JS_IsBool(first) and !finite and !c.JS_IsString(first)) {
+                c.JS_FreeValue(context, result);
+                const engine = engine_mod.Engine.fromContext(context.?);
+                return @import("native_typebox_errors.zig").invalidLiteral(engine, first) catch |err| {
+                    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(context);
+                    return engine.throwCaptured();
+                };
+            }
+            const name: [*:0]const u8 = if (c.JS_IsBigInt(first)) "bigint" else if (c.JS_IsBool(first)) "boolean" else if (finite) "number" else "string";
             successful = successful and put(context, result, "type", c.JS_NewString(context, name));
             successful = successful and put(context, result, "const", c.JS_DupValue(context, first));
             if (argc > 1) successful = successful and copyProperties(context, result, argv[1], false);
@@ -673,6 +736,11 @@ fn cloneMemory(engine: *engine_mod.Engine, value: c.JSValue, active: *std.ArrayL
     }
     return result;
 }
+pub fn cloneValue(engine: *engine_mod.Engine, value: c.JSValue) !c.JSValue {
+    var active: std.ArrayList(c.JSValue) = .empty;
+    defer active.deinit(engine.gpa);
+    return cloneMemory(engine, value, &active);
+}
 
 test "native schema binding isolates throwing property getters without leaking engine values" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
@@ -800,4 +868,21 @@ test "native TypeBox installed named constructors default Type and Format are re
     const text = try engine.toString(result);
     defer std.testing.allocator.free(text);
     try std.testing.expectEqualStrings("{\"type\":true,\"format\":true,\"typeReadonly\":true,\"formatReadonly\":true,\"tag\":\"[object Module]\",\"prototype\":true,\"extensible\":false,\"descriptor\":{\"writable\":true,\"enumerable\":true,\"configurable\":false},\"functions\":[{\"key\":\"Any\",\"name\":\"Any\",\"length\":1},{\"key\":\"Unknown\",\"name\":\"Unknown\",\"length\":1},{\"key\":\"String\",\"name\":\"String\",\"length\":1},{\"key\":\"Number\",\"name\":\"Number\",\"length\":1},{\"key\":\"Integer\",\"name\":\"Integer\",\"length\":1},{\"key\":\"Boolean\",\"name\":\"Boolean\",\"length\":1},{\"key\":\"Null\",\"name\":\"Null\",\"length\":1},{\"key\":\"Literal\",\"name\":\"Literal\",\"length\":2},{\"key\":\"Array\",\"name\":\"_Array_\",\"length\":2},{\"key\":\"Union\",\"name\":\"Union\",\"length\":1},{\"key\":\"Intersect\",\"name\":\"Intersect\",\"length\":1},{\"key\":\"Optional\",\"name\":\"Optional\",\"length\":1},{\"key\":\"Object\",\"name\":\"_Object_\",\"length\":1},{\"key\":\"Record\",\"name\":\"Record\",\"length\":2}],\"schema\":{\"type\":\"object\",\"required\":[\"value\"],\"properties\":{\"value\":{\"type\":\"string\"}}},\"email\":true}", text);
+}
+
+test "native durable VM Literal rejects invalid values with original subclass readonly cause and BigInt type" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    errdefer std.debug.print("Literal source VM failure: {s}\n", .{engine.last_error orelse "none"});
+    const output = try engine.evalModule(
+        \\import * as T from 'typebox';
+        \\const output=[];for(const [name,value]of [['undefined',undefined],['null',null],['nan',NaN],['positive-infinity',Infinity],['negative-infinity',-Infinity],['object',{}],['array',[]],['symbol',Symbol('fixture')],['function',function(){}],['bigint',17n],['zero',0],['negative-zero',-0],['string',''],['boolean',true]])try{const schema=T.Literal(value);output.push({name,type:schema.type,kind:schema['~kind'],same:Object.is(schema.const,value)})}catch(error){const cause=Object.getOwnPropertyDescriptor(error,'cause');output.push({name,error:{name:error.name,message:error.message,constructor:error.constructor.name,instance:error instanceof T.InvalidLiteralValue,ordinary:error instanceof Error,cause:error.cause.value===value||Number.isNaN(error.cause.value)&&Number.isNaN(value),descriptor:[cause.writable,cause.enumerable,cause.configurable],own:Object.getOwnPropertyNames(error)}})}let noNew;try{T.InvalidLiteralValue(1)}catch(error){noNew={name:error.name,message:error.message}}class Child extends T.InvalidLiteralValue{}const value={},child=new Child(value);globalThis.result=JSON.stringify({output,noNew,class:{arity:T.InvalidLiteralValue.length,name:T.InvalidLiteralValue.name,base:Object.getPrototypeOf(T.InvalidLiteralValue)===Error,prototype:Object.getOwnPropertyDescriptor(T.InvalidLiteralValue,'prototype').writable,subclass:child instanceof Child&&child instanceof T.InvalidLiteralValue&&child instanceof Error,cause:child.cause.value===value}});
+    , "native-literal-error-source-corpus");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-literal-error-result", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("typebox_literal_error_source.json"), "\r\n "), text);
 }

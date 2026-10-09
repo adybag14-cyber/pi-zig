@@ -214,7 +214,7 @@ test "native codemode models allocation failures release queued workers canonica
             try std.testing.expect(json.get(result.value, "ok").?.bool);
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Check.run, .{});
+    try @import("test_support/sdk_allocation_shards.zig").check("codemode-models", Check.run, .{});
 }
 test "native codemode models structured tool fields named like protocol markers remain ordinary source data" {
     const gpa = std.testing.allocator;

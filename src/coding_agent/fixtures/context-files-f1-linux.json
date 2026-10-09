@@ -1,0 +1,440 @@
+{
+  "source": "f1b2e77f5b13b2a199b1052cb79c235451afe7d7",
+  "platform": "linux",
+  "rows": [
+    {
+      "name": "global-and-ancestor-order",
+      "cwd": "project/src",
+      "agentDir": "agent",
+      "nodes": [
+        {
+          "path": "agent/AGENTS.md",
+          "data": "global"
+        },
+        {
+          "path": "AGENTS.md",
+          "data": "outer"
+        },
+        {
+          "path": "project/CLAUDE.md",
+          "data": "parent"
+        },
+        {
+          "path": "project/src/AGENTS.md",
+          "data": "child"
+        }
+      ],
+      "expected": [
+        {
+          "path": "agent/AGENTS.md",
+          "content": "global"
+        },
+        {
+          "path": "AGENTS.md",
+          "content": "outer"
+        },
+        {
+          "path": "project/CLAUDE.md",
+          "content": "parent"
+        },
+        {
+          "path": "project/src/AGENTS.md",
+          "content": "child"
+        }
+      ],
+      "outsideCount": 0
+    },
+    {
+      "name": "override-priority",
+      "cwd": "project",
+      "agentDir": "agent",
+      "nodes": [
+        {
+          "path": "project/AGENTS.override.md",
+          "data": "override"
+        },
+        {
+          "path": "project/AGENTS.md",
+          "data": "agents"
+        },
+        {
+          "path": "project/CLAUDE.md",
+          "data": "claude"
+        }
+      ],
+      "expected": [
+        {
+          "path": "project/AGENTS.override.md",
+          "content": "override"
+        }
+      ],
+      "outsideCount": 0
+    },
+    {
+      "name": "uppercase-candidates",
+      "cwd": "project",
+      "agentDir": "agent",
+      "nodes": [
+        {
+          "path": "project/AGENTS.MD",
+          "data": "upper agents"
+        },
+        {
+          "path": "project/CLAUDE.MD",
+          "data": "upper claude"
+        }
+      ],
+      "expected": [
+        {
+          "path": "project/AGENTS.MD",
+          "content": "upper agents"
+        }
+      ],
+      "outsideCount": 0
+    },
+    {
+      "name": "directory-candidate-fallback",
+      "cwd": "project",
+      "agentDir": "agent",
+      "nodes": [
+        {
+          "path": "project/AGENTS.md",
+          "directory": true
+        },
+        {
+          "path": "project/CLAUDE.md",
+          "data": "file after directory"
+        }
+      ],
+      "expected": [
+        {
+          "path": "project/CLAUDE.md",
+          "content": "file after directory"
+        }
+      ],
+      "outsideCount": 0
+    },
+    {
+      "name": "global-is-project",
+      "cwd": "project",
+      "agentDir": "project",
+      "nodes": [
+        {
+          "path": "project/AGENTS.md",
+          "data": "only once"
+        }
+      ],
+      "expected": [
+        {
+          "path": "project/AGENTS.md",
+          "content": "only once"
+        }
+      ],
+      "outsideCount": 0
+    },
+    {
+      "name": "bom",
+      "cwd": "project",
+      "agentDir": "agent",
+      "nodes": [
+        {
+          "path": "project/AGENTS.md",
+          "data": "﻿instructions"
+        }
+      ],
+      "expected": [
+        {
+          "path": "project/AGENTS.md",
+          "content": "instructions"
+        }
+      ],
+      "outsideCount": 0
+    },
+    {
+      "name": "missing",
+      "cwd": "project/src",
+      "agentDir": "agent",
+      "nodes": [],
+      "expected": [],
+      "outsideCount": 0
+    },
+    {
+      "name": "nested-own-context",
+      "cwd": "outer/main/worktrees/feat/src",
+      "agentDir": "agent",
+      "nodes": [
+        {
+          "path": "outer/main/.git/HEAD",
+          "data": "ref: refs/heads/main\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/HEAD",
+          "data": "ref: refs/heads/feat\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/commondir",
+          "data": "../.."
+        },
+        {
+          "path": "outer/main/worktrees/feat/.git",
+          "data": "gitdir: ../../.git/worktrees/feat\n"
+        },
+        {
+          "path": "outer/main/AGENTS.md",
+          "data": "main"
+        },
+        {
+          "path": "outer/main/worktrees/feat/AGENTS.md",
+          "data": "worktree"
+        }
+      ],
+      "expected": [
+        {
+          "path": "outer/main/worktrees/feat/AGENTS.md",
+          "content": "worktree"
+        }
+      ],
+      "outsideCount": 0
+    },
+    {
+      "name": "nested-link-to-main",
+      "cwd": "outer/main/worktrees/feat/src",
+      "agentDir": "agent",
+      "nodes": [
+        {
+          "path": "outer/main/.git/HEAD",
+          "data": "ref: refs/heads/main\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/HEAD",
+          "data": "ref: refs/heads/feat\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/commondir",
+          "data": "../.."
+        },
+        {
+          "path": "outer/main/worktrees/feat/.git",
+          "data": "gitdir: ../../.git/worktrees/feat\n"
+        },
+        {
+          "path": "outer/main/AGENTS.md",
+          "data": "main"
+        },
+        {
+          "path": "outer/main/worktrees/feat/AGENTS.md",
+          "target": "../../AGENTS.md"
+        }
+      ],
+      "expected": [
+        {
+          "path": "outer/main/worktrees/feat/AGENTS.md",
+          "content": "main"
+        }
+      ],
+      "outsideCount": 0
+    },
+    {
+      "name": "nested-both-link-shared",
+      "cwd": "outer/main/worktrees/feat/src",
+      "agentDir": "agent",
+      "nodes": [
+        {
+          "path": "outer/main/.git/HEAD",
+          "data": "ref: refs/heads/main\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/HEAD",
+          "data": "ref: refs/heads/feat\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/commondir",
+          "data": "../.."
+        },
+        {
+          "path": "outer/main/worktrees/feat/.git",
+          "data": "gitdir: ../../.git/worktrees/feat\n"
+        },
+        {
+          "path": "outer/shared-agents.md",
+          "data": "shared"
+        },
+        {
+          "path": "outer/main/AGENTS.md",
+          "target": "../shared-agents.md"
+        },
+        {
+          "path": "outer/main/worktrees/feat/AGENTS.md",
+          "target": "../../../shared-agents.md"
+        }
+      ],
+      "expected": [
+        {
+          "path": "outer/main/worktrees/feat/AGENTS.md",
+          "content": "shared"
+        }
+      ],
+      "outsideCount": 0
+    },
+    {
+      "name": "nested-no-own-inherits-main",
+      "cwd": "outer/main/worktrees/feat/src",
+      "agentDir": "agent",
+      "nodes": [
+        {
+          "path": "outer/main/.git/HEAD",
+          "data": "ref: refs/heads/main\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/HEAD",
+          "data": "ref: refs/heads/feat\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/commondir",
+          "data": "../.."
+        },
+        {
+          "path": "outer/main/worktrees/feat/.git",
+          "data": "gitdir: ../../.git/worktrees/feat\n"
+        },
+        {
+          "path": "outer/main/AGENTS.md",
+          "data": "main"
+        }
+      ],
+      "expected": [
+        {
+          "path": "outer/main/AGENTS.md",
+          "content": "main"
+        }
+      ],
+      "outsideCount": 0
+    },
+    {
+      "name": "nested-priority-is-filename-specific",
+      "cwd": "outer/main/worktrees/feat/src",
+      "agentDir": "agent",
+      "nodes": [
+        {
+          "path": "outer/main/.git/HEAD",
+          "data": "ref: refs/heads/main\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/HEAD",
+          "data": "ref: refs/heads/feat\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/commondir",
+          "data": "../.."
+        },
+        {
+          "path": "outer/main/worktrees/feat/.git",
+          "data": "gitdir: ../../.git/worktrees/feat\n"
+        },
+        {
+          "path": "outer/main/AGENTS.md",
+          "data": "main agents"
+        },
+        {
+          "path": "outer/main/CLAUDE.md",
+          "data": "main claude"
+        },
+        {
+          "path": "outer/main/worktrees/feat/CLAUDE.md",
+          "data": "worktree claude"
+        }
+      ],
+      "expected": [
+        {
+          "path": "outer/main/AGENTS.md",
+          "content": "main agents"
+        },
+        {
+          "path": "outer/main/worktrees/feat/CLAUDE.md",
+          "content": "worktree claude"
+        }
+      ],
+      "outsideCount": 0
+    },
+    {
+      "name": "nested-missing-head-normal-inheritance",
+      "cwd": "outer/main/worktrees/feat/src",
+      "agentDir": "agent",
+      "nodes": [
+        {
+          "path": "outer/main/.git/HEAD",
+          "data": "ref: refs/heads/main\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/commondir",
+          "data": "../.."
+        },
+        {
+          "path": "outer/main/worktrees/feat/.git",
+          "data": "gitdir: ../../.git/worktrees/feat\n"
+        },
+        {
+          "path": "outer/main/AGENTS.md",
+          "data": "main"
+        },
+        {
+          "path": "outer/main/worktrees/feat/AGENTS.md",
+          "data": "worktree"
+        }
+      ],
+      "expected": [
+        {
+          "path": "outer/main/AGENTS.md",
+          "content": "main"
+        },
+        {
+          "path": "outer/main/worktrees/feat/AGENTS.md",
+          "content": "worktree"
+        }
+      ],
+      "outsideCount": 0
+    },
+    {
+      "name": "sibling-worktree",
+      "cwd": "outer/feat/src",
+      "agentDir": "agent",
+      "nodes": [
+        {
+          "path": "outer/AGENTS.md",
+          "data": "outer"
+        },
+        {
+          "path": "outer/main/.git/HEAD",
+          "data": "ref: refs/heads/main\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/HEAD",
+          "data": "ref: refs/heads/feat\n"
+        },
+        {
+          "path": "outer/main/.git/worktrees/feat/commondir",
+          "data": "../.."
+        },
+        {
+          "path": "outer/feat/.git",
+          "data": "gitdir: ../main/.git/worktrees/feat\n"
+        },
+        {
+          "path": "outer/feat/AGENTS.md",
+          "data": "feat"
+        }
+      ],
+      "expected": [
+        {
+          "path": "outer/AGENTS.md",
+          "content": "outer"
+        },
+        {
+          "path": "outer/feat/AGENTS.md",
+          "content": "feat"
+        }
+      ],
+      "outsideCount": 0
+    }
+  ]
+}

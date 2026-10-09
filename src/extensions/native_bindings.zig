@@ -103,6 +103,7 @@ pub const Bindings = struct {
     context_snapshot: ?c.JSValue = null,
     sdk_context: ?SdkContext = null,
     source_path: ?[]u8 = null,
+    source_info_value: ?c.JSValue = null,
     invocation_signal: ?c.JSValue = null,
     tool_update_fn: ?ToolUpdateFn = null,
     tool_update_context: ?*anyopaque = null,
@@ -218,6 +219,7 @@ pub const Bindings = struct {
         self.engine.freeValue(self.context_guard);
         if (self.context_snapshot) |snapshot| self.engine.freeValue(snapshot);
         if (self.sdk_context) |scope| self.freeSdkContext(scope);
+        if (self.source_info_value) |value| self.engine.freeValue(value);
         if (self.source_path) |path| self.gpa.free(path);
         const gpa = self.gpa;
         gpa.destroy(self);
@@ -487,6 +489,7 @@ pub const Bindings = struct {
 
     fn catalogApi(self: *Bindings, method: Method) !c.JSValue {
         if (self.catalog_fn) |lookup| return lookup(self.tool_context, self, if (method == .getAllTools) .tools else .commands);
+        if (method == .getAllTools) return self.toolCatalogValues();
         var arena = std.heap.ArenaAllocator.init(self.gpa);
         defer arena.deinit();
         const allocator = arena.allocator();
@@ -532,6 +535,102 @@ pub const Bindings = struct {
         }
         const json = try std.json.Stringify.valueAlloc(allocator, std.json.Value{ .array = values }, .{});
         return self.parseJson(json, "native-extension-catalog");
+    }
+
+    pub fn sourceInfoValue(self: *Bindings) !c.JSValue {
+        if (self.source_info_value) |value| return value;
+        const value = try @import("native_values.zig").object(self.engine);
+        errdefer self.engine.freeValue(value);
+        const path = self.source_path orelse "";
+        try @import("native_tool_info.zig").putData(self.engine, value, "path", try self.engine.checked(c.JS_NewStringLen(self.engine.context, path.ptr, path.len)));
+        try @import("native_tool_info.zig").putData(self.engine, value, "source", try self.engine.checked(c.JS_NewString(self.engine.context, "temporary")));
+        try @import("native_tool_info.zig").putData(self.engine, value, "scope", try self.engine.checked(c.JS_NewString(self.engine.context, "temporary")));
+        try @import("native_tool_info.zig").putData(self.engine, value, "origin", try self.engine.checked(c.JS_NewString(self.engine.context, "top-level")));
+        try @import("native_tool_info.zig").putData(self.engine, value, "baseDir", c.pi_js_undefined());
+        self.source_info_value = value;
+        return value;
+    }
+    fn projectionExposure(raw: ?*anyopaque, name: c.JSValue) !c.JSValue {
+        const self: *Bindings = @ptrCast(@alignCast(raw.?));
+        if (!c.JS_IsString(name)) return c.pi_js_undefined();
+        const label = try self.engine.toString(name);
+        defer self.gpa.free(label);
+        const definition = if (self.tool_lookup) |lookup| lookup(self.tool_context, label) else self.tools.get(label);
+        if (definition) |value| {
+            const retained = c.JS_DupValue(self.engine.context, value);
+            defer self.engine.freeValue(retained);
+            return @import("native_values.zig").get(self.engine, retained, "exposure");
+        }
+        return c.pi_js_undefined();
+    }
+    pub fn toolCatalogEntry(self: *Bindings, definition: c.JSValue) !c.JSValue {
+        return @import("native_tool_info.zig").project(self.engine, definition, try self.sourceInfoValue(), .{ .context = self, .read = projectionExposure });
+    }
+    pub fn toolCatalogSnapshot(self: *Bindings) !c.JSValue {
+        if (self.context_snapshot) |snapshot| {
+            const current = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "allTools"));
+            if (c.JS_IsArray(current)) return current;
+            self.engine.freeValue(current);
+        }
+        return self.engine.checked(c.JS_NewArray(self.engine.context));
+    }
+    fn toolCatalogValues(self: *Bindings) !c.JSValue {
+        const vm = @import("native_values.zig");
+        const Registration = struct { name: []u8, value: c.JSValue };
+        var registrations: std.ArrayList(Registration) = .empty;
+        defer {
+            for (registrations.items) |entry| {
+                self.gpa.free(entry.name);
+                self.engine.freeValue(entry.value);
+            }
+            registrations.deinit(self.gpa);
+        }
+        for (self.tool_order.items) |name| if (self.tools.get(name)) |definition| {
+            const owned_name = try self.gpa.dupe(u8, name);
+            const retained = c.JS_DupValue(self.engine.context, definition);
+            registrations.append(self.gpa, .{ .name = owned_name, .value = retained }) catch |err| {
+                self.gpa.free(owned_name);
+                self.engine.freeValue(retained);
+                return err;
+            };
+        };
+        const result = try vm.array(self.engine);
+        errdefer self.engine.freeValue(result);
+        const snapshot = try self.toolCatalogSnapshot();
+        defer self.engine.freeValue(snapshot);
+        var count: u32 = 0;
+        for (0..try vm.length(self.engine, snapshot)) |index| {
+            const value = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, snapshot, @intCast(index)));
+            defer self.engine.freeValue(value);
+            const source = try vm.get(self.engine, value, "sourceInfo");
+            defer self.engine.freeValue(source);
+            const row = try @import("native_tool_info.zig").project(self.engine, value, source, null);
+            if (c.JS_SetPropertyUint32(self.engine.context, result, count, row) < 0) return error.JavaScriptException;
+            count += 1;
+        }
+        for (registrations.items) |entry| {
+            const row = try self.toolCatalogEntry(entry.value);
+            var row_consumed = false;
+            errdefer if (!row_consumed) self.engine.freeValue(row);
+            var found: ?u32 = null;
+            for (0..count) |index| {
+                const existing = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, result, @intCast(index)));
+                defer self.engine.freeValue(existing);
+                const label_value = try vm.get(self.engine, existing, "name");
+                defer self.engine.freeValue(label_value);
+                if (!c.JS_IsString(label_value)) continue;
+                const label = try self.engine.toString(label_value);
+                defer self.gpa.free(label);
+                if (std.mem.eql(u8, label, entry.name)) {
+                    found = @intCast(index);
+                    break;
+                }
+            }
+            row_consumed = true;
+            if (c.JS_SetPropertyUint32(self.engine.context, result, found orelse count, row) < 0) return error.JavaScriptException;
+            if (found == null) count += 1;
+        }
+        return result;
     }
 
     pub fn catalogEntry(self: *Bindings, allocator: std.mem.Allocator, kind: CatalogKind, name: []const u8, value: c.JSValue) !std.json.Value {
@@ -774,6 +873,7 @@ pub const Bindings = struct {
         try native_stream.install(self.engine);
         try native_tui.install(self.engine);
         try typebox.install(self.engine);
+        try @import("native_tool_parameters.zig").initialize(self.engine);
     }
 
     pub fn loadFactory(self: *Bindings, source: []const u8, filename: [:0]const u8) !void {
@@ -787,6 +887,9 @@ pub const Bindings = struct {
         const owned = try self.gpa.dupe(u8, path);
         if (self.source_path) |previous| self.gpa.free(previous);
         self.source_path = owned;
+        if (self.source_info_value) |value| self.engine.freeValue(value);
+        self.source_info_value = null;
+        _ = try self.sourceInfoValue();
     }
 
     pub fn loadFactoryValue(self: *Bindings, namespace: c.JSValue) !void {
@@ -852,11 +955,13 @@ pub const Bindings = struct {
         const keybindings_config = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "keybindingsConfig"));
         defer self.engine.freeValue(keybindings_config);
         if (!c.JS_IsUndefined(keybindings_config) and (!c.JS_IsObject(keybindings_config) or c.JS_IsArray(keybindings_config))) return error.InvalidExtensionContext;
+        try @import("native_terminal_image.zig").validateAdmittedContext(self.engine, snapshot);
         const strict_theme = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "strictThemeValidation"));
         defer self.engine.freeValue(strict_theme);
         if (self.selection_context_fn) |receive| try receive(self.tool_context, source);
         if (!c.JS_IsUndefined(strict_theme)) try @import("native_theme.zig").setStrictFileValidation(self.engine, c.JS_ToBool(self.engine.context, strict_theme) != 0);
         try @import("native_keybindings.zig").hydrateAdmittedConfig(self.engine, snapshot);
+        try @import("native_terminal_image.zig").hydrateAdmittedContext(self.engine, snapshot);
         if (self.context_snapshot) |old| self.engine.freeValue(old);
         self.context_snapshot = snapshot;
     }
@@ -2051,7 +2156,7 @@ pub const Bindings = struct {
         const signal = if (self.invocation_signal) |value| c.JS_DupValue(self.engine.context, value) else try abort_signal.create(self.engine);
         defer self.engine.freeValue(signal);
         if (aborted) try abort_signal.abort(self.engine, signal, c.pi_js_undefined());
-        const value = try @import("native_provider_operations.zig").invoke(self.engine, &self.providers, id, provider, generation, operation, model, context, options, signal, auth_rewrites_model);
+        const value = try @import("native_provider_operations.zig").invokeResult(self.engine, &self.providers, id, provider, generation, operation, model, context, options, signal, auth_rewrites_model);
         defer self.engine.freeValue(value);
         const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
         defer self.engine.freeValue(result);
@@ -2060,6 +2165,24 @@ pub const Bindings = struct {
         return self.engine.stringify(result);
     }
 
+    pub fn invokeProviderAuthOperation(self: *Bindings, id: []const u8, provider: []const u8, generation: u64, operation: @import("native_provider_operations.zig").AuthOperation, credential_json: []const u8, options_json: []const u8, aborted: bool) ![]u8 {
+        try self.beginActions();
+        defer self.finishInvocation();
+        const credential = try self.parseJson(credential_json, "native-provider-auth-credential");
+        defer self.engine.freeValue(credential);
+        const options = try self.parseJson(options_json, "native-provider-auth-options");
+        defer self.engine.freeValue(options);
+        const signal = if (self.invocation_signal) |value| c.JS_DupValue(self.engine.context, value) else try abort_signal.create(self.engine);
+        defer self.engine.freeValue(signal);
+        if (aborted) try abort_signal.abort(self.engine, signal, c.pi_js_undefined());
+        const value = try @import("native_provider_operations.zig").invokeAuth(self.engine, &self.providers, id, provider, generation, operation, credential, options, signal);
+        defer self.engine.freeValue(value);
+        const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
+        defer self.engine.freeValue(result);
+        try self.actionProperty(result, "value", c.JS_DupValue(self.engine.context, value));
+        try self.mergeActions(result);
+        return self.engine.stringify(result);
+    }
     pub fn invokeTool(self: *Bindings, name: []const u8, call_id: []const u8, args_json: []const u8) ![]u8 {
         try self.beginActions();
         defer self.finishInvocation();
@@ -2469,7 +2592,7 @@ test "native subscriptions return independent idempotent removers and dispatch s
     try std.testing.expect(!bindings.handlers.contains("shared"));
 }
 
-test "native readonly API catalogs settings and action updates are copied without exposing registrations" {
+test "native API ToolInfo retains source schema identity while settings commands and action snapshots are copied" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     const bindings = try Bindings.init(std.testing.allocator, engine);
@@ -2477,7 +2600,7 @@ test "native readonly API catalogs settings and action updates are copied withou
     try bindings.loadFactory(
         "export default pi=>{for(const method of ['getActiveTools','getAllTools','getCommands','getSettings','getSessionName','getThinkingLevel','setSessionName','setThinkingLevel','setActiveTools','sendUserMessage','appendEntry','setLabel']){let rejected=false;try{pi[method]()}catch(error){rejected=error.name==='Error'&&error.message==='Extension runtime not initialized. Action methods cannot be called during extension loading.'}if(!rejected)throw Error('unbound '+method)}" ++
             "pi.registerTool({name:'read',description:'extension read',parameters:{type:'object',properties:{value:{type:'string',__piOptional:true}}},execute(){return {content:'read'}}});" ++
-            "pi.registerCommand('inspect',{description:'native inspection',handler:()=>{const tools=pi.getAllTools(),settings=pi.getSettings(),commands=pi.getCommands();const own=tools.find(t=>t.name==='read');if(own.description!=='extension read'||own.parameters.properties.value.__piOptional!==undefined||own.source!=='extension')throw Error('tool projection');own.parameters.type='changed';settings.nested.value=9;commands[0].name='changed';if(pi.getAllTools().find(t=>t.name==='read').parameters.type!=='object'||pi.getSettings().nested.value!==1||pi.getCommands().some(c=>c.name==='changed'))throw Error('snapshot mutation');" ++
+            "pi.registerCommand('inspect',{description:'native inspection',handler:()=>{const tools=pi.getAllTools(),settings=pi.getSettings(),commands=pi.getCommands();const own=tools.find(t=>t.name==='read');if(own.description!=='extension read'||own.parameters.properties.value.__piOptional!==true||own.sourceInfo.path!=='native-api-catalog.mjs'||'source' in own)throw Error('tool projection');own.name='changed row';own.parameters.type='changed';settings.nested.value=9;commands[0].name='changed';if(pi.getAllTools().find(t=>t.name==='read').parameters!==own.parameters||own.parameters.type!=='changed'||pi.getSettings().nested.value!==1||pi.getCommands().some(c=>c.name==='changed'))throw Error('snapshot mutation');" ++
             "if(pi.getSessionName()!=='initial'||pi.getThinkingLevel()!=='low')throw Error('initial metadata');pi.setSessionName('updated');pi.setThinkingLevel('high');pi.setActiveTools([]);return {name:pi.getSessionName(),level:pi.getThinkingLevel(),active:pi.getActiveTools(),tools:pi.getAllTools().map(t=>t.name),path:pi.getCommands().find(c=>c.name==='inspect').sourceInfo.path};}});};",
         "native-api-catalog.mjs",
     );

@@ -91,7 +91,7 @@ pub fn filePathErrorValue(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
         _ = engine.throwCaptured();
         return c.JS_GetException(engine.context);
     }
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     if (err == error.InvalidFileUrlEncoding) if (engine.url_decode_uri_component) |decoder| {
         var args = [_]c.JSValue{c.JS_NewString(engine.context, "%")};
         if (c.JS_IsException(args[0])) return args[0];
@@ -117,7 +117,7 @@ pub fn filePathErrorValue(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
 }
 fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     _ = c.JS_ThrowTypeError(engine.context, "Native URL: %s", @as([*:0]const u8, @errorName(err)));
     const exception = c.JS_GetException(engine.context);
     if (!c.JS_IsError(exception)) return c.JS_Throw(engine.context, exception);
@@ -444,6 +444,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     if (c.JS_DefinePropertyValue(engine.context, prototype, atom, c.JS_NewString(engine.context, "URL"), c.JS_PROP_CONFIGURABLE) < 0 or c.JS_DefinePropertyValueStr(engine.context, global, "URL", c.JS_DupValue(engine.context, constructor), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     engine.url_class = class_id;
     engine.url_decode_uri_component = c.JS_DupValue(engine.context, decoder);
+    engine.native_url_constructor = c.JS_DupValue(engine.context, constructor);
 }
 
 test "native URL class serializes real records and links stable live search params through setters" {

@@ -1965,6 +1965,37 @@ test "native CLI activation allocation failure retains producer acknowledgement 
     try std.testing.checkAllAllocationFailures(std.testing.allocator, Sweep.run, .{});
 }
 
+const TypedModelOwner = coding.typed_model_registry.Owner;
+const TypedModelBackend = coding.typed_model_backend.State;
+fn enqueueMainModelActions(gpa: std.mem.Allocator, owner: *TypedModelOwner, generation: u64, bridge: *extensions.integration.Bridge, source: []const u8, envelope: []const u8) !void {
+    _ = gpa;
+    const allocator = bridge.action_queue.gpa;
+    var batch = try extensions.actions.Batch.parseNative(allocator, std.fs.path.stem(source), "typed_model", envelope);
+    defer batch.deinit(allocator);
+    if (batch.isEmpty()) return;
+    owner.mutex.lockUncancelable(owner.io);
+    defer owner.mutex.unlock(owner.io);
+    if (!owner.live or owner.generation != generation) return error.TypedRegistryOwnerRetired;
+    // Queue publication performs no VM callbacks while the owner is checked.
+    try bridge.action_queue.enqueue(&batch);
+}
+fn acceptMainModelActions(raw: ?*anyopaque, gpa: std.mem.Allocator, snapshot: *const coding.typed_model_registry.Snapshot, source: []const u8, envelope: []const u8) !void {
+    const bridge: *extensions.integration.Bridge = @ptrCast(@alignCast(raw.?));
+    try enqueueMainModelActions(gpa, snapshot.owner orelse return error.TypedRegistryProgramNotAdmitted, snapshot.generation, bridge, source, envelope);
+}
+fn refreshMainNativeModels(gpa: std.mem.Allocator, registry: *extensions.provider_registry.Registry, owner: *TypedModelOwner, bridge: *extensions.integration.Bridge, aborted: ?*bool) !void {
+    const names = try registry.nativeProviderNames(gpa);
+    defer {
+        for (names) |name| gpa.free(name);
+        gpa.free(names);
+    }
+    for (names) |name| {
+        const generation = owner.generation;
+        const envelope = (try registry.refreshNativeCatalog(gpa, name, aborted)) orelse continue;
+        defer gpa.free(envelope);
+        try enqueueMainModelActions(gpa, owner, generation, bridge, name, envelope);
+    }
+}
 const FooterModelSnapshot = struct {
     live: *coding.live_state.LiveState,
     registry: *extensions.provider_registry.Registry,
@@ -2322,6 +2353,9 @@ const RuntimeResourceReloadContext = struct {
     extension_oauth: *extensions.provider_oauth.Runtime,
     provider_stream: *extensions.provider_stream.Runtime,
     provider_models: *extensions.provider_models.Runtime,
+    typed_owner: ?*TypedModelOwner = null,
+    typed_backend: ?**TypedModelBackend = null,
+    initial_models_file: ?*const coding.models_file.ModelsFile = null,
     schemas: *[]u8,
     prompt_templates: *[]coding.prompts.PromptTemplate,
     command_names: *std.ArrayList([]const u8),
@@ -2564,15 +2598,23 @@ const RuntimeResourceReloadContext = struct {
             try new_themes.loadPath(path);
         }
 
-        var new_provider_registry = extensions.provider_registry.Registry.init(
+        const replacement_all_catalog = if (fresh_catalog_snapshot) |*snapshot| snapshot.all_model_catalog else self.provider_registry.baseline_all_catalog;
+        var new_provider_registry = extensions.provider_registry.Registry.initAll(
             gpa,
             self.io,
             self.environ,
             self.agent_dir,
             replacement_baseline_catalog,
+            replacement_all_catalog,
             replacement_baseline_runtimes,
         );
         errdefer new_provider_registry.deinit();
+        var new_typed_backend: ?*TypedModelBackend = if (self.typed_backend != null) try TypedModelBackend.create(gpa, self.io, self.environ, if (fresh_catalog_snapshot) |*snapshot| &snapshot.models_file else self.initial_models_file orelse return error.MissingTypedModelConfiguration, self.agent_dir, if (self.cli.api_key != null) self.provider_name.* else null, self.cli.api_key, fresh_settings.http_proxy) else null;
+        defer if (new_typed_backend) |backend| TypedModelBackend.release(backend);
+        if (new_typed_backend) |backend| {
+            backend.actions_context = self.bridge;
+            backend.actions = acceptMainModelActions;
+        }
         for (new_host.extensions.items) |extension| {
             for (extension.providers) |registration| try new_provider_registry.registerJsonWithRuntime(registration.name, registration.config_json, extension.script_runtime);
         }
@@ -2720,6 +2762,7 @@ const RuntimeResourceReloadContext = struct {
         // Client validation and rollback are finished. Retire captured contexts
         // before any owner is replaced; failed preparation keeps them valid.
         _ = try self.host.invalidateNativeContexts(null);
+        if (self.typed_owner) |owner| owner.retire();
         self.ui.resetForReload();
         tui.render.resetTheme();
 
@@ -2739,6 +2782,14 @@ const RuntimeResourceReloadContext = struct {
         self.bridge.* = new_bridge;
         self.bridge.host = self.host;
         self.provider_registry.* = new_provider_registry;
+        if (self.typed_owner) |owner| {
+            const backend = new_typed_backend orelse return error.MissingTypedModelBackend;
+            const previous = self.typed_backend.?.*;
+            self.typed_backend.?.* = backend;
+            new_typed_backend = null;
+            try owner.bindBackend(self.provider_registry, backend.backend());
+            TypedModelBackend.release(previous);
+        }
         self.extension_oauth.registry = self.provider_registry;
         self.provider_stream.registry = self.provider_registry;
         self.provider_models.commitPreparedRegistry(self.provider_registry, &provider_models_preparation);
@@ -2864,6 +2915,15 @@ const RuntimeResourceReloadContext = struct {
             if (self.theme_registry.find(theme_name)) |theme| tui.render.setTheme(theme);
         }
         try selectTerminalTheme(self.terminal_theme, self.theme_registry);
+
+        if (self.typed_owner) |owner| {
+            try refreshMainNativeModels(gpa, self.provider_registry, owner, self.bridge, self.shared_abort);
+            self.live.model_catalog = self.provider_registry.catalog();
+            if (self.live.client_pool) |pool| {
+                pool.setModelCatalog(self.provider_registry.catalog());
+                pool.setRuntimeProviders(self.provider_registry.runtimes());
+            }
+        }
 
         if (self.host.extensions.items.len > 0) {
             self.bridge.sessionStart(gpa, self.cwd, self.session.id, "reload") catch |err| {
@@ -3894,6 +3954,7 @@ fn runMain(init: std.process.Init) !void {
     extension_ui.bindKeybindings(&terminal_keybindings);
     defer extension_ui.bindKeybindings(null);
     const terminal_capabilities = tui.terminal_image.detectCapabilities(tui.terminal_image.environmentFromMap(environ), build_options.os.tag == .windows, false);
+    extension_ui.bindTerminalState(terminal_capabilities, .{});
     var terminal_theme = try extensions.terminal_theme_producer.Producer.init(gpa, io, &extension_ui, if (terminal_capabilities.true_color) .truecolor else .@"256color", Io.File.stdout().isTty(io) catch false);
     defer terminal_theme.deinit();
     try selectTerminalTheme(&terminal_theme, &theme_registry);
@@ -4421,15 +4482,24 @@ fn runMain(init: std.process.Init) !void {
     // Declarative providers registered while script modules initialize share
     // the models.json parser and runtime resolver. Later hook/tool registrations
     // update this same in-memory registry through the ordered action channel.
-    var extension_provider_registry = extensions.provider_registry.Registry.init(
+    const all_model_catalog = try coding.effective_catalog.buildAllWithExtras(arena, &models_file, radius_cached_catalogs.infos);
+    var extension_provider_registry = extensions.provider_registry.Registry.initAll(
         gpa,
         io,
         environ,
         agent_dir,
         model_catalog,
+        all_model_catalog,
         runtime_provider_list.items,
     );
     defer extension_provider_registry.deinit();
+    var typed_model_backend = try TypedModelBackend.create(gpa, io, environ, &models_file, agent_dir, if (cli.api_key != null) provider_name else null, cli.api_key, settings.http_proxy);
+    defer TypedModelBackend.release(typed_model_backend);
+    var typed_model_owner: TypedModelOwner = .{ .io = io, .backend = typed_model_backend.backend() };
+    typed_model_backend.actions_context = &extension_bridge;
+    typed_model_backend.actions = acceptMainModelActions;
+    defer typed_model_owner.retire();
+    try typed_model_owner.bind(&extension_provider_registry);
     for (extension_host.extensions.items) |extension| {
         for (extension.providers) |registration| {
             extension_provider_registry.registerJsonWithRuntime(registration.name, registration.config_json, extension.script_runtime) catch |err| {
@@ -4546,7 +4616,7 @@ fn runMain(init: std.process.Init) !void {
     extension_bridge.setAbortFlag(&shared_abort);
 
     // Mutable agent config so /reload can update prompts for subsequent turns
-    var codemode_runtime: pi_zig.mcp.codemode_builtin.Runtime = .{ .io = io, .cwd = cwd, .session = &sess, .configured = configured_mcp, .host = &extension_host, .output_root = if (configured_mcp) |service| service.output_root else null };
+    var codemode_runtime: pi_zig.mcp.codemode_builtin.Runtime = .{ .io = io, .cwd = cwd, .session = &sess, .configured = configured_mcp, .host = &extension_host, .output_root = if (configured_mcp) |service| service.output_root else null, .model_runtime = typed_model_owner.runtime() };
     var agent_cfg = agent.AgentConfig{
         .max_turns = max_turns,
         .system_prompt = system_body,
@@ -4718,6 +4788,9 @@ fn runMain(init: std.process.Init) !void {
         .host = &extension_host,
         .bridge = &extension_bridge,
         .provider_registry = &extension_provider_registry,
+        .typed_owner = &typed_model_owner,
+        .typed_backend = &typed_model_backend,
+        .initial_models_file = &models_file,
         .extension_oauth = &extension_oauth_runtime,
         .provider_stream = &extension_stream_runtime,
         .provider_models = &extension_models_runtime,
@@ -4784,6 +4857,12 @@ fn runMain(init: std.process.Init) !void {
         session_path,
         session_dir,
     );
+
+    try refreshMainNativeModels(gpa, &extension_provider_registry, &typed_model_owner, &extension_bridge, &shared_abort);
+    live.model_catalog = extension_provider_registry.catalog();
+    client_pool.setModelCatalog(extension_provider_registry.catalog());
+    client_pool.setRuntimeProviders(extension_provider_registry.runtimes());
+    if (model_scope_storage == null or model_scope_storage.?.scoped_models.len == 0) cycling_model_catalog = extension_provider_registry.catalog();
 
     // Export only mode
     if (cli.export_path) |ep| {

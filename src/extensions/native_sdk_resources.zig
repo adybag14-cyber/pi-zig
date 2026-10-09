@@ -74,17 +74,14 @@ pub fn reload(engine: *engine_mod.Engine, data: c.JSValue) !void {
     const contexts = try sdk.array(engine);
     defer engine.freeValue(contexts);
     if (!try flag(engine, options, "noContextFiles")) {
-        try contextAt(engine, contexts, root);
-        var ancestors: std.ArrayList([]const u8) = .empty;
-        var current: []const u8 = cwd;
-        for (0..128) |_| {
-            try ancestors.append(allocator, current);
-            current = std.fs.path.dirname(current) orelse break;
-        }
-        var index = ancestors.items.len;
-        while (index > 0) {
-            index -= 1;
-            try contextAt(engine, contexts, ancestors.items[index]);
+        var instruction_files = try @import("../coding_agent/project_context.zig").load(engine.gpa, io, cwd, root, true);
+        defer instruction_files.deinit(engine.gpa);
+        for (instruction_files.items) |item| {
+            const row = try sdk.object(engine);
+            defer engine.freeValue(row);
+            try sdk.put(engine, row, "path", try sdk.text(engine, item.path));
+            try sdk.put(engine, row, "content", try sdk.text(engine, item.content));
+            try sdk.append(engine, contexts, c.JS_DupValue(engine.context, row));
         }
     }
     const agents = try sdk.object(engine);
@@ -298,20 +295,6 @@ fn file(engine: *engine_mod.Engine, path: []const u8) !?[]u8 {
         error.FileNotFound, error.IsDir => null,
         else => return err,
     };
-}
-fn contextAt(engine: *engine_mod.Engine, rows: c.JSValue, directory: []const u8) !void {
-    for ([_][]const u8{ "AGENTS.override.md", "AGENTS.md", "AGENTS.MD", "CLAUDE.md", "CLAUDE.MD" }) |name| {
-        const path = try std.fs.path.join(engine.gpa, &.{ directory, name });
-        defer engine.gpa.free(path);
-        const contents = (try file(engine, path)) orelse continue;
-        defer engine.gpa.free(contents);
-        const row = try sdk.object(engine);
-        defer engine.freeValue(row);
-        try sdk.put(engine, row, "path", try sdk.text(engine, path));
-        try sdk.put(engine, row, "content", try sdk.text(engine, stripBom(contents)));
-        try sdk.append(engine, rows, c.JS_DupValue(engine.context, row));
-        break;
-    }
 }
 fn stripBom(value: []const u8) []const u8 {
     return if (std.mem.startsWith(u8, value, "\xEF\xBB\xBF")) value[3..] else value;

@@ -7,6 +7,27 @@
 //! process-global JavaScript environment.
 const std = @import("std");
 
+test "Source6fb terminal capabilities pure Main detector replays original environment profile and overrides" {
+    const gpa = std.testing.allocator;
+    const fixture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/terminal-capabilities-original-6fb.json"), .{});
+    defer fixture.deinit();
+    for (fixture.value.object.get("cases").?.array.items, 0..) |entry, index| {
+        const variables = entry.object.get("environment").?.object;
+        var env: Environment = .{};
+        inline for (.{ .{ "term_program", "TERM_PROGRAM" }, .{ "terminal_emulator", "TERMINAL_EMULATOR" }, .{ "term", "TERM" }, .{ "color_term", "COLORTERM" }, .{ "tmux", "TMUX" }, .{ "kitty_window_id", "KITTY_WINDOW_ID" }, .{ "ghostty_resources_dir", "GHOSTTY_RESOURCES_DIR" }, .{ "wezterm_pane", "WEZTERM_PANE" }, .{ "warp_session_id", "WARP_SESSION_ID" }, .{ "warp_terminal_session_uuid", "WARP_TERMINAL_SESSION_UUID" }, .{ "iterm_session_id", "ITERM_SESSION_ID" }, .{ "wt_session", "WT_SESSION" }, .{ "pi_hyperlinks", "PI_HYPERLINKS" }, .{ "pi_image_protocol", "PI_IMAGE_PROTOCOL" }, .{ "pi_true_color", "PI_TRUE_COLOR" } }) |field| {
+            if (variables.get(field[1])) |value| @field(env, field[0]) = value.string;
+        }
+        const actual = detectCapabilities(env, std.mem.eql(u8, entry.object.get("platform").?.string, "win32"), entry.object.get("probeValue").?.bool);
+        const expected = entry.object.get("result").?.object;
+        const image = expected.get("images").?;
+        const protocol: ?ImageProtocol = if (image == .null) null else if (std.mem.eql(u8, image.string, "kitty")) .kitty else .iterm2;
+        std.testing.expectEqualDeep(TerminalCapabilities{ .images = protocol, .true_color = expected.get("trueColor").?.bool, .hyperlinks = expected.get("hyperlinks").?.bool }, actual) catch |err| {
+            std.debug.print("Source pure capability case {d}\n", .{index});
+            return err;
+        };
+    }
+}
+
 pub const ImageProtocol = enum {
     kitty,
     iterm2,
@@ -88,7 +109,24 @@ pub fn environmentFromMap(environ: *const std.process.Environ.Map) Environment {
 }
 
 fn eqlLower(value: ?[]const u8, expected: []const u8) bool {
-    return if (value) |actual| std.ascii.eqlIgnoreCase(actual, expected) else false;
+    const actual = value orelse return false;
+    if (std.ascii.eqlIgnoreCase(actual, expected)) return true;
+    // Source String.toLowerCase recognizes Kelvin sign as ASCII k, including
+    // TERM_PROGRAM and PI_IMAGE_PROTOCOL spellings of kitty.
+    var at: usize = 0;
+    for (expected) |wanted| {
+        if (at >= actual.len) return false;
+        const unit: u8 = if (std.mem.startsWith(u8, actual[at..], "K")) found: {
+            at += 3;
+            break :found 'k';
+        } else found: {
+            const byte = actual[at];
+            at += 1;
+            break :found std.ascii.toLower(byte);
+        };
+        if (unit != std.ascii.toLower(wanted)) return false;
+    }
+    return at == actual.len;
 }
 
 fn containsLower(value: ?[]const u8, needle: []const u8) bool {
@@ -141,7 +179,7 @@ fn detectCapabilitiesBase(env: Environment, is_windows_console: bool, tmux_forwa
     if (present(env.iterm_session_id) or eqlLower(env.term_program, "iterm.app")) {
         return .{ .images = .iterm2, .true_color = true, .hyperlinks = true };
     }
-    if (present(env.wt_session) or eqlLower(env.term_program, "vscode") or eqlLower(env.term_program, "alacritty")) {
+    if (present(env.wt_session) or eqlLower(env.term_program, "vscode") or eqlLower(env.term_program, "alacritty") or eqlLower(env.term_program, "zed")) {
         return .{ .images = null, .true_color = true, .hyperlinks = true };
     }
     if (eqlLower(env.terminal_emulator, "jetbrains-jediterm")) {

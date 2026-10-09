@@ -1,0 +1,1 @@
+[{"name":"normalize-cycle","error":{"name":"RangeError","message":"Maximum call stack size exceeded"}},{"name":"typed-nan-cycle","error":{"name":"RangeError","message":"Maximum call stack size exceeded"}},{"name":"shared","same":true,"value":3,"input":"3"}]

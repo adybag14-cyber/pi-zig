@@ -1,0 +1,108 @@
+{
+  "authority": "Exact executable used for Source6fb captures",
+  "nodeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+  "nodeSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+  "versions": {
+    "node": "24.14.0",
+    "acorn": "8.15.0",
+    "ada": "3.4.2",
+    "amaro": "1.1.7",
+    "ares": "1.34.6",
+    "brotli": "1.2.0",
+    "cldr": "48.0",
+    "icu": "78.2",
+    "llhttp": "9.3.0",
+    "merve": "1.0.0",
+    "modules": "137",
+    "napi": "10",
+    "nbytes": "0.1.1",
+    "ncrypto": "0.0.1",
+    "nghttp2": "1.68.0",
+    "openssl": "3.5.5",
+    "simdjson": "4.2.4",
+    "simdutf": "6.4.0",
+    "sqlite": "3.51.2",
+    "tz": "2025c",
+    "undici": "7.21.0",
+    "unicode": "17.0",
+    "uv": "1.51.0",
+    "uvwasi": "0.0.23",
+    "v8": "13.6.233.17-node.41",
+    "zlib": "1.3.1-e00f703",
+    "zstd": "1.5.7"
+  },
+  "nodeConfig": {
+    "icuSmall": false,
+    "icuDataIn": "..\\..\\deps\\icu-tmp\\icudt78l.dat"
+  },
+  "execArgv": [],
+  "environment": {
+    "ICU_DATA": null,
+    "NODE_ICU_DATA": null
+  },
+  "breakIteratorResources": [
+    "icudt78l/brkitr/burmesedict.dict",
+    "icudt78l/brkitr/char.brk",
+    "icudt78l/brkitr/cjdict.dict",
+    "icudt78l/brkitr/de.res",
+    "icudt78l/brkitr/el.res",
+    "icudt78l/brkitr/en.res",
+    "icudt78l/brkitr/en_US.res",
+    "icudt78l/brkitr/en_US_POSIX.res",
+    "icudt78l/brkitr/es.res",
+    "icudt78l/brkitr/fr.res",
+    "icudt78l/brkitr/it.res",
+    "icudt78l/brkitr/ja.res",
+    "icudt78l/brkitr/khmerdict.dict",
+    "icudt78l/brkitr/ko.res",
+    "icudt78l/brkitr/laodict.dict",
+    "icudt78l/brkitr/line.brk",
+    "icudt78l/brkitr/line_cj.brk",
+    "icudt78l/brkitr/line_loose.brk",
+    "icudt78l/brkitr/line_loose_cj.brk",
+    "icudt78l/brkitr/line_loose_phrase_cj.brk",
+    "icudt78l/brkitr/line_normal.brk",
+    "icudt78l/brkitr/line_normal_cj.brk",
+    "icudt78l/brkitr/line_normal_phrase_cj.brk",
+    "icudt78l/brkitr/line_phrase_cj.brk",
+    "icudt78l/brkitr/pt.res",
+    "icudt78l/brkitr/res_index.res",
+    "icudt78l/brkitr/root.res",
+    "icudt78l/brkitr/ru.res",
+    "icudt78l/brkitr/sent.brk",
+    "icudt78l/brkitr/sent_el.brk",
+    "icudt78l/brkitr/thaidict.dict",
+    "icudt78l/brkitr/title.brk",
+    "icudt78l/brkitr/word.brk",
+    "icudt78l/brkitr/word_POSIX.brk",
+    "icudt78l/brkitr/zh.res",
+    "icudt78l/brkitr/zh_Hant.res"
+  ],
+  "lstmResources": {
+    "Thai_graphclust_model4_heavy.res": false,
+    "Burmese_graphclust_model5_heavy.res": false
+  },
+  "dictionaryResources": [
+    {
+      "name": "cjdict.dict",
+      "present": true
+    },
+    {
+      "name": "thaidict.dict",
+      "present": true
+    },
+    {
+      "name": "burmesedict.dict",
+      "present": true
+    },
+    {
+      "name": "laodict.dict",
+      "present": true
+    },
+    {
+      "name": "khmerdict.dict",
+      "present": true
+    }
+  ],
+  "selectedProfile": "ICU78.2 dictionary fallback: selected LSTM resources absent from actual Node data package"
+}

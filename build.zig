@@ -270,6 +270,14 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    const catalog_wire_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_tool_catalog_wire_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"private native catalog"} });
+    catalog_wire_tests.root_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, catalog_wire_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, catalog_wire_tests.root_module, typescript_parser);
+    linkDurable(b, catalog_wire_tests.root_module);
+    const run_catalog_wire_tests = b.addRunArtifact(catalog_wire_tests);
+    b.step("test-native-tool-catalog-wire", "Exercise private native catalog admission and lifetime control").dependOn(&run_catalog_wire_tests.step);
+    test_step.dependOn(&run_catalog_wire_tests.step);
     const theme_schema_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/theme_schema_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
     const run_theme_schema_tests = b.addRunArtifact(theme_schema_tests);
     theme_schema_tests.root_module.link_libc = true;
@@ -651,6 +659,12 @@ pub fn build(b: *std.Build) void {
         .filters = &.{"native codemode"},
     });
     linkQuickJs(b, codemode_tests.root_module, quickjs, sqlite_lib_dir);
+    const codemode_allocation_tests = b.addTest(.{
+        .root_module = codemode_tests.root_module,
+        .use_llvm = use_llvm,
+        .filters = &.{"native codemode allocation failures"},
+    });
+    b.step("test-codemode-allocation", "Exhaustively check codemode allocation ownership without repeating CLI and model suites").dependOn(&b.addRunArtifact(codemode_allocation_tests).step);
     const run_codemode_tests = b.addRunArtifact(codemode_tests);
     const codemode_step = b.step("test-codemode", "Exercise isolated native codemode user scripts and Zig host callbacks");
     const discovery_process_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/codemode_discovery_process_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
@@ -683,6 +697,10 @@ pub fn build(b: *std.Build) void {
     const codemode_models_tests = b.addTest(.{ .root_module = codemode_models_module, .use_llvm = use_llvm, .filters = &.{"native codemode models"} });
     const codemode_models_run = b.addRunArtifact(codemode_models_tests);
     b.step("test-codemode-models", "Compare model globals against original registry behavior and concurrency").dependOn(&codemode_models_run.step);
+    const codemode_model_allocation_tests = b.addTest(.{ .root_module = codemode_models_module, .use_llvm = use_llvm, .filters = &.{"native codemode models allocation failures"} });
+    const codemode_model_allocation_run = b.addRunArtifact(codemode_model_allocation_tests);
+    codemode_model_allocation_run.has_side_effects = true;
+    b.step("test-codemode-model-allocation-shard", "Exercise one exhaustive model worker allocation range").dependOn(&codemode_model_allocation_run.step);
     const structured_result_tests = b.addTest(.{ .root_module = codemode_models_module, .use_llvm = use_llvm, .filters = &.{"native codemode models structured"} });
     b.step("test-codemode-structured-results", "Replay original arbitrary structured fields across the tool protocol").dependOn(&b.addRunArtifact(structured_result_tests).step);
     codemode_step.dependOn(&codemode_models_run.step);
@@ -844,6 +862,17 @@ pub fn build(b: *std.Build) void {
     const typed_catalog_run = b.addRunArtifact(typed_catalog_tests);
     b.step("test-typed-catalog", "Exercise Source typed catalog registration and allocation ownership").dependOn(&typed_catalog_run.step);
     test_step.dependOn(&typed_catalog_run.step);
+    const typed_auth_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_typed_auth_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"typed auth"}, .use_llvm = use_llvm });
+    const typed_auth_run = b.addRunArtifact(typed_auth_tests);
+    b.step("test-typed-auth", "Exercise private typed request credential and header ownership").dependOn(&typed_auth_run.step);
+    test_step.dependOn(&typed_auth_run.step);
+    const typed_registry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_typed_registry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"typed registry owner"}, .use_llvm = use_llvm });
+    linkQuickJs(b, typed_registry_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, typed_registry_tests.root_module);
+    typed_registry_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const typed_registry_run = b.addRunArtifact(typed_registry_tests);
+    b.step("test-typed-registry-owner", "Exercise actual Main registry snapshots and generation admission").dependOn(&typed_registry_run.step);
+    test_step.dependOn(&typed_registry_run.step);
     const sdk_stream_ownership_tests = b.addTest(.{
         .root_module = binding_tests.root_module,
         .filters = &.{ "SDK lazy chat stream continuation", "terminal admission allocation" },
@@ -922,6 +951,12 @@ pub fn build(b: *std.Build) void {
     const sdk_registry_run = b.addRunArtifact(sdk_registry_tests);
     b.step("test-sdk-model-registry", "Exercise Source compatibility facade and exact model ownership").dependOn(&sdk_registry_run.step);
     test_step.dependOn(&sdk_registry_run.step);
+    const sdk_allocation_step = b.step("test-sdk-allocation-shard", "Exercise a complete SDK allocation range with baseline and completion receipts");
+    sdk_allocation_step.dependOn(&codemode_model_allocation_run.step);
+    inline for (.{ sdk_virtual_run, sdk_session_lease_run, sdk_registry_run }) |run| {
+        run.has_side_effects = true;
+        sdk_allocation_step.dependOn(&run.step);
+    }
     const sdk_settings_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_settings_ownership_test.zig"), .target = target, .optimize = optimize });
     sdk_settings_module.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, sdk_settings_module, quickjs, sqlite_lib_dir);
@@ -941,6 +976,63 @@ pub fn build(b: *std.Build) void {
     const sdk_session_manager_run = b.addRunArtifact(sdk_session_manager_tests);
     b.step("test-sdk-session-manager", "Exercise Source session manager identities projections and allocation ownership").dependOn(&sdk_session_manager_run.step);
     test_step.dependOn(&sdk_session_manager_run.step);
+    const tui_word_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/tui_word_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const run_tui_word_tests = b.addRunArtifact(tui_word_tests);
+    const tui_word_step = b.step("test-tui-words", "Replay Source word rules dictionaries and signed UTF16 cursor boundaries");
+    tui_word_step.dependOn(&run_tui_word_tests.step);
+    test_step.dependOn(&run_tui_word_tests.step);
+    inline for (.{ .{ "unicode-words-generator", "tools/unicode_words.zig" }, .{ "word-language-data-generator", "tools/word_language_data.zig" }, .{ "word-normalization-data-generator", "tools/word_normalization_data.zig" } }) |item| {
+        const generator = b.addExecutable(.{ .name = item[0], .root_module = b.createModule(.{ .root_source_file = b.path(item[1]), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+        const check = b.addRunArtifact(generator);
+        check.addArg("--check");
+        check.setCwd(b.path("."));
+        check.has_side_effects = true;
+        tui_word_step.dependOn(&check.step);
+        test_step.dependOn(&check.step);
+    }
+    const native_list_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_list_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Source6fb public SelectList"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, native_list_tests.root_module, quickjs, sqlite_lib_dir);
+    const run_native_list_tests = b.addRunArtifact(native_list_tests);
+    b.step("test-native-lists", "Replay Source public SelectList and SettingsList callbacks layout and lifecycle").dependOn(&run_native_list_tests.step);
+    test_step.dependOn(&run_native_list_tests.step);
+    const native_layout_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_layout_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Source6fb public Text"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, native_layout_tests.root_module, quickjs, sqlite_lib_dir);
+    const native_layout_run = b.addRunArtifact(native_layout_tests);
+    b.step("test-native-layout", "Replay original public component layouts caches and callback lifecycle").dependOn(&native_layout_run.step);
+    test_step.dependOn(&native_layout_run.step);
+    const native_terminal_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_terminal_image_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Source6fb terminal capabilities"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, native_terminal_tests.root_module, quickjs, sqlite_lib_dir);
+    const native_terminal_run = b.addRunArtifact(native_terminal_tests);
+    b.step("test-native-terminal-capabilities", "Replay Source environment capability cache and admitted terminal context").dependOn(&native_terminal_run.step);
+    test_step.dependOn(&native_terminal_run.step);
+    const project_context_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/project_context_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const native_project_context_module = b.createModule(.{ .root_source_file = b.path("src/native_project_context_test.zig"), .target = target, .optimize = optimize });
+    native_project_context_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, native_project_context_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, native_project_context_module);
+    const native_project_context_tests = b.addTest(.{ .root_module = native_project_context_module, .use_llvm = use_llvm, .filters = &.{"Source f1 SDK"} });
+    const project_context_step = b.step("test-project-context", "Replay current upstream context files and native SDK resource projection");
+    const project_context_run = b.addRunArtifact(project_context_tests);
+    const native_project_context_run = b.addRunArtifact(native_project_context_tests);
+    project_context_step.dependOn(&project_context_run.step);
+    project_context_step.dependOn(&native_project_context_run.step);
+    test_step.dependOn(&project_context_run.step);
+    test_step.dependOn(&native_project_context_run.step);
     const native_input_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_input_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{ "Source6fb public Input", "native JS UTF16" },
@@ -1005,6 +1097,18 @@ pub fn build(b: *std.Build) void {
     const theme_state_step = b.step("test-theme-state", "Prove cached theme snapshot ownership and explicit empty reports without terminal I/O");
     theme_state_step.dependOn(&run_theme_state_tests.step);
     test_step.dependOn(&run_theme_state_tests.step);
+    const toolinfo_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_bindings_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "ToolInfo", "native catalog", "canonical builtin schemas" },
+        .use_llvm = use_llvm,
+    });
+    toolinfo_tests.root_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, toolinfo_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, toolinfo_tests.root_module);
+    const run_toolinfo_tests = b.addRunArtifact(toolinfo_tests);
+    const toolinfo_test_step = b.step("test-native-toolinfo", "Check source ToolInfo references and owned native catalog generations");
+    toolinfo_test_step.dependOn(&run_toolinfo_tests.step);
+    test_step.dependOn(&run_toolinfo_tests.step);
     const filesystem_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_fs.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
@@ -1125,6 +1229,11 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&typed_owner_process_run.step);
     const native_runtime_step = b.step("test-native-runtime", "Exercise the persistent native extension runtime and host without Node");
     native_runtime_step.dependOn(&run_native_runtime_tests.step);
+    const typed_main_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime typed Main"}, .use_llvm = use_llvm });
+    const typed_main_process_run = b.addRunArtifact(typed_main_process_tests);
+    typed_main_process_run.step.dependOn(b.getInstallStep());
+    b.step("test-typed-main-process", "Exercise actual Main typed registry and classifier/image/native callbacks without Node").dependOn(&typed_main_process_run.step);
+    test_step.dependOn(&typed_main_process_run.step);
     const late_registration_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_runtime_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native runtime late"},

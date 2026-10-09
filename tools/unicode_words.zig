@@ -1,0 +1,102 @@
+//! Project pinned Unicode17 word properties and actual Source scalar statuses.
+const std = @import("std");
+const Range = struct { first: u21, last: u21, property: []const u8 };
+const Input = struct { path: []const u8, hash: []const u8 };
+const word_input: Input = .{ .path = "src/tui/unicode17/WordBreakProperty.txt", .hash = "72274cac1e6b919507db35655c3e175aa27274668a1ece95c28d2069f2ad9852" };
+const scripts_input: Input = .{ .path = "src/tui/unicode17/Scripts.txt", .hash = "9f5e50d3abaee7d6ce09480f325c706f485ae3240912527e651954d2d6b035bf" };
+const line_input: Input = .{ .path = "src/tui/unicode17/LineBreak.txt", .hash = "e6a18fa91f8f6a6f8e534b1d3f128c21ada45bfe152eb6b1bcc5e15fd8ac92e6" };
+const status_input: Input = .{ .path = "src/tui/fixtures/word-scalar-status-original-6fb.json", .hash = "cc099c89bcdca69087a1f813736b83e011bb6a2e06ff9dc27447f6051649d3c1" };
+const icu_rules_input: Input = .{ .path = "src/tui/icu78/word.txt", .hash = "8c623551556473c97f32a1ecc22716c4d73fbf71b8dc500a4b461302ca146171" };
+fn read(gpa: std.mem.Allocator, io: std.Io, input: Input) ![]u8 {
+    const bytes = try std.Io.Dir.cwd().readFileAlloc(io, input.path, gpa, .limited(8 * 1024 * 1024));
+    errdefer gpa.free(bytes);
+    var hash: [32]u8 = undefined;
+    std.crypto.hash.sha2.Sha256.hash(bytes, &hash, .{});
+    if (!std.mem.eql(u8, &std.fmt.bytesToHex(hash, .lower), input.hash)) return error.WordInputHashMismatch;
+    return bytes;
+}
+fn less(_: void, a: Range, b: Range) bool {
+    return a.first < b.first;
+}
+fn ranges(gpa: std.mem.Allocator, bytes: []const u8) !std.ArrayList(Range) {
+    var result: std.ArrayList(Range) = .empty;
+    errdefer result.deinit(gpa);
+    var lines = std.mem.splitScalar(u8, bytes, '\n');
+    while (lines.next()) |raw| {
+        const line = std.mem.trim(u8, raw[0 .. std.mem.indexOfScalar(u8, raw, '#') orelse raw.len], " \t\r");
+        if (line.len == 0) continue;
+        var fields = std.mem.splitScalar(u8, line, ';');
+        const code = std.mem.trim(u8, fields.next().?, " \t");
+        const property = std.mem.trim(u8, fields.next() orelse return error.InvalidUnicodeProperty, " \t");
+        const dot = std.mem.indexOf(u8, code, "..");
+        const first = try std.fmt.parseInt(u21, if (dot) |index| code[0..index] else code, 16);
+        const last = if (dot) |index| try std.fmt.parseInt(u21, code[index + 2 ..], 16) else first;
+        try result.append(gpa, .{ .first = first, .last = last, .property = property });
+    }
+    std.mem.sort(Range, result.items, {}, less);
+    for (result.items, 0..) |range, index| if (range.first > range.last or (index > 0 and range.first <= result.items[index - 1].last)) return error.InvalidUnicodePropertyRanges;
+    return result;
+}
+pub fn main(init: std.process.Init) !void {
+    const args = try init.minimal.args.toSlice(init.arena.allocator());
+    if (args.len > 2 or (args.len == 2 and !std.mem.eql(u8, args[1], "--check"))) return error.InvalidArguments;
+    const icu_rules = try read(init.gpa, init.io, icu_rules_input);
+    defer init.gpa.free(icu_rules);
+    const word_bytes = try read(init.gpa, init.io, word_input);
+    defer init.gpa.free(word_bytes);
+    var words = try ranges(init.gpa, word_bytes);
+    defer words.deinit(init.gpa);
+    const script_bytes = try read(init.gpa, init.io, scripts_input);
+    defer init.gpa.free(script_bytes);
+    var scripts = try ranges(init.gpa, script_bytes);
+    defer scripts.deinit(init.gpa);
+    const line_bytes = try read(init.gpa, init.io, line_input);
+    defer init.gpa.free(line_bytes);
+    var line_breaks = try ranges(init.gpa, line_bytes);
+    defer line_breaks.deinit(init.gpa);
+    const status_bytes = try read(init.gpa, init.io, status_input);
+    defer init.gpa.free(status_bytes);
+    const status = try std.json.parseFromSlice(std.json.Value, init.gpa, status_bytes, .{});
+    defer status.deinit();
+    const traits = try init.gpa.alloc(u8, 0x110000);
+    defer init.gpa.free(traits);
+    @memset(traits, 0);
+    for (scripts.items) |range| {
+        const names = [_][]const u8{ "Han", "Hiragana", "Katakana", "Hangul", "Thai", "Myanmar", "Lao", "Khmer" };
+        for (names, 0..) |name, index| if (std.mem.eql(u8, name, range.property)) {
+            @memset(traits[range.first .. @as(usize, range.last) + 1], @as(u8, @intCast(index + 1)));
+            break;
+        };
+    }
+    for (line_breaks.items) |range| if (std.mem.eql(u8, range.property, "SA")) for (traits[range.first .. @as(usize, range.last) + 1]) |*value| {
+        value.* |= 16;
+    };
+    for (status.value.object.get("ranges").?.array.items) |range| for (traits[@intCast(range.object.get("first").?.integer) .. @as(usize, @intCast(range.object.get("last").?.integer)) + 1]) |*value| {
+        value.* |= 64;
+    };
+    var output: std.Io.Writer.Allocating = .init(init.gpa);
+    defer output.deinit();
+    const writer = &output.writer;
+    try writer.writeAll("//! Generated by tools/unicode_words.zig from pinned Unicode17 and Source ICU78.2 data.\n" ++
+        "pub const Word = enum { Other, CR, LF, Newline, Extend, ZWJ, Regional_Indicator, Format, Katakana, Hebrew_Letter, ALetter, Single_Quote, Double_Quote, MidNumLet, MidLetter, MidNum, Numeric, ExtendNumLet, WSegSpace };\n" ++
+        "pub const Script = enum(u4) { other, han, hiragana, katakana, hangul, thai, myanmar, lao, khmer };\n" ++
+        "pub const WordRange = struct { first: u21, last: u21, property: Word };\n" ++
+        "pub const TraitRange = struct { first: u21, last: u21, flags: u8 };\n" ++
+        "pub const words = [_]WordRange{\n");
+    for (words.items) |range| try writer.print("    .{{ .first = 0x{X}, .last = 0x{X}, .property = .{s} }},\n", .{ range.first, range.last, range.property });
+    try writer.writeAll("};\npub const traits = [_]TraitRange{\n");
+    var first: usize = 0;
+    for (1..traits.len + 1) |at| {
+        if (at == traits.len or traits[at] != traits[first]) {
+            if (traits[first] != 0) try writer.print("    .{{ .first = 0x{X}, .last = 0x{X}, .flags = {d} }},\n", .{ first, at - 1, traits[first] });
+            first = at;
+        }
+    }
+    try writer.writeAll("};\n");
+    const destination = "src/tui/icu78/generated_words.zig";
+    if (args.len == 2) {
+        const old = try std.Io.Dir.cwd().readFileAlloc(init.io, destination, init.gpa, .limited(4 * 1024 * 1024));
+        defer init.gpa.free(old);
+        if (!std.mem.eql(u8, old, output.written())) return error.StaleWordProjection;
+    } else try std.Io.Dir.cwd().writeFile(init.io, .{ .sub_path = destination, .data = output.written() });
+}

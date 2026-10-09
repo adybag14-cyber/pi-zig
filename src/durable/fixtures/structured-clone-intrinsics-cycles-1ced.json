@@ -1,0 +1,1 @@
+[{"map":[[{"n":1},{"n":2}]],"set":[{"n":3}],"view":7,"error":{"name":"TypeError","message":"original","cause":{"n":4},"stack":true},"failure":{"name":"DataCloneError","message":"function original(){} could not be cloned."},"events":[]},{"cycle":true,"detached":true}]

@@ -1,0 +1,109 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "source": {
+    "path": "packages/tui/src/components/spacer.ts",
+    "sha256": "b511acec1d33885dad23e7ab2108b2d04dff0589b3bfda53b1f7458be4381e66"
+  },
+  "cases": [
+    {
+      "expression": "undefined",
+      "lines": [
+        ""
+      ],
+      "same": false
+    },
+    {
+      "expression": "null",
+      "lines": [],
+      "same": false
+    },
+    {
+      "expression": "-2",
+      "lines": [],
+      "same": false
+    },
+    {
+      "expression": "0",
+      "lines": [],
+      "same": false
+    },
+    {
+      "expression": ".5",
+      "lines": [
+        ""
+      ],
+      "same": false
+    },
+    {
+      "expression": "1",
+      "lines": [
+        ""
+      ],
+      "same": false
+    },
+    {
+      "expression": "2.5",
+      "lines": [
+        "",
+        "",
+        ""
+      ],
+      "same": false
+    },
+    {
+      "expression": "\"2\"",
+      "lines": [
+        "",
+        ""
+      ],
+      "same": false
+    },
+    {
+      "expression": "NaN",
+      "lines": [],
+      "same": false
+    }
+  ],
+  "structural": [
+    {
+      "script": "const s=new Spacer(2),first=s.render(5);s.setLines(.5);const second=s.render(99);s.lines=-2;s.invalidate();return{first,second,last:s.render(0),own:Object.keys(s)}",
+      "result": {
+        "first": [
+          "",
+          ""
+        ],
+        "second": [
+          ""
+        ],
+        "last": [],
+        "own": [
+          "lines"
+        ]
+      }
+    },
+    {
+      "script": "return{length:Spacer.length,name:Spacer.name,methods:Object.fromEntries(Object.getOwnPropertyNames(Spacer.prototype).filter(k=>k!=='constructor').map(k=>[k,{name:Spacer.prototype[k].name,length:Spacer.prototype[k].length,enumerable:Object.getOwnPropertyDescriptor(Spacer.prototype,k).enumerable}]))}",
+      "result": {
+        "length": 0,
+        "name": "Spacer",
+        "methods": {
+          "setLines": {
+            "name": "setLines",
+            "length": 1,
+            "enumerable": false
+          },
+          "invalidate": {
+            "name": "invalidate",
+            "length": 0,
+            "enumerable": false
+          },
+          "render": {
+            "name": "render",
+            "length": 1,
+            "enumerable": false
+          }
+        }
+      }
+    }
+  ]
+}
