@@ -55,6 +55,61 @@ fn create(root: *Root, env: *const std.process.Environ.Map, trusted: bool) !*con
 fn execute(service: *configured.Service, name: []const u8, args: []const u8) !tools.ToolResult {
     return (try configured.Service.execute(service, gpa, "owned-call", name, args, discard, null, null)) orelse error.MissingConfiguredTool;
 }
+test "mcp.configured naming matches original bulk collisions duplicates and historical reservations" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var original = try json.Owned.parse(gpa, @embedFile("mcp/fixtures/mcp-tools-refresh-original-6fb.json"));
+    defer original.deinit();
+    const modes = [_][]const u8{ "--names-collisions", "--names-old", "--names-duplicates" };
+    for (modes, 0..) |mode, case_index| {
+        var root = try Root.init();
+        defer root.deinit();
+        var arena: std.heap.ArenaAllocator = .init(gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        var configuration = try stdioConfig(a, program, "direct");
+        var args: Value = .{ .array = .init(a) };
+        try args.array.append(.{ .string = mode });
+        try configuration.object.put(a, "args", args);
+        try root.write(false, try document(a, "native", configuration));
+        var env = try std.testing.environ.createMap(gpa);
+        defer env.deinit();
+        const service = try create(&root, &env, false);
+        defer service.deinit();
+        try service.start();
+        const source = original.value.object.get("rows").?.array.items[case_index];
+        const expected = source.object.get("initial").?.array.items;
+        try std.testing.expectEqual(expected.len, service.descriptors.items.len);
+        for (expected, service.descriptors.items) |row, actual| try std.testing.expectEqualStrings(try protocol.text(row, "name"), actual.name);
+        if (case_index == 1) {
+            const old_parameters = service.descriptors.items[0].parameter_id;
+            const old_namespace = service.descriptors.items[0].namespace_id;
+            const old_plain_parameters = service.descriptors.items[1].parameter_id;
+            const server = service.findServer("native").?;
+            var next: Value = .{ .array = .init(service.loaded.arena.allocator()) };
+            try next.array.append(.{ .string = "--names-new" });
+            try server.config.object.put(service.loaded.arena.allocator(), "args", next);
+            try service.reconnect("native");
+            const after = source.object.get("after").?.array.items;
+            try std.testing.expectEqual(after.len, service.descriptors.items.len);
+            for (after, service.descriptors.items) |row, actual| {
+                try std.testing.expectEqualStrings(try protocol.text(row, "name"), actual.name);
+                try std.testing.expectEqualStrings(try protocol.text(row, "exposure"), @tagName(actual.exposure));
+            }
+            try std.testing.expectEqual(old_parameters, service.descriptors.items[0].parameter_id);
+            try std.testing.expectEqual(old_namespace, service.descriptors.items[0].namespace_id);
+            try std.testing.expect(old_plain_parameters != service.descriptors.items[1].parameter_id);
+            try std.testing.expect(old_namespace != service.descriptors.items[1].namespace_id);
+            try std.testing.expectEqual(service.descriptors.items[1].namespace_id, service.descriptors.items[2].namespace_id);
+            try std.testing.expect(!service.owns(service.descriptors.items[0].name));
+            const before_refresh = service.descriptors.items[1].parameter_id;
+            try service.reconnect("native");
+            try std.testing.expectEqual(after.len, service.descriptors.items.len);
+            try std.testing.expect(before_refresh != service.descriptors.items[1].parameter_id);
+            try std.testing.expectEqual(old_parameters, service.descriptors.items[0].parameter_id);
+        }
+    }
+}
 
 test "mcp.configured resource-only servers expose native global tools with pagination remote errors and absent templates" {
     const program = try fixturePath();
@@ -383,8 +438,19 @@ test "mcp.configured direct exact override wins glob without downgrading other e
     const service = try create(&root, &env, false);
     defer service.deinit();
     try service.start();
-    try std.testing.expectEqual(@as(usize, 1), service.descriptors.items.len);
+    try std.testing.expectEqual(@as(usize, 6), service.descriptors.items.len);
     try std.testing.expectEqualStrings("mcp__fixture__double", service.descriptors.items[0].name);
+    try std.testing.expectEqual(configured.ParameterIdentity.remote_json, service.descriptors.items[0].parameter_identity);
+    for (service.descriptors.items[1..]) |descriptor| {
+        try std.testing.expectEqual(@as(@TypeOf(descriptor.exposure), .hidden), descriptor.exposure);
+        try std.testing.expect(!service.owns(descriptor.name));
+    }
+    const callable = try service.registrySchemasJson();
+    defer gpa.free(callable);
+    var parsed = try json.Owned.parse(gpa, callable);
+    defer parsed.deinit();
+    try std.testing.expectEqual(@as(usize, 1), parsed.value.array.items.len);
+    try std.testing.expectEqualStrings("mcp__fixture__double", try protocol.text(try protocol.field(parsed.value.array.items[0], "function"), "name"));
 }
 test "mcp.configured real agent schema validation dispatch and separate extension hook context" {
     const program = try fixturePath();

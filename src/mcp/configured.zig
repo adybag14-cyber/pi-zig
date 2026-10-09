@@ -12,6 +12,7 @@ const stdio = @import("stdio_transport.zig");
 const http = @import("http_transport.zig");
 const projection = @import("agent_tools.zig");
 const resource_tools = @import("resource_tools.zig");
+const tool_names = @import("tool_names.zig");
 const agent = @import("../agent/loop.zig");
 const tools = @import("../agent/tools.zig");
 const startup = @import("../durable/startup.zig");
@@ -26,7 +27,18 @@ const oauth_challenge = @import("oauth_challenge.zig");
 
 pub const Options = struct { agent_dir: []const u8, cwd: []const u8, project_trusted: bool = false, environ: *const std.process.Environ.Map, reserved_names: []const []const u8 = &.{}, output_root: ?[]const u8 = null, max_servers: usize = 64, provider_token_context: ?*anyopaque = null, provider_token: ?*const fn (?*anyopaque, std.mem.Allocator, []const u8) anyerror!?[]u8 = null, management_all: bool = false };
 pub const ParameterIdentity = enum { remote_json, resource_list, resource_read };
-pub const Descriptor = struct { server: *Server, raw_name: []const u8, name: []const u8, schema: Value, codemode_metadata: ?Value = null, exposure: config.Exposure = .direct, loaded: bool = false, resource: bool = false, definition_id: u64, parameter_identity: ParameterIdentity = .remote_json };
+const CatalogStorage = struct {
+    owned: json.Owned,
+    references: usize = 1,
+    fn release(self: *CatalogStorage, gpa: std.mem.Allocator) void {
+        std.debug.assert(self.references > 0);
+        self.references -= 1;
+        if (self.references != 0) return;
+        self.owned.deinit();
+        gpa.destroy(self);
+    }
+};
+pub const Descriptor = struct { server: *Server, raw_name: []const u8, name: []const u8, schema: Value, codemode_metadata: ?Value = null, exposure: config.Exposure = .direct, loaded: bool = false, resource: bool = false, definition_id: u64, parameter_id: u64 = 0, namespace_id: u64 = 0, storage: ?*CatalogStorage = null, parameter_identity: ParameterIdentity = .remote_json };
 pub const Server = struct {
     owner: *Service,
     name: []const u8,
@@ -187,6 +199,48 @@ pub const Server = struct {
     }
 };
 
+test "mcp.configured refresh every allocation failure preserves committed metadata and releases parsed generations" {
+    const Sweep = struct {
+        fn run(a: std.mem.Allocator) !void {
+            var loaded = try json.Owned.empty(a);
+            defer loaded.deinit();
+            var environment: std.process.Environ.Map = .init(a);
+            defer environment.deinit();
+            var service: Service = .{ .gpa = a, .io = std.testing.io, .loaded = loaded, .environment = environment, .cwd = ".", .output_root = ".", .reserved = &.{} };
+            defer {
+                for (service.descriptors.items) |descriptor| if (descriptor.storage) |storage| storage.release(a);
+                service.descriptors.deinit(a);
+                service.servers.deinit(a);
+                if (service.name_registry) |*registry| registry.deinit();
+                if (service.resource_metadata) |*metadata| metadata.deinit();
+            }
+            var server: Server = .{ .owner = &service, .name = "native", .config = .{ .object = .empty }, .connection = undefined, .timeout_ms = 1000, .auth_arena = .init(a) };
+            defer server.auth_arena.deinit();
+            try service.servers.append(a, &server);
+            var initial = try json.Owned.parse(a, "{\"initialized\":{\"capabilities\":{\"tools\":{}}},\"tools\":[{\"name\":\"old\",\"inputSchema\":{}},{\"name\":\"retained\",\"inputSchema\":{}}],\"resourcesCount\":0,\"resourceTemplatesCount\":0}");
+            defer initial.deinit();
+            var refreshed = try json.Owned.parse(a, "{\"initialized\":{\"capabilities\":{\"tools\":{}}},\"tools\":[{\"name\":\"retained\",\"inputSchema\":{}},{\"name\":\"new\",\"inputSchema\":{}}],\"resourcesCount\":0,\"resourceTemplatesCount\":0}");
+            defer refreshed.deinit();
+            try service.publishDiscovery(&server, initial.value);
+            const old_parameter = service.descriptors.items[0].parameter_id;
+            const retained_parameter = service.descriptors.items[1].parameter_id;
+            service.publishDiscovery(&server, refreshed.value) catch |err| {
+                try std.testing.expectEqual(@as(usize, 2), service.descriptors.items.len);
+                try std.testing.expectEqual(old_parameter, service.descriptors.items[0].parameter_id);
+                try std.testing.expectEqual(retained_parameter, service.descriptors.items[1].parameter_id);
+                try std.testing.expect(service.descriptors.items[0].exposure != .hidden);
+                return err;
+            };
+            try std.testing.expectEqual(@as(usize, 3), service.descriptors.items.len);
+            try std.testing.expectEqual(old_parameter, service.descriptors.items[0].parameter_id);
+            try std.testing.expect(service.descriptors.items[0].exposure == .hidden);
+            try std.testing.expect(retained_parameter != service.descriptors.items[1].parameter_id);
+            try std.testing.expectEqual(service.descriptors.items[1].namespace_id, service.descriptors.items[2].namespace_id);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Sweep.run, .{});
+}
+
 test "mcp.configured search allocation failures restore activation and release all owned result fields" {
     const Sweep = struct {
         fn run(a: std.mem.Allocator) !void {
@@ -247,6 +301,8 @@ pub const Service = struct {
     servers: std.ArrayList(*Server) = .empty,
     descriptors: std.ArrayList(Descriptor) = .empty,
     next_definition_id: u64 = 1,
+    name_registry: ?tool_names.Registry = null,
+    resource_metadata: ?json.Owned = null,
     call_mutex: std.Io.Mutex = .init,
     calls_retired: std.Io.Condition = .init,
     active_calls: usize = 0,
@@ -436,34 +492,109 @@ pub const Service = struct {
     }
     fn publishDiscovery(self: *Service, server: *Server, result: json.Value) !void {
         const initialized = try protocol.field(result, "initialized");
-        server.has_resources = json.get(try protocol.field(initialized, "capabilities"), "resources") != null;
-        server.resources_count = @intCast(try json.asInteger(try protocol.field(result, "resourcesCount")));
-        server.resource_templates_count = @intCast(try json.asInteger(try protocol.field(result, "resourceTemplatesCount")));
+        const has_resources = json.get(try protocol.field(initialized, "capabilities"), "resources") != null;
+        const resources_count: usize = @intCast(try json.asInteger(try protocol.field(result, "resourcesCount")));
+        const resource_templates_count: usize = @intCast(try json.asInteger(try protocol.field(result, "resourceTemplatesCount")));
         const listed = try protocol.field(result, "tools");
-        const a = self.loaded.arena.allocator();
-        for (listed.array.items) |item| {
+        if (self.name_registry == null) self.name_registry = try tool_names.Registry.init(self.gpa);
+        const raw_names = try self.gpa.alloc([]const u8, listed.array.items.len);
+        defer self.gpa.free(raw_names);
+        for (listed.array.items, raw_names) |item, *raw| raw.* = try protocol.text(item, "name");
+        var assigned = try self.name_registry.?.assign(server.name, raw_names);
+        defer assigned.deinit();
+        var replacement: std.ArrayList(Descriptor) = .empty;
+        defer replacement.deinit(self.gpa);
+        var created: std.ArrayList(*CatalogStorage) = .empty;
+        defer created.deinit(self.gpa);
+        var committed = false;
+        defer if (!committed) for (created.items) |storage| storage.release(self.gpa);
+        const namespace_id = try self.allocateDefinitionId();
+        var offered: std.StringHashMapUnmanaged(void) = .empty;
+        defer offered.deinit(self.gpa);
+        for (listed.array.items, assigned.value.array.items) |item, assigned_name| {
             const raw_name = try protocol.text(item, "name");
             const exposure = try config.toolExposure(server.config, raw_name);
-            if (exposure == .hidden) continue;
-            var duplicate = false;
-            for (self.descriptors.items) |descriptor| if (descriptor.server == server and std.mem.eql(u8, descriptor.raw_name, raw_name)) {
-                duplicate = true;
+            var name = assigned_name.string;
+            var name_taken = false;
+            for (self.reserved) |reserved| if (std.mem.eql(u8, name, reserved)) {
+                name_taken = true;
                 break;
             };
-            if (duplicate) continue;
-            const base = try projection.toolName(self.gpa, server.name, raw_name, false);
-            defer self.gpa.free(base);
-            const name = try projection.toolName(self.gpa, server.name, raw_name, self.taken(base));
-            defer self.gpa.free(name);
-            if (self.taken(name)) return error.DuplicateMcpToolName;
+            for (self.descriptors.items) |descriptor| if (descriptor.server != server and std.mem.eql(u8, descriptor.name, name)) {
+                name_taken = true;
+                break;
+            };
+            const collision_name = if (name_taken) try projection.toolName(self.gpa, server.name, raw_name, true) else null;
+            defer if (collision_name) |value| self.gpa.free(value);
+            if (collision_name) |value| name = value;
+            if (offered.contains(name)) return error.DuplicateMcpToolName;
+            const storage = try self.gpa.create(CatalogStorage);
+            storage.* = .{ .owned = json.Owned.empty(self.gpa) catch |err| {
+                self.gpa.destroy(storage);
+                return err;
+            } };
+            created.append(self.gpa, storage) catch |err| {
+                storage.release(self.gpa);
+                return err;
+            };
+            const a = storage.owned.arena.allocator();
+            const owned_name = try a.dupe(u8, name);
+            try offered.put(self.gpa, owned_name, {});
             const schema = try projection.schema(a, server.name, name, item);
             const metadata = try projection.codemodeMetadata(a, server.name, server.config, initialized, item);
-            try self.descriptors.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, raw_name), .name = try a.dupe(u8, name), .schema = schema, .codemode_metadata = metadata, .exposure = exposure, .definition_id = try self.allocateDefinitionId() });
+            try replacement.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, raw_name), .name = owned_name, .schema = schema, .codemode_metadata = metadata, .exposure = exposure, .definition_id = try self.allocateDefinitionId(), .parameter_id = try self.allocateDefinitionId(), .namespace_id = namespace_id, .storage = storage });
         }
-        try self.syncResourceTools();
+        // Withdrawn definitions remain visible as hidden metadata and retain
+        // their original parameter/namespace objects. Refreshing an offered
+        // definition always gets fresh identities, even for equal schema JSON.
+        for (self.descriptors.items) |descriptor| {
+            if (descriptor.server == server and !descriptor.resource) {
+                if (offered.contains(descriptor.name)) continue;
+                var hidden = descriptor;
+                if (hidden.exposure != .hidden) hidden.definition_id = try self.allocateDefinitionId();
+                hidden.exposure = .hidden;
+                hidden.loaded = false;
+                try replacement.append(self.gpa, hidden);
+            } else try replacement.append(self.gpa, descriptor);
+        }
+        var ordered: std.ArrayList(Descriptor) = .empty;
+        defer ordered.deinit(self.gpa);
+        try ordered.ensureTotalCapacity(self.gpa, replacement.items.len + 2);
+        for (self.descriptors.items) |old| for (replacement.items) |fresh| if (old.server == fresh.server and old.resource == fresh.resource and std.mem.eql(u8, old.name, fresh.name)) {
+            ordered.appendAssumeCapacity(fresh);
+            break;
+        };
+        for (replacement.items) |fresh| {
+            var existed = false;
+            for (self.descriptors.items) |old| if (old.server == fresh.server and old.resource == fresh.resource and std.mem.eql(u8, old.name, fresh.name)) {
+                existed = true;
+                break;
+            };
+            if (!existed) ordered.appendAssumeCapacity(fresh);
+        }
+        const previous_resources = server.has_resources;
+        const previous_count = server.resources_count;
+        const previous_templates = server.resource_templates_count;
+        server.has_resources = has_resources;
+        server.resources_count = resources_count;
+        server.resource_templates_count = resource_templates_count;
+        self.syncResourceToolsInto(&ordered) catch |err| {
+            server.has_resources = previous_resources;
+            server.resources_count = previous_count;
+            server.resource_templates_count = previous_templates;
+            return err;
+        };
+        for (self.descriptors.items) |descriptor| if (descriptor.server == server and !descriptor.resource and offered.contains(descriptor.name)) if (descriptor.storage) |storage| storage.release(self.gpa);
+        self.descriptors.deinit(self.gpa);
+        self.descriptors = ordered;
+        ordered = .empty;
+        committed = true;
     }
     /// Runs on the catalog line, publishing the widest visible server exposure.
     fn syncResourceTools(self: *Service) !void {
+        return self.syncResourceToolsInto(&self.descriptors);
+    }
+    fn syncResourceToolsInto(self: *Service, descriptors: *std.ArrayList(Descriptor)) !void {
         var selected: ?*Server = null;
         var exposure: config.Exposure = .hidden;
         for (self.servers.items) |server| {
@@ -475,13 +606,13 @@ pub const Service = struct {
                 exposure = candidate;
             }
         }
-        var metadata = try json.Owned.parse(self.gpa, @embedFile("resource_tool_metadata.json"));
-        defer metadata.deinit();
+        if (self.resource_metadata == null) self.resource_metadata = try json.Owned.parse(self.gpa, @embedFile("resource_tool_metadata.json"));
+        const metadata = self.resource_metadata.?;
         const a = self.loaded.arena.allocator();
         for (metadata.value.array.items) |definition| {
             const name = try protocol.text(definition, "name");
             var existing: ?*Descriptor = null;
-            for (self.descriptors.items) |*descriptor| if (descriptor.resource and std.mem.eql(u8, descriptor.name, name)) {
+            for (descriptors.items) |*descriptor| if (descriptor.resource and std.mem.eql(u8, descriptor.name, name)) {
                 existing = descriptor;
                 break;
             };
@@ -497,7 +628,7 @@ pub const Service = struct {
             var item = try json.clone(a, definition);
             try item.object.put(a, "inputSchema", try protocol.field(item, "parameters"));
             const schema = try projection.schema(a, "", name, item);
-            try self.descriptors.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, name), .name = try a.dupe(u8, name), .schema = schema, .exposure = exposure, .resource = true, .definition_id = try self.allocateDefinitionId(), .parameter_identity = if (std.mem.eql(u8, name, "read_mcp_resource")) .resource_read else .resource_list });
+            try descriptors.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, name), .name = try a.dupe(u8, name), .schema = schema, .exposure = exposure, .resource = true, .definition_id = try self.allocateDefinitionId(), .parameter_identity = if (std.mem.eql(u8, name, "read_mcp_resource")) .resource_read else .resource_list });
         }
     }
     fn allocateDefinitionId(self: *Service) !u64 {
@@ -573,7 +704,7 @@ pub const Service = struct {
         var owned = try json.Owned.empty(self.gpa);
         defer owned.deinit();
         owned.value = .{ .array = .init(owned.arena.allocator()) };
-        for (self.descriptors.items) |descriptor| if (descriptor.exposure == .direct or descriptor.loaded) try owned.value.array.append(descriptor.schema);
+        for (self.descriptors.items) |descriptor| if (descriptor.exposure != .hidden and (descriptor.exposure == .direct or descriptor.loaded)) try owned.value.array.append(descriptor.schema);
         if (self.hasDeferred() and (if (self.search_active_fn) |active| active(self.search_active_context) else true)) {
             var schema = try json.Owned.parse(self.gpa, "{\"type\":\"function\",\"function\":{\"name\":\"tool_search\",\"description\":\"Searches deferred tool metadata with BM25 and exposes matching tools for the next model call.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\"},\"limit\":{\"type\":\"number\"}},\"required\":[\"query\"]}}}");
             defer schema.deinit();
@@ -607,7 +738,7 @@ pub const Service = struct {
         var owned = try json.Owned.empty(self.gpa);
         defer owned.deinit();
         owned.value = .{ .array = .init(owned.arena.allocator()) };
-        for (self.descriptors.items) |descriptor| try owned.value.array.append(descriptor.schema);
+        for (self.descriptors.items) |descriptor| if (descriptor.exposure != .hidden) try owned.value.array.append(descriptor.schema);
         return json.stringify(self.gpa, owned.value);
     }
     /// Each DTO owns schema and discovery metadata; no mutable catalog storage escapes.
@@ -643,7 +774,7 @@ pub const Service = struct {
             documents.deinit(self.gpa);
         }
         for (self.descriptors.items) |descriptor| {
-            if (descriptor.loaded or descriptor.exposure == .direct) continue;
+            if (descriptor.loaded or descriptor.exposure == .direct or descriptor.exposure == .hidden) continue;
             const function = try protocol.field(descriptor.schema, "function");
             const document = try tool_search.createDocument(self.gpa, .{ .name = descriptor.name, .description = try protocol.text(function, "description"), .parameters = try protocol.field(function, "parameters") }, .{ .name = descriptor.server.name });
             errdefer self.gpa.free(document.text);
@@ -714,14 +845,22 @@ pub const Service = struct {
         try self.promoteReady();
         self.catalog_mutex.lockUncancelable(self.io);
         defer self.catalog_mutex.unlock(self.io);
-        for (self.descriptors.items) |descriptor| if (std.mem.eql(u8, descriptor.name, name)) return descriptor;
+        for (self.descriptors.items) |descriptor| if (descriptor.exposure != .hidden and std.mem.eql(u8, descriptor.name, name)) {
+            if (descriptor.storage) |storage| storage.references += 1;
+            return descriptor;
+        };
         return null;
+    }
+    fn releaseDescriptor(self: *Service, descriptor: Descriptor) void {
+        self.catalog_mutex.lockUncancelable(self.io);
+        defer self.catalog_mutex.unlock(self.io);
+        if (descriptor.storage) |storage| storage.release(self.gpa);
     }
     pub fn owns(self: *Service, name: []const u8) bool {
         self.catalog_mutex.lockUncancelable(self.io);
         defer self.catalog_mutex.unlock(self.io);
         if (std.mem.eql(u8, name, "tool_search")) return self.hasDeferred();
-        for (self.descriptors.items) |descriptor| if (std.mem.eql(u8, descriptor.name, name)) return true;
+        for (self.descriptors.items) |descriptor| if (descriptor.exposure != .hidden and std.mem.eql(u8, descriptor.name, name)) return true;
         return false;
     }
     pub fn exists(raw: ?*anyopaque, name: []const u8) bool {
@@ -802,6 +941,7 @@ pub const Service = struct {
         }
         if (std.mem.eql(u8, name, "tool_search") and self.owns(name)) return try self.searchResultAbort(gpa, arguments, abort_flag);
         if (try self.descriptorForName(name)) |descriptor| {
+            defer self.releaseDescriptor(descriptor);
             if (descriptor.resource) return try self.executeResource(gpa, name, arguments, abort_flag);
             const server = descriptor.server;
             const borrow = try server.connection.acquire();
@@ -938,10 +1078,11 @@ pub const Service = struct {
         {
             self.catalog_mutex.lockUncancelable(self.io);
             defer self.catalog_mutex.unlock(self.io);
-            var index: usize = 0;
-            while (index < self.descriptors.items.len) {
-                if (self.descriptors.items[index].server == server and !self.descriptors.items[index].resource) _ = self.descriptors.orderedRemove(index) else index += 1;
-            }
+            for (self.descriptors.items) |*descriptor| if (descriptor.server == server and !descriptor.resource) {
+                if (descriptor.exposure != .hidden) descriptor.definition_id = try self.allocateDefinitionId();
+                descriptor.exposure = .hidden;
+                descriptor.loaded = false;
+            };
             server.has_resources = false;
             try self.syncResourceTools();
         }
@@ -1058,7 +1199,10 @@ pub const Service = struct {
             self.gpa.destroy(server);
         }
         self.servers.deinit(self.gpa);
+        for (self.descriptors.items) |descriptor| if (descriptor.storage) |storage| storage.release(self.gpa);
         self.descriptors.deinit(self.gpa);
+        if (self.name_registry) |*registry| registry.deinit();
+        if (self.resource_metadata) |*metadata| metadata.deinit();
         self.diagnostics.deinit(self.gpa);
         self.environment.deinit();
         if (self.credentials) |*credentials| credentials.deinit();
