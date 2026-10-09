@@ -173,6 +173,9 @@ pub fn toolExposure(value: Value, name: []const u8) !Exposure {
         var iterator = items.object.iterator();
         while (iterator.next()) |entry| if (std.mem.indexOfScalar(u8, entry.key_ptr.*, '*') != null and matches(entry.key_ptr.*, name)) return exposure(alias(entry.value_ptr.*)) orelse error.InvalidMcpExposure;
     }
+    return serverExposure(value);
+}
+pub fn serverExposure(value: Value) !Exposure {
     return if (json.get(value, "exposure")) |item| exposure(alias(item)) orelse error.InvalidMcpExposure else .codemode;
 }
 pub const LoadOptions = struct { global_path: []const u8, project_path: ?[]const u8 = null, project_trusted: bool = false, max_bytes: usize = 4 * 1024 * 1024 };

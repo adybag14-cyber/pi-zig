@@ -247,7 +247,7 @@ test "native codemode nested pipeline MCP codemode servers leave the description
     defer gpa.free(before);
     var tool = try json.Owned.parse(gpa, "{\"type\":\"function\",\"function\":{\"name\":\"mcp__docs__lookup\",\"description\":\"Waited tools must not change catalog\",\"parameters\":{\"type\":\"object\"}}}");
     defer tool.deinit();
-    try service.descriptors.append(gpa, .{ .server = &server, .raw_name = "lookup", .name = "mcp__docs__lookup", .schema = tool.value, .exposure = .codemode });
+    try service.descriptors.append(gpa, .{ .server = &server, .raw_name = "lookup", .name = "mcp__docs__lookup", .schema = tool.value, .exposure = .codemode, .definition_id = 1 });
     const after = try builtin.Runtime.prepareLoadout(&runtime, gpa, &config, schemas);
     defer gpa.free(after);
     try std.testing.expectEqualStrings(before, after);

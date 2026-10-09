@@ -175,7 +175,7 @@ fn decodedText(a: std.mem.Allocator, bytes: []const u8) ![]u8 {
     try decoder.finish(&sink);
     return sink.list.toOwnedSlice(a);
 }
-fn block(a: std.mem.Allocator, io: std.Io, root: []const u8, server: []const u8, item: Value, list: *Value, saved: *std.ArrayList([]const u8)) !void {
+fn block(a: std.mem.Allocator, io: std.Io, root: []const u8, server: []const u8, readable_resources: bool, item: Value, list: *Value, saved: *std.ArrayList([]const u8)) !void {
     const kind = try protocol.text(item, "type");
     if (std.mem.eql(u8, kind, "resource_link")) {
         const uri = try protocol.text(item, "uri");
@@ -193,7 +193,8 @@ fn block(a: std.mem.Allocator, io: std.Io, root: []const u8, server: []const u8,
         defer a.free(details);
         const description = if (json.get(item, "description")) |value| try std.fmt.allocPrint(a, ": {s}", .{try json.asString(value)}) else try a.dupe(u8, "");
         defer a.free(description);
-        const text = try std.fmt.allocPrint(a, "[Resource {s} \"{s}\"{s}{s}]", .{ uri, title, details, description });
+        const read = if (readable_resources) try std.fmt.allocPrint(a, ". Read it with read_mcp_resource (server \"{s}\")", .{server}) else "";
+        const text = try std.fmt.allocPrint(a, "[Resource {s} \"{s}\"{s}{s}{s}]", .{ uri, title, details, description, read });
         defer a.free(text);
         try textBlock(a, list, text);
         return;
@@ -204,10 +205,8 @@ fn block(a: std.mem.Allocator, io: std.Io, root: []const u8, server: []const u8,
             const mime = if (json.get(resource, "mimeType")) |value| try json.asString(value) else "unknown type";
             if (!std.mem.startsWith(u8, mime, "image/")) {
                 const encoded = try json.asString(blob_value);
-                const n = try std.base64.standard.Decoder.calcSizeForSlice(encoded);
-                const bytes = try a.alloc(u8, n);
+                const bytes = try @import("../extensions/binary_encoding.zig").encode(a, encoded, .base64);
                 defer a.free(bytes);
-                try std.base64.standard.Decoder.decode(bytes, encoded);
                 const semicolon = std.mem.indexOfScalar(u8, mime, ';') orelse mime.len;
                 const normalized = try std.ascii.allocLowerString(a, try trimJs(mime[0..semicolon]));
                 defer a.free(normalized);
@@ -220,16 +219,16 @@ fn block(a: std.mem.Allocator, io: std.Io, root: []const u8, server: []const u8,
                 const uri = try protocol.text(resource, "uri");
                 const suffix = try extension(a, uri);
                 defer a.free(suffix);
+                const formatted = try size(a, @floatFromInt(bytes.len));
+                defer a.free(formatted);
                 const path = saveTracked(a, io, root, bytes, suffix, saved) catch |cause| {
                     if (cause == error.OutOfMemory) return cause;
-                    const message = try std.fmt.allocPrint(a, "[Binary resource {s} ({s}) could not be saved: {s}]", .{ uri, mime, @errorName(cause) });
+                    const message = try std.fmt.allocPrint(a, "[Binary resource {s} ({s}, {s}) could not be saved: {s}]", .{ uri, mime, formatted, @errorName(cause) });
                     defer a.free(message);
                     try textBlock(a, list, message);
                     return;
                 };
 
-                const formatted = try size(a, @floatFromInt(bytes.len));
-                defer a.free(formatted);
                 const message = try std.fmt.allocPrint(a, "[Binary resource {s} ({s}, {s}) saved to {s}]", .{ uri, mime, formatted, path });
                 defer a.free(message);
                 try textBlock(a, list, message);
@@ -244,9 +243,11 @@ fn block(a: std.mem.Allocator, io: std.Io, root: []const u8, server: []const u8,
     var projection = try @import("content.zig").toLlmContent(a, single);
     defer projection.deinit();
     for (projection.value.array.items) |value| try list.array.append(try json.clone(a, value));
-    _ = server;
 }
 pub fn convert(gpa: std.mem.Allocator, io: std.Io, root: []const u8, server: []const u8, tool: []const u8, reply: Value) !tools.ToolResult {
+    return convertWithOptions(gpa, io, root, server, tool, reply, false);
+}
+pub fn convertWithOptions(gpa: std.mem.Allocator, io: std.Io, root: []const u8, server: []const u8, tool: []const u8, reply: Value, readable_resources: bool) !tools.ToolResult {
     var owned = try json.Owned.empty(gpa);
     defer owned.deinit();
     const a = owned.arena.allocator();
@@ -256,7 +257,7 @@ pub fn convert(gpa: std.mem.Allocator, io: std.Io, root: []const u8, server: []c
     const content = try protocol.field(reply, "content");
     if (content != .array) return error.InvalidMcpToolResult;
     if (content.array.items.len > 0) {
-        for (content.array.items) |item| try block(a, io, root, server, item, &projected, &saved);
+        for (content.array.items) |item| try block(a, io, root, server, readable_resources, item, &projected, &saved);
     } else {
         var fallback = try @import("content.zig").toLlmContent(gpa, reply);
         defer fallback.deinit();

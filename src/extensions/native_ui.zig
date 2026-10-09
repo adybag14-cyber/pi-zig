@@ -119,6 +119,7 @@ pub const Manager = struct {
     bridge: ?Bridge = null,
     generation: u32 = 0,
     invocation_clock: u32 = 0,
+    component_clock: u64 = 0,
     active: bool = false,
     provider_action_fn: ?ProviderActionFn = null,
     provider_action_context: ?*anyopaque = null,
@@ -201,11 +202,13 @@ pub const Manager = struct {
     }
 
     pub fn begin(self: *Manager, generation: u32, snapshot: ?c.JSValue, signal: ?c.JSValue) !void {
-        self.finish();
         if (self.invocation_clock == std.math.maxInt(u32)) return error.NativeUiGenerationExhausted;
+        if (self.component_clock == std.math.maxInt(u64)) return error.NativeUiGenerationExhausted;
+        self.finish();
         self.generation = @max(generation, self.invocation_clock + 1);
         self.invocation_clock = self.generation;
-        self.components.generation = @as(u64, self.generation) + 1;
+        self.components.generation = @max(self.components.generation, self.component_clock + 1);
+        self.component_clock = self.components.generation;
         self.has_ui = false;
         if (snapshot) |context| {
             try self.footer_data.update(context);

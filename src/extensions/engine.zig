@@ -38,12 +38,15 @@ pub const ModuleInput = union(enum) { source: []u8, exports: c.JSValue };
 pub const Engine = struct {
     gpa: std.mem.Allocator,
     runtime: *c.JSRuntime,
+    native_memory_owner: *anyopaque,
     context: *c.JSContext,
     options: Options,
     interrupts: u64 = 0,
     cancelled: std.atomic.Value(bool) = .init(false),
     last_error: ?[]u8 = null,
     captured_exception: ?c.JSValue = null,
+    native_allocation_exception: ?c.JSValue = null,
+    native_allocation_generation: u64 = 0,
     host_data: ?*anyopaque = null,
     native_ui_manager: ?*anyopaque = null,
     host_ui_pending: usize = 0,
@@ -77,6 +80,11 @@ pub const Engine = struct {
     url_search_params_class: c.JSClassID = 0,
     url_search_params_iterator_class: c.JSClassID = 0,
     url_decode_uri_component: ?c.JSValue = null,
+    native_url_constructor: ?c.JSValue = null,
+    intrinsic_decode_uri_component: c.JSValue,
+    intrinsic_regexp_constructor: c.JSValue,
+    intrinsic_bigint_constructor: c.JSValue,
+    intrinsic_clone_operations: c.JSValue,
     event_stream_class: c.JSClassID = 0,
     event_stream_iterator_class: c.JSClassID = 0,
     event_stream_async_atom: c.JSAtom = c.JS_ATOM_NULL,
@@ -104,13 +112,21 @@ pub const Engine = struct {
     native_module_names: std.StringHashMapUnmanaged(void) = .empty,
     native_module_values: std.StringHashMapUnmanaged(c.JSValue) = .empty,
     native_namespace_counter: u64 = 0,
+    native_tool_validator_cache: ?c.JSValue = null,
+    native_tool_legacy_symbol: ?c.JSValue = null,
+    native_typebox_hash_accumulator: u64 = 14695981039346656037,
+    native_typebox_literal_error: ?c.JSValue = null,
+    native_typebox_literal_base: ?c.JSValue = null,
+    native_typebox_literal_stack: ?c.JSValue = null,
     commonjs_cache: c.JSValue,
     source_loader: ?SourceLoader = null,
 
     pub fn init(gpa: std.mem.Allocator, options: Options) !*Engine {
         const self = try gpa.create(Engine);
         errdefer gpa.destroy(self);
-        const runtime = c.JS_NewRuntime() orelse return error.OutOfMemory;
+        var memory_owner: ?*anyopaque = null;
+        const runtime = c.pi_js_new_runtime(options.memory_limit, &memory_owner) orelse return error.OutOfMemory;
+        errdefer c.pi_js_release_memory_owner(memory_owner);
         errdefer c.JS_FreeRuntime(runtime);
         c.JS_SetMemoryLimit(runtime, options.memory_limit);
         c.JS_SetMaxStackSize(runtime, options.stack_limit);
@@ -121,7 +137,20 @@ pub const Engine = struct {
             return error.OutOfMemory;
         }
         errdefer c.JS_FreeValue(context, commonjs_cache);
-        self.* = .{ .gpa = gpa, .runtime = runtime, .context = context, .options = options, .commonjs_cache = commonjs_cache };
+        const intrinsic_global = c.JS_GetGlobalObject(context);
+        defer c.JS_FreeValue(context, intrinsic_global);
+        const intrinsic_decoder = c.JS_GetPropertyStr(context, intrinsic_global, "decodeURIComponent");
+        if (c.JS_IsException(intrinsic_decoder)) return error.OutOfMemory;
+        errdefer c.JS_FreeValue(context, intrinsic_decoder);
+        const intrinsic_regexp = c.JS_GetPropertyStr(context, intrinsic_global, "RegExp");
+        if (c.JS_IsException(intrinsic_regexp)) return error.OutOfMemory;
+        errdefer c.JS_FreeValue(context, intrinsic_regexp);
+        const intrinsic_bigint = c.JS_GetPropertyStr(context, intrinsic_global, "BigInt");
+        if (c.JS_IsException(intrinsic_bigint)) return error.OutOfMemory;
+        errdefer c.JS_FreeValue(context, intrinsic_bigint);
+        const clone_operations = try @import("native_clone_intrinsics.zig").create(context);
+        errdefer c.JS_FreeValue(context, clone_operations);
+        self.* = .{ .gpa = gpa, .runtime = runtime, .native_memory_owner = memory_owner.?, .context = context, .options = options, .commonjs_cache = commonjs_cache, .intrinsic_decode_uri_component = intrinsic_decoder, .intrinsic_regexp_constructor = intrinsic_regexp, .intrinsic_bigint_constructor = intrinsic_bigint, .intrinsic_clone_operations = clone_operations };
         c.JS_SetContextOpaque(context, self);
         c.JS_SetRuntimeOpaque(runtime, self);
         c.JS_SetInterruptHandler(runtime, interrupt, self);
@@ -153,15 +182,27 @@ pub const Engine = struct {
         c.JS_FreeAtom(self.context, self.event_stream_async_atom);
         if (self.host_scheduler_deinit) |cleanup| cleanup(self);
         if (self.captured_exception) |exception| self.freeValue(exception);
+        if (self.native_allocation_exception) |exception| self.freeValue(exception);
         if (self.buffer_prototype) |prototype| self.freeValue(prototype);
         if (self.url_decode_uri_component) |decoder| self.freeValue(decoder);
+        if (self.native_url_constructor) |constructor| self.freeValue(constructor);
+        self.freeValue(self.intrinsic_decode_uri_component);
+        self.freeValue(self.intrinsic_regexp_constructor);
+        self.freeValue(self.intrinsic_bigint_constructor);
+        self.freeValue(self.intrinsic_clone_operations);
         var values = self.native_module_values.valueIterator();
         while (values.next()) |value| self.freeValue(value.*);
         self.native_module_values.deinit(self.gpa);
         if (self.native_sdk_model_bridge_registry) |value| self.freeValue(value);
+        if (self.native_tool_validator_cache) |cache| self.freeValue(cache);
+        if (self.native_tool_legacy_symbol) |symbol| self.freeValue(symbol);
+        if (self.native_typebox_literal_error) |constructor| self.freeValue(constructor);
+        if (self.native_typebox_literal_base) |constructor| self.freeValue(constructor);
+        if (self.native_typebox_literal_stack) |getter| self.freeValue(getter);
         self.freeValue(self.commonjs_cache);
         c.JS_FreeContext(self.context);
         c.JS_FreeRuntime(self.runtime);
+        c.pi_js_release_memory_owner(self.native_memory_owner);
         if (self.last_error) |message| self.gpa.free(message);
         var modules = self.modules.iterator();
         while (modules.next()) |entry| {
@@ -181,6 +222,7 @@ pub const Engine = struct {
     }
 
     pub fn beginInvocation(self: *Engine) void {
+        self.finishJob();
         self.interrupts = 0;
         self.cancelled.store(false, .release);
         if (self.last_error) |message| self.gpa.free(message);
@@ -474,6 +516,26 @@ pub const Engine = struct {
         return value;
     }
 
+    /// Remember native allocator failures crossing a C callback by object
+    /// identity. Private native callers can restore their error union without
+    /// mistaking a user's similarly named error, or a later rethrow, for OOM.
+    pub fn throwNativeOutOfMemory(self: *Engine) c.JSValue {
+        _ = c.JS_ThrowOutOfMemory(self.context);
+        const exception = c.JS_GetException(self.context);
+        if (self.native_allocation_exception) |previous| self.freeValue(previous);
+        self.native_allocation_exception = c.JS_DupValue(self.context, exception);
+        self.native_allocation_generation +%= 1;
+        return c.JS_Throw(self.context, exception);
+    }
+    pub fn nativeAllocationError(self: *Engine, err: anyerror, generation: u64) anyerror {
+        if (err == error.JavaScriptException and generation != self.native_allocation_generation) {
+            if (self.captured_exception) |exception| if (self.native_allocation_exception) |native| {
+                if (c.JS_IsStrictEqual(self.context, exception, native)) return error.OutOfMemory;
+            };
+        }
+        return err;
+    }
+
     /// Native callbacks preserve the user's exception object and identity.
     pub fn throwCaptured(self: *Engine) c.JSValue {
         if (c.JS_HasException(self.context)) return c.JS_Throw(self.context, c.JS_GetException(self.context));
@@ -573,6 +635,7 @@ pub const Engine = struct {
     /// Drain queued microtasks without awaiting a promise or sleeping on the
     /// host scheduler. Used by the persistent owner's idle event loop.
     pub fn drainReadyJobs(self: *Engine) !bool {
+        defer self.finishJob();
         var jobs: usize = 0;
         while (c.JS_IsJobPending(self.runtime)) {
             if (jobs >= self.options.job_budget) return error.JavaScriptJobLimit;
@@ -592,6 +655,7 @@ pub const Engine = struct {
     }
 
     pub fn awaitValue(self: *Engine, value: c.JSValue) !c.JSValue {
+        defer self.finishJob();
         const previous_deadline = self.host_await_deadline_ms;
         defer self.host_await_deadline_ms = previous_deadline;
         if (self.native_io) |io| {
@@ -615,6 +679,9 @@ pub const Engine = struct {
                 return error.JavaScriptException;
             }
             if (status == 0) {
+                // The promise may span another timer/I/O turn. The current
+                // job's complete microtask checkpoint ends before that turn.
+                self.finishJob();
                 if (self.host_pump) |pump| {
                     if (try pump(self)) continue;
                 }
@@ -638,6 +705,12 @@ pub const Engine = struct {
             c.JS_PROMISE_FULFILLED => c.JS_PromiseResult(self.context, value),
             else => c.JS_DupValue(self.context, value),
         };
+    }
+
+    /// Host job checkpoint, never a checkpoint between promise microtasks.
+    /// Pending jobs retain construction/deref targets until the queue drains.
+    pub fn finishJob(self: *Engine) void {
+        if (!c.JS_IsJobPending(self.runtime) and !@import("native_async_scope.zig").isActive(self)) c.JS_ClearKeptObjects(self.runtime);
     }
 
     fn captureException(self: *Engine, context: *c.JSContext) void {
@@ -666,6 +739,36 @@ pub const Engine = struct {
         return if (self.interrupts > self.options.interrupt_budget) 1 else 0;
     }
 };
+
+test "native durable VM native allocation exception tracking distinguishes fresh identity user replacements and later rethrows" {
+    const Fixture = struct {
+        fn fail(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+            return Engine.fromContext(context.?).throwNativeOutOfMemory();
+        }
+    };
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try engine.bindFunction("nativeAllocationFixture", Fixture.fail, 0);
+    var generation = engine.native_allocation_generation;
+    _ = engine.eval("nativeAllocationFixture()", "native-allocation-fresh", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        try std.testing.expectEqual(error.OutOfMemory, engine.nativeAllocationError(err, generation));
+    };
+    const native = engine.captured_exception.?;
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    if (c.JS_SetPropertyStr(engine.context, global, "savedNativeAllocation", c.JS_DupValue(engine.context, native)) < 0) return error.JavaScriptException;
+    generation = engine.native_allocation_generation;
+    _ = engine.eval("throw savedNativeAllocation", "native-allocation-rethrow", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, generation));
+    };
+    generation = engine.native_allocation_generation;
+    _ = engine.eval("try{nativeAllocationFixture()}catch(error){throw {name:'InternalError',message:'out of memory',user:true}}", "native-allocation-user-replacement", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        try std.testing.expectEqual(error.JavaScriptException, engine.nativeAllocationError(err, generation));
+    };
+    const user = try engine.checked(c.JS_GetPropertyStr(engine.context, engine.captured_exception.?, "user"));
+    defer engine.freeValue(user);
+    try std.testing.expect(c.JS_ToBool(engine.context, user) != 0);
+}
 
 test "native control pump settles an idle promise on its owner thread and bounds missing responses" {
     const Control = struct {

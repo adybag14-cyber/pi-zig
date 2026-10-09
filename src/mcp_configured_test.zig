@@ -56,6 +56,150 @@ fn execute(service: *configured.Service, name: []const u8, args: []const u8) !to
     return (try configured.Service.execute(service, gpa, "owned-call", name, args, discard, null, null)) orelse error.MissingConfiguredTool;
 }
 
+test "mcp.configured resource-only servers expose native global tools with pagination remote errors and absent templates" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var configuration = try stdioConfig(a, program, "direct");
+    var args: Value = .{ .array = .init(a) };
+    try args.array.append(.{ .string = "--resources-no-templates" });
+    try configuration.object.put(a, "args", args);
+    // Tool-specific overrides do not suppress server resources.
+    try configuration.object.put(a, "toolExposure", try map(a, &.{.{ "*", .{ .string = "hidden" } }}));
+    try root.write(false, try document(a, "native", configuration));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const service = try create(&root, &env, false);
+    defer service.deinit();
+    try service.start();
+    try std.testing.expectEqual(@as(usize, 3), service.descriptors.items.len);
+    try std.testing.expectEqual(@as(usize, 2), service.findServer("native").?.resources_count);
+    try std.testing.expectEqual(@as(usize, 0), service.findServer("native").?.resource_templates_count);
+    try std.testing.expect(service.owns("list_mcp_resources"));
+    try std.testing.expect(service.owns("list_mcp_resource_templates"));
+    try std.testing.expect(service.owns("read_mcp_resource"));
+    try std.testing.expectEqual(@import("mcp/config.zig").Exposure.direct, service.exposureOf("list_mcp_resources").?);
+    var listed = try execute(service, "list_mcp_resources", "{}");
+    defer listed.deinit(gpa);
+    var details = try json.Owned.parse(gpa, listed.details_json.?);
+    defer details.deinit();
+    const resources = try protocol.field(try protocol.field(details.value, "structuredContent"), "resources");
+    try std.testing.expectEqual(@as(usize, 2), resources.array.items.len);
+    try std.testing.expectEqualStrings("file:///second", try protocol.text(resources.array.items[1], "name"));
+    try std.testing.expect(json.get(resources.array.items[0], "icons") == null);
+    try std.testing.expect(json.get(resources.array.items[0], "_meta") == null);
+    var page = try execute(service, "list_mcp_resources", "{\"server\":\"native\"}");
+    defer page.deinit(gpa);
+    try std.testing.expect(std.mem.indexOf(u8, page.content, "nextCursor") != null);
+    var templates = try execute(service, "list_mcp_resource_templates", "{}");
+    defer templates.deinit(gpa);
+    try std.testing.expectEqualStrings("{\"resourceTemplates\":[]}", templates.content);
+    var template_page = try execute(service, "list_mcp_resource_templates", "{\"server\":\"native\"}");
+    defer template_page.deinit(gpa);
+    try std.testing.expectEqualStrings("{\"server\":\"native\",\"resourceTemplates\":[]}", template_page.content);
+    var read = try execute(service, "read_mcp_resource", "{\"server\":\"native\",\"uri\":\"file:///first\"}");
+    defer read.deinit(gpa);
+    try std.testing.expectEqualStrings("Native resource contents", read.content);
+    var remote = try execute(service, "read_mcp_resource", "{\"server\":\"native\",\"uri\":\"fail\"}");
+    defer remote.deinit(gpa);
+    try std.testing.expect(remote.is_error);
+    try std.testing.expectEqualStrings("Original resource failure", remote.content);
+}
+
+test "mcp.configured shutdown joins admitted resource callers before server catalog destruction" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var configuration = try stdioConfig(a, program, "direct");
+    var args: Value = .{ .array = .init(a) };
+    try args.array.append(.{ .string = "--resources" });
+    try configuration.object.put(a, "args", args);
+    try root.write(false, try document(a, "native", configuration));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const service = try create(&root, &env, false);
+    defer service.deinit();
+    try service.start();
+    const server = service.findServer("native").?;
+    const observed = try server.connection.acquire();
+    var borrowed = true;
+    defer if (borrowed) observed.release();
+    var calling = try io.concurrent(execute, .{ service, "read_mcp_resource", "{\"server\":\"native\",\"uri\":\"slow\"}" });
+    var joined = false;
+    defer if (!joined) {
+        if (calling.cancel(io)) |result| {
+            var owned = result;
+            owned.deinit(gpa);
+        } else |_| {}
+    };
+    for (0..1000) |_| {
+        if (observed.client.pendingCount() > 0) break;
+        try io.sleep(.fromMilliseconds(1), .awake);
+    }
+    try std.testing.expect(observed.client.pendingCount() > 0);
+    observed.release();
+    borrowed = false;
+    try service.close();
+    try std.testing.expectError(error.McpConnectionClosed, calling.await(io));
+    joined = true;
+    try std.testing.expectEqual(@as(usize, 0), service.active_calls);
+    try std.testing.expectError(error.McpConnectionClosed, execute(service, "read_mcp_resource", "{}"));
+}
+
+test "mcp.configured failed initial resource lists keep reading available and false tools capabilities skip discovery" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    for ([_][]const u8{ "--resources-failed-lists", "--resources-false-tools" }) |mode| {
+        var root = try Root.init();
+        defer root.deinit();
+        var arena: std.heap.ArenaAllocator = .init(gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        var configuration = try stdioConfig(a, program, "direct");
+        var args: Value = .{ .array = .init(a) };
+        try args.array.append(.{ .string = mode });
+        try configuration.object.put(a, "args", args);
+        try root.write(false, try document(a, "native", configuration));
+        var env = try std.testing.environ.createMap(gpa);
+        defer env.deinit();
+        const service = try create(&root, &env, false);
+        defer service.deinit();
+        try service.start();
+        try std.testing.expectEqual(@as(usize, 0), service.diagnostics.items.len);
+        const server = service.findServer("native").?;
+        try std.testing.expect(server.has_resources);
+        try std.testing.expectEqual(@as(usize, 3), service.descriptors.items.len);
+        try std.testing.expectEqual(@as(usize, if (std.mem.eql(u8, mode, "--resources-failed-lists")) 0 else 2), server.resources_count);
+        var read = try execute(service, "read_mcp_resource", "{\"server\":\"native\",\"uri\":\"file:///first\"}");
+        defer read.deinit(gpa);
+        try std.testing.expectEqualStrings("Native resource contents", read.content);
+        const cli = try gpa.dupe(u8, env.get("PI_MCP_CONFIGURED_CLI") orelse return error.MissingCliFixture);
+        defer gpa.free(cli);
+        try env.put("PI_AGENT_DIR", root.path);
+        try env.put("PI_OFFLINE", "1");
+        try env.put("PATH", std.fs.path.dirname(cli).?);
+        const output = try std.process.run(gpa, io, .{ .argv = &.{ cli, "mcp", "list", "--json" }, .cwd = .{ .path = root.path }, .environ_map = &env, .stdout_limit = .limited(65536), .stderr_limit = .limited(65536), .timeout = .{ .duration = .{ .raw = .fromSeconds(20), .clock = .awake } } });
+        defer gpa.free(output.stdout);
+        defer gpa.free(output.stderr);
+        try std.testing.expect(output.term == .exited and output.term.exited == 0);
+        var report = try json.Owned.parse(gpa, output.stdout);
+        defer report.deinit();
+        const row = (try protocol.field(report.value, "servers")).array.items[0];
+        try std.testing.expectEqualStrings("connected", try protocol.text(row, "state"));
+        try std.testing.expectEqual(@as(usize, 0), (try protocol.field(row, "tools")).array.items.len);
+        try std.testing.expectEqual(@as(f64, if (std.mem.eql(u8, mode, "--resources-failed-lists")) 0 else 2), try json.asNumber(try protocol.field(row, "resources")));
+        try std.testing.expectEqual(@as(f64, if (std.mem.eql(u8, mode, "--resources-failed-lists")) 0 else 1), try json.asNumber(try protocol.field(row, "resourceTemplates")));
+    }
+}
+
 test "mcp.configured trusted project overrides and untrusted files never execute" {
     const program = try fixturePath();
     defer gpa.free(program);
@@ -1082,4 +1226,57 @@ test "mcp.configured background direct timeout reports original notice once and 
     try std.testing.expectEqual(@as(usize, 1), notice.calls);
     try service.awaitForScript("text(await tools.read({path:'input.txt'}));", null);
     try service.close();
+}
+
+test "mcp.configured background shutdown cancels a pending reconnect factory before lifecycle retirement" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    try root.write(false, try document(arena.allocator(), "fixture", try stdioConfig(arena.allocator(), program, "direct")));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const service = try create(&root, &env, false);
+    defer service.deinit();
+    try service.startBackground();
+    try service.awaitStartup();
+    const Probe = struct {
+        entered: std.Io.Event = .unset,
+        cleaned: std.atomic.Value(bool) = .init(false),
+        fn factory(raw: ?*anyopaque, _: std.mem.Allocator, operation_io: std.Io, _: usize) !@import("mcp/connection.zig").Lease {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            defer self.cleaned.store(true, .release);
+            self.entered.set(operation_io);
+            try operation_io.sleep(.fromSeconds(3600), .awake);
+            return error.UnexpectedReconnectRelease;
+        }
+    };
+    var probe: Probe = .{};
+    const server = service.findServer("fixture").?;
+    server.connection.options.factory = Probe.factory;
+    server.connection.options.factory_context = &probe;
+    var reconnecting = try io.concurrent(configured.Service.reconnect, .{ service, "fixture" });
+    var joined = false;
+    defer if (!joined) reconnecting.cancel(io) catch {};
+    try probe.entered.wait(io);
+    var queued = try io.concurrent(configured.Service.reconnect, .{ service, "fixture" });
+    var queued_joined = false;
+    defer if (!queued_joined) queued.cancel(io) catch {};
+    server.lifecycle_mutex.lockUncancelable(io);
+    while (server.reconnect_callers < 2) server.lifecycle_changed.waitUncancelable(io, &server.lifecycle_mutex);
+    server.lifecycle_mutex.unlock(io);
+    try service.close();
+    try std.testing.expectError(error.McpConnectionClosed, queued.await(io));
+    queued_joined = true;
+    reconnecting.await(io) catch |cause| switch (cause) {
+        error.Canceled, error.McpConnectionClosed => {},
+        else => return cause,
+    };
+    joined = true;
+    try std.testing.expect(probe.cleaned.load(.acquire));
+    try std.testing.expect(!server.reconnect_active);
+    try std.testing.expectEqual(@as(usize, 0), server.reconnect_callers);
+    try std.testing.expect(server.connection.connectionState() == .closed);
 }

@@ -71,6 +71,9 @@ pub fn retire(engine: *engine_mod.Engine, value: c.JSValue) void {
 pub fn capture(engine: *engine_mod.Engine) c.JSValue {
     return if (state(engine)) |s| c.JS_DupValue(engine.context, s.current) else c.pi_js_undefined();
 }
+pub fn isActive(engine: *engine_mod.Engine) bool {
+    return if (state(engine)) |s| !c.JS_IsUndefined(s.current) else false;
+}
 pub fn requireLive(engine: *engine_mod.Engine) !void {
     const s = state(engine) orelse return;
     if (s.failed) return error.OutOfMemory;

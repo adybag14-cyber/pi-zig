@@ -1151,6 +1151,9 @@ JS_EXTERN JSValue JS_PromiseThen(JSContext *ctx, JSValueConst promise,
 JS_EXTERN JSPromiseStateEnum JS_PromiseState(JSContext *ctx,
                                              JSValueConst promise);
 JS_EXTERN JSValue JS_PromiseResult(JSContext *ctx, JSValueConst promise);
+/* Host checkpoint after an execution job and its microtasks have completed.
+   WeakRef construction and successful deref keep their target until here. */
+JS_EXTERN void JS_ClearKeptObjects(JSRuntime *rt);
 JS_EXTERN bool JS_IsPromise(JSValueConst val);
 JS_EXTERN void JS_PromiseMarkAsHandled(JSContext *ctx, JSValueConst promise);
 JS_EXTERN JSValue JS_NewSettledPromise(JSContext *ctx, bool is_reject, JSValueConst value);

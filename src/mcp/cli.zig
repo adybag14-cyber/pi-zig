@@ -402,7 +402,7 @@ fn serverReport(a: std.mem.Allocator, entry: json.Value, service: *@import("conf
     defer borrowed.release();
     const capabilities = @import("capabilities.zig");
     const offers = try protocol.field(borrowed.client.initialized.?.value, "capabilities");
-    if (json.get(offers, "tools") != null) {
+    if (capabilities.offersTools(offers)) {
         var listed = try capabilities.listAll(borrowed.client, .tools, .{ .timeout_ms = server.timeout_ms });
         defer listed.deinit();
         var overrides: json.Value = .{ .object = .empty };
@@ -415,12 +415,9 @@ fn serverReport(a: std.mem.Allocator, entry: json.Value, service: *@import("conf
         if (overrides.object.count() != 0) try report.object.put(a, "toolExposure", overrides);
     }
     if (json.get(offers, "resources") != null) {
-        var resources = try capabilities.listAll(borrowed.client, .resources, .{ .timeout_ms = server.timeout_ms });
-        defer resources.deinit();
-        var templates = try capabilities.listAll(borrowed.client, .resource_templates, .{ .timeout_ms = server.timeout_ms });
-        defer templates.deinit();
-        try report.object.put(a, "resources", .{ .integer = @intCast(resources.value.array.items.len) });
-        try report.object.put(a, "resourceTemplates", .{ .integer = @intCast(templates.value.array.items.len) });
+        const counts = try @import("configured.zig").Service.resourceCounts(server);
+        try report.object.put(a, "resources", .{ .integer = @intCast(counts.resources) });
+        try report.object.put(a, "resourceTemplates", .{ .integer = @intCast(counts.templates) });
     }
     try report.object.put(a, "state", .{ .string = "connected" });
     return report;
@@ -488,7 +485,7 @@ fn toolCount(server: *@import("configured.zig").Server) !usize {
     const borrowed = try server.connection.acquire();
     defer borrowed.release();
     const offers = try protocol.field(borrowed.client.initialized.?.value, "capabilities");
-    if (json.get(offers, "tools") == null) return 0;
+    if (!@import("capabilities.zig").offersTools(offers)) return 0;
     var tools = try @import("capabilities.zig").listAll(borrowed.client, .tools, .{ .timeout_ms = server.timeout_ms });
     defer tools.deinit();
     return tools.value.array.items.len;

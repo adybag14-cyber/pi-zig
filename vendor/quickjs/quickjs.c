@@ -387,6 +387,9 @@ struct JSRuntime {
     JSValue execution_context;
     JSExecutionContextHook *execution_context_hook;
     void *execution_context_opaque;
+    JSValue *kept_objects;
+    size_t kept_objects_count;
+    size_t kept_objects_capacity;
     // for smuggling the parent promise from js_promise_then
     // to js_promise_constructor
     JSValueLink *parent_promise;
@@ -2490,6 +2493,20 @@ void JS_SetSharedArrayBufferFunctions(JSRuntime *rt,
     rt->sab_funcs = *sf;
 }
 
+void JS_ClearKeptObjects(JSRuntime *rt)
+{
+    /* Native callbacks may pump nested promises while their caller's JS job
+       is still on the stack. Such a nested pump is not a host checkpoint. */
+    if (rt->current_stack_frame)
+        return;
+    /* Drop each external root before releasing it. A finalizer cannot leave
+       a stale count or make the same retained reference release twice. */
+    while (rt->kept_objects_count != 0) {
+        JSValue target = rt->kept_objects[--rt->kept_objects_count];
+        JS_FreeValueRT(rt, target);
+    }
+}
+
 /* return 0 if OK, < 0 if exception */
 int JS_EnqueueJob(JSContext *ctx, JSJobFunc *job_func,
                   int argc, JSValueConst *argv)
@@ -2680,6 +2697,10 @@ void JS_FreeRuntime(JSRuntime *rt)
 
     rt->in_free = true;
     JS_FreeValueRT(rt, rt->execution_context);
+    JS_ClearKeptObjects(rt);
+    js_free_rt(rt, rt->kept_objects);
+    rt->kept_objects = NULL;
+    rt->kept_objects_capacity = 0;
     JS_FreeValueRT(rt, rt->current_exception);
 
     list_for_each_safe(el, el1, &rt->job_list) {
@@ -63099,6 +63120,33 @@ typedef struct JSWeakRefData {
 
 static JSWeakRefData js_weakref_sentinel;
 
+static int js_add_to_kept_objects(JSContext *ctx, JSValueConst target)
+{
+    JSRuntime *rt = ctx->rt;
+    size_t i;
+    for (i = 0; i < rt->kept_objects_count; i++) {
+        if (js_same_value(ctx, rt->kept_objects[i], target))
+            return 0;
+    }
+    if (rt->kept_objects_count == rt->kept_objects_capacity) {
+        size_t capacity = rt->kept_objects_capacity ? rt->kept_objects_capacity * 2 : 16;
+        JSValue *objects;
+        if (capacity < rt->kept_objects_capacity || capacity > SIZE_MAX / sizeof(JSValue)) {
+            JS_ThrowOutOfMemory(ctx);
+            return -1;
+        }
+        objects = js_realloc(ctx, rt->kept_objects, capacity * sizeof(JSValue));
+        if (!objects)
+            return -1;
+        rt->kept_objects = objects;
+        rt->kept_objects_capacity = capacity;
+    }
+    /* This duplicate is an external runtime root, like queued job argv.
+       The cycle collector observes its reference without a weak-edge mark. */
+    rt->kept_objects[rt->kept_objects_count++] = js_dup(target);
+    return 0;
+}
+
 static void js_weakref_finalizer(JSRuntime *rt, JSValueConst val)
 {
     JSWeakRefData *wrd = JS_GetOpaque(val, JS_CLASS_WEAK_REF);
@@ -63129,7 +63177,6 @@ static JSValue js_weakref_constructor(JSContext *ctx, JSValueConst new_target,
     JSValueConst arg = argv[0];
     if (!is_valid_weakref_target(arg))
         return JS_ThrowTypeError(ctx, "invalid target");
-    // TODO(saghul): short-circuit if the refcount is 1?
     JSValue obj = js_create_from_ctor(ctx, new_target, JS_CLASS_WEAK_REF);
     if (JS_IsException(obj))
         return JS_EXCEPTION;
@@ -63142,6 +63189,12 @@ static JSValue js_weakref_constructor(JSContext *ctx, JSValueConst new_target,
     if (!wr) {
         JS_FreeValue(ctx, obj);
         js_free(ctx, wrd);
+        return JS_EXCEPTION;
+    }
+    if (js_add_to_kept_objects(ctx, arg) < 0) {
+        JS_FreeValue(ctx, obj);
+        js_free(ctx, wrd);
+        js_free(ctx, wr);
         return JS_EXCEPTION;
     }
     wrd->target = arg;
@@ -63161,6 +63214,8 @@ static JSValue js_weakref_deref(JSContext *ctx, JSValueConst this_val, int argc,
         return JS_EXCEPTION;
     if (wrd == &js_weakref_sentinel)
         return JS_UNDEFINED;
+    if (js_add_to_kept_objects(ctx, wrd->target) < 0)
+        return JS_EXCEPTION;
     return js_dup(wrd->target);
 }
 

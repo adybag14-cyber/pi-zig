@@ -5,6 +5,18 @@ const protocol = @import("protocol.zig");
 const json = protocol.json;
 const Value = protocol.Value;
 pub const List = enum { tools, resources, resource_templates, prompts };
+pub fn offersTools(offers: Value) bool {
+    const value = json.get(offers, "tools") orelse return false;
+    return switch (value) {
+        .null => false,
+        .bool => value.bool,
+        .integer => value.integer != 0,
+        .float => value.float != 0 and !std.math.isNan(value.float),
+        .number_string => (json.asNumber(value) catch return true) != 0,
+        .string => value.string.len != 0,
+        .array, .object => true,
+    };
+}
 fn method(kind: List) []const u8 {
     return switch (kind) {
         .tools => "tools/list",
@@ -56,7 +68,7 @@ pub fn listAll(client: *session.Client, kind: List, options: session.RequestOpti
         if (cursor) |value| try params.object.put(a, "cursor", .{ .string = value });
         var page = try client.request(method(kind), if (cursor != null) params else null, options);
         defer page.deinit();
-        if (page.value != .object) return error.InvalidMcpListPage;
+        try normalizeListPage(&page, kind);
         const list = try protocol.field(page.value, key(kind));
         if (list != .array) return error.InvalidMcpListPage;
         for (list.array.items) |value| {
@@ -77,6 +89,35 @@ pub fn listAll(client: *session.Client, kind: List, options: session.RequestOpti
         cursor = copied;
     }
     return error.TooManyMcpPages;
+}
+pub fn listPage(client: *session.Client, kind: List, cursor: ?[]const u8, options: session.RequestOptions) !json.Owned {
+    var params = try json.Owned.empty(client.gpa);
+    defer params.deinit();
+    params.value = .{ .object = .empty };
+    if (cursor) |value| try params.value.object.put(params.arena.allocator(), "cursor", .{ .string = value });
+    var result = try client.request(method(kind), if (cursor != null) params.value else null, options);
+    errdefer result.deinit();
+    try normalizeListPage(&result, kind);
+    return result;
+}
+/// The Source client exposes only normalized list entries and a nonempty cursor.
+pub fn normalizeListPage(result: *json.Owned, kind: List) !void {
+    if (result.value != .object) return error.InvalidMcpListPage;
+    const items = try protocol.field(result.value, key(kind));
+    if (items != .array) return error.InvalidMcpListPage;
+    for (items.array.items) |*item| {
+        try validateItem(kind, item.*);
+        if ((kind == .resources or kind == .resource_templates) and json.get(item.*, "name") == null) try item.object.put(result.arena.allocator(), "name", try protocol.field(item.*, if (kind == .resources) "uri" else "uriTemplate"));
+    }
+    var normalized: Value = .{ .object = .empty };
+    try normalized.object.put(result.arena.allocator(), key(kind), items);
+    if (json.get(result.value, "nextCursor")) |next| {
+        if (next != .null and !(next == .string and next.string.len == 0)) {
+            if (next != .string) return error.InvalidMcpCursor;
+            try normalized.object.put(result.arena.allocator(), "nextCursor", next);
+        }
+    }
+    result.value = normalized;
 }
 pub fn validateCallTool(value: *Value, a: std.mem.Allocator) !void {
     if (value.* != .object) return error.InvalidMcpToolResult;

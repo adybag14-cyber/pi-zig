@@ -130,6 +130,32 @@ pub const Connection = struct {
         self.borrowers += 1;
         return .{ .owner = self, .client = client };
     }
+    pub fn inOwnerCallback(self: *const Connection) bool {
+        return session.Client.inOwnerCallback(self);
+    }
+    /// Reuse stable synchronization storage after every old request/Borrow retires.
+    pub fn reset(self: *Connection, options: Options, owner_closing: *const std.atomic.Value(bool)) !void {
+        try self.close();
+        self.close_mutex.lockUncancelable(self.io);
+        defer self.close_mutex.unlock(self.io);
+        if (owner_closing.load(.acquire)) return error.McpConnectionClosed;
+        self.mutex.lockUncancelable(self.io);
+        const client = self.client;
+        const lease = self.lease;
+        self.client = null;
+        self.lease = null;
+        self.mutex.unlock(self.io);
+        if (client) |value| value.deinit();
+        if (lease) |value| value.deinit();
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (owner_closing.load(.acquire)) return error.McpConnectionClosed;
+        self.options = options;
+        self.state = .idle;
+        self.cause = null;
+        self.shutdown.store(false, .release);
+        self.changed.broadcast(self.io);
+    }
     pub fn close(self: *Connection) !void {
         // Consult callback-owned identity before touching this connection's
         // locks or shutdown state. Another closer may already hold close_mutex

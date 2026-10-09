@@ -413,6 +413,140 @@ test "native MouseRegion real terminal pointer ACK precedes keyboard capture cro
     }
 }
 
+test "Source6fb public Text Box Spacer real native modal updates cache padding columns and restores both terminal modes" {
+    if (!pty.supported()) return error.SkipZigTest;
+    for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
+        var fixture = try Fixture.init(mode);
+        defer fixture.deinit();
+        const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+        defer errors.close(std.testing.io);
+        const source =
+            \\import{Text,Box,Spacer}from'pi-tui';export default pi=>pi.registerCommand('layout-proof',{async handler(_,ctx){const result=await ctx.ui.custom((tui,theme,keys,done)=>{const text=new Text('NATIVE_LAYOUT:one界😀 words',1,1,line=>'\x1b[41m'+line+'\x1b[49m'),spacer=new Spacer(1),box=new Box(2,1,line=>'\x1b[42m'+line+'\x1b[49m');box.addChild(text);box.addChild(spacer);box.handleInput=data=>{if(data==='c'){text.setText('NATIVE_LAYOUT:two界😀 words');box.setBgFn(line=>'\x1b[44m'+line+'\x1b[49m')}else if(data==='p'){text.setPaddingX(0);text.setText('NATIVE_LAYOUT:padding')}else if(data==='\x1b'){const textCached=text.render(20)===text.render(20),boxCached=box.render(60)===box.render(60),spacerFresh=spacer.render(20)!==spacer.render(20);done({textCached,boxCached,spacerFresh})}tui.requestRender()};return box},{overlay:true,overlayOptions:{width:60,height:14,row:4,col:5}});return{message:'LAYOUT_DONE:'+JSON.stringify(result)}}})
+        ;
+        var child = try fixture.spawnExtension(errors, source);
+        defer child.deinit();
+        var observed = try Observer.init();
+        defer observed.deinit();
+        try observed.waitInitialStartup(&child, ">");
+        try observed.send(&child, "/layout-proof\r", "NATIVE_LAYOUT:one界😀 words");
+        try std.testing.expectEqual(@as(u21, 'N'), observed.screen.cells()[6 * observed.screen.columns + 8].scalar);
+        try observed.send(&child, "c", "NATIVE_LAYOUT:two界😀 words");
+        try observed.send(&child, "p", "NATIVE_LAYOUT:padding");
+        try std.testing.expectEqual(@as(u21, 'N'), observed.screen.cells()[6 * observed.screen.columns + 7].scalar);
+        try observed.send(&child, "\x1b", "LAYOUT_DONE:{\"textCached\":true,\"boxCached\":true,\"spacerFresh\":true}");
+        try observed.send(&child, "after-layout-proof", "> after-layout-proof");
+        try cleanExit(&fixture, &child, &observed);
+    }
+}
+
+test "Source6fb public SelectList SettingsList real native modal filters changes delegates submenu and restores both terminal modes" {
+    if (!pty.supported()) return error.SkipZigTest;
+    for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
+        var fixture = try Fixture.init(mode);
+        defer fixture.deinit();
+        const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+        defer errors.close(std.testing.io);
+        const source =
+            \\import{SelectList,SettingsList,Input}from'pi-tui';export default pi=>pi.registerCommand('lists-proof',{async handler(_,ctx){const result=await ctx.ui.custom((tui,theme,keys,done)=>{let stage='select',selection='alpha',changed='none';const listTheme={selectedText:x=>x,description:x=>x,scrollInfo:x=>x,noMatch:x=>x},select=new SelectList([{value:'alpha',label:'Alpha'},{value:'beta',label:'Beta'}],2,listTheme),settingsTheme={cursor:'→ ',label:x=>x,value:x=>x,description:x=>x,hint:x=>x};let settings;const items=[{id:'alpha',label:'Alpha',currentValue:'one',values:['one','two']},{id:'beta',label:'Beta',currentValue:'one',values:['one','two'],description:'Native settings description with wrapped words'},{id:'sub',label:'Submenu',currentValue:'old',submenu(value,close){const input=new Input({prompt:'SUBMENU_NATIVE:'});input.setValue(value);input.onSubmit=value=>close(value);input.onEscape=()=>close();return input}}];settings=new SettingsList(items,3,settingsTheme,(id,value)=>{changed=id+':'+value},()=>done({selection,beta:items[1].currentValue,sub:items[2].currentValue,query:settings.searchInput.getValue()}),{enableSearch:true});select.onSelectionChange=item=>{selection=item.value};select.onSelect=item=>{selection=item.value;stage='settings'};select.onCancel=()=>done(null);return{render(width){return stage==='select'?['LIST_SELECT:'+selection,...select.render(width)]:['LIST_SETTINGS:'+changed,...settings.render(width)]},handleInput(data){(stage==='select'?select:settings).handleInput(data);tui.requestRender()},handleMouse(event){return(stage==='select'?select:settings).handleMouse(event)},invalidate(){select.invalidate();settings.invalidate()}}},{overlay:true,overlayOptions:{width:60,height:15,row:4,col:5}});return{message:'LISTS_DONE:'+JSON.stringify(result)}}})
+        ;
+        var child = try fixture.spawnExtension(errors, source);
+        defer child.deinit();
+        var observed = try Observer.init();
+        defer observed.deinit();
+        try observed.waitInitialStartup(&child, ">");
+        try observed.send(&child, "/lists-proof\r", "LIST_SELECT:alpha");
+        try observed.send(&child, "\x1b[B", "LIST_SELECT:beta");
+        try observed.send(&child, "\r", "LIST_SETTINGS:none");
+        try observed.send(&child, "bet", "> bet");
+        try observed.send(&child, "\r", "LIST_SETTINGS:beta:two");
+        try observed.send(&child, "\x15sub", "> sub");
+        try observed.send(&child, "\r", "SUBMENU_NATIVE:old");
+        try observed.send(&child, "\x05\x15chosen\r", "LIST_SETTINGS:sub:chosen");
+        try observed.send(&child, "\x1b", "LISTS_DONE:{\"selection\":\"beta\",\"beta\":\"two\",\"sub\":\"chosen\",\"query\":\"sub\"}");
+        try observed.send(&child, "after-lists-proof", "> after-lists-proof");
+        try cleanExit(&fixture, &child, &observed);
+    }
+}
+
+test "Source6fb public Input real native word modifiers preserve all dictionary scripts and restoration" {
+    if (!pty.supported()) return error.SkipZigTest;
+    const gpa = std.testing.allocator;
+    const oracle = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("extensions/fixtures/input-words-original-6fb.json"), .{});
+    defer oracle.deinit();
+    const Sample = struct { mode: []const u8, seed: []const u8, expected: []u8, cursor: i64 };
+    const Seeds = [_]struct { mode: []const u8, value: []const u8 }{
+        .{ .mode = "cjk", .value = "中文测试语言" },
+        .{ .mode = "thai", .value = "ภาษาไทยภาษาอังกฤษ" },
+        .{ .mode = "lao", .value = "ຂ້ອຍຮຽນພາສາລາວ" },
+        .{ .mode = "khmer", .value = "ខ្ញុំកំពុងរៀនភាសាខ្មែរ" },
+        .{ .mode = "myanmar", .value = "ကျွန်ုပ်မြန်မာဘာသာလေ့လာနေသည်" },
+    };
+    var samples: std.ArrayList(Sample) = .empty;
+    defer {
+        for (samples.items) |sample| gpa.free(sample.expected);
+        samples.deinit(gpa);
+    }
+    for (Seeds) |seed| {
+        const units = try std.unicode.utf8ToUtf16LeAlloc(gpa, seed.value);
+        defer gpa.free(units);
+        var target: ?usize = null;
+        for (oracle.value.object.get("cases").?.array.items) |item| {
+            if (item.object.get("kitty").?.bool or !std.mem.eql(u8, item.object.get("key").?.string, "\x1bb") or item.object.get("cursor").?.integer != units.len) continue;
+            const original = item.object.get("units").?.array.items;
+            if (original.len != units.len) continue;
+            var equal = true;
+            for (original, units) |value, unit| if (value.integer != unit) {
+                equal = false;
+                break;
+            };
+            if (equal) {
+                target = @intCast(item.object.get("first").?.object.get("cursor").?.integer);
+                break;
+            }
+        }
+        const at = target orelse return error.MissingSourceWordModifierGolden;
+        const modified = try gpa.alloc(u16, units.len + 1);
+        defer gpa.free(modified);
+        @memcpy(modified[0..at], units[0..at]);
+        modified[at] = '#';
+        @memcpy(modified[at + 1 ..], units[at..]);
+        const expected = try std.unicode.utf16LeToUtf8Alloc(gpa, modified);
+        errdefer gpa.free(expected);
+        try samples.append(gpa, .{ .mode = seed.mode, .seed = seed.value, .expected = expected, .cursor = @intCast(at + 1) });
+    }
+    var source: Io.Writer.Allocating = .init(gpa);
+    defer source.deinit();
+    try source.writer.writeAll("import{Input}from'pi-tui';const samples=");
+    try std.json.Stringify.value(samples.items, .{}, &source.writer);
+    try source.writer.writeAll(";export default pi=>{pi.registerCommand('word-proof',{async handler(mode,ctx){mode=mode.trim();const sample=samples.find(item=>item.mode===mode);if(!sample)throw Error('unknown word mode');const result=await ctx.ui.custom((tui,theme,keys,done)=>{const input=new Input({prompt:'WORD_NATIVE:'});input.setValue(sample.seed);input.onSubmit=value=>done({matches:value===sample.expected,cursor:input.cursor});input.onEscape=()=>done({matches:false,cursor:-1});return input},{overlay:true,overlayOptions:{width:80,height:3,row:5,col:7}});return{message:'WORD_MODE_DONE:'+mode+':'+result.matches+':'+result.cursor}}});pi.registerCommand('word-dialog',{async handler(_,ctx){const value=await ctx.ui.input('WORD_DIALOG_TITLE','');return{message:'WORD_DIALOG_DONE:'+(value==='中文测试#语言')}}});}");
+    for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
+        var fixture = try Fixture.init(mode);
+        defer fixture.deinit();
+        const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
+        defer errors.close(std.testing.io);
+        var child = try fixture.spawnExtension(errors, source.written());
+        defer child.deinit();
+        var observed = try Observer.init();
+        defer observed.deinit();
+        try observed.waitInitialStartup(&child, ">");
+        for (samples.items) |sample| {
+            const command = try std.fmt.allocPrint(gpa, "/word-proof {s}\r", .{sample.mode});
+            defer gpa.free(command);
+            try observed.send(&child, command, "WORD_NATIVE:");
+            const result = try std.fmt.allocPrint(gpa, "WORD_MODE_DONE:{s}:true:{d}", .{ sample.mode, sample.cursor });
+            defer gpa.free(result);
+            try observed.send(&child, "\x05\x1bb#\r", result);
+        }
+        try observed.send(&child, "/word-dialog\r", "WORD_DIALOG_TITLE");
+        try observed.send(&child, "中文测试语言\x1bb#\r", "WORD_DIALOG_DONE:true");
+        try observed.send(&child, "after-word-proof", "> after-word-proof");
+        try observed.send(&child, "\x15中文测试语言", "> 中文测试语言");
+        try observed.send(&child, "\x1bb#", "> 中文测试#语言");
+        try observed.send(&child, "\x05\x15after-core-word", "> after-core-word");
+        try cleanExit(&fixture, &child, &observed);
+    }
+}
+
 test "Source6fb public Input real native modal preserves UTF16 edits paste undo cursor cells and restoration" {
     if (!pty.supported()) return error.SkipZigTest;
     for ([_][]const u8{ "regular", "fullscreen" }) |mode| {
