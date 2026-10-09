@@ -1,0 +1,96 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "key": "",
+      "error": {
+        "name": "Error",
+        "message": "Nested call key \"\" must be non-empty, without \"/\", not \"__proto__\", and not a positive integer"
+      }
+    },
+    {
+      "key": "/",
+      "error": {
+        "name": "Error",
+        "message": "Nested call key \"/\" must be non-empty, without \"/\", not \"__proto__\", and not a positive integer"
+      }
+    },
+    {
+      "key": "a/b",
+      "error": {
+        "name": "Error",
+        "message": "Nested call key \"a/b\" must be non-empty, without \"/\", not \"__proto__\", and not a positive integer"
+      }
+    },
+    {
+      "key": "__proto__",
+      "error": {
+        "name": "Error",
+        "message": "Nested call key \"__proto__\" must be non-empty, without \"/\", not \"__proto__\", and not a positive integer"
+      }
+    },
+    {
+      "key": "1",
+      "error": {
+        "name": "Error",
+        "message": "Nested call key \"1\" must be non-empty, without \"/\", not \"__proto__\", and not a positive integer"
+      }
+    },
+    {
+      "key": "2",
+      "error": {
+        "name": "Error",
+        "message": "Nested call key \"2\" must be non-empty, without \"/\", not \"__proto__\", and not a positive integer"
+      }
+    },
+    {
+      "key": "999999999999999999999",
+      "error": {
+        "name": "Error",
+        "message": "Nested call key \"999999999999999999999\" must be non-empty, without \"/\", not \"__proto__\", and not a positive integer"
+      }
+    },
+    {
+      "key": "0",
+      "ok": true
+    },
+    {
+      "key": "01",
+      "ok": true
+    },
+    {
+      "key": "-1",
+      "ok": true
+    },
+    {
+      "key": "a",
+      "ok": true
+    },
+    {
+      "key": "a\\b",
+      "ok": true
+    },
+    {
+      "key": "é",
+      "ok": true
+    },
+    {
+      "key": "\u0000",
+      "ok": true
+    },
+    {
+      "key": null,
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of null (reading 'includes')"
+      }
+    },
+    {
+      "key": 7,
+      "error": {
+        "name": "TypeError",
+        "message": "key.includes is not a function"
+      }
+    }
+  ]
+}

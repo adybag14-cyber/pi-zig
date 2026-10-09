@@ -194,3 +194,143 @@ test "native durable v2 awaited continuations preserve intrinsic Promise and raw
     defer engine.freeValue(same);
     try std.testing.expect(c.JS_ToBool(engine.context, same) != 0);
 }
+test "native durable v2 explicit nested keys match actual Source calls and preserve raw includes failures" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-eba-nested-keys-original.json"));
+    defer source.deinit();
+    const calls = @import("extensions/native_durable_tool_call.zig");
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const key = try engine.fromJsonValue(row.object.get("key").?);
+        defer engine.freeValue(key);
+        if (row.object.get("error")) |expected| {
+            try std.testing.expectError(error.JavaScriptException, calls.checkKey(engine, key));
+            const failure = engine.captured_exception.?;
+            const name_value = try vm.get(engine, failure, "name");
+            defer engine.freeValue(name_value);
+            const name = try engine.toString(name_value);
+            defer std.testing.allocator.free(name);
+            try std.testing.expectEqualStrings(expected.object.get("name").?.string, name);
+            if (row.object.get("key").? == .string) {
+                const message_value = try vm.get(engine, failure, "message");
+                defer engine.freeValue(message_value);
+                const message = try engine.toString(message_value);
+                defer std.testing.allocator.free(message);
+                try std.testing.expectEqualStrings(expected.object.get("message").?.string, message);
+            }
+        } else try calls.checkKey(engine, key);
+    }
+    const key = try engine.eval("globalThis.originalKeyError={raw:true};({includes(){throw originalKeyError}})", "key-raw-error", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(key);
+    try std.testing.expectError(error.JavaScriptException, calls.checkKey(engine, key));
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const original = try vm.get(engine, global, "originalKeyError");
+    defer engine.freeValue(original);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, engine.captured_exception.?));
+}
+test "native durable v2 calls retain original entry tool and nested parent identities" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var intrinsics = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer intrinsics.deinit(engine);
+    const calls = @import("extensions/native_durable_tool_call.zig");
+    const state = try engine.eval("globalThis.entryType={entry:true};globalThis.ctx={context:true};globalThis.wanted={type:'toolCall',id:'wanted',name:'target',arguments:{value:7}};({runtime:{async entry(type,id,context){if(type!==entryType||context!==ctx||id!==42)throw Error('entry identity');return{model:[{role:'assistant',content:[{type:'text',text:'skip'},wanted]}]}}},input:{kind:'model',assistant:42,callId:'wanted'},context:ctx,token:entryType,call:wanted,agent:{tools:[{name:'model'}],callable:[{name:'target'}]}})", "call-admission", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(state);
+    const runtime = try vm.get(engine, state, "runtime");
+    defer engine.freeValue(runtime);
+    const input = try vm.get(engine, state, "input");
+    defer engine.freeValue(input);
+    const context = try vm.get(engine, state, "context");
+    defer engine.freeValue(context);
+    const token = try vm.get(engine, state, "token");
+    defer engine.freeValue(token);
+    const original = try vm.get(engine, state, "call");
+    defer engine.freeValue(original);
+    const pending = try calls.readCall(engine, runtime, input, context, token, &intrinsics);
+    defer engine.freeValue(pending);
+    const call = try engine.awaitValue(pending);
+    defer engine.freeValue(call);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, call));
+    const nested_input = try engine.eval("({kind:'nested',parent:9,parentCallId:'parent-call',call:wanted})", "nested-admission", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(nested_input);
+    const nested_pending = try calls.readCall(engine, c.pi_js_undefined(), nested_input, context, token, &intrinsics);
+    defer engine.freeValue(nested_pending);
+    const nested = try engine.awaitValue(nested_pending);
+    defer engine.freeValue(nested);
+    const parent = try vm.get(engine, nested, "parent");
+    defer engine.freeValue(parent);
+    const parent_json = try engine.stringify(parent);
+    defer std.testing.allocator.free(parent_json);
+    try std.testing.expectEqualStrings("{\"taskId\":9,\"callId\":\"parent-call\"}", parent_json);
+    const arguments = try vm.get(engine, original, "arguments");
+    defer engine.freeValue(arguments);
+    const nested_arguments = try vm.get(engine, nested, "arguments");
+    defer engine.freeValue(nested_arguments);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, arguments, nested_arguments));
+    const agent = try vm.get(engine, state, "agent");
+    defer engine.freeValue(agent);
+    const name = try engine.checked(c.JS_NewString(engine.context, "target"));
+    defer engine.freeValue(name);
+    const model_tool = try calls.resolveTool(engine, agent, false, name);
+    defer engine.freeValue(model_tool);
+    try std.testing.expect(c.JS_IsUndefined(model_tool));
+    const nested_tool = try calls.resolveTool(engine, agent, true, name);
+    defer engine.freeValue(nested_tool);
+    const callable = try vm.get(engine, agent, "callable");
+    defer engine.freeValue(callable);
+    const first = try engine.checked(c.JS_GetPropertyUint32(engine.context, callable, 0));
+    defer engine.freeValue(first);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, nested_tool, first));
+}
+fn testErrorMessage(engine: *engine_mod.Engine, failure: c.JSValue) !c.JSValue {
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const string = try vm.get(engine, global, "String");
+    defer engine.freeValue(string);
+    var args = [_]c.JSValue{failure};
+    return engine.checked(c.JS_Call(engine.context, string, c.pi_js_undefined(), args.len, &args));
+}
+test "native durable v2 preparation preserves Source getter try boundaries and validation clones arguments" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const calls = @import("extensions/native_durable_tool_call.zig");
+    const source = try engine.eval("globalThis.reads=0;globalThis.firstFailure={first:true};globalThis.args={count:'2'};({tool:{get prepareArguments(){reads++;if(reads===1)return()=>{throw Error('wrong first callback')};return function(value){if(this!==sourceTool)throw Error('receiver');return value}},parameters:{type:'object',properties:{count:{type:'number'}},required:['count']},name:'target'},call:{type:'toolCall',id:'c1',name:'target'},args})", "prepare-getters", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(source);
+    const tool = try vm.get(engine, source, "tool");
+    defer engine.freeValue(tool);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    if (c.JS_SetPropertyStr(engine.context, global, "sourceTool", c.JS_DupValue(engine.context, tool)) < 0) return error.JavaScriptException;
+    const args = try vm.get(engine, source, "args");
+    defer engine.freeValue(args);
+    const prepared = try calls.prepare(engine, tool, args, testErrorMessage);
+    defer prepared.deinit(engine);
+    try std.testing.expect(prepared == .arguments and c.JS_IsStrictEqual(engine.context, prepared.arguments, args));
+    const call = try vm.get(engine, source, "call");
+    defer engine.freeValue(call);
+    const validated = try calls.validate(engine, tool, call, prepared.arguments, testErrorMessage);
+    defer validated.deinit(engine);
+    try std.testing.expect(validated == .arguments);
+    try std.testing.expect(!c.JS_IsStrictEqual(engine.context, validated.arguments, args));
+    const encoded = try engine.stringify(validated.arguments);
+    defer std.testing.allocator.free(encoded);
+    try std.testing.expectEqualStrings("{\"count\":2}", encoded);
+    const original = try engine.stringify(args);
+    defer std.testing.allocator.free(original);
+    try std.testing.expectEqualStrings("{\"count\":\"2\"}", original);
+    const first_throws = try engine.eval("({get prepareArguments(){throw firstFailure}})", "prepare-first-getter", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(first_throws);
+    try std.testing.expectError(error.JavaScriptException, calls.prepare(engine, first_throws, args, testErrorMessage));
+    const first_failure = try vm.get(engine, global, "firstFailure");
+    defer engine.freeValue(first_failure);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, first_failure, engine.captured_exception.?));
+    const second_throws = try engine.eval("globalThis.secondReads=0;({get prepareArguments(){if(++secondReads===1)return()=>{};throw 'second-getter'}})", "prepare-second-getter", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(second_throws);
+    const checked = try calls.prepare(engine, second_throws, args, testErrorMessage);
+    defer checked.deinit(engine);
+    try std.testing.expect(checked == .failure);
+    const failure = try engine.toString(checked.failure);
+    defer std.testing.allocator.free(failure);
+    try std.testing.expectEqualStrings("second-getter", failure);
+}
