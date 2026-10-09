@@ -7,7 +7,17 @@ const bounded = @import("read.zig");
 const scan_module = @import("line_scan.zig");
 const decode = @import("decode.zig");
 const truncate = @import("truncate.zig");
+pub const images = @import("image_processor.zig");
 pub const Input = struct { path: []const u8, offset: ?f64 = null, limit: ?f64 = null };
+pub const Options = struct {
+    images: ?images.Processor = null,
+    model: images.Model = .{},
+    model_context: ?*anyopaque = null,
+    resolve_model: ?*const fn (?*anyopaque, types.Context) anyerror!images.Model = null,
+};
+test {
+    _ = @import("tool_read_images42a_test.zig");
+}
 fn integer(number: f64) f64 {
     return if (std.math.isNan(number)) 0 else @trunc(number);
 }
@@ -68,17 +78,68 @@ fn image(reader: anytype, size: u64, context: types.Context) !types.Result(?[]co
     }
     return .{ .value = "image/png" };
 }
-fn readOnce(reader: anytype, info: types.FileInfo, input: Input, context: types.Context) !values.Result {
+fn imageError(gpa: std.mem.Allocator, message: []u8) !values.Result {
+    var result: values.ToolResult = .{ .isError = true };
+    errdefer result.deinit(gpa);
+    try result.diagnostic(gpa, .err, "unsupported_image", message);
+    return .{ .value = result };
+}
+fn imageNote(writer: *std.Io.Writer, comptime format: []const u8, args: anytype) !void {
+    // This writer is allocation-backed; its only drain failure is OOM.
+    writer.print(format, args) catch return error.OutOfMemory;
+}
+fn readImage(reader: anytype, info: types.FileInfo, input: Input, mime: []const u8, options: Options, context: types.Context) !values.Result {
+    const gpa = reader.gpa;
+    const model = if (options.resolve_model) |resolve| try resolve(options.model_context, context) else options.model;
+    var prepared: images.Prepared = undefined;
+    if (options.images) |processor| {
+        const read_result = try reader.read(0, info.size, context);
+        if (read_result == .failure) return values.fileFailure(gpa, read_result.failure);
+        defer gpa.free(read_result.value);
+        prepared = (try processor.prepare(processor.context, gpa, read_result.value, mime, model.limits)) orelse
+            return imageError(gpa, try std.fmt.allocPrint(gpa, "{s} is an image ({s}) that cannot be prepared for the model", .{ input.path, mime }));
+    } else {
+        if (!images.inlineType(mime)) return imageError(gpa, try std.fmt.allocPrint(gpa, "{s} is an image ({s}) that needs converting, and no image processor is configured", .{ input.path, mime }));
+        const base64_length = @ceil(@as(f64, @floatFromInt(info.size)) / 3) * 4;
+        if (base64_length > model.limits.maxBytes) {
+            const size = try truncate.formatSize(gpa, info.size);
+            defer gpa.free(size);
+            return imageError(gpa, try std.fmt.allocPrint(gpa, "{s} is an image ({s}) of {s}, too large to send, and no image processor is configured to shrink it", .{ input.path, mime, size }));
+        }
+        const read_result = try reader.read(0, info.size, context);
+        if (read_result == .failure) return values.fileFailure(gpa, read_result.failure);
+        defer gpa.free(read_result.value);
+        const size = images.dimensions(read_result.value, mime) orelse return imageError(gpa, try std.fmt.allocPrint(gpa, "{s} is an image ({s}) whose size cannot be read", .{ input.path, mime }));
+        if (size.width > model.limits.maxWidth or size.height > model.limits.maxHeight) return imageError(gpa, try std.fmt.allocPrint(gpa, "{s} is an image ({s}) of {d}x{d}, larger than {d}x{d}, and no image processor is configured to shrink it", .{ input.path, mime, size.width, size.height, model.limits.maxWidth, model.limits.maxHeight }));
+        const encoder = std.base64.standard.Encoder;
+        const encoded = try gpa.alloc(u8, encoder.calcSize(read_result.value.len));
+        errdefer gpa.free(encoded);
+        _ = encoder.encode(encoded, read_result.value);
+        prepared = .{ .data = encoded, .mimeType = try gpa.dupe(u8, mime) };
+    }
+    var transferred = false;
+    defer if (!transferred) prepared.deinit(gpa) else if (prepared.convertedFrom) |value| gpa.free(value);
+    var result: values.ToolResult = .{};
+    errdefer result.deinit(gpa);
+    var message: std.Io.Writer.Allocating = .init(gpa);
+    defer message.deinit();
+    try imageNote(&message.writer, "Read image file [{s}].", .{prepared.mimeType});
+    if (prepared.convertedFrom) |from| try imageNote(&message.writer, " Converted from {s} to {s}.", .{ from, prepared.mimeType });
+    if (prepared.resized) |resize| try imageNote(&message.writer, " Resized from {d}x{d} to {d}x{d}. Multiply coordinates by {d:.2} to map them to the original.", .{ resize.from.width, resize.from.height, resize.to.width, resize.to.height, resize.from.width / resize.to.width });
+    if (!model.vision) try imageNote(&message.writer, " The current model does not support images; it sees a placeholder instead.", .{});
+    try result.diagnostic(gpa, .info, "image", try gpa.dupe(u8, message.written()));
+    try result.images.append(gpa, .{ .data = prepared.data, .mimeType = prepared.mimeType });
+    transferred = true;
+    return .{ .value = result };
+}
+fn readOnce(reader: anytype, info: types.FileInfo, input: Input, options: Options, is_image: *bool, context: types.Context) !values.Result {
     const gpa = reader.gpa;
     const mime = try image(reader, info.size, context);
     if (mime == .failure) return values.fileFailure(gpa, mime.failure);
+    is_image.* = mime.value != null;
+    if (mime.value) |kind| return readImage(reader, info, input, kind, options, context);
     var result: values.ToolResult = .{};
     errdefer result.deinit(gpa);
-    if (mime.value) |kind| {
-        result.isError = true;
-        try result.diagnostic(gpa, .err, "unsupported_image", try std.fmt.allocPrint(gpa, "{s} is an image ({s}); reading images is not supported", .{ input.path, kind }));
-        return .{ .value = result };
-    }
     const offset = input.offset orelse 0;
     const start_line = if (offset == 0 or std.math.isNan(offset)) @as(f64, 0) else maximum(0, offset - 1);
     const display = start_line + 1;
@@ -144,6 +205,9 @@ fn readOnce(reader: anytype, info: types.FileInfo, input: Input, context: types.
     return .{ .value = result };
 }
 pub fn execute(env: anytype, input: Input, context: types.Context) !values.Result {
+    return executeWithOptions(env, input, .{}, context);
+}
+pub fn executeWithOptions(env: anytype, input: Input, options: Options, context: types.Context) !values.Result {
     const gpa = env.fs.gpa;
     const resolved = try resolvePath(gpa, env, input.path, context);
     if (resolved == .failure) return values.fileFailure(gpa, resolved.failure);
@@ -158,14 +222,16 @@ pub fn execute(env: anytype, input: Input, context: types.Context) !values.Resul
         if (before_result == .failure) return values.fileFailure(gpa, before_result.failure);
         var before = before_result.value;
         defer before.deinit(gpa);
-        var result = try readOnce(&reader, before, input, context);
+        var is_image = false;
+        var result = try readOnce(&reader, before, input, options, &is_image, context);
         var transferred = false;
         defer if (!transferred) result.deinit(gpa);
         const after_result = try reader.info(context);
         if (after_result == .failure) return values.fileFailure(gpa, after_result.failure);
         var after = after_result.value;
         defer after.deinit(gpa);
-        if (after.size < before.size or (after.size == before.size and before.mtimeMs != after.mtimeMs)) {
+        const unchanged = after.size == before.size and after.mtimeMs == before.mtimeMs;
+        if (!unchanged and (is_image or after.size <= before.size)) {
             if (attempt == 0) continue;
             return .{ .failure = .{ .message = try std.fmt.allocPrint(gpa, "{s} changed while it was read", .{input.path}) } };
         }

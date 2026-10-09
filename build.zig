@@ -422,6 +422,16 @@ pub fn build(b: *std.Build) void {
     const durable_tools_step = b.step("test-durable-tools", "Exercise bounded durable reader integration with existing native CLI tools");
     durable_tools_step.dependOn(&run_durable_tools_tests.step);
     test_step.dependOn(&run_durable_tools_tests.step);
+    const durable_read_images_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_read_images42a_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "images42a", "durable b7df" },
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, durable_read_images_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, durable_read_images_tests.root_module);
+    const durable_read_images_run = b.addRunArtifact(durable_read_images_tests);
+    b.step("test-durable-read-images", "Replay actual newest Durable image reads and sweep owned image allocation failures").dependOn(&durable_read_images_run.step);
+    test_step.dependOn(&durable_read_images_run.step);
     const env_daemon = b.addExecutable(.{
         .name = "pi-env",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/env_daemon.zig"), .target = target, .optimize = optimize }),

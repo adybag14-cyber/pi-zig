@@ -7,14 +7,21 @@ pub const Severity = enum { info, warn, err };
 pub const Diagnostic = struct { severity: Severity, code: ?[]const u8 = null, message: []u8 };
 pub const EditDetails = struct { diff: []u8, patch: []u8, firstChangedLine: ?u64 = null };
 pub const Details = union(enum) { truncation: truncate.Details, edit: EditDetails };
+pub const ImageContent = struct { data: []u8, mimeType: []u8 };
 pub const ToolResult = struct {
     /// null and the empty string both serialize to an empty content array.
     text: ?[]u8 = null,
+    images: std.ArrayList(ImageContent) = .empty,
     isError: bool = false,
     diagnostics: std.ArrayList(Diagnostic) = .empty,
     details: ?Details = null,
     pub fn deinit(self: *ToolResult, gpa: std.mem.Allocator) void {
         if (self.text) |text| gpa.free(text);
+        for (self.images.items) |image| {
+            gpa.free(image.data);
+            gpa.free(image.mimeType);
+        }
+        self.images.deinit(gpa);
         for (self.diagnostics.items) |item| gpa.free(item.message);
         self.diagnostics.deinit(gpa);
         if (self.details) |details| switch (details) {
