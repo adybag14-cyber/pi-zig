@@ -1,0 +1,195 @@
+{
+  "node": "24.14.0",
+  "cases": [
+    {
+      "value": "",
+      "encoding": "base64",
+      "result": 0
+    },
+    {
+      "value": "",
+      "encoding": "base64url",
+      "result": 0
+    },
+    {
+      "value": "a",
+      "encoding": "base64",
+      "result": 0
+    },
+    {
+      "value": "a",
+      "encoding": "base64url",
+      "result": 0
+    },
+    {
+      "value": "aa",
+      "encoding": "base64",
+      "result": 1
+    },
+    {
+      "value": "aa",
+      "encoding": "base64url",
+      "result": 1
+    },
+    {
+      "value": "aaa",
+      "encoding": "base64",
+      "result": 2
+    },
+    {
+      "value": "aaa",
+      "encoding": "base64url",
+      "result": 2
+    },
+    {
+      "value": "aaaa",
+      "encoding": "base64",
+      "result": 3
+    },
+    {
+      "value": "aaaa",
+      "encoding": "base64url",
+      "result": 3
+    },
+    {
+      "value": "a=",
+      "encoding": "base64",
+      "result": 0
+    },
+    {
+      "value": "a=",
+      "encoding": "base64url",
+      "result": 0
+    },
+    {
+      "value": "a==",
+      "encoding": "base64",
+      "result": 0
+    },
+    {
+      "value": "a==",
+      "encoding": "base64url",
+      "result": 0
+    },
+    {
+      "value": "a===",
+      "encoding": "base64",
+      "result": 1
+    },
+    {
+      "value": "a===",
+      "encoding": "base64url",
+      "result": 1
+    },
+    {
+      "value": "YQ==",
+      "encoding": "base64",
+      "result": 1
+    },
+    {
+      "value": "YQ==",
+      "encoding": "base64url",
+      "result": 1
+    },
+    {
+      "value": "YQ",
+      "encoding": "base64",
+      "result": 1
+    },
+    {
+      "value": "YQ",
+      "encoding": "base64url",
+      "result": 1
+    },
+    {
+      "value": "Y W J j",
+      "encoding": "base64",
+      "result": 5
+    },
+    {
+      "value": "Y W J j",
+      "encoding": "base64url",
+      "result": 5
+    },
+    {
+      "value": "??abc",
+      "encoding": "base64",
+      "result": 3
+    },
+    {
+      "value": "??abc",
+      "encoding": "base64url",
+      "result": 3
+    },
+    {
+      "value": "a😀b",
+      "encoding": "base64",
+      "result": 3
+    },
+    {
+      "value": "a😀b",
+      "encoding": "base64url",
+      "result": 3
+    },
+    {
+      "value": "\ud800=",
+      "encoding": "base64",
+      "result": 0
+    },
+    {
+      "value": "\ud800=",
+      "encoding": "base64url",
+      "result": 0
+    },
+    {
+      "value": "界abc==",
+      "encoding": "base64",
+      "result": 3
+    },
+    {
+      "value": "界abc==",
+      "encoding": "base64url",
+      "result": 3
+    },
+    {
+      "value": "aG V?sbG8=ignored",
+      "encoding": "base64",
+      "result": 12
+    },
+    {
+      "value": "aG V?sbG8=ignored",
+      "encoding": "base64url",
+      "result": 12
+    },
+    {
+      "value": "====",
+      "encoding": "base64",
+      "result": 1
+    },
+    {
+      "value": "====",
+      "encoding": "base64url",
+      "result": 1
+    },
+    {
+      "value": "a=b",
+      "encoding": "base64",
+      "result": 2
+    },
+    {
+      "value": "a=b",
+      "encoding": "base64url",
+      "result": 2
+    },
+    {
+      "value": "abc=d",
+      "encoding": "base64",
+      "result": 3
+    },
+    {
+      "value": "abc=d",
+      "encoding": "base64url",
+      "result": 3
+    }
+  ]
+}

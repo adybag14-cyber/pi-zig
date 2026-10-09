@@ -1054,6 +1054,11 @@ pub fn build(b: *std.Build) void {
     project_context_step.dependOn(&native_project_context_run.step);
     test_step.dependOn(&project_context_run.step);
     test_step.dependOn(&native_project_context_run.step);
+    const native_image_api_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_terminal_image_api_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "Source6fb terminal image API", "native Buffer byteLength Base64", "Source6fb terminal image home" }, .use_llvm = use_llvm });
+    linkQuickJs(b, native_image_api_tests.root_module, quickjs, sqlite_lib_dir);
+    const native_image_api_run = b.addRunArtifact(native_image_api_tests);
+    b.step("test-native-terminal-image-api", "Replay Source terminal image APIs and native buffer sizes").dependOn(&native_image_api_run.step);
+    test_step.dependOn(&native_image_api_run.step);
     const native_markdown_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_markdown_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{ "Source6fb native Markdown", "Source6fb native Container", "native focus containment" },

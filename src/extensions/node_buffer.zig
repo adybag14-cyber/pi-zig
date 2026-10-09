@@ -284,11 +284,21 @@ fn staticCall(engine: *engine_mod.Engine, method: Static, args: []c.JSValue) any
                     error.UnknownBufferEncoding => encodings.Encoding.utf8,
                     else => return err,
                 };
-                if (codec == .hex) {
+                if (codec == .hex or codec == .base64 or codec == .base64url) {
                     var iterator = (try std.unicode.Wtf8View.init(text)).iterator();
                     var units: usize = 0;
                     while (iterator.nextCodepoint()) |point| units += if (point > 0xffff) @as(usize, 2) else 1;
-                    size = units / 2;
+                    if (codec == .hex) {
+                        size = units / 2;
+                    } else {
+                        // Node's length API estimates encoded UTF16 units; it
+                        // intentionally does not validate or decode Base64.
+                        if (text.len > 0 and text[text.len - 1] == '=') {
+                            units -|= 1;
+                            if (text.len > 1 and text[text.len - 2] == '=') units -|= 1;
+                        }
+                        size = (try std.math.mul(usize, units, 3)) / 4;
+                    }
                 } else {
                     const bytes = try encodings.encode(engine.gpa, text, codec);
                     defer engine.gpa.free(bytes);
@@ -837,6 +847,22 @@ test "native Buffer copies arrays shares ArrayBuffers and retains binary encodin
     const encoded = try engine.stringify(json);
     defer engine.gpa.free(encoded);
     try std.testing.expectEqualStrings("{\"type\":\"Buffer\",\"data\":[42]}", encoded);
+}
+test "native Buffer byteLength Base64 estimate matches Node24 UTF16 and malformed encoded inputs" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try install(engine);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const bytes = @embedFile("fixtures/buffer-base64-length-node24.json");
+    try property(engine, global, "lengthFixture", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "buffer-base64-length-node24.json")));
+    const result = engine.evalModule(
+        \\for(const item of lengthFixture.cases){const actual=Buffer.byteLength(item.value,item.encoding);if(actual!==item.result)throw Error(JSON.stringify({item,actual}));}
+    , "buffer-base64-byte-length.mjs") catch |err| {
+        if (engine.last_error) |message| std.debug.print("Buffer Base64 byte length: {s}\n", .{message});
+        return err;
+    };
+    engine.freeValue(result);
 }
 
 test "native Buffer mutators revalidate storage after user conversion detaches the backing" {

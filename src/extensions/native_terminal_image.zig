@@ -286,6 +286,7 @@ pub fn install(engine: *Engine, exports: c.JSValue) !void {
         var data = [_]c.JSValue{state};
         try js.define(engine, exports, name, try engine.checked(c.JS_NewCFunctionData2(engine.context, methodCall, name.ptr, length, @intCast(field.value), 1, &data)));
     }
+    try @import("native_terminal_image_api.zig").install(engine, exports, state);
     try engine.registerValueModule(private_module, state);
 }
 const Admission = struct {

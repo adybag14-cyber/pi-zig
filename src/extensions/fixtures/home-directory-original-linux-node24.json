@@ -1,0 +1,38 @@
+{
+  "platform": "linux",
+  "node": "24.21.0",
+  "normalization": "OS-derived profile compared with the current host baseline, never a developer path",
+  "cases": [
+    {
+      "value": null,
+      "result": "@current-user-home",
+      "fallback": true,
+      "matchesBaseline": true
+    },
+    {
+      "value": "",
+      "result": "",
+      "fallback": false
+    },
+    {
+      "value": "ab",
+      "result": "ab",
+      "fallback": false
+    },
+    {
+      "value": "C:\\ProofHome",
+      "result": "C:\\ProofHome",
+      "fallback": false
+    },
+    {
+      "value": "C:\\ProofHome\\",
+      "result": "C:\\ProofHome\\",
+      "fallback": false
+    },
+    {
+      "value": "C:/",
+      "result": "C:/",
+      "fallback": false
+    }
+  ]
+}
