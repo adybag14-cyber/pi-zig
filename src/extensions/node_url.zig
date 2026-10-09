@@ -10,6 +10,12 @@ const node_path = @import("node_path.zig");
 const c = engine_mod.c;
 
 pub fn install(engine: *engine_mod.Engine) !void {
+    const long_alias = engine.native_module_names.contains("node:url");
+    const short_alias = engine.native_module_names.contains("url");
+    if (long_alias or short_alias) {
+        if (!long_alias or !short_alias) return error.NativeUrlPartiallyInstalled;
+        return;
+    }
     if (engine.url_class == 0) try native_url.install(engine);
     const object = try engine.checked(c.JS_NewObject(engine.context));
     defer engine.freeValue(object);

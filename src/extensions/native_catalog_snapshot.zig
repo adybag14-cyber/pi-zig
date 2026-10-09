@@ -76,3 +76,26 @@ pub fn appendMcp(owned: *json.Owned, service: *configured.Service, scope: Scope,
         try destination.object.getPtr("records").?.array.append(record);
     }
 }
+pub fn appendBuiltins(owned: *json.Owned, scope: Scope) !void {
+    const destination = try owner(owned, scope);
+    const a = owned.arena.allocator();
+    const names = [_][]const u8{ "read", "bash", "powershell", "edit", "write", "grep", "find", "ls" };
+    for (names, 0..) |name, index| {
+        var record: std.json.Value = .{ .object = .empty };
+        try putId(a, &record.object, "definitionId", index + 1);
+        try record.object.put(a, "parameterIdentity", .{ .string = try std.fmt.allocPrint(a, "builtin_{s}", .{name}) });
+        var metadata: std.json.Value = .{ .object = .empty };
+        try metadata.object.put(a, "name", .{ .string = name });
+        try metadata.object.put(a, "exposure", .{ .string = "direct" });
+        try record.object.put(a, "metadata", metadata);
+        // The worker selects its genuine builtin module constants/template;
+        // the parent cannot replace their identity with a JSON schema copy.
+        try record.object.put(a, "parameters", .null);
+        var source_info: std.json.Value = .{ .object = .empty };
+        try source_info.object.put(a, "path", .{ .string = try std.fmt.allocPrint(a, "builtin:{s}", .{name}) });
+        inline for (.{ .{ "source", "builtin" }, .{ "scope", "temporary" }, .{ "origin", "top-level" } }) |field| try source_info.object.put(a, field[0], .{ .string = field[1] });
+        try record.object.put(a, "sourceInfo", source_info);
+        try putId(a, &record.object, "sourceInfoId", index + 1);
+        try destination.object.getPtr("records").?.array.append(record);
+    }
+}

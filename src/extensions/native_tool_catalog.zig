@@ -8,7 +8,7 @@ const parameters_mod = @import("native_tool_parameters.zig");
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
 pub const OwnerScope = struct { owner: *const anyopaque, generation: u64 };
-pub const ParameterIdentity = enum { remote_json, resource_list, resource_read, codemode, tool_search };
+pub const ParameterIdentity = enum { remote_json, resource_list, resource_read, codemode, tool_search, builtin_read, builtin_bash, builtin_powershell, builtin_edit, builtin_write, builtin_grep, builtin_find, builtin_ls };
 pub const Record = struct {
     scope: OwnerScope,
     definition_id: u64,
@@ -248,12 +248,15 @@ pub const Cache = struct {
         return value;
     }
     fn parameter(self: *Cache, record: Record) !c.JSValue {
+        const identity_name = @tagName(record.parameter_identity);
+        if (std.mem.startsWith(u8, identity_name, "builtin_")) return @import("native_sdk_tools.zig").getParameters(self.engine, identity_name[8..]);
         if (record.parameter_identity != .remote_json) return parameters_mod.get(self.engine, switch (record.parameter_identity) {
             .resource_list => .resource_list,
             .resource_read => .resource_read,
             .codemode => .codemode,
             .tool_search => .tool_search,
             .remote_json => unreachable,
+            else => unreachable,
         }, record.parameters);
         if (record.parameter_id == 0) return error.InvalidNativeParameterIdentity;
         const key: Key = .{ .scope = record.scope, .id = record.parameter_id };
@@ -299,8 +302,15 @@ pub const Cache = struct {
             return entry;
         }
         try self.definitions.ensureUnusedCapacity(self.engine.gpa, 1);
-        const value = try self.engine.fromJsonValue(record.metadata);
+        const identity_name = @tagName(record.parameter_identity);
+        const builtin = std.mem.startsWith(u8, identity_name, "builtin_");
+        if (builtin) {
+            const name = record.metadata.object.get("name") orelse return error.InvalidNativeDefinitionIdentity;
+            if (name != .string or !std.mem.eql(u8, name.string, identity_name[8..])) return error.InvalidNativeDefinitionIdentity;
+        }
+        const value = if (builtin) try @import("native_sdk_tools.zig").getTemplate(self.engine, identity_name[8..]) else try self.engine.fromJsonValue(record.metadata);
         errdefer self.engine.freeValue(value);
+        if (builtin) if (record.metadata.object.get("exposure")) |exposure| try info.putData(self.engine, value, "exposure", try self.engine.fromJsonValue(exposure));
         try info.putData(self.engine, value, "parameters", try self.parameter(record));
         if (self.definitions.getPtr(key)) |existing| {
             existing.seen = @max(existing.seen, sequence);
@@ -452,6 +462,42 @@ test "native durable VM MCP parameter bodies release every failed materializatio
     try std.testing.checkAllAllocationFailures(std.testing.allocator, parameterBodyExercise, .{});
 }
 const BodyReentryProbe = struct { cache: *Cache, scope: OwnerScope, records: []const Record };
+test "native durable VM Main builtin catalog retains genuine Source schemas and template metadata" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var cache = Cache.init(engine);
+    defer cache.deinit();
+    const source = try std.json.parseFromSlice(std.json.Value, engine.gpa, @embedFile("../durable/fixtures/sdk-builtin-templates-1ced.json"), .{});
+    defer source.deinit();
+    var owner: u8 = 0;
+    const scope: OwnerScope = .{ .owner = &owner, .generation = 1 };
+    const a = source.arena.allocator();
+    var records: [8]Record = undefined;
+    for (source.value.array.items, 0..) |row, index| {
+        const name = row.object.get("name").?.string;
+        const kind = try std.fmt.allocPrint(a, "builtin_{s}", .{name});
+        var metadata: std.json.Value = .{ .object = .empty };
+        try metadata.object.put(a, "name", .{ .string = name });
+        try metadata.object.put(a, "description", .{ .string = "caller JSON must not replace the builtin template" });
+        records[index] = .{ .scope = scope, .definition_id = index + 1, .parameter_identity = std.meta.stringToEnum(ParameterIdentity, kind).?, .metadata = metadata, .parameters = .null, .source_info = .null, .source_info_id = index + 1 };
+    }
+    const rows = try collect(&cache, scope, &records);
+    defer engine.freeValue(rows);
+    try std.testing.expectEqual(@as(usize, 8), try vm.length(engine, rows));
+    for (source.value.array.items, 0..) |row, index| {
+        const name = row.object.get("name").?.string;
+        const parameters = try rowField(engine, rows, @intCast(index), "parameters");
+        defer engine.freeValue(parameters);
+        const canonical = try @import("native_sdk_tools.zig").getParameters(engine, name);
+        defer engine.freeValue(canonical);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, parameters, canonical));
+        const description = try rowField(engine, rows, @intCast(index), "description");
+        defer engine.freeValue(description);
+        const text = try engine.toString(description);
+        defer engine.gpa.free(text);
+        try std.testing.expectEqualStrings(row.object.get("metadata").?.object.get("description").?.string, text);
+    }
+}
 threadlocal var body_reentry_probe: ?BodyReentryProbe = null;
 fn bodyReenter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
