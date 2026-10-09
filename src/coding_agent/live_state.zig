@@ -151,10 +151,12 @@ pub const DynamicCatalogSnapshot = struct {
     copilot_catalog: copilot_catalog_filter.Set,
     /// Alias of copilot_catalog.infos published through LiveState.
     model_catalog: []providers.ModelInfo,
+    all_model_catalog: []providers.ModelInfo = &.{},
     dynamic_runtimes: []runtime_config.ResolvedRuntime,
     runtime_configs: []RuntimeProviderConfig,
 
     pub fn deinit(self: *DynamicCatalogSnapshot) void {
+        if (self.all_model_catalog.len > 0) self.gpa.free(self.all_model_catalog);
         if (self.runtime_configs.len > 0) self.gpa.free(self.runtime_configs);
         for (self.dynamic_runtimes) |*runtime| runtime.deinit();
         if (self.dynamic_runtimes.len > 0) self.gpa.free(self.dynamic_runtimes);
@@ -200,6 +202,8 @@ pub fn loadDynamicAuthCatalogWithOptions(
     var copilot_catalog = try copilot_catalog_filter.load(gpa, io, agent_dir, unfiltered_catalog);
     errdefer copilot_catalog.deinit();
     const catalog = copilot_catalog.infos;
+    const all_catalog = try effective_catalog.buildAllWithExtras(gpa, &models_file, cached.infos);
+    errdefer if (all_catalog.len > 0) gpa.free(all_catalog);
 
     var runtimes: std.ArrayList(runtime_config.ResolvedRuntime) = .empty;
     errdefer {
@@ -258,6 +262,7 @@ pub fn loadDynamicAuthCatalogWithOptions(
         .radius_catalogs = cached,
         .copilot_catalog = copilot_catalog,
         .model_catalog = catalog,
+        .all_model_catalog = all_catalog,
         .dynamic_runtimes = try runtimes.toOwnedSlice(gpa),
         .runtime_configs = try configs.toOwnedSlice(gpa),
     };

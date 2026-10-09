@@ -12,6 +12,169 @@ const component_protocol = @import("extensions/component_protocol.zig");
 const renderer_protocol = @import("extensions/renderer_protocol.zig");
 
 const editor_protocol = @import("extensions/editor_protocol.zig");
+fn findTypedMarker(gpa: std.mem.Allocator, value: std.json.Value, marker: []const u8) anyerror!?@import("mcp/protocol.zig").json.Owned {
+    switch (value) {
+        .string => |text| if (std.mem.indexOf(u8, text, marker)) |start| {
+            const tail = text[start + marker.len ..];
+            const end = std.mem.indexOfAny(u8, tail, "\r\n") orelse tail.len;
+            return @import("mcp/protocol.zig").json.Owned.parse(gpa, tail[0..end]) catch |err| {
+                if (err == error.OutOfMemory) return err;
+                return null;
+            };
+        },
+        .array => |array| for (array.items) |item| if (try findTypedMarker(gpa, item, marker)) |result| return result,
+        .object => |object| for (object.values()) |item| if (try findTypedMarker(gpa, item, marker)) |result| return result,
+        else => {},
+    }
+    return null;
+}
+fn typedSessionValue(gpa: std.mem.Allocator, session: []const u8, marker: []const u8) !@import("mcp/protocol.zig").json.Owned {
+    var lines = std.mem.splitScalar(u8, session, '\n');
+    while (lines.next()) |line| {
+        if (line.len == 0) continue;
+        var value = try @import("mcp/protocol.zig").json.Owned.parse(gpa, line);
+        defer value.deinit();
+        if (try findTypedMarker(gpa, value.value, marker)) |result| return result;
+    }
+    std.debug.print("typed Main session missing {s}: {s}\n", .{ marker, session });
+    return error.TypedMainResultMissing;
+}
+fn runTypedMainCli(fixture: *Fixture, code: []const u8, models_json: ?[]const u8) ![]u8 {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    try fixture.tmp.dir.createDirPath(io, "agent");
+    try fixture.tmp.dir.createDirPath(io, "home");
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "agent/settings.json", .data = "{\"marker\":\"bound\",\"quietStartup\":true,\"enableInstallTelemetry\":false,\"defaultTools\":[\"codemode\"],\"retry\":{\"enabled\":false}}" });
+    if (models_json) |bytes| try fixture.tmp.dir.writeFile(io, .{ .sub_path = "agent/models.json", .data = bytes });
+    const arguments = try std.json.Stringify.valueAlloc(gpa, .{ .code = code }, .{});
+    defer gpa.free(arguments);
+    const script = try std.json.Stringify.valueAlloc(gpa, .{ .{ .content = "", .tool_calls = .{.{ .id = "typed-main", .name = "codemode", .arguments = arguments }} }, .{ .content = "MAIN_TYPED_DONE" } }, .{});
+    defer gpa.free(script);
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "mock.json", .data = script });
+    const home = try std.fs.path.join(gpa, &.{ fixture.root, "home" });
+    defer gpa.free(home);
+    const agent_dir = try std.fs.path.join(gpa, &.{ fixture.root, "agent" });
+    defer gpa.free(agent_dir);
+    const mock = try std.fs.path.join(gpa, &.{ fixture.root, "mock.json" });
+    defer gpa.free(mock);
+    const session = try std.fs.path.join(gpa, &.{ fixture.root, "session.jsonl" });
+    defer gpa.free(session);
+    try fixture.environment.put("PI_AGENT_DIR", agent_dir);
+    try fixture.environment.put("HOME", home);
+    try fixture.environment.put("USERPROFILE", home);
+    try fixture.environment.put("PI_EXTENSION_BACKEND", "native");
+    try fixture.environment.put("PI_SKIP_VERSION_CHECK", "1");
+    try fixture.environment.put("PI_TELEMETRY", "0");
+    const result = try std.process.run(gpa, io, .{ .argv = &.{ fixture.executable, "--offline", "--print", "--mock-script", mock, "--session", session, "--no-context-files", "--no-skills", "--no-prompt-templates", "--no-themes", "--tools", "codemode", "--approve", "--verbose", "-e", fixture.source_path, "exercise typed Main" }, .cwd = .{ .path = fixture.root }, .environ_map = &fixture.environment, .stdout_limit = .limited(1024 * 1024), .stderr_limit = .limited(1024 * 1024), .timeout = .{ .duration = .{ .raw = .fromSeconds(25), .clock = .awake } } });
+    defer gpa.free(result.stdout);
+    defer gpa.free(result.stderr);
+    if (result.term != .exited or result.term.exited != 0) {
+        std.debug.print("typed Main stderr {s}\nstdout {s}\n", .{ result.stderr, result.stdout });
+        return error.TypedMainCliFailed;
+    }
+    try std.testing.expect(std.mem.indexOf(u8, result.stdout, "MAIN_TYPED_DONE") != null);
+    return std.Io.Dir.cwd().readFileAlloc(io, session, gpa, .limited(4 * 1024 * 1024));
+}
+test "native runtime typed Main actual native getter private auth and canonical Source callback without Node" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/native-provider-binding-6fb2e78.txt"));
+    defer fixture.deinit();
+    const session = try runTypedMainCli(&fixture, "const all=await models.getModelsOfType('classifier','bound-native');const available=await models.getAvailableOfType('classifier','bound-native');const selected=await models.getModelOfType('classifier','bound-native','same');if(all.length!==1||available.length!==1||selected.type!=='classifier'||selected.headers!==undefined)throw Error('Main catalog/private header projection');const result=await models.classify(selected,{state:{},questions:{q:{type:'bool',instructions:'q',criteria:{true:'yes',false:'no'}}}});text('MAIN_CUSTOM_SOURCE:'+JSON.stringify(result));", null);
+    defer gpa.free(session);
+    var actual = try typedSessionValue(gpa, session, "MAIN_CUSTOM_SOURCE:");
+    defer actual.deinit();
+    var expected = try @import("mcp/protocol.zig").json.Owned.parse(gpa, @embedFile("extensions/fixtures/native-provider-binding-6fb2e78.json"));
+    defer expected.deinit();
+    try std.testing.expect(@import("mcp/protocol.zig").json.equal(expected.value.object.get("classified").?, actual.value));
+    try std.testing.expect(std.mem.indexOf(u8, session, "getter before core binding") == null);
+    try fixture.noBridge();
+}
+test "native runtime typed Main actual builtin classifier image wire and private config without Node" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>{}");
+    defer fixture.deinit();
+    const server = try @import("ai/http_fixture.zig").PlanServer.init(gpa, std.testing.io, &.{
+        .{ .path = "/v1/systemone", .body = "{\"answers\":{\"q\":{\"type\":\"noul\",\"noul\":0.95}},\"usage\":{\"input_tokens\":7,\"output_tokens\":2}}", .expected_request_headers = &.{ .{ .name = "authorization", .value = "Bearer fixture-classifier" }, .{ .name = "X-Fixture", .value = "private-classifier" } } },
+        .{ .path = "/v1/chat/completions", .body = "{\"id\":\"image-fixture\",\"usage\":{\"prompt_tokens\":4,\"completion_tokens\":2},\"choices\":[{\"message\":{\"images\":[{\"image_url\":\"data:image/png;base64,YWJj\"}]}}]}", .expected_request_headers = &.{ .{ .name = "authorization", .value = "Bearer fixture-image" }, .{ .name = "X-Fixture", .value = "private-image" } } },
+    });
+    defer server.deinit();
+    const base = try server.url(gpa, "/v1");
+    defer gpa.free(base);
+    const file = try std.json.Stringify.valueAlloc(gpa, .{ .providers = .{ .typesafe = .{ .baseUrl = base, .apiKey = "fixture-classifier", .headers = .{ .@"X-Fixture" = "private-classifier" } }, .openrouter = .{ .baseUrl = base, .apiKey = "fixture-image", .headers = .{ .@"X-Fixture" = "private-image" } } } }, .{});
+    defer gpa.free(file);
+    const before = std.Io.Clock.real.now(std.testing.io).toMilliseconds();
+    const session = try runTypedMainCli(&fixture, "const classifier=await models.getModelOfType('classifier','typesafe','jev-latest');const imageModel=await models.getModelOfType('image','openrouter','black-forest-labs/flux-3-image');if(!classifier||!imageModel||classifier.headers!==undefined||imageModel.headers!==undefined)throw Error('actual typed builtin catalog');if(!(await models.getAvailableOfType('classifier','typesafe')).length)throw Error('availability');const a=await models.classify(classifier,{state:{text:'fixture'},questions:{q:{type:'bool',instructions:'q',criteria:{true:'yes',false:'no'}}}});const b=await models.generateImages(imageModel,{input:[{type:'text',text:'fixture image'}]});if(a.stopReason!=='stop'||b.stopReason!=='stop')throw Error(JSON.stringify({a,b}));text('MAIN_BUILTIN_SOURCE:'+JSON.stringify({a,b}));image(b.output[0]);", file);
+    defer gpa.free(session);
+    const after = std.Io.Clock.real.now(std.testing.io).toMilliseconds();
+    var actual = try typedSessionValue(gpa, session, "MAIN_BUILTIN_SOURCE:");
+    defer actual.deinit();
+    try server.finish();
+    try std.testing.expectEqual(@as(usize, 2), server.captured.items.len);
+    try std.testing.expect(std.mem.indexOf(u8, session, "image-fixture") != null);
+    var expected = try @import("mcp/protocol.zig").json.Owned.parse(gpa, @embedFile("extensions/fixtures/main-typed-builtin-6fb2e78.json"));
+    defer expected.deinit();
+    for ([_][]const u8{ "a", "b" }) |field| {
+        const row = actual.value.object.getPtr(field).?;
+        const timestamp = row.object.get("timestamp").?;
+        const timestamp_ms = try @import("mcp/protocol.zig").json.asNumber(timestamp);
+        try std.testing.expect(std.math.isFinite(timestamp_ms) and timestamp_ms >= @as(f64, @floatFromInt(before)) and timestamp_ms <= @as(f64, @floatFromInt(after)));
+        try row.object.put(actual.arena.allocator(), "timestamp", .{ .integer = 0 });
+        try std.testing.expect(@import("mcp/protocol.zig").json.equal(expected.value.object.get(field).?, row.*));
+    }
+    for (server.captured.items, expected.value.object.get("requests").?.array.items) |request, source_request| {
+        try std.testing.expectEqualStrings(source_request.object.get("path").?.string, request.path);
+        var payload = try @import("mcp/protocol.zig").json.Owned.parse(gpa, request.payload);
+        defer payload.deinit();
+        try std.testing.expect(@import("mcp/protocol.zig").json.equal(source_request.object.get("body").?, payload.value));
+    }
+    try fixture.noBridge();
+}
+test "native runtime typed provider owner admits getters only after binding and private auth canonical callback matches Source" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/native-provider-binding-6fb2e78.txt"));
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    var before = (try host.executeCommand("getter-calls", "")).?;
+    defer before.deinit(gpa);
+    try std.testing.expectEqualStrings("0", before.message.?);
+    var registry = provider_registry_mod.Registry.initAll(gpa, std.testing.io, &fixture.environment, null, &.{}, &.{}, &.{});
+    defer registry.deinit();
+    const extension = host.extensions.items[0];
+    try registry.registerJsonWithRuntime("bound-native", extension.providers[0].config_json, extension.script_runtime);
+    try std.testing.expect(registry.nativeMode("bound-native"));
+    try std.testing.expectEqual(@as(usize, 0), registry.allCatalog().len);
+    try host.setScriptContextJson("{\"nativeRuntimeBound\":true,\"settings\":{\"marker\":\"bound\"}}");
+    const envelope = (try registry.refreshNativeCatalog(gpa, "bound-native", null)).?;
+    defer gpa.free(envelope);
+    var expected = try @import("mcp/protocol.zig").json.Owned.parse(gpa, @embedFile("extensions/fixtures/native-provider-binding-6fb2e78.json"));
+    defer expected.deinit();
+    var rows = try @import("mcp/protocol.zig").json.Owned.empty(gpa);
+    defer rows.deinit();
+    rows.value = .{ .array = .init(rows.arena.allocator()) };
+    for (registry.allCatalog()) |model| try rows.value.array.append(try @import("coding_agent/typed_model_registry.zig").modelValue(rows.arena.allocator(), model));
+    try std.testing.expect(@import("mcp/protocol.zig").json.equal(expected.value.object.get("models").?, rows.value));
+    const file: @import("coding_agent/models_file.zig").ModelsFile = .{ .gpa = gpa };
+    const backend = try @import("coding_agent/typed_model_backend.zig").State.create(gpa, std.testing.io, &fixture.environment, &file, null, null, null, null);
+    defer @import("coding_agent/typed_model_backend.zig").State.release(backend);
+    var owner: @import("coding_agent/typed_model_registry.zig").Owner = .{ .io = std.testing.io, .backend = backend.backend() };
+    defer owner.retire();
+    try owner.bind(&registry);
+    const entry = owner.runtime();
+    const runtime = try entry.acquire.?(entry.context, gpa);
+    defer runtime.release.?(runtime.context, gpa);
+    var input = try @import("mcp/protocol.zig").json.Owned.parse(gpa, "[{\"provider\":\"bound-native\",\"id\":\"same\"},{\"state\":{},\"questions\":{\"q\":{\"type\":\"bool\",\"instructions\":\"q\",\"criteria\":{\"true\":\"yes\",\"false\":\"no\"}}}}]");
+    defer input.deinit();
+    var classified = try runtime.invoke(runtime.context, gpa, .classify, input.value, null);
+    defer classified.deinit();
+    if (!@import("mcp/protocol.zig").json.equal(expected.value.object.get("classified").?, classified.value)) {
+        const actual = try @import("mcp/protocol.zig").json.stringify(gpa, classified.value);
+        defer gpa.free(actual);
+        std.debug.print("native getter/auth actual {s}\n", .{actual});
+        return error.NativeGetterAuthMismatch;
+    }
+}
 
 test "native runtime typed provider owner exact model receiver signal generation without Node" {
     const gpa = std.testing.allocator;

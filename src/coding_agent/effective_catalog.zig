@@ -16,6 +16,8 @@ fn hasIdentity(list: []const providers.ModelInfo, target: providers.ModelInfo) b
 
 fn applyOverride(model: providers.ModelInfo, provider_config: ?*const models_file_mod.ProviderConfig) providers.ModelInfo {
     var merged = model;
+    // models.json definitions and modelOverrides address chat models only.
+    if (model.kind != .chat) return merged;
     if (provider_config) |provider| {
         if (provider.findOverride(model.id)) |model_override| {
             if (model_override.name) |name| merged.display = name;
@@ -29,6 +31,14 @@ fn applyOverride(model: providers.ModelInfo, provider_config: ?*const models_fil
             merged.sampling_params_by_thinking_level = @import("../ai/request_metadata.zig").SamplingParamsByThinkingLevel.merge(model.sampling_params_by_thinking_level, model_override.sampling_params_by_thinking_level);
         }
     }
+    return merged;
+}
+
+fn applyProviderBase(model: providers.ModelInfo, provider_config: ?*const models_file_mod.ProviderConfig) providers.ModelInfo {
+    var merged = model;
+    if (provider_config) |provider| if (provider.oauth != .radius) {
+        if (provider.base_url) |base| merged.base_url = base;
+    };
     return merged;
 }
 
@@ -57,7 +67,8 @@ fn compose(gpa: std.mem.Allocator, models_file: *const models_file_mod.ModelsFil
     for (builtins) |known| {
         if (!include_non_chat and known.kind != .chat) continue;
         if (staticHasIdentity(models_file, known) or hasIdentity(extras, known)) continue;
-        try out.append(gpa, applyOverride(known, models_file.findProvider(known.providerName())));
+        const configured = models_file.findProvider(known.providerName());
+        try out.append(gpa, applyOverride(applyProviderBase(known, configured), configured));
     }
 
     for (extras) |extra| {
@@ -66,7 +77,8 @@ fn compose(gpa: std.mem.Allocator, models_file: *const models_file_mod.ModelsFil
         if (staticHasIdentity(models_file, extra)) continue;
         // Deduplicate malformed/repeated stores by first identity, just like a provider map.
         if (hasIdentity(out.items, extra)) continue;
-        try out.append(gpa, applyOverride(extra, models_file.findProvider(extra.providerName())));
+        const configured = models_file.findProvider(extra.providerName());
+        try out.append(gpa, applyOverride(applyProviderBase(extra, configured), configured));
     }
 
     for (models_file.providers) |provider_config| {
