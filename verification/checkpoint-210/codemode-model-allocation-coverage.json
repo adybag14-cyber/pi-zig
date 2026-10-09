@@ -1,0 +1,55 @@
+{
+  "status": "all allocation indices covered exactly once",
+  "total": 2197,
+  "ranges": [
+    {
+      "shard": 0,
+      "start": 0,
+      "end": 274,
+      "total": 2197
+    },
+    {
+      "shard": 1,
+      "start": 274,
+      "end": 549,
+      "total": 2197
+    },
+    {
+      "shard": 2,
+      "start": 549,
+      "end": 823,
+      "total": 2197
+    },
+    {
+      "shard": 3,
+      "start": 823,
+      "end": 1098,
+      "total": 2197
+    },
+    {
+      "shard": 4,
+      "start": 1098,
+      "end": 1373,
+      "total": 2197
+    },
+    {
+      "shard": 5,
+      "start": 1373,
+      "end": 1647,
+      "total": 2197
+    },
+    {
+      "shard": 6,
+      "start": 1647,
+      "end": 1922,
+      "total": 2197
+    },
+    {
+      "shard": 7,
+      "start": 1922,
+      "end": 2197,
+      "total": 2197
+    }
+  ],
+  "qualification": "codemode-model-allocation-ranges-windows-debug-qualified-20261009.json"
+}

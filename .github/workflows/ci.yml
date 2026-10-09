@@ -86,7 +86,9 @@ jobs:
 
       - name: Complete exhaustive SDK and model allocation ranges
         shell: bash
-        timeout-minutes: 30
+        # Ubuntu's three SDK sweeps took 24 minutes. The added exhaustive
+        # model-worker sweep needs its own compilation/execution allowance.
+        timeout-minutes: 45
         env:
           PI_SDK_ALLOCATION_SHARDS: "8"
         run: |
@@ -112,6 +114,35 @@ jobs:
           else
             ./zig-out/bin/pi --version
           fi
+
+      - name: Preserve Windows failure source and executable identity
+        if: failure() && runner.os == 'Windows'
+        shell: bash
+        run: |
+          mkdir -p verification/ci-windows-failure
+          printf '%s\n' "run=$GITHUB_RUN_ID" "attempt=$GITHUB_RUN_ATTEMPT" > verification/ci-windows-failure/source.txt
+          git rev-parse HEAD >> verification/ci-windows-failure/source.txt
+          git rev-parse 'HEAD^{tree}' >> verification/ci-windows-failure/source.txt
+          zig version >> verification/ci-windows-failure/source.txt
+          for binary in pi.exe pi-conpty-launcher.exe pi-terminal-probe.exe; do
+            if [[ -f "zig-out/bin/$binary" ]]; then
+              sha256sum "zig-out/bin/$binary" >> verification/ci-windows-failure/binaries.sha256
+            fi
+          done
+
+      - name: Upload Windows failure executables and source receipts
+        if: failure() && runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-failure-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 14
+          path: |
+            verification/ci-windows-failure/**
+            FILES.sha256
+            ARTIFACT-MANIFEST.json
+            zig-out/bin/pi.exe
+            zig-out/bin/pi-conpty-launcher.exe
+            zig-out/bin/pi-terminal-probe.exe
 
   codemode-allocation:
     name: macOS codemode allocation (${{ matrix.shard }})
