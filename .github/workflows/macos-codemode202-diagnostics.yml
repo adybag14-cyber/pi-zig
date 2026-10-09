@@ -1,0 +1,57 @@
+name: macOS checkpoint202 codemode diagnostics
+on:
+  workflow_dispatch:
+    inputs:
+      run_allocations:
+        description: Repeat complete eight-shard allocation proof
+        type: boolean
+        default: false
+  pull_request:
+jobs:
+  diagnose:
+    if: github.event_name == 'workflow_dispatch' && inputs.run_allocations
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Stream integrated codemode allocation phases
+        timeout-minutes: 10
+        env:
+          PI_CODEMODE_ALLOCATION_SHARD: ${{ matrix.shard }}
+          PI_CODEMODE_ALLOCATION_SHARDS: "8"
+        run: zig build test-codemode -Ddiagnostic-tests=true -j2 --summary all
+  full-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Qualify integrated Darwin final module frameworks
+        timeout-minutes: 20
+        env:
+          PI_CODEMODE_ALLOCATION_SHARD: "0"
+          PI_CODEMODE_ALLOCATION_SHARDS: "8"
+        run: zig build test test-provider-contracts -Ddiagnostic-tests=true -j2 --summary all
+  frontend:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Qualify native frontend admission and late invocation diagnostics
+        timeout-minutes: 10
+        run: zig build test-fullscreen-frontend-process -j2 --summary all
