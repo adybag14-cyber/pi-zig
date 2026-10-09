@@ -1,0 +1,1822 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "nested": false,
+      "variant": "prepare-throws",
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "prepare",
+          true,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] repair failed\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "invalid_arguments",
+              "message": "repair failed"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "prepare-invalid",
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] Validation failed for tool \"absent\":\n  - count: must be number\n\nReceived arguments:\n{\n  \"count\": \"bad\"\n}\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "invalid_arguments",
+              "message": "Validation failed for tool \"absent\":\n  - count: must be number\n\nReceived arguments:\n{\n  \"count\": \"bad\"\n}"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "initial-invalid",
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] Validation failed for tool \"absent\":\n  - count: must be number\n\nReceived arguments:\n{\n  \"count\": \"bad\"\n}\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "invalid_arguments",
+              "message": "Validation failed for tool \"absent\":\n  - count: must be number\n\nReceived arguments:\n{\n  \"count\": \"bad\"\n}"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "before-block",
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          null,
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] Tool call blocked: blocked by fixture\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "blocked",
+              "message": "Tool call blocked: blocked by fixture"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "before-throws",
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          null,
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] Tool call blocked: hook failed\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "blocked",
+              "message": "Tool call blocked: hook failed"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "decision-getter-throws",
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          null,
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] Tool call blocked: decision failed\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "blocked",
+              "message": "Tool call blocked: decision failed"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "hook-invalid",
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          null,
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] Validation failed for tool \"absent\":\n  - count: must be number\n\nReceived arguments:\n{\n  \"count\": \"bad\"\n}\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "invalid_arguments",
+              "message": "Validation failed for tool \"absent\":\n  - count: must be number\n\nReceived arguments:\n{\n  \"count\": \"bad\"\n}"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "after-block-skipped",
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          null,
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] Tool call blocked: blocked by fixture\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "blocked",
+              "message": "Tool call blocked: blocked by fixture"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "prepare-throws",
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "prepare",
+          true,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "invalid_arguments",
+              "message": "repair failed"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "prepare-invalid",
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "invalid_arguments",
+              "message": "Validation failed for tool \"absent\":\n  - count: must be number\n\nReceived arguments:\n{\n  \"count\": \"bad\"\n}"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "initial-invalid",
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "invalid_arguments",
+              "message": "Validation failed for tool \"absent\":\n  - count: must be number\n\nReceived arguments:\n{\n  \"count\": \"bad\"\n}"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "before-block",
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          {
+            "taskId": 3,
+            "callId": "parent"
+          },
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "blocked",
+              "message": "Tool call blocked: blocked by fixture"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "before-throws",
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          {
+            "taskId": 3,
+            "callId": "parent"
+          },
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "blocked",
+              "message": "Tool call blocked: hook failed"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "decision-getter-throws",
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          {
+            "taskId": 3,
+            "callId": "parent"
+          },
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "blocked",
+              "message": "Tool call blocked: decision failed"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "hook-invalid",
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          {
+            "taskId": 3,
+            "callId": "parent"
+          },
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "invalid_arguments",
+              "message": "Validation failed for tool \"absent\":\n  - count: must be number\n\nReceived arguments:\n{\n  \"count\": \"bad\"\n}"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "after-block-skipped",
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "hooks",
+          "beforeTool"
+        ],
+        [
+          "before",
+          {
+            "taskId": 3,
+            "callId": "parent"
+          },
+          2,
+          "number",
+          true,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "blocked",
+              "message": "Tool call blocked: blocked by fixture"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    }
+  ]
+}

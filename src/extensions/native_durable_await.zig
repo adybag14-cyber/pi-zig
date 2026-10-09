@@ -37,3 +37,24 @@ pub const Intrinsics = struct {
         return engine.checked(c.JS_Call(engine.context, self.then_function, promise, continuations.len, &continuations));
     }
 };
+
+/// A state object is retained by the VM's function data for each continuation.
+/// The callback is compiled Zig; no host pointer outlives an async stack frame.
+pub fn continueWith(comptime next: *const fn (*Engine, c.JSValue, c.JSValue, bool, c_int) anyerror!c.JSValue, engine: *Engine, intrinsics: *Intrinsics, state: c.JSValue, awaited: c.JSValue, stage: c_int) !c.JSValue {
+    const Adapter = struct {
+        fn fulfilled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const owner = Engine.fromContext(context.?);
+            return next(owner, data[0], if (argc > 0) argv[0] else c.pi_js_undefined(), false, magic) catch |err| @import("native_durable.zig").reject(owner, err);
+        }
+        fn rejected(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const owner = Engine.fromContext(context.?);
+            return next(owner, data[0], if (argc > 0) argv[0] else c.pi_js_undefined(), true, magic) catch |err| @import("native_durable.zig").reject(owner, err);
+        }
+    };
+    var captures = [_]c.JSValue{state};
+    const fulfilled = try engine.checked(c.JS_NewCFunctionData2(engine.context, Adapter.fulfilled, "", 1, stage, captures.len, &captures));
+    defer engine.freeValue(fulfilled);
+    const rejected = try engine.checked(c.JS_NewCFunctionData2(engine.context, Adapter.rejected, "", 1, stage, captures.len, &captures));
+    defer engine.freeValue(rejected);
+    return intrinsics.chain(engine, awaited, fulfilled, rejected);
+}

@@ -291,6 +291,140 @@ fn testErrorMessage(engine: *engine_mod.Engine, failure: c.JSValue) !c.JSValue {
     var args = [_]c.JSValue{failure};
     return engine.checked(c.JS_Call(engine.context, string, c.pi_js_undefined(), args.len, &args));
 }
+test "native durable v2 live slots match Source identity cleanup and logarithmic draft reads" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var intrinsics = try output.Cache.init(engine);
+    defer intrinsics.deinit();
+    const slots = @import("extensions/native_durable_tool_slots.zig");
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-eba-live-slots-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const kind = row.object.get("kind").?.string;
+        if (std.mem.eql(u8, kind, "binary")) continue;
+        const original = if (row.object.get("before")) |value| value else row.object.get("live").?;
+        const value = try engine.fromJsonValue(original);
+        defer engine.freeValue(value);
+        if (std.mem.eql(u8, kind, "find")) {
+            const id = try engine.fromJsonValue(row.object.get("taskId").?);
+            defer engine.freeValue(id);
+            const found = try slots.find(engine, value, id);
+            defer engine.freeValue(found);
+            if (row.object.get("found").? == .null) {
+                try std.testing.expect(c.JS_IsUndefined(found));
+                continue;
+            }
+            const actual = try engine.stringify(found);
+            defer std.testing.allocator.free(actual);
+            const expected = try json.stringify(std.testing.allocator, row.object.get("found").?);
+            defer std.testing.allocator.free(expected);
+            try std.testing.expectEqualStrings(expected, actual);
+            const second = try slots.find(engine, value, id);
+            defer engine.freeValue(second);
+            try std.testing.expect(c.JS_IsStrictEqual(engine.context, found, second));
+        } else {
+            if (std.mem.eql(u8, kind, "finish")) try slots.finish(engine, value) else {
+                const array = try vm.get(engine, value, "nestedTools");
+                defer engine.freeValue(array);
+                const id = try engine.fromJsonValue(row.object.get("taskId").?);
+                defer engine.freeValue(id);
+                try slots.removeBelow(engine, value, id, intrinsics.iterator_symbol);
+                const after = try vm.get(engine, value, "nestedTools");
+                defer engine.freeValue(after);
+                try std.testing.expect(c.JS_IsUndefined(after) or c.JS_IsStrictEqual(engine.context, array, after));
+            }
+            const actual = try engine.stringify(value);
+            defer std.testing.allocator.free(actual);
+            const expected = try json.stringify(std.testing.allocator, row.object.get("after").?);
+            defer std.testing.allocator.free(expected);
+            try std.testing.expectEqualStrings(expected, actual);
+        }
+    }
+    const large = try engine.eval("globalThis.slotReads=0;globalThis.nested=Array.from({length:1024},(_,i)=>({get taskId(){slotReads++;return i+10},parentTaskId:1}));({nestedTools:nested})", "binary-slot-reads", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(large);
+    const found = try slots.find(engine, large, c.JS_NewInt32(engine.context, 777));
+    defer engine.freeValue(found);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const reads = try vm.get(engine, global, "slotReads");
+    defer engine.freeValue(reads);
+    var count: i32 = 0;
+    try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(engine.context, &count, reads));
+    const binary = source.value.object.get("rows").?.array.items[source.value.object.get("rows").?.array.items.len - 1];
+    try std.testing.expectEqual(@as(i32, @intCast(try json.asInteger(binary.object.get("reads").?))), count);
+}
+test "native durable v2 terminal transactions match actual Source model and nested ToolTask traces" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var intrinsics = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer intrinsics.deinit(engine);
+    var cache = try output.Cache.init(engine);
+    defer cache.deinit();
+    const exports = try vm.object(engine);
+    defer engine.freeValue(exports);
+    try @import("extensions/native_durable_builtin_documents.zig").install(engine, exports);
+    try @import("extensions/native_durable_entries.zig").install(engine, exports);
+    const calls_token = try engine.eval("({definition:{kind:'pi.tool.nested',version:1,scope:'task',initial:()=>({calls:{}})}})", "nested-calls-token", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(calls_token);
+    const live_token = try vm.get(engine, exports, "LiveDoc");
+    defer engine.freeValue(live_token);
+    const result_token = try vm.get(engine, exports, "NestedResultDoc");
+    defer engine.freeValue(result_token);
+    const tool_result = try vm.get(engine, exports, "ToolResultEntry");
+    defer engine.freeValue(tool_result);
+    const assistant = try vm.get(engine, exports, "AssistantEntry");
+    defer engine.freeValue(assistant);
+    const usage_token = try vm.get(engine, exports, "UsageDoc");
+    defer engine.freeValue(usage_token);
+    const make = try engine.eval(@embedFile("extensions/fixtures/durable-eba-settle-runtime.txt"), "actual-source-runtime-fixture", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-eba-settle-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        var args = [_]c.JSValue{c.pi_js_bool(engine.context, @intFromBool(row.object.get("nested").?.bool))};
+        const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(fixture);
+        const runtime = try vm.get(engine, fixture, "runtime");
+        defer engine.freeValue(runtime);
+        const input = try vm.get(engine, fixture, "input");
+        defer engine.freeValue(input);
+        const context = try vm.get(engine, fixture, "context");
+        defer engine.freeValue(context);
+        const call_pending = try @import("extensions/native_durable_tool_call.zig").readCall(engine, runtime, input, context, assistant, &intrinsics);
+        defer engine.freeValue(call_pending);
+        const call = try engine.awaitValue(call_pending);
+        defer engine.freeValue(call);
+        const agent_pending = try vm.invoke(engine, runtime, "agent", &.{context});
+        defer engine.freeValue(agent_pending);
+        const agent = try engine.awaitValue(agent_pending);
+        defer engine.freeValue(agent);
+        const name = try vm.get(engine, call, "name");
+        defer engine.freeValue(name);
+        const tool = try @import("extensions/native_durable_tool_call.zig").resolveTool(engine, agent, row.object.get("nested").?.bool, name);
+        defer engine.freeValue(tool);
+        try std.testing.expect(c.JS_IsUndefined(tool));
+        const result = try vm.get(engine, fixture, "result");
+        defer engine.freeValue(result);
+        const pending = try @import("extensions/native_durable_tool_settle.zig").run(engine, &intrinsics, .{ .live = live_token, .nested_calls = calls_token, .nested_results = result_token, .tool_result = tool_result, .usage = usage_token, .iterator_symbol = cache.iterator_symbol }, runtime, input, call, .completed, .{ .final = result }, context, c.pi_js_undefined(), c.pi_js_undefined());
+        defer engine.freeValue(pending);
+        const done = try engine.awaitValue(pending);
+        defer engine.freeValue(done);
+        try std.testing.expect(c.JS_IsUndefined(done));
+        const inspected = try vm.invoke(engine, fixture, "inspect", &.{});
+        defer engine.freeValue(inspected);
+        const actual = try engine.stringify(inspected);
+        defer std.testing.allocator.free(actual);
+        var expected = row;
+        _ = expected.object.swapRemove("nested");
+        const wanted = try json.stringify(std.testing.allocator, expected);
+        defer std.testing.allocator.free(wanted);
+        var actual_value = try json.Owned.parse(std.testing.allocator, actual);
+        defer actual_value.deinit();
+        var expected_value = try json.Owned.parse(std.testing.allocator, wanted);
+        defer expected_value.deinit();
+        try std.testing.expect(json.equal(expected_value.value, actual_value.value));
+    }
+}
 test "native durable v2 preparation preserves Source getter try boundaries and validation clones arguments" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
@@ -333,4 +467,299 @@ test "native durable v2 preparation preserves Source getter try boundaries and v
     const failure = try engine.toString(checked.failure);
     defer std.testing.allocator.free(failure);
     try std.testing.expectEqualStrings("second-getter", failure);
+}
+
+test "native durable v2 preflight cancellation and unsafe recovery match actual Source terminal handlers" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var intrinsics = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer intrinsics.deinit(engine);
+    var cache = try output.Cache.init(engine);
+    defer cache.deinit();
+    const exports = try vm.object(engine);
+    defer engine.freeValue(exports);
+    try @import("extensions/native_durable_builtin_documents.zig").install(engine, exports);
+    try @import("extensions/native_durable_entries.zig").install(engine, exports);
+    const calls_token = try engine.eval("({definition:{kind:'pi.tool.nested',version:1,scope:'task',initial:()=>({calls:{}})}})", "nested-calls-token", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(calls_token);
+    const live = try vm.get(engine, exports, "LiveDoc");
+    defer engine.freeValue(live);
+    const nested_results = try vm.get(engine, exports, "NestedResultDoc");
+    defer engine.freeValue(nested_results);
+    const tool_result = try vm.get(engine, exports, "ToolResultEntry");
+    defer engine.freeValue(tool_result);
+    const assistant = try vm.get(engine, exports, "AssistantEntry");
+    defer engine.freeValue(assistant);
+    const usage = try vm.get(engine, exports, "UsageDoc");
+    defer engine.freeValue(usage);
+    const tokens: @import("extensions/native_durable_tool_task.zig").Tokens = .{ .assistant = assistant, .terminal = .{ .live = live, .nested_calls = calls_token, .nested_results = nested_results, .tool_result = tool_result, .usage = usage, .iterator_symbol = cache.iterator_symbol } };
+    const make = try engine.eval(@embedFile("extensions/fixtures/durable-eba-settle-runtime.txt"), "actual-source-runtime-fixture", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    const prepare = try engine.eval("(fixture,nested,mode,partial)=>{const slot=(nested?fixture.inspect().live.nestedTools:fixture.inspect().live.tools).find(slot=>slot.taskId===7);if(partial)Object.assign(slot,{output:'partial λ\\n',details:{retained:true},droppedBytes:24,droppedLines:2,diagnostics:[{severity:'info',code:'earlier',message:'Before interruption'}]});if(mode==='safe-recovery'){const original=fixture.runtime.agent;fixture.runtime.agent=async(ctx)=>{await original(ctx);return{tools:[{name:'absent',replay:'safe'}],callable:[{name:'absent',replay:'safe'}]}}}return{input:fixture.input,state:{checkpoint:{phase:mode==='restart-call'?'call':'execute',arguments:mode==='safe-recovery'?{count:2}:{},replay:mode==='safe-recovery'?'safe':'unsafe'}},abortReason:mode.startsWith('restart')?'restart':'explicit'}}", "source-recovery-test-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(prepare);
+    const prepare_preflight = try engine.eval(@embedFile("extensions/fixtures/durable-eba-preflight-runtime.txt"), "actual-source-preflight-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(prepare_preflight);
+    for ([_][]const u8{ @embedFile("extensions/fixtures/durable-eba-recovery-original.json"), @embedFile("extensions/fixtures/durable-eba-preflight-original.json"), @embedFile("extensions/fixtures/durable-eba-intent-original.json"), @embedFile("extensions/fixtures/durable-eba-safe-replay-original.json") }) |corpus| {
+        var source = try json.Owned.parse(std.testing.allocator, corpus);
+        defer source.deinit();
+        for (source.value.object.get("rows").?.array.items) |row| {
+            const nested = row.object.get("nested").?.bool;
+            const is_preflight = row.object.contains("variant");
+            const is_intent = is_preflight and std.mem.startsWith(u8, row.object.get("variant").?.string, "intent-");
+            const mode = if (is_preflight) "preflight" else row.object.get("mode").?.string;
+            var make_args = [_]c.JSValue{c.pi_js_bool(engine.context, @intFromBool(nested))};
+            const fixture = fixture: {
+                if (!is_preflight) break :fixture try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), make_args.len, &make_args));
+                const variant = row.object.get("variant").?.string;
+                const variant_value = try engine.checked(c.JS_NewStringLen(engine.context, variant.ptr, variant.len));
+                defer engine.freeValue(variant_value);
+                var args = [_]c.JSValue{ make, make_args[0], variant_value };
+                break :fixture try engine.checked(c.JS_Call(engine.context, prepare_preflight, c.pi_js_undefined(), args.len, &args));
+            };
+            defer engine.freeValue(fixture);
+            const mode_value = try engine.checked(c.JS_NewStringLen(engine.context, mode.ptr, mode.len));
+            defer engine.freeValue(mode_value);
+            var prepare_args = [_]c.JSValue{ fixture, make_args[0], mode_value, c.pi_js_bool(engine.context, @intFromBool(if (row.object.get("partial")) |partial| partial.bool else false)) };
+            const task = try engine.checked(c.JS_Call(engine.context, prepare, c.pi_js_undefined(), prepare_args.len, &prepare_args));
+            defer engine.freeValue(task);
+            const runtime = try vm.get(engine, fixture, "runtime");
+            defer engine.freeValue(runtime);
+            const context = try vm.get(engine, fixture, "context");
+            defer engine.freeValue(context);
+            const handlers = @import("extensions/native_durable_tool_task.zig");
+            const pending = if (is_preflight) try handlers.prepareCall(engine, &intrinsics, tokens, task, runtime, context) else if (std.mem.endsWith(u8, mode, "recovery")) try handlers.prepareRecovery(engine, &intrinsics, tokens, task, runtime, context) else try handlers.abort(engine, &intrinsics, tokens, task, runtime, context);
+            defer engine.freeValue(pending);
+            const done = try engine.awaitValue(pending);
+            defer engine.freeValue(done);
+            if (is_intent) {
+                try std.testing.expect(c.JS_IsObject(done));
+                const intent_pending = try @import("extensions/native_durable_tool_intent.zig").commit(engine, &intrinsics, live, task, runtime, done, context, false);
+                defer engine.freeValue(intent_pending);
+                const committed = try engine.awaitValue(intent_pending);
+                engine.freeValue(committed);
+            } else if (std.mem.eql(u8, mode, "safe-recovery")) {
+                const args = try vm.get(engine, done, "arguments");
+                defer engine.freeValue(args);
+                const encoded = try engine.stringify(args);
+                defer std.testing.allocator.free(encoded);
+                try std.testing.expectEqualStrings("{\"count\":2}", encoded);
+            } else try std.testing.expect(c.JS_IsUndefined(done));
+            const inspected = try vm.invoke(engine, fixture, "inspect", &.{});
+            defer engine.freeValue(inspected);
+            const text = try engine.stringify(inspected);
+            defer std.testing.allocator.free(text);
+            var actual = try json.Owned.parse(std.testing.allocator, text);
+            defer actual.deinit();
+            var expected = row;
+            _ = expected.object.swapRemove("nested");
+            _ = expected.object.swapRemove("mode");
+            _ = expected.object.swapRemove("partial");
+            _ = expected.object.swapRemove("variant");
+            try std.testing.expect(json.equal(expected, actual.value));
+        }
+    }
+}
+
+test "native durable v2 content bounding matches 160 actual Source Unicode retention cases" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var cache = try output.Cache.init(engine);
+    defer cache.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-eba-bound-content-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const content = try engine.fromJsonValue(row.object.get("content").?);
+        defer engine.freeValue(content);
+        const limits = row.object.get("limits").?;
+        var bounded = try @import("extensions/native_durable_tool_bound.zig").content(engine, content, .{ .maxBytes = @intCast(try json.asInteger(limits.object.get("maxBytes").?)), .maxLines = @intCast(try json.asInteger(limits.object.get("maxLines").?)), .retain = if (std.mem.eql(u8, limits.object.get("retain").?.string, "head")) .head else .tail }, cache.iterator_symbol);
+        defer bounded.deinit(engine);
+        const expected = row.object.get("result").?;
+        try std.testing.expectEqual(@as(usize, @intCast(try json.asInteger(expected.object.get("droppedBytes").?))), bounded.dropped_bytes);
+        try std.testing.expectEqual(@as(u64, @intCast(try json.asInteger(expected.object.get("droppedLines").?))), bounded.dropped_lines);
+        try std.testing.expectEqual(row.object.get("same").?.bool, c.JS_IsStrictEqual(engine.context, content, bounded.content));
+        const image = try engine.checked(c.JS_GetPropertyUint32(engine.context, content, 1));
+        defer engine.freeValue(image);
+        const contains = try vm.invoke(engine, bounded.content, "includes", &.{image});
+        defer engine.freeValue(contains);
+        try std.testing.expectEqual(row.object.get("imageSame").?.bool, c.JS_ToBool(engine.context, contains) != 0);
+        const text = try engine.stringify(bounded.content);
+        defer std.testing.allocator.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        try std.testing.expect(json.equal(expected.object.get("content").?, actual.value));
+    }
+}
+
+fn exerciseFinal(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const generation = engine.native_allocation_generation;
+    return exerciseFinalWithEngine(gpa, engine) catch |err| engine.nativeAllocationError(err, generation);
+}
+fn exerciseFinalWithEngine(gpa: std.mem.Allocator, engine: *engine_mod.Engine) !void {
+    var intrinsics = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer intrinsics.deinit(engine);
+    var cache = try output.Cache.init(engine);
+    defer cache.deinit();
+    const make = try engine.eval(@embedFile("extensions/fixtures/durable-eba-final-runtime.txt"), "actual-source-final-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    var source = try json.Owned.parse(gpa, @embedFile("extensions/fixtures/durable-eba-final-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const variant = row.object.get("variant").?.string;
+        const variant_value = try engine.checked(c.JS_NewStringLen(engine.context, variant.ptr, variant.len));
+        defer engine.freeValue(variant_value);
+        var args = [_]c.JSValue{ c.pi_js_bool(engine.context, @intFromBool(row.object.get("nested").?.bool)), variant_value };
+        const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(fixture);
+        var values = [_]c.JSValue{c.pi_js_undefined()} ** 8;
+        defer for (values) |value| engine.freeValue(value);
+        inline for (.{ "runtime", "input", "call", "tool", "result", "reported", "context", "snapshot" }, 0..) |field, index| values[index] = try vm.get(engine, fixture, field);
+        const diagnostics = try vm.get(engine, values[5], "diagnostics");
+        defer engine.freeValue(diagnostics);
+        const details = try vm.get(engine, values[5], "details");
+        defer engine.freeValue(details);
+        // The Source fixture records its private OutputBuffer.snapshot call.
+        // The native driver computes the same snapshot using its native buffer.
+        if (std.mem.eql(u8, variant, "retained") or std.mem.eql(u8, variant, "replace-retained")) {
+            const buffer = try vm.get(engine, values[5], "output");
+            defer engine.freeValue(buffer);
+            const snapshot = try vm.invoke(engine, buffer, "snapshot", &.{});
+            engine.freeValue(snapshot);
+        }
+        const pending = try @import("extensions/native_durable_tool_final.zig").run(engine, &intrinsics, &cache, values[0], values[1], values[2], values[3], values[4], .{ .snapshot = values[7], .details = details, .diagnostics = diagnostics, .limits = .{ .maxBytes = 8, .maxLines = 2, .retain = if (std.mem.eql(u8, variant, "tail")) .tail else .head } }, values[6]);
+        defer engine.freeValue(pending);
+        const result = engine.awaitValue(pending) catch |err| {
+            std.debug.print("Final projection {s}: {s}\n", .{ variant, engine.last_error orelse "no diagnostic" });
+            return err;
+        };
+        defer engine.freeValue(result);
+        const actual_json = try engine.stringify(result);
+        defer gpa.free(actual_json);
+        var actual = try json.Owned.parse(gpa, actual_json);
+        defer actual.deinit();
+        try std.testing.expect(json.equal(row.object.get("result").?, actual.value));
+        inline for (.{ "reports", "trace" }) |field| {
+            const value = try vm.get(engine, fixture, field);
+            defer engine.freeValue(value);
+            const text = try engine.stringify(value);
+            defer gpa.free(text);
+            var parsed = try json.Owned.parse(gpa, text);
+            defer parsed.deinit();
+            try std.testing.expect(json.equal(row.object.get(field).?, parsed.value));
+        }
+    }
+}
+
+test "native durable v2 final projection matches actual Source hooks bounding and structured output" {
+    try exerciseFinal(std.testing.allocator);
+}
+test "native durable v2 final projection releases continuations and results at every failed allocation" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, exerciseFinal, .{});
+}
+
+test "native durable v2 progress matches actual Source coalescing throttling failure and stop traces" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const Factory = struct {
+        fn create(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const owner = engine_mod.Engine.fromContext(context.?);
+            var intrinsics = @import("extensions/native_durable_await.zig").Intrinsics.init(owner) catch |err| return @import("extensions/native_durable.zig").reject(owner, err);
+            defer intrinsics.deinit(owner);
+            if (argc < 3) return c.JS_ThrowTypeError(context, "Progress fixture requires three arguments");
+            return @import("extensions/native_durable_progress.zig").create(owner, &intrinsics, argv[0], argv[1], argv[2]) catch |err| @import("extensions/native_durable.zig").reject(owner, err);
+        }
+    };
+    const factory = try engine.checked(c.JS_NewCFunction(engine.context, Factory.create, "nativeProgress", 3));
+    defer engine.freeValue(factory);
+    const exercise_progress = try engine.eval(@embedFile("extensions/fixtures/durable-eba-progress-runtime.txt"), "actual-source-progress-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(exercise_progress);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-eba-progress-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const scenario = row.object.get("scenario").?.string;
+        const scenario_value = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
+        defer engine.freeValue(scenario_value);
+        var args = [_]c.JSValue{ factory, scenario_value };
+        const pending = try engine.checked(c.JS_Call(engine.context, exercise_progress, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(pending);
+        const result = engine.awaitValue(pending) catch |err| {
+            std.debug.print("Progress {s}: {s}\n", .{ scenario, engine.last_error orelse "no diagnostic" });
+            return err;
+        };
+        defer engine.freeValue(result);
+        const text = try engine.stringify(result);
+        defer std.testing.allocator.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        var expected = row;
+        _ = expected.object.swapRemove("scenario");
+        if (!json.equal(expected, actual.value)) std.debug.print("Progress {s} actual: {s}\n", .{ scenario, text });
+        try std.testing.expect(json.equal(expected, actual.value));
+    }
+}
+
+fn exerciseBuffer(gpa: std.mem.Allocator, allocation_case: bool) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const generation = engine.native_allocation_generation;
+    return exerciseBufferWithEngine(gpa, engine, allocation_case) catch |err| engine.nativeAllocationError(err, generation);
+}
+fn exerciseBufferWithEngine(gpa: std.mem.Allocator, engine: *engine_mod.Engine, allocation_case: bool) !void {
+    try @import("extensions/text_decoder.zig").install(engine);
+    const pattern = try engine.eval("(/[\\x00-\\x08\\x0b-\\x1f\\ufff9-\\ufffb]/g)", "source-output-sanitizer", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(pattern);
+    const Factory = struct {
+        fn create(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const owner = engine_mod.Engine.fromContext(context.?);
+            return createOwned(owner, if (argc > 0) argv[0] else c.pi_js_undefined(), data[0]) catch |err| @import("extensions/native_durable.zig").reject(owner, err);
+        }
+        fn createOwned(owner: *engine_mod.Engine, limits: c.JSValue, sanitizer: c.JSValue) !c.JSValue {
+            const max_bytes = try vm.get(owner, limits, "maxBytes");
+            defer owner.freeValue(max_bytes);
+            const max_lines = try vm.get(owner, limits, "maxLines");
+            defer owner.freeValue(max_lines);
+            const retain = try vm.get(owner, limits, "retain");
+            defer owner.freeValue(retain);
+            var bytes: f64 = 0;
+            var lines: f64 = 0;
+            if (c.JS_ToFloat64(owner.context, &bytes, max_bytes) < 0 or c.JS_ToFloat64(owner.context, &lines, max_lines) < 0) return error.JavaScriptException;
+            return @import("extensions/native_durable_output_buffer.zig").create(owner, .{ .maxBytes = @intFromFloat(bytes), .maxLines = @intFromFloat(lines), .retain = if (try @import("extensions/native_durable_tool_call.zig").equalsString(owner, retain, "tail")) .tail else .head }, sanitizer);
+        }
+    };
+    var captures = [_]c.JSValue{pattern};
+    const factory = try engine.checked(c.JS_NewCFunctionData2(engine.context, Factory.create, "nativeOutputBuffer", 1, 0, captures.len, &captures));
+    defer engine.freeValue(factory);
+    const exercise_buffer = try engine.eval(@embedFile("extensions/fixtures/durable-eba-buffer-runtime.txt"), "actual-source-buffer-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(exercise_buffer);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-eba-buffer-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        if (allocation_case) {
+            const limits = row.object.get("limits").?;
+            if (try json.asInteger(limits.object.get("maxBytes").?) != 9 or try json.asInteger(limits.object.get("maxLines").?) != 3) continue;
+        }
+        const limits = try engine.fromJsonValue(row.object.get("limits").?);
+        defer engine.freeValue(limits);
+        var args = [_]c.JSValue{ factory, limits };
+        const generation = engine.native_allocation_generation;
+        const result = try engine.checked(c.JS_Call(engine.context, exercise_buffer, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(result);
+        // The fixture catches ordinary Source push errors, including a head
+        // skip. An induced native allocator failure must still fail this run.
+        if (engine.native_allocation_generation != generation) return error.OutOfMemory;
+        const text = try engine.stringify(result);
+        defer gpa.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        if (!json.equal(row.object.get("steps").?, actual.value)) std.debug.print("Running output actual: {s}\n", .{text});
+        try std.testing.expect(json.equal(row.object.get("steps").?, actual.value));
+    }
+}
+
+test "native durable v2 running output matches actual Source streaming decoding and UTF16 retention" {
+    try exerciseBuffer(std.testing.allocator, false);
+}
+test "native durable v2 running output releases decoder chunks and closures on every failed allocation" {
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, exerciseBuffer, .{true});
 }

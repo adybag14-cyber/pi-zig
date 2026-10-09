@@ -150,7 +150,7 @@ const State = struct {
 
 fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     if (err == error.UnsupportedEncoding) return c.JS_ThrowRangeError(engine.context, "Unsupported TextDecoder encoding");
     return c.JS_ThrowTypeError(engine.context, "Native TextDecoder: %s", @as([*:0]const u8, @errorName(err)));
 }

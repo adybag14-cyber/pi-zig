@@ -1,0 +1,3629 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 0,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 2,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 20,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 0,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 2,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 20,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 0,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "λ o",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 16,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 2,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "λ o",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 16,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 20,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "λ o",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 16,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 0,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "λ one\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 13,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 2,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "λ one\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 13,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 20,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "λ one\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 13,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 0,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "λ one\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 13,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 2,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "λ one\n界 two\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 5,
+        "droppedLines": 1
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 20,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "λ one\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "界 two\nthree",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 0,
+        "droppedLines": 0
+      },
+      "same": true,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 0,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 2,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 20,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 0,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "e",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 19,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 2,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "e",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 19,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 20,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "e",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 19,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 0,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "hree",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 16,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 2,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "hree",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 16,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 20,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "hree",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 16,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 0,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "three",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 15,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 2,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "three",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 15,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 20,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "three",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 15,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 0,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "three",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 15,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 2,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "界 two\nthree",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 7,
+        "droppedLines": 1
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "λ one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "界 two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 20,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "λ one\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "界 two\nthree",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 0,
+        "droppedLines": 0
+      },
+      "same": true,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 0,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 2,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 20,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 0,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 2,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 20,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 0,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "� ",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 17,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 2,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "� ",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 17,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 20,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "� ",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 17,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 0,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "� one\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 13,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 2,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "� one\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 13,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 20,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "� one\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 13,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 0,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 1,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "� one\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 13,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 2,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "� one\n� two\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          }
+        ],
+        "droppedBytes": 5,
+        "droppedLines": 1
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 20,
+        "retain": "head"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "\ud800 one\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "\udfff two\nthree",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 0,
+        "droppedLines": 0
+      },
+      "same": true,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 0,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 2,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 0,
+        "maxLines": 20,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 0,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "e",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 2,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "e",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 1,
+        "maxLines": 20,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "e",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 20,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 0,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "hree",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 17,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 2,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "hree",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 17,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 4,
+        "maxLines": 20,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "hree",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 17,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 0,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "three",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 16,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 2,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "three",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 16,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 8,
+        "maxLines": 20,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "three",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 16,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 0,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 21,
+        "droppedLines": 3
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 1,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "three",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 16,
+        "droppedLines": 2
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 2,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "� two\nthree",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 8,
+        "droppedLines": 1
+      },
+      "same": false,
+      "imageSame": true
+    },
+    {
+      "content": [
+        {
+          "type": "text",
+          "text": "\ud800 one\n",
+          "extra": {
+            "x": 1
+          }
+        },
+        {
+          "type": "image",
+          "data": "YWJj",
+          "mimeType": "image/png"
+        },
+        {
+          "type": "text",
+          "text": "\udfff two\nthree",
+          "extra": "retained"
+        }
+      ],
+      "limits": {
+        "maxBytes": 64,
+        "maxLines": 20,
+        "retain": "tail"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "\ud800 one\n",
+            "extra": {
+              "x": 1
+            }
+          },
+          {
+            "type": "image",
+            "data": "YWJj",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "\udfff two\nthree",
+            "extra": "retained"
+          }
+        ],
+        "droppedBytes": 0,
+        "droppedLines": 0
+      },
+      "same": true,
+      "imageSame": true
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+(create,limits)=>{
+ const buffer=create(limits),rows=[];
+ const steps=[{bytes:[239,187]},{bytes:[191,206]},{bytes:[187,32,111,110,101,10]},{text:'\ud83d'},{text:'\ude00\n'},{text:'\ud800 control\u0000\u001b\t\n'},{bytes:[226,130]},{text:'next\n',skip:{bytes:100,newlines:8,endsWithNewline:true}},{bytes:[172,116,97,105,108]},{end:true}];
+ for(const step of steps){let accepted,error;try{if(step.end)buffer.end();else accepted=buffer.push(step.bytes?new Uint8Array(step.bytes):step.text,step.skip)}catch(failure){error={name:failure.name,message:failure.message}}const snapshot=buffer.snapshot();rows.push({accepted,error,snapshot,storedBytes:buffer.storedBytes})}
+ return rows;
+}

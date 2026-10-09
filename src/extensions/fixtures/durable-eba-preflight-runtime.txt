@@ -1,0 +1,26 @@
+(make,nested,variant)=>{
+ const f=make(nested),originalAgent=f.runtime.agent;
+ f.call.arguments={count:'2'};
+ const tool={name:'absent',parameters:{type:'object',properties:{count:{type:'number'}},required:['count'],additionalProperties:false}};
+ if(variant.startsWith('intent-')&&variant!=='intent-coerced')f.call.arguments={count:2};
+ if(variant==='intent-safe')tool.replay='safe';
+ if(variant==='prepare-throws')tool.prepareArguments=function(args){f.inspect().trace.push(['prepare',this===tool,args===f.call.arguments]);throw 'repair failed'};
+ if(variant==='prepare-invalid')tool.prepareArguments=()=>({count:'bad'});
+ if(variant==='initial-invalid')f.call.arguments={count:'bad'};
+ f.runtime.agent=async(ctx)=>{await originalAgent(ctx);return{tools:[tool],callable:[tool]}};
+ f.runtime.signal={aborted:false};
+ f.runtime.hooks={async each(event,callback){
+  f.inspect().trace.push(['hooks',event]);
+  await callback(async(call,runtime,context)=>{
+   f.inspect().trace.push(['before',call.parent??null,call.arguments.count,typeof call.arguments.count,runtime===f.runtime,context===f.context]);
+   if(variant==='before-throws')throw 'hook failed';
+   if(variant==='decision-getter-throws')return{get block(){throw 'decision failed'}};
+   if(variant==='hook-invalid')return{arguments:{count:'bad'}};
+   if(variant==='intent-hook-repair')return{arguments:{count:'3'}};
+   if(variant.startsWith('intent-'))return undefined;
+   return{block:'blocked by fixture'};
+  });
+  if(variant==='after-block-skipped')await callback(()=>{f.inspect().trace.push(['unexpected-second-hook']);throw 'must be skipped'});
+ }};
+ return f;
+}

@@ -1,0 +1,164 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "idle",
+      "trace": [
+        [
+          "clear",
+          null
+        ]
+      ],
+      "pending": 0
+    },
+    {
+      "scenario": "coalesce",
+      "trace": [
+        [
+          "write",
+          0
+        ],
+        [
+          "first",
+          "resolved"
+        ],
+        [
+          "timer",
+          1,
+          100
+        ],
+        [
+          "write",
+          100
+        ],
+        [
+          "clear",
+          null
+        ]
+      ],
+      "pending": 0
+    },
+    {
+      "scenario": "bytes-delay",
+      "trace": [
+        [
+          "write",
+          0
+        ],
+        [
+          "first",
+          "resolved"
+        ],
+        [
+          "timer",
+          1,
+          2000
+        ],
+        [
+          "write",
+          2000
+        ],
+        [
+          "clear",
+          null
+        ]
+      ],
+      "pending": 0
+    },
+    {
+      "scenario": "failure",
+      "trace": [
+        [
+          "write",
+          0
+        ],
+        [
+          "error",
+          "write-failure"
+        ],
+        [
+          "first",
+          "rejected",
+          "write-failure"
+        ],
+        [
+          "timer",
+          1,
+          100
+        ],
+        [
+          "write",
+          100
+        ],
+        [
+          "clear",
+          null
+        ]
+      ],
+      "pending": 0
+    },
+    {
+      "scenario": "stop-flight",
+      "trace": [
+        [
+          "write",
+          0
+        ],
+        [
+          "clear",
+          null
+        ],
+        [
+          "first",
+          "resolved"
+        ]
+      ],
+      "pending": 0
+    },
+    {
+      "scenario": "stop-pending",
+      "trace": [
+        [
+          "write",
+          0
+        ],
+        [
+          "first",
+          "resolved"
+        ],
+        [
+          "timer",
+          1,
+          100
+        ],
+        [
+          "clear",
+          1
+        ]
+      ],
+      "pending": 1
+    },
+    {
+      "scenario": "reentrant",
+      "trace": [
+        [
+          "write",
+          0
+        ],
+        [
+          "write",
+          0
+        ],
+        [
+          "first",
+          "resolved"
+        ],
+        [
+          "clear",
+          null
+        ]
+      ],
+      "pending": 0
+    }
+  ]
+}

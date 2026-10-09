@@ -15,6 +15,16 @@ pub fn unitsAlloc(engine: *engine_mod.Engine, value: c.JSValue) ![]u16 {
 pub fn string(engine: *engine_mod.Engine, units: []const u16) !c.JSValue {
     return engine.checked(c.JS_NewStringUTF16(engine.context, units.ptr, units.len));
 }
+pub fn concat(engine: *engine_mod.Engine, parts: []const c.JSValue) !c.JSValue {
+    var joined: std.ArrayList(u16) = .empty;
+    defer joined.deinit(engine.gpa);
+    for (parts) |part| {
+        const units = try unitsAlloc(engine, part);
+        defer engine.gpa.free(units);
+        try joined.appendSlice(engine.gpa, units);
+    }
+    return string(engine, joined.items);
+}
 test "native JS UTF16 preserves NUL lone surrogates and split pairs without UTF8 loss" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();

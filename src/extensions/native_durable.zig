@@ -166,7 +166,7 @@ fn point(engine: *Engine, input: c.JSValue) !backend.memory.Point {
 }
 pub fn reject(engine: *Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
     return c.JS_ThrowTypeError(engine.context, "Native durable: %s", @as([*:0]const u8, @errorName(err)));
 }
 pub fn rejectedPromise(engine: *Engine, err: anyerror) c.JSValue {
@@ -312,6 +312,7 @@ pub fn install(engine: *Engine) !void {
     if (!c.JS_IsRegisteredClass(engine.runtime, engine.native_durable_class) and c.JS_NewClass(engine.runtime, engine.native_durable_class, &definition) < 0) return error.OutOfMemory;
     const exports = try sdk.object(engine);
     defer engine.freeValue(exports);
+    try @import("native_durable_errors.zig").install(engine, exports);
     const ctor = try engine.checked(c.JS_NewCFunction2(engine.context, constructor, "MemoryStorage", 0, c.JS_CFUNC_constructor, 0));
     defer engine.freeValue(ctor);
     const prototype = try sdk.object(engine);

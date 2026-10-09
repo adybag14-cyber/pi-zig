@@ -1,0 +1,2393 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "limits": {
+        "retain": "head",
+        "maxBytes": 0,
+        "maxLines": 0
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 10,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "error": {
+            "name": "Error",
+            "message": "Skipped output requires tail retention"
+          },
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 36,
+            "droppedLines": 4
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 36,
+            "droppedLines": 4
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "head",
+        "maxBytes": 0,
+        "maxLines": 1
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 10,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "error": {
+            "name": "Error",
+            "message": "Skipped output requires tail retention"
+          },
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 36,
+            "droppedLines": 4
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 36,
+            "droppedLines": 4
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "head",
+        "maxBytes": 0,
+        "maxLines": 3
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 10,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "error": {
+            "name": "Error",
+            "message": "Skipped output requires tail retention"
+          },
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 36,
+            "droppedLines": 4
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 36,
+            "droppedLines": 4
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "head",
+        "maxBytes": 4,
+        "maxLines": 0
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 10,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "error": {
+            "name": "Error",
+            "message": "Skipped output requires tail retention"
+          },
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 36,
+            "droppedLines": 4
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 36,
+            "droppedLines": 4
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "head",
+        "maxBytes": 4,
+        "maxLines": 1
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 3,
+            "droppedLines": 0
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 6,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 10,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 25,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 25,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "error": {
+            "name": "Error",
+            "message": "Skipped output requires tail retention"
+          },
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 25,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 32,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 32,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "head",
+        "maxBytes": 4,
+        "maxLines": 3
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 3,
+            "droppedLines": 0
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 6,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 10,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 25,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 25,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "error": {
+            "name": "Error",
+            "message": "Skipped output requires tail retention"
+          },
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 25,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 32,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "λ o",
+            "droppedBytes": 32,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "head",
+        "maxBytes": 9,
+        "maxLines": 0
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 10,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "error": {
+            "name": "Error",
+            "message": "Skipped output requires tail retention"
+          },
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 36,
+            "droppedLines": 4
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 36,
+            "droppedLines": 4
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "head",
+        "maxBytes": 9,
+        "maxLines": 1
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 3,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 22,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 22,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "error": {
+            "name": "Error",
+            "message": "Skipped output requires tail retention"
+          },
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 22,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "head",
+        "maxBytes": 9,
+        "maxLines": 3
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 3,
+            "droppedLines": 1
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 22,
+            "droppedLines": 2
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 22,
+            "droppedLines": 2
+          },
+          "storedBytes": 10
+        },
+        {
+          "error": {
+            "name": "Error",
+            "message": "Skipped output requires tail retention"
+          },
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 22,
+            "droppedLines": 2
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 10
+        },
+        {
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 10
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "head",
+        "maxBytes": 40,
+        "maxLines": 0
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 10,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "error": {
+            "name": "Error",
+            "message": "Skipped output requires tail retention"
+          },
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 36,
+            "droppedLines": 4
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 36,
+            "droppedLines": 4
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "head",
+        "maxBytes": 40,
+        "maxLines": 1
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 3,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 22,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 22,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "error": {
+            "name": "Error",
+            "message": "Skipped output requires tail retention"
+          },
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 22,
+            "droppedLines": 2
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "head",
+        "maxBytes": 40,
+        "maxLines": 3
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n\ud83d",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n😀\n",
+            "droppedBytes": 2,
+            "droppedLines": 0
+          },
+          "storedBytes": 14
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n😀\n\ud800 control\t\n",
+            "droppedBytes": 2,
+            "droppedLines": 0
+          },
+          "storedBytes": 29
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "λ one\n😀\n\ud800 control\t\n",
+            "droppedBytes": 2,
+            "droppedLines": 0
+          },
+          "storedBytes": 29
+        },
+        {
+          "error": {
+            "name": "Error",
+            "message": "Skipped output requires tail retention"
+          },
+          "snapshot": {
+            "text": "λ one\n😀\n\ud800 control\t\n",
+            "droppedBytes": 2,
+            "droppedLines": 0
+          },
+          "storedBytes": 29
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n😀\n\ud800 control\t\n",
+            "droppedBytes": 9,
+            "droppedLines": 1
+          },
+          "storedBytes": 29
+        },
+        {
+          "snapshot": {
+            "text": "λ one\n😀\n\ud800 control\t\n",
+            "droppedBytes": 9,
+            "droppedLines": 1
+          },
+          "storedBytes": 29
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "tail",
+        "maxBytes": 0,
+        "maxLines": 0
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 10,
+            "droppedLines": 2
+          },
+          "storedBytes": 3
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 137,
+            "droppedLines": 12
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 144,
+            "droppedLines": 13
+          },
+          "storedBytes": 1
+        },
+        {
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 144,
+            "droppedLines": 13
+          },
+          "storedBytes": 1
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "tail",
+        "maxBytes": 0,
+        "maxLines": 1
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 10,
+            "droppedLines": 2
+          },
+          "storedBytes": 3
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 137,
+            "droppedLines": 12
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 144,
+            "droppedLines": 13
+          },
+          "storedBytes": 1
+        },
+        {
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 144,
+            "droppedLines": 13
+          },
+          "storedBytes": 1
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "tail",
+        "maxBytes": 0,
+        "maxLines": 3
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 10,
+            "droppedLines": 2
+          },
+          "storedBytes": 3
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 137,
+            "droppedLines": 12
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 144,
+            "droppedLines": 13
+          },
+          "storedBytes": 1
+        },
+        {
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 144,
+            "droppedLines": 13
+          },
+          "storedBytes": 1
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "tail",
+        "maxBytes": 4,
+        "maxLines": 0
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 10,
+            "droppedLines": 2
+          },
+          "storedBytes": 4
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 137,
+            "droppedLines": 12
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 144,
+            "droppedLines": 13
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 144,
+            "droppedLines": 13
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "tail",
+        "maxBytes": 4,
+        "maxLines": 1
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "one\n",
+            "droppedBytes": 3,
+            "droppedLines": 0
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "�",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "�\n",
+            "droppedBytes": 10,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "\t\n",
+            "droppedBytes": 25,
+            "droppedLines": 2
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "\t\n",
+            "droppedBytes": 25,
+            "droppedLines": 2
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "ext\n",
+            "droppedBytes": 133,
+            "droppedLines": 11
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "tail",
+            "droppedBytes": 140,
+            "droppedLines": 12
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "tail",
+            "droppedBytes": 140,
+            "droppedLines": 12
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "tail",
+        "maxBytes": 4,
+        "maxLines": 3
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "one\n",
+            "droppedBytes": 3,
+            "droppedLines": 0
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "�",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "�\n",
+            "droppedBytes": 10,
+            "droppedLines": 1
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "\t\n",
+            "droppedBytes": 25,
+            "droppedLines": 2
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "\t\n",
+            "droppedBytes": 25,
+            "droppedLines": 2
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "ext\n",
+            "droppedBytes": 133,
+            "droppedLines": 11
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "tail",
+            "droppedBytes": 140,
+            "droppedLines": 12
+          },
+          "storedBytes": 7
+        },
+        {
+          "snapshot": {
+            "text": "tail",
+            "droppedBytes": 140,
+            "droppedLines": 12
+          },
+          "storedBytes": 7
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "tail",
+        "maxBytes": 9,
+        "maxLines": 0
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 10,
+            "droppedLines": 2
+          },
+          "storedBytes": 4
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 137,
+            "droppedLines": 12
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 144,
+            "droppedLines": 13
+          },
+          "storedBytes": 8
+        },
+        {
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 144,
+            "droppedLines": 13
+          },
+          "storedBytes": 8
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "tail",
+        "maxBytes": 9,
+        "maxLines": 1
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "�",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "😀\n",
+            "droppedBytes": 9,
+            "droppedLines": 1
+          },
+          "storedBytes": 6
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "ntrol\t\n",
+            "droppedBytes": 20,
+            "droppedLines": 2
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "ntrol\t\n",
+            "droppedBytes": 20,
+            "droppedLines": 2
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "next\n",
+            "droppedBytes": 132,
+            "droppedLines": 11
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "�tail",
+            "droppedBytes": 137,
+            "droppedLines": 12
+          },
+          "storedBytes": 10
+        },
+        {
+          "snapshot": {
+            "text": "�tail",
+            "droppedBytes": 137,
+            "droppedLines": 12
+          },
+          "storedBytes": 10
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "tail",
+        "maxBytes": 9,
+        "maxLines": 3
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "�",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "😀\n",
+            "droppedBytes": 9,
+            "droppedLines": 1
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "ntrol\t\n",
+            "droppedBytes": 20,
+            "droppedLines": 2
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "ntrol\t\n",
+            "droppedBytes": 20,
+            "droppedLines": 2
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "next\n",
+            "droppedBytes": 132,
+            "droppedLines": 11
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "�tail",
+            "droppedBytes": 137,
+            "droppedLines": 12
+          },
+          "storedBytes": 10
+        },
+        {
+          "snapshot": {
+            "text": "�tail",
+            "droppedBytes": 137,
+            "droppedLines": 12
+          },
+          "storedBytes": 10
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "tail",
+        "maxBytes": 40,
+        "maxLines": 0
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 10,
+            "droppedLines": 2
+          },
+          "storedBytes": 4
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 29,
+            "droppedLines": 3
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 137,
+            "droppedLines": 12
+          },
+          "storedBytes": 1
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 144,
+            "droppedLines": 13
+          },
+          "storedBytes": 8
+        },
+        {
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 144,
+            "droppedLines": 13
+          },
+          "storedBytes": 8
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "tail",
+        "maxBytes": 40,
+        "maxLines": 1
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "�",
+            "droppedBytes": 7,
+            "droppedLines": 1
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "😀\n",
+            "droppedBytes": 9,
+            "droppedLines": 1
+          },
+          "storedBytes": 6
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "� control\t\n",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 16
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "� control\t\n",
+            "droppedBytes": 14,
+            "droppedLines": 2
+          },
+          "storedBytes": 16
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "next\n",
+            "droppedBytes": 132,
+            "droppedLines": 11
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "�tail",
+            "droppedBytes": 137,
+            "droppedLines": 12
+          },
+          "storedBytes": 12
+        },
+        {
+          "snapshot": {
+            "text": "�tail",
+            "droppedBytes": 137,
+            "droppedLines": 12
+          },
+          "storedBytes": 12
+        }
+      ]
+    },
+    {
+      "limits": {
+        "retain": "tail",
+        "maxBytes": 40,
+        "maxLines": 3
+      },
+      "steps": [
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 0
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 7
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n\ud83d",
+            "droppedBytes": 0,
+            "droppedLines": 0
+          },
+          "storedBytes": 10
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n😀\n",
+            "droppedBytes": 2,
+            "droppedLines": 0
+          },
+          "storedBytes": 12
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "λ one\n😀\n\ud800 control\t\n",
+            "droppedBytes": 2,
+            "droppedLines": 0
+          },
+          "storedBytes": 27
+        },
+        {
+          "accepted": false,
+          "snapshot": {
+            "text": "λ one\n😀\n\ud800 control\t\n",
+            "droppedBytes": 2,
+            "droppedLines": 0
+          },
+          "storedBytes": 27
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "next\n",
+            "droppedBytes": 132,
+            "droppedLines": 11
+          },
+          "storedBytes": 5
+        },
+        {
+          "accepted": true,
+          "snapshot": {
+            "text": "next\n�tail",
+            "droppedBytes": 132,
+            "droppedLines": 11
+          },
+          "storedBytes": 12
+        },
+        {
+          "snapshot": {
+            "text": "next\n�tail",
+            "droppedBytes": 132,
+            "droppedLines": 11
+          },
+          "storedBytes": 12
+        }
+      ]
+    }
+  ]
+}

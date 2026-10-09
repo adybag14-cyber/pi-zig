@@ -1,0 +1,1937 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "nested": false,
+      "mode": "abort",
+      "partial": false,
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] Tool absent was aborted\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "aborted",
+              "message": "Tool absent was aborted"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "mode": "abort",
+      "partial": true,
+      "trace": [
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial λ\n"
+              },
+              {
+                "type": "text",
+                "text": "<harness>\n[info] Before interruption\n[warn] Output truncated: 2 lines, 24 bytes dropped\n[error] Tool absent was aborted\n</harness>"
+              }
+            ],
+            "details": {
+              "retained": true
+            },
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "info",
+              "code": "earlier",
+              "message": "Before interruption"
+            },
+            {
+              "severity": "warn",
+              "code": "truncated",
+              "message": "Output truncated: 2 lines, 24 bytes dropped"
+            },
+            {
+              "severity": "error",
+              "code": "aborted",
+              "message": "Tool absent was aborted"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "mode": "restart-execute",
+      "partial": false,
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] Tool absent was interrupted by a restart and may have partially run\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "interrupted",
+              "message": "Tool absent was interrupted by a restart and may have partially run"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "mode": "restart-execute",
+      "partial": true,
+      "trace": [
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial λ\n"
+              },
+              {
+                "type": "text",
+                "text": "<harness>\n[info] Before interruption\n[warn] Output truncated: 2 lines, 24 bytes dropped\n[error] Tool absent was interrupted by a restart and may have partially run\n</harness>"
+              }
+            ],
+            "details": {
+              "retained": true
+            },
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "info",
+              "code": "earlier",
+              "message": "Before interruption"
+            },
+            {
+              "severity": "warn",
+              "code": "truncated",
+              "message": "Output truncated: 2 lines, 24 bytes dropped"
+            },
+            {
+              "severity": "error",
+              "code": "interrupted",
+              "message": "Tool absent was interrupted by a restart and may have partially run"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "mode": "restart-call",
+      "partial": false,
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] Tool absent was not started: its caller ended with a restart\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "abandoned",
+              "message": "Tool absent was not started: its caller ended with a restart"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "mode": "restart-call",
+      "partial": true,
+      "trace": [
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial λ\n"
+              },
+              {
+                "type": "text",
+                "text": "<harness>\n[info] Before interruption\n[warn] Output truncated: 2 lines, 24 bytes dropped\n[error] Tool absent was not started: its caller ended with a restart\n</harness>"
+              }
+            ],
+            "details": {
+              "retained": true
+            },
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "info",
+              "code": "earlier",
+              "message": "Before interruption"
+            },
+            {
+              "severity": "warn",
+              "code": "truncated",
+              "message": "Output truncated: 2 lines, 24 bytes dropped"
+            },
+            {
+              "severity": "error",
+              "code": "abandoned",
+              "message": "Tool absent was not started: its caller ended with a restart"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "mode": "unsafe-recovery",
+      "partial": false,
+      "trace": [
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] Tool absent was interrupted and may have partially run\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "interrupted",
+              "message": "Tool absent was interrupted and may have partially run"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "failed",
+          "error": {
+            "message": "Tool absent was interrupted and may have partially run"
+          },
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "mode": "unsafe-recovery",
+      "partial": true,
+      "trace": [
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "entry",
+          "pi.assistant",
+          11,
+          true
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial λ\n"
+              },
+              {
+                "type": "text",
+                "text": "<harness>\n[info] Before interruption\n[warn] Output truncated: 2 lines, 24 bytes dropped\n[error] Tool absent was interrupted and may have partially run\n</harness>"
+              }
+            ],
+            "details": {
+              "retained": true
+            },
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "info",
+              "code": "earlier",
+              "message": "Before interruption"
+            },
+            {
+              "severity": "warn",
+              "code": "truncated",
+              "message": "Output truncated: 2 lines, 24 bytes dropped"
+            },
+            {
+              "severity": "error",
+              "code": "interrupted",
+              "message": "Tool absent was interrupted and may have partially run"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "failed",
+          "error": {
+            "message": "Tool absent was interrupted and may have partially run"
+          },
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "mode": "abort",
+      "partial": false,
+      "trace": [
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "aborted",
+              "message": "Tool absent was aborted"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "mode": "abort",
+      "partial": true,
+      "trace": [
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent",
+            "output": "partial λ\n",
+            "details": {
+              "retained": true
+            },
+            "droppedBytes": 24,
+            "droppedLines": 2,
+            "diagnostics": [
+              {
+                "severity": "info",
+                "code": "earlier",
+                "message": "Before interruption"
+              }
+            ]
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "aborted",
+              "message": "Tool absent was aborted"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "mode": "restart-execute",
+      "partial": false,
+      "trace": [
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "interrupted",
+              "message": "Tool absent was interrupted by a restart and may have partially run"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "mode": "restart-execute",
+      "partial": true,
+      "trace": [
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent",
+            "output": "partial λ\n",
+            "details": {
+              "retained": true
+            },
+            "droppedBytes": 24,
+            "droppedLines": 2,
+            "diagnostics": [
+              {
+                "severity": "info",
+                "code": "earlier",
+                "message": "Before interruption"
+              }
+            ]
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "interrupted",
+              "message": "Tool absent was interrupted by a restart and may have partially run"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "mode": "restart-call",
+      "partial": false,
+      "trace": [
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "abandoned",
+              "message": "Tool absent was not started: its caller ended with a restart"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "mode": "restart-call",
+      "partial": true,
+      "trace": [
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent",
+            "output": "partial λ\n",
+            "details": {
+              "retained": true
+            },
+            "droppedBytes": 24,
+            "droppedLines": 2,
+            "diagnostics": [
+              {
+                "severity": "info",
+                "code": "earlier",
+                "message": "Before interruption"
+              }
+            ]
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "abandoned",
+              "message": "Tool absent was not started: its caller ended with a restart"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "aborted",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "mode": "unsafe-recovery",
+      "partial": false,
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "interrupted",
+              "message": "Tool absent was interrupted and may have partially run"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "failed",
+          "error": {
+            "message": "Tool absent was interrupted and may have partially run"
+          },
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "mode": "unsafe-recovery",
+      "partial": true,
+      "trace": [
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent",
+            "output": "partial λ\n",
+            "details": {
+              "retained": true
+            },
+            "droppedBytes": 24,
+            "droppedLines": 2,
+            "diagnostics": [
+              {
+                "severity": "info",
+                "code": "earlier",
+                "message": "Before interruption"
+              }
+            ]
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "interrupted",
+              "message": "Tool absent was interrupted and may have partially run"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "failed",
+          "error": {
+            "message": "Tool absent was interrupted and may have partially run"
+          },
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    }
+  ]
+}

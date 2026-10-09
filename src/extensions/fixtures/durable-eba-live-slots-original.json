@@ -1,0 +1,564 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "kind": "find",
+      "live": {
+        "tools": [
+          {
+            "taskId": 1,
+            "status": "running"
+          },
+          {
+            "taskId": 2,
+            "status": "done"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 1,
+      "found": {
+        "taskId": 1,
+        "status": "running"
+      }
+    },
+    {
+      "kind": "find",
+      "live": {
+        "tools": [
+          {
+            "taskId": 1,
+            "status": "running"
+          },
+          {
+            "taskId": 2,
+            "status": "done"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 2,
+      "found": {
+        "taskId": 2,
+        "status": "done"
+      }
+    },
+    {
+      "kind": "find",
+      "live": {
+        "tools": [
+          {
+            "taskId": 1,
+            "status": "running"
+          },
+          {
+            "taskId": 2,
+            "status": "done"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 3,
+      "found": {
+        "taskId": 3,
+        "parentTaskId": 1
+      }
+    },
+    {
+      "kind": "find",
+      "live": {
+        "tools": [
+          {
+            "taskId": 1,
+            "status": "running"
+          },
+          {
+            "taskId": 2,
+            "status": "done"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 4,
+      "found": null
+    },
+    {
+      "kind": "find",
+      "live": {
+        "tools": [
+          {
+            "taskId": 1,
+            "status": "running"
+          },
+          {
+            "taskId": 2,
+            "status": "done"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 8,
+      "found": {
+        "taskId": 8,
+        "parentTaskId": 3
+      }
+    },
+    {
+      "kind": "find",
+      "live": {
+        "tools": [
+          {
+            "taskId": 1,
+            "status": "running"
+          },
+          {
+            "taskId": 2,
+            "status": "done"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 9,
+      "found": {
+        "taskId": 9,
+        "parentTaskId": 1
+      }
+    },
+    {
+      "kind": "find",
+      "live": {
+        "tools": [
+          {
+            "taskId": 1,
+            "status": "running"
+          },
+          {
+            "taskId": 2,
+            "status": "done"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 10,
+      "found": null
+    },
+    {
+      "kind": "find",
+      "live": {
+        "tools": [
+          {
+            "taskId": 1,
+            "status": "running"
+          },
+          {
+            "taskId": 2,
+            "status": "done"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 30,
+      "found": {
+        "taskId": 30,
+        "parentTaskId": 20
+      }
+    },
+    {
+      "kind": "find",
+      "live": {
+        "tools": [
+          {
+            "taskId": 1,
+            "status": "running"
+          },
+          {
+            "taskId": 2,
+            "status": "done"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 99,
+      "found": null
+    },
+    {
+      "kind": "remove",
+      "before": {
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 1,
+      "after": {
+        "nestedTools": [
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "same": true
+    },
+    {
+      "kind": "remove",
+      "before": {
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 3,
+      "after": {
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "same": true
+    },
+    {
+      "kind": "remove",
+      "before": {
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 20,
+      "after": {
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          }
+        ]
+      },
+      "same": true
+    },
+    {
+      "kind": "remove",
+      "before": {
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "taskId": 99,
+      "after": {
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          },
+          {
+            "taskId": 9,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 30,
+            "parentTaskId": 20
+          }
+        ]
+      },
+      "same": true
+    },
+    {
+      "kind": "remove",
+      "before": {
+        "nestedTools": []
+      },
+      "taskId": 1,
+      "after": {},
+      "same": true
+    },
+    {
+      "kind": "remove",
+      "before": {
+        "nestedTools": [
+          {
+            "taskId": 3,
+            "parentTaskId": 1
+          },
+          {
+            "taskId": 8,
+            "parentTaskId": 3
+          }
+        ]
+      },
+      "taskId": 1,
+      "after": {},
+      "same": true
+    },
+    {
+      "kind": "finish",
+      "before": {
+        "taskId": 7,
+        "status": "running",
+        "output": "partial",
+        "droppedBytes": 2,
+        "droppedLines": 1,
+        "details": {
+          "x": 1
+        },
+        "diagnostics": [
+          {
+            "code": "old"
+          }
+        ],
+        "entry": 11,
+        "summary": {
+          "old": true
+        },
+        "custom": "keep"
+      },
+      "after": {
+        "taskId": 7,
+        "status": "done",
+        "entry": 11,
+        "summary": {
+          "old": true
+        },
+        "custom": "keep"
+      }
+    },
+    {
+      "kind": "binary",
+      "count": 1024,
+      "target": 777,
+      "found": true,
+      "reads": 3
+    }
+  ]
+}
