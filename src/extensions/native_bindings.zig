@@ -1093,6 +1093,7 @@ pub const Bindings = struct {
     fn invokeRegistration(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
         const self = fromOwnerData(engine, data, 0) catch |err| return publicationFailure(engine, err);
+        @import("native_sdk_resource_owners.zig").assertPiRuntime(self) catch |err| return publicationFailure(engine, err);
         const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
         return self.registration(@enumFromInt(magic), args) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();

@@ -16,6 +16,7 @@ pub const Scope = struct {
     provider_clock: u64 = 0,
     references: usize = 1,
     retired: bool = false,
+    runtime_invalidated: bool = false,
     next_retired: ?*Scope = null,
     owner_value: ?c.JSValue = null,
     bound_lease: ?@import("native_sdk_model_bridge.zig").Lease = null,
@@ -187,6 +188,31 @@ pub fn bindSession(owner: *sdk.State) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, value, "_boundSession", c.JS_DupValue(engine.context, session), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     scope.bound_lease = lease;
 }
+/// Disposing any runner invalidates the shared ExtensionRuntime for this
+/// loader incarnation. A later constructor or bind does not clear that state.
+/// Handler ownership and pure definitions remain alive until graph retirement.
+pub fn invalidateSessionRuntime(owner: *sdk.State) !void {
+    const value = try vm.get(owner.engine, owner.data, "_sdkExtensionOwnerScope");
+    defer owner.engine.freeValue(value);
+    if (c.JS_IsUndefined(value) or owner.engine.native_sdk_resource_scope_class == 0) return;
+    const scope: *Scope = @ptrCast(@alignCast(c.JS_GetOpaque(value, owner.engine.native_sdk_resource_scope_class) orelse return error.InvalidSDKResourceOwner));
+    if (scope.engine != owner.engine) return error.InvalidSDKResourceOwner;
+    scope.runtime_invalidated = true;
+}
+/// Pi's runtime availability is independent of an event's actual session
+/// context. Live B contexts still work after shared runner A invalidates Pi.
+pub fn assertPiRuntime(caller: *bindings.Bindings) !void {
+    if (!caller.sdk_resource_owner) return;
+    const engine = caller.engine;
+    const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return error.NativeSDKExtensionGroupUnavailable));
+    if (try group.selected(caller.owner_id) != caller) return error.StaleNativeExtensionOwner;
+    for (group.entries.items) |entry| if (entry.binding == caller) {
+        const scope = entry.sdk_scope orelse return error.InvalidSDKResourceOwner;
+        if (scope.runtime_invalidated) try stale(engine);
+        return;
+    };
+    return error.StaleNativeExtensionOwner;
+}
 pub fn releaseContext(engine: *Engine, context: bindings.Bindings.SdkContext) void {
     engine.freeValue(context.session);
     engine.freeValue(context.registry);
@@ -274,6 +300,48 @@ pub fn retainCaller(caller: *bindings.Bindings) !Caller {
     const lease = try sdk.modelRegistryLease(engine, retained.registry);
     if (!c.JS_IsStrictEqual(engine.context, registry, retained.registry) or !c.JS_IsStrictEqual(engine.context, manager, retained.manager) or lease.runtime_id != actual.runtime_id) return error.InvalidNativeSDKContext;
     return retained;
+}
+
+test "ToolInfo shared SDK loader disposal invalidates Pi across constructors while live session contexts and new incarnations remain independent" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const main = try group.add("<main>");
+    try main.installSchemas();
+    var temporary = std.testing.tmpDir(.{});
+    defer temporary.cleanup();
+    var root_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const root_size = try temporary.dir.realPath(std.testing.io, &root_buffer);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try vm.put(engine, global, "sharedLoaderCwd", try sdk.text(engine, root_buffer[0..root_size]));
+    const source = @embedFile("../durable/fixtures/sdk-shared-loader-dispose-1ced.json");
+    try vm.put(engine, global, "sharedLoaderSource", try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-shared-loader-disposal")));
+    const before = try group.manifest();
+    defer engine.gpa.free(before);
+    const output = engine.evalModule(
+        \\import{createAgentSession,SessionManager,SettingsManager,DefaultResourceLoader,ModelRuntime}from'@earendil-works/pi-coding-agent';
+        \\const cwd=sharedLoaderCwd,runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}}),settings=SettingsManager.inMemory({defaultTools:[]}),cases=[],events=[];let savedPi,generation=0;
+        \\const probe=pi=>{try{return{name:pi.getSessionName(),names:pi.getAllTools().map(tool=>tool.name)}}catch(error){return{errorName:error.name,error:error.message}}};
+        \\const loader=new DefaultResourceLoader({cwd,agentDir:cwd,settingsManager:settings,noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true,noContextFiles:true,extensionFactories:[pi=>{savedPi=pi;const incarnation=++generation;pi.registerTool({name:'owned',description:'owned',parameters:{type:'object'},execute:async()=>({content:[]})});pi.on('session_start',(_,ctx)=>{let current;try{current={name:ctx.sessionManager.getSessionName(),idle:ctx.isIdle()}}catch(error){current={error:error.message}}events.push({incarnation,context:current,pi:probe(pi)})})}]});
+        \\const create=async name=>{const{session}=await createAgentSession({cwd,resourceLoader:loader,modelRuntime:runtime,sessionManager:SessionManager.inMemory(cwd),settingsManager:settings,tools:['owned']});session.setSessionName(name);return session};
+        \\await loader.reload();const originalPi=savedPi,A=await create('A');await A.bindExtensions({});cases.push({phase:'A',pi:probe(originalPi)});
+        \\const B=await create('B');cases.push({phase:'B-before-A-dispose',pi:probe(originalPi)});A.dispose();cases.push({phase:'A-disposed',pi:probe(originalPi),pureB:B.getAllTools().map(tool=>tool.name)});
+        \\let registered=false;try{originalPi.on('after-dispose',()=>{});registered=true}catch(error){if(error.message!==sharedLoaderSource.cases[2].pi.error)throw error}if(registered)throw Error('stale runtime registration admitted');
+        \\await B.bindExtensions({});cases.push({phase:'B-bind-after-A-dispose',pi:probe(originalPi)});await B.bindExtensions({});cases.push({phase:'B-rebind',pi:probe(originalPi)});
+        \\await loader.reload();const nextPi=savedPi,C=await create('C');await C.bindExtensions({});cases.push({phase:'new-incarnation',oldPi:probe(originalPi),newPi:probe(nextPi),same:originalPi===nextPi});
+        \\B.dispose();cases.push({phase:'old-B-disposed-new-C-live',pi:probe(nextPi)});C.dispose();
+        \\if(JSON.stringify({cases,events})!==JSON.stringify({cases:sharedLoaderSource.cases,events:sharedLoaderSource.events}))throw Error(JSON.stringify({cases,events,source:sharedLoaderSource}));
+    , "actual-shared-loader-disposal") catch |err| {
+        std.debug.print("Actual shared SDK runtime disposal: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(output);
+    const after = try group.manifest();
+    defer engine.gpa.free(after);
+    try std.testing.expectEqualStrings(before, after);
 }
 
 test "ToolInfo actual OLD SDK Pi retains its constructor runtime across direct loader reload and new constructor binding" {

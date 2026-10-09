@@ -298,6 +298,7 @@ fn attachSessionModelLease(self: *State) !void {
     self.model_lease_anchor = anchor.value;
 }
 fn retireSessionModelLease(self: *State) !void {
+    try @import("native_sdk_resource_owners.zig").invalidateSessionRuntime(self);
     if (self.tool_catalog) |catalog| catalog.retire();
     const anchor = self.model_lease_anchor orelse return;
     const bridge = @import("native_sdk_model_bridge.zig");
