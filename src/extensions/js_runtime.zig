@@ -517,6 +517,7 @@ const NativeDialogs = struct {
     runtime: *Runtime,
     session: *NativeReadSession,
     invocation_id: u64,
+    bridge: ?UiBridge = null,
     queued: std.ArrayList(*NativeDialog) = .empty,
     active: ?*NativeDialog = null,
 
@@ -571,13 +572,13 @@ const NativeDialogs = struct {
         errdefer if (!published) allocator.free(encoded);
         const dialog = try allocator.create(NativeDialog);
         errdefer if (!published) allocator.destroy(dialog);
-        dialog.* = .{ .runtime = self.runtime, .session = self.session, .bridge = self.runtime.ui_bridge, .invocation_id = self.invocation_id, .id = id, .method = name, .args = encoded };
+        dialog.* = .{ .runtime = self.runtime, .session = self.session, .bridge = self.bridge, .invocation_id = self.invocation_id, .id = id, .method = name, .args = encoded };
         if (std.mem.eql(u8, name, "custom_native")) {
             const fence = try component_protocol.readFence(&args.object);
             if (fence.invocation_id != self.invocation_id or fence.token != id) return error.InvalidNativeComponentIdentity;
             const component = try allocator.create(NativeComponentSession);
             errdefer if (!published) allocator.destroy(component);
-            component.* = .{ .runtime = self.runtime, .bridge = self.runtime.ui_bridge, .fence = fence, .controls = component_protocol.ControlQueue.init(allocator, self.runtime.io) };
+            component.* = .{ .runtime = self.runtime, .bridge = self.bridge, .fence = fence, .controls = component_protocol.ControlQueue.init(allocator, self.runtime.io) };
             component.controls.reset(fence);
             dialog.component = component;
         }
@@ -1587,7 +1588,13 @@ pub const Runtime = struct {
         self.context_mutex.lockUncancelable(self.io);
         defer self.context_mutex.unlock(self.io);
         if (self.context_json) |raw| view.context_json = try view.gpa.dupe(u8, raw);
+        view.ui_bridge = self.captureUiBridge();
         return view;
+    }
+    fn captureUiBridge(self: *Runtime) ?UiBridge {
+        self.widget_mutex.lockUncancelable(self.io);
+        defer self.widget_mutex.unlock(self.io);
+        return self.ui_bridge;
     }
 
     pub fn invokeHook(self: *Runtime, name: []const u8, payload_json: []const u8, flags_json: []const u8) ![]u8 {
@@ -1721,12 +1728,12 @@ pub const Runtime = struct {
         const request = try std.json.Stringify.valueAlloc(a, .{ .kind = "provider_typed_operation", .version = 1, .ownerGeneration = try std.fmt.allocPrint(a, "{d}", .{self.owner_generation}), .callbackId = callback_id, .providerName = provider, .callbackGeneration = generation, .operation = @tagName(operation), .model = model, .modelContext = context, .options = options, .authRewritesModel = auth_rewrites_model, .context = try self.contextValue(a) }, .{});
         // This operation is single-use; an uncertain provider response is not
         // replayed on a different callback or worker generation.
-        if (self.shared_owner) |owner| return owner.invokeProviderTicketRequest(self.extension_id, request, abort_flag);
-        if (self.native_group) return self.invokeProviderTicketRequest(self.extension_id, request, abort_flag);
+        if (self.shared_owner) |owner| return owner.invokeProviderTicketRequest(self.extension_id, request, abort_flag, self.captureUiBridge());
+        if (self.native_group) return self.invokeProviderTicketRequest(self.extension_id, request, abort_flag, self.captureUiBridge());
         return error.NativeTypedProviderRequiresGroupOwner;
     }
 
-    fn invokeProviderTicketRequest(self: *Runtime, extension_id: u64, raw: []const u8, abort_flag: ?*bool) ![]u8 {
+    fn invokeProviderTicketRequest(self: *Runtime, extension_id: u64, raw: []const u8, abort_flag: ?*bool, bridge: ?UiBridge) ![]u8 {
         if (!self.native_group or extension_id == 0) return error.NativeTypedProviderRequiresGroupOwner;
         const session = self.native_read_session orelse return error.NativeTypedProviderRequiresGroupOwner;
         var arena: std.heap.ArenaAllocator = .init(self.gpa);
@@ -1761,7 +1768,7 @@ pub const Runtime = struct {
         try request.object.put(a, "invocationId", .{ .string = id_text });
         try request.object.put(a, "abortable", .{ .bool = true });
         try request.object.put(a, "aborted", .{ .bool = if (abort_flag) |flag| @atomicLoad(bool, flag, .acquire) else false });
-        var dialogs: NativeDialogs = .{ .runtime = self, .session = session, .invocation_id = id };
+        var dialogs: NativeDialogs = .{ .runtime = self, .session = session, .invocation_id = id, .bridge = bridge };
         defer dialogs.deinit();
         const admission = try self.exchangeProviderTicket(try std.json.Stringify.valueAlloc(a, request, .{}), id, &dialogs);
         defer self.gpa.free(admission);
@@ -1831,8 +1838,8 @@ pub const Runtime = struct {
         const options = try std.json.parseFromSliceLeaky(std.json.Value, a, options_json, .{});
         if ((credential != .null and credential != .object) or options != .object) return error.InvalidNativeProviderAuthRequest;
         const request = try std.json.Stringify.valueAlloc(a, .{ .kind = "provider_auth_operation", .version = 1, .ownerGeneration = self.owner_generation, .callbackId = callback_id, .providerName = provider, .callbackGeneration = generation, .operation = @tagName(operation), .credential = credential, .options = options, .context = try self.contextValue(a) }, .{});
-        if (self.shared_owner) |owner| return owner.invokeProviderTicketRequest(self.extension_id, request, abort_flag);
-        if (self.native_group) return self.invokeProviderTicketRequest(self.extension_id, request, abort_flag);
+        if (self.shared_owner) |owner| return owner.invokeProviderTicketRequest(self.extension_id, request, abort_flag, self.captureUiBridge());
+        if (self.native_group) return self.invokeProviderTicketRequest(self.extension_id, request, abort_flag, self.captureUiBridge());
         return error.NativeTypedProviderRequiresGroupOwner;
     }
     pub fn invokeProviderMethodWithTimeout(
@@ -2416,7 +2423,7 @@ pub const Runtime = struct {
             reader_group.await(self.io) catch {};
             native_session.deinit();
         };
-        var local_dialogs: NativeDialogs = .{ .runtime = self, .session = native_session, .invocation_id = expected_invocation_id };
+        var local_dialogs: NativeDialogs = .{ .runtime = self, .session = native_session, .invocation_id = expected_invocation_id, .bridge = self.ui_bridge };
         const native_dialogs = retained_dialogs orelse &local_dialogs;
         defer if (retained_dialogs == null) local_dialogs.deinit();
         while (true) {
@@ -2461,7 +2468,7 @@ pub const Runtime = struct {
                         const identity = parsed.value.object.get("invocationId") orelse return error.InvalidNativeInvocationIdentity;
                         if (try wireInvocationId(identity) != expected_invocation_id or expected_invocation_id == 0) return error.InvalidNativeInvocationIdentity;
                     }
-                    self.handleUiActionUnlocked(&parsed.value.object) catch {};
+                    self.handleUiActionUnlocked(&parsed.value.object, native_dialogs.bridge) catch {};
                     continue;
                 }
                 if (std.mem.eql(u8, type_value.string, "tool_update")) {
@@ -2612,8 +2619,8 @@ pub const Runtime = struct {
         try self.writeLine(response.written());
     }
 
-    fn handleUiActionUnlocked(self: *Runtime, object: *const std.json.ObjectMap) !void {
-        const bridge = self.ui_bridge orelse return;
+    fn handleUiActionUnlocked(self: *Runtime, object: *const std.json.ObjectMap, captured_bridge: ?UiBridge) !void {
+        const bridge = captured_bridge orelse return;
         const method_value = object.get("method") orelse return error.InvalidJavaScriptExtensionResponse;
         if (method_value != .string or method_value.string.len == 0) return error.InvalidJavaScriptExtensionResponse;
         const args_value = object.get("args") orelse std.json.Value{ .object = .empty };

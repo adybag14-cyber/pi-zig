@@ -144,6 +144,20 @@ test "native runtime typed Main four native callbacks cross a real admission bar
     try fixture.noBridge();
 }
 
+test "native runtime typed Main native auth base URL rewrite preserves canonical symbols and catalog without Node" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/native-provider-auth-rewrite-6fb2e78.txt"));
+    defer fixture.deinit();
+    const session = try runTypedMainCli(&fixture, "const selected=await models.getModelOfType('classifier','bound-native','same');selected.baseUrl='https://attacker.invalid';selected.headers={'X-Private':'attacker'};const classified=await models.classify(selected,{state:{},questions:{q:{type:'bool',instructions:'q',criteria:{true:'yes',false:'no'}}}});const after=await models.getModelOfType('classifier','bound-native','same');text('MAIN_AUTH_REWRITE:'+JSON.stringify({classified,catalogBaseUrl:after.baseUrl}));", null);
+    defer gpa.free(session);
+    var actual = try typedSessionValue(gpa, session, "MAIN_AUTH_REWRITE:");
+    defer actual.deinit();
+    var expected = try @import("mcp/protocol.zig").json.Owned.parse(gpa, @embedFile("extensions/fixtures/native-provider-auth-rewrite-6fb2e78.json"));
+    defer expected.deinit();
+    try std.testing.expect(@import("mcp/protocol.zig").json.equal(expected.value, actual.value));
+    try fixture.noBridge();
+}
+
 test "native runtime typed tickets four real admissions preserve A B views and one abort without Node" {
     try exerciseTypedTicketProcess(.one_abort);
 }
@@ -159,9 +173,41 @@ fn exerciseTypedTicketProcess(mode: TypedTicketProcessMode) !void {
     const io = std.testing.io;
     var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/typed-ticket-concurrency-6fb2e78.txt"));
     defer fixture.deinit();
+    const UiCapture = struct {
+        messages: std.ArrayList([]u8) = .empty,
+        mutex: std.Io.Mutex = .init,
+        fn request(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            return error.UnexpectedTicketDialog;
+        }
+        fn action(raw: ?*anyopaque, allocator: std.mem.Allocator, method: []const u8, arguments: []const u8) !void {
+            _ = allocator;
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            if (!std.mem.eql(u8, method, "notify")) return error.UnexpectedTicketUiAction;
+            var parsed = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, arguments, .{});
+            defer parsed.deinit();
+            const message = try std.testing.allocator.dupe(u8, parsed.value.object.get("message").?.string);
+            errdefer std.testing.allocator.free(message);
+            self.mutex.lockUncancelable(std.testing.io);
+            defer self.mutex.unlock(std.testing.io);
+            try self.messages.append(std.testing.allocator, message);
+        }
+    };
+    var ui: UiCapture = .{};
+    var ui_a: UiCapture = .{};
+    var ui_b: UiCapture = .{};
+    defer {
+        for ([_]*UiCapture{ &ui, &ui_a, &ui_b }) |capture| {
+            for (capture.messages.items) |message| gpa.free(message);
+            capture.messages.deinit(gpa);
+        }
+    }
     var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options() };
     defer host.deinit();
+    host.setScriptUiBridge(.{ .context = &ui, .request_fn = UiCapture.request, .action_fn = UiCapture.action });
     try host.loadPath(fixture.source_path);
+    try host.setScriptContextJson("{\"nativeRuntimeBound\":true,\"hasUI\":true,\"settings\":{\"marker\":\"base\"}}");
+    var captured_ui = (try host.executeCommand("ticket-capture-ui", "")).?;
+    defer captured_ui.deinit(gpa);
     const extension = host.extensions.items[0];
     var config = try std.json.parseFromSlice(std.json.Value, gpa, extension.providers[0].config_json, .{});
     defer config.deinit();
@@ -199,9 +245,10 @@ fn exerciseTypedTicketProcess(mode: TypedTicketProcessMode) !void {
     }
     for (&calls, &views, 0..) |*call, *view, index| {
         view.* = try extension.script_runtime.?.pinView();
-        const snapshot = try std.json.Stringify.valueAlloc(gpa, .{ .nativeRuntimeBound = true, .settings = .{ .marker = if (index % 2 == 0) "A" else "B" } }, .{});
+        const snapshot = try std.json.Stringify.valueAlloc(gpa, .{ .nativeRuntimeBound = true, .hasUI = true, .settings = .{ .marker = if (index % 2 == 0) "A" else "B" } }, .{});
         defer gpa.free(snapshot);
         try view.*.?.setContextJson(snapshot);
+        view.*.?.setUiBridge(.{ .context = if (index % 2 == 0) &ui_a else &ui_b, .request_fn = UiCapture.request, .action_fn = UiCapture.action });
         call.* = .{ .runtime = view.*.?, .callback = descriptor.callback_id, .generation = descriptor.generation, .id = index + 1, .late = mode == .owner_retire or (mode == .cancel_one and index == 1) };
         try call.group.concurrent(io, Call.run, .{call});
     }
@@ -217,6 +264,9 @@ fn exerciseTypedTicketProcess(mode: TypedTicketProcessMode) !void {
     }
     try std.testing.expectEqual(@as(i64, 4), admitted);
     for (&calls) |*call| try std.testing.expect(!call.done.isSet());
+    // Later view mutations cannot replace either authority captured at begin.
+    try views[0].?.setContextJson("{\"nativeRuntimeBound\":true,\"hasUI\":true,\"settings\":{\"marker\":\"CHANGED\"}}");
+    views[0].?.setUiBridge(.{ .context = &ui, .request_fn = UiCapture.request, .action_fn = UiCapture.action });
     switch (mode) {
         .one_abort => @atomicStore(bool, &calls[1].aborted, true, .release),
         .cancel_one => {
@@ -270,9 +320,23 @@ fn exerciseTypedTicketProcess(mode: TypedTicketProcessMode) !void {
         }
         try std.testing.expectEqual(expected_late, late_count);
         try std.testing.expectEqual(expected_late, parsed.value.object.get("lateBlocked").?.integer);
+        try std.testing.expectEqual(expected_late, parsed.value.object.get("lateUiBlocked").?.integer);
         try std.testing.expectEqual(if (mode == .owner_retire) @as(i64, 4) else 1, parsed.value.object.get("aborts").?.integer);
         try std.testing.expectEqual(if (mode == .owner_retire) @as(i64, 0) else 3, parsed.value.object.get("finished").?.integer);
         break;
+    }
+    try std.testing.expectEqual(@as(usize, 0), ui.messages.items.len);
+    try std.testing.expectEqual(if (mode == .owner_retire) @as(usize, 0) else 2, ui_a.messages.items.len);
+    try std.testing.expectEqual(if (mode == .owner_retire) @as(usize, 0) else 1, ui_b.messages.items.len);
+    for ([_][]const u8{ "A:1", "A:3", "B:4" }) |expected| {
+        if (mode == .owner_retire) break;
+        var found = false;
+        const messages = if (expected[0] == 'A') ui_a.messages.items else ui_b.messages.items;
+        for (messages) |message| if (std.mem.eql(u8, expected, message)) {
+            found = true;
+            break;
+        };
+        try std.testing.expect(found);
     }
     try fixture.noBridge();
 }

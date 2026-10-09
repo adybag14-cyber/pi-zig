@@ -1,13 +1,13 @@
-globalThis.started=0;globalThis.aborts=0;globalThis.finished=0;globalThis.lateBookkeeping=0;globalThis.lateBlocked=0;globalThis.barrier=[];
+globalThis.started=0;globalThis.aborts=0;globalThis.finished=0;globalThis.lateBookkeeping=0;globalThis.lateBlocked=0;globalThis.lateUiBlocked=0;globalThis.barrier=[];
 export default function nativeTicketFixture(pi){
 const model={id:'same',name:'Ticket classifier',provider:'ticket',type:'classifier',api:'fixture',baseUrl:'https://fixture.invalid',input:['text']};
 const provider={id:'ticket',auth:{apiKey:{check:async()=>({type:'api_key'}),resolve:async()=>({auth:{apiKey:'fixture-key'},source:'fixture'})}},getModels(){return [model]},getAllModels(){return [model]},async classify(selected,context,{signal}){
 const marker=pi.getSettings().marker;const id=context.state.id;
 await new Promise(resolve=>{barrier.push(resolve);started++;if(started===4&&marker==='bound')for(const release of barrier)release()});
-if(context.state.late)setTimeout(()=>{lateBookkeeping++;try{pi.setSessionName('late-'+id)}catch{lateBlocked++}},20);
+if(context.state.late)setTimeout(()=>{lateBookkeeping++;try{pi.setSessionName('late-'+id)}catch{lateBlocked++}try{globalThis.ticketUi?.notify('late-'+id)}catch{lateUiBlocked++}},20);
 await new Promise((resolve,reject)=>{if(signal.aborted){aborts++;reject(Error('aborted'));return}signal.addEventListener('abort',()=>{aborts++;reject(Error('aborted'))},{once:true});setTimeout(resolve,30)});
-await Promise.resolve();if(pi.getSettings().marker!==marker)throw Error('snapshot changed');pi.setSessionName(String(id));finished++;
+await Promise.resolve();if(pi.getSettings().marker!==marker)throw Error('snapshot changed');globalThis.ticketUi?.notify(marker+':'+id);pi.setSessionName(String(id));finished++;
 return {api:selected.api,provider:selected.provider,model:selected.id,answers:{q:{type:'bool',value:true,probability:1,confidence:1}},stopReason:'stop',timestamp:1,id,marker,canonical:selected===model,receiver:this===provider};
 }};
-pi.registerProvider(provider);pi.registerCommand('ticket-state',{handler(){return{message:JSON.stringify({started,aborts,finished,lateBookkeeping,lateBlocked})}}});pi.registerCommand('ticket-release',{handler(){for(const release of barrier)release();return{message:'released'}}});
+pi.registerProvider(provider);pi.registerCommand('ticket-capture-ui',{handler(_,ctx){globalThis.ticketUi=ctx.ui;return{message:'captured'}}});pi.registerCommand('ticket-state',{handler(){return{message:JSON.stringify({started,aborts,finished,lateBookkeeping,lateBlocked,lateUiBlocked})}}});pi.registerCommand('ticket-release',{handler(){for(const release of barrier)release();return{message:'released'}}});
 }

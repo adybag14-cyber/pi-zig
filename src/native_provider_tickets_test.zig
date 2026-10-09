@@ -68,6 +68,51 @@ test "native provider tickets admit four callbacks before completion and isolate
     try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt64(engine.context, &count, aborts));
     try std.testing.expectEqual(@as(i64, 1), count);
 }
+test "native provider tickets failed admission result serialization and retirement release every new owner allocation" {
+    const Sweep = struct {
+        fn run(allocator: std.mem.Allocator) !void {
+            exercise(allocator) catch |err| {
+                const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(allocator.ptr));
+                return if (err == error.WriteFailed and failing.has_induced_failure) error.OutOfMemory else err;
+            };
+        }
+        fn exercise(allocator: std.mem.Allocator) !void {
+            const gpa = std.testing.allocator;
+            const engine = try engine_mod.Engine.init(gpa, .{});
+            defer engine.deinit();
+            const group = try group_mod.Group.init(engine);
+            defer group.deinit();
+            const binding = try group.add("ticket-ownership.js");
+            try binding.loadFactory("export default pi=>{const model={id:'same',provider:'ticket',type:'classifier',api:'fixture',baseUrl:'https://fixture.invalid'};pi.registerProvider({id:'ticket',getModels(){return [model]},getAllModels(){return [model]},classify(){pi.setSessionName('owned');return {stopReason:'stop',marker:'owned'}}})}", "ticket-ownership.js");
+            const manifest = try binding.manifestJson("ticket-ownership.js");
+            defer gpa.free(manifest);
+            var parsed = try std.json.parseFromSlice(std.json.Value, gpa, manifest, .{});
+            defer parsed.deinit();
+            const config = parsed.value.object.get("providers").?.array.items[0].object.get("config").?;
+            const descriptor = try @import("extensions/provider_method_ref.zig").ProviderMethodRef.fromJson(config.object.get("classify").?);
+            const bytes = try std.json.Stringify.valueAlloc(gpa, .{ .kind = "provider_typed_begin", .callbackId = descriptor.callback_id, .providerName = "ticket", .callbackGeneration = descriptor.generation, .operation = "classify", .model = .{ .id = "same", .provider = "ticket", .api = "fixture" }, .modelContext = .{ .state = .{}, .questions = .{} }, .options = .{}, .context = .{ .nativeRuntimeBound = true, .settings = .{ .marker = "ownership" } } }, .{});
+            defer gpa.free(bytes);
+            var request = try std.json.parseFromSlice(std.json.Value, gpa, bytes, .{});
+            defer request.deinit();
+            // Existing services use the same underlying allocator. Restrict the
+            // exhaustive sweep to the newly admitted owner/ticket allocations.
+            engine.gpa = allocator;
+            defer engine.gpa = gpa;
+            var manager: tickets_mod.Manager = .{ .engine = engine, .io = std.testing.io };
+            defer manager.deinit();
+            try manager.begin(binding, "1", request.value.object);
+            try manager.pump();
+            const ticket = manager.find("1").?;
+            var result = try std.json.parseFromSlice(std.json.Value, gpa, ticket.result orelse return error.TicketDidNotSettle, .{});
+            defer result.deinit();
+            try std.testing.expectEqualStrings("owned", result.value.object.get("value").?.object.get("marker").?.string);
+            try std.testing.expectEqualStrings("owned", result.value.object.get("actionQueue").?.array.items[0].object.get("name").?.string);
+            manager.consume(ticket);
+            try std.testing.expect(!binding.invocation_active and group.broker.active == null and !group.ui.active);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Sweep.run, .{});
+}
 const source =
     \\globalThis.started=0;globalThis.aborts=0;globalThis.barrier=[];
     \\export default pi=>{
