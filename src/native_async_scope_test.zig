@@ -3,6 +3,25 @@ const engine_mod = @import("extensions/engine.zig");
 const scopes = @import("extensions/native_async_scope.zig");
 const timers = @import("extensions/timers.zig");
 const c = engine_mod.c;
+const LateInstall = struct {
+    fn install(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+        scopes.install(engine_mod.Engine.fromContext(context.?)) catch return c.JS_ThrowOutOfMemory(context);
+        return c.pi_js_undefined();
+    }
+};
+test "native async scope installed inside a running job has no unmatched hook exit" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try engine.bindFunction("installLateScope", LateInstall.install, 0);
+    const pending = try engine.eval("Promise.resolve().then(()=>installLateScope()).then(()=>42)", "late-scope.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(pending);
+    const result = try engine.awaitValue(pending);
+    defer engine.freeValue(result);
+    try scopes.requireLive(engine);
+    var number: i32 = 0;
+    try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(engine.context, &number, result));
+    try std.testing.expectEqual(@as(i32, 42), number);
+}
 const Capture = struct {
     active: usize = 0,
     starts: [4]usize = .{0} ** 4,

@@ -47,3 +47,9 @@ without retiring siblings, owner retirement, late timer bookkeeping with blocked
 actions/UI, and allocation ownership. JSON contains no native scope token or
 pointer. Provider ticket messages are bounded, owner/generation checked, and
 single-use operations are never replayed after an uncertain response.
+
+The pending-job dispatcher snapshots the execution hook and opaque owner before
+entering the job. It pairs the exit with that same installed hook only when
+the entry ran, including a first SDK dynamic import that installs a hook from
+inside an already executing job. Replacing or removing a hook cannot call an
+exit against a different or already released owner.

@@ -2577,6 +2577,8 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
     JSJobEntry *e;
     JSValue res;
     int i, ret;
+    JSExecutionContextHook *context_hook;
+    void *context_opaque;
 
     if (list_empty(&rt->job_list)) {
         *pctx = NULL;
@@ -2587,11 +2589,14 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
     e = list_entry(rt->job_list.next, JSJobEntry, link);
     list_del(&e->link);
     ctx = e->ctx;
-    if (rt->execution_context_hook)
-        rt->execution_context_hook(ctx, true, e->execution_context, rt->execution_context_opaque);
+    context_hook = rt->execution_context_hook;
+    context_opaque = rt->execution_context_opaque;
+    if (context_hook)
+        context_hook(ctx, true, e->execution_context, context_opaque);
     res = e->job_func(e->ctx, e->argc, vc(e->argv));
-    if (rt->execution_context_hook)
-        rt->execution_context_hook(ctx, false, e->execution_context, rt->execution_context_opaque);
+    if (context_hook && context_hook == rt->execution_context_hook &&
+        context_opaque == rt->execution_context_opaque)
+        context_hook(ctx, false, e->execution_context, context_opaque);
     JS_FreeValue(ctx, e->execution_context);
     for(i = 0; i < e->argc; i++)
         JS_FreeValue(ctx, e->argv[i]);
