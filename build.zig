@@ -657,6 +657,10 @@ pub fn build(b: *std.Build) void {
     const codemode_models_tests = b.addTest(.{ .root_module = codemode_models_module, .use_llvm = use_llvm, .filters = &.{"native codemode models"} });
     const codemode_models_run = b.addRunArtifact(codemode_models_tests);
     b.step("test-codemode-models", "Compare model globals against original registry behavior and concurrency").dependOn(&codemode_models_run.step);
+    const codemode_model_allocation_tests = b.addTest(.{ .root_module = codemode_models_module, .use_llvm = use_llvm, .filters = &.{"native codemode models allocation failures"} });
+    const codemode_model_allocation_run = b.addRunArtifact(codemode_model_allocation_tests);
+    codemode_model_allocation_run.has_side_effects = true;
+    b.step("test-codemode-model-allocation-shard", "Exercise one exhaustive model worker allocation range").dependOn(&codemode_model_allocation_run.step);
     const structured_result_tests = b.addTest(.{ .root_module = codemode_models_module, .use_llvm = use_llvm, .filters = &.{"native codemode models structured"} });
     b.step("test-codemode-structured-results", "Replay original arbitrary structured fields across the tool protocol").dependOn(&b.addRunArtifact(structured_result_tests).step);
     codemode_step.dependOn(&codemode_models_run.step);
@@ -877,6 +881,7 @@ pub fn build(b: *std.Build) void {
     b.step("test-sdk-model-registry", "Exercise Source compatibility facade and exact model ownership").dependOn(&sdk_registry_run.step);
     test_step.dependOn(&sdk_registry_run.step);
     const sdk_allocation_step = b.step("test-sdk-allocation-shard", "Exercise a complete SDK allocation range with baseline and completion receipts");
+    sdk_allocation_step.dependOn(&codemode_model_allocation_run.step);
     inline for (.{ sdk_virtual_run, sdk_session_lease_run, sdk_registry_run }) |run| {
         run.has_side_effects = true;
         sdk_allocation_step.dependOn(&run.step);
