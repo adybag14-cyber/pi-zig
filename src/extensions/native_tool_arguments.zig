@@ -39,6 +39,8 @@ fn legacyTypeBox(engine: *Engine, schema: c.JSValue) !bool {
     return c.JS_ToBool(engine.context, included) != 0;
 }
 pub fn validateArguments(engine: *Engine, tool: c.JSValue, call: c.JSValue) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     const original = try vm.get(engine, call, "arguments");
     defer engine.freeValue(original);
     const clone_global = c.JS_GetGlobalObject(engine.context);
@@ -200,6 +202,8 @@ fn validationErrorLineOwned(engine: *Engine, error_value: c.JSValue) !c.JSValue 
     return engine.checked(c.JS_NewStringLen(engine.context, line.ptr, line.len));
 }
 pub fn validateCall(engine: *Engine, tools: c.JSValue, call: c.JSValue) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var captures = [_]c.JSValue{call};
     const predicate = try engine.checked(c.JS_NewCFunctionData(engine.context, toolMatches, 1, 0, captures.len, &captures));
     defer engine.freeValue(predicate);
@@ -696,4 +700,46 @@ test "native durable VM required property literal names stay separate from root 
     const text = try engine.toString(result);
     defer engine.gpa.free(text);
     try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("../durable/fixtures/tool-validation-required-names-1ced.json"), "\r\n "), text);
+}
+
+test "native durable VM caught raw validation callback exceptions never invoke their user string coercion" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try testFunctions(engine);
+    const output = try engine.evalModule(
+        \\const output=[],originalClone=globalThis.structuredClone??nativeDefaultClone,originalGet=WeakMap.prototype.get,originalError=Error;globalThis.structuredClone=originalClone;
+        \\for(const name of ['clone','parameters','find','cache','Check','Errors','map','join','Error']){
+        \\ const events=[],raw={toString(){events.push('coerce');return 'raw-owned'}},schema={type:'object'},tool={parameters:schema},call={name:'fixture',arguments:{}};
+        \\ if(name==='clone')globalThis.structuredClone=function(){events.push('clone');throw raw};
+        \\ if(name==='parameters')Object.defineProperty(tool,'parameters',{get(){events.push('parameters');throw raw}});
+        \\ if(name==='cache')WeakMap.prototype.get=function(){events.push('cache');throw raw};
+        \\ if(['Check','Errors','map','join'].includes(name))WeakMap.prototype.get=function(){return{Check(){events.push('Check');if(name==='Check')throw raw;return false},Errors(){events.push('Errors');if(name==='Errors')throw raw;return{map(){events.push('map');if(name==='map')throw raw;return{join(){events.push('join');throw raw}}}}}}};
+        \\ if(name==='Error'){tool.parameters={type:'number'};globalThis.Error=function(){events.push('Error');throw raw}};
+        \\ try{try{if(name==='find')validateToolCall({find(){events.push('find');throw raw}},call);else validateToolArguments(tool,call)}catch(error){output.push({name,raw:error===raw,events})}}finally{globalThis.structuredClone=originalClone;WeakMap.prototype.get=originalGet;globalThis.Error=originalError}
+        \\}
+        \\globalThis.result=JSON.stringify(output);
+    , "native-validation-raw-coercion-source");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-validation-raw-coercion-result", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("../durable/fixtures/tool-validation-raw-coercion-1ced.json"), "\r\n "), text);
+    try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
+}
+
+test "native durable VM raw validation diagnostic scope unwinds before uncaught host errors are reported" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try testFunctions(engine);
+    const caught = try engine.eval("globalThis.hostCoercions=0;globalThis.hostRaw={toString(){hostCoercions++;return 'host diagnostic'}};const original=WeakMap.prototype.get;WeakMap.prototype.get=function(){throw hostRaw};try{try{validateToolArguments({parameters:{type:'object'}},{name:'fixture',arguments:{}})}catch(error){if(error!==hostRaw||hostCoercions!==0)throw Error('premature diagnostics')}}finally{WeakMap.prototype.get=original}", "native-validation-host-diagnostic-scope", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(caught);
+    try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
+    try std.testing.expectError(error.JavaScriptException, engine.eval("throw hostRaw", "native-host-uncaught-diagnostic", c.JS_EVAL_TYPE_GLOBAL));
+    try std.testing.expectEqualStrings("host diagnostic", engine.last_error.?);
+    const count = try engine.eval("hostCoercions", "native-host-diagnostic-count", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(count);
+    var number: i32 = 0;
+    if (c.JS_ToInt32(engine.context, &number, count) < 0) return error.JavaScriptException;
+    try std.testing.expectEqual(@as(i32, 1), number);
 }
