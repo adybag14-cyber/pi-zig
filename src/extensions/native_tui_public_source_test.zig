@@ -1,6 +1,22 @@
 const std = @import("std");
 const js = @import("native_js_values.zig");
 const c = js.c;
+test "Source6fb public TUI slice column clipping style links markers and exact line composition" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("native_tui.zig").install(engine);
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    const bytes = @embedFile("fixtures/tui-columns-original-6fb.json");
+    try js.define(engine, root, "tuiColumnSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "tui-columns-original-6fb.json")));
+    const result = engine.evalModule("import{stripTerminalSequences,getOsc8LinkAtColumn,sliceByColumn,compositeTuiLine}from'pi-tui';\n" ++ @embedFile("fixtures/tui-columns-original-6fb.input.js") ++
+        \\for(let i=0;i<tuiColumnSource.cases.length;i++){const actual=tuiColumnResults[i],expected=tuiColumnSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
+    , "tui-columns-original.mjs") catch |err| {
+        if (engine.last_error) |message| std.debug.print("Native TUI columns: {s}\n", .{message});
+        return err;
+    };
+    engine.freeValue(result);
+}
 test "Source6fb public TUI slice helper regex literals ignore replaced global constructor" {
     const engine = try js.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
