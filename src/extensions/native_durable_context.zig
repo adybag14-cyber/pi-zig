@@ -65,6 +65,11 @@ pub fn install(engine: *Engine) !void {
     }
     inline for (.{ "createContextKey", "withContextValue", "withAbortSignal", "withoutAbortSignal", "withCancel", "awaitWithContext" }, 0..) |name, operation| try sdk.put(engine, exports, name, try engine.checked(c.pi_js_function_magic(engine.context, exported, name, 3, @intCast(operation))));
     try engine.registerValueModule("@earendil-works/chord/context", exports);
+    const root = try sdk.object(engine);
+    defer engine.freeValue(root);
+    try @import("native_sdk_models.zig").copy(engine, root, exports);
+    try @import("native_chord_json.zig").install(engine, root);
+    if (!engine.native_module_names.contains("@earendil-works/chord")) try engine.registerValueModule("@earendil-works/chord", root);
 }
 fn argument(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
