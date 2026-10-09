@@ -1,0 +1,20 @@
+async(ToolTask,variant)=>{
+ const context={},live={tools:[{taskId:7,callId:'root',name:'outer',status:'pending'}]},indexes=new Map,results=new Map,tasks=new Map,waiters=new Map,entries=[];
+ let nextId=70,tail=Promise.resolve(),starts=[];const received=[];
+ const rootCall={type:'toolCall',id:'root',name:'outer',arguments:{}};
+ const inner={name:'inner',parameters:{type:'object',properties:{count:{type:'number'}},required:['count']},...(variant==='schema'||variant==='invalid-schema'?{structuredOutputSchema:{type:'object',properties:{count:{type:'number'}},required:['count']}}:{}),async execute(args){return{output:[{type:'text',text:'inner '+args.count}],details:{original:true},...(variant==='schema'?{structuredOutput:{count:args.count}}:variant==='invalid-schema'?{structuredOutput:{count:'bad'}}:{})}}};
+ const outer={name:'outer',parameters:{type:'object'},async execute(_,api,ctx){
+  const options=variant==='default-keys'?undefined:{key:'leaf'};
+  const first=await api.executeTool('inner',{count:2},ctx,options);received.push(JSON.parse(JSON.stringify(first)));first.details={changed:true};
+  try{const second=await api.executeTool('inner',{count:variant==='conflict'?3:2},ctx,options);received.push(second)}catch(error){received.push({error:error.message})}
+  return{output:[{type:'text',text:'outer done'}]};
+ }};
+ const doc=(token,id,key,seed)=>{const kind=token.definition.kind;if(kind==='pi.live')return live;if(kind==='pi.tool.nested'){if(!indexes.has(id))indexes.set(id,{calls:{}});return indexes.get(id)}if(kind==='pi.tool.nested-result'){const address=id+':'+key;if(!results.has(address)&&seed!==undefined)results.set(address,seed);return results.get(address)}throw Error('unexpected '+kind)};
+ const runtime=(id,input)=>({taskId:id,conversationId:1,registry:{},models:{},settings:{progress:{outputIntervalMs:0}},signal:{aborted:false},async entry(){return{model:[{role:'assistant',content:[rootCall]}]}},async agent(){return{tools:[outer],callable:variant==='unavailable'?[]:[inner]}},async env(){return{}},hooks:{async each(){}},now:()=>123,report(error){throw error},memo(){},getTask:async id=>tasks.get(id),waitForTask:async id=>{if(tasks.get(id)?.state.status==='terminal')return tasks.get(id);if(!waiters.has(id))waiters.set(id,Promise.withResolvers());return waiters.get(id).promise},conversation(){},snapshotAsOf(){},watchDoc(){},async snapshot(token,owner,key){if(token.definition.kind==='pi.tool.nested')return indexes.get(owner);if(token.definition.kind==='pi.tool.nested-result')return results.get(owner+':'+key);throw Error('unexpected snapshot')},async abortOwned(child){if(tasks.get(child)?.owner!==id)throw Error('wrong owner');if(tasks.get(child).state.status!=='terminal')throw Error('test left a task running')},commit(change){
+  const operation=tail.then(async()=>{const local=[];const next=await change({doc:async(...args)=>doc(...args),task:async id=>tasks.get(id),async createTask(token,input,options){if(token!==ToolTask)throw Error('wrong actual token');const id=nextId++;tasks.set(id,{id,input,owner:options.ownership.taskId,state:{status:'running',checkpoint:{phase:'call'}}});local.push(id);return id},async appendEntry(token,id,data){entries.push(data);return{id:99}}});if(next!==undefined)tasks.get(id).state=next;starts.push(...local)});
+  tail=operation.catch(()=>{});return operation.then(()=>{const pending=starts;starts=[];for(const child of pending)queueMicrotask(async()=>{const record=tasks.get(child);try{await ToolTask.definition.phases.call(record,runtime(child,record.input),context);waiters.get(child)?.resolve(record)}catch(error){waiters.get(child)?.reject(error)}})})
+ }});
+ tasks.set(7,{id:7,input:{kind:'model',assistant:11,callId:'root'},state:{status:'running',checkpoint:{phase:'call'}}});
+ await ToolTask.definition.phases.call(tasks.get(7),runtime(7,tasks.get(7).input),context);
+ return{received,live,entries,tasks:[...tasks.values()],indexes:[...indexes],results:[...results]};
+}

@@ -76,3 +76,75 @@ fn objectEqual(engine: *Engine, left: c.JSValue, right: c.JSValue, key: c.JSValu
     defer engine.freeValue(b);
     return c.pi_js_bool(engine.context, @intFromBool(try equal(engine, a, b)));
 }
+
+/// Update compatible containers leaf by leaf so the durable draft records
+/// changed leaves and appends rather than replacing the complete details tree.
+pub fn assign(engine: *Engine, target: c.JSValue, key: c.JSValue, value: c.JSValue, iterator_symbol: c.JSValue) !void {
+    const current = try js.getKey(engine, target, key);
+    defer engine.freeValue(current);
+    if (try isRecord(engine, current) and try isRecord(engine, value)) {
+        const object = try js.global(engine, "Object");
+        defer engine.freeValue(object);
+        const keys = try vm.invoke(engine, object, "keys", &.{current});
+        defer engine.freeValue(keys);
+        var key_iterator = try js.Iterator.init(engine, keys, iterator_symbol);
+        defer key_iterator.deinit();
+        errdefer key_iterator.closePreserving();
+        while (try key_iterator.next()) |name| {
+            defer engine.freeValue(name);
+            const own = try vm.invoke(engine, object, "hasOwn", &.{ value, name });
+            defer engine.freeValue(own);
+            if (c.JS_ToBool(engine.context, own) == 0) {
+                const atom = try js.atom(engine, name);
+                defer c.JS_FreeAtom(engine.context, atom);
+                if (c.JS_DeleteProperty(engine.context, current, atom, c.JS_PROP_THROW) < 0) return js.capture(engine);
+            }
+        }
+        const entries = try vm.invoke(engine, object, "entries", &.{value});
+        defer engine.freeValue(entries);
+        var entry_iterator = try js.Iterator.init(engine, entries, iterator_symbol);
+        defer entry_iterator.deinit();
+        errdefer entry_iterator.closePreserving();
+        while (try entry_iterator.next()) |entry| {
+            defer engine.freeValue(entry);
+            // Object.entries returns actual two-element arrays. Read through
+            // their iterator to retain the Source destructuring boundary.
+            var pair = try js.Iterator.init(engine, entry, iterator_symbol);
+            defer pair.deinit();
+            errdefer pair.closePreserving();
+            const name = try pair.next() orelse c.pi_js_undefined();
+            defer engine.freeValue(name);
+            const child = try pair.next() orelse c.pi_js_undefined();
+            defer engine.freeValue(child);
+            try pair.close();
+            try assign(engine, current, name, child, iterator_symbol);
+        }
+        return;
+    }
+    const array = try js.global(engine, "Array");
+    defer engine.freeValue(array);
+    const current_array = try vm.invoke(engine, array, "isArray", &.{current});
+    defer engine.freeValue(current_array);
+    if (c.JS_ToBool(engine.context, current_array) != 0) {
+        const value_array = try vm.invoke(engine, array, "isArray", &.{value});
+        defer engine.freeValue(value_array);
+        if (c.JS_ToBool(engine.context, value_array) != 0 and try vm.length(engine, current) <= try vm.length(engine, value)) {
+            var index: u32 = 0;
+            while (index < try vm.length(engine, value)) : (index += 1) {
+                const item = try engine.checked(c.JS_GetPropertyUint32(engine.context, value, index));
+                defer engine.freeValue(item);
+                if (index < try vm.length(engine, current)) try assign(engine, current, c.JS_NewInt64(engine.context, index), item, iterator_symbol) else try js.push(engine, current, item);
+            }
+            return;
+        }
+    }
+    if (!c.JS_IsStrictEqual(engine.context, current, value)) try js.setKey(engine, target, key, value);
+}
+fn isRecord(engine: *Engine, value: c.JSValue) !bool {
+    if (!c.JS_IsObject(value) or c.JS_IsFunction(engine.context, value)) return false;
+    const array = try js.global(engine, "Array");
+    defer engine.freeValue(array);
+    const result = try vm.invoke(engine, array, "isArray", &.{value});
+    defer engine.freeValue(result);
+    return c.JS_ToBool(engine.context, result) == 0;
+}

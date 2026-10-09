@@ -1,0 +1,863 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "variant": "normal",
+      "received": [
+        {
+          "taskId": 70,
+          "structuredOutput": "inner 2",
+          "isError": false,
+          "details": {
+            "original": true
+          },
+          "diagnostics": [],
+          "durationMs": 5
+        },
+        {
+          "taskId": 70,
+          "structuredOutput": "inner 2",
+          "isError": false,
+          "details": {
+            "original": true
+          },
+          "diagnostics": [],
+          "durationMs": 5
+        }
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "callId": "root",
+            "name": "outer",
+            "status": "done",
+            "entry": 99
+          }
+        ]
+      },
+      "entries": [
+        {
+          "model": [
+            {
+              "role": "toolResult",
+              "toolCallId": "root",
+              "toolName": "outer",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "outer done"
+                }
+              ],
+              "isError": false,
+              "durationMs": 15,
+              "timestamp": 123
+            }
+          ],
+          "data": {
+            "diagnostics": []
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "id": 7,
+          "input": {
+            "kind": "model",
+            "assistant": 11,
+            "callId": "root"
+          },
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "model",
+                "entryId": 99
+              }
+            }
+          }
+        },
+        {
+          "id": 70,
+          "input": {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "root",
+            "key": "leaf",
+            "call": {
+              "type": "toolCall",
+              "id": "root/leaf",
+              "name": "inner",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          "owner": 7,
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "nested"
+              }
+            }
+          }
+        }
+      ],
+      "indexes": [
+        [
+          7,
+          {
+            "calls": {
+              "leaf": 70
+            }
+          }
+        ]
+      ],
+      "results": [
+        [
+          "7:70",
+          {
+            "result": {
+              "taskId": 70,
+              "structuredOutput": "inner 2",
+              "isError": false,
+              "details": {
+                "original": true
+              },
+              "diagnostics": [],
+              "durationMs": 5
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "variant": "default-keys",
+      "received": [
+        {
+          "taskId": 70,
+          "structuredOutput": "inner 2",
+          "isError": false,
+          "details": {
+            "original": true
+          },
+          "diagnostics": [],
+          "durationMs": 5
+        },
+        {
+          "taskId": 71,
+          "structuredOutput": "inner 2",
+          "isError": false,
+          "details": {
+            "original": true
+          },
+          "diagnostics": [],
+          "durationMs": 5
+        }
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "callId": "root",
+            "name": "outer",
+            "status": "done",
+            "entry": 99
+          }
+        ]
+      },
+      "entries": [
+        {
+          "model": [
+            {
+              "role": "toolResult",
+              "toolCallId": "root",
+              "toolName": "outer",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "outer done"
+                }
+              ],
+              "isError": false,
+              "durationMs": 25,
+              "timestamp": 123
+            }
+          ],
+          "data": {
+            "diagnostics": []
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "id": 7,
+          "input": {
+            "kind": "model",
+            "assistant": 11,
+            "callId": "root"
+          },
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "model",
+                "entryId": 99
+              }
+            }
+          }
+        },
+        {
+          "id": 70,
+          "input": {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "root",
+            "key": "1",
+            "call": {
+              "type": "toolCall",
+              "id": "root/1",
+              "name": "inner",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          "owner": 7,
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "nested"
+              }
+            }
+          }
+        },
+        {
+          "id": 71,
+          "input": {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "root",
+            "key": "2",
+            "call": {
+              "type": "toolCall",
+              "id": "root/2",
+              "name": "inner",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          "owner": 7,
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "nested"
+              }
+            }
+          }
+        }
+      ],
+      "indexes": [
+        [
+          7,
+          {
+            "calls": {
+              "1": 70,
+              "2": 71
+            }
+          }
+        ]
+      ],
+      "results": [
+        [
+          "7:70",
+          {
+            "result": {
+              "taskId": 70,
+              "structuredOutput": "inner 2",
+              "isError": false,
+              "details": {
+                "original": true
+              },
+              "diagnostics": [],
+              "durationMs": 5
+            }
+          }
+        ],
+        [
+          "7:71",
+          {
+            "result": {
+              "taskId": 71,
+              "structuredOutput": "inner 2",
+              "isError": false,
+              "details": {
+                "original": true
+              },
+              "diagnostics": [],
+              "durationMs": 5
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "variant": "conflict",
+      "received": [
+        {
+          "taskId": 70,
+          "structuredOutput": "inner 2",
+          "isError": false,
+          "details": {
+            "original": true
+          },
+          "diagnostics": [],
+          "durationMs": 5
+        },
+        {
+          "error": "Nested call root/leaf was already made with another tool or other arguments"
+        }
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "callId": "root",
+            "name": "outer",
+            "status": "done",
+            "entry": 99
+          }
+        ]
+      },
+      "entries": [
+        {
+          "model": [
+            {
+              "role": "toolResult",
+              "toolCallId": "root",
+              "toolName": "outer",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "outer done"
+                }
+              ],
+              "isError": false,
+              "durationMs": 15,
+              "timestamp": 123
+            }
+          ],
+          "data": {
+            "diagnostics": []
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "id": 7,
+          "input": {
+            "kind": "model",
+            "assistant": 11,
+            "callId": "root"
+          },
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "model",
+                "entryId": 99
+              }
+            }
+          }
+        },
+        {
+          "id": 70,
+          "input": {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "root",
+            "key": "leaf",
+            "call": {
+              "type": "toolCall",
+              "id": "root/leaf",
+              "name": "inner",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          "owner": 7,
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "nested"
+              }
+            }
+          }
+        }
+      ],
+      "indexes": [
+        [
+          7,
+          {
+            "calls": {
+              "leaf": 70
+            }
+          }
+        ]
+      ],
+      "results": [
+        [
+          "7:70",
+          {
+            "result": {
+              "taskId": 70,
+              "structuredOutput": "inner 2",
+              "isError": false,
+              "details": {
+                "original": true
+              },
+              "diagnostics": [],
+              "durationMs": 5
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "variant": "schema",
+      "received": [
+        {
+          "taskId": 70,
+          "structuredOutput": {
+            "count": 2
+          },
+          "isError": false,
+          "details": {
+            "original": true
+          },
+          "diagnostics": [],
+          "durationMs": 5
+        },
+        {
+          "taskId": 70,
+          "structuredOutput": {
+            "count": 2
+          },
+          "isError": false,
+          "details": {
+            "original": true
+          },
+          "diagnostics": [],
+          "durationMs": 5
+        }
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "callId": "root",
+            "name": "outer",
+            "status": "done",
+            "entry": 99
+          }
+        ]
+      },
+      "entries": [
+        {
+          "model": [
+            {
+              "role": "toolResult",
+              "toolCallId": "root",
+              "toolName": "outer",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "outer done"
+                }
+              ],
+              "isError": false,
+              "durationMs": 15,
+              "timestamp": 123
+            }
+          ],
+          "data": {
+            "diagnostics": []
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "id": 7,
+          "input": {
+            "kind": "model",
+            "assistant": 11,
+            "callId": "root"
+          },
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "model",
+                "entryId": 99
+              }
+            }
+          }
+        },
+        {
+          "id": 70,
+          "input": {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "root",
+            "key": "leaf",
+            "call": {
+              "type": "toolCall",
+              "id": "root/leaf",
+              "name": "inner",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          "owner": 7,
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "nested"
+              }
+            }
+          }
+        }
+      ],
+      "indexes": [
+        [
+          7,
+          {
+            "calls": {
+              "leaf": 70
+            }
+          }
+        ]
+      ],
+      "results": [
+        [
+          "7:70",
+          {
+            "result": {
+              "taskId": 70,
+              "structuredOutput": {
+                "count": 2
+              },
+              "isError": false,
+              "details": {
+                "original": true
+              },
+              "diagnostics": [],
+              "durationMs": 5
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "variant": "invalid-schema",
+      "received": [
+        {
+          "taskId": 70,
+          "isError": true,
+          "details": {
+            "original": true
+          },
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "invalid_structured_output",
+              "message": "Tool inner returned structuredOutput that does not match its schema: count: must be number"
+            }
+          ],
+          "durationMs": 5
+        },
+        {
+          "taskId": 70,
+          "isError": true,
+          "details": {
+            "original": true
+          },
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "invalid_structured_output",
+              "message": "Tool inner returned structuredOutput that does not match its schema: count: must be number"
+            }
+          ],
+          "durationMs": 5
+        }
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "callId": "root",
+            "name": "outer",
+            "status": "done",
+            "entry": 99
+          }
+        ]
+      },
+      "entries": [
+        {
+          "model": [
+            {
+              "role": "toolResult",
+              "toolCallId": "root",
+              "toolName": "outer",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "outer done"
+                }
+              ],
+              "isError": false,
+              "durationMs": 15,
+              "timestamp": 123
+            }
+          ],
+          "data": {
+            "diagnostics": []
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "id": 7,
+          "input": {
+            "kind": "model",
+            "assistant": 11,
+            "callId": "root"
+          },
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "model",
+                "entryId": 99
+              }
+            }
+          }
+        },
+        {
+          "id": 70,
+          "input": {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "root",
+            "key": "leaf",
+            "call": {
+              "type": "toolCall",
+              "id": "root/leaf",
+              "name": "inner",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          "owner": 7,
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "nested"
+              }
+            }
+          }
+        }
+      ],
+      "indexes": [
+        [
+          7,
+          {
+            "calls": {
+              "leaf": 70
+            }
+          }
+        ]
+      ],
+      "results": [
+        [
+          "7:70",
+          {
+            "result": {
+              "taskId": 70,
+              "isError": true,
+              "details": {
+                "original": true
+              },
+              "diagnostics": [
+                {
+                  "severity": "error",
+                  "code": "invalid_structured_output",
+                  "message": "Tool inner returned structuredOutput that does not match its schema: count: must be number"
+                }
+              ],
+              "durationMs": 5
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "variant": "unavailable",
+      "received": [
+        {
+          "taskId": 70,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "tool_unavailable",
+              "message": "Tool inner is not available"
+            }
+          ]
+        },
+        {
+          "taskId": 70,
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "tool_unavailable",
+              "message": "Tool inner is not available"
+            }
+          ]
+        }
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "callId": "root",
+            "name": "outer",
+            "status": "done",
+            "entry": 99
+          }
+        ]
+      },
+      "entries": [
+        {
+          "model": [
+            {
+              "role": "toolResult",
+              "toolCallId": "root",
+              "toolName": "outer",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "outer done"
+                }
+              ],
+              "isError": false,
+              "durationMs": 5,
+              "timestamp": 123
+            }
+          ],
+          "data": {
+            "diagnostics": []
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "id": 7,
+          "input": {
+            "kind": "model",
+            "assistant": 11,
+            "callId": "root"
+          },
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "model",
+                "entryId": 99
+              }
+            }
+          }
+        },
+        {
+          "id": 70,
+          "input": {
+            "kind": "nested",
+            "parent": 7,
+            "parentCallId": "root",
+            "key": "leaf",
+            "call": {
+              "type": "toolCall",
+              "id": "root/leaf",
+              "name": "inner",
+              "arguments": {
+                "count": 2
+              }
+            }
+          },
+          "owner": 7,
+          "state": {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "kind": "nested"
+              }
+            }
+          }
+        }
+      ],
+      "indexes": [
+        [
+          7,
+          {
+            "calls": {
+              "leaf": 70
+            }
+          }
+        ]
+      ],
+      "results": [
+        [
+          "7:70",
+          {
+            "result": {
+              "taskId": 70,
+              "isError": true,
+              "diagnostics": [
+                {
+                  "severity": "error",
+                  "code": "tool_unavailable",
+                  "message": "Tool inner is not available"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    }
+  ]
+}

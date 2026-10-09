@@ -1,0 +1,635 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "normal",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "set",
+          "live.tools.0.output",
+          "first λ\n"
+        ],
+        [
+          "delete",
+          "live.tools.0.details.tree.remove"
+        ],
+        [
+          "set",
+          "live.tools.0.details.tree.old",
+          2
+        ],
+        [
+          "set",
+          "live.tools.0.details.list.0.old",
+          2
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics",
+          []
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics.0",
+          {
+            "severity": "info",
+            "code": "first",
+            "message": "first"
+          }
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics.length",
+          1
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "set",
+          "live.tools.0.output",
+          "λ\nnext\n"
+        ],
+        [
+          "set",
+          "live.tools.0.droppedBytes",
+          12
+        ],
+        [
+          "set",
+          "live.tools.0.droppedLines",
+          1
+        ],
+        [
+          "set",
+          "live.tools.0.details.tree.old",
+          3
+        ],
+        [
+          "set",
+          "live.tools.0.details.tree.new",
+          4
+        ],
+        [
+          "set",
+          "live.tools.0.details.list.0.old",
+          3
+        ],
+        [
+          "set",
+          "live.tools.0.details.list.1",
+          {
+            "extra": 5
+          }
+        ],
+        [
+          "set",
+          "live.tools.0.details.list.length",
+          2
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics.1",
+          {
+            "severity": "warn",
+            "code": "second",
+            "message": "second"
+          }
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics.length",
+          2
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "set",
+          "live.tools.0.droppedBytes",
+          12
+        ],
+        [
+          "set",
+          "live.tools.0.droppedLines",
+          1
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "outcomes": [
+        "first resolved",
+        "second resolved",
+        "third resolved"
+      ],
+      "pending": 0,
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "running",
+            "details": {
+              "tree": {
+                "old": 3,
+                "new": 4
+              },
+              "list": [
+                {
+                  "old": 3
+                },
+                {
+                  "extra": 5
+                }
+              ]
+            },
+            "output": "λ\nnext\n",
+            "diagnostics": [
+              {
+                "severity": "info",
+                "code": "first",
+                "message": "first"
+              },
+              {
+                "severity": "warn",
+                "code": "second",
+                "message": "second"
+              }
+            ],
+            "droppedBytes": 12,
+            "droppedLines": 1
+          }
+        ]
+      },
+      "identities": {
+        "details": true,
+        "tree": true,
+        "list": true
+      }
+    },
+    {
+      "scenario": "missing",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "outcomes": [
+        "first resolved",
+        "second resolved",
+        "third resolved"
+      ],
+      "pending": 0,
+      "live": {},
+      "identities": {
+        "details": true,
+        "tree": true,
+        "list": true
+      }
+    },
+    {
+      "scenario": "disabled",
+      "trace": [],
+      "outcomes": [
+        "first resolved",
+        "second resolved",
+        "third resolved"
+      ],
+      "pending": 0,
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "running",
+            "details": {
+              "tree": {
+                "old": 1,
+                "remove": 2
+              },
+              "list": [
+                {
+                  "old": 1
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "identities": {
+        "details": true,
+        "tree": true,
+        "list": true
+      }
+    },
+    {
+      "scenario": "failure",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "report",
+          "commit failed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "set",
+          "live.tools.0.output",
+          "λ\nnext\n"
+        ],
+        [
+          "set",
+          "live.tools.0.droppedBytes",
+          12
+        ],
+        [
+          "set",
+          "live.tools.0.droppedLines",
+          1
+        ],
+        [
+          "delete",
+          "live.tools.0.details.tree.remove"
+        ],
+        [
+          "set",
+          "live.tools.0.details.tree.old",
+          3
+        ],
+        [
+          "set",
+          "live.tools.0.details.tree.new",
+          4
+        ],
+        [
+          "set",
+          "live.tools.0.details.list.0.old",
+          3
+        ],
+        [
+          "set",
+          "live.tools.0.details.list.1",
+          {
+            "extra": 5
+          }
+        ],
+        [
+          "set",
+          "live.tools.0.details.list.length",
+          2
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics",
+          []
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics.0",
+          {
+            "severity": "info",
+            "code": "first",
+            "message": "first"
+          }
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics.length",
+          1
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics.1",
+          {
+            "severity": "warn",
+            "code": "second",
+            "message": "second"
+          }
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics.length",
+          2
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "set",
+          "live.tools.0.droppedBytes",
+          12
+        ],
+        [
+          "set",
+          "live.tools.0.droppedLines",
+          1
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "outcomes": [
+        [
+          "first rejected",
+          "commit failed"
+        ],
+        "second resolved",
+        "third resolved"
+      ],
+      "pending": 0,
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "running",
+            "details": {
+              "tree": {
+                "old": 3,
+                "new": 4
+              },
+              "list": [
+                {
+                  "old": 3
+                },
+                {
+                  "extra": 5
+                }
+              ]
+            },
+            "output": "λ\nnext\n",
+            "droppedBytes": 12,
+            "droppedLines": 1,
+            "diagnostics": [
+              {
+                "severity": "info",
+                "code": "first",
+                "message": "first"
+              },
+              {
+                "severity": "warn",
+                "code": "second",
+                "message": "second"
+              }
+            ]
+          }
+        ]
+      },
+      "identities": {
+        "details": true,
+        "tree": true,
+        "list": true
+      }
+    },
+    {
+      "scenario": "aborted",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "set",
+          "live.tools.0.output",
+          "λ\nnext\n"
+        ],
+        [
+          "set",
+          "live.tools.0.droppedBytes",
+          12
+        ],
+        [
+          "set",
+          "live.tools.0.droppedLines",
+          1
+        ],
+        [
+          "delete",
+          "live.tools.0.details.tree.remove"
+        ],
+        [
+          "set",
+          "live.tools.0.details.tree.old",
+          3
+        ],
+        [
+          "set",
+          "live.tools.0.details.tree.new",
+          4
+        ],
+        [
+          "set",
+          "live.tools.0.details.list.0.old",
+          3
+        ],
+        [
+          "set",
+          "live.tools.0.details.list.1",
+          {
+            "extra": 5
+          }
+        ],
+        [
+          "set",
+          "live.tools.0.details.list.length",
+          2
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics",
+          []
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics.0",
+          {
+            "severity": "info",
+            "code": "first",
+            "message": "first"
+          }
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics.length",
+          1
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics.1",
+          {
+            "severity": "warn",
+            "code": "second",
+            "message": "second"
+          }
+        ],
+        [
+          "set",
+          "live.tools.0.diagnostics.length",
+          2
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1
+        ],
+        [
+          "set",
+          "live.tools.0.droppedBytes",
+          12
+        ],
+        [
+          "set",
+          "live.tools.0.droppedLines",
+          1
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "outcomes": [
+        [
+          "first rejected",
+          "commit aborted"
+        ],
+        "second resolved",
+        "third resolved"
+      ],
+      "pending": 0,
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "running",
+            "details": {
+              "tree": {
+                "old": 3,
+                "new": 4
+              },
+              "list": [
+                {
+                  "old": 3
+                },
+                {
+                  "extra": 5
+                }
+              ]
+            },
+            "output": "λ\nnext\n",
+            "droppedBytes": 12,
+            "droppedLines": 1,
+            "diagnostics": [
+              {
+                "severity": "info",
+                "code": "first",
+                "message": "first"
+              },
+              {
+                "severity": "warn",
+                "code": "second",
+                "message": "second"
+              }
+            ]
+          }
+        ]
+      },
+      "identities": {
+        "details": true,
+        "tree": true,
+        "list": true
+      }
+    }
+  ]
+}

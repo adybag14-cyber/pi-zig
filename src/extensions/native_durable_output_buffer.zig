@@ -4,7 +4,7 @@ const std = @import("std");
 const engine_mod = @import("engine.zig");
 const vm = @import("native_values.zig");
 const js = @import("native_js_values.zig");
-const window = @import("../durable/output_window.zig");
+const window = @import("native_durable_output_limits.zig");
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
 const Action = enum(c_int) { push, end, snapshot, chunkText };
@@ -52,9 +52,10 @@ pub fn create(engine: *Engine, limits: window.Limits, sanitize_pattern: c.JSValu
     defer scope.deinit();
     const state = try vm.object(engine);
     errdefer engine.freeValue(state);
-    try setNumber(engine, state, "maxBytes", @floatFromInt(limits.maxBytes));
-    try setNumber(engine, state, "maxLines", @floatFromInt(limits.maxLines));
+    try setNumber(engine, state, "maxBytes", limits.maxBytes);
+    try setNumber(engine, state, "maxLines", limits.maxLines);
     try put(engine, state, "tail", c.pi_js_bool(engine.context, @intFromBool(limits.retain == .tail)));
+    try put(engine, state, "head", c.pi_js_bool(engine.context, @intFromBool(limits.retain == .head)));
     try @import("native_tool_info.zig").putData(engine, state, "chunks", try vm.array(engine));
     inline for (.{ "storedBytes", "storedNewlines", "totalBytes", "totalNewlines" }) |key| try setNumber(engine, state, key, 0);
     try put(engine, state, "endsWithNewline", c.pi_js_bool(engine.context, 1));
@@ -148,7 +149,7 @@ fn accept(engine: *Engine, state: c.JSValue, text: c.JSValue) !bool {
     try setNumber(engine, state, "storedNewlines", (try numeric(engine, state, "storedNewlines")) + @as(f64, @floatFromInt(newlines)));
     const max_bytes = try numeric(engine, state, "maxBytes");
     const max_lines = try numeric(engine, state, "maxLines");
-    if (!try flag(engine, state, "tail")) {
+    if (try flag(engine, state, "head")) {
         try put(engine, state, "full", c.pi_js_bool(engine.context, @intFromBool((try numeric(engine, state, "storedBytes")) > max_bytes or (try numeric(engine, state, "storedNewlines")) >= max_lines)));
         return true;
     }
@@ -184,7 +185,7 @@ fn snapshot(engine: *Engine, state: c.JSValue) !c.JSValue {
     defer engine.gpa.free(encoded);
     try std.unicode.wtf8ToUtf8Lossy(encoded, encoded);
     const tail = try flag(engine, state, "tail");
-    const limits: window.Limits = .{ .maxBytes = @intFromFloat(try numeric(engine, state, "maxBytes")), .maxLines = @intFromFloat(try numeric(engine, state, "maxLines")), .retain = if (tail) .tail else .head };
+    const limits: window.Limits = .{ .maxBytes = try numeric(engine, state, "maxBytes"), .maxLines = try numeric(engine, state, "maxLines"), .retain = if (try flag(engine, state, "head")) .head else if (tail) .tail else .other };
     const kept = try window.boundOutput(engine.gpa, encoded, limits);
     defer engine.gpa.free(kept.text);
     const kept_value = if (kept.droppedBytes == 0) stored else try scope.own(try engine.checked(c.JS_NewStringLen(engine.context, kept.text.ptr, kept.text.len)));

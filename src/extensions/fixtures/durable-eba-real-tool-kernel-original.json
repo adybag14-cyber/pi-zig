@@ -1,0 +1,29 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "calls": [
+    [
+      "outer"
+    ],
+    [
+      "inner",
+      2
+    ]
+  ],
+  "nested": [
+    {
+      "value": "inner 2",
+      "owned": true
+    },
+    {
+      "value": "inner 2",
+      "owned": true
+    },
+    true,
+    true
+  ],
+  "status": "completed",
+  "liveDone": true,
+  "entryPresent": true,
+  "nestedRemoved": true,
+  "reports": []
+}

@@ -1,0 +1,2909 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "nested": false,
+      "variant": "plain",
+      "failure": null,
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": null,
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "isError": false,
+            "durationMs": 5,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": []
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "reported",
+      "failure": null,
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": {
+        "text": "first λ",
+        "truncated": true
+      },
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "committed"
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "first λ"
+              },
+              {
+                "type": "text",
+                "text": "<harness>\n[info] reported\n[warn] Output truncated to its beginning: 1 lines, 6 bytes dropped\n</harness>"
+              }
+            ],
+            "details": {
+              "meta": 1
+            },
+            "isError": false,
+            "durationMs": 5,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "info",
+              "code": "reported",
+              "message": "reported"
+            },
+            {
+              "severity": "warn",
+              "code": "truncated",
+              "message": "Output truncated to its beginning: 1 lines, 6 bytes dropped"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "tail",
+      "failure": null,
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": {
+          "maxBytes": 8,
+          "maxLines": 2,
+          "minIntervalMs": 0,
+          "bytesPerSecond": 102400
+        }
+      },
+      "apiEffects": {
+        "text": "next\n",
+        "truncated": true
+      },
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "committed"
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "next\n"
+              },
+              {
+                "type": "text",
+                "text": "<harness>\n[info] reported\n[warn] Output truncated to its end: 1 lines, 9 bytes dropped\n</harness>"
+              }
+            ],
+            "details": {
+              "meta": 1
+            },
+            "isError": false,
+            "durationMs": 5,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "info",
+              "code": "reported",
+              "message": "reported"
+            },
+            {
+              "severity": "warn",
+              "code": "truncated",
+              "message": "Output truncated to its end: 1 lines, 9 bytes dropped"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "transactions",
+      "failure": null,
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": {
+        "returned": true,
+        "id": 201,
+        "explicit": 201
+      },
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "change"
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "x": 1
+          },
+          {
+            "abandonOnRestart": true,
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            }
+          }
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "x": 2
+          },
+          {
+            "abandonOnRestart": false,
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            }
+          }
+        ],
+        [
+          "committed"
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "isError": false,
+            "durationMs": 5,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": []
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "safe",
+      "failure": null,
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": {
+        "returned": true,
+        "id": 201,
+        "explicit": 201
+      },
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "change"
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "x": 1
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            }
+          }
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "x": 2
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            },
+            "abandonOnRestart": false
+          }
+        ],
+        [
+          "committed"
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "done"
+              }
+            ],
+            "isError": false,
+            "durationMs": 5,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": []
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "thrown",
+      "failure": null,
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": null,
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] [object Object]\n</harness>"
+              }
+            ],
+            "isError": true,
+            "durationMs": 5,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "tool_error",
+              "message": "[object Object]"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "failed",
+          "error": {
+            "message": "Tool absent threw"
+          },
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "aborted",
+      "failure": "original",
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": null,
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      }
+    },
+    {
+      "nested": false,
+      "variant": "env-thrown",
+      "failure": null,
+      "apiShape": null,
+      "apiEffects": null,
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "now"
+        ],
+        [
+          "append",
+          "pi.tool-result",
+          1
+        ],
+        [
+          "slot-set",
+          "status"
+        ],
+        [
+          "slot-set",
+          "entry"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "done",
+            "callId": "c1",
+            "name": "absent",
+            "entry": 99
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "model": [
+          {
+            "role": "toolResult",
+            "toolCallId": "c1",
+            "toolName": "absent",
+            "content": [
+              {
+                "type": "text",
+                "text": "<harness>\n[error] [object Object]\n</harness>"
+              }
+            ],
+            "isError": true,
+            "timestamp": 123
+          }
+        ],
+        "data": {
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "tool_error",
+              "message": "[object Object]"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "failed",
+          "error": {
+            "message": "Tool absent threw"
+          },
+          "result": {
+            "kind": "model",
+            "entryId": 99
+          }
+        }
+      }
+    },
+    {
+      "nested": false,
+      "variant": "after-thrown",
+      "failure": "original",
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": null,
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      }
+    },
+    {
+      "nested": true,
+      "variant": "plain",
+      "failure": null,
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": null,
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "structuredOutput": "done",
+          "isError": false,
+          "diagnostics": [],
+          "durationMs": 5
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "reported",
+      "failure": null,
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": {
+        "text": "first λ",
+        "truncated": true
+      },
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "committed"
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent",
+            "output": "first λ",
+            "droppedBytes": 6,
+            "droppedLines": 1,
+            "details": {
+              "meta": 1
+            },
+            "diagnostics": [
+              {
+                "severity": "info",
+                "code": "reported",
+                "message": "reported"
+              }
+            ]
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "structuredOutput": "first λ",
+          "isError": false,
+          "details": {
+            "meta": 1
+          },
+          "diagnostics": [
+            {
+              "severity": "info",
+              "code": "reported",
+              "message": "reported"
+            },
+            {
+              "severity": "warn",
+              "code": "truncated",
+              "message": "Output truncated to its beginning: 1 lines, 6 bytes dropped"
+            }
+          ],
+          "durationMs": 5
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "tail",
+      "failure": null,
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": {
+          "maxBytes": 8,
+          "maxLines": 2,
+          "minIntervalMs": 0,
+          "bytesPerSecond": 102400
+        }
+      },
+      "apiEffects": {
+        "text": "next\n",
+        "truncated": true
+      },
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "output"
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "slot-set",
+          "droppedBytes"
+        ],
+        [
+          "slot-set",
+          "droppedLines"
+        ],
+        [
+          "slot-set",
+          "details"
+        ],
+        [
+          "slot-set",
+          "diagnostics"
+        ],
+        [
+          "committed"
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent",
+            "output": "next\n",
+            "droppedBytes": 9,
+            "droppedLines": 1,
+            "details": {
+              "meta": 1
+            },
+            "diagnostics": [
+              {
+                "severity": "info",
+                "code": "reported",
+                "message": "reported"
+              }
+            ]
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "structuredOutput": "next\n",
+          "isError": false,
+          "details": {
+            "meta": 1
+          },
+          "diagnostics": [
+            {
+              "severity": "info",
+              "code": "reported",
+              "message": "reported"
+            },
+            {
+              "severity": "warn",
+              "code": "truncated",
+              "message": "Output truncated to its end: 1 lines, 9 bytes dropped"
+            }
+          ],
+          "durationMs": 5
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "transactions",
+      "failure": null,
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": {
+        "returned": true,
+        "id": 201,
+        "explicit": 201
+      },
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "change"
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "x": 1
+          },
+          {
+            "abandonOnRestart": true,
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            }
+          }
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "x": 2
+          },
+          {
+            "abandonOnRestart": false,
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            }
+          }
+        ],
+        [
+          "committed"
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "structuredOutput": "done",
+          "isError": false,
+          "diagnostics": [],
+          "durationMs": 5
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "safe",
+      "failure": null,
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": {
+        "returned": true,
+        "id": 201,
+        "explicit": 201
+      },
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "change"
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "x": 1
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            }
+          }
+        ],
+        [
+          "committed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "createTask",
+          true,
+          {
+            "x": 2
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            },
+            "abandonOnRestart": false
+          }
+        ],
+        [
+          "committed"
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "structuredOutput": "done",
+          "isError": false,
+          "diagnostics": [],
+          "durationMs": 5
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "completed",
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "thrown",
+      "failure": null,
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": null,
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "structuredOutput": "",
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "tool_error",
+              "message": "[object Object]"
+            }
+          ],
+          "durationMs": 5
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "failed",
+          "error": {
+            "message": "Tool absent threw"
+          },
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "aborted",
+      "failure": "original",
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": null,
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      }
+    },
+    {
+      "nested": true,
+      "variant": "env-thrown",
+      "failure": null,
+      "apiShape": null,
+      "apiEffects": null,
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ],
+        [
+          "snapshot",
+          "pi.tool.nested",
+          7,
+          true
+        ],
+        [
+          "abort",
+          70,
+          true
+        ],
+        [
+          "abort",
+          80,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "pi.live",
+          1,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested",
+          3,
+          null
+        ],
+        [
+          "doc",
+          "pi.tool.nested-result",
+          3,
+          "7"
+        ],
+        [
+          "committed"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          }
+        ]
+      },
+      "stored": {
+        "result": {
+          "taskId": 7,
+          "structuredOutput": "",
+          "isError": true,
+          "diagnostics": [
+            {
+              "severity": "error",
+              "code": "tool_error",
+              "message": "[object Object]"
+            }
+          ]
+        }
+      },
+      "ending": {
+        "status": "terminal",
+        "outcome": {
+          "status": "failed",
+          "error": {
+            "message": "Tool absent threw"
+          },
+          "result": {
+            "kind": "nested"
+          }
+        }
+      }
+    },
+    {
+      "nested": true,
+      "variant": "after-thrown",
+      "failure": "original",
+      "apiShape": {
+        "keys": [
+          "taskId",
+          "conversationId",
+          "callId",
+          "registry",
+          "agent",
+          "models",
+          "output",
+          "outputWindow",
+          "retainedOutput",
+          "diagnostic",
+          "details",
+          "commit",
+          "memo",
+          "createTask",
+          "getTask",
+          "waitForTask",
+          "conversation",
+          "snapshot",
+          "snapshotAsOf",
+          "watchDoc",
+          "executeTool",
+          "env"
+        ],
+        "aliases": {
+          "agent": true,
+          "memo": true,
+          "getTask": true,
+          "waitForTask": true,
+          "conversation": true,
+          "snapshot": true,
+          "snapshotAsOf": true,
+          "watchDoc": true
+        },
+        "env": true,
+        "window": null
+      },
+      "apiEffects": null,
+      "trace": [
+        [
+          "env",
+          true
+        ],
+        [
+          "execute",
+          true,
+          true,
+          true
+        ],
+        [
+          "hooks",
+          "afterTool"
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "taskId": 7,
+            "status": "pending",
+            "callId": "c1",
+            "name": "absent"
+          }
+        ],
+        "nestedTools": [
+          {
+            "taskId": 7,
+            "parentTaskId": 3,
+            "status": "pending",
+            "callId": "parent/leaf",
+            "name": "absent"
+          },
+          {
+            "taskId": 70,
+            "parentTaskId": 7,
+            "status": "running"
+          },
+          {
+            "taskId": 80,
+            "parentTaskId": 70,
+            "status": "running"
+          }
+        ]
+      }
+    }
+  ]
+}

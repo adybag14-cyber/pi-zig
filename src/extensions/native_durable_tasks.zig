@@ -669,6 +669,15 @@ pub fn getManager(engine: *Engine, session: c.JSValue) !*Manager {
     for (owner.managers.items) |item| if (c.JS_IsStrictEqual(engine.context, item.session, session)) return item;
     return error.TaskManagerUnavailable;
 }
+/// Close admission retires the scheduler before the storage queue is drained.
+/// A session without a task manager has nothing to retire.
+pub fn retireSession(engine: *Engine, session: c.JSValue) void {
+    if (engine.native_durable_control_context == null) return;
+    const owner: *Hub = @ptrCast(@alignCast(engine.native_durable_control_context.?));
+    for (owner.managers.items) |manager| {
+        if (c.JS_IsStrictEqual(engine.context, manager.session, session)) manager.close();
+    }
+}
 pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: c.JSValue) !void {
     if (!engine.abort_signals_ready) try aborts.install(engine);
     try registerRuntimeClass(engine);

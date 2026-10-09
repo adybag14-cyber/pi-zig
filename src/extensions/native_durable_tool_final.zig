@@ -6,7 +6,7 @@ const js = @import("native_js_values.zig");
 const calls = @import("native_durable_tool_call.zig");
 const awaiting = @import("native_durable_await.zig");
 const output = @import("native_durable_tool_output.zig");
-const window = @import("../durable/output_window.zig");
+const window = @import("native_durable_output_limits.zig");
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
 pub const Reported = struct { snapshot: c.JSValue, details: c.JSValue, diagnostics: c.JSValue, limits: window.Limits };
@@ -39,9 +39,10 @@ pub fn run(engine: *Engine, intrinsics: *awaiting.Intrinsics, cache: *output.Cac
     defer scope.deinit();
     const state = try scope.own(try vm.object(engine));
     inline for (.{ .{ "runtime", runtime }, .{ "input", input }, .{ "call", call }, .{ "tool", tool }, .{ "context", context }, .{ "weak", cache.weak }, .{ "iterator", cache.iterator_symbol }, .{ "promiseConstructor", intrinsics.constructor }, .{ "promiseResolve", intrinsics.resolve }, .{ "promiseThen", intrinsics.then_function } }) |field| try put(engine, state, field[0], field[1]);
-    try put(engine, state, "maxBytes", c.JS_NewFloat64(engine.context, @floatFromInt(reported.limits.maxBytes)));
-    try put(engine, state, "maxLines", c.JS_NewFloat64(engine.context, @floatFromInt(reported.limits.maxLines)));
+    try put(engine, state, "maxBytes", c.JS_NewFloat64(engine.context, reported.limits.maxBytes));
+    try put(engine, state, "maxLines", c.JS_NewFloat64(engine.context, reported.limits.maxLines));
     try put(engine, state, "tail", c.pi_js_bool(engine.context, @intFromBool(reported.limits.retain == .tail)));
+    try put(engine, state, "head", c.pi_js_bool(engine.context, @intFromBool(reported.limits.retain == .head)));
     const checked_output = try scope.get(result, "output");
     const retained = if (c.JS_IsUndefined(checked_output)) reported.snapshot else c.pi_js_undefined();
     const content = if (c.JS_IsUndefined(retained)) try scope.get(result, "output") else content: {
@@ -144,7 +145,7 @@ fn finish(engine: *Engine, state: c.JSValue) !c.JSValue {
     const raw_content = try scope.get(final, "output");
     const content = if (nullish(raw_content)) try scope.own(try vm.array(engine)) else raw_content;
     const symbol = try scope.get(state, "iterator");
-    var bounded = try @import("native_durable_tool_bound.zig").content(engine, content, .{ .maxBytes = @intFromFloat(max_bytes), .maxLines = @intFromFloat(max_lines), .retain = if (tail) .tail else .head }, symbol);
+    var bounded = try @import("native_durable_tool_bound.zig").content(engine, content, .{ .maxBytes = max_bytes, .maxLines = max_lines, .retain = if (c.JS_ToBool(engine.context, try scope.get(state, "head")) != 0) .head else if (tail) .tail else .other }, symbol);
     defer bounded.deinit(engine);
     if (bounded.dropped_bytes > 0) {
         const item = try scope.own(try truncated(engine, c.JS_NewFloat64(engine.context, @floatFromInt(bounded.dropped_bytes)), c.JS_NewFloat64(engine.context, @floatFromInt(bounded.dropped_lines)), tail));

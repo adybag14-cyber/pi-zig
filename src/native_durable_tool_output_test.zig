@@ -571,7 +571,7 @@ test "native durable v2 content bounding matches 160 actual Source Unicode reten
         const content = try engine.fromJsonValue(row.object.get("content").?);
         defer engine.freeValue(content);
         const limits = row.object.get("limits").?;
-        var bounded = try @import("extensions/native_durable_tool_bound.zig").content(engine, content, .{ .maxBytes = @intCast(try json.asInteger(limits.object.get("maxBytes").?)), .maxLines = @intCast(try json.asInteger(limits.object.get("maxLines").?)), .retain = if (std.mem.eql(u8, limits.object.get("retain").?.string, "head")) .head else .tail }, cache.iterator_symbol);
+        var bounded = try @import("extensions/native_durable_tool_bound.zig").content(engine, content, .{ .maxBytes = @floatFromInt(try json.asInteger(limits.object.get("maxBytes").?)), .maxLines = @floatFromInt(try json.asInteger(limits.object.get("maxLines").?)), .retain = if (std.mem.eql(u8, limits.object.get("retain").?.string, "head")) .head else .tail }, cache.iterator_symbol);
         defer bounded.deinit(engine);
         const expected = row.object.get("result").?;
         try std.testing.expectEqual(@as(usize, @intCast(try json.asInteger(expected.object.get("droppedBytes").?))), bounded.dropped_bytes);
@@ -724,7 +724,7 @@ fn exerciseBufferWithEngine(gpa: std.mem.Allocator, engine: *engine_mod.Engine, 
             var bytes: f64 = 0;
             var lines: f64 = 0;
             if (c.JS_ToFloat64(owner.context, &bytes, max_bytes) < 0 or c.JS_ToFloat64(owner.context, &lines, max_lines) < 0) return error.JavaScriptException;
-            return @import("extensions/native_durable_output_buffer.zig").create(owner, .{ .maxBytes = @intFromFloat(bytes), .maxLines = @intFromFloat(lines), .retain = if (try @import("extensions/native_durable_tool_call.zig").equalsString(owner, retain, "tail")) .tail else .head }, sanitizer);
+            return @import("extensions/native_durable_output_buffer.zig").create(owner, .{ .maxBytes = bytes, .maxLines = lines, .retain = if (try @import("extensions/native_durable_tool_call.zig").equalsString(owner, retain, "tail")) .tail else .head }, sanitizer);
         }
     };
     var captures = [_]c.JSValue{pattern};
@@ -762,4 +762,456 @@ test "native durable v2 running output matches actual Source streaming decoding 
 }
 test "native durable v2 running output releases decoder chunks and closures on every failed allocation" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, exerciseBuffer, .{true});
+}
+
+test "native durable v2 progress publication matches actual Source draft mutations and failure bookkeeping" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    var cache = try output.Cache.init(engine);
+    defer cache.deinit();
+    const exports = try vm.object(engine);
+    defer engine.freeValue(exports);
+    try @import("extensions/native_durable_builtin_documents.zig").install(engine, exports);
+    const live = try vm.get(engine, exports, "LiveDoc");
+    defer engine.freeValue(live);
+    const Factory = struct {
+        fn create(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const owner = engine_mod.Engine.fromContext(context.?);
+            if (argc < 4) return c.JS_ThrowTypeError(context, "Progress publication fixture requires four arguments");
+            var intrinsics = @import("extensions/native_durable_await.zig").Intrinsics.init(owner) catch |err| return @import("extensions/native_durable.zig").reject(owner, err);
+            defer intrinsics.deinit(owner);
+            return @import("extensions/native_durable_tool_progress.zig").create(owner, &intrinsics, argv[0], argv[1], c.JS_ToBool(owner.context, argv[2]) != 0, argv[3], data[0], data[1]) catch |err| @import("extensions/native_durable.zig").reject(owner, err);
+        }
+    };
+    var captures = [_]c.JSValue{ live, cache.iterator_symbol };
+    const factory = try engine.checked(c.JS_NewCFunctionData2(engine.context, Factory.create, "nativePublishProgress", 4, 0, captures.len, &captures));
+    defer engine.freeValue(factory);
+    const exercise_publication = try engine.eval(@embedFile("extensions/fixtures/durable-eba-publication-runtime.txt"), "actual-source-publication-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(exercise_publication);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-eba-publication-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const scenario = row.object.get("scenario").?.string;
+        const scenario_value = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
+        defer engine.freeValue(scenario_value);
+        var args = [_]c.JSValue{ factory, scenario_value };
+        const pending = try engine.checked(c.JS_Call(engine.context, exercise_publication, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(pending);
+        const result = engine.awaitValue(pending) catch |err| {
+            std.debug.print("Publication {s}: {s}\n", .{ scenario, engine.last_error orelse "no diagnostic" });
+            return err;
+        };
+        defer engine.freeValue(result);
+        const text = try engine.stringify(result);
+        defer std.testing.allocator.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        var expected = row;
+        _ = expected.object.swapRemove("scenario");
+        if (!json.equal(expected, actual.value)) std.debug.print("Publication {s} actual: {s}\n", .{ scenario, text });
+        try std.testing.expect(json.equal(expected, actual.value));
+    }
+}
+
+fn exerciseExecution(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    const generation = engine.native_allocation_generation;
+    return exerciseExecutionWithEngine(gpa, engine) catch |err| engine.nativeAllocationError(err, generation);
+}
+fn exerciseExecutionWithEngine(gpa: std.mem.Allocator, engine: *engine_mod.Engine) !void {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/text_decoder.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    var intrinsics = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer intrinsics.deinit(engine);
+    var cache = try output.Cache.init(engine);
+    defer cache.deinit();
+    const exports = try vm.object(engine);
+    defer engine.freeValue(exports);
+    try @import("extensions/native_durable_builtin_documents.zig").install(engine, exports);
+    try @import("extensions/native_durable_entries.zig").install(engine, exports);
+    const index_token = try engine.eval("({definition:{kind:'pi.tool.nested',version:1,scope:'task',initial:()=>({calls:{}})}})", "actual-index-definition", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(index_token);
+    const pattern = try engine.eval("(/[\\x00-\\x08\\x0b-\\x1f\\ufff9-\\ufffb]/g)", "source-output-sanitizer", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(pattern);
+    var tokens = [_]c.JSValue{c.pi_js_undefined()} ** 4;
+    defer for (tokens) |token| engine.freeValue(token);
+    inline for (.{ "LiveDoc", "NestedResultDoc", "ToolResultEntry", "UsageDoc" }, 0..) |name, index| tokens[index] = try vm.get(engine, exports, name);
+    const make = try engine.eval(@embedFile("extensions/fixtures/durable-eba-settle-runtime.txt"), "actual-source-runtime-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    const prepare_attempt = try engine.eval(@embedFile("extensions/fixtures/durable-eba-execute-runtime.txt"), "actual-source-attempt-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(prepare_attempt);
+    const prepare_phase = try engine.eval("(prepare,make,nested,variant)=>{const f=prepare(make,nested,variant),original=f.runtime.agent;f.tool.parameters={type:'object',properties:{count:{type:'number'}},required:['count']};f.call.arguments=f.arguments;f.runtime.agent=async(ctx)=>{await original(ctx);return{tools:[f.tool],callable:[f.tool]}};return f}", "actual-source-phase-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(prepare_phase);
+    const registered = engine.native_module_values.get("@earendil-works/pi-durable").?;
+    const tool_task = try vm.get(engine, registered, "ToolTask");
+    defer engine.freeValue(tool_task);
+    const definition = try vm.get(engine, tool_task, "definition");
+    defer engine.freeValue(definition);
+    const phases = try vm.get(engine, definition, "phases");
+    defer engine.freeValue(phases);
+    for ([_][]const u8{ @embedFile("extensions/fixtures/durable-eba-execute-original.json"), @embedFile("extensions/fixtures/durable-eba-tool-phase-original.json") }, 0..) |corpus, corpus_index| {
+        var source = try json.Owned.parse(gpa, corpus);
+        defer source.deinit();
+        for (source.value.object.get("rows").?.array.items) |row| {
+            const clock = try engine.eval("globalThis.attemptTick=0;globalThis.performance={now(){const value=attemptTick;attemptTick+=5;return value}}", "source-controlled-performance", c.JS_EVAL_TYPE_GLOBAL);
+            engine.freeValue(clock);
+            const variant = row.object.get("variant").?.string;
+            const variant_value = try engine.checked(c.JS_NewStringLen(engine.context, variant.ptr, variant.len));
+            defer engine.freeValue(variant_value);
+            var args = [_]c.JSValue{ make, c.pi_js_bool(engine.context, @intFromBool(row.object.get("nested").?.bool)), variant_value };
+            const fixture = fixture: {
+                if (corpus_index == 0) break :fixture try engine.checked(c.JS_Call(engine.context, prepare_attempt, c.pi_js_undefined(), args.len, &args));
+                var phase_args = [_]c.JSValue{ prepare_attempt, make, args[1], variant_value };
+                break :fixture try engine.checked(c.JS_Call(engine.context, prepare_phase, c.pi_js_undefined(), phase_args.len, &phase_args));
+            };
+            defer engine.freeValue(fixture);
+            var values = [_]c.JSValue{c.pi_js_undefined()} ** 7;
+            defer for (values) |value| engine.freeValue(value);
+            inline for (.{ "runtime", "input", "call", "tool", "arguments", "context", "marker" }, 0..) |name, index| values[index] = try vm.get(engine, fixture, name);
+            const pending = pending: {
+                if (corpus_index == 0) break :pending try @import("extensions/native_durable_tool_execute.zig").run(engine, &intrinsics, &cache, .{ .tool_task = tool_task, .terminal = .{ .live = tokens[0], .nested_calls = index_token, .nested_results = tokens[1], .tool_result = tokens[2], .usage = tokens[3], .iterator_symbol = cache.iterator_symbol }, .sanitize_pattern = pattern }, .{ .maxBytes = 8, .maxLines = 2, .retain = if (std.mem.eql(u8, variant, "tail")) .tail else .head }, values[0], values[1], values[2], values[3], values[4], values[5]);
+                const task = try vm.object(engine);
+                defer engine.freeValue(task);
+                try @import("extensions/native_tool_info.zig").putData(engine, task, "input", c.JS_DupValue(engine.context, values[1]));
+                break :pending try vm.invoke(engine, phases, "call", &.{ task, values[0], values[5] });
+            };
+            defer engine.freeValue(pending);
+            if (row.object.get("failure").? == .null) {
+                const completed = engine.awaitValue(pending) catch |err| {
+                    std.debug.print("Attempt {s}: {s}\n", .{ variant, engine.last_error orelse "no diagnostic" });
+                    return err;
+                };
+                defer engine.freeValue(completed);
+                try std.testing.expect(c.JS_IsUndefined(completed));
+            } else {
+                try std.testing.expectError(error.JavaScriptException, engine.awaitValue(pending));
+                try std.testing.expect(c.JS_IsStrictEqual(engine.context, values[6], engine.captured_exception.?));
+            }
+            const inspected = try vm.invoke(engine, fixture, "inspectExecution", &.{});
+            defer engine.freeValue(inspected);
+            const text = try engine.stringify(inspected);
+            defer gpa.free(text);
+            var actual = try json.Owned.parse(gpa, text);
+            defer actual.deinit();
+            var expected = row;
+            _ = expected.object.swapRemove("nested");
+            _ = expected.object.swapRemove("variant");
+            _ = expected.object.swapRemove("failure");
+            if (!json.equal(expected, actual.value)) std.debug.print("Attempt {s} actual: {s}\n", .{ variant, text });
+            try std.testing.expect(json.equal(expected, actual.value));
+        }
+        if (source.value.object.get("shape")) |shape| {
+            const inspect = try engine.eval("(ToolTask)=>{const checkpoint={phase:'execute',arguments:{count:2},replay:'safe'},migrated=ToolTask.definition.migrate({assistant:11,callId:'c1',extra:true},checkpoint);return{tokenKeys:Object.keys(ToolTask),definitionKeys:Object.keys(ToolTask.definition),name:ToolTask.definition.name,version:ToolTask.definition.version,initial:ToolTask.definition.initial(),arity:{initial:ToolTask.definition.initial.length,migrate:ToolTask.definition.migrate.length,call:ToolTask.definition.phases.call.length,execute:ToolTask.definition.phases.execute.length,abort:ToolTask.definition.abort.length},migrated,checkpointIdentity:migrated.checkpoint===checkpoint}}", "actual-source-task-shape", c.JS_EVAL_TYPE_GLOBAL);
+            defer engine.freeValue(inspect);
+            var args = [_]c.JSValue{tool_task};
+            const actual_shape = try engine.checked(c.JS_Call(engine.context, inspect, c.pi_js_undefined(), args.len, &args));
+            defer engine.freeValue(actual_shape);
+            const text = try engine.stringify(actual_shape);
+            defer gpa.free(text);
+            var parsed = try json.Owned.parse(gpa, text);
+            defer parsed.deinit();
+            try std.testing.expect(json.equal(shape, parsed.value));
+        }
+    }
+}
+
+test "native durable v2 execution matches actual Source attempt API and terminal transaction traces" {
+    try exerciseExecution(std.testing.allocator);
+}
+test "native durable v2 execution releases task continuations at every failed allocation" {
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try exerciseExecution(baseline.allocator());
+    for (0..baseline.alloc_index) |fail_index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = fail_index });
+        if (exerciseExecution(failing.allocator())) |_| {
+            // Guest code can contain a failed allocation and finish cleanup.
+            // Engine allocations can vary after earlier VM jobs have completed.
+        } else |err| {
+            if (!failing.has_induced_failure) return err;
+        }
+        if (failing.allocated_bytes != failing.freed_bytes) {
+            std.debug.print("Execution allocation leak {d}/{d}: {d} allocated, {d} freed\n", .{ fail_index, baseline.alloc_index, failing.allocated_bytes, failing.freed_bytes });
+            return error.MemoryLeakDetected;
+        }
+    }
+}
+
+test "native durable v2 nested admissions match actual Source creation reattachment and conflicts" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/native_durable.zig").install(engine);
+    const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+    const tool_task = try vm.get(engine, exports, "ToolTask");
+    defer engine.freeValue(tool_task);
+    const live = try vm.get(engine, exports, "LiveDoc");
+    defer engine.freeValue(live);
+    const index = try @import("extensions/native_durable_tool_builtin.zig").indexToken(engine);
+    defer engine.freeValue(index);
+    const Factory = struct {
+        fn admit(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const owner = engine_mod.Engine.fromContext(context.?);
+            if (argc < 6) return c.JS_ThrowTypeError(context, "Nested admission fixture requires six arguments");
+            return admitOwned(owner, argv[0..6], data) catch |err| @import("extensions/native_durable.zig").rejectedPromise(owner, err);
+        }
+        fn admitOwned(owner: *engine_mod.Engine, args: []const c.JSValue, data: [*c]c.JSValue) !c.JSValue {
+            var intrinsics = try @import("extensions/native_durable_await.zig").Intrinsics.init(owner);
+            defer intrinsics.deinit(owner);
+            const key = try vm.get(owner, args[4], "key");
+            defer owner.freeValue(key);
+            const progress = try vm.get(owner, args[4], "progress");
+            defer owner.freeValue(progress);
+            const abandon = try vm.get(owner, args[4], "abandonOnRestart");
+            defer owner.freeValue(abandon);
+            return @import("extensions/native_durable_nested_call.zig").admit(owner, &intrinsics, .{ .task = data[0], .index = data[1], .live = data[2] }, args[0], args[1], args[2], args[3], key, progress, c.JS_ToBool(owner.context, abandon) != 0, args[5]);
+        }
+    };
+    var captures = [_]c.JSValue{ tool_task, index, live };
+    const admit = try engine.checked(c.JS_NewCFunctionData2(engine.context, Factory.admit, "nativeAdmit", 6, 0, captures.len, &captures));
+    defer engine.freeValue(admit);
+    const exercise_admission = try engine.eval(@embedFile("extensions/fixtures/durable-eba-admission-runtime.txt"), "actual-source-admission-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(exercise_admission);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-eba-admission-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const variant = row.object.get("variant").?.string;
+        const name = try engine.checked(c.JS_NewStringLen(engine.context, variant.ptr, variant.len));
+        defer engine.freeValue(name);
+        var args = [_]c.JSValue{ admit, tool_task, name };
+        const pending = try engine.checked(c.JS_Call(engine.context, exercise_admission, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(pending);
+        const result = try engine.awaitValue(pending);
+        defer engine.freeValue(result);
+        const text = try engine.stringify(result);
+        defer std.testing.allocator.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        var expected = row;
+        _ = expected.object.swapRemove("variant");
+        try std.testing.expect(json.equal(expected, actual.value));
+    }
+}
+
+test "native durable v2 full nested tool calls match actual Source task family results and cleanup" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/text_decoder.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+    const tool_task = try vm.get(engine, exports, "ToolTask");
+    defer engine.freeValue(tool_task);
+    const exercise_nested = try engine.eval(@embedFile("extensions/fixtures/durable-eba-nested-runtime.txt"), "actual-source-nested-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(exercise_nested);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-eba-nested-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const clock = try engine.eval("globalThis.nestedTick=0;globalThis.performance={now(){const value=nestedTick;nestedTick+=5;return value}}", "source-controlled-nested-performance", c.JS_EVAL_TYPE_GLOBAL);
+        engine.freeValue(clock);
+        const variant = row.object.get("variant").?.string;
+        const name = try engine.checked(c.JS_NewStringLen(engine.context, variant.ptr, variant.len));
+        defer engine.freeValue(name);
+        var args = [_]c.JSValue{ tool_task, name };
+        const pending = try engine.checked(c.JS_Call(engine.context, exercise_nested, c.pi_js_undefined(), args.len, &args));
+        defer engine.freeValue(pending);
+        const result = engine.awaitValue(pending) catch |err| {
+            std.debug.print("Nested {s}: {s}\n", .{ variant, engine.last_error orelse "no diagnostic" });
+            return err;
+        };
+        defer engine.freeValue(result);
+        const text = try engine.stringify(result);
+        defer std.testing.allocator.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        var expected = row;
+        _ = expected.object.swapRemove("variant");
+        if (!json.equal(expected, actual.value)) std.debug.print("Nested {s} actual: {s}\n", .{ variant, text });
+        try std.testing.expect(json.equal(expected, actual.value));
+    }
+}
+
+test "native durable v2 real session scheduler executes genuine ToolTask and owned nested calls" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 30_000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const durable = @import("extensions/native_durable.zig");
+    const tasks = @import("extensions/native_durable_tasks.zig");
+    try durable.install(engine);
+    try @import("extensions/text_decoder.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    if (c.JS_AddPerformance(engine.context) < 0) return @import("extensions/native_js_values.zig").capture(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const exports = engine.native_module_values.get("@earendil-works/pi-durable").?;
+    const token = try vm.get(engine, exports, "ToolTask");
+    defer engine.freeValue(token);
+    const builtins = try vm.array(engine);
+    defer engine.freeValue(builtins);
+    try @import("extensions/native_js_values.zig").push(engine, builtins, token);
+    const registry = try @import("extensions/native_durable_registry.zig").create(engine, builtins);
+    defer engine.freeValue(registry);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try @import("extensions/native_tool_info.zig").putData(engine, global, "toolKernelSession", c.JS_DupValue(engine.context, session));
+    try @import("extensions/native_tool_info.zig").putData(engine, global, "toolKernelRegistry", c.JS_DupValue(engine.context, registry));
+    const setup = engine.evalModule(
+        \\import{ToolTask,AssistantEntry,LiveDoc,AgentDoc,defineExtension,defineTool}from'@earendil-works/pi-durable';
+        \\globalThis.toolKernelCalls=[];globalThis.toolKernelNested=[];globalThis.toolKernelReports=[];
+        \\const inner=defineTool({name:'kernel-inner',description:'inner',parameters:{type:'object',properties:{count:{type:'number'}},required:['count']},callers:['tools'],execute:async(args,api,ctx)=>{
+        \\ toolKernelCalls.push(['inner',args.count]);api.output('inner report\n');await api.details({owned:true},ctx);
+        \\ return {output:[{type:'text',text:'inner '+args.count}],details:{owned:true}};
+        \\}});
+        \\const outer=defineTool({name:'kernel-outer',description:'outer',parameters:{type:'object'},callers:['model'],execute:async(args,api,ctx)=>{
+        \\ globalThis.toolKernelSavedApi=api;toolKernelCalls.push(['outer',api.taskId]);const first=await api.executeTool('kernel-inner',{count:2},ctx,{key:'child'});const second=await api.executeTool('kernel-inner',{count:2},ctx,{key:'child'});
+        \\ toolKernelNested.push(first,second);if(first===second)throw Error('returned nested copies alias');return {output:[{type:'text',text:'kernel done'}]};
+        \\}});
+        \\toolKernelRegistry.install(defineExtension({name:'kernel-tools',tools:[outer,inner]}));
+        \\globalThis.toolKernelOptions={registry:toolKernelRegistry,onReport:error=>toolKernelReports.push(String(error?.stack??error)),settings:{progress:{outputIntervalMs:0}}};
+        \\globalThis.toolKernelConversation=(await toolKernelSession.commit(tx=>tx.createRootConversation(),{})).id;
+        \\await toolKernelSession.commit(async tx=>{await tx.doc(AgentDoc,toolKernelConversation);await tx.doc(LiveDoc,toolKernelConversation)},{});
+        \\globalThis.toolKernelAssistant=await toolKernelSession.commit(tx=>tx.appendEntry(AssistantEntry,toolKernelConversation,{model:[{role:'assistant',content:[{type:'toolCall',id:'root',name:'kernel-outer',arguments:{}}]}]}),{});
+        \\globalThis.toolKernelTask=await toolKernelSession.commit(tx=>tx.createTask(ToolTask,{kind:'model',assistant:toolKernelAssistant.id,callId:'root'},{conversationId:toolKernelConversation,ownership:{kind:'conversation'}}),{});
+        \\await toolKernelSession.commit(async tx=>{const live=await tx.doc(LiveDoc,toolKernelConversation);live.tools=[{taskId:toolKernelTask,callId:'root',name:'kernel-outer',arguments:{},status:'pending'}]},{});
+    , "real-native-tool-kernel-setup") catch |err| {
+        std.debug.print("Tool kernel setup: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(setup);
+    const options = try vm.get(engine, global, "toolKernelOptions");
+    defer engine.freeValue(options);
+    const context = try vm.object(engine);
+    defer engine.freeValue(context);
+    try tasks.attach(engine, session, options, context);
+    const manager = try tasks.getManager(engine, session);
+    const id = try vm.get(engine, global, "toolKernelTask");
+    defer engine.freeValue(id);
+    const pending = try tasks.wait(manager, try durable.number(engine, id), null, context);
+    defer engine.freeValue(pending);
+    const settled = engine.awaitValue(pending) catch |err| {
+        std.debug.print("Real ToolTask kernel: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    defer engine.freeValue(settled);
+    const record = try engine.stringify(settled);
+    defer std.testing.allocator.free(record);
+    var parsed = try json.Owned.parse(std.testing.allocator, record);
+    defer parsed.deinit();
+    const outcome = parsed.value.object.get("state").?.object.get("outcome").?;
+    if (!std.mem.eql(u8, outcome.object.get("status").?.string, "completed")) {
+        std.debug.print("Real ToolTask outcome: {s}\n", .{record});
+        return error.ToolKernelDidNotComplete;
+    }
+    const source_bytes = @embedFile("extensions/fixtures/durable-eba-real-tool-kernel-original.json");
+    try @import("extensions/native_tool_info.zig").putData(engine, global, "toolKernelSource", try engine.checked(c.JS_ParseJSON(engine.context, source_bytes.ptr, source_bytes.len, "actual-source-tool-kernel")));
+    const proof = try engine.evalModule(
+        \\import{LiveDoc}from'@earendil-works/pi-durable';
+        \\if(toolKernelCalls.length!==2||toolKernelCalls[0][0]!=='outer'||toolKernelCalls[1][0]!=='inner')throw Error(JSON.stringify(toolKernelCalls));
+        \\if(toolKernelNested.length!==2||toolKernelNested[0].structuredOutput!=='inner 2'||toolKernelNested[1].structuredOutput!=='inner 2'||toolKernelNested[0].taskId!==toolKernelNested[1].taskId)throw Error(JSON.stringify(toolKernelNested));
+        \\const live=await toolKernelSession.snapshot(LiveDoc,toolKernelConversation,{});if(live.nestedTools!==undefined||live.tools[0].status!=='done'||live.tools[0].entry===undefined)throw Error(JSON.stringify(live));
+        \\if(toolKernelReports.length)throw Error(JSON.stringify(toolKernelReports));
+        \\const actual={calls:toolKernelCalls.map(row=>row[0]==='outer'?['outer']:row),nested:[...toolKernelNested.map(row=>({value:row.structuredOutput,owned:row.details?.owned})),toolKernelNested[0]!==toolKernelNested[1],toolKernelNested[0].taskId===toolKernelNested[1].taskId],status:'completed',liveDone:live.tools[0].status==='done',entryPresent:live.tools[0].entry!==undefined,nestedRemoved:live.nestedTools===undefined,reports:toolKernelReports};
+        \\const {source,...expected}=toolKernelSource;if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));
+        \\for(const call of[()=>toolKernelSavedApi.output('late'),()=>toolKernelSavedApi.diagnostic({severity:'info',message:'late'}),()=>toolKernelSavedApi.retainedOutput()]){let denied=false;try{call()}catch(error){denied=error.message===`Tool call root has settled`}if(!denied)throw Error('retained sync tool API admitted after settlement')}
+        \\for(const call of[()=>toolKernelSavedApi.details({late:true},{}),()=>toolKernelSavedApi.executeTool('kernel-inner',{count:3},{})]){let denied=false;try{await call()}catch(error){denied=error.message===`Tool call root has settled`}if(!denied)throw Error('retained async tool API admitted after settlement')}
+        \\await toolKernelSession.close({});
+    , "real-native-tool-kernel-proof");
+    engine.freeValue(proof);
+}
+
+test "native durable v2 numeric output limits match actual Source edge corpus" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/text_decoder.zig").install(engine);
+    const sanitizer = try engine.eval("(/[\\x00-\\x08\\x0b-\\x1f\\ufff9-\\ufffb]/g)", "numeric-output-sanitizer", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(sanitizer);
+    const corpus = @embedFile("extensions/fixtures/durable-output-numeric-original.json");
+    const source = try engine.checked(c.JS_ParseJSON(engine.context, corpus.ptr, corpus.len, "actual-numeric-source"));
+    defer engine.freeValue(source);
+    const rows = try vm.get(engine, source, "rows");
+    defer engine.freeValue(rows);
+    const number_from = try engine.eval("value=>Number(value)", "numeric-source-values", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(number_from);
+    for (0..try vm.length(engine, rows)) |index| {
+        const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, @intCast(index)));
+        defer engine.freeValue(row);
+        const limit_values = try vm.get(engine, row, "limits");
+        defer engine.freeValue(limit_values);
+        var limits: @import("extensions/native_durable_output_limits.zig").Limits = .{};
+        inline for (.{ "maxBytes", "maxLines" }) |name| {
+            const text = try vm.get(engine, limit_values, name);
+            defer engine.freeValue(text);
+            var args = [_]c.JSValue{text};
+            const value = try engine.checked(c.JS_Call(engine.context, number_from, c.pi_js_undefined(), 1, &args));
+            defer engine.freeValue(value);
+            if (c.JS_ToFloat64(engine.context, &@field(limits, name), value) < 0) return error.InvalidNumericSource;
+        }
+        const retain = try vm.get(engine, limit_values, "retain");
+        defer engine.freeValue(retain);
+        const retention = try engine.toString(retain);
+        defer std.testing.allocator.free(retention);
+        limits.retain = if (std.mem.eql(u8, retention, "head")) .head else if (std.mem.eql(u8, retention, "tail")) .tail else .other;
+        const source_text = try vm.get(engine, row, "text");
+        defer engine.freeValue(source_text);
+        const encoded = try engine.toString(source_text);
+        defer std.testing.allocator.free(encoded);
+        try std.unicode.wtf8ToUtf8Lossy(encoded, encoded);
+        const bounded = try @import("extensions/native_durable_output_limits.zig").boundOutput(std.testing.allocator, encoded, limits);
+        defer std.testing.allocator.free(bounded.text);
+        const expected_bound = try vm.get(engine, row, "bounded");
+        defer engine.freeValue(expected_bound);
+        inline for (.{ .{ "bytes", bounded.bytes }, .{ "droppedBytes", bounded.droppedBytes }, .{ "droppedLines", bounded.droppedLines } }) |field| {
+            const expected = try vm.get(engine, expected_bound, field[0]);
+            defer engine.freeValue(expected);
+            var actual: i64 = 0;
+            if (c.JS_ToInt64(engine.context, &actual, expected) < 0) return error.InvalidNumericSource;
+            try std.testing.expectEqual(actual, @as(i64, @intCast(field[1])));
+        }
+        const actual_text = if (bounded.droppedBytes == 0) c.JS_DupValue(engine.context, source_text) else try engine.checked(c.JS_NewStringLen(engine.context, bounded.text.ptr, bounded.text.len));
+        defer engine.freeValue(actual_text);
+        const expected_text = try vm.get(engine, expected_bound, "text");
+        defer engine.freeValue(expected_text);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, actual_text, expected_text));
+        const buffer = try @import("extensions/native_durable_output_buffer.zig").create(engine, limits, sanitizer);
+        defer engine.freeValue(buffer);
+        const compare = try engine.eval("(buffer,row)=>{buffer.push(row.text.slice(0,1));buffer.snapshot();buffer.push(row.text.slice(1));buffer.end();const actual=buffer.snapshot();if(JSON.stringify(actual)!==JSON.stringify(row.buffer))throw Error(JSON.stringify({limits:row.limits,text:row.text,actual,expected:row.buffer}));}", "actual-source-numeric-buffer-comparison", c.JS_EVAL_TYPE_GLOBAL);
+        defer engine.freeValue(compare);
+        var args = [_]c.JSValue{ buffer, row };
+        const result = engine.checked(c.JS_Call(engine.context, compare, c.pi_js_undefined(), args.len, &args)) catch |err| {
+            std.debug.print("Numeric Source case {d}: {s}\n", .{ index, engine.last_error orelse "missing diagnostic" });
+            return err;
+        };
+        engine.freeValue(result);
+    }
+}
+
+test "native durable v2 ToolTask numeric limit phases match actual Source traces" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/text_decoder.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    inline for (.{ .{ "numericMake", "extensions/fixtures/durable-eba-settle-runtime.txt" }, .{ "numericPrepare", "extensions/fixtures/durable-eba-execute-runtime.txt" } }) |item| {
+        try @import("extensions/native_tool_info.zig").putData(engine, global, item[0], try engine.eval(@embedFile(item[1]), "actual-source-numeric-fixture", c.JS_EVAL_TYPE_GLOBAL));
+    }
+    const bytes = @embedFile("extensions/fixtures/durable-eba-limits-original.json");
+    try @import("extensions/native_tool_info.zig").putData(engine, global, "numericSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "numeric-task-source")));
+    const result = engine.evalModule(
+        \\import{ToolTask}from'@earendil-works/pi-durable';
+        \\for(const[name,limits]of[['infinite',{maxBytes:Infinity,maxLines:Infinity}],['nan',{maxBytes:NaN,maxLines:NaN}],['fractional',{maxBytes:3.5,maxLines:1.5}],['negative',{maxBytes:-1,maxLines:-1}],['zero',{maxBytes:0,maxLines:0}],['null',{maxBytes:null,maxLines:null,retain:null}],['unknown-retain',{maxBytes:4,maxLines:1,retain:'other'}]]){
+        \\let tick=0;globalThis.performance={now:()=>{const value=tick;tick+=5;return value}};const f=numericPrepare(numericMake,false,'plain'),oldAgent=f.runtime.agent;f.tool.parameters={type:'object'};f.tool.outputLimits=limits;f.call.arguments={};f.runtime.agent=async(ctx)=>{await oldAgent(ctx);return{tools:[f.tool],callable:[f.tool]}};
+        \\let failure;try{await ToolTask.definition.phases.call({input:f.input,state:{checkpoint:{phase:'call'}}},f.runtime,f.context)}catch(error){failure={name:error.name,message:error.message}}
+        \\const actual={name,failure,...f.inspectExecution()},expected=numericSource.rows.find(row=>row.name===name);if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({actual,expected}));}
+    , "actual-source-numeric-task-comparison") catch |err| {
+        std.debug.print("Numeric ToolTask: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(result);
 }

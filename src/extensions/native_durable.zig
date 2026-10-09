@@ -348,6 +348,7 @@ pub fn install(engine: *Engine) !void {
     try @import("native_durable_entries.zig").install(engine, exports);
     try @import("native_durable_builtin_documents.zig").install(engine, exports);
     try @import("native_durable_documents.zig").install(engine, exports);
+    try @import("native_durable_tool_builtin.zig").install(engine, exports);
     if (!engine.native_module_names.contains("@earendil-works/pi-durable")) try engine.registerValueModule("@earendil-works/pi-durable", exports);
     inline for (.{ .{ "jsonl", "openNodeJsonlStorage", 0 }, .{ "sqlite", "openNodeSqliteStorage", 1 } }) |item| {
         const storage_exports = try sdk.object(engine);
@@ -627,6 +628,7 @@ pub fn sessionDispatchScoped(self: *State, receiver: c.JSValue, operation: Metho
     if (operation == .close) {
         self.closing = true;
         self.close_pending = c.JS_DupValue(engine.context, queued);
+        @import("native_durable_tasks.zig").retireSession(engine, receiver);
     }
     if (close_snapshot) |listeners| {
         for (self.close_listeners.items) |listener| engine.freeValue(listener);
