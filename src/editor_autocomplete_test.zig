@@ -40,31 +40,27 @@ test "native autocomplete async suggestions preserve UTF16 positions selection i
     try input(engine,
         \\import {Editor} from 'pi-tui';globalThis.resolvers=[];globalThis.signals=[];globalThis.queries=[];globalThis.submits=[];globalThis.changes=[];globalThis.draws=0;
         \\globalThis.provider={getSuggestions(lines,line,col,options){queries.push([lines.join('\n'),line,col,options.force]);signals.push(options.signal);return new Promise(resolve=>resolvers.push(resolve))},applyCompletion(lines,line,col,item,prefix){globalThis.appliedItem=item;globalThis.appliedPrefix=prefix;const lineText='Ω🦊 '+item.value;return {lines:[lineText],cursorLine:0,cursorCol:lineText.length}}};
-        \\globalThis.editor=new Editor({requestRender(){draws++}},{});editor.onSubmit=value=>submits.push(value);editor.onChange=value=>changes.push(value);editor.setAutocompleteProvider(provider);editor.setAutocompleteMaxVisible(2);editor.setText('@Ω🦊');editor.handleInput('\t');if(queries.length!==1||queries[0][2]!==4||!queries[0][3]||!(signals[0] instanceof AbortSignal))throw Error('query coordinates/signal');globalThis.first={value:'A',label:'Alpha'};globalThis.second={value:'B',label:'Beta',description:'two'};resolvers[0]({items:[first,second],prefix:'@'});
+        \\const identity=text=>text;globalThis.editor=new Editor({terminal:{rows:24,columns:80},requestRender(){draws++}},{borderColor:identity,selectList:{selectedPrefix:identity,selectedText:identity,description:identity,scrollInfo:identity,noMatch:identity}});editor.onSubmit=value=>submits.push(value);editor.onChange=value=>changes.push(value);editor.setAutocompleteProvider(provider);editor.setAutocompleteMaxVisible(2);editor.setText('@Ω🦊');editor.handleInput('\t');await Promise.resolve();if(queries.length!==1||queries[0][2]!==4||!queries[0][3]||!(signals[0] instanceof AbortSignal))throw Error('query coordinates/signal');globalThis.first={value:'A',label:'Alpha'};globalThis.second={value:'B',label:'Beta',description:'two'};resolvers[0]({items:[first,second],prefix:'@'});await editor.autocompleteRequestTask;
     , "autocomplete-query-input.mjs");
     _ = try engine.drainReadyJobs();
     const editor = try editorValue(engine);
     defer engine.freeValue(editor);
-    try std.testing.expect(try native_editor.pollAutocomplete(engine, editor));
     try input(engine,
-        \\if(!editor.isShowingAutocomplete()||!editor.render(40).join('|').includes('→ Alpha'))throw Error('menu');editor.handleInput('\x1b[B');if(!editor.render(40).join('|').includes('→ Beta'))throw Error('selection');editor.handleInput('\r');if(editor.getText()!=='Ω🦊 B'||editor.isShowingAutocomplete()||submits.length!==0||appliedItem!==second||appliedPrefix!=='@')throw Error('apply identity/submit');editor.handleInput('\x1b[45;5u');if(editor.getText()!=='@Ω🦊')throw Error('completion undo');editor.setText('race');editor.handleInput('\t');editor.setText('fresh');if(!signals[1].aborted)throw Error('abort');editor.handleInput('\t');if(queries.length!==2)throw Error('request overlap');resolvers[1]({items:[{value:'OLD',label:'Expired'}],prefix:''});
+        \\if(!editor.isShowingAutocomplete()||!editor.render(40).join('|').includes('→ Alpha'))throw Error('menu');editor.handleInput('\x1b[B');if(!editor.render(40).join('|').includes('→ Beta'))throw Error('selection');editor.handleInput('\r');if(editor.getText()!=='Ω🦊 B'||editor.isShowingAutocomplete()||submits.length!==0||appliedItem!==second||appliedPrefix!=='@')throw Error('apply identity/submit');editor.handleInput('\x1b[45;5u');if(editor.getText()!=='@Ω🦊')throw Error('completion undo');editor.setText('race');editor.handleInput('\t');await Promise.resolve();editor.setText('fresh');if(!signals[1].aborted)throw Error('abort');editor.handleInput('\t');if(queries.length!==2)throw Error('request overlap');resolvers[1]({items:[{value:'OLD',label:'Expired'}],prefix:''});
     , "autocomplete-selection-input.mjs");
     _ = try engine.drainReadyJobs();
-    _ = try native_editor.pollAutocomplete(engine, editor);
     try input(engine,
-        \\if(queries.length!==3||queries[2][0]!=='fresh'||editor.getText()!=='fresh'||editor.isShowingAutocomplete())throw Error('expired result');resolvers[2]({items:[{value:'C',label:'Current'}],prefix:''});
+        \\if(queries.length!==3||queries[2][0]!=='fresh'||editor.getText()!=='fresh'||editor.isShowingAutocomplete())throw Error('expired result');resolvers[2]({items:[{value:'C',label:'Current'}],prefix:''});await editor.autocompleteRequestTask;
     , "autocomplete-stale-input.mjs");
     _ = try engine.drainReadyJobs();
-    _ = try native_editor.pollAutocomplete(engine, editor);
     try input(engine,
-        \\if(editor.getText()!=='Ω🦊 C'||editor.isShowingAutocomplete())throw Error('forced single');editor.setText('retire');editor.handleInput('\t');
+        \\if(editor.getText()!=='Ω🦊 C'||editor.isShowingAutocomplete())throw Error('forced single');editor.setText('retire');editor.handleInput('\t');await Promise.resolve();
     , "autocomplete-retirement-input.mjs");
     native_editor.retireAutocomplete(engine, editor);
     try input(engine,
-        \\if(!signals[3].aborted)throw Error('retirement signal');resolvers[3]({items:[{value:'LATE',label:'Late'}],prefix:''});
+        \\if(!signals[3].aborted)throw Error('retirement signal');resolvers[3]({items:[{value:'LATE',label:'Late'}],prefix:''});await editor.autocompleteRequestTask;
     , "autocomplete-retired-result-input.mjs");
     _ = try engine.drainReadyJobs();
-    try std.testing.expect(!try native_editor.pollAutocomplete(engine, editor));
     try input(engine, "if(editor.getText()!=='retire'||editor.isShowingAutocomplete())throw Error('retired mutation');", "autocomplete-retired-inspection.mjs");
     c.JS_RunGC(engine.runtime);
 }

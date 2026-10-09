@@ -156,14 +156,14 @@ test "native editor rejected factory and first render unwind component and facto
     c.JS_RunGC(engine.runtime);
 }
 
-test "native editor branded methods subclass overrides callbacks Unicode movement and history" {
+test "native editor Source subclass overrides callbacks Unicode movement and caller-owned history" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();
     try @import("extensions/native_tui.zig").install(engine);
     const module = engine.evalModule(
         \\import {Editor} from 'pi-tui';import {CustomEditor} from 'pi-coding-agent';
         \\let changes=[];let submissions=[];class Derived extends CustomEditor{handleInput(v){if(v==='!')return super.handleInput('Ω');super.handleInput(v)}}
-        \\const editor=new Derived({}, {}, {});editor.onChange=text=>changes.push(text);editor.onSubmit=text=>submissions.push(text);editor.setText('a🦊');editor.handleInput('\x1b[D');editor.handleInput('!');if(editor.getText()!=='aΩ🦊')throw Error('scalar movement');editor.handleInput('\r');if(submissions.join()!=='aΩ🦊'||editor.getText()!=='')throw Error('submit');editor.handleInput('\x1b[A');if(editor.getText()!=='aΩ🦊')throw Error('history');if(changes.length<3||editor.render(40).length<3)throw Error('change/render');let branded=false;try{Editor.prototype.getText.call({})}catch(e){branded=e instanceof TypeError}if(!branded)throw Error('brand');
+        \\const identity=text=>text,editor=new Derived({terminal:{rows:24,columns:80},requestRender(){}},{borderColor:identity}, {matches(){return false;}});editor.onChange=text=>changes.push(text);editor.onSubmit=text=>{submissions.push(text);editor.addToHistory(text)};editor.setText('a🦊');editor.handleInput('\x1b[D');editor.handleInput('!');if(editor.getText()!=='aΩ🦊')throw Error('scalar movement');editor.handleInput('\r');if(submissions.join()!=='aΩ🦊'||editor.getText()!=='')throw Error('submit');editor.handleInput('\x1b[A');if(editor.getText()!=='aΩ🦊')throw Error('history');if(changes.length<3||editor.render(40).length<3)throw Error('change/render');let branded=false;try{Editor.prototype.getText.call({})}catch(e){branded=e instanceof TypeError}if(!branded)throw Error('brand');
     , "editor-class-input.mjs") catch |err| {
         std.debug.print("Editor class error: {s}\n", .{engine.last_error orelse @errorName(err)});
         return err;

@@ -1158,6 +1158,14 @@ pub fn build(b: *std.Build) void {
     theme_watch_process_run.step.dependOn(&sdk_install.step);
     b.step("test-native-theme-watchers-process", "Prove retained Theme callbacks reload through the actual no-Node SDK worker").dependOn(&theme_watch_process_run.step);
     test_step.dependOn(&theme_watch_process_run.step);
+    const editor_source_module = b.createModule(.{ .root_source_file = b.path("src/native_editor_source_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, editor_source_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, editor_source_module);
+    editor_source_module.addImport("catalog_tool", catalog_tool);
+    const editor_source_tests = b.addTest(.{ .root_module = editor_source_module, .use_llvm = use_llvm, .filters = &.{"Source6fb public Editor"} });
+    const editor_source_run = b.addRunArtifact(editor_source_tests);
+    b.step("test-native-editor-source", "Replay Source Editor and CustomEditor fields editing rendering mouse and async lifecycle").dependOn(&editor_source_run.step);
+    test_step.dependOn(&editor_source_run.step);
     const dialog_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_dialog_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
         .use_llvm = use_llvm,

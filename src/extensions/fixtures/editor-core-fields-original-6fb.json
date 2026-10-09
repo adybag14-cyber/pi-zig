@@ -1,0 +1,594 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "constructor fields and real auxiliary values",
+      "value": {
+        "own": [
+          "state",
+          "focused",
+          "tui",
+          "theme",
+          "paddingX",
+          "lastWidth",
+          "renderedVisibleLineCount",
+          "renderedAutocompleteHeight",
+          "scrollOffset",
+          "borderColor",
+          "autocompleteProvider",
+          "autocompleteTriggerCharacters",
+          "autocompleteTriggerPattern",
+          "autocompleteDebouncePattern",
+          "autocompleteList",
+          "autocompleteState",
+          "autocompletePrefix",
+          "autocompleteMaxVisible",
+          "autocompleteAbort",
+          "autocompleteDebounceTimer",
+          "autocompleteRequestTask",
+          "autocompleteStartToken",
+          "autocompleteRequestId",
+          "pastes",
+          "pasteCounter",
+          "pasteBuffer",
+          "isInPaste",
+          "history",
+          "historyIndex",
+          "historyDraft",
+          "killRing",
+          "lastAction",
+          "jumpMode",
+          "preferredVisualCol",
+          "snappedFromCursorCol",
+          "undoStack",
+          "onSubmit",
+          "onChange",
+          "disableSubmit"
+        ],
+        "descriptor": true,
+        "tui": true,
+        "theme": true,
+        "border": true,
+        "trigger": "(?:^|(?:\\s|(?:(?=\\p{Punctuation})[\\p{Script_Extensions=Han}\\p{Script_Extensions=Hiragana}\\p{Script_Extensions=Katakana}\\p{Script_Extensions=Hangul}\\p{Script_Extensions=Bopomofo}]|[，．：；！？（）［］｛｝“”‘’…—])))[([{<`]*(?:@\"[^\"]*|[@#](?:(?!(?:\\s|(?:(?=\\p{Punctuation})[\\p{Script_Extensions=Han}\\p{Script_Extensions=Hiragana}\\p{Script_Extensions=Katakana}\\p{Script_Extensions=Hangul}\\p{Script_Extensions=Bopomofo}]|[，．：；！？（）［］｛｝“”‘’…—]))).)*)$",
+        "debounce": "(?:^|(?:\\s|(?:(?=\\p{Punctuation})[\\p{Script_Extensions=Han}\\p{Script_Extensions=Hiragana}\\p{Script_Extensions=Katakana}\\p{Script_Extensions=Hangul}\\p{Script_Extensions=Bopomofo}]|[，．：；！？（）［］｛｝“”‘’…—])))[([{<`]*(?:@(?:\"[^\"]*|(?:(?!(?:\\s|(?:(?=\\p{Punctuation})[\\p{Script_Extensions=Han}\\p{Script_Extensions=Hiragana}\\p{Script_Extensions=Katakana}\\p{Script_Extensions=Hangul}\\p{Script_Extensions=Bopomofo}]|[，．：；！？（）［］｛｝“”‘’…—]))).)*)|[#](?:(?!(?:\\s|(?:(?=\\p{Punctuation})[\\p{Script_Extensions=Han}\\p{Script_Extensions=Hiragana}\\p{Script_Extensions=Katakana}\\p{Script_Extensions=Hangul}\\p{Script_Extensions=Bopomofo}]|[，．：；！？（）［］｛｝“”‘’…—]))).)*)$",
+        "flags": [
+          "u",
+          "u"
+        ],
+        "promise": true,
+        "map": true,
+        "undo": "UndoStack",
+        "undoFields": [
+          "stack"
+        ],
+        "kill": "KillRing",
+        "killFields": [
+          "ring"
+        ],
+        "initial": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "lines": [
+            ""
+          ],
+          "expanded": "",
+          "state": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "pastes": [],
+          "pasteCounter": 0,
+          "history": [],
+          "historyIndex": -1,
+          "historyDraft": null,
+          "lastAction": null,
+          "preferredVisualCol": null,
+          "snappedFromCursorCol": null,
+          "undo": 0
+        }
+      }
+    },
+    {
+      "name": "fields control text cursor and cloned lines",
+      "value": {
+        "snapshot": {
+          "text": "a\ud800\nb😀c",
+          "cursor": {
+            "line": 1,
+            "col": 3
+          },
+          "lines": [
+            "a\ud800",
+            "b😀c"
+          ],
+          "expanded": "a\ud800\nb😀c",
+          "state": {
+            "lines": [
+              "a\ud800",
+              "b😀c"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 3
+          },
+          "pastes": [],
+          "pasteCounter": 0,
+          "history": [],
+          "historyIndex": -1,
+          "historyDraft": null,
+          "lastAction": null,
+          "preferredVisualCol": null,
+          "snappedFromCursorCol": null,
+          "undo": 0
+        },
+        "padding": 123.25,
+        "maximum": -9,
+        "clone": true
+      }
+    },
+    {
+      "name": "atomic insert undo deep clones state maps and cursor",
+      "value": {
+        "inserted": {
+          "text": "first\na😀    X\nY\nZz\nlast",
+          "cursor": {
+            "line": 3,
+            "col": 1
+          },
+          "lines": [
+            "first",
+            "a😀    X",
+            "Y",
+            "Zz",
+            "last"
+          ],
+          "expanded": "first\na😀    X\nY\nZz\nlast",
+          "state": {
+            "lines": [
+              "first",
+              "a😀    X",
+              "Y",
+              "Zz",
+              "last"
+            ],
+            "cursorLine": 3,
+            "cursorCol": 1
+          },
+          "pastes": [
+            [
+              7,
+              "payload"
+            ]
+          ],
+          "pasteCounter": 7,
+          "history": [],
+          "historyIndex": -1,
+          "historyDraft": null,
+          "lastAction": null,
+          "preferredVisualCol": null,
+          "snappedFromCursorCol": null,
+          "undo": 1
+        },
+        "replaced": true,
+        "stateRetained": true,
+        "mapReplaced": true,
+        "restored": {
+          "text": "first\na😀z\nlast",
+          "cursor": {
+            "line": 1,
+            "col": 3
+          },
+          "lines": [
+            "first",
+            "a😀z",
+            "last"
+          ],
+          "expanded": "first\na😀z\nlast",
+          "state": {
+            "lines": [
+              "first",
+              "a😀z",
+              "last"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 3
+          },
+          "pastes": [
+            [
+              7,
+              "payload"
+            ]
+          ],
+          "pasteCounter": 7,
+          "history": [],
+          "historyIndex": -1,
+          "historyDraft": null,
+          "lastAction": null,
+          "preferredVisualCol": null,
+          "snappedFromCursorCol": 9,
+          "undo": 0
+        }
+      }
+    },
+    {
+      "name": "same text set clears paste registry without extra undo",
+      "value": {
+        "count": 1,
+        "same": {
+          "text": "a    b\nc",
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "lines": [
+            "a    b",
+            "c"
+          ],
+          "expanded": "a    b\nc",
+          "state": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "pastes": [],
+          "pasteCounter": 0,
+          "history": [],
+          "historyIndex": -1,
+          "historyDraft": null,
+          "lastAction": null,
+          "preferredVisualCol": null,
+          "snappedFromCursorCol": null,
+          "undo": 1
+        },
+        "restored": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "lines": [
+            ""
+          ],
+          "expanded": "",
+          "state": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "pastes": [],
+          "pasteCounter": 0,
+          "history": [],
+          "historyIndex": -1,
+          "historyDraft": null,
+          "lastAction": null,
+          "preferredVisualCol": null,
+          "snappedFromCursorCol": null,
+          "undo": 0
+        },
+        "changes": [
+          [
+            true,
+            "a    b\nc"
+          ],
+          [
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "single line internal insertion keeps array identity",
+      "value": {
+        "retained": true,
+        "snapshot": {
+          "text": "a\ud83d𐈀z",
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "lines": [
+            "a\ud83d𐈀z"
+          ],
+          "expanded": "a\ud83d𐈀z",
+          "state": {
+            "lines": [
+              "a\ud83d𐈀z"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 3
+          },
+          "pastes": [],
+          "pasteCounter": 0,
+          "history": [],
+          "historyIndex": -1,
+          "historyDraft": null,
+          "lastAction": null,
+          "preferredVisualCol": null,
+          "snappedFromCursorCol": null,
+          "undo": 0
+        }
+      }
+    },
+    {
+      "name": "empty insertion is side effect free",
+      "value": {
+        "snapshot": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "lines": [
+            ""
+          ],
+          "expanded": "",
+          "state": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "pastes": [],
+          "pasteCounter": 0,
+          "history": [],
+          "historyIndex": 5,
+          "historyDraft": {
+            "draft": 1
+          },
+          "lastAction": "kill",
+          "preferredVisualCol": null,
+          "snappedFromCursorCol": null,
+          "undo": 0
+        },
+        "token": true
+      }
+    },
+    {
+      "name": "map expansion follows insertion order and literal replacement",
+      "value": {
+        "forward": "$&\nDONE $&\nDONE [paste #404]",
+        "reverse": "[paste #2] $& [paste #404]"
+      }
+    },
+    {
+      "name": "borrowed getters observe ordinary receivers and iterators",
+      "value": {
+        "reads": 3,
+        "cursor": {
+          "line": 1,
+          "col": 2
+        },
+        "text": "a\nb",
+        "lines": [
+          "custom",
+          "\udfff"
+        ]
+      }
+    },
+    {
+      "name": "paste pair destructuring closes after two entries",
+      "value": {
+        "expanded": "expanded",
+        "calls": [
+          "next0",
+          "next1",
+          "close"
+        ]
+      }
+    },
+    {
+      "name": "normalization uses actual replace method and receivers",
+      "value": {
+        "result": "DONE",
+        "calls": [
+          [
+            true,
+            "\\r\\n",
+            "g",
+            "\n"
+          ],
+          [
+            true,
+            "\\r",
+            "g",
+            "\n"
+          ],
+          [
+            true,
+            "\\t",
+            "g",
+            "    "
+          ]
+        ]
+      }
+    },
+    {
+      "name": "virtual text hooks preserve order and callback receivers",
+      "value": {
+        "calls": [
+          [
+            "cancelAutocomplete",
+            true,
+            []
+          ],
+          [
+            "exitHistoryBrowsing",
+            true,
+            []
+          ],
+          [
+            "normalizeText",
+            true,
+            [
+              "x\ty\rZ"
+            ]
+          ],
+          [
+            "getText",
+            true,
+            []
+          ],
+          [
+            "pushUndoSnapshot",
+            true,
+            []
+          ],
+          [
+            "setTextInternal",
+            true,
+            [
+              "x    y\nZ"
+            ]
+          ],
+          [
+            "setCursorCol",
+            true,
+            [
+              1
+            ]
+          ],
+          [
+            "getText",
+            true,
+            []
+          ],
+          [
+            "onChange",
+            true,
+            "x    y\nZ"
+          ],
+          [
+            "getText",
+            true,
+            []
+          ]
+        ],
+        "text": "x    y\nZ"
+      }
+    },
+    {
+      "name": "raw onChange throw preserves mutation and identity",
+      "value": {
+        "same": true,
+        "snapshot": {
+          "text": "committed",
+          "cursor": {
+            "line": 0,
+            "col": 9
+          },
+          "lines": [
+            "committed"
+          ],
+          "expanded": "committed",
+          "state": {
+            "lines": [
+              "committed"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 9
+          },
+          "pastes": [],
+          "pasteCounter": 0,
+          "history": [],
+          "historyIndex": -1,
+          "historyDraft": null,
+          "lastAction": null,
+          "preferredVisualCol": null,
+          "snappedFromCursorCol": null,
+          "undo": 1
+        }
+      }
+    },
+    {
+      "name": "undo assigns into current state and invokes virtual hooks",
+      "value": {
+        "retained": true,
+        "extra": "saved",
+        "snapshot": {
+          "text": "A",
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "lines": [
+            "A"
+          ],
+          "expanded": "A",
+          "state": {
+            "lines": [
+              "A"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 1,
+            "extra": "saved"
+          },
+          "pastes": [],
+          "pasteCounter": 0,
+          "history": [],
+          "historyIndex": -1,
+          "historyDraft": null,
+          "lastAction": null,
+          "preferredVisualCol": null,
+          "snappedFromCursorCol": 37,
+          "undo": 1
+        },
+        "calls": [
+          [
+            true,
+            "A"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "history trim duplicates and capacity",
+      "value": {
+        "count": 100,
+        "first": "102",
+        "last": "3"
+      }
+    },
+    {
+      "name": "setters use replaced tui and normalize without coercion",
+      "value": {
+        "original": 0,
+        "other": 4,
+        "coercions": 0,
+        "padding": 0,
+        "maximum": 5
+      }
+    },
+    {
+      "name": "cancellation executes real abort and virtual ui hooks",
+      "value": {
+        "calls": [
+          true,
+          "clear"
+        ],
+        "token": 1,
+        "state": null,
+        "prefix": "",
+        "showing": false
+      }
+    },
+    {
+      "name": "normalization regex literals ignore replaced global constructor",
+      "value": {
+        "calls": 0,
+        "text": "a\nb    c"
+      }
+    }
+  ]
+}

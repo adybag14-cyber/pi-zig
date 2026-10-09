@@ -1,0 +1,1276 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "backward accumulation",
+      "value": {
+        "steps": [
+          {
+            "text": "abc\nf\nghi",
+            "state": {
+              "lines": [
+                "abc",
+                "f",
+                "ghi"
+              ],
+              "cursorLine": 1,
+              "cursorCol": 0
+            },
+            "ring": [
+              "de"
+            ],
+            "undo": 1,
+            "last": "kill",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "abcf\nghi",
+            "state": {
+              "lines": [
+                "abcf",
+                "ghi"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 3
+            },
+            "ring": [
+              "\nde"
+            ],
+            "undo": 2,
+            "last": "kill",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "f\nghi",
+            "state": {
+              "lines": [
+                "f",
+                "ghi"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [
+              "abc\nde"
+            ],
+            "undo": 3,
+            "last": "kill",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "abc\ndef\nghi",
+            "state": {
+              "lines": [
+                "abc",
+                "def",
+                "ghi"
+              ],
+              "cursorLine": 1,
+              "cursorCol": 2
+            },
+            "ring": [
+              "abc\nde"
+            ],
+            "undo": 4,
+            "last": "yank",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "f\nghi",
+            "state": {
+              "lines": [
+                "f",
+                "ghi"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [
+              "abc\nde"
+            ],
+            "undo": 3,
+            "last": null,
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "abc\nf\nghi"
+          ],
+          [
+            true,
+            "abcf\nghi"
+          ],
+          [
+            true,
+            "f\nghi"
+          ],
+          [
+            true,
+            "abc\ndef\nghi"
+          ],
+          [
+            true,
+            "f\nghi"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "forward accumulation",
+      "value": {
+        "steps": [
+          {
+            "text": "a\ndef\nghi",
+            "state": {
+              "lines": [
+                "a",
+                "def",
+                "ghi"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 1
+            },
+            "ring": [
+              "bc"
+            ],
+            "undo": 1,
+            "last": "kill",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": 9,
+            "snapped": 7
+          },
+          {
+            "text": "adef\nghi",
+            "state": {
+              "lines": [
+                "adef",
+                "ghi"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 1
+            },
+            "ring": [
+              "bc\n"
+            ],
+            "undo": 2,
+            "last": "kill",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": 9,
+            "snapped": 7
+          },
+          {
+            "text": "a\nghi",
+            "state": {
+              "lines": [
+                "a",
+                "ghi"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 1
+            },
+            "ring": [
+              "bc\ndef"
+            ],
+            "undo": 3,
+            "last": "kill",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": 9,
+            "snapped": 7
+          },
+          {
+            "text": "abc\ndef\nghi",
+            "state": {
+              "lines": [
+                "abc",
+                "def",
+                "ghi"
+              ],
+              "cursorLine": 1,
+              "cursorCol": 3
+            },
+            "ring": [
+              "bc\ndef"
+            ],
+            "undo": 4,
+            "last": "yank",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "a\nghi",
+            "state": {
+              "lines": [
+                "a",
+                "ghi"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 1
+            },
+            "ring": [
+              "bc\ndef"
+            ],
+            "undo": 3,
+            "last": null,
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "a\ndef\nghi"
+          ],
+          [
+            true,
+            "adef\nghi"
+          ],
+          [
+            true,
+            "a\nghi"
+          ],
+          [
+            true,
+            "abc\ndef\nghi"
+          ],
+          [
+            true,
+            "a\nghi"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "empty lines merge",
+      "value": {
+        "steps": [
+          {
+            "text": "😀\n",
+            "state": {
+              "lines": [
+                "😀",
+                ""
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [
+              "\n"
+            ],
+            "undo": 1,
+            "last": "kill",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "\n",
+            "state": {
+              "lines": [
+                "",
+                ""
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [
+              "\n😀"
+            ],
+            "undo": 2,
+            "last": "kill",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "",
+            "state": {
+              "lines": [
+                ""
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [
+              "\n😀\n"
+            ],
+            "undo": 3,
+            "last": "kill",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "\n😀\n",
+            "state": {
+              "lines": [
+                "",
+                "😀",
+                ""
+              ],
+              "cursorLine": 2,
+              "cursorCol": 0
+            },
+            "ring": [
+              "\n😀\n"
+            ],
+            "undo": 4,
+            "last": "yank",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "",
+            "state": {
+              "lines": [
+                ""
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [
+              "\n😀\n"
+            ],
+            "undo": 3,
+            "last": null,
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "😀\n"
+          ],
+          [
+            true,
+            "\n"
+          ],
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            "\n😀\n"
+          ],
+          [
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "edges notify",
+      "value": {
+        "steps": [
+          {
+            "text": "",
+            "state": {
+              "lines": [
+                ""
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [],
+            "undo": 0,
+            "last": null,
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": 9,
+            "snapped": 7
+          },
+          {
+            "text": "",
+            "state": {
+              "lines": [
+                ""
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [],
+            "undo": 0,
+            "last": null,
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": 9,
+            "snapped": 7
+          },
+          {
+            "text": "",
+            "state": {
+              "lines": [
+                ""
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [],
+            "undo": 0,
+            "last": null,
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "",
+            "state": {
+              "lines": [
+                ""
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [],
+            "undo": 0,
+            "last": null,
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "",
+            "state": {
+              "lines": [
+                ""
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [],
+            "undo": 0,
+            "last": null,
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "name": "line moves reset sticky",
+      "value": {
+        "steps": [
+          {
+            "text": "é😀z",
+            "state": {
+              "lines": [
+                "é😀z"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [],
+            "undo": 0,
+            "last": null,
+            "historyIndex": 3,
+            "historyDraft": {
+              "draft": true
+            },
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "é😀z",
+            "state": {
+              "lines": [
+                "é😀z"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 5
+            },
+            "ring": [],
+            "undo": 0,
+            "last": null,
+            "historyIndex": 3,
+            "historyDraft": {
+              "draft": true
+            },
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "",
+            "state": {
+              "lines": [
+                ""
+              ],
+              "cursorLine": 0,
+              "cursorCol": 0
+            },
+            "ring": [
+              "é😀z"
+            ],
+            "undo": 1,
+            "last": "kill",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          },
+          {
+            "text": "é😀z",
+            "state": {
+              "lines": [
+                "é😀z"
+              ],
+              "cursorLine": 0,
+              "cursorCol": 5
+            },
+            "ring": [
+              "é😀z"
+            ],
+            "undo": 2,
+            "last": "yank",
+            "historyIndex": -1,
+            "historyDraft": null,
+            "preferred": null,
+            "snapped": null
+          }
+        ],
+        "changes": [
+          [
+            true,
+            ""
+          ],
+          [
+            true,
+            "é😀z"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "raw yank \"abc\"",
+      "value": {
+        "first": {
+          "text": "AabcZ\nlast",
+          "state": {
+            "lines": [
+              "AabcZ",
+              "last"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 4
+          },
+          "ring": [
+            "older",
+            "abc"
+          ],
+          "undo": 1,
+          "last": "yank",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "retained": true,
+        "second": {
+          "text": "AolderZ\nlast",
+          "state": {
+            "lines": [
+              "AolderZ",
+              "last"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 6
+          },
+          "ring": [
+            "abc",
+            "older"
+          ],
+          "undo": 2,
+          "last": "yank",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "restored": {
+          "text": "AabcZ\nlast",
+          "state": {
+            "lines": [
+              "AabcZ",
+              "last"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 4
+          },
+          "ring": [
+            "abc",
+            "older"
+          ],
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "changes": [
+          [
+            true,
+            "AabcZ\nlast"
+          ],
+          [
+            true,
+            "AZ\nlast"
+          ],
+          [
+            true,
+            "AolderZ\nlast"
+          ],
+          [
+            true,
+            "AabcZ\nlast"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "raw yank \"a\\nb\"",
+      "value": {
+        "first": {
+          "text": "Aa\nbZ\nlast",
+          "state": {
+            "lines": [
+              "Aa",
+              "bZ",
+              "last"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1
+          },
+          "ring": [
+            "older",
+            "a\nb"
+          ],
+          "undo": 1,
+          "last": "yank",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "retained": true,
+        "second": {
+          "text": "AolderZ\nlast",
+          "state": {
+            "lines": [
+              "AolderZ",
+              "last"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 6
+          },
+          "ring": [
+            "a\nb",
+            "older"
+          ],
+          "undo": 2,
+          "last": "yank",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "restored": {
+          "text": "Aa\nbZ\nlast",
+          "state": {
+            "lines": [
+              "Aa",
+              "bZ",
+              "last"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1
+          },
+          "ring": [
+            "a\nb",
+            "older"
+          ],
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "changes": [
+          [
+            true,
+            "Aa\nbZ\nlast"
+          ],
+          [
+            true,
+            "AZ\nlast"
+          ],
+          [
+            true,
+            "AolderZ\nlast"
+          ],
+          [
+            true,
+            "Aa\nbZ\nlast"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "raw yank \"\\n\"",
+      "value": {
+        "first": {
+          "text": "A\nZ\nlast",
+          "state": {
+            "lines": [
+              "A",
+              "Z",
+              "last"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 0
+          },
+          "ring": [
+            "older",
+            "\n"
+          ],
+          "undo": 1,
+          "last": "yank",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "retained": true,
+        "second": {
+          "text": "AolderZ\nlast",
+          "state": {
+            "lines": [
+              "AolderZ",
+              "last"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 6
+          },
+          "ring": [
+            "\n",
+            "older"
+          ],
+          "undo": 2,
+          "last": "yank",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "restored": {
+          "text": "A\nZ\nlast",
+          "state": {
+            "lines": [
+              "A",
+              "Z",
+              "last"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 0
+          },
+          "ring": [
+            "\n",
+            "older"
+          ],
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "changes": [
+          [
+            true,
+            "A\nZ\nlast"
+          ],
+          [
+            true,
+            "AZ\nlast"
+          ],
+          [
+            true,
+            "AolderZ\nlast"
+          ],
+          [
+            true,
+            "A\nZ\nlast"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "raw yank \"a\\n\\nb\"",
+      "value": {
+        "first": {
+          "text": "Aa\n\nbZ\nlast",
+          "state": {
+            "lines": [
+              "Aa",
+              "",
+              "bZ",
+              "last"
+            ],
+            "cursorLine": 2,
+            "cursorCol": 1
+          },
+          "ring": [
+            "older",
+            "a\n\nb"
+          ],
+          "undo": 1,
+          "last": "yank",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "retained": true,
+        "second": {
+          "text": "AolderZ\nlast",
+          "state": {
+            "lines": [
+              "AolderZ",
+              "last"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 6
+          },
+          "ring": [
+            "a\n\nb",
+            "older"
+          ],
+          "undo": 2,
+          "last": "yank",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "restored": {
+          "text": "Aa\n\nbZ\nlast",
+          "state": {
+            "lines": [
+              "Aa",
+              "",
+              "bZ",
+              "last"
+            ],
+            "cursorLine": 2,
+            "cursorCol": 1
+          },
+          "ring": [
+            "a\n\nb",
+            "older"
+          ],
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "changes": [
+          [
+            true,
+            "Aa\n\nbZ\nlast"
+          ],
+          [
+            true,
+            "AZ\nlast"
+          ],
+          [
+            true,
+            "AolderZ\nlast"
+          ],
+          [
+            true,
+            "Aa\n\nbZ\nlast"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "raw yank \"\\ud800😀\\t\"",
+      "value": {
+        "first": {
+          "text": "A\ud800😀\tZ\nlast",
+          "state": {
+            "lines": [
+              "A\ud800😀\tZ",
+              "last"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 5
+          },
+          "ring": [
+            "older",
+            "\ud800😀\t"
+          ],
+          "undo": 1,
+          "last": "yank",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "retained": true,
+        "second": {
+          "text": "AolderZ\nlast",
+          "state": {
+            "lines": [
+              "AolderZ",
+              "last"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 6
+          },
+          "ring": [
+            "\ud800😀\t",
+            "older"
+          ],
+          "undo": 2,
+          "last": "yank",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "restored": {
+          "text": "A\ud800😀\tZ\nlast",
+          "state": {
+            "lines": [
+              "A\ud800😀\tZ",
+              "last"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 5
+          },
+          "ring": [
+            "\ud800😀\t",
+            "older"
+          ],
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        "changes": [
+          [
+            true,
+            "A\ud800😀\tZ\nlast"
+          ],
+          [
+            true,
+            "AZ\nlast"
+          ],
+          [
+            true,
+            "AolderZ\nlast"
+          ],
+          [
+            true,
+            "A\ud800😀\tZ\nlast"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "actual splice receiver and source deletion arguments",
+      "value": {
+        "calls": [
+          [
+            true,
+            [
+              1,
+              1
+            ],
+            [
+              "ab",
+              "b",
+              "c"
+            ]
+          ]
+        ],
+        "retained": true,
+        "snapshot": {
+          "text": "a\nc",
+          "state": {
+            "lines": [
+              "a",
+              "c"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 1
+          },
+          "ring": [
+            "\nb"
+          ],
+          "undo": 2,
+          "last": "kill",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        }
+      }
+    },
+    {
+      "name": "yank observes ring replacement during virtual snapshot",
+      "value": {
+        "text": "new",
+        "state": {
+          "lines": [
+            "new"
+          ],
+          "cursorLine": 0,
+          "cursorCol": 3
+        },
+        "ring": [
+          "new"
+        ],
+        "undo": 1,
+        "last": "yank",
+        "historyIndex": -1,
+        "historyDraft": null,
+        "preferred": null,
+        "snapped": null
+      }
+    },
+    {
+      "name": "yank pop observes ring replacement during virtual deletion",
+      "value": {
+        "text": "new1",
+        "state": {
+          "lines": [
+            "new1"
+          ],
+          "cursorLine": 0,
+          "cursorCol": 4
+        },
+        "ring": [
+          "new2",
+          "new1"
+        ],
+        "undo": 1,
+        "last": "yank",
+        "historyIndex": -1,
+        "historyDraft": null,
+        "preferred": null,
+        "snapped": null
+      }
+    },
+    {
+      "name": "no-op yank pop short circuits before ring getter",
+      "value": {
+        "last": null,
+        "undo": 0
+      }
+    },
+    {
+      "name": "kill raw change throw preserves committed mutation",
+      "value": {
+        "same": true,
+        "snapshot": {
+          "text": "",
+          "state": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "ring": [
+            "abc"
+          ],
+          "undo": 2,
+          "last": "kill",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        }
+      }
+    },
+    {
+      "name": "public keyboard uses the ordinary source kill ring",
+      "value": [
+        {
+          "text": "abc\ndef",
+          "state": {
+            "lines": [
+              "abc",
+              "def"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 0
+          },
+          "ring": [],
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        {
+          "text": "abc\n",
+          "state": {
+            "lines": [
+              "abc",
+              ""
+            ],
+            "cursorLine": 1,
+            "cursorCol": 0
+          },
+          "ring": [
+            "def"
+          ],
+          "undo": 2,
+          "last": "kill",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        {
+          "text": "abc\ndef",
+          "state": {
+            "lines": [
+              "abc",
+              "def"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 3
+          },
+          "ring": [
+            "def"
+          ],
+          "undo": 3,
+          "last": "yank",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        {
+          "text": "abc\ndef",
+          "state": {
+            "lines": [
+              "abc",
+              "def"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 3
+          },
+          "ring": [
+            "def"
+          ],
+          "undo": 3,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        {
+          "text": "abc\n",
+          "state": {
+            "lines": [
+              "abc",
+              ""
+            ],
+            "cursorLine": 1,
+            "cursorCol": 0
+          },
+          "ring": [
+            "def",
+            "def"
+          ],
+          "undo": 4,
+          "last": "kill",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        },
+        {
+          "text": "abc\ndef",
+          "state": {
+            "lines": [
+              "abc",
+              "def"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 3
+          },
+          "ring": [
+            "def",
+            "def"
+          ],
+          "undo": 5,
+          "last": "yank",
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null
+        }
+      ]
+    }
+  ]
+}

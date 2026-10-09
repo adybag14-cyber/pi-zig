@@ -1,0 +1,3791 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "click 0 -2 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 -2 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 -2 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 -2 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 -2 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 0 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 0 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 0 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 0 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 0 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 1 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 1 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 1 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 1 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 1 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 2 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 2 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 2 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 2 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 2 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 3 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 3 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 3 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 3 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 3 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 4 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 4 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 4 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 4 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 4 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 6 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 6 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 6 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 6 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 6 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 10 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 10 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 10 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 10 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 10 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 20 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 0 20 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 20 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 20 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 0 20 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 -2 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 -2 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 -2 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 -2 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 -2 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 0 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 0 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 0 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 0 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 0 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 1 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 1 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 1 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 1 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 1 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 2 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 2 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 2 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 2 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 2 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 3 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 3 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 3 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 3 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 3 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 4 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 4 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 4 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 4 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 3
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 4 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 6 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 6 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 6 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 6 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 6 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 10 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 10 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 10 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 10 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 10 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 20 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 1 20 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 20 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 20 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 3,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 1 20 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 99 -2 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 99 -2 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 -2 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 -2 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 -2 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 0 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 99 0 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 0 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 0 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 0 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 1 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 99 1 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 1 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 1 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 1 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 2 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 99 2 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 2 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 2 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 2 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 3 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 99 3 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 3 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 3 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 3 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 4 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 99 4 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 4 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 4 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 4 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 4
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 6 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 99 6 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 6 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 6 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 6 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 10 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 99 10 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 10 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 10 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 10 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 20 0",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": 7,
+          "snapped": 3,
+          "last": "kill",
+          "history": 2,
+          "draft": {
+            "draft": true
+          }
+        }
+      }
+    },
+    {
+      "name": "click 99 20 1",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 20 2",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 20 4",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 1
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "click 99 20 6",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "snapshot": {
+          "cursor": {
+            "line": 1,
+            "col": 6
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "selection gestures remain unhandled",
+      "value": [
+        {
+          "type": "press",
+          "button": "left"
+        },
+        {
+          "type": "press",
+          "button": "right"
+        },
+        {
+          "type": "drag",
+          "button": "left"
+        },
+        {
+          "type": "drag",
+          "button": "right"
+        },
+        {
+          "type": "release",
+          "button": "left"
+        },
+        {
+          "type": "release",
+          "button": "right"
+        },
+        {
+          "type": "wheel",
+          "button": "left"
+        },
+        {
+          "type": "wheel",
+          "button": "right"
+        }
+      ]
+    },
+    {
+      "name": "autocomplete mouse actual receiver spread and forced focus",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true,
+          "custom": 7
+        },
+        "calls": [
+          [
+            true,
+            {
+              "type": "click",
+              "button": "right",
+              "x": 6,
+              "y": 1,
+              "width": 16,
+              "height": 2,
+              "extra": "retained"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "optional autocomplete mouse method remains absent",
+      "value": {}
+    },
+    {
+      "name": "mouse hit closes actual segment iterator early",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "calls": [
+          "next0",
+          "return"
+        ],
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "mouse cursor calls actual update override",
+      "value": {
+        "result": {
+          "handled": true,
+          "focus": true
+        },
+        "calls": [
+          true
+        ],
+        "snapshot": {
+          "cursor": {
+            "line": 0,
+            "col": 2
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      }
+    },
+    {
+      "name": "vertical snap and continuation 4",
+      "value": {
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 4
+          },
+          {
+            "logicalLine": 0,
+            "startCol": 4,
+            "length": 2
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 0,
+            "length": 4
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 4,
+            "length": 3
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 7,
+            "length": 3
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 10,
+            "length": 4
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 14,
+            "length": 1
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 15,
+            "length": 4
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 19,
+            "length": 3
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 22,
+            "length": 4
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 0,
+            "length": 4
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 4,
+            "length": 1
+          },
+          {
+            "logicalLine": 3,
+            "startCol": 0,
+            "length": 4
+          },
+          {
+            "logicalLine": 3,
+            "startCol": 4,
+            "length": 2
+          },
+          {
+            "logicalLine": 3,
+            "startCol": 6,
+            "length": 4
+          },
+          {
+            "logicalLine": 3,
+            "startCol": 10,
+            "length": 3
+          },
+          {
+            "logicalLine": 3,
+            "startCol": 13,
+            "length": 4
+          }
+        ],
+        "steps": [
+          {
+            "target": 0,
+            "snapshot": {
+              "cursor": {
+                "line": 0,
+                "col": 3
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 1,
+            "snapshot": {
+              "cursor": {
+                "line": 0,
+                "col": 6
+              },
+              "preferred": 3,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 2,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 0
+              },
+              "preferred": null,
+              "snapped": 3,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 3,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 25
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 4,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 0
+              },
+              "preferred": 3,
+              "snapped": 9,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 5,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 24
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 6,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 0
+              },
+              "preferred": 2,
+              "snapped": 14,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 7,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 22
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 8,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 0
+              },
+              "preferred": null,
+              "snapped": 19,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 9,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 22
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 10,
+            "snapshot": {
+              "cursor": {
+                "line": 2,
+                "col": 0
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 11,
+            "snapshot": {
+              "cursor": {
+                "line": 2,
+                "col": 4
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 12,
+            "snapshot": {
+              "cursor": {
+                "line": 3,
+                "col": 0
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 13,
+            "snapshot": {
+              "cursor": {
+                "line": 3,
+                "col": 4
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 14,
+            "snapshot": {
+              "cursor": {
+                "line": 3,
+                "col": 6
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 15,
+            "snapshot": {
+              "cursor": {
+                "line": 3,
+                "col": 10
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 16,
+            "snapshot": {
+              "cursor": {
+                "line": 3,
+                "col": 13
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "vertical snap and continuation 6",
+      "value": {
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 6
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 0,
+            "length": 6
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 6,
+            "length": 4
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 10,
+            "length": 5
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 15,
+            "length": 6
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 21,
+            "length": 5
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 0,
+            "length": 5
+          },
+          {
+            "logicalLine": 3,
+            "startCol": 0,
+            "length": 6
+          },
+          {
+            "logicalLine": 3,
+            "startCol": 6,
+            "length": 6
+          },
+          {
+            "logicalLine": 3,
+            "startCol": 12,
+            "length": 5
+          }
+        ],
+        "steps": [
+          {
+            "target": 0,
+            "snapshot": {
+              "cursor": {
+                "line": 0,
+                "col": 3
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 1,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 0
+              },
+              "preferred": null,
+              "snapped": 3,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 2,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 24
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 3,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 0
+              },
+              "preferred": null,
+              "snapped": 13,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 4,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 24
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 5,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 24
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 6,
+            "snapshot": {
+              "cursor": {
+                "line": 2,
+                "col": 3
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 7,
+            "snapshot": {
+              "cursor": {
+                "line": 3,
+                "col": 3
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 8,
+            "snapshot": {
+              "cursor": {
+                "line": 3,
+                "col": 9
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 9,
+            "snapshot": {
+              "cursor": {
+                "line": 3,
+                "col": 15
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "vertical snap and continuation 10",
+      "value": {
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 6
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 0,
+            "length": 10
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 10,
+            "length": 5
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 15,
+            "length": 7
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 22,
+            "length": 4
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 0,
+            "length": 5
+          },
+          {
+            "logicalLine": 3,
+            "startCol": 0,
+            "length": 6
+          },
+          {
+            "logicalLine": 3,
+            "startCol": 6,
+            "length": 7
+          },
+          {
+            "logicalLine": 3,
+            "startCol": 13,
+            "length": 4
+          }
+        ],
+        "steps": [
+          {
+            "target": 0,
+            "snapshot": {
+              "cursor": {
+                "line": 0,
+                "col": 3
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 1,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 0
+              },
+              "preferred": null,
+              "snapped": 3,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 2,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 25
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 3,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 0
+              },
+              "preferred": null,
+              "snapped": 18,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 4,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 25
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 5,
+            "snapshot": {
+              "cursor": {
+                "line": 2,
+                "col": 3
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 6,
+            "snapshot": {
+              "cursor": {
+                "line": 3,
+                "col": 3
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 7,
+            "snapshot": {
+              "cursor": {
+                "line": 3,
+                "col": 9
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 8,
+            "snapshot": {
+              "cursor": {
+                "line": 3,
+                "col": 16
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "vertical snap and continuation 20",
+      "value": {
+        "map": [
+          {
+            "logicalLine": 0,
+            "startCol": 0,
+            "length": 6
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 0,
+            "length": 15
+          },
+          {
+            "logicalLine": 1,
+            "startCol": 15,
+            "length": 11
+          },
+          {
+            "logicalLine": 2,
+            "startCol": 0,
+            "length": 5
+          },
+          {
+            "logicalLine": 3,
+            "startCol": 0,
+            "length": 17
+          }
+        ],
+        "steps": [
+          {
+            "target": 0,
+            "snapshot": {
+              "cursor": {
+                "line": 0,
+                "col": 3
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 1,
+            "snapshot": {
+              "cursor": {
+                "line": 1,
+                "col": 0
+              },
+              "preferred": null,
+              "snapped": 3,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 2,
+            "snapshot": {
+              "cursor": {
+                "line": 2,
+                "col": 3
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 3,
+            "snapshot": {
+              "cursor": {
+                "line": 2,
+                "col": 3
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          },
+          {
+            "target": 4,
+            "snapshot": {
+              "cursor": {
+                "line": 3,
+                "col": 3
+              },
+              "preferred": null,
+              "snapped": null,
+              "last": null,
+              "history": -1,
+              "draft": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "page scroll uses actual terminal viewport and sticky columns",
+      "value": [
+        {
+          "cursor": {
+            "line": 4,
+            "col": 4
+          },
+          "preferred": 5,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        },
+        {
+          "cursor": {
+            "line": 4,
+            "col": 4
+          },
+          "preferred": 5,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        },
+        {
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "preferred": null,
+          "snapped": null,
+          "last": null,
+          "history": -1,
+          "draft": null
+        }
+      ]
+    },
+    {
+      "name": "actual update guard and request callback",
+      "value": [
+        [
+          true,
+          {
+            "force": false,
+            "explicitTab": false
+          }
+        ],
+        [
+          true,
+          {
+            "force": true,
+            "explicitTab": false
+          }
+        ]
+      ]
+    }
+  ]
+}

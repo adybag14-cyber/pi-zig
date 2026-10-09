@@ -1,0 +1,571 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "trigger characters actual unicode regex and debounce",
+      "value": {
+        "characters": [
+          "@",
+          "#",
+          "!",
+          "]",
+          "-",
+          "\\",
+          "\ud800"
+        ],
+        "trigger": "(?:^|(?:\\s|(?:(?=\\p{Punctuation})[\\p{Script_Extensions=Han}\\p{Script_Extensions=Hiragana}\\p{Script_Extensions=Katakana}\\p{Script_Extensions=Hangul}\\p{Script_Extensions=Bopomofo}]|[，．：；！？（）［］｛｝“”‘’…—])))[([{<`]*(?:@\"[^\"]*|[@#!\\]\\-\\\\\ud800](?:(?!(?:\\s|(?:(?=\\p{Punctuation})[\\p{Script_Extensions=Han}\\p{Script_Extensions=Hiragana}\\p{Script_Extensions=Katakana}\\p{Script_Extensions=Hangul}\\p{Script_Extensions=Bopomofo}]|[，．：；！？（）［］｛｝“”‘’…—]))).)*)$",
+        "debounce": "(?:^|(?:\\s|(?:(?=\\p{Punctuation})[\\p{Script_Extensions=Han}\\p{Script_Extensions=Hiragana}\\p{Script_Extensions=Katakana}\\p{Script_Extensions=Hangul}\\p{Script_Extensions=Bopomofo}]|[，．：；！？（）［］｛｝“”‘’…—])))[([{<`]*(?:@(?:\"[^\"]*|(?:(?!(?:\\s|(?:(?=\\p{Punctuation})[\\p{Script_Extensions=Han}\\p{Script_Extensions=Hiragana}\\p{Script_Extensions=Katakana}\\p{Script_Extensions=Hangul}\\p{Script_Extensions=Bopomofo}]|[，．：；！？（）［］｛｝“”‘’…—]))).)*)|[#!\\]\\-\\\\\ud800](?:(?!(?:\\s|(?:(?=\\p{Punctuation})[\\p{Script_Extensions=Han}\\p{Script_Extensions=Hiragana}\\p{Script_Extensions=Katakana}\\p{Script_Extensions=Hangul}\\p{Script_Extensions=Bopomofo}]|[，．：；！？（）［］｛｝“”‘’…—]))).)*)$",
+        "values": [
+          [
+            "@x",
+            20,
+            0
+          ],
+          [
+            "#x",
+            20,
+            0
+          ],
+          [
+            "!x",
+            20,
+            0
+          ],
+          [
+            "]x",
+            20,
+            0
+          ],
+          [
+            "-x",
+            20,
+            0
+          ],
+          [
+            "\\x",
+            20,
+            0
+          ],
+          [
+            "word@x",
+            0,
+            0
+          ],
+          [
+            "(@\"a b",
+            20,
+            0
+          ],
+          [
+            "界，@x",
+            20,
+            0
+          ],
+          [
+            "界@x",
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "name": "best match value priority and case",
+      "value": [
+        [
+          "",
+          -1
+        ],
+        [
+          "Al",
+          1
+        ],
+        [
+          "Alpha",
+          0
+        ],
+        [
+          "al",
+          2
+        ],
+        [
+          "z",
+          -1
+        ]
+      ]
+    },
+    {
+      "name": "sync provider is awaited and original list selected",
+      "value": {
+        "before": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 1,
+          "id": 0,
+          "abort": false,
+          "undo": 0
+        },
+        "synchronous": {
+          "snapshot": {
+            "text": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "state": null,
+            "prefix": "",
+            "list": null,
+            "token": 3,
+            "id": 0,
+            "abort": false,
+            "undo": 0
+          },
+          "calls": 0
+        },
+        "events": [
+          [
+            true,
+            true,
+            0,
+            0,
+            false,
+            true,
+            false
+          ]
+        ],
+        "after": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "state": "regular",
+          "prefix": "a",
+          "list": {
+            "items": [
+              {
+                "value": "abc",
+                "label": "A"
+              },
+              {
+                "value": "a",
+                "label": "Exact"
+              }
+            ],
+            "selected": 1,
+            "maximum": 5
+          },
+          "token": 3,
+          "id": 1,
+          "abort": false,
+          "undo": 0
+        },
+        "renders": 1
+      }
+    },
+    {
+      "name": "previous task serializes provider",
+      "value": {
+        "events": [
+          "called",
+          "one tick",
+          "provider",
+          "finished"
+        ],
+        "snapshot": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 2,
+          "id": 1,
+          "abort": false,
+          "undo": 0
+        }
+      }
+    },
+    {
+      "name": "cancel waits old task and ignores old result",
+      "value": {
+        "events": [
+          [
+            "get",
+            1,
+            true
+          ],
+          [
+            "abort",
+            true,
+            true
+          ],
+          [
+            "after request",
+            1,
+            true
+          ],
+          [
+            "get",
+            2,
+            true
+          ]
+        ],
+        "snapshot": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "state": "regular",
+          "prefix": "new",
+          "list": {
+            "items": [
+              {
+                "value": "new",
+                "label": "New"
+              }
+            ],
+            "selected": 0,
+            "maximum": 5
+          },
+          "token": 5,
+          "id": 2,
+          "abort": false,
+          "undo": 0
+        }
+      }
+    },
+    {
+      "name": "changed cursor invalidates result",
+      "value": {
+        "snapshot": {
+          "text": "abc",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 4,
+          "id": 1,
+          "abort": true,
+          "undo": 1
+        },
+        "renders": 0
+      }
+    },
+    {
+      "name": "empty result clears ui and redraws",
+      "value": {
+        "snapshot": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 4,
+          "id": 1,
+          "abort": false,
+          "undo": 0
+        },
+        "renders": 1
+      }
+    },
+    {
+      "name": "forced single completion applies atomically",
+      "value": {
+        "events": [
+          [
+            "should",
+            true,
+            true,
+            0,
+            0
+          ],
+          [
+            "apply",
+            true,
+            true,
+            0,
+            0,
+            "done",
+            "x"
+          ],
+          [
+            "change",
+            true,
+            "COMPLETE"
+          ]
+        ],
+        "snapshot": {
+          "text": "COMPLETE",
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 3,
+          "id": 1,
+          "abort": false,
+          "undo": 1
+        },
+        "renders": 1
+      }
+    },
+    {
+      "name": "force predicate denial preserves request state",
+      "value": {
+        "calls": [
+          "denied"
+        ],
+        "before": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 1,
+          "id": 0,
+          "abort": false,
+          "undo": 0
+        },
+        "after": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 1,
+          "id": 0,
+          "abort": false,
+          "undo": 0
+        }
+      }
+    },
+    {
+      "name": "actual SelectList callback applies and cancels",
+      "value": {
+        "before": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "state": "regular",
+          "prefix": "/a",
+          "list": {
+            "items": [
+              {
+                "value": "/abc",
+                "label": "ABC"
+              },
+              {
+                "value": "/a",
+                "label": "Exact"
+              }
+            ],
+            "selected": 1,
+            "maximum": 5
+          },
+          "token": 1,
+          "id": 0,
+          "abort": false,
+          "undo": 0
+        },
+        "events": [
+          [
+            true,
+            true,
+            "/abc",
+            "/a"
+          ],
+          [
+            true,
+            "selected"
+          ]
+        ],
+        "after": {
+          "text": "selected",
+          "cursor": {
+            "line": 0,
+            "col": 8
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 2,
+          "id": 0,
+          "abort": false,
+          "undo": 1
+        }
+      }
+    },
+    {
+      "name": "retained old list observes current provider and prefix",
+      "value": {
+        "events": [
+          [
+            true,
+            "",
+            "item"
+          ]
+        ],
+        "snapshot": {
+          "text": "new provider",
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 3,
+          "id": 0,
+          "abort": false,
+          "undo": 1
+        }
+      }
+    },
+    {
+      "name": "run wraps synchronous provider throw in raw rejection",
+      "value": {
+        "threw": false,
+        "same": true,
+        "snapshot": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 1,
+          "id": 1,
+          "abort": false,
+          "undo": 0
+        }
+      }
+    },
+    {
+      "name": "previous raw rejection remains serialized",
+      "value": {
+        "same": true,
+        "snapshot": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 1,
+          "id": 0,
+          "abort": false,
+          "undo": 0
+        }
+      }
+    },
+    {
+      "name": "await ignores patched public promise then",
+      "value": {
+        "same": false,
+        "ok": true,
+        "snapshot": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 2,
+          "id": 1,
+          "abort": false,
+          "undo": 0
+        }
+      }
+    },
+    {
+      "name": "actual debounce timer starts provider",
+      "value": {
+        "before": {
+          "calls": 0,
+          "timer": true
+        },
+        "events": [
+          "get"
+        ],
+        "timer": false,
+        "snapshot": {
+          "text": "@path",
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "state": "regular",
+          "prefix": "@path",
+          "list": {
+            "items": [
+              {
+                "value": "@pathx",
+                "label": "Path"
+              }
+            ],
+            "selected": 0,
+            "maximum": 5
+          },
+          "token": 4,
+          "id": 1,
+          "abort": false,
+          "undo": 1
+        }
+      }
+    },
+    {
+      "name": "cancel clears pending debounce without provider",
+      "value": {
+        "events": [],
+        "timer": false,
+        "snapshot": {
+          "text": "@path",
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "state": null,
+          "prefix": "",
+          "list": null,
+          "token": 5,
+          "id": 0,
+          "abort": false,
+          "undo": 1
+        }
+      }
+    }
+  ]
+}

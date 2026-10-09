@@ -2,28 +2,64 @@
 const std = @import("std");
 const engine_mod = @import("engine.zig");
 const components = @import("native_components.zig");
-const Editor = @import("../tui/editor.zig").Editor;
-const line_editor = @import("../tui/line_editor.zig");
-const Keybindings = @import("../tui/keybindings.zig").Manager;
-const keys = @import("../tui/keys.zig");
-const autocomplete_mod = @import("native_autocomplete.zig");
 const autocomplete_registry = @import("native_autocomplete_registry.zig");
 const c = engine_mod.c;
+const source_core = @import("native_editor_core.zig");
+const source_values = @import("native_editor_values.zig");
+const source_methods = @import("native_editor_methods.zig");
+const source_segments = @import("native_editor_segments.zig");
+const source_editing = @import("native_editor_editing.zig");
+const source_visual = @import("native_editor_visual.zig");
+const source_render = @import("native_editor_render.zig");
+const source_navigation = @import("native_editor_navigation.zig");
+const source_autocomplete = @import("native_editor_autocomplete.zig");
+const source_text = @import("native_editor_text_operations.zig");
+const source_deletion = @import("native_editor_deletion.zig");
+const source_input = @import("native_editor_input.zig");
+const source_custom = @import("native_custom_editor.zig");
 
-const Node = struct {
-    engine: *engine_mod.Engine,
-    editor: Editor,
-    bindings: Keybindings,
-    tui: c.JSValue,
-    theme: c.JSValue,
-    keybindings: c.JSValue,
-    custom: bool,
-    padding: u8 = 0,
-    autocomplete_max: usize = 5,
-    autocomplete: autocomplete_mod.State = undefined,
-};
-const Constructor = struct { engine: *engine_mod.Engine, prototype: c.JSValue, node_class: c.JSClassID, custom: bool };
-const Method = enum(c_int) { getText, getExpandedText, setText, insertTextAtCursor, addToHistory, handleInput, render, invalidate, setPaddingX, getPaddingX, setAutocompleteMaxVisible, getAutocompleteMaxVisible, setAutocompleteProvider, isShowingAutocomplete, onAction };
+const Node = struct { engine: *engine_mod.Engine };
+const Constructor = struct { engine: *engine_mod.Engine, prototype: c.JSValue, node_class: c.JSClassID, custom: bool, input_constructor: c.JSValue };
+fn sourceMethodCall(context: ?*c.JSContext, object: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = engine_mod.Engine.fromContext(context.?);
+    const method: source_methods.Method = @enumFromInt(magic);
+    const args: []const c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
+    if (method == .handleInput) return source_input.input(engine, object, source_values.v.arg(args, 0)) catch |err| fail(engine, err);
+    if (method == .segment) return source_segments.segment(engine, object, source_values.v.arg(args, 0), source_values.v.arg(args, 1), data[0]) catch |err| fail(engine, err);
+    if (source_editing.supports(method)) return (source_editing.operation(engine, object, method, args) catch |err| return fail(engine, err)).?;
+    if (source_visual.supports(method)) return source_visual.operation(engine, data[1], object, method, args) catch |err| fail(engine, err);
+    if (source_render.supports(method)) return source_render.operation(engine, data[1], object, method, args) catch |err| fail(engine, err);
+    if (source_navigation.supports(method)) return source_navigation.operation(engine, data[1], object, method, args) catch |err| fail(engine, err);
+    if (source_autocomplete.supports(method)) return source_autocomplete.operation(engine, data[2], object, method, args) catch |err| fail(engine, err);
+    if (source_text.supports(method)) return source_text.operation(engine, data[1], object, method, args) catch |err| fail(engine, err);
+    if (source_deletion.supports(method)) return source_deletion.operation(engine, data[1], object, method, args) catch |err| fail(engine, err);
+    const result = source_core.operation(engine, object, method, args) catch |err| return fail(engine, err);
+    return result.?;
+}
+fn cursorByteOffset(engine: *engine_mod.Engine, object: c.JSValue) !usize {
+    const list = try source_values.lines(engine, object);
+    defer engine.freeValue(list);
+    const row = try source_values.cursor(engine, object, "cursorLine");
+    const col = try source_values.cursor(engine, object, "cursorCol");
+    if (!std.math.isFinite(row) or !std.math.isFinite(col)) return error.NativeEditorStateLimit;
+    const line_count = try source_values.length(engine, list);
+    const index: usize = @intFromFloat(@max(0, @min(@as(f64, @floatFromInt(line_count)), row)));
+    var offset: usize = 0;
+    for (0..index) |at| {
+        const line = try source_values.v.fieldAt(engine, list, @floatFromInt(at));
+        defer engine.freeValue(line);
+        const bytes = try engine.toString(line);
+        defer engine.gpa.free(bytes);
+        offset += bytes.len + 1;
+    }
+    const line = try source_values.line(engine, object);
+    defer engine.freeValue(line);
+    const prefix = try source_values.js.invoke(engine, line, "slice", &.{ source_values.v.numeric(engine, 0), source_values.v.numeric(engine, col) });
+    defer engine.freeValue(prefix);
+    const bytes = try engine.toString(prefix);
+    defer engine.gpa.free(bytes);
+    return offset + bytes.len;
+}
 fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
     if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);
@@ -32,26 +68,20 @@ fn fail(engine: *engine_mod.Engine, err: anyerror) c.JSValue {
 fn put(engine: *engine_mod.Engine, object: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, object, name, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
 }
-fn mark(runtime: ?*c.JSRuntime, object: c.JSValue, mark_fn: ?*const c.JS_MarkFunc) callconv(.c) void {
+fn finalizer(_: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
     const node: *Node = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)) orelse return));
-    for ([_]c.JSValue{ node.tui, node.theme, node.keybindings }) |value| c.JS_MarkValue(runtime, value, mark_fn);
-    node.autocomplete.mark(runtime, mark_fn);
-}
-fn finalizer(runtime: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
-    const node: *Node = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)) orelse return));
-    for ([_]c.JSValue{ node.tui, node.theme, node.keybindings }) |value| c.JS_FreeValueRT(runtime, value);
-    node.autocomplete.deinit(runtime);
-    node.editor.deinit();
-    node.bindings.deinit();
+    _ = c.JS_SetOpaque(object, null);
     node.engine.gpa.destroy(node);
 }
 fn constructorMark(runtime: ?*c.JSRuntime, object: c.JSValue, mark_fn: ?*const c.JS_MarkFunc) callconv(.c) void {
     const state: *Constructor = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)) orelse return));
     c.JS_MarkValue(runtime, state.prototype, mark_fn);
+    c.JS_MarkValue(runtime, state.input_constructor, mark_fn);
 }
 fn constructorFinalizer(runtime: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
     const state: *Constructor = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)) orelse return));
     c.JS_FreeValueRT(runtime, state.prototype);
+    c.JS_FreeValueRT(runtime, state.input_constructor);
     state.engine.gpa.destroy(state);
 }
 fn constructorCall(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
@@ -67,207 +97,14 @@ fn construct(state: *Constructor, target: c.JSValue, args: []c.JSValue) !c.JSVal
     const object = try engine.checked(c.JS_NewObjectProtoClass(engine.context, if (c.JS_IsObject(prototype)) prototype else state.prototype, state.node_class));
     errdefer engine.freeValue(object);
     const node = try engine.gpa.create(Node);
-    node.* = .{ .engine = engine, .editor = Editor.init(engine.gpa), .bindings = Keybindings.init(engine.gpa), .tui = c.JS_DupValue(engine.context, if (args.len > 0) args[0] else c.pi_js_undefined()), .theme = c.JS_DupValue(engine.context, if (args.len > 1) args[1] else c.pi_js_undefined()), .keybindings = c.JS_DupValue(engine.context, if (state.custom and args.len > 2) args[2] else c.pi_js_undefined()), .custom = state.custom };
-    node.autocomplete = autocomplete_mod.State.init(engine, &node.editor, object, node.tui);
+    node.* = .{ .engine = engine };
     _ = c.JS_SetOpaque(object, node);
-    try put(engine, object, "tui", c.JS_DupValue(engine.context, node.tui));
-    try put(engine, object, "theme", c.JS_DupValue(engine.context, node.theme));
-    try put(engine, object, "keybindings", c.JS_DupValue(engine.context, node.keybindings));
-    const color = if (c.JS_IsObject(node.theme)) try engine.checked(c.JS_GetPropertyStr(engine.context, node.theme, "borderColor")) else c.pi_js_undefined();
-    defer engine.freeValue(color);
-    try put(engine, object, "borderColor", if (c.JS_IsFunction(engine.context, color)) c.JS_DupValue(engine.context, color) else try engine.checked(c.pi_js_function_magic(engine.context, borderColor, "borderColor", 1, 0)));
     const option_index: usize = if (state.custom) 3 else 2;
-    if (args.len > option_index and c.JS_IsObject(args[option_index])) {
-        const padding = try engine.checked(c.JS_GetPropertyStr(engine.context, args[option_index], "paddingX"));
-        defer engine.freeValue(padding);
-        if (!c.JS_IsUndefined(padding)) node.padding = @intCast(try count(engine, padding, 3));
-    }
-    if (state.custom) {
-        const global = c.JS_GetGlobalObject(engine.context);
-        defer engine.freeValue(global);
-        const map = try engine.checked(c.JS_GetPropertyStr(engine.context, global, "Map"));
-        defer engine.freeValue(map);
-        try put(engine, object, "actionHandlers", try engine.checked(c.JS_CallConstructor(engine.context, map, 0, null)));
-    }
+    const options = if (args.len > option_index) args[option_index] else c.pi_js_undefined();
+    try source_values.initialize(engine, object, if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined(), options, state.input_constructor);
+    if (state.custom) try source_custom.initialize(engine, object, if (args.len > 2) args[2] else c.pi_js_undefined(), options);
     return object;
 }
-fn count(engine: *engine_mod.Engine, value: c.JSValue, maximum: usize) !usize {
-    var number: f64 = 0;
-    if (c.JS_ToFloat64(engine.context, &number, value) < 0) return error.JavaScriptException;
-    if (!std.math.isFinite(number) or number < 0) return error.InvalidEditorDimension;
-    return @intFromFloat(@min(@as(f64, @floatFromInt(maximum)), @floor(number)));
-}
-fn borderColor(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int) callconv(.c) c.JSValue {
-    const engine = engine_mod.Engine.fromContext(context.?);
-    const theme = @import("native_theme.zig").getEditorTheme(engine) catch |err| return fail(engine, err);
-    defer engine.freeValue(theme);
-    const paint = engine.checked(c.JS_GetPropertyStr(context, theme, "borderColor")) catch |err| return fail(engine, err);
-    defer engine.freeValue(paint);
-    var args = [_]c.JSValue{if (argc > 0) argv[0] else c.pi_js_undefined()};
-    return c.JS_Call(context, paint, theme, args.len, &args);
-}
-fn callback(node: *Node, object: c.JSValue, name: [*:0]const u8, args: []c.JSValue) !?c.JSValue {
-    return components.callMethod(node.engine, object, name, args, true);
-}
-fn changed(node: *Node, object: c.JSValue) !void {
-    const text = try node.engine.checked(c.JS_NewStringLen(node.engine.context, node.editor.slice().ptr, node.editor.slice().len));
-    defer node.engine.freeValue(text);
-    var args = [_]c.JSValue{text};
-    if (try callback(node, object, "onChange", &args)) |value| node.engine.freeValue(value);
-}
-fn matchesAction(node: *Node, input: c.JSValue, action: c.JSValue) !bool {
-    if (c.JS_IsObject(node.keybindings)) {
-        const matches = try node.engine.checked(c.JS_GetPropertyStr(node.engine.context, node.keybindings, "matches"));
-        defer node.engine.freeValue(matches);
-        if (c.JS_IsFunction(node.engine.context, matches)) {
-            var args = [_]c.JSValue{ input, action };
-            const result = try node.engine.checked(c.JS_Call(node.engine.context, matches, node.keybindings, args.len, &args));
-            defer node.engine.freeValue(result);
-            return c.JS_ToBool(node.engine.context, result) != 0;
-        }
-    }
-    return false;
-}
-fn dispatchActions(node: *Node, object: c.JSValue, input: c.JSValue) !bool {
-    const engine = node.engine;
-    const handlers = try engine.checked(c.JS_GetPropertyStr(engine.context, object, "actionHandlers"));
-    defer engine.freeValue(handlers);
-    const iterator = (try components.callMethod(engine, handlers, "entries", &.{}, false)).?;
-    defer engine.freeValue(iterator);
-    var count_entries: usize = 0;
-    while (count_entries < 4096) : (count_entries += 1) {
-        const entry = (try components.callMethod(engine, iterator, "next", &.{}, false)).?;
-        defer engine.freeValue(entry);
-        const done = try engine.checked(c.JS_GetPropertyStr(engine.context, entry, "done"));
-        defer engine.freeValue(done);
-        if (c.JS_ToBool(engine.context, done) != 0) return false;
-        const pair = try engine.checked(c.JS_GetPropertyStr(engine.context, entry, "value"));
-        defer engine.freeValue(pair);
-        const action = try engine.checked(c.JS_GetPropertyUint32(engine.context, pair, 0));
-        defer engine.freeValue(action);
-        const handler = try engine.checked(c.JS_GetPropertyUint32(engine.context, pair, 1));
-        defer engine.freeValue(handler);
-        if (try matchesAction(node, input, action)) {
-            if (!c.JS_IsFunction(engine.context, handler)) return error.InvalidEditorAction;
-            const result = try engine.checked(c.JS_Call(engine.context, handler, c.pi_js_undefined(), 0, null));
-            engine.freeValue(result);
-            return true;
-        }
-    }
-    return error.EditorActionLimit;
-}
-fn render(node: *Node, object: c.JSValue, width: usize) !c.JSValue {
-    const engine = node.engine;
-    _ = try node.autocomplete.poll();
-    const focused = try engine.checked(c.JS_GetPropertyStr(engine.context, object, "focused"));
-    defer engine.freeValue(focused);
-    const view = node.editor;
-    var lines = try line_editor.renderEditorLinesFocused(engine.gpa, &view, @max(3, width), node.padding, c.JS_IsUndefined(focused) or c.JS_ToBool(engine.context, focused) != 0);
-    defer lines.deinit(engine.gpa);
-    const array = try engine.checked(c.JS_NewArray(engine.context));
-    errdefer engine.freeValue(array);
-    const border_bytes = try engine.gpa.alloc(u8, width * 3);
-    defer engine.gpa.free(border_bytes);
-    for (0..width) |i| @memcpy(border_bytes[i * 3 ..][0..3], "─");
-    const border = try engine.checked(c.JS_NewStringLen(engine.context, border_bytes.ptr, border_bytes.len));
-    defer engine.freeValue(border);
-    var border_args = [_]c.JSValue{border};
-    const painted = (try callback(node, object, "borderColor", &border_args)) orelse c.JS_DupValue(engine.context, border);
-    defer engine.freeValue(painted);
-    if (c.JS_SetPropertyUint32(engine.context, array, 0, c.JS_DupValue(engine.context, painted)) < 0) return error.JavaScriptException;
-    for (lines.items, 0..) |line, i| if (c.JS_SetPropertyUint32(engine.context, array, @intCast(i + 1), try engine.checked(c.JS_NewStringLen(engine.context, line.ptr, line.len))) < 0) return error.JavaScriptException;
-    if (c.JS_SetPropertyUint32(engine.context, array, @intCast(lines.items.len + 1), c.JS_DupValue(engine.context, painted)) < 0) return error.JavaScriptException;
-    try node.autocomplete.appendRows(array, lines.items.len + 2, width);
-    return array;
-}
-fn methodCall(context: ?*c.JSContext, object: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = engine_mod.Engine.fromContext(context.?);
-    var class: i64 = 0;
-    if (c.JS_ToInt64(context, &class, data[0]) < 0) return engine.throwCaptured();
-    const node: *Node = @ptrCast(@alignCast(c.JS_GetOpaque(object, @intCast(class)) orelse return c.JS_ThrowTypeError(context, "Invalid Editor receiver")));
-    return operation(node, object, @enumFromInt(magic), if (argc == 0) &.{} else argv[0..@intCast(argc)]) catch |err| fail(engine, err);
-}
-fn operation(node: *Node, object: c.JSValue, method: Method, args: []c.JSValue) !c.JSValue {
-    const engine = node.engine;
-    const first = if (args.len > 0) args[0] else c.pi_js_undefined();
-    switch (method) {
-        .getText, .getExpandedText => return engine.checked(c.JS_NewStringLen(engine.context, node.editor.slice().ptr, node.editor.slice().len)),
-        .getPaddingX => return c.JS_NewInt64(engine.context, node.padding),
-        .getAutocompleteMaxVisible => return c.JS_NewInt64(engine.context, @intCast(node.autocomplete_max)),
-        .setPaddingX => node.padding = @intCast(try count(engine, first, 3)),
-        .setAutocompleteMaxVisible => {
-            node.autocomplete_max = try count(engine, first, 4096);
-            node.autocomplete.max_visible = node.autocomplete_max;
-        },
-        .setAutocompleteProvider => try node.autocomplete.setProvider(first),
-        .isShowingAutocomplete => return c.pi_js_bool(engine.context, @intFromBool(node.autocomplete.showing())),
-        .invalidate => {},
-        .render => return render(node, object, try count(engine, first, 16384)),
-        .onAction => {
-            if (args.len < 2 or !c.JS_IsFunction(engine.context, args[1])) return error.InvalidEditorAction;
-            const handlers = try engine.checked(c.JS_GetPropertyStr(engine.context, object, "actionHandlers"));
-            defer engine.freeValue(handlers);
-            const result = (try components.callMethod(engine, handlers, "set", args[0..2], false)).?;
-            engine.freeValue(result);
-        },
-        .setText, .insertTextAtCursor, .addToHistory => {
-            const text = try engine.toString(first);
-            defer engine.gpa.free(text);
-            if (method != .addToHistory) try node.autocomplete.cancel();
-            switch (method) {
-                .setText => try node.editor.setText(text),
-                .insertTextAtCursor => try node.editor.insert(text),
-                .addToHistory => try node.editor.addHistory(text),
-                else => unreachable,
-            }
-            if (method != .addToHistory) try changed(node, object);
-        },
-        .handleInput => {
-            const input = try engine.toString(first);
-            defer engine.gpa.free(input);
-            if (!node.custom) if (try node.autocomplete.input(input) == .handled) return c.pi_js_undefined();
-            if (keys.matchesKey(input, "tab") and node.autocomplete.provider == null) {
-                if (try callback(node, object, "_nativeAutocomplete", &.{})) |value| {
-                    engine.freeValue(value);
-                    return c.pi_js_undefined();
-                }
-            }
-            if (node.custom) {
-                var shortcut_args = [_]c.JSValue{first};
-                if (try callback(node, object, "onExtensionShortcut", &shortcut_args)) |value| {
-                    defer engine.freeValue(value);
-                    if (c.JS_ToBool(engine.context, value) != 0) return c.pi_js_undefined();
-                }
-                if (try node.autocomplete.input(input) == .handled) return c.pi_js_undefined();
-                const hook: ?[*:0]const u8 = if (keys.matchesKey(input, "escape")) "onEscape" else if (keys.matchesKey(input, "ctrl+d") and node.editor.slice().len == 0) "onCtrlD" else null;
-                if (hook) |name| if (try callback(node, object, name, &.{})) |value| {
-                    engine.freeValue(value);
-                    return c.pi_js_undefined();
-                };
-                if (try dispatchActions(node, object, first)) return c.pi_js_undefined();
-            }
-            const previous = try engine.gpa.dupe(u8, node.editor.slice());
-            defer engine.gpa.free(previous);
-            try node.autocomplete.cancel();
-            const disposition = try line_editor.applyInputSequence(engine.gpa, &node.editor, &node.bindings, input, null);
-            if (disposition == .submit) {
-                const text = try engine.checked(c.JS_NewStringLen(engine.context, node.editor.slice().ptr, node.editor.slice().len));
-                defer engine.freeValue(text);
-                var values = [_]c.JSValue{text};
-                if (try callback(node, object, "onSubmit", &values)) |value| engine.freeValue(value);
-                try node.editor.addHistory(node.editor.slice());
-                try node.editor.setText("");
-            }
-            if (disposition == .cancel) try node.editor.setText("");
-            if (!std.mem.eql(u8, previous, node.editor.slice())) {
-                try changed(node, object);
-                if (disposition != .submit and disposition != .cancel) try node.autocomplete.automatic();
-            }
-        },
-    }
-    return c.pi_js_undefined();
-}
-
 /// Add classes to the TUI module and the coding-agent module before input loads.
 pub fn install(engine: *engine_mod.Engine, tui_exports: c.JSValue) !void {
     if (engine.abort_signal_class == 0) try @import("abort_signal.zig").install(engine);
@@ -275,7 +112,7 @@ pub fn install(engine: *engine_mod.Engine, tui_exports: c.JSValue) !void {
     var constructor_class: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &node_class);
     _ = c.JS_NewClassID(engine.runtime, &constructor_class);
-    const node_definition: c.JSClassDef = .{ .class_name = "Native Editor", .finalizer = finalizer, .gc_mark = mark, .call = null, .exotic = null };
+    const node_definition: c.JSClassDef = .{ .class_name = "Native Editor", .finalizer = finalizer, .gc_mark = null, .call = null, .exotic = null };
     const constructor_definition: c.JSClassDef = .{ .class_name = "Native Editor Constructor", .finalizer = constructorFinalizer, .gc_mark = constructorMark, .call = constructorCall, .exotic = null };
     if (c.JS_NewClass(engine.runtime, node_class, &node_definition) < 0 or c.JS_NewClass(engine.runtime, constructor_class, &constructor_definition) < 0) return error.OutOfMemory;
     const global = c.JS_GetGlobalObject(engine.context);
@@ -291,25 +128,34 @@ pub fn install(engine: *engine_mod.Engine, tui_exports: c.JSValue) !void {
     defer engine.freeValue(editor_constructor);
     var editor_prototype = c.pi_js_undefined();
     defer engine.freeValue(editor_prototype);
+    const segments_owner = try source_segments.install(engine);
+    defer engine.freeValue(segments_owner);
+    const visual_constants = try source_visual.install(engine);
+    defer engine.freeValue(visual_constants);
+    const autocomplete_constants = try source_autocomplete.install(engine, tui_exports);
+    defer engine.freeValue(autocomplete_constants);
     inline for (.{ false, true }) |custom| {
         const prototype = try engine.checked(if (custom) c.JS_NewObjectProto(engine.context, editor_prototype) else c.JS_NewObject(engine.context));
         defer engine.freeValue(prototype);
-        inline for (std.meta.fields(Method)) |field| {
-            if (!custom or field.value == @intFromEnum(Method.onAction)) {
-                const name: [:0]const u8 = field.name;
-                var data = [_]c.JSValue{c.JS_NewInt64(engine.context, node_class)};
-                defer engine.freeValue(data[0]);
-                try put(engine, prototype, name, try engine.checked(c.JS_NewCFunctionData2(engine.context, methodCall, name, 1, @intCast(field.value), 1, &data)));
-            }
+        if (custom) {
+            try source_custom.install(engine, prototype);
+        } else inline for (std.meta.fields(source_methods.Method)) |field| {
+            const selected: source_methods.Method = @enumFromInt(field.value);
+            if (comptime !(source_core.supports(selected) or source_editing.supports(selected) or source_visual.supports(selected) or source_render.supports(selected) or source_navigation.supports(selected) or source_autocomplete.supports(selected) or source_text.supports(selected) or source_deletion.supports(selected) or selected == .handleInput or selected == .segment)) @compileError("Source Editor method missing native implementation: " ++ field.name);
+            const name: [:0]const u8 = field.name;
+            var data = [_]c.JSValue{ segments_owner, visual_constants, autocomplete_constants };
+            const value = try engine.checked(c.JS_NewCFunctionData2(engine.context, sourceMethodCall, name, source_methods.arity(selected), @intCast(field.value), data.len, &data));
+            if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, value, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return @import("native_js_values.zig").capture(engine);
         }
         const constructor = try engine.checked(c.JS_NewObjectProtoClass(engine.context, if (custom) editor_constructor else function_prototype, constructor_class));
         defer engine.freeValue(constructor);
         const state = try engine.gpa.create(Constructor);
-        state.* = .{ .engine = engine, .prototype = c.JS_DupValue(engine.context, prototype), .node_class = node_class, .custom = custom };
+        state.* = .{ .engine = engine, .prototype = c.JS_DupValue(engine.context, prototype), .node_class = node_class, .custom = custom, .input_constructor = try engine.checked(c.JS_GetPropertyStr(engine.context, tui_exports, "Input")) };
         _ = c.JS_SetOpaque(constructor, state);
         _ = c.JS_SetConstructorBit(engine.context, constructor, true);
         if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;
-        try put(engine, constructor, "name", try engine.checked(c.JS_NewString(engine.context, if (custom) "CustomEditor" else "Editor")));
+        if (c.JS_DefinePropertyValueStr(engine.context, constructor, "length", c.JS_NewInt32(engine.context, if (custom) 4 else 2), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+        if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try engine.checked(c.JS_NewString(engine.context, if (custom) "CustomEditor" else "Editor")), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
         try put(engine, if (custom) coding else tui_exports, if (custom) "CustomEditor" else "Editor", c.JS_DupValue(engine.context, constructor));
         if (!custom) {
             editor_constructor = c.JS_DupValue(engine.context, constructor);
@@ -334,12 +180,10 @@ fn autocompleteNode(engine: *engine_mod.Engine, component: c.JSValue) !?*Node {
     if (!std.mem.eql(u8, std.mem.span(name), "Native Editor")) return null;
     return @ptrCast(@alignCast(c.JS_GetOpaque(component, class_id) orelse return null));
 }
-pub fn pollAutocomplete(engine: *engine_mod.Engine, component: c.JSValue) !bool {
-    const node = (try autocompleteNode(engine, component)) orelse return false;
-    return node.autocomplete.poll();
-}
 pub fn retireAutocomplete(engine: *engine_mod.Engine, component: c.JSValue) void {
-    if (autocompleteNode(engine, component) catch null) |node| node.autocomplete.retire();
+    if (autocompleteNode(engine, component) catch null) |_| {
+        source_values.invokeVoid(engine, component, "cancelAutocomplete", &.{}) catch {};
+    }
 }
 
 const protocol = @import("editor_protocol.zig");
@@ -513,7 +357,6 @@ pub const Manager = struct {
     pub fn retire(self: *Manager) !void {
         const current_component = self.component orelse return;
         const current_factory = self.factory;
-        retireAutocomplete(self.engine, current_component);
         // Detach before any observable dispose callback; captured methods now
         // fail their generation fence even if disposal re-enters user input.
         self.component = null;
@@ -522,6 +365,7 @@ pub const Manager = struct {
         self.dirty = false;
         self.retiring = true;
         defer self.retiring = false;
+        retireAutocomplete(self.engine, current_component);
         defer self.engine.freeValue(current_component);
         defer if (current_factory) |value| self.engine.freeValue(value);
         defer {
@@ -618,9 +462,6 @@ pub const Manager = struct {
         // Drain and consume those ready promise jobs before the owner parks
         // for external input; a synchronous base provider has no timer wake.
         for (0..4) |_| {
-            if (self.component) |component_value| if (try pollAutocomplete(self.engine, component_value)) {
-                self.dirty = true;
-            };
             if (!c.JS_IsJobPending(self.engine.runtime)) break;
             _ = try self.engine.drainReadyJobs();
         }
@@ -642,18 +483,19 @@ pub const Manager = struct {
         defer if (!transferred) frame.deinit();
         const contents = try self.getText();
         defer if (!transferred) self.engine.gpa.free(contents);
-        if (self.component == null or !identity.matches(self.fence())) {
-            return false;
-        }
+        if (self.component == null or !identity.matches(self.fence())) return false;
         const class_id = c.JS_GetClassID(held);
         const class_atom = c.JS_GetClassName(self.engine.runtime, class_id);
         defer c.JS_FreeAtom(self.engine.context, class_atom);
         const class_name = c.JS_AtomToCString(self.engine.context, class_atom) orelse return error.OutOfMemory;
         defer c.JS_FreeCString(self.engine.context, class_name);
         const cursor = if (std.mem.eql(u8, std.mem.span(class_name), "Native Editor")) native: {
-            const node: *Node = @ptrCast(@alignCast(c.JS_GetOpaque(held, class_id) orelse break :native contents.len));
-            break :native @min(node.editor.cursor, contents.len);
+            if (c.JS_GetOpaque(held, class_id) == null) break :native contents.len;
+            break :native @min(try cursorByteOffset(self.engine, held), contents.len);
         } else contents.len;
+        // Cursor getters are observable and can retire/rebind the component.
+        // Check the owner fence after the final user-code read before publishing.
+        if (self.component == null or !identity.matches(self.fence())) return false;
         transferred = true;
         try self.send(.{ .frame = .{ .text = contents, .width = self.width, .frame = frame, .focused = self.focused, .cursor = cursor } });
         return true;

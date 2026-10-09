@@ -14,6 +14,11 @@ const Method = enum(c_int) { getValue, setValue, handleInput, handleMouse, inser
 const Kind = enum { input, undo, kill };
 const Class = struct { engine: *Engine, prototype: c.JSValue, kind: Kind = .input, undo: ?c.JSValue = null, kill: ?c.JSValue = null };
 const AuxMethod = enum(c_int) { undo_push, undo_pop, undo_clear, undo_length, kill_push, kill_peek, kill_rotate, kill_length };
+pub fn createAuxiliary(engine: *Engine, input_constructor: c.JSValue, undo: bool) !c.JSValue {
+    const retained: *Class = @ptrCast(@alignCast(c.JS_GetOpaque(input_constructor, c.JS_GetClassID(input_constructor)) orelse return error.NativeInputConstructorUnavailable));
+    const constructor = if (undo) retained.undo.? else retained.kill.?;
+    return engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null));
+}
 fn fail(engine: *Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
     if (err == error.OutOfMemory) return c.JS_ThrowOutOfMemory(engine.context);

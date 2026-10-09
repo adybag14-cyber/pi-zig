@@ -1,0 +1,1464 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "paste clean controls",
+      "value": {
+        "pasted": {
+          "text": "before\nAa\nb\nc    \nZENDZ\nafter",
+          "expanded": "before\nAa\nb\nc    \nZENDZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "Aa",
+              "b",
+              "c    ",
+              "ZENDZ",
+              "after"
+            ],
+            "cursorLine": 4,
+            "cursorCol": 4
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "sameLines": false,
+        "undo": {
+          "text": "before\nAZ\nafter",
+          "expanded": "before\nAZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "AZ",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 0,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "changes": [
+          [
+            true,
+            "before\nAa\nb\nc    \nZENDZ\nafter"
+          ],
+          [
+            true,
+            "before\nAZ\nafter"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "paste unknown CSI code",
+      "value": {
+        "pasted": {
+          "text": "before\nAa[42;5u[0;5uZZ\nafter",
+          "expanded": "before\nAa[42;5u[0;5uZZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "Aa[42;5u[0;5uZZ",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 14
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "sameLines": true,
+        "undo": {
+          "text": "before\nAZ\nafter",
+          "expanded": "before\nAZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "AZ",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 0,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "changes": [
+          [
+            true,
+            "before\nAa[42;5u[0;5uZZ\nafter"
+          ],
+          [
+            true,
+            "before\nAZ\nafter"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "paste empty",
+      "value": {
+        "pasted": {
+          "text": "before\nAZ\nafter",
+          "expanded": "before\nAZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "AZ",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "sameLines": true,
+        "undo": {
+          "text": "before\nAZ\nafter",
+          "expanded": "before\nAZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "AZ",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 0,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "changes": [
+          [
+            true,
+            "before\nAZ\nafter"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "paste ten lines",
+      "value": {
+        "pasted": {
+          "text": "before\nAx\nx\nx\nx\nx\nx\nx\nx\nx\nxZ\nafter",
+          "expanded": "before\nAx\nx\nx\nx\nx\nx\nx\nx\nx\nxZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "Ax",
+              "x",
+              "x",
+              "x",
+              "x",
+              "x",
+              "x",
+              "x",
+              "x",
+              "xZ",
+              "after"
+            ],
+            "cursorLine": 10,
+            "cursorCol": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "sameLines": false,
+        "undo": {
+          "text": "before\nAZ\nafter",
+          "expanded": "before\nAZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "AZ",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 0,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "changes": [
+          [
+            true,
+            "before\nAx\nx\nx\nx\nx\nx\nx\nx\nx\nxZ\nafter"
+          ],
+          [
+            true,
+            "before\nAZ\nafter"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "paste eleven lines",
+      "value": {
+        "pasted": {
+          "text": "before\nA[paste #1 +11 lines]Z\nafter",
+          "expanded": "before\nAx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nxZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "A[paste #1 +11 lines]Z",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 21
+          },
+          "pastes": [
+            [
+              1,
+              "x\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx"
+            ]
+          ],
+          "counter": 1,
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "sameLines": true,
+        "undo": {
+          "text": "before\nAZ\nafter",
+          "expanded": "before\nAZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "AZ",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 0,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "changes": [
+          [
+            true,
+            "before\nA[paste #1 +11 lines]Z\nafter"
+          ],
+          [
+            true,
+            "before\nAZ\nafter"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "paste 1000 units",
+      "value": {
+        "pasted": {
+          "text": "before\nAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxZ\nafter",
+          "expanded": "before\nAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "AxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxZ",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1001
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "sameLines": true,
+        "undo": {
+          "text": "before\nAZ\nafter",
+          "expanded": "before\nAZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "AZ",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 0,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "changes": [
+          [
+            true,
+            "before\nAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxZ\nafter"
+          ],
+          [
+            true,
+            "before\nAZ\nafter"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "paste 1001 units",
+      "value": {
+        "pasted": {
+          "text": "before\nA[paste #1 1001 chars]Z\nafter",
+          "expanded": "before\nAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "A[paste #1 1001 chars]Z",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 22
+          },
+          "pastes": [
+            [
+              1,
+              "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            ]
+          ],
+          "counter": 1,
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "sameLines": true,
+        "undo": {
+          "text": "before\nAZ\nafter",
+          "expanded": "before\nAZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "AZ",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 0,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "changes": [
+          [
+            true,
+            "before\nA[paste #1 1001 chars]Z\nafter"
+          ],
+          [
+            true,
+            "before\nAZ\nafter"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "paste surrogate units",
+      "value": {
+        "pasted": {
+          "text": "before\nA[paste #1 1002 chars]Z\nafter",
+          "expanded": "before\nA😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀Z\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "A[paste #1 1002 chars]Z",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 22
+          },
+          "pastes": [
+            [
+              1,
+              "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+            ]
+          ],
+          "counter": 1,
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "sameLines": true,
+        "undo": {
+          "text": "before\nAZ\nafter",
+          "expanded": "before\nAZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "AZ",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 0,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "changes": [
+          [
+            true,
+            "before\nA[paste #1 1002 chars]Z\nafter"
+          ],
+          [
+            true,
+            "before\nAZ\nafter"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "paste lone surrogates",
+      "value": {
+        "pasted": {
+          "text": "before\nA𐏿\ud800Z\nafter",
+          "expanded": "before\nA𐏿\ud800Z\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "A𐏿\ud800Z",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 4
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "sameLines": true,
+        "undo": {
+          "text": "before\nAZ\nafter",
+          "expanded": "before\nAZ\nafter",
+          "state": {
+            "lines": [
+              "before",
+              "AZ",
+              "after"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 1
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 0,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "changes": [
+          [
+            true,
+            "before\nA𐏿\ud800Z\nafter"
+          ],
+          [
+            true,
+            "before\nAZ\nafter"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "path prefix uses ASCII word before cursor",
+      "value": [
+        [
+          "abc",
+          "/tmp/file",
+          "abc /tmp/file"
+        ],
+        [
+          "abc",
+          "~/file",
+          "abc ~/file"
+        ],
+        [
+          "abc",
+          "./file",
+          "abc ./file"
+        ],
+        [
+          "abc",
+          "ordinary",
+          "abcordinary"
+        ],
+        [
+          "abc ",
+          "/tmp/file",
+          "abc /tmp/file"
+        ],
+        [
+          "abc ",
+          "~/file",
+          "abc ~/file"
+        ],
+        [
+          "abc ",
+          "./file",
+          "abc ./file"
+        ],
+        [
+          "abc ",
+          "ordinary",
+          "abc ordinary"
+        ],
+        [
+          "界",
+          "/tmp/file",
+          "界/tmp/file"
+        ],
+        [
+          "界",
+          "~/file",
+          "界~/file"
+        ],
+        [
+          "界",
+          "./file",
+          "界./file"
+        ],
+        [
+          "界",
+          "ordinary",
+          "界ordinary"
+        ],
+        [
+          "_",
+          "/tmp/file",
+          "_ /tmp/file"
+        ],
+        [
+          "_",
+          "~/file",
+          "_ ~/file"
+        ],
+        [
+          "_",
+          "./file",
+          "_ ./file"
+        ],
+        [
+          "_",
+          "ordinary",
+          "_ordinary"
+        ],
+        [
+          "3",
+          "/tmp/file",
+          "3 /tmp/file"
+        ],
+        [
+          "3",
+          "~/file",
+          "3 ~/file"
+        ],
+        [
+          "3",
+          "./file",
+          "3 ./file"
+        ],
+        [
+          "3",
+          "ordinary",
+          "3ordinary"
+        ],
+        [
+          "-",
+          "/tmp/file",
+          "-/tmp/file"
+        ],
+        [
+          "-",
+          "~/file",
+          "-~/file"
+        ],
+        [
+          "-",
+          "./file",
+          "-./file"
+        ],
+        [
+          "-",
+          "ordinary",
+          "-ordinary"
+        ]
+      ]
+    },
+    {
+      "name": "valid ids are constructed from actual keys method",
+      "value": {
+        "valid": [
+          9,
+          2
+        ],
+        "independent": true,
+        "map": [
+          [
+            2,
+            "b"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "newline keeps line array and restores whole cursor on undo",
+      "value": {
+        "split": {
+          "text": "a\ud83d\n\ude00z\nlast",
+          "expanded": "a\ud83d\n\ude00z\nlast",
+          "state": {
+            "lines": [
+              "a\ud83d",
+              "\ude00z",
+              "last"
+            ],
+            "cursorLine": 1,
+            "cursorCol": 0
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 1,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "retained": true,
+        "restored": {
+          "text": "a😀z\nlast",
+          "expanded": "a😀z\nlast",
+          "state": {
+            "lines": [
+              "a😀z",
+              "last"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 2
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 0,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        },
+        "changes": [
+          [
+            true,
+            "a\ud83d\n\ude00z\nlast"
+          ],
+          [
+            true,
+            "a😀z\nlast"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "submit expands trims and clears before ordered callbacks",
+      "value": {
+        "events": [
+          [
+            "change",
+            true,
+            "",
+            {
+              "text": "",
+              "expanded": "",
+              "state": {
+                "lines": [
+                  ""
+                ],
+                "cursorLine": 0,
+                "cursorCol": 0
+              },
+              "pastes": [],
+              "counter": 0,
+              "undo": 0,
+              "last": null,
+              "historyIndex": -1,
+              "historyDraft": null,
+              "preferred": 7,
+              "snapped": 8,
+              "scroll": 0
+            }
+          ],
+          [
+            "submit",
+            true,
+            "PAYLOAD",
+            {
+              "text": "",
+              "expanded": "",
+              "state": {
+                "lines": [
+                  ""
+                ],
+                "cursorLine": 0,
+                "cursorCol": 0
+              },
+              "pastes": [],
+              "counter": 0,
+              "undo": 0,
+              "last": null,
+              "historyIndex": -1,
+              "historyDraft": null,
+              "preferred": 7,
+              "snapped": 8,
+              "scroll": 0
+            }
+          ]
+        ],
+        "replaced": true,
+        "final": {
+          "text": "",
+          "expanded": "",
+          "state": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 0,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": 7,
+          "snapped": 8,
+          "scroll": 0
+        }
+      }
+    },
+    {
+      "name": "submit raw change throw prevents submit after clearing state",
+      "value": {
+        "same": true,
+        "submitted": false,
+        "final": {
+          "text": "",
+          "expanded": "",
+          "state": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "pastes": [],
+          "counter": 0,
+          "undo": 0,
+          "last": null,
+          "historyIndex": -1,
+          "historyDraft": null,
+          "preferred": null,
+          "snapped": null,
+          "scroll": 0
+        }
+      }
+    },
+    {
+      "name": "backslash enter honors actual kb receiver and key alternatives",
+      "value": [
+        {
+          "disabled": false,
+          "text": "a\\",
+          "input": "\r",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": [
+            [
+              true,
+              "tui.input.submit"
+            ]
+          ]
+        },
+        {
+          "disabled": false,
+          "text": "a\\",
+          "input": "\r",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": true,
+          "calls": [
+            [
+              true,
+              "tui.input.submit"
+            ]
+          ]
+        },
+        {
+          "disabled": false,
+          "text": "a\\",
+          "input": "\r",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": true,
+          "calls": [
+            [
+              true,
+              "tui.input.submit"
+            ]
+          ]
+        },
+        {
+          "disabled": false,
+          "text": "a\\",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "a\\",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "a\\",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "a\\",
+          "input": "x",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "a\\",
+          "input": "x",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "a\\",
+          "input": "x",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "a",
+          "input": "\r",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": [
+            [
+              true,
+              "tui.input.submit"
+            ]
+          ]
+        },
+        {
+          "disabled": false,
+          "text": "a",
+          "input": "\r",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": [
+            [
+              true,
+              "tui.input.submit"
+            ]
+          ]
+        },
+        {
+          "disabled": false,
+          "text": "a",
+          "input": "\r",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": [
+            [
+              true,
+              "tui.input.submit"
+            ]
+          ]
+        },
+        {
+          "disabled": false,
+          "text": "a",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "a",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "a",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "a",
+          "input": "x",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "a",
+          "input": "x",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "a",
+          "input": "x",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "",
+          "input": "\r",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": [
+            [
+              true,
+              "tui.input.submit"
+            ]
+          ]
+        },
+        {
+          "disabled": false,
+          "text": "",
+          "input": "\r",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": [
+            [
+              true,
+              "tui.input.submit"
+            ]
+          ]
+        },
+        {
+          "disabled": false,
+          "text": "",
+          "input": "\r",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": [
+            [
+              true,
+              "tui.input.submit"
+            ]
+          ]
+        },
+        {
+          "disabled": false,
+          "text": "",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "",
+          "input": "x",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "",
+          "input": "x",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": false,
+          "text": "",
+          "input": "x",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a\\",
+          "input": "\r",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a\\",
+          "input": "\r",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a\\",
+          "input": "\r",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a\\",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a\\",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a\\",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a\\",
+          "input": "x",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a\\",
+          "input": "x",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a\\",
+          "input": "x",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a",
+          "input": "\r",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a",
+          "input": "\r",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a",
+          "input": "\r",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a",
+          "input": "x",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a",
+          "input": "x",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "a",
+          "input": "x",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "",
+          "input": "\r",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "",
+          "input": "\r",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "",
+          "input": "\r",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "",
+          "input": "\u001b[13;2u",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "",
+          "input": "x",
+          "bindings": [
+            "enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "",
+          "input": "x",
+          "bindings": [
+            "shift+enter"
+          ],
+          "result": false,
+          "calls": []
+        },
+        {
+          "disabled": true,
+          "text": "",
+          "input": "x",
+          "bindings": [
+            "shift+return"
+          ],
+          "result": false,
+          "calls": []
+        }
+      ]
+    }
+  ]
+}

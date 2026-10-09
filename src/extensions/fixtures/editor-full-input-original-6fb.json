@@ -1,0 +1,1458 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "typing words",
+      "value": {
+        "steps": [
+          {
+            "text": "a",
+            "cursor": {
+              "line": 0,
+              "col": 1
+            },
+            "last": "type-word",
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "ab",
+            "cursor": {
+              "line": 0,
+              "col": 2
+            },
+            "last": "type-word",
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "ab ",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "last": "type-word",
+            "undo": 2,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "ab c",
+            "cursor": {
+              "line": 0,
+              "col": 4
+            },
+            "last": "type-word",
+            "undo": 2,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "ab cd",
+            "cursor": {
+              "line": 0,
+              "col": 5
+            },
+            "last": "type-word",
+            "undo": 2,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "ab",
+            "cursor": {
+              "line": 0,
+              "col": 2
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "last": null,
+            "undo": 0,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "last": null,
+            "undo": 0,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "a"
+          ],
+          [
+            true,
+            "ab"
+          ],
+          [
+            true,
+            "ab "
+          ],
+          [
+            true,
+            "ab c"
+          ],
+          [
+            true,
+            "ab cd"
+          ],
+          [
+            true,
+            "ab"
+          ],
+          [
+            true,
+            ""
+          ]
+        ],
+        "submitted": []
+      }
+    },
+    {
+      "name": "unicode delete",
+      "value": {
+        "steps": [
+          {
+            "text": "a😀é🇺🇳z",
+            "cursor": {
+              "line": 0,
+              "col": 9
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "a😀éz",
+            "cursor": {
+              "line": 0,
+              "col": 5
+            },
+            "last": null,
+            "undo": 2,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "a😀é",
+            "cursor": {
+              "line": 0,
+              "col": 5
+            },
+            "last": null,
+            "undo": 3,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "a😀é",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "last": null,
+            "undo": 3,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "😀é",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "last": null,
+            "undo": 4,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "a😀é",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "last": null,
+            "undo": 3,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "a😀éz"
+          ],
+          [
+            true,
+            "a😀é"
+          ],
+          [
+            true,
+            "😀é"
+          ],
+          [
+            true,
+            "a😀é"
+          ]
+        ],
+        "submitted": []
+      }
+    },
+    {
+      "name": "paste chunks",
+      "value": {
+        "steps": [
+          {
+            "text": "A",
+            "cursor": {
+              "line": 0,
+              "col": 1
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": true,
+            "paste": "a\r\nb",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "A",
+            "cursor": {
+              "line": 0,
+              "col": 1
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": true,
+            "paste": "a\r\nb\tX",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "Aa\nb    XZ",
+            "cursor": {
+              "line": 1,
+              "col": 7
+            },
+            "last": "type-word",
+            "undo": 3,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "Aa\nb    X",
+            "cursor": {
+              "line": 1,
+              "col": 6
+            },
+            "last": null,
+            "undo": 2,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "A",
+            "cursor": {
+              "line": 0,
+              "col": 1
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "Aa\nb    X"
+          ],
+          [
+            true,
+            "Aa\nb    XZ"
+          ],
+          [
+            true,
+            "Aa\nb    X"
+          ],
+          [
+            true,
+            "A"
+          ]
+        ],
+        "submitted": []
+      }
+    },
+    {
+      "name": "empty paste trailing",
+      "value": {
+        "steps": [
+          {
+            "text": "tail",
+            "cursor": {
+              "line": 0,
+              "col": 4
+            },
+            "last": "type-word",
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "tail"
+          ]
+        ],
+        "submitted": []
+      }
+    },
+    {
+      "name": "newlines and submit",
+      "value": {
+        "steps": [
+          {
+            "text": "a\n",
+            "cursor": {
+              "line": 1,
+              "col": 0
+            },
+            "last": null,
+            "undo": 3,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "a\nnext",
+            "cursor": {
+              "line": 1,
+              "col": 4
+            },
+            "last": "type-word",
+            "undo": 4,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "a\nnext\n",
+            "cursor": {
+              "line": 2,
+              "col": 0
+            },
+            "last": null,
+            "undo": 5,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "a\nnext\nlast",
+            "cursor": {
+              "line": 2,
+              "col": 4
+            },
+            "last": "type-word",
+            "undo": 6,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "last": null,
+            "undo": 0,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "a"
+          ],
+          [
+            true,
+            "a\n"
+          ],
+          [
+            true,
+            "a\nnext"
+          ],
+          [
+            true,
+            "a\nnext\n"
+          ],
+          [
+            true,
+            "a\nnext\nlast"
+          ],
+          [
+            true,
+            ""
+          ]
+        ],
+        "submitted": [
+          [
+            true,
+            "a\nnext\nlast"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "copy cancel ignored",
+      "value": {
+        "steps": [
+          {
+            "text": "abc",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "abc",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "abc",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "abc",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          }
+        ],
+        "changes": [],
+        "submitted": []
+      }
+    },
+    {
+      "name": "kitty shifted characters",
+      "value": {
+        "steps": [
+          {
+            "text": "A",
+            "cursor": {
+              "line": 0,
+              "col": 1
+            },
+            "last": "type-word",
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "A😀",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "last": "type-word",
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "A😀 ",
+            "cursor": {
+              "line": 0,
+              "col": 4
+            },
+            "last": "type-word",
+            "undo": 2,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "A😀",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "last": null,
+            "undo": 3,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "A"
+          ],
+          [
+            true,
+            "A😀"
+          ],
+          [
+            true,
+            "A😀 "
+          ],
+          [
+            true,
+            "A😀"
+          ]
+        ],
+        "submitted": []
+      }
+    },
+    {
+      "name": "visual arrows",
+      "value": {
+        "steps": [
+          {
+            "text": "one two three\nshort\nlast",
+            "cursor": {
+              "line": 1,
+              "col": 4
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "one two three\nshort\nlast",
+            "cursor": {
+              "line": 0,
+              "col": 12
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "one two three\nshort\nlast",
+            "cursor": {
+              "line": 1,
+              "col": 4
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "one two three\nshort\nlast",
+            "cursor": {
+              "line": 1,
+              "col": 5
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "one two three\nshort\nlast",
+            "cursor": {
+              "line": 1,
+              "col": 4
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "one two three\nshort\nlast",
+            "cursor": {
+              "line": 0,
+              "col": 3
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "one two three\nshort\nlast",
+            "cursor": {
+              "line": 2,
+              "col": 4
+            },
+            "last": null,
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          }
+        ],
+        "changes": [],
+        "submitted": []
+      }
+    },
+    {
+      "name": "packet text remains atomic",
+      "value": {
+        "steps": [
+          {
+            "text": "abc def",
+            "cursor": {
+              "line": 0,
+              "col": 7
+            },
+            "last": "type-word",
+            "undo": 1,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          },
+          {
+            "text": "",
+            "cursor": {
+              "line": 0,
+              "col": 0
+            },
+            "last": null,
+            "undo": 0,
+            "history": -1,
+            "draft": null,
+            "pasting": false,
+            "paste": "",
+            "jump": null,
+            "state": null,
+            "prefix": "",
+            "ring": []
+          }
+        ],
+        "changes": [
+          [
+            true,
+            "abc def"
+          ],
+          [
+            true,
+            ""
+          ]
+        ],
+        "submitted": []
+      }
+    },
+    {
+      "name": "arrow history and edits",
+      "value": [
+        {
+          "text": "new",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "last": null,
+          "undo": 1,
+          "history": 0,
+          "draft": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        },
+        {
+          "text": "old\nentry",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "last": null,
+          "undo": 1,
+          "history": 1,
+          "draft": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        },
+        {
+          "text": "old\nentry",
+          "cursor": {
+            "line": 1,
+            "col": 0
+          },
+          "last": null,
+          "undo": 1,
+          "history": 1,
+          "draft": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        },
+        {
+          "text": "new",
+          "cursor": {
+            "line": 0,
+            "col": 3
+          },
+          "last": null,
+          "undo": 1,
+          "history": 0,
+          "draft": {
+            "lines": [
+              ""
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        },
+        {
+          "text": "newdraft",
+          "cursor": {
+            "line": 0,
+            "col": 8
+          },
+          "last": "type-word",
+          "undo": 2,
+          "history": -1,
+          "draft": null,
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        },
+        {
+          "text": "newdraft",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "last": null,
+          "undo": 2,
+          "history": -1,
+          "draft": null,
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        },
+        {
+          "text": "new",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "last": null,
+          "undo": 3,
+          "history": 0,
+          "draft": {
+            "lines": [
+              "newdraft"
+            ],
+            "cursorLine": 0,
+            "cursorCol": 0
+          },
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        },
+        {
+          "text": "Xnew",
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "last": "type-word",
+          "undo": 4,
+          "history": -1,
+          "draft": null,
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        },
+        {
+          "text": "new",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "last": null,
+          "undo": 3,
+          "history": -1,
+          "draft": null,
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        }
+      ]
+    },
+    {
+      "name": "actual global keybinding manager override and jump",
+      "value": {
+        "jumped": {
+          "text": "axxa",
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "last": null,
+          "undo": 1,
+          "history": -1,
+          "draft": null,
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        },
+        "after": {
+          "text": "axxa",
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "last": null,
+          "undo": 1,
+          "history": -1,
+          "draft": null,
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        },
+        "receivers": true,
+        "matchedActions": [
+          [
+            "J",
+            "tui.input.copy"
+          ],
+          [
+            "J",
+            "tui.editor.undo"
+          ],
+          [
+            "J",
+            "tui.input.tab"
+          ],
+          [
+            "J",
+            "tui.editor.deleteToLineEnd"
+          ],
+          [
+            "J",
+            "tui.editor.deleteToLineStart"
+          ],
+          [
+            "J",
+            "tui.editor.deleteWordBackward"
+          ],
+          [
+            "J",
+            "tui.editor.deleteWordForward"
+          ],
+          [
+            "J",
+            "tui.editor.deleteCharBackward"
+          ],
+          [
+            "J",
+            "tui.editor.deleteCharForward"
+          ],
+          [
+            "J",
+            "tui.editor.yank"
+          ],
+          [
+            "J",
+            "tui.editor.yankPop"
+          ],
+          [
+            "J",
+            "tui.editor.historyPrevious"
+          ],
+          [
+            "J",
+            "tui.editor.historyNext"
+          ],
+          [
+            "J",
+            "tui.editor.cursorLineStart"
+          ],
+          [
+            "J",
+            "tui.editor.cursorLineEnd"
+          ],
+          [
+            "J",
+            "tui.editor.cursorWordLeft"
+          ],
+          [
+            "J",
+            "tui.editor.cursorWordRight"
+          ],
+          [
+            "J",
+            "tui.input.newLine"
+          ],
+          [
+            "J",
+            "tui.input.submit"
+          ],
+          [
+            "J",
+            "tui.editor.cursorUp"
+          ],
+          [
+            "J",
+            "tui.editor.cursorDown"
+          ],
+          [
+            "J",
+            "tui.editor.cursorRight"
+          ],
+          [
+            "J",
+            "tui.editor.cursorLeft"
+          ],
+          [
+            "J",
+            "tui.editor.pageUp"
+          ],
+          [
+            "J",
+            "tui.editor.pageDown"
+          ],
+          [
+            "J",
+            "tui.editor.jumpForward"
+          ],
+          [
+            "U",
+            "tui.input.copy"
+          ],
+          [
+            "U",
+            "tui.editor.undo"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "disabled submit keeps text",
+      "value": {
+        "text": "text",
+        "cursor": {
+          "line": 0,
+          "col": 4
+        },
+        "last": null,
+        "undo": 1,
+        "history": -1,
+        "draft": null,
+        "pasting": false,
+        "paste": "",
+        "jump": null,
+        "state": null,
+        "prefix": "",
+        "ring": []
+      }
+    },
+    {
+      "name": "picker completion / \"\\t\"",
+      "value": {
+        "events": [
+          [
+            "apply",
+            true,
+            "/done"
+          ],
+          [
+            "change",
+            true,
+            "/done"
+          ]
+        ],
+        "after": {
+          "text": "/done",
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "last": null,
+          "undo": 1,
+          "history": -1,
+          "draft": null,
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        }
+      }
+    },
+    {
+      "name": "picker completion / \"\\r\"",
+      "value": {
+        "events": [
+          [
+            "apply",
+            true,
+            "/done"
+          ],
+          [
+            "change",
+            true,
+            ""
+          ],
+          [
+            "submit",
+            true,
+            "/done"
+          ]
+        ],
+        "after": {
+          "text": "",
+          "cursor": {
+            "line": 0,
+            "col": 0
+          },
+          "last": null,
+          "undo": 0,
+          "history": -1,
+          "draft": null,
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        }
+      }
+    },
+    {
+      "name": "picker completion @ \"\\t\"",
+      "value": {
+        "events": [
+          [
+            "apply",
+            true,
+            "@done"
+          ],
+          [
+            "change",
+            true,
+            "@done"
+          ]
+        ],
+        "after": {
+          "text": "@done",
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "last": null,
+          "undo": 1,
+          "history": -1,
+          "draft": null,
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        }
+      }
+    },
+    {
+      "name": "picker completion @ \"\\r\"",
+      "value": {
+        "events": [
+          [
+            "apply",
+            true,
+            "@done"
+          ],
+          [
+            "change",
+            true,
+            "@done"
+          ]
+        ],
+        "after": {
+          "text": "@done",
+          "cursor": {
+            "line": 0,
+            "col": 5
+          },
+          "last": null,
+          "undo": 1,
+          "history": -1,
+          "draft": null,
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        }
+      }
+    },
+    {
+      "name": "tab invokes actual forced provider request",
+      "value": {
+        "calls": [
+          [
+            true,
+            0,
+            1,
+            true
+          ]
+        ],
+        "after": {
+          "text": "a",
+          "cursor": {
+            "line": 0,
+            "col": 1
+          },
+          "last": "type-word",
+          "undo": 1,
+          "history": -1,
+          "draft": null,
+          "pasting": false,
+          "paste": "",
+          "jump": null,
+          "state": null,
+          "prefix": "",
+          "ring": []
+        }
+      }
+    }
+  ]
+}
