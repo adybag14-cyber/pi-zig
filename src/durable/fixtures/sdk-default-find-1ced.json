@@ -1,0 +1,120 @@
+{
+  "source": "1cedd32724abfcb0915f76cc61b6827e2c16dbad",
+  "fd": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\env-completion-20261007\\sdk-default-find-source-tools\\bin\\fd.exe",
+  "cases": [
+    {
+      "name": "repo-kept",
+      "args": {
+        "pattern": "kept.txt",
+        "path": "repo"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "kept.txt\nnested/kept.txt"
+          }
+        ]
+      }
+    },
+    {
+      "name": "repo-ignored",
+      "args": {
+        "pattern": "ignored.txt",
+        "path": "repo"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "No files found matching pattern"
+          }
+        ]
+      }
+    },
+    {
+      "name": "outside-ignore",
+      "args": {
+        "pattern": "ignored.txt",
+        "path": "outside"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "No files found matching pattern"
+          }
+        ]
+      }
+    },
+    {
+      "name": "path-pattern",
+      "args": {
+        "pattern": "sub/**/*.ts",
+        "path": "outside"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "No files found matching pattern"
+          }
+        ]
+      },
+      "resultLinux": {
+        "content": [
+          {
+            "type": "text",
+            "text": "sub/code.ts"
+          }
+        ]
+      }
+    },
+    {
+      "name": "nested-boundary",
+      "args": {
+        "pattern": "visible.txt",
+        "path": "repo"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "nested/sub/visible.txt"
+          }
+        ]
+      }
+    },
+    {
+      "name": "default-limit-notice",
+      "args": {
+        "pattern": "kept.txt",
+        "path": "outside",
+        "limit": 1
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "kept.txt\n\n[1 results limit reached. Use limit=2 for more, or refine pattern]"
+          }
+        ],
+        "details": {
+          "resultLimitReached": 1
+        }
+      }
+    },
+    {
+      "name": "missing",
+      "args": {
+        "pattern": "*",
+        "path": "missing"
+      },
+      "error": {
+        "name": "Error",
+        "message": "[fd error]: Search path '$CWD/missing' is not a directory.\n[fd error]: No valid search paths given."
+      }
+    }
+  ],
+  "linuxSource": "sdk-default-find-linux-source-result.json"
+}

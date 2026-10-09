@@ -569,7 +569,7 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
         defer engine.freeValue(ctx);
         try put(engine, ctx, "messages", c.JS_DupValue(engine.context, messages));
         try put(engine, ctx, "systemPrompt", try get(engine, self.data, "systemPrompt"));
-        try put(engine, ctx, "tools", try get(engine, self.data, "customTools"));
+        try put(engine, ctx, "tools", try @import("native_sdk_tool_catalog.zig").activeDefinitions(self));
         const options = try object(engine);
         defer engine.freeValue(options);
         const selected_level = try agentField(self, "thinkingLevel");
@@ -679,7 +679,7 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
         const content = try get(engine, final, "content");
         defer engine.freeValue(content);
         var invoked = false;
-        const definitions = try get(engine, self.data, "customTools");
+        const definitions = try @import("native_sdk_tool_catalog.zig").activeDefinitions(self);
         defer engine.freeValue(definitions);
         for (0..try length(engine, content)) |i| {
             const call = try engine.checked(c.JS_GetPropertyUint32(engine.context, content, @intCast(i)));
@@ -707,7 +707,18 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
                 defer engine.freeValue(context_value);
                 try put(engine, context_value, "sessionManager", c.JS_DupValue(engine.context, manager));
                 try put(engine, context_value, "model", c.JS_DupValue(engine.context, model));
-                const pending = try invoke(engine, tool, "execute", &.{ id, arguments, c.pi_js_undefined(), c.pi_js_undefined(), context_value });
+                try put(engine, context_value, "cwd", try get(engine, self.data, "_sdkToolCwd"));
+                const prepare = try get(engine, tool, "prepareArguments");
+                defer engine.freeValue(prepare);
+                const prepared = if (c.JS_IsFunction(engine.context, prepare)) try invoke(engine, tool, "prepareArguments", &.{arguments}) else c.JS_DupValue(engine.context, arguments);
+                defer engine.freeValue(prepared);
+                const validation_call = try object(engine);
+                defer engine.freeValue(validation_call);
+                try put(engine, validation_call, "name", c.JS_DupValue(engine.context, name));
+                try put(engine, validation_call, "arguments", c.JS_DupValue(engine.context, prepared));
+                const validated = try @import("native_tool_arguments.zig").validateArguments(engine, tool, validation_call);
+                defer engine.freeValue(validated);
+                const pending = try invoke(engine, tool, "execute", &.{ id, validated, signal, c.pi_js_undefined(), context_value });
                 defer engine.freeValue(pending);
                 const result = try engine.awaitValue(pending);
                 defer engine.freeValue(result);
@@ -717,7 +728,13 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
                 try put(engine, message, "toolCallId", c.JS_DupValue(engine.context, id));
                 try put(engine, message, "toolName", c.JS_DupValue(engine.context, name));
                 try put(engine, message, "content", try get(engine, result, "content"));
-                try put(engine, message, "isError", c.pi_js_bool(engine.context, 0));
+                const result_error = try get(engine, result, "isError");
+                defer engine.freeValue(result_error);
+                try put(engine, message, "isError", c.pi_js_bool(engine.context, @intFromBool(c.JS_ToBool(engine.context, result_error) == 1)));
+                try put(engine, message, "details", try get(engine, result, "details"));
+                const structured = try get(engine, result, "structuredContent");
+                defer engine.freeValue(structured);
+                if (!c.JS_IsUndefined(structured)) try put(engine, message, "structuredContent", c.JS_DupValue(engine.context, structured));
                 try append(engine, messages, c.JS_DupValue(engine.context, message));
                 const result_id = try invoke(engine, manager, "appendMessage", &.{message});
                 engine.freeValue(result_id);
@@ -1557,6 +1574,20 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     const custom = try get(engine, opts, "customTools");
     defer engine.freeValue(custom);
     try put(engine, data, "customTools", if (c.JS_IsArray(custom)) c.JS_DupValue(engine.context, custom) else try array(engine));
+    const factory_cwd = if (c.JS_IsString(desired_cwd)) try engine.toString(desired_cwd) else try cwd(engine);
+    defer engine.gpa.free(factory_cwd);
+    try put(engine, data, "_sdkToolCwd", try text(engine, factory_cwd));
+    const image_auto_resize = try invoke(engine, settings, "getImageAutoResize", &.{});
+    defer engine.freeValue(image_auto_resize);
+    const shell_path_value = try invoke(engine, settings, "getShellPath", &.{});
+    defer engine.freeValue(shell_path_value);
+    const shell_path = if (c.JS_IsString(shell_path_value)) try engine.toString(shell_path_value) else null;
+    defer if (shell_path) |value| engine.gpa.free(value);
+    const prefix_value = try invoke(engine, settings, "getShellCommandPrefix", &.{});
+    defer engine.freeValue(prefix_value);
+    const prefix = if (c.JS_IsString(prefix_value)) try engine.toString(prefix_value) else null;
+    defer if (prefix) |value| engine.gpa.free(value);
+    try put(engine, data, "_sdkBuiltinDefinitions", try @import("native_sdk_builtin_execution.zig").createDefinitionsWithOptions(engine, factory_cwd, .{ .auto_resize = c.JS_ToBool(engine.context, image_auto_resize) != 0, .shell_path = shell_path, .command_prefix = prefix }));
     const tools = try get(engine, opts, "tools");
     defer engine.freeValue(tools);
     try put(engine, data, "activeTools", if (c.JS_IsArray(tools)) try clone(engine, tools) else try jsonObject(engine, "[\"read\",\"bash\",\"edit\",\"write\"]"));
@@ -1584,6 +1615,7 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     try attachSessionModelLease(session_owner);
     errdefer if (session_owner.model_lease_anchor) |anchor| @import("native_sdk_model_bridge.zig").invalidateAnchorRT(engine, engine.runtime, anchor);
     try @import("native_sdk_tool_catalog.zig").initialize(session_owner, opts);
+    try @import("native_sdk_tool_catalog.zig").initializeActive(session_owner, opts);
     const result = try object(engine);
     errdefer engine.freeValue(result);
     try put(engine, result, "session", c.JS_DupValue(engine.context, session));
@@ -1834,12 +1866,10 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
         if (operation == .waitForIdle) return if (self.running) get(engine, self.data, "promptIdle") else promise(engine, c.pi_js_undefined());
         if (operation == .getLastAssistantText) return @import("native_sdk_session_state.zig").lastAssistantText(self);
         if (operation == .getActiveToolNames) {
-            const value = try get(engine, self.data, "activeTools");
-            defer engine.freeValue(value);
-            return clone(engine, value);
+            return @import("native_sdk_tool_catalog.zig").activeNames(self);
         }
         if (operation == .setActiveToolsByName) {
-            try put(engine, self.data, "activeTools", try clone(engine, first));
+            try @import("native_sdk_tool_catalog.zig").setActive(self, first);
             return c.pi_js_undefined();
         }
         if (operation == .getAllTools) {
@@ -2337,6 +2367,7 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     if (c.JS_NewClass(engine.runtime, engine.native_sdk_class, &definition) < 0) return error.OutOfMemory;
     try @import("native_sdk_credential_sync.zig").install(engine, exports);
     try @import("native_sdk_session_projection.zig").install(engine, exports);
+    try @import("native_sdk_builtin_execution.zig").installFindFactories(engine, exports);
     try put(engine, exports, "VIRTUAL_MODEL_STATE_ENTRY", try text(engine, "pi.virtual-model-state"));
     try put(engine, exports, "createAgentSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createAgentSession", 1)));
     try put(engine, exports, "createAgentSessionServices", try engine.checked(c.pi_js_function_magic(engine.context, serviceCallback, "createAgentSessionServices", 1, 0)));

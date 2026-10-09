@@ -244,6 +244,111 @@ pub fn getDefinition(owner: *sdk.State, name: c.JSValue) !c.JSValue {
     for (self.records.items) |record| if (std.mem.eql(u8, record.name, text)) return c.JS_DupValue(self.engine.context, record.definition);
     return c.pi_js_undefined();
 }
+fn declarable(engine: *Engine, definition: c.JSValue) !bool {
+    const value = try vm.get(engine, definition, "exposure");
+    defer engine.freeValue(value);
+    if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) return true;
+    const text = try engine.toString(value);
+    defer engine.gpa.free(text);
+    return std.mem.eql(u8, text, "direct") or std.mem.eql(u8, text, "model-only");
+}
+fn activatable(self: *State, record: Record) !bool {
+    const value = try vm.get(self.engine, record.definition, "exposure");
+    defer self.engine.freeValue(value);
+    const text = if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) try self.engine.gpa.dupe(u8, "direct") else try self.engine.toString(value);
+    defer self.engine.gpa.free(text);
+    if (std.mem.eql(u8, text, "hidden")) return false;
+    if (!isMcp(record.name)) return true;
+    const allowed = self.allowed orelse return true;
+    for (allowed) |pattern| if (@import("../mcp/config.zig").matches(pattern, record.name)) return true;
+    if (std.mem.eql(u8, text, "direct")) return false;
+    for (self.records.items) |entry| if (std.mem.eql(u8, entry.name, "tool_search")) return true;
+    return false;
+}
+pub fn setActive(owner: *sdk.State, requested: c.JSValue) !void {
+    const self = try current(owner);
+    const engine = self.engine;
+    const names = try vm.array(engine);
+    defer engine.freeValue(names);
+    const definitions = try vm.array(engine);
+    defer engine.freeValue(definitions);
+    var seen: std.StringHashMapUnmanaged(void) = .empty;
+    defer seen.deinit(engine.gpa);
+    if (c.JS_IsArray(requested)) for (0..try vm.length(engine, requested)) |index| {
+        const value = try engine.checked(c.JS_GetPropertyUint32(engine.context, requested, @intCast(index)));
+        defer engine.freeValue(value);
+        if (!c.JS_IsString(value)) continue;
+        const name = try engine.toString(value);
+        defer engine.gpa.free(name);
+        for (self.records.items) |record| if (std.mem.eql(u8, record.name, name)) {
+            if (seen.contains(record.name) or !try activatable(self, record)) break;
+            try seen.put(engine.gpa, record.name, {});
+            const output: u32 = @intCast(try vm.length(engine, names));
+            if (c.JS_SetPropertyUint32(engine.context, names, output, c.JS_DupValue(engine.context, value)) < 0 or c.JS_SetPropertyUint32(engine.context, definitions, output, c.JS_DupValue(engine.context, record.definition)) < 0) return error.JavaScriptException;
+            break;
+        };
+    };
+    try vm.put(engine, owner.data, "activeTools", c.JS_DupValue(engine.context, names));
+    try sdk.setAgentField(owner, "tools", definitions);
+}
+pub fn initializeActive(owner: *sdk.State, options: c.JSValue) !void {
+    const self = try current(owner);
+    const engine = self.engine;
+    var arena: std.heap.ArenaAllocator = .init(engine.gpa);
+    defer arena.deinit();
+    const allocator = arena.allocator();
+    const configured = try vm.get(engine, options, "tools");
+    defer engine.freeValue(configured);
+    const entries = try strings(engine, allocator, configured);
+    const no_tools = try vm.get(engine, options, "noTools");
+    defer engine.freeValue(no_tools);
+    const settings = try vm.get(engine, owner.data, "settingsManager");
+    defer engine.freeValue(settings);
+    const default_value = try vm.invoke(engine, settings, "getDefaultTools", &.{});
+    defer engine.freeValue(default_value);
+    const defaults = if (c.JS_ToBool(engine.context, no_tools) == 1) &.{} else (try strings(engine, allocator, default_value)) orelse &selection.default_tool_names;
+    const selected = if (entries) |values| if (selection.usesModifiers(values)) try selection.apply(allocator, defaults, values) else values else defaults;
+    const requested = try vm.array(engine);
+    defer engine.freeValue(requested);
+    for (selected, 0..) |name, index| if (c.JS_SetPropertyUint32(engine.context, requested, @intCast(index), try sdk.text(engine, name)) < 0) return error.JavaScriptException;
+    for (self.records.items) |record| {
+        var activate = false;
+        if (self.allowed) |allowed| {
+            for (allowed) |pattern| if (@import("../mcp/config.zig").matches(pattern, record.name)) {
+                activate = true;
+                break;
+            };
+        } else {
+            const source_kind = try vm.get(engine, record.source, "source");
+            defer engine.freeValue(source_kind);
+            const kind = try engine.toString(source_kind);
+            defer engine.gpa.free(kind);
+            if (!std.mem.eql(u8, kind, "builtin")) {
+                const default_active = try vm.get(engine, record.definition, "defaultActive");
+                defer engine.freeValue(default_active);
+                activate = !c.JS_IsBool(default_active) or c.JS_ToBool(engine.context, default_active) != 0;
+            }
+        }
+        if (activate and try declarable(engine, record.definition)) if (c.JS_SetPropertyUint32(engine.context, requested, @intCast(try vm.length(engine, requested)), try sdk.text(engine, record.name)) < 0) return error.JavaScriptException;
+    }
+    try setActive(owner, requested);
+}
+pub fn activeDefinitions(owner: *sdk.State) !c.JSValue {
+    return sdk.agentField(owner, "tools");
+}
+pub fn activeNames(owner: *sdk.State) !c.JSValue {
+    const engine = owner.engine;
+    const definitions = try activeDefinitions(owner);
+    defer engine.freeValue(definitions);
+    const names = try vm.array(engine);
+    errdefer engine.freeValue(names);
+    for (0..try vm.length(engine, definitions)) |index| {
+        const definition = try engine.checked(c.JS_GetPropertyUint32(engine.context, definitions, @intCast(index)));
+        defer engine.freeValue(definition);
+        if (c.JS_SetPropertyUint32(engine.context, names, @intCast(index), try vm.get(engine, definition, "name")) < 0) return error.JavaScriptException;
+    }
+    return names;
+}
 fn exposure(raw: ?*anyopaque, name: c.JSValue) !c.JSValue {
     const owner: *sdk.State = @ptrCast(@alignCast(raw.?));
     const value = try getDefinition(owner, name);

@@ -127,6 +127,11 @@ pub const Engine = struct {
     native_tool_parameter_constants: [4]?c.JSValue = .{null} ** 4,
     native_sdk_tools_state: ?*anyopaque = null,
     native_sdk_tools_cleanup: ?*const fn (*Engine) void = null,
+    native_sdk_builtin_execution_state: ?*anyopaque = null,
+    native_sdk_builtin_execution_class: c.JSClassID = 0,
+    native_sdk_builtin_execution_cleanup: ?*const fn (*Engine) void = null,
+    native_sdk_builtin_execution_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_sdk_builtin_execution_pending: ?*const fn (*Engine) bool = null,
     native_chord_json_functions: ?c.JSValue = null,
     native_typebox_hash_accumulator: u64 = 14695981039346656037,
     native_typebox_literal_error: ?c.JSValue = null,
@@ -188,6 +193,7 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        if (self.native_sdk_builtin_execution_cleanup) |cleanup| cleanup(self);
         if (self.native_sdk_events_deinit) |cleanup| cleanup(self);
         if (self.native_sdk_resource_owner_deinit) |cleanup| cleanup(self);
         self.closeDurableOwner();
@@ -644,7 +650,8 @@ pub const Engine = struct {
         const host_worked = if (self.host_control_pump) |pump| try pump(self) else false;
         const durable_worked = if (self.native_durable_control_pump) |pump| try pump(self) else false;
         const sdk_retired = if (self.native_sdk_resource_owner_pump) |pump| try pump(self) else false;
-        return host_worked or durable_worked or sdk_retired;
+        const tools_worked = if (self.native_sdk_builtin_execution_pump) |pump| try pump(self) else false;
+        return host_worked or durable_worked or sdk_retired or tools_worked;
     }
     pub fn closeDurableOwner(self: *Engine) void {
         if (self.native_durable_control_deinit) |cleanup| cleanup(self);
@@ -671,7 +678,8 @@ pub const Engine = struct {
     }
 
     fn refreshUiDeadline(self: *Engine) void {
-        if (self.host_ui_pending == 0 or self.host_await_deadline_ms == null or self.options.host_await_timeout_ms == 0) return;
+        const tool_pending = if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false;
+        if ((self.host_ui_pending == 0 and !tool_pending) or self.host_await_deadline_ms == null or self.options.host_await_timeout_ms == 0) return;
         if (self.native_io) |io| self.host_await_deadline_ms = std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(self.options.host_await_timeout_ms, std.math.maxInt(i64))));
     }
 
@@ -716,7 +724,7 @@ pub const Engine = struct {
                 }
                 // A native transport can settle a promise through an incoming
                 // abort or UI response even when no timer or JS job is pending.
-                if ((self.host_control_pump != null or self.native_durable_control_pump != null) and self.native_io != null) {
+                if ((self.host_control_pump != null or self.native_durable_control_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {
                     try self.native_io.?.sleep(.fromMilliseconds(5), .awake);
                     continue;
                 }
