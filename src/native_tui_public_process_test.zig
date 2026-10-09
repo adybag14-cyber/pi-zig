@@ -1,6 +1,12 @@
 const std = @import("std");
 const builtin = @import("builtin");
 test "native worker public TUI components loaders image and actual callbacks run without Node" {
+    try runWorker(@embedFile("extensions/fixtures/tui-public-worker-original-6fb.input.js"), @embedFile("extensions/fixtures/tui-public-worker-original-6fb.json"));
+}
+test "native worker genuine Stack ScrollView layout state and transient timer run without Node" {
+    try runWorker(@embedFile("extensions/fixtures/stack-scroll-worker-original-6fb.input.js"), @embedFile("extensions/fixtures/stack-scroll-worker-original-6fb.json"));
+}
+fn runWorker(input: []const u8, expected: []const u8) !void {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
     var temporary = std.testing.tmpDir(.{});
@@ -15,7 +21,7 @@ test "native worker public TUI components loaders image and actual callbacks run
     defer gpa.free(home);
     const script = try std.fs.path.join(gpa, &.{ buffer[0..length], "entry.mjs" });
     defer gpa.free(script);
-    try temporary.dir.writeFile(io, .{ .sub_path = "entry.mjs", .data = @embedFile("extensions/fixtures/tui-public-worker-original-6fb.input.js") });
+    try temporary.dir.writeFile(io, .{ .sub_path = "entry.mjs", .data = input });
     var root_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
     const cwd = try std.Io.Dir.cwd().openDir(io, ".", .{});
     defer cwd.close(io);
@@ -37,5 +43,5 @@ test "native worker public TUI components loaders image and actual callbacks run
     if (result.term != .exited or result.term.exited != 0) std.debug.print("TUI real-worker failure:\n{s}\n{s}\n", .{ result.stdout, result.stderr });
     try std.testing.expect(result.term == .exited and result.term.exited == 0);
     try std.testing.expectEqualStrings("", result.stderr);
-    try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("extensions/fixtures/tui-public-worker-original-6fb.json"), "\r\n"), std.mem.trim(u8, result.stdout, "\r\n"));
+    try std.testing.expectEqualStrings(std.mem.trim(u8, expected, "\r\n"), std.mem.trim(u8, result.stdout, "\r\n"));
 }

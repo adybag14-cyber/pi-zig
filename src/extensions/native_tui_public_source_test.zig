@@ -1,6 +1,38 @@
 const std = @import("std");
 const js = @import("native_js_values.zig");
 const c = js.c;
+test "Source6fb public TUI slice ScrollView field authority follow chaining scrollbar lifecycle and layout hook" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("native_tui.zig").install(engine);
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    const bytes = @embedFile("fixtures/scroll-view-original-6fb.json");
+    try js.define(engine, root, "scrollViewSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "scroll-view-original-6fb.json")));
+    const result = engine.evalModule("import{ScrollView,Container}from'pi-tui';\n" ++ @embedFile("fixtures/scroll-view-original-6fb.input.js") ++
+        \\for(let i=0;i<scrollViewSource.cases.length;i++){const actual=scrollViewResults[i],expected=scrollViewSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
+    , "tui-scroll-view-original.mjs") catch |err| {
+        if (engine.last_error) |message| std.debug.print("Native ScrollView: {s}\n", .{message});
+        return err;
+    };
+    engine.freeValue(result);
+}
+test "Source6fb public TUI slice Stack HStack VStack genuine hierarchy ordinary entries and layout behavior" {
+    const engine = try js.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("native_tui.zig").install(engine);
+    const root = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(root);
+    const bytes = @embedFile("fixtures/stack-components-original-6fb.json");
+    try js.define(engine, root, "stackSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "stack-components-original-6fb.json")));
+    const result = engine.evalModule("import{HStack,VStack,Container}from'pi-tui';\n" ++ @embedFile("fixtures/stack-components-original-6fb.input.js") ++
+        \\for(let i=0;i<stackSource.cases.length;i++){const actual=stackResults[i],expected=stackSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
+    , "tui-stack-components-original.mjs") catch |err| {
+        if (engine.last_error) |message| std.debug.print("Native Stack components: {s}\n", .{message});
+        return err;
+    };
+    engine.freeValue(result);
+}
 test "Source6fb public TUI slice column clipping style links markers and exact line composition" {
     const engine = try js.Engine.init(std.testing.allocator, .{});
     defer engine.deinit();

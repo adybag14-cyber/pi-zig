@@ -512,6 +512,8 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try @import("native_tui_public_helpers.zig").install(engine, exports);
     try @import("native_image_component.zig").install(engine, exports);
     try @import("native_tui_columns.zig").install(engine, exports);
+    try @import("native_stack_components.zig").install(engine, exports);
+    try @import("native_scroll_view.zig").install(engine, exports);
     try @import("native_box_component.zig").install(engine, exports);
     try @import("native_spacer_component.zig").install(engine, exports);
     try @import("native_markdown_component.zig").install(engine, exports);
