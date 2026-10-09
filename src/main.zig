@@ -4396,7 +4396,10 @@ fn runMain(init: std.process.Init) !void {
     var configured_mcp: ?*pi_zig.mcp.configured.Service = null;
     defer if (configured_mcp) |service| service.deinit();
     // Publishers must retire before the native service they snapshot.
-    defer extension_host.stopNativeCatalogPublisher();
+    defer {
+        extension_host.stopNativeCatalogPublisher();
+        main_catalog_source.unbindMcp();
+    }
     if (agent_dir) |directory| {
         var reserved: std.ArrayList([]const u8) = .empty;
         defer reserved.deinit(gpa);

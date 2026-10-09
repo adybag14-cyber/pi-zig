@@ -51,6 +51,11 @@ pub const State = struct {
         self.mutex.unlock(self.io);
         changed(self);
     }
+    pub fn unbindMcp(self: *State) void {
+        self.mutex.lockUncancelable(self.io);
+        self.service = null;
+        self.mutex.unlock(self.io);
+    }
     fn changed(raw: ?*anyopaque) void {
         const self: *State = @ptrCast(@alignCast(raw.?));
         self.mutex.lockUncancelable(self.io);
