@@ -133,6 +133,20 @@ pub const Connection = struct {
     pub fn inOwnerCallback(self: *const Connection) bool {
         return session.Client.inOwnerCallback(self);
     }
+    /// Retain the exact callback client before scheduling any asynchronous
+    /// refresh. Reset cannot destroy or reuse that client until release.
+    pub fn pinCallbackClient(self: *Connection, client: *session.Client) ?Borrow {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.shutdown.load(.acquire) or (self.client != client and self.opening_client != client)) return null;
+        self.borrowers += 1;
+        return .{ .owner = self, .client = client };
+    }
+    pub fn isCurrent(self: *Connection, client: *session.Client) bool {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        return !self.shutdown.load(.acquire) and self.state == .ready and self.client == client;
+    }
     /// Reuse stable synchronization storage after every old request/Borrow retires.
     pub fn reset(self: *Connection, options: Options, owner_closing: *const std.atomic.Value(bool)) !void {
         try self.close();

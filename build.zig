@@ -270,7 +270,7 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
-    const catalog_wire_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_tool_catalog_wire_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"private native catalog"} });
+    const catalog_wire_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_tool_catalog_wire_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "private native catalog", "native durable VM MCP parameter bodies" } });
     catalog_wire_tests.root_module.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, catalog_wire_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, catalog_wire_tests.root_module, typescript_parser);

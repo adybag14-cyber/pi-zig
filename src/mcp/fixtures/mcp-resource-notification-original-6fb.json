@@ -1,0 +1,172 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "initial": [
+    {
+      "name": "mcp__native__shared",
+      "exposure": "direct",
+      "parameters": 1,
+      "properties": 2,
+      "required": 3,
+      "namespace": 4,
+      "annotations": 5,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "list_mcp_resources",
+      "exposure": "direct",
+      "parameters": 6,
+      "properties": 7,
+      "required": null,
+      "namespace": null,
+      "annotations": 8,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "list_mcp_resource_templates",
+      "exposure": "direct",
+      "parameters": 6,
+      "properties": 7,
+      "required": null,
+      "namespace": null,
+      "annotations": 8,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "read_mcp_resource",
+      "exposure": "direct",
+      "parameters": 9,
+      "properties": 10,
+      "required": 11,
+      "namespace": null,
+      "annotations": 8,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    }
+  ],
+  "after": [
+    {
+      "name": "mcp__native__shared",
+      "exposure": "direct",
+      "parameters": 12,
+      "properties": 2,
+      "required": 3,
+      "namespace": 13,
+      "annotations": 14,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "list_mcp_resources",
+      "exposure": "direct",
+      "parameters": 6,
+      "properties": 7,
+      "required": null,
+      "namespace": null,
+      "annotations": 8,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "list_mcp_resource_templates",
+      "exposure": "direct",
+      "parameters": 6,
+      "properties": 7,
+      "required": null,
+      "namespace": null,
+      "annotations": 8,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "read_mcp_resource",
+      "exposure": "direct",
+      "parameters": 9,
+      "properties": 10,
+      "required": 11,
+      "namespace": null,
+      "annotations": 8,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    }
+  ],
+  "relationships": {
+    "freshParameters": true,
+    "sharedProperties": true,
+    "sharedRequired": true,
+    "freshNamespace": true,
+    "freshAnnotations": true
+  },
+  "registrations": [
+    {
+      "name": "mcp__native__shared",
+      "exposure": "direct",
+      "parameters": 1,
+      "properties": 2,
+      "required": 3,
+      "namespace": 4,
+      "annotations": 5,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "list_mcp_resources",
+      "exposure": "direct",
+      "parameters": 6,
+      "properties": 7,
+      "required": null,
+      "namespace": null,
+      "annotations": 8,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "list_mcp_resource_templates",
+      "exposure": "direct",
+      "parameters": 6,
+      "properties": 7,
+      "required": null,
+      "namespace": null,
+      "annotations": 8,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "read_mcp_resource",
+      "exposure": "direct",
+      "parameters": 9,
+      "properties": 10,
+      "required": 11,
+      "namespace": null,
+      "annotations": 8,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "mcp__native__shared",
+      "exposure": "direct",
+      "parameters": 12,
+      "properties": 2,
+      "required": 3,
+      "namespace": 13,
+      "annotations": 14,
+      "annotationsValue": {
+        "readOnlyHint": true
+      }
+    }
+  ]
+}

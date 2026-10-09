@@ -14,6 +14,7 @@ pub const Context = struct {
     }
 };
 pub const Notification = *const fn (?*anyopaque, []const u8, ?Value) anyerror!void;
+pub const ClientNotification = *const fn (?*anyopaque, *Client, []const u8, ?Value) anyerror!void;
 pub const ErrorListener = *const fn (?*anyopaque, anyerror) void;
 pub const Progress = *const fn (?*anyopaque, Value) anyerror!void;
 pub const Options = struct {
@@ -25,6 +26,7 @@ pub const Options = struct {
     request_timeout_ms: f64 = 30_000,
     context: ?*anyopaque = null,
     on_notification: ?Notification = null,
+    on_client_notification: ?ClientNotification = null,
     on_error: ?ErrorListener = null,
     max_pending: usize = 1024,
     /// Optional monotonic clock for deterministic deadline policy verification.
@@ -489,6 +491,7 @@ pub const Client = struct {
                     }
                 }
                 if (self.options.on_notification) |callback| callback(self.options.context, method, params) catch |cause| self.report(cause);
+                if (self.options.on_client_notification) |callback| callback(self.options.context, self, method, params) catch |cause| self.report(cause);
             },
             .request => {
                 const method = try protocol.text(value, "method");
