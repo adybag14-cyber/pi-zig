@@ -1,0 +1,19 @@
+{
+  "status": "measured CI scheduling correction, not a product parity qualification",
+  "sourceHead": "dfe6527cc78b1b876bdd8548bc51a14fc9d10781",
+  "run": 37959799640,
+  "job": 113919433160,
+  "testStartedUtc": "2026-10-09T16:41:50Z",
+  "lastCompleted": "1270/1646 extensions.native_durable_tasks.test.native durable VM task definitions scheduler subscriptions and Session leases roll back every GPA failure",
+  "lastCompletedUtc": "2026-10-09T17:26:57Z",
+  "timeoutUtc": "2026-10-09T17:27:02Z",
+  "previousStepMinutes": 45,
+  "nextStepMinutes": 60,
+  "managedTestSeconds": 600,
+  "allocationRanges": "all eight retained",
+  "knownFailures": [
+    "native renderer idle original error missing ERROR_RESULT:100",
+    "native CLI custom scene clean exit timeout"
+  ],
+  "limitation": "These product or process lifecycle failures remain unresolved. The larger cold graph budget does not change display, quit, per managed-test or assertion acceptance conditions."
+}

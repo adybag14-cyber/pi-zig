@@ -70,8 +70,11 @@ jobs:
       - name: Test
         shell: bash
         # This gate cold-compiles the complete test graph. Bound individual
-        # test execution as well as the whole build, as local qualification does.
-        timeout-minutes: 45
+        # protocol-managed test execution as well as the whole build.
+        # The cold macOS graph reached test 1270 of 1646 at the 45 minute
+        # deadline. Allow 60 minutes to finish the complete graph;
+        # managed tests retain the 600 second deadline below.
+        timeout-minutes: 60
         env:
           PI_SDK_ALLOCATION_SHARD: "0"
           PI_SDK_ALLOCATION_SHARDS: "8"

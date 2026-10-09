@@ -1684,9 +1684,12 @@ test "native late live fullscreen command discovery completion and next agent to
         }
         return cause;
     };
+    // Final text can paint before Main finishes turn hooks and saves history.
+    // The next /quit command and clean exit acknowledge that owner's finish.
+    try cleanExit(&fixture, &child, &observed);
     const saved = try fixture.scratch.dir.readFileAlloc(std.testing.io, "history.jsonl", std.testing.allocator, .limited(1024 * 1024));
     defer std.testing.allocator.free(saved);
     try std.testing.expect(std.mem.indexOf(u8, saved, "late-live-tool-result") != null);
     try std.testing.expect(std.mem.indexOf(u8, saved, "late-live-tool") != null);
-    try cleanExit(&fixture, &child, &observed);
+    try std.testing.expect(std.mem.indexOf(u8, saved, "late-live-turn-complete") != null);
 }

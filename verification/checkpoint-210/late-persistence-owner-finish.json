@@ -1,0 +1,74 @@
+{
+  "status": "qualified fixture-only owner-finish repair against exact hosted Ubuntu executable",
+  "sourceHead": "dfe6527cc78b1b876bdd8548bc51a14fc9d10781",
+  "ciMergeHead": "3346cfd438b9239ee8791c9d73cb93b711649b42",
+  "sourceTree": "4198d521261f2174ed5a3397c88aa2e38db30fb5",
+  "artifactRun": 37959799640,
+  "artifactId": 11632261719,
+  "artifactZipSha256": "21D5DAFB93F4E93AEA2620389383DD44E6FE40BA0C2158CB959FB07A0EBF8AAE",
+  "productSha256": "D5B5BB960478A3E4A04AADA2DAED7E144A52558D73711807E348DE96A5F6F62C",
+  "productBuild": "Hosted Debug executable unchanged for every replay; ReleaseSafe applies only to the fixture test compilation",
+  "runtime": "Existing Kali WSL glibc2.42; default Ubuntu libc could not satisfy requiredGLIBC_2.36",
+  "donor": "C:\\Users\\adyba\\pi-zig-ui-late-persistence-dfe-20261009-a",
+  "patch": "UI-LATE-PERSISTENCE-OWNER-FINISH-DFE-20261009-a.patch",
+  "patchSha256": "D799A645BB33EC254444353D541015EDB69165A4E25736506F9D92C2BD127672",
+  "patchPaths": 1,
+  "finalFixtureSha256": "1F37798D2CD63194295A863619C5E04650F874A8355EF27A49822BA1E2FEB195",
+  "negative": {
+    "job": "ui-late-persistence-dfe-negative-kali-debug-20261009-a",
+    "status": "expected failed immediate history assertion after final text marker",
+    "historyBytes": 9231,
+    "tool": false,
+    "final": false,
+    "finishEntered": false,
+    "finishCompleted": false
+  },
+  "positive": {
+    "job": "ui-late-persistence-dfe-positive-kali-debug-20261009-a",
+    "status": "passed same diagnostic input with owner cleanExit before history read",
+    "historyBytes": 10331,
+    "tool": true,
+    "final": true,
+    "finishEntered": true,
+    "finishCompleted": true
+  },
+  "diagnosticInput": "Only diagnostic controls add an extensionAPI asynchronousagent_end hook with500ms finish delay and witness files. Finalpatch removes that input/hook and diagnostics completely.",
+  "gates": [
+    {
+      "job": "ui-late-persistence-dfe-final-kali-debug-20261009-a",
+      "status": "passed",
+      "completedUtc": "2026-10-09T18:28:27.8719433+01:00",
+      "stderrSha256": "701D9FDDE852187ECEB435996DEFF35DB40D2896F8B06501F3487A12B238E9E5"
+    },
+    {
+      "job": "ui-late-persistence-dfe-final-kali-rs-20261009-a",
+      "status": "passed",
+      "completedUtc": "2026-10-09T18:30:02.0926226+01:00",
+      "stderrSha256": "1BC0EB2A57E73B050BC1677091BB83B18D42E67740F2D3BB06E88F528EDB1FA1"
+    }
+  ],
+  "deadlines": {
+    "finalDisplayMs": 5000,
+    "ownedQuitMs": 5000,
+    "changed": false
+  },
+  "finalAssertions": [
+    "late-live-tool-result persisted",
+    "late-live-tool custom evidence persisted",
+    "late-live-turn-complete final assistant persisted",
+    "clean zero exit",
+    "alternate buffer retired",
+    "empty productstderr"
+  ],
+  "preserved": [
+    "original hosted Ubuntu log failureline1512",
+    "default Ubuntu GLIBC rejection/original replay receipt",
+    "negative diagnostic fixture/log",
+    "positive diagnostic fixture/log",
+    "verified original artifact and source receipts"
+  ],
+  "mainEdits": false,
+  "productEdits": false,
+  "macOS": "No macOS execution claim. Prior Mac late-final display and new renderer-result/quit failures remain distinct.",
+  "verifiedUtc": "2026-10-09T17:32:14.5512650+00:00"
+}
