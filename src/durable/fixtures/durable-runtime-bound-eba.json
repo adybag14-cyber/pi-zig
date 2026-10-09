@@ -1,0 +1,175 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "name": "active",
+      "recordMatches": true,
+      "memoValue": {
+        "owned": true
+      },
+      "memoRetained": {
+        "owned": true
+      },
+      "entryUndefined": true,
+      "envUndefined": true,
+      "now": 123,
+      "aliases": true,
+      "settingsEqual": true,
+      "registrySame": true,
+      "functions": [
+        {
+          "name": "getTask",
+          "length": 2,
+          "hasPrototype": false
+        },
+        {
+          "name": "outcomes",
+          "length": 2,
+          "hasPrototype": false
+        },
+        {
+          "name": "entry",
+          "length": 0,
+          "hasPrototype": false
+        },
+        {
+          "name": "now",
+          "length": 0,
+          "hasPrototype": false
+        },
+        {
+          "name": "report",
+          "length": 1,
+          "hasPrototype": false
+        },
+        {
+          "name": "memo",
+          "length": 1,
+          "hasPrototype": false
+        },
+        {
+          "name": "snapshot",
+          "length": 0,
+          "hasPrototype": false
+        },
+        {
+          "name": "snapshotAsOf",
+          "length": 0,
+          "hasPrototype": false
+        },
+        {
+          "name": "watchDoc",
+          "length": 0,
+          "hasPrototype": false
+        },
+        {
+          "name": "agent",
+          "length": 1,
+          "hasPrototype": false
+        },
+        {
+          "name": "env",
+          "length": 1,
+          "hasPrototype": false
+        },
+        {
+          "name": "context",
+          "length": 3,
+          "hasPrototype": false
+        },
+        {
+          "name": "sleep",
+          "length": 2,
+          "hasPrototype": false
+        },
+        {
+          "name": "waitForTask",
+          "length": 2,
+          "hasPrototype": false
+        },
+        {
+          "name": "abortOwned",
+          "length": 2,
+          "hasPrototype": false
+        },
+        {
+          "name": "commit",
+          "length": 2,
+          "hasPrototype": false
+        }
+      ]
+    },
+    {
+      "name": "retired",
+      "errors": [
+        {
+          "name": "getTask",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "outcomes",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "entry",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "now",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "report",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "memo",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "snapshot",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "snapshotAsOf",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "watchDoc",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "agent",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "env",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "context",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "sleep",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "waitForTask",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "abortOwned",
+          "message": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "commit",
+          "message": "Task $TASK invocation has ended"
+        }
+      ],
+      "settingsEqual": true,
+      "registrySame": true,
+      "reportedOriginal": true
+    }
+  ]
+}

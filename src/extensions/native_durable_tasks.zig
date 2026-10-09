@@ -868,15 +868,25 @@ fn runtimeObject(self: *Manager, entry: *Entry, record: json.Value) !c.JSValue {
     try sdk.put(engine, object, "models", try sdk.get(engine, self.options, "models"));
     const settings_atom = c.JS_NewAtom(engine.context, "settings");
     defer c.JS_FreeAtom(engine.context, settings_atom);
-    const settings_getter = try engine.checked(c.JS_NewCFunction(engine.context, runtimeSettingsGetter, "get settings", 0));
+    var settings_data = [_]c.JSValue{self.options};
+    const settings_getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, runtimeSettingsGetter, "get settings", 0, 0, settings_data.len, &settings_data));
+    var bound_data = [_]c.JSValue{object};
     if (c.JS_DefinePropertyGetSet(engine.context, object, settings_atom, settings_getter, c.pi_js_undefined(), c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
-    try sdk.put(engine, object, "commit", try engine.checked(c.JS_NewCFunction(engine.context, runtimeCommit, "commit", 2)));
+    try sdk.put(engine, object, "commit", try engine.checked(c.JS_NewCFunctionData2(engine.context, runtimeCommit, "commit", 2, 0, bound_data.len, &bound_data)));
     const hooks = try sdk.object(engine);
     defer engine.freeValue(hooks);
     var hook_data = [_]c.JSValue{object};
     try sdk.put(engine, hooks, "each", try engine.checked(c.JS_NewCFunctionData(engine.context, hooksEach, 2, 0, hook_data.len, &hook_data)));
     try sdk.put(engine, object, "hooks", c.JS_DupValue(engine.context, hooks));
-    inline for (std.meta.fields(RuntimeMethod)) |operation| try sdk.put(engine, object, operation.name, try engine.checked(c.pi_js_function_magic(engine.context, runtimeMethod, operation.name, 2, @intCast(operation.value))));
+    inline for (std.meta.fields(RuntimeMethod)) |operation| {
+        const arity: c_int = switch (@as(RuntimeMethod, @enumFromInt(operation.value))) {
+            .now, .entry, .snapshot, .snapshotAsOf, .watchDoc => 0,
+            .report, .memo, .agent, .env => 1,
+            .context => 3,
+            else => 2,
+        };
+        try sdk.put(engine, object, operation.name, try engine.checked(c.JS_NewCFunctionData2(engine.context, runtimeMethod, operation.name, arity, @intCast(operation.value), bound_data.len, &bound_data)));
+    }
     runtime.* = .{ .entry = entry.retain(), .session = c.JS_DupValue(engine.context, self.session), .signal = signal, .context = invocation_context, .agent = c.pi_js_undefined(), .snapshot = c.JS_DupValue(engine.context, self.snapshot) };
     _ = c.JS_SetOpaque(object, runtime);
     if (!existing) self.signals.appendAssumeCapacity(.{ .entry = entry.retain(), .value = c.JS_DupValue(engine.context, signal), .context = c.JS_DupValue(engine.context, invocation_context) });
@@ -885,10 +895,9 @@ fn runtimeObject(self: *Manager, entry: *Entry, record: json.Value) !c.JSValue {
 fn runtimeRegistryGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.JS_DupValue(context, data[0]);
 }
-fn runtimeSettingsGetter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn runtimeSettingsGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
-    const self = runtimeState(engine, receiver) orelse return durable.reject(engine, error.InvalidTaskRuntime);
-    return @import("native_durable_agent.zig").runtimeSettings(engine, self.entry.manager.options) catch |err| durable.reject(engine, err);
+    return @import("native_durable_agent.zig").runtimeSettings(engine, data[0]) catch |err| durable.reject(engine, err);
 }
 fn active(self: *Runtime) !void {
     if (!self.entry.runtime.isActive() or self.entry.manager.closed) {
@@ -913,9 +922,9 @@ fn messageError(engine: *Engine, message: []const u8) !c.JSValue {
     var args = [_]c.JSValue{text};
     return engine.checked(c.JS_CallConstructor(engine.context, constructor, 1, &args));
 }
-fn runtimeMethod(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
+fn runtimeMethod(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
-    return runtimeMethodOwned(engine, receiver, @enumFromInt(magic), argv[0..@intCast(argc)]) catch |err| if (magic == @intFromEnum(RuntimeMethod.now) or magic == @intFromEnum(RuntimeMethod.report)) durable.reject(engine, err) else durable.rejectedPromise(engine, err);
+    return runtimeMethodOwned(engine, data[0], @enumFromInt(magic), argv[0..@intCast(argc)]) catch |err| if (magic == @intFromEnum(RuntimeMethod.now) or magic == @intFromEnum(RuntimeMethod.report)) durable.reject(engine, err) else durable.rejectedPromise(engine, err);
 }
 fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMethod, args: []const c.JSValue) !c.JSValue {
     const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
@@ -1331,8 +1340,9 @@ fn runtimeAbortOwnedSettled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, a
     if (rejected != 0) return c.JS_Throw(context, c.JS_DupValue(context, if (argc > 0) argv[0] else c.pi_js_undefined()));
     return c.pi_js_undefined();
 }
-fn runtimeCommit(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn runtimeCommit(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
+    const receiver = captures[0];
     const self = runtimeState(engine, receiver) orelse return durable.rejectedPromise(engine, error.InvalidTaskRuntime);
     active(self) catch |err| return durable.rejectedPromise(engine, err);
     var data = [_]c.JSValue{ receiver, if (argc > 0) argv[0] else c.pi_js_undefined(), if (argc > 1) argv[1] else c.pi_js_undefined() };
@@ -1934,6 +1944,90 @@ test "native durable VM runtime abortOwned uses real fixture task handlers and m
         return err;
     };
     engine.freeValue(compare);
+}
+test "native durable VM runtime methods retain original invocation through extracted aliases and fake receivers as Source closures" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const builtins = try sdk.array(engine);
+    defer engine.freeValue(builtins);
+    const registry = try @import("native_durable_registry.zig").create(engine, builtins);
+    defer engine.freeValue(registry);
+    const options = try sdk.object(engine);
+    defer engine.freeValue(options);
+    try sdk.put(engine, options, "registry", c.JS_DupValue(engine.context, registry));
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "boundSession", c.JS_DupValue(engine.context, session));
+    try sdk.put(engine, global, "boundRegistry", c.JS_DupValue(engine.context, registry));
+    const source = @embedFile("../durable/fixtures/durable-runtime-bound-eba.json");
+    try sdk.put(engine, global, "boundSource", try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-eba-runtime-closures")));
+    const setup = try engine.evalModule(
+        \\import{defineTask}from'@earendil-works/pi-durable';
+        \\globalThis.boundRows=[];globalThis.boundReports=[];globalThis.boundReport=error=>boundReports.push(error);globalThis.boundClock=()=>123;
+        \\globalThis.boundNames=['getTask','outcomes','entry','now','report','memo','snapshot','snapshotAsOf','watchDoc','agent','env','context','sleep','waitForTask','abortOwned','commit'];
+        \\const Parent=defineTask({name:'fixture.runtime-bound',version:1,initial:()=>({phase:'work'}),phases:{work:async(_,runtime,ctx)=>{try{
+        \\ globalThis.boundSaved={runtime,methods:Object.fromEntries(boundNames.map(name=>[name,runtime[name]])),settings:Object.getOwnPropertyDescriptor(runtime,'settings').get,registry:Object.getOwnPropertyDescriptor(runtime,'registry').get};
+        \\ const fake=new Proxy({},{get(){throw Error('must not inspect fake receiver')}}),methods=boundSaved.methods;
+        \\ const record=await methods.getTask.call(fake,runtime.taskId,ctx),candidate={owned:true},memo=await methods.memo.call(fake,'bound',candidate,ctx),reread=await methods.memo.call(fake,'bound',ctx);
+        \\ const entry=await methods.entry.call(fake,999,ctx),env=await methods.env.call(fake,ctx);await methods.sleep.call(fake,123,ctx);await methods.commit.call(fake,()=>undefined,ctx);
+        \\ globalThis.boundMarker=Object.freeze({report:true});methods.report.call(fake,boundMarker);
+        \\ boundRows.push({name:'active',recordMatches:record.id===runtime.taskId,memoValue:memo,memoRetained:reread,entryUndefined:entry===undefined,envUndefined:env===undefined,now:methods.now.call(fake),aliases:boundNames.every(name=>methods[name]===runtime[name]),settingsEqual:JSON.stringify(boundSaved.settings.call(fake))===JSON.stringify(runtime.settings),registrySame:boundSaved.registry.call(fake)===runtime.registry,functions:boundNames.map(name=>({name,length:methods[name].length,hasPrototype:Object.hasOwn(methods[name],'prototype')}))});
+        \\ await methods.commit.call(fake,()=>({status:'terminal',outcome:{status:'completed',result:null}}),ctx);
+        \\}catch(error){globalThis.boundOriginalError=String(error?.stack??error);throw error}}}});
+        \\boundRegistry.install({name:'actual-runtime-closures',tasks:[Parent]});
+        \\await boundSession.commit(tx=>tx.createRootConversation(),{});
+        \\globalThis.boundTaskId=await boundSession.commit(tx=>tx.createTask(Parent,null,{conversationId:1,ownership:{kind:'conversation'}}),{});
+    , "actual-runtime-bound-setup");
+    engine.freeValue(setup);
+    try sdk.put(engine, options, "now", try sdk.get(engine, global, "boundClock"));
+    try sdk.put(engine, options, "onReport", try sdk.get(engine, global, "boundReport"));
+    const context = try sdk.object(engine);
+    defer engine.freeValue(context);
+    try attach(engine, session, options, context);
+    const manager = try getManager(engine, session);
+    const id = try sdk.get(engine, global, "boundTaskId");
+    defer engine.freeValue(id);
+    const pending = try wait(manager, try durable.number(engine, id), null, context);
+    defer engine.freeValue(pending);
+    const settled = try engine.awaitValue(pending);
+    defer engine.freeValue(settled);
+    var record = try durable.owned(engine, settled);
+    defer record.deinit();
+    const outcome = try json.required(try json.required(record.value, "state"), "outcome");
+    if (!std.mem.eql(u8, try json.asString(try json.required(outcome, "status")), "completed")) {
+        const failure = try sdk.get(engine, global, "boundOriginalError");
+        defer engine.freeValue(failure);
+        const message = try engine.toString(failure);
+        defer engine.gpa.free(message);
+        std.debug.print("Source bound runtime original error: {s}\n", .{message});
+        return error.BoundRuntimeTaskDidNotComplete;
+    }
+    const saved = try sdk.get(engine, global, "boundSaved");
+    defer engine.freeValue(saved);
+    const saved_runtime = try sdk.get(engine, saved, "runtime");
+    defer engine.freeValue(saved_runtime);
+    for (0..200) |_| {
+        if (!runtimeState(engine, saved_runtime).?.entry.runtime.isActive()) break;
+        _ = try engine.pumpControls();
+        _ = try engine.drainReadyJobs();
+        try std.testing.io.sleep(.fromMilliseconds(1), .awake);
+    }
+    try std.testing.expect(!runtimeState(engine, saved_runtime).?.entry.runtime.isActive());
+    const compared = engine.evalModule(
+        \\const fake={},errors=[];for(const name of boundNames){try{await boundSaved.methods[name].call(fake);errors.push({name,unexpected:true})}catch(error){errors.push({name,message:error.message.replaceAll(String(boundTaskId),'$TASK')})}}
+        \\boundRows.push({name:'retired',errors,settingsEqual:JSON.stringify(boundSaved.settings.call(fake))===JSON.stringify(boundSaved.runtime.settings),registrySame:boundSaved.registry.call(fake)===boundSaved.runtime.registry,reportedOriginal:boundReports.length===1&&boundReports[0]===boundMarker});
+        \\if(JSON.stringify(boundRows)!==JSON.stringify(boundSource.cases))throw Error(JSON.stringify({actual:boundRows,source:boundSource.cases}));
+    , "actual-runtime-bound-compare") catch |err| {
+        std.debug.print("Source bound runtime comparison: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(compared);
 }
 fn migrationKey(allocator: std.mem.Allocator, input: json.Value, checkpoint: json.Value, from: u64) ![]u8 {
     var values = [_]json.Value{ input, checkpoint, .{ .integer = @intCast(from) } };
