@@ -1,0 +1,38 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "before": {
+    "modelA": true,
+    "settled": false,
+    "authReached": true
+  },
+  "after": {
+    "modelB": true,
+    "settled": true,
+    "ctxModelB": true,
+    "scoped": [
+      {
+        "id": "a",
+        "provider": "ready"
+      },
+      {
+        "id": "b",
+        "provider": "held"
+      }
+    ],
+    "enabled": [
+      "ready/a",
+      "held/b"
+    ],
+    "events": [
+      {
+        "model": "b",
+        "previous": "a"
+      }
+    ]
+  },
+  "piMissing": false,
+  "directMissing": {
+    "name": "Error",
+    "message": "No API key for missing/b"
+  }
+}

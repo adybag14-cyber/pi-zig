@@ -1,0 +1,106 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "phase": "initial",
+      "level": "low",
+      "levels": [
+        "off",
+        "minimal",
+        "low",
+        "medium",
+        "max"
+      ],
+      "supports": true,
+      "recorded": [
+        "low"
+      ]
+    },
+    {
+      "phase": "high-persist",
+      "level": "max",
+      "levels": [
+        "off",
+        "minimal",
+        "low",
+        "medium",
+        "max"
+      ],
+      "supports": true,
+      "default": "high",
+      "recorded": [
+        "low",
+        "max"
+      ]
+    },
+    {
+      "phase": "same",
+      "level": "max",
+      "levels": [
+        "off",
+        "minimal",
+        "low",
+        "medium",
+        "max"
+      ],
+      "supports": true,
+      "default": "high",
+      "recorded": [
+        "low",
+        "max"
+      ]
+    },
+    {
+      "phase": "cycle",
+      "level": "off",
+      "levels": [
+        "off",
+        "minimal",
+        "low",
+        "medium",
+        "max"
+      ],
+      "supports": true,
+      "default": "off",
+      "recorded": [
+        "low",
+        "max",
+        "off"
+      ]
+    },
+    {
+      "phase": "xhigh",
+      "level": "max",
+      "levels": [
+        "off",
+        "minimal",
+        "low",
+        "medium",
+        "max"
+      ],
+      "supports": true,
+      "default": "off",
+      "recorded": [
+        "low",
+        "max",
+        "off",
+        "max"
+      ]
+    }
+  ],
+  "cycled": "off",
+  "events": [
+    {
+      "type": "thinking_level_changed",
+      "level": "max"
+    },
+    {
+      "type": "thinking_level_changed",
+      "level": "off"
+    },
+    {
+      "type": "thinking_level_changed",
+      "level": "max"
+    }
+  ]
+}

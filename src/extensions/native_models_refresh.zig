@@ -280,7 +280,12 @@ pub fn refresh(engine: *engine_mod.Engine, store: c.JSValue, options: c.JSValue,
     defer engine.freeValue(promise);
     const all = try sdk.invoke(engine, promise, "all", &.{pending});
     defer engine.freeValue(all);
-    try then(engine, all, root, .aggregate);
+    // Source Models.refresh awaits raceWithAbortSignal(Promise.all(...)),
+    // including an empty provider set. Preserve that reaction boundary before
+    // publishing the aggregate and ModelRuntime's next model snapshot.
+    const raced = try race(engine, all, signal, c.pi_js_undefined());
+    defer engine.freeValue(raced);
+    try then(engine, raced, root, .aggregate);
     return result;
 }
 fn continuation(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, raw_stage: c_int, captured: [*c]c.JSValue) callconv(.c) c.JSValue {

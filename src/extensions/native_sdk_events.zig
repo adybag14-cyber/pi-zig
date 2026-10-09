@@ -24,7 +24,7 @@ const Task = struct {
     snapshot_value: ?c.JSValue = null,
     snapshot: []u8,
     event: []u8,
-    payload: []u8,
+    payload: c.JSValue,
     invocation: bindings.Bindings.InvocationState = .{},
     ui: ui_mod.Manager.InvocationState = .{},
     previous_active: ?*bindings.Bindings = null,
@@ -180,12 +180,12 @@ fn finalize(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     if (task.snapshot_value) |snapshot| c.JS_FreeValueRT(runtime, snapshot);
     task.gpa.free(task.snapshot);
     task.gpa.free(task.event);
-    task.gpa.free(task.payload);
+    c.JS_FreeValueRT(runtime, task.payload);
     task.gpa.destroy(task);
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
     const task: *Task = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    for ([_]c.JSValue{ task.token, task.session, task.binding_owner }) |root| c.JS_MarkValue(runtime, root, marker);
+    for ([_]c.JSValue{ task.token, task.session, task.binding_owner, task.payload }) |root| c.JS_MarkValue(runtime, root, marker);
     if (task.captured) |captured| for ([_]c.JSValue{ captured.session, captured.registry, captured.manager }) |root| c.JS_MarkValue(runtime, root, marker);
     if (task.snapshot_value) |snapshot| c.JS_MarkValue(runtime, snapshot, marker);
     for (task.invocation.actions.items) |root| c.JS_MarkValue(runtime, root, marker);
@@ -235,7 +235,7 @@ fn run(task: *Task) !c.JSValue {
         try scopes.denyWithMessage(engine, task.token, @import("native_context_lifetime.zig").default_message);
     }
     try task.binding.setContext(task.snapshot);
-    const pending = try task.binding.invokeSdkHookPromise(task.event, task.payload, task.session, !admitted);
+    const pending = try task.binding.invokeSdkHookValue(task.event, task.payload, task.session, !admitted);
     defer engine.freeValue(pending);
     var data = [_]c.JSValue{task.owner};
     const complete = try engine.checked(c.JS_NewCFunctionData2(engine.context, finished, "sdkEventComplete", 1, 0, 1, &data));
@@ -246,6 +246,13 @@ fn run(task: *Task) !c.JSValue {
     return engine.checked(c.JS_Call(engine.context, task.binding.ui_manager.components.promise_then, pending, callbacks.len, &callbacks));
 }
 pub fn emitOne(engine: *engine_mod.Engine, binding: *bindings.Bindings, session: c.JSValue, captured: ?bindings.Bindings.SdkContext, snapshot: []const u8, event: []const u8, payload: []const u8, previous: ?c.JSValue) !c.JSValue {
+    const terminated = try engine.gpa.dupeZ(u8, payload);
+    defer engine.gpa.free(terminated);
+    const parsed = try engine.checked(c.JS_ParseJSON(engine.context, terminated.ptr, payload.len, "sdk-event"));
+    defer engine.freeValue(parsed);
+    return emitOneValue(engine, binding, session, captured, snapshot, event, parsed, previous);
+}
+pub fn emitOneValue(engine: *engine_mod.Engine, binding: *bindings.Bindings, session: c.JSValue, captured: ?bindings.Bindings.SdkContext, snapshot: []const u8, event: []const u8, payload: c.JSValue, previous: ?c.JSValue) !c.JSValue {
     const self = try manager(engine);
     if (self.tasks.items.len >= 1024) return error.NativeSDKEventLimit;
     var transferred = false;
@@ -253,14 +260,13 @@ pub fn emitOne(engine: *engine_mod.Engine, binding: *bindings.Bindings, session:
     errdefer if (!transferred) engine.gpa.free(owned_snapshot);
     const owned_event = try engine.gpa.dupe(u8, event);
     errdefer if (!transferred) engine.gpa.free(owned_event);
-    const owned_payload = try engine.gpa.dupe(u8, payload);
-    errdefer if (!transferred) engine.gpa.free(owned_payload);
+
     const task = try engine.gpa.create(Task);
     errdefer if (!transferred) engine.gpa.destroy(task);
     const owner = try engine.checked(c.JS_NewObjectClass(engine.context, self.class));
     errdefer if (!transferred) engine.freeValue(owner);
     const token = try scopes.create(engine, task, Task.activate, Task.deactivate);
-    task.* = .{ .engine = engine, .gpa = engine.gpa, .manager = self, .binding = binding, .binding_owner = c.JS_DupValue(engine.context, binding.owner_token), .binding_class = binding.owner_class, .owner_id = binding.owner_id, .owner = owner, .token = token, .session = c.JS_DupValue(engine.context, session), .captured = if (captured) |scope| .{ .session = c.JS_DupValue(engine.context, scope.session), .registry = c.JS_DupValue(engine.context, scope.registry), .manager = c.JS_DupValue(engine.context, scope.manager), .lease = scope.lease } else null, .snapshot = owned_snapshot, .event = owned_event, .payload = owned_payload };
+    task.* = .{ .engine = engine, .gpa = engine.gpa, .manager = self, .binding = binding, .binding_owner = c.JS_DupValue(engine.context, binding.owner_token), .binding_class = binding.owner_class, .owner_id = binding.owner_id, .owner = owner, .token = token, .session = c.JS_DupValue(engine.context, session), .captured = if (captured) |scope| .{ .session = c.JS_DupValue(engine.context, scope.session), .registry = c.JS_DupValue(engine.context, scope.registry), .manager = c.JS_DupValue(engine.context, scope.manager), .lease = scope.lease } else null, .snapshot = owned_snapshot, .event = owned_event, .payload = c.JS_DupValue(engine.context, payload) };
     task.ui.components = binding.ui_manager.components.forkInvocation();
     _ = c.JS_SetOpaque(owner, task);
     transferred = true;

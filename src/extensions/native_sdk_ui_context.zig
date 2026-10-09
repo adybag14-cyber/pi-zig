@@ -17,6 +17,19 @@ pub fn bind(engine: *engine_mod.Engine, session: c.JSValue, bindings: c.JSValue)
     errdefer engine.freeValue(wrapped);
     try sdk.put(engine, state.data, "extension_wrappedUI", wrapped);
 }
+pub fn action(engine: *engine_mod.Engine, session: c.JSValue, abort: bool) !void {
+    const state = try sdk.state(engine, session);
+    const callback = try sdk.get(engine, state.data, if (abort) "extension_abortHandler" else "extension_shutdownHandler");
+    defer engine.freeValue(callback);
+    if (abort and c.JS_ToBool(engine.context, callback) != 1) {
+        const pending = try sdk.invoke(engine, session, "abort", &.{});
+        engine.freeValue(pending);
+        return;
+    }
+    if (!abort and (c.JS_IsNull(callback) or c.JS_IsUndefined(callback))) return;
+    const value = try engine.checked(c.JS_Call(engine.context, callback, session, 0, null));
+    engine.freeValue(value);
+}
 pub fn mode(engine: *engine_mod.Engine, session: c.JSValue) !c.JSValue {
     const value = try sdk.get(engine, (try sdk.state(engine, session)).data, "extension_mode");
     if (!c.JS_IsUndefined(value)) return value;

@@ -1,0 +1,99 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "tag": "initial",
+      "model": "a",
+      "thinking": "low",
+      "defaultThinking": "low",
+      "models": [
+        {
+          "provider": "fixture",
+          "modelId": "a"
+        }
+      ],
+      "thinkingEntries": [
+        "low"
+      ]
+    },
+    {
+      "tag": "b-persist",
+      "model": "b",
+      "thinking": "medium",
+      "defaultProvider": "fixture",
+      "defaultModel": "b",
+      "defaultThinking": "low",
+      "models": [
+        {
+          "provider": "fixture",
+          "modelId": "a"
+        },
+        {
+          "provider": "fixture",
+          "modelId": "b"
+        }
+      ],
+      "thinkingEntries": [
+        "low",
+        "medium"
+      ]
+    },
+    {
+      "tag": "a-no-persist",
+      "model": "a",
+      "thinking": "low",
+      "defaultProvider": "fixture",
+      "defaultModel": "b",
+      "defaultThinking": "low",
+      "models": [
+        {
+          "provider": "fixture",
+          "modelId": "a"
+        },
+        {
+          "provider": "fixture",
+          "modelId": "b"
+        },
+        {
+          "provider": "fixture",
+          "modelId": "a"
+        }
+      ],
+      "thinkingEntries": [
+        "low",
+        "medium",
+        "low"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "type": "thinking_level_select",
+      "level": "medium",
+      "previous": "low"
+    },
+    {
+      "type": "model_select",
+      "model": "b",
+      "previous": "a",
+      "source": "set",
+      "ctxModel": "b",
+      "thinking": "medium"
+    },
+    {
+      "type": "thinking_level_select",
+      "level": "low",
+      "previous": "medium"
+    },
+    {
+      "type": "model_select",
+      "model": "a",
+      "previous": "b",
+      "source": "set",
+      "ctxModel": "a",
+      "thinking": "low"
+    }
+  ],
+  "identityA": true,
+  "identityB": true
+}

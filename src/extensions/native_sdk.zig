@@ -125,6 +125,12 @@ const Method = enum(c_int) {
     getToolDefinition,
     setSessionName,
     setThinkingLevel,
+    getAvailableThinkingLevels,
+    cycleThinkingLevel,
+    supportsThinking,
+    setScopedModels,
+    waitForIdle,
+    getLastAssistantText,
     setModel,
     getSessionStats,
     clearQueue,
@@ -140,7 +146,7 @@ const Method = enum(c_int) {
     getRegisteredProviderConfig,
     listCredentials,
 };
-const Getter = enum(c_int) { sessionId, sessionFile, sessionManager, settingsManager, modelRuntime, resourceLoader, model, thinkingLevel, messages, agent, systemPrompt, isStreaming, sessionName, session, services, cwd, diagnostics };
+const Getter = enum(c_int) { sessionId, sessionFile, sessionManager, settingsManager, modelRuntime, resourceLoader, model, thinkingLevel, messages, agent, systemPrompt, isStreaming, sessionName, session, services, cwd, diagnostics, state, isIdle, scopedModels, promptTemplates };
 
 pub fn get(engine: *engine_mod.Engine, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
     return engine.checked(c.JS_GetPropertyStr(engine.context, target, name));
@@ -330,19 +336,25 @@ fn new(engine: *engine_mod.Engine, kind: Kind, data: c.JSValue) !c.JSValue {
         .model_registry => &.{},
         .resource_loader => &.{ .reload, .getExtensions, .getSkills, .getPrompts, .getThemes, .getAgentsFiles, .getSystemPrompt, .getAppendSystemPrompt, .getSystemPromptSource, .getAppendSystemPromptSources, .extendResources },
         .model_runtime => &.{ .registerProvider, .registerNativeProvider, .unregisterProvider, .registerVirtualModel, .unregisterVirtualModel, .resolveModel, .getPhysicalModel, .getProviders, .getProvider, .getModels, .getAll, .getAvailable, .getModel, .getModelsOfType, .getModelOfType, .getAllModels, .getAllAvailable, .getAvailableOfType, .checkAuth, .getAuth, .getAvailableSnapshot, .setRuntimeApiKey, .removeRuntimeApiKey, .hasConfiguredAuth, .clearRuntimeApiKey, .refresh, .streamSimple, .completeSimple, .stream, .complete, .streamDeferred, .fetchDeferred, .cancelDeferred, .classify, .generateImages, .getError, .getProviderAuthStatus, .isUsingOAuth, .isUsingSubscription, .getRegisteredProviderIds, .getRegisteredNativeProvider, .getRegisteredProviderConfig, .listCredentials },
-        .agent_session => &.{ .subscribe, .unsubscribe, .dispose, .prompt, .abort, .bindExtensions, .getActiveToolNames, .setActiveToolsByName, .getAllTools, .getToolDefinition, .setSessionName, .setThinkingLevel, .setModel, .getSessionStats, .clearQueue, .steer, .followUp, .newSession },
+        .agent_session => &.{ .subscribe, .unsubscribe, .dispose, .prompt, .abort, .bindExtensions, .getActiveToolNames, .setActiveToolsByName, .getAllTools, .getToolDefinition, .setSessionName, .setThinkingLevel, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .setScopedModels, .waitForIdle, .getLastAssistantText, .setModel, .getSessionStats, .clearQueue, .steer, .followUp, .newSession },
         .session_runtime => &.{ .newSession, .switchSession, .dispose, .setRebindSession, .setBeforeSessionInvalidate },
     };
     for (methods) |operation| {
         const name = try engine.gpa.dupeZ(u8, @tagName(operation));
         defer engine.gpa.free(name);
-        try put(engine, value, name, try engine.checked(c.pi_js_function_magic(engine.context, method, name, 1, @intFromEnum(operation))));
+        const arity: c_int = if (kind == .agent_session) switch (operation) {
+            .getActiveToolNames, .getAllTools, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .waitForIdle, .getLastAssistantText, .dispose, .abort, .getSessionStats, .clearQueue => 0,
+            else => 1,
+        } else 1;
+        try put(engine, value, name, try engine.checked(c.pi_js_function_magic(engine.context, method, name, arity, @intFromEnum(operation))));
     }
     if (kind == .agent_session or kind == .session_runtime) inline for (std.meta.fields(Getter)) |field| {
-        const atom = c.JS_NewAtom(engine.context, field.name);
-        defer c.JS_FreeAtom(engine.context, atom);
-        const read = try engine.checked(c.pi_js_function_magic(engine.context, getter, field.name, 0, @intCast(field.value)));
-        if (c.JS_DefinePropertyGetSet(engine.context, value, atom, read, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
+        if (kind != .session_runtime or (field.value != @intFromEnum(Getter.state) and field.value != @intFromEnum(Getter.isIdle) and field.value != @intFromEnum(Getter.scopedModels) and field.value != @intFromEnum(Getter.promptTemplates))) {
+            const atom = c.JS_NewAtom(engine.context, field.name);
+            defer c.JS_FreeAtom(engine.context, atom);
+            const read = try engine.checked(c.pi_js_function_magic(engine.context, getter, field.name, 0, @intCast(field.value)));
+            if (c.JS_DefinePropertyGetSet(engine.context, value, atom, read, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
+        }
     };
     return value;
 }
@@ -360,6 +372,22 @@ fn getterValue(self: *State, which: Getter) !c.JSValue {
             return get(engine, service, "cwd");
         }
         return get(engine, self.data, @tagName(which));
+    }
+    if (self.kind == .agent_session) {
+        if (which == .model or which == .thinkingLevel or which == .messages) return agentField(self, @tagName(which));
+        if (which == .state) {
+            const agent = try get(engine, self.data, "agent");
+            defer engine.freeValue(agent);
+            return get(engine, agent, "state");
+        }
+        if (which == .isIdle) return c.pi_js_bool(engine.context, @intFromBool(!self.running));
+        if (which == .promptTemplates) {
+            const loader = try get(engine, self.data, "resourceLoader");
+            defer engine.freeValue(loader);
+            const prompts = try invoke(engine, loader, "getPrompts", &.{});
+            defer engine.freeValue(prompts);
+            return get(engine, prompts, "prompts");
+        }
     }
     if (which == .isStreaming) return c.pi_js_bool(engine.context, @intFromBool(self.running and !self.disposed));
     if (which == .sessionId or which == .sessionFile or which == .sessionName) {
@@ -385,7 +413,23 @@ fn getterValue(self: *State, which: Getter) !c.JSValue {
     }
     return get(engine, self.data, @tagName(which));
 }
-fn emit(self: *State, notification: c.JSValue) !void {
+pub fn agentField(self: *State, name: [*:0]const u8) !c.JSValue {
+    const agent = try get(self.engine, self.data, "agent");
+    defer self.engine.freeValue(agent);
+    if (!c.JS_IsObject(agent)) return get(self.engine, self.data, name);
+    const view = try get(self.engine, agent, "state");
+    defer self.engine.freeValue(view);
+    return get(self.engine, view, name);
+}
+pub fn setAgentField(self: *State, name: [*:0]const u8, value: c.JSValue) !void {
+    const agent = try get(self.engine, self.data, "agent");
+    defer self.engine.freeValue(agent);
+    const state_value = try get(self.engine, agent, "state");
+    defer self.engine.freeValue(state_value);
+    if (c.JS_SetPropertyStr(self.engine.context, state_value, name, c.JS_DupValue(self.engine.context, value)) < 0) return @import("native_js_values.zig").capture(self.engine);
+    try put(self.engine, self.data, name, c.JS_DupValue(self.engine.context, value));
+}
+pub fn emit(self: *State, notification: c.JSValue) !void {
     var listeners: std.ArrayList(c.JSValue) = .empty;
     defer {
         for (listeners.items) |listener| self.engine.freeValue(listener);
@@ -463,14 +507,14 @@ fn startPrompt(self: *State, receiver: c.JSValue, args: []const c.JSValue) !c.JS
 fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
     const engine = self.engine;
     if (self.disposed) return error.NativeSDKDisposed;
-    const model = try get(engine, self.data, "model");
+    const model = try agentField(self, "model");
     defer engine.freeValue(model);
     if (!c.JS_IsObject(model)) return error.NativeSDKNoModelSelected;
     const runtime = try get(engine, self.data, "modelRuntime");
     defer engine.freeValue(runtime);
     const manager = try get(engine, self.data, "sessionManager");
     defer engine.freeValue(manager);
-    const messages = try get(engine, self.data, "messages");
+    const messages = try agentField(self, "messages");
     defer engine.freeValue(messages);
     const start = try event(self, "agent_start");
     defer engine.freeValue(start);
@@ -527,7 +571,7 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
         try put(engine, ctx, "tools", try get(engine, self.data, "customTools"));
         const options = try object(engine);
         defer engine.freeValue(options);
-        const selected_level = try get(engine, self.data, "thinkingLevel");
+        const selected_level = try agentField(self, "thinkingLevel");
         defer engine.freeValue(selected_level);
         const signal = try get(engine, self.data, "promptSignal");
         defer engine.freeValue(signal);
@@ -1493,6 +1537,9 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
         }
     }
     try put(engine, data, "model", c.JS_DupValue(engine.context, model));
+    const scoped = try get(engine, opts, "scopedModels");
+    defer engine.freeValue(scoped);
+    try put(engine, data, "scopedModels", if (c.JS_IsUndefined(scoped)) try array(engine) else c.JS_DupValue(engine.context, scoped));
     const chosen = try get(engine, opts, "thinkingLevel");
     defer engine.freeValue(chosen);
     const default_thinking = try invoke(engine, settings, "getDefaultThinkingLevel", &.{});
@@ -1518,8 +1565,9 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     defer engine.freeValue(agent_state);
     try put(engine, agent_state, "messages", try get(engine, data, "messages"));
     try put(engine, agent_state, "model", c.JS_DupValue(engine.context, model));
+    try put(engine, agent_state, "thinkingLevel", try get(engine, data, "thinkingLevel"));
     try put(engine, agent_state, "tools", try get(engine, data, "customTools"));
-    try put(engine, agent, "state", c.JS_DupValue(engine.context, agent_state));
+    try put(engine, agent, "state", try @import("native_sdk_session_state.zig").view(engine, agent_state));
     try put(engine, data, "agent", c.JS_DupValue(engine.context, agent));
     const session = try new(engine, .agent_session, data);
     defer engine.freeValue(session);
@@ -1652,7 +1700,11 @@ fn typedOperationJob(context: ?*c.JSContext, _: c_int, args: [*c]c.JSValue) call
 
 fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const engine = self.engine;
-    if (self.disposed and operation != .dispose and !(self.kind == .agent_session and (operation == .getAllTools or operation == .getToolDefinition))) return error.NativeSDKDisposed;
+    const retained_session_method = self.kind == .agent_session and switch (operation) {
+        .getAllTools, .getToolDefinition, .getActiveToolNames, .setActiveToolsByName, .setSessionName, .setThinkingLevel, .getAvailableThinkingLevels, .cycleThinkingLevel, .supportsThinking, .setModel => true,
+        else => false,
+    };
+    if (self.disposed and operation != .dispose and !retained_session_method) return error.NativeSDKDisposed;
     const first = if (args.len > 0) args[0] else c.pi_js_undefined();
     const second = if (args.len > 1) args[1] else c.pi_js_undefined();
     if (self.kind == .session_runtime) {
@@ -1768,6 +1820,12 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             defer engine.freeValue(resources);
             return @import("native_sdk_resources.zig").emitAsync(engine, resources, self.data, "session_start", "{\"reason\":\"startup\"}");
         }
+        if (operation == .setScopedModels) {
+            try put(engine, self.data, "scopedModels", c.JS_DupValue(engine.context, first));
+            return c.pi_js_undefined();
+        }
+        if (operation == .waitForIdle) return if (self.running) get(engine, self.data, "promptIdle") else promise(engine, c.pi_js_undefined());
+        if (operation == .getLastAssistantText) return @import("native_sdk_session_state.zig").lastAssistantText(self);
         if (operation == .getActiveToolNames) {
             const value = try get(engine, self.data, "activeTools");
             defer engine.freeValue(value);
@@ -1786,30 +1844,27 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             defer engine.freeValue(manager);
             const value = try invoke(engine, manager, "appendSessionInfo", &.{first});
             engine.freeValue(value);
+            const notification = try event(self, "session_info_changed");
+            defer engine.freeValue(notification);
+            try put(engine, notification, "name", try invoke(engine, manager, "getSessionName", &.{}));
+            try emit(self, notification);
+            const resources = try get(engine, self.data, "resourceLoader");
+            defer engine.freeValue(resources);
+            const pending = try @import("native_sdk_resources.zig").emitValue(engine, resources, self.data, "session_info_changed", notification);
+            engine.freeValue(pending);
             return c.pi_js_undefined();
         }
         if (operation == .setThinkingLevel) {
-            try put(engine, self.data, "thinkingLevel", c.JS_DupValue(engine.context, first));
-            const manager = try get(engine, self.data, "sessionManager");
-            defer engine.freeValue(manager);
-            const value = try invoke(engine, manager, "appendThinkingLevelChange", &.{first});
-            engine.freeValue(value);
+            try @import("native_sdk_thinking.zig").set(engine, receiver, first, if (args.len > 1) args[1] else c.pi_js_undefined());
             return c.pi_js_undefined();
         }
-        if (operation == .setModel) {
-            if (args.len < 2) return error.NativeSDKMissingArgument;
-            const runtime = try get(engine, self.data, "modelRuntime");
-            defer engine.freeValue(runtime);
-            const model = try invoke(engine, runtime, "getModel", args);
+        if (operation == .getAvailableThinkingLevels or operation == .supportsThinking) {
+            const model = try agentField(self, "model");
             defer engine.freeValue(model);
-            if (!c.JS_IsObject(model)) return error.NativeSDKModelUnavailable;
-            try put(engine, self.data, "model", c.JS_DupValue(engine.context, model));
-            const manager = try get(engine, self.data, "sessionManager");
-            defer engine.freeValue(manager);
-            const recorded = try invoke(engine, manager, "appendModelChange", args);
-            engine.freeValue(recorded);
-            return promise(engine, c.pi_js_undefined());
+            return if (operation == .getAvailableThinkingLevels) @import("native_sdk_thinking.zig").available(engine, model) else c.pi_js_bool(engine.context, @intFromBool(try @import("native_sdk_thinking.zig").supports(engine, model)));
         }
+        if (operation == .cycleThinkingLevel) return @import("native_sdk_thinking.zig").cycle(engine, receiver, first);
+        if (operation == .setModel) return @import("native_sdk_model_mutation.zig").set(engine, receiver, first, if (args.len > 1) args[1] else c.pi_js_undefined());
         if (operation == .clearQueue) return c.pi_js_undefined();
         if (operation == .steer or operation == .followUp) return error.NativeSDKQueueWhileRunningRequired;
         if (operation == .newSession) {
@@ -1818,7 +1873,9 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             defer engine.freeValue(manager);
             const path = try invoke(engine, manager, "newSession", args);
             engine.freeValue(path);
-            try put(engine, self.data, "messages", try array(engine));
+            const empty_messages = try array(engine);
+            defer engine.freeValue(empty_messages);
+            try setAgentField(self, "messages", empty_messages);
             try retireSessionModelLease(self);
             try attachSessionModelLease(self);
             return promise(engine, c.pi_js_bool(engine.context, 1));
@@ -1828,7 +1885,7 @@ fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const 
             errdefer engine.freeValue(value);
             try put(engine, value, "sessionId", try getterValue(self, .sessionId));
             try put(engine, value, "sessionFile", try getterValue(self, .sessionFile));
-            const messages = try get(engine, self.data, "messages");
+            const messages = try agentField(self, "messages");
             defer engine.freeValue(messages);
             try put(engine, value, "totalMessages", c.JS_NewInt32(engine.context, @intCast(try length(engine, messages))));
             return value;

@@ -17,7 +17,7 @@ fn ownerFinalizer(_: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
     const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)) orelse return));
     owner.gpa.destroy(owner);
 }
-const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, registerProvider, unregisterProvider, registerMessageRenderer, registerEntryRenderer, registerMarkdownTransformer, registerToolRenderer, getActiveTools, getAllTools, getCommands, getSettings, getSessionName, getThinkingLevel, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel };
+const Method = enum(c_int) { on, registerTool, registerCommand, registerFlag, getFlag, registerProvider, unregisterProvider, registerMessageRenderer, registerEntryRenderer, registerMarkdownTransformer, registerToolRenderer, getActiveTools, getAllTools, getCommands, getSettings, getSessionName, getThinkingLevel, setSessionName, setThinkingLevel, setActiveTools, sendUserMessage, appendEntry, setLabel, setModel };
 const ContextMethod = enum(c_int) {
     mode,
     hasUI,
@@ -33,6 +33,8 @@ const ContextMethod = enum(c_int) {
     isProjectTrusted,
     hasPendingMessages,
     getContextUsage,
+    abort,
+    shutdown,
     getSystemPrompt,
     getCwd,
     getSessionDir,
@@ -405,7 +407,7 @@ pub const Bindings = struct {
 
     fn registration(self: *Bindings, method: Method, args: []c.JSValue) !c.JSValue {
         const runtime_method = switch (method) {
-            .getActiveTools, .getAllTools, .getCommands, .getSettings, .getSessionName, .getThinkingLevel, .setSessionName, .setThinkingLevel, .setActiveTools, .sendUserMessage, .appendEntry, .setLabel => true,
+            .getActiveTools, .getAllTools, .getCommands, .getSettings, .getSessionName, .getThinkingLevel, .setSessionName, .setThinkingLevel, .setActiveTools, .sendUserMessage, .appendEntry, .setLabel, .setModel => true,
             else => false,
         };
         if (runtime_method) {
@@ -460,6 +462,8 @@ pub const Bindings = struct {
             return c.pi_js_undefined();
         }
         if (@intFromEnum(method) >= @intFromEnum(Method.setSessionName)) {
+            if (self.sdk_context != null and method != .sendUserMessage) return self.sdkAction(method, args);
+            if (self.broker) |broker| if (broker.active) |active| if (active != self and active.sdk_context != null and method != .sendUserMessage) return active.sdkAction(method, args);
             return self.recordAction(method, args);
         }
         if (method == .registerTool) {
@@ -872,7 +876,46 @@ pub const Bindings = struct {
         return c.pi_js_undefined();
     }
 
+    fn sdkAction(self: *Bindings, method: Method, args: []c.JSValue) !c.JSValue {
+        var caller = try @import("native_sdk_resource_owners.zig").retainCaller(self);
+        defer caller.deinit();
+        const sdk = @import("native_sdk.zig");
+        switch (method) {
+            .setSessionName => return sdk.invoke(self.engine, caller.session, "setSessionName", args),
+            .setThinkingLevel => return sdk.invoke(self.engine, caller.session, "setThinkingLevel", args),
+            .setModel => return @import("native_sdk_model_mutation.zig").setFromPi(self.engine, caller.session, args[0]),
+            .setActiveTools => {
+                if (self.set_active_tools_fn) |set| {
+                    _ = try set(self.tool_context, self, args[0]);
+                    return c.pi_js_undefined();
+                }
+                return sdk.invoke(self.engine, caller.session, "setActiveToolsByName", args);
+            },
+            .setLabel => return sdk.invoke(self.engine, caller.manager, "appendLabelChange", args),
+            .appendEntry => {
+                const id = try sdk.invoke(self.engine, caller.manager, "appendCustomEntry", args);
+                defer self.engine.freeValue(id);
+                const entry = try sdk.invoke(self.engine, caller.manager, "getEntry", &.{id});
+                defer self.engine.freeValue(entry);
+                if (c.JS_ToBool(self.engine.context, entry) == 1) {
+                    const notification = try sdk.object(self.engine);
+                    defer self.engine.freeValue(notification);
+                    try sdk.put(self.engine, notification, "type", try sdk.text(self.engine, "entry_appended"));
+                    try sdk.put(self.engine, notification, "entry", c.JS_DupValue(self.engine.context, entry));
+                    try sdk.emit(caller.owner, notification);
+                }
+                return c.pi_js_undefined();
+            },
+            else => unreachable,
+        }
+    }
+
     fn recordAction(self: *Bindings, method: Method, args: []c.JSValue) !c.JSValue {
+        if (method == .setModel) {
+            const provider = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, args[0], "provider"));
+            defer self.engine.freeValue(provider);
+            if (!try self.configuredProvider(self.context_snapshot orelse return error.StaleExtensionActionContext, provider)) return @import("native_sdk.zig").promise(self.engine, c.pi_js_bool(self.engine.context, 0));
+        }
         const recipient = if (self.broker) |broker| broker.active orelse return error.StaleExtensionActionContext else if (self.invocation_active) self else return error.StaleExtensionActionContext;
         const action = try self.engine.checked(c.JS_NewObject(self.engine.context));
         errdefer self.engine.freeValue(action);
@@ -883,6 +926,7 @@ pub const Bindings = struct {
             .sendUserMessage => "send_user_message",
             .appendEntry => "append_entry",
             .setLabel => "set_label",
+            .setModel => "set_model",
             else => unreachable,
         };
         if (c.JS_DefinePropertyValueStr(self.engine.context, action, "type", c.JS_NewString(self.engine.context, kind), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
@@ -893,6 +937,7 @@ pub const Bindings = struct {
             .sendUserMessage => "content",
             .appendEntry => "customType",
             .setLabel => "entryId",
+            .setModel => "model",
             else => unreachable,
         };
         const action_value = if (method == .setActiveTools) try self.cloneValue(args[0]) else c.JS_DupValue(self.engine.context, args[0]);
@@ -919,7 +964,7 @@ pub const Bindings = struct {
             try self.actionProperty(action, "nativeSelectionSequence", c.JS_NewInt64(self.engine.context, @intCast(selection_sequence)));
         };
         recipient.actions.appendAssumeCapacity(action);
-        return c.pi_js_undefined();
+        return if (method == .setModel) @import("native_sdk.zig").promise(self.engine, c.pi_js_bool(self.engine.context, 1)) else c.pi_js_undefined();
     }
 
     fn beginActions(self: *Bindings) !void {
@@ -1100,7 +1145,15 @@ pub const Bindings = struct {
         var args = [_]c.JSValue{self.api};
         const promise = try self.engine.checked(c.JS_Call(self.engine.context, factory, c.pi_js_undefined(), 1, &args));
         defer self.engine.freeValue(promise);
-        const value = try self.engine.awaitValue(promise);
+        // SDK factory loading awaits only the factory result. Draining every
+        // ready job here prematurely finishes unrelated runtime refreshes.
+        const value = if (self.sdk_resource_owner) sdk_factory: {
+            // Await assimilates arbitrary thenables; an already intrinsic
+            // promise keeps its existing reaction chain and async ownership.
+            const awaited = if (c.JS_PromiseState(self.engine.context, promise) == c.JS_PROMISE_NOT_A_PROMISE) try @import("native_sdk.zig").promise(self.engine, promise) else c.JS_DupValue(self.engine.context, promise);
+            defer self.engine.freeValue(awaited);
+            break :sdk_factory try self.engine.awaitValueOnly(awaited);
+        } else try self.engine.awaitValue(promise);
         defer self.engine.freeValue(value);
     }
 
@@ -1510,7 +1563,7 @@ pub const Bindings = struct {
         errdefer self.engine.freeValue(context);
         inline for (std.meta.fields(ContextMethod)) |field| {
             const kind: ContextMethod = @enumFromInt(field.value);
-            if (@intFromEnum(kind) <= @intFromEnum(ContextMethod.getSystemPrompt)) {
+            if (@intFromEnum(kind) <= @intFromEnum(ContextMethod.getSystemPrompt) and ((kind != .abort and kind != .shutdown) or self.sdk_context != null)) {
                 const name: [:0]const u8 = field.name;
                 const function = try self.contextFunction(name, kind, snapshot, self.context_epoch);
                 const status = if (@intFromEnum(kind) <= @intFromEnum(ContextMethod.sessionManager)) property: {
@@ -1539,6 +1592,13 @@ pub const Bindings = struct {
             const state = sdk.state(engine, data[session_offset]) catch return self.staleSdkContext();
             const lease = sdk.sessionModelLease(state) catch return self.staleSdkContext();
             if (lease.generation != generation or lease.runtime_id != runtime_id) return self.staleSdkContext();
+            if (kind == .model or kind == .thinkingLevel or kind == .scopedModels or kind == .getSystemPrompt) return (if (kind == .model or kind == .thinkingLevel) sdk.agentField(state, @tagName(kind)) else sdk.get(engine, state.data, if (kind == .getSystemPrompt) "systemPrompt" else @tagName(kind))) catch |err| return publicationFailure(engine, err);
+            if (kind == .abort or kind == .shutdown) {
+                @import("native_sdk_ui_context.zig").action(engine, data[session_offset], kind == .abort) catch |err| return publicationFailure(engine, err);
+                return c.pi_js_undefined();
+            }
+            if (kind == .isIdle) return c.pi_js_bool(context, @intFromBool(!state.running));
+            if (kind == .signal) return sdk.get(engine, state.data, "promptSignal") catch |err| return publicationFailure(engine, err);
             if (kind == .ui or kind == .mode or kind == .hasUI) {
                 const ui = @import("native_sdk_ui_context.zig");
                 return (switch (kind) {
@@ -1573,6 +1633,7 @@ pub const Bindings = struct {
     }
 
     fn contextValue(self: *Bindings, kind: ContextMethod, snapshot: c.JSValue, args: []c.JSValue) !c.JSValue {
+        if (kind == .abort or kind == .shutdown) return error.NativeSDKContextUnavailable;
         if (kind == .signal) return if (self.invocation_signal) |signal| c.JS_DupValue(self.engine.context, signal) else c.pi_js_undefined();
         if (kind == .getLeafEntry or kind == .getEntry or kind == .getLabel or kind == .getBranch or kind == .buildContextEntries or kind == .getTree or kind == .buildSessionProjection) return self.sessionApi(kind, snapshot, args);
         if (kind == .sessionManager) {
@@ -1595,7 +1656,7 @@ pub const Bindings = struct {
             .scopedModels => "scopedModels",
             .modelRegistry => unreachable,
             .thinkingLevel => "thinkingLevel",
-            .signal => unreachable,
+            .signal, .abort, .shutdown => unreachable,
             .ui => unreachable,
             .isIdle => "idle",
             .isProjectTrusted => "projectTrusted",
@@ -1849,6 +1910,11 @@ pub const Bindings = struct {
     /// SDK emit follows JavaScript await boundaries without recursively running
     /// unrelated jobs on a native stack. The handler list is snapshotted once.
     pub fn invokeSdkHookPromise(self: *Bindings, name: []const u8, payload_json: []const u8, session: c.JSValue, stale: bool) !c.JSValue {
+        const event = try self.parseJson(payload_json, "sdk-extension-hook");
+        defer self.engine.freeValue(event);
+        return self.invokeSdkHookValue(name, event, session, stale);
+    }
+    pub fn invokeSdkHookValue(self: *Bindings, name: []const u8, event: c.JSValue, session: c.JSValue, stale: bool) !c.JSValue {
         try self.beginActions();
         const sdk = @import("native_sdk.zig");
         const state = try sdk.object(self.engine);
@@ -1860,8 +1926,6 @@ pub const Bindings = struct {
         try sdk.put(self.engine, state, "promiseThen", c.JS_DupValue(self.engine.context, self.ui_manager.components.promise_then));
         const accepts_results = std.mem.eql(u8, name, "session_before_switch") or std.mem.eql(u8, name, "session_before_fork") or std.mem.eql(u8, name, "session_before_compact") or std.mem.eql(u8, name, "session_before_tree");
         try sdk.put(self.engine, state, "acceptResults", c.pi_js_bool(self.engine.context, @intFromBool(accepts_results)));
-        const event = try self.parseJson(payload_json, "sdk-extension-hook");
-        defer self.engine.freeValue(event);
         try sdk.put(self.engine, event, "type", try sdk.text(self.engine, name));
         try sdk.put(self.engine, state, "event", c.JS_DupValue(self.engine.context, event));
         try sdk.put(self.engine, state, "context", if (stale) try self.createStaleContext() else try self.createContext());

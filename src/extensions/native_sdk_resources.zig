@@ -189,6 +189,13 @@ pub fn emit(engine: *engine_mod.Engine, resources: c.JSValue, session_data: c.JS
     engine.freeValue(result);
 }
 pub fn emitAsync(engine: *engine_mod.Engine, resources: c.JSValue, session_data: c.JSValue, event: []const u8, payload: []const u8) !c.JSValue {
+    const terminated = try engine.gpa.dupeZ(u8, payload);
+    defer engine.gpa.free(terminated);
+    const parsed = try engine.checked(c.JS_ParseJSON(engine.context, terminated.ptr, payload.len, "sdk-resource-event"));
+    defer engine.freeValue(parsed);
+    return emitValue(engine, resources, session_data, event, parsed);
+}
+pub fn emitValue(engine: *engine_mod.Engine, resources: c.JSValue, session_data: c.JSValue, event: []const u8, payload: c.JSValue) !c.JSValue {
     const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return sdk.promise(engine, c.pi_js_undefined())));
     _ = resources;
     const ids = try @import("native_sdk_resource_owners.zig").sessionOwnerIds(engine, session_data);
@@ -206,7 +213,9 @@ pub fn emitAsync(engine: *engine_mod.Engine, resources: c.JSValue, session_data:
     try sdk.put(engine, context, "cwd", try sdk.invoke(engine, manager, "getCwd", &.{}));
     try sdk.put(engine, context, "sessionId", try sdk.invoke(engine, manager, "getSessionId", &.{}));
     try sdk.put(engine, context, "sessionEntries", try sdk.invoke(engine, manager, "getEntries", &.{}));
-    try sdk.put(engine, context, "model", try sdk.get(engine, session_data, "model"));
+    // SDK ctx.model is read from its captured genuine session by the native
+    // accessor. Serializing the model here would invoke guest getters that
+    // the Source context constructor does not observe, and lose VM identity.
     try sdk.put(engine, context, "thinkingLevel", try sdk.get(engine, session_data, "thinkingLevel"));
     try sdk.put(engine, context, "activeTools", try sdk.get(engine, session_data, "activeTools"));
     try sdk.put(engine, context, "systemPrompt", try sdk.get(engine, session_data, "systemPrompt"));
@@ -223,7 +232,7 @@ pub fn emitAsync(engine: *engine_mod.Engine, resources: c.JSValue, session_data:
         var integer: i64 = 0;
         if (c.JS_ToInt64(engine.context, &integer, id) < 0) return error.JavaScriptException;
         const binding = try group.selected(@intCast(integer));
-        const next = try @import("native_sdk_events.zig").emitOne(engine, binding, session, if (lease) |live| .{ .session = session, .registry = registry, .manager = manager, .lease = live } else null, raw, event, payload, pending);
+        const next = try @import("native_sdk_events.zig").emitOneValue(engine, binding, session, if (lease) |live| .{ .session = session, .registry = registry, .manager = manager, .lease = live } else null, raw, event, payload, pending);
         if (pending) |value| engine.freeValue(value);
         pending = next;
     }

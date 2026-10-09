@@ -1,0 +1,44 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "name": "setThinkingLevel",
+      "model": "a",
+      "thinking": "high",
+      "active": []
+    },
+    {
+      "name": "setSessionName",
+      "model": "a",
+      "thinking": "high",
+      "sessionName": "after-dispose",
+      "active": []
+    },
+    {
+      "name": "setActiveToolsByName",
+      "model": "a",
+      "thinking": "high",
+      "sessionName": "after-dispose",
+      "active": []
+    },
+    {
+      "name": "setModel",
+      "model": "b",
+      "thinking": "medium",
+      "sessionName": "after-dispose",
+      "active": []
+    }
+  ],
+  "events": [
+    {
+      "type": "thinking_level_select",
+      "level": "high",
+      "previous": "low"
+    },
+    {
+      "type": "thinking_level_select",
+      "level": "medium",
+      "previous": "high"
+    }
+  ]
+}

@@ -894,6 +894,18 @@ pub fn build(b: *std.Build) void {
     const async_scope_run = b.addRunArtifact(async_scope_tests);
     b.step("test-native-async-scope", "Prove four private promise and timer execution scopes").dependOn(&async_scope_run.step);
     test_step.dependOn(&async_scope_run.step);
+    const sdk_public_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_public_session_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public"}, .use_llvm = use_llvm });
+    const sdk_public_allocation_range = b.option(u8, "sdk-public-allocation-range", "SDK public model and thenable exhaustive allocation range 0..7; omit to run all indices");
+    if (sdk_public_allocation_range) |range| if (range >= 8) @panic("SDK public allocation range must be 0..7");
+    const sdk_public_options = b.addOptions();
+    sdk_public_options.addOption(?u8, "range", sdk_public_allocation_range);
+    sdk_public_tests.root_module.addOptions("sdk_public_allocation_options", sdk_public_options);
+    linkQuickJs(b, sdk_public_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, sdk_public_tests.root_module);
+    sdk_public_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const sdk_public_run = b.addRunArtifact(sdk_public_tests);
+    b.step("test-native-sdk-public-session", "Replay actual Source SDK session mutations and observable effects").dependOn(&sdk_public_run.step);
+    test_step.dependOn(&sdk_public_run.step);
     const sdk_ui_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_ui_context_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK UI"}, .use_llvm = use_llvm });
     const sdk_ui_allocation_range = b.option(u8, "sdk-ui-allocation-range", "SDK UI exhaustive host allocation range 0..7; omit to run all indices");
     if (sdk_ui_allocation_range) |range| if (range >= 8) @panic("SDK UI allocation range must be 0..7");
