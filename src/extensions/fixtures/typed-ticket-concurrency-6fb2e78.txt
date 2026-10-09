@@ -7,7 +7,7 @@ await new Promise(resolve=>{barrier.push(resolve);started++;if(started===4&&mark
 if(context.state.late)setTimeout(()=>{lateBookkeeping++;try{pi.setSessionName('late-'+id)}catch{lateBlocked++}try{globalThis.ticketUi?.notify('late-'+id)}catch{lateUiBlocked++}},20);
 await new Promise((resolve,reject)=>{if(signal.aborted){aborts++;reject(Error('aborted'));return}signal.addEventListener('abort',()=>{aborts++;reject(Error('aborted'))},{once:true});setTimeout(resolve,30)});
 await Promise.resolve();if(pi.getSettings().marker!==marker)throw Error('snapshot changed');globalThis.ticketUi?.notify(marker+':'+id);pi.setSessionName(String(id));finished++;
-return {api:selected.api,provider:selected.provider,model:selected.id,answers:{q:{type:'bool',value:true,probability:1,confidence:1}},stopReason:'stop',timestamp:1,id,marker,canonical:selected===model,receiver:this===provider};
+return {api:selected.api,provider:selected.provider,model:selected.id,answers:{q:{type:'bool',value:true,probability:1,confidence:1}},stopReason:'stop',timestamp:1,id,marker,canonical:selected===model,receiver:this===provider,catalogVisible:pi.getAllTools().some(tool=>tool.name==='remote')};
 }};
 pi.registerProvider(provider);pi.registerCommand('ticket-capture-ui',{handler(_,ctx){globalThis.ticketUi=ctx.ui;return{message:'captured'}}});pi.registerCommand('ticket-state',{handler(){return{message:JSON.stringify({started,aborts,finished,lateBookkeeping,lateBlocked,lateUiBlocked})}}});pi.registerCommand('ticket-release',{handler(){for(const release of barrier)release();return{message:'released'}}});
 }

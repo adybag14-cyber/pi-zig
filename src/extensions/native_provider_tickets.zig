@@ -55,12 +55,17 @@ pub const Ticket = struct {
     }
     pub fn retire(self: *Ticket, reason: []const u8) !void {
         if (self.retired) return;
-        try self.abort();
+        scopes.disable(self.manager.engine, self.scope);
+        const abort_failure: ?anyerror = failure: {
+            self.abort() catch |err| break :failure err;
+            break :failure null;
+        };
         self.closeScope();
         self.retired = true;
         if (self.result) |result| self.manager.engine.gpa.free(result);
         self.result = null;
         if (self.failure == null) self.failure = try self.manager.engine.gpa.dupe(u8, reason);
+        if (abort_failure) |err| return err;
     }
     fn closeScope(self: *Ticket) void {
         if (self.scope_closed) return;
@@ -72,7 +77,12 @@ pub const Ticket = struct {
     }
     fn deinit(self: *Ticket) void {
         const engine = self.manager.engine;
-        self.retire("Native typed provider ticket retired") catch {};
+        // Destruction publishes no diagnostic and must not allocate merely to
+        // discard a completed result. Cleanup remains complete after OOM.
+        scopes.disable(engine, self.scope);
+        self.abort() catch {};
+        self.closeScope();
+        self.retired = true;
         self.ui.pending.deinit(engine.gpa);
         self.ui.customs.deinit(engine.gpa);
         if (self.ui.components) |*components| components.deinit();
@@ -102,7 +112,11 @@ pub const Manager = struct {
         return null;
     }
     pub fn retireOwner(self: *Manager, owner: ?u64) !void {
-        for (self.tickets.items) |ticket| if (owner == null or ticket.owner_id == owner.?) try ticket.retire("Native typed provider owner retired");
+        var failure: ?anyerror = null;
+        for (self.tickets.items) |ticket| if (owner == null or ticket.owner_id == owner.?) ticket.retire("Native typed provider owner retired") catch |err| {
+            if (failure == null) failure = err;
+        };
+        if (failure) |err| return err;
     }
     pub fn begin(self: *Manager, binding: *bindings_mod.Bindings, id: []const u8, request: std.json.ObjectMap) !void {
         const engine = self.engine;

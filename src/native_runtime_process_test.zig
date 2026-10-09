@@ -264,6 +264,8 @@ fn exerciseTypedTicketProcess(mode: TypedTicketProcessMode) !void {
     }
     try std.testing.expectEqual(@as(i64, 4), admitted);
     for (&calls) |*call| try std.testing.expect(!call.done.isSet());
+    const catalog_ack = try publishTypedTicketCatalog(host.native_group_runtime.?, 1);
+    defer gpa.free(catalog_ack);
     // Later view mutations cannot replace either authority captured at begin.
     try views[0].?.setContextJson("{\"nativeRuntimeBound\":true,\"hasUI\":true,\"settings\":{\"marker\":\"CHANGED\"}}");
     views[0].?.setUiBridge(.{ .context = &ui, .request_fn = UiCapture.request, .action_fn = UiCapture.action });
@@ -301,6 +303,7 @@ fn exerciseTypedTicketProcess(mode: TypedTicketProcessMode) !void {
         }
         try std.testing.expectEqualStrings(if (index % 2 == 0) "A" else "B", value.object.get("marker").?.string);
         try std.testing.expect(value.object.get("canonical").?.bool and value.object.get("receiver").?.bool);
+        try std.testing.expect(value.object.get("catalogVisible").?.bool);
         try std.testing.expectEqual(@as(i64, @intCast(index + 1)), value.object.get("id").?.integer);
         const action = result.value.object.get("actionQueue").?.array.items[0];
         var id_buffer: [16]u8 = undefined;
@@ -338,6 +341,48 @@ fn exerciseTypedTicketProcess(mode: TypedTicketProcessMode) !void {
         };
         try std.testing.expect(found);
     }
+    try fixture.noBridge();
+}
+
+fn publishTypedTicketCatalog(owner: *runtime_mod.Runtime, version: u32) ![]u8 {
+    const gpa = std.testing.allocator;
+    var catalog_source = try std.json.parseFromSlice(std.json.Value, gpa, "{\"owners\":[{\"key\":\"91\",\"generation\":\"1\",\"records\":[{\"definitionId\":\"10\",\"parameterId\":\"20\",\"parameterIdentity\":\"remote_json\",\"metadata\":{\"name\":\"remote\",\"description\":\"remote fixture\"},\"parameters\":{\"type\":\"object\",\"properties\":{\"value\":{\"type\":\"string\"}}},\"sourceInfo\":{\"path\":\"builtin:mcp\"},\"sourceInfoId\":\"1\"}]}]}", .{});
+    defer catalog_source.deinit();
+    const generation = try std.fmt.allocPrint(gpa, "{d}", .{owner.owner_generation});
+    defer gpa.free(generation);
+    const frame = try std.json.Stringify.valueAlloc(gpa, .{ .kind = "native_tool_catalog", .version = version, .ownerGeneration = generation, .catalog = catalog_source.value }, .{});
+    defer gpa.free(frame);
+    return owner.invokeGroupRequest(1, frame, null);
+}
+
+test "native runtime private catalog control acknowledges FIFO identity and isolates rejected updates from public context without Node" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('catalog-probe',{handler(){const remote=pi.getAllTools().find(tool=>tool.name==='remote');if(remote)globalThis.oldSchema??=remote.parameters;return {message:JSON.stringify({found:!!remote,description:remote?.description,same:!remote||oldSchema===remote.parameters})}}})");
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    try host.setScriptContextJson("{\"nativeRuntimeBound\":true,\"catalog\":{\"owners\":[{\"key\":\"91\",\"generation\":\"999\",\"records\":[]}]}}");
+    var before = (try host.executeCommand("catalog-probe", "")).?;
+    defer before.deinit(gpa);
+    try std.testing.expectEqualStrings("{\"found\":false,\"same\":true}", before.message.?);
+    const owner = host.native_group_runtime.?;
+    for (0..2) |_| {
+        const ack = try publishTypedTicketCatalog(owner, 1);
+        defer gpa.free(ack);
+        var value = try std.json.parseFromSlice(std.json.Value, gpa, ack, .{});
+        defer value.deinit();
+        try std.testing.expect(value.value.object.get("acknowledged").?.bool);
+        try std.testing.expectEqual(owner.owner_generation, try @import("extensions/component_protocol.zig").identifier(value.value.object.get("ownerGeneration").?));
+        var after = (try host.executeCommand("catalog-probe", "")).?;
+        defer after.deinit(gpa);
+        try std.testing.expectEqualStrings("{\"found\":true,\"description\":\"remote fixture\",\"same\":true}", after.message.?);
+    }
+    try std.testing.expectError(error.JavaScriptExtensionExecutionFailed, publishTypedTicketCatalog(owner, 2));
+    try std.testing.expect(!owner.closed);
+    var retained = (try host.executeCommand("catalog-probe", "")).?;
+    defer retained.deinit(gpa);
+    try std.testing.expectEqualStrings("{\"found\":true,\"description\":\"remote fixture\",\"same\":true}", retained.message.?);
     try fixture.noBridge();
 }
 test "native runtime typed provider owner admits getters only after binding and private auth canonical callback matches Source" {

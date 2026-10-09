@@ -1250,6 +1250,11 @@ pub fn build(b: *std.Build) void {
     typed_ticket_process_run.step.dependOn(b.getInstallStep());
     b.step("test-native-ticket-process", "Prove four real callback admissions with isolated snapshots and individual abort").dependOn(&typed_ticket_process_run.step);
     test_step.dependOn(&typed_ticket_process_run.step);
+    const catalog_control_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime private catalog control"}, .use_llvm = use_llvm });
+    const catalog_control_process_run = b.addRunArtifact(catalog_control_process_tests);
+    catalog_control_process_run.step.dependOn(b.getInstallStep());
+    b.step("test-native-catalog-control-process", "Prove private catalog FIFO acknowledgement and rollback on a real native worker").dependOn(&catalog_control_process_run.step);
+    test_step.dependOn(&catalog_control_process_run.step);
     const late_registration_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_runtime_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native runtime late"},

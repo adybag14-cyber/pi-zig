@@ -10,9 +10,11 @@ const Token = struct {
     activate: Callback,
     deactivate: Callback,
     live: bool = true,
+    enabled: bool = true,
 };
 const State = struct {
     engine: *engine_mod.Engine,
+    gpa: std.mem.Allocator,
     class: c.JSClassID,
     current: c.JSValue,
     stack: [128]c.JSValue = undefined,
@@ -39,7 +41,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     const definition: c.JSClassDef = .{ .class_name = "Native private async scope", .finalizer = finalize };
     if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
     const s = try engine.gpa.create(State);
-    s.* = .{ .engine = engine, .class = class, .current = c.pi_js_undefined() };
+    s.* = .{ .engine = engine, .gpa = engine.gpa, .class = class, .current = c.pi_js_undefined() };
     engine.native_async_scope = s;
     c.JS_SetExecutionContextHook(engine.runtime, hook, s);
 }
@@ -50,7 +52,7 @@ pub fn deinit(engine: *engine_mod.Engine) void {
     engine.freeValue(s.current);
     for (s.stack[0..s.depth]) |value| engine.freeValue(value);
     engine.native_async_scope = null;
-    engine.gpa.destroy(s);
+    s.gpa.destroy(s);
 }
 pub fn create(engine: *engine_mod.Engine, context: ?*anyopaque, activate: Callback, deactivate: Callback) !c.JSValue {
     try install(engine);
@@ -66,7 +68,11 @@ pub fn retire(engine: *engine_mod.Engine, value: c.JSValue) void {
     const token = record(engine, value) orelse return;
     if (token.live) if (state(engine)) |s| if (c.JS_IsStrictEqual(engine.context, s.current, value)) token.deactivate(token.context);
     token.live = false;
+    token.enabled = false;
     token.context = null;
+}
+pub fn disable(engine: *engine_mod.Engine, value: c.JSValue) void {
+    if (record(engine, value)) |token| token.enabled = false;
 }
 pub fn capture(engine: *engine_mod.Engine) c.JSValue {
     return if (state(engine)) |s| c.JS_DupValue(engine.context, s.current) else c.pi_js_undefined();
@@ -77,7 +83,7 @@ pub fn isActive(engine: *engine_mod.Engine) bool {
 pub fn requireLive(engine: *engine_mod.Engine) !void {
     const s = state(engine) orelse return;
     if (s.failed) return error.OutOfMemory;
-    if (record(engine, s.current)) |token| if (!token.live) return error.RetiredNativeAsyncScope;
+    if (record(engine, s.current)) |token| if (!token.live or !token.enabled) return error.RetiredNativeAsyncScope;
 }
 fn switchTo(s: *State, value: c.JSValue) void {
     if (c.JS_IsStrictEqual(s.engine.context, s.current, value)) return;
