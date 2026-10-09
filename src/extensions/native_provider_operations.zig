@@ -173,6 +173,36 @@ pub fn failureResult(engine: *engine_mod.Engine, operation: Operation, model: c.
     try values.put(engine, result, "timestamp", try values.invoke(engine, date, "now", &.{}));
     return result;
 }
+/// Provider failures become typed results at the operation boundary, while
+/// descriptor/owner admission failures remain transport errors.
+pub fn invokeResult(engine: *engine_mod.Engine, registered: *providers.Providers, id: []const u8, provider: []const u8, generation: u64, operation: Operation, model: c.JSValue, context: c.JSValue, options: c.JSValue, signal: c.JSValue, auth_rewrites_model: bool) !c.JSValue {
+    try registered.validate(id, provider, generation);
+    return invoke(engine, registered, id, provider, generation, operation, model, context, options, signal, auth_rewrites_model) catch |err| {
+        if (err != error.JavaScriptException or engine.captured_exception == null) return err;
+        const exception = engine.captured_exception.?;
+        const diagnostic = if (c.JS_IsError(exception)) try values.get(engine, exception, "message") else blk: {
+            const text = try engine.toString(exception);
+            defer engine.gpa.free(text);
+            break :blk try engine.checked(c.JS_NewStringLen(engine.context, text.ptr, text.len));
+        };
+        defer engine.freeValue(diagnostic);
+        const aborted = try values.get(engine, signal, "aborted");
+        defer engine.freeValue(aborted);
+        const result = try values.object(engine);
+        errdefer engine.freeValue(result);
+        for ([_][:0]const u8{ "api", "provider" }) |field| try values.put(engine, result, field, try values.get(engine, model, field));
+        try values.put(engine, result, "model", try values.get(engine, model, "id"));
+        try values.put(engine, result, if (operation == .classify) "answers" else "output", if (operation == .classify) try values.object(engine) else try values.array(engine));
+        try values.put(engine, result, "stopReason", try engine.checked(c.JS_NewString(engine.context, if (c.JS_ToBool(engine.context, aborted) == 1) "aborted" else "error")));
+        try values.put(engine, result, "errorMessage", c.JS_DupValue(engine.context, diagnostic));
+        const global = c.JS_GetGlobalObject(engine.context);
+        defer engine.freeValue(global);
+        const date = try values.get(engine, global, "Date");
+        defer engine.freeValue(date);
+        try values.put(engine, result, "timestamp", try values.invoke(engine, date, "now", &.{}));
+        return result;
+    };
+}
 
 fn exerciseOwner(gpa: std.mem.Allocator) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});

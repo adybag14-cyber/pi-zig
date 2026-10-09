@@ -6,10 +6,13 @@ const native_ui = @import("native_ui.zig");
 const native_renderers = @import("native_renderers.zig");
 const abort_signal = @import("abort_signal.zig");
 const activation_mod = @import("tool_activation.zig");
+const tool_catalog = @import("native_tool_catalog.zig");
+const vm = @import("native_values.zig");
 const c = engine_mod.c;
 
 pub const Entry = struct { id: u64, source: []u8, binding: *bindings_mod.Bindings };
 pub const Group = struct {
+    pub const NativeToolCatalogFn = *const fn (?*anyopaque, *bindings_mod.Bindings, *tool_catalog.CatalogSink) anyerror!void;
     provider_catalog_clock: u64 = 0,
     sdk_availability: @import("native_sdk_availability_protocol.zig").Store = .{},
     engine: *engine_mod.Engine,
@@ -31,6 +34,10 @@ pub const Group = struct {
     external_tools: std.ArrayList([]const u8) = .empty,
     actions_fn: ?*const fn (?*anyopaque, u64, []const u8) anyerror!void = null,
     actions_context: ?*anyopaque = null,
+    native_tool_catalog_fn: ?NativeToolCatalogFn = null,
+    native_tool_catalog_context: ?*anyopaque = null,
+    native_wire_catalog_state: ?*anyopaque = null,
+    native_tool_catalog_cache: tool_catalog.Cache,
 
     pub fn init(engine: *engine_mod.Engine) !*Group {
         if (engine.host_data != null or engine.native_ui_manager != null) return error.NativeGroupAlreadyAttached;
@@ -40,7 +47,7 @@ pub const Group = struct {
         const renderers = try native_renderers.Manager.init(engine);
         errdefer renderers.deinit();
         const self = try engine.gpa.create(Group);
-        self.* = .{ .engine = engine, .ui = ui, .renderers = renderers, .activation = activation_mod.Tracker.init(engine.gpa, 1) };
+        self.* = .{ .engine = engine, .ui = ui, .renderers = renderers, .activation = activation_mod.Tracker.init(engine.gpa, 1), .native_tool_catalog_cache = .init(engine) };
         renderers.replay_fn = replay;
         renderers.replay_context = self;
         engine.native_sdk_extension_group = self;
@@ -72,7 +79,21 @@ pub const Group = struct {
         if (self.selection_context) |*context| context.deinit();
         for (self.external_tools.items) |name| self.engine.gpa.free(name);
         self.external_tools.deinit(self.engine.gpa);
+        self.native_tool_catalog_cache.deinit();
+        @import("native_tool_catalog_wire.zig").deinit(self);
         self.engine.gpa.destroy(self);
+    }
+
+    /// Native-only producer admission. The callback resolves the actual caller
+    /// and, when present, its exact private SDK lease before appending records.
+    pub fn setNativeToolCatalog(self: *Group, context: ?*anyopaque, callback: NativeToolCatalogFn) !void {
+        if (self.deinitializing) return error.StaleNativeExtensionOwner;
+        try @import("native_tool_parameters.zig").initialize(self.engine);
+        self.native_tool_catalog_context = context;
+        self.native_tool_catalog_fn = callback;
+    }
+    pub fn retireNativeToolCatalog(self: *Group, scope: tool_catalog.OwnerScope) void {
+        self.native_tool_catalog_cache.retire(scope);
     }
 
     pub fn add(self: *Group, path: []const u8) !*bindings_mod.Bindings {
@@ -435,6 +456,7 @@ pub const Group = struct {
     fn catalog(context: ?*anyopaque, caller: *bindings_mod.Bindings, kind: bindings_mod.Bindings.CatalogKind) !c.JSValue {
         const self: *Group = @ptrCast(@alignCast(context.?));
         if (self.deinitializing) return error.StaleNativeExtensionOwner;
+        if (kind == .tools) return self.toolCatalog(caller);
         var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
         defer arena.deinit();
         const allocator = arena.allocator();
@@ -512,6 +534,117 @@ pub const Group = struct {
         return self.engine.fromJsonValue(.{ .array = values });
     }
 
+    const ToolCatalogRegistration = struct { name: []u8, value: c.JSValue, source_info: c.JSValue };
+    const ToolExposureContext = struct { group: *Group, native_rows: c.JSValue };
+    fn toolExposure(raw: ?*anyopaque, name: c.JSValue) !c.JSValue {
+        const context: *ToolExposureContext = @ptrCast(@alignCast(raw.?));
+        const self = context.group;
+        if (self.deinitializing) return error.StaleNativeExtensionOwner;
+        if (!c.JS_IsString(name)) return c.pi_js_undefined();
+        const label = try self.engine.toString(name);
+        defer self.engine.gpa.free(label);
+        if (self.tool(label)) |definition| {
+            const retained = c.JS_DupValue(self.engine.context, definition);
+            defer self.engine.freeValue(retained);
+            return vm.get(self.engine, retained, "exposure");
+        }
+        for (0..try vm.length(self.engine, context.native_rows)) |index| {
+            const row = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, context.native_rows, @intCast(index)));
+            defer self.engine.freeValue(row);
+            const row_name = try vm.get(self.engine, row, "name");
+            defer self.engine.freeValue(row_name);
+            if (c.JS_IsStrictEqual(self.engine.context, row_name, name)) return vm.get(self.engine, row, "exposure");
+        }
+        return c.pi_js_undefined();
+    }
+    fn toolCatalog(self: *Group, caller: *bindings_mod.Bindings) !c.JSValue {
+        // selected() and the rooted API owner token provide actual runtime
+        // membership. Context JSON cannot choose a foreign metadata owner.
+        if (try self.selected(caller.owner_id) != caller) return error.StaleNativeExtensionOwner;
+        // Snapshot original definition/source references before ANY metadata
+        // getters run. No raw Bindings pointer survives a reentrant unload.
+        var registrations: std.ArrayList(ToolCatalogRegistration) = .empty;
+        defer {
+            for (registrations.items) |entry| {
+                self.engine.gpa.free(entry.name);
+                self.engine.freeValue(entry.value);
+                self.engine.freeValue(entry.source_info);
+            }
+            registrations.deinit(self.engine.gpa);
+        }
+        for (self.entries.items) |entry| for (entry.binding.tool_order.items) |name| if (entry.binding.tools.get(name)) |value| {
+            const source = try entry.binding.sourceInfoValue();
+            const owned_name = try self.engine.gpa.dupe(u8, name);
+            const retained = c.JS_DupValue(self.engine.context, value);
+            const source_info = c.JS_DupValue(self.engine.context, source);
+            registrations.append(self.engine.gpa, .{ .name = owned_name, .value = retained, .source_info = source_info }) catch |err| {
+                self.engine.gpa.free(owned_name);
+                self.engine.freeValue(retained);
+                self.engine.freeValue(source_info);
+                return err;
+            };
+        };
+        const result = if (self.native_tool_catalog_fn) |feed| blk: {
+            var sink = try tool_catalog.CatalogSink.init(&self.native_tool_catalog_cache);
+            defer sink.deinit();
+            try feed(self.native_tool_catalog_context, caller, &sink);
+            break :blk try sink.finish();
+        } else blk: {
+            const rows = try vm.array(self.engine);
+            errdefer self.engine.freeValue(rows);
+            const snapshot = try caller.toolCatalogSnapshot();
+            defer self.engine.freeValue(snapshot);
+            var count: u32 = 0;
+            for (0..try vm.length(self.engine, snapshot)) |index| {
+                const value = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, snapshot, @intCast(index)));
+                defer self.engine.freeValue(value);
+                const source = try vm.get(self.engine, value, "source");
+                defer self.engine.freeValue(source);
+                if (c.JS_IsString(source)) {
+                    const label = try self.engine.toString(source);
+                    defer self.engine.gpa.free(label);
+                    if (std.mem.eql(u8, label, "extension")) continue;
+                }
+                const source_info = try vm.get(self.engine, value, "sourceInfo");
+                defer self.engine.freeValue(source_info);
+                const row = try @import("native_tool_info.zig").project(self.engine, value, source_info, null);
+                if (c.JS_SetPropertyUint32(self.engine.context, rows, count, row) < 0) return error.JavaScriptException;
+                count += 1;
+            }
+            break :blk rows;
+        };
+        errdefer self.engine.freeValue(result);
+        var exposure_context: ToolExposureContext = .{ .group = self, .native_rows = result };
+        var seen: std.StringHashMapUnmanaged(void) = .empty;
+        defer seen.deinit(self.engine.gpa);
+        var count: u32 = @intCast(try vm.length(self.engine, result));
+        for (registrations.items) |entry| {
+            if (seen.contains(entry.name)) continue;
+            try seen.put(self.engine.gpa, entry.name, {});
+            const row = try @import("native_tool_info.zig").project(self.engine, entry.value, entry.source_info, .{ .context = &exposure_context, .read = toolExposure });
+            var row_consumed = false;
+            errdefer if (!row_consumed) self.engine.freeValue(row);
+            var found: ?u32 = null;
+            for (0..count) |index| {
+                const existing = try self.engine.checked(c.JS_GetPropertyUint32(self.engine.context, result, @intCast(index)));
+                defer self.engine.freeValue(existing);
+                const name_value = try vm.get(self.engine, existing, "name");
+                defer self.engine.freeValue(name_value);
+                if (!c.JS_IsString(name_value)) continue;
+                const name = try self.engine.toString(name_value);
+                defer self.engine.gpa.free(name);
+                if (std.mem.eql(u8, name, entry.name)) {
+                    found = @intCast(index);
+                    break;
+                }
+            }
+            row_consumed = true;
+            if (c.JS_SetPropertyUint32(self.engine.context, result, found orelse count, row) < 0) return error.JavaScriptException;
+            if (found == null) count += 1;
+        }
+        return result;
+    }
+
     pub fn manifest(self: *Group) ![]u8 {
         try self.initializeActivation();
         for (0..64) |_| {
@@ -545,6 +678,67 @@ pub const Group = struct {
         return std.json.Stringify.valueAlloc(self.engine.gpa, std.json.Value{ .array = entries }, .{});
     }
 };
+
+test "native group ToolInfo schema and metadata references match actual Source SDK session and builtin identity predicates" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const group = try Group.init(engine);
+    defer group.deinit();
+    const owner = try group.add("<sdk:fixture_identity>");
+    try owner.installSchemas();
+    const code = try @import("native_tool_parameters.zig").get(engine, .codemode, .null);
+    defer engine.freeValue(code);
+    const search = try @import("native_tool_parameters.zig").get(engine, .tool_search, .null);
+    defer engine.freeValue(search);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try vm.put(engine, global, "fixtureCodeParameters", c.JS_DupValue(engine.context, code));
+    try vm.put(engine, global, "fixtureSearchParameters", c.JS_DupValue(engine.context, search));
+    const Feed = struct {
+        code: std.json.Value,
+        search: std.json.Value,
+        source: std.json.Value,
+        fn call(raw: ?*anyopaque, _: *bindings_mod.Bindings, sink: *tool_catalog.CatalogSink) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            const scope: tool_catalog.OwnerScope = .{ .owner = self, .generation = 1 };
+            try sink.beginScope(scope);
+            try sink.append(.{ .scope = scope, .definition_id = 1, .parameter_identity = .codemode, .metadata = self.code, .parameters = .null, .source_info = self.source });
+            try sink.append(.{ .scope = scope, .definition_id = 2, .parameter_identity = .tool_search, .metadata = self.search, .parameters = .null, .source_info = self.source });
+        }
+    };
+    const data = try std.json.parseFromSlice(std.json.Value, engine.gpa, "[{\"name\":\"codemode\",\"description\":\"fixture code\",\"exposure\":\"model-only\"},{\"name\":\"tool_search\",\"description\":\"fixture search\",\"exposure\":\"model-only\"},{\"path\":\"builtin:mcp\"}]", .{});
+    defer data.deinit();
+    var feed: Feed = .{ .code = data.value.array.items[0], .search = data.value.array.items[1], .source = data.value.array.items[2] };
+    try group.setNativeToolCatalog(&feed, Feed.call);
+    owner.loadFactory(
+        \\import * as Type from 'typebox';
+        \\export default pi=>{
+        \\ if(typeof Type.Object!=='function'||typeof Type.String!=='function'||typeof pi.registerTool!=='function'||typeof pi.registerCommand!=='function')throw Error('ToolInfo fixture functions: '+[typeof Type.Object,typeof Type.String,typeof pi.registerTool,typeof pi.registerCommand].join(','));
+        \\ const parameters=Type.Object({value:Type.String()}),guidelines=['fixture guideline'],annotations={readOnlyHint:true,nested:{value:1}},namespace={name:'fixture_namespace',description:'fixture namespace'},definition={name:'fixture_identity',description:'original description',parameters,promptGuidelines:guidelines,annotations,namespace,execute:async()=>({content:[]})};
+        \\ globalThis.fixtureDefinition=definition;globalThis.fixtureApi=pi;pi.registerTool(definition);
+        \\ pi.registerCommand('inspect',{handler(){
+        \\ const first=pi.getAllTools(),second=pi.getAllTools(),a=first.find(t=>t.name===definition.name),b=second.find(t=>t.name===definition.name),isCode=t=>t.name==='codemode'&&t.parameters===fixtureCodeParameters,isSearch=t=>t.name==='tool_search'&&t.parameters===fixtureSearchParameters;
+        \\ const output={keys:Object.keys(a),arraysDistinct:first!==second,infosDistinct:a!==b,definition:fixtureRegisteredSame,parameters:a.parameters===parameters&&b.parameters===parameters,guidelines:a.promptGuidelines===guidelines&&b.promptGuidelines===guidelines,namespace:a.namespace===namespace,annotationsCopy:a.annotations!==annotations&&a.annotations!==b.annotations,annotationsNested:a.annotations.nested===annotations.nested,sourceInfo:a.sourceInfo===b.sourceInfo,hiddenKind:Object.getOwnPropertyDescriptor(a.parameters,'~kind').enumerable===false,codemode:pi.getAllTools().some(isCode),toolSearch:pi.getAllTools().some(isSearch),impostors:[isCode({name:'codemode',parameters:JSON.parse(JSON.stringify(fixtureCodeParameters))}),isSearch({name:'tool_search',parameters:JSON.parse(JSON.stringify(fixtureSearchParameters))})]};
+        \\ a.name='changed row';a.parameters.properties.value.description='shared schema mutation';a.promptGuidelines.push('shared guideline');a.annotations.readOnlyHint=false;a.annotations.nested.value=2;output.mutations={definitionName:definition.name,parameterDescription:parameters.properties.value.description,guidelines,annotationTop:annotations.readOnlyHint,annotationNested:annotations.nested.value,next:pi.getAllTools().find(t=>t.name===definition.name).parameters===parameters};return output;
+        \\ }});
+        \\};
+    , "<sdk:fixture_identity>") catch |err| {
+        std.debug.print("ToolInfo source fixture factory: {s}\n", .{engine.last_error orelse @errorName(err)});
+        return err;
+    };
+    const definition = try vm.get(engine, global, "fixtureDefinition");
+    defer engine.freeValue(definition);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, owner.tools.get("fixture_identity").?, definition));
+    try vm.put(engine, global, "fixtureRegisteredSame", c.pi_js_bool(engine.context, 1));
+    try owner.setContext("{\"nativeRuntimeBound\":true}");
+    const result = try owner.invokeCommand("inspect", "");
+    defer engine.gpa.free(result);
+    const parsed = try std.json.parseFromSlice(std.json.Value, engine.gpa, result, .{});
+    defer parsed.deinit();
+    const text = try std.json.Stringify.valueAlloc(engine.gpa, parsed.value, .{});
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("../durable/fixtures/sdk-toolinfo-schema-identity-1ced.json"), "\r\n "), text);
+}
 
 test "native group retains real resolver base component state identity and action origin across extension callbacks" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});

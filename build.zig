@@ -270,6 +270,14 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    const catalog_wire_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_tool_catalog_wire_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"private native catalog"} });
+    catalog_wire_tests.root_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, catalog_wire_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, catalog_wire_tests.root_module, typescript_parser);
+    linkDurable(b, catalog_wire_tests.root_module);
+    const run_catalog_wire_tests = b.addRunArtifact(catalog_wire_tests);
+    b.step("test-native-tool-catalog-wire", "Exercise private native catalog admission and lifetime control").dependOn(&run_catalog_wire_tests.step);
+    test_step.dependOn(&run_catalog_wire_tests.step);
     const theme_schema_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/theme_schema_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
     const run_theme_schema_tests = b.addRunArtifact(theme_schema_tests);
     theme_schema_tests.root_module.link_libc = true;
@@ -1011,6 +1019,31 @@ pub fn build(b: *std.Build) void {
     const native_layout_run = b.addRunArtifact(native_layout_tests);
     b.step("test-native-layout", "Replay original public component layouts caches and callback lifecycle").dependOn(&native_layout_run.step);
     test_step.dependOn(&native_layout_run.step);
+    const native_terminal_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_terminal_image_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Source6fb terminal capabilities"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, native_terminal_tests.root_module, quickjs, sqlite_lib_dir);
+    const native_terminal_run = b.addRunArtifact(native_terminal_tests);
+    b.step("test-native-terminal-capabilities", "Replay Source environment capability cache and admitted terminal context").dependOn(&native_terminal_run.step);
+    test_step.dependOn(&native_terminal_run.step);
+    const project_context_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/project_context_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const native_project_context_module = b.createModule(.{ .root_source_file = b.path("src/native_project_context_test.zig"), .target = target, .optimize = optimize });
+    native_project_context_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, native_project_context_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, native_project_context_module);
+    const native_project_context_tests = b.addTest(.{ .root_module = native_project_context_module, .use_llvm = use_llvm, .filters = &.{"Source f1 SDK"} });
+    const project_context_step = b.step("test-project-context", "Replay current upstream context files and native SDK resource projection");
+    const project_context_run = b.addRunArtifact(project_context_tests);
+    const native_project_context_run = b.addRunArtifact(native_project_context_tests);
+    project_context_step.dependOn(&project_context_run.step);
+    project_context_step.dependOn(&native_project_context_run.step);
+    test_step.dependOn(&project_context_run.step);
+    test_step.dependOn(&native_project_context_run.step);
     const native_input_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_input_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{ "Source6fb public Input", "native JS UTF16" },
@@ -1075,6 +1108,18 @@ pub fn build(b: *std.Build) void {
     const theme_state_step = b.step("test-theme-state", "Prove cached theme snapshot ownership and explicit empty reports without terminal I/O");
     theme_state_step.dependOn(&run_theme_state_tests.step);
     test_step.dependOn(&run_theme_state_tests.step);
+    const toolinfo_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_bindings_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "ToolInfo", "native catalog", "canonical builtin schemas" },
+        .use_llvm = use_llvm,
+    });
+    toolinfo_tests.root_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, toolinfo_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, toolinfo_tests.root_module);
+    const run_toolinfo_tests = b.addRunArtifact(toolinfo_tests);
+    const toolinfo_test_step = b.step("test-native-toolinfo", "Check source ToolInfo references and owned native catalog generations");
+    toolinfo_test_step.dependOn(&run_toolinfo_tests.step);
+    test_step.dependOn(&run_toolinfo_tests.step);
     const filesystem_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/node_fs.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,

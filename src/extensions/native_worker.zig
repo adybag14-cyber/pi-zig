@@ -25,7 +25,7 @@ const c = engine_mod.c;
 const provider_tickets = @import("native_provider_tickets.zig");
 
 const WireRecord = struct {
-    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, context_invalidate, provider_ticket_retire, shutdown };
+    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, context_invalidate, provider_ticket_retire, native_tool_catalog, shutdown };
     bytes: []u8,
     kind: Kind = .request,
 };
@@ -102,6 +102,7 @@ const Transport = struct {
         if (std.mem.eql(u8, kind.string, "terminal_input")) return .terminal_input;
         if (std.mem.eql(u8, kind.string, "context_invalidate")) return .context_invalidate;
         if (std.mem.eql(u8, kind.string, "provider_ticket_retire")) return .provider_ticket_retire;
+        if (std.mem.eql(u8, kind.string, "native_tool_catalog")) return .native_tool_catalog;
         return .request;
     }
 
@@ -268,7 +269,7 @@ const Transport = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.records.items, 0..) |record, index| {
-            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or record.kind == .terminal_input or record.kind == .context_invalidate or record.kind == .provider_ticket_retire or (self.active and record.kind == .shutdown and index == 0)) {
+            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or record.kind == .terminal_input or record.kind == .context_invalidate or record.kind == .provider_ticket_retire or record.kind == .native_tool_catalog or (self.active and record.kind == .shutdown and index == 0)) {
                 const removed = self.records.orderedRemove(index);
                 self.queued_bytes -= removed.bytes.len;
                 return removed;
@@ -299,6 +300,11 @@ const Transport = struct {
             var arena: std.heap.ArenaAllocator = .init(engine.gpa);
             defer arena.deinit();
             const request = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{});
+            if (record.kind == .native_tool_catalog) {
+                try self.applyNativeToolCatalog(request);
+                dispatched = true;
+                continue;
+            }
             if (record.kind == .provider_ticket_retire) {
                 try self.retireTicket(request);
                 dispatched = true;
@@ -466,6 +472,25 @@ const Transport = struct {
         if (ticket.owner_id != extension) return error.NativeProviderTicketOwnerMismatch;
         try ticket.retire("Native typed provider caller retired");
         manager.consume(ticket);
+    }
+    fn applyNativeToolCatalog(self: *Transport, request: std.json.Value) !void {
+        if (request != .object) return error.InvalidNativeToolCatalogControl;
+        const id = try component_protocol.identifier(request.object.get("invocationId") orelse return error.InvalidNativeToolCatalogControl);
+        const failure: ?anyerror = outcome: {
+            const version = request.object.get("version") orelse break :outcome error.InvalidNativeToolCatalogVersion;
+            if (version != .integer or version.integer != 1) break :outcome error.InvalidNativeToolCatalogVersion;
+            const owner = component_protocol.identifier(request.object.get("ownerGeneration") orelse break :outcome error.InvalidNativeToolCatalogOwner) catch |err| break :outcome err;
+            if (owner != self.group.renderers.owner_generation) break :outcome error.NativeToolCatalogOwnerRetired;
+            @import("native_tool_catalog_wire.zig").apply(self.engine, self.group, request.object) catch |err| break :outcome err;
+            break :outcome null;
+        };
+        try self.writer.print("\x1e{{\"ok\":{s},\"invocationId\":\"{d}\",", .{ if (failure == null) "true" else "false", id });
+        if (failure) |err| {
+            try self.writer.writeAll("\"error\":");
+            try std.json.Stringify.value(@errorName(err), .{}, self.writer);
+        } else try self.writer.print("\"result\":{{\"acknowledged\":true,\"ownerGeneration\":\"{d}\"}}", .{self.group.renderers.owner_generation});
+        try self.writer.writeAll("}\n");
+        try self.writer.flush();
     }
     fn widgetControl(self: *Transport, request: std.json.Value) !void {
         if (request != .object) return error.InvalidWidgetControl;
@@ -1438,6 +1463,10 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         if (try transport.persistentControl(record.kind, request)) continue;
         if (record.kind == .provider_ticket_retire) {
             try transport.retireTicket(request);
+            continue;
+        }
+        if (record.kind == .native_tool_catalog) {
+            try transport.applyNativeToolCatalog(request);
             continue;
         }
         const kind = requiredText(request.object, "kind") catch |err| {

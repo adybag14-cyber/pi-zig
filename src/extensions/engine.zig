@@ -114,6 +114,7 @@ pub const Engine = struct {
     native_namespace_counter: u64 = 0,
     native_tool_validator_cache: ?c.JSValue = null,
     native_tool_legacy_symbol: ?c.JSValue = null,
+    native_tool_parameter_constants: [4]?c.JSValue = .{null} ** 4,
     native_typebox_hash_accumulator: u64 = 14695981039346656037,
     native_typebox_literal_error: ?c.JSValue = null,
     native_typebox_literal_base: ?c.JSValue = null,
@@ -196,6 +197,7 @@ pub const Engine = struct {
         if (self.native_sdk_model_bridge_registry) |value| self.freeValue(value);
         if (self.native_tool_validator_cache) |cache| self.freeValue(cache);
         if (self.native_tool_legacy_symbol) |symbol| self.freeValue(symbol);
+        for (self.native_tool_parameter_constants) |value| if (value) |constant| self.freeValue(constant);
         if (self.native_typebox_literal_error) |constructor| self.freeValue(constructor);
         if (self.native_typebox_literal_base) |constructor| self.freeValue(constructor);
         if (self.native_typebox_literal_stack) |getter| self.freeValue(getter);

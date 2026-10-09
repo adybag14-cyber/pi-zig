@@ -65,8 +65,19 @@ pub fn discoverTrusted(
         append_parts.deinit(gpa);
     }
 
+    var instructions = try @import("project_context.zig").load(gpa, io, cwd, global_dir, trust_project);
+    defer instructions.deinit(gpa);
+    for (instructions.items) |item| {
+        const path = try gpa.dupe(u8, item.path);
+        errdefer gpa.free(path);
+        const content = try gpa.dupe(u8, item.content);
+        errdefer gpa.free(content);
+        const name = std.fs.path.basename(path);
+        const kind: ContextKind = if (std.mem.eql(u8, name, "AGENTS.override.md")) .agents_override else if (std.ascii.eqlIgnoreCase(name, "AGENTS.md")) .agents else .claude;
+        try files.append(gpa, .{ .path = path, .content = content, .kind = kind });
+    }
+
     if (global_dir) |gdir| {
-        _ = try tryLoadDirectoryContext(gpa, io, gdir, &files);
         if (try loadOptional(gpa, io, gdir, "SYSTEM.md")) |s| {
             if (system_override) |old| gpa.free(old);
             system_override = s;
@@ -82,7 +93,6 @@ pub fn discoverTrusted(
         var depth: usize = 0;
 
         while (depth < 64) : (depth += 1) {
-            _ = try tryLoadDirectoryContext(gpa, io, current, &files);
             // Project SYSTEM.md overrides global
             if (try loadOptional(gpa, io, current, "SYSTEM.md")) |s| {
                 if (system_override) |old| gpa.free(old);
@@ -119,43 +129,6 @@ pub fn discoverTrusted(
         .system_override = system_override,
         .append_system = append_joined,
     };
-}
-
-/// Load the single context file selected for one directory. An override is
-/// directory-local: it replaces AGENTS.md/CLAUDE.md only at this level while
-/// parent and child directory context files continue to layer normally.
-fn tryLoadDirectoryContext(
-    gpa: std.mem.Allocator,
-    io: Io,
-    dir: []const u8,
-    out: *std.ArrayList(ContextFile),
-) !bool {
-    if (try tryLoad(gpa, io, dir, "AGENTS.override.md", .agents_override, out)) return true;
-    if (try tryLoad(gpa, io, dir, "AGENTS.md", .agents, out)) return true;
-    return try tryLoad(gpa, io, dir, "CLAUDE.md", .claude, out);
-}
-
-fn tryLoad(
-    gpa: std.mem.Allocator,
-    io: Io,
-    dir: []const u8,
-    name: []const u8,
-    kind: ContextKind,
-    out: *std.ArrayList(ContextFile),
-) !bool {
-    const path = try std.fs.path.join(gpa, &.{ dir, name });
-    defer gpa.free(path);
-    const data = std.Io.Dir.cwd().readFileAlloc(io, path, gpa, .limited(1024 * 1024)) catch |err| switch (err) {
-        error.FileNotFound => return false,
-        else => return err,
-    };
-    errdefer gpa.free(data);
-    try out.append(gpa, .{
-        .path = try gpa.dupe(u8, path),
-        .content = data,
-        .kind = kind,
-    });
-    return true;
 }
 
 fn loadOptional(gpa: std.mem.Allocator, io: Io, dir: []const u8, name: []const u8) !?[]u8 {

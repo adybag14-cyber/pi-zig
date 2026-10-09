@@ -6,7 +6,7 @@ const vm = @import("native_values.zig");
 const references = @import("native_schema_refs.zig");
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
-pub const Failure = struct { path: []const u8, message: []const u8 };
+pub const Failure = struct { path: []const u8, message: []const u8, required_properties: []const []const u8 = &.{}, required_base: []const u8 = "" };
 pub const Result = struct {
     arena: *std.heap.ArenaAllocator,
     valid: bool,
@@ -241,7 +241,14 @@ const Context = struct {
     }
     fn mergeErrors(self: *Context, failures: []const Failure) !void {
         if (self.check_only) return error.CheckFailed;
-        for (failures) |failure| try self.add(failure.path, failure.message);
+        for (failures) |failure| {
+            const before = self.failures.items.len;
+            try self.add(failure.path, failure.message);
+            if (self.failures.items.len > before) {
+                self.failures.items[before].required_properties = failure.required_properties;
+                self.failures.items[before].required_base = failure.required_base;
+            }
+        }
     }
     fn equal(self: *Context, left: c.JSValue, right: c.JSValue) anyerror!bool {
         if (!c.JS_IsObject(left) or c.JS_IsFunction(self.engine.context, left)) return c.JS_IsStrictEqual(self.engine.context, left, right);
@@ -432,7 +439,14 @@ const Context = struct {
             try required_names.put(self.a, key, {});
             if (!try self.has(value, key)) try missing.append(self.a, key);
         };
-        if (missing.items.len != 0) try self.add(if (missing.items[0].len == 0) path else try std.fmt.allocPrint(self.a, "{s}{s}{s}", .{ path, if (path.len == 0) "" else ".", missing.items[0] }), try std.fmt.allocPrint(self.a, "must have required properties {s}", .{try std.mem.join(self.a, ", ", missing.items)}));
+        if (missing.items.len != 0) {
+            const before = self.failures.items.len;
+            try self.add(if (missing.items[0].len == 0) path else try std.fmt.allocPrint(self.a, "{s}{s}{s}", .{ path, if (path.len == 0) "" else ".", missing.items[0] }), try std.fmt.allocPrint(self.a, "must have required properties {s}", .{try std.mem.join(self.a, ", ", missing.items)}));
+            if (self.failures.items.len > before) {
+                self.failures.items[before].required_properties = missing.items;
+                self.failures.items[before].required_base = path;
+            }
+        }
         const properties = try self.get(schema, "properties");
         defer self.engine.freeValue(properties);
         const patterns = try self.get(schema, "patternProperties");

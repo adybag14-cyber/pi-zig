@@ -97,21 +97,23 @@ pub fn validateArguments(engine: *Engine, tool: c.JSValue, call: c.JSValue) !c.J
     return engine.checked(c.JS_Throw(engine.context, try validationFailureValue(engine, validator, parameters, args, call)));
 }
 fn validationFailureValue(engine: *Engine, validator: c.JSValue, parameters: c.JSValue, args: c.JSValue, call: c.JSValue) !c.JSValue {
-    // Errors performs the accelerated Check again before walking the original
-    // live schema. A changed schema can consequently yield no error details.
-    const rechecked = try cache.check(engine, validator, args);
-    var messages: std.ArrayList(u8) = .empty;
-    defer messages.deinit(engine.gpa);
-    if (!rechecked) {
-        var errors = try evaluator.evaluate(engine, parameters, args);
-        defer errors.deinit(engine.gpa);
-        for (errors.failures, 0..) |failure, index| {
-            const line = try std.fmt.allocPrint(engine.gpa, "{s}  - {s}: {s}", .{ if (index == 0) "" else "\n", failure.path, failure.message });
-            defer engine.gpa.free(line);
-            try messages.appendSlice(engine.gpa, line);
-        }
-    }
-    if (messages.items.len == 0) try messages.appendSlice(engine.gpa, "Unknown validation error");
+    const generation = engine.native_allocation_generation;
+    return validationFailureValueOwned(engine, validator, parameters, args, call) catch |err| return engine.nativeAllocationError(err, generation);
+}
+fn validationFailureValueOwned(engine: *Engine, validator: c.JSValue, parameters: c.JSValue, args: c.JSValue, call: c.JSValue) !c.JSValue {
+    _ = parameters;
+    const errors = try vm.invoke(engine, validator, "Errors", &.{args});
+    defer engine.freeValue(errors);
+    const formatter = try engine.checked(c.JS_NewCFunction(engine.context, validationErrorLine, "", 1));
+    defer engine.freeValue(formatter);
+    const lines = try vm.invoke(engine, errors, "map", &.{formatter});
+    defer engine.freeValue(lines);
+    const separator = try engine.checked(c.JS_NewString(engine.context, "\n"));
+    defer engine.freeValue(separator);
+    const joined = try vm.invoke(engine, lines, "join", &.{separator});
+    defer engine.freeValue(joined);
+    const messages = if (c.JS_ToBool(engine.context, joined) != 0) try engine.toString(joined) else try engine.gpa.dupe(u8, "Unknown validation error");
+    defer engine.gpa.free(messages);
     const name_value = try vm.get(engine, call, "name");
     defer engine.freeValue(name_value);
     const name = try engine.toString(name_value);
@@ -129,9 +131,73 @@ fn validationFailureValue(engine: *Engine, validator: c.JSValue, parameters: c.J
     defer engine.freeValue(encoded);
     const received = try engine.toString(encoded);
     defer engine.gpa.free(received);
-    const message = try std.fmt.allocPrint(engine.gpa, "Validation failed for tool \"{s}\":\n{s}\n\nReceived arguments:\n{s}", .{ name, messages.items, received });
+    const message = try std.fmt.allocPrint(engine.gpa, "Validation failed for tool \"{s}\":\n{s}\n\nReceived arguments:\n{s}", .{ name, messages, received });
     defer engine.gpa.free(message);
     return createError(engine, message);
+}
+fn validationErrorLine(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return validationErrorLineOwned(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| {
+        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+        return engine.throwCaptured();
+    };
+}
+fn formattedErrorPath(engine: *Engine, error_value: c.JSValue) ![]u8 {
+    const keyword = try vm.get(engine, error_value, "keyword");
+    defer engine.freeValue(keyword);
+    var required = c.pi_js_undefined();
+    defer engine.freeValue(required);
+    if (c.JS_IsString(keyword)) {
+        const name = try engine.toString(keyword);
+        defer engine.gpa.free(name);
+        if (std.mem.eql(u8, name, "required")) {
+            const params = try vm.get(engine, error_value, "params");
+            defer engine.freeValue(params);
+            const properties = try vm.get(engine, params, "requiredProperties");
+            defer engine.freeValue(properties);
+            if (!c.JS_IsUndefined(properties) and !c.JS_IsNull(properties)) required = try engine.checked(c.JS_GetPropertyUint32(engine.context, properties, 0));
+        }
+    }
+    const path = try vm.get(engine, error_value, "instancePath");
+    defer engine.freeValue(path);
+    const regexp = @import("native_schema_regexp.zig");
+    const start_text = try engine.checked(c.JS_NewString(engine.context, "^/"));
+    defer engine.freeValue(start_text);
+    const leading = try regexp.construct(engine, engine.intrinsic_regexp_constructor, start_text, null);
+    defer engine.freeValue(leading);
+    const empty = try engine.checked(c.JS_NewString(engine.context, ""));
+    defer engine.freeValue(empty);
+    const stripped = try vm.invoke(engine, path, "replace", &.{ leading, empty });
+    defer engine.freeValue(stripped);
+    const slash_text = try engine.checked(c.JS_NewString(engine.context, "/"));
+    defer engine.freeValue(slash_text);
+    const flags = try engine.checked(c.JS_NewString(engine.context, "g"));
+    defer engine.freeValue(flags);
+    const slashes = try regexp.construct(engine, engine.intrinsic_regexp_constructor, slash_text, flags);
+    defer engine.freeValue(slashes);
+    const dot = try engine.checked(c.JS_NewString(engine.context, "."));
+    defer engine.freeValue(dot);
+    const dotted = try vm.invoke(engine, stripped, "replace", &.{ slashes, dot });
+    defer engine.freeValue(dotted);
+    const base = try engine.toString(dotted);
+    defer engine.gpa.free(base);
+    if (c.JS_ToBool(engine.context, required) != 0) {
+        const property = try engine.toString(required);
+        defer engine.gpa.free(property);
+        return if (c.JS_ToBool(engine.context, dotted) != 0) std.fmt.allocPrint(engine.gpa, "{s}.{s}", .{ base, property }) else engine.gpa.dupe(u8, property);
+    }
+    return engine.gpa.dupe(u8, if (c.JS_ToBool(engine.context, dotted) != 0) base else "root");
+}
+fn validationErrorLineOwned(engine: *Engine, error_value: c.JSValue) !c.JSValue {
+    const path = try formattedErrorPath(engine, error_value);
+    defer engine.gpa.free(path);
+    const message_value = try vm.get(engine, error_value, "message");
+    defer engine.freeValue(message_value);
+    const message = try engine.toString(message_value);
+    defer engine.gpa.free(message);
+    const line = try std.fmt.allocPrint(engine.gpa, "  - {s}: {s}", .{ path, message });
+    defer engine.gpa.free(line);
+    return engine.checked(c.JS_NewStringLen(engine.context, line.ptr, line.len));
 }
 pub fn validateCall(engine: *Engine, tools: c.JSValue, call: c.JSValue) !c.JSValue {
     var captures = [_]c.JSValue{call};
@@ -171,6 +237,22 @@ fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVal
         if (err == error.JavaScriptException) return engine.throwCaptured();
         return c.JS_ThrowTypeError(context, "Tool validation: %s", @as([*:0]const u8, @errorName(err)));
     };
+}
+/// Install Pi's public validation functions before extension input. Every
+/// root/subpath alias retains these exact function and module-state values.
+pub fn install(engine: *Engine, exports: c.JSValue) !void {
+    try cache.initializeOwnerState(engine);
+    const arguments = try engine.checked(c.JS_NewCFunctionMagic(engine.context, callback, "validateToolArguments", 2, c.JS_CFUNC_generic_magic, 0));
+    defer engine.freeValue(arguments);
+    const call = try engine.checked(c.JS_NewCFunctionMagic(engine.context, callback, "validateToolCall", 2, c.JS_CFUNC_generic_magic, 1));
+    defer engine.freeValue(call);
+    try vm.put(engine, exports, "validateToolArguments", c.JS_DupValue(engine.context, arguments));
+    try vm.put(engine, exports, "validateToolCall", c.JS_DupValue(engine.context, call));
+    const validation = try vm.object(engine);
+    defer engine.freeValue(validation);
+    try vm.put(engine, validation, "validateToolArguments", c.JS_DupValue(engine.context, arguments));
+    try vm.put(engine, validation, "validateToolCall", c.JS_DupValue(engine.context, call));
+    inline for (.{ "@earendil-works/pi-ai/utils/validation", "@mariozechner/pi-ai/utils/validation", "pi-ai/utils/validation" }) |name| try engine.registerValueModule(name, validation);
 }
 pub fn testFunctions(engine: *Engine) !void {
     try cache.initializeOwnerState(engine);
@@ -542,4 +624,76 @@ test "native durable VM validation module captures legacy kind and WeakMap state
     const text = try engine.toString(result);
     defer engine.gpa.free(text);
     try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("../durable/fixtures/tool-validation-module-state-1ced.json"), "\r\n "), text);
+}
+
+test "native durable VM cached Validator replacements retain Check Errors receivers mapping order raw errors and mutated cache identity" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try testFunctions(engine);
+    const output = try engine.evalModule(
+        \\const output=[],get=WeakMap.prototype.get,raw={owned:true};
+        \\for(const name of ['accept','reject','throw-check','throw-errors','truthy-primitive','mutated-cached']){
+        \\ const events=[],schema={type:'object'},call={name:'fixture',arguments:{value:1}};let validator;
+        \\ if(name==='mutated-cached'){validateToolArguments({parameters:schema},call);validator=get.call((()=>{let owner;WeakMap.prototype.get=function(key){owner=this;return get.call(this,key)};try{validateToolArguments({parameters:schema},call)}finally{WeakMap.prototype.get=get}return owner})(),schema)}
+        \\ else validator=name==='truthy-primitive'?7:{};
+        \\ if(typeof validator==='object'){
+        \\  Object.defineProperty(validator,'Check',{configurable:true,get(){events.push('get Check');return function(value){events.push(['Check',this===validator,value]);if(name==='throw-check')throw raw;return name==='accept'?1:0}}});
+        \\  Object.defineProperty(validator,'Errors',{configurable:true,get(){events.push('get Errors');return function(value){events.push(['Errors',this===validator,value]);if(name==='throw-errors')throw raw;const rows=[{keyword:'required',params:{requiredProperties:['field']},instancePath:'/outer/path',message:'must be present'},{keyword:'type',instancePath:'',message:'root failure'}];const map=rows.map;rows.map=function(callback){events.push(['map',this===rows]);return map.call(this,callback)};return rows}}});
+        \\ }
+        \\ WeakMap.prototype.get=function(){events.push('cache');return validator};
+        \\ try{try{output.push({name,result:validateToolArguments({parameters:schema},call),events})}catch(error){output.push({name,error:error===raw?'raw':{name:error.name,...(name==='truthy-primitive'?{}:{message:error.message})},events})}}finally{WeakMap.prototype.get=get}
+        \\}
+        \\globalThis.result=JSON.stringify(output);
+    , "native-validator-cache-replacement-source");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-validator-cache-replacement-result", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("../durable/fixtures/tool-validation-cache-replacement-1ced.json"), "\r\n "), text);
+}
+
+test "native durable VM public Pi ai validation root subpath imports match real Source functions aliases cloning coercion and owned failures" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try @import("native_stream.zig").install(engine);
+    const output = try engine.evalModule(
+        \\import {validateToolArguments,validateToolCall} from '@earendil-works/pi-ai';
+        \\import * as validation from '@earendil-works/pi-ai/utils/validation';
+        \\import * as legacy from '@mariozechner/pi-ai/utils/validation';
+        \\import * as short from 'pi-ai/utils/validation';
+        \\if(legacy.validateToolArguments!==validateToolArguments||short.validateToolCall!==validateToolCall)throw Error('validation alias identity');
+        \\const tool={name:'fixture',parameters:{type:'object',properties:{n:{type:'number'}},required:['n']}},original={name:'fixture',arguments:{n:'3'}},events=[];
+        \\const result={names:[validateToolArguments.name,validateToolCall.name],arity:[validateToolArguments.length,validateToolCall.length],same:validateToolArguments===validation.validateToolArguments&&validateToolCall===validation.validateToolCall,first:validateToolArguments(tool,original),unchanged:original.arguments.n==='3',call:validateToolCall([tool],{name:'fixture',arguments:{n:'4'}})};
+        \\try{validateToolCall([],{name:'missing',arguments:{}})}catch(error){result.missing={name:error.name,message:error.message}}
+        \\try{validateToolArguments(tool,{name:'fixture',arguments:{n:'bad'}})}catch(error){result.invalid={name:error.name,message:error.message}}
+        \\const custom={find(predicate){events.push([this===custom,typeof predicate,predicate(tool)]);return tool}};result.custom=validateToolCall(custom,{name:'fixture',arguments:{n:'5'}});result.events=events;
+        \\globalThis.result=JSON.stringify(result);
+    , "native-public-validation-imports-source");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-public-validation-imports-result", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("../durable/fixtures/tool-validation-public-imports-1ced.json"), "\r\n "), text);
+}
+
+test "native durable VM required property literal names stay separate from root slash dot empty and prototype instance paths" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try testFunctions(engine);
+    const output = try engine.evalModule(
+        \\const output=[];
+        \\for(const base of ['root','a/b','a.b','a~b','','__proto__'])for(const property of ['value','a/b','']){
+        \\ const schema={type:'object',properties:{[base]:{type:'object',required:[property]}}},args={[base]:{}};
+        \\ try{output.push({base,property,result:validateToolArguments({parameters:schema},{name:'fixture',arguments:args})})}catch(error){output.push({base,property,error:{name:error.name,message:error.message}})}
+        \\}
+        \\globalThis.result=JSON.stringify(output);
+    , "native-required-property-source-names");
+    defer engine.freeValue(output);
+    const result = try engine.eval("globalThis.result", "native-required-property-source-result", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(result);
+    const text = try engine.toString(result);
+    defer engine.gpa.free(text);
+    try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("../durable/fixtures/tool-validation-required-names-1ced.json"), "\r\n "), text);
 }

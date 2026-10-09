@@ -314,19 +314,14 @@ pub fn install(engine: *engine_mod.Engine) !void {
     defer engine.freeValue(module);
     // Register the shared schema object before immutable module export names
     // are declared. All pi-ai and Typebox aliases retain its exact identity.
-    const schema_exports = if (engine.native_module_values.get("typebox")) |existing| c.JS_DupValue(engine.context, existing) else blk: {
-        const created = try engine.checked(c.JS_NewObject(engine.context));
-        errdefer engine.freeValue(created);
-        try property(engine, created, "Type", try typebox.create(engine));
-        try engine.registerValueModule("typebox", created);
-        try engine.registerValueModule("@sinclair/typebox", created);
-        break :blk created;
-    };
+    try typebox.install(engine);
+    const schema_exports = c.JS_DupValue(engine.context, engine.native_module_values.get("typebox").?);
     defer engine.freeValue(schema_exports);
     try property(engine, module, "Type", try engine.checked(c.JS_GetPropertyStr(engine.context, schema_exports, "Type")));
     try property(engine, module, "EventStream", c.JS_DupValue(engine.context, constructor));
     try property(engine, module, "AssistantMessageEventStream", c.JS_DupValue(engine.context, assistant));
     try native_models.populateExports(engine, module);
+    try @import("native_tool_arguments.zig").install(engine, module);
     var factory_data = [_]c.JSValue{assistant};
     try property(engine, module, "createAssistantMessageEventStream", try engine.checked(c.JS_NewCFunctionData2(engine.context, assistantFactory, "createAssistantMessageEventStream", 0, 0, 1, &factory_data)));
     try engine.registerValueModule("@earendil-works/pi-ai", module);
