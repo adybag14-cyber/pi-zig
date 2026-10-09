@@ -1007,6 +1007,22 @@ pub fn build(b: *std.Build) void {
     const native_terminal_run = b.addRunArtifact(native_terminal_tests);
     b.step("test-native-terminal-capabilities", "Replay Source environment capability cache and admitted terminal context").dependOn(&native_terminal_run.step);
     test_step.dependOn(&native_terminal_run.step);
+    const project_context_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/project_context_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    const native_project_context_module = b.createModule(.{ .root_source_file = b.path("src/native_project_context_test.zig"), .target = target, .optimize = optimize });
+    native_project_context_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, native_project_context_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, native_project_context_module);
+    const native_project_context_tests = b.addTest(.{ .root_module = native_project_context_module, .use_llvm = use_llvm, .filters = &.{"Source f1 SDK"} });
+    const project_context_step = b.step("test-project-context", "Replay current upstream context files and native SDK resource projection");
+    const project_context_run = b.addRunArtifact(project_context_tests);
+    const native_project_context_run = b.addRunArtifact(native_project_context_tests);
+    project_context_step.dependOn(&project_context_run.step);
+    project_context_step.dependOn(&native_project_context_run.step);
+    test_step.dependOn(&project_context_run.step);
+    test_step.dependOn(&native_project_context_run.step);
     const native_input_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_input_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{ "Source6fb public Input", "native JS UTF16" },
