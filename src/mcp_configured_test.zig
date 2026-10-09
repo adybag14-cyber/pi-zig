@@ -1022,13 +1022,15 @@ test "mcp.configured actual create discover schema call allocation failures clea
     defer env.deinit();
     const Allocate = struct {
         fn run(allocator: std.mem.Allocator, path: []const u8, environment: *const std.process.Environ.Map) !void {
-            const service = try configured.Service.create(allocator, io, .{ .agent_dir = path, .cwd = path, .environ = environment, .output_root = path });
+            var synchronized: @import("test_support/synchronized_allocator.zig").Synchronized = .{ .backing = allocator };
+            const owned_allocator = synchronized.allocator();
+            const service = try configured.Service.create(owned_allocator, io, .{ .agent_dir = path, .cwd = path, .environ = environment, .output_root = path });
             defer service.deinit();
             try service.start();
             const schema = try service.schemasJson();
-            defer allocator.free(schema);
-            var result = (try configured.Service.execute(service, allocator, "gpa", "mcp__fixture__double", "{\"value\":3}", discard, null, null)) orelse return error.MissingConfiguredTool;
-            defer result.deinit(allocator);
+            defer owned_allocator.free(schema);
+            var result = (try configured.Service.execute(service, owned_allocator, "gpa", "mcp__fixture__double", "{\"value\":3}", discard, null, null)) orelse return error.MissingConfiguredTool;
+            defer result.deinit(owned_allocator);
             try std.testing.expectEqualStrings("6", result.content);
             try service.close();
         }
