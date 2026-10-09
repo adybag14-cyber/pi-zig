@@ -942,6 +942,9 @@ pub fn build(b: *std.Build) void {
     linkDurable(b, sdk_refresh_ownership_tests.root_module);
     sdk_refresh_ownership_tests.root_module.addImport("catalog_tool", catalog_tool);
     const sdk_refresh_ownership_run = b.addRunArtifact(sdk_refresh_ownership_tests);
+    const sdk_refresh_abort_tests = b.addTest(.{ .root_module = sdk_refresh_ownership_tests.root_module, .filters = &.{"aggregate abort matches Source"}, .use_llvm = use_llvm });
+    const sdk_refresh_abort_run = b.addRunArtifact(sdk_refresh_abort_tests);
+    b.step("test-sdk-refresh-abort", "Replay actual Source pre-aborted and in-flight refresh aggregate cancellation").dependOn(&sdk_refresh_abort_run.step);
     const sdk_refresh_ownership_step = b.step("test-sdk-refresh-ownership", "Exercise provider refresh publication and cancellation allocation ownership");
     sdk_refresh_ownership_step.dependOn(&sdk_refresh_ownership_run.step);
     test_step.dependOn(&sdk_refresh_ownership_run.step);

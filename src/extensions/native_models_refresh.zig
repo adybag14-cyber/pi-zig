@@ -217,14 +217,21 @@ pub fn refresh(engine: *engine_mod.Engine, store: c.JSValue, options: c.JSValue,
     const signal = if (c.JS_IsObject(requested_signal)) c.JS_DupValue(engine.context, requested_signal) else try abort_signal.create(engine);
     defer engine.freeValue(signal);
     try sdk.put(engine, root, "signal", c.JS_DupValue(engine.context, signal));
+    const initially_aborted = try sdk.get(engine, signal, "aborted");
+    defer engine.freeValue(initially_aborted);
+    // Source returns before reading provider selection or racing Promise.all
+    // when the caller has already aborted. The race rejects with the reason;
+    // refresh itself reports cancellation in its ordinary aggregate result.
+    if (c.JS_ToBool(engine.context, initially_aborted) == 1) {
+        try advance(engine, root, .aggregate, c.pi_js_undefined());
+        return result;
+    }
     try listen(engine, root);
     const pending = try sdk.array(engine);
     defer engine.freeValue(pending);
     const selected = if (c.JS_IsObject(options)) try sdk.get(engine, options, "providers") else c.pi_js_undefined();
     defer engine.freeValue(selected);
-    const initially_aborted = try sdk.get(engine, signal, "aborted");
-    defer engine.freeValue(initially_aborted);
-    if (c.JS_ToBool(engine.context, initially_aborted) != 1) for (0..try sdk.length(engine, providers)) |index| {
+    for (0..try sdk.length(engine, providers)) |index| {
         const provider = try engine.checked(c.JS_GetPropertyUint32(engine.context, providers, @intCast(index)));
         defer engine.freeValue(provider);
         const id = try sdk.get(engine, provider, "id");
@@ -275,7 +282,7 @@ pub fn refresh(engine: *engine_mod.Engine, store: c.JSValue, options: c.JSValue,
         const ignored = try nativeFunction(engine, job, .ignored);
         defer engine.freeValue(ignored);
         try sdk.append(engine, pending, try sdk.invoke(engine, raced, "catch", &.{ignored}));
-    };
+    }
     const promise = try sdk.get(engine, global, "Promise");
     defer engine.freeValue(promise);
     const all = try sdk.invoke(engine, promise, "all", &.{pending});
@@ -351,7 +358,14 @@ fn advance(engine: *engine_mod.Engine, job: c.JSValue, stage: Stage, value: c.JS
         if (c.JS_ToBool(engine.context, publication_job) == 1) return finish(engine, job, value, false);
         const root = try sdk.get(engine, job, "root");
         defer engine.freeValue(root);
-        if (c.JS_IsUndefined(root)) return finish(engine, job, value, false);
+        if (c.JS_IsUndefined(root)) {
+            const caller_signal = try sdk.get(engine, job, "signal");
+            defer engine.freeValue(caller_signal);
+            const caller_aborted = try sdk.get(engine, caller_signal, "aborted");
+            defer engine.freeValue(caller_aborted);
+            if (c.JS_ToBool(engine.context, caller_aborted) == 1) return advance(engine, job, .aggregate, c.pi_js_undefined());
+            return finish(engine, job, value, false);
+        }
         const errors = try sdk.get(engine, root, "errors");
         defer engine.freeValue(errors);
         const id = try sdk.get(engine, job, "id");
@@ -568,6 +582,40 @@ fn publication(engine: *engine_mod.Engine, owner: c.JSValue, value: c.JSValue) !
     const raced = try race(engine, result, signal, c.pi_js_undefined());
     engine.freeValue(result);
     return raced;
+}
+
+test "native model refresh retained publications aggregate abort matches Source before selection and during work" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try abort_signal.install(engine);
+    const exports = try sdk.object(engine);
+    defer engine.freeValue(exports);
+    try @import("native_models.zig").populateExports(engine, exports);
+    try engine.registerValueModule("@earendil-works/pi-ai", exports);
+    const Report = struct {
+        fn log(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const global = c.JS_GetGlobalObject(context);
+            defer c.JS_FreeValue(context, global);
+            if (argc > 0 and c.JS_SetPropertyStr(context, global, "abortProof", c.JS_DupValue(context, argv[0])) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+            return c.pi_js_undefined();
+        }
+    };
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const console = try sdk.object(engine);
+    defer engine.freeValue(console);
+    try sdk.put(engine, console, "log", try engine.checked(c.JS_NewCFunction(engine.context, Report.log, "log", 1)));
+    try sdk.put(engine, global, "console", c.JS_DupValue(engine.context, console));
+    const Fixture = struct { schemaVersion: u32, sourceCommit: []const u8, inputSha256: []const u8, input: []const u8 };
+    var parsed = try std.json.parseFromSlice(Fixture, std.testing.allocator, @embedFile("fixtures/sdk-model-refresh-abort-6fb2e78.input.json"), .{});
+    defer parsed.deinit();
+    const module = try engine.evalModule(parsed.value.input, "sdk-model-refresh-abort.mjs");
+    defer engine.freeValue(module);
+    const proof = try sdk.get(engine, global, "abortProof");
+    defer engine.freeValue(proof);
+    const actual = try engine.toString(proof);
+    defer engine.gpa.free(actual);
+    try std.testing.expectEqualStrings(std.mem.trim(u8, @embedFile("fixtures/sdk-model-refresh-abort-6fb2e78.json"), "\r\n"), actual);
 }
 
 test "native model refresh retained publications signals store roots and GC release failed host allocations" {
