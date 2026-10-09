@@ -320,6 +320,7 @@ pub fn install(engine: *Engine) !void {
     try sdk.put(engine, ctor, "prototype", c.JS_DupValue(engine.context, prototype));
     try sdk.put(engine, exports, "MemoryStorage", c.JS_DupValue(engine.context, ctor));
     try sdk.put(engine, exports, "createSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createSession", 1)));
+    try @import("native_durable_errors.zig").install(engine, exports);
     try @import("native_durable_harness.zig").install(engine, exports);
     try @import("native_durable_registry.zig").installHelpers(engine, exports);
     try @import("native_durable_agent.zig").install(engine, exports);
@@ -715,6 +716,43 @@ fn constructorAllocationExercise(gpa: std.mem.Allocator) !void {
     defer engine.freeValue(storage);
     const session = try sessionObject(engine, storage);
     defer engine.freeValue(session);
+}
+
+test "native durable VM eba independent concurrent and unawaited nested commits retain Source queue order" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try install(engine);
+    const source = @embedFile("../durable/fixtures/durable-storage-failure-eba.json");
+    const fixture = try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-eba-storage"));
+    defer engine.freeValue(fixture);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "storageFailureFixture", c.JS_DupValue(engine.context, fixture));
+    const queue_output = engine.evalModule(
+        \\import {MemoryStorage,createSession} from '@earendil-works/pi-durable';
+        \\const expected=name=>storageFailureFixture.cases.find(c=>c.name===name);
+        \\const equal=(a,b)=>{if(JSON.stringify(a)!==JSON.stringify(b))throw Error(JSON.stringify({a,b}));};
+        \\{
+        \\ const session=createSession(new MemoryStorage()),events=[];let release;
+        \\ const admitted=new Promise(resolve=>release=resolve);
+        \\ const first=session.commit(async()=>{events.push('first-begin');await admitted;events.push('first-end');return 1;},{});
+        \\ const second=session.commit(()=>{events.push('second');return 2;},{});
+        \\ await Promise.resolve();await Promise.resolve();const before=[...events];release();
+        \\ const values=await Promise.all([first,second]);await session.close({});events.push('close');
+        \\ const source=expected('concurrent-commit-order');equal({before,events,values},{before:source.before,events:source.events,values:source.values});
+        \\}
+        \\{
+        \\ const session=createSession(new MemoryStorage()),events=[];let nested;
+        \\ const first=await session.commit(()=>{events.push('outer-begin');nested=session.commit(()=>{events.push('nested');return 2;},{});events.push('outer-end');return 1;},{});
+        \\ const second=await nested;await session.close({});events.push('close');
+        \\ const source=expected('nested-unawaited-commit');equal({events,values:[first,second]},{events:source.events,values:source.values});
+        \\}
+    , "actual-eba-commit-queue") catch |err| {
+        std.debug.print("Actual Source commit queue: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(queue_output);
 }
 test "native durable VM constructor and module allocations roll back on every GPA failure" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, constructorAllocationExercise, .{});

@@ -1,0 +1,225 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "name": "conversation-raw-object",
+      "firstOriginal": true,
+      "laterOriginal": false,
+      "laterSessionFailed": true,
+      "laterCause": true,
+      "closes": 1,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "conversation",
+        "close"
+      ],
+      "reports": [
+        true
+      ]
+    },
+    {
+      "name": "conversation-request-error",
+      "firstOriginal": true,
+      "laterOriginal": true,
+      "laterSessionFailed": false,
+      "laterCause": false,
+      "closes": 1,
+      "endReason": "closed",
+      "endCause": false,
+      "calls": [
+        "conversation",
+        "conversation",
+        "close"
+      ],
+      "reports": []
+    },
+    {
+      "name": "mintId-raw-object",
+      "firstOriginal": true,
+      "laterOriginal": false,
+      "laterSessionFailed": true,
+      "laterCause": true,
+      "closes": 1,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "mintId",
+        "close"
+      ],
+      "reports": [
+        true
+      ]
+    },
+    {
+      "name": "mintId-request-error",
+      "firstOriginal": true,
+      "laterOriginal": false,
+      "laterSessionFailed": true,
+      "laterCause": true,
+      "closes": 1,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "mintId",
+        "close"
+      ],
+      "reports": [
+        true
+      ]
+    },
+    {
+      "name": "commit-raw-object",
+      "firstOriginal": true,
+      "laterOriginal": false,
+      "laterSessionFailed": true,
+      "laterCause": true,
+      "closes": 1,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "commit",
+        "close"
+      ],
+      "reports": [
+        true
+      ]
+    },
+    {
+      "name": "commit-request-error",
+      "firstOriginal": true,
+      "laterOriginal": false,
+      "laterSessionFailed": true,
+      "laterCause": true,
+      "closes": 1,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "commit",
+        "close"
+      ],
+      "reports": [
+        true
+      ]
+    },
+    {
+      "name": "conversation-caller-canceled",
+      "firstOriginal": true,
+      "endReason": "closed",
+      "endCause": false,
+      "calls": 1
+    },
+    {
+      "name": "mintId-caller-canceled",
+      "firstOriginal": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": 1
+    },
+    {
+      "name": "commit-caller-canceled",
+      "firstOriginal": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": 1
+    },
+    {
+      "name": "racing-resolve",
+      "firstOriginal": true,
+      "beforeClosed": false,
+      "racingSessionFailed": true,
+      "racingCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "close"
+      ]
+    },
+    {
+      "name": "racing-reject",
+      "firstOriginal": true,
+      "beforeClosed": false,
+      "racingSessionFailed": true,
+      "racingCause": true,
+      "endReason": "failed",
+      "endCause": true,
+      "calls": [
+        "close"
+      ]
+    },
+    {
+      "name": "close-and-listener-failure",
+      "closeOriginal": true,
+      "endReason": "failed",
+      "endCause": true,
+      "second": true,
+      "calls": 1,
+      "reports": 2
+    },
+    {
+      "name": "host-listener",
+      "commitSucceeded": true,
+      "second": 1,
+      "laterSessionFailed": false,
+      "laterCause": false,
+      "reports": [
+        true
+      ],
+      "endReason": "closed",
+      "endCause": false
+    },
+    {
+      "name": "internal-listener",
+      "commitSucceeded": true,
+      "second": 1,
+      "laterSessionFailed": true,
+      "laterCause": true,
+      "reports": [
+        true
+      ],
+      "endReason": "failed",
+      "endCause": true
+    },
+    {
+      "name": "error-message",
+      "nullPrototype": "[object Object]",
+      "hostileString": "[object Object]",
+      "primitive": "7",
+      "error": "exact"
+    },
+    {
+      "name": "concurrent-commit-order",
+      "before": [
+        "first-begin"
+      ],
+      "events": [
+        "first-begin",
+        "first-end",
+        "second",
+        "close"
+      ],
+      "values": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "nested-unawaited-commit",
+      "events": [
+        "outer-begin",
+        "outer-end",
+        "nested",
+        "close"
+      ],
+      "values": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "nested-awaited-commit-bounded-observation",
+      "nestedStarted": false,
+      "outerSettled": false
+    }
+  ]
+}

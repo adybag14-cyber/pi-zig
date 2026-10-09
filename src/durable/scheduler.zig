@@ -266,7 +266,7 @@ pub const Scheduler = struct {
     }
     pub fn open(self: *Scheduler) !void {
         if (self.subscription != null) return error.SchedulerAlreadyOpen;
-        self.subscription = try self.session.subscribe(observe, self);
+        self.subscription = try self.session.observeCommits(observe, self);
         errdefer {
             self.session.unsubscribe(self.subscription.?);
             self.subscription = null;

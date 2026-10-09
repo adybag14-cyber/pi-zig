@@ -5,6 +5,9 @@ const json = backend.json;
 const types = @import("types.zig");
 const Value = json.Value;
 const tasks = @import("task_state.zig");
+test {
+    _ = @import("session_failure_test.zig");
+}
 pub const TaskOptions = struct { conversationId: ?u64 = null, ownerTaskId: ?u64 = null, background: bool = false };
 pub const Scope = struct { conversationId: ?u64 = null, taskId: ?u64 = null };
 pub const Publication = struct { seq: u64, changes: Value };
@@ -18,17 +21,114 @@ pub const Result = struct {
         self.value.deinit();
     }
 };
-const Subscription = struct { id: u64, callback: Listener, context: ?*anyopaque };
+const Subscription = struct { id: u64, callback: Listener, context: ?*anyopaque, internal: bool = false };
 const CloseSubscription = struct { id: u64, callback: CloseListener, context: ?*anyopaque };
+/// All Session components use this field, including reads outside its mutation
+/// line. Deriving the containing owner keeps init-by-value and moved fixtures
+/// valid without a stale self pointer.
+pub const GuardedStorage = struct {
+    raw: backend.Backend,
+    underway: std.atomic.Value(u32) = .init(0),
+    closing: std.atomic.Value(bool) = .init(false),
+    backend_mutex: std.Io.Mutex = .init,
+    fn owner(self: *GuardedStorage) *Session {
+        return @fieldParentPtr("storage", self);
+    }
+    fn requestError(err: anyerror) bool {
+        return switch (err) {
+            error.StorageRequestError, error.UnknownConversation, error.InvalidStorageCursor, error.ScanCursorOrderMismatch, error.DocumentDoesNotRetainHistory => true,
+            else => false,
+        };
+    }
+    fn dispose(comptime T: type, value: T, args: anytype) void {
+        if (T == *backend.memory.State) value.destroy(args[0]) else if (T == json.Owned) {
+            var owned = value;
+            owned.deinit();
+        } else if (T == ?json.Owned) {
+            if (value) |record| {
+                var owned = record;
+                owned.deinit();
+            }
+        }
+    }
+    fn call(self: *GuardedStorage, comptime name: []const u8, args: anytype, read_context: ?types.Context) !@typeInfo(@TypeOf(@call(.auto, @field(backend.Backend, name), .{self.raw} ++ args))).error_union.payload {
+        const current = self.owner();
+        try current.assertHealthy();
+        if (self.closing.load(.acquire)) return error.SessionClosed;
+        _ = self.underway.fetchAdd(1, .acq_rel);
+        defer {
+            _ = self.underway.fetchSub(1, .acq_rel);
+            current.io.futexWake(u32, &self.underway.raw, std.math.maxInt(u32));
+        }
+        try current.assertHealthy();
+        if (self.closing.load(.acquire)) return error.SessionClosed;
+        const value = self.invoke(name, args) catch |err| {
+            try current.assertHealthy();
+            const exempt = if (read_context) |context| context.aborted() or requestError(err) else false;
+            if (!exempt and !current.fail(err)) return error.SessionFailed;
+            return err;
+        };
+        current.assertHealthy() catch |err| {
+            dispose(@TypeOf(value), value, args);
+            return err;
+        };
+        return value;
+    }
+    fn invoke(self: *GuardedStorage, comptime name: []const u8, args: anytype) !@typeInfo(@TypeOf(@call(.auto, @field(backend.Backend, name), .{self.raw} ++ args))).error_union.payload {
+        const callbacks_on_owner = self.raw == .custom and self.raw.custom.callbacks_on_owner;
+        if (!callbacks_on_owner) try self.backend_mutex.lock(self.owner().io);
+        defer if (!callbacks_on_owner) self.backend_mutex.unlock(self.owner().io);
+        return @call(.auto, @field(backend.Backend, name), .{self.raw} ++ args);
+    }
+    pub fn mintId(self: *GuardedStorage) !u64 {
+        return self.call("mintId", .{}, null);
+    }
+    pub fn commitAt(self: *GuardedStorage, writes: Value, seq: ?u64) !u64 {
+        return self.call("commitAt", .{ writes, seq }, null);
+    }
+    pub fn snapshot(self: *GuardedStorage, gpa: std.mem.Allocator) !*backend.memory.State {
+        return self.call("snapshot", .{gpa}, types.Context{});
+    }
+    pub fn readRecord(self: *GuardedStorage, gpa: std.mem.Allocator, id: u64) !?json.Owned {
+        return self.call("readRecord", .{ gpa, id }, types.Context{});
+    }
+    pub fn readTableRecord(self: *GuardedStorage, gpa: std.mem.Allocator, table: backend.memory.Table, id: u64) !?json.Owned {
+        return self.readTableRecordContext(gpa, table, id, .{});
+    }
+    pub fn readTableRecordContext(self: *GuardedStorage, gpa: std.mem.Allocator, table: backend.memory.Table, id: u64, context: types.Context) !?json.Owned {
+        return self.call("readTableRecord", .{ gpa, table, id }, context);
+    }
+    pub fn readEntry(self: *GuardedStorage, gpa: std.mem.Allocator, id: u64, conversation: ?u64) !?json.Owned {
+        return self.call("readEntry", .{ gpa, id, conversation }, types.Context{});
+    }
+    pub fn readDocument(self: *GuardedStorage, gpa: std.mem.Allocator, id: u64, at: backend.memory.Point) !?json.Owned {
+        return self.call("readDocument", .{ gpa, id, at }, types.Context{});
+    }
+    pub fn scan(self: *GuardedStorage, gpa: std.mem.Allocator, parameters: backend.query.Query) !json.Owned {
+        return self.call("scan", .{ gpa, parameters }, types.Context{});
+    }
+    /// The facade calls this only after its mutation line has settled. Physical
+    /// backend close remains with the capability owner, once this drain ends.
+    pub fn drain(self: *GuardedStorage) void {
+        self.closing.store(true, .release);
+        while (true) {
+            const count = self.underway.load(.acquire);
+            if (count == 0) return;
+            self.owner().io.futexWaitUncancelable(u32, &self.underway.raw, count);
+        }
+    }
+};
 pub const Session = struct {
     gpa: std.mem.Allocator,
     io: std.Io,
-    storage: backend.Backend,
+    storage: GuardedStorage,
     mutex: std.Io.Mutex = .init,
     listeners: std.ArrayList(Subscription) = .empty,
-    nextSubscription: u64 = 1,
-    closed: bool = false,
-    poison: ?anyerror = null,
+    nextSubscription: std.atomic.Value(u64) = .init(1),
+    closed: std.atomic.Value(bool) = .init(false),
+    failure_code: std.atomic.Value(u16) = .init(0),
+    report_error: ?*const fn (?*anyopaque, anyerror) void = null,
+    report_context: ?*anyopaque = null,
     ownerThread: std.atomic.Value(std.Thread.Id) = .init(0),
     closeListeners: std.ArrayList(CloseSubscription) = .empty,
     closeMutex: std.Io.Mutex = .init,
@@ -37,76 +137,100 @@ pub const Session = struct {
     source_clock: ?*const fn (?*anyopaque) i64 = null,
     source_clock_context: ?*anyopaque = null,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, storage: backend.Backend) Session {
-        return .{ .gpa = gpa, .io = io, .storage = storage };
+        return .{ .gpa = gpa, .io = io, .storage = .{ .raw = storage } };
     }
     pub fn deinit(self: *Session) void {
         self.close();
+        self.storage.drain();
         self.closeListeners.deinit(self.gpa);
         self.listeners.deinit(self.gpa);
         self.* = undefined;
     }
     fn healthy(self: *const Session) !void {
-        if (self.closed) return error.SessionClosed;
-        if (self.poison) |err| return err;
+        try self.assertHealthy();
+        if (self.closed.load(.acquire)) return error.SessionClosed;
+    }
+    pub fn failure(self: *const Session) ?anyerror {
+        const code = self.failure_code.load(.acquire);
+        return if (code == 0) null else @errorFromInt(code);
+    }
+    pub fn assertHealthy(self: *const Session) !void {
+        if (self.failure() != null) return error.SessionFailed;
+    }
+    pub fn fail(self: *Session, err: anyerror) bool {
+        if (self.failure_code.cmpxchgStrong(0, @intFromError(err), .acq_rel, .acquire) != null) return false;
+        self.close();
+        self.report(err);
+        return true;
+    }
+    pub fn report(self: *Session, err: anyerror) void {
+        if (self.report_error) |callback| callback(self.report_context, err);
     }
     pub fn subscribe(self: *Session, callback: Listener, context: ?*anyopaque) !u64 {
-        const on_owner = self.ownerThread.load(.acquire) == std.Thread.getCurrentId();
-        if (!on_owner) try self.mutex.lock(self.io);
-        defer if (!on_owner) self.mutex.unlock(self.io);
+        return self.subscribeKind(callback, context, false);
+    }
+    pub fn observeCommits(self: *Session, callback: Listener, context: ?*anyopaque) !u64 {
+        return self.subscribeKind(callback, context, true);
+    }
+    fn subscribeKind(self: *Session, callback: Listener, context: ?*anyopaque, internal: bool) !u64 {
+        try self.mutex.lock(self.io);
+        defer self.mutex.unlock(self.io);
         try self.healthy();
-        const id = self.nextSubscription;
-        try self.listeners.append(self.gpa, .{ .id = id, .callback = callback, .context = context });
-        self.nextSubscription += 1;
+        const id = self.nextSubscription.fetchAdd(1, .monotonic);
+        try self.listeners.append(self.gpa, .{ .id = id, .callback = callback, .context = context, .internal = internal });
         return id;
     }
     pub fn unsubscribe(self: *Session, id: u64) void {
-        const on_owner = self.ownerThread.load(.acquire) == std.Thread.getCurrentId();
-        if (!on_owner) self.mutex.lockUncancelable(self.io);
-        defer if (!on_owner) self.mutex.unlock(self.io);
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
         for (self.listeners.items, 0..) |item, index| if (item.id == id) {
             _ = self.listeners.orderedRemove(index);
             return;
         };
     }
     pub fn subscribeClose(self: *Session, callback: CloseListener, context: ?*anyopaque) !u64 {
-        const on_owner = self.ownerThread.load(.acquire) == std.Thread.getCurrentId();
-        if (!on_owner) try self.mutex.lock(self.io);
-        defer if (!on_owner) self.mutex.unlock(self.io);
         try self.healthy();
-        const id = self.nextSubscription;
+        try self.closeMutex.lock(self.io);
+        defer self.closeMutex.unlock(self.io);
+        try self.healthy();
+        const id = self.nextSubscription.fetchAdd(1, .monotonic);
         try self.closeListeners.append(self.gpa, .{ .id = id, .callback = callback, .context = context });
-        self.nextSubscription += 1;
         return id;
     }
     /// Off-line unsubscribe waits for any in-flight close callback. A callback can remove later callbacks.
     pub fn unsubscribeClose(self: *Session, id: u64) void {
-        const on_owner = self.ownerThread.load(.acquire) == std.Thread.getCurrentId();
         const on_close = self.closeOwnerThread.load(.acquire) == std.Thread.getCurrentId();
-        if (!on_owner and !on_close) self.closeMutex.lockUncancelable(self.io);
-        defer if (!on_owner and !on_close) self.closeMutex.unlock(self.io);
-        if (!on_owner) self.mutex.lockUncancelable(self.io);
-        defer if (!on_owner) self.mutex.unlock(self.io);
+        if (!on_close) self.closeMutex.lockUncancelable(self.io);
+        defer if (!on_close) self.closeMutex.unlock(self.io);
         for (self.closeListeners.items, 0..) |item, index| if (item.id == id) {
             _ = self.closeListeners.orderedRemove(index);
             return;
         };
     }
     pub fn commit(self: *Session, callback: CommitFn, callback_context: ?*anyopaque, scope: Scope, context: types.Context) !Result {
-        if (self.ownerThread.load(.acquire) == std.Thread.getCurrentId()) return error.ReentrantSessionCommit;
-        if (context.aborted()) return error.Canceled;
-        try self.mutex.lock(self.io);
-        defer {
-            self.mutex.unlock(self.io);
-            self.notifyClose();
-        }
-        self.ownerThread.store(std.Thread.getCurrentId(), .release);
-        defer self.ownerThread.store(0, .release);
+        const thread = std.Thread.getCurrentId();
         try self.healthy();
         if (context.aborted()) return error.Canceled;
-        const tx = try Transaction.create(self, scope);
+        // Reserve the serialized mutation line without holding an OS mutex
+        // across caller code, awaits, or a custom Storage method.
+        while (self.ownerThread.cmpxchgStrong(0, thread, .acq_rel, .acquire)) |owner| {
+            if (owner == thread) return error.ReentrantSessionCommit;
+            try self.healthy();
+            if (context.aborted()) return error.Canceled;
+            try self.io.futexWait(std.Thread.Id, &self.ownerThread.raw, owner);
+        }
+        defer {
+            self.ownerThread.store(0, .release);
+            self.io.futexWake(std.Thread.Id, &self.ownerThread.raw, std.math.maxInt(u32));
+            self.notifyClose();
+        }
+        try self.healthy();
+        if (context.aborted()) return error.Canceled;
+        const tx = try Transaction.create(self, scope, context);
         defer tx.release();
         defer tx.active = false;
         const returned = try callback(callback_context, tx, context);
+        try self.assertHealthy();
         if (context.aborted()) return error.Canceled;
         var result: Result = .{ .value = try json.Owned.empty(self.gpa) };
         errdefer result.deinit();
@@ -122,26 +246,31 @@ pub const Session = struct {
         defer prepared.deinit();
         var publication = try buildPublication(self.gpa, prepared.state.?, prepared.seq, tx.writes, &tx.preparedDocumentOps);
         defer publication.deinit();
-        const listeners = try self.gpa.dupe(Subscription, self.listeners.items);
+        const listeners = blk: {
+            try self.mutex.lock(self.io);
+            defer self.mutex.unlock(self.io);
+            break :blk try self.gpa.dupe(Subscription, self.listeners.items);
+        };
         defer self.gpa.free(listeners);
-        const seq = self.storage.commitAt(tx.writes, prepared.seq) catch |err| {
-            if (err != error.StorageRejected and err != error.OutOfMemory) self.poison = err;
+        const seq = try self.storage.commitAt(tx.writes, prepared.seq);
+        result.seq = seq;
+        if (tx.after_storage) |adopt| adopt(tx.after_storage_context) catch |err| {
+            _ = self.fail(err);
             return err;
         };
-        result.seq = seq;
-        if (tx.after_storage) |adopt| try adopt(tx.after_storage_context);
         const event: Publication = .{ .seq = seq, .changes = publication.value };
-        for (listeners) |listener| try listener.callback(listener.context, &event, context);
+        for ([_]bool{ true, false }) |internal| for (listeners) |listener| {
+            if (listener.internal != internal) continue;
+            listener.callback(listener.context, &event, context) catch |err| {
+                if (internal) {
+                    _ = self.fail(err);
+                } else self.report(err);
+            };
+        };
         return result;
     }
     pub fn close(self: *Session) void {
-        if (self.ownerThread.load(.acquire) == std.Thread.getCurrentId()) {
-            self.closed = true;
-            return;
-        }
-        self.mutex.lockUncancelable(self.io);
-        self.closed = true;
-        self.mutex.unlock(self.io);
+        self.closed.store(true, .release);
         self.notifyClose();
     }
     fn notifyClose(self: *Session) void {
@@ -150,21 +279,14 @@ pub const Session = struct {
         defer self.closeMutex.unlock(self.io);
         self.closeOwnerThread.store(std.Thread.getCurrentId(), .release);
         defer self.closeOwnerThread.store(0, .release);
-        self.mutex.lockUncancelable(self.io);
-        if (!self.closed or self.closeNotified) {
-            self.mutex.unlock(self.io);
-            return;
-        }
+        if (!self.closed.load(.acquire) or self.closeNotified) return;
         self.closeNotified = true;
         while (self.closeListeners.items.len > 0) {
             const listener = self.closeListeners.orderedRemove(0);
-            self.mutex.unlock(self.io);
             listener.callback(listener.context);
-            self.mutex.lockUncancelable(self.io);
         }
         self.closeListeners.deinit(self.gpa);
         self.closeListeners = .empty;
-        self.mutex.unlock(self.io);
     }
 };
 pub const Transaction = struct {
@@ -173,6 +295,7 @@ pub const Transaction = struct {
     owned: json.Owned,
     writes: Value,
     scope: Scope,
+    read_context: types.Context,
     active: bool = true,
     tableWritten: bool = false,
     refs: std.atomic.Value(usize) = .init(1),
@@ -183,11 +306,11 @@ pub const Transaction = struct {
     after_storage_context: ?*anyopaque = null,
     before_storage: ?*const fn (?*anyopaque) anyerror!void = null,
     before_storage_context: ?*anyopaque = null,
-    fn create(session: *Session, scope: Scope) !*Transaction {
+    fn create(session: *Session, scope: Scope, context: types.Context) !*Transaction {
         const self = try session.gpa.create(Transaction);
         errdefer session.gpa.destroy(self);
         const owned = try json.Owned.empty(session.gpa);
-        self.* = .{ .gpa = session.gpa, .session = session, .owned = owned, .scope = scope, .writes = .{ .array = .init(owned.arena.allocator()) }, .ownerThread = std.Thread.getCurrentId() };
+        self.* = .{ .gpa = session.gpa, .session = session, .owned = owned, .scope = scope, .read_context = context, .writes = .{ .array = .init(owned.arena.allocator()) }, .ownerThread = std.Thread.getCurrentId() };
         return self;
     }
     pub fn retain(self: *Transaction) *Transaction {
@@ -214,7 +337,7 @@ pub const Transaction = struct {
     }
     pub fn readRecord(self: *Transaction, table: backend.memory.Table, id: u64) !?Value {
         try self.reading();
-        var record = (try self.session.storage.readTableRecord(self.gpa, table, id)) orelse return null;
+        var record = (try self.session.storage.readTableRecordContext(self.gpa, table, id, self.read_context)) orelse return null;
         defer record.deinit();
         return try json.clone(self.allocator(), record.value);
     }
@@ -673,7 +796,7 @@ test "durable Session admission allocates before publish and survives callback f
                 if (err == error.OutOfMemory) return err;
                 try std.testing.expectEqual(error.OriginalSessionCallback, err);
             }
-            try std.testing.expect(session.poison == null);
+            try std.testing.expect(session.failure() == null);
         }
     }.run, .{});
 }

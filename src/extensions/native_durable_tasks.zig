@@ -1197,7 +1197,7 @@ fn runtimeReadOwned(engine: *Engine, receiver: c.JSValue, args: c.JSValue, opera
         if (!slot.found_existing) slot.value_ptr.* = null;
         return @import("native_durable_context_view.zig").read(engine, self.session, first, context, at, slot.value_ptr);
     }
-    const store = owner.lease.value.storage;
+    const store = &owner.lease.value.storage;
     if (operation == .getTask) {
         var record = (try store.readTableRecord(engine.gpa, .task, try durable.number(engine, first))) orelse return c.pi_js_undefined();
         defer record.deinit();
@@ -1434,9 +1434,24 @@ fn settleWaiters(self: *Manager) !void {
 }
 const WaiterRecord = union(enum) { busy, record: ?json.Owned };
 fn readWaiterTask(session: *session_mod.Session, gpa: std.mem.Allocator, id: u64) !WaiterRecord {
-    const on_owner = session.ownerThread.load(.acquire) == std.Thread.getCurrentId();
-    if (!on_owner and !session.mutex.tryLock()) return .busy;
-    defer if (!on_owner) session.mutex.unlock(session.io);
+    const thread = std.Thread.getCurrentId();
+    const on_owner = session.ownerThread.load(.acquire) == thread;
+    if (!on_owner) {
+        // Reserve the same logical line as commits. The subscription mutex is
+        // only probed for a pre-existing native barrier, never held over a
+        // custom Storage callback or VM work.
+        if (session.ownerThread.cmpxchgStrong(0, thread, .acq_rel, .acquire) != null) return .busy;
+        if (!session.mutex.tryLock()) {
+            session.ownerThread.store(0, .release);
+            session.io.futexWake(std.Thread.Id, &session.ownerThread.raw, std.math.maxInt(u32));
+            return .busy;
+        }
+        session.mutex.unlock(session.io);
+    }
+    defer if (!on_owner) {
+        session.ownerThread.store(0, .release);
+        session.io.futexWake(std.Thread.Id, &session.ownerThread.raw, std.math.maxInt(u32));
+    };
     return .{ .record = try session.storage.readTableRecord(gpa, .task, id) };
 }
 
