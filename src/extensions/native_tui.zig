@@ -491,6 +491,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try @import("native_input.zig").install(engine, exports);
     try @import("native_select_list.zig").install(engine, exports);
     try @import("native_fuzzy.zig").install(engine, exports);
+    try @import("native_terminal_image.zig").install(engine, exports);
     try @import("native_settings_list.zig").install(engine, exports);
     try define(engine, exports, "CURSOR_MARKER", try engine.checked(c.JS_NewString(engine.context, @import("../tui/cursor_markers.zig").cursor)));
     const array_is_array = try components.arrayPredicate(engine);

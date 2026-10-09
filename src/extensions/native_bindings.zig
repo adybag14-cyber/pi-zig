@@ -852,11 +852,13 @@ pub const Bindings = struct {
         const keybindings_config = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "keybindingsConfig"));
         defer self.engine.freeValue(keybindings_config);
         if (!c.JS_IsUndefined(keybindings_config) and (!c.JS_IsObject(keybindings_config) or c.JS_IsArray(keybindings_config))) return error.InvalidExtensionContext;
+        try @import("native_terminal_image.zig").validateAdmittedContext(self.engine, snapshot);
         const strict_theme = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "strictThemeValidation"));
         defer self.engine.freeValue(strict_theme);
         if (self.selection_context_fn) |receive| try receive(self.tool_context, source);
         if (!c.JS_IsUndefined(strict_theme)) try @import("native_theme.zig").setStrictFileValidation(self.engine, c.JS_ToBool(self.engine.context, strict_theme) != 0);
         try @import("native_keybindings.zig").hydrateAdmittedConfig(self.engine, snapshot);
+        try @import("native_terminal_image.zig").hydrateAdmittedContext(self.engine, snapshot);
         if (self.context_snapshot) |old| self.engine.freeValue(old);
         self.context_snapshot = snapshot;
     }

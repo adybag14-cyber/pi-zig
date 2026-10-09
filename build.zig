@@ -979,6 +979,15 @@ pub fn build(b: *std.Build) void {
     const native_layout_run = b.addRunArtifact(native_layout_tests);
     b.step("test-native-layout", "Replay original public component layouts caches and callback lifecycle").dependOn(&native_layout_run.step);
     test_step.dependOn(&native_layout_run.step);
+    const native_terminal_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_terminal_image_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Source6fb terminal capabilities"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, native_terminal_tests.root_module, quickjs, sqlite_lib_dir);
+    const native_terminal_run = b.addRunArtifact(native_terminal_tests);
+    b.step("test-native-terminal-capabilities", "Replay Source environment capability cache and admitted terminal context").dependOn(&native_terminal_run.step);
+    test_step.dependOn(&native_terminal_run.step);
     const native_input_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_input_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{ "Source6fb public Input", "native JS UTF16" },
