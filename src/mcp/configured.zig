@@ -38,7 +38,7 @@ const CatalogStorage = struct {
         gpa.destroy(self);
     }
 };
-pub const Descriptor = struct { server: *Server, raw_name: []const u8, name: []const u8, schema: Value, codemode_metadata: ?Value = null, exposure: config.Exposure = .direct, loaded: bool = false, resource: bool = false, definition_id: u64, parameter_id: u64 = 0, namespace_id: u64 = 0, storage: ?*CatalogStorage = null, parameter_identity: ParameterIdentity = .remote_json };
+pub const Descriptor = struct { server: *Server, raw_name: []const u8, name: []const u8, schema: Value, codemode_metadata: ?Value = null, exposure: config.Exposure = .direct, loaded: bool = false, resource: bool = false, definition_id: u64, parameter_id: u64 = 0, parameter_body_id: u64 = 0, raw_parameters: ?Value = null, namespace_id: u64 = 0, storage: ?*CatalogStorage = null, parameter_identity: ParameterIdentity = .remote_json };
 pub const Server = struct {
     owner: *Service,
     name: []const u8,
@@ -117,7 +117,7 @@ pub const Server = struct {
                 if (!fetched) try candidate.value.object.put(a, key, try json.clone(a, try protocol.field(current.value, key)));
             }
         }
-        try service.publishDiscovery(self, candidate.value);
+        try service.publishDiscoveryWithBodies(self, candidate.value, resources);
     }
     fn authToken(raw: ?*anyopaque, gpa: std.mem.Allocator, _: ?*bool) !?[]u8 {
         const self: *Server = @ptrCast(@alignCast(raw.?));
@@ -551,6 +551,9 @@ pub const Service = struct {
         try self.publishDiscovery(server, result.value);
     }
     fn publishDiscovery(self: *Service, server: *Server, result: json.Value) !void {
+        return self.publishDiscoveryWithBodies(server, result, false);
+    }
+    fn publishDiscoveryWithBodies(self: *Service, server: *Server, result: json.Value, reuse_bodies: bool) !void {
         var discovery = try json.Owned.empty(self.gpa);
         errdefer discovery.deinit();
         discovery.value = try json.clone(discovery.arena.allocator(), result);
@@ -605,7 +608,13 @@ pub const Service = struct {
             try offered.put(self.gpa, owned_name, {});
             const schema = try projection.schema(a, server.name, name, item);
             const metadata = try projection.codemodeMetadata(a, server.name, server.config, initialized, item);
-            try replacement.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, raw_name), .name = owned_name, .schema = schema, .codemode_metadata = metadata, .exposure = exposure, .definition_id = try self.allocateDefinitionId(), .parameter_id = try self.allocateDefinitionId(), .namespace_id = namespace_id, .storage = storage });
+            var body_id: u64 = 0;
+            if (reuse_bodies) for (self.descriptors.items) |previous| if (previous.server == server and std.mem.eql(u8, previous.name, name)) {
+                body_id = previous.parameter_body_id;
+                break;
+            };
+            if (body_id == 0) body_id = try self.allocateDefinitionId();
+            try replacement.append(self.gpa, .{ .server = server, .raw_name = try a.dupe(u8, raw_name), .name = owned_name, .schema = schema, .codemode_metadata = metadata, .exposure = exposure, .definition_id = try self.allocateDefinitionId(), .parameter_id = try self.allocateDefinitionId(), .parameter_body_id = body_id, .raw_parameters = try json.clone(a, try protocol.field(item, "inputSchema")), .namespace_id = namespace_id, .storage = storage });
         }
         // Withdrawn definitions remain visible as hidden metadata and retain
         // their original parameter/namespace objects. Refreshing an offered

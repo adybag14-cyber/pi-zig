@@ -45,6 +45,7 @@ pub const Engine = struct {
     cancelled: std.atomic.Value(bool) = .init(false),
     last_error: ?[]u8 = null,
     captured_exception: ?c.JSValue = null,
+    native_exception_diagnostics_suppressed: usize = 0,
     native_allocation_exception: ?c.JSValue = null,
     native_allocation_generation: u64 = 0,
     host_data: ?*anyopaque = null,
@@ -708,6 +709,16 @@ pub const Engine = struct {
     }
 
     fn captureValue(self: *Engine, context: *c.JSContext, exception: c.JSValue) void {
+        // A native implementation may call guest functions whose exceptions
+        // are still inside a guest try/catch. Capturing their identity must
+        // not invoke user ToString code before that catch gets the exception.
+        if (self.native_exception_diagnostics_suppressed != 0) {
+            if (self.last_error) |message| self.gpa.free(message);
+            self.last_error = null;
+            if (self.captured_exception) |previous| self.freeValue(previous);
+            self.captured_exception = c.JS_DupValue(context, exception);
+            return;
+        }
         const text = c.JS_ToCString(context, exception);
         defer if (text != null) c.JS_FreeCString(context, text);
         const diagnostic_message = if (text == null) null else self.gpa.dupe(u8, std.mem.span(text)) catch null;

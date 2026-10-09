@@ -12,7 +12,7 @@ pub const Exposure = struct {
 pub fn putData(engine: *Engine, target: c.JSValue, key: [:0]const u8, value: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, target, key, value, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
 }
-fn shallow(engine: *Engine, value: c.JSValue) !c.JSValue {
+pub fn shallow(engine: *Engine, value: c.JSValue) !c.JSValue {
     const result = try vm.object(engine);
     errdefer engine.freeValue(result);
     if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) return result;

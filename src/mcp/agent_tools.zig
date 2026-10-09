@@ -107,6 +107,13 @@ pub fn codemodeMetadata(a: std.mem.Allocator, server: []const u8, configuration:
     var metadata: Value = .{ .object = .empty };
     try metadata.object.put(a, "namespace", namespace);
     try metadata.object.put(a, "outputSchema", output);
+    var annotations: Value = .{ .object = .empty };
+    if (json.get(tool, "annotations")) |hints| if (hints == .object) {
+        inline for (.{ "readOnlyHint", "destructiveHint", "idempotentHint", "openWorldHint" }) |hint| {
+            if (json.get(hints, hint)) |value| if (value == .bool) try annotations.object.put(a, hint, value);
+        }
+    };
+    if (annotations.object.count() != 0) try metadata.object.put(a, "annotations", annotations);
     return metadata;
 }
 fn size(a: std.mem.Allocator, n: f64) ![]u8 {

@@ -47,6 +47,8 @@ const State = struct {
                     .definition_id = try positive(record, "definitionId"),
                     .parameter_identity = try parameterKind(record),
                     .parameter_id = try optionalId(record, "parameterId"),
+                    .parameter_body_id = try optionalId(record, "parameterBodyId"),
+                    .raw_parameters = json.get(record, "rawParameters"),
                     .metadata = try json.required(record, "metadata"),
                     .parameters = try json.required(record, "parameters"),
                     .source_info = json.get(record, "sourceInfo") orelse .null,
@@ -120,6 +122,9 @@ pub fn apply(engine: *engine_mod.Engine, group: *group_mod.Group, object: std.js
             const parameters = try json.required(record, "parameters");
             if (kind == .remote_json and parameters != .object) return error.InvalidNativeToolCatalogFrame;
             if (kind != .remote_json and parameters != .object and parameters != .null) return error.InvalidNativeToolCatalogFrame;
+            if (try optionalId(record, "parameterBodyId") != 0) {
+                if (kind != .remote_json or (json.get(record, "rawParameters") orelse return error.InvalidNativeToolCatalogFrame) != .object) return error.InvalidNativeToolCatalogFrame;
+            }
             inline for (.{ "namespaceId", "promptGuidelinesId", "annotationsId", "sourceInfoId", "sourceOwnerKey" }) |name| _ = try optionalId(record, name);
         }
     }

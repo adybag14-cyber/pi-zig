@@ -130,6 +130,61 @@ test "mcp.configured shutdown cancels an admitted live list refresh and retires 
     try std.testing.expectEqual(@as(@TypeOf(server.connection.state), .closed), server.connection.state);
 }
 
+test "mcp.configured resource notification keeps parsed schema bodies and does not issue a tools refresh" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var configuration = try stdioConfig(a, program, "direct");
+    var args: Value = .{ .array = .init(a) };
+    try args.array.append(.{ .string = "--notify-resources" });
+    try configuration.object.put(a, "args", args);
+    try root.write(false, try document(a, "native", configuration));
+    var environment = try std.testing.environ.createMap(gpa);
+    defer environment.deinit();
+    const service = try create(&root, &environment, false);
+    defer service.deinit();
+    try service.start();
+    const server = service.findServer("native").?;
+    try std.testing.expectEqual(@as(usize, 2), server.resources_count);
+    const parameter_id = service.descriptors.items[0].parameter_id;
+    const body_id = service.descriptors.items[0].parameter_body_id;
+    var reply = try execute(service, "mcp__native__trigger", "{}");
+    defer reply.deinit(gpa);
+    const deadline = std.Io.Clock.awake.now(io).toMilliseconds() + 5000;
+    while (true) {
+        service.catalog_mutex.lockUncancelable(io);
+        const ready = server.resources_count == 3;
+        service.catalog_mutex.unlock(io);
+        if (ready) break;
+        if (std.Io.Clock.awake.now(io).toMilliseconds() >= deadline) return error.ResourceNotificationTimeout;
+        try io.sleep(.fromMilliseconds(2), .awake);
+    }
+    try std.testing.expect(service.owns("mcp__native__old"));
+    try std.testing.expect(!service.owns("mcp__native__new"));
+    service.catalog_mutex.lockUncancelable(io);
+    defer service.catalog_mutex.unlock(io);
+    try std.testing.expect(parameter_id != service.descriptors.items[0].parameter_id);
+    try std.testing.expectEqual(body_id, service.descriptors.items[0].parameter_body_id);
+}
+
+test "mcp.configured native discovery annotations match the real Source registered definition" {
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var source = try json.Owned.parse(gpa, @embedFile("mcp/fixtures/mcp-resource-notification-original-6fb.json"));
+    defer source.deinit();
+    var tool = try json.Owned.parse(gpa, "{\"name\":\"shared\",\"inputSchema\":{},\"annotations\":{\"readOnlyHint\":true}}");
+    defer tool.deinit();
+    const metadata = try @import("mcp/agent_tools.zig").codemodeMetadata(a, "native", .{ .object = .empty }, .{ .object = .empty }, tool.value);
+    const expected = try protocol.field(source.value.object.get("initial").?.array.items[0], "annotationsValue");
+    const actual = try protocol.field(metadata, "annotations");
+    try std.testing.expectEqualStrings(try json.stringify(a, expected), try json.stringify(a, actual));
+}
+
 test "mcp.configured naming matches original bulk collisions duplicates and historical reservations" {
     const program = try fixturePath();
     defer gpa.free(program);
