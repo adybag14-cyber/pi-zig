@@ -38,5 +38,5 @@ test "SDK virtual catalog routing filtering stream and teardown release every fa
             if (failing.has_induced_failure) return error.OutOfMemory;
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+    try @import("test_support/sdk_allocation_shards.zig").check("virtual-ownership", Probe.run, .{});
 }

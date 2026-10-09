@@ -179,5 +179,5 @@ test "SDK session model lease every host allocation releases factory anchor rota
             };
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{path[0..count]});
+    try @import("test_support/sdk_allocation_shards.zig").check("session-model-lease", Probe.run, .{path[0..count]});
 }

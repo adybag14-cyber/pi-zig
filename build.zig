@@ -876,6 +876,11 @@ pub fn build(b: *std.Build) void {
     const sdk_registry_run = b.addRunArtifact(sdk_registry_tests);
     b.step("test-sdk-model-registry", "Exercise Source compatibility facade and exact model ownership").dependOn(&sdk_registry_run.step);
     test_step.dependOn(&sdk_registry_run.step);
+    const sdk_allocation_step = b.step("test-sdk-allocation-shard", "Exercise a complete SDK allocation range with baseline and completion receipts");
+    inline for (.{ sdk_virtual_run, sdk_session_lease_run, sdk_registry_run }) |run| {
+        run.has_side_effects = true;
+        sdk_allocation_step.dependOn(&run.step);
+    }
     const sdk_settings_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_settings_ownership_test.zig"), .target = target, .optimize = optimize });
     sdk_settings_module.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, sdk_settings_module, quickjs, sqlite_lib_dir);

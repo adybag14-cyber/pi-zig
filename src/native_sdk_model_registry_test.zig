@@ -133,5 +133,5 @@ test "SDK model registry every host allocation releases facade auth anchors and 
             };
         }
     };
-    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{path[0..count]});
+    try @import("test_support/sdk_allocation_shards.zig").check("model-registry", Probe.run, .{path[0..count]});
 }
