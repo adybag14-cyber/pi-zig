@@ -57,6 +57,12 @@ pub const Engine = struct {
     native_durable_class: c.JSClassID = 0,
     native_models_store_class: c.JSClassID = 0,
     native_sdk_extension_group: ?*anyopaque = null,
+    native_sdk_resource_scope_class: c.JSClassID = 0,
+    native_sdk_resource_retire_pending: ?*anyopaque = null,
+    native_sdk_resource_owner_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_sdk_resource_owner_deinit: ?*const fn (*Engine) void = null,
+    native_sdk_event_retire_owner: ?*const fn (*Engine, u64) void = null,
+    native_sdk_default_admission: ?*const fn (*Engine, u64) anyerror!void = null,
     native_sdk_next_runtime_id: u64 = 1,
     native_durable_harness_class: c.JSClassID = 0,
     native_durable_runtime_class: c.JSClassID = 0,
@@ -178,6 +184,7 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        if (self.native_sdk_resource_owner_deinit) |cleanup| cleanup(self);
         self.closeDurableOwner();
         @import("native_async_scope.zig").deinit(self);
         for (self.native_sdk_prototypes) |prototype| if (prototype) |value| self.freeValue(value);
@@ -629,7 +636,8 @@ pub const Engine = struct {
         self.refreshUiDeadline();
         const host_worked = if (self.host_control_pump) |pump| try pump(self) else false;
         const durable_worked = if (self.native_durable_control_pump) |pump| try pump(self) else false;
-        return host_worked or durable_worked;
+        const sdk_retired = if (self.native_sdk_resource_owner_pump) |pump| try pump(self) else false;
+        return host_worked or durable_worked or sdk_retired;
     }
     pub fn closeDurableOwner(self: *Engine) void {
         if (self.native_durable_control_deinit) |cleanup| cleanup(self);

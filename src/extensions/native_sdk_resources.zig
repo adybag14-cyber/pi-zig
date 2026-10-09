@@ -95,10 +95,18 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
     defer engine.freeValue(options);
     const inputs = try sdk.get(engine, options, "extensionFactories");
     defer engine.freeValue(inputs);
-    if (!c.JS_IsArray(inputs) or try sdk.length(engine, inputs) == 0) return;
-    const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return error.NativeSDKExtensionGroupUnavailable));
+    const input_count = if (c.JS_IsArray(inputs)) try sdk.length(engine, inputs) else 0;
     const previous = try sdk.get(engine, data, "extensionOwnerIds");
     defer engine.freeValue(previous);
+    if (input_count == 0 and (!c.JS_IsArray(previous) or try sdk.length(engine, previous) == 0)) return;
+    const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return error.NativeSDKExtensionGroupUnavailable));
+    var private_scope = try sdk.get(engine, data, "_sdkExtensionOwnerScope");
+    defer engine.freeValue(private_scope);
+    if (c.JS_IsUndefined(private_scope)) {
+        engine.freeValue(private_scope);
+        private_scope = try @import("native_sdk_resource_owners.zig").create(group);
+        try sdk.put(engine, data, "_sdkExtensionOwnerScope", c.JS_DupValue(engine.context, private_scope));
+    }
     if (c.JS_IsArray(previous)) for (0..try sdk.length(engine, previous)) |index| {
         const id = try engine.checked(c.JS_GetPropertyUint32(engine.context, previous, @intCast(index)));
         defer engine.freeValue(id);
@@ -112,7 +120,7 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
     defer engine.freeValue(rows);
     const errors = try sdk.array(engine);
     defer engine.freeValue(errors);
-    for (0..try sdk.length(engine, inputs)) |index| {
+    for (0..input_count) |index| {
         const input = try engine.checked(c.JS_GetPropertyUint32(engine.context, inputs, @intCast(index)));
         defer engine.freeValue(input);
         const factory = if (c.JS_IsFunction(engine.context, input)) c.JS_DupValue(engine.context, input) else try sdk.get(engine, input, "factory");
@@ -125,7 +133,7 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
         defer engine.gpa.free(name);
         const path = try std.fmt.allocPrint(engine.gpa, "<inline:{s}>", .{name});
         defer engine.gpa.free(path);
-        const binding = try group.add(path);
+        const binding = try group.addSdk(path, private_scope);
         binding.loadFactoryValue(factory) catch |err| {
             const diagnostic = try sdk.object(engine);
             defer engine.freeValue(diagnostic);

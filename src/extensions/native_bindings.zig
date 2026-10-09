@@ -65,7 +65,7 @@ pub const Bindings = struct {
     pub const ActiveToolsFn = *const fn (?*anyopaque) anyerror!c.JSValue;
     pub const SetActiveToolsFn = *const fn (?*anyopaque, *Bindings, c.JSValue) anyerror!u64;
     pub const SelectionContextFn = *const fn (?*anyopaque, []const u8) anyerror!void;
-    pub const SharedServices = struct { ui: *native_ui.Manager, renderers: *native_renderers.Manager, broker: ?*InvocationBroker = null, owner_id: u64 = 0, tool_lookup: ?ToolLookupFn = null, tool_context: ?*anyopaque = null, catalog_fn: ?CatalogFn = null, provider_catalog_fn: ?ProviderCatalogFn = null, provider_catalog_clock: ?*u64 = null, registration_fn: ?RegistrationFn = null, active_tools_fn: ?ActiveToolsFn = null, set_active_tools_fn: ?SetActiveToolsFn = null, selection_context_fn: ?SelectionContextFn = null };
+    pub const SharedServices = struct { ui: *native_ui.Manager, renderers: *native_renderers.Manager, broker: ?*InvocationBroker = null, owner_id: u64 = 0, sdk_resource_owner: bool = false, tool_lookup: ?ToolLookupFn = null, tool_context: ?*anyopaque = null, catalog_fn: ?CatalogFn = null, provider_catalog_fn: ?ProviderCatalogFn = null, provider_catalog_clock: ?*u64 = null, registration_fn: ?RegistrationFn = null, active_tools_fn: ?ActiveToolsFn = null, set_active_tools_fn: ?SetActiveToolsFn = null, selection_context_fn: ?SelectionContextFn = null };
     pub const ToolUpdateFn = *const fn (?*anyopaque, c.JSValue) anyerror!void;
     gpa: std.mem.Allocator,
     engine: *engine_mod.Engine,
@@ -78,6 +78,8 @@ pub const Bindings = struct {
     owns_services: bool,
     broker: ?*InvocationBroker = null,
     owner_id: u64 = 0,
+    /// Assigned by a validated native ResourceLoader scope, never source/JSON.
+    sdk_resource_owner: bool = false,
     tool_lookup: ?ToolLookupFn = null,
     tool_context: ?*anyopaque = null,
     catalog_fn: ?CatalogFn = null,
@@ -193,6 +195,7 @@ pub const Bindings = struct {
         if (services) |shared| {
             self.broker = shared.broker;
             self.owner_id = shared.owner_id;
+            self.sdk_resource_owner = shared.sdk_resource_owner;
             self.tool_lookup = shared.tool_lookup;
             self.tool_context = shared.tool_context;
             self.catalog_fn = shared.catalog_fn;
@@ -211,16 +214,21 @@ pub const Bindings = struct {
         try ui_manager.footer_data.addOwner(self.owner_id);
         errdefer ui_manager.footer_data.removeOwner(self.owner_id);
         try ui_manager.terminal_input.addOwner(self.owner_id);
-        ui_manager.provider_action_fn = providerUiAction;
-        ui_manager.provider_action_context = self;
+        if (!self.sdk_resource_owner) {
+            ui_manager.provider_action_fn = providerUiAction;
+            ui_manager.provider_action_context = self;
+        }
         if (services == null) engine.host_data = self;
         return self;
     }
 
-    pub fn deinit(self: *Bindings) void {
-        // Retire the public API before any user component dispose callback.
+    pub fn retireOwnerToken(self: *Bindings) void {
         const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(self.owner_token, self.owner_class).?));
         owner.binding = null;
+    }
+    pub fn deinit(self: *Bindings) void {
+        // Retire the public API before any user component dispose callback.
+        self.retireOwnerToken();
         self.ui_manager.widgets.removeOwner(self.owner_id);
         self.ui_manager.footer_data.removeOwner(self.owner_id);
         self.ui_manager.terminal_input.removeOwner(self.owner_id);
@@ -308,6 +316,10 @@ pub const Bindings = struct {
             else => false,
         };
         if (runtime_method) {
+            if (self.sdk_resource_owner) {
+                const active = if (self.broker) |broker| broker.active orelse self else self;
+                if (active.sdk_context == null) return @import("native_sdk_resource_owners.zig").uninitialized(self.engine);
+            }
             var unbound = self.factory_active;
             if (self.context_snapshot) |snapshot| {
                 const bound = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "nativeRuntimeBound"));
@@ -479,7 +491,22 @@ pub const Bindings = struct {
     }
 
     fn readonlyApi(self: *Bindings, method: Method) !c.JSValue {
+        if (self.sdk_context != null) {
+            if (method == .getAllTools or method == .getCommands) return self.catalogApi(method);
+            var caller = try @import("native_sdk_resource_owners.zig").retainCaller(self);
+            defer caller.deinit();
+            const sdk_mod = @import("native_sdk.zig");
+            if (method == .getActiveTools) return sdk_mod.invoke(self.engine, caller.session, "getActiveToolNames", &.{});
+            if (method == .getSessionName) return sdk_mod.invoke(self.engine, caller.manager, "getSessionName", &.{});
+            if (method == .getThinkingLevel) return @import("native_values.zig").get(self.engine, caller.session, "thinkingLevel");
+            if (method == .getSettings) {
+                const settings = try @import("native_values.zig").get(self.engine, caller.owner.data, "settingsManager");
+                defer self.engine.freeValue(settings);
+                return sdk_mod.invoke(self.engine, settings, "getSettings", &.{});
+            }
+        }
         if (self.broker) |broker| if (broker.active) |active| if (active != self) return active.readonlyApi(method);
+        if (self.sdk_resource_owner) return @import("native_sdk_resource_owners.zig").uninitialized(self.engine);
         if (method == .getAllTools or method == .getCommands) return self.catalogApi(method);
         if (method == .getActiveTools) if (self.active_tools_fn) |read| return read(self.tool_context);
         const key: [*:0]const u8 = switch (method) {
@@ -780,7 +807,9 @@ pub const Bindings = struct {
             const selection_sequence = try set(self.tool_context, self, names);
             // The legacy mirror must carry the actual filtered loadout too;
             // callers can name unknown, hidden, or excluded registrations.
-            if (self.active_tools_fn) |read| try self.actionProperty(action, "names", try read(self.tool_context));
+            if (self.sdk_context != null) {
+                try self.actionProperty(action, "names", try self.readonlyApi(.getActiveTools));
+            } else if (self.active_tools_fn) |read| try self.actionProperty(action, "names", try read(self.tool_context));
             try self.actionProperty(action, "nativeSelectionSequence", c.JS_NewInt64(self.engine.context, @intCast(selection_sequence)));
         };
         recipient.actions.appendAssumeCapacity(action);
@@ -794,13 +823,17 @@ pub const Bindings = struct {
         self.invocation_clock += 1;
         self.invocation_generation = self.invocation_clock;
         self.publication_sequence = 0;
-        self.ui_manager.provider_action_fn = providerUiAction;
-        self.ui_manager.provider_action_context = self;
+        if (!self.sdk_resource_owner) {
+            self.ui_manager.provider_action_fn = providerUiAction;
+            self.ui_manager.provider_action_context = self;
+        }
         for (self.actions.items) |action| self.engine.freeValue(action);
         self.actions.clearRetainingCapacity();
-        if (self.ui_manager.generation == std.math.maxInt(u32)) return error.ExtensionInvocationGenerationExhausted;
-        self.ui_manager.editor_owner_id = self.owner_id;
-        try self.ui_manager.begin(self.ui_manager.generation + 1, self.context_snapshot, self.invocation_signal);
+        if (!self.sdk_resource_owner) {
+            if (self.ui_manager.generation == std.math.maxInt(u32)) return error.ExtensionInvocationGenerationExhausted;
+            self.ui_manager.editor_owner_id = self.owner_id;
+            try self.ui_manager.begin(self.ui_manager.generation + 1, self.context_snapshot, self.invocation_signal);
+        }
         self.invocation_active = true;
         if (self.broker) |broker| broker.active = self;
     }
@@ -826,7 +859,7 @@ pub const Bindings = struct {
     }
 
     fn finishInvocation(self: *Bindings) void {
-        self.ui_manager.finish();
+        if (!self.sdk_resource_owner) self.ui_manager.finish();
         self.invocation_active = false;
         if (self.broker) |broker| if (broker.active == self) {
             broker.active = null;
@@ -1005,10 +1038,12 @@ pub const Bindings = struct {
         try @import("native_terminal_image.zig").validateAdmittedContext(self.engine, snapshot);
         const strict_theme = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, snapshot, "strictThemeValidation"));
         defer self.engine.freeValue(strict_theme);
-        if (self.selection_context_fn) |receive| try receive(self.tool_context, source);
-        if (!c.JS_IsUndefined(strict_theme)) try @import("native_theme.zig").setStrictFileValidation(self.engine, c.JS_ToBool(self.engine.context, strict_theme) != 0);
-        try @import("native_keybindings.zig").hydrateAdmittedConfig(self.engine, snapshot);
-        try @import("native_terminal_image.zig").hydrateAdmittedContext(self.engine, snapshot);
+        if (!self.sdk_resource_owner and self.sdk_context == null) {
+            if (self.selection_context_fn) |receive| try receive(self.tool_context, source);
+            if (!c.JS_IsUndefined(strict_theme)) try @import("native_theme.zig").setStrictFileValidation(self.engine, c.JS_ToBool(self.engine.context, strict_theme) != 0);
+            try @import("native_keybindings.zig").hydrateAdmittedConfig(self.engine, snapshot);
+            try @import("native_terminal_image.zig").hydrateAdmittedContext(self.engine, snapshot);
+        }
         if (self.context_snapshot) |old| self.engine.freeValue(old);
         self.context_snapshot = snapshot;
     }
@@ -1050,6 +1085,7 @@ pub const Bindings = struct {
         self.context_snapshot = saved.snapshot;
     }
     fn contextFunction(self: *Bindings, name: [:0]const u8, kind: ContextMethod, snapshot: c.JSValue, generation: u32) anyerror!c.JSValue {
+        if (self.sdk_resource_owner and self.sdk_context == null) return @import("native_sdk_resource_owners.zig").uninitialized(self.engine);
         const token = c.JS_DupValue(self.engine.context, self.context_guard);
         defer self.engine.freeValue(token);
         const owner_class = c.JS_NewInt64(self.engine.context, self.owner_class);

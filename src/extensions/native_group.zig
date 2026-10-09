@@ -8,9 +8,10 @@ const abort_signal = @import("abort_signal.zig");
 const activation_mod = @import("tool_activation.zig");
 const tool_catalog = @import("native_tool_catalog.zig");
 const vm = @import("native_values.zig");
+const sdk_owners = @import("native_sdk_resource_owners.zig");
 const c = engine_mod.c;
 
-pub const Entry = struct { id: u64, source: []u8, binding: *bindings_mod.Bindings };
+pub const Entry = struct { id: u64, source: []u8, binding: *bindings_mod.Bindings, sdk_scope: ?*sdk_owners.Scope = null };
 pub const Group = struct {
     pub const NativeToolCatalogFn = *const fn (?*anyopaque, *bindings_mod.Bindings, *tool_catalog.CatalogSink) anyerror!void;
     provider_catalog_clock: u64 = 0,
@@ -20,7 +21,9 @@ pub const Group = struct {
     renderers: *native_renderers.Manager,
     broker: bindings_mod.Bindings.InvocationBroker = .{},
     entries: std.ArrayList(Entry) = .empty,
+    sdk_scopes: std.ArrayList(*sdk_owners.Scope) = .empty,
     next_id: u64 = 1,
+    next_sdk_id: u64 = 9_007_199_254_740_990,
     membership_revision: u64 = 0,
     activation: activation_mod.Tracker,
     registration_journal: std.ArrayList(activation_mod.Event) = .empty,
@@ -64,13 +67,20 @@ pub const Group = struct {
 
     pub fn deinit(self: *Group) void {
         self.deinitializing = true;
+        for (self.sdk_scopes.items) |scope| scope.retired = true;
         self.engine.native_sdk_extension_group = null;
         self.sdk_availability.deinit(self.engine.gpa);
         for (self.entries.items) |entry| {
             entry.binding.deinit();
             self.engine.gpa.free(entry.source);
+            if (entry.sdk_scope) |scope| scope.release();
         }
         self.entries.deinit(self.engine.gpa);
+        for (self.sdk_scopes.items) |scope| {
+            scope.closeRenderers();
+            scope.release();
+        }
+        self.sdk_scopes.deinit(self.engine.gpa);
         self.renderers.deinit();
         self.ui.deinit();
         self.activation.deinit();
@@ -97,37 +107,64 @@ pub const Group = struct {
     }
 
     pub fn add(self: *Group, path: []const u8) !*bindings_mod.Bindings {
-        if (self.entries.items.len >= 4096 or self.next_id >= 9_007_199_254_740_991) return error.NativeGroupExtensionLimit;
+        return self.addScoped(path, null);
+    }
+    pub fn addSdk(self: *Group, path: []const u8, scope_value: c.JSValue) !*bindings_mod.Bindings {
+        return self.addScoped(path, try sdk_owners.fromValue(self, scope_value));
+    }
+    fn addScoped(self: *Group, path: []const u8, scope: ?*sdk_owners.Scope) !*bindings_mod.Bindings {
+        if (self.deinitializing) return error.StaleNativeExtensionOwner;
+        if (self.entries.items.len >= 4096 or self.next_id >= self.next_sdk_id) return error.NativeGroupExtensionLimit;
+        const id = if (scope != null) self.next_sdk_id else self.next_id;
         const source = try self.engine.gpa.dupe(u8, path);
         errdefer self.engine.gpa.free(source);
-        const binding = try bindings_mod.Bindings.initShared(self.engine.gpa, self.engine, .{ .ui = self.ui, .renderers = self.renderers, .broker = &self.broker, .owner_id = self.next_id, .tool_lookup = lookupTool, .tool_context = self, .catalog_fn = catalog, .provider_catalog_fn = providerCatalog, .provider_catalog_clock = &self.provider_catalog_clock, .registration_fn = registration, .active_tools_fn = activeTools, .set_active_tools_fn = setActiveTools, .selection_context_fn = selectionContext });
+        const binding = try bindings_mod.Bindings.initShared(self.engine.gpa, self.engine, .{ .ui = self.ui, .renderers = if (scope) |private| private.renderers.? else self.renderers, .broker = if (scope) |private| &private.broker else &self.broker, .owner_id = id, .sdk_resource_owner = scope != null, .tool_lookup = lookupTool, .tool_context = self, .catalog_fn = catalog, .provider_catalog_fn = providerCatalog, .provider_catalog_clock = if (scope) |private| &private.provider_clock else &self.provider_catalog_clock, .registration_fn = registration, .active_tools_fn = activeTools, .set_active_tools_fn = setActiveTools, .selection_context_fn = if (scope == null) selectionContext else null });
         errdefer binding.deinit();
         try binding.setSourcePath(path);
-        try self.entries.append(self.engine.gpa, .{ .id = self.next_id, .source = source, .binding = binding });
-        self.next_id += 1;
-        self.membership_revision +%= 1;
+        try self.entries.ensureUnusedCapacity(self.engine.gpa, 1);
+        self.entries.appendAssumeCapacity(.{ .id = id, .source = source, .binding = binding, .sdk_scope = if (scope) |private| private.retain() else null });
+        if (scope == null) {
+            self.next_id += 1;
+            self.membership_revision +%= 1;
+        } else self.next_sdk_id -= 1;
         return binding;
     }
 
     pub fn selected(self: *Group, id: u64) !*bindings_mod.Bindings {
         if (self.deinitializing) return error.StaleNativeExtensionOwner;
-        for (self.entries.items) |entry| if (entry.id == id) return entry.binding;
+        for (self.entries.items) |entry| if (entry.id == id) {
+            if (entry.sdk_scope) |scope| if (scope.retired) return error.StaleNativeExtensionOwner;
+            return entry.binding;
+        };
         return error.UnknownNativeExtensionOwner;
     }
     pub fn invalidateContexts(self: *Group, reason: []const u8) !usize {
-        for (self.entries.items) |entry| try entry.binding.invalidateContextWithReason(reason);
-        return self.entries.items.len;
+        var count: usize = 0;
+        for (self.entries.items) |entry| if (entry.sdk_scope == null) {
+            try entry.binding.invalidateContextWithReason(reason);
+            count += 1;
+        };
+        return count;
     }
 
     pub fn remove(self: *Group, id: u64) !void {
         if (self.deinitializing) return error.StaleNativeExtensionOwner;
         for (self.entries.items, 0..) |entry, index| if (entry.id == id) {
+            if (entry.sdk_scope) |scope| {
+                const removed = self.entries.orderedRemove(index);
+                if (self.engine.native_sdk_event_retire_owner) |retire| retire(self.engine, id);
+                removed.binding.deinit();
+                self.engine.gpa.free(removed.source);
+                scope.release();
+                return;
+            }
             var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
             defer arena.deinit();
             var names: std.ArrayList([]const u8) = .empty;
             for (entry.binding.tool_order.items) |name| try names.append(arena.allocator(), try arena.allocator().dupe(u8, name));
             const removed = self.entries.orderedRemove(index);
             self.membership_revision +%= 1;
+            if (self.engine.native_sdk_event_retire_owner) |retire| retire(self.engine, id);
             removed.binding.deinit();
             self.engine.gpa.free(removed.source);
             for (names.items) |name| self.recordRegistration(name, self.selection_received) catch |err| {
@@ -140,7 +177,7 @@ pub const Group = struct {
 
     pub fn tool(self: *Group, name: []const u8) ?c.JSValue {
         if (self.deinitializing) return null;
-        for (self.entries.items) |entry| if (entry.binding.tools.get(name)) |value| return value;
+        for (self.entries.items) |entry| if (entry.sdk_scope == null) if (entry.binding.tools.get(name)) |value| return value;
         return null;
     }
 
@@ -209,6 +246,7 @@ pub const Group = struct {
     fn registration(context: ?*anyopaque, caller: *bindings_mod.Bindings, name: []const u8) !void {
         const self: *Group = @ptrCast(@alignCast(context.?));
         if (self.deinitializing) return error.StaleNativeExtensionOwner;
+        if (caller.sdk_resource_owner) return;
         // The original runtime refresh callback is unbound during initial
         // factories. Reading user default/exposure getters must wait until all
         // factories have completed and the registry is admitted.
@@ -230,6 +268,7 @@ pub const Group = struct {
         defer arena.deinit();
         var names: std.ArrayList([]const u8) = .empty;
         for (self.entries.items) |entry| {
+            if (entry.sdk_scope != null) continue;
             if (owner_id) |owner| if (entry.id != owner) continue;
             for (entry.binding.tool_order.items) |name| {
                 var duplicate = false;
@@ -251,7 +290,7 @@ pub const Group = struct {
             const revision = self.registrationRevision();
             var winner: ?Entry = null;
             var definition: ?c.JSValue = null;
-            for (self.entries.items) |entry| if (entry.binding.tools.get(name)) |value| {
+            for (self.entries.items) |entry| if (entry.sdk_scope == null) if (entry.binding.tools.get(name)) |value| {
                 winner = entry;
                 definition = c.JS_DupValue(self.engine.context, value);
                 break;
@@ -308,6 +347,14 @@ pub const Group = struct {
     fn setActiveTools(context: ?*anyopaque, caller: *bindings_mod.Bindings, value: c.JSValue) !u64 {
         const self: *Group = @ptrCast(@alignCast(context.?));
         if (self.deinitializing) return error.StaleNativeExtensionOwner;
+        if (caller.sdk_context != null) {
+            var sdk_caller = try sdk_owners.retainCaller(caller);
+            defer sdk_caller.deinit();
+            const ignored = try @import("native_sdk.zig").invoke(self.engine, sdk_caller.session, "setActiveToolsByName", &.{value});
+            self.engine.freeValue(ignored);
+            return 0;
+        }
+        if (caller.sdk_resource_owner) return error.NativeSDKContextUnavailable;
         const raw = try self.engine.stringify(value);
         defer self.engine.gpa.free(raw);
         var parsed = try std.json.parseFromSlice(std.json.Value, self.engine.gpa, raw, .{});
@@ -436,6 +483,7 @@ pub const Group = struct {
         errdefer self.engine.freeValue(result);
         var output: u32 = 0;
         for (self.entries.items) |entry| {
+            if (entry.sdk_scope != null) continue;
             const records = try entry.binding.providers.catalogSnapshot();
             defer self.engine.freeValue(records);
             const count_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, records, "length"));
@@ -457,11 +505,14 @@ pub const Group = struct {
         const self: *Group = @ptrCast(@alignCast(context.?));
         if (self.deinitializing) return error.StaleNativeExtensionOwner;
         if (kind == .tools) return self.toolCatalog(caller);
+        if (caller.sdk_resource_owner and caller.sdk_context == null) return sdk_owners.uninitialized(self.engine);
+        var sdk_caller = if (caller.sdk_context != null) try sdk_owners.retainCaller(caller) else null;
+        defer if (sdk_caller) |*retained| retained.deinit();
         var arena: std.heap.ArenaAllocator = .init(self.engine.gpa);
         defer arena.deinit();
         const allocator = arena.allocator();
         var values: std.json.Array = .init(allocator);
-        const snapshot = try caller.catalogSnapshot(allocator, kind);
+        const snapshot = if (sdk_caller == null) try caller.catalogSnapshot(allocator, kind) else std.json.Value{ .array = .init(allocator) };
         if (snapshot != .array) return error.InvalidNativeCatalogSnapshot;
         // Agent snapshots can contain older extension projections. The group
         // owns current extension entries; retain external prompt/skill/builtins.
@@ -476,6 +527,9 @@ pub const Group = struct {
             registrations.deinit(allocator);
         }
         for (self.entries.items) |entry| {
+            if (sdk_caller) |*retained| {
+                if (!try retained.owns(entry.id)) continue;
+            } else if (entry.sdk_scope != null) continue;
             const order = if (kind == .tools) entry.binding.tool_order.items else entry.binding.command_order.items;
             const table = if (kind == .tools) &entry.binding.tools else &entry.binding.commands;
             for (order) |name| if (table.get(name)) |value| {
@@ -561,6 +615,7 @@ pub const Group = struct {
         // selected() and the rooted API owner token provide actual runtime
         // membership. Context JSON cannot choose a foreign metadata owner.
         if (try self.selected(caller.owner_id) != caller) return error.StaleNativeExtensionOwner;
+        if (caller.sdk_resource_owner and caller.sdk_context == null) return sdk_owners.uninitialized(self.engine);
         if (caller.sdk_context != null) {
             // Actual SDK scope takes precedence over Main's native producer
             // and JSON context, and owns its complete extension/custom map.
@@ -580,7 +635,7 @@ pub const Group = struct {
             }
             registrations.deinit(self.engine.gpa);
         }
-        for (self.entries.items) |entry| for (entry.binding.tool_order.items) |name| if (entry.binding.tools.get(name)) |value| {
+        for (self.entries.items) |entry| if (entry.sdk_scope == null) for (entry.binding.tool_order.items) |name| if (entry.binding.tools.get(name)) |value| {
             const source = try entry.binding.sourceInfoValue();
             const owned_name = try self.engine.gpa.dupe(u8, name);
             const retained = c.JS_DupValue(self.engine.context, value);
@@ -668,7 +723,9 @@ pub const Group = struct {
 
     fn registrationRevision(self: *Group) u64 {
         var revision = self.membership_revision;
-        for (self.entries.items) |entry| revision +%= entry.binding.registration_revision;
+        for (self.entries.items) |entry| if (entry.sdk_scope == null) {
+            revision +%= entry.binding.registration_revision;
+        };
         return revision;
     }
 
@@ -678,6 +735,7 @@ pub const Group = struct {
         const allocator = arena.allocator();
         var entries: std.json.Array = .init(allocator);
         for (self.entries.items) |entry| {
+            if (entry.sdk_scope != null) continue;
             const raw = try entry.binding.manifestJson(entry.source);
             defer self.engine.gpa.free(raw);
             var manifest_value = try std.json.parseFromSliceLeaky(std.json.Value, allocator, raw, .{});
@@ -688,6 +746,173 @@ pub const Group = struct {
         return std.json.Stringify.valueAlloc(self.engine.gpa, std.json.Value{ .array = entries }, .{});
     }
 };
+
+test "ToolInfo private SDK resource owners preserve Main handshake membership catalogs brokers renderers and journals" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try Group.init(engine);
+    defer group.deinit();
+    const first = try group.add("<main:one>");
+    try first.installSchemas();
+    try first.loadFactory("export default pi=>{globalThis.mainApi=pi;pi.registerTool({name:'shared',description:'main-shared',parameters:{type:'object'},execute(){return{content:[]}}});pi.registerCommand('make-sdk',{handler:async()=>{await globalThis.createPrivateSdk('B');return{created:true}}})}", "<main:one>");
+    try group.initializeActivation();
+    const Main = struct {
+        calls: usize = 0,
+        fn feed(raw: ?*anyopaque, caller: *bindings_mod.Bindings, _: *tool_catalog.CatalogSink) !void {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            if (caller.sdk_resource_owner or caller.sdk_context != null) return error.PrivateSDKMustNotUseMainProducer;
+            self.calls += 1;
+        }
+    };
+    var main: Main = .{};
+    try group.setNativeToolCatalog(&main, Main.feed);
+    const main_ui_owner = group.ui.provider_action_context;
+    const initial_revision = group.membership_revision;
+    const initial_sequence = group.activation.sequence;
+    var temporary = std.testing.tmpDir(.{});
+    defer temporary.cleanup();
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const path_size = try temporary.dir.realPath(std.testing.io, &path_buffer);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try vm.put(engine, global, "ownedCwd", try engine.checked(c.JS_NewStringLen(engine.context, path_buffer[0..path_size].ptr, path_size)));
+    const namespace = engine.evalModule(
+        "import{createAgentSession,SessionManager,SettingsManager,DefaultResourceLoader}from'@earendil-works/pi-coding-agent';globalThis.privateApis={};globalThis.privateRecords=[];globalThis.privateLoaders={};globalThis.privateSessions={};globalThis.privateInputs={};" ++
+            "globalThis.createPrivateSdk=async tag=>{const cwd=ownedCwd,settings=SettingsManager.inMemory({defaultTools:[],defaultProvider:tag}),inputs=[{name:tag,factory:pi=>{privateApis[tag]=pi;pi.registerTool({name:'shared',description:'sdk-'+tag,parameters:{type:'object'},execute(){return{content:[]}}});pi.registerCommand('private-'+tag,{description:'private command',handler(){}});pi.registerToolRenderer(()=>undefined);pi.on('session_start',()=>{privateRecords.push({tag,names:pi.getAllTools().map(t=>t.name),descriptions:pi.getAllTools().map(t=>t.description),commands:pi.getCommands().map(c=>c.name),provider:pi.getSettings().defaultProvider});pi.setActiveTools(['shared'])})}}];const loader=new DefaultResourceLoader({cwd,agentDir:cwd,settingsManager:settings,noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true,noContextFiles:true,extensionFactories:inputs});await loader.reload();const{session}=await createAgentSession({cwd,agentDir:cwd,sessionManager:SessionManager.inMemory(cwd),settingsManager:settings,resourceLoader:loader,tools:['shared'],model:{id:'fixture',provider:'fixture',api:'openai-responses',name:'Fixture',baseUrl:'https://example.invalid',input:['text'],contextWindow:8192,maxTokens:1024,cost:{input:0,output:0,cacheRead:0,cacheWrite:0}}});privateLoaders[tag]=loader;privateSessions[tag]=session;privateInputs[tag]=inputs;await session.bindExtensions({});};await createPrivateSdk('A');export const proof=true;",
+        "actual-private-sdk-resource-owners.mjs",
+    ) catch |err| {
+        if (engine.last_error) |message| std.debug.print("Private SDK owners: {s}\n", .{message});
+        return err;
+    };
+    defer engine.freeValue(namespace);
+    const nested = try first.invokeCommand("make-sdk", "");
+    defer engine.gpa.free(nested);
+    try std.testing.expectEqualStrings("{\"created\":true}", nested);
+    try std.testing.expectEqual(initial_revision, group.membership_revision);
+    try std.testing.expectEqual(initial_sequence, group.activation.sequence);
+    try std.testing.expectEqual(main_ui_owner, group.ui.provider_action_context);
+    try std.testing.expectEqual(@as(usize, 0), group.renderers.resolvers.items.len);
+    try std.testing.expectEqual(@as(usize, 0), main.calls);
+    try std.testing.expectEqual(@as(usize, 2), group.sdk_scopes.items.len);
+    try std.testing.expect(group.sdk_scopes.items[0].broker.active == null and group.sdk_scopes.items[1].broker.active == null);
+    try std.testing.expect(&group.sdk_scopes.items[0].broker != &group.sdk_scopes.items[1].broker);
+    const second = try group.add("<main:two>");
+    try second.loadFactory("export default pi=>pi.registerTool({name:'other',description:'main-other',parameters:{type:'object'},execute(){return{content:[]}}})", "<main:two>");
+    try std.testing.expectEqual(@as(u64, 2), second.owner_id);
+    try group.refreshOwnerActivation(second.owner_id, false);
+    const manifest = try group.manifest();
+    defer engine.gpa.free(manifest);
+    const parsed = try std.json.parseFromSlice(std.json.Value, engine.gpa, manifest, .{});
+    defer parsed.deinit();
+    try std.testing.expectEqual(@as(usize, 2), parsed.value.array.items.len);
+    try std.testing.expectEqual(@as(i64, 1), parsed.value.array.items[0].object.get("extensionId").?.integer);
+    try std.testing.expectEqual(@as(i64, 2), parsed.value.array.items[1].object.get("extensionId").?.integer);
+    const records = try vm.get(engine, global, "privateRecords");
+    defer engine.freeValue(records);
+    const encoded = try engine.stringify(records);
+    defer engine.gpa.free(encoded);
+    try std.testing.expectEqualStrings("[{\"tag\":\"A\",\"names\":[\"shared\"],\"descriptions\":[\"sdk-A\"],\"commands\":[\"private-A\"],\"provider\":\"A\"},{\"tag\":\"B\",\"names\":[\"shared\"],\"descriptions\":[\"sdk-B\"],\"commands\":[\"private-B\"],\"provider\":\"B\"}]", encoded);
+    const main_rows = try group.toolCatalog(first);
+    defer engine.freeValue(main_rows);
+    const main_row = try engine.checked(c.JS_GetPropertyUint32(engine.context, main_rows, 0));
+    defer engine.freeValue(main_row);
+    const main_description = try vm.get(engine, main_row, "description");
+    defer engine.freeValue(main_description);
+    const description = try engine.toString(main_description);
+    defer engine.gpa.free(description);
+    try std.testing.expectEqualStrings("main-shared", description);
+    const stable_manifest = try group.manifest();
+    defer engine.gpa.free(stable_manifest);
+    const stable_sequence = group.activation.sequence;
+    const cleared = try engine.evalModule("privateInputs.A.length=0;await privateLoaders.A.reload();if(privateSessions.A.getAllTools().length!==0)throw Error('private withdrawal');privateSessions.A.dispose();privateSessions.B.dispose();export const proof=true", "private-sdk-resource-withdrawal.mjs");
+    defer engine.freeValue(cleared);
+    const after = try group.manifest();
+    defer engine.gpa.free(after);
+    try std.testing.expectEqualStrings(stable_manifest, after);
+    try std.testing.expectEqual(stable_sequence, group.activation.sequence);
+    try std.testing.expectEqual(@as(usize, 1), main.calls);
+}
+
+test "ToolInfo SDK resource owner IDs never reuse or overlap Main and owner retirement precedes freeing bindings" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const group = try Group.init(engine);
+    defer group.deinit();
+    const first = try group.add("<main:one>");
+    const scope = try sdk_owners.create(group);
+    defer engine.freeValue(scope);
+    const forged = try vm.object(engine);
+    defer engine.freeValue(forged);
+    try std.testing.expectError(error.InvalidSDKResourceOwner, group.addSdk("<forged>", forged));
+    const private = try group.addSdk("<inline:private>", scope);
+    const private_id = private.owner_id;
+    try std.testing.expect(private.sdk_resource_owner);
+    const Hook = struct {
+        var binding: ?*bindings_mod.Bindings = null;
+        var calls: usize = 0;
+        var live: bool = false;
+        fn retire(_: *engine_mod.Engine, id: u64) void {
+            calls += 1;
+            live = binding.?.sdk_resource_owner and binding.?.owner_id == id;
+        }
+    };
+    Hook.binding = private;
+    Hook.calls = 0;
+    Hook.live = false;
+    engine.native_sdk_event_retire_owner = Hook.retire;
+    try group.remove(private_id);
+    engine.native_sdk_event_retire_owner = null;
+    Hook.binding = null;
+    try std.testing.expectEqual(@as(usize, 1), Hook.calls);
+    try std.testing.expect(Hook.live);
+    const replacement = try group.addSdk("<inline:replacement>", scope);
+    const second = try group.add("<main:two>");
+    try std.testing.expectEqual(@as(u64, 1), first.owner_id);
+    try std.testing.expectEqual(@as(u64, 2), second.owner_id);
+    try std.testing.expectEqual(private_id - 1, replacement.owner_id);
+    try std.testing.expectError(error.UnknownNativeExtensionOwner, group.selected(private_id));
+    const saved_frontier = group.next_id;
+    group.next_id = group.next_sdk_id;
+    try std.testing.expectError(error.NativeGroupExtensionLimit, group.add("<overlap:main>"));
+    try std.testing.expectError(error.NativeGroupExtensionLimit, group.addSdk("<overlap:sdk>", scope));
+    group.next_id = saved_frontier;
+}
+
+test "ToolInfo SDK resource owner scopes unwind every admitted native allocation and retire on the VM owner" {
+    const Probe = struct {
+        fn run(gpa: std.mem.Allocator) !void {
+            exercise(gpa) catch |err| {
+                const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+                if (failing.has_induced_failure and (err == error.JavaScriptException or err == error.OutOfMemory)) return error.OutOfMemory;
+                return err;
+            };
+        }
+        fn exercise(gpa: std.mem.Allocator) !void {
+            const engine = try engine_mod.Engine.init(gpa, .{});
+            defer engine.deinit();
+            const group = try Group.init(engine);
+            defer group.deinit();
+            const main = try group.add("<main>");
+            const scope = try sdk_owners.create(group);
+            var owned = true;
+            defer if (owned) engine.freeValue(scope);
+            const private = try group.addSdk("<inline:allocation>", scope);
+            try private.loadFactory("export default pi=>{pi.registerTool({name:'private',description:'private',parameters:{type:'object'},execute(){return{content:[]}}});pi.registerToolRenderer(()=>undefined)}", "<inline:allocation>");
+            try std.testing.expectEqual(@as(u64, 1), main.owner_id);
+            try std.testing.expectEqual(@as(u64, 2), group.next_id);
+            try std.testing.expectEqual(@as(u64, 1), group.membership_revision);
+            try std.testing.expectEqual(@as(usize, 0), group.renderers.resolvers.items.len);
+            try group.remove(private.owner_id);
+            engine.freeValue(scope);
+            owned = false;
+            _ = try engine.pumpControls();
+            try std.testing.expectEqual(@as(usize, 1), group.entries.items.len);
+            try std.testing.expectEqual(@as(usize, 0), group.sdk_scopes.items.len);
+        }
+    };
+    try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+}
 
 test "native group ToolInfo schema and metadata references match actual Source SDK session and builtin identity predicates" {
     const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
@@ -919,6 +1144,8 @@ test "native group ToolInfo actual SDK private snapshots unwind every admitted q
     const lease = try sdk_mod.sessionModelLease(owner);
     const saved = try binding.pushSdkContext(.{ .session = session, .registry = registry, .manager = manager, .lease = lease });
     defer binding.restoreSdkContext(saved);
+    const saved_extension = try extension.pushSdkContext(.{ .session = session, .registry = registry, .manager = manager, .lease = lease });
+    defer extension.restoreSdkContext(saved_extension);
     const Query = struct {
         fn run(actual: *Group, caller: *bindings_mod.Bindings) !void {
             actual.native_tool_catalog_cache.deinit();

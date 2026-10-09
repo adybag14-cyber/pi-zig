@@ -77,6 +77,7 @@ pub const State = struct {
     }
     fn refresh(self: *State, owner: *sdk.State) !void {
         if (self.refreshing or (owner.disposed and self.initialized)) return;
+        if (self.initialized and try @import("native_sdk_resource_owners.zig").sessionScopeRetired(owner)) return;
         self.refreshing = true;
         defer self.refreshing = false;
         var versions = try ownerVersions(owner);
@@ -293,6 +294,7 @@ pub fn feed(caller: *bindings_mod.Bindings, sink: *catalog.CatalogSink) !void {
     const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return error.NativeSDKExtensionGroupUnavailable));
     if (try group.selected(caller.owner_id) != caller) return error.StaleNativeExtensionOwner;
     const owner = try sdk.state(engine, session);
+    try @import("native_sdk_resource_owners.zig").assertSessionScope(owner, group);
     const actual = try sdk.sessionModelLease(owner);
     if (actual.runtime_id != scope.lease.runtime_id or actual.generation != scope.lease.generation) return error.InvalidNativeSDKModelLease;
     const actual_registry = try vm.get(engine, owner.data, "modelRegistry");
