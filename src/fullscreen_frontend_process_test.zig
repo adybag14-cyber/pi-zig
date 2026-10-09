@@ -35,7 +35,7 @@ test "actual native extension dialogs use Source selector Escape cancel default 
         const errors = try fixture.scratch.dir.createFile(std.testing.io, "stderr.log", .{});
         defer errors.close(std.testing.io);
         const source =
-            \\export default pi=>{pi.registerCommand('confirm',{async handler(_,ctx){const value=await ctx.ui.confirm('CONFIRM_DIALOG_TITLE','Message');return {message:'CONFIRM_RESULT:'+value}}});pi.registerCommand('select',{async handler(_,ctx){const value=await ctx.ui.select('SELECT_DIALOG_TITLE',['alpha','beta']);return {message:'SELECT_RESULT:'+value}}});pi.registerCommand('input',{async handler(_,ctx){const value=await ctx.ui.input('INPUT_DIALOG_TITLE','SOURCE_IGNORES_PLACEHOLDER');return {message:'INPUT_RESULT:'+JSON.stringify(value)}}})}
+            \\export default pi=>{let inputCall=0;pi.registerCommand('confirm',{async handler(_,ctx){const value=await ctx.ui.confirm('CONFIRM_DIALOG_TITLE','Message');return {message:'CONFIRM_RESULT:'+value}}});pi.registerCommand('select',{async handler(_,ctx){const value=await ctx.ui.select('SELECT_DIALOG_TITLE',['alpha','beta']);return {message:'SELECT_RESULT:'+value}}});pi.registerCommand('input',{async handler(_,ctx){const call=++inputCall,value=await ctx.ui.input('INPUT_DIALOG_TITLE:'+call,'SOURCE_IGNORES_PLACEHOLDER');return {message:'INPUT_RESULT:'+JSON.stringify(value)+':CALL:'+call}}})}
         ;
         var child = try fixture.spawnExtension(errors, source);
         defer child.deinit();
@@ -55,14 +55,30 @@ test "actual native extension dialogs use Source selector Escape cancel default 
         try child.send("j\r");
         try observed.waitAny(&child, "SELECT_RESULT:beta");
         try child.send("/input\r");
-        try observed.waitAny(&child, "INPUT_DIALOG_TITLE");
+        try observed.waitAny(&child, "INPUT_DIALOG_TITLE:1");
         try std.testing.expect(!try observed.screen.contains("SOURCE_IGNORES_PLACEHOLDER"));
         try child.send("\r");
         try observed.waitAny(&child, "INPUT_RESULT:\"\"");
         try child.send("/input\r");
-        try observed.waitAny(&child, "INPUT_DIALOG_TITLE");
+        try observed.waitAny(&child, "INPUT_DIALOG_TITLE:2");
         try child.send("a界\x1b[DZ\r");
-        try observed.waitAny(&child, "INPUT_RESULT:\"aZ界\"");
+        try observed.waitAny(&child, "INPUT_RESULT:\"aZ界\":CALL:2");
+        // Keep the original complete burst above, and split the same bytes at
+        // every CSI boundary without accepting an earlier dialog's title/result.
+        const burst = "a界\x1b[DZ\r";
+        for (0..4) |csi_split| {
+            const call = csi_split + 3;
+            const title = try std.fmt.allocPrint(std.testing.allocator, "INPUT_DIALOG_TITLE:{d}", .{call});
+            defer std.testing.allocator.free(title);
+            const result = try std.fmt.allocPrint(std.testing.allocator, "INPUT_RESULT:\"aZ界\":CALL:{d}", .{call});
+            defer std.testing.allocator.free(result);
+            try child.send("/input\r");
+            try observed.waitAny(&child, title);
+            const boundary = "a界".len + csi_split;
+            try child.send(burst[0..boundary]);
+            try child.send(burst[boundary..]);
+            try observed.waitAny(&child, result);
+        }
         try observed.send(&child, "after-dialog", "> after-dialog");
         try cleanExit(&fixture, &child, &observed);
     }
