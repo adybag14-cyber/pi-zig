@@ -20,6 +20,7 @@ const State = struct {
 };
 
 pub fn deinit(engine: *Engine) void {
+    engine.native_sdk_tools_cleanup = null;
     if (engine.native_sdk_tools_state) |opaque_state| {
         engine.native_sdk_tools_state = null;
         const state: *State = @ptrCast(@alignCast(opaque_state));
@@ -45,6 +46,7 @@ fn stateFor(engine: *Engine) !*State {
         if (metadata.object.get("outputSchema")) |output| state.outputs[index] = try schema(engine, types, output);
     }
     engine.native_sdk_tools_state = state;
+    engine.native_sdk_tools_cleanup = deinit;
     return state;
 }
 

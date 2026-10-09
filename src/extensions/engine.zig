@@ -117,6 +117,7 @@ pub const Engine = struct {
     native_tool_legacy_symbol: ?c.JSValue = null,
     native_tool_parameter_constants: [4]?c.JSValue = .{null} ** 4,
     native_sdk_tools_state: ?*anyopaque = null,
+    native_sdk_tools_cleanup: ?*const fn (*Engine) void = null,
     native_typebox_hash_accumulator: u64 = 14695981039346656037,
     native_typebox_literal_error: ?c.JSValue = null,
     native_typebox_literal_base: ?c.JSValue = null,
@@ -200,7 +201,7 @@ pub const Engine = struct {
         if (self.native_tool_validator_cache) |cache| self.freeValue(cache);
         if (self.native_tool_legacy_symbol) |symbol| self.freeValue(symbol);
         for (self.native_tool_parameter_constants) |value| if (value) |constant| self.freeValue(constant);
-        @import("native_sdk_tools.zig").deinit(self);
+        if (self.native_sdk_tools_cleanup) |cleanup| cleanup(self);
         if (self.native_typebox_literal_error) |constructor| self.freeValue(constructor);
         if (self.native_typebox_literal_base) |constructor| self.freeValue(constructor);
         if (self.native_typebox_literal_stack) |getter| self.freeValue(getter);
