@@ -1,0 +1,585 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "parallel",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          "assistant",
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [
+                  {
+                    "type": "toolCall",
+                    "id": "a",
+                    "name": "first",
+                    "arguments": {}
+                  },
+                  {
+                    "type": "toolCall",
+                    "id": "b",
+                    "name": "second",
+                    "arguments": {}
+                  }
+                ],
+                "stopReason": "toolUse",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "task",
+          true,
+          {
+            "kind": "model",
+            "assistant": 10,
+            "callId": "a"
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            }
+          },
+          11
+        ],
+        [
+          "task",
+          true,
+          {
+            "kind": "model",
+            "assistant": 10,
+            "callId": "b"
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            }
+          },
+          12
+        ],
+        [
+          "next",
+          {
+            "status": "waiting",
+            "checkpoint": {
+              "phase": "tools",
+              "assistant": 10,
+              "tools": [
+                11,
+                12
+              ],
+              "pending": []
+            },
+            "on": [
+              11,
+              12
+            ],
+            "policy": "allSettled"
+          }
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "callId": "a",
+            "name": "first",
+            "taskId": 11,
+            "status": "pending"
+          },
+          {
+            "callId": "b",
+            "name": "second",
+            "taskId": 12,
+            "status": "pending"
+          }
+        ]
+      },
+      "usage": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      }
+    },
+    {
+      "scenario": "sequential",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          "assistant",
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [
+                  {
+                    "type": "toolCall",
+                    "id": "a",
+                    "name": "first",
+                    "arguments": {}
+                  },
+                  {
+                    "type": "toolCall",
+                    "id": "b",
+                    "name": "second",
+                    "arguments": {}
+                  }
+                ],
+                "stopReason": "toolUse",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "task",
+          true,
+          {
+            "kind": "model",
+            "assistant": 10,
+            "callId": "a"
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            }
+          },
+          11
+        ],
+        [
+          "next",
+          {
+            "status": "waiting",
+            "checkpoint": {
+              "phase": "tools",
+              "assistant": 10,
+              "tools": [
+                11
+              ],
+              "pending": [
+                "b"
+              ]
+            },
+            "on": [
+              11
+            ],
+            "policy": "allSettled"
+          }
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "callId": "a",
+            "name": "first",
+            "taskId": 11,
+            "status": "pending"
+          },
+          {
+            "callId": "b",
+            "name": "second",
+            "status": "pending"
+          }
+        ]
+      },
+      "usage": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      }
+    },
+    {
+      "scenario": "tool-sequential",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          "assistant",
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [
+                  {
+                    "type": "toolCall",
+                    "id": "a",
+                    "name": "first",
+                    "arguments": {}
+                  },
+                  {
+                    "type": "toolCall",
+                    "id": "b",
+                    "name": "second",
+                    "arguments": {}
+                  }
+                ],
+                "stopReason": "toolUse",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "task",
+          true,
+          {
+            "kind": "model",
+            "assistant": 10,
+            "callId": "a"
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            }
+          },
+          11
+        ],
+        [
+          "next",
+          {
+            "status": "waiting",
+            "checkpoint": {
+              "phase": "tools",
+              "assistant": 10,
+              "tools": [
+                11
+              ],
+              "pending": [
+                "b"
+              ]
+            },
+            "on": [
+              11
+            ],
+            "policy": "allSettled"
+          }
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "callId": "a",
+            "name": "first",
+            "taskId": 11,
+            "status": "pending"
+          },
+          {
+            "callId": "b",
+            "name": "second",
+            "status": "pending"
+          }
+        ]
+      },
+      "usage": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      }
+    },
+    {
+      "scenario": "unavailable",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          "assistant",
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [
+                  {
+                    "type": "toolCall",
+                    "id": "a",
+                    "name": "first",
+                    "arguments": {}
+                  },
+                  {
+                    "type": "toolCall",
+                    "id": "b",
+                    "name": "second",
+                    "arguments": {}
+                  }
+                ],
+                "stopReason": "toolUse",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "task",
+          true,
+          {
+            "kind": "model",
+            "assistant": 10,
+            "callId": "a"
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            }
+          },
+          11
+        ],
+        [
+          "append",
+          "tool",
+          3,
+          {
+            "model": [
+              {
+                "role": "toolResult",
+                "toolCallId": "b",
+                "toolName": "second",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<harness>\n[error] Tool second is not available\n</harness>"
+                  }
+                ],
+                "isError": true,
+                "timestamp": 5
+              }
+            ],
+            "data": {
+              "diagnostics": [
+                {
+                  "severity": "error",
+                  "code": "tool_unavailable",
+                  "message": "Tool second is not available"
+                }
+              ]
+            }
+          },
+          12
+        ],
+        [
+          "next",
+          {
+            "status": "waiting",
+            "checkpoint": {
+              "phase": "tools",
+              "assistant": 10,
+              "tools": [
+                11
+              ],
+              "pending": []
+            },
+            "on": [
+              11
+            ],
+            "policy": "allSettled"
+          }
+        ]
+      ],
+      "live": {
+        "tools": [
+          {
+            "callId": "a",
+            "name": "first",
+            "taskId": 11,
+            "status": "pending"
+          },
+          {
+            "callId": "b",
+            "name": "second",
+            "status": "done",
+            "entry": 12
+          }
+        ]
+      },
+      "usage": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      }
+    }
+  ]
+}

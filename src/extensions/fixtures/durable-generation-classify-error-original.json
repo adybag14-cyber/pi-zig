@@ -1,0 +1,396 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "retry",
+      "trace": [
+        [
+          "hooks",
+          "afterResponse"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [],
+                "stopReason": "error",
+                "errorMessage": "503 unavailable",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "retry",
+              "attempt": 1,
+              "until": 105
+            }
+          }
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 7,
+          "inputs": [
+            1
+          ]
+        },
+        "generation": {
+          "attempt": 1,
+          "retry": {
+            "at": 105,
+            "error": "503 unavailable"
+          }
+        }
+      },
+      "ledger": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      }
+    },
+    {
+      "scenario": "quota",
+      "trace": [
+        [
+          "hooks",
+          "afterResponse"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [],
+                "stopReason": "error",
+                "errorMessage": "insufficient_quota",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "model_error",
+            "detail": "insufficient_quota"
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "failed",
+              "error": {
+                "message": "insufficient_quota",
+                "detail": {
+                  "reason": "model_error"
+                }
+              }
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "ledger": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      }
+    },
+    {
+      "scenario": "aborted",
+      "trace": [
+        [
+          "hooks",
+          "afterResponse"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [],
+                "stopReason": "aborted",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "model_error",
+            "detail": "Model response ended with stop reason aborted"
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "failed",
+              "error": {
+                "message": "Model response ended with stop reason aborted",
+                "detail": {
+                  "reason": "model_error"
+                }
+              }
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "ledger": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      }
+    },
+    {
+      "scenario": "unknown",
+      "trace": [
+        [
+          "hooks",
+          "afterResponse"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [],
+                "stopReason": "other",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "model_error",
+            "detail": "Model response ended with stop reason other"
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "failed",
+              "error": {
+                "message": "Model response ended with stop reason other",
+                "detail": {
+                  "reason": "model_error"
+                }
+              }
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "ledger": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      }
+    }
+  ]
+}

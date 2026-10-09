@@ -1,0 +1,163 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "plain",
+      "trace": [
+        [
+          "env"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "scan",
+          {
+            "conversationId": 3
+          },
+          1
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "request",
+              "attempt": 1,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "thinkingLevel": "off",
+              "streamOptions": {
+                "temperature": 0.2
+              },
+              "cutoff": 2
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "scenario": "section",
+      "trace": [
+        [
+          "env"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "scan",
+          {
+            "conversationId": 3
+          },
+          1
+        ],
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "system",
+                "content": "",
+                "sections": {
+                  "a": "<a>\nA\n</a>"
+                },
+                "timestamp": 5
+              }
+            ]
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "request",
+              "attempt": 1,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "thinkingLevel": "off",
+              "streamOptions": {
+                "temperature": 0.2
+              },
+              "cutoff": 4
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "scenario": "env-error",
+      "trace": [
+        [
+          "env"
+        ],
+        [
+          "report",
+          "env unavailable"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "scan",
+          {
+            "conversationId": 3
+          },
+          1
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "request",
+              "attempt": 1,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "thinkingLevel": "off",
+              "streamOptions": {
+                "temperature": 0.2
+              },
+              "cutoff": 2
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "scenario": "empty",
+      "trace": [
+        [
+          "env"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "scan",
+          {
+            "conversationId": 3
+          },
+          1
+        ]
+      ],
+      "failure": {
+        "name": "Error",
+        "message": "Conversation 3 has no entries to send"
+      }
+    }
+  ]
+}

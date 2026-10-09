@@ -1,0 +1,69 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "live": {},
+      "trace": []
+    },
+    {
+      "owner": 7,
+      "live": {},
+      "trace": [
+        [
+          1,
+          {
+            "status": "done",
+            "answer": 9
+          }
+        ],
+        [
+          2,
+          {
+            "status": "done",
+            "answer": 9
+          }
+        ]
+      ]
+    },
+    {
+      "owner": 8,
+      "live": {
+        "run": {
+          "taskId": 8,
+          "inputs": [
+            1,
+            2
+          ]
+        }
+      },
+      "trace": []
+    }
+  ],
+  "hand": [
+    {
+      "live": {}
+    },
+    {
+      "owner": 7,
+      "live": {
+        "run": {
+          "taskId": 10,
+          "inputs": [
+            1
+          ]
+        }
+      }
+    },
+    {
+      "owner": 8,
+      "live": {
+        "run": {
+          "taskId": 8,
+          "inputs": [
+            1
+          ]
+        }
+      }
+    }
+  ]
+}

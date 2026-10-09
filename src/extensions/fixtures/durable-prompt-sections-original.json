@@ -1,0 +1,401 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "variants": [
+    [],
+    [
+      [
+        "a",
+        "A"
+      ]
+    ],
+    [
+      [
+        "a",
+        "A"
+      ],
+      [
+        "b",
+        "B"
+      ]
+    ],
+    [
+      [
+        "b",
+        "B"
+      ],
+      [
+        "a",
+        "A"
+      ]
+    ],
+    [
+      [
+        "a",
+        "X"
+      ],
+      [
+        "c",
+        "C"
+      ]
+    ],
+    [
+      [
+        "__proto__",
+        "value"
+      ],
+      [
+        "toString",
+        "T"
+      ]
+    ]
+  ],
+  "rows": [
+    {
+      "shown": 0,
+      "desired": 0,
+      "patches": []
+    },
+    {
+      "shown": 0,
+      "desired": 1,
+      "patches": [
+        {
+          "a": "A"
+        }
+      ]
+    },
+    {
+      "shown": 0,
+      "desired": 2,
+      "patches": [
+        {
+          "a": "A",
+          "b": "B"
+        }
+      ]
+    },
+    {
+      "shown": 0,
+      "desired": 3,
+      "patches": [
+        {
+          "b": "B",
+          "a": "A"
+        }
+      ]
+    },
+    {
+      "shown": 0,
+      "desired": 4,
+      "patches": [
+        {
+          "a": "X",
+          "c": "C"
+        }
+      ]
+    },
+    {
+      "shown": 0,
+      "desired": 5,
+      "patches": [
+        {
+          "toString": "T"
+        }
+      ]
+    },
+    {
+      "shown": 1,
+      "desired": 0,
+      "patches": [
+        {
+          "a": null
+        }
+      ]
+    },
+    {
+      "shown": 1,
+      "desired": 1,
+      "patches": []
+    },
+    {
+      "shown": 1,
+      "desired": 2,
+      "patches": [
+        {
+          "b": "B"
+        }
+      ]
+    },
+    {
+      "shown": 1,
+      "desired": 3,
+      "patches": [
+        {
+          "a": null
+        },
+        {
+          "b": "B",
+          "a": "A"
+        }
+      ]
+    },
+    {
+      "shown": 1,
+      "desired": 4,
+      "patches": [
+        {
+          "a": "X",
+          "c": "C"
+        }
+      ]
+    },
+    {
+      "shown": 1,
+      "desired": 5,
+      "patches": [
+        {
+          "a": null,
+          "toString": "T"
+        }
+      ]
+    },
+    {
+      "shown": 2,
+      "desired": 0,
+      "patches": [
+        {
+          "a": null,
+          "b": null
+        }
+      ]
+    },
+    {
+      "shown": 2,
+      "desired": 1,
+      "patches": [
+        {
+          "b": null
+        }
+      ]
+    },
+    {
+      "shown": 2,
+      "desired": 2,
+      "patches": []
+    },
+    {
+      "shown": 2,
+      "desired": 3,
+      "patches": [
+        {
+          "a": null,
+          "b": null
+        },
+        {
+          "b": "B",
+          "a": "A"
+        }
+      ]
+    },
+    {
+      "shown": 2,
+      "desired": 4,
+      "patches": [
+        {
+          "a": "X",
+          "b": null,
+          "c": "C"
+        }
+      ]
+    },
+    {
+      "shown": 2,
+      "desired": 5,
+      "patches": [
+        {
+          "a": null,
+          "b": null,
+          "toString": "T"
+        }
+      ]
+    },
+    {
+      "shown": 3,
+      "desired": 0,
+      "patches": [
+        {
+          "b": null,
+          "a": null
+        }
+      ]
+    },
+    {
+      "shown": 3,
+      "desired": 1,
+      "patches": [
+        {
+          "b": null
+        }
+      ]
+    },
+    {
+      "shown": 3,
+      "desired": 2,
+      "patches": [
+        {
+          "b": null,
+          "a": null
+        },
+        {
+          "a": "A",
+          "b": "B"
+        }
+      ]
+    },
+    {
+      "shown": 3,
+      "desired": 3,
+      "patches": []
+    },
+    {
+      "shown": 3,
+      "desired": 4,
+      "patches": [
+        {
+          "b": null,
+          "a": "X",
+          "c": "C"
+        }
+      ]
+    },
+    {
+      "shown": 3,
+      "desired": 5,
+      "patches": [
+        {
+          "b": null,
+          "a": null,
+          "toString": "T"
+        }
+      ]
+    },
+    {
+      "shown": 4,
+      "desired": 0,
+      "patches": [
+        {
+          "a": null,
+          "c": null
+        }
+      ]
+    },
+    {
+      "shown": 4,
+      "desired": 1,
+      "patches": [
+        {
+          "a": "A",
+          "c": null
+        }
+      ]
+    },
+    {
+      "shown": 4,
+      "desired": 2,
+      "patches": [
+        {
+          "a": "A",
+          "c": null,
+          "b": "B"
+        }
+      ]
+    },
+    {
+      "shown": 4,
+      "desired": 3,
+      "patches": [
+        {
+          "a": null,
+          "c": null
+        },
+        {
+          "b": "B",
+          "a": "A"
+        }
+      ]
+    },
+    {
+      "shown": 4,
+      "desired": 4,
+      "patches": []
+    },
+    {
+      "shown": 4,
+      "desired": 5,
+      "patches": [
+        {
+          "a": null,
+          "c": null,
+          "toString": "T"
+        }
+      ]
+    },
+    {
+      "shown": 5,
+      "desired": 0,
+      "patches": [
+        {
+          "toString": null
+        }
+      ]
+    },
+    {
+      "shown": 5,
+      "desired": 1,
+      "patches": [
+        {
+          "toString": null,
+          "a": "A"
+        }
+      ]
+    },
+    {
+      "shown": 5,
+      "desired": 2,
+      "patches": [
+        {
+          "toString": null,
+          "a": "A",
+          "b": "B"
+        }
+      ]
+    },
+    {
+      "shown": 5,
+      "desired": 3,
+      "patches": [
+        {
+          "toString": null,
+          "b": "B",
+          "a": "A"
+        }
+      ]
+    },
+    {
+      "shown": 5,
+      "desired": 4,
+      "patches": [
+        {
+          "toString": null,
+          "a": "X",
+          "c": "C"
+        }
+      ]
+    },
+    {
+      "shown": 5,
+      "desired": 5,
+      "patches": []
+    }
+  ]
+}

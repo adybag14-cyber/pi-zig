@@ -1,0 +1,780 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "variants": [
+    [],
+    [
+      {
+        "name": "a",
+        "description": "A",
+        "parameters": {
+          "type": "object"
+        }
+      }
+    ],
+    [
+      {
+        "name": "a",
+        "description": "A",
+        "parameters": {
+          "type": "object"
+        }
+      },
+      {
+        "name": "b",
+        "description": "B",
+        "parameters": {
+          "type": "object"
+        }
+      }
+    ],
+    [
+      {
+        "name": "b",
+        "description": "B",
+        "parameters": {
+          "type": "object"
+        }
+      },
+      {
+        "name": "a",
+        "description": "A",
+        "parameters": {
+          "type": "object"
+        }
+      }
+    ],
+    [
+      {
+        "name": "a",
+        "description": "changed",
+        "parameters": {
+          "type": "object"
+        }
+      },
+      {
+        "name": "b",
+        "description": "B",
+        "parameters": {
+          "type": "object"
+        }
+      }
+    ],
+    [
+      {
+        "name": "a",
+        "description": "A",
+        "parameters": {
+          "type": "object"
+        }
+      },
+      {
+        "name": "b",
+        "description": "B",
+        "parameters": {
+          "type": "object"
+        },
+        "constrainedSampling": true
+      }
+    ]
+  ],
+  "rows": [
+    {
+      "offered": 0,
+      "desired": 0,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 0,
+      "desired": 1,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 0,
+      "desired": 2,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 0,
+      "desired": 3,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": [
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 0,
+      "desired": 4,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "changed",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 0,
+      "desired": 5,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            },
+            "constrainedSampling": true
+          }
+        ]
+      }
+    },
+    {
+      "offered": 1,
+      "desired": 0,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          }
+        ],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 1,
+      "desired": 1,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 1,
+      "desired": 2,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": [
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 1,
+      "desired": 3,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 1,
+      "desired": 4,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "changed",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 1,
+      "desired": 5,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": [
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            },
+            "constrainedSampling": true
+          }
+        ]
+      }
+    },
+    {
+      "offered": 2,
+      "desired": 0,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          },
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 2,
+      "desired": 1,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 2,
+      "desired": 2,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 2,
+      "desired": 3,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          },
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 2,
+      "desired": 4,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          },
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "changed",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 2,
+      "desired": 5,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            },
+            "constrainedSampling": true
+          }
+        ]
+      }
+    },
+    {
+      "offered": 3,
+      "desired": 0,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "b"
+          },
+          {
+            "name": "a"
+          }
+        ],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 3,
+      "desired": 1,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 3,
+      "desired": 2,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "b"
+          },
+          {
+            "name": "a"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 3,
+      "desired": 3,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 3,
+      "desired": 4,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "b"
+          },
+          {
+            "name": "a"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "changed",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 3,
+      "desired": 5,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            },
+            "constrainedSampling": true
+          }
+        ]
+      }
+    },
+    {
+      "offered": 4,
+      "desired": 0,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          },
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 4,
+      "desired": 1,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          },
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 4,
+      "desired": 2,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          },
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 4,
+      "desired": 3,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 4,
+      "desired": 4,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 4,
+      "desired": 5,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          },
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            },
+            "constrainedSampling": true
+          }
+        ]
+      }
+    },
+    {
+      "offered": 5,
+      "desired": 0,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          },
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 5,
+      "desired": 1,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": []
+      }
+    },
+    {
+      "offered": 5,
+      "desired": 2,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 5,
+      "desired": 3,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          },
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "a",
+            "description": "A",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 5,
+      "desired": 4,
+      "changes": {
+        "toolsRemoved": [
+          {
+            "name": "a"
+          },
+          {
+            "name": "b"
+          }
+        ],
+        "toolsAdded": [
+          {
+            "name": "a",
+            "description": "changed",
+            "parameters": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "b",
+            "description": "B",
+            "parameters": {
+              "type": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "offered": 5,
+      "desired": 5,
+      "changes": {
+        "toolsRemoved": [],
+        "toolsAdded": []
+      }
+    }
+  ]
+}

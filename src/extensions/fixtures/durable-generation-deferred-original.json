@@ -1,0 +1,523 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 2,
+              "compacted": 9,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 4,
+              "handle": {
+                "id": "handle"
+              },
+              "pollAt": 5100
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "deferred": {
+            "pollAt": 5100
+          }
+        }
+      }
+    },
+    {
+      "pollAfterMs": 0,
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 2,
+              "compacted": 9,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 4,
+              "handle": {
+                "id": "handle",
+                "pollAfterMs": 0
+              },
+              "pollAt": 100
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "deferred": {
+            "pollAt": 100
+          }
+        }
+      }
+    },
+    {
+      "pollAfterMs": -100,
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 2,
+              "compacted": 9,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 4,
+              "handle": {
+                "id": "handle",
+                "pollAfterMs": -100
+              },
+              "pollAt": 0
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "deferred": {
+            "pollAt": 0
+          }
+        }
+      }
+    },
+    {
+      "pollAfterMs": 5,
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 2,
+              "compacted": 9,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 4,
+              "handle": {
+                "id": "handle",
+                "pollAfterMs": 5
+              },
+              "pollAt": 105
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "deferred": {
+            "pollAt": 105
+          }
+        }
+      }
+    },
+    {
+      "pollAt": 100,
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 2,
+              "compacted": 9,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 4,
+              "handle": {
+                "id": "handle"
+              },
+              "pollAt": 5100
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "deferred": {
+            "pollAt": 5100
+          }
+        }
+      }
+    },
+    {
+      "pollAt": 100,
+      "pollAfterMs": 0,
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 2,
+              "compacted": 9,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 4,
+              "handle": {
+                "id": "handle",
+                "pollAfterMs": 0
+              },
+              "pollAt": 101
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "deferred": {
+            "pollAt": 101
+          }
+        }
+      }
+    },
+    {
+      "pollAt": 100,
+      "pollAfterMs": -100,
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 2,
+              "compacted": 9,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 4,
+              "handle": {
+                "id": "handle",
+                "pollAfterMs": -100
+              },
+              "pollAt": 101
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "deferred": {
+            "pollAt": 101
+          }
+        }
+      }
+    },
+    {
+      "pollAt": 100,
+      "pollAfterMs": 5,
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 2,
+              "compacted": 9,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 4,
+              "handle": {
+                "id": "handle",
+                "pollAfterMs": 5
+              },
+              "pollAt": 105
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "deferred": {
+            "pollAt": 105
+          }
+        }
+      }
+    },
+    {
+      "pollAt": 200,
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 2,
+              "compacted": 9,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 4,
+              "handle": {
+                "id": "handle"
+              },
+              "pollAt": 5100
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "deferred": {
+            "pollAt": 5100
+          }
+        }
+      }
+    },
+    {
+      "pollAt": 200,
+      "pollAfterMs": 0,
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 2,
+              "compacted": 9,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 4,
+              "handle": {
+                "id": "handle",
+                "pollAfterMs": 0
+              },
+              "pollAt": 201
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "deferred": {
+            "pollAt": 201
+          }
+        }
+      }
+    },
+    {
+      "pollAt": 200,
+      "pollAfterMs": -100,
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 2,
+              "compacted": 9,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 4,
+              "handle": {
+                "id": "handle",
+                "pollAfterMs": -100
+              },
+              "pollAt": 201
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "deferred": {
+            "pollAt": 201
+          }
+        }
+      }
+    },
+    {
+      "pollAt": 200,
+      "pollAfterMs": 5,
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 2,
+              "compacted": 9,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 4,
+              "handle": {
+                "id": "handle",
+                "pollAfterMs": 5
+              },
+              "pollAt": 201
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "deferred": {
+            "pollAt": 201
+          }
+        }
+      }
+    }
+  ]
+}

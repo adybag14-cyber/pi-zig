@@ -1,0 +1,182 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "empty",
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "stopReason": "stop"
+      },
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ]
+      ],
+      "live": {}
+    },
+    {
+      "scenario": "partial",
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "stopReason": "stop"
+      },
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "message": {
+            "content": [
+              {
+                "type": "text",
+                "text": "first"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "two-partial",
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "stopReason": "stop"
+      },
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "message": {
+            "content": [
+              {
+                "type": "text",
+                "text": "second"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "throw",
+      "failure": true,
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 2,
+          "message": {
+            "content": [
+              {
+                "type": "text",
+                "text": "first"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenario": "abort-write",
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "done"
+          }
+        ],
+        "stopReason": "stop"
+      },
+      "trace": [
+        [
+          "stream",
+          "m",
+          1,
+          true
+        ],
+        [
+          "commit",
+          true
+        ]
+      ],
+      "live": {}
+    }
+  ]
+}

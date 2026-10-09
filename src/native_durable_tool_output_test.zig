@@ -1215,3 +1215,115 @@ test "native durable v2 ToolTask numeric limit phases match actual Source traces
     };
     engine.freeValue(result);
 }
+
+test "native durable v2 prompt planning matches actual Source head and ordered sections" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const bytes = @embedFile("extensions/fixtures/durable-prompt-original.json");
+    const corpus = try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "actual-prompt-source"));
+    defer engine.freeValue(corpus);
+    const make = try engine.eval("(corpus,row)=>{const messages=corpus.variants[row.variant],entries=messages.map((message,index)=>({id:index+1,kind:'pi.system',model:[message]}));return{view:{head:row.head?{id:10}:undefined,entries,messages},desired:new Map(corpus.desireds[row.desired])}}", "actual-prompt-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    const rows = try vm.get(engine, corpus, "rows");
+    defer engine.freeValue(rows);
+    const tools = try vm.array(engine);
+    defer engine.freeValue(tools);
+    for (0..try vm.length(engine, rows)) |index| {
+        const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, @intCast(index)));
+        defer engine.freeValue(row);
+        var args = [_]c.JSValue{ corpus, row };
+        const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), 2, &args));
+        defer engine.freeValue(fixture);
+        const view = try vm.get(engine, fixture, "view");
+        defer engine.freeValue(view);
+        const desired = try vm.get(engine, fixture, "desired");
+        defer engine.freeValue(desired);
+        const planned = try @import("extensions/native_durable_prompt.zig").planSystemEntries(engine, view, desired, tools, c.JS_NewInt32(engine.context, 5));
+        defer engine.freeValue(planned);
+        const actual = try engine.stringify(planned);
+        defer std.testing.allocator.free(actual);
+        const expected = try vm.get(engine, row, "planned");
+        defer engine.freeValue(expected);
+        const expected_text = try engine.stringify(expected);
+        defer std.testing.allocator.free(expected_text);
+        try std.testing.expectEqualStrings(expected_text, actual);
+    }
+}
+
+test "native durable v2 prompt section and tool patches match actual Source matrices" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    for ([_][]const u8{ @embedFile("extensions/fixtures/durable-prompt-sections-original.json"), @embedFile("extensions/fixtures/durable-prompt-tools-original.json") }, 0..) |bytes, corpus_index| {
+        const corpus = try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "actual-prompt-patches"));
+        defer engine.freeValue(corpus);
+        const variants = try vm.get(engine, corpus, "variants");
+        defer engine.freeValue(variants);
+        const rows = try vm.get(engine, corpus, "rows");
+        defer engine.freeValue(rows);
+        const make = try engine.eval("(variants,index,map)=>map?new Map(variants[index]):variants[index]", "prompt-patches-input", c.JS_EVAL_TYPE_GLOBAL);
+        defer engine.freeValue(make);
+        for (0..try vm.length(engine, rows)) |index| {
+            const row = try engine.checked(c.JS_GetPropertyUint32(engine.context, rows, @intCast(index)));
+            defer engine.freeValue(row);
+            const left_index = try vm.get(engine, row, if (corpus_index == 0) "shown" else "offered");
+            defer engine.freeValue(left_index);
+            const right_index = try vm.get(engine, row, "desired");
+            defer engine.freeValue(right_index);
+            var args = [_]c.JSValue{ variants, left_index, c.pi_js_bool(engine.context, @intFromBool(corpus_index == 0)) };
+            const left = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), 3, &args));
+            defer engine.freeValue(left);
+            args[1] = right_index;
+            const right = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), 3, &args));
+            defer engine.freeValue(right);
+            const result = if (corpus_index == 0) try @import("extensions/native_durable_prompt.zig").planSections(engine, left, right) else try @import("extensions/native_durable_prompt.zig").planTools(engine, left, right);
+            defer engine.freeValue(result);
+            const expected = try vm.get(engine, row, if (corpus_index == 0) "patches" else "changes");
+            defer engine.freeValue(expected);
+            const actual_text = try engine.stringify(result);
+            defer std.testing.allocator.free(actual_text);
+            const expected_text = try engine.stringify(expected);
+            defer std.testing.allocator.free(expected_text);
+            try std.testing.expectEqualStrings(expected_text, actual_text);
+        }
+    }
+}
+
+test "native durable v2 prompt rendering matches actual Source errors and cancellation" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var captured = try @import("extensions/native_durable_await.zig").Intrinsics.init(engine);
+    defer captured.deinit(engine);
+    const make = try engine.eval("scenario=>{const trace=[],reason={original:true},context={abortSignal:{aborted:scenario==='aborted'}},input={original:true},shown=new Map([['a','shown']]),sections=[{key:'a',tag:scenario==='plain'?false:undefined,render:async(i,c)=>{trace.push(['render',i===input,c===context]);if(scenario.startsWith('throw')||scenario==='aborted')throw reason;if(scenario==='omit')return undefined;return'new'}},{key:'b',render:()=>{trace.push(['second']);return'B'}}];if(scenario==='throw-new')sections[0].key='new';return{sections,input,shown,context,report:error=>trace.push(['report',error===reason]),reason,inspect:(result,failure)=>({scenario,result:result===undefined?undefined:[...result],failure,trace})}}", "actual-render-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(make);
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-prompt-render-original.json"));
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const scenario = row.object.get("scenario").?.string;
+        const name = try engine.checked(c.JS_NewStringLen(engine.context, scenario.ptr, scenario.len));
+        defer engine.freeValue(name);
+        var args = [_]c.JSValue{name};
+        const fixture = try engine.checked(c.JS_Call(engine.context, make, c.pi_js_undefined(), 1, &args));
+        defer engine.freeValue(fixture);
+        var values = [_]c.JSValue{c.pi_js_undefined()} ** 6;
+        defer for (values) |value| engine.freeValue(value);
+        inline for (.{ "sections", "input", "shown", "report", "context", "reason" }, 0..) |key, index| values[index] = try vm.get(engine, fixture, key);
+        const pending = try @import("extensions/native_durable_prompt.zig").renderSections(engine, &captured, values[0], values[1], values[2], values[3], values[4]);
+        defer engine.freeValue(pending);
+        var rendered = c.pi_js_undefined();
+        defer engine.freeValue(rendered);
+        var failure = c.pi_js_undefined();
+        if (engine.awaitValue(pending)) |result| {
+            rendered = result;
+        } else |err| {
+            if (!std.mem.eql(u8, scenario, "aborted")) return err;
+            failure = c.pi_js_bool(engine.context, @intFromBool(c.JS_IsStrictEqual(engine.context, values[5], engine.captured_exception.?)));
+        }
+        const inspected = try vm.invoke(engine, fixture, "inspect", &.{ rendered, failure });
+        defer engine.freeValue(inspected);
+        const text = try engine.stringify(inspected);
+        defer std.testing.allocator.free(text);
+        var actual = try json.Owned.parse(std.testing.allocator, text);
+        defer actual.deinit();
+        try std.testing.expect(json.equal(row, actual.value));
+    }
+}
