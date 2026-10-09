@@ -32,6 +32,14 @@ pub fn failed(v: Value) !bool {
 pub fn cancellation(v: Value) !bool {
     return try live(v) and (try flag(v, "abortRequested") or try failed(v));
 }
+pub const Cancellation = enum { none, request, restart };
+pub fn abortMark(gpa: std.mem.Allocator, record: Value, reason: Cancellation) !Value {
+    var next = try json.clone(gpa, record);
+    try next.object.put(gpa, "abortRequested", .{ .bool = true });
+    _ = next.object.orderedRemove("abortReason");
+    if (reason == .restart) try next.object.put(gpa, "abortReason", .{ .string = "restart" });
+    return next;
+}
 pub fn validate(v: Value) !void {
     _ = try number(v, "id");
     _ = try number(v, "conversationId");
@@ -143,6 +151,9 @@ pub const Graph = struct {
         return false;
     }
     pub fn belowCancelled(self: Graph, start: Up) !bool {
+        return try self.cancellingOwner(start) != .none;
+    }
+    pub fn cancellingOwner(self: Graph, start: Up) !Cancellation {
         var at: ?Up = start;
         var remaining = self.state.rows.count() + 1;
         while (at) |step| {
@@ -150,12 +161,15 @@ pub const Graph = struct {
             remaining -= 1;
             if (step == .task) {
                 const record = try self.task(step.task);
-                if (try cancellation(record)) return true;
-                if (try flag(record, "background")) return false;
+                if (try cancellation(record)) {
+                    const reason = json.get(record, "abortReason");
+                    return if (reason != null and reason.? == .string and std.mem.eql(u8, reason.?.string, "restart") and !try failed(record)) .restart else .request;
+                }
+                if (try flag(record, "background")) return .none;
             }
             at = try self.next(step);
         }
-        return false;
+        return .none;
     }
     pub fn waitingOn(self: Graph, record: Value) !bool {
         if (try status(record) != .waiting) return false;

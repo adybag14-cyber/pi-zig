@@ -782,7 +782,7 @@ pub fn createTask(engine: *Engine, _: c.JSValue, transaction: c.JSValue, args: [
     }
     const ownership = try json.required(options_value.value, "ownership");
     const ownership_kind = try json.asString(try json.required(ownership, "kind"));
-    const task_options: session_mod.TaskOptions = .{ .conversationId = if (json.get(options_value.value, "conversationId")) |id| try json.asInteger(id) else null, .ownerTaskId = if (std.mem.eql(u8, ownership_kind, "task")) try json.asInteger(try json.required(ownership, "taskId")) else null, .background = if (json.get(options_value.value, "background")) |value| value.bool else false };
+    const task_options: session_mod.TaskOptions = .{ .conversationId = if (json.get(options_value.value, "conversationId")) |id| try json.asInteger(id) else null, .ownerTaskId = if (std.mem.eql(u8, ownership_kind, "task")) try json.asInteger(try json.required(ownership, "taskId")) else null, .background = if (json.get(options_value.value, "background")) |value| value.bool else false, .abandonOnRestart = if (json.get(options_value.value, "abandonOnRestart")) |value| value == .bool and value.bool else false };
     _ = try tx.transaction.?.taskConversation(task_options);
     const initial = try sdk.get(engine, definition, "initial");
     defer engine.freeValue(initial);

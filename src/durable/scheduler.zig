@@ -8,6 +8,7 @@ const types = @import("types.zig");
 const json = backend.json;
 const Value = json.Value;
 const Transaction = session_mod.Transaction;
+test { _ = @import("restart_test.zig"); }
 pub const Handler = *const fn (?*anyopaque, *Runtime, Value, types.Context) anyerror!void;
 pub const Initial = *const fn (?*anyopaque, std.mem.Allocator, Value) anyerror!Value;
 pub const Migrated = struct { input: Value, checkpoint: Value };
@@ -201,6 +202,7 @@ pub const Scheduler = struct {
     invocations: std.ArrayList(*Invocation) = .empty,
     reports: std.ArrayList(Report) = .empty,
     migration_failures: std.AutoHashMap(u64, u64),
+    abandoned: std.AutoHashMapUnmanaged(u64, void) = .empty,
     subscription: ?u64 = null,
     close_subscription: ?u64 = null,
     generation: u64 = 1,
@@ -227,6 +229,7 @@ pub const Scheduler = struct {
         self.definitions.deinit(self.gpa);
         self.reports.deinit(self.gpa);
         self.migration_failures.deinit();
+        self.abandoned.deinit(self.gpa);
     }
     pub fn register(self: *Scheduler, definition: Definition) !void {
         if (definition.name.len == 0 or definition.version == 0 or definition.version > backend.memory.max_integer) return error.InvalidTaskDefinition;
@@ -266,6 +269,7 @@ pub const Scheduler = struct {
     }
     pub fn open(self: *Scheduler) !void {
         if (self.subscription != null) return error.SchedulerAlreadyOpen;
+        errdefer self.abandoned.clearRetainingCapacity();
         self.subscription = try self.session.observeCommits(observe, self);
         errdefer {
             self.session.unsubscribe(self.subscription.?);
@@ -326,6 +330,9 @@ pub const Scheduler = struct {
         while (rows.next()) |item| {
             if (item.value_ptr.table != .task) continue;
             const record = item.value_ptr.record;
+            if (try model.live(record)) if (json.get(record, "abandonOnRestart")) |flag| {
+                if (flag == .bool and flag.bool) try self.abandoned.put(self.gpa, item.key_ptr.*, {});
+            };
             if (try model.status(record) == .running) try tx.setTask(try model.withState(tx.owned.arena.allocator(), record, try model.checkpointState(tx.owned.arena.allocator(), "pending", try model.field(try model.field(record, "state"), "checkpoint"))));
         }
         return .null;
@@ -350,7 +357,8 @@ pub const Scheduler = struct {
                 if (item.value_ptr.table != .task) continue;
                 var record = item.value_ptr.record;
                 if (!try model.live(record)) continue;
-                var mark = !try model.flag(record, "background") and try graph.belowCancelled(try model.parent(record));
+                const inherited = if (try model.flag(record, "background")) model.Cancellation.none else try graph.cancellingOwner(try model.parent(record));
+                var mark = inherited != .none;
                 if (try model.status(record) == .waiting) {
                     const state = try model.field(record, "state");
                     if (std.mem.eql(u8, try model.text(state, "policy"), "failFast")) {
@@ -362,9 +370,8 @@ pub const Scheduler = struct {
                         if (any_failed) for ((try model.field(state, "on")).array.items) |member| {
                             const id = try json.asInteger(member);
                             const child = try graph.task(id);
-                            if (try model.live(child) and !try model.failed(child) and !try model.flag(child, "abortRequested")) {
-                                var child_mark = try json.clone(a, child);
-                                try child_mark.object.put(a, "abortRequested", .{ .bool = true });
+                            if (try model.live(child) and !try model.failed(child) and (!try model.flag(child, "abortRequested") or json.get(child, "abortReason") != null)) {
+                                const child_mark = try model.abortMark(a, child, .request);
                                 view.rows.getPtr(id).?.record = child_mark;
                                 try tx.setTask(child_mark);
                                 changed = true;
@@ -372,10 +379,9 @@ pub const Scheduler = struct {
                         };
                     }
                 }
-                mark = mark and !try model.flag(record, "abortRequested");
+                mark = mark and (!try model.flag(record, "abortRequested") or (json.get(record, "abortReason") != null and inherited == .request));
                 if (mark) {
-                    record = try json.clone(a, record);
-                    try record.object.put(a, "abortRequested", .{ .bool = true });
+                    record = try model.abortMark(a, record, inherited);
                 }
                 var finalize = false;
                 if (try model.status(record) == .completing and !try graph.hasOwnedLive(item.key_ptr.*)) {
@@ -422,8 +428,7 @@ pub const Scheduler = struct {
                 const row = item.value_ptr.*;
                 if (row.table != .task or !try model.live(row.record) or (try model.flag(row.record, "background") and !self.cross_background)) continue;
                 if (!try graph.reaches(try model.parent(row.record), .{ .conversation = self.conversation }, self.cross_background)) continue;
-                var marked = try json.clone(tx.owned.arena.allocator(), row.record);
-                try marked.object.put(tx.owned.arena.allocator(), "abortRequested", .{ .bool = true });
+                const marked = try model.abortMark(tx.owned.arena.allocator(), row.record, .request);
                 try tx.setTask(marked);
             }
             if (self.scheduler.options.withdraw_inputs) |withdraw| {
@@ -539,10 +544,8 @@ pub const Scheduler = struct {
                     }
                 }
             }
-            record = try json.clone(tx.owned.arena.allocator(), record);
-            _ = record.object.orderedRemove("abortReason");
-            try record.object.put(tx.owned.arena.allocator(), "abortRequested", .{ .bool = true });
-            try tx.setTask(record);
+            if (!try model.flag(record, "abortRequested") or json.get(record, "abortReason") != null)
+                try tx.setTask(try model.abortMark(tx.owned.arena.allocator(), record, .request));
             return .null;
         }
     };
@@ -584,6 +587,11 @@ pub const Scheduler = struct {
             return err;
         };
         result.deinit();
+        if (batch.marked_abandoned) {
+            self.abandoned.clearRetainingCapacity();
+            try self.reconcile();
+            return 0;
+        }
         for (batch.list.items) |invocation| {
             const thread = std.Thread.spawn(.{}, worker, .{invocation}) catch |err| {
                 // A durable reservation survives failed OS admission and is recovered at reopen.
@@ -663,7 +671,12 @@ pub const Scheduler = struct {
                     for (batch.list.items) |invocation| invocation.end();
                     return err;
                 };
+                const published = result.seq != null;
                 result.deinit();
+                if (batch.marked_abandoned) {
+                    self.abandoned.clearRetainingCapacity();
+                    continue;
+                }
                 for (batch.list.items) |invocation| {
                     const thread = std.Thread.spawn(.{}, worker, .{invocation}) catch |err| {
                         invocation.end();
@@ -675,6 +688,10 @@ pub const Scheduler = struct {
                     workers.appendAssumeCapacity(.{ .thread = thread, .invocation = invocation });
                     count += 1;
                 }
+                // Orphaning a blocked child can unblock its owner's abort
+                // without admitting a worker in this pass. Observe that
+                // committed progress before deciding the driver is idle.
+                if (published and batch.list.items.len == 0) continue;
             }
             if (workers.items.len == 0) return count;
             try self.io.sleep(.fromMilliseconds(5), .awake);
@@ -687,6 +704,7 @@ pub const Scheduler = struct {
         limit: usize = 0,
         excluded: ?*const std.AutoHashMapUnmanaged(u64, void) = null,
         in_flight: []const u64 = &.{},
+        marked_abandoned: bool = false,
         fn lookup(self: *const @This(), name: []const u8) ?*DefinitionNode {
             var index = self.registry.len;
             while (index > 0) {
@@ -698,6 +716,16 @@ pub const Scheduler = struct {
         fn reserve(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
             const scheduler = self.scheduler;
+            if (scheduler.abandoned.count() != 0) {
+                var pending = scheduler.abandoned.keyIterator();
+                while (pending.next()) |id| {
+                    const record = (try tx.currentRecord(id.*, .task)) orelse continue;
+                    if (try model.live(record) and !try model.flag(record, "abortRequested"))
+                        try tx.setTask(try model.abortMark(tx.owned.arena.allocator(), record, .restart));
+                }
+                self.marked_abandoned = true;
+                return .null;
+            }
             const view = try scheduler.session.storage.snapshot(scheduler.gpa);
             defer view.destroy(scheduler.gpa);
             const graph: model.Graph = .{ .state = view };
@@ -724,6 +752,7 @@ pub const Scheduler = struct {
                 const s = try model.status(record);
                 if (s == .completing) continue;
                 const mode: Mode = if (try model.flag(record, "abortRequested")) .abort else .run;
+                if (mode == .run and !try model.flag(record, "background") and try graph.belowCancelled(try model.parent(record))) continue;
                 if (mode == .abort and try graph.hasOwnedLive(id)) continue;
                 if (mode == .run and try graph.waitingOn(record)) continue;
                 const node = self.lookup(try model.text(record, "kind"));

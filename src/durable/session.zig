@@ -8,7 +8,7 @@ const tasks = @import("task_state.zig");
 test {
     _ = @import("session_failure_test.zig");
 }
-pub const TaskOptions = struct { conversationId: ?u64 = null, ownerTaskId: ?u64 = null, background: bool = false };
+pub const TaskOptions = struct { conversationId: ?u64 = null, ownerTaskId: ?u64 = null, background: bool = false, abandonOnRestart: bool = false };
 pub const Scope = struct { conversationId: ?u64 = null, taskId: ?u64 = null };
 pub const Publication = struct { seq: u64, changes: Value };
 pub const Listener = *const fn (?*anyopaque, *const Publication, types.Context) anyerror!void;
@@ -495,6 +495,7 @@ pub const Transaction = struct {
         if (options.ownerTaskId) |owner| try record.object.put(a, "owner", .{ .integer = @intCast(owner) });
         try record.object.put(a, "background", .{ .bool = options.background });
         try record.object.put(a, "abortRequested", .{ .bool = false });
+        if (options.abandonOnRestart) try record.object.put(a, "abandonOnRestart", .{ .bool = true });
         try record.object.put(a, "state", try tasks.checkpointState(a, "pending", checkpoint));
         try tasks.validate(record);
         try self.createdTasks.append(a, id);
