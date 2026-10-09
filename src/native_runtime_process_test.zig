@@ -129,6 +129,153 @@ test "native runtime typed Main actual builtin classifier image wire and private
     }
     try fixture.noBridge();
 }
+
+test "native runtime typed Main four native callbacks cross a real admission barrier and match Source" {
+    const gpa = std.testing.allocator;
+    var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/typed-ticket-concurrency-6fb2e78.txt"));
+    defer fixture.deinit();
+    const session = try runTypedMainCli(&fixture, "const model=await models.getModelOfType('classifier','ticket','same');const results=await Promise.all([1,2,3,4].map(id=>models.classify(model,{state:{id},questions:{q:{type:'bool',instructions:'q',criteria:{true:'yes',false:'no'}}}})));text('MAIN_TYPED_TICKETS:'+JSON.stringify(results));", null);
+    defer gpa.free(session);
+    var actual = try typedSessionValue(gpa, session, "MAIN_TYPED_TICKETS:");
+    defer actual.deinit();
+    var expected = try @import("mcp/protocol.zig").json.Owned.parse(gpa, @embedFile("extensions/fixtures/typed-ticket-concurrency-6fb2e78.json"));
+    defer expected.deinit();
+    try std.testing.expect(@import("mcp/protocol.zig").json.equal(expected.value.object.get("results").?, actual.value));
+    try fixture.noBridge();
+}
+
+test "native runtime typed tickets four real admissions preserve A B views and one abort without Node" {
+    try exerciseTypedTicketProcess(.one_abort);
+}
+test "native runtime typed tickets owner retirement drops four private scopes and blocks late actions without Node" {
+    try exerciseTypedTicketProcess(.owner_retire);
+}
+test "native runtime typed tickets cancelling one task retires only its scope and preserves the shared owner without Node" {
+    try exerciseTypedTicketProcess(.cancel_one);
+}
+const TypedTicketProcessMode = enum { one_abort, owner_retire, cancel_one };
+fn exerciseTypedTicketProcess(mode: TypedTicketProcessMode) !void {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/typed-ticket-concurrency-6fb2e78.txt"));
+    defer fixture.deinit();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    const extension = host.extensions.items[0];
+    var config = try std.json.parseFromSlice(std.json.Value, gpa, extension.providers[0].config_json, .{});
+    defer config.deinit();
+    const descriptor = try @import("extensions/provider_method_ref.zig").ProviderMethodRef.fromJson(config.value.object.get("classify").?);
+    var views: [4]?*runtime_mod.Runtime = .{null} ** 4;
+    defer for (views) |view| if (view) |runtime| runtime.deinit();
+    const Call = struct {
+        runtime: *runtime_mod.Runtime = undefined,
+        callback: []const u8 = "",
+        generation: u64 = 0,
+        id: usize = 0,
+        aborted: bool = false,
+        late: bool = false,
+        group: std.Io.Group = .init,
+        done: std.Io.Event = .unset,
+        result: ?[]u8 = null,
+        failure: ?anyerror = null,
+        fn run(self: *@This()) void {
+            defer self.done.set(std.testing.io);
+            var buffer: [96]u8 = undefined;
+            const context = std.fmt.bufPrint(&buffer, "{{\"state\":{{\"id\":{d},\"late\":{}}},\"questions\":{{}}}}", .{ self.id, self.late }) catch unreachable;
+            self.result = self.runtime.invokeProviderTypedOperation(self.callback, "ticket", self.generation, .classify, "{\"id\":\"same\",\"provider\":\"ticket\",\"api\":\"fixture\"}", context, "{}", false, &self.aborted) catch |err| {
+                self.failure = err;
+                return;
+            };
+        }
+    };
+    var calls: [4]Call = .{Call{}} ** 4;
+    defer for (calls) |call| if (call.result) |result| gpa.free(result);
+    defer {
+        for (&calls) |*call| {
+            call.group.cancel(io);
+            call.group.await(io) catch {};
+        }
+    }
+    for (&calls, &views, 0..) |*call, *view, index| {
+        view.* = try extension.script_runtime.?.pinView();
+        const snapshot = try std.json.Stringify.valueAlloc(gpa, .{ .nativeRuntimeBound = true, .settings = .{ .marker = if (index % 2 == 0) "A" else "B" } }, .{});
+        defer gpa.free(snapshot);
+        try view.*.?.setContextJson(snapshot);
+        call.* = .{ .runtime = view.*.?, .callback = descriptor.callback_id, .generation = descriptor.generation, .id = index + 1, .late = mode == .owner_retire or (mode == .cancel_one and index == 1) };
+        try call.group.concurrent(io, Call.run, .{call});
+    }
+    var admitted: i64 = 0;
+    const deadline = std.Io.Clock.awake.now(io).toMilliseconds() + 5000;
+    while (admitted != 4 and std.Io.Clock.awake.now(io).toMilliseconds() < deadline) {
+        var state = (try host.executeCommand("ticket-state", "")).?;
+        defer state.deinit(gpa);
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, state.message.?, .{});
+        defer parsed.deinit();
+        admitted = parsed.value.object.get("started").?.integer;
+        if (admitted != 4) try io.sleep(.fromMilliseconds(5), .awake);
+    }
+    try std.testing.expectEqual(@as(i64, 4), admitted);
+    for (&calls) |*call| try std.testing.expect(!call.done.isSet());
+    switch (mode) {
+        .one_abort => @atomicStore(bool, &calls[1].aborted, true, .release),
+        .cancel_one => {
+            calls[1].group.cancel(io);
+            try calls[1].group.await(io);
+        },
+        .owner_retire => {
+            _ = try host.invalidateNativeContexts(null);
+            for (&calls) |*call| try event_wait.untilSet(io, &call.done, 10_000);
+        },
+    }
+    var released = (try host.executeCommand("ticket-release", "")).?;
+    defer released.deinit(gpa);
+    for (&calls) |*call| try event_wait.untilSet(io, &call.done, 10_000);
+    for (&calls) |*call| try call.group.await(io);
+    for (calls, 0..) |call, index| {
+        if (mode == .owner_retire) {
+            try std.testing.expectEqual(error.NativeTypedProviderTicketRetired, call.failure.?);
+            continue;
+        }
+        if (mode == .cancel_one and index == 1) {
+            try std.testing.expectEqual(error.Canceled, call.failure.?);
+            continue;
+        }
+        if (call.failure) |err| return err;
+        var result = try std.json.parseFromSlice(std.json.Value, gpa, call.result.?, .{});
+        defer result.deinit();
+        const value = result.value.object.get("value").?;
+        if (index == 1) {
+            try std.testing.expectEqualStrings("aborted", value.object.get("stopReason").?.string);
+            continue;
+        }
+        try std.testing.expectEqualStrings(if (index % 2 == 0) "A" else "B", value.object.get("marker").?.string);
+        try std.testing.expect(value.object.get("canonical").?.bool and value.object.get("receiver").?.bool);
+        try std.testing.expectEqual(@as(i64, @intCast(index + 1)), value.object.get("id").?.integer);
+        const action = result.value.object.get("actionQueue").?.array.items[0];
+        var id_buffer: [16]u8 = undefined;
+        try std.testing.expectEqualStrings(try std.fmt.bufPrint(&id_buffer, "{d}", .{index + 1}), action.object.get("name").?.string);
+    }
+    const expected_late: i64 = if (mode == .owner_retire) 4 else if (mode == .cancel_one) 1 else 0;
+    const late_deadline = std.Io.Clock.awake.now(io).toMilliseconds() + 5000;
+    while (true) {
+        var state = (try host.executeCommand("ticket-state", "")).?;
+        defer state.deinit(gpa);
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, state.message.?, .{});
+        defer parsed.deinit();
+        const late_count = parsed.value.object.get("lateBookkeeping").?.integer;
+        if (late_count != expected_late and std.Io.Clock.awake.now(io).toMilliseconds() < late_deadline) {
+            try io.sleep(.fromMilliseconds(5), .awake);
+            continue;
+        }
+        try std.testing.expectEqual(expected_late, late_count);
+        try std.testing.expectEqual(expected_late, parsed.value.object.get("lateBlocked").?.integer);
+        try std.testing.expectEqual(if (mode == .owner_retire) @as(i64, 4) else 1, parsed.value.object.get("aborts").?.integer);
+        try std.testing.expectEqual(if (mode == .owner_retire) @as(i64, 0) else 3, parsed.value.object.get("finished").?.integer);
+        break;
+    }
+    try fixture.noBridge();
+}
 test "native runtime typed provider owner admits getters only after binding and private auth canonical callback matches Source" {
     const gpa = std.testing.allocator;
     var fixture = try Fixture.initSource(@embedFile("extensions/fixtures/native-provider-binding-6fb2e78.txt"));

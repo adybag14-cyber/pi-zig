@@ -98,6 +98,7 @@ pub const Bindings = struct {
     actions: std.ArrayList(c.JSValue) = .empty,
     invocation_active: bool = false,
     invocation_generation: u32 = 0,
+    invocation_clock: u32 = 0,
     context_epoch: u32 = 1,
     context_guard: c.JSValue,
     context_snapshot: ?c.JSValue = null,
@@ -109,6 +110,45 @@ pub const Bindings = struct {
     tool_update_promise: ?c.JSValue = null,
     publication_sequence: u64 = 0,
     registration_revision: u64 = 0,
+
+    pub const InvocationState = struct {
+        actions: std.ArrayList(c.JSValue) = .empty,
+        invocation_active: bool = false,
+        invocation_generation: u32 = 0,
+        context_snapshot: ?c.JSValue = null,
+        sdk_context: ?SdkContext = null,
+        invocation_signal: ?c.JSValue = null,
+        tool_update_fn: ?ToolUpdateFn = null,
+        tool_update_context: ?*anyopaque = null,
+        tool_update_promise: ?c.JSValue = null,
+        publication_sequence: u64 = 0,
+    };
+    pub fn exchangeInvocation(self: *Bindings, saved: *InvocationState) void {
+        inline for (std.meta.fields(InvocationState)) |field| std.mem.swap(field.type, &@field(self, field.name), &@field(saved, field.name));
+        if (self.broker) |broker| broker.active = if (self.invocation_active) self else null;
+    }
+    pub fn beginTicket(self: *Bindings, signal: c.JSValue, snapshot: []const u8) !void {
+        try self.setContext(snapshot);
+        try self.setInvocationOptions(signal, null, null);
+        try self.beginActions();
+    }
+    pub fn finishTicket(self: *Bindings, value: c.JSValue) ![]u8 {
+        const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
+        defer self.engine.freeValue(result);
+        try self.actionProperty(result, "value", c.JS_DupValue(self.engine.context, value));
+        try self.mergeActions(result);
+        return self.engine.stringify(result);
+    }
+    pub fn retireTicket(self: *Bindings) void {
+        self.finishInvocation();
+        for (self.actions.items) |action| self.engine.freeValue(action);
+        self.actions.deinit(self.gpa);
+        self.actions = .empty;
+        if (self.context_snapshot) |snapshot| self.engine.freeValue(snapshot);
+        self.context_snapshot = null;
+        if (self.sdk_context) |scope| self.freeSdkContext(scope);
+        self.sdk_context = null;
+    }
 
     pub fn init(gpa: std.mem.Allocator, engine: *engine_mod.Engine) !*Bindings {
         if (engine.host_data != null) return error.EngineHostAlreadyAttached;
@@ -224,6 +264,7 @@ pub const Bindings = struct {
     }
 
     fn fromOwnerData(engine: *engine_mod.Engine, data: [*c]c.JSValue, offset: usize) !*Bindings {
+        try @import("native_async_scope.zig").requireLive(engine);
         var class: i64 = 0;
         if (c.JS_ToInt64(engine.context, &class, data[offset + 1]) < 0) return error.JavaScriptException;
         const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(data[offset], @intCast(class)) orelse return error.StaleNativeExtensionOwner));
@@ -645,8 +686,9 @@ pub const Bindings = struct {
     fn beginActions(self: *Bindings) !void {
         if (self.invocation_active) return error.ExtensionInvocationBusy;
         if (self.broker) |broker| if (broker.active != null) return error.ExtensionInvocationBusy;
-        if (self.invocation_generation == std.math.maxInt(u32)) return error.ExtensionInvocationGenerationExhausted;
-        self.invocation_generation += 1;
+        if (self.invocation_clock == std.math.maxInt(u32)) return error.ExtensionInvocationGenerationExhausted;
+        self.invocation_clock += 1;
+        self.invocation_generation = self.invocation_clock;
         self.publication_sequence = 0;
         self.ui_manager.provider_action_fn = providerUiAction;
         self.ui_manager.provider_action_context = self;

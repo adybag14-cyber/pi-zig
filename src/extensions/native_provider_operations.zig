@@ -8,6 +8,11 @@ const c = engine_mod.c;
 pub const Operation = enum { classify, generate_images };
 pub const AuthOperation = enum { check, resolve };
 pub fn invokeAuth(engine: *engine_mod.Engine, registered: *providers.Providers, id: []const u8, provider: []const u8, generation: u64, operation: AuthOperation, credential: c.JSValue, options: c.JSValue, signal: c.JSValue) !c.JSValue {
+    const pending = try invokeAuthPending(engine, registered, id, provider, generation, operation, credential, options, signal);
+    defer engine.freeValue(pending);
+    return engine.awaitValue(pending);
+}
+pub fn invokeAuthPending(engine: *engine_mod.Engine, registered: *providers.Providers, id: []const u8, provider: []const u8, generation: u64, operation: AuthOperation, credential: c.JSValue, options: c.JSValue, signal: c.JSValue) !c.JSValue {
     var callback = try registered.captureInvocation(id, provider, generation);
     defer callback.deinit();
     if (!std.mem.eql(u8, callback.path, if (operation == .check) "auth.apiKey.check" else "auth.apiKey.resolve")) return error.NativeProviderAuthPathMismatch;
@@ -19,9 +24,7 @@ pub fn invokeAuth(engine: *engine_mod.Engine, registered: *providers.Providers, 
     try values.put(engine, input, "ctx", try @import("native_sdk_models.zig").authContext(engine, options));
     try values.put(engine, input, "signal", c.JS_DupValue(engine.context, signal));
     var args = [_]c.JSValue{input};
-    const pending = try engine.checked(c.JS_Call(engine.context, callback.function, callback.receiver, 1, &args));
-    defer engine.freeValue(pending);
-    return engine.awaitValue(pending);
+    return engine.checked(c.JS_Call(engine.context, callback.function, callback.receiver, 1, &args));
 }
 fn copyProperties(engine: *engine_mod.Engine, target: c.JSValue, source: c.JSValue) !void {
     var names: [*c]c.JSPropertyEnum = null;
@@ -103,6 +106,11 @@ pub fn invoke(
     signal: c.JSValue,
     auth_rewrites_model: bool,
 ) !c.JSValue {
+    const pending = try invokePending(engine, registered, callback_id, provider, generation, operation, model, context, options, signal, auth_rewrites_model);
+    defer engine.freeValue(pending);
+    return engine.awaitValue(pending);
+}
+pub fn invokePending(engine: *engine_mod.Engine, registered: *providers.Providers, callback_id: []const u8, provider: []const u8, generation: u64, operation: Operation, model: c.JSValue, context: c.JSValue, options: c.JSValue, signal: c.JSValue, auth_rewrites_model: bool) !c.JSValue {
     const initial = try values.invoke(engine, signal, "throwIfAborted", &.{});
     engine.freeValue(initial);
     var callback = try registered.captureInvocation(callback_id, provider, generation);
@@ -130,9 +138,7 @@ pub fn invoke(
     }
     try values.put(engine, request_options, "signal", c.JS_DupValue(engine.context, signal));
     var args = [_]c.JSValue{ request_model, context, request_options };
-    const pending = try engine.checked(c.JS_Call(engine.context, callback.function, callback.receiver, args.len, &args));
-    defer engine.freeValue(pending);
-    return engine.awaitValue(pending);
+    return engine.checked(c.JS_Call(engine.context, callback.function, callback.receiver, args.len, &args));
 }
 /// Provider failures become typed results at the operation boundary, while
 /// descriptor/owner admission failures remain transport errors.
@@ -141,28 +147,31 @@ pub fn invokeResult(engine: *engine_mod.Engine, registered: *providers.Providers
     return invoke(engine, registered, id, provider, generation, operation, model, context, options, signal, auth_rewrites_model) catch |err| {
         if (err != error.JavaScriptException or engine.captured_exception == null) return err;
         const exception = engine.captured_exception.?;
-        const diagnostic = if (c.JS_IsError(exception)) try values.get(engine, exception, "message") else blk: {
-            const text = try engine.toString(exception);
-            defer engine.gpa.free(text);
-            break :blk try engine.checked(c.JS_NewStringLen(engine.context, text.ptr, text.len));
-        };
-        defer engine.freeValue(diagnostic);
-        const aborted = try values.get(engine, signal, "aborted");
-        defer engine.freeValue(aborted);
-        const result = try values.object(engine);
-        errdefer engine.freeValue(result);
-        for ([_][:0]const u8{ "api", "provider" }) |field| try values.put(engine, result, field, try values.get(engine, model, field));
-        try values.put(engine, result, "model", try values.get(engine, model, "id"));
-        try values.put(engine, result, if (operation == .classify) "answers" else "output", if (operation == .classify) try values.object(engine) else try values.array(engine));
-        try values.put(engine, result, "stopReason", try engine.checked(c.JS_NewString(engine.context, if (c.JS_ToBool(engine.context, aborted) == 1) "aborted" else "error")));
-        try values.put(engine, result, "errorMessage", c.JS_DupValue(engine.context, diagnostic));
-        const global = c.JS_GetGlobalObject(engine.context);
-        defer engine.freeValue(global);
-        const date = try values.get(engine, global, "Date");
-        defer engine.freeValue(date);
-        try values.put(engine, result, "timestamp", try values.invoke(engine, date, "now", &.{}));
-        return result;
+        return failureResult(engine, operation, model, signal, exception);
     };
+}
+pub fn failureResult(engine: *engine_mod.Engine, operation: Operation, model: c.JSValue, signal: c.JSValue, exception: c.JSValue) !c.JSValue {
+    const diagnostic = if (c.JS_IsError(exception)) try values.get(engine, exception, "message") else blk: {
+        const text = try engine.toString(exception);
+        defer engine.gpa.free(text);
+        break :blk try engine.checked(c.JS_NewStringLen(engine.context, text.ptr, text.len));
+    };
+    defer engine.freeValue(diagnostic);
+    const aborted = try values.get(engine, signal, "aborted");
+    defer engine.freeValue(aborted);
+    const result = try values.object(engine);
+    errdefer engine.freeValue(result);
+    for ([_][:0]const u8{ "api", "provider" }) |field| try values.put(engine, result, field, try values.get(engine, model, field));
+    try values.put(engine, result, "model", try values.get(engine, model, "id"));
+    try values.put(engine, result, if (operation == .classify) "answers" else "output", if (operation == .classify) try values.object(engine) else try values.array(engine));
+    try values.put(engine, result, "stopReason", try engine.checked(c.JS_NewString(engine.context, if (c.JS_ToBool(engine.context, aborted) == 1) "aborted" else "error")));
+    try values.put(engine, result, "errorMessage", c.JS_DupValue(engine.context, diagnostic));
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const date = try values.get(engine, global, "Date");
+    defer engine.freeValue(date);
+    try values.put(engine, result, "timestamp", try values.invoke(engine, date, "now", &.{}));
+    return result;
 }
 
 fn exerciseOwner(gpa: std.mem.Allocator) !void {

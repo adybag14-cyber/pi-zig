@@ -83,6 +83,32 @@ const OAuthMethod = enum(c_int) { onAuth, onDeviceCode, onPrompt, onProgress, on
 pub const ProviderActionFn = *const fn (?*anyopaque, [*:0]const u8, c.JSValue) anyerror!void;
 
 pub const Manager = struct {
+    /// Invocation-owned fields move with a private async ticket. Persistent
+    /// editor/widget services and globally unique request IDs stay on Manager.
+    pub const InvocationState = struct {
+        opening_focus: ?*OpeningFocus = null,
+        polling_custom: bool = false,
+        generation: u32 = 0,
+        active: bool = false,
+        provider_action_fn: ?ProviderActionFn = null,
+        provider_action_context: ?*anyopaque = null,
+        has_ui: bool = false,
+        signal: ?c.JSValue = null,
+        pending: std.ArrayList(Pending) = .empty,
+        customs: std.ArrayList(Custom) = .empty,
+        editor_owner_id: u64 = 0,
+        invocation_id: u64 = 0,
+        width: usize = 80,
+        height: usize = 24,
+        components: ?components_mod.Manager = null,
+    };
+    pub fn exchangeInvocation(self: *Manager, saved: *InvocationState) void {
+        inline for (std.meta.fields(InvocationState)) |field| {
+            if (comptime std.mem.eql(u8, field.name, "components")) {
+                std.mem.swap(components_mod.Manager, &self.components, &saved.components.?);
+            } else std.mem.swap(field.type, &@field(self, field.name), &@field(saved, field.name));
+        }
+    }
     engine: *engine_mod.Engine,
     token: c.JSValue,
     opening_focus: ?*OpeningFocus = null,
@@ -92,6 +118,7 @@ pub const Manager = struct {
     editor_text: c.JSValue,
     bridge: ?Bridge = null,
     generation: u32 = 0,
+    invocation_clock: u32 = 0,
     active: bool = false,
     provider_action_fn: ?ProviderActionFn = null,
     provider_action_context: ?*anyopaque = null,
@@ -175,7 +202,10 @@ pub const Manager = struct {
 
     pub fn begin(self: *Manager, generation: u32, snapshot: ?c.JSValue, signal: ?c.JSValue) !void {
         self.finish();
-        self.generation = generation;
+        if (self.invocation_clock == std.math.maxInt(u32)) return error.NativeUiGenerationExhausted;
+        self.generation = @max(generation, self.invocation_clock + 1);
+        self.invocation_clock = self.generation;
+        self.components.generation = @as(u64, self.generation) + 1;
         self.has_ui = false;
         if (snapshot) |context| {
             try self.footer_data.update(context);
@@ -271,6 +301,7 @@ pub const Manager = struct {
     }
     fn invoke(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
+        @import("native_async_scope.zig").requireLive(engine) catch |err| return fail(engine, err);
         const method: Method = @enumFromInt(magic);
         const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
         if (method == .onTerminalInput or method == .notify or method == .setStatus or method == .setTitle or method == .setWorkingIndicator or method == .setWorkingMessage or method == .setWorkingVisible or method == .setHiddenThinkingLabel or method == .setHeader or method == .setFooter or method == .setWidget or method == .setEditorComponent or method == .getEditorComponent or method == .getEditorText or method == .setEditorText or method == .pasteToEditor or method == .addAutocompleteProvider) {

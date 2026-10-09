@@ -384,6 +384,9 @@ struct JSRuntime {
 
     JSPromiseHook *promise_hook;
     void *promise_hook_opaque;
+    JSValue execution_context;
+    JSExecutionContextHook *execution_context_hook;
+    void *execution_context_opaque;
     // for smuggling the parent promise from js_promise_then
     // to js_promise_constructor
     JSValueLink *parent_promise;
@@ -1074,6 +1077,7 @@ typedef struct JSJobEntry {
     struct list_head link;
     JSContext *ctx;
     JSJobFunc *job_func;
+    JSValue execution_context;
     int argc;
     JSValue argv[];
 } JSJobEntry;
@@ -2321,6 +2325,7 @@ JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)
     rt = mf->js_calloc(opaque, 1, sizeof(JSRuntime));
     if (!rt)
         return NULL;
+    rt->execution_context = JS_UNDEFINED;
     rt->mf = *mf;
     if (!rt->mf.js_malloc_usable_size) {
         /* use dummy function if none provided */
@@ -2500,12 +2505,38 @@ int JS_EnqueueJob(JSContext *ctx, JSJobFunc *job_func,
         return -1;
     e->ctx = ctx;
     e->job_func = job_func;
+    e->execution_context = js_dup(rt->execution_context);
     e->argc = argc;
     for(i = 0; i < argc; i++) {
         e->argv[i] = js_dup(argv[i]);
     }
     list_add_tail(&e->link, &rt->job_list);
     return 0;
+}
+
+void JS_SetExecutionContext(JSRuntime *rt, JSValueConst value)
+{
+    JSValue previous = rt->execution_context;
+    rt->execution_context = js_dup(value);
+    JS_FreeValueRT(rt, previous);
+}
+
+void JS_SetExecutionContextHook(JSRuntime *rt, JSExecutionContextHook *hook, void *opaque)
+{
+    rt->execution_context_hook = hook;
+    rt->execution_context_opaque = opaque;
+}
+
+static int js_enqueue_job_context(JSContext *ctx, JSJobFunc *job_func,
+                                  int argc, JSValueConst *argv, JSValueConst execution_context)
+{
+    JSRuntime *rt = ctx->rt;
+    JSValue previous = rt->execution_context;
+    int result;
+    rt->execution_context = execution_context;
+    result = JS_EnqueueJob(ctx, job_func, argc, argv);
+    rt->execution_context = previous;
+    return result;
 }
 
 bool JS_IsJobPending(JSRuntime *rt)
@@ -2539,7 +2570,12 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
     e = list_entry(rt->job_list.next, JSJobEntry, link);
     list_del(&e->link);
     ctx = e->ctx;
+    if (rt->execution_context_hook)
+        rt->execution_context_hook(ctx, true, e->execution_context, rt->execution_context_opaque);
     res = e->job_func(e->ctx, e->argc, vc(e->argv));
+    if (rt->execution_context_hook)
+        rt->execution_context_hook(ctx, false, e->execution_context, rt->execution_context_opaque);
+    JS_FreeValue(ctx, e->execution_context);
     for(i = 0; i < e->argc; i++)
         JS_FreeValue(ctx, e->argv[i]);
     if (JS_IsException(res))
@@ -2643,10 +2679,12 @@ void JS_FreeRuntime(JSRuntime *rt)
     int i;
 
     rt->in_free = true;
+    JS_FreeValueRT(rt, rt->execution_context);
     JS_FreeValueRT(rt, rt->current_exception);
 
     list_for_each_safe(el, el1, &rt->job_list) {
         JSJobEntry *e = list_entry(el, JSJobEntry, link);
+        JS_FreeValueRT(rt, e->execution_context);
         for(i = 0; i < e->argc; i++)
             JS_FreeValueRT(rt, e->argv[i]);
         js_free_rt(rt, e);
@@ -55518,6 +55556,7 @@ typedef struct JSPromiseReactionData {
     struct list_head link; /* not used in promise_reaction_job */
     JSValue resolving_funcs[2];
     JSValue handler;
+    JSValue execution_context;
 } JSPromiseReactionData;
 
 JSPromiseStateEnum JS_PromiseState(JSContext *ctx, JSValueConst promise)
@@ -55585,6 +55624,7 @@ static void promise_reaction_data_free(JSRuntime *rt,
     JS_FreeValueRT(rt, rd->resolving_funcs[0]);
     JS_FreeValueRT(rt, rd->resolving_funcs[1]);
     JS_FreeValueRT(rt, rd->handler);
+    JS_FreeValueRT(rt, rd->execution_context);
     js_free_rt(rt, rd);
 }
 
@@ -55688,7 +55728,7 @@ static void fulfill_or_reject_promise(JSContext *ctx, JSValueConst promise,
         args[2] = rd->handler;
         args[3] = js_bool(is_reject);
         args[4] = value;
-        JS_EnqueueJob(ctx, promise_reaction_job, 5, args);
+        js_enqueue_job_context(ctx, promise_reaction_job, 5, args, rd->execution_context);
         list_del(&rd->link);
         promise_reaction_data_free(ctx->rt, rd);
     }
@@ -55897,6 +55937,7 @@ static void js_promise_mark(JSRuntime *rt, JSValueConst val,
             JS_MarkValue(rt, rd->resolving_funcs[0], mark_func);
             JS_MarkValue(rt, rd->resolving_funcs[1], mark_func);
             JS_MarkValue(rt, rd->handler, mark_func);
+            JS_MarkValue(rt, rd->execution_context, mark_func);
         }
     }
     JS_MarkValue(rt, s->promise_result, mark_func);
@@ -56494,6 +56535,7 @@ static __exception int perform_promise_then(JSContext *ctx,
         if (!JS_IsFunction(ctx, handler))
             handler = JS_UNDEFINED;
         rd->handler = js_dup(handler);
+        rd->execution_context = js_dup(ctx->rt->execution_context);
         rd_array[i] = rd;
     }
 
@@ -56510,7 +56552,7 @@ static __exception int perform_promise_then(JSContext *ctx,
         args[2] = rd->handler;
         args[3] = js_bool(i);
         args[4] = s->promise_result;
-        JS_EnqueueJob(ctx, promise_reaction_job, 5, args);
+        js_enqueue_job_context(ctx, promise_reaction_job, 5, args, rd->execution_context);
         for(i = 0; i < 2; i++)
             promise_reaction_data_free(ctx->rt, rd_array[i]);
     }

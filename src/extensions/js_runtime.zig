@@ -215,8 +215,21 @@ const NativeReadSession = struct {
             self.wake.reset();
             try dialogs.progress();
             self.mutex.lockUncancelable(self.runtime.io);
-            if (self.records.items.len > 0) {
-                const value = self.records.orderedRemove(0);
+            const selected = selected: {
+                for (self.records.items, 0..) |record, index| {
+                    var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+                    defer arena.deinit();
+                    const parsed = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record, .{}) catch break :selected index;
+                    if (parsed == .object) if (parsed.object.get("invocationId")) |identity| {
+                        const actual = wireInvocationId(identity) catch break :selected index;
+                        if (dialogs.invocation_id != 0 and actual != dialogs.invocation_id) continue;
+                    };
+                    break :selected index;
+                }
+                break :selected @as(?usize, null);
+            };
+            if (selected) |index| {
+                const value = self.records.orderedRemove(index);
                 self.bytes -= value.len;
                 self.mutex.unlock(self.runtime.io);
                 return value;
@@ -1708,9 +1721,92 @@ pub const Runtime = struct {
         const request = try std.json.Stringify.valueAlloc(a, .{ .kind = "provider_typed_operation", .version = 1, .ownerGeneration = try std.fmt.allocPrint(a, "{d}", .{self.owner_generation}), .callbackId = callback_id, .providerName = provider, .callbackGeneration = generation, .operation = @tagName(operation), .model = model, .modelContext = context, .options = options, .authRewritesModel = auth_rewrites_model, .context = try self.contextValue(a) }, .{});
         // This operation is single-use; an uncertain provider response is not
         // replayed on a different callback or worker generation.
-        if (self.shared_owner) |owner| return owner.invokeGroupRequest(self.extension_id, request, abort_flag);
-        if (self.native_group) return self.invokeGroupRequest(self.extension_id, request, abort_flag);
+        if (self.shared_owner) |owner| return owner.invokeProviderTicketRequest(self.extension_id, request, abort_flag);
+        if (self.native_group) return self.invokeProviderTicketRequest(self.extension_id, request, abort_flag);
         return error.NativeTypedProviderRequiresGroupOwner;
+    }
+
+    fn invokeProviderTicketRequest(self: *Runtime, extension_id: u64, raw: []const u8, abort_flag: ?*bool) ![]u8 {
+        if (!self.native_group or extension_id == 0) return error.NativeTypedProviderRequiresGroupOwner;
+        const session = self.native_read_session orelse return error.NativeTypedProviderRequiresGroupOwner;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        var request = try std.json.parseFromSliceLeaky(std.json.Value, a, raw, .{});
+        if (request != .object) return error.InvalidNativeTypedProviderRequest;
+        const kind = request.object.get("kind") orelse return error.InvalidNativeTypedProviderRequest;
+        if (kind != .string) return error.InvalidNativeTypedProviderRequest;
+        const begin_kind: []const u8 = if (std.mem.eql(u8, kind.string, "provider_typed_operation")) "provider_typed_begin" else if (std.mem.eql(u8, kind.string, "provider_auth_operation")) "provider_auth_begin" else return error.InvalidNativeTypedProviderRequest;
+        self.mutex.lockUncancelable(self.io);
+        const id = self.next_invocation_id;
+        self.next_invocation_id = std.math.add(u64, id, 1) catch {
+            self.mutex.unlock(self.io);
+            return error.NativeInvocationLimit;
+        };
+        const closed = self.closed;
+        self.mutex.unlock(self.io);
+        if (closed) return error.JavaScriptExtensionClosed;
+        const id_text = try std.fmt.allocPrint(a, "{d}", .{id});
+        const owner_text = try std.fmt.allocPrint(a, "{d}", .{self.owner_generation});
+        var completed = false;
+        defer if (!completed) {
+            const previous = self.io.swapCancelProtection(.blocked);
+            defer _ = self.io.swapCancelProtection(previous);
+            var buffer: [256]u8 = undefined;
+            const retire = std.fmt.bufPrint(&buffer, "{{\"kind\":\"provider_ticket_retire\",\"ownerGeneration\":\"{s}\",\"extensionId\":{d},\"ticketId\":\"{s}\"}}", .{ owner_text, extension_id, id_text }) catch unreachable;
+            self.writeLine(retire) catch {};
+        };
+        try request.object.put(a, "kind", .{ .string = begin_kind });
+        try request.object.put(a, "extensionId", .{ .integer = @intCast(extension_id) });
+        try request.object.put(a, "invocationId", .{ .string = id_text });
+        try request.object.put(a, "abortable", .{ .bool = true });
+        try request.object.put(a, "aborted", .{ .bool = if (abort_flag) |flag| @atomicLoad(bool, flag, .acquire) else false });
+        var dialogs: NativeDialogs = .{ .runtime = self, .session = session, .invocation_id = id };
+        defer dialogs.deinit();
+        const admission = try self.exchangeProviderTicket(try std.json.Stringify.valueAlloc(a, request, .{}), id, &dialogs);
+        defer self.gpa.free(admission);
+        const admitted = try std.json.parseFromSliceLeaky(std.json.Value, a, admission, .{});
+        const ticket_id = if (admitted == .object) admitted.object.get("ticketId") orelse return error.InvalidNativeProviderTicket else return error.InvalidNativeProviderTicket;
+        if (ticket_id != .string or !std.mem.eql(u8, ticket_id.string, id_text)) return error.InvalidNativeProviderTicket;
+        while (true) {
+            const poll = try std.json.Stringify.valueAlloc(self.gpa, .{ .kind = "provider_ticket_poll", .version = 1, .ownerGeneration = owner_text, .extensionId = extension_id, .invocationId = id_text, .ticketId = id_text, .aborted = if (abort_flag) |flag| @atomicLoad(bool, flag, .acquire) else false }, .{});
+            defer self.gpa.free(poll);
+            const response = try self.exchangeProviderTicket(poll, id, &dialogs);
+            defer self.gpa.free(response);
+            var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, response, .{});
+            defer parsed.deinit();
+            if (parsed.value != .object) return error.InvalidNativeProviderTicket;
+            const pending = parsed.value.object.get("pending") orelse return error.InvalidNativeProviderTicket;
+            if (pending != .bool) return error.InvalidNativeProviderTicket;
+            if (!pending.bool) {
+                if (parsed.value.object.get("error")) |_| return error.NativeTypedProviderTicketRetired;
+                const envelope = parsed.value.object.get("envelope") orelse return error.InvalidNativeProviderTicket;
+                const value = try stringifyValue(self.gpa, envelope);
+                completed = true;
+                return value;
+            }
+            try self.io.sleep(.fromMilliseconds(5), .awake);
+        }
+    }
+    fn exchangeProviderTicket(self: *Runtime, request: []const u8, id: u64, dialogs: *NativeDialogs) ![]u8 {
+        // Once a short request is written, drain its exact response before
+        // honoring task cancellation. The next outer cancellation point sends
+        // a ticket-only retirement control and preserves the shared owner.
+        const previous = self.io.swapCancelProtection(.blocked);
+        defer _ = self.io.swapCancelProtection(previous);
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        if (self.closed) return error.JavaScriptExtensionClosed;
+        self.clearLastErrorUnlocked();
+        try self.requireNativeRequest(request);
+        self.writeLine(request) catch |err| {
+            self.closeUnlocked();
+            return err;
+        };
+        return self.readResultWithDialogs(null, null, null, null, id, null, dialogs) catch |err| {
+            if (err != error.JavaScriptExtensionExecutionFailed) self.closeUnlocked();
+            return err;
+        };
     }
 
     pub fn providerAdmission(self: *Runtime, callback_id: []const u8, provider: []const u8, generation: u64) !bool {
@@ -1735,8 +1831,8 @@ pub const Runtime = struct {
         const options = try std.json.parseFromSliceLeaky(std.json.Value, a, options_json, .{});
         if ((credential != .null and credential != .object) or options != .object) return error.InvalidNativeProviderAuthRequest;
         const request = try std.json.Stringify.valueAlloc(a, .{ .kind = "provider_auth_operation", .version = 1, .ownerGeneration = self.owner_generation, .callbackId = callback_id, .providerName = provider, .callbackGeneration = generation, .operation = @tagName(operation), .credential = credential, .options = options, .context = try self.contextValue(a) }, .{});
-        if (self.shared_owner) |owner| return owner.invokeGroupRequest(self.extension_id, request, abort_flag);
-        if (self.native_group) return self.invokeGroupRequest(self.extension_id, request, abort_flag);
+        if (self.shared_owner) |owner| return owner.invokeProviderTicketRequest(self.extension_id, request, abort_flag);
+        if (self.native_group) return self.invokeProviderTicketRequest(self.extension_id, request, abort_flag);
         return error.NativeTypedProviderRequiresGroupOwner;
     }
     pub fn invokeProviderMethodWithTimeout(
@@ -2296,6 +2392,18 @@ pub const Runtime = struct {
         expected_invocation_id: u64,
         abort_flag: ?*const bool,
     ) ![]u8 {
+        return self.readResultWithDialogs(update_fn, update_ctx, stream_event_fn, stream_event_ctx, expected_invocation_id, abort_flag, null);
+    }
+    fn readResultWithDialogs(
+        self: *Runtime,
+        update_fn: ?ToolUpdateFn,
+        update_ctx: ?*anyopaque,
+        stream_event_fn: ?ProviderStreamEventFn,
+        stream_event_ctx: ?*anyopaque,
+        expected_invocation_id: u64,
+        abort_flag: ?*const bool,
+        retained_dialogs: ?*NativeDialogs,
+    ) ![]u8 {
         var expected_stream_sequence: u64 = 1;
         var local_native_session: NativeReadSession = .{ .runtime = self };
         const native_session = self.native_read_session orelse &local_native_session;
@@ -2308,10 +2416,11 @@ pub const Runtime = struct {
             reader_group.await(self.io) catch {};
             native_session.deinit();
         };
-        var native_dialogs: NativeDialogs = .{ .runtime = self, .session = native_session, .invocation_id = expected_invocation_id };
-        defer native_dialogs.deinit();
+        var local_dialogs: NativeDialogs = .{ .runtime = self, .session = native_session, .invocation_id = expected_invocation_id };
+        const native_dialogs = retained_dialogs orelse &local_dialogs;
+        defer if (retained_dialogs == null) local_dialogs.deinit();
         while (true) {
-            const line = if (self.backend == .native) try native_session.next(&native_dialogs) else try self.readRecordUnlocked();
+            const line = if (self.backend == .native) try native_session.next(native_dialogs) else try self.readRecordUnlocked();
             defer (if (self.backend == .native) std.heap.page_allocator else self.gpa).free(line);
             var parsed = try std.json.parseFromSlice(std.json.Value, self.gpa, line, .{});
             defer parsed.deinit();
@@ -2437,7 +2546,7 @@ pub const Runtime = struct {
         if (parsed.value != .object) return error.InvalidNativeExtensionRequest;
         const kind = parsed.value.object.get("kind") orelse return error.InvalidNativeExtensionRequest;
         if (kind != .string) return error.InvalidNativeExtensionRequest;
-        for ([_][]const u8{ "hook", "tool", "command", "group_add_source", "group_remove_source", "sdk_availability_snapshot", "sdk_model_bridge", "provider_method", "provider_typed_operation", "provider_admission", "provider_auth_operation", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "render_message", "render_entry", "transform_markdown", "render_tool_call", "render_tool_result", "prepare_tool_arguments", "renderer_retire", "shutdown" }) |supported| {
+        for ([_][]const u8{ "hook", "tool", "command", "group_add_source", "group_remove_source", "sdk_availability_snapshot", "sdk_model_bridge", "provider_method", "provider_typed_operation", "provider_typed_begin", "provider_auth_begin", "provider_ticket_poll", "provider_admission", "provider_auth_operation", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "render_message", "render_entry", "transform_markdown", "render_tool_call", "render_tool_result", "prepare_tool_arguments", "renderer_retire", "shutdown" }) |supported| {
             if (std.mem.eql(u8, supported, kind.string)) return;
         }
         // Keep unsupported custom-component and renderer operations out of the

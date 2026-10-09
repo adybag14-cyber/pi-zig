@@ -22,9 +22,10 @@ const renderer_protocol = @import("renderer_protocol.zig");
 const editor_protocol = @import("editor_protocol.zig");
 const widget_protocol = @import("widget_protocol.zig");
 const c = engine_mod.c;
+const provider_tickets = @import("native_provider_tickets.zig");
 
 const WireRecord = struct {
-    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, context_invalidate, shutdown };
+    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, context_invalidate, provider_ticket_retire, shutdown };
     bytes: []u8,
     kind: Kind = .request,
 };
@@ -58,8 +59,10 @@ const Transport = struct {
     seen_ids: std.StringHashMapUnmanaged(void) = .empty,
     metadata_revision: u64 = 0,
     metadata_snapshot: ?[]u8 = null,
+    tickets: ?*provider_tickets.Manager = null,
 
     fn deinit(self: *Transport) void {
+        if (self.tickets) |tickets| tickets.deinit();
         if (self.metadata_snapshot) |snapshot| self.engine.gpa.free(snapshot);
         self.clearActive();
         for (self.records.items) |record| std.heap.page_allocator.free(record.bytes);
@@ -98,6 +101,7 @@ const Transport = struct {
         if (std.mem.eql(u8, kind.string, "widget_control")) return .widget_control;
         if (std.mem.eql(u8, kind.string, "terminal_input")) return .terminal_input;
         if (std.mem.eql(u8, kind.string, "context_invalidate")) return .context_invalidate;
+        if (std.mem.eql(u8, kind.string, "provider_ticket_retire")) return .provider_ticket_retire;
         return .request;
     }
 
@@ -209,6 +213,7 @@ const Transport = struct {
         _ = try self.engine.pumpControls();
         _ = try self.engine.drainReadyJobs();
         if (try timers.pumpReady(self.engine)) _ = try self.engine.drainReadyJobs();
+        if (self.tickets) |tickets| try tickets.pump();
         _ = try self.group.renderers.pumpDirtyReady();
         _ = try self.group.ui.editors.pumpDirty();
         _ = try self.group.ui.widgets.pumpDirty();
@@ -263,7 +268,7 @@ const Transport = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.records.items, 0..) |record, index| {
-            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or record.kind == .terminal_input or record.kind == .context_invalidate or (self.active and record.kind == .shutdown and index == 0)) {
+            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or record.kind == .terminal_input or record.kind == .context_invalidate or record.kind == .provider_ticket_retire or (self.active and record.kind == .shutdown and index == 0)) {
                 const removed = self.records.orderedRemove(index);
                 self.queued_bytes -= removed.bytes.len;
                 return removed;
@@ -294,6 +299,11 @@ const Transport = struct {
             var arena: std.heap.ArenaAllocator = .init(engine.gpa);
             defer arena.deinit();
             const request = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{});
+            if (record.kind == .provider_ticket_retire) {
+                try self.retireTicket(request);
+                dispatched = true;
+                continue;
+            }
             if (record.kind == .context_invalidate) {
                 try self.contextInvalidate(request);
                 dispatched = true;
@@ -319,6 +329,28 @@ const Transport = struct {
                 dispatched = true;
                 continue;
             }
+            if (request == .object) if (request.object.get("invocationId")) |id| if (id == .string) if (self.tickets) |tickets| if (tickets.find(id.string)) |ticket| {
+                if (!ticket.scope_closed) {
+                    const guard = ticket.enter();
+                    defer guard.restore();
+                    if (record.kind == .abort) {
+                        try ticket.abort();
+                    } else if (record.kind == .ui_response) {
+                        const request_id = request.object.get("id") orelse continue;
+                        const ok = request.object.get("ok") orelse continue;
+                        if (request_id != .integer or request_id.integer <= 0 or request_id.integer > std.math.maxInt(u32) or ok != .bool) continue;
+                        const value = try engine.fromJsonValue(request.object.get(if (ok.bool) "result" else "error") orelse .null);
+                        defer engine.freeValue(value);
+                        try ticket.binding.ui_manager.respond(@intCast(request_id.integer), ok.bool, value);
+                    } else if (record.kind == .component_control) {
+                        var control = try component_protocol.readControl(engine.gpa, &request.object);
+                        defer control.deinit();
+                        _ = try ticket.binding.ui_manager.componentControl(&control);
+                    }
+                }
+                dispatched = true;
+                continue;
+            };
             if (!self.active) continue;
             if (record.kind == .shutdown) {
                 self.shutdown_requested = true;
@@ -412,6 +444,7 @@ const Transport = struct {
         if (generation != self.group.ui.widgets.owner_generation) return;
         const message = if (request.object.get("message")) |value| if (value == .string) value.string else return error.InvalidContextInvalidation else @import("native_context_lifetime.zig").default_message;
         if (message.len > 65536) return error.InvalidContextInvalidation;
+        if (self.tickets) |tickets| try tickets.retireOwner(null);
         const invalidated = self.group.invalidateContexts(message) catch |err| {
             try self.writer.print("\x1e{{\"type\":\"context_invalidate_result\",\"id\":\"{d}\",\"ownerGeneration\":\"{d}\",\"ok\":false,\"error\":", .{ id, generation });
             try std.json.Stringify.value(@errorName(err), .{}, self.writer);
@@ -421,6 +454,18 @@ const Transport = struct {
         };
         try self.writer.print("\x1e{{\"type\":\"context_invalidate_result\",\"id\":\"{d}\",\"ownerGeneration\":\"{d}\",\"ok\":true,\"invalidated\":{d}}}\n", .{ id, generation, invalidated });
         try self.writer.flush();
+    }
+    fn retireTicket(self: *Transport, request: std.json.Value) !void {
+        if (request != .object) return error.InvalidNativeProviderTicket;
+        const owner = try component_protocol.identifier(request.object.get("ownerGeneration") orelse return error.InvalidNativeProviderTicket);
+        if (owner != self.group.renderers.owner_generation) return;
+        const extension = try component_protocol.identifier(request.object.get("extensionId") orelse return error.InvalidNativeProviderTicket);
+        const id = try requiredText(request.object, "ticketId");
+        const manager = self.tickets orelse return;
+        const ticket = manager.find(id) orelse return;
+        if (ticket.owner_id != extension) return error.NativeProviderTicketOwnerMismatch;
+        try ticket.retire("Native typed provider caller retired");
+        manager.consume(ticket);
     }
     fn widgetControl(self: *Transport, request: std.json.Value) !void {
         if (request != .object) return error.InvalidWidgetControl;
@@ -579,7 +624,8 @@ const Transport = struct {
         const allocator = arena.allocator();
         var object: std.json.ObjectMap = .empty;
         try object.put(allocator, "type", .{ .string = kind });
-        try object.put(allocator, "invocationId", .{ .string = self.active_id });
+        const invocation_id = if (self.tickets) |tickets| if (tickets.active) |ticket| ticket.id else self.active_id else self.active_id;
+        try object.put(allocator, "invocationId", .{ .string = invocation_id });
         if (id) |value| try object.put(allocator, "id", .{ .integer = value });
         if (method) |value| try object.put(allocator, "method", .{ .string = value });
         if (arguments) |value| try object.put(allocator, "args", try std.json.parseFromSliceLeaky(std.json.Value, allocator, value, .{}));
@@ -596,7 +642,7 @@ const Transport = struct {
 
     fn uiAction(context: ?*anyopaque, method: []const u8, args: []const u8) !void {
         const self: *Transport = @ptrCast(@alignCast(context.?));
-        if (self.active) return self.uiRecord("ui_action", null, method, args);
+        if (self.active or (if (self.tickets) |tickets| tickets.active != null else false)) return self.uiRecord("ui_action", null, method, args);
         var out: std.Io.Writer.Allocating = .init(self.engine.gpa);
         defer out.deinit();
         try out.writer.print("{{\"type\":\"widget_action\",\"ownerGeneration\":\"{d}\",\"method\":", .{self.group.ui.widgets.owner_generation});
@@ -1331,7 +1377,8 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     try writer.writeAll(manifest);
     try writer.writeAll("}\n");
     try writer.flush();
-    var transport: Transport = .{ .engine = engine, .bindings = bindings, .io = io, .writer = writer, .group = group, .initial_input = initial_input };
+    var typed_tickets: provider_tickets.Manager = .{ .engine = engine, .io = io };
+    var transport: Transport = .{ .engine = engine, .bindings = bindings, .io = io, .writer = writer, .group = group, .initial_input = initial_input, .tickets = &typed_tickets };
     defer transport.deinit();
     group.renderers.record_fn = Transport.rendererRecord;
     group.renderers.record_context = &transport;
@@ -1389,6 +1436,10 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
         // before next() dequeues its FIFO. It remains an owner-thread control,
         // never an ordinary invocation or an ordinary response-envelope entry.
         if (try transport.persistentControl(record.kind, request)) continue;
+        if (record.kind == .provider_ticket_retire) {
+            try transport.retireTicket(request);
+            continue;
+        }
         const kind = requiredText(request.object, "kind") catch |err| {
             try writeFailure(allocator, writer, @errorName(err));
             continue;
@@ -1402,6 +1453,32 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             try writeFailure(allocator, writer, "InvalidNativeExtensionOwner");
             continue;
         } else 1;
+        if (std.mem.eql(u8, kind, "provider_ticket_poll")) {
+            const id = try requiredText(request.object, "ticketId");
+            const invocation_id = try requiredText(request.object, "invocationId");
+            const owner = try component_protocol.identifier(request.object.get("ownerGeneration") orelse return error.InvalidNativeTypedProviderRequest);
+            const version = request.object.get("version") orelse return error.InvalidNativeTypedProviderRequest;
+            if (version != .integer or version.integer != 1 or owner != group.renderers.owner_generation or !std.mem.eql(u8, id, invocation_id)) return error.InvalidNativeTypedProviderRequest;
+            const ticket = typed_tickets.find(id) orelse return error.UnknownNativeProviderTicket;
+            if (ticket.owner_id != extension_id) return error.NativeProviderTicketOwnerMismatch;
+            if (!ticket.retired) ticket.binding.providers.validate(ticket.callback, ticket.provider, ticket.generation) catch {
+                try ticket.retire("Native typed provider callback retired");
+            };
+            if (request.object.get("aborted")) |value| if (value == .bool and value.bool) try ticket.abort();
+            try typed_tickets.pump();
+            var payload: std.json.ObjectMap = .empty;
+            const complete = ticket.result != null or ticket.failure != null;
+            try payload.put(allocator, "pending", .{ .bool = !complete });
+            if (ticket.failure) |failure| try payload.put(allocator, "error", .{ .string = failure });
+            if (ticket.result) |result| try payload.put(allocator, "envelope", try std.json.parseFromSliceLeaky(std.json.Value, allocator, result, .{}));
+            var response: std.json.ObjectMap = .empty;
+            try response.put(allocator, "ok", .{ .bool = true });
+            try response.put(allocator, "invocationId", .{ .string = id });
+            try response.put(allocator, "result", .{ .object = payload });
+            try writeRecord(writer, .{ .object = response });
+            if (complete) typed_tickets.consume(ticket);
+            continue;
+        }
         const selected_binding = group.selected(extension_id) catch |err| {
             try writeFailure(allocator, writer, @errorName(err));
             continue;
@@ -1417,6 +1494,18 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             continue;
         };
         defer transport.clearActive();
+        if (std.mem.eql(u8, kind, "provider_typed_begin") or std.mem.eql(u8, kind, "provider_auth_begin")) {
+            const version = request.object.get("version") orelse return error.InvalidNativeTypedProviderRequest;
+            const owner = try component_protocol.identifier(request.object.get("ownerGeneration") orelse return error.InvalidNativeTypedProviderRequest);
+            if (version != .integer or version.integer != 1 or owner != group.renderers.owner_generation) return error.InvalidNativeTypedProviderRequest;
+            typed_tickets.begin(selected_binding, transport.active_id, request.object) catch |err| {
+                try writeFailure(allocator, writer, engine.last_error orelse @errorName(err));
+                continue;
+            };
+            try writer.print("\x1e{{\"ok\":true,\"invocationId\":\"{s}\",\"result\":{{\"ticketId\":\"{s}\",\"pending\":true}}}}\n", .{ transport.active_id, transport.active_id });
+            try writer.flush();
+            continue;
+        }
         if (grouped and std.mem.eql(u8, kind, "sdk_availability_snapshot")) {
             const runtime_id: u64 = if (request.object.get("runtimeId")) |value| component_protocol.identifier(value) catch {
                 try writeFailure(allocator, writer, "InvalidNativeSDKRuntime");
@@ -1450,6 +1539,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
             // the loop's deferred cleanup must never retain a freed binding.
             transport.clearActive();
             transport.bindings = try group.selected(1);
+            try typed_tickets.retireOwner(owner_id);
             group.remove(owner_id) catch |err| {
                 try writeFailure(allocator, writer, @errorName(err));
                 return err;

@@ -17,6 +17,7 @@ const HandleState = struct {
     delay_ms: i64,
     callback: c.JSValue,
     arguments: []c.JSValue,
+    async_scope: c.JSValue,
     refed: bool = true,
     cancelled: bool = false,
 };
@@ -28,6 +29,7 @@ fn handleState(value: c.JSValue) *HandleState {
 fn handleFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const retained = handleState(value);
     c.JS_FreeValueRT(runtime, retained.callback);
+    c.JS_FreeValueRT(runtime, retained.async_scope);
     for (retained.arguments) |argument| c.JS_FreeValueRT(runtime, argument);
     retained.gpa.free(retained.arguments);
     retained.gpa.destroy(retained);
@@ -36,6 +38,7 @@ fn handleFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
 fn handleMark(runtime: ?*c.JSRuntime, value: c.JSValue, mark: ?*const c.JS_MarkFunc) callconv(.c) void {
     const retained = handleState(value);
     c.JS_MarkValue(runtime, retained.callback, mark);
+    c.JS_MarkValue(runtime, retained.async_scope, mark);
     for (retained.arguments) |argument| c.JS_MarkValue(runtime, argument, mark);
 }
 const Scheduler = struct {
@@ -143,9 +146,10 @@ fn createHandle(engine: *engine_mod.Engine, id: u32, delay: i64, repeat: bool, a
         return err;
     };
     for (arguments, 0..) |*argument, index| argument.* = c.JS_DupValue(engine.context, args[index + 2]);
-    retained.* = .{ .gpa = engine.gpa, .id = id, .delay_ms = delay, .interval_ms = if (repeat) delay else null, .callback = c.JS_DupValue(engine.context, args[0]), .arguments = arguments };
+    retained.* = .{ .gpa = engine.gpa, .id = id, .delay_ms = delay, .interval_ms = if (repeat) delay else null, .callback = c.JS_DupValue(engine.context, args[0]), .arguments = arguments, .async_scope = @import("native_async_scope.zig").capture(engine) };
     const object = engine.checked(c.JS_NewObjectClass(engine.context, state.handle_class)) catch |err| {
         engine.freeValue(retained.callback);
+        engine.freeValue(retained.async_scope);
         for (arguments) |argument| engine.freeValue(argument);
         engine.gpa.free(arguments);
         engine.gpa.destroy(retained);
@@ -404,6 +408,10 @@ fn fire(state: *Scheduler, index: usize) !bool {
     const timer = state.timers.orderedRemove(index);
     defer state.freeTimer(timer);
     const retained = handleState(timer.handle);
+    const scope = @import("native_async_scope.zig").enter(engine, retained.async_scope);
+    defer scope.restore();
+    // Retired scopes still run ordinary JS bookkeeping. Their native action,
+    // context and UI capabilities reject instead of borrowing another ticket.
     if (retained.interval_ms) |interval| {
         const repeated: Timer = .{ .id = timer.id, .deadline_ms = std.Io.Clock.awake.now(state.io).toMilliseconds() + interval, .handle = c.JS_DupValue(engine.context, timer.handle) };
         errdefer state.freeTimer(repeated);

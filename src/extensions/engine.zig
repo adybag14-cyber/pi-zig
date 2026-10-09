@@ -48,6 +48,7 @@ pub const Engine = struct {
     native_ui_manager: ?*anyopaque = null,
     host_ui_pending: usize = 0,
     native_io: ?std.Io = null,
+    native_async_scope: ?*anyopaque = null,
     native_sdk_class: c.JSClassID = 0,
     native_durable_class: c.JSClassID = 0,
     native_models_store_class: c.JSClassID = 0,
@@ -145,6 +146,7 @@ pub const Engine = struct {
 
     pub fn deinit(self: *Engine) void {
         self.closeDurableOwner();
+        @import("native_async_scope.zig").deinit(self);
         for (self.native_sdk_prototypes) |prototype| if (prototype) |value| self.freeValue(value);
         if (self.native_weak_ref_constructor) |value| self.freeValue(value);
         if (self.native_weak_ref_deref) |value| self.freeValue(value);
