@@ -1278,8 +1278,12 @@ pub fn build(b: *std.Build) void {
     const native_runtime_step = b.step("test-native-runtime", "Exercise the persistent native extension runtime and host without Node");
     native_runtime_step.dependOn(&run_native_runtime_tests.step);
     const catalog_control_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{ "native runtime private catalog", "native catalog control" }, .use_llvm = use_llvm });
+    linkQuickJs(b, catalog_control_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, catalog_control_tests.root_module, typescript_parser);
     const catalog_control_run = b.addRunArtifact(catalog_control_tests);
     catalog_control_run.step.dependOn(&install_mcp_configured_cli.step);
+    catalog_control_run.step.dependOn(&install_mcp_configured_fixture.step);
+    catalog_control_run.setEnvironmentVariable("PI_MCP_CONFIGURED_FIXTURE", b.getInstallPath(.bin, b.fmt("pi-mcp-configured-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
     b.step("test-native-catalog-control", "Exercise catalog updates during ordinary managed callbacks").dependOn(&catalog_control_run.step);
     test_step.dependOn(&catalog_control_run.step);
     const typed_main_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime typed Main"}, .use_llvm = use_llvm });

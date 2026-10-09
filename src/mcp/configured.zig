@@ -372,6 +372,8 @@ pub const Service = struct {
     started: bool = false,
     startup: ?*startup_pool.Pool = null,
     catalog_mutex: std.Io.Mutex = .init,
+    catalog_changed_context: ?*anyopaque = null,
+    catalog_changed_fn: ?*const fn (?*anyopaque) void = null,
     waited_for_direct_startup: bool = false,
     startup_wait_ms: i64 = 10_000,
     notice_context: ?*anyopaque = null,
@@ -458,7 +460,7 @@ pub const Service = struct {
     pub fn startBackground(self: *Service) !void {
         if (self.started) return;
         const pool = try self.gpa.create(startup_pool.Pool);
-        pool.* = .{ .gpa = self.gpa, .io = self.io };
+        pool.* = .{ .gpa = self.gpa, .io = self.io, .ready_context = self, .on_ready = startupReady };
         self.startup = pool;
         self.started = true;
         for (self.servers.items) |server| {
@@ -663,6 +665,14 @@ pub const Service = struct {
         committed = true;
         if (server.discovery) |*previous| previous.deinit();
         server.discovery = discovery;
+        self.signalCatalogChanged();
+    }
+    fn signalCatalogChanged(self: *Service) void {
+        if (self.catalog_changed_fn) |notify| notify(self.catalog_changed_context);
+    }
+    fn startupReady(raw: ?*anyopaque) void {
+        const self: *Service = @ptrCast(@alignCast(raw.?));
+        self.signalCatalogChanged();
     }
     /// Runs on the catalog line, publishing the widest visible server exposure.
     fn syncResourceTools(self: *Service) !void {

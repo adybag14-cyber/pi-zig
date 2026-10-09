@@ -420,6 +420,87 @@ test "native runtime private catalog control progresses while an ordinary comman
     try fixture.noBridge();
 }
 
+test "native runtime private catalog Main MCP publisher progresses during an ordinary dialog and preserves withdrawn schema identity" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('hold-catalog',{async handler(_,ctx){const old=pi.getAllTools().find(t=>t.name==='mcp__native__old');if(!old)throw Error('Missing initial actual MCP catalog');await ctx.ui.select('hold-catalog',['continue']);const all=pi.getAllTools(),held=all.find(t=>t.name==='mcp__native__old'),fresh=all.find(t=>t.name==='mcp__native__new');return{message:JSON.stringify({oldSame:held?.parameters===old.parameters,hidden:held?.exposure==='hidden',fresh:!!fresh,sharedSource:held?.sourceInfo===fresh?.sourceInfo})}}})");
+    defer fixture.deinit();
+    var state: @import("extensions/main_catalog_source.zig").State = .{ .gpa = gpa, .io = io };
+    defer state.deinit();
+    var inherited = try std.testing.environ.createMap(gpa);
+    defer inherited.deinit();
+    const program = inherited.get("PI_MCP_CONFIGURED_FIXTURE") orelse return error.MissingFixture;
+    const config = try std.json.Stringify.valueAlloc(gpa, .{ .mcpServers = .{ .native = .{ .command = program, .args = .{"--notify-refresh"}, .exposure = "direct" } } }, .{});
+    defer gpa.free(config);
+    try fixture.tmp.dir.writeFile(io, .{ .sub_path = "mcp.json", .data = config });
+    const service = try @import("mcp/configured.zig").Service.create(gpa, io, .{ .agent_dir = fixture.root, .cwd = fixture.root, .project_trusted = false, .environ = &inherited, .output_root = fixture.root });
+    defer service.deinit();
+    state.bindMcp(service);
+    try service.start();
+    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options(), .native_catalog_source = state.source() };
+    defer host.deinit();
+    try host.loadPath(fixture.source_path);
+    try host.setScriptContextJson("{\"nativeRuntimeBound\":true,\"mode\":\"interactive\",\"hasUI\":true}");
+    const runtime = host.extensions.items[0].script_runtime.?;
+    const Dialog = struct {
+        entered: std.Io.Event = .unset,
+        release: std.Io.Event = .unset,
+        fn select(raw: ?*anyopaque, allocator: std.mem.Allocator, _: []const u8, _: []const u8) ![]u8 {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.entered.set(std.testing.io);
+            try event_wait.untilSet(std.testing.io, &self.release, 5000);
+            return allocator.dupe(u8, "\"continue\"");
+        }
+        fn action(_: ?*anyopaque, _: std.mem.Allocator, _: []const u8, _: []const u8) !void {}
+    };
+    var dialog: Dialog = .{};
+    runtime.setUiBridge(.{ .context = &dialog, .request_fn = Dialog.select, .action_fn = Dialog.action });
+    const Pending = struct {
+        runtime: *runtime_mod.Runtime,
+        result: ?[]u8 = null,
+        failure: ?anyerror = null,
+        finished: std.Io.Event = .unset,
+        fn run(self: *@This()) void {
+            defer self.finished.set(std.testing.io);
+            self.result = self.runtime.invokeCommand("hold-catalog", "", "{}") catch |err| {
+                self.failure = err;
+                return;
+            };
+        }
+    };
+    var pending: Pending = .{ .runtime = runtime };
+    var group: std.Io.Group = .init;
+    try group.concurrent(io, Pending.run, .{&pending});
+    defer {
+        dialog.release.set(io);
+        group.cancel(io);
+        group.await(io) catch {};
+        if (pending.result) |result| gpa.free(result);
+    }
+    try event_wait.untilSet(io, &dialog.entered, 5000);
+    const publisher = host.native_catalog_publisher.?;
+    const publication = publisher.publication.load(.acquire);
+    const Update = struct {
+        fn discard(_: ?*anyopaque, _: @import("agent/loop.zig").ExternalToolUpdate) void {}
+    };
+    var trigger = (try @import("mcp/configured.zig").Service.execute(service, gpa, "refresh", "mcp__native__trigger", "{}", Update.discard, null, null)) orelse return error.MissingTrigger;
+    defer trigger.deinit(gpa);
+    const deadline = std.Io.Clock.awake.now(io).toMilliseconds() + 5000;
+    while (publisher.publication.load(.acquire) <= publication) {
+        if (std.Io.Clock.awake.now(io).toMilliseconds() >= deadline) return error.MainMcpPublicationTimeout;
+        try io.sleep(.fromMilliseconds(2), .awake);
+    }
+    try std.testing.expect(publisher.failure() == null);
+    try std.testing.expect(!pending.finished.isSet());
+    dialog.release.set(io);
+    try group.await(io);
+    if (pending.failure) |err| return err;
+    var response = try std.json.parseFromSlice(std.json.Value, gpa, pending.result orelse return error.MissingCatalogCommandReply, .{});
+    defer response.deinit();
+    try std.testing.expectEqualStrings("{\"oldSame\":true,\"hidden\":true,\"fresh\":true,\"sharedSource\":true}", response.value.object.get("message").?.string);
+    try fixture.noBridge();
+}
+
 test "native runtime private catalog control acknowledges FIFO identity and isolates rejected updates from public context without Node" {
     const gpa = std.testing.allocator;
     var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('catalog-probe',{handler(){const remote=pi.getAllTools().find(tool=>tool.name==='remote');if(remote)globalThis.oldSchema??=remote.parameters;return {message:JSON.stringify({found:!!remote,description:remote?.description,same:!remote||oldSchema===remote.parameters})}}})");

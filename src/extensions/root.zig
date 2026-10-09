@@ -8,6 +8,7 @@ pub const native_worker = @import("native_worker.zig");
 pub const ui = @import("ui.zig");
 pub const terminal_theme_producer = @import("terminal_theme_producer.zig");
 pub const Host = host.Host;
+pub const main_catalog_source = @import("main_catalog_source.zig");
 pub const ExtensionManifest = host.ExtensionManifest;
 test {
     std.testing.refAllDecls(@This());

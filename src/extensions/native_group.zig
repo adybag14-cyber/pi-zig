@@ -650,7 +650,9 @@ pub const Group = struct {
             if (c.JS_SetPropertyUint32(self.engine.context, result, found orelse count, row) < 0) return error.JavaScriptException;
             if (found == null) count += 1;
         }
-        return result;
+        const filtered = try @import("native_tool_catalog_wire.zig").filterRows(self, result);
+        self.engine.freeValue(result);
+        return filtered;
     }
 
     pub fn manifest(self: *Group) ![]u8 {

@@ -2532,6 +2532,7 @@ const RuntimeResourceReloadContext = struct {
             .footer_models_context = self.host.footer_models_context,
             .footer_models_fn = self.host.footer_models_fn,
             .native_runtime_options = self.host.native_runtime_options,
+            .native_catalog_source = self.host.native_catalog_source,
             .script_renderer_bridge = self.host.script_renderer_bridge,
             .script_editor_bridge = self.host.script_editor_bridge,
             .script_widget_bridge = self.host.script_widget_bridge,
@@ -3964,6 +3965,8 @@ fn runMain(init: std.process.Init) !void {
 
     const native_extension_executable = if (extension_backend == .native) try std.process.executablePathAlloc(io, gpa) else null;
     defer if (native_extension_executable) |path| gpa.free(path);
+    var main_catalog_source: extensions.main_catalog_source.State = .{ .gpa = gpa, .io = io };
+    defer main_catalog_source.deinit();
     var extension_host = extensions.Host{
         .gpa = gpa,
         .io = io,
@@ -3971,6 +3974,7 @@ fn runMain(init: std.process.Init) !void {
         .script_ui_bridge = extension_ui.bridge(),
         .script_backend = extension_backend,
         .native_runtime_options = .{ .executable = native_extension_executable, .environ_map = environ },
+        .native_catalog_source = main_catalog_source.source(),
         .settings_snapshot_json = try gpa.dupe(u8, settings.source_json orelse "{}"),
     };
     defer extension_host.deinit();
@@ -4153,6 +4157,8 @@ fn runMain(init: std.process.Init) !void {
         .no_tools = cli.no_tools and !cli_uses_modifiers,
     };
     const registration_tool_filter = active_tool_filter;
+    main_catalog_source.allowed_names = registration_tool_filter.allow orelse if (cli.no_tools) &.{} else null;
+    main_catalog_source.excluded_names = cli.exclude_tools orelse &.{};
     const initial_extension_schemas = try synchronizeNativeToolActivation(&extension_host, &active_tool_filter, registration_tool_filter);
     gpa.free(initial_extension_schemas);
     try syncExtensionScriptContext(
@@ -4380,6 +4386,8 @@ fn runMain(init: std.process.Init) !void {
     defer gpa.free(extension_tool_schemas);
     var configured_mcp: ?*pi_zig.mcp.configured.Service = null;
     defer if (configured_mcp) |service| service.deinit();
+    // Publishers must retire before the native service they snapshot.
+    defer extension_host.stopNativeCatalogPublisher();
     if (agent_dir) |directory| {
         var reserved: std.ArrayList([]const u8) = .empty;
         defer reserved.deinit(gpa);
@@ -4391,6 +4399,7 @@ fn runMain(init: std.process.Init) !void {
             .environ = environ,
             .reserved_names = reserved.items,
         });
+        main_catalog_source.bindMcp(configured_mcp.?);
         const discovery_activation = pi_zig.mcp.activation;
         const needs = discovery_activation.configuredNeeds(configured_mcp.?.loaded.value);
         var eligible = active_tool_filter;

@@ -30,6 +30,7 @@ const Job = struct {
         self.complete = true;
         self.owner.mutex.unlock(self.owner.io);
         self.ready.set(self.owner.io);
+        if (self.owner.on_ready) |notify| notify(self.owner.ready_context);
     }
 };
 pub const Pool = struct {
@@ -40,6 +41,8 @@ pub const Pool = struct {
     closed: bool = false,
     active_waiters: usize = 0,
     retired: std.Io.Condition = .init,
+    ready_context: ?*anyopaque = null,
+    on_ready: ?*const fn (?*anyopaque) void = null,
     pub fn add(self: *Pool, context: *anyopaque, fetch: Fetch, direct: bool) !void {
         try self.mutex.lock(self.io);
         defer self.mutex.unlock(self.io);

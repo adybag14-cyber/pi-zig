@@ -99,6 +99,17 @@ pub fn apply(engine: *engine_mod.Engine, group: *group_mod.Group, object: std.js
     const value = object.get("catalog") orelse return error.InvalidNativeToolCatalogFrame;
     const owners = try json.required(value, "owners");
     if (owners != .array or owners.array.items.len > 4096) return error.InvalidNativeToolCatalogFrame;
+    if (json.get(value, "registrationPolicy")) |policy| {
+        const allowed = try json.required(policy, "allowed");
+        const excluded = try json.required(policy, "excluded");
+        if ((allowed != .null and allowed != .array) or excluded != .array) return error.InvalidNativeToolCatalogFrame;
+        if (allowed == .array) for (allowed.array.items) |name| {
+            _ = try json.asString(name);
+        };
+        for (excluded.array.items) |name| {
+            _ = try json.asString(name);
+        }
+    }
     var candidate = try json.Owned.empty(engine.gpa);
     errdefer candidate.deinit();
     candidate.value = try json.clone(candidate.arena.allocator(), value);
@@ -156,6 +167,73 @@ pub fn apply(engine: *engine_mod.Engine, group: *group_mod.Group, object: std.js
     }
     if (self.snapshot) |*old| old.deinit();
     self.snapshot = candidate;
+}
+/// Policy is owned by the admitted private control frame. Public context and
+/// active loadouts cannot change registry membership. Pin before VM getters.
+pub fn filterRows(group: *group_mod.Group, rows: engine_mod.c.JSValue) !engine_mod.c.JSValue {
+    const engine = group.engine;
+    const raw = group.native_wire_catalog_state orelse return engine_mod.c.JS_DupValue(engine.context, rows);
+    const self: *State = @ptrCast(@alignCast(raw));
+    const snapshot = self.snapshot orelse return engine_mod.c.JS_DupValue(engine.context, rows);
+    const policy = json.get(snapshot.value, "registrationPolicy") orelse return engine_mod.c.JS_DupValue(engine.context, rows);
+    var pinned = try json.Owned.empty(engine.gpa);
+    defer pinned.deinit();
+    pinned.value = try json.clone(pinned.arena.allocator(), policy);
+    const vm = @import("native_values.zig");
+    const result = try vm.array(engine);
+    errdefer engine.freeValue(result);
+    var count: u32 = 0;
+    for (0..try vm.length(engine, rows)) |index| {
+        const row = try engine.checked(engine_mod.c.JS_GetPropertyUint32(engine.context, rows, @intCast(index)));
+        defer engine.freeValue(row);
+        const name_value = try vm.get(engine, row, "name");
+        defer engine.freeValue(name_value);
+        const name = try engine.toString(name_value);
+        defer engine.gpa.free(name);
+        if (!permits(pinned.value, name)) continue;
+        if (engine_mod.c.JS_SetPropertyUint32(engine.context, result, count, engine_mod.c.JS_DupValue(engine.context, row)) < 0) return error.JavaScriptException;
+        count += 1;
+    }
+    return result;
+}
+fn isMcp(name: []const u8) bool {
+    return std.mem.startsWith(u8, name, "mcp__") or std.mem.eql(u8, name, "list_mcp_resources") or std.mem.eql(u8, name, "list_mcp_resource_templates") or std.mem.eql(u8, name, "read_mcp_resource");
+}
+fn permits(policy: std.json.Value, name: []const u8) bool {
+    const matches = @import("../mcp/config.zig").matches;
+    for (policy.object.get("excluded").?.array.items) |pattern| if (matches(pattern.string, name)) return false;
+    const allowed = policy.object.get("allowed").?;
+    if (allowed == .null) return true;
+    var filters_mcp = allowed.array.items.len == 0;
+    for (allowed.array.items) |pattern| {
+        if (matches(pattern.string, name)) return true;
+        filters_mcp = filters_mcp or std.mem.startsWith(u8, pattern.string, "mcp__");
+    }
+    return !filters_mcp and isMcp(name);
+}
+test "private native catalog registration policies match actual upstream session registry and MCP exceptions" {
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("fixtures/main-catalog-registration-original-f1.json"));
+    defer source.deinit();
+    const candidates = [_][]const u8{ "read", "bash", "powershell", "edit", "write", "grep", "find", "ls", "bootstrap", "mcp__one__remote", "mcp__two__remote", "read_mcp_resource", "list_mcp_resources", "list_mcp_resource_templates" };
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const a = source.arena.allocator();
+        const options = row.object.get("options").?;
+        const supplied = json.get(options, "tools") orelse .null;
+        var allowed = supplied;
+        if (supplied == .array and supplied.array.items.len != 0 and supplied.array.items[0].string[0] == '+') allowed = .null;
+        if (supplied == .null) if (json.get(options, "noTools")) |disabled| {
+            if (std.mem.eql(u8, disabled.string, "all")) allowed = .{ .array = .init(a) };
+        };
+        var policy: std.json.Value = .{ .object = .empty };
+        try policy.object.put(a, "allowed", allowed);
+        try policy.object.put(a, "excluded", json.get(options, "excludeTools") orelse .{ .array = .init(a) });
+        var actual: std.json.Value = .{ .array = .init(a) };
+        for (candidates) |name| if (permits(policy, name)) {
+            try actual.array.append(.{ .string = name });
+        };
+        try std.testing.expectEqualStrings(try json.stringify(a, row.object.get("names").?), try json.stringify(a, actual));
+        try std.testing.expectEqualStrings(try json.stringify(a, row.object.get("names").?), try json.stringify(a, row.object.get("after").?));
+    }
 }
 pub fn deinit(group: *group_mod.Group) void {
     const raw = group.native_wire_catalog_state orelse return;

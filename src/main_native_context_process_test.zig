@@ -25,7 +25,10 @@ test "native main context actual CLI applies strict theme admission before exten
         \\export default pi=>{{let unbound=false;try{{pi.getSettings()}}catch(error){{unbound=error.name==='Error'&&error.message==='Extension runtime not initialized. Action methods cannot be called during extension loading.'}}if(!unbound)throw Error('Missing Source factory runtime fence');pi.registerTool({{name:'bootstrap',description:'Bootstrap proof',parameters:{{type:'object',properties:{{}}}},execute(){{if(getCapabilities()!==overrideCaps||getCellDimensions()!==overrideCells)throw Error('Identical Main admission erased terminal overrides');const settings=pi.getSettings();if(settings.custom?.nested?.value!==7||settings.steeringMode!=='one-at-a-time'||'queueMode' in settings||settings.codemode.mode!=='only')throw Error('Lost live CLI settings snapshot');settings.custom.nested.value=99;if(pi.getSettings().custom.nested.value!==7)throw Error('Shared CLI settings snapshot');return {{content:[{{type:'text',text:'STRICT_BOOTSTRAP_OK'}}]}}}}}});}};
     , .{path_json});
     defer gpa.free(source);
-    try scratch.dir.writeFile(io, .{ .sub_path = "extension.mjs", .data = source });
+    const catalog_check = "const first=pi.getAllTools(),second=pi.getAllTools(),read=first.find(t=>t.name==='read'),again=second.find(t=>t.name==='read');if(!read||first===second||read===again||read.parameters!==again.parameters||read.promptGuidelines!==again.promptGuidelines||read.sourceInfo!==again.sourceInfo||read.sourceInfo.path!=='builtin:read'||read.parameters['~kind']!=='Object'||read.parameters.properties.path['~kind']!=='String'||!read.description.startsWith('Read the contents of a file.'))throw Error('Missing actual Main canonical ToolInfo');for(const name of ['bash','powershell','edit','write','grep','find','ls','codemode','tool_search'])if(!first.some(t=>t.name===name))throw Error('Missing Main tool '+name);const settings=pi.getSettings();";
+    const source_with_catalog = try std.mem.replaceOwned(u8, gpa, source, "const settings=pi.getSettings();", catalog_check);
+    defer gpa.free(source_with_catalog);
+    try scratch.dir.writeFile(io, .{ .sub_path = "extension.mjs", .data = source_with_catalog });
     try scratch.dir.writeFile(io, .{ .sub_path = "mock.json", .data = "[{\"content\":\"\",\"tool_calls\":[{\"id\":\"proof\",\"name\":\"bootstrap\",\"arguments\":\"{}\"}]},{\"content\":\"done\"}]" });
     var environment: std.process.Environ.Map = .init(gpa);
     defer environment.deinit();
@@ -43,10 +46,20 @@ test "native main context actual CLI applies strict theme admission before exten
     try environment.put("HOME", home);
     try environment.put("USERPROFILE", home);
     try environment.put("PI_AGENT_DIR", agent);
-    const result = try std.process.run(gpa, io, .{ .argv = &.{ binary, "-p", "--mode", "json", "--mock-script", "mock.json", "--tools", "bootstrap", "--extension", "extension.mjs", "--no-context-files", "--no-skills", "--no-themes", "--no-prompt-templates", "--approve", "bootstrap" }, .cwd = .{ .path = directory }, .environ_map = &environment, .stdout_limit = .limited(1024 * 1024), .stderr_limit = .limited(1024 * 1024), .timeout = .{ .duration = .{ .raw = .fromSeconds(30), .clock = .awake } } });
+    const result = try std.process.run(gpa, io, .{ .argv = &.{ binary, "-p", "--mode", "json", "--mock-script", "mock.json", "--extension", "extension.mjs", "--no-context-files", "--no-skills", "--no-themes", "--no-prompt-templates", "--approve", "bootstrap" }, .cwd = .{ .path = directory }, .environ_map = &environment, .stdout_limit = .limited(1024 * 1024), .stderr_limit = .limited(1024 * 1024), .timeout = .{ .duration = .{ .raw = .fromSeconds(30), .clock = .awake } } });
     defer gpa.free(result.stdout);
     defer gpa.free(result.stderr);
     if (result.term != .exited or result.term.exited != 0 or std.mem.indexOf(u8, result.stdout, "STRICT_BOOTSTRAP_OK") == null) std.debug.print("CLI context stdout:\n{s}\nstderr:\n{s}\n", .{ result.stdout, result.stderr });
     try std.testing.expect(result.term == .exited and result.term.exited == 0);
     try std.testing.expect(std.mem.indexOf(u8, result.stdout, "STRICT_BOOTSTRAP_OK") != null);
+    const filtered_source =
+        \\export default pi=>pi.registerTool({name:'bootstrap',description:'Registry proof',parameters:{type:'object',properties:{}},execute(){const names=pi.getAllTools().map(t=>t.name);if(JSON.stringify(names)!==JSON.stringify(['read','bootstrap']))throw Error('Registration policy mismatch: '+JSON.stringify(names));pi.setActiveTools(['bootstrap']);if(JSON.stringify(pi.getAllTools().map(t=>t.name))!==JSON.stringify(names))throw Error('Active loadout changed registry membership');return{content:[{type:'text',text:'FILTERED_REGISTRY_OK'}]}}});
+    ;
+    try scratch.dir.writeFile(io, .{ .sub_path = "filtered.mjs", .data = filtered_source });
+    const filtered = try std.process.run(gpa, io, .{ .argv = &.{ binary, "-p", "--mode", "json", "--mock-script", "mock.json", "--tools", "read,bootstrap,codemode", "--exclude-tools", "codemode", "--extension", "filtered.mjs", "--no-context-files", "--no-skills", "--no-themes", "--no-prompt-templates", "--approve", "bootstrap" }, .cwd = .{ .path = directory }, .environ_map = &environment, .stdout_limit = .limited(1024 * 1024), .stderr_limit = .limited(1024 * 1024), .timeout = .{ .duration = .{ .raw = .fromSeconds(30), .clock = .awake } } });
+    defer gpa.free(filtered.stdout);
+    defer gpa.free(filtered.stderr);
+    if (filtered.term != .exited or filtered.term.exited != 0 or std.mem.indexOf(u8, filtered.stdout, "FILTERED_REGISTRY_OK") == null) std.debug.print("filtered CLI stdout:\n{s}\nstderr:\n{s}\n", .{ filtered.stdout, filtered.stderr });
+    try std.testing.expect(filtered.term == .exited and filtered.term.exited == 0);
+    try std.testing.expect(std.mem.indexOf(u8, filtered.stdout, "FILTERED_REGISTRY_OK") != null);
 }

@@ -14,6 +14,7 @@
 const std = @import("std");
 const Io = std.Io;
 const js_runtime = @import("js_runtime.zig");
+const native_catalog = @import("native_catalog_publisher.zig");
 const actions_mod = @import("actions.zig");
 const command_names = @import("command_names.zig");
 const tool_activation = @import("tool_activation.zig");
@@ -430,6 +431,8 @@ pub const Host = struct {
     script_editor_bridge: ?js_runtime.EditorBridge = null,
     script_widget_bridge: ?js_runtime.WidgetBridge = null,
     native_group_runtime: ?*js_runtime.Runtime = null,
+    native_catalog_source: ?native_catalog.Source = null,
+    native_catalog_publisher: ?*native_catalog.Publisher = null,
     metadata_revision: u64 = 0,
     metadata_owner_generation: u64 = 0,
     registration_owner_generation: u64 = 0,
@@ -587,6 +590,7 @@ pub const Host = struct {
     }
 
     pub fn deinit(self: *Host) void {
+        self.stopNativeCatalogPublisher();
         for (self.tool_registration_events.items) |*event| event.deinit(self.gpa);
         self.tool_registration_events.deinit(self.gpa);
         for (self.extensions.items) |*e| e.deinit(self.gpa);
@@ -608,6 +612,20 @@ pub const Host = struct {
         self.* = undefined;
     }
 
+    pub fn stopNativeCatalogPublisher(self: *Host) void {
+        if (self.native_catalog_publisher) |value| value.deinit();
+        self.native_catalog_publisher = null;
+    }
+    fn ensureNativeCatalog(self: *Host) !void {
+        if (self.script_backend != .native or self.native_catalog_publisher != null) return;
+        const source = self.native_catalog_source orelse return;
+        const owner = self.native_group_runtime orelse return;
+        self.native_catalog_publisher = try native_catalog.Publisher.create(self.gpa, owner, source, .{
+            .codemode = !self.hasTool("codemode"),
+            .tool_search = !self.hasTool("tool_search"),
+            .mcp = !self.hasCommand("mcp"),
+        });
+    }
     pub fn setScriptUiBridge(self: *Host, bridge: ?js_runtime.UiBridge) void {
         self.script_ui_bridge = bridge;
         for (self.extensions.items) |*extension| if (extension.script_runtime) |runtime| runtime.setUiBridge(bridge);
@@ -756,6 +774,7 @@ pub const Host = struct {
         const owned = try stringifyValue(self.gpa, parsed.value);
         errdefer self.gpa.free(owned);
         for (self.extensions.items) |*extension| if (extension.script_runtime) |runtime| try runtime.setContextJson(owned);
+        try self.ensureNativeCatalog();
         if (self.script_context_json) |old| self.gpa.free(old);
         self.script_context_json = owned;
     }
