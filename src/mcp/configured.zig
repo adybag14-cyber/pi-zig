@@ -579,7 +579,15 @@ pub const Service = struct {
         const namespace_id = try self.allocateDefinitionId();
         var offered: std.StringHashMapUnmanaged(void) = .empty;
         defer offered.deinit(self.gpa);
-        for (listed.array.items, assigned.value.array.items) |item, assigned_name| {
+        for (listed.array.items, assigned.value.array.items, 0..) |first, assigned_name, index| {
+            // Source registers every offered definition into a Map: the last
+            // repeated assigned name supplies the value, retaining the first
+            // position. Build only that final value so superseded storage has
+            // no unpublished lifetime to leak on a successful transaction.
+            var item = first;
+            for (assigned.value.array.items[index + 1 ..], listed.array.items[index + 1 ..]) |later_name, later_item| {
+                if (std.mem.eql(u8, assigned_name.string, later_name.string)) item = later_item;
+            }
             const raw_name = try protocol.text(item, "name");
             const exposure = try config.toolExposure(server.config, raw_name);
             var name = assigned_name.string;
@@ -595,7 +603,7 @@ pub const Service = struct {
             const collision_name = if (name_taken) try projection.toolName(self.gpa, server.name, raw_name, true) else null;
             defer if (collision_name) |value| self.gpa.free(value);
             if (collision_name) |value| name = value;
-            if (offered.contains(name)) return error.DuplicateMcpToolName;
+            if (offered.contains(name)) continue;
             const storage = try self.gpa.create(CatalogStorage);
             storage.* = .{ .owned = json.Owned.empty(self.gpa) catch |err| {
                 self.gpa.destroy(storage);

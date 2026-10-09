@@ -277,6 +277,51 @@ test "mcp.configured naming matches original bulk collisions duplicates and hist
     }
 }
 
+test "mcp.configured repeated assigned names use the final definition at the first Source map position" {
+    const program = try fixturePath();
+    defer gpa.free(program);
+    var original = try json.Owned.parse(gpa, @embedFile("mcp/fixtures/mcp-tools-refresh-duplicates-original-f1.json"));
+    defer original.deinit();
+    const source = original.value.object.get("rows").?.array.items[3];
+    var root = try Root.init();
+    defer root.deinit();
+    var arena: std.heap.ArenaAllocator = .init(gpa);
+    defer arena.deinit();
+    const a = arena.allocator();
+    var configuration = try stdioConfig(a, program, "direct");
+    var args: Value = .{ .array = .init(a) };
+    try args.array.append(.{ .string = "--names-many" });
+    try configuration.object.put(a, "args", args);
+    try root.write(false, try document(a, "native", configuration));
+    var env = try std.testing.environ.createMap(gpa);
+    defer env.deinit();
+    const service = try create(&root, &env, false);
+    defer service.deinit();
+    try service.start();
+    const expected = source.object.get("initial").?.array.items;
+    try std.testing.expectEqual(expected.len, service.descriptors.items.len);
+    for (expected, service.descriptors.items) |row, actual| {
+        try std.testing.expectEqualStrings(try protocol.text(row, "name"), actual.name);
+        try std.testing.expectEqualStrings(try json.stringify(a, row.object.get("properties").?), try json.stringify(a, actual.raw_parameters.?.object.get("properties").?));
+    }
+    const retained_middle = service.descriptors.items[2].parameter_id;
+    const old_offered = service.descriptors.items[1].parameter_id;
+    const server = service.findServer("native").?;
+    var next: Value = .{ .array = .init(service.loaded.arena.allocator()) };
+    try next.array.append(.{ .string = "--names-many-new" });
+    try server.config.object.put(service.loaded.arena.allocator(), "args", next);
+    try service.reconnect("native");
+    const after = source.object.get("after").?.array.items;
+    try std.testing.expectEqual(after.len, service.descriptors.items.len);
+    for (after, service.descriptors.items) |row, actual| {
+        try std.testing.expectEqualStrings(try protocol.text(row, "name"), actual.name);
+        try std.testing.expectEqualStrings(try protocol.text(row, "exposure"), @tagName(actual.exposure));
+        try std.testing.expectEqualStrings(try json.stringify(a, row.object.get("properties").?), try json.stringify(a, actual.raw_parameters.?.object.get("properties").?));
+    }
+    try std.testing.expectEqual(retained_middle, service.descriptors.items[2].parameter_id);
+    try std.testing.expect(old_offered != service.descriptors.items[1].parameter_id);
+}
+
 test "mcp.configured resource-only servers expose native global tools with pagination remote errors and absent templates" {
     const program = try fixturePath();
     defer gpa.free(program);

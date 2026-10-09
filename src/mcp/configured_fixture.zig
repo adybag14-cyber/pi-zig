@@ -105,12 +105,17 @@ pub fn main(init: std.process.Init) !void {
                 continue;
             }
             if (args.len > 1 and std.mem.startsWith(u8, args[1], "--names-")) {
-                const names: []const []const u8 = if (std.mem.eql(u8, args[1], "--names-collisions")) &.{ "a-b", "a_b" } else if (std.mem.eql(u8, args[1], "--names-duplicates")) &.{ "plain", "plain" } else if (std.mem.eql(u8, args[1], "--names-new")) &.{ "a_b", "plain" } else &.{ "a-b", "plain" };
+                const names: []const []const u8 = if (std.mem.eql(u8, args[1], "--names-many")) &.{ "plain", "plain", "middle", "plain", "tail", "plain" } else if (std.mem.eql(u8, args[1], "--names-many-new")) &.{ "plain", "plain", "plain" } else if (std.mem.eql(u8, args[1], "--names-collisions")) &.{ "a-b", "a_b" } else if (std.mem.eql(u8, args[1], "--names-duplicates")) &.{ "plain", "plain" } else if (std.mem.eql(u8, args[1], "--names-new")) &.{ "a_b", "plain" } else &.{ "a-b", "plain" };
                 var listed: Value = .{ .array = .init(a) };
-                for (names) |name| {
+                for (names, 0..) |name, position| {
                     var item: Value = .{ .object = .empty };
                     try item.object.put(a, "name", .{ .string = name });
-                    try item.object.put(a, "inputSchema", .{ .object = .empty });
+                    if (std.mem.startsWith(u8, args[1], "--names-many")) {
+                        var schema = try json.Owned.parse(init.gpa, "{\"type\":\"object\",\"properties\":{\"position\":{\"type\":\"integer\",\"const\":0}}}");
+                        defer schema.deinit();
+                        schema.value.object.getPtr("properties").?.object.getPtr("position").?.object.getPtr("const").?.* = .{ .integer = @intCast(position) };
+                        try item.object.put(a, "inputSchema", try json.clone(a, schema.value));
+                    } else try item.object.put(a, "inputSchema", .{ .object = .empty });
                     try listed.array.append(item);
                 }
                 result = .{ .object = .empty };
