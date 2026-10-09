@@ -1054,6 +1054,15 @@ pub fn build(b: *std.Build) void {
     project_context_step.dependOn(&native_project_context_run.step);
     test_step.dependOn(&project_context_run.step);
     test_step.dependOn(&native_project_context_run.step);
+    const native_markdown_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_markdown_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "Source6fb native Markdown", "Source6fb native Container", "native focus containment" },
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, native_markdown_tests.root_module, quickjs, sqlite_lib_dir);
+    const native_markdown_run = b.addRunArtifact(native_markdown_tests);
+    b.step("test-native-markdown", "Replay Source Markdown and Container layout callbacks and lifecycle").dependOn(&native_markdown_run.step);
+    test_step.dependOn(&native_markdown_run.step);
     const native_input_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_input_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{ "Source6fb public Input", "native JS UTF16" },

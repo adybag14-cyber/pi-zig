@@ -1,0 +1,7 @@
+# Native Marked18 grammar and Source Markdown component
+
+Authority is @earendil-works/pi-tui Source6fb, unchanged in TUI through f1b2e77, with marked18.0.11. The grammar capture comes from the actual pinned Marked module, SHA256 05e41134d075ad3a009a748d6c779c3d83cea9b942be911c2d9abade36d1dd31. LICENSE retains the original MIT notice. Extracted published source-map references remain in the external task evidence directory.
+
+Production parsing and rendering use Zig algorithms and the existing direct-C QuickJS regexp engine. Marked JavaScript is neither embedded nor interpreted as a host implementation. Source math/strict-strikethrough extensions, token/link graphs, weak token caches, callback ordering, method shape, and ordinary component fields are implemented natively. The admitted native SDK module is separate from the application's legacy extension default; this component does not authorize a default switch or bridge removal.
+
+Conformance includes 1,392 original layouts, all 81 current upstream Markdown tests captured as 100 render observations, 800 adversarial token/layout cases, structural/cache/iterator/callback reentry cases, and exhaustive native allocation-failure probes. These are scoped proofs, not a claim that the entire TUI is qualified. Frozen Windows/Linux Debug/ReleaseSafe qualification and composition receipts remain the authority for integration.

@@ -34,56 +34,7 @@ const Constructor = struct { engine: *engine_mod.Engine, prototype: c.JSValue, a
 /// Match upstream mounted containment: identity, then genuine Container children.
 /// Snapshots stay rooted on the worker owner across observable child getters.
 pub fn containsComponent(engine: *engine_mod.Engine, root: c.JSValue, target: c.JSValue) !bool {
-    var pending: std.ArrayList(c.JSValue) = .empty;
-    defer {
-        for (pending.items) |value| engine.freeValue(value);
-        pending.deinit(engine.gpa);
-    }
-    var visited: std.ArrayList(c.JSValue) = .empty;
-    defer {
-        for (visited.items) |value| engine.freeValue(value);
-        visited.deinit(engine.gpa);
-    }
-    {
-        const owned = c.JS_DupValue(engine.context, root);
-        errdefer engine.freeValue(owned);
-        try pending.append(engine.gpa, owned);
-    }
-    while (pending.pop()) |value| {
-        var transferred = false;
-        defer if (!transferred) engine.freeValue(value);
-        if (c.JS_IsStrictEqual(engine.context, value, target)) return true;
-        var seen = false;
-        for (visited.items) |previous| if (c.JS_IsStrictEqual(engine.context, previous, value)) {
-            seen = true;
-            break;
-        };
-        if (seen) continue;
-        if (visited.items.len >= 4096) return error.NativeFocusContainmentLimit;
-        try visited.append(engine.gpa, value);
-        transferred = true;
-        if (!c.JS_IsObject(value)) continue;
-        const class_id = c.JS_GetClassID(value);
-        const atom = c.JS_GetClassName(engine.runtime, class_id);
-        defer c.JS_FreeAtom(engine.context, atom);
-        const name = c.JS_AtomToCString(engine.context, atom) orelse return error.OutOfMemory;
-        defer c.JS_FreeCString(engine.context, name);
-        if (!std.mem.eql(u8, std.mem.span(name), "Native TUI Component")) continue;
-        const node: *Node = @ptrCast(@alignCast(c.JS_GetOpaque(value, class_id) orelse continue));
-        if (node.kind != .container) continue;
-        const array = try children(engine, value);
-        defer engine.freeValue(array);
-        const length_value = try engine.checked(c.JS_GetPropertyStr(engine.context, array, "length"));
-        defer engine.freeValue(length_value);
-        const length = try count(engine, length_value, false);
-        if (length > 4096 - pending.items.len) return error.NativeFocusContainmentLimit;
-        for (0..length) |index| {
-            const child = try engine.checked(c.JS_GetPropertyUint32(engine.context, array, @intCast(index)));
-            errdefer engine.freeValue(child);
-            try pending.append(engine.gpa, child);
-        }
-    }
-    return false;
+    return @import("native_container_component.zig").containsComponent(engine, root, target);
 }
 const Method = enum(c_int) { render, invalidate, setText, setLines, setBgFn, addChild, removeChild, clear, handleMouse };
 
@@ -554,9 +505,11 @@ pub fn install(engine: *engine_mod.Engine) !void {
         try define(engine, constructor, "name", try engine.checked(c.JS_NewString(engine.context, item[0])));
         try define(engine, exports, item[0], c.JS_DupValue(engine.context, constructor));
     }
+    try @import("native_container_component.zig").install(engine, exports);
     try @import("native_text_component.zig").install(engine, exports);
     try @import("native_box_component.zig").install(engine, exports);
     try @import("native_spacer_component.zig").install(engine, exports);
+    try @import("native_markdown_component.zig").install(engine, exports);
     try @import("native_editor.zig").install(engine, exports);
     try engine.registerValueModule("@earendil-works/pi-tui", exports);
     try engine.registerValueModule("@mariozechner/pi-tui", exports);
@@ -857,14 +810,25 @@ fn focusContainmentOwnershipCase(gpa: std.mem.Allocator) !void {
     const original_allocator = engine.gpa;
     engine.gpa = gpa;
     defer engine.gpa = original_allocator;
-    try std.testing.expect(try containsComponent(engine, root, target));
-    try std.testing.expect(!try containsComponent(engine, root, missing));
-    try std.testing.expect(!try containsComponent(engine, box, target));
-    try std.testing.expect(!try containsComponent(engine, fake, target));
+    defer engine.beginInvocation();
+    try std.testing.expect(try focusContainsNormalized(engine, root, target));
+    if (focusContainsNormalized(engine, root, missing)) |_| {
+        return error.ExpectedNativeContainmentCycleFailure;
+    } else |err| {
+        if (err == error.OutOfMemory) return err;
+        try std.testing.expectEqual(error.JavaScriptException, err);
+    }
+    try std.testing.expect(!try focusContainsNormalized(engine, box, target));
+    try std.testing.expect(!try focusContainsNormalized(engine, fake, target));
+    engine.beginInvocation();
+    engine.gpa = original_allocator;
     c.JS_RunGC(engine.runtime);
 }
+fn focusContainsNormalized(engine: *engine_mod.Engine, root: c.JSValue, target: c.JSValue) !bool {
+    return containsComponent(engine, root, target) catch |err| return @import("native_text_component.zig").allocationError(engine, err);
+}
 
-test "native focus containment is branded bounded cycle safe and releases every failed traversal allocation" {
+test "native focus containment is Source instanceof bounded cycle safe and releases every failed traversal allocation" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, focusContainmentOwnershipCase, .{});
 }
 
