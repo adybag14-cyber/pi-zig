@@ -51,17 +51,73 @@ fn getOwned(engine: *Engine, schema: c.JSValue) !c.JSValue {
     var snapshots: Snapshot = .{ .engine = engine, .refs = .{ .engine = engine, .a = arena.allocator(), .root = schema } };
     defer snapshots.pairs.deinit(engine.gpa);
     const compiled = try snapshots.walk(schema);
-    errdefer engine.freeValue(compiled);
+    defer engine.freeValue(compiled);
     if (c.JS_IsObject(compiled)) try vm.put(engine, compiled, "~nativeUnevaluated", c.pi_js_bool(engine.context, @intFromBool(use_unevaluated)));
+    const validator = try vm.object(engine);
+    errdefer engine.freeValue(validator);
+    var captures = [_]c.JSValue{ compiled, schema };
+    try vm.put(engine, validator, "Check", try engine.checked(c.JS_NewCFunctionData2(engine.context, validatorMethod, "Check", 1, 0, captures.len, &captures)));
+    try vm.put(engine, validator, "Errors", try engine.checked(c.JS_NewCFunctionData2(engine.context, validatorMethod, "Errors", 1, 1, captures.len, &captures)));
     // WeakMap supplies the original primitive-key failure, including boolean
     // schemas: normalization catches this compile/cache error upstream.
-    const result = try vm.invoke(engine, weak, "set", &.{ schema, compiled });
+    const result = try vm.invoke(engine, weak, "set", &.{ schema, validator });
     engine.freeValue(result);
-    return compiled;
+    return validator;
 }
 pub fn check(engine: *Engine, compiled: c.JSValue, value: c.JSValue) !bool {
     const generation = engine.native_allocation_generation;
-    return evaluator.checkCompiled(engine, compiled, value) catch |err| return engine.nativeAllocationError(err, generation);
+    const checked = vm.invoke(engine, compiled, "Check", &.{value}) catch |err| return engine.nativeAllocationError(err, generation);
+    defer engine.freeValue(checked);
+    return c.JS_ToBool(engine.context, checked) != 0;
+}
+fn validatorMethod(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return validatorMethodOwned(engine, receiver, captures[0], captures[1], if (argc > 0) argv[0] else c.pi_js_undefined(), magic != 0) catch |err| {
+        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+        return engine.throwCaptured();
+    };
+}
+fn validatorMethodOwned(engine: *Engine, receiver: c.JSValue, compiled: c.JSValue, schema: c.JSValue, value: c.JSValue, errors: bool) !c.JSValue {
+    if (!errors) return c.pi_js_bool(engine.context, @intFromBool(try evaluator.checkCompiled(engine, compiled, value)));
+    const result = try vm.array(engine);
+    errdefer engine.freeValue(result);
+    // Source Errors re-enters the receiver's current Check method. User
+    // overrides and cached replacement objects therefore remain observable.
+    if (try check(engine, receiver, value)) return result;
+    var evaluated = try evaluator.evaluate(engine, schema, value);
+    defer evaluated.deinit(engine.gpa);
+    for (evaluated.failures, 0..) |failure, index| {
+        const row = try vm.object(engine);
+        var consumed = false;
+        errdefer if (!consumed) engine.freeValue(row);
+        const base = if (failure.required_properties.len != 0) failure.required_base else failure.path;
+        const path = if (base.len == 0 or (failure.required_properties.len == 0 and std.mem.eql(u8, base, "root"))) try engine.gpa.dupe(u8, "") else blk: {
+            const pointer = try std.fmt.allocPrint(engine.gpa, "/{s}", .{base});
+            for (pointer) |*character| if (character.* == '.') {
+                character.* = '/';
+            };
+            break :blk pointer;
+        };
+        defer engine.gpa.free(path);
+        try vm.put(engine, row, "keyword", try engine.checked(c.JS_NewString(engine.context, if (failure.required_properties.len != 0) "required" else "native")));
+        if (failure.required_properties.len != 0) {
+            const params = try vm.object(engine);
+            defer engine.freeValue(params);
+            const required = try vm.array(engine);
+            defer engine.freeValue(required);
+            for (failure.required_properties, 0..) |property, property_index| {
+                const name = try engine.checked(c.JS_NewStringLen(engine.context, property.ptr, property.len));
+                if (c.JS_SetPropertyUint32(engine.context, required, @intCast(property_index), name) < 0) return error.JavaScriptException;
+            }
+            try vm.put(engine, params, "requiredProperties", c.JS_DupValue(engine.context, required));
+            try vm.put(engine, row, "params", c.JS_DupValue(engine.context, params));
+        }
+        try vm.put(engine, row, "instancePath", try engine.checked(c.JS_NewStringLen(engine.context, path.ptr, path.len)));
+        try vm.put(engine, row, "message", try engine.checked(c.JS_NewStringLen(engine.context, failure.message.ptr, failure.message.len)));
+        consumed = true;
+        if (c.JS_SetPropertyUint32(engine.context, result, @intCast(index), row) < 0) return error.JavaScriptException;
+    }
+    return result;
 }
 pub fn validators(engine: *Engine) @import("native_tool_coercion.zig").Validators {
     return .{ .engine = engine, .context = engine, .compile = compileCallback, .check = checkCallback };

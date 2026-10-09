@@ -321,6 +321,7 @@ pub fn install(engine: *engine_mod.Engine) !void {
     try property(engine, module, "EventStream", c.JS_DupValue(engine.context, constructor));
     try property(engine, module, "AssistantMessageEventStream", c.JS_DupValue(engine.context, assistant));
     try native_models.populateExports(engine, module);
+    try @import("native_tool_arguments.zig").install(engine, module);
     var factory_data = [_]c.JSValue{assistant};
     try property(engine, module, "createAssistantMessageEventStream", try engine.checked(c.JS_NewCFunctionData2(engine.context, assistantFactory, "createAssistantMessageEventStream", 0, 0, 1, &factory_data)));
     try engine.registerValueModule("@earendil-works/pi-ai", module);
