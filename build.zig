@@ -1280,6 +1280,7 @@ pub fn build(b: *std.Build) void {
     const catalog_control_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{ "native runtime private catalog", "native catalog control" }, .use_llvm = use_llvm });
     linkQuickJs(b, catalog_control_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, catalog_control_tests.root_module, typescript_parser);
+    linkDurable(b, catalog_control_tests.root_module);
     const catalog_control_run = b.addRunArtifact(catalog_control_tests);
     catalog_control_run.step.dependOn(&install_mcp_configured_cli.step);
     catalog_control_run.step.dependOn(&install_mcp_configured_fixture.step);
