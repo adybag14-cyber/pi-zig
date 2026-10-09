@@ -1,0 +1,47 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "name": "ordinary",
+      "synchronous": [
+        "first",
+        "second"
+      ],
+      "beforeBackendSettled": false,
+      "calls": [
+        "first",
+        "second",
+        "backend",
+        "settled"
+      ],
+      "endReason": "closed",
+      "callerOriginal": false
+    },
+    {
+      "name": "canceled-caller",
+      "synchronous": [
+        "first",
+        "second"
+      ],
+      "beforeBackendSettled": false,
+      "calls": [
+        "first",
+        "second",
+        "backend",
+        "settled"
+      ],
+      "endReason": "closed",
+      "callerOriginal": true
+    },
+    {
+      "name": "raw-close-failure",
+      "firstOriginal": true,
+      "endReason": "failed",
+      "endOriginal": true,
+      "laterFailed": true,
+      "laterOriginal": true,
+      "repeatedOriginal": true,
+      "calls": 1
+    }
+  ]
+}

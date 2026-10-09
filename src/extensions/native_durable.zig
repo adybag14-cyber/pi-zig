@@ -40,6 +40,10 @@ pub const State = struct {
     transaction: ?*session_module.Transaction = null,
     parent: c.JSValue,
     tail: c.JSValue,
+    closed_promise: ?c.JSValue = null,
+    closed_resolve: ?c.JSValue = null,
+    close_pending: ?c.JSValue = null,
+    failure_reason: ?c.JSValue = null,
     closing: bool = false,
     sqlite: ?*backend.sqlite.Sqlite = null,
     sqlite_source: ?*backend.sqlite_source.Sqlite = null,
@@ -107,6 +111,10 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     }
     c.JS_FreeValueRT(runtime, self.parent);
     c.JS_FreeValueRT(runtime, self.tail);
+    if (self.closed_promise) |promise| c.JS_FreeValueRT(runtime, promise);
+    if (self.closed_resolve) |resolve| c.JS_FreeValueRT(runtime, resolve);
+    if (self.close_pending) |promise| c.JS_FreeValueRT(runtime, promise);
+    if (self.failure_reason) |reason| c.JS_FreeValueRT(runtime, reason);
     if (self.creation_owner) |owner| c.JS_FreeValueRT(runtime, owner);
     if (self.documents) |documents| documents.deinit(runtime);
     if (self.document_cache) |cache| cache.deinit(runtime);
@@ -123,6 +131,10 @@ fn mark(runtime: ?*c.JSRuntime, input: c.JSValue, marker: ?*const c.JS_MarkFunc)
     const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(input, engine.native_durable_class) orelse return));
     c.JS_MarkValue(runtime, self.parent, marker);
     c.JS_MarkValue(runtime, self.tail, marker);
+    if (self.closed_promise) |promise| c.JS_MarkValue(runtime, promise, marker);
+    if (self.closed_resolve) |resolve| c.JS_MarkValue(runtime, resolve, marker);
+    if (self.close_pending) |promise| c.JS_MarkValue(runtime, promise, marker);
+    if (self.failure_reason) |reason| c.JS_MarkValue(runtime, reason, marker);
     if (self.creation_owner) |owner| c.JS_MarkValue(runtime, owner, marker);
     if (self.documents) |documents| documents.mark(runtime, marker);
     if (self.document_cache) |cache| cache.mark(runtime, marker);
@@ -287,7 +299,7 @@ fn constructor(context: ?*c.JSContext, new_target: c.JSValue, _: c_int, _: [*c]c
     return constructedMemory(engine, new_target) catch |err| reject(engine, err);
 }
 fn constructedMemory(engine: *Engine, new_target: c.JSValue) !c.JSValue {
-    const object = try memoryObject(engine);
+    const object = try memoryObjectWithMethods(engine, false);
     errdefer engine.freeValue(object);
     const prototype = try sdk.get(engine, new_target, "prototype");
     defer engine.freeValue(prototype);
@@ -295,13 +307,16 @@ fn constructedMemory(engine: *Engine, new_target: c.JSValue) !c.JSValue {
     return object;
 }
 pub fn memoryObject(engine: *Engine) !c.JSValue {
+    return memoryObjectWithMethods(engine, true);
+}
+fn memoryObjectWithMethods(engine: *Engine, own_methods: bool) !c.JSValue {
     const object = try engine.checked(c.JS_NewObjectClass(engine.context, engine.native_durable_class));
     errdefer engine.freeValue(object);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
     self.* = .{ .engine = engine, .kind = .memory, .memory = try backend.memory.Memory.init(engine.gpa), .parent = c.pi_js_undefined(), .tail = c.pi_js_undefined() };
     errdefer self.memory.deinit();
-    inline for (std.meta.fields(Method)[0..16]) |field| try sdk.put(engine, object, field.name, try engine.checked(c.pi_js_function_magic(engine.context, method, field.name, 1, @intCast(field.value))));
+    if (own_methods) inline for (std.meta.fields(Method)[0..16]) |field| try sdk.put(engine, object, field.name, try engine.checked(c.pi_js_function_magic(engine.context, method, field.name, 1, @intCast(field.value))));
     _ = c.JS_SetOpaque(object, self);
     return object;
 }
@@ -318,6 +333,10 @@ pub fn install(engine: *Engine) !void {
     const prototype = try sdk.object(engine);
     defer engine.freeValue(prototype);
     try sdk.put(engine, prototype, "constructor", c.JS_DupValue(engine.context, ctor));
+    inline for (std.meta.fields(Method)[0..16]) |field| {
+        const function = try engine.checked(c.pi_js_function_magic(engine.context, method, field.name, 1, @intCast(field.value)));
+        if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, function, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
+    }
     try sdk.put(engine, ctor, "prototype", c.JS_DupValue(engine.context, prototype));
     try sdk.put(engine, exports, "MemoryStorage", c.JS_DupValue(engine.context, ctor));
     try sdk.put(engine, exports, "createSession", try engine.checked(c.JS_NewCFunction(engine.context, createSession, "createSession", 1)));
@@ -431,12 +450,18 @@ pub fn sessionObject(engine: *Engine, storage: c.JSValue) !c.JSValue {
     const native = &lease.value;
     const tail = try sdk.promise(engine, c.pi_js_undefined());
     errdefer engine.freeValue(tail);
+    var closed_functions: [2]c.JSValue = undefined;
+    const closed_promise = try engine.checked(c.JS_NewPromiseCapability(engine.context, &closed_functions));
+    errdefer engine.freeValue(closed_promise);
+    errdefer engine.freeValue(closed_functions[0]);
+    defer engine.freeValue(closed_functions[1]);
     lease.* = .{ .gpa = engine.gpa, .value = session_module.Session.init(engine.gpa, io, store) };
     errdefer native.deinit();
-    self.* = .{ .engine = engine, .kind = .session, .memory = undefined, .session = native, .session_lease = lease, .owner_thread = std.Thread.getCurrentId(), .parent = c.JS_DupValue(engine.context, storage), .tail = tail, .task_creator = @import("native_durable_tasks.zig").createTask };
+    self.* = .{ .engine = engine, .kind = .session, .memory = undefined, .session = native, .session_lease = lease, .owner_thread = std.Thread.getCurrentId(), .parent = c.JS_DupValue(engine.context, storage), .tail = tail, .task_creator = @import("native_durable_tasks.zig").createTask, .closed_promise = closed_promise, .closed_resolve = closed_functions[0] };
     errdefer engine.freeValue(self.parent);
     _ = try native.subscribe(publication, self);
     try methods(engine, result_object, &.{ .commit, .close, .subscribeCommits, .subscribeClose, .snapshot, .snapshotAsOf, .unloadDocuments, .watchDoc, .documentState });
+    if (c.JS_DefinePropertyValueStr(engine.context, result_object, "closed", c.JS_DupValue(engine.context, closed_promise), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     _ = c.JS_SetOpaque(result_object, self);
     return result_object;
 }
@@ -485,9 +510,15 @@ fn queuedContinuation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.J
         self.session.?.close();
         for (self.commit_listeners.items) |listener| engine.freeValue(listener);
         self.commit_listeners.clearRetainingCapacity();
-        const owner = state(engine, self.parent) catch |err| return reject(engine, err);
-        owner.closeStorage();
-        return c.pi_js_undefined();
+        self.session.?.storage.drain();
+        return closeBackend(self, data[0], data[2]) catch |err| {
+            _ = reject(engine, err);
+            const reason = c.JS_GetException(engine.context);
+            defer engine.freeValue(reason);
+            recordFailure(self, reason);
+            settleClosed(self) catch |settle_error| return reject(engine, settle_error);
+            return c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
+        };
     }
     checkCancellation(engine, data[2]) catch |err| return reject(engine, err);
     self.publication_context = data[2];
@@ -510,7 +541,60 @@ fn queuedContinuation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.J
     };
     return call.returned;
 }
+fn recordFailure(self: *State, reason: c.JSValue) void {
+    if (self.failure_reason == null) {
+        self.failure_reason = c.JS_DupValue(self.engine.context, reason);
+        _ = self.session.?.fail(error.JavaScriptException);
+    }
+}
+fn assertVMHealthy(self: *State) !void {
+    if (self.failure_reason) |reason| {
+        const value = try @import("native_durable_errors.zig").sessionFailed(self.engine, reason);
+        _ = try self.engine.checked(c.JS_Throw(self.engine.context, value));
+    }
+    try self.session.?.assertHealthy();
+}
+fn settleClosed(self: *State) !void {
+    const resolve = self.closed_resolve orelse return;
+    const engine = self.engine;
+    const end = try sdk.object(engine);
+    defer engine.freeValue(end);
+    try sdk.put(engine, end, "reason", try sdk.text(engine, if (self.failure_reason != null) "failed" else "closed"));
+    if (self.failure_reason) |reason| try sdk.put(engine, end, "error", c.JS_DupValue(engine.context, reason));
+    var args = [_]c.JSValue{end};
+    const ignored = try engine.checked(c.JS_Call(engine.context, resolve, c.pi_js_undefined(), 1, &args));
+    engine.freeValue(ignored);
+    engine.freeValue(resolve);
+    self.closed_resolve = null;
+}
+fn closeBackend(self: *State, receiver: c.JSValue, context: c.JSValue) !c.JSValue {
+    const engine = self.engine;
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    const cleanup = try @import("native_durable_context.zig").withoutAbortSignal(engine, context);
+    defer engine.freeValue(cleanup);
+    const value = try sdk.invoke(engine, self.parent, "close", &.{cleanup});
+    defer engine.freeValue(value);
+    const pending = try sdk.promise(engine, value);
+    defer engine.freeValue(pending);
+    var data = [_]c.JSValue{receiver};
+    const fulfilled = try engine.checked(c.JS_NewCFunctionData(engine.context, closeSettled, 1, 0, data.len, &data));
+    defer engine.freeValue(fulfilled);
+    const rejected = try engine.checked(c.JS_NewCFunctionData(engine.context, closeSettled, 1, 1, data.len, &data));
+    defer engine.freeValue(rejected);
+    return sdk.invoke(engine, pending, "then", &.{ fulfilled, rejected });
+}
+fn closeSettled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, rejected: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const self = state(engine, data[0]) catch |err| return reject(engine, err);
+    const value = if (argc > 0) argv[0] else c.pi_js_undefined();
+    if (rejected != 0) recordFailure(self, value);
+    settleClosed(self) catch |err| return reject(engine, err);
+    if (rejected != 0) return c.JS_Throw(context, c.JS_DupValue(context, value));
+    return c.pi_js_undefined();
+}
 pub fn sessionDispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
+    if (operation != .close) try assertVMHealthy(self);
     if (operation == .documentState) return @import("native_durable_state.zig").acquire(self.engine, receiver, args);
     if (operation == .watchDoc) return @import("native_durable_observation.zig").acquire(self.engine, receiver, args);
     if (operation == .unloadDocuments) return @import("native_durable_documents.zig").unload(self.engine, receiver);
@@ -521,14 +605,15 @@ pub fn sessionDispatch(self: *State, receiver: c.JSValue, operation: Method, arg
 pub fn sessionDispatchScoped(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue, conversation: ?u64) !c.JSValue {
     const engine = self.engine;
     if (operation != .commit and operation != .close) return error.InvalidDurableSessionMethod;
+    if (operation == .commit) try assertVMHealthy(self);
     if (self.closing and operation == .commit) return error.SessionClosed;
     if (operation == .commit and !c.JS_IsFunction(engine.context, argument(args, 0))) return error.ExpectedDurableCommitCallback;
-    if (self.closing and operation == .close) return c.JS_DupValue(engine.context, self.tail);
+    if (self.closing and operation == .close) return @import("native_durable_context.zig").awaitWithContext(engine, self.close_pending orelse self.tail, argument(args, 0));
     const close_snapshot = if (operation == .close) try duplicateListeners(engine, self.close_listeners.items) else null;
     defer if (close_snapshot) |listeners| freeListeners(engine, listeners);
     const scope = if (conversation) |id| try engine.checked(c.JS_NewInt64(engine.context, @intCast(id))) else c.pi_js_undefined();
     defer engine.freeValue(scope);
-    var data = [_]c.JSValue{ receiver, argument(args, 0), argument(args, 1), scope };
+    var data = [_]c.JSValue{ receiver, argument(args, 0), argument(args, if (operation == .close) 0 else 1), scope };
     // Allocate the normalization callback before admitting the queue callback.
     const ignored = try engine.checked(c.JS_NewCFunction(engine.context, ignore, "durable-line-settled", 0));
     defer engine.freeValue(ignored);
@@ -539,16 +624,37 @@ pub fn sessionDispatchScoped(self: *State, receiver: c.JSValue, operation: Metho
     const next = try sdk.invoke(engine, queued, "then", &.{ ignored, ignored });
     engine.freeValue(self.tail);
     self.tail = next;
-    if (operation == .close) self.closing = true;
+    if (operation == .close) {
+        self.closing = true;
+        self.close_pending = c.JS_DupValue(engine.context, queued);
+    }
     if (close_snapshot) |listeners| {
         for (self.close_listeners.items) |listener| engine.freeValue(listener);
         self.close_listeners.clearRetainingCapacity();
         for (listeners) |listener| {
-            const returned = try engine.checked(c.JS_Call(engine.context, listener, c.pi_js_undefined(), 0, null));
-            engine.freeValue(returned);
+            contained(engine, listener, &.{});
         }
     }
+    if (operation == .close) {
+        const observed = try @import("native_durable_context.zig").awaitWithContext(engine, queued, argument(args, 0));
+        engine.freeValue(queued);
+        return observed;
+    }
     return queued;
+}
+fn contained(engine: *Engine, callback: c.JSValue, arguments: []const c.JSValue) void {
+    const returned = c.JS_Call(engine.context, callback, c.pi_js_undefined(), @intCast(arguments.len), if (arguments.len == 0) null else @constCast(arguments.ptr));
+    if (c.JS_IsException(returned)) {
+        engine.freeValue(c.JS_GetException(engine.context));
+        return;
+    }
+    defer engine.freeValue(returned);
+    const pending = sdk.promise(engine, returned) catch return;
+    defer engine.freeValue(pending);
+    const ignored = engine.checked(c.JS_NewCFunction(engine.context, ignore, "contained-listener-error", 0)) catch return;
+    defer engine.freeValue(ignored);
+    const observed = sdk.invoke(engine, pending, "then", &.{ ignored, ignored }) catch return;
+    engine.freeValue(observed);
 }
 
 fn duplicateListeners(engine: *Engine, listeners: []const c.JSValue) ![]c.JSValue {
@@ -562,7 +668,9 @@ fn freeListeners(engine: *Engine, listeners: []c.JSValue) void {
 }
 pub fn subscribe(self: *State, receiver: c.JSValue, operation: Method, listener: c.JSValue) !c.JSValue {
     const engine = self.engine;
-    if (self.kind != .session or self.closing) return error.SessionClosed;
+    if (self.kind != .session) return error.SessionClosed;
+    try assertVMHealthy(self);
+    if (self.closing) return error.SessionClosed;
     if (!c.JS_IsFunction(engine.context, listener)) return error.ExpectedDurableListener;
     var data = [_]c.JSValue{ receiver, listener };
     const cancel = try engine.checked(c.JS_NewCFunctionData(engine.context, unsubscribe, 0, if (operation == .subscribeClose) 1 else 0, data.len, &data));
@@ -614,8 +722,7 @@ pub fn deliverPublication(self: *State, event: *const session_module.Publication
     try sdk.put(engine, value, "changes", c.JS_DupValue(engine.context, changes));
     var args = [_]c.JSValue{ value, self.publication_context orelse c.pi_js_undefined() };
     for (listeners) |listener| {
-        const returned = try engine.checked(c.JS_Call(engine.context, listener, c.pi_js_undefined(), args.len, &args));
-        engine.freeValue(returned);
+        contained(engine, listener, &args);
     }
 }
 fn transactionDispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
@@ -684,6 +791,7 @@ fn transactionDispatch(self: *State, receiver: c.JSValue, operation: Method, arg
 /// Queues a native owner continuation on the same line as Session commits.
 pub fn enqueue(engine: *Engine, session: c.JSValue, callback: c.JSValue) !c.JSValue {
     const self = try state(engine, session);
+    try assertVMHealthy(self);
     if (self.closing) return error.SessionClosed;
     const ignored = try engine.checked(c.JS_NewCFunction(engine.context, ignore, "durable-line-settled", 0));
     defer engine.freeValue(ignored);
@@ -754,6 +862,59 @@ test "native durable VM eba independent concurrent and unawaited nested commits 
         return err;
     };
     engine.freeValue(queue_output);
+}
+
+test "native durable VM backend close overrides settle closed only after cleanup and preserve raw close failure identity" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try install(engine);
+    const source = @embedFile("../durable/fixtures/durable-close-facade-eba.json");
+    const fixture = try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-eba-close"));
+    defer engine.freeValue(fixture);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "closeFixture", c.JS_DupValue(engine.context, fixture));
+    const output = engine.evalModule(
+        \\import{MemoryStorage,createSession,SessionFailed}from'@earendil-works/pi-durable';
+        \\import{BACKGROUND_CONTEXT,withAbortSignal}from'@earendil-works/chord/context';
+        \\const equal=(a,b)=>{if(JSON.stringify(a)!==JSON.stringify(b))throw Error(JSON.stringify({a,b}));};
+        \\for(const cancelCaller of [false,true]){
+        \\ const calls=[];let release;const gate=new Promise(resolve=>release=resolve);
+        \\ class Held extends MemoryStorage{async close(ctx){calls.push('backend');if(ctx.abortSignal!==undefined)throw Error('cleanup retained caller signal');await gate;calls.push('settled');await super.close(ctx)}}
+        \\ const session=createSession(new Held());let ended=false;session.closed.then(()=>ended=true);
+        \\ session.subscribeClose(()=>{calls.push('first');throw{listener:true}});session.subscribeClose(()=>calls.push('second'));session.subscribeClose(()=>Promise.reject({asyncListener:true}));
+        \\ const controller=new AbortController(),reason=new Error('caller stop');if(cancelCaller)controller.abort(reason);
+        \\ const closing=session.close(cancelCaller?withAbortSignal(controller.signal,BACKGROUND_CONTEXT):BACKGROUND_CONTEXT);
+        \\ const synchronous=[...calls];let callerError;const observed=closing.catch(error=>callerError=error);
+        \\ await Promise.resolve();await Promise.resolve();const beforeBackendSettled=ended;release();await observed;
+        \\ const end=await session.closed;await session.close(BACKGROUND_CONTEXT);
+        \\ const row={name:cancelCaller?'canceled-caller':'ordinary',synchronous,beforeBackendSettled,calls,endReason:end.reason,callerOriginal:callerError===reason};
+        \\ equal(row,closeFixture.cases.find(item=>item.name===row.name));
+        \\}
+        \\{
+        \\ const calls=[];let release;const gate=new Promise(resolve=>release=resolve);
+        \\ class Held extends MemoryStorage{async close(ctx){calls.push('backend');if(ctx.abortSignal!==undefined)throw Error('cleanup retained caller signal');await gate;calls.push('settled');await super.close(ctx)}}
+        \\ const session=createSession(new Held());let ended=false;session.closed.then(()=>ended=true);
+        \\ session.subscribeClose(()=>{calls.push('first');throw {listener:true}});session.subscribeClose(()=>calls.push('second'));session.subscribeClose(()=>Promise.reject({asyncListener:true}));
+        \\ const closing=session.close({});if(calls.join(',')!=='first,second')throw Error('synchronous listener isolation');
+        \\ await Promise.resolve();await Promise.resolve();if(ended)throw Error('closed before backend cleanup');release();await closing;
+        \\ const end=await session.closed;if(end.reason!=='closed'||calls.join(',')!=='first,second,backend,settled')throw Error('close settlement');await session.close({});
+        \\}
+        \\{
+        \\ const raw=Object.create(null);raw.toString=()=>{throw Error('must not coerce cause')};let calls=0;
+        \\ class Broken extends MemoryStorage{close(){calls++;throw raw}}
+        \\ const session=createSession(new Broken());let first;try{await session.close({})}catch(error){first=error}
+        \\ const end=await session.closed;if(first!==raw||end.reason!=='failed'||end.error!==raw||calls!==1)throw Error('raw close failure');
+        \\ let later;try{await session.commit(()=>true,{})}catch(error){later=error}
+        \\ if(!(later instanceof SessionFailed)||later.cause!==raw)throw Error('failed admission');
+        \\ let repeated;try{await session.close({})}catch(error){repeated=error}if(repeated!==raw||calls!==1)throw Error('close once');
+        \\}
+    , "actual-eba-close-override") catch |err| {
+        std.debug.print("Durable close facade: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(output);
 }
 test "native durable VM constructor and module allocations roll back on every GPA failure" {
     try std.testing.checkAllAllocationFailures(std.testing.allocator, constructorAllocationExercise, .{});
