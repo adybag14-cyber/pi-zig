@@ -703,11 +703,6 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
                 defer engine.freeValue(candidate);
                 if (!c.JS_IsStrictEqual(engine.context, name, candidate)) continue;
                 found = true;
-                const context_value = try object(engine);
-                defer engine.freeValue(context_value);
-                try put(engine, context_value, "sessionManager", c.JS_DupValue(engine.context, manager));
-                try put(engine, context_value, "model", c.JS_DupValue(engine.context, model));
-                try put(engine, context_value, "cwd", try get(engine, self.data, "_sdkToolCwd"));
                 const prepare = try get(engine, tool, "prepareArguments");
                 defer engine.freeValue(prepare);
                 const prepared = if (c.JS_IsFunction(engine.context, prepare)) try invoke(engine, tool, "prepareArguments", &.{arguments}) else c.JS_DupValue(engine.context, arguments);
@@ -718,7 +713,7 @@ fn runPrompt(self: *State, prompt_text: c.JSValue, _: c.JSValue) !void {
                 try put(engine, validation_call, "arguments", c.JS_DupValue(engine.context, prepared));
                 const validated = try @import("native_tool_arguments.zig").validateArguments(engine, tool, validation_call);
                 defer engine.freeValue(validated);
-                const pending = try invoke(engine, tool, "execute", &.{ id, validated, signal, c.pi_js_undefined(), context_value });
+                const pending = try invoke(engine, tool, "execute", &.{ id, validated, signal, c.pi_js_undefined() });
                 defer engine.freeValue(pending);
                 const result = try engine.awaitValue(pending);
                 defer engine.freeValue(result);

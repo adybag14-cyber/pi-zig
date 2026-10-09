@@ -1,0 +1,259 @@
+{
+  "source": "1cedd32724abfcb0915f76cc61b6827e2c16dbad",
+  "result": {
+    "keys": [
+      "ui",
+      "mode",
+      "hasUI",
+      "cwd",
+      "sessionManager",
+      "modelRegistry",
+      "model",
+      "scopedModels",
+      "thinkingLevel",
+      "isIdle",
+      "isProjectTrusted",
+      "signal",
+      "abort",
+      "hasPendingMessages",
+      "shutdown",
+      "getContextUsage",
+      "compact",
+      "getSystemPrompt"
+    ],
+    "allKeys": [
+      "ui",
+      "mode",
+      "hasUI",
+      "cwd",
+      "sessionManager",
+      "modelRegistry",
+      "model",
+      "scopedModels",
+      "thinkingLevel",
+      "isIdle",
+      "isProjectTrusted",
+      "signal",
+      "abort",
+      "hasPendingMessages",
+      "shutdown",
+      "getContextUsage",
+      "compact",
+      "getSystemPrompt",
+      "tools",
+      "executeTool"
+    ],
+    "descriptors": {
+      "ui": {
+        "enumerable": true,
+        "configurable": true,
+        "get": true,
+        "writable": null
+      },
+      "mode": {
+        "enumerable": true,
+        "configurable": true,
+        "get": true,
+        "writable": null
+      },
+      "hasUI": {
+        "enumerable": true,
+        "configurable": true,
+        "get": true,
+        "writable": null
+      },
+      "cwd": {
+        "enumerable": true,
+        "configurable": true,
+        "get": true,
+        "writable": null
+      },
+      "sessionManager": {
+        "enumerable": true,
+        "configurable": true,
+        "get": true,
+        "writable": null
+      },
+      "modelRegistry": {
+        "enumerable": true,
+        "configurable": true,
+        "get": true,
+        "writable": null
+      },
+      "model": {
+        "enumerable": true,
+        "configurable": true,
+        "get": true,
+        "writable": null
+      },
+      "scopedModels": {
+        "enumerable": true,
+        "configurable": true,
+        "get": true,
+        "writable": null
+      },
+      "thinkingLevel": {
+        "enumerable": true,
+        "configurable": true,
+        "get": true,
+        "writable": null
+      },
+      "isIdle": {
+        "enumerable": true,
+        "configurable": true,
+        "get": false,
+        "writable": true
+      },
+      "isProjectTrusted": {
+        "enumerable": true,
+        "configurable": true,
+        "get": false,
+        "writable": true
+      },
+      "signal": {
+        "enumerable": true,
+        "configurable": true,
+        "get": true,
+        "writable": null
+      },
+      "abort": {
+        "enumerable": true,
+        "configurable": true,
+        "get": false,
+        "writable": true
+      },
+      "hasPendingMessages": {
+        "enumerable": true,
+        "configurable": true,
+        "get": false,
+        "writable": true
+      },
+      "shutdown": {
+        "enumerable": true,
+        "configurable": true,
+        "get": false,
+        "writable": true
+      },
+      "getContextUsage": {
+        "enumerable": true,
+        "configurable": true,
+        "get": false,
+        "writable": true
+      },
+      "compact": {
+        "enumerable": true,
+        "configurable": true,
+        "get": false,
+        "writable": true
+      },
+      "getSystemPrompt": {
+        "enumerable": true,
+        "configurable": true,
+        "get": false,
+        "writable": true
+      },
+      "tools": {
+        "enumerable": false,
+        "configurable": false,
+        "get": true,
+        "writable": null
+      },
+      "executeTool": {
+        "enumerable": false,
+        "configurable": false,
+        "get": false,
+        "writable": false
+      }
+    },
+    "fresh": true,
+    "synchronous": true,
+    "definitionReceiver": true,
+    "overrideSame": true,
+    "nullCreates": true,
+    "cwd": "C:\\sdk",
+    "managerSame": true,
+    "modelSame": true,
+    "uiType": "object",
+    "mode": "print",
+    "hasUI": false,
+    "idle": true,
+    "projectTrusted": true,
+    "signalSame": false,
+    "signalUndefined": true,
+    "pending": false,
+    "thinkingLevel": "off",
+    "systemPromptSame": true,
+    "tools": [
+      {
+        "name": "own",
+        "keys": [
+          "name",
+          "label",
+          "description",
+          "parameters",
+          "outputSchema",
+          "constrainedSampling",
+          "prepareArguments",
+          "executionMode",
+          "execute"
+        ]
+      }
+    ],
+    "originalThrow": true,
+    "dynamicExecute": true,
+    "afterDispose": {
+      "cwd": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      },
+      "sessionManager": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      },
+      "model": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      },
+      "ui": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      },
+      "mode": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      },
+      "hasUI": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      },
+      "thinkingLevel": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      },
+      "tools": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      },
+      "signal": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      },
+      "isIdle": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      },
+      "isProjectTrusted": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      },
+      "hasPendingMessages": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      },
+      "getSystemPrompt": {
+        "name": "Error",
+        "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+      }
+    }
+  }
+}

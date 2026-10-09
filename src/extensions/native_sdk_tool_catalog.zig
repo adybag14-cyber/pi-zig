@@ -12,7 +12,7 @@ const selection = @import("../coding_agent/tool_selection.zig");
 const c = engine_mod.c;
 const Engine = engine_mod.Engine;
 const Version = struct { id: u64, revision: ?u64 };
-const Record = struct { name: []u8, definition: c.JSValue, source: c.JSValue };
+const Record = struct { name: []u8, definition: c.JSValue, source: c.JSValue, agent_tool: ?c.JSValue = null };
 const Retained = struct { definition: c.JSValue, source: c.JSValue };
 
 pub const State = struct {
@@ -31,6 +31,7 @@ pub const State = struct {
             self.engine.gpa.free(record.name);
             c.JS_FreeValueRT(runtime, record.definition);
             c.JS_FreeValueRT(runtime, record.source);
+            if (record.agent_tool) |tool| c.JS_FreeValueRT(runtime, tool);
         }
         records.deinit(self.engine.gpa);
     }
@@ -45,6 +46,7 @@ pub const State = struct {
         for (self.records.items) |record| {
             c.JS_MarkValue(runtime, record.definition, marker);
             c.JS_MarkValue(runtime, record.source, marker);
+            if (record.agent_tool) |tool| c.JS_MarkValue(runtime, tool, marker);
         }
     }
     pub fn retire(self: *State) void {
@@ -66,6 +68,8 @@ pub const State = struct {
         for (records.items) |*record| if (std.mem.eql(u8, record.name, name)) {
             self.engine.freeValue(record.definition);
             self.engine.freeValue(record.source);
+            if (record.agent_tool) |tool| self.engine.freeValue(tool);
+            record.agent_tool = null;
             record.definition = c.JS_DupValue(self.engine.context, definition);
             record.source = c.JS_DupValue(self.engine.context, source);
             return;
@@ -265,6 +269,12 @@ fn activatable(self: *State, record: Record) !bool {
     for (self.records.items) |entry| if (std.mem.eql(u8, entry.name, "tool_search")) return true;
     return false;
 }
+fn agentTool(owner: *sdk.State, record: *Record) !c.JSValue {
+    if (record.agent_tool) |tool| return c.JS_DupValue(owner.engine.context, tool);
+    const tool = try @import("native_sdk_agent_tool.zig").wrap(owner, record.definition);
+    record.agent_tool = tool;
+    return c.JS_DupValue(owner.engine.context, tool);
+}
 pub fn setActive(owner: *sdk.State, requested: c.JSValue) !void {
     const self = try current(owner);
     const engine = self.engine;
@@ -280,11 +290,11 @@ pub fn setActive(owner: *sdk.State, requested: c.JSValue) !void {
         if (!c.JS_IsString(value)) continue;
         const name = try engine.toString(value);
         defer engine.gpa.free(name);
-        for (self.records.items) |record| if (std.mem.eql(u8, record.name, name)) {
-            if (seen.contains(record.name) or !try activatable(self, record)) break;
+        for (self.records.items) |*record| if (std.mem.eql(u8, record.name, name)) {
+            if (seen.contains(record.name) or !try activatable(self, record.*)) break;
             try seen.put(engine.gpa, record.name, {});
             const output: u32 = @intCast(try vm.length(engine, names));
-            if (c.JS_SetPropertyUint32(engine.context, names, output, c.JS_DupValue(engine.context, value)) < 0 or c.JS_SetPropertyUint32(engine.context, definitions, output, c.JS_DupValue(engine.context, record.definition)) < 0) return error.JavaScriptException;
+            if (c.JS_SetPropertyUint32(engine.context, names, output, c.JS_DupValue(engine.context, value)) < 0 or c.JS_SetPropertyUint32(engine.context, definitions, output, try agentTool(owner, record)) < 0) return error.JavaScriptException;
             break;
         };
     };
@@ -335,6 +345,33 @@ pub fn initializeActive(owner: *sdk.State, options: c.JSValue) !void {
 }
 pub fn activeDefinitions(owner: *sdk.State) !c.JSValue {
     return sdk.agentField(owner, "tools");
+}
+pub fn callableDefinitions(owner: *sdk.State) !c.JSValue {
+    const self = try current(owner);
+    const engine = owner.engine;
+    const active = try activeNames(owner);
+    defer engine.freeValue(active);
+    const result = try vm.array(engine);
+    errdefer engine.freeValue(result);
+    for (self.records.items) |*record| {
+        const exposure_value = try vm.get(engine, record.definition, "exposure");
+        defer engine.freeValue(exposure_value);
+        const exposure_text = if (c.JS_IsUndefined(exposure_value) or c.JS_IsNull(exposure_value)) try engine.gpa.dupe(u8, "direct") else try engine.toString(exposure_value);
+        defer engine.gpa.free(exposure_text);
+        var callable = std.mem.eql(u8, exposure_text, "codemode") or std.mem.eql(u8, exposure_text, "deferred");
+        if (std.mem.eql(u8, exposure_text, "direct")) for (0..try vm.length(engine, active)) |index| {
+            const value = try engine.checked(c.JS_GetPropertyUint32(engine.context, active, @intCast(index)));
+            defer engine.freeValue(value);
+            const name = try engine.toString(value);
+            defer engine.gpa.free(name);
+            if (std.mem.eql(u8, record.name, name)) {
+                callable = true;
+                break;
+            }
+        };
+        if (callable and c.JS_SetPropertyUint32(engine.context, result, @intCast(try vm.length(engine, result)), try agentTool(owner, record)) < 0) return error.JavaScriptException;
+    }
+    return result;
 }
 pub fn activeNames(owner: *sdk.State) !c.JSValue {
     const engine = owner.engine;
