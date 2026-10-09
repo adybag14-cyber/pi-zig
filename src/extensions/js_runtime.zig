@@ -703,6 +703,7 @@ pub const Runtime = struct {
     last_owner_error: ?[]u8 = null,
     ui_bridge: ?UiBridge = null,
     context_json: ?[]u8 = null,
+    context_mutex: Io.Mutex = .init,
     next_invocation_id: u64 = 1,
     /// Lock-free identity of the one provider stream currently owned by this
     /// persistent worker. Registry replacement can request retirement without
@@ -869,7 +870,7 @@ pub const Runtime = struct {
         try request.object.put(allocator, "abortable", .{ .bool = true });
         if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) try request.object.put(allocator, "aborted", .{ .bool = true });
         if (!request.object.contains("context")) {
-            const context = if (self.context_json) |raw| try std.json.parseFromSliceLeaky(std.json.Value, allocator, raw, .{}) else std.json.Value{ .object = .empty };
+            const context = try self.contextValue(allocator);
             try request.object.put(allocator, "context", context);
         }
         const encoded = try std.json.Stringify.valueAlloc(allocator, request, .{});
@@ -914,7 +915,7 @@ pub const Runtime = struct {
         try request.object.put(a, "invocationId", .{ .string = try std.fmt.allocPrint(a, "{d}", .{invocation_id}) });
         try request.object.put(a, "abortable", .{ .bool = true });
         if (abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) try request.object.put(a, "aborted", .{ .bool = true });
-        try request.object.put(a, "context", if (self.context_json) |context| try std.json.parseFromSliceLeaky(std.json.Value, a, context, .{}) else .{ .object = .empty });
+        try request.object.put(a, "context", try self.contextValue(a));
         const response = try self.exchangeWithUpdatesUnlocked(try std.json.Stringify.valueAlloc(a, request, .{}), invocation_id, abort_flag, null, null);
         errdefer self.gpa.free(response);
         try validateNativeModelReply(self.gpa, response, lease, invocation_id);
@@ -1551,14 +1552,29 @@ pub const Runtime = struct {
     pub fn setContextJson(self: *Runtime, raw: []const u8) !void {
         try validateObjectJson(self.gpa, raw);
         const owned = try self.gpa.dupe(u8, raw);
-        self.mutex.lockUncancelable(self.io);
-        defer self.mutex.unlock(self.io);
+        self.context_mutex.lockUncancelable(self.io);
+        defer self.context_mutex.unlock(self.io);
         if (self.context_json) |old| self.gpa.free(old);
         self.context_json = owned;
     }
 
     fn writeContext(self: *const Runtime, writer: *std.Io.Writer) !void {
+        @constCast(self).context_mutex.lockUncancelable(self.io);
+        defer @constCast(self).context_mutex.unlock(self.io);
         try writer.writeAll(self.context_json orelse "{\"mode\":\"print\",\"hasUI\":false}");
+    }
+    fn contextValue(self: *Runtime, a: std.mem.Allocator) !std.json.Value {
+        self.context_mutex.lockUncancelable(self.io);
+        defer self.context_mutex.unlock(self.io);
+        return if (self.context_json) |raw| std.json.parseFromSliceLeaky(std.json.Value, a, raw, .{}) else .{ .object = .empty };
+    }
+    pub fn pinView(self: *Runtime) !*Runtime {
+        const view = try (self.shared_owner orelse self).extensionView(self.extension_id, self.source_path);
+        errdefer view.deinit();
+        self.context_mutex.lockUncancelable(self.io);
+        defer self.context_mutex.unlock(self.io);
+        if (self.context_json) |raw| view.context_json = try view.gpa.dupe(u8, raw);
+        return view;
     }
 
     pub fn invokeHook(self: *Runtime, name: []const u8, payload_json: []const u8, flags_json: []const u8) ![]u8 {
@@ -1680,7 +1696,49 @@ pub const Runtime = struct {
     ) ![]u8 {
         return self.invokeProviderMethodWithTimeout(callback_id, args_json, append_signal, abort_flag, null);
     }
+    pub fn invokeProviderTypedOperation(self: *Runtime, callback_id: []const u8, provider: []const u8, generation: u64, operation: @import("native_provider_operations.zig").Operation, model_json: []const u8, context_json: []const u8, options_json: []const u8, auth_rewrites_model: bool, abort_flag: ?*bool) ![]u8 {
+        if (self.backend != .native or callback_id.len == 0 or provider.len == 0 or generation == 0 or generation > 9_007_199_254_740_991) return error.InvalidNativeTypedProviderRequest;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        const model = try std.json.parseFromSliceLeaky(std.json.Value, a, model_json, .{});
+        const context = try std.json.parseFromSliceLeaky(std.json.Value, a, context_json, .{});
+        const options = try std.json.parseFromSliceLeaky(std.json.Value, a, options_json, .{});
+        if (model != .object or context != .object or options != .object) return error.InvalidNativeTypedProviderRequest;
+        const request = try std.json.Stringify.valueAlloc(a, .{ .kind = "provider_typed_operation", .version = 1, .ownerGeneration = try std.fmt.allocPrint(a, "{d}", .{self.owner_generation}), .callbackId = callback_id, .providerName = provider, .callbackGeneration = generation, .operation = @tagName(operation), .model = model, .modelContext = context, .options = options, .authRewritesModel = auth_rewrites_model, .context = try self.contextValue(a) }, .{});
+        // This operation is single-use; an uncertain provider response is not
+        // replayed on a different callback or worker generation.
+        if (self.shared_owner) |owner| return owner.invokeGroupRequest(self.extension_id, request, abort_flag);
+        if (self.native_group) return self.invokeGroupRequest(self.extension_id, request, abort_flag);
+        return error.NativeTypedProviderRequiresGroupOwner;
+    }
 
+    pub fn providerAdmission(self: *Runtime, callback_id: []const u8, provider: []const u8, generation: u64) !bool {
+        if (self.backend != .native) return error.NativeTypedProviderOwnerRequired;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        const request = try std.json.Stringify.valueAlloc(a, .{ .kind = "provider_admission", .version = 1, .ownerGeneration = self.owner_generation, .callbackId = callback_id, .providerName = provider, .callbackGeneration = generation, .context = try self.contextValue(a) }, .{});
+        const bytes = if (self.shared_owner) |owner| try owner.invokeGroupRequest(self.extension_id, request, null) else if (self.native_group) try self.invokeGroupRequest(self.extension_id, request, null) else return error.NativeTypedProviderRequiresGroupOwner;
+        defer self.gpa.free(bytes);
+        var result = try std.json.parseFromSlice(std.json.Value, self.gpa, bytes, .{});
+        defer result.deinit();
+        const native_mode = if (result.value == .object) result.value.object.get("native") orelse return error.InvalidNativeProviderAdmission else return error.InvalidNativeProviderAdmission;
+        return if (native_mode == .bool) native_mode.bool else error.InvalidNativeProviderAdmission;
+    }
+    pub fn invokeProviderAuthOperation(self: *Runtime, callback_id: []const u8, provider: []const u8, generation: u64, operation: @import("native_provider_operations.zig").AuthOperation, credential_json: []const u8, options_json: []const u8, abort_flag: ?*bool) ![]u8 {
+        if (self.backend != .native or generation == 0 or generation > 9_007_199_254_740_991) return error.InvalidNativeProviderAuthRequest;
+        var arena: std.heap.ArenaAllocator = .init(self.gpa);
+        defer arena.deinit();
+        const a = arena.allocator();
+        const credential = try std.json.parseFromSliceLeaky(std.json.Value, a, credential_json, .{});
+        const options = try std.json.parseFromSliceLeaky(std.json.Value, a, options_json, .{});
+        if ((credential != .null and credential != .object) or options != .object) return error.InvalidNativeProviderAuthRequest;
+        const request = try std.json.Stringify.valueAlloc(a, .{ .kind = "provider_auth_operation", .version = 1, .ownerGeneration = self.owner_generation, .callbackId = callback_id, .providerName = provider, .callbackGeneration = generation, .operation = @tagName(operation), .credential = credential, .options = options, .context = try self.contextValue(a) }, .{});
+        if (self.shared_owner) |owner| return owner.invokeGroupRequest(self.extension_id, request, abort_flag);
+        if (self.native_group) return self.invokeGroupRequest(self.extension_id, request, abort_flag);
+        return error.NativeTypedProviderRequiresGroupOwner;
+    }
     pub fn invokeProviderMethodWithTimeout(
         self: *Runtime,
         callback_id: []const u8,
@@ -2379,7 +2437,7 @@ pub const Runtime = struct {
         if (parsed.value != .object) return error.InvalidNativeExtensionRequest;
         const kind = parsed.value.object.get("kind") orelse return error.InvalidNativeExtensionRequest;
         if (kind != .string) return error.InvalidNativeExtensionRequest;
-        for ([_][]const u8{ "hook", "tool", "command", "group_add_source", "group_remove_source", "sdk_availability_snapshot", "sdk_model_bridge", "provider_method", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "render_message", "render_entry", "transform_markdown", "render_tool_call", "render_tool_result", "prepare_tool_arguments", "renderer_retire", "shutdown" }) |supported| {
+        for ([_][]const u8{ "hook", "tool", "command", "group_add_source", "group_remove_source", "sdk_availability_snapshot", "sdk_model_bridge", "provider_method", "provider_typed_operation", "provider_admission", "provider_auth_operation", "provider_oauth_login", "provider_refresh_models", "provider_stream_simple", "provider_fetch_deferred", "provider_cancel_deferred", "provider_callback_commit", "render_message", "render_entry", "transform_markdown", "render_tool_call", "render_tool_result", "prepare_tool_arguments", "renderer_retire", "shutdown" }) |supported| {
             if (std.mem.eql(u8, supported, kind.string)) return;
         }
         // Keep unsupported custom-component and renderer operations out of the

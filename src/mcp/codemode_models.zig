@@ -9,6 +9,9 @@ pub const Runtime = struct {
     docs_path: []const u8 = "docs/codemode.md",
     admitted_context: ?*anyopaque = null,
     admitted: ?*const fn (?*anyopaque, Value) anyerror!void = null,
+    /// Capture one private registry lease for the complete program lifetime.
+    acquire: ?*const fn (?*anyopaque, std.mem.Allocator) anyerror!Runtime = null,
+    release: ?*const fn (?*anyopaque, std.mem.Allocator) void = null,
 };
 const classifier_shape = "{ state: { ... }, images?: [{ type: \"image\", data: <base64>, mimeType }], questions: { <id>: { type: \"choice\", instructions, criteria: { <label>: <meaning> } } | { type: \"score\", instructions, criteria: [<lowest level>, ..., <highest level>] } | { type: \"bool\", instructions, criteria: { true: <meaning>, false: <meaning> } } } }";
 fn argument(args: Value, index: usize) ?Value {

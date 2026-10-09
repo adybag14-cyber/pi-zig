@@ -13,6 +13,7 @@ const runtime_config = @import("../coding_agent/runtime_config.zig");
 const live_state = @import("../coding_agent/live_state.zig");
 const js_runtime = @import("js_runtime.zig");
 const provider_method_ref = @import("../provider_method_ref.zig");
+const typed_catalog = @import("provider_typed_catalog.zig");
 
 const CallbackOwner = struct {
     callback_id: []u8,
@@ -44,10 +45,12 @@ const Registration = struct {
     name: []u8,
     config_json: []u8,
     models_file: models_file_mod.ModelsFile,
+    typed: typed_catalog.Catalog,
     replaces_models: bool,
     resolved: []runtime_config.ResolvedRuntime,
     runtime_configs: []live_state.RuntimeProviderConfig,
     callback_owners: []CallbackOwner,
+    native_mode: bool,
 
     fn init(
         gpa: std.mem.Allocator,
@@ -55,11 +58,13 @@ const Registration = struct {
         environ: *const std.process.Environ.Map,
         agent_dir: ?[]const u8,
         baseline_catalog: []const providers.ModelInfo,
+        baseline_all_catalog: []const providers.ModelInfo,
         name: []const u8,
         incoming_json: []const u8,
         config_json: []const u8,
         incoming_runtime: ?*js_runtime.Runtime,
         previous: ?*const Registration,
+        native_mode: bool,
     ) !Registration {
         var config = try std.json.parseFromSlice(std.json.Value, gpa, config_json, .{});
         defer config.deinit();
@@ -87,7 +92,11 @@ const Registration = struct {
             if (callback_owners.len > 0) gpa.free(callback_owners);
         }
 
-        const document = try providerDocument(gpa, name, config.value);
+        var typed = try typed_catalog.Catalog.initWithMode(gpa, name, config.value, baseline_all_catalog, native_mode);
+        errdefer typed.deinit();
+        var document_arena: std.heap.ArenaAllocator = .init(gpa);
+        defer document_arena.deinit();
+        const document = try providerDocument(gpa, name, try typed_catalog.chatConfig(document_arena.allocator(), config.value));
         defer gpa.free(document);
         var models_file = try models_file_mod.parseFromSlice(gpa, document);
         errdefer models_file.deinit();
@@ -135,10 +144,12 @@ const Registration = struct {
             .name = owned_name,
             .config_json = try gpa.dupe(u8, config_json),
             .models_file = models_file,
+            .typed = typed,
             .replaces_models = replaces_models,
             .resolved = resolved,
             .runtime_configs = configs,
             .callback_owners = callback_owners,
+            .native_mode = native_mode,
         };
     }
 
@@ -149,6 +160,7 @@ const Registration = struct {
         for (self.callback_owners) |*owner| owner.deinit(self.gpa);
         if (self.callback_owners.len > 0) self.gpa.free(self.callback_owners);
         self.models_file.deinit();
+        self.typed.deinit();
         self.gpa.free(self.name);
         self.gpa.free(self.config_json);
         self.* = undefined;
@@ -168,11 +180,17 @@ pub const Registry = struct {
     environ: *const std.process.Environ.Map,
     agent_dir: ?[]const u8,
     baseline_catalog: []const providers.ModelInfo,
+    baseline_all_catalog: []const providers.ModelInfo,
     baseline_runtimes: []const live_state.RuntimeProviderConfig,
     registrations: std.ArrayList(Registration) = .empty,
     catalog_snapshot: []providers.ModelInfo = &.{},
+    all_catalog_snapshot: []providers.ModelInfo = &.{},
     runtime_snapshot: []live_state.RuntimeProviderConfig = &.{},
     owns_snapshots: bool = false,
+    /// Mutation serialization is distinct from the Main owner's short snapshot
+    /// lock. Callback handoff may wait for a VM and never holds access_mutex.
+    mutation_mutex: Io.Mutex = .init,
+    access_mutex: ?*Io.Mutex = null,
 
     pub fn init(
         gpa: std.mem.Allocator,
@@ -188,18 +206,37 @@ pub const Registry = struct {
             .environ = environ,
             .agent_dir = agent_dir,
             .baseline_catalog = baseline_catalog,
+            .baseline_all_catalog = baseline_catalog,
             .baseline_runtimes = baseline_runtimes,
             .catalog_snapshot = @constCast(baseline_catalog),
+            .all_catalog_snapshot = @constCast(baseline_catalog),
             .runtime_snapshot = @constCast(baseline_runtimes),
         };
     }
 
+    /// Both catalogs come from the same actual CLI configuration and dynamic
+    /// provider snapshot. No SDK runtime or arbitrary latest registry is used.
+    pub fn initAll(gpa: std.mem.Allocator, io: Io, environ: *const std.process.Environ.Map, agent_dir: ?[]const u8, baseline_catalog: []const providers.ModelInfo, baseline_all_catalog: []const providers.ModelInfo, baseline_runtimes: []const live_state.RuntimeProviderConfig) Registry {
+        var result = init(gpa, io, environ, agent_dir, baseline_catalog, baseline_runtimes);
+        result.baseline_all_catalog = baseline_all_catalog;
+        result.all_catalog_snapshot = @constCast(baseline_all_catalog);
+        return result;
+    }
+
     pub fn deinit(self: *Registry) void {
+        self.mutation_mutex.lockUncancelable(self.io);
+        // The owner must retire its generation before deinit. Wait for any
+        // snapshot already being copied, then release before VM handoff.
+        if (self.access_mutex) |mutex| {
+            mutex.lockUncancelable(self.io);
+            mutex.unlock(self.io);
+        }
         for (self.registrations.items) |*registration| {
             self.handoffCallbacks(registration.name, registration, null);
         }
         if (self.owns_snapshots) {
             if (self.catalog_snapshot.len > 0) self.gpa.free(self.catalog_snapshot);
+            if (self.all_catalog_snapshot.len > 0) self.gpa.free(self.all_catalog_snapshot);
             if (self.runtime_snapshot.len > 0) self.gpa.free(self.runtime_snapshot);
         }
         for (self.registrations.items) |*registration| registration.deinit();
@@ -209,6 +246,111 @@ pub const Registry = struct {
 
     pub fn catalog(self: *const Registry) []const providers.ModelInfo {
         return self.catalog_snapshot;
+    }
+    pub fn allCatalog(self: *const Registry) []const providers.ModelInfo {
+        return self.all_catalog_snapshot;
+    }
+    pub fn nativeMode(self: *const Registry, name: []const u8) bool {
+        const index = self.findIndex(name) orelse return false;
+        return self.registrations.items[index].native_mode;
+    }
+
+    pub const MethodLease = struct {
+        gpa: std.mem.Allocator,
+        provider: []u8,
+        callback_id: []u8,
+        generation: u64,
+        runtime: *js_runtime.Runtime,
+        pub fn deinit(self: *MethodLease) void {
+            self.runtime.deinit();
+            self.gpa.free(self.provider);
+            self.gpa.free(self.callback_id);
+        }
+    };
+    /// Owner snapshot lock must be held by the caller. Pin the exact worker
+    /// view and descriptor before a registration/reload can release them.
+    pub fn captureMethod(self: *const Registry, gpa: std.mem.Allocator, name: []const u8, path: []const u8) !?MethodLease {
+        const index = self.findIndex(name) orelse return null;
+        const registration = &self.registrations.items[index];
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, registration.config_json, .{});
+        defer parsed.deinit();
+        const raw = valueAtProviderPath(parsed.value, path) catch |err| switch (err) {
+            error.ProviderMethodNotRegistered => return null,
+            else => return err,
+        };
+        const method = provider_method_ref.ProviderMethodRef.fromJson(raw) catch return null;
+        if (!std.mem.eql(u8, method.path, path)) return error.ProviderMethodPathMismatch;
+        return try pinMethod(gpa, name, registration, method);
+    }
+    fn pinMethod(gpa: std.mem.Allocator, name: []const u8, registration: *const Registration, method: provider_method_ref.ProviderMethodRef) !MethodLease {
+        const runtime = registration.callbackRuntime(method.callback_id, method.path, method.generation) orelse return error.ProviderMethodRuntimeMissing;
+        if (runtime.backend != .native) return error.NativeTypedProviderOwnerRequired;
+        const provider = try gpa.dupe(u8, name);
+        errdefer gpa.free(provider);
+        const id = try gpa.dupe(u8, method.callback_id);
+        errdefer gpa.free(id);
+        const view = try runtime.pinView();
+        return .{ .gpa = gpa, .provider = provider, .callback_id = id, .generation = method.generation, .runtime = view };
+    }
+    pub fn captureTypedMethod(self: *const Registry, gpa: std.mem.Allocator, name: []const u8, api: []const u8, image: bool) !?MethodLease {
+        const index = self.findIndex(name) orelse return null;
+        const registration = &self.registrations.items[index];
+        if (registration.native_mode) return self.captureMethod(gpa, name, if (image) "generateImages" else "classify");
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, registration.config_json, .{});
+        defer parsed.deinit();
+        const implementations = parsed.value.object.get(if (image) "images" else "classifiers") orelse return null;
+        if (implementations != .object) return null;
+        const implementation = implementations.object.get(api) orelse return null;
+        if (implementation != .object) return null;
+        const raw = implementation.object.get(if (image) "generateImages" else "classify") orelse return null;
+        const method = provider_method_ref.ProviderMethodRef.fromJson(raw) catch return null;
+        const path = try std.fmt.allocPrint(gpa, "{s}.{s}.{s}", .{ if (image) "images" else "classifiers", api, if (image) "generateImages" else "classify" });
+        defer gpa.free(path);
+        if (!std.mem.eql(u8, method.path, path)) return error.ProviderMethodPathMismatch;
+        return try pinMethod(gpa, name, registration, method);
+    }
+    pub fn configurationOwned(self: *const Registry, gpa: std.mem.Allocator, name: []const u8) ![]u8 {
+        const index = self.findIndex(name) orelse return gpa.dupe(u8, "{}");
+        return gpa.dupe(u8, self.registrations.items[index].config_json);
+    }
+    /// Only call after the extension runtime has its regular bound context.
+    /// The returned envelope remains owned by the caller so actions are not
+    /// silently discarded. No getter executes during factory registration.
+    pub fn refreshNativeCatalog(self: *Registry, gpa: std.mem.Allocator, name: []const u8, abort_flag: ?*bool) !?[]u8 {
+        if (self.access_mutex) |mutex| mutex.lockUncancelable(self.io);
+        var locked = true;
+        defer if (locked) if (self.access_mutex) |mutex| mutex.unlock(self.io);
+        const index = self.findIndex(name) orelse return null;
+        if (!self.registrations.items[index].native_mode) return null;
+        var method = (try self.captureMethod(gpa, name, "getAllModels")) orelse (try self.captureMethod(gpa, name, "getModels")) orelse return error.NativeProviderCatalogGetterMissing;
+        defer method.deinit();
+        if (self.access_mutex) |mutex| mutex.unlock(self.io);
+        locked = false;
+        if (!try method.runtime.providerAdmission(method.callback_id, name, method.generation)) return error.NativeProviderAdmissionMismatch;
+        const envelope = try method.runtime.invokeProviderMethod(method.callback_id, "[]", false, abort_flag);
+        errdefer gpa.free(envelope);
+        var parsed = try std.json.parseFromSlice(std.json.Value, gpa, envelope, .{});
+        defer parsed.deinit();
+        const rows = if (parsed.value == .object) parsed.value.object.get("value") orelse return error.InvalidNativeProviderModels else return error.InvalidNativeProviderModels;
+        if (rows != .array) return error.InvalidNativeProviderModels;
+        const bytes = try std.json.Stringify.valueAlloc(gpa, rows, .{});
+        defer gpa.free(bytes);
+        // Publication preserves native mode and every exact callback owner.
+        try self.applyDynamicModels(name, bytes);
+        return envelope;
+    }
+    pub fn nativeProviderNames(self: *const Registry, gpa: std.mem.Allocator) ![][]u8 {
+        var names: std.ArrayList([]u8) = .empty;
+        errdefer {
+            for (names.items) |name| gpa.free(name);
+            names.deinit(gpa);
+        }
+        for (self.registrations.items) |registration| if (registration.native_mode) {
+            const name = try gpa.dupe(u8, registration.name);
+            errdefer gpa.free(name);
+            try names.append(gpa, name);
+        };
+        return names.toOwnedSlice(gpa);
     }
 
     pub fn runtimes(self: *const Registry) []const live_state.RuntimeProviderConfig {
@@ -239,14 +381,25 @@ pub const Registry = struct {
         config_json: []const u8,
         runtime: ?*js_runtime.Runtime,
     ) !void {
+        self.mutation_mutex.lockUncancelable(self.io);
+        defer self.mutation_mutex.unlock(self.io);
         if (name.len == 0) return error.InvalidExtensionProviderName;
         var incoming = try std.json.parseFromSlice(std.json.Value, self.gpa, config_json, .{});
         defer incoming.deinit();
         if (incoming.value != .object) return error.InvalidExtensionProviderConfig;
 
         const existing_index = self.findIndex(name);
-        const effective_json = if (existing_index) |index|
-            try mergeObjects(self.gpa, self.registrations.items[index].config_json, config_json)
+        var native_mode = false;
+        if (runtime == null and existing_index != null) {
+            native_mode = self.registrations.items[existing_index.?].native_mode;
+        } else if (incoming.value.object.get("getModels")) |getter| if (getter == .object) {
+            if (getter.object.get("__piNativeProviderMode")) |mode| native_mode = mode == .bool and mode.bool;
+        };
+        const effective_json = if (existing_index != null and !native_mode and !self.registrations.items[existing_index.?].native_mode) blk: {
+            const index = existing_index.?;
+            break :blk try mergeObjects(self.gpa, self.registrations.items[index].config_json, config_json);
+        } else if (runtime == null and existing_index != null)
+            try mergeObjects(self.gpa, self.registrations.items[existing_index.?].config_json, config_json)
         else
             try self.gpa.dupe(u8, config_json);
         defer self.gpa.free(effective_json);
@@ -257,33 +410,42 @@ pub const Registry = struct {
             self.environ,
             self.agent_dir,
             self.baseline_catalog,
+            self.baseline_all_catalog,
             name,
             config_json,
             effective_json,
             runtime,
             if (existing_index) |index| &self.registrations.items[index] else null,
+            native_mode,
         );
 
         if (existing_index) |index| {
             var old = self.registrations.items[index];
+            if (self.access_mutex) |mutex| mutex.lockUncancelable(self.io);
             self.registrations.items[index] = replacement;
             self.rebuild() catch |err| {
                 self.registrations.items[index] = old;
                 replacement.deinit();
+                if (self.access_mutex) |mutex| mutex.unlock(self.io);
                 return err;
             };
+            if (self.access_mutex) |mutex| mutex.unlock(self.io);
             self.handoffCallbacks(name, &old, &self.registrations.items[index]);
             old.deinit();
         } else {
+            if (self.access_mutex) |mutex| mutex.lockUncancelable(self.io);
             self.registrations.append(self.gpa, replacement) catch |err| {
                 replacement.deinit();
+                if (self.access_mutex) |mutex| mutex.unlock(self.io);
                 return err;
             };
             self.rebuild() catch |err| {
                 var removed = self.registrations.pop().?;
                 removed.deinit();
+                if (self.access_mutex) |mutex| mutex.unlock(self.io);
                 return err;
             };
+            if (self.access_mutex) |mutex| mutex.unlock(self.io);
             self.handoffCallbacks(name, null, &self.registrations.items[self.registrations.items.len - 1]);
         }
     }
@@ -583,11 +745,13 @@ pub const Registry = struct {
             self.environ,
             self.agent_dir,
             self.baseline_catalog,
+            self.baseline_all_catalog,
             name,
             patch.written(),
             effective,
             null,
             &self.registrations.items[index],
+            self.registrations.items[index].native_mode,
         );
         candidate.deinit();
     }
@@ -684,12 +848,19 @@ pub const Registry = struct {
     }
 
     pub fn unregister(self: *Registry, name: []const u8) !bool {
+        self.mutation_mutex.lockUncancelable(self.io);
+        defer self.mutation_mutex.unlock(self.io);
+        if (self.access_mutex) |mutex| mutex.lockUncancelable(self.io);
+        var access_locked = true;
+        defer if (access_locked) if (self.access_mutex) |mutex| mutex.unlock(self.io);
         const index = self.findIndex(name) orelse return false;
         var removed = self.registrations.orderedRemove(index);
         self.rebuild() catch |err| {
             try self.registrations.insert(self.gpa, index, removed);
             return err;
         };
+        if (self.access_mutex) |mutex| mutex.unlock(self.io);
+        access_locked = false;
         self.handoffCallbacks(name, &removed, null);
         removed.deinit();
         return true;
@@ -741,9 +912,11 @@ pub const Registry = struct {
         if (self.registrations.items.len == 0) {
             if (self.owns_snapshots) {
                 if (self.catalog_snapshot.len > 0) self.gpa.free(self.catalog_snapshot);
+                if (self.all_catalog_snapshot.len > 0) self.gpa.free(self.all_catalog_snapshot);
                 if (self.runtime_snapshot.len > 0) self.gpa.free(self.runtime_snapshot);
             }
             self.catalog_snapshot = @constCast(self.baseline_catalog);
+            self.all_catalog_snapshot = @constCast(self.baseline_all_catalog);
             self.runtime_snapshot = @constCast(self.baseline_runtimes);
             self.owns_snapshots = false;
             return;
@@ -761,6 +934,21 @@ pub const Registry = struct {
         }
 
         var runtime_list: std.ArrayList(live_state.RuntimeProviderConfig) = .empty;
+        var all_models: std.ArrayList(providers.ModelInfo) = .empty;
+        errdefer all_models.deinit(self.gpa);
+        for (self.baseline_all_catalog) |model| {
+            const index = self.findIndex(model.providerName());
+            if (index != null and self.registrations.items[index.?].replaces_models) continue;
+            var effective = model;
+            if (index) |at| if (self.registrations.items[at].typed.base_url) |base| {
+                effective.base_url = base;
+            };
+            try all_models.append(self.gpa, effective);
+        }
+        for (self.registrations.items) |registration| if (registration.replaces_models) {
+            try all_models.appendSlice(self.gpa, registration.models_file.model_infos);
+            try all_models.appendSlice(self.gpa, registration.typed.models);
+        };
         errdefer runtime_list.deinit(self.gpa);
         for (self.baseline_runtimes) |runtime| {
             if (!self.providerRegistered(runtime.id)) try runtime_list.append(self.gpa, runtime);
@@ -771,12 +959,16 @@ pub const Registry = struct {
         errdefer if (next_models.len > 0) self.gpa.free(next_models);
         const next_runtimes = try runtime_list.toOwnedSlice(self.gpa);
         errdefer if (next_runtimes.len > 0) self.gpa.free(next_runtimes);
+        const next_all_models = try all_models.toOwnedSlice(self.gpa);
+        errdefer if (next_all_models.len > 0) self.gpa.free(next_all_models);
 
         if (self.owns_snapshots) {
             if (self.catalog_snapshot.len > 0) self.gpa.free(self.catalog_snapshot);
+            if (self.all_catalog_snapshot.len > 0) self.gpa.free(self.all_catalog_snapshot);
             if (self.runtime_snapshot.len > 0) self.gpa.free(self.runtime_snapshot);
         }
         self.catalog_snapshot = next_models;
+        self.all_catalog_snapshot = next_all_models;
         self.runtime_snapshot = next_runtimes;
         self.owns_snapshots = true;
     }

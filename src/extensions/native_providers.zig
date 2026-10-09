@@ -11,6 +11,8 @@ const Callback = struct {
     generation: u64,
     function: c.JSValue,
     receiver: c.JSValue,
+    native_mode: bool = false,
+    root: ?c.JSValue = null,
 };
 const Pending = struct { id: []u8, callback: Callback };
 const Registration = struct { source: c.JSValue, live: c.JSValue, encoded: c.JSValue, generation: u64, ordinal: u64, first_ordinal: u64, native: bool };
@@ -54,6 +56,7 @@ pub const Providers = struct {
         self.engine.gpa.free(callback.path);
         self.engine.freeValue(callback.function);
         self.engine.freeValue(callback.receiver);
+        if (callback.root) |root| self.engine.freeValue(root);
     }
 
     fn define(self: *Providers, object: c.JSValue, key: [*:0]const u8, value: c.JSValue) !void {
@@ -100,6 +103,7 @@ pub const Providers = struct {
         provider: []const u8,
         path: []const u8,
         generation: u64,
+        native_mode: bool,
         active: *std.ArrayList(c.JSValue),
         pending: *std.ArrayList(Pending),
     ) anyerror!c.JSValue {
@@ -118,6 +122,7 @@ pub const Providers = struct {
             try self.define(object, descriptor.callback_kind_field, try engine.fromJsonValue(.{ .string = descriptor.provider_method_kind }));
             try self.define(object, descriptor.callback_path_field, try engine.fromJsonValue(.{ .string = path }));
             try self.define(object, descriptor.callback_generation_field, c.JS_NewInt64(engine.context, @intCast(generation)));
+            try self.define(object, "__piNativeProviderMode", c.pi_js_bool(engine.context, @intFromBool(native_mode)));
             const function = c.JS_DupValue(engine.context, value);
             errdefer engine.freeValue(function);
             const owner = c.JS_DupValue(engine.context, receiver);
@@ -128,6 +133,7 @@ pub const Providers = struct {
                 .generation = generation,
                 .function = function,
                 .receiver = owner,
+                .native_mode = native_mode,
             } });
             return object;
         }
@@ -158,7 +164,7 @@ pub const Providers = struct {
                 defer engine.gpa.free(child_path);
                 const child = try engine.checked(c.JS_GetProperty(engine.context, value, atom));
                 defer engine.freeValue(child);
-                const encoded = try self.walk(child, value, provider, child_path, generation, active, pending);
+                const encoded = try self.walk(child, value, provider, child_path, generation, native_mode, active, pending);
                 if (c.JS_SetPropertyUint32(engine.context, clone, @intCast(index), encoded) < 0) return error.JavaScriptException;
             }
             if (c.JS_SetPropertyStr(engine.context, clone, "length", c.JS_DupValue(engine.context, length)) < 0) return error.JavaScriptException;
@@ -178,7 +184,7 @@ pub const Providers = struct {
             defer engine.gpa.free(child_path);
             const child = try engine.checked(c.JS_GetProperty(engine.context, value, name.atom));
             defer engine.freeValue(child);
-            const encoded = try self.walk(child, value, provider, child_path, generation, active, pending);
+            const encoded = try self.walk(child, value, provider, child_path, generation, native_mode, active, pending);
             if (c.JS_DefinePropertyValue(engine.context, clone, name.atom, encoded, c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
         }
         return clone;
@@ -194,7 +200,8 @@ pub const Providers = struct {
         self.next_generation += 1;
         const source = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
         errdefer engine.freeValue(source);
-        if (!replace) if (self.registrations.get(name)) |previous| try self.copyDefined(source, previous.source);
+        const merge_previous = !replace and if (self.registrations.get(name)) |previous| !previous.native else false;
+        if (merge_previous) if (self.registrations.get(name)) |previous| try self.copyDefined(source, previous.source);
         try self.copyDefined(source, config);
         var active: std.ArrayList(c.JSValue) = .empty;
         defer active.deinit(engine.gpa);
@@ -205,15 +212,24 @@ pub const Providers = struct {
             engine.gpa.free(entry.id);
             self.freeCallback(entry.callback);
         };
-        const encoded = try self.walk(source, c.pi_js_undefined(), name, "", generation, &active, &pending);
+        const encoded = try self.walk(source, c.pi_js_undefined(), name, "", generation, replace, &active, &pending);
         errdefer engine.freeValue(encoded);
+        for (pending.items) |*entry| entry.callback.root = c.JS_DupValue(engine.context, if (replace) config else source);
+        // Native providers are registered by object identity. Their root
+        // methods receive that object as `this`; named configuration methods
+        // continue to receive the merged configuration snapshot.
+        if (replace) for (pending.items) |*entry| {
+            if (std.mem.indexOfScalar(u8, entry.callback.path, '.') != null) continue;
+            engine.freeValue(entry.callback.receiver);
+            entry.callback.receiver = c.JS_DupValue(engine.context, config);
+        };
         const json = try engine.stringify(encoded);
         defer engine.gpa.free(json);
         // Publication update closures mutate the extension's original object.
         // Keep that object rooted beside the immutable transport snapshot.
-        const live_config = if (!replace and self.registrations.contains(name)) c.JS_DupValue(engine.context, self.registrations.get(name).?.live) else c.JS_DupValue(engine.context, config);
+        const live_config = if (merge_previous and self.registrations.contains(name)) c.JS_DupValue(engine.context, self.registrations.get(name).?.live) else c.JS_DupValue(engine.context, config);
         errdefer engine.freeValue(live_config);
-        if (!replace and self.registrations.contains(name)) try self.copyDefined(live_config, source);
+        if (merge_previous and self.registrations.contains(name)) try self.copyDefined(live_config, source);
         // Live objects may be proxies. Reselect the maps and reserve after
         // their define traps return; no map slot survives user callbacks.
         const key = if (self.registrations.contains(name)) null else try engine.gpa.dupe(u8, name);
@@ -303,6 +319,33 @@ pub const Providers = struct {
         defer self.engine.freeValue(pending);
         return self.engine.awaitValue(pending);
     }
+    /// Owner-thread stack lease. Copy roots before a getter/callback can mutate
+    /// registrations; never retain a hash-map slot across extension execution.
+    pub const Invocation = struct {
+        engine: *engine_mod.Engine,
+        provider: []u8,
+        path: []u8,
+        generation: u64,
+        function: c.JSValue,
+        receiver: c.JSValue,
+        root: c.JSValue,
+        native_mode: bool,
+        pub fn deinit(self: *Invocation) void {
+            self.engine.gpa.free(self.provider);
+            self.engine.gpa.free(self.path);
+            self.engine.freeValue(self.function);
+            self.engine.freeValue(self.receiver);
+            self.engine.freeValue(self.root);
+        }
+    };
+    pub fn captureInvocation(self: *Providers, id: []const u8, provider: []const u8, generation: u64) !Invocation {
+        try self.validate(id, provider, generation);
+        const entry = self.callbacks.get(id) orelse return error.UnknownNativeProviderCallback;
+        const owned_provider = try self.engine.gpa.dupe(u8, entry.provider);
+        errdefer self.engine.gpa.free(owned_provider);
+        const owned_path = try self.engine.gpa.dupe(u8, entry.path);
+        return .{ .engine = self.engine, .provider = owned_provider, .path = owned_path, .generation = entry.generation, .function = c.JS_DupValue(self.engine.context, entry.function), .receiver = c.JS_DupValue(self.engine.context, entry.receiver), .root = c.JS_DupValue(self.engine.context, entry.root orelse entry.receiver), .native_mode = entry.native_mode };
+    }
 
     pub fn currentModelsUnsettled(self: *Providers, provider: []const u8, require_getter: bool) !c.JSValue {
         const entry = self.registrations.get(provider) orelse return error.UnknownNativeProviderCallback;
@@ -323,6 +366,10 @@ pub const Providers = struct {
     pub fn live(self: *Providers, id: []const u8, provider: []const u8, generation: u64) bool {
         self.validate(id, provider, generation) catch return false;
         return true;
+    }
+    pub fn nativeMode(self: *Providers, id: []const u8, provider: []const u8, generation: u64) !bool {
+        try self.validate(id, provider, generation);
+        return self.callbacks.get(id).?.native_mode;
     }
 
     /// Old callback IDs remain rooted until the host commits its exact selected

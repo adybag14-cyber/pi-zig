@@ -654,6 +654,8 @@ pub fn build(b: *std.Build) void {
     codemode_step.dependOn(&discovery_process_run.step);
     test_step.dependOn(&discovery_process_run.step);
     const discovery_tests = b.addTest(.{ .root_module = codemode_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native codemode discovery"} });
+    const typed_lease_tests = b.addTest(.{ .root_module = codemode_tests.root_module, .use_llvm = use_llvm, .filters = &.{"native codemode typed owner program"} });
+    b.step("test-typed-model-lease", "Exercise program-scoped typed registry admission and cleanup").dependOn(&b.addRunArtifact(typed_lease_tests).step);
     const discovery_run = b.addRunArtifact(discovery_tests);
     b.step("test-codemode-discovery", "Replay source session discovery globals").dependOn(&discovery_run.step);
     codemode_step.dependOn(&run_codemode_tests.step);
@@ -822,6 +824,24 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, binding_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, binding_tests.root_module);
     binding_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const typed_provider_tests = b.addTest(.{
+        .root_module = binding_tests.root_module,
+        .filters = &.{"typed provider owner"},
+        .use_llvm = use_llvm,
+    });
+    b.step("test-typed-provider-owner", "Exercise exact typed provider callback receiver and signal ownership").dependOn(&b.addRunArtifact(typed_provider_tests).step);
+    const typed_catalog_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_typed_catalog_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"typed catalog"}, .use_llvm = use_llvm });
+    linkQuickJs(b, typed_catalog_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, typed_catalog_tests.root_module);
+    typed_catalog_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-typed-catalog", "Exercise Source typed catalog registration and allocation ownership").dependOn(&b.addRunArtifact(typed_catalog_tests).step);
+    const typed_auth_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_typed_auth_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"typed auth"}, .use_llvm = use_llvm });
+    b.step("test-typed-auth", "Exercise private typed request credential and header ownership").dependOn(&b.addRunArtifact(typed_auth_tests).step);
+    const typed_registry_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_typed_registry_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"typed registry owner"}, .use_llvm = use_llvm });
+    linkQuickJs(b, typed_registry_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, typed_registry_tests.root_module);
+    typed_registry_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-typed-registry-owner", "Exercise actual Main registry snapshots and generation admission").dependOn(&b.addRunArtifact(typed_registry_tests).step);
     const sdk_stream_ownership_tests = b.addTest(.{
         .root_module = binding_tests.root_module,
         .filters = &.{ "SDK lazy chat stream continuation", "terminal admission allocation" },
@@ -1098,6 +1118,18 @@ pub fn build(b: *std.Build) void {
     run_native_runtime_tests.step.dependOn(b.getInstallStep());
     const native_runtime_step = b.step("test-native-runtime", "Exercise the persistent native extension runtime and host without Node");
     native_runtime_step.dependOn(&run_native_runtime_tests.step);
+    const typed_owner_process_tests = b.addTest(.{
+        .root_module = native_runtime_tests.root_module,
+        .filters = &.{"native runtime typed provider owner"},
+        .use_llvm = use_llvm,
+    });
+    const typed_owner_process_run = b.addRunArtifact(typed_owner_process_tests);
+    typed_owner_process_run.step.dependOn(b.getInstallStep());
+    b.step("test-typed-provider-process", "Exercise typed callbacks over the real native owner transport without Node").dependOn(&typed_owner_process_run.step);
+    const typed_main_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime typed Main"}, .use_llvm = use_llvm });
+    const typed_main_process_run = b.addRunArtifact(typed_main_process_tests);
+    typed_main_process_run.step.dependOn(b.getInstallStep());
+    b.step("test-typed-main-process", "Exercise actual Main typed registry and classifier/image/native callbacks without Node").dependOn(&typed_main_process_run.step);
     const late_registration_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_runtime_process_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native runtime late"},

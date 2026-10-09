@@ -877,6 +877,48 @@ fn invoke(gpa: std.mem.Allocator, bindings: *bindings_mod.Bindings, transport: *
         defer gpa.free(arguments);
         return bindings.invokeProviderMethodWithSignal(try requiredText(object, "callbackId"), arguments, append_signal, aborted);
     }
+    if (std.mem.eql(u8, kind, "provider_typed_operation")) {
+        const version = object.get("version") orelse return error.InvalidNativeTypedProviderRequest;
+        if (version != .integer or version.integer != 1) return error.InvalidNativeTypedProviderRequest;
+        const owner = try component_protocol.identifier(object.get("ownerGeneration") orelse return error.InvalidNativeTypedProviderRequest);
+        if (owner != transport.group.renderers.owner_generation) return error.NativeTypedProviderOwnerRetired;
+        const generation = try component_protocol.identifier(object.get("callbackGeneration") orelse return error.InvalidNativeTypedProviderRequest);
+        if (generation == 0 or generation > 9_007_199_254_740_991) return error.InvalidNativeTypedProviderRequest;
+        const operation = std.meta.stringToEnum(@import("native_provider_operations.zig").Operation, try requiredText(object, "operation")) orelse return error.InvalidNativeTypedProviderRequest;
+        const model = try encoded(gpa, object.get("model") orelse return error.InvalidNativeTypedProviderRequest);
+        defer gpa.free(model);
+        const context = try encoded(gpa, object.get("modelContext") orelse return error.InvalidNativeTypedProviderRequest);
+        defer gpa.free(context);
+        const options = try encoded(gpa, object.get("options") orelse return error.InvalidNativeTypedProviderRequest);
+        defer gpa.free(options);
+        const rewritten = if (object.get("authRewritesModel")) |value| value == .bool and value.bool else false;
+        const aborted = if (object.get("aborted")) |value| value == .bool and value.bool else false;
+        return bindings.invokeProviderTypedOperation(try requiredText(object, "callbackId"), try requiredText(object, "providerName"), generation, operation, model, context, options, rewritten, aborted);
+    }
+    if (std.mem.eql(u8, kind, "provider_admission")) {
+        const version = object.get("version") orelse return error.InvalidNativeProviderAdmission;
+        if (version != .integer or version.integer != 1) return error.InvalidNativeProviderAdmission;
+        const owner = try component_protocol.identifier(object.get("ownerGeneration") orelse return error.InvalidNativeProviderAdmission);
+        if (owner != transport.group.renderers.owner_generation) return error.NativeTypedProviderOwnerRetired;
+        const generation = try component_protocol.identifier(object.get("callbackGeneration") orelse return error.InvalidNativeProviderAdmission);
+        const native_mode = try bindings.providers.nativeMode(try requiredText(object, "callbackId"), try requiredText(object, "providerName"), generation);
+        return std.json.Stringify.valueAlloc(gpa, .{ .native = native_mode }, .{});
+    }
+    if (std.mem.eql(u8, kind, "provider_auth_operation")) {
+        const version = object.get("version") orelse return error.InvalidNativeProviderAuthRequest;
+        if (version != .integer or version.integer != 1) return error.InvalidNativeProviderAuthRequest;
+        const owner = try component_protocol.identifier(object.get("ownerGeneration") orelse return error.InvalidNativeProviderAuthRequest);
+        if (owner != transport.group.renderers.owner_generation) return error.NativeTypedProviderOwnerRetired;
+        const generation = try component_protocol.identifier(object.get("callbackGeneration") orelse return error.InvalidNativeProviderAuthRequest);
+        if (generation == 0 or generation > 9_007_199_254_740_991) return error.InvalidNativeProviderAuthRequest;
+        const operation = std.meta.stringToEnum(@import("native_provider_operations.zig").AuthOperation, try requiredText(object, "operation")) orelse return error.InvalidNativeProviderAuthRequest;
+        const credential = try encoded(gpa, object.get("credential") orelse .null);
+        defer gpa.free(credential);
+        const options = try encoded(gpa, object.get("options") orelse return error.InvalidNativeProviderAuthRequest);
+        defer gpa.free(options);
+        const aborted = if (object.get("aborted")) |value| value == .bool and value.bool else false;
+        return bindings.invokeProviderAuthOperation(try requiredText(object, "callbackId"), try requiredText(object, "providerName"), generation, operation, credential, options, aborted);
+    }
     if (std.mem.eql(u8, kind, "provider_callback_commit")) {
         const selected = try encoded(gpa, object.get("callbackIds") orelse std.json.Value{ .array = std.json.Array.init(gpa) });
         defer gpa.free(selected);
