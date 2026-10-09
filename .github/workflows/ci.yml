@@ -72,12 +72,31 @@ jobs:
         # This gate cold-compiles the complete test graph. Bound individual
         # test execution as well as the whole build, as local qualification does.
         timeout-minutes: 45
+        env:
+          PI_SDK_ALLOCATION_SHARD: "0"
+          PI_SDK_ALLOCATION_SHARDS: "8"
         run: |
           if [[ "${{ runner.os }}" == "macOS" ]]; then
             export PI_CODEMODE_ALLOCATION_SHARD=0
             export PI_CODEMODE_ALLOCATION_SHARDS=8
           fi
-          zig build test test-provider-contracts -j2 --test-timeout 180s --summary all
+          # SDK ownership sweeps passed in three to four minutes in the frozen
+          # full qualification; keep every injected allocation case enabled.
+          zig build test test-provider-contracts -j2 --test-timeout 600s --summary all
+
+      - name: Complete exhaustive SDK and model allocation ranges
+        shell: bash
+        timeout-minutes: 30
+        env:
+          PI_SDK_ALLOCATION_SHARDS: "8"
+        run: |
+          # Range zero ran in the full graph. Every remaining failure index
+          # runs here on this same OS, including model worker ownership;
+          # no allocation case is sampled or skipped.
+          for shard in 1 2 3 4 5 6 7; do
+            export PI_SDK_ALLOCATION_SHARD="$shard"
+            zig build test-sdk-allocation-shard -j1 --test-timeout 180s --summary all
+          done
 
       - name: Qualify macOS native environment lifecycle (ReleaseSafe)
         if: runner.os == 'macOS'
