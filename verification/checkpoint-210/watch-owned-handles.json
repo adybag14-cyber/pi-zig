@@ -1,0 +1,91 @@
+{
+  "status": "qualified_windows_scoped",
+  "created_utc": "2026-10-09T14:10:15.3058592+00:00",
+  "baseline": "c4c2cd7adc6c51c368e178c6fea9d695301f552a",
+  "commit": "326ba370c4e3e01b59ad2a21843f13cf0dd956b1",
+  "branch": "fix/windows-watch-owned-retirement-20261009",
+  "donor": "C:\\Users\\adyba\\pi-zig-watch-handle-ci-c4-20261009",
+  "files": [
+    {
+      "path": "src/durable/watch_windows.zig",
+      "sha256": "88DB0A4C4872C705A50E3E6FDFAC03B4B3E074DFA8541934BB809E0007D594A3"
+    }
+  ],
+  "patch": "watch-owned-handles-c4-repair.patch",
+  "patch_sha256": "43580EFCB1334A0AFD0376394D97E174B0D6926BE03602027D61E61F6B9ED51B",
+  "source_failure": "checkpoint210-hosted-windows-c4c2.log:419-2704; watch_windows.zig:182 process-wide expected74 found73",
+  "qualification": "Exact final one-file source; focused WindowsDebug2/2 and ReleaseSafe2/2; test-durable both modes41pass/5skip; non-test production build-exe semantic compile passed",
+  "ownership": "Per-creation ticket records exact handle and owner, so HANDLE value reuse does not confuse close ownership; every created handle must close successfully; exact OVERLAPPED must retire with completion/cancellation/overflow before handle close/buffer retirement",
+  "regression": "Intentionally retained owned event remains detected after unrelated test-created event closes; retiring owned event then passes",
+  "gpa": "Original exhaustive checkAllAllocationFailures remains enabled; initial plus100normal cycles audited; directory/event/cancellation coverage>=101each",
+  "production": "Audit tickets are void and hooks compile away outside tests; production syscall order retained, no process-wide count tolerance",
+  "gates": [
+    {
+      "name": "watch-handle-c4-final-debug-20261009",
+      "pid": 22868,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/durable/watch_windows.zig -ODebug -lc --test-filter \"durable watch Windows\"",
+      "created_utc": "2026-10-09T14:02:44.8301860Z",
+      "launched_utc": "2026-10-09T14:02:44.8262051+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-watch-handle-ci-c4-20261009",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-09T14:02:47.1192511+00:00"
+    },
+    {
+      "name": "watch-handle-c4-final-rs-20261009",
+      "pid": 7580,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" test src/durable/watch_windows.zig -OReleaseSafe -lc --test-filter \"durable watch Windows\"",
+      "created_utc": "2026-10-09T14:02:47.1309450Z",
+      "launched_utc": "2026-10-09T14:02:47.1300041+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-watch-handle-ci-c4-20261009",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-09T14:02:55.7180092+00:00"
+    },
+    {
+      "name": "watch-handle-c4-final-production-compile-20261009",
+      "pid": 49592,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build-exe -ODebug -lc --dep watch -Mroot=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\watch-handle-c4-production-probe.zig -Mwatch=src/durable/watch_windows.zig -fno-emit-bin",
+      "created_utc": "2026-10-09T14:02:55.7261030Z",
+      "launched_utc": "2026-10-09T14:02:55.7252131+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-watch-handle-ci-c4-20261009",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-09T14:02:56.2181455+00:00"
+    },
+    {
+      "name": "watch-handle-c4-final-durable-debug-20261009",
+      "pid": 43056,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-durable -Doptimize=Debug -j1 --test-timeout 600s --summary all",
+      "created_utc": "2026-10-09T14:09:43.3623440Z",
+      "launched_utc": "2026-10-09T14:09:43.3592360+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-watch-handle-ci-c4-20261009",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-09T14:09:53.8413430+00:00"
+    },
+    {
+      "name": "watch-handle-c4-final-durable-rs-20261009",
+      "pid": 47088,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-durable -Doptimize=ReleaseSafe -j1 --test-timeout 600s --summary all",
+      "created_utc": "2026-10-09T14:09:53.8498740Z",
+      "launched_utc": "2026-10-09T14:09:53.8489607+00:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-watch-handle-ci-c4-20261009",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-09T14:10:15.2936382+00:00"
+    }
+  ],
+  "scope_limits": "Does not certify new hosted CI or other failed UI/SDK tests. Parent owns combined inventory regeneration and exact-head publication qualification.",
+  "retained_setup_failure": "watch-handle-c4-durable-debug-20261009 failed unchanged cmd.exe spawn solely because my first isolated PATH omitted System32; corrected final gates include System32"
+}

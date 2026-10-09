@@ -86,7 +86,9 @@ jobs:
 
       - name: Complete exhaustive SDK and model allocation ranges
         shell: bash
-        timeout-minutes: 30
+        # Ubuntu's three SDK sweeps took 24 minutes. The added exhaustive
+        # model-worker sweep needs its own compilation/execution allowance.
+        timeout-minutes: 45
         env:
           PI_SDK_ALLOCATION_SHARDS: "8"
         run: |
@@ -112,6 +114,33 @@ jobs:
           else
             ./zig-out/bin/pi --version
           fi
+
+      - name: Preserve failure source and executable identity
+        if: failure()
+        shell: bash
+        run: |
+          mkdir -p verification/ci-failure
+          printf '%s\n' "run=$GITHUB_RUN_ID" "attempt=$GITHUB_RUN_ATTEMPT" > verification/ci-failure/source.txt
+          git rev-parse HEAD >> verification/ci-failure/source.txt
+          git rev-parse 'HEAD^{tree}' >> verification/ci-failure/source.txt
+          zig version >> verification/ci-failure/source.txt
+          zig build maintenance -- hash-files zig-out/bin/pi zig-out/bin/pi.exe zig-out/bin/pi-conpty-launcher.exe zig-out/bin/pi-terminal-probe zig-out/bin/pi-terminal-probe.exe > verification/ci-failure/binaries.sha256
+
+      - name: Upload failure executables and source receipts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-${{ runner.os }}-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 14
+          path: |
+            verification/ci-failure/**
+            FILES.sha256
+            ARTIFACT-MANIFEST.json
+            zig-out/bin/pi.exe
+            zig-out/bin/pi
+            zig-out/bin/pi-conpty-launcher.exe
+            zig-out/bin/pi-terminal-probe.exe
+            zig-out/bin/pi-terminal-probe
 
   codemode-allocation:
     name: macOS codemode allocation (${{ matrix.shard }})

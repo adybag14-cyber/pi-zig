@@ -1,0 +1,16 @@
+{
+  "status": "qualified native Linux Debug model worker allocation range zero",
+  "head": "bf5d68622c0e7104949d0a8554f69454319eaee1",
+  "sourceManifest": "codemode-model-allocation-ranges-final-inputs.json",
+  "compiledInputs": 954,
+  "results": {
+    "name": "codemode-model-range0-native-linux-debug-20261009",
+    "completedUtc": "2026-10-09T13:53:16.5470174+00:00",
+    "summary": "Build Summary: 7/7 steps succeeded; 2/2 tests passed",
+    "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "stderrSha256": "C087681CDBB16CECDB44EA0721819AE017993932434F96E7A57B576D1EEDDE55"
+  },
+  "scope": "native Linux Debug model worker allocation range zero",
+  "parityCertified": false,
+  "verifiedUtc": "2026-10-09T13:56:23.7353989+00:00"
+}

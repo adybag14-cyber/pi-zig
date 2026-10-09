@@ -1,0 +1,67 @@
+{
+  "status": "qualified all eight exhaustive Codemode model worker allocation ranges in Windows Debug",
+  "head": "bf5d68622c0e7104949d0a8554f69454319eaee1",
+  "sourceManifest": "codemode-model-allocation-ranges-final-inputs.json",
+  "compiledInputs": 954,
+  "results": [
+    {
+      "name": "codemode-model-range0-windows-debug-20261009",
+      "completedUtc": "2026-10-09T13:48:21.1439530+00:00",
+      "summary": "Build Summary: 7/7 steps succeeded; 2/2 tests passed",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "21AF7FD9B81B3A1E3E3E30336B9D78DFDDB9B34B65B181E811C98A006446E3AC"
+    },
+    {
+      "name": "codemode-model-range1-windows-debug-20261009",
+      "completedUtc": "2026-10-09T13:50:32.6803222+00:00",
+      "summary": "Build Summary: 7/7 steps succeeded; 2/2 tests passed",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "B431510F7C80BF83F6942529635EEC67FCE3636F67436F43D8221D6D3AC916EE"
+    },
+    {
+      "name": "codemode-model-range2-windows-debug-20261009",
+      "completedUtc": "2026-10-09T13:50:35.5493908+00:00",
+      "summary": "Build Summary: 7/7 steps succeeded; 2/2 tests passed",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "DFD2E3C133967A049D1A73A32A4C9CE241990D5E71DF85ACB2C748D4EE58ECD5"
+    },
+    {
+      "name": "codemode-model-range3-windows-debug-20261009",
+      "completedUtc": "2026-10-09T13:50:39.2981487+00:00",
+      "summary": "Build Summary: 7/7 steps succeeded; 2/2 tests passed",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "ABF1DDCE9BE3B22BA47250313E425A9CA7DFDB2DA51FEBF0662D3B40DB11BF52"
+    },
+    {
+      "name": "codemode-model-range4-windows-debug-20261009",
+      "completedUtc": "2026-10-09T13:50:43.7837645+00:00",
+      "summary": "Build Summary: 7/7 steps succeeded; 2/2 tests passed",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "7C9CB9F5A26CBF1D6B6B78FC74C9C14E00D2ADCECDFD5F5C6915573C145CEB65"
+    },
+    {
+      "name": "codemode-model-range5-windows-debug-20261009",
+      "completedUtc": "2026-10-09T13:50:48.8976457+00:00",
+      "summary": "Build Summary: 7/7 steps succeeded; 2/2 tests passed",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "AF30E1C58391CBB4CDDA403034A5D00BD8F8225F1A6DE971905BB5DDCF9830AD"
+    },
+    {
+      "name": "codemode-model-range6-windows-debug-20261009",
+      "completedUtc": "2026-10-09T13:50:54.6414815+00:00",
+      "summary": "Build Summary: 7/7 steps succeeded; 2/2 tests passed",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "DE8FD0461ED534C5DDF0DE3780565F3BE84927871DF3D2F44240CF124819F0EF"
+    },
+    {
+      "name": "codemode-model-range7-windows-debug-20261009",
+      "completedUtc": "2026-10-09T13:51:06.9091491+00:00",
+      "summary": "Build Summary: 7/7 steps succeeded; 2/2 tests passed",
+      "stdoutSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "stderrSha256": "C994375A2505211E9FD0EE31A26AE346B705967B193AFAB662FFD52C1062D123"
+    }
+  ],
+  "scope": "all eight exhaustive Codemode model worker allocation ranges in Windows Debug",
+  "parityCertified": false,
+  "verifiedUtc": "2026-10-09T13:54:01.8775531+00:00"
+}

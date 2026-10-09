@@ -1,0 +1,77 @@
+{
+  "status": "focused fixture replay qualified; macOS and exact d8 binary unqualified",
+  "sourceHead": "d8cf881014051d3cdd4d32adb2dc8f509179b367",
+  "donor": "C:\\Users\\adyba\\pi-zig-ui-macos-startup-d8-20261009-a",
+  "patch": "UI-RETAINED-STARTUP-ADMISSION-D8-20261009-b.patch",
+  "patchSha256": "444D7CF7110854F6FE130BE70F2125E6AEC1CDF3D4DCE135299A5C29A74E818B",
+  "sourceSha256": "7AD53DD865012E26CCE5A62FA5E8FE49D0D2DCDD5DEEC0EC9DDF36DED06E1295",
+  "windowsProduct": "qualified955 c4 deadline Debug product, both Debug and ReleaseSafe test replays",
+  "windowsProductSha256": "D695CA7D835906953FA59C1C96B3CDB5EC0264219009CFCA30B6B3F045B334B1",
+  "linuxProducts": "qualified955 c4 deadline Debug and ReleaseSafe respective products",
+  "gates": [
+    {
+      "name": "ui-macos-startup-d8-replay-win-debug-20261009-c",
+      "pid": 13164,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -Doptimize=Debug -j1 --summary all",
+      "created_utc": "2026-10-09T15:29:12.720403Z",
+      "launched_utc": "2026-10-09T16:29:12.7166133+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\ui-macos-startup-d8-replay-20261009-a",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-09T16:29:20.2637533+01:00"
+    },
+    {
+      "name": "ui-macos-startup-d8-replay-win-rs-20261009-b",
+      "pid": 49780,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test -Doptimize=ReleaseSafe -j1 --summary all",
+      "created_utc": "2026-10-09T15:29:36.562285Z",
+      "launched_utc": "2026-10-09T16:29:36.5586855+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\parity-audit-20261007\\ui-macos-startup-d8-replay-20261009-a",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-09T16:29:53.0075537+01:00"
+    },
+    {
+      "name": "ui-macos-startup-d8-replay-linux-debug-20261009-b",
+      "pid": 39652,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec /usr/bin/timeout --signal=TERM --kill-after=5s 900s /bin/sh -c \"set -eu; export ZIG_LIBC=/tmp/pi-ui-native-libc-20261009-b.txt; export PATH=/usr/bin:/bin; cd /tmp/pi-ui-macos-startup-d8-replay-20261009-a; exec /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test -Doptimize=Debug -j1 --summary all\"",
+      "created_utc": "2026-10-09T15:29:36.548745Z",
+      "launched_utc": "2026-10-09T16:29:36.5456133+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-ui-macos-startup-d8-20261009-a",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-09T16:29:48.5126814+01:00"
+    },
+    {
+      "name": "ui-macos-startup-d8-replay-linux-rs-20261009-b",
+      "pid": 49032,
+      "executable": "C:\\Windows\\System32\\wsl.exe",
+      "command_line": "\"C:\\Windows\\System32\\wsl.exe\" --exec /usr/bin/timeout --signal=TERM --kill-after=5s 900s /bin/sh -c \"set -eu; export ZIG_LIBC=/tmp/pi-ui-native-libc-20261009-b.txt; export PATH=/usr/bin:/bin; cd /tmp/pi-ui-macos-startup-d8-replay-rs-20261009-b; exec /mnt/c/Users/adyba/pi-zig-toolchain-20261003/zig-x86_64-linux-0.16.0/zig build test -Doptimize=ReleaseSafe -j1 --summary all\"",
+      "created_utc": "2026-10-09T15:30:43.983759Z",
+      "launched_utc": "2026-10-09T16:30:43.9806508+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-ui-macos-startup-d8-20261009-a",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-09T16:31:03.5438095+01:00"
+    }
+  ],
+  "testsPerGate": 2,
+  "unchangedLateTurnTimingMilliseconds": 5000,
+  "startupAdmissionMilliseconds": 90000,
+  "retainedRenderTimingMilliseconds": 5000,
+  "firstMacFailure": "m5 final assistant persisted at14:34:36, tool witness result-ready, empty stderr; cells still Working with tool result at14:34:38,18frames",
+  "limitations": [
+    "The hosted d8 late-turn failure remains unresolved",
+    "No local macOS execution is claimed",
+    "Existing955 binaries do not constitute exactd8 product evidence",
+    "Startup repair has not been proven causal for the hosted second failure",
+    "Original Mac log and failed initial generic-header helper replay retained"
+  ]
+}
