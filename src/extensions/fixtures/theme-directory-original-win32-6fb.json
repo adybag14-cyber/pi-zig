@@ -1,0 +1,317 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "platform": "win32",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "home": "C:\\ProofHome",
+      "value": null,
+      "result": "C:\\ProofHome\\.pi\\agent\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "",
+      "result": "C:\\ProofHome\\.pi\\agent\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "~",
+      "result": "C:\\ProofHome\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "~/nested",
+      "result": "C:\\ProofHome\\nested\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "~\\nested",
+      "result": "C:\\ProofHome\\nested\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "relative",
+      "result": "relative\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "../relative",
+      "result": "..\\relative\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": " @relative ",
+      "result": " @relative \\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "file:///C:/Data/a%20b",
+      "result": "C:\\Data\\a b\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "file:///tmp/a%20b",
+      "errorName": "TypeError",
+      "errorCode": "ERR_INVALID_FILE_URL_PATH"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "file://server/share/x",
+      "result": "\\\\server\\share\\x\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "FILE:///C:/Data/x",
+      "result": ".\\FILE:\\C:\\Data\\x\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "/c",
+      "result": "C:\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "/c/a/b",
+      "result": "C:\\a\\b\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "/mnt/c/a/b",
+      "result": "C:\\a\\b\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "/MNT/c/a/b",
+      "result": "C:\\a\\b\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "/cygdrive/d/a/b",
+      "result": "D:\\a\\b\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "/foo/bar",
+      "result": "\\foo\\bar\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "//server/share",
+      "result": "\\\\server\\share\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "/c/a\\b",
+      "result": "\\c\\a\\b\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "/c/a\nb",
+      "result": "\\c\\a\nb\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "/c/a b",
+      "result": "\\c\\a b\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "C:\\Data\\folder",
+      "result": "C:\\Data\\folder\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "C:/Data/folder",
+      "result": "C:\\Data\\folder\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "C:relative",
+      "result": "C:relative\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "../a\\b",
+      "result": "..\\a\\b\\themes"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "file:///C:/bad%2Fseparator",
+      "errorName": "TypeError",
+      "errorCode": "ERR_INVALID_FILE_URL_PATH"
+    },
+    {
+      "home": "C:\\ProofHome",
+      "value": "file:///C:/bad%ZZ",
+      "errorName": "URIError"
+    },
+    {
+      "home": "",
+      "value": null,
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "~",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "~/nested",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "~\\nested",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "relative",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "../relative",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": " @relative ",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "file:///C:/Data/a%20b",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "file:///tmp/a%20b",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "file://server/share/x",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "FILE:///C:/Data/x",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "/c",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "/c/a/b",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "/mnt/c/a/b",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "/MNT/c/a/b",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "/cygdrive/d/a/b",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "/foo/bar",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "//server/share",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "/c/a\\b",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "/c/a\nb",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "/c/a b",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "C:\\Data\\folder",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "C:/Data/folder",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "C:relative",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "../a\\b",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "file:///C:/bad%2Fseparator",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    },
+    {
+      "home": "",
+      "value": "file:///C:/bad%ZZ",
+      "errorName": "SystemError",
+      "errorCode": "ERR_SYSTEM_ERROR"
+    }
+  ]
+}

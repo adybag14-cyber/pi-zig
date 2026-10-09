@@ -1111,6 +1111,19 @@ pub fn build(b: *std.Build) void {
     const theme_constructor_run = b.addRunArtifact(theme_constructor_tests);
     b.step("test-theme-constructor-6fb", "Replay selected Source Theme constructors fallback slots and retained colors").dependOn(&theme_constructor_run.step);
     test_step.dependOn(&theme_constructor_run.step);
+    const theme_watch_module = b.createModule(.{ .root_source_file = b.path("src/native_theme_watch_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, theme_watch_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, theme_watch_module);
+    theme_watch_module.addImport("catalog_tool", catalog_tool);
+    const theme_watch_tests = b.addTest(.{ .root_module = theme_watch_module, .use_llvm = use_llvm, .filters = &.{"Source6fb Theme watcher"} });
+    const theme_watch_run = b.addRunArtifact(theme_watch_tests);
+    b.step("test-native-theme-watchers", "Replay Source custom Theme watcher debounce lifecycle and native events").dependOn(&theme_watch_run.step);
+    test_step.dependOn(&theme_watch_run.step);
+    const theme_watch_process_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_theme_watch_process_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const theme_watch_process_run = b.addRunArtifact(theme_watch_process_tests);
+    theme_watch_process_run.step.dependOn(&sdk_install.step);
+    b.step("test-native-theme-watchers-process", "Prove retained Theme callbacks reload through the actual no-Node SDK worker").dependOn(&theme_watch_process_run.step);
+    test_step.dependOn(&theme_watch_process_run.step);
     const dialog_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_dialog_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
         .use_llvm = use_llvm,

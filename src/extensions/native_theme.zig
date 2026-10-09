@@ -1,5 +1,6 @@
 //! Retained Theme instances and source-authentic color/token resolution.
 const std = @import("std");
+const builtin = @import("builtin");
 const engine_mod = @import("engine.zig");
 const color_api = @import("native_color.zig");
 const colors = color_api.colors;
@@ -581,14 +582,24 @@ fn moduleOperation(engine: *engine_mod.Engine, module: c.JSValue, method: Module
             return loadFile(engine, engine.native_io orelse return error.NativeIoUnavailable, path, if (c.JS_IsUndefined(arg(args, 1))) null else try color_api.mode(engine, arg(args, 1)));
         },
         .initTheme => {
-            const name = if (c.JS_IsUndefined(arg(args, 0))) try engine.gpa.dupe(u8, "system") else try engine.toString(arg(args, 0));
-            defer engine.gpa.free(name);
-            const selected = loadByName(engine, name, null) catch |err| blk: {
+            const supplied = arg(args, 0);
+            const selected_name = if (c.JS_IsUndefined(supplied) or c.JS_IsNull(supplied)) try jsString(engine, "system") else c.JS_DupValue(engine.context, supplied);
+            defer engine.freeValue(selected_name);
+            try put(engine, module, "currentThemeName", c.JS_DupValue(engine.context, selected_name));
+            var loaded = true;
+            const selected = loadByValue(engine, selected_name, null) catch |err| blk: {
                 if (err == error.OutOfMemory) return err;
+                loaded = false;
+                try put(engine, module, "currentThemeName", try jsString(engine, "system"));
                 break :blk try createSystem(engine, null);
             };
             try put(engine, module, "current", selected);
             try put(engine, module, "resourceSignature", c.pi_js_undefined());
+            if (loaded and c.JS_ToBool(engine.context, arg(args, 1)) != 0) @import("native_theme_watch.zig").start(engine, module) catch |err| {
+                if (err == error.OutOfMemory) return err;
+                try put(engine, module, "currentThemeName", try jsString(engine, "system"));
+                try put(engine, module, "current", try createSystem(engine, null));
+            };
         },
     }
     return c.pi_js_undefined();
@@ -802,6 +813,7 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     const map_constructor = try get(engine, global, "Map");
     defer engine.freeValue(map_constructor);
     try put(engine, module, "registeredThemes", try engine.checked(c.JS_CallConstructor(engine.context, map_constructor, 0, null)));
+    try @import("native_theme_watch.zig").initialize(engine, module);
     const symbol = try get(engine, global, "Symbol");
     defer engine.freeValue(symbol);
     try put(engine, module, "iteratorSymbol", try get(engine, symbol, "iterator"));
@@ -953,12 +965,62 @@ pub fn hydrateState(engine: *engine_mod.Engine, state: c.JSValue) !void {
     try put(engine, module, "resourceSignature", c.pi_js_undefined());
     committed = true;
 }
-fn moduleState(engine: *engine_mod.Engine) !c.JSValue {
+pub fn moduleState(engine: *engine_mod.Engine) !c.JSValue {
     const exports = engine.native_module_values.get("pi-coding-agent") orelse return error.NativeThemeModuleUnavailable;
     const constructor = try get(engine, exports, "Theme");
     defer engine.freeValue(constructor);
     const state: *Constructor = @ptrCast(@alignCast(c.JS_GetOpaque(constructor, c.JS_GetClassID(constructor)) orelse return error.NativeThemeConstructorUnavailable));
     return c.JS_DupValue(engine.context, state.module);
+}
+pub fn onThemeChange(engine: *engine_mod.Engine, callback: c.JSValue) !void {
+    const module = try moduleState(engine);
+    defer engine.freeValue(module);
+    try put(engine, module, "onThemeChangeCallback", c.JS_DupValue(engine.context, callback));
+}
+pub fn setThemeInstance(engine: *engine_mod.Engine, instance: c.JSValue) !void {
+    const module = try moduleState(engine);
+    defer engine.freeValue(module);
+    try put(engine, module, "current", c.JS_DupValue(engine.context, instance));
+    try put(engine, module, "resourceSignature", c.pi_js_undefined());
+    try put(engine, module, "currentThemeName", try jsString(engine, "<in-memory>"));
+    try @import("native_theme_watch.zig").stop(engine, module);
+    try @import("native_theme_watch.zig").notify(engine, module);
+}
+fn selectNamed(engine: *engine_mod.Engine, module: c.JSValue, name: c.JSValue, watch: bool) !void {
+    try put(engine, module, "currentThemeName", c.JS_DupValue(engine.context, name));
+    try put(engine, module, "current", try loadByValue(engine, name, null));
+    try put(engine, module, "resourceSignature", c.pi_js_undefined());
+    if (watch) try @import("native_theme_watch.zig").start(engine, module);
+    try @import("native_theme_watch.zig").notify(engine, module);
+}
+pub fn setTheme(engine: *engine_mod.Engine, name: c.JSValue, watch: bool) !c.JSValue {
+    const module = try moduleState(engine);
+    defer engine.freeValue(module);
+    const result = try object(engine);
+    errdefer engine.freeValue(result);
+    selectNamed(engine, module, name, watch) catch |err| {
+        if (err == error.OutOfMemory) return err;
+        const original = if (engine.captured_exception) |value| c.JS_DupValue(engine.context, value) else c.pi_js_undefined();
+        defer engine.freeValue(original);
+        try put(engine, module, "currentThemeName", try jsString(engine, "system"));
+        try put(engine, module, "current", try createSystem(engine, null));
+        try put(engine, module, "resourceSignature", c.pi_js_undefined());
+        const helpers = @import("native_js_values.zig");
+        const error_constructor = try helpers.global(engine, "Error");
+        defer engine.freeValue(error_constructor);
+        const is_error = c.JS_IsInstanceOf(engine.context, original, error_constructor);
+        if (is_error < 0) return helpers.capture(engine);
+        const message = if (is_error != 0) try get(engine, original, "message") else if (c.JS_IsUndefined(original)) try jsString(engine, @errorName(err)) else blk: {
+            const string_constructor = try helpers.global(engine, "String");
+            defer engine.freeValue(string_constructor);
+            break :blk try helpers.call(engine, string_constructor, c.pi_js_undefined(), &.{original});
+        };
+        try put(engine, result, "success", c.pi_js_bool(engine.context, 0));
+        try put(engine, result, "error", message);
+        return result;
+    };
+    try put(engine, result, "success", c.pi_js_bool(engine.context, 1));
+    return result;
 }
 pub fn createSystem(engine: *engine_mod.Engine, color_mode: ?ColorMode) !c.JSValue {
     const system = @import("../themes/system_theme.zig");
@@ -1038,19 +1100,43 @@ pub fn createSystem(engine: *engine_mod.Engine, color_mode: ?ColorMode) !c.JSVal
     return engine.checked(c.JS_CallConstructor(engine.context, constructor, args.len, &args));
 }
 pub fn loadByName(engine: *engine_mod.Engine, name: []const u8, color_mode: ?ColorMode) !c.JSValue {
-    if (std.mem.eql(u8, name, "system")) return createSystem(engine, color_mode);
+    const key = try jsString(engine, name);
+    defer engine.freeValue(key);
+    return loadByValue(engine, key, color_mode);
+}
+pub fn loadByValue(engine: *engine_mod.Engine, key: c.JSValue, color_mode: ?ColorMode) !c.JSValue {
+    const system_name = try jsString(engine, "system");
+    defer engine.freeValue(system_name);
+    if (c.JS_IsStrictEqual(engine.context, key, system_name)) return createSystem(engine, color_mode);
     const module = try moduleState(engine);
     defer engine.freeValue(module);
     const registered = try get(engine, module, "registeredThemes");
     defer engine.freeValue(registered);
-    const key = try jsString(engine, name);
-    defer engine.freeValue(key);
     var args = [_]c.JSValue{key};
     const existing = try invoke(engine, registered, "get", &args);
-    if (!c.JS_IsUndefined(existing)) return existing;
+    if (c.JS_ToBool(engine.context, existing) != 0) return existing;
     engine.freeValue(existing);
+    const name = try engine.toString(key);
+    defer engine.gpa.free(name);
     if (std.mem.eql(u8, name, "dark")) return fromJson(engine, @embedFile("../themes/fixtures/dark-original-6fb.json"), null, color_mode);
     if (std.mem.eql(u8, name, "light")) return fromJson(engine, @embedFile("../themes/fixtures/light-original-6fb.json"), null, color_mode);
+    if (engine.native_io) |io| {
+        const directory = try @import("native_theme_watch.zig").directory(engine);
+        defer engine.gpa.free(directory);
+        const filename = try std.fmt.allocPrint(engine.gpa, "{s}.json", .{name});
+        defer engine.gpa.free(filename);
+        const path = try @import("node_path.zig").join(engine.gpa, &.{ directory, filename }, if (builtin.os.tag == .windows) .win32 else .posix);
+        defer engine.gpa.free(path);
+        const present = blk: {
+            std.Io.Dir.cwd().access(io, path, .{}) catch break :blk false;
+            break :blk true;
+        };
+        if (present) {
+            const content = try std.Io.Dir.cwd().readFileAlloc(io, path, engine.gpa, .limited(4 * 1024 * 1024));
+            defer engine.gpa.free(content);
+            return fromJsonWithValidation(engine, content, null, color_mode, try strictFileValidation(engine));
+        }
+    }
     const message = try std.fmt.allocPrint(engine.gpa, "Theme not found: {s}", .{name});
     defer engine.gpa.free(message);
     return color_api.throwError(engine, message);

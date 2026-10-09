@@ -1,0 +1,399 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "script": "const file=root+'/themes/custom.json',write=color=>fs.writeFileSync(file,JSON.stringify({...base,name:'custom',colors:{...base.colors,accent:color}}));write('#112233');const oldSet=globalThis.setTimeout,oldClear=globalThis.clearTimeout,timers=new Map(),timerEvents=[],observations=[];let id=0,changes=0;globalThis.setTimeout=(callback,delay)=>{const current=++id;timers.set(current,callback);timerEvents.push(['timeout',current,delay]);return current};globalThis.clearTimeout=current=>{timers.delete(current);timerEvents.push(['clear',current])};const observe=stage=>observations.push({stage,name:api.theme.name,accent:api.theme.colors.accent,changes,watchers:watchers.map(w=>({closed:w.closed})),pending:[...timers.keys()],timerEvents:timerEvents.splice(0)}),fire=()=>{const entries=[...timers];timers.clear();for(const[,callback]of entries)callback()};try{api.onThemeChange(()=>changes++);api.initTheme('custom',true);observe('initial');watchers[0].listener('change','other.json');observe('other-filename');watchers[0].listener('rename',undefined);observe('missing-filename');watchers[0].listener('change','custom.json');observe('debounced');write('#010203');fire();observe('valid-reload');fs.writeFileSync(file,'{invalid');watchers[0].listener('change','custom.json');fire();observe('invalid-retains');fs.unlinkSync(file);watchers[0].listener('rename','custom.json');fire();observe('missing-retains');write('#334455');watchers[0].listener('change','custom.json');api.setTheme('dark',false);observe('switch-without-watcher');fire();observe('stale-timer');api.initTheme('custom',true);watchers[1].listener('change','custom.json');watchers[1].error();observe('watch-error-pending');fire();observe('watch-error-pending-reload');api.setThemeInstance(api.getThemeByName('dark'));observe('instance-stops');api.initTheme('custom',true);watchers[2].listener('change','custom.json');api.stopThemeWatcher();observe('stop-clears');fire();observe('stopped-no-reload');return observations}finally{api.stopThemeWatcher();api.onThemeChange(undefined);globalThis.setTimeout=oldSet;globalThis.clearTimeout=oldClear}",
+  "structural": [
+    {
+      "script": "const reason={};api.initTheme({toString(){throw reason}},false);return {name:api.theme.name}",
+      "result": {
+        "name": "system"
+      }
+    },
+    {
+      "script": "api.initTheme(null,true);return {name:api.theme.name}",
+      "result": {
+        "name": "system"
+      }
+    },
+    {
+      "script": "const reason={original:true};api.onThemeChange(()=>{throw reason});const result=api.setTheme('dark',false);return {result,name:api.theme.name}",
+      "result": {
+        "result": {
+          "success": false,
+          "error": "[object Object]"
+        },
+        "name": "system"
+      }
+    },
+    {
+      "script": "const reason={original:true};api.onThemeChange(()=>{throw reason});try{api.setThemeInstance(api.getThemeByName('dark'))}catch(e){return {same:e===reason,name:api.theme.name}}",
+      "result": {
+        "same": true,
+        "name": "dark"
+      }
+    },
+    {
+      "script": "const result=api.setTheme('does-not-exist',false);return {result,name:api.theme.name}",
+      "result": {
+        "result": {
+          "success": false,
+          "error": "Theme not found: does-not-exist"
+        },
+        "name": "system"
+      }
+    },
+    {
+      "script": "const key={includes(){return false},toString(){throw Error('name coerced')}},instance={name:key};api.setRegisteredThemes([instance]);api.initTheme(key,false);return api.theme.name===key",
+      "result": true
+    },
+    {
+      "script": "const reason={message:{payload:true}},calls=[],old=Error;try{globalThis.Error={[Symbol.hasInstance](value){calls.push(value===reason);return true}};api.onThemeChange(()=>{throw reason});const result=api.setTheme('dark',false);return {result,same:result.error===reason.message,calls,name:api.theme.name}}finally{globalThis.Error=old}",
+      "result": {
+        "result": {
+          "success": false,
+          "error": {
+            "payload": true
+          }
+        },
+        "same": true,
+        "calls": [
+          true
+        ],
+        "name": "system"
+      }
+    }
+  ],
+  "observations": [
+    {
+      "stage": "initial",
+      "name": "custom",
+      "accent": {
+        "kind": "rgb",
+        "r": 17,
+        "g": 34,
+        "b": 51
+      },
+      "changes": 0,
+      "watchers": [
+        {
+          "closed": false
+        }
+      ],
+      "pending": [],
+      "events": []
+    },
+    {
+      "stage": "other-filename",
+      "name": "custom",
+      "accent": {
+        "kind": "rgb",
+        "r": 17,
+        "g": 34,
+        "b": 51
+      },
+      "changes": 0,
+      "watchers": [
+        {
+          "closed": false
+        }
+      ],
+      "pending": [],
+      "events": []
+    },
+    {
+      "stage": "missing-filename",
+      "name": "custom",
+      "accent": {
+        "kind": "rgb",
+        "r": 17,
+        "g": 34,
+        "b": 51
+      },
+      "changes": 0,
+      "watchers": [
+        {
+          "closed": false
+        }
+      ],
+      "pending": [
+        1
+      ],
+      "events": [
+        [
+          "timeout",
+          1,
+          100
+        ]
+      ]
+    },
+    {
+      "stage": "debounced",
+      "name": "custom",
+      "accent": {
+        "kind": "rgb",
+        "r": 17,
+        "g": 34,
+        "b": 51
+      },
+      "changes": 0,
+      "watchers": [
+        {
+          "closed": false
+        }
+      ],
+      "pending": [
+        2
+      ],
+      "events": [
+        [
+          "clear",
+          1
+        ],
+        [
+          "timeout",
+          2,
+          100
+        ]
+      ]
+    },
+    {
+      "stage": "valid-reload",
+      "name": "custom",
+      "accent": {
+        "kind": "rgb",
+        "r": 1,
+        "g": 2,
+        "b": 3
+      },
+      "changes": 1,
+      "watchers": [
+        {
+          "closed": false
+        }
+      ],
+      "pending": [],
+      "events": []
+    },
+    {
+      "stage": "invalid-retains",
+      "name": "custom",
+      "accent": {
+        "kind": "rgb",
+        "r": 1,
+        "g": 2,
+        "b": 3
+      },
+      "changes": 1,
+      "watchers": [
+        {
+          "closed": false
+        }
+      ],
+      "pending": [],
+      "events": [
+        [
+          "timeout",
+          3,
+          100
+        ]
+      ]
+    },
+    {
+      "stage": "missing-retains",
+      "name": "custom",
+      "accent": {
+        "kind": "rgb",
+        "r": 1,
+        "g": 2,
+        "b": 3
+      },
+      "changes": 1,
+      "watchers": [
+        {
+          "closed": false
+        }
+      ],
+      "pending": [],
+      "events": [
+        [
+          "timeout",
+          4,
+          100
+        ]
+      ]
+    },
+    {
+      "stage": "switch-without-watcher",
+      "name": "dark",
+      "accent": {
+        "kind": "rgb",
+        "r": 167,
+        "g": 152,
+        "b": 215
+      },
+      "changes": 2,
+      "watchers": [
+        {
+          "closed": false
+        }
+      ],
+      "pending": [
+        5
+      ],
+      "events": [
+        [
+          "timeout",
+          5,
+          100
+        ]
+      ]
+    },
+    {
+      "stage": "stale-timer",
+      "name": "dark",
+      "accent": {
+        "kind": "rgb",
+        "r": 167,
+        "g": 152,
+        "b": 215
+      },
+      "changes": 2,
+      "watchers": [
+        {
+          "closed": false
+        }
+      ],
+      "pending": [],
+      "events": []
+    },
+    {
+      "stage": "watch-error-pending",
+      "name": "custom",
+      "accent": {
+        "kind": "rgb",
+        "r": 1,
+        "g": 2,
+        "b": 3
+      },
+      "changes": 2,
+      "watchers": [
+        {
+          "closed": true
+        },
+        {
+          "closed": true
+        }
+      ],
+      "pending": [
+        6
+      ],
+      "events": [
+        [
+          "timeout",
+          6,
+          100
+        ]
+      ]
+    },
+    {
+      "stage": "watch-error-pending-reload",
+      "name": "custom",
+      "accent": {
+        "kind": "rgb",
+        "r": 51,
+        "g": 68,
+        "b": 85
+      },
+      "changes": 3,
+      "watchers": [
+        {
+          "closed": true
+        },
+        {
+          "closed": true
+        }
+      ],
+      "pending": [],
+      "events": []
+    },
+    {
+      "stage": "instance-stops",
+      "name": "dark",
+      "accent": {
+        "kind": "rgb",
+        "r": 167,
+        "g": 152,
+        "b": 215
+      },
+      "changes": 4,
+      "watchers": [
+        {
+          "closed": true
+        },
+        {
+          "closed": true
+        }
+      ],
+      "pending": [],
+      "events": []
+    },
+    {
+      "stage": "stop-clears",
+      "name": "custom",
+      "accent": {
+        "kind": "rgb",
+        "r": 51,
+        "g": 68,
+        "b": 85
+      },
+      "changes": 4,
+      "watchers": [
+        {
+          "closed": true
+        },
+        {
+          "closed": true
+        },
+        {
+          "closed": true
+        }
+      ],
+      "pending": [],
+      "events": [
+        [
+          "timeout",
+          7,
+          100
+        ],
+        [
+          "clear",
+          7
+        ]
+      ]
+    },
+    {
+      "stage": "stopped-no-reload",
+      "name": "custom",
+      "accent": {
+        "kind": "rgb",
+        "r": 51,
+        "g": 68,
+        "b": 85
+      },
+      "changes": 4,
+      "watchers": [
+        {
+          "closed": true
+        },
+        {
+          "closed": true
+        },
+        {
+          "closed": true
+        }
+      ],
+      "pending": [],
+      "events": []
+    }
+  ]
+}
