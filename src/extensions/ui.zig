@@ -203,6 +203,8 @@ test "native main context carries admitted key overrides kitty and strict files 
 pub const NativeToolSelection = @import("tool_activation.zig").Selection;
 
 pub const Controller = struct {
+    terminal_capabilities: ?@import("../tui/terminal_image.zig").TerminalCapabilities = null,
+    terminal_cell_dimensions: ?@import("../tui/terminal_image.zig").CellDimensions = null,
     gpa: std.mem.Allocator,
     io: Io,
     has_ui: bool,
@@ -308,6 +310,12 @@ pub const Controller = struct {
         self.state_mutex.lockUncancelable(self.io);
         defer self.state_mutex.unlock(self.io);
         self.dialog_keybindings = bindings;
+    }
+    pub fn bindTerminalState(self: *Controller, capabilities: @import("../tui/terminal_image.zig").TerminalCapabilities, cells: @import("../tui/terminal_image.zig").CellDimensions) void {
+        self.state_mutex.lockUncancelable(self.io);
+        defer self.state_mutex.unlock(self.io);
+        self.terminal_capabilities = capabilities;
+        self.terminal_cell_dimensions = cells.normalized();
     }
 
     fn dialogBindings(self: *Controller) ?*const Keybindings {
@@ -666,6 +674,15 @@ pub const Controller = struct {
         errdefer out.deinit();
         try out.writer.writeAll("{\"mode\":");
         try std.json.Stringify.value(options.mode, .{}, &out.writer);
+        if (self.terminal_capabilities) |caps| {
+            const images: ?[]const u8 = if (caps.images) |protocol| @tagName(protocol) else null;
+            try out.writer.writeAll(",\"terminalCapabilities\":");
+            try std.json.Stringify.value(.{ .images = images, .trueColor = caps.true_color, .hyperlinks = caps.hyperlinks }, .{}, &out.writer);
+        }
+        if (self.terminal_cell_dimensions) |cells| {
+            try out.writer.writeAll(",\"cellDimensions\":");
+            try std.json.Stringify.value(.{ .widthPx = cells.width_px, .heightPx = cells.height_px }, .{}, &out.writer);
+        }
         if (options.runtime_bound) |bound| try out.writer.print(",\"nativeRuntimeBound\":{}", .{bound});
         if (options.settings_json) |settings| {
             var parsed_settings = try std.json.parseFromSlice(std.json.Value, allocator, settings, .{});

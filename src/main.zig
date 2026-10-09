@@ -3954,6 +3954,7 @@ fn runMain(init: std.process.Init) !void {
     extension_ui.bindKeybindings(&terminal_keybindings);
     defer extension_ui.bindKeybindings(null);
     const terminal_capabilities = tui.terminal_image.detectCapabilities(tui.terminal_image.environmentFromMap(environ), build_options.os.tag == .windows, false);
+    extension_ui.bindTerminalState(terminal_capabilities, .{});
     var terminal_theme = try extensions.terminal_theme_producer.Producer.init(gpa, io, &extension_ui, if (terminal_capabilities.true_color) .truecolor else .@"256color", Io.File.stdout().isTty(io) catch false);
     defer terminal_theme.deinit();
     try selectTerminalTheme(&terminal_theme, &theme_registry);
