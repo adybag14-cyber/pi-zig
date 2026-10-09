@@ -1,0 +1,364 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "rows": [
+    {
+      "phases": [
+        [
+          "a-b",
+          "a_b"
+        ],
+        [
+          "a_b",
+          "a-b"
+        ]
+      ],
+      "initial": [
+        {
+          "name": "mcp__native__a_b_d5b2fced",
+          "exposure": "direct",
+          "parametersId": 1,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__a_b_e2c39898",
+          "exposure": "direct",
+          "parametersId": 3,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        }
+      ],
+      "after": [
+        {
+          "name": "mcp__native__a_b_d5b2fced",
+          "exposure": "direct",
+          "parametersId": 6,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__a_b_e2c39898",
+          "exposure": "direct",
+          "parametersId": 4,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        }
+      ],
+      "registrations": [
+        {
+          "name": "mcp__native__a_b_d5b2fced",
+          "exposure": "direct",
+          "parametersId": 1,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__a_b_e2c39898",
+          "exposure": "direct",
+          "parametersId": 3,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__a_b_e2c39898",
+          "exposure": "direct",
+          "parametersId": 4,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__a_b_d5b2fced",
+          "exposure": "direct",
+          "parametersId": 6,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        }
+      ]
+    },
+    {
+      "phases": [
+        [
+          "a-b",
+          "plain"
+        ],
+        [
+          "a_b",
+          "plain"
+        ]
+      ],
+      "initial": [
+        {
+          "name": "mcp__native__a_b",
+          "exposure": "direct",
+          "parametersId": 1,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__plain",
+          "exposure": "direct",
+          "parametersId": 3,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        }
+      ],
+      "after": [
+        {
+          "name": "mcp__native__a_b",
+          "exposure": "hidden",
+          "parametersId": 1,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__plain",
+          "exposure": "direct",
+          "parametersId": 6,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__a_b_e2c39898",
+          "exposure": "direct",
+          "parametersId": 4,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        }
+      ],
+      "registrations": [
+        {
+          "name": "mcp__native__a_b",
+          "exposure": "direct",
+          "parametersId": 1,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__plain",
+          "exposure": "direct",
+          "parametersId": 3,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__a_b_e2c39898",
+          "exposure": "direct",
+          "parametersId": 4,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__plain",
+          "exposure": "direct",
+          "parametersId": 6,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__a_b",
+          "exposure": "hidden",
+          "parametersId": 1,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        }
+      ]
+    },
+    {
+      "phases": [
+        [
+          "plain",
+          "plain"
+        ],
+        [
+          "plain"
+        ]
+      ],
+      "initial": [
+        {
+          "name": "mcp__native__plain",
+          "exposure": "direct",
+          "parametersId": 1,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__plain_e81a130a",
+          "exposure": "direct",
+          "parametersId": 3,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        }
+      ],
+      "after": [
+        {
+          "name": "mcp__native__plain",
+          "exposure": "direct",
+          "parametersId": 4,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__plain_e81a130a",
+          "exposure": "hidden",
+          "parametersId": 3,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        }
+      ],
+      "registrations": [
+        {
+          "name": "mcp__native__plain",
+          "exposure": "direct",
+          "parametersId": 1,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__plain_e81a130a",
+          "exposure": "direct",
+          "parametersId": 3,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__plain",
+          "exposure": "direct",
+          "parametersId": 4,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__plain_e81a130a",
+          "exposure": "hidden",
+          "parametersId": 3,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        }
+      ]
+    },
+    {
+      "phases": [
+        [
+          "old",
+          "stay"
+        ],
+        [
+          "new",
+          "stay"
+        ]
+      ],
+      "initial": [
+        {
+          "name": "mcp__native__old",
+          "exposure": "direct",
+          "parametersId": 1,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__stay",
+          "exposure": "direct",
+          "parametersId": 3,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        }
+      ],
+      "after": [
+        {
+          "name": "mcp__native__old",
+          "exposure": "hidden",
+          "parametersId": 1,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__stay",
+          "exposure": "direct",
+          "parametersId": 6,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__new",
+          "exposure": "direct",
+          "parametersId": 4,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        }
+      ],
+      "registrations": [
+        {
+          "name": "mcp__native__old",
+          "exposure": "direct",
+          "parametersId": 1,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__stay",
+          "exposure": "direct",
+          "parametersId": 3,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__new",
+          "exposure": "direct",
+          "parametersId": 4,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__stay",
+          "exposure": "direct",
+          "parametersId": 6,
+          "namespaceId": 5,
+          "annotationsId": null,
+          "guidelinesId": null
+        },
+        {
+          "name": "mcp__native__old",
+          "exposure": "hidden",
+          "parametersId": 1,
+          "namespaceId": 2,
+          "annotationsId": null,
+          "guidelinesId": null
+        }
+      ]
+    }
+  ]
+}

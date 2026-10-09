@@ -82,6 +82,22 @@ pub fn main(init: std.process.Init) !void {
             result = .{ .object = .empty };
             try result.object.put(a, "contents", contents);
         } else if (std.mem.eql(u8, method, "tools/list")) {
+            if (args.len > 1 and std.mem.startsWith(u8, args[1], "--names-")) {
+                const names: []const []const u8 = if (std.mem.eql(u8, args[1], "--names-collisions")) &.{ "a-b", "a_b" } else if (std.mem.eql(u8, args[1], "--names-duplicates")) &.{ "plain", "plain" } else if (std.mem.eql(u8, args[1], "--names-new")) &.{ "a_b", "plain" } else &.{ "a-b", "plain" };
+                var listed: Value = .{ .array = .init(a) };
+                for (names) |name| {
+                    var item: Value = .{ .object = .empty };
+                    try item.object.put(a, "name", .{ .string = name });
+                    try item.object.put(a, "inputSchema", .{ .object = .empty });
+                    try listed.array.append(item);
+                }
+                result = .{ .object = .empty };
+                try result.object.put(a, "tools", listed);
+                var response = try protocol.response(init.gpa, id, result, false);
+                defer response.deinit();
+                try emit(init.io, init.gpa, response.value);
+                continue;
+            }
             var value = try json.Owned.parse(init.gpa, "{\"tools\":[{\"name\":\"double\",\"description\":\"Double a value\",\"inputSchema\":{\"type\":\"object\",\"properties\":{\"value\":{\"type\":\"number\"}},\"required\":[\"value\"],\"additionalProperties\":false}},{\"name\":\"hidden\",\"inputSchema\":{}},{\"name\":\"progress\",\"inputSchema\":{}},{\"name\":\"error\",\"inputSchema\":{}},{\"name\":\"slow\",\"inputSchema\":{}},{\"name\":\"remote\",\"inputSchema\":{}}]}");
             defer value.deinit();
             result = try json.clone(a, value.value);
