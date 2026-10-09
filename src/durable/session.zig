@@ -236,6 +236,7 @@ pub const Session = struct {
         errdefer result.deinit();
         result.value.value = try json.clone(result.value.arena.allocator(), returned);
         tx.active = false;
+        try tx.assembleSubmissions();
         if (tx.writes.array.items.len == 0) return result;
         // Stage both durable state   and   publication before admitting storage.
         var predicted: backend.memory.Memory = .{ .gpa = self.gpa, .state = try self.storage.snapshot(self.gpa) };
@@ -301,6 +302,7 @@ pub const Transaction = struct {
     refs: std.atomic.Value(usize) = .init(1),
     ownerThread: std.Thread.Id,
     createdTasks: std.ArrayList(u64) = .empty,
+    submissionChanges: std.ArrayList(struct { id: u64, change: Value }) = .empty,
     preparedDocumentOps: std.AutoHashMapUnmanaged(u64, Value) = .empty,
     after_storage: ?*const fn (?*anyopaque) anyerror!void = null,
     after_storage_context: ?*anyopaque = null,
@@ -341,6 +343,79 @@ pub const Transaction = struct {
         defer record.deinit();
         return try json.clone(self.allocator(), record.value);
     }
+    pub fn submissionByRequest(self: *Transaction, conversation: u64, request: []const u8) !?Value {
+        try self.reading();
+        const state = try self.session.storage.snapshot(self.gpa);
+        defer state.destroy(self.gpa);
+        const key = try backend.memory.requestKey(self.gpa, .{ .integer = @intCast(conversation) }, .{ .string = request });
+        defer self.gpa.free(key);
+        const id = state.submissionRequests.get(key) orelse return null;
+        const row = state.rows.get(id) orelse return null;
+        return try json.clone(self.allocator(), row.record);
+    }
+    pub fn latestHeadMarker(self: *Transaction, conversation: u64) !?Value {
+        try self.reading();
+        var snapshot: backend.memory.Memory = .{ .gpa = self.gpa, .state = try self.session.storage.snapshot(self.gpa) };
+        defer snapshot.deinit();
+        var marker = try @import("backend/source_scan.zig").latestHead(self.gpa, &snapshot, conversation, null);
+        defer if (marker) |*value| value.deinit();
+        return if (marker) |value| try json.clone(self.allocator(), value.value) else null;
+    }
+    pub fn createSubmission(self: *Transaction, supplied: Value) !Value {
+        try self.ensureActive();
+        const conversation = try json.asInteger(try json.required(supplied, "conversationId"));
+        if (try self.currentRecord(conversation, .conversation) == null) return error.UnknownConversation;
+        var record = try json.clone(self.allocator(), supplied);
+        const id = try self.session.storage.mintId();
+        try record.object.put(self.allocator(), "id", .{ .integer = @intCast(id) });
+        try self.writeRecord(.submission, record);
+        return json.clone(self.allocator(), record);
+    }
+    pub fn changeSubmission(self: *Transaction, id: u64, change: Value) !void {
+        try self.ensureActive();
+        self.tableWritten = true;
+        try self.submissionChanges.append(self.allocator(), .{ .id = id, .change = try json.clone(self.allocator(), change) });
+    }
+    fn assembleSubmissions(self: *Transaction) !void {
+        for (self.submissionChanges.items) |change| {
+            var record = (try self.candidateRecord(change.id, .submission)) orelse return error.UnknownSubmission;
+            const status = try json.asString(try json.required(record, "status"));
+            if (std.mem.eql(u8, status, "done") or std.mem.eql(u8, status, "unanswered")) continue;
+            const next_status = try json.asString(try json.required(change.change, "status"));
+            record = try json.clone(self.allocator(), record);
+            if (std.mem.eql(u8, next_status, "placed")) {
+                if (!std.mem.eql(u8, status, "queued")) return error.SubmissionNotQueued;
+                const kind = try json.asString(try json.required(record, "type"));
+                try record.object.put(self.allocator(), "status", .{ .string = if (std.mem.eql(u8, kind, "input")) "placed" else "done" });
+                try record.object.put(self.allocator(), "entry", try json.required(change.change, "entry"));
+            } else {
+                if (std.mem.eql(u8, next_status, "done") and !std.mem.eql(u8, status, "placed")) return error.SubmissionNotPlaced;
+                for (change.change.object.keys(), change.change.object.values()) |key, value| try record.object.put(self.allocator(), key, value);
+            }
+            // Assembly happens after callback admission, with the transaction closed to callers.
+            var write: Value = .{ .object = .empty };
+            try write.object.put(self.allocator(), "type", .{ .string = "submission" });
+            try write.object.put(self.allocator(), "value", record);
+            try self.writes.array.append(write);
+        }
+        var submissions: std.AutoArrayHashMapUnmanaged(u64, Value) = .empty;
+        var index: usize = 0;
+        while (index < self.writes.array.items.len) {
+            const write = self.writes.array.items[index];
+            const kind = json.get(write, "type") orelse {
+                index += 1;
+                continue;
+            };
+            if (kind != .string or !std.mem.eql(u8, kind.string, "submission")) {
+                index += 1;
+                continue;
+            }
+            const record = try json.required(write, "value");
+            try submissions.put(self.allocator(), try backend.memory.idOf(record), write);
+            _ = self.writes.array.orderedRemove(index);
+        }
+        for (submissions.values()) |write| try self.writes.array.append(write);
+    }
     pub fn scan(self: *Transaction, query: backend.query.Query) !Value {
         try self.reading();
         var page = try self.session.storage.scan(self.gpa, query);
@@ -363,6 +438,9 @@ pub const Transaction = struct {
     }
     pub fn currentRecord(self: *Transaction, id: u64, table: backend.memory.Table) !?Value {
         try self.ensureActive();
+        return self.candidateRecord(id, table);
+    }
+    fn candidateRecord(self: *Transaction, id: u64, table: backend.memory.Table) !?Value {
         var index = self.writes.array.items.len;
         while (index > 0) {
             index -= 1;

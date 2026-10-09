@@ -26,7 +26,7 @@ pub const SessionLease = struct {
     }
 };
 const Kind = enum { memory, jsonl, sqlite, sqlite_source, session, transaction };
-pub const Method = enum(c_int) { mintId, commit, close, conversation, entry, task, submission, submissionByRequest, document, findDocument, findLatestHeadMarker, scanConversations, scanEntries, scanTasks, scanSubmissions, scanDocuments, createRootConversation, createConversation, forkConversation, appendEntry, subscribeCommits, subscribeClose, createTask, doc, snapshot, retireDoc, snapshotAsOf, unloadDocuments, watchDoc, documentState };
+pub const Method = enum(c_int) { mintId, commit, close, conversation, entry, task, submission, submissionByRequest, document, findDocument, findLatestHeadMarker, scanConversations, scanEntries, scanTasks, scanSubmissions, scanDocuments, createRootConversation, createConversation, forkConversation, appendEntry, subscribeCommits, subscribeClose, createTask, doc, snapshot, retireDoc, snapshotAsOf, unloadDocuments, watchDoc, documentState, latestHeadMarker, createSubmission, placeSubmission, settleSubmission };
 pub const State = struct {
     engine: *Engine,
     kind: Kind,
@@ -209,7 +209,19 @@ fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.
 fn dispatch(self: *State, receiver: c.JSValue, operation: Method, args: []const c.JSValue) !c.JSValue {
     const engine = self.engine;
     if (self.kind == .session) return sessionDispatch(self, receiver, operation, args);
-    if (self.kind == .transaction) return transactionDispatch(self, receiver, operation, args);
+    if (self.kind == .transaction) return transactionDispatch(self, receiver, operation, args) catch |err| {
+        if (err == error.ReadAfterWrite) {
+            const exports = engine.native_module_values.get("@earendil-works/pi-durable") orelse return err;
+            const error_constructor = try sdk.get(engine, exports, "ReadAfterWrite");
+            defer engine.freeValue(error_constructor);
+            const name = try sdk.text(engine, @tagName(operation));
+            defer engine.freeValue(name);
+            var arguments = [_]c.JSValue{name};
+            const exception = try engine.checked(c.JS_CallConstructor(engine.context, error_constructor, 1, &arguments));
+            return engine.checked(c.JS_Throw(engine.context, exception));
+        }
+        return err;
+    };
     if (operation == .close) {
         self.closeStorage();
         return sdk.promise(engine, c.pi_js_undefined());
@@ -347,6 +359,7 @@ pub fn install(engine: *Engine) !void {
     try @import("native_durable_tasks.zig").defineTask(engine, exports);
     try @import("native_durable_entries.zig").install(engine, exports);
     try @import("native_durable_builtin_documents.zig").install(engine, exports);
+    try @import("native_durable_compaction_builtin.zig").install(engine, exports);
     try @import("native_durable_documents.zig").install(engine, exports);
     try @import("native_durable_tool_builtin.zig").install(engine, exports);
     if (!engine.native_module_names.contains("@earendil-works/pi-durable")) try engine.registerValueModule("@earendil-works/pi-durable", exports);
@@ -431,7 +444,11 @@ fn methods(engine: *Engine, target: c.JSValue, operations: []const Method) !void
     for (operations) |operation| {
         const name = try engine.gpa.dupeZ(u8, @tagName(operation));
         defer engine.gpa.free(name);
-        try sdk.put(engine, target, name, try engine.checked(c.pi_js_function_magic(engine.context, method, name, 1, @intFromEnum(operation))));
+        const arity: c_int = switch (operation) {
+            .submissionByRequest, .placeSubmission, .settleSubmission => 2,
+            else => 1,
+        };
+        try sdk.put(engine, target, name, try engine.checked(c.pi_js_function_magic(engine.context, method, name, arity, @intFromEnum(operation))));
     }
 }
 fn createSession(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -471,7 +488,7 @@ pub fn transactionObject(engine: *Engine, native: *session_module.Transaction, p
     errdefer engine.freeValue(result_object);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
-    try methods(engine, result_object, &.{ .createRootConversation, .createConversation, .forkConversation, .appendEntry, .conversation, .entry, .task, .createTask, .doc, .retireDoc });
+    try methods(engine, result_object, &.{ .createRootConversation, .createConversation, .forkConversation, .appendEntry, .conversation, .entry, .task, .submission, .submissionByRequest, .latestHeadMarker, .createSubmission, .placeSubmission, .settleSubmission, .createTask, .doc, .retireDoc });
     self.* = .{ .engine = engine, .kind = .transaction, .memory = undefined, .transaction = native.retain(), .parent = c.JS_DupValue(engine.context, parent), .tail = c.pi_js_undefined() };
     _ = c.JS_SetOpaque(result_object, self);
     return result_object;
@@ -739,6 +756,34 @@ fn transactionDispatch(self: *State, receiver: c.JSValue, operation: Method, arg
         return create(engine, parent.creation_owner orelse c.pi_js_undefined(), receiver, args);
     }
     const output: json.Value = switch (operation) {
+        .submission => (try native.readRecord(.submission, try number(engine, argument(args, 0)))) orelse return sdk.promise(engine, c.pi_js_undefined()),
+        .submissionByRequest => blk: {
+            const request = try engine.toString(argument(args, 1));
+            defer engine.gpa.free(request);
+            break :blk (try native.submissionByRequest(try number(engine, argument(args, 0)), request)) orelse return sdk.promise(engine, c.pi_js_undefined());
+        },
+        .latestHeadMarker => (try native.latestHeadMarker(try number(engine, argument(args, 0)))) orelse return sdk.promise(engine, c.pi_js_undefined()),
+        .createSubmission => blk: {
+            const options = try sdk.object(engine);
+            defer engine.freeValue(options);
+            try sdk.put(engine, options, "omitUndefinedProperties", c.pi_js_bool(engine.context, 1));
+            const copied = try @import("native_chord_json.zig").copyJson(engine, argument(args, 0), options);
+            defer engine.freeValue(copied);
+            var input = try owned(engine, copied);
+            defer input.deinit();
+            break :blk try native.createSubmission(input.value);
+        },
+        .placeSubmission, .settleSubmission => {
+            var change = if (operation == .placeSubmission) try json.Owned.empty(engine.gpa) else try owned(engine, argument(args, 1));
+            defer change.deinit();
+            if (operation == .placeSubmission) {
+                change.value = .{ .object = .empty };
+                try change.value.object.put(change.arena.allocator(), "status", .{ .string = "placed" });
+                try change.value.object.put(change.arena.allocator(), "entry", .{ .integer = @intCast(try number(engine, argument(args, 1))) });
+            }
+            try native.changeSubmission(try number(engine, argument(args, 0)), change.value);
+            return c.pi_js_undefined();
+        },
         .createRootConversation => try native.createRootConversation(),
         .createConversation => try native.createConversation(null, try ownerTask(engine, argument(args, 0))),
         .forkConversation => blk: {
