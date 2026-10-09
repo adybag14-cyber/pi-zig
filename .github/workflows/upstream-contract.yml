@@ -33,4 +33,4 @@ jobs:
       - name: Fetch current upstream authority
         run: git clone --depth=1 --branch main https://github.com/earendil-works/pi.git "$RUNNER_TEMP/pi-upstream-contract"
       - name: Detect all tracked upstream contract changes
-        run: zig build maintenance -- verify-upstream-contract "$RUNNER_TEMP/pi-upstream-contract" verification/upstream-contract/tree-eba84973.json
+        run: zig build maintenance -- verify-upstream-contract "$RUNNER_TEMP/pi-upstream-contract" verification/upstream-contract/tree-42a3497d.json
