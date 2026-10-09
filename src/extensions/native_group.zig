@@ -829,7 +829,7 @@ test "ToolInfo private SDK resource owners preserve Main handshake membership ca
     const stable_manifest = try group.manifest();
     defer engine.gpa.free(stable_manifest);
     const stable_sequence = group.activation.sequence;
-    const cleared = try engine.evalModule("privateInputs.A.length=0;await privateLoaders.A.reload();if(privateSessions.A.getAllTools().length!==0)throw Error('private withdrawal');privateSessions.A.dispose();privateSessions.B.dispose();export const proof=true", "private-sdk-resource-withdrawal.mjs");
+    const cleared = try engine.evalModule("privateInputs.A.length=0;await privateLoaders.A.reload();if(privateLoaders.A.getExtensions().extensions.length!==0)throw Error('current loader withdrawal');if(privateSessions.A.getAllTools().map(t=>t.name).join(',')!=='shared')throw Error('retained old SDK runtime');privateSessions.A.dispose();privateSessions.B.dispose();export const proof=true", "private-sdk-resource-withdrawal.mjs");
     defer engine.freeValue(cleared);
     const after = try group.manifest();
     defer engine.gpa.free(after);

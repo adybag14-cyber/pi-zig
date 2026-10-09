@@ -100,20 +100,10 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
     defer engine.freeValue(previous);
     if (input_count == 0 and (!c.JS_IsArray(previous) or try sdk.length(engine, previous) == 0)) return;
     const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return error.NativeSDKExtensionGroupUnavailable));
-    var private_scope = try sdk.get(engine, data, "_sdkExtensionOwnerScope");
+    // A reload creates a new runtime. Saved APIs and existing sessions keep
+    // their previous runtime until its own marked JS graph is collected.
+    const private_scope = try @import("native_sdk_resource_owners.zig").create(group);
     defer engine.freeValue(private_scope);
-    if (c.JS_IsUndefined(private_scope)) {
-        engine.freeValue(private_scope);
-        private_scope = try @import("native_sdk_resource_owners.zig").create(group);
-        try sdk.put(engine, data, "_sdkExtensionOwnerScope", c.JS_DupValue(engine.context, private_scope));
-    }
-    if (c.JS_IsArray(previous)) for (0..try sdk.length(engine, previous)) |index| {
-        const id = try engine.checked(c.JS_GetPropertyUint32(engine.context, previous, @intCast(index)));
-        defer engine.freeValue(id);
-        var integer: i64 = 0;
-        if (c.JS_ToInt64(engine.context, &integer, id) < 0) return error.JavaScriptException;
-        group.remove(@intCast(integer)) catch |err| if (err != error.UnknownNativeExtensionOwner) return err;
-    };
     const ids = try sdk.array(engine);
     defer engine.freeValue(ids);
     const rows = try sdk.array(engine);
@@ -163,6 +153,8 @@ pub fn factories(engine: *engine_mod.Engine, data: c.JSValue) !void {
         try sdk.put(engine, row, "flags", try tableMap(engine, binding.flags));
         try sdk.append(engine, rows, c.JS_DupValue(engine.context, row));
     }
+    try sdk.put(engine, private_scope, "_extensionOwnerIds", c.JS_DupValue(engine.context, ids));
+    try sdk.put(engine, data, "_sdkExtensionOwnerScope", c.JS_DupValue(engine.context, private_scope));
     try sdk.put(engine, data, "extensionOwnerIds", c.JS_DupValue(engine.context, ids));
     const result = try sdk.object(engine);
     defer engine.freeValue(result);
@@ -198,8 +190,8 @@ pub fn emit(engine: *engine_mod.Engine, resources: c.JSValue, session_data: c.JS
 }
 pub fn emitAsync(engine: *engine_mod.Engine, resources: c.JSValue, session_data: c.JSValue, event: []const u8, payload: []const u8) !c.JSValue {
     const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return sdk.promise(engine, c.pi_js_undefined())));
-    const owner = try sdk.state(engine, resources);
-    const ids = try sdk.get(engine, owner.data, "extensionOwnerIds");
+    _ = resources;
+    const ids = try @import("native_sdk_resource_owners.zig").sessionOwnerIds(engine, session_data);
     defer engine.freeValue(ids);
     if (!c.JS_IsArray(ids)) return sdk.promise(engine, c.pi_js_undefined());
     const session = try sdk.sessionDataSessionValue(engine, session_data);

@@ -137,18 +137,34 @@ pub fn uninitialized(engine: *Engine) !c.JSValue {
     const reason = try @import("native_js_values.zig").builtin(engine, "Error", &.{message});
     return engine.checked(c.JS_Throw(engine.context, reason));
 }
+fn sessionScopeValue(engine: *Engine, session_data: c.JSValue) !c.JSValue {
+    const captured = try vm.get(engine, session_data, "_sdkExtensionOwnerScope");
+    if (!c.JS_IsUndefined(captured)) return captured;
+    engine.freeValue(captured);
+    const resource = try vm.get(engine, session_data, "resourceLoader");
+    defer engine.freeValue(resource);
+    const raw = c.JS_GetOpaque(resource, engine.native_sdk_class) orelse return c.pi_js_undefined();
+    const loader: *sdk.State = @ptrCast(@alignCast(raw));
+    if (loader.kind != .resource_loader) return c.pi_js_undefined();
+    return vm.get(engine, loader.data, "_sdkExtensionOwnerScope");
+}
 fn sessionScope(owner: *sdk.State) !?*Scope {
     const engine = owner.engine;
-    const resource = try vm.get(engine, owner.data, "resourceLoader");
-    defer engine.freeValue(resource);
-    const raw = c.JS_GetOpaque(resource, engine.native_sdk_class) orelse return null;
-    const loader: *sdk.State = @ptrCast(@alignCast(raw));
-    if (loader.kind != .resource_loader) return null;
-    const value = try vm.get(engine, loader.data, "_sdkExtensionOwnerScope");
+    const value = try sessionScopeValue(engine, owner.data);
     defer engine.freeValue(value);
     if (c.JS_IsUndefined(value)) return null;
     if (engine.native_sdk_resource_scope_class == 0) return error.InvalidSDKResourceOwner;
     return @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_sdk_resource_scope_class) orelse return error.InvalidSDKResourceOwner));
+}
+/// Owned IDs from the actual constructor-captured runtime incarnation. Calls
+/// made before constructor binding may inspect only the loader's current one.
+pub fn sessionOwnerIds(engine: *Engine, session_data: c.JSValue) !c.JSValue {
+    const value = try sessionScopeValue(engine, session_data);
+    defer engine.freeValue(value);
+    if (c.JS_IsUndefined(value)) return c.pi_js_undefined();
+    const group: *group_mod.Group = @ptrCast(@alignCast(engine.native_sdk_extension_group orelse return error.NativeSDKExtensionGroupUnavailable));
+    _ = try fromValue(group, value);
+    return vm.get(engine, value, "_extensionOwnerIds");
 }
 pub fn sessionScopeRetired(owner: *sdk.State) !bool {
     const scope = (try sessionScope(owner)) orelse return false;
@@ -167,6 +183,7 @@ pub fn bindSession(owner: *sdk.State) !void {
     const session = try sdk.sessionDataSessionValue(engine, owner.data);
     defer engine.freeValue(session);
     const value = scope.owner_value orelse return error.InvalidSDKResourceOwner;
+    try vm.put(engine, owner.data, "_sdkExtensionOwnerScope", c.JS_DupValue(engine.context, value));
     if (c.JS_DefinePropertyValueStr(engine.context, value, "_boundSession", c.JS_DupValue(engine.context, session), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     scope.bound_lease = lease;
 }
@@ -226,12 +243,7 @@ pub const Caller = struct {
         self.engine.freeValue(self.manager);
     }
     pub fn owns(self: *Caller, id: u64) !bool {
-        const resource = try vm.get(self.engine, self.owner.data, "resourceLoader");
-        defer self.engine.freeValue(resource);
-        const raw = c.JS_GetOpaque(resource, self.engine.native_sdk_class) orelse return false;
-        const loader: *sdk.State = @ptrCast(@alignCast(raw));
-        if (loader.kind != .resource_loader) return false;
-        const ids = try vm.get(self.engine, loader.data, "extensionOwnerIds");
+        const ids = try sessionOwnerIds(self.engine, self.owner.data);
         defer self.engine.freeValue(ids);
         if (!c.JS_IsArray(ids)) return false;
         for (0..try vm.length(self.engine, ids)) |index| {
@@ -262,6 +274,128 @@ pub fn retainCaller(caller: *bindings.Bindings) !Caller {
     const lease = try sdk.modelRegistryLease(engine, retained.registry);
     if (!c.JS_IsStrictEqual(engine.context, registry, retained.registry) or !c.JS_IsStrictEqual(engine.context, manager, retained.manager) or lease.runtime_id != actual.runtime_id) return error.InvalidNativeSDKContext;
     return retained;
+}
+
+test "ToolInfo actual OLD SDK Pi retains its constructor runtime across direct loader reload and new constructor binding" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const main = try group.add("<main>");
+    try main.installSchemas();
+    var temporary = std.testing.tmpDir(.{});
+    defer temporary.cleanup();
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const path_size = try temporary.dir.realPath(std.testing.io, &path_buffer);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try vm.put(engine, global, "ownedCwd", try sdk.text(engine, path_buffer[0..path_size]));
+    const source = @embedFile("../durable/fixtures/sdk-resource-old-pi-reload-1ced.json");
+    const fixture = try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-old-Pi"));
+    defer engine.freeValue(fixture);
+    try vm.put(engine, global, "oldPiFixture", c.JS_DupValue(engine.context, fixture));
+    const event_source = @embedFile("../durable/fixtures/sdk-resource-old-pi-events-1ced.json");
+    const event_fixture = try engine.checked(c.JS_ParseJSON(engine.context, event_source, event_source.len, "actual-old-Pi-events"));
+    defer engine.freeValue(event_fixture);
+    try vm.put(engine, global, "oldPiEventFixture", c.JS_DupValue(engine.context, event_fixture));
+    const before = try group.manifest();
+    defer engine.gpa.free(before);
+    const output = engine.evalModule(
+        \\import{createAgentSession,SessionManager,SettingsManager,DefaultResourceLoader}from'@earendil-works/pi-coding-agent';
+        \\let currentPi,number=0;const observed=[],events=[],cwd=ownedCwd,settings=SettingsManager.inMemory({defaultTools:[]});
+        \\const loader=new DefaultResourceLoader({cwd,agentDir:cwd,settingsManager:settings,noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true,noContextFiles:true,extensionFactories:[{factory:pi=>{currentPi=pi;number++;const generation=number;pi.on('session_start',()=>events.push({generation,names:pi.getAllTools().map(t=>t.name),sessionName:pi.getSessionName()}));pi.registerTool({name:'own'+number,description:'own',parameters:{type:'object',properties:{}},execute:async()=>({content:[]})})}}]});
+        \\const check=(phase,pi)=>{try{observed.push({phase,names:pi.getAllTools().map(t=>t.name),sessionName:pi.getSessionName()})}catch(error){observed.push({phase,error:error.message,errorName:error.name})}};
+        \\const create=async(name,tool)=>{const{session}=await createAgentSession({cwd,agentDir:cwd,sessionManager:SessionManager.inMemory(cwd),settingsManager:settings,resourceLoader:loader,tools:[tool],model:{id:'fixture',name:'Fixture',api:'openai-responses',provider:'fixture',baseUrl:'https://example.invalid',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:8192,maxTokens:1024}});session.setSessionName(name);return session;};
+        \\await loader.reload();const oldPi=currentPi;check('old-loaded',oldPi);
+        \\const A=await create('A','own1');check('old-A-created',oldPi);await A.bindExtensions({});check('old-A-bound',oldPi);
+        \\await loader.reload();const newPi=currentPi;observed.push({phase:'reload-identity',same:oldPi===newPi});check('old-after-reload',oldPi);check('new-after-reload',newPi);
+        \\const B=await create('B','own2');check('old-after-B-created',oldPi);check('new-after-B-created',newPi);await B.bindExtensions({});check('old-after-B-bound',oldPi);check('new-after-B-bound',newPi);
+        \\if(A.getAllTools().map(t=>t.name).join(',')!=='own1'||B.getAllTools().map(t=>t.name).join(',')!=='own2')throw Error('session incarnation changed');
+        \\await A.bindExtensions({});if(JSON.stringify(events)!==JSON.stringify(oldPiEventFixture))throw Error(JSON.stringify({events,source:oldPiEventFixture}));
+        \\A.dispose();check('old-after-A-disposed',oldPi);check('new-after-A-disposed',newPi);
+        \\B.dispose();check('old-after-B-disposed',oldPi);check('new-after-B-disposed',newPi);
+        \\if(JSON.stringify(observed)!==JSON.stringify(oldPiFixture))throw Error(JSON.stringify({observed,source:oldPiFixture}));
+    , "actual-old-pi-reload-incarnations.mjs") catch |err| {
+        std.debug.print("Actual OLD SDK Pi: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(output);
+    const after = try group.manifest();
+    defer engine.gpa.free(after);
+    try std.testing.expectEqualStrings(before, after);
+}
+
+test "ToolInfo SDK reload incarnations preserve the live constructor owner and collect every failed unrooted candidate allocation" {
+    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    const engine = try Engine.init(failing.allocator(), .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    const group = try group_mod.Group.init(engine);
+    defer group.deinit();
+    const main = try group.add("<main>");
+    try main.installSchemas();
+    var temporary = std.testing.tmpDir(.{});
+    defer temporary.cleanup();
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const path_size = try temporary.dir.realPath(std.testing.io, &path_buffer);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try vm.put(engine, global, "ownedCwd", try sdk.text(engine, path_buffer[0..path_size]));
+    const namespace = try engine.evalModule(
+        \\import{createAgentSession,SessionManager,SettingsManager,DefaultResourceLoader}from'@earendil-works/pi-coding-agent';
+        \\const cwd=ownedCwd,settings=SettingsManager.inMemory({defaultTools:[]});
+        \\export const loader=new DefaultResourceLoader({cwd,agentDir:cwd,settingsManager:settings,noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true,noContextFiles:true,extensionFactories:[{factory:pi=>pi.registerTool({name:'own',description:'own',parameters:{type:'object'},execute(){return{content:[]}}})}]});
+        \\await loader.reload();export const{session}=await createAgentSession({cwd,agentDir:cwd,resourceLoader:loader,settingsManager:settings,sessionManager:SessionManager.inMemory(cwd),tools:['own'],model:{id:'fixture',provider:'fixture',api:'openai-responses',name:'Fixture',input:['text'],contextWindow:8192,maxTokens:1024,cost:{input:0,output:0,cacheRead:0,cacheWrite:0}}});
+    , "sdk-reload-incarnation-allocations.mjs");
+    defer engine.freeValue(namespace);
+    const loader = try vm.get(engine, namespace, "loader");
+    defer engine.freeValue(loader);
+    const loader_state = try sdk.state(engine, loader);
+    const session = try vm.get(engine, namespace, "session");
+    defer engine.freeValue(session);
+    const owner = try sdk.state(engine, session);
+    const original = (try sessionScope(owner)).?;
+    const original_lease = try sdk.sessionModelLease(owner);
+    const main_manifest = try group.manifest();
+    defer engine.gpa.free(main_manifest);
+    var complete = false;
+    var failures: usize = 0;
+    for (0..2048) |offset| {
+        failing.has_induced_failure = false;
+        failing.fail_index = failing.alloc_index + offset;
+        @import("native_sdk_resources.zig").factories(engine, loader_state.data) catch |err| {
+            failing.fail_index = std.math.maxInt(usize);
+            try std.testing.expect(failing.has_induced_failure);
+            try std.testing.expect(err == error.OutOfMemory or err == error.JavaScriptException);
+        };
+        failing.fail_index = std.math.maxInt(usize);
+        const induced = failing.has_induced_failure;
+        if (induced) failures += 1;
+        engine.beginInvocation();
+        for (0..3) |_| {
+            c.JS_RunGC(engine.runtime);
+            _ = try engine.pumpControls();
+        }
+        try std.testing.expect(!original.retired);
+        try std.testing.expectEqual(original, (try sessionScope(owner)).?);
+        try std.testing.expectEqual(original_lease, try sdk.sessionModelLease(owner));
+        const current_value = try vm.get(engine, loader_state.data, "_sdkExtensionOwnerScope");
+        defer engine.freeValue(current_value);
+        const current = try fromValue(group, current_value);
+        try std.testing.expectEqual(@as(usize, if (current == original) 1 else 2), group.sdk_scopes.items.len);
+        const manifest = try group.manifest();
+        defer engine.gpa.free(manifest);
+        try std.testing.expectEqualStrings(main_manifest, manifest);
+        const rows = try vm.invoke(engine, session, "getAllTools", &.{});
+        defer engine.freeValue(rows);
+        try std.testing.expectEqual(@as(usize, 1), try vm.length(engine, rows));
+        if (!induced) {
+            complete = true;
+            break;
+        }
+    }
+    try std.testing.expect(complete and failures != 0);
 }
 
 test "ToolInfo constructor-bound SDK loader defaults use the actual session with explicit event and stale-fence precedence" {
@@ -360,10 +494,18 @@ test "ToolInfo SDK loader and Pi retain the session through marked JS edges whil
         try std.testing.expectEqual(expected, c.JS_ToBool(engine.context, alive) == 1);
         const dropped = try engine.eval("probe.retained=null;probe=null;true", "sdk-gc-drop.js", c.JS_EVAL_TYPE_GLOBAL);
         engine.freeValue(dropped);
+        if (expected) {
+            // deref() keeps the Session until this host job ends, even after
+            // every explicit strong reference is dropped in the same job.
+            c.JS_RunGC(engine.runtime);
+            try std.testing.expectEqual(@as(usize, 1), group.sdk_scopes.items.len);
+        }
+        engine.finishJob();
         for (0..3) |_| {
             c.JS_RunGC(engine.runtime);
             _ = try engine.pumpControls();
         }
+        if (group.sdk_scopes.items.len != 0) std.debug.print("SDK scope GC keep={s}, remaining={d}\n", .{ keep, group.sdk_scopes.items.len });
         try std.testing.expectEqual(@as(usize, 0), group.sdk_scopes.items.len);
         try std.testing.expectEqual(@as(usize, 1), group.entries.items.len);
     }

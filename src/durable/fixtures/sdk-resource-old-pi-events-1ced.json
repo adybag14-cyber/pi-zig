@@ -1,0 +1,23 @@
+[
+  {
+    "generation": 1,
+    "names": [
+      "own1"
+    ],
+    "sessionName": "A"
+  },
+  {
+    "generation": 2,
+    "names": [
+      "own2"
+    ],
+    "sessionName": "B"
+  },
+  {
+    "generation": 1,
+    "names": [
+      "own1"
+    ],
+    "sessionName": "A"
+  }
+]

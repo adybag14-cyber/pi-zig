@@ -202,12 +202,7 @@ fn ownerVersions(owner: *sdk.State) !std.ArrayList(Version) {
     const engine = owner.engine;
     var result: std.ArrayList(Version) = .empty;
     errdefer result.deinit(engine.gpa);
-    const resources = try vm.get(engine, owner.data, "resourceLoader");
-    defer engine.freeValue(resources);
-    const pointer = c.JS_GetOpaque(resources, engine.native_sdk_class) orelse return result;
-    const loader: *sdk.State = @ptrCast(@alignCast(pointer));
-    if (loader.kind != .resource_loader) return result;
-    const ids = try vm.get(engine, loader.data, "extensionOwnerIds");
+    const ids = try @import("native_sdk_resource_owners.zig").sessionOwnerIds(engine, owner.data);
     defer engine.freeValue(ids);
     if (!c.JS_IsArray(ids)) return result;
     const group: ?*group_mod.Group = if (engine.native_sdk_extension_group) |raw| @ptrCast(@alignCast(raw)) else null;
