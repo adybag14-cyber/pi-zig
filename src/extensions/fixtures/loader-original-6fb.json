@@ -1,0 +1,1036 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "indicator undefined",
+      "value": {
+        "before": {
+          "fields": [
+            "text",
+            "paddingX",
+            "paddingY",
+            "customBgFn",
+            "cachedText",
+            "cachedWidth",
+            "cachedLines",
+            "frames",
+            "intervalMs",
+            "currentFrame",
+            "intervalId",
+            "ui",
+            "renderIndicatorVerbatim",
+            "spinnerColorFn",
+            "messageColorFn",
+            "message"
+          ],
+          "frames": [
+            "⠋",
+            "⠙",
+            "⠹",
+            "⠸",
+            "⠼",
+            "⠴",
+            "⠦",
+            "⠧",
+            "⠇",
+            "⠏"
+          ],
+          "intervalMs": 80,
+          "currentFrame": 0,
+          "active": true,
+          "verbatim": false,
+          "text": "<⠋> [Loading...]",
+          "render": [
+            "",
+            " <⠋> [Loading...]   "
+          ]
+        },
+        "after": {
+          "currentFrame": 1,
+          "text": "<⠙> [Loading...]",
+          "render": [
+            "",
+            " <⠙>        ",
+            " [Loading.. ",
+            " .]         "
+          ]
+        },
+        "events": [
+          [
+            "spinner",
+            "⠋"
+          ],
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ],
+          [
+            "set",
+            1,
+            80,
+            0
+          ],
+          [
+            "spinner",
+            "⠙"
+          ],
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "indicator {}",
+      "value": {
+        "before": {
+          "fields": [
+            "text",
+            "paddingX",
+            "paddingY",
+            "customBgFn",
+            "cachedText",
+            "cachedWidth",
+            "cachedLines",
+            "frames",
+            "intervalMs",
+            "currentFrame",
+            "intervalId",
+            "ui",
+            "renderIndicatorVerbatim",
+            "spinnerColorFn",
+            "messageColorFn",
+            "message"
+          ],
+          "frames": [
+            "⠋",
+            "⠙",
+            "⠹",
+            "⠸",
+            "⠼",
+            "⠴",
+            "⠦",
+            "⠧",
+            "⠇",
+            "⠏"
+          ],
+          "intervalMs": 80,
+          "currentFrame": 0,
+          "active": true,
+          "verbatim": true,
+          "text": "⠋ [Loading...]",
+          "render": [
+            "",
+            " ⠋ [Loading...]     "
+          ]
+        },
+        "after": {
+          "currentFrame": 1,
+          "text": "⠙ [Loading...]",
+          "render": [
+            "",
+            " ⠙          ",
+            " [Loading.. ",
+            " .]         "
+          ]
+        },
+        "events": [
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ],
+          [
+            "set",
+            1,
+            80,
+            0
+          ],
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "indicator null",
+      "value": {
+        "before": {
+          "fields": [
+            "text",
+            "paddingX",
+            "paddingY",
+            "customBgFn",
+            "cachedText",
+            "cachedWidth",
+            "cachedLines",
+            "frames",
+            "intervalMs",
+            "currentFrame",
+            "intervalId",
+            "ui",
+            "renderIndicatorVerbatim",
+            "spinnerColorFn",
+            "messageColorFn",
+            "message"
+          ],
+          "frames": [
+            "⠋",
+            "⠙",
+            "⠹",
+            "⠸",
+            "⠼",
+            "⠴",
+            "⠦",
+            "⠧",
+            "⠇",
+            "⠏"
+          ],
+          "intervalMs": 80,
+          "currentFrame": 0,
+          "active": true,
+          "verbatim": true,
+          "text": "⠋ [Loading...]",
+          "render": [
+            "",
+            " ⠋ [Loading...]     "
+          ]
+        },
+        "after": {
+          "currentFrame": 1,
+          "text": "⠙ [Loading...]",
+          "render": [
+            "",
+            " ⠙          ",
+            " [Loading.. ",
+            " .]         "
+          ]
+        },
+        "events": [
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ],
+          [
+            "set",
+            1,
+            80,
+            0
+          ],
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "indicator {\"frames\":[]}",
+      "value": {
+        "before": {
+          "fields": [
+            "text",
+            "paddingX",
+            "paddingY",
+            "customBgFn",
+            "cachedText",
+            "cachedWidth",
+            "cachedLines",
+            "frames",
+            "intervalMs",
+            "currentFrame",
+            "intervalId",
+            "ui",
+            "renderIndicatorVerbatim",
+            "spinnerColorFn",
+            "messageColorFn",
+            "message"
+          ],
+          "frames": [],
+          "intervalMs": 80,
+          "currentFrame": 0,
+          "active": false,
+          "verbatim": true,
+          "text": "[Loading...]",
+          "render": [
+            "",
+            " [Loading...]       "
+          ]
+        },
+        "after": {
+          "currentFrame": 0,
+          "text": "[Loading...]",
+          "render": [
+            "",
+            " [Loading.. ",
+            " .]         "
+          ]
+        },
+        "events": [
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "indicator {\"frames\":[\"*\"]}",
+      "value": {
+        "before": {
+          "fields": [
+            "text",
+            "paddingX",
+            "paddingY",
+            "customBgFn",
+            "cachedText",
+            "cachedWidth",
+            "cachedLines",
+            "frames",
+            "intervalMs",
+            "currentFrame",
+            "intervalId",
+            "ui",
+            "renderIndicatorVerbatim",
+            "spinnerColorFn",
+            "messageColorFn",
+            "message"
+          ],
+          "frames": [
+            "*"
+          ],
+          "intervalMs": 80,
+          "currentFrame": 0,
+          "active": false,
+          "verbatim": true,
+          "text": "* [Loading...]",
+          "render": [
+            "",
+            " * [Loading...]     "
+          ]
+        },
+        "after": {
+          "currentFrame": 0,
+          "text": "* [Loading...]",
+          "render": [
+            "",
+            " *          ",
+            " [Loading.. ",
+            " .]         "
+          ]
+        },
+        "events": [
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "indicator {\"frames\":[\"a\",\"b\"],\"intervalMs\":5}",
+      "value": {
+        "before": {
+          "fields": [
+            "text",
+            "paddingX",
+            "paddingY",
+            "customBgFn",
+            "cachedText",
+            "cachedWidth",
+            "cachedLines",
+            "frames",
+            "intervalMs",
+            "currentFrame",
+            "intervalId",
+            "ui",
+            "renderIndicatorVerbatim",
+            "spinnerColorFn",
+            "messageColorFn",
+            "message"
+          ],
+          "frames": [
+            "a",
+            "b"
+          ],
+          "intervalMs": 5,
+          "currentFrame": 0,
+          "active": true,
+          "verbatim": true,
+          "text": "a [Loading...]",
+          "render": [
+            "",
+            " a [Loading...]     "
+          ]
+        },
+        "after": {
+          "currentFrame": 1,
+          "text": "b [Loading...]",
+          "render": [
+            "",
+            " b          ",
+            " [Loading.. ",
+            " .]         "
+          ]
+        },
+        "events": [
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ],
+          [
+            "set",
+            1,
+            5,
+            0
+          ],
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "indicator {\"frames\":\"xy\",\"intervalMs\":-1}",
+      "value": {
+        "before": {
+          "fields": [
+            "text",
+            "paddingX",
+            "paddingY",
+            "customBgFn",
+            "cachedText",
+            "cachedWidth",
+            "cachedLines",
+            "frames",
+            "intervalMs",
+            "currentFrame",
+            "intervalId",
+            "ui",
+            "renderIndicatorVerbatim",
+            "spinnerColorFn",
+            "messageColorFn",
+            "message"
+          ],
+          "frames": [
+            "x",
+            "y"
+          ],
+          "intervalMs": 80,
+          "currentFrame": 0,
+          "active": true,
+          "verbatim": true,
+          "text": "x [Loading...]",
+          "render": [
+            "",
+            " x [Loading...]     "
+          ]
+        },
+        "after": {
+          "currentFrame": 1,
+          "text": "y [Loading...]",
+          "render": [
+            "",
+            " y          ",
+            " [Loading.. ",
+            " .]         "
+          ]
+        },
+        "events": [
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ],
+          [
+            "set",
+            1,
+            80,
+            0
+          ],
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "indicator {\"frames\":[\"\",\"😀\"],\"intervalMs\":0}",
+      "value": {
+        "before": {
+          "fields": [
+            "text",
+            "paddingX",
+            "paddingY",
+            "customBgFn",
+            "cachedText",
+            "cachedWidth",
+            "cachedLines",
+            "frames",
+            "intervalMs",
+            "currentFrame",
+            "intervalId",
+            "ui",
+            "renderIndicatorVerbatim",
+            "spinnerColorFn",
+            "messageColorFn",
+            "message"
+          ],
+          "frames": [
+            "",
+            "😀"
+          ],
+          "intervalMs": 80,
+          "currentFrame": 0,
+          "active": true,
+          "verbatim": true,
+          "text": "[Loading...]",
+          "render": [
+            "",
+            " [Loading...]       "
+          ]
+        },
+        "after": {
+          "currentFrame": 1,
+          "text": "😀 [Loading...]",
+          "render": [
+            "",
+            " 😀         ",
+            " [Loading.. ",
+            " .]         "
+          ]
+        },
+        "events": [
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ],
+          [
+            "set",
+            1,
+            80,
+            0
+          ],
+          [
+            "message",
+            "Loading..."
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "shape inheritance",
+      "value": {
+        "fields": [
+          "text",
+          "paddingX",
+          "paddingY",
+          "customBgFn",
+          "cachedText",
+          "cachedWidth",
+          "cachedLines",
+          "frames",
+          "intervalMs",
+          "currentFrame",
+          "intervalId",
+          "ui",
+          "renderIndicatorVerbatim",
+          "spinnerColorFn",
+          "messageColorFn",
+          "message"
+        ],
+        "name": "Loader",
+        "length": 3,
+        "prototype": [
+          {
+            "name": "constructor",
+            "length": 3,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "render",
+            "length": 1,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "start",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "stop",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "setMessage",
+            "length": 1,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "invalidate",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "setIndicator",
+            "length": 1,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "restartAnimation",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "getRenderedIndicator",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "updateDisplay",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          }
+        ],
+        "inherits": true,
+        "instance": true,
+        "events": []
+      }
+    },
+    {
+      "name": "ordinary fields and virtual methods",
+      "value": {
+        "text": "+ [next]",
+        "fields": [
+          "text",
+          "paddingX",
+          "paddingY",
+          "customBgFn",
+          "cachedText",
+          "cachedWidth",
+          "cachedLines",
+          "frames",
+          "intervalMs",
+          "currentFrame",
+          "intervalId",
+          "ui",
+          "renderIndicatorVerbatim",
+          "spinnerColorFn",
+          "messageColorFn",
+          "message"
+        ],
+        "events": [
+          [
+            "message",
+            "changed"
+          ],
+          [
+            "render"
+          ],
+          [
+            "message",
+            "next"
+          ],
+          [
+            "render"
+          ],
+          [
+            "message",
+            "next"
+          ],
+          [
+            "render"
+          ],
+          [
+            "clear",
+            1
+          ],
+          [
+            "message",
+            "next"
+          ],
+          [
+            "render"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "virtual callback receivers",
+      "value": {
+        "events": [
+          [
+            "indicator",
+            true
+          ],
+          [
+            "render"
+          ],
+          [
+            "restart",
+            true
+          ],
+          [
+            "indicator",
+            true
+          ],
+          [
+            "setText",
+            true,
+            "custom Loading..."
+          ],
+          [
+            "render"
+          ]
+        ],
+        "prototype": true
+      }
+    },
+    {
+      "name": "stop uses current token",
+      "value": {
+        "intervalId": null,
+        "events": [
+          [
+            "clear",
+            {
+              "manual": true
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "original color exception",
+      "value": true
+    },
+    {
+      "name": "original render exception",
+      "value": true
+    },
+    {
+      "name": "frames iterator copied",
+      "value": {
+        "frames": [
+          "A",
+          "B"
+        ],
+        "copied": 1,
+        "events": [
+          [
+            "set",
+            1,
+            80,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "indicator getter reads",
+      "value": {
+        "events": [
+          [
+            "frames"
+          ],
+          [
+            "frames"
+          ],
+          [
+            "interval"
+          ],
+          [
+            "interval"
+          ],
+          [
+            "interval"
+          ]
+        ],
+        "intervalMs": 7
+      }
+    },
+    {
+      "name": "null UI",
+      "value": {
+        "lines": [
+          "",
+          " x  "
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "cancellable abort lifecycle",
+      "value": {
+        "aborted": true,
+        "sameSignal": true,
+        "fields": [
+          "text",
+          "paddingX",
+          "paddingY",
+          "customBgFn",
+          "cachedText",
+          "cachedWidth",
+          "cachedLines",
+          "frames",
+          "intervalMs",
+          "currentFrame",
+          "intervalId",
+          "ui",
+          "renderIndicatorVerbatim",
+          "spinnerColorFn",
+          "messageColorFn",
+          "message",
+          "abortController",
+          "onAbort"
+        ],
+        "events": [
+          [
+            "render"
+          ],
+          [
+            "signal",
+            true
+          ],
+          [
+            "abort",
+            true,
+            true
+          ],
+          [
+            "abort",
+            true,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "cancellable shape",
+      "value": {
+        "fields": [
+          "text",
+          "paddingX",
+          "paddingY",
+          "customBgFn",
+          "cachedText",
+          "cachedWidth",
+          "cachedLines",
+          "frames",
+          "intervalMs",
+          "currentFrame",
+          "intervalId",
+          "ui",
+          "renderIndicatorVerbatim",
+          "spinnerColorFn",
+          "messageColorFn",
+          "message",
+          "abortController",
+          "onAbort"
+        ],
+        "name": "CancellableLoader",
+        "length": 0,
+        "inherits": true,
+        "instance": true,
+        "prototype": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "length": 0,
+            "writable": true
+          },
+          {
+            "name": "signal",
+            "enumerable": false,
+            "configurable": true,
+            "get": 0,
+            "set": "undefined"
+          },
+          {
+            "name": "aborted",
+            "enumerable": false,
+            "configurable": true,
+            "get": 0,
+            "set": "undefined"
+          },
+          {
+            "name": "handleInput",
+            "enumerable": false,
+            "configurable": true,
+            "length": 1,
+            "writable": true
+          },
+          {
+            "name": "dispose",
+            "enumerable": false,
+            "configurable": true,
+            "length": 0,
+            "writable": true
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "name": "cancellable global keybindings",
+      "value": {
+        "before": false,
+        "after": true,
+        "events": []
+      }
+    },
+    {
+      "name": "cancellable borrowed fields",
+      "value": {
+        "aborted": true,
+        "sameSignal": true,
+        "events": [
+          [
+            "abort",
+            true
+          ],
+          [
+            "stop",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "array spread ignores public push",
+      "value": {
+        "frames": [
+          "B"
+        ],
+        "text": "B x"
+      }
+    },
+    {
+      "name": "currentFrame primitive addition and signed remainder",
+      "value": {
+        "first": 1,
+        "second": -2,
+        "third": 3
+      }
+    },
+    {
+      "name": "display getter order and callback receiver",
+      "value": [
+        [
+          "setText"
+        ],
+        [
+          "color"
+        ],
+        [
+          "message"
+        ],
+        [
+          "colorCall",
+          true,
+          "x"
+        ],
+        [
+          "set",
+          true,
+          "x"
+        ]
+      ]
+    }
+  ]
+}

@@ -1166,6 +1166,17 @@ pub fn build(b: *std.Build) void {
     const editor_source_run = b.addRunArtifact(editor_source_tests);
     b.step("test-native-editor-source", "Replay Source Editor and CustomEditor fields editing rendering mouse and async lifecycle").dependOn(&editor_source_run.step);
     test_step.dependOn(&editor_source_run.step);
+    const tui_public_source_module = b.createModule(.{ .root_source_file = b.path("src/native_tui_public_source_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, tui_public_source_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, tui_public_source_module);
+    tui_public_source_module.addImport("catalog_tool", catalog_tool);
+    const tui_public_audit_tests = b.addTest(.{ .root_module = tui_public_source_module, .use_llvm = use_llvm, .filters = &.{"Source6fb public TUI final"} });
+    const tui_public_audit_run = b.addRunArtifact(tui_public_audit_tests);
+    b.step("audit-native-tui-public-source", "Audit complete Source TUI runtime namespace and prototypes").dependOn(&tui_public_audit_run.step);
+    const tui_public_slice_tests = b.addTest(.{ .root_module = tui_public_source_module, .use_llvm = use_llvm, .filters = &.{"Source6fb public TUI slice"} });
+    const tui_public_slice_run = b.addRunArtifact(tui_public_slice_tests);
+    b.step("test-native-tui-public-source", "Replay implemented Source public TUI behavior slices").dependOn(&tui_public_slice_run.step);
+    test_step.dependOn(&tui_public_slice_run.step);
     const dialog_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_dialog_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
         .use_llvm = use_llvm,

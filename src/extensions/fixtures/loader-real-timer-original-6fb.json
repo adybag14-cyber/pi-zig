@@ -1,0 +1,20 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "result": {
+    "frame": 1,
+    "text": "b run",
+    "active": false,
+    "count": 2,
+    "events": [
+      [
+        "render",
+        1
+      ],
+      [
+        "render",
+        2
+      ]
+    ]
+  }
+}
