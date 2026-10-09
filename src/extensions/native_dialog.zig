@@ -92,6 +92,36 @@ fn paint(gpa: std.mem.Allocator, io: Io, model: *Model, title: []const u8, previ
     try render.writeAll(io, out.written());
 }
 
+const Intake = struct {
+    decoder: line_editor.InputDecoder,
+    last_byte_ms: ?i64 = null,
+    fn init(gpa: std.mem.Allocator) Intake {
+        return .{ .decoder = .init(gpa) };
+    }
+    fn deinit(self: *Intake) void {
+        self.decoder.deinit();
+    }
+    fn feed(self: *Intake, byte: u8, now_ms: i64) !?line_editor.InputDecoder.Input {
+        const packet = try self.decoder.feed(byte);
+        self.last_byte_ms = if (packet == null) now_ms else null;
+        return packet;
+    }
+    fn waitMs(self: *const Intake, now_ms: i64) u32 {
+        const timeout = self.decoder.pendingTimeoutMs();
+        if (self.decoder.paste) return @intCast(timeout);
+        const last = self.last_byte_ms orelse return @intCast(timeout);
+        const elapsed = @max(0, now_ms -| last);
+        return @intCast(@max(0, timeout -| elapsed));
+    }
+    fn wake(self: *Intake, now_ms: i64) ?line_editor.InputDecoder.Input {
+        // Win32 notification records and interrupted POSIX polls can wake
+        // readiness early. Source expires elapsed idle time, not each wake.
+        if (self.decoder.paste or self.last_byte_ms == null or self.waitMs(now_ms) != 0) return null;
+        self.last_byte_ms = null;
+        return self.decoder.flushPending();
+    }
+};
+
 pub fn run(gpa: std.mem.Allocator, io: Io, reader: *Io.File.Reader, model: *Model, title: []const u8) !void {
     var raw = try line_editor.RawMode.enter();
     defer raw.leave();
@@ -100,8 +130,8 @@ pub fn run(gpa: std.mem.Allocator, io: Io, reader: *Io.File.Reader, model: *Mode
     };
     try render.writeAll(io, terminal.hide_cursor ++ terminal.bracketed_paste_enable);
     defer if (raw.restore) render.writeAll(io, terminal.bracketed_paste_disable ++ terminal.show_cursor) catch {};
-    var decoder = line_editor.InputDecoder.init(gpa);
-    defer decoder.deinit();
+    var intake = Intake.init(gpa);
+    defer intake.deinit();
     var rows: usize = 0;
     try paint(gpa, io, model, title, &rows);
     while (!model.done) {
@@ -109,17 +139,17 @@ pub fn run(gpa: std.mem.Allocator, io: Io, reader: *Io.File.Reader, model: *Mode
         // task scheduler. Admit the dialog broker's signal/timeout cancellation
         // before every wait so a quiet terminal cannot retain the stdin lease.
         try io.checkCancel();
-        const ready = if (platform.inputBuffered(reader)) platform.Ready.input else try platform.waitInput(@intCast(decoder.pendingTimeoutMs()));
+        const ready = if (platform.inputBuffered(reader)) platform.Ready.input else try platform.waitInput(intake.waitMs(Io.Clock.awake.now(io).toMilliseconds()));
         if (ready == .dead) return error.DeadTerminal;
         if (ready == .input) {
             const byte = try platform.readByte(reader);
-            if (try decoder.feed(byte)) |event| {
+            if (try intake.feed(byte, Io.Clock.awake.now(io).toMilliseconds())) |event| {
                 try model.handle(switch (event) {
                     .key, .paste => |data| data,
                 }, event == .paste);
                 if (!model.done) try paint(gpa, io, model, title, &rows);
             }
-        } else if (decoder.flushPending()) |event| {
+        } else if (intake.wake(Io.Clock.awake.now(io).toMilliseconds())) |event| {
             try model.handle(switch (event) {
                 .key, .paste => |data| data,
             }, event == .paste);
@@ -144,6 +174,52 @@ test "native dialog selector and input match actual Source1ced callback traces" 
                 try std.testing.expectEqual(expected == .bool, model.cancelled);
                 if (expected == .string) try std.testing.expectEqualStrings(expected.string, if (kind == .select) model.options[model.selected] else model.input.editor.slice());
             }
+        }
+    }
+}
+
+fn capturePacket(gpa: std.mem.Allocator, model: *Model, events: *std.ArrayList([]u8), packet: line_editor.InputDecoder.Input) !void {
+    const data = switch (packet) {
+        .key, .paste => |value| value,
+    };
+    const owned = try gpa.dupe(u8, data);
+    events.append(gpa, owned) catch |err| {
+        gpa.free(owned);
+        return err;
+    };
+    try model.handle(data, packet == .paste);
+}
+test "native dialog Source CSI fragmentation ignores early readiness wakes and honors actual escape deadlines" {
+    const gpa = std.testing.allocator;
+    const fixture = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/dialog-fragment-deadline-original-6fb.json"), .{});
+    defer fixture.deinit();
+    for (fixture.value.object.get("cases").?.array.items) |item| {
+        var intake = Intake.init(gpa);
+        defer intake.deinit();
+        var model = Model.init(gpa, .input, &.{}, null);
+        defer model.deinit();
+        var events: std.ArrayList([]u8) = .empty;
+        defer {
+            for (events.items) |value| gpa.free(value);
+            events.deinit(gpa);
+        }
+        const steps = item.object.get("steps").?.array.items;
+        const snapshots = item.object.get("snapshots").?.array.items;
+        for (steps, snapshots) |step, expected| {
+            const now_ms = step.object.get("at").?.integer;
+            if (intake.wake(now_ms)) |packet| try capturePacket(gpa, &model, &events, packet);
+            if (step.object.get("data")) |data| for (data.string) |byte| {
+                if (try intake.feed(byte, now_ms)) |packet| try capturePacket(gpa, &model, &events, packet);
+            };
+            try std.testing.expectEqualStrings(expected.object.get("value").?.string, model.input.editor.slice());
+            const prefix = try std.unicode.utf8ToUtf16LeAlloc(gpa, model.input.editor.slice()[0..model.input.editor.cursor]);
+            defer gpa.free(prefix);
+            try std.testing.expectEqual(expected.object.get("cursor").?.integer, @as(i64, @intCast(prefix.len)));
+            try std.testing.expectEqual(expected.object.get("done").?.bool, model.done);
+            try std.testing.expectEqual(expected.object.get("cancelled").?.bool, model.cancelled);
+            const wanted_events = expected.object.get("events").?.array.items;
+            try std.testing.expectEqual(wanted_events.len, events.items.len);
+            for (wanted_events, events.items) |wanted, actual| try std.testing.expectEqualStrings(wanted.string, actual);
         }
     }
 }
