@@ -109,7 +109,10 @@ fn schema(engine: *Engine, types: c.JSValue, value: std.json.Value) anyerror!c.J
     var fields = value.object.iterator();
     while (fields.next()) |field| {
         var structural = false;
-        for ([_][]const u8{ "type", "required", "properties", "items", "anyOf", "const" }) |key| if (std.mem.eql(u8, key, field.key_ptr.*)) { structural = true; break; };
+        for ([_][]const u8{ "type", "required", "properties", "items", "anyOf", "const" }) |key| if (std.mem.eql(u8, key, field.key_ptr.*)) {
+            structural = true;
+            break;
+        };
         if (!structural) try putName(engine, options, field.key_ptr.*, try engine.fromJsonValue(field.value_ptr.*));
     }
     if (value.object.get("const")) |literal| {
@@ -188,11 +191,12 @@ test "canonical builtin schemas retain shared mutations and hidden nested TypeBo
     try vm.put(engine, global, "editA", try getTemplate(engine, "edit"));
     const proof = try engine.eval(
         "if(readA===readB||readA.parameters!==readB.parameters||readA.outputSchema!==readB.outputSchema)throw Error('factory identity');" ++
-        "if(readA.promptGuidelines===readB.promptGuidelines)throw Error('factory guidelines');" ++
-        "const hidden=(x,k)=>Object.getOwnPropertyDescriptor(x,k)?.enumerable===false;" ++
-        "if(!hidden(readA.parameters,'~kind')||!hidden(readA.parameters.properties.offset,'~optional')||readA.parameters.properties.path['~kind']!=='String'||editA.parameters.properties.edits.items['~kind']!=='Object'||editA.parameters.properties.edits['~kind']!=='Array')throw Error('genuine schemas');" ++
-        "readA.parameters.properties.path.description='retained schema mutation';readA.promptGuidelines.push('local');readA.description='local';true",
-        "builtin-template-identities.js", c.JS_EVAL_TYPE_GLOBAL,
+            "if(readA.promptGuidelines===readB.promptGuidelines)throw Error('factory guidelines');" ++
+            "const hidden=(x,k)=>Object.getOwnPropertyDescriptor(x,k)?.enumerable===false;" ++
+            "if(!hidden(readA.parameters,'~kind')||!hidden(readA.parameters.properties.offset,'~optional')||readA.parameters.properties.path['~kind']!=='String'||editA.parameters.properties.edits.items['~kind']!=='Object'||editA.parameters.properties.edits['~kind']!=='Array')throw Error('genuine schemas');" ++
+            "readA.parameters.properties.path.description='retained schema mutation';readA.promptGuidelines.push('local');readA.description='local';true",
+        "builtin-template-identities.js",
+        c.JS_EVAL_TYPE_GLOBAL,
     );
     defer engine.freeValue(proof);
     try vm.put(engine, global, "readC", try getTemplate(engine, "read"));

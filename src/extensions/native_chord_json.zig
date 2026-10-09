@@ -289,7 +289,7 @@ test "native durable VM public Chord root strict JSON and context exports share 
     try @import("native_durable.zig").install(engine);
     const result = try engine.evalModule(
         "import{copyJson,isJsonValue,BACKGROUND_CONTEXT}from'@earendil-works/chord';import{BACKGROUND_CONTEXT as context}from'@earendil-works/chord/context';" ++
-        "const source={a:{value:1},b:undefined},copy=copyJson(source,{omitUndefinedProperties:true});if(copy===source||copy.a===source.a||copy.a.value!==1||'b'in copy||!isJsonValue(copy)||isJsonValue(source)||copyJson.length!==2||isJsonValue.length!==1||BACKGROUND_CONTEXT!==context)throw Error('public strict JSON');export{copyJson,isJsonValue};",
+            "const source={a:{value:1},b:undefined},copy=copyJson(source,{omitUndefinedProperties:true});if(copy===source||copy.a===source.a||copy.a.value!==1||'b'in copy||!isJsonValue(copy)||isJsonValue(source)||copyJson.length!==2||isJsonValue.length!==1||BACKGROUND_CONTEXT!==context)throw Error('public strict JSON');export{copyJson,isJsonValue};",
         "public-chord-json.mjs",
     );
     defer engine.freeValue(result);
@@ -315,7 +315,8 @@ test "native durable VM Chord strict JSON raw getter reflection failures are not
     try vm.put(engine, global, "strictJson", c.JS_DupValue(engine.context, json));
     const result = try engine.eval(
         "let coercions=0;const original={toString(){coercions++;return'raw'}};const value=new Proxy({a:1},{ownKeys(){throw original}});for(const call of[()=>strictJson.copyJson(value),()=>strictJson.isJsonValue(value)]){let caught;try{call()}catch(e){caught=e}if(caught!==original)throw Error('identity')}if(coercions!==0)throw Error('premature coercion');true",
-        "chord-json-raw-coercion.js", c.JS_EVAL_TYPE_GLOBAL,
+        "chord-json-raw-coercion.js",
+        c.JS_EVAL_TYPE_GLOBAL,
     );
     defer engine.freeValue(result);
     try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);

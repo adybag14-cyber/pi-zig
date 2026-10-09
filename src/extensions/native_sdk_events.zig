@@ -155,7 +155,9 @@ pub fn deinit(engine: *engine_mod.Engine) void {
     engine.native_sdk_default_admission = null;
     engine.gpa.destroy(self);
 }
-fn admitDefault(engine: *engine_mod.Engine, _: u64) !void { try scopes.requireLive(engine); }
+fn admitDefault(engine: *engine_mod.Engine, _: u64) !void {
+    try scopes.requireLive(engine);
+}
 pub fn retireOwner(engine: *engine_mod.Engine, owner_id: u64) void {
     const raw = engine.native_sdk_events orelse return;
     const self: *Manager = @ptrCast(@alignCast(raw));

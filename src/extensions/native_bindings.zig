@@ -149,7 +149,9 @@ pub const Bindings = struct {
     }
     pub fn retireSdkScope(self: *Bindings) void {
         self.invocation_active = false;
-        if (self.broker) |broker| if (broker.active == self) { broker.active = null; };
+        if (self.broker) |broker| if (broker.active == self) {
+            broker.active = null;
+        };
         self.clearInvocationOptions();
         self.clearInvocationRoots();
     }
