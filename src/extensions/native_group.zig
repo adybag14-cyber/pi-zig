@@ -121,6 +121,9 @@ pub const Group = struct {
         const binding = try bindings_mod.Bindings.initShared(self.engine.gpa, self.engine, .{ .ui = self.ui, .renderers = if (scope) |private| private.renderers.? else self.renderers, .broker = if (scope) |private| &private.broker else &self.broker, .owner_id = id, .sdk_resource_owner = scope != null, .tool_lookup = lookupTool, .tool_context = self, .catalog_fn = catalog, .provider_catalog_fn = providerCatalog, .provider_catalog_clock = if (scope) |private| &private.provider_clock else &self.provider_catalog_clock, .registration_fn = registration, .active_tools_fn = activeTools, .set_active_tools_fn = setActiveTools, .selection_context_fn = if (scope == null) selectionContext else null });
         errdefer binding.deinit();
         try binding.setSourcePath(path);
+        if (scope) |private| {
+            if (c.JS_DefinePropertyValueStr(self.engine.context, binding.owner_token, "_sdkResourceOwner", c.JS_DupValue(self.engine.context, private.owner_value.?), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+        }
         try self.entries.ensureUnusedCapacity(self.engine.gpa, 1);
         self.entries.appendAssumeCapacity(.{ .id = id, .source = source, .binding = binding, .sdk_scope = if (scope) |private| private.retain() else null });
         if (scope == null) {
@@ -906,6 +909,7 @@ test "ToolInfo SDK resource owner scopes unwind every admitted native allocation
             try group.remove(private.owner_id);
             engine.freeValue(scope);
             owned = false;
+            c.JS_RunGC(engine.runtime);
             _ = try engine.pumpControls();
             try std.testing.expectEqual(@as(usize, 1), group.entries.items.len);
             try std.testing.expectEqual(@as(usize, 0), group.sdk_scopes.items.len);

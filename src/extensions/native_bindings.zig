@@ -80,6 +80,7 @@ pub const Bindings = struct {
     owner_id: u64 = 0,
     /// Assigned by a validated native ResourceLoader scope, never source/JSON.
     sdk_resource_owner: bool = false,
+    gc_values_retired: bool = false,
     tool_lookup: ?ToolLookupFn = null,
     tool_context: ?*anyopaque = null,
     catalog_fn: ?CatalogFn = null,
@@ -223,8 +224,74 @@ pub const Bindings = struct {
     }
 
     pub fn retireOwnerToken(self: *Bindings) void {
+        if (self.gc_values_retired) return;
         const owner: *OwnerToken = @ptrCast(@alignCast(c.JS_GetOpaque(self.owner_token, self.owner_class).?));
         owner.binding = null;
+    }
+    pub fn markScopeValues(self: *Bindings, runtime: ?*c.JSRuntime, marker: ?*const c.JS_MarkFunc) void {
+        if (self.gc_values_retired) return;
+        inline for (std.meta.fields(Bindings)) |field| {
+            if (field.type == c.JSValue) c.JS_MarkValue(runtime, @field(self, field.name), marker);
+            if (field.type == ?c.JSValue) if (@field(self, field.name)) |value| c.JS_MarkValue(runtime, value, marker);
+        }
+        if (self.sdk_context) |scope| for ([_]c.JSValue{ scope.session, scope.registry, scope.manager }) |value| c.JS_MarkValue(runtime, value, marker);
+        inline for (.{ "tools", "commands", "flags", "flag_overrides" }) |name| {
+            var values = @field(self, name).valueIterator();
+            while (values.next()) |value| c.JS_MarkValue(runtime, value.*, marker);
+        }
+        var handlers = self.handlers.valueIterator();
+        while (handlers.next()) |list| for (list.items) |value| c.JS_MarkValue(runtime, value, marker);
+        for (self.actions.items) |value| c.JS_MarkValue(runtime, value, marker);
+        self.providers.mark(runtime, marker);
+        if (self.stream_runner.signal) |value| c.JS_MarkValue(runtime, value, marker);
+        if (self.stream_runner.ack) |ack| {
+            c.JS_MarkValue(runtime, ack.resolve, marker);
+            c.JS_MarkValue(runtime, ack.reject, marker);
+        }
+    }
+    pub fn retireScopeValuesRT(self: *Bindings, runtime: ?*c.JSRuntime) void {
+        if (self.gc_values_retired) return;
+        // Peer class finalizers may already have cleared their opaque token.
+        // Every API edge is in this unreachable cycle; no guest code runs here.
+        self.gc_values_retired = true;
+        self.providers.retireValuesRT(runtime);
+        inline for (.{ "tools", "commands", "flags", "flag_overrides" }) |name| {
+            var values = @field(self, name).iterator();
+            while (values.next()) |entry| {
+                self.gpa.free(entry.key_ptr.*);
+                c.JS_FreeValueRT(runtime, entry.value_ptr.*);
+            }
+            @field(self, name).deinit(self.gpa);
+            @field(self, name) = .empty;
+        }
+        var handlers = self.handlers.iterator();
+        while (handlers.next()) |entry| {
+            for (entry.value_ptr.items) |value| c.JS_FreeValueRT(runtime, value);
+            entry.value_ptr.deinit(self.gpa);
+            self.gpa.free(entry.key_ptr.*);
+        }
+        self.handlers.deinit(self.gpa);
+        self.handlers = .empty;
+        for (self.actions.items) |value| c.JS_FreeValueRT(runtime, value);
+        self.actions.clearRetainingCapacity();
+        if (self.sdk_context) |scope| for ([_]c.JSValue{ scope.session, scope.registry, scope.manager }) |value| c.JS_FreeValueRT(runtime, value);
+        self.sdk_context = null;
+        if (self.stream_runner.signal) |value| c.JS_FreeValueRT(runtime, value);
+        if (self.stream_runner.ack) |ack| {
+            c.JS_FreeValueRT(runtime, ack.resolve);
+            c.JS_FreeValueRT(runtime, ack.reject);
+        }
+        self.stream_runner = .{ .engine = self.engine };
+        inline for (std.meta.fields(Bindings)) |field| {
+            if (field.type == c.JSValue) {
+                c.JS_FreeValueRT(runtime, @field(self, field.name));
+                @field(self, field.name) = c.pi_js_undefined();
+            }
+            if (field.type == ?c.JSValue) {
+                if (@field(self, field.name)) |value| c.JS_FreeValueRT(runtime, value);
+                @field(self, field.name) = null;
+            }
+        }
     }
     pub fn deinit(self: *Bindings) void {
         // Retire the public API before any user component dispose callback.
@@ -316,6 +383,19 @@ pub const Bindings = struct {
             else => false,
         };
         if (runtime_method) {
+            if (self.sdk_resource_owner and self.sdk_context == null and !self.factory_active) {
+                if (self.broker) |broker| if (broker.active) |active| if (active != self and active.sdk_context != null) {
+                    const saved = try self.pushSdkContext(active.sdk_context.?);
+                    defer self.restoreSdkContext(saved);
+                    return self.registration(method, args);
+                };
+                if (try @import("native_sdk_resource_owners.zig").defaultContext(self)) |scope| {
+                    defer @import("native_sdk_resource_owners.zig").releaseContext(self.engine, scope);
+                    const saved = try self.pushSdkContext(scope);
+                    defer self.restoreSdkContext(saved);
+                    return self.registration(method, args);
+                }
+            }
             if (self.sdk_resource_owner) {
                 const active = if (self.broker) |broker| broker.active orelse self else self;
                 if (active.sdk_context == null) return @import("native_sdk_resource_owners.zig").uninitialized(self.engine);

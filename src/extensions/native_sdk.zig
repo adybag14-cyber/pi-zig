@@ -1548,6 +1548,7 @@ fn factory(engine: *engine_mod.Engine, options: c.JSValue) !c.JSValue {
     defer engine.freeValue(thinking);
     const recorded = try invoke(engine, manager, "appendThinkingLevelChange", &.{thinking});
     engine.freeValue(recorded);
+    try @import("native_sdk_resource_owners.zig").bindSession(session_owner);
     return result;
 }
 fn modelDispatch(self: *State, operation: Method, args: []const c.JSValue) !c.JSValue {

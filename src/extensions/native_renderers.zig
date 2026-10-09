@@ -58,6 +58,7 @@ pub const Manager = struct {
     replay_context: ?*anyopaque = null,
     sink_failure: ?anyerror = null,
     redraw_due_ms: ?i64 = null,
+    gc_values_retired: bool = false,
 
     pub fn init(engine: *engine_mod.Engine) !*Manager {
         var class: c.JSClassID = 0;
@@ -88,8 +89,10 @@ pub const Manager = struct {
     }
 
     pub fn deinit(self: *Manager) void {
-        const token: *Token = @ptrCast(@alignCast(c.JS_GetOpaque(self.token, self.token_class).?));
-        token.manager = null;
+        if (!self.gc_values_retired) {
+            const token: *Token = @ptrCast(@alignCast(c.JS_GetOpaque(self.token, self.token_class).?));
+            token.manager = null;
+        }
         while (self.rows.count() != 0) {
             var keys = self.rows.keyIterator();
             _ = self.retire(keys.next().?.*, null);
@@ -103,6 +106,41 @@ pub const Manager = struct {
         self.engine.freeValue(self.array_predicate);
         self.engine.freeValue(self.theme);
         self.engine.gpa.destroy(self);
+    }
+    pub fn markScopeValues(self: *Manager, runtime: ?*c.JSRuntime, marker: ?*const c.JS_MarkFunc) void {
+        if (self.gc_values_retired) return;
+        for ([_]c.JSValue{ self.token, self.array_predicate, self.theme }) |value| c.JS_MarkValue(runtime, value, marker);
+        inline for (.{ "messages", "entries", "resolvers", "transformers" }) |name| for (@field(self, name).items) |entry| c.JS_MarkValue(runtime, entry.callback, marker);
+        var rows = self.rows.valueIterator();
+        while (rows.next()) |current_row| inline for (std.meta.fields(Row)) |field| {
+            if (field.type == c.JSValue) c.JS_MarkValue(runtime, @field(current_row.*, field.name), marker);
+        };
+    }
+    pub fn retireScopeValuesRT(self: *Manager, runtime: ?*c.JSRuntime) void {
+        if (self.gc_values_retired) return;
+        self.gc_values_retired = true;
+        var rows = self.rows.iterator();
+        while (rows.next()) |entry| {
+            const current_row = entry.value_ptr.*;
+            inline for (std.meta.fields(Row)) |field| if (field.type == c.JSValue) c.JS_FreeValueRT(runtime, @field(current_row, field.name));
+            self.engine.gpa.free(current_row.tool);
+            self.engine.gpa.destroy(current_row);
+            self.engine.gpa.free(entry.key_ptr.*);
+        }
+        self.rows.deinit(self.engine.gpa);
+        self.rows = .empty;
+        inline for (.{ "messages", "entries", "resolvers", "transformers" }) |name| {
+            for (@field(self, name).items) |entry| {
+                self.engine.gpa.free(entry.name);
+                c.JS_FreeValueRT(runtime, entry.callback);
+            }
+            @field(self, name).deinit(self.engine.gpa);
+            @field(self, name) = .empty;
+        }
+        for ([_]c.JSValue{ self.token, self.array_predicate, self.theme }) |value| c.JS_FreeValueRT(runtime, value);
+        self.token = c.pi_js_undefined();
+        self.array_predicate = c.pi_js_undefined();
+        self.theme = c.pi_js_undefined();
     }
 
     pub fn register(self: *Manager, kind: RegistrationKind, name: []const u8, callback: c.JSValue) !void {

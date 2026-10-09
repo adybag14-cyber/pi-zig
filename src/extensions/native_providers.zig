@@ -51,6 +51,39 @@ pub const Providers = struct {
         self.callbacks.deinit(self.engine.gpa);
     }
 
+    pub fn mark(self: *Providers, runtime: ?*c.JSRuntime, marker: ?*const c.JS_MarkFunc) void {
+        var registrations = self.registrations.valueIterator();
+        while (registrations.next()) |entry| for ([_]c.JSValue{ entry.source, entry.live, entry.encoded }) |value| c.JS_MarkValue(runtime, value, marker);
+        var callbacks = self.callbacks.valueIterator();
+        while (callbacks.next()) |entry| {
+            c.JS_MarkValue(runtime, entry.function, marker);
+            c.JS_MarkValue(runtime, entry.receiver, marker);
+            if (entry.root) |value| c.JS_MarkValue(runtime, value, marker);
+        }
+    }
+    /// Release cycle-owned values inside a class finalizer, without invoking
+    /// callbacks or requiring a still-live JSContext.
+    pub fn retireValuesRT(self: *Providers, runtime: ?*c.JSRuntime) void {
+        var registrations = self.registrations.iterator();
+        while (registrations.next()) |entry| {
+            self.engine.gpa.free(entry.key_ptr.*);
+            for ([_]c.JSValue{ entry.value_ptr.source, entry.value_ptr.live, entry.value_ptr.encoded }) |value| c.JS_FreeValueRT(runtime, value);
+        }
+        self.registrations.deinit(self.engine.gpa);
+        self.registrations = .empty;
+        var callbacks = self.callbacks.iterator();
+        while (callbacks.next()) |entry| {
+            self.engine.gpa.free(entry.key_ptr.*);
+            self.engine.gpa.free(entry.value_ptr.provider);
+            self.engine.gpa.free(entry.value_ptr.path);
+            c.JS_FreeValueRT(runtime, entry.value_ptr.function);
+            c.JS_FreeValueRT(runtime, entry.value_ptr.receiver);
+            if (entry.value_ptr.root) |value| c.JS_FreeValueRT(runtime, value);
+        }
+        self.callbacks.deinit(self.engine.gpa);
+        self.callbacks = .empty;
+    }
+
     fn freeCallback(self: *Providers, callback: Callback) void {
         self.engine.gpa.free(callback.provider);
         self.engine.gpa.free(callback.path);
