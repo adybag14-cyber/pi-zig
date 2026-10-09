@@ -1,0 +1,620 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "toolTaskVersion": 2,
+  "rows": [
+    {
+      "name": "one-text",
+      "nested": false,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ]
+      },
+      "hasSchema": false,
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "c1",
+        "toolName": "target",
+        "content": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "isError": false
+      },
+      "reports": []
+    },
+    {
+      "name": "one-text",
+      "nested": true,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ]
+      },
+      "hasSchema": false,
+      "result": {
+        "structuredOutput": "one",
+        "isError": false,
+        "diagnostics": []
+      },
+      "reports": []
+    },
+    {
+      "name": "one-image",
+      "nested": false,
+      "input": {
+        "output": [
+          {
+            "type": "image",
+            "data": "AAAA",
+            "mimeType": "image/png"
+          }
+        ]
+      },
+      "hasSchema": false,
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "c1",
+        "toolName": "target",
+        "content": [
+          {
+            "type": "image",
+            "data": "AAAA",
+            "mimeType": "image/png"
+          }
+        ],
+        "isError": false
+      },
+      "reports": []
+    },
+    {
+      "name": "one-image",
+      "nested": true,
+      "input": {
+        "output": [
+          {
+            "type": "image",
+            "data": "AAAA",
+            "mimeType": "image/png"
+          }
+        ]
+      },
+      "hasSchema": false,
+      "result": {
+        "structuredOutput": {
+          "type": "image",
+          "data": "AAAA",
+          "mimeType": "image/png"
+        },
+        "isError": false,
+        "diagnostics": []
+      },
+      "reports": []
+    },
+    {
+      "name": "empty",
+      "nested": false,
+      "input": {
+        "output": []
+      },
+      "hasSchema": false,
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "c1",
+        "toolName": "target",
+        "content": [],
+        "isError": false
+      },
+      "reports": []
+    },
+    {
+      "name": "empty",
+      "nested": true,
+      "input": {
+        "output": []
+      },
+      "hasSchema": false,
+      "result": {
+        "structuredOutput": "",
+        "isError": false,
+        "diagnostics": []
+      },
+      "reports": []
+    },
+    {
+      "name": "mixed",
+      "nested": false,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          },
+          {
+            "type": "image",
+            "data": "AAAA",
+            "mimeType": "image/png"
+          }
+        ]
+      },
+      "hasSchema": false,
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "c1",
+        "toolName": "target",
+        "content": [
+          {
+            "type": "text",
+            "text": "one"
+          },
+          {
+            "type": "image",
+            "data": "AAAA",
+            "mimeType": "image/png"
+          }
+        ],
+        "isError": false
+      },
+      "reports": []
+    },
+    {
+      "name": "mixed",
+      "nested": true,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          },
+          {
+            "type": "image",
+            "data": "AAAA",
+            "mimeType": "image/png"
+          }
+        ]
+      },
+      "hasSchema": false,
+      "result": {
+        "structuredOutput": [
+          {
+            "type": "text",
+            "text": "one"
+          },
+          {
+            "type": "image",
+            "data": "AAAA",
+            "mimeType": "image/png"
+          }
+        ],
+        "isError": false,
+        "diagnostics": []
+      },
+      "reports": []
+    },
+    {
+      "name": "two-text",
+      "nested": false,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          },
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ]
+      },
+      "hasSchema": false,
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "c1",
+        "toolName": "target",
+        "content": [
+          {
+            "type": "text",
+            "text": "one"
+          },
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "isError": false
+      },
+      "reports": []
+    },
+    {
+      "name": "two-text",
+      "nested": true,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          },
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ]
+      },
+      "hasSchema": false,
+      "result": {
+        "structuredOutput": [
+          {
+            "type": "text",
+            "text": "one"
+          },
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "isError": false,
+        "diagnostics": []
+      },
+      "reports": []
+    },
+    {
+      "name": "schema-valid",
+      "nested": false,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "structuredOutput": {
+          "count": 2
+        }
+      },
+      "hasSchema": true,
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "c1",
+        "toolName": "target",
+        "content": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "isError": false
+      },
+      "reports": []
+    },
+    {
+      "name": "schema-valid",
+      "nested": true,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "structuredOutput": {
+          "count": 2
+        }
+      },
+      "hasSchema": true,
+      "result": {
+        "structuredOutput": {
+          "count": 2
+        },
+        "isError": false,
+        "diagnostics": []
+      },
+      "reports": []
+    },
+    {
+      "name": "schema-invalid",
+      "nested": false,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "structuredOutput": {
+          "count": "bad"
+        }
+      },
+      "hasSchema": true,
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "c1",
+        "toolName": "target",
+        "content": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "isError": false
+      },
+      "reports": [
+        "Tool target returned structuredOutput that does not match its schema: count: must be number"
+      ]
+    },
+    {
+      "name": "schema-invalid",
+      "nested": true,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "structuredOutput": {
+          "count": "bad"
+        }
+      },
+      "hasSchema": true,
+      "result": {
+        "isError": true,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "invalid_structured_output",
+            "message": "Tool target returned structuredOutput that does not match its schema: count: must be number"
+          }
+        ]
+      },
+      "reports": []
+    },
+    {
+      "name": "schema-missing",
+      "nested": false,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ]
+      },
+      "hasSchema": true,
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "c1",
+        "toolName": "target",
+        "content": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "isError": false
+      },
+      "reports": [
+        "Tool target returned no structuredOutput"
+      ]
+    },
+    {
+      "name": "schema-missing",
+      "nested": true,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ]
+      },
+      "hasSchema": true,
+      "result": {
+        "isError": true,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "invalid_structured_output",
+            "message": "Tool target returned no structuredOutput"
+          }
+        ]
+      },
+      "reports": []
+    },
+    {
+      "name": "schema-error-missing",
+      "nested": false,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "isError": true
+      },
+      "hasSchema": true,
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "c1",
+        "toolName": "target",
+        "content": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "isError": true
+      },
+      "reports": []
+    },
+    {
+      "name": "schema-error-missing",
+      "nested": true,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "isError": true
+      },
+      "hasSchema": true,
+      "result": {
+        "isError": true,
+        "diagnostics": []
+      },
+      "reports": []
+    },
+    {
+      "name": "undeclared-output",
+      "nested": false,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "structuredOutput": {
+          "count": 2
+        }
+      },
+      "hasSchema": false,
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "c1",
+        "toolName": "target",
+        "content": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "isError": false
+      },
+      "reports": [
+        "Tool target returned structuredOutput but declares no structuredOutputSchema"
+      ]
+    },
+    {
+      "name": "undeclared-output",
+      "nested": true,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "structuredOutput": {
+          "count": 2
+        }
+      },
+      "hasSchema": false,
+      "result": {
+        "structuredOutput": "one",
+        "isError": true,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "invalid_structured_output",
+            "message": "Tool target returned structuredOutput but declares no structuredOutputSchema"
+          }
+        ]
+      },
+      "reports": []
+    },
+    {
+      "name": "error-text",
+      "nested": false,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "isError": true,
+        "details": {
+          "context": "kept"
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "original",
+            "message": "original failure"
+          }
+        ]
+      },
+      "hasSchema": false,
+      "result": {
+        "role": "toolResult",
+        "toolCallId": "c1",
+        "toolName": "target",
+        "content": [
+          {
+            "type": "text",
+            "text": "one"
+          },
+          {
+            "type": "text",
+            "text": "<harness>\n[error] original failure\n</harness>"
+          }
+        ],
+        "details": {
+          "context": "kept"
+        },
+        "isError": true
+      },
+      "reports": []
+    },
+    {
+      "name": "error-text",
+      "nested": true,
+      "input": {
+        "output": [
+          {
+            "type": "text",
+            "text": "one"
+          }
+        ],
+        "isError": true,
+        "details": {
+          "context": "kept"
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "original",
+            "message": "original failure"
+          }
+        ]
+      },
+      "hasSchema": false,
+      "result": {
+        "structuredOutput": "one",
+        "isError": true,
+        "details": {
+          "context": "kept"
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "original",
+            "message": "original failure"
+          }
+        ]
+      },
+      "reports": []
+    }
+  ]
+}

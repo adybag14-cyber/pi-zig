@@ -21,6 +21,20 @@ pub fn install(engine: *Engine, exports: c.JSValue) !void {
         try sdk.put(engine, token, "definition", c.JS_DupValue(engine.context, definition));
         try sdk.put(engine, exports, name, token);
     }
+    const nested = try sdk.object(engine);
+    defer engine.freeValue(nested);
+    try sdk.put(engine, nested, "kind", try sdk.text(engine, "pi.tool.nested-result"));
+    try sdk.put(engine, nested, "version", c.JS_NewInt64(engine.context, 1));
+    try sdk.put(engine, nested, "scope", try sdk.text(engine, "task"));
+    try sdk.put(engine, nested, "family", c.pi_js_bool(engine.context, 1));
+    try sdk.put(engine, nested, "initial", try engine.checked(c.JS_NewCFunction(engine.context, nestedInitial, "initial", 1)));
+    const nested_token = try sdk.object(engine);
+    errdefer engine.freeValue(nested_token);
+    try sdk.put(engine, nested_token, "definition", c.JS_DupValue(engine.context, nested));
+    try sdk.put(engine, exports, "NestedResultDoc", nested_token);
+}
+fn nestedInitial(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    return c.JS_DupValue(context, if (argc > 0) argv[0] else c.pi_js_undefined());
 }
 fn initial(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, operation: c_int) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
@@ -50,18 +64,28 @@ fn checkpointOwned(engine: *Engine, value: c.JSValue, operation: c_int) !c.JSVal
     const generation = try sdk.get(engine, value, "generation");
     defer engine.freeValue(generation);
     if (!c.JS_IsUndefined(generation)) return c.pi_js_bool(engine.context, 0);
-    const tools = try sdk.get(engine, value, "tools");
-    defer engine.freeValue(tools);
-    if (!c.JS_IsUndefined(tools) and !c.JS_IsNull(tools)) for (0..try sdk.length(engine, tools)) |index| {
-        const slot = try engine.checked(c.JS_GetPropertyUint32(engine.context, tools, @intCast(index)));
-        defer engine.freeValue(slot);
-        const status = try sdk.get(engine, slot, "status");
-        defer engine.freeValue(status);
-        if (c.JS_IsString(status)) {
-            const label = try engine.toString(status);
-            defer engine.gpa.free(label);
-            if (@import("std").mem.eql(u8, label, "running")) return c.pi_js_bool(engine.context, 0);
-        }
-    };
+    inline for (.{ "tools", "nestedTools" }) |property| {
+        const slots = try sdk.get(engine, value, property);
+        defer engine.freeValue(slots);
+        const array = if (c.JS_IsUndefined(slots) or c.JS_IsNull(slots)) try sdk.array(engine) else c.JS_DupValue(engine.context, slots);
+        defer engine.freeValue(array);
+        const predicate = try engine.checked(c.JS_NewCFunction(engine.context, slotRunning, "", 1));
+        defer engine.freeValue(predicate);
+        const found = try sdk.invoke(engine, array, "some", &.{predicate});
+        defer engine.freeValue(found);
+        if (c.JS_ToBool(engine.context, found) != 0) return c.pi_js_bool(engine.context, 0);
+    }
     return c.pi_js_bool(engine.context, 1);
+}
+fn slotRunning(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return slotRunningOwned(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| durable.reject(engine, err);
+}
+fn slotRunningOwned(engine: *Engine, slot: c.JSValue) !c.JSValue {
+    const status = try sdk.get(engine, slot, "status");
+    defer engine.freeValue(status);
+    if (!c.JS_IsString(status)) return c.pi_js_bool(engine.context, 0);
+    const text = try engine.toString(status);
+    defer engine.gpa.free(text);
+    return c.pi_js_bool(engine.context, @intFromBool(@import("std").mem.eql(u8, text, "running")));
 }

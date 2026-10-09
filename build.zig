@@ -445,6 +445,13 @@ pub fn build(b: *std.Build) void {
     const run_native_durable_tests = b.addRunArtifact(native_durable_tests);
     const native_durable_step = b.step("test-native-durable-vm", "Exercise native public durable VM storage and Session objects");
     native_durable_step.dependOn(&run_native_durable_tests.step);
+    const durable_tool_output_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_tool_output_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable v2"} });
+    linkQuickJs(b, durable_tool_output_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, durable_tool_output_tests.root_module);
+    linkTypeScriptParser(b, durable_tool_output_tests.root_module, typescript_parser);
+    const durable_tool_output_run = b.addRunArtifact(durable_tool_output_tests);
+    b.step("test-native-durable-tool-output", "Replay actual Durable v2 structured output and independent schema cache contracts").dependOn(&durable_tool_output_run.step);
+    test_step.dependOn(&durable_tool_output_run.step);
     const sqlite_source_fixture = b.addExecutable(.{
         .name = "pi-durable-sqlite-source-fixture",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/durable_sqlite_source_fixture.zig"), .target = target, .optimize = optimize }),

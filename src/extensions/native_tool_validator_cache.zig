@@ -45,6 +45,17 @@ fn getOwned(engine: *Engine, schema: c.JSValue) !c.JSValue {
     const previous = try vm.invoke(engine, weak, "get", &.{schema});
     if (c.JS_ToBool(engine.context, previous) != 0) return previous;
     engine.freeValue(previous);
+    const validator = try compileFresh(engine, schema);
+    errdefer engine.freeValue(validator);
+    // WeakMap supplies the original primitive-key failure, including boolean
+    // schemas: normalization catches this compile/cache error upstream.
+    const result = try vm.invoke(engine, weak, "set", &.{ schema, validator });
+    engine.freeValue(result);
+    return validator;
+}
+/// Compile with the same Source semantics without sharing a caller's cache.
+/// Durable structured output owns a separate WeakMap from tool arguments.
+pub fn compileFresh(engine: *Engine, schema: c.JSValue) !c.JSValue {
     const use_unevaluated = try evaluator.usesUnevaluated(engine, schema);
     var arena = std.heap.ArenaAllocator.init(engine.gpa);
     defer arena.deinit();
@@ -58,10 +69,6 @@ fn getOwned(engine: *Engine, schema: c.JSValue) !c.JSValue {
     var captures = [_]c.JSValue{ compiled, schema };
     try vm.put(engine, validator, "Check", try engine.checked(c.JS_NewCFunctionData2(engine.context, validatorMethod, "Check", 1, 0, captures.len, &captures)));
     try vm.put(engine, validator, "Errors", try engine.checked(c.JS_NewCFunctionData2(engine.context, validatorMethod, "Errors", 1, 1, captures.len, &captures)));
-    // WeakMap supplies the original primitive-key failure, including boolean
-    // schemas: normalization catches this compile/cache error upstream.
-    const result = try vm.invoke(engine, weak, "set", &.{ schema, validator });
-    engine.freeValue(result);
     return validator;
 }
 pub fn check(engine: *Engine, compiled: c.JSValue, value: c.JSValue) !bool {
