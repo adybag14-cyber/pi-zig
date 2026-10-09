@@ -25,7 +25,7 @@ const c = engine_mod.c;
 const provider_tickets = @import("native_provider_tickets.zig");
 
 const WireRecord = struct {
-    const Kind = enum { request, abort, ui_response, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, context_invalidate, provider_ticket_retire, native_tool_catalog, shutdown };
+    const Kind = enum { request, abort, ui_response, native_ui_service_response, native_ui_service_epoch, component_control, provider_stream_ack, renderer_control, editor_control, widget_control, terminal_input, context_invalidate, provider_ticket_retire, native_tool_catalog, shutdown };
     bytes: []u8,
     kind: Kind = .request,
 };
@@ -94,6 +94,8 @@ const Transport = struct {
         if (std.mem.eql(u8, kind.string, "abort_current") or std.mem.eql(u8, kind.string, "abort")) return .abort;
         if (std.mem.eql(u8, kind.string, "shutdown")) return .shutdown;
         if (std.mem.eql(u8, kind.string, "ui_response")) return .ui_response;
+        if (std.mem.eql(u8, kind.string, "native_ui_service_response") or std.mem.eql(u8, kind.string, "native_ui_service_component_control")) return .native_ui_service_response;
+        if (std.mem.eql(u8, kind.string, "native_ui_service_epoch")) return .native_ui_service_epoch;
         if (std.mem.eql(u8, kind.string, "provider_stream_ack")) return .provider_stream_ack;
         if (std.mem.eql(u8, kind.string, "component_control")) return .component_control;
         if (std.mem.eql(u8, kind.string, "renderer_control") or std.mem.eql(u8, kind.string, "renderer_subscribe")) return .renderer_control;
@@ -176,6 +178,9 @@ const Transport = struct {
             };
             try self.publishMetadataSafe();
             var deadline = try timers.nextDeadline(self.engine);
+            for (self.group.ui.services.items) |service| if (service.deadline()) |due| {
+                deadline = if (deadline) |previous| @min(previous, due) else due;
+            };
             if (self.group.ui.footer_data.next_poll) |footer_due| deadline = if (deadline) |due| @min(due, footer_due) else footer_due;
             if (self.group.renderers.nextRedrawDeadline()) |redraw_due| {
                 deadline = if (deadline) |due| @min(due, redraw_due) else redraw_due;
@@ -215,6 +220,7 @@ const Transport = struct {
         _ = try self.engine.drainReadyJobs();
         if (try timers.pumpReady(self.engine)) _ = try self.engine.drainReadyJobs();
         if (self.tickets) |tickets| try tickets.pump();
+        try self.group.pollUiServices();
         _ = try self.group.renderers.pumpDirtyReady();
         _ = try self.group.ui.editors.pumpDirty();
         _ = try self.group.ui.widgets.pumpDirty();
@@ -269,7 +275,7 @@ const Transport = struct {
         self.mutex.lockUncancelable(self.io);
         defer self.mutex.unlock(self.io);
         for (self.records.items, 0..) |record, index| {
-            if (record.kind == .abort or record.kind == .ui_response or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or record.kind == .terminal_input or record.kind == .context_invalidate or record.kind == .provider_ticket_retire or record.kind == .native_tool_catalog or (self.active and record.kind == .shutdown and index == 0)) {
+            if (record.kind == .abort or record.kind == .ui_response or record.kind == .native_ui_service_response or record.kind == .native_ui_service_epoch or record.kind == .component_control or record.kind == .provider_stream_ack or record.kind == .renderer_control or record.kind == .editor_control or record.kind == .widget_control or record.kind == .terminal_input or record.kind == .context_invalidate or record.kind == .provider_ticket_retire or record.kind == .native_tool_catalog or (self.active and record.kind == .shutdown and index == 0)) {
                 const removed = self.records.orderedRemove(index);
                 self.queued_bytes -= removed.bytes.len;
                 return removed;
@@ -300,6 +306,16 @@ const Transport = struct {
             var arena: std.heap.ArenaAllocator = .init(engine.gpa);
             defer arena.deinit();
             const request = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record.bytes, .{});
+            if (record.kind == .native_ui_service_epoch) {
+                try self.uiServiceEpoch(request);
+                dispatched = true;
+                continue;
+            }
+            if (record.kind == .native_ui_service_response) {
+                if (request == .object) try self.group.uiServiceResponse(request.object);
+                dispatched = true;
+                continue;
+            }
             if (record.kind == .native_tool_catalog) {
                 try self.applyNativeToolCatalog(request);
                 dispatched = true;
@@ -399,6 +415,7 @@ const Transport = struct {
             }
         }
         if (try self.bindings.ui_manager.poll()) dispatched = true;
+        try self.group.pollUiServices();
         try self.bindings.stream_runner.poll();
         if (self.inputEnded()) self.terminal = true;
         if (self.terminal) {
@@ -433,6 +450,8 @@ const Transport = struct {
     }
     fn persistentControl(self: *Transport, kind: WireRecord.Kind, request: std.json.Value) !bool {
         switch (kind) {
+            .native_ui_service_epoch => try self.uiServiceEpoch(request),
+            .native_ui_service_response => if (request == .object) try self.group.uiServiceResponse(request.object),
             .context_invalidate => try self.contextInvalidate(request),
             .terminal_input => try self.terminalInput(request),
             .widget_control => try self.widgetControl(request),
@@ -443,6 +462,20 @@ const Transport = struct {
         return true;
     }
 
+    fn uiServiceEpoch(self: *Transport, request: std.json.Value) !void {
+        if (request != .object) return;
+        const object = request.object;
+        const version = object.get("version") orelse return;
+        if (version != .integer or version.integer != 1) return;
+        const owner = component_protocol.identifier(object.get("ownerGeneration") orelse return) catch return;
+        const id = component_protocol.identifier(object.get("controlId") orelse return) catch return;
+        const epoch = component_protocol.identifier(object.get("serviceGeneration") orelse return) catch return;
+        if (owner != self.group.ui.widgets.owner_generation or id == 0 or epoch == 0 or id <= self.group.ui.service_epoch_control_id) return;
+        if (self.group.ui.current_service_ui) |value| self.engine.freeValue(value);
+        self.group.ui.current_service_ui = null;
+        self.group.ui.service_epoch = epoch;
+        self.group.ui.service_epoch_control_id = id;
+    }
     fn contextInvalidate(self: *Transport, request: std.json.Value) !void {
         if (request != .object) return error.InvalidContextInvalidation;
         const id = try component_protocol.identifier(request.object.get("id") orelse return error.InvalidContextInvalidation);
@@ -671,13 +704,44 @@ const Transport = struct {
         };
     }
 
+    fn serviceRecord(self: *Transport, kind: []const u8, lease: @import("native_ui_service_protocol.zig").Lease, id: ?u32, method: ?[]const u8, arguments: ?[]const u8) !void {
+        var out: std.Io.Writer.Allocating = .init(self.engine.gpa);
+        defer out.deinit();
+        try out.writer.writeAll("{\"type\":");
+        try std.json.Stringify.value(kind, .{}, &out.writer);
+        try out.writer.writeByte(',');
+        try lease.writeFields(&out.writer);
+        if (id) |value| try out.writer.print(",\"requestId\":\"{d}\"", .{value});
+        try out.writer.writeAll(",\"invocationId\":");
+        try std.json.Stringify.value(self.active_id, .{}, &out.writer);
+        if (method) |value| {
+            try out.writer.writeAll(",\"method\":");
+            try std.json.Stringify.value(value, .{}, &out.writer);
+        }
+        if (arguments) |value| try out.writer.print(",\"args\":{s}", .{value});
+        try out.writer.writeByte('}');
+        try self.writer.writeByte(0x1e);
+        try self.writer.writeAll(out.written());
+        try self.writer.writeByte('\n');
+        try self.writer.flush();
+    }
+    fn serviceOpen(context: ?*anyopaque, lease: @import("native_ui_service_protocol.zig").Lease) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        try self.serviceRecord("native_ui_service_open", lease, null, null, null);
+    }
+    fn serviceClose(context: ?*anyopaque, lease: @import("native_ui_service_protocol.zig").Lease) !void {
+        const self: *Transport = @ptrCast(@alignCast(context.?));
+        try self.serviceRecord("native_ui_service_close", lease, null, null, null);
+    }
     fn uiRequest(context: ?*anyopaque, id: u32, method: []const u8, args: []const u8) !void {
         const self: *Transport = @ptrCast(@alignCast(context.?));
+        if (self.group.ui.service) |lease| return self.serviceRecord("native_ui_service_request", lease, id, method, args);
         try self.uiRecord("ui_request", id, method, args);
     }
 
     fn uiAction(context: ?*anyopaque, method: []const u8, args: []const u8) !void {
         const self: *Transport = @ptrCast(@alignCast(context.?));
+        if (self.group.ui.service) |lease| return self.serviceRecord("native_ui_service_action", lease, null, method, args);
         if (self.active or (if (self.tickets) |tickets| tickets.active != null else false)) return self.uiRecord("ui_action", null, method, args);
         var out: std.Io.Writer.Allocating = .init(self.engine.gpa);
         defer out.deinit();
@@ -692,6 +756,7 @@ const Transport = struct {
 
     fn uiCancel(context: ?*anyopaque, id: u32) !void {
         const self: *Transport = @ptrCast(@alignCast(context.?));
+        if (self.group.ui.service) |lease| return self.serviceRecord("native_ui_service_cancel", lease, id, null, null);
         try self.uiRecord("ui_cancel", id, null, null);
     }
 
@@ -710,6 +775,14 @@ const Transport = struct {
 
     fn componentScene(context: ?*anyopaque, scene: component_protocol.Scene) !void {
         const self: *Transport = @ptrCast(@alignCast(context.?));
+        if (self.group.ui.service) |lease| {
+            var owned = scene;
+            defer owned.deinit();
+            var out: std.Io.Writer.Allocating = .init(self.engine.gpa);
+            defer out.deinit();
+            try component_protocol.writeScene(&out.writer, &scene);
+            return self.serviceRecord("native_ui_service_component_scene", lease, @intCast(scene.fence.token), null, out.written());
+        }
         try self.writer.writeByte(0x1e);
         try component_protocol.writeScene(self.writer, &scene);
         try self.writer.writeByte('\n');
@@ -720,6 +793,14 @@ const Transport = struct {
 
     fn componentClose(context: ?*anyopaque, fence: component_protocol.Fence) !void {
         const self: *Transport = @ptrCast(@alignCast(context.?));
+        if (self.group.ui.service) |lease| {
+            var out: std.Io.Writer.Allocating = .init(self.engine.gpa);
+            defer out.deinit();
+            try out.writer.writeByte('{');
+            try component_protocol.writeFence(&out.writer, fence);
+            try out.writer.writeByte('}');
+            return self.serviceRecord("native_ui_service_component_close", lease, @intCast(fence.token), null, out.written());
+        }
         try self.writer.writeAll("\x1e{\"type\":\"component_close\",");
         try component_protocol.writeFence(self.writer, fence);
         try self.writer.writeAll("}\n");
@@ -727,6 +808,12 @@ const Transport = struct {
     }
     fn componentMouseOutcome(context: ?*anyopaque, value: component_protocol.MouseOutcome) !void {
         const self: *Transport = @ptrCast(@alignCast(context.?));
+        if (self.group.ui.service) |lease| {
+            var out: std.Io.Writer.Allocating = .init(self.engine.gpa);
+            defer out.deinit();
+            try component_protocol.writeMouseOutcome(&out.writer, value);
+            return self.serviceRecord("native_ui_service_component_mouse_outcome", lease, @intCast(value.fence.token), null, out.written());
+        }
         try self.writer.writeByte(0x1e);
         try component_protocol.writeMouseOutcome(self.writer, value);
         try self.writer.writeByte('\n');
@@ -1433,7 +1520,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     engine.host_control_pump = Transport.pump;
     engine.host_owner_notify_context = &transport;
     engine.host_owner_notify = Transport.notifyOwner;
-    bindings.ui_manager.bridge = .{ .context = &transport, .request = Transport.uiRequest, .action = Transport.uiAction, .cancel = Transport.uiCancel, .component_scene = Transport.componentScene, .component_close = Transport.componentClose, .component_mouse_outcome = Transport.componentMouseOutcome };
+    bindings.ui_manager.bridge = .{ .context = &transport, .request = Transport.uiRequest, .action = Transport.uiAction, .cancel = Transport.uiCancel, .component_scene = Transport.componentScene, .component_close = Transport.componentClose, .component_mouse_outcome = Transport.componentMouseOutcome, .service_open = if (grouped) Transport.serviceOpen else null, .service_close = if (grouped) Transport.serviceClose else null };
     defer bindings.ui_manager.bridge = null;
     defer {
         // Retire and join durable workers while their notifier and transport

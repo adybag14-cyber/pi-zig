@@ -131,6 +131,26 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     const sdk_install = b.addInstallArtifact(sdk_embedder, .{});
+    const ui_service_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ui_service_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native UI service"}, .use_llvm = use_llvm });
+    linkQuickJs(b, ui_service_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, ui_service_tests.root_module);
+    ui_service_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const ui_service_run = b.addRunArtifact(ui_service_tests);
+    b.step("test-native-ui-service", "Exercise retained Main service leases without changing SDK async admission").dependOn(&ui_service_run.step);
+    const ui_service_process_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ui_service_process_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native UI service process"}, .use_llvm = use_llvm });
+    linkQuickJs(b, ui_service_process_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, ui_service_process_tests.root_module);
+    ui_service_process_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const ui_service_process_run = b.addRunArtifact(ui_service_process_tests);
+    ui_service_process_run.step.dependOn(&sdk_install.step);
+    ui_service_process_run.setEnvironmentVariable("PI_UI_SERVICE_TEST_BINARY", b.getInstallPath(.bin, b.fmt("pi-sdk-embedder{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
+    b.step("test-native-ui-service-process", "Prove completed Main services on a real no-Node worker and idle transport").dependOn(&ui_service_process_run.step);
+    const ui_service_allocation_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ui_service_allocation_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Main UI service allocation"}, .use_llvm = use_llvm });
+    linkQuickJs(b, ui_service_allocation_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, ui_service_allocation_tests.root_module);
+    ui_service_allocation_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const ui_service_allocation_run = b.addRunArtifact(ui_service_allocation_tests);
+    b.step("test-native-ui-service-allocation", "Sweep every retained frontend service host allocation; PI_SDK_ALLOCATION_SHARD/SHARDS partitions hosted jobs").dependOn(&ui_service_allocation_run.step);
     const sdk_step = b.step("sdk-embedder", "Build the no-Node native SDK module embedder");
     sdk_step.dependOn(&sdk_install.step);
 
@@ -270,6 +290,9 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    test_step.dependOn(&ui_service_run.step);
+    test_step.dependOn(&ui_service_process_run.step);
+    test_step.dependOn(&ui_service_allocation_run.step);
     const catalog_wire_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_tool_catalog_wire_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "private native catalog", "native durable VM MCP parameter bodies", "native durable VM Main builtin catalog" } });
     catalog_wire_tests.root_module.addImport("catalog_tool", catalog_tool);
     linkQuickJs(b, catalog_wire_tests.root_module, quickjs, sqlite_lib_dir);

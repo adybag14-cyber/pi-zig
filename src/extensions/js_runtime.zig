@@ -137,6 +137,7 @@ const NativeReadSession = struct {
     failure: ?anyerror = null,
 
     fn reader(self: *@This()) Io.Cancelable!void {
+        defer self.runtime.ui_services.close(self.runtime);
         defer self.runtime.rendererEnded();
         defer self.runtime.editorEnded();
         defer self.runtime.widgetEnded();
@@ -151,7 +152,15 @@ const NativeReadSession = struct {
                 self.wake.set(self.runtime.io);
                 return;
             };
-            const adopted = (self.runtime.dispatchMetadataRecord(record) catch |err| {
+            const adopted = (self.dispatchUiServiceRecord(record) catch |err| {
+                std.heap.page_allocator.free(record);
+                self.mutex.lockUncancelable(self.runtime.io);
+                self.finished = true;
+                self.failure = err;
+                self.mutex.unlock(self.runtime.io);
+                self.wake.set(self.runtime.io);
+                return;
+            }) or (self.runtime.dispatchMetadataRecord(record) catch |err| {
                 std.heap.page_allocator.free(record);
                 self.mutex.lockUncancelable(self.runtime.io);
                 self.finished = true;
@@ -211,6 +220,16 @@ const NativeReadSession = struct {
         }
     }
 
+    fn dispatchUiServiceRecord(self: *@This(), record: []const u8) !bool {
+        var arena: std.heap.ArenaAllocator = .init(std.heap.page_allocator);
+        defer arena.deinit();
+        const root = std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), record, .{}) catch return false;
+        if (root != .object) return false;
+        const kind = root.object.get("type") orelse return false;
+        if (kind != .string) return false;
+        return self.runtime.ui_services.dispatch(self.runtime, self, kind.string, root.object);
+    }
+
     fn next(self: *@This(), dialogs: *NativeDialogs) ![]u8 {
         var budget: NativeRecordBudget = .{};
         while (true) {
@@ -243,7 +262,7 @@ const NativeReadSession = struct {
             // Human dialogs do not inherit the short ordinary script-record
             // timeout. Their own cancellation/deadline arrives on the wire.
             const now = Io.Clock.awake.now(self.runtime.io).toMilliseconds();
-            if (try budget.remaining(now, self.runtime.timeout_ms, dialogs.humanWait())) |remaining| {
+            if (try budget.remaining(now, self.runtime.timeout_ms, dialogs.humanWait() or self.runtime.ui_services.humanWait(self.runtime, dialogs.invocation_id))) |remaining| {
                 const timeout: Io.Timeout = .{ .duration = .{ .raw = .fromMilliseconds(remaining), .clock = .awake } };
                 self.wake.waitTimeout(self.runtime.io, timeout) catch |err| switch (err) {
                     // Event waits may report a spurious wake as Timeout.
@@ -276,6 +295,17 @@ const NativeComponentSession = struct {
     presented: std.atomic.Value(bool) = .init(false),
     close_attempted: std.atomic.Value(bool) = .init(false),
     failure: ?anyerror = null,
+    service_header: ?@import("native_ui_service_protocol.zig").Header = null,
+
+    fn writeControl(self: *@This(), writer: *Io.Writer, control: *const component_protocol.Control) !void {
+        if (self.service_header) |header| {
+            try writer.writeAll("{\"kind\":\"native_ui_service_component_control\",");
+            try header.writeFields(writer);
+            try writer.writeAll(",\"control\":");
+            try component_protocol.writeControl(writer, control);
+            try writer.writeByte('}');
+        } else try component_protocol.writeControl(writer, control);
+    }
 
     fn push(self: *@This(), scene: component_protocol.Scene) !void {
         self.mutex.lockUncancelable(self.runtime.io);
@@ -303,7 +333,7 @@ const NativeComponentSession = struct {
             defer control.deinit();
             var record: Io.Writer.Allocating = .init(std.heap.page_allocator);
             defer record.deinit();
-            component_protocol.writeControl(&record.writer, &control) catch |err| {
+            self.writeControl(&record.writer, &control) catch |err| {
                 self.fail(err);
                 return;
             };
@@ -359,7 +389,7 @@ const NativeComponentSession = struct {
                 const cancel: component_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = self.fence, .kind = .cancel };
                 var record: Io.Writer.Allocating = .init(std.heap.page_allocator);
                 defer record.deinit();
-                try component_protocol.writeControl(&record.writer, &cancel);
+                try self.writeControl(&record.writer, &cancel);
                 try self.runtime.writeLine(record.written());
             };
         }
@@ -368,7 +398,7 @@ const NativeComponentSession = struct {
         var record: Io.Writer.Allocating = .init(std.heap.page_allocator);
         defer record.deinit();
         const acknowledgement: component_protocol.Control = .{ .gpa = std.heap.page_allocator, .fence = self.fence, .kind = .{ .close_ack = outcome.ok }, .error_message = outcome.error_message };
-        try component_protocol.writeControl(&record.writer, &acknowledgement);
+        try self.writeControl(&record.writer, &acknowledgement);
         try self.runtime.writeLine(record.written());
     }
 
@@ -463,6 +493,8 @@ const NativeDialog = struct {
     cancelled: std.atomic.Value(bool) = .init(false),
     failure: ?anyerror = null,
     component: ?*NativeComponentSession = null,
+    service_header: ?@import("native_ui_service_protocol.zig").Header = null,
+    activity_invocation_id: u64 = 0,
 
     fn run(self: *@This()) Io.Cancelable!void {
         defer {
@@ -489,7 +521,11 @@ const NativeDialog = struct {
         if (result) |value| try validateAnyJson(allocator, value);
         var response: Io.Writer.Allocating = .init(allocator);
         defer response.deinit();
-        try response.writer.print("{{\"kind\":\"ui_response\",\"invocationId\":\"{d}\",\"id\":{d},", .{ self.invocation_id, self.id });
+        if (self.service_header) |header| {
+            try response.writer.writeAll("{\"kind\":\"native_ui_service_response\",");
+            try header.writeFields(&response.writer);
+            try response.writer.writeByte(',');
+        } else try response.writer.print("{{\"kind\":\"ui_response\",\"invocationId\":\"{d}\",\"id\":{d},", .{ self.invocation_id, self.id });
         if (result) |value| {
             try response.writer.writeAll("\"ok\":true,\"result\":");
             try response.writer.writeAll(value);
@@ -512,6 +548,183 @@ const NativeDialog = struct {
         std.heap.page_allocator.free(self.method);
         std.heap.page_allocator.free(self.args);
         std.heap.page_allocator.destroy(self);
+    }
+};
+
+/// Only the persistent stdout reader mutates these owned tables. Callback
+/// tasks publish their completion atomically and never access the VM or table.
+const NativeUiServices = struct {
+    const protocol = @import("native_ui_service_protocol.zig");
+    const Lease = struct { identity: protocol.Lease, bridge: ?UiBridge, invocation_id: u64, last_request_id: u64 = 0 };
+    leases: std.ArrayList(Lease) = .empty,
+    requests: std.ArrayList(*NativeDialog) = .empty,
+    last_service_id: u64 = 0,
+    mutex: Io.Mutex = .init,
+
+    fn releaseDialog(request: *NativeDialog) void {
+        const io = request.runtime.io;
+        const previous = io.swapCancelProtection(.blocked);
+        defer _ = io.swapCancelProtection(previous);
+        request.deinit();
+    }
+
+    fn reap(self: *@This()) void {
+        var index: usize = 0;
+        while (index < self.requests.items.len) {
+            const request = self.requests.items[index];
+            if (request.done.load(.acquire)) {
+                _ = self.requests.swapRemove(index);
+                releaseDialog(request);
+            } else index += 1;
+        }
+    }
+    fn close(self: *@This(), runtime: *Runtime) void {
+        self.mutex.lockUncancelable(runtime.io);
+        defer self.mutex.unlock(runtime.io);
+        for (self.requests.items) |request| releaseDialog(request);
+        self.requests.clearRetainingCapacity();
+        self.leases.clearRetainingCapacity();
+    }
+    fn deinit(self: *@This(), runtime: *Runtime) void {
+        self.close(runtime);
+        self.requests.deinit(std.heap.page_allocator);
+        self.leases.deinit(std.heap.page_allocator);
+    }
+    fn find(self: *@This(), identity: protocol.Lease) ?*Lease {
+        for (self.leases.items) |*lease| if (lease.identity.eql(identity)) return lease;
+        return null;
+    }
+    fn sameBridge(a: ?UiBridge, b: ?UiBridge) bool {
+        if (a == null or b == null) return a == null and b == null;
+        return a.?.context == b.?.context and a.?.request_fn == b.?.request_fn and a.?.action_fn == b.?.action_fn and a.?.component_scene_fn == b.?.component_scene_fn and a.?.component_close_fn == b.?.component_close_fn;
+    }
+    fn epochForBridge(self: *@This(), runtime: *Runtime, bridge: ?UiBridge, proposed: u64) u64 {
+        self.mutex.lockUncancelable(runtime.io);
+        defer self.mutex.unlock(runtime.io);
+        for (self.leases.items) |lease| if (sameBridge(lease.bridge, bridge)) return lease.identity.service_generation;
+        return proposed;
+    }
+    fn humanWait(self: *@This(), runtime: *Runtime, invocation_id: u64) bool {
+        if (invocation_id == 0) return false;
+        self.mutex.lockUncancelable(runtime.io);
+        defer self.mutex.unlock(runtime.io);
+        for (self.requests.items) |request| if (request.activity_invocation_id == invocation_id and !request.done.load(.acquire)) {
+            if (request.component) |component| {
+                if (component.presented.load(.acquire)) return true;
+            } else return true;
+        };
+        return false;
+    }
+    fn dispatch(self: *@This(), runtime: *Runtime, session: *NativeReadSession, kind: []const u8, object: std.json.ObjectMap) !bool {
+        if (!std.mem.startsWith(u8, kind, "native_ui_service_")) return false;
+        self.mutex.lockUncancelable(runtime.io);
+        defer self.mutex.unlock(runtime.io);
+        const identity = protocol.Lease.read(object) catch return true;
+        if (identity.owner_generation != runtime.owner_generation) return true;
+        self.reap();
+        if (std.mem.eql(u8, kind, "native_ui_service_open")) {
+            const invocation = wireInvocationId(object.get("invocationId") orelse return true) catch return true;
+            if (invocation == 0 or invocation != @atomicLoad(u64, &runtime.service_open_invocation_id, .acquire) or identity.extension_id != @atomicLoad(u64, &runtime.service_open_extension_id, .acquire)) return true;
+            if (identity.service_id <= self.last_service_id or self.leases.items.len >= 4096) return true;
+            const bridge = runtime.captureUiBridge();
+            try self.leases.append(std.heap.page_allocator, .{ .identity = identity, .bridge = bridge, .invocation_id = invocation });
+            self.last_service_id = identity.service_id;
+            return true;
+        }
+        const lease = self.find(identity) orelse return true;
+        if (std.mem.eql(u8, kind, "native_ui_service_close")) {
+            var index: usize = 0;
+            while (index < self.requests.items.len) {
+                const request = self.requests.items[index];
+                if (request.service_header.?.lease.eql(identity)) {
+                    _ = self.requests.swapRemove(index);
+                    releaseDialog(request);
+                } else index += 1;
+            }
+            for (self.leases.items, 0..) |item, at| if (item.identity.eql(identity)) {
+                _ = self.leases.swapRemove(at);
+                break;
+            };
+            return true;
+        }
+        if (std.mem.eql(u8, kind, "native_ui_service_action")) {
+            const method = object.get("method") orelse return true;
+            const args = object.get("args") orelse return true;
+            if (method != .string or args != .object) return true;
+            const encoded = try stringifyValue(std.heap.page_allocator, args);
+            defer std.heap.page_allocator.free(encoded);
+            if (lease.bridge) |bridge| try bridge.action_fn(bridge.context, std.heap.page_allocator, method.string, encoded);
+            return true;
+        }
+        const header = protocol.Header.read(object) catch return true;
+        if (std.mem.eql(u8, kind, "native_ui_service_component_scene") or std.mem.eql(u8, kind, "native_ui_service_component_close") or std.mem.eql(u8, kind, "native_ui_service_component_mouse_outcome")) {
+            const payload = object.get("args") orelse return true;
+            if (payload != .object) return true;
+            for (self.requests.items) |request| if (request.service_header.?.matches(header)) {
+                const component = request.component orelse return true;
+                if (std.mem.eql(u8, kind, "native_ui_service_component_scene")) {
+                    var scene = try component_protocol.readScene(std.heap.page_allocator, &payload.object);
+                    errdefer scene.deinit();
+                    component.push(scene) catch |err| {
+                        if (err == error.StaleNativeComponentScene) {
+                            scene.deinit();
+                            return true;
+                        }
+                        return err;
+                    };
+                } else if (std.mem.eql(u8, kind, "native_ui_service_component_close")) {
+                    const fence = component_protocol.readFence(&payload.object) catch return true;
+                    if (component_protocol.Fence.matches(component.fence, fence)) component.requestClose();
+                } else {
+                    const outcome = component_protocol.readMouseOutcome(&payload.object) catch return true;
+                    if (!component_protocol.Fence.matches(component.fence, outcome.fence)) return true;
+                    component.controls.publishMouseOutcome(outcome) catch |err| {
+                        if (err != error.StaleNativeComponentControl) return err;
+                    };
+                }
+                break;
+            };
+            return true;
+        }
+        if (std.mem.eql(u8, kind, "native_ui_service_cancel")) {
+            for (self.requests.items, 0..) |request, index| if (request.service_header.?.matches(header)) {
+                _ = self.requests.swapRemove(index);
+                releaseDialog(request);
+                break;
+            };
+            return true;
+        }
+        if (!std.mem.eql(u8, kind, "native_ui_service_request")) return true;
+        const incoming = protocol.readRequest(object) catch return true;
+        if (header.request_id <= lease.last_request_id or header.request_id > std.math.maxInt(u32) or self.requests.items.len >= protocol.maximum_pending) return true;
+        const component_fence: ?component_protocol.Fence = if (std.mem.eql(u8, incoming.method, "custom_native")) blk: {
+            const fence = component_protocol.readFence(&incoming.args) catch return true;
+            if (fence.invocation_id != lease.invocation_id or fence.token != header.request_id) return true;
+            break :blk fence;
+        } else null;
+        const allocator = std.heap.page_allocator;
+        const method = try allocator.dupe(u8, incoming.method);
+        errdefer allocator.free(method);
+        const args = try stringifyValue(allocator, .{ .object = incoming.args });
+        errdefer allocator.free(args);
+        if (args.len > protocol.maximum_request_bytes) return error.NativeUiServiceRequestLimit;
+        const request = try allocator.create(NativeDialog);
+        errdefer allocator.destroy(request);
+        const activity = if (object.get("invocationId")) |value| wireInvocationId(value) catch 0 else 0;
+        request.* = .{ .runtime = runtime, .session = session, .bridge = lease.bridge, .invocation_id = lease.invocation_id, .id = @intCast(header.request_id), .method = method, .args = args, .service_header = header, .activity_invocation_id = activity };
+        if (component_fence) |fence| {
+            const component = try allocator.create(NativeComponentSession);
+            component.* = .{ .runtime = runtime, .bridge = lease.bridge, .fence = fence, .controls = component_protocol.ControlQueue.init(allocator, runtime.io), .service_header = header };
+            component.controls.reset(fence);
+            request.component = component;
+        }
+        errdefer if (request.component) |component| component.deinit();
+        try self.requests.ensureUnusedCapacity(allocator, 1);
+        try request.group.concurrent(runtime.io, NativeDialog.run, .{request});
+        request.started = true;
+        self.requests.appendAssumeCapacity(request);
+        lease.last_request_id = header.request_id;
+        return true;
     }
 };
 
@@ -665,6 +878,11 @@ pub const Runtime = struct {
     group_references: std.atomic.Value(usize) = .init(1),
     native_read_session: ?*NativeReadSession = null,
     native_reader_group: Io.Group = .init,
+    ui_services: NativeUiServices = .{},
+    service_open_invocation_id: u64 = 0,
+    service_open_extension_id: u64 = 0,
+    ui_bridge_revision: u64 = 1,
+    service_epoch_sent_revision: u64 = 0,
     owner_generation: u64 = 1,
     renderer_mutex: Io.Mutex = .init,
     editor_mutex: Io.Mutex = .init,
@@ -1032,6 +1250,7 @@ pub const Runtime = struct {
             self.gpa.destroy(session);
             self.native_read_session = null;
         }
+        self.ui_services.deinit(self);
         self.editorEnded();
         self.widgetEnded();
         if (self.widget_controls) |controls| std.heap.page_allocator.destroy(controls);
@@ -1125,8 +1344,23 @@ pub const Runtime = struct {
         self.widget_mutex.lockUncancelable(self.io);
         defer self.widget_mutex.unlock(self.io);
         const previous = self.ui_bridge;
+        if (!NativeUiServices.sameBridge(previous, bridge)) self.ui_bridge_revision +|= 1;
         self.ui_bridge = bridge;
         return previous;
+    }
+    fn prepareUiServiceEpoch(self: *Runtime) !void {
+        if (self.backend != .native or !self.native_group) return;
+        self.widget_mutex.lockUncancelable(self.io);
+        const revision = self.ui_bridge_revision;
+        const bridge = self.ui_bridge;
+        self.widget_mutex.unlock(self.io);
+        if (revision == self.service_epoch_sent_revision) return;
+        if (revision > 9_007_199_254_740_991) return error.NativeUiServiceExhausted;
+        const epoch = self.ui_services.epochForBridge(self, bridge, revision);
+        var buffer: [256]u8 = undefined;
+        const notice = try std.fmt.bufPrint(&buffer, "{{\"kind\":\"native_ui_service_epoch\",\"version\":1,\"ownerGeneration\":\"{d}\",\"controlId\":\"{d}\",\"serviceGeneration\":\"{d}\"}}", .{ self.owner_generation, revision, epoch });
+        try self.writeLine(notice);
+        self.service_epoch_sent_revision = revision;
     }
 
     pub fn setWidgetBridge(self: *Runtime, bridge: ?WidgetBridge) !void {
@@ -2331,6 +2565,19 @@ pub const Runtime = struct {
         if (self.shared_owner) |owner| return self.exchangeGroupView(owner, request, abort_flag, update_fn, update_ctx, stream_event_fn, stream_event_ctx, watch_provider_retirement);
         if (self.backend == .native) try self.requireNativeRequest(request);
         self.clearLastErrorUnlocked();
+        try self.prepareUiServiceEpoch();
+        if (self.backend == .native and self.native_group) {
+            var arena: std.heap.ArenaAllocator = .init(self.gpa);
+            defer arena.deinit();
+            const value = try std.json.parseFromSliceLeaky(std.json.Value, arena.allocator(), request, .{});
+            const extension = if (value == .object) if (value.object.get("extensionId")) |id| try component_protocol.identifier(id) else self.extension_id else self.extension_id;
+            @atomicStore(u64, &self.service_open_extension_id, extension, .release);
+            @atomicStore(u64, &self.service_open_invocation_id, invocation_id, .release);
+        }
+        defer {
+            @atomicStore(u64, &self.service_open_invocation_id, 0, .release);
+            @atomicStore(u64, &self.service_open_extension_id, 0, .release);
+        }
         self.writeLine(request) catch |err| {
             self.closeUnlocked();
             return err;

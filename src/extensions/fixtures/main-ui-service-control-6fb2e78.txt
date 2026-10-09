@@ -1,0 +1,7 @@
+export default pi => {
+  pi.registerCommand('abort-first', { handler() { globalThis.__serviceFirstAbort.abort({ cancel: true }); return { aborted: true }; } });
+  pi.registerCommand('inspect-service', { handler() { return { states: globalThis.__serviceStates }; } });
+  pi.registerCommand('ordinary-held', { async handler() { return { value: await globalThis.__keptMainUI.input('ordinary', '') }; } });
+  pi.registerCommand('retained-after-remove', { async handler() { const value = await globalThis.__keptMainUI.input('after-remove', ''); globalThis.__keptMainUI.notify('after-remove:' + value); return { value }; } });
+  pi.registerCommand('shutdown-held', { handler() { void globalThis.__keptMainUI.input('shutdown', ''); return { held: true }; } });
+}

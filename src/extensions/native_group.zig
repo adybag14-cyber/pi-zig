@@ -179,6 +179,40 @@ pub const Group = struct {
         };
     }
 
+    pub fn pollUiServices(self: *Group) !void {
+        for (self.ui.services.items) |service| try service.poll();
+    }
+    pub fn uiServiceResponse(self: *Group, object: std.json.ObjectMap) !void {
+        const header = @import("native_ui_service_protocol.zig").Header.read(object) catch return;
+        if (header.lease.owner_generation != self.ui.widgets.owner_generation) return;
+        // These frontend services outlive an extension reload. A retired Pi
+        // binding cannot admit a new service, but a previously issued native
+        // service keeps its own Runtime owner and original provenance.
+        for (self.ui.services.items) |service| if (service.identity.eql(header.lease)) {
+            const kind = object.get("kind") orelse return;
+            if (kind == .string and std.mem.eql(u8, kind.string, "native_ui_service_component_control")) {
+                const control = object.get("control") orelse return;
+                if (control != .object) return;
+                return service.componentControl(header, control.object);
+            }
+            const ok = object.get("ok") orelse return;
+            if (ok != .bool or !service.accepts(header)) return;
+            const value = if (ok.bool) try self.engine.fromJsonValue(object.get("result") orelse .null) else failure: {
+                const reason = object.get("error") orelse std.json.Value{ .string = "Native UI request failed" };
+                const text = if (reason == .string) try self.engine.gpa.dupe(u8, reason.string) else try std.json.Stringify.valueAlloc(self.engine.gpa, reason, .{});
+                defer self.engine.gpa.free(text);
+                const exception = try self.engine.checked(c.JS_NewError(self.engine.context));
+                errdefer self.engine.freeValue(exception);
+                const message = try self.engine.checked(c.JS_NewStringLen(self.engine.context, text.ptr, text.len));
+                if (c.JS_DefinePropertyValueStr(self.engine.context, exception, "message", message, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
+                break :failure exception;
+            };
+            defer self.engine.freeValue(value);
+            try service.respond(header, ok.bool, value);
+            return;
+        };
+    }
+
     pub fn tool(self: *Group, name: []const u8) ?c.JSValue {
         if (self.deinitializing) return null;
         for (self.entries.items) |entry| if (entry.sdk_scope == null) if (entry.binding.tools.get(name)) |value| return value;

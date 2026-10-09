@@ -18,9 +18,11 @@ pub const Bridge = struct {
     component_scene: ?*const fn (?*anyopaque, protocol.Scene) anyerror!void = null,
     component_close: ?*const fn (?*anyopaque, protocol.Fence) anyerror!void = null,
     component_mouse_outcome: ?*const fn (?*anyopaque, protocol.MouseOutcome) anyerror!void = null,
+    service_open: ?*const fn (?*anyopaque, @import("native_ui_service_protocol.zig").Lease) anyerror!void = null,
+    service_close: ?*const fn (?*anyopaque, @import("native_ui_service_protocol.zig").Lease) anyerror!void = null,
 };
 
-const Method = enum(c_int) { select, confirm, input, editor, notify, setStatus, setTitle, setEditorText, pasteToEditor, getEditorText, setWidget, setWorkingMessage, setWorkingVisible, setHiddenThinkingLabel, custom, setEditorComponent, getEditorComponent, addAutocompleteProvider, setHeader, setFooter, setWorkingIndicator, onTerminalInput };
+pub const Method = enum(c_int) { select, confirm, input, editor, notify, setStatus, setTitle, setEditorText, pasteToEditor, getEditorText, setWidget, setWorkingMessage, setWorkingVisible, setHiddenThinkingLabel, custom, setEditorComponent, getEditorComponent, addAutocompleteProvider, setHeader, setFooter, setWorkingIndicator, onTerminalInput };
 const Pending = struct {
     id: u32,
     generation: u32,
@@ -101,6 +103,7 @@ pub const Manager = struct {
         width: usize = 80,
         height: usize = 24,
         components: ?components_mod.Manager = null,
+        service: ?@import("native_ui_service_protocol.zig").Lease = null,
     };
     pub fn exchangeInvocation(self: *Manager, saved: *InvocationState) void {
         inline for (std.meta.fields(InvocationState)) |field| {
@@ -140,6 +143,41 @@ pub const Manager = struct {
     height: usize = 24,
     customs: std.ArrayList(Custom) = .empty,
     polling_custom: bool = false,
+    service: ?@import("native_ui_service_protocol.zig").Lease = null,
+    service_clock: u64 = 0,
+    service_epoch: u64 = 1,
+    service_epoch_control_id: u64 = 0,
+    services: std.ArrayList(*@import("native_ui_service.zig").Service) = .empty,
+    service_frontend_owner_ready: bool = false,
+    current_service_ui: ?c.JSValue = null,
+
+    /// Zero is reserved for the actual frontend service, independently of
+    /// positive Main and private SDK extension registration owner IDs.
+    pub fn ensureServiceFrontendOwner(self: *Manager) !void {
+        if (self.service_frontend_owner_ready) return;
+        try self.editors.addOwner(0);
+        errdefer self.editors.removeOwner(0);
+        try self.widgets.addOwner(0);
+        errdefer self.widgets.removeOwner(0);
+        try self.footer_data.addOwner(0);
+        errdefer self.footer_data.removeOwner(0);
+        try self.terminal_input.addOwner(0);
+        self.service_frontend_owner_ready = true;
+    }
+
+    /// An owner-held UI service has independent pending dialogs and components.
+    /// Editor, widget, footer and theme services stay on this shared manager.
+    pub fn forkService(self: *Manager, identity: @import("native_ui_service_protocol.zig").Lease) !InvocationState {
+        if (self.invocation_clock == std.math.maxInt(u32) or self.component_clock == std.math.maxInt(u64)) return error.NativeUiGenerationExhausted;
+        var components = self.components.forkInvocation();
+        if (components.ui_service) |previous| self.engine.freeValue(previous);
+        components.ui_service = null;
+        self.invocation_clock += 1;
+        self.component_clock += 1;
+        components.generation = self.component_clock;
+        components.completion_bridge = self.components.completion_bridge;
+        return .{ .generation = self.invocation_clock, .active = true, .has_ui = self.has_ui, .editor_owner_id = self.editor_owner_id, .invocation_id = self.invocation_id, .width = self.width, .height = self.height, .components = components, .service = identity };
+    }
 
     pub fn init(engine: *engine_mod.Engine) !*Manager {
         if (engine.native_ui_manager != null) return error.NativeUiAlreadyAttached;
@@ -185,6 +223,10 @@ pub const Manager = struct {
     }
 
     pub fn deinit(self: *Manager) void {
+        if (self.current_service_ui) |value| self.engine.freeValue(value);
+        self.current_service_ui = null;
+        while (self.services.items.len > 0) self.services.items[self.services.items.len - 1].retire(self.engine);
+        self.services.deinit(self.engine.gpa);
         self.widgets.deinit();
         self.footer_data.deinit();
         self.terminal_input.deinit();
@@ -1323,6 +1365,10 @@ pub const Manager = struct {
         const result = if (!ok or pending.provider_request) value else if (pending.confirm) c.pi_js_bool(self.engine.context, c.JS_ToBool(self.engine.context, value)) else if (c.JS_IsNull(value)) c.pi_js_undefined() else value;
         try self.call(if (ok) pending.resolve else pending.reject, result);
     }
+    pub fn hasPending(self: *const Manager, id: u32) bool {
+        for (self.pending.items) |pending| if (pending.id == id and pending.generation == self.generation) return true;
+        return false;
+    }
 
     pub fn cancel(self: *Manager, id: u32) !void {
         var pending = self.takePending(id) orelse return;
@@ -1527,9 +1573,19 @@ pub const Manager = struct {
 
     fn onAbort(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
         const engine = engine_mod.Engine.fromContext(context.?);
-        const self = current(engine, data) catch return c.pi_js_undefined();
         var id: u32 = 0;
         if (c.JS_ToUint32(context, &id, data[2]) < 0) return engine.throwCaptured();
+        const self = current(engine, data) catch {
+            const manager: *Manager = @ptrCast(@alignCast(engine.native_ui_manager orelse return c.pi_js_undefined()));
+            if (!c.JS_IsStrictEqual(context, manager.token, data[0])) return c.pi_js_undefined();
+            var generation: u32 = 0;
+            if (c.JS_ToUint32(context, &generation, data[1]) < 0) return engine.throwCaptured();
+            for (manager.services.items) |service| if (service.saved.generation == generation) {
+                service.cancel(id) catch |err| return fail(engine, err);
+                break;
+            };
+            return c.pi_js_undefined();
+        };
         self.cancel(id) catch |err| return fail(engine, err);
         return c.pi_js_undefined();
     }

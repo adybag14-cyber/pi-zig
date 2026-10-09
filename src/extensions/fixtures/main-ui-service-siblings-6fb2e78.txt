@@ -1,0 +1,10 @@
+export default pi => {
+  pi.registerCommand('capture-service', { handler(_args, ctx) { globalThis.__keptMainUI = ctx.ui; return { captured: true }; } });
+  pi.registerCommand('start-siblings', { handler() {
+    globalThis.__serviceFirstAbort = new AbortController();
+    globalThis.__serviceStates = [];
+    void globalThis.__keptMainUI.input('first', '', { signal: globalThis.__serviceFirstAbort.signal }).then(value => globalThis.__serviceStates.push({ first: value ?? null }));
+    void globalThis.__keptMainUI.input('second', '').then(value => { globalThis.__serviceStates.push({ second: value }); globalThis.__keptMainUI.notify('siblings-done'); });
+    return { started: true };
+  } });
+}

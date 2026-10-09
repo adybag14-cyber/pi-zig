@@ -1,0 +1,25 @@
+import { ModelRuntime, DefaultResourceLoader, SessionManager, SettingsManager, createAgentSession } from '@earendil-works/pi-coding-agent';
+export default pi => pi.registerCommand('schedule-stale-sdk', { async handler(_args, mainCtx) {
+  const mainUI = mainCtx.ui;
+  let sdkCtx;
+  const loader = new DefaultResourceLoader({ cwd: mainCtx.cwd, agentDir: mainCtx.cwd + '/service-child-agent', noExtensions: true, noSkills: true, noThemes: true, noPromptTemplates: true, extensionFactories: [sdkPi => {
+    sdkPi.on('session_start', (_event, ctx) => { sdkCtx = ctx; });
+    sdkPi.on('ui_prompt_start', async event => {
+      if (event.title !== 'after-dispose') return;
+      const report = {};
+      try { sdkCtx.ui; report.ctxAllowed = true; } catch (error) { report.ctxError = error.message; }
+      try { sdkPi.getAllTools(); report.piBeforeAllowed = true; } catch (error) { report.piBeforeError = error.message; }
+      report.main = await mainUI.input('from-stale-sdk', 'hint');
+      try { sdkPi.getAllTools(); report.piAfterAllowed = true; } catch (error) { report.piAfterError = error.message; }
+      mainUI.notify('sdk-stale-report:' + JSON.stringify(report));
+    });
+  }] });
+  await loader.reload();
+  const runtime = await ModelRuntime.create({ modelsPath: null, refreshOnCreate: false, credentials: { read: async () => undefined, list: async () => [] } });
+  const { session } = await createAgentSession({ cwd: mainCtx.cwd, resourceLoader: loader, modelRuntime: runtime, sessionManager: SessionManager.inMemory(mainCtx.cwd), settingsManager: SettingsManager.inMemory(), tools: [] });
+  await session.bindExtensions({ uiContext: { input: async title => 'SDK:' + title }, mode: 'rpc' });
+  const rawSdkUI = sdkCtx.ui;
+  session.dispose();
+  setTimeout(() => { void rawSdkUI.input('after-dispose', 'hint'); }, 2);
+  return { scheduled: true };
+} });

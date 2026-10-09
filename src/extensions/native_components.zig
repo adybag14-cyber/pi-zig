@@ -100,7 +100,7 @@ pub fn callMethod(engine: *engine_mod.Engine, component: c.JSValue, name: [*:0]c
     return try engine.checked(c.JS_Call(engine.context, function, component, @intCast(args.len), if (args.len == 0) null else args.ptr));
 }
 
-const Handle = struct { engine: *engine_mod.Engine, manager: ?*Manager, id: u64, generation: u64 };
+const Handle = struct { engine: *engine_mod.Engine, manager: ?*Manager, id: u64, generation: u64, ui_service: ?c.JSValue = null };
 const Entry = struct {
     id: u64,
     generation: u64,
@@ -121,7 +121,12 @@ fn handleFinalizer(runtime: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void 
     const id = c.JS_GetClassID(object);
     const self: *Handle = @ptrCast(@alignCast(c.JS_GetOpaque(object, id) orelse return));
     const engine: *engine_mod.Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
+    if (self.ui_service) |service| c.JS_FreeValueRT(runtime, service);
     engine.gpa.destroy(self);
+}
+fn handleMark(runtime: ?*c.JSRuntime, object: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
+    const self: *Handle = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)) orelse return));
+    if (self.ui_service) |service| c.JS_MarkValue(runtime, service, marker);
 }
 
 fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -129,6 +134,11 @@ fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVal
     var class_id: u32 = 0;
     if (c.JS_ToUint32(context, &class_id, data[1]) < 0) return c.JS_Throw(context, c.JS_GetException(context));
     const handle: *Handle = @ptrCast(@alignCast(c.JS_GetOpaque(data[0], class_id) orelse return c.JS_ThrowTypeError(context, "Invalid native component handle")));
+    var service_guard = if (handle.ui_service) |service| @import("native_ui_service.zig").Service.enterCallback(engine, service) catch |err| {
+        if (err == error.JavaScriptException) return engine.throwCaptured();
+        return c.JS_ThrowTypeError(context, "Native component service: %s", @as([*:0]const u8, @errorName(err)));
+    } else null;
+    defer if (service_guard) |*guard| guard.restore();
     const value = if (argc == 0) c.pi_js_undefined() else argv[0];
     const manager = handle.manager orelse {
         if (magic == 2 and c.JS_IsObject(value)) {
@@ -181,11 +191,12 @@ pub const Manager = struct {
     retiring: bool = false,
     entries: std.AutoHashMapUnmanaged(u64, *Entry) = .empty,
     completion_bridge: ?CompletionBridge = null,
+    ui_service: ?c.JSValue = null,
 
     pub fn init(engine: *engine_mod.Engine) !Manager {
         var id: c.JSClassID = 0;
         _ = c.JS_NewClassID(engine.runtime, &id);
-        const definition: c.JSClassDef = .{ .class_name = "Native Component Handle", .finalizer = handleFinalizer, .gc_mark = null, .call = null, .exotic = null };
+        const definition: c.JSClassDef = .{ .class_name = "Native Component Handle", .finalizer = handleFinalizer, .gc_mark = handleMark, .call = null, .exotic = null };
         if (c.JS_NewClass(engine.runtime, id, &definition) < 0) return error.OutOfMemory;
         const array_is_array = try arrayPredicate(engine);
         errdefer engine.freeValue(array_is_array);
@@ -206,12 +217,14 @@ pub const Manager = struct {
     pub fn deinit(self: *Manager) void {
         self.retireGeneration(c.pi_js_undefined()) catch {};
         self.retiring = true;
+        if (self.ui_service) |service| self.engine.freeValue(service);
+        self.ui_service = null;
         self.entries.deinit(self.engine.gpa);
         self.engine.freeValue(self.array_is_array);
         for ([_]c.JSValue{ self.promise_type, self.promise_resolve, self.promise_then }) |value| self.engine.freeValue(value);
     }
     pub fn forkInvocation(self: *const Manager) Manager {
-        return .{ .engine = self.engine, .array_is_array = c.JS_DupValue(self.engine.context, self.array_is_array), .promise_type = c.JS_DupValue(self.engine.context, self.promise_type), .promise_resolve = c.JS_DupValue(self.engine.context, self.promise_resolve), .promise_then = c.JS_DupValue(self.engine.context, self.promise_then), .handle_class = self.handle_class, .generation = self.generation, .completion_bridge = self.completion_bridge };
+        return .{ .engine = self.engine, .array_is_array = c.JS_DupValue(self.engine.context, self.array_is_array), .promise_type = c.JS_DupValue(self.engine.context, self.promise_type), .promise_resolve = c.JS_DupValue(self.engine.context, self.promise_resolve), .promise_then = c.JS_DupValue(self.engine.context, self.promise_then), .handle_class = self.handle_class, .generation = self.generation, .completion_bridge = self.completion_bridge, .ui_service = if (self.ui_service) |service| c.JS_DupValue(self.engine.context, service) else null };
     }
 
     fn freeEntry(self: *Manager, entry: *Entry) void {
@@ -299,7 +312,7 @@ pub const Manager = struct {
         var handle_transferred = false;
         defer if (!handle_transferred) engine.freeValue(handle);
         const state = try engine.gpa.create(Handle);
-        state.* = .{ .engine = engine, .manager = self, .id = id, .generation = generation };
+        state.* = .{ .engine = engine, .manager = self, .id = id, .generation = generation, .ui_service = if (self.ui_service) |service| c.JS_DupValue(engine.context, service) else null };
         _ = c.JS_SetOpaque(handle, state);
         const entry = try engine.gpa.create(Entry);
         errdefer if (!transferred) engine.gpa.destroy(entry);

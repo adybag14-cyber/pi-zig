@@ -190,7 +190,7 @@ fn noopValue(engine: *engine_mod.Engine, operation: Noop) !c.JSValue {
 fn unsubscribe(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();
 }
-fn noop(engine: *engine_mod.Engine) !c.JSValue {
+pub fn noop(engine: *engine_mod.Engine) !c.JSValue {
     if (engine.native_sdk_noop_ui) |value| return c.JS_DupValue(engine.context, value);
     const value = try sdk.object(engine);
     errdefer engine.freeValue(value);

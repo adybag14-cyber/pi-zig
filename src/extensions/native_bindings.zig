@@ -74,6 +74,8 @@ pub const Bindings = struct {
     api: c.JSValue,
     providers: native_providers.Providers,
     ui_manager: *native_ui.Manager,
+    main_ui_service: ?*@import("native_ui_service.zig").Service = null,
+    main_ui_services: std.ArrayList(*@import("native_ui_service.zig").Service) = .empty,
     renderers: *native_renderers.Manager,
     owner_token: c.JSValue,
     owner_class: c.JSClassID,
@@ -309,6 +311,8 @@ pub const Bindings = struct {
     pub fn deinit(self: *Bindings) void {
         // Retire the public API before any user component dispose callback.
         self.retireOwnerToken();
+        self.main_ui_services.deinit(self.gpa);
+        self.main_ui_service = null;
         self.ui_manager.widgets.removeOwner(self.owner_id);
         self.ui_manager.footer_data.removeOwner(self.owner_id);
         self.ui_manager.terminal_input.removeOwner(self.owner_id);
@@ -351,6 +355,30 @@ pub const Bindings = struct {
         if (self.source_path) |path| self.gpa.free(path);
         const gpa = self.gpa;
         gpa.destroy(self);
+    }
+
+    fn createMainUiObject(self: *Bindings) !c.JSValue {
+        const scopes = @import("native_async_scope.zig");
+        // Provider tickets retain their invocation-owned UI and original bridge.
+        if (self.sdk_resource_owner or (scopes.isActive(self.engine) and !scopes.isSdkScope(self.engine))) return self.ui_manager.createObject();
+        if (!self.ui_manager.has_ui) return @import("native_sdk_ui_context.zig").noop(self.engine);
+        const bridge = self.ui_manager.bridge orelse return self.ui_manager.createObject();
+        if (bridge.service_open == null) return self.ui_manager.createObject();
+        if (self.ui_manager.current_service_ui) |value| return c.JS_DupValue(self.engine.context, value);
+        if (self.main_ui_service == null or self.main_ui_service.?.identity.service_generation != self.ui_manager.service_epoch) {
+            self.main_ui_service = for (self.main_ui_services.items) |service| {
+                if (service.identity.service_generation == self.ui_manager.service_epoch) break service;
+            } else new: {
+                if (self.main_ui_services.items.len >= 64) return error.NativeUiServiceLimit;
+                try self.main_ui_services.ensureUnusedCapacity(self.gpa, 1);
+                const service = try @import("native_ui_service.zig").Service.create(self);
+                self.main_ui_services.appendAssumeCapacity(service);
+                break :new service;
+            };
+        }
+        const object = try self.main_ui_service.?.createObject(self);
+        self.ui_manager.current_service_ui = c.JS_DupValue(self.engine.context, object);
+        return object;
     }
 
     fn fromOwnerData(engine: *engine_mod.Engine, data: [*c]c.JSValue, offset: usize) !*Bindings {
@@ -1265,7 +1293,7 @@ pub const Bindings = struct {
         }
         var data = [_]c.JSValue{ token, snapshot, self.owner_token, owner_class, session, lease_generation, runtime_id };
         if (kind == .ui or kind == .modelRegistry or kind == .sessionManager) {
-            const object = if (kind == .ui) if (self.sdk_context) |scope| try @import("native_sdk_ui_context.zig").current(self.engine, scope.session) else try self.ui_manager.createObject() else if (kind == .modelRegistry) if (self.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.registry) else try self.createModelRegistry(snapshot, generation) else if (self.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.manager) else try self.contextValue(.sessionManager, snapshot, &.{});
+            const object = if (kind == .ui) if (self.sdk_context) |scope| try @import("native_sdk_ui_context.zig").current(self.engine, scope.session) else c.pi_js_undefined() else if (kind == .modelRegistry) if (self.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.registry) else try self.createModelRegistry(snapshot, generation) else if (self.sdk_context) |scope| c.JS_DupValue(self.engine.context, scope.manager) else try self.contextValue(.sessionManager, snapshot, &.{});
             defer self.engine.freeValue(object);
             var ui_data = [_]c.JSValue{ token, snapshot, object, self.owner_token, owner_class, session, lease_generation, runtime_id };
             return self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, contextCallback, name.ptr, 0, @intFromEnum(kind), ui_data.len, &ui_data));
@@ -1610,8 +1638,9 @@ pub const Bindings = struct {
                 }) catch |err| return publicationFailure(engine, err);
             }
         }
-        // UI is an owner-rooted capability captured when the context is
-        // created. Its individual methods enforce invocation/owner fences.
+        // Source reads the runner's current shared UI from this getter. A stale
+        // context never retains an old frontend object through a cached field.
+        if (kind == .ui) return self.createMainUiObject() catch |err| publicationFailure(engine, err);
         if (cached) return c.JS_DupValue(context, data[2]);
         const arguments: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
         const snapshot = if (!c.JS_IsUndefined(data[session_offset])) data[1] else self.context_snapshot orelse data[1];
