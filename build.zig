@@ -861,6 +861,13 @@ pub fn build(b: *std.Build) void {
     const typed_registry_run = b.addRunArtifact(typed_registry_tests);
     b.step("test-typed-registry-owner", "Exercise actual Main registry snapshots and generation admission").dependOn(&typed_registry_run.step);
     test_step.dependOn(&typed_registry_run.step);
+    const weakref_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_weakref_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native WeakRef"}, .use_llvm = use_llvm });
+    linkQuickJs(b, weakref_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, weakref_tests.root_module);
+    weakref_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const weakref_run = b.addRunArtifact(weakref_tests);
+    b.step("test-native-weakref", "Compare WeakRef kept objects with actual V8 job checkpoints").dependOn(&weakref_run.step);
+    test_step.dependOn(&weakref_run.step);
     const sdk_stream_ownership_tests = b.addTest(.{
         .root_module = binding_tests.root_module,
         .filters = &.{ "SDK lazy chat stream continuation", "terminal admission allocation" },
