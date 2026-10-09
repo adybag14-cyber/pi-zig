@@ -2053,7 +2053,7 @@ pub const Bindings = struct {
         const signal = if (self.invocation_signal) |value| c.JS_DupValue(self.engine.context, value) else try abort_signal.create(self.engine);
         defer self.engine.freeValue(signal);
         if (aborted) try abort_signal.abort(self.engine, signal, c.pi_js_undefined());
-        const value = try @import("native_provider_operations.zig").invoke(self.engine, &self.providers, id, provider, generation, operation, model, context, options, signal, auth_rewrites_model);
+        const value = try @import("native_provider_operations.zig").invokeResult(self.engine, &self.providers, id, provider, generation, operation, model, context, options, signal, auth_rewrites_model);
         defer self.engine.freeValue(value);
         const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
         defer self.engine.freeValue(result);
@@ -2062,6 +2062,24 @@ pub const Bindings = struct {
         return self.engine.stringify(result);
     }
 
+    pub fn invokeProviderAuthOperation(self: *Bindings, id: []const u8, provider: []const u8, generation: u64, operation: @import("native_provider_operations.zig").AuthOperation, credential_json: []const u8, options_json: []const u8, aborted: bool) ![]u8 {
+        try self.beginActions();
+        defer self.finishInvocation();
+        const credential = try self.parseJson(credential_json, "native-provider-auth-credential");
+        defer self.engine.freeValue(credential);
+        const options = try self.parseJson(options_json, "native-provider-auth-options");
+        defer self.engine.freeValue(options);
+        const signal = if (self.invocation_signal) |value| c.JS_DupValue(self.engine.context, value) else try abort_signal.create(self.engine);
+        defer self.engine.freeValue(signal);
+        if (aborted) try abort_signal.abort(self.engine, signal, c.pi_js_undefined());
+        const value = try @import("native_provider_operations.zig").invokeAuth(self.engine, &self.providers, id, provider, generation, operation, credential, options, signal);
+        defer self.engine.freeValue(value);
+        const result = try self.engine.checked(c.JS_NewObjectProto(self.engine.context, c.pi_js_null()));
+        defer self.engine.freeValue(result);
+        try self.actionProperty(result, "value", c.JS_DupValue(self.engine.context, value));
+        try self.mergeActions(result);
+        return self.engine.stringify(result);
+    }
     pub fn invokeTool(self: *Bindings, name: []const u8, call_id: []const u8, args_json: []const u8) ![]u8 {
         try self.beginActions();
         defer self.finishInvocation();

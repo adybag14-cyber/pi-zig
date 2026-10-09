@@ -1,0 +1,6 @@
+globalThis.nativeGetterCount=0;
+export default function nativeProviderFixture(pi){
+const marker=Symbol('native-model');const models=[{type:'classifier',provider:'bound-native',id:'same',name:'Class',api:'fixture-classifier',baseUrl:'https://fixture.invalid',input:['text'],headers:{'X-Private':'class'},[marker]:'kept'},{type:'image',provider:'bound-native',id:'same',name:'Image',api:'fixture-image',baseUrl:'https://fixture.invalid',input:['text'],output:['image'],headers:{'X-Private':'image'}}];
+const provider={id:'bound-native',auth:{apiKey:{check:async()=>({type:'api_key'}),resolve:async()=>({auth:{apiKey:'fixture-key'},source:'fixture'})}},getModels(){return[]},getAllModels(){const settings=pi.getSettings();if(settings.marker!=='bound')throw Error('getter before core binding');globalThis.nativeGetterCount++;return models;},async classify(model,context,options){return{api:model.api,provider:model.provider,model:model.id,answers:{q:{type:'bool',value:true,probability:1,confidence:1}},stopReason:'stop',timestamp:1,received:{canonical:model===models[0],receiver:this===provider,symbol:model[marker],headers:options.headers,key:options.apiKey,signal:options.signal instanceof AbortSignal,keys:Object.keys(options)}}}};
+pi.registerProvider(provider);pi.registerCommand('getter-calls',{handler(){return{message:String(globalThis.nativeGetterCount)}}});
+}

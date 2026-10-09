@@ -10,6 +10,9 @@ pub const Catalog = struct {
         self.arena.deinit();
     }
     pub fn init(gpa: std.mem.Allocator, provider: []const u8, config: std.json.Value, baseline: []const providers.ModelInfo) !Catalog {
+        return initWithMode(gpa, provider, config, baseline, false);
+    }
+    pub fn initWithMode(gpa: std.mem.Allocator, provider: []const u8, config: std.json.Value, baseline: []const providers.ModelInfo, native_mode: bool) !Catalog {
         var self: Catalog = .{ .arena = .init(gpa) };
         errdefer self.deinit();
         const a = self.arena.allocator();
@@ -45,7 +48,7 @@ pub const Catalog = struct {
             // explicitly clears model-scoped headers during extension composition.
             var row: std.json.Value = .{ .object = .empty };
             var entries = definition.object.iterator();
-            while (entries.next()) |entry| if (!std.mem.eql(u8, entry.key_ptr.*, "headers")) try row.object.put(a, entry.key_ptr.*, entry.value_ptr.*);
+            while (entries.next()) |entry| if (native_mode or !std.mem.eql(u8, entry.key_ptr.*, "headers")) try row.object.put(a, entry.key_ptr.*, entry.value_ptr.*);
             try row.object.put(a, "api", .{ .string = api });
             try row.object.put(a, "provider", .{ .string = provider });
             try row.object.put(a, "baseUrl", .{ .string = base });
@@ -53,6 +56,15 @@ pub const Catalog = struct {
             const copied = try std.json.parseFromSlice(std.json.Value, a, metadata, .{ .allocate = .alloc_always });
             const retained = copied.value;
             var model: providers.ModelInfo = .{ .kind = kind, .provider = providers.Provider.fromString(provider) orelse .openai, .provider_id = text(retained, "provider").?, .id = text(retained, "id").?, .display = text(retained, "name") orelse text(retained, "id").?, .operation_api = text(retained, "api").?, .base_url = text(retained, "baseUrl").?, .source_metadata_json = metadata, .input_text = false };
+            if (native_mode) if (retained.object.get("headers")) |headers| if (headers == .object) {
+                var fields = headers.object.iterator();
+                var out: std.ArrayList(@import("../ai/request_metadata.zig").Header) = .empty;
+                while (fields.next()) |field| {
+                    if (field.value_ptr.* != .string) return error.InvalidNativeProviderModels;
+                    try out.append(a, .{ .name = field.key_ptr.*, .value = field.value_ptr.string });
+                }
+                model.headers = try out.toOwnedSlice(a);
+            };
             if (retained.object.get("input")) |input| if (input == .array) {
                 for (input.array.items) |item| if (item == .string) {
                     if (std.mem.eql(u8, item.string, "text")) model.input_text = true;
