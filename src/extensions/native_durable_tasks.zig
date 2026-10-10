@@ -1800,6 +1800,50 @@ test "native durable VM ownership publication index readiness preserves committe
     try settleWaiters(manager);
     try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, promise));
 }
+test "native durable VM failed ownership observer keeps original Session failure and does not join an unready queue" {
+    const gpa = std.testing.allocator;
+    const engine = try Engine.init(gpa, .{ .host_await_timeout_ms = 1000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const options = try engine.eval("({registry:{snapshot(){return{tasks(){return[]}}}}})", "failed-index-observer-options", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(options);
+    try attach(engine, session, options, c.pi_js_undefined());
+    const manager = try getManager(engine, session);
+    const Failure = struct {
+        fn observe(_: ?*anyopaque, _: ?u64, _: *const owner_index.Index) !void {
+            return error.OriginalOwnershipObserverFailure;
+        }
+        fn root(_: ?*anyopaque, tx: *session_mod.Transaction, _: @import("../durable/types.zig").Context) !json.Value {
+            return tx.createRootConversation();
+        }
+    };
+    manager.scheduler.options.index_changed = Failure.observe;
+    // A real committed publication reaches foreign forwarding first, then the
+    // internal index observer fails. Its event must stay unready, never become
+    // a successful publication and never become a guest close dependency.
+    var committed = try manager.lease.value.commit(Failure.root, null, .{}, .{});
+    committed.deinit();
+    try std.testing.expectEqual(@as(?anyerror, error.OriginalOwnershipObserverFailure), manager.lease.value.failure());
+    try std.testing.expect(!manager.lease.value.fail(error.LaterFailureMustNotReplaceOriginal));
+    try std.testing.expectEqual(@as(usize, 1), manager.events.items.len);
+    try std.testing.expect(manager.publicationPending());
+    try Manager.deliver(manager);
+    try std.testing.expectEqual(@as(usize, 1), manager.events.items.len);
+    manager.retire();
+    const joined = try manager.joinPromise();
+    defer engine.freeValue(joined);
+    const settled = try engine.awaitValue(joined);
+    defer engine.freeValue(settled);
+    try std.testing.expect(c.JS_IsUndefined(settled));
+    try std.testing.expect(manager.closed and manager.thread == null and manager.active_dispatches == 0);
+    try std.testing.expect(manager.publicationPending());
+    try std.testing.expectEqual(@as(?anyerror, error.OriginalOwnershipObserverFailure), manager.lease.value.failure());
+}
 fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();
 }
