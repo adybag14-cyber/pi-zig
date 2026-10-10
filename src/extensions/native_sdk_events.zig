@@ -25,6 +25,7 @@ const Task = struct {
     snapshot: []u8,
     event: []u8,
     payload: c.JSValue,
+    handlers: ?c.JSValue = null,
     invocation: bindings.Bindings.InvocationState = .{},
     ui: ui_mod.Manager.InvocationState = .{},
     previous_active: ?*bindings.Bindings = null,
@@ -181,6 +182,7 @@ fn finalize(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     task.gpa.free(task.snapshot);
     task.gpa.free(task.event);
     c.JS_FreeValueRT(runtime, task.payload);
+    if (task.handlers) |handlers| c.JS_FreeValueRT(runtime, handlers);
     task.gpa.destroy(task);
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
@@ -188,6 +190,7 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
     for ([_]c.JSValue{ task.token, task.session, task.binding_owner, task.payload }) |root| c.JS_MarkValue(runtime, root, marker);
     if (task.captured) |captured| for ([_]c.JSValue{ captured.session, captured.registry, captured.manager }) |root| c.JS_MarkValue(runtime, root, marker);
     if (task.snapshot_value) |snapshot| c.JS_MarkValue(runtime, snapshot, marker);
+    if (task.handlers) |handlers| c.JS_MarkValue(runtime, handlers, marker);
     for (task.invocation.actions.items) |root| c.JS_MarkValue(runtime, root, marker);
     if (task.invocation.context_snapshot) |root| c.JS_MarkValue(runtime, root, marker);
     if (task.invocation.sdk_context) |scope| for ([_]c.JSValue{ scope.session, scope.registry, scope.manager }) |root| c.JS_MarkValue(runtime, root, marker);
@@ -203,11 +206,22 @@ fn finished(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSVal
     const engine = engine_mod.Engine.fromContext(context.?);
     task.complete();
     if (magic != 0) return c.JS_Throw(context, if (argc > 0) c.JS_DupValue(context, args[0]) else c.pi_js_undefined());
-    _ = engine;
-    return c.pi_js_undefined();
+    return if (std.mem.eql(u8, task.event, "input") and argc > 0) c.JS_DupValue(engine.context, args[0]) else c.pi_js_undefined();
 }
-fn start(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+fn start(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const task = fromData(context, data);
+    if (std.mem.eql(u8, task.event, "input") and argc > 0) {
+        const engine = engine_mod.Engine.fromContext(context.?);
+        const stopped = sdk.get(engine, task.payload, "_nativeInputHandled") catch |err| {
+            task.close();
+            return sdk.fail(engine, err);
+        };
+        defer engine.freeValue(stopped);
+        if (!c.JS_IsUndefined(stopped)) {
+            task.close();
+            return c.JS_DupValue(context, args[0]);
+        }
+    }
     return run(task) catch |err| {
         task.close();
         return sdk.fail(engine_mod.Engine.fromContext(context.?), err);
@@ -235,7 +249,7 @@ fn run(task: *Task) !c.JSValue {
         try scopes.denyWithMessage(engine, task.token, @import("native_context_lifetime.zig").default_message);
     }
     try task.binding.setContext(task.snapshot);
-    const pending = try task.binding.invokeSdkHookValue(task.event, task.payload, task.session, !admitted);
+    const pending = try task.binding.invokeSdkHookValueWithHandlers(task.event, task.payload, task.session, !admitted, task.handlers);
     defer engine.freeValue(pending);
     var data = [_]c.JSValue{task.owner};
     const complete = try engine.checked(c.JS_NewCFunctionData2(engine.context, finished, "sdkEventComplete", 1, 0, 1, &data));
@@ -253,6 +267,9 @@ pub fn emitOne(engine: *engine_mod.Engine, binding: *bindings.Bindings, session:
     return emitOneValue(engine, binding, session, captured, snapshot, event, parsed, previous);
 }
 pub fn emitOneValue(engine: *engine_mod.Engine, binding: *bindings.Bindings, session: c.JSValue, captured: ?bindings.Bindings.SdkContext, snapshot: []const u8, event: []const u8, payload: c.JSValue, previous: ?c.JSValue) !c.JSValue {
+    return emitOneValueWithHandlers(engine, binding, session, captured, snapshot, event, payload, previous, null);
+}
+pub fn emitOneValueWithHandlers(engine: *engine_mod.Engine, binding: *bindings.Bindings, session: c.JSValue, captured: ?bindings.Bindings.SdkContext, snapshot: []const u8, event: []const u8, payload: c.JSValue, previous: ?c.JSValue, handlers: ?c.JSValue) !c.JSValue {
     const self = try manager(engine);
     if (self.tasks.items.len >= 1024) return error.NativeSDKEventLimit;
     var transferred = false;
@@ -267,6 +284,7 @@ pub fn emitOneValue(engine: *engine_mod.Engine, binding: *bindings.Bindings, ses
     errdefer if (!transferred) engine.freeValue(owner);
     const token = try scopes.create(engine, task, Task.activate, Task.deactivate);
     task.* = .{ .engine = engine, .gpa = engine.gpa, .manager = self, .binding = binding, .binding_owner = c.JS_DupValue(engine.context, binding.owner_token), .binding_class = binding.owner_class, .owner_id = binding.owner_id, .owner = owner, .token = token, .session = c.JS_DupValue(engine.context, session), .captured = if (captured) |scope| .{ .session = c.JS_DupValue(engine.context, scope.session), .registry = c.JS_DupValue(engine.context, scope.registry), .manager = c.JS_DupValue(engine.context, scope.manager), .lease = scope.lease } else null, .snapshot = owned_snapshot, .event = owned_event, .payload = c.JS_DupValue(engine.context, payload) };
+    task.handlers = if (handlers) |list| c.JS_DupValue(engine.context, list) else null;
     task.ui.components = binding.ui_manager.components.forkInvocation();
     _ = c.JS_SetOpaque(owner, task);
     transferred = true;

@@ -1007,6 +1007,13 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-sdk-public-session", "Replay actual Source SDK session mutations and observable effects").dependOn(&sdk_public_run.step);
     test_step.dependOn(&sdk_public_run.step);
     const sdk_ui_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_ui_context_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK UI"}, .use_llvm = use_llvm });
+    const sdk_input_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_input_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK input"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_input_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, sdk_input_tests.root_module);
+    sdk_input_tests.root_module.addImport("catalog_tool", catalog_tool);
+    const sdk_input_run = b.addRunArtifact(sdk_input_tests);
+    b.step("test-native-sdk-input", "Replay genuine Source input reducer chains and original context ownership").dependOn(&sdk_input_run.step);
+    test_step.dependOn(&sdk_input_run.step);
     const sdk_ui_allocation_range = b.option(u8, "sdk-ui-allocation-range", "SDK UI exhaustive host allocation range 0..7; omit to run all indices");
     if (sdk_ui_allocation_range) |range| if (range >= 8) @panic("SDK UI allocation range must be 0..7");
     const sdk_ui_options = b.addOptions();

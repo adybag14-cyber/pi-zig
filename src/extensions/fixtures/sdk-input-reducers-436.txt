@@ -1,0 +1,26 @@
+import {ModelRuntime,DefaultResourceLoader,createAgentSession,SessionManager,SettingsManager} from '@earendil-works/pi-coding-agent';
+const inputTrace=[],inputErrors=[],originalImages=[{type:'image',data:'AA==',mimeType:'image/png'}],replacementImages=[{type:'image',data:'AQ==',mimeType:'image/png'}];
+let registeredLate=false,handledReads=0;
+const handledObject={get action(){handledReads++;return 'handled'},marker:'same handled object'};
+const observe=(handler,event,ctx)=>{let idle;try{idle=ctx.isIdle()}catch(error){idle=error.message}inputTrace.push({handler,text:event.text,images:event.images===originalImages?'original':event.images===replacementImages?'replacement':'other',source:event.source,behavior:event.streamingBehavior??null,idle})};
+const runtime=await ModelRuntime.create({modelsPath:null,refreshOnCreate:false,credentials:{read:async()=>undefined,list:async()=>[]}});
+const model={id:'input436',name:'Input436',provider:'input436',api:'input436',type:'chat',baseUrl:'https://fixture.invalid',reasoning:false,input:['text'],cost:{input:0,output:0,cacheRead:0,cacheWrite:0},contextWindow:8192,maxTokens:128};
+runtime.registerNativeProvider({id:'input436',auth:{apiKey:{resolve:async()=>({auth:{apiKey:'fixture-key'},source:'fixture'})}},getModels:()=>[model],getAllModels:()=>[model]});
+let secondPi;
+const loader=new DefaultResourceLoader({cwd:'/sdk-input436',agentDir:'/sdk-input436/agent',noExtensions:true,noSkills:true,noThemes:true,noPromptTemplates:true,noContextFiles:true,extensionFactories:[pi=>{
+  pi.on('input',(event,ctx)=>{observe('a1',event,ctx);if(!registeredLate){registeredLate=true;secondPi.on('input',(late,lateCtx)=>observe('late',late,lateCtx))}if(event.text==='handled')return handledObject;if(event.text==='throw')throw new RangeError('input handler failed');if(event.text==='transform'){event.text='ignored mutation';return {action:'transform',text:'first',images:null}}if(event.text==='back')return {action:'transform',text:'middle'};if(event.text==='disposed')return {action:'transform',text:'after disposal'}});
+  pi.on('input',async(event,ctx)=>{observe('a2',event,ctx);await Promise.resolve();if(event.text==='first')return {action:'transform',text:'second',images:replacementImages}});
+},pi=>{secondPi=pi;pi.on('input',(event,ctx)=>{observe('b1',event,ctx);if(event.text==='middle')return {action:'transform',text:'back'};event.text='ignored b mutation'})}]});
+await loader.reload();
+const {session}=await createAgentSession({cwd:'/sdk-input436',agentDir:'/sdk-input436/agent',model,modelRuntime:runtime,resourceLoader:loader,settingsManager:SettingsManager.inMemory(),sessionManager:SessionManager.inMemory('/sdk-input436'),tools:[]});
+await session.bindExtensions({mode:'rpc',onError:report=>inputErrors.push({event:report.event,error:report.error})});
+globalThis.sdkInputSession=session;
+globalThis.runSdkInputs=async emit=>{
+  const outcomes=[];
+  for(const text of ['transform','back','handled','throw']){
+    const pending=emit(text,originalImages,'rpc','steer');inputTrace.push({returned:text});const value=await pending;outcomes.push({text,action:value.action,textResult:value.text??null,imagesResult:value.images===originalImages?'original':value.images===replacementImages?'replacement':value.images===undefined?'undefined':'other',sameHandled:value===handledObject});
+  }
+  session.dispose();
+  const value=await emit('disposed',originalImages,'interactive');outcomes.push({text:'disposed',action:value.action,textResult:value.text??null,imagesResult:value.images===originalImages?'original':'other'});
+  return {outcomes,inputTrace,inputErrors,handledReads};
+};

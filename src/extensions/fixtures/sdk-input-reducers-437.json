@@ -1,0 +1,230 @@
+{
+  "outcomes": [
+    {
+      "text": "transform",
+      "action": "transform",
+      "textResult": "second",
+      "imagesResult": "replacement",
+      "sameHandled": false
+    },
+    {
+      "text": "back",
+      "action": "continue",
+      "textResult": null,
+      "imagesResult": "undefined",
+      "sameHandled": false
+    },
+    {
+      "text": "handled",
+      "action": "handled",
+      "textResult": null,
+      "imagesResult": "undefined",
+      "sameHandled": true
+    },
+    {
+      "text": "throw",
+      "action": "continue",
+      "textResult": null,
+      "imagesResult": "undefined",
+      "sameHandled": false
+    },
+    {
+      "text": "getter",
+      "action": "transform",
+      "textResult": "getter transform",
+      "imagesResult": "original",
+      "sameHandled": false
+    },
+    {
+      "text": "disposed",
+      "action": "transform",
+      "textResult": "after disposal",
+      "imagesResult": "original"
+    }
+  ],
+  "inputTrace": [
+    {
+      "handler": "a1",
+      "text": "transform",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "returned": "transform"
+    },
+    {
+      "handler": "a2",
+      "text": "first",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "handler": "b1",
+      "text": "second",
+      "images": "replacement",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "handler": "a1",
+      "text": "back",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "returned": "back"
+    },
+    {
+      "handler": "a2",
+      "text": "middle",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "handler": "b1",
+      "text": "middle",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "handler": "late",
+      "text": "back",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "handler": "a1",
+      "text": "handled",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "returned": "handled"
+    },
+    {
+      "handler": "a1",
+      "text": "throw",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "handler": "a2",
+      "text": "throw",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "returned": "throw"
+    },
+    {
+      "handler": "b1",
+      "text": "throw",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "handler": "late",
+      "text": "throw",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "handler": "a1",
+      "text": "getter",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "returned": "getter"
+    },
+    {
+      "handler": "a2",
+      "text": "getter transform",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "handler": "b1",
+      "text": "getter transform",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "handler": "late",
+      "text": "getter transform",
+      "images": "original",
+      "source": "rpc",
+      "behavior": "steer",
+      "idle": true
+    },
+    {
+      "handler": "a1",
+      "text": "disposed",
+      "images": "original",
+      "source": "interactive",
+      "behavior": null,
+      "idle": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+    },
+    {
+      "handler": "a2",
+      "text": "after disposal",
+      "images": "original",
+      "source": "interactive",
+      "behavior": null,
+      "idle": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+    },
+    {
+      "handler": "b1",
+      "text": "after disposal",
+      "images": "original",
+      "source": "interactive",
+      "behavior": null,
+      "idle": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+    },
+    {
+      "handler": "late",
+      "text": "after disposal",
+      "images": "original",
+      "source": "interactive",
+      "behavior": null,
+      "idle": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+    }
+  ],
+  "inputErrors": [
+    {
+      "event": "input",
+      "error": "input handler failed"
+    }
+  ],
+  "handledReads": 2,
+  "transformReads": 2
+}

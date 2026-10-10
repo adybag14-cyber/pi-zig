@@ -1961,6 +1961,9 @@ pub const Bindings = struct {
         return self.invokeSdkHookValue(name, event, session, stale);
     }
     pub fn invokeSdkHookValue(self: *Bindings, name: []const u8, event: c.JSValue, session: c.JSValue, stale: bool) !c.JSValue {
+        return self.invokeSdkHookValueWithHandlers(name, event, session, stale, null);
+    }
+    pub fn invokeSdkHookValueWithHandlers(self: *Bindings, name: []const u8, event: c.JSValue, session: c.JSValue, stale: bool, snapshot: ?c.JSValue) !c.JSValue {
         try self.beginActions();
         const sdk = @import("native_sdk.zig");
         const state = try sdk.object(self.engine);
@@ -1974,12 +1977,15 @@ pub const Bindings = struct {
         try sdk.put(self.engine, state, "acceptResults", c.pi_js_bool(self.engine.context, @intFromBool(accepts_results)));
         try sdk.put(self.engine, event, "type", try sdk.text(self.engine, name));
         try sdk.put(self.engine, state, "event", c.JS_DupValue(self.engine.context, event));
+        const is_input = std.mem.eql(u8, name, "input");
+        try sdk.put(self.engine, state, "inputReducer", c.pi_js_bool(self.engine.context, @intFromBool(is_input)));
+        if (is_input) try @import("native_sdk_input.zig").initialize(self.engine, state, event);
         try sdk.put(self.engine, state, "context", if (stale) try self.createStaleContext() else try self.createContext());
         try sdk.put(self.engine, state, "result", try sdk.object(self.engine));
         try sdk.put(self.engine, state, "index", c.JS_NewInt32(self.engine.context, 0));
-        const handlers = try sdk.array(self.engine);
+        const handlers = if (snapshot) |value| c.JS_DupValue(self.engine.context, value) else try sdk.array(self.engine);
         defer self.engine.freeValue(handlers);
-        if (self.handlers.get(name)) |list| for (list.items) |handler| try sdk.append(self.engine, handlers, c.JS_DupValue(self.engine.context, handler));
+        if (snapshot == null) if (self.handlers.get(name)) |list| for (list.items) |handler| try sdk.append(self.engine, handlers, c.JS_DupValue(self.engine.context, handler));
         try sdk.put(self.engine, state, "handlers", c.JS_DupValue(self.engine.context, handlers));
         var functions: [2]c.JSValue = undefined;
         const pending = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &functions));
@@ -2038,6 +2044,14 @@ pub const Bindings = struct {
     fn advanceSdkHook(engine: *engine_mod.Engine, state: c.JSValue, previous: c.JSValue, rejected: bool) !void {
         const sdk = @import("native_sdk.zig");
         if (rejected) try reportSdkHookError(engine, state, previous);
+        const input_flag = try sdk.get(engine, state, "inputReducer");
+        defer engine.freeValue(input_flag);
+        const is_input = c.JS_ToBool(engine.context, input_flag) == 1;
+        if (is_input and !rejected) @import("native_sdk_input.zig").reduce(engine, state, previous) catch |err| {
+            if (err != error.JavaScriptException) return err;
+            const reason = engine.captured_exception orelse return err;
+            try reportSdkHookError(engine, state, reason);
+        };
         const result = try sdk.get(engine, state, "result");
         defer engine.freeValue(result);
         const accepts_results = try sdk.get(engine, state, "acceptResults");
@@ -2055,19 +2069,21 @@ pub const Bindings = struct {
         defer engine.freeValue(index_value);
         var index: u32 = 0;
         if (c.JS_ToUint32(engine.context, &index, index_value) < 0) return error.JavaScriptException;
-        if (index == try sdk.length(engine, handlers)) {
+        if (index == try sdk.length(engine, handlers) or (is_input and try @import("native_sdk_input.zig").handled(engine, state))) {
             var owner_data = [_]c.JSValue{ try sdk.get(engine, state, "ownerToken"), try sdk.get(engine, state, "ownerClass") };
             defer for (owner_data) |root| engine.freeValue(root);
             const binding = resolveOwnerData(engine, &owner_data, 0) catch null;
             if (binding) |owner| if (owner.invocation_active) try owner.mergeActions(result);
-            const ignored = try sdk.invoke(engine, state, "resolve", &.{result});
+            const input_result = if (is_input) try @import("native_sdk_input.zig").result(engine, state) else c.pi_js_undefined();
+            defer engine.freeValue(input_result);
+            const ignored = try sdk.invoke(engine, state, "resolve", &.{if (is_input) input_result else result});
             engine.freeValue(ignored);
             return;
         }
         try sdk.put(engine, state, "index", c.JS_NewInt64(engine.context, index + 1));
         const handler = try engine.checked(c.JS_GetPropertyUint32(engine.context, handlers, index));
         defer engine.freeValue(handler);
-        var args = [_]c.JSValue{ try sdk.get(engine, state, "event"), try sdk.get(engine, state, "context") };
+        var args = [_]c.JSValue{ if (is_input) try @import("native_sdk_input.zig").nextEvent(engine, state) else try sdk.get(engine, state, "event"), try sdk.get(engine, state, "context") };
         defer for (args) |value| engine.freeValue(value);
         const value = engine.checked(c.JS_Call(engine.context, handler, c.pi_js_undefined(), args.len, &args)) catch |err| {
             if (err != error.JavaScriptException) return err;

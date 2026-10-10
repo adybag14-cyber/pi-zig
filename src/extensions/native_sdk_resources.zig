@@ -224,6 +224,28 @@ pub fn emitValue(engine: *engine_mod.Engine, resources: c.JSValue, session_data:
     try sdk.put(engine, context, "idle", c.pi_js_bool(engine.context, @intFromBool(!(try sdk.state(engine, session)).running)));
     const raw = try engine.stringify(context);
     defer engine.gpa.free(raw);
+    // Source snapshots every extension's input handlers before invoking the
+    // first one. A synchronous handler cannot register a later participant in
+    // this input, and each owner still executes in its captured SDK context.
+    const input_snapshots = if (std.mem.eql(u8, event, "input")) try sdk.array(engine) else c.pi_js_undefined();
+    defer engine.freeValue(input_snapshots);
+    const input_state = if (c.JS_IsArray(input_snapshots)) try sdk.object(engine) else c.pi_js_undefined();
+    defer engine.freeValue(input_state);
+    if (c.JS_IsArray(input_snapshots)) {
+        try sdk.put(engine, input_state, "event", c.JS_DupValue(engine.context, payload));
+        try @import("native_sdk_input.zig").initialize(engine, input_state, payload);
+    }
+    if (c.JS_IsArray(input_snapshots)) for (0..try sdk.length(engine, ids)) |index| {
+        const id = try engine.checked(c.JS_GetPropertyUint32(engine.context, ids, @intCast(index)));
+        defer engine.freeValue(id);
+        var integer: i64 = 0;
+        if (c.JS_ToInt64(engine.context, &integer, id) < 0) return error.JavaScriptException;
+        const binding = try group.selected(@intCast(integer));
+        const handlers = try sdk.array(engine);
+        defer engine.freeValue(handlers);
+        if (binding.handlers.get("input")) |list| for (list.items) |handler| try sdk.append(engine, handlers, c.JS_DupValue(engine.context, handler));
+        try sdk.append(engine, input_snapshots, c.JS_DupValue(engine.context, handlers));
+    };
     var pending: ?c.JSValue = null;
     errdefer if (pending) |value| engine.freeValue(value);
     for (0..try sdk.length(engine, ids)) |index| {
@@ -232,9 +254,21 @@ pub fn emitValue(engine: *engine_mod.Engine, resources: c.JSValue, session_data:
         var integer: i64 = 0;
         if (c.JS_ToInt64(engine.context, &integer, id) < 0) return error.JavaScriptException;
         const binding = try group.selected(@intCast(integer));
-        const next = try @import("native_sdk_events.zig").emitOneValue(engine, binding, session, if (lease) |live| .{ .session = session, .registry = registry, .manager = manager, .lease = live } else null, raw, event, payload, pending);
+        const handlers = if (c.JS_IsArray(input_snapshots)) try engine.checked(c.JS_GetPropertyUint32(engine.context, input_snapshots, @intCast(index))) else c.pi_js_undefined();
+        defer engine.freeValue(handlers);
+        const next = try @import("native_sdk_events.zig").emitOneValueWithHandlers(engine, binding, session, if (lease) |live| .{ .session = session, .registry = registry, .manager = manager, .lease = live } else null, raw, event, payload, pending, if (c.JS_IsArray(handlers)) handlers else null);
         if (pending) |value| engine.freeValue(value);
         pending = next;
+    }
+    if (c.JS_IsArray(input_snapshots)) {
+        if (pending) |value| {
+            pending = null;
+            defer engine.freeValue(value);
+            return @import("native_sdk_input.zig").finish(engine, input_state, value, group.ui.components.promise_then);
+        }
+        const value = try @import("native_sdk_input.zig").result(engine, input_state);
+        defer engine.freeValue(value);
+        return sdk.promise(engine, value);
     }
     return pending orelse try sdk.promise(engine, c.pi_js_undefined());
 }
