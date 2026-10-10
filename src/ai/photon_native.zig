@@ -1,9 +1,6 @@
 //! External native codec draft. No interpreter or JS host is involved.
 const std = @import("std");
 const c = @cImport({
-    @cDefine("WASM_RT_USE_MMAP", "0");
-    @cDefine("WASM_RT_USE_SEGUE", "0");
-    @cDefine("WASM_RT_MEMCHECK_BOUNDS_CHECK", "1");
     @cInclude("photon_native.h");
 });
 pub const Dimensions = struct { width: u32, height: u32 };

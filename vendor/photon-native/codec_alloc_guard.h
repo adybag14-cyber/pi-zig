@@ -1,15 +1,9 @@
 /* External unqualified research: private allocation/trap boundary. */
 #ifndef PI_IMAGE_ALLOC_GUARD_H
 #define PI_IMAGE_ALLOC_GUARD_H
-#include <stddef.h>
+#include "photon_allocator.h"
 #include <setjmp.h>
 #include "wasm-rt.h"
-
-typedef struct {
-  void *context;
-  void *(*allocate)(void *, size_t, size_t);
-  void (*release)(void *, void *, size_t, size_t);
-} PiImageAllocator;
 
 typedef struct PiImageAllocation PiImageAllocation;
 typedef struct {

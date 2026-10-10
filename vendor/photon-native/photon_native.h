@@ -1,7 +1,7 @@
 /* External native codec boundary draft; not yet installed as a repository API. */
 #ifndef PI_PHOTON_NATIVE_H
 #define PI_PHOTON_NATIVE_H
-#include "codec_alloc_guard.h"
+#include "photon_allocator.h"
 enum PiPhotonFormat { PI_PHOTON_RGBA = 0, PI_PHOTON_PNG = 1, PI_PHOTON_JPEG = 2 };
 typedef struct {
   int status; /* 0 success, 1 allocation failure, 2 codec trap, 3 invalid input, 4 nested guard */

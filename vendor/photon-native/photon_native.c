@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "photon_native.h"
+#include "codec_alloc_guard.h"
 #include "photon.h"
 struct w2c_0x5F__wbindgen__placeholder__0x5F { w2c_pi__photon *module; };
 
