@@ -1,0 +1,174 @@
+{
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "abort listener actual signal receiver once and disposer shape",
+      "value": {
+        "seen": [
+          [
+            true,
+            "abort",
+            true
+          ]
+        ],
+        "nullProto": true,
+        "keys": [
+          "dispose"
+        ],
+        "descriptor": {
+          "enumerable": true,
+          "writable": true,
+          "configurable": true,
+          "name": "[Symbol.dispose]",
+          "length": 0
+        }
+      }
+    },
+    {
+      "name": "abort disposer removes before abort",
+      "value": []
+    },
+    {
+      "name": "preaborted listener is microtask and disposal does not cancel",
+      "value": [
+        "sync",
+        [
+          "call",
+          true,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "duck signal getters and flags",
+      "value": [
+        "aborted",
+        [
+          "add",
+          true,
+          "abort",
+          true,
+          true,
+          [
+            [
+              "kResistStopPropagation",
+              true
+            ]
+          ]
+        ],
+        [
+          "remove",
+          true,
+          "abort",
+          true
+        ],
+        [
+          "remove",
+          true,
+          "abort",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "duck add method raw throw identity",
+      "value": true
+    },
+    {
+      "name": "addAbort invalid signal undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"signal\" argument must be an instance of AbortSignal. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "addAbort invalid signal null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"signal\" argument must be an instance of AbortSignal. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "addAbort invalid signal 0",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"signal\" argument must be an instance of AbortSignal. Received type number (0)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "addAbort invalid signal x",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"signal\" argument must be an instance of AbortSignal. Received type string ('x')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "addAbort invalid signal [object Object]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"signal\" argument must be an instance of AbortSignal. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "addAbort invalid signal ()=>{}",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"signal\" argument must be an instance of AbortSignal. Received function ",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "addAbort invalid listener undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"listener\" argument must be of type function. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "addAbort invalid listener null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"listener\" argument must be of type function. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "addAbort invalid listener 0",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"listener\" argument must be of type function. Received type number (0)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "addAbort invalid listener x",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"listener\" argument must be of type function. Received type string ('x')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "addAbort invalid listener [object Object]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"listener\" argument must be of type function. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "addAbort invalid listener ",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"listener\" argument must be of type function. Received an instance of Array",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "captured promise error event receiver and ordering",
+      "value": [
+        "listener",
+        "after emit",
+        "microtask",
+        "nested microtask",
+        [
+          "error",
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "name": "custom rejection receiver type and args",
+      "value": [
+        [
+          true,
+          true,
+          "x",
+          [
+            1,
+            "two"
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "thenable getter call receiver and callbacks",
+      "value": [
+        "then getter",
+        [
+          "then call",
+          true,
+          true,
+          "function"
+        ],
+        "after reject",
+        "after emit",
+        [
+          "error",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "thenable getter raw throw synchronous error event",
+      "value": [
+        "get",
+        [
+          "error",
+          true
+        ],
+        "after emit"
+      ]
+    },
+    {
+      "name": "thenable call raw throw synchronous error event",
+      "value": [
+        "call",
+        [
+          "error",
+          true
+        ],
+        "after emit"
+      ]
+    },
+    {
+      "name": "thenable repeated reject is not deduplicated",
+      "value": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "capture false never reads then",
+      "value": {
+        "result": true,
+        "seen": []
+      }
+    },
+    {
+      "name": "capture ignores null undefined and nonthenable values",
+      "value": {
+        "result": true,
+        "seen": []
+      }
+    },
+    {
+      "name": "capture switch read after listener invocation",
+      "value": [
+        "yes"
+      ]
+    },
+    {
+      "name": "error dispatch temporarily disables capture and restores",
+      "value": [
+        [
+          "first",
+          false
+        ],
+        [
+          "restored",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "custom rejection lookup occurs during queued dispatch",
+      "value": [
+        [
+          "late hook",
+          true,
+          "value",
+          "x"
+        ]
+      ]
+    },
+    {
+      "name": "multiple emissions preserve scheduling order",
+      "value": [
+        "micro",
+        "a",
+        "b"
+      ]
+    }
+  ]
+}

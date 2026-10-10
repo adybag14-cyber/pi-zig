@@ -40,6 +40,7 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io, environment: *const std.p
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
     try put(engine, global, "process", c.JS_DupValue(engine.context, process));
+    try @import("node_process_events.zig").install(engine, process);
     try engine.registerDefaultModule("node:process", process);
     try engine.registerDefaultModule("process", process);
 }

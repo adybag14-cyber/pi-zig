@@ -1,0 +1,368 @@
+{
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "resource constructor genuine hierarchy metadata and relative IDs",
+      "value": {
+        "constructor": {
+          "name": "EventEmitterAsyncResource",
+          "length": 0,
+          "keys": [
+            "length",
+            "name",
+            "prototype"
+          ]
+        },
+        "prototype": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "type": "function",
+            "functionName": "EventEmitterAsyncResource",
+            "length": 0
+          },
+          {
+            "name": "emit",
+            "enumerable": false,
+            "configurable": true,
+            "type": "function",
+            "functionName": "emit",
+            "length": 1
+          },
+          {
+            "name": "emitDestroy",
+            "enumerable": false,
+            "configurable": true,
+            "type": "function",
+            "functionName": "emitDestroy",
+            "length": 0
+          },
+          {
+            "name": "asyncId",
+            "enumerable": false,
+            "configurable": true,
+            "getName": "get asyncId",
+            "getLength": 0
+          },
+          {
+            "name": "triggerAsyncId",
+            "enumerable": false,
+            "configurable": true,
+            "getName": "get triggerAsyncId",
+            "getLength": 0
+          },
+          {
+            "name": "asyncResource",
+            "enumerable": false,
+            "configurable": true,
+            "getName": "get asyncResource",
+            "getLength": 0
+          }
+        ],
+        "instance": true,
+        "superConstructor": true,
+        "superPrototype": true,
+        "keys": [
+          "_events",
+          "_eventsCount",
+          "_maxListeners"
+        ],
+        "resourceName": "EventEmitterReferencingAsyncResource",
+        "resourceEmitter": true,
+        "resourceMethods": [
+          [
+            "asyncId",
+            "function"
+          ],
+          [
+            "triggerAsyncId",
+            "function"
+          ],
+          [
+            "runInAsyncScope",
+            "function"
+          ],
+          [
+            "emitDestroy",
+            "function"
+          ],
+          [
+            "bind",
+            "function"
+          ]
+        ],
+        "idMatch": true,
+        "trigger": 42,
+        "triggerMatch": true,
+        "positiveId": true
+      }
+    },
+    {
+      "name": "resource IDs distinct and emitter callbacks use its async ID",
+      "value": {
+        "different": true,
+        "emitted": true,
+        "missing": false,
+        "seen": [
+          [
+            true,
+            7,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "resource captures constructor owner scope through later invocation",
+      "value": [
+        [
+          true,
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "resource emitDestroy preserves subsequent emission",
+      "value": {
+        "emitted": true,
+        "seen": [
+          "called"
+        ]
+      }
+    },
+    {
+      "name": "resource virtual runInAsyncScope receiver and args",
+      "value": {
+        "result": "override",
+        "seen": [
+          [
+            true,
+            true,
+            true,
+            [
+              "x",
+              1,
+              2
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "resource raw listener error identity",
+      "value": true
+    },
+    {
+      "name": "resource derived constructor default name",
+      "value": {
+        "instance": true,
+        "resource": true
+      }
+    },
+    {
+      "name": "resource base constructor no name",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.name\" property must be of type string. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "resource constructor validation {}",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.name\" property must be of type string. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "resource constructor validation null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.name\" property must be of type string. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "resource constructor validation 0",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.name\" property must be of type string. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "resource constructor validation {\"name\":1}",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.name\" property must be of type string. Received type number (1)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "resource constructor validation {\"name\":\"x\",\"triggerAsyncId\":-1}",
+      "value": {
+        "instance": true,
+        "triggerGiven": -1
+      }
+    },
+    {
+      "name": "resource constructor validation {\"name\":\"x\",\"triggerAsyncId\":1.5}",
+      "error": {
+        "name": "RangeError",
+        "message": "Invalid triggerAsyncId value: 1.5",
+        "code": "ERR_INVALID_ASYNC_ID"
+      }
+    },
+    {
+      "name": "resource constructor validation {\"name\":\"x\",\"requireManualDestroy\":1}",
+      "value": {
+        "instance": true
+      }
+    },
+    {
+      "name": "resource borrowed emit private brand",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #asyncResource from an object whose class did not declare it"
+      }
+    },
+    {
+      "name": "resource borrowed getter private brand",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read private member #asyncResource from an object whose class did not declare it"
+      }
+    },
+    {
+      "name": "resource parent hierarchy own symbols and base metadata",
+      "value": {
+        "parentName": "AsyncResource",
+        "parentLength": 1,
+        "baseKeys": [
+          "length",
+          "name",
+          "prototype",
+          "bind"
+        ],
+        "parentPrototype": true,
+        "referenceKeys": [
+          "constructor",
+          "eventEmitter"
+        ],
+        "basePrototype": [
+          "constructor",
+          "runInAsyncScope",
+          "emitDestroy",
+          "asyncId",
+          "triggerAsyncId",
+          "bind"
+        ],
+        "symbols": [
+          {
+            "name": "context_frame",
+            "enumerable": true
+          },
+          {
+            "name": "async_id_symbol",
+            "enumerable": true,
+            "type": "number"
+          },
+          {
+            "name": "trigger_async_id_symbol",
+            "enumerable": true,
+            "type": "number"
+          }
+        ],
+        "baseInstance": true
+      }
+    },
+    {
+      "name": "resource ordinary ID symbols affect public getters and execution context",
+      "value": {
+        "asyncId": 9001,
+        "trigger": 77,
+        "inside": 9001,
+        "after": false
+      }
+    },
+    {
+      "name": "resource bind default receiver metadata args and scope",
+      "value": {
+        "name": "bound",
+        "length": 2,
+        "value": {
+          "receiver": true,
+          "args": [
+            1,
+            2
+          ],
+          "scope": true
+        },
+        "resource": true,
+        "keys": [
+          "asyncResource"
+        ]
+      }
+    },
+    {
+      "name": "resource bind explicit receiver captures virtual method",
+      "value": {
+        "name": "bound ",
+        "length": 1,
+        "value": "original",
+        "seen": [
+          [
+            true,
+            true,
+            true,
+            [
+              7
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "resource bind default receiver observes virtual method",
+      "value": {
+        "receiver": true,
+        "args": [
+          7
+        ]
+      }
+    },
+    {
+      "name": "resource virtual ID getters and emitDestroy receiver",
+      "value": {
+        "asyncId": "virtual-id",
+        "trigger": "virtual-trigger",
+        "seen": [
+          true
+        ]
+      }
+    },
+    {
+      "name": "resource scope error restores preceding ID",
+      "value": {
+        "same": true,
+        "restored": true
+      }
+    },
+    {
+      "name": "resource owner survives asynchronous listener continuation",
+      "value": [
+        [
+          "sync",
+          1
+        ],
+        [
+          "promise",
+          1
+        ]
+      ]
+    }
+  ]
+}

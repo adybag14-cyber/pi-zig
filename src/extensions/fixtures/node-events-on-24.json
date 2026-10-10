@@ -1,0 +1,386 @@
+{
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "iterator shape and intrinsic identity",
+      "value": {
+        "own": [
+          {
+            "key": "next",
+            "name": "next",
+            "length": 0
+          },
+          {
+            "key": "return",
+            "name": "return",
+            "length": 0
+          },
+          {
+            "key": "throw",
+            "name": "throw",
+            "length": 1
+          },
+          {
+            "key": "asyncIterator",
+            "name": "[Symbol.asyncIterator]",
+            "length": 0
+          },
+          {
+            "key": "nodejs.watermarkData",
+            "keys": [
+              "size",
+              "low",
+              "high",
+              "isPaused"
+            ]
+          }
+        ],
+        "self": true,
+        "proto": [],
+        "protoSymbols": [
+          "Symbol.asyncIterator",
+          "Symbol.asyncDispose"
+        ],
+        "watermarks": {
+          "size": 0,
+          "low": 1,
+          "high": 9007199254740991,
+          "isPaused": false
+        },
+        "names": [
+          "x",
+          "error"
+        ]
+      }
+    },
+    {
+      "name": "buffered and pending values FIFO cleanup",
+      "value": {
+        "first": {
+          "value": [
+            1,
+            "a"
+          ],
+          "done": false
+        },
+        "second": {
+          "value": [
+            2,
+            "b"
+          ],
+          "done": false
+        },
+        "third": {
+          "value": [
+            3
+          ],
+          "done": false
+        },
+        "done": {
+          "done": true
+        },
+        "again": {
+          "done": true
+        },
+        "names": []
+      }
+    },
+    {
+      "name": "pending error identity closes other waits",
+      "value": {
+        "same": true,
+        "second": {
+          "done": true
+        },
+        "next": {
+          "done": true
+        },
+        "names": []
+      }
+    },
+    {
+      "name": "buffered events precede queued error once",
+      "value": {
+        "first": {
+          "value": [
+            "buffered"
+          ],
+          "done": false
+        },
+        "same": true,
+        "next": {
+          "done": true
+        },
+        "names": []
+      }
+    },
+    {
+      "name": "falsey error closes without rejecting subsequent next",
+      "value": {
+        "next": {
+          "done": true
+        },
+        "names": []
+      }
+    },
+    {
+      "name": "close event pending done and buffered retention",
+      "value": {
+        "first": {
+          "value": [
+            "buffered"
+          ],
+          "done": false
+        },
+        "done": {
+          "done": true
+        },
+        "names": []
+      }
+    },
+    {
+      "name": "return resolves all pending waiters",
+      "value": {
+        "done": {
+          "done": true
+        },
+        "first": {
+          "done": true
+        },
+        "second": {
+          "done": true
+        },
+        "names": []
+      }
+    },
+    {
+      "name": "throw Error synchronous undefined and later rejection",
+      "value": {
+        "returned": true,
+        "same": true,
+        "next": {
+          "done": true
+        },
+        "names": []
+      }
+    },
+    {
+      "name": "iterator invalid throw undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.AsyncIterator\" property must be an instance of Error. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "iterator invalid throw null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.AsyncIterator\" property must be an instance of Error. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "iterator invalid throw 0",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.AsyncIterator\" property must be an instance of Error. Received type number (0)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "iterator invalid throw text",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.AsyncIterator\" property must be an instance of Error. Received type string ('text')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "iterator invalid throw [object Object]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.AsyncIterator\" property must be an instance of Error. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "watermark pause resume actual receiver and thresholds",
+      "value": {
+        "seen": [
+          [
+            "pause",
+            true
+          ],
+          [
+            "resume",
+            true
+          ]
+        ],
+        "atHigh": {
+          "size": 2,
+          "low": 2,
+          "high": 2,
+          "isPaused": false
+        },
+        "aboveHigh": {
+          "size": 3,
+          "low": 2,
+          "high": 2,
+          "isPaused": true
+        },
+        "atLow": {
+          "size": 2,
+          "low": 2,
+          "high": 2,
+          "isPaused": true
+        },
+        "belowLow": {
+          "size": 1,
+          "low": 2,
+          "high": 2,
+          "isPaused": false
+        }
+      }
+    },
+    {
+      "name": "legacy watermark aliases",
+      "value": {
+        "high": 8,
+        "low": 3
+      }
+    },
+    {
+      "name": "abort pending promise reason identity cleanup",
+      "value": {
+        "name": "AbortError",
+        "message": "The operation was aborted",
+        "code": "ABORT_ERR",
+        "cause": true,
+        "next": {
+          "done": true
+        },
+        "names": []
+      }
+    },
+    {
+      "name": "preabort throws synchronously",
+      "error": {
+        "name": "AbortError",
+        "message": "The operation was aborted",
+        "code": "ABORT_ERR"
+      }
+    },
+    {
+      "name": "invalid highWaterMark 0",
+      "error": {
+        "name": "RangeError",
+        "message": "The value of \"options.highWaterMark\" is out of range. It must be >= 1 && <= 9007199254740991. Received 0",
+        "code": "ERR_OUT_OF_RANGE"
+      }
+    },
+    {
+      "name": "invalid highWaterMark -1",
+      "error": {
+        "name": "RangeError",
+        "message": "The value of \"options.highWaterMark\" is out of range. It must be >= 1 && <= 9007199254740991. Received -1",
+        "code": "ERR_OUT_OF_RANGE"
+      }
+    },
+    {
+      "name": "invalid highWaterMark 1.5",
+      "error": {
+        "name": "RangeError",
+        "message": "The value of \"options.highWaterMark\" is out of range. It must be an integer. Received 1.5",
+        "code": "ERR_OUT_OF_RANGE"
+      }
+    },
+    {
+      "name": "invalid highWaterMark NaN",
+      "error": {
+        "name": "RangeError",
+        "message": "The value of \"options.highWaterMark\" is out of range. It must be an integer. Received NaN",
+        "code": "ERR_OUT_OF_RANGE"
+      }
+    },
+    {
+      "name": "invalid highWaterMark Infinity",
+      "error": {
+        "name": "RangeError",
+        "message": "The value of \"options.highWaterMark\" is out of range. It must be an integer. Received Infinity",
+        "code": "ERR_OUT_OF_RANGE"
+      }
+    },
+    {
+      "name": "invalid highWaterMark 2",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.highWaterMark\" property must be of type number. Received type string ('2')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid highWaterMark null",
+      "value": 9007199254740991
+    },
+    {
+      "name": "invalid on options null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options\" argument must be of type object. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid on options 0",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options\" argument must be of type object. Received type number (0)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid on options []",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options\" argument must be of type object. Received an instance of Array",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid on options {\"signal\":null}",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.signal\" property must be an instance of AbortSignal. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "on error event has one handler and resolves raw reason",
+      "value": {
+        "count": 1,
+        "value": {
+          "value": [
+            "reason",
+            7
+          ],
+          "done": false
+        },
+        "names": []
+      }
+    },
+    {
+      "name": "borrowed iterator methods use original closure",
+      "value": {
+        "value": {
+          "value": [
+            9
+          ],
+          "done": false
+        },
+        "selfOther": true,
+        "names": []
+      }
+    }
+  ]
+}

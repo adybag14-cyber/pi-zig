@@ -1,0 +1,33 @@
+{
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "timer phase nextTick and synchronous thenable rejection",
+      "value": [
+        "then",
+        "sync",
+        [
+          "error",
+          "thenable"
+        ],
+        "tick",
+        "nested tick",
+        "micro",
+        "tick micro",
+        "nested micro"
+      ]
+    },
+    {
+      "name": "timer phase promise rejection follows all microtasks",
+      "value": [
+        "sync",
+        "micro",
+        "nested micro",
+        [
+          "error",
+          "promise"
+        ]
+      ]
+    }
+  ]
+}

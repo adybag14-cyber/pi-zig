@@ -1,0 +1,1 @@
+{"seen":[{"name":"MaxListenersExceededWarning","message":"Possible EventEmitter memory leak detected. 2 x listeners added to [EventEmitter]. MaxListeners is 1. Use emitter.setMaxListeners() to increase limit","count":2},{"name":"CustomWarning","message":"second","code":"CUSTOM"}],"count":2,"warned":true}

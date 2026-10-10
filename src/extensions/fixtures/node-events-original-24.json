@@ -1,0 +1,666 @@
+{
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "shape",
+      "value": {
+        "ctor": {
+          "name": "EventEmitter",
+          "length": 1,
+          "keys": [
+            "length",
+            "name",
+            "prototype",
+            "addAbortListener",
+            "once",
+            "on",
+            "getEventListeners",
+            "getMaxListeners",
+            "listenerCount",
+            "EventEmitter",
+            "usingDomains",
+            "captureRejectionSymbol",
+            "captureRejections",
+            "EventEmitterAsyncResource",
+            "errorMonitor",
+            "defaultMaxListeners",
+            "kMaxEventTargetListeners",
+            "kMaxEventTargetListenersWarned",
+            "setMaxListeners",
+            "init"
+          ]
+        },
+        "prototype": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 1,
+            "functionName": "EventEmitter"
+          },
+          {
+            "name": "_events",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "undefined"
+          },
+          {
+            "name": "_eventsCount",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "number"
+          },
+          {
+            "name": "_maxListeners",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "undefined"
+          },
+          {
+            "name": "setMaxListeners",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 1,
+            "functionName": "setMaxListeners"
+          },
+          {
+            "name": "getMaxListeners",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 0,
+            "functionName": "getMaxListeners"
+          },
+          {
+            "name": "emit",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 1,
+            "functionName": "emit"
+          },
+          {
+            "name": "addListener",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 2,
+            "functionName": "addListener"
+          },
+          {
+            "name": "on",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 2,
+            "functionName": "addListener"
+          },
+          {
+            "name": "prependListener",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 2,
+            "functionName": "prependListener"
+          },
+          {
+            "name": "once",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 2,
+            "functionName": "once"
+          },
+          {
+            "name": "prependOnceListener",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 2,
+            "functionName": "prependOnceListener"
+          },
+          {
+            "name": "removeListener",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 2,
+            "functionName": "removeListener"
+          },
+          {
+            "name": "off",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 2,
+            "functionName": "removeListener"
+          },
+          {
+            "name": "removeAllListeners",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 1,
+            "functionName": "removeAllListeners"
+          },
+          {
+            "name": "listeners",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 1,
+            "functionName": "listeners"
+          },
+          {
+            "name": "rawListeners",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 1,
+            "functionName": "rawListeners"
+          },
+          {
+            "name": "listenerCount",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 2,
+            "functionName": "listenerCount"
+          },
+          {
+            "name": "eventNames",
+            "enumerable": true,
+            "configurable": true,
+            "writable": true,
+            "type": "function",
+            "length": 0,
+            "functionName": "eventNames"
+          }
+        ],
+        "instance": {
+          "keys": [
+            "_events",
+            "_eventsCount",
+            "_maxListeners"
+          ],
+          "symbols": [
+            [
+              "shapeMode",
+              false
+            ],
+            [
+              "kCapture",
+              false
+            ]
+          ],
+          "names": [],
+          "count": 0,
+          "max": 10,
+          "nullEvents": true
+        },
+        "aliases": true
+      }
+    },
+    {
+      "name": "ordered listeners receivers and return values",
+      "value": {
+        "seen": [
+          [
+            "b",
+            true,
+            [
+              1,
+              2
+            ]
+          ],
+          [
+            "a",
+            true,
+            [
+              1,
+              2
+            ]
+          ]
+        ],
+        "returns": [
+          true,
+          true,
+          false,
+          true
+        ],
+        "snapshot": {
+          "keys": [
+            "_events",
+            "_eventsCount",
+            "_maxListeners"
+          ],
+          "symbols": [
+            [
+              "shapeMode",
+              false
+            ],
+            [
+              "kCapture",
+              false
+            ]
+          ],
+          "names": [
+            "x"
+          ],
+          "count": 1,
+          "max": 10,
+          "nullEvents": true
+        },
+        "listeners": [
+          "b",
+          "a"
+        ],
+        "raw": [
+          "b",
+          "a"
+        ]
+      }
+    },
+    {
+      "name": "once wrapper identity receiver and repeat",
+      "value": {
+        "before": {
+          "name": "bound onceWrapper",
+          "length": 0,
+          "listener": true,
+          "listeners": true
+        },
+        "first": "returned",
+        "seen": [
+          [
+            true,
+            3
+          ]
+        ],
+        "snapshot": {
+          "keys": [
+            "_events",
+            "_eventsCount",
+            "_maxListeners"
+          ],
+          "symbols": [
+            [
+              "shapeMode",
+              false
+            ],
+            [
+              "kCapture",
+              false
+            ]
+          ],
+          "names": [],
+          "count": 0,
+          "max": 10,
+          "nullEvents": true
+        }
+      }
+    },
+    {
+      "name": "prepend once order and remove listener event",
+      "value": {
+        "seen": [
+          [
+            "remove",
+            true,
+            "x",
+            false
+          ],
+          "b",
+          "a",
+          "a"
+        ],
+        "count": 1
+      }
+    },
+    {
+      "name": "new listener reentry before insert",
+      "value": {
+        "seen": [
+          [
+            true,
+            "x",
+            "first",
+            0
+          ],
+          [
+            true,
+            "x",
+            "second",
+            0
+          ]
+        ],
+        "listeners": [
+          "second",
+          "first"
+        ]
+      }
+    },
+    {
+      "name": "emit uses stable listener snapshot",
+      "value": {
+        "seen": [
+          "a",
+          "b",
+          "a",
+          "c"
+        ],
+        "listeners": [
+          "a",
+          "c",
+          "c"
+        ]
+      }
+    },
+    {
+      "name": "duplicate remove from end and original once identity",
+      "value": {
+        "initial": 3,
+        "afterOne": [
+          "direct",
+          "once"
+        ],
+        "afterTwo": [
+          "direct"
+        ],
+        "count": 1
+      }
+    },
+    {
+      "name": "remove all events order",
+      "value": {
+        "seen": [
+          [
+            "x",
+            "b"
+          ],
+          [
+            "x",
+            "a"
+          ],
+          [
+            "y",
+            "a"
+          ]
+        ],
+        "snapshot": {
+          "keys": [
+            "_events",
+            "_eventsCount",
+            "_maxListeners"
+          ],
+          "symbols": [
+            [
+              "shapeMode",
+              false
+            ],
+            [
+              "kCapture",
+              false
+            ]
+          ],
+          "names": [],
+          "count": 0,
+          "max": 10,
+          "nullEvents": true
+        }
+      }
+    },
+    {
+      "name": "symbol and numeric event names",
+      "value": {
+        "seen": [
+          "symbol",
+          "number"
+        ],
+        "snapshot": {
+          "keys": [
+            "_events",
+            "_eventsCount",
+            "_maxListeners"
+          ],
+          "symbols": [
+            [
+              "shapeMode",
+              false
+            ],
+            [
+              "kCapture",
+              false
+            ]
+          ],
+          "names": [
+            "1",
+            "symbol:named"
+          ],
+          "count": 2,
+          "max": 10,
+          "nullEvents": true
+        },
+        "symListener": 1
+      }
+    },
+    {
+      "name": "ordinary _events fields authority",
+      "value": {
+        "seen": [
+          [
+            true,
+            7
+          ],
+          [
+            true,
+            8
+          ],
+          [
+            true,
+            8
+          ]
+        ],
+        "count": 2,
+        "snapshot": {
+          "keys": [
+            "_events",
+            "_eventsCount",
+            "_maxListeners"
+          ],
+          "symbols": [
+            [
+              "shapeMode",
+              false
+            ],
+            [
+              "kCapture",
+              false
+            ]
+          ],
+          "names": [
+            "x"
+          ],
+          "count": 1,
+          "max": 4,
+          "nullEvents": true
+        }
+      }
+    },
+    {
+      "name": "raw listener throw identity",
+      "value": true
+    },
+    {
+      "name": "unhandled error preserves Error object",
+      "value": true
+    },
+    {
+      "name": "error monitor does not consume error",
+      "value": {
+        "same": true,
+        "seen": [
+          [
+            true,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "invalid listener undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"listener\" argument must be of type function. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid listener null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"listener\" argument must be of type function. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid listener 42",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"listener\" argument must be of type function. Received type number (42)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid listener text",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"listener\" argument must be of type function. Received type string ('text')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid listener [object Object]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"listener\" argument must be of type function. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid max -1",
+      "error": {
+        "name": "RangeError",
+        "message": "The value of \"setMaxListeners\" is out of range. It must be >= 0. Received -1",
+        "code": "ERR_OUT_OF_RANGE"
+      }
+    },
+    {
+      "name": "invalid max NaN",
+      "error": {
+        "name": "RangeError",
+        "message": "The value of \"setMaxListeners\" is out of range. It must be >= 0. Received NaN",
+        "code": "ERR_OUT_OF_RANGE"
+      }
+    },
+    {
+      "name": "invalid max 2",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"setMaxListeners\" argument must be of type number. Received type string ('2')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid max undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"setMaxListeners\" argument must be of type number. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid max null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"setMaxListeners\" argument must be of type number. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "max 0",
+      "value": {
+        "same": true,
+        "max": 0
+      }
+    },
+    {
+      "name": "max 1",
+      "value": {
+        "same": true,
+        "max": 1
+      }
+    },
+    {
+      "name": "max 3.5",
+      "value": {
+        "same": true,
+        "max": 3.5
+      }
+    },
+    {
+      "name": "max Infinity",
+      "value": {
+        "same": true,
+        "max": null
+      }
+    },
+    {
+      "name": "constructor call without new",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of undefined (reading '_events')"
+      }
+    },
+    {
+      "name": "borrowed methods ordinary receiver",
+      "value": {
+        "emitted": true,
+        "seen": [
+          [
+            true,
+            4
+          ]
+        ],
+        "count": 1
+      }
+    },
+    {
+      "name": "listener arrays fresh copy",
+      "value": {
+        "count": 1,
+        "fresh": true
+      }
+    }
+  ]
+}

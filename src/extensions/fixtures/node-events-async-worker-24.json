@@ -1,0 +1,1 @@
+{"values":[[1,"a"],[2,"b"],[3,"c"]],"ready":["yes"],"phases":["timer",["pause",true],["resume",true]],"bound":{"same":true,"args":[3,4]},"suppressed":true,"exposed":true,"resource":true,"idMatch":true,"names":[],"warnings":[{"name":"DeprecationWarning","message":"The asyncResource property on bound functions is deprecated","code":"DEP0172"}]}

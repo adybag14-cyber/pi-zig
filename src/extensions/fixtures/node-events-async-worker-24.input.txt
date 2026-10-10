@@ -1,0 +1,14 @@
+import{EventEmitter,on,once,EventEmitterAsyncResource}from'node:events';
+const warnings=[],phases=[];
+process.on('warning',warning=>warnings.push({name:warning.name,message:warning.message,code:warning.code}));
+const e=new EventEmitterAsyncResource({name:'native-worker',captureRejections:true});
+e.pause=function(){phases.push(['pause',this===e]);};e.resume=function(){phases.push(['resume',this===e]);};
+const iterator=on(e,'data',{close:['end'],highWaterMark:1,lowWaterMark:1});
+const ready=once(e,'ready');
+setTimeout(()=>{phases.push('timer');e.emit('data',1,'a');e.emit('data',2,'b');e.emit('data',3,'c');e.emit('ready','yes');e.emit('end');},1);
+const values=[];for await(const value of iterator)values.push(value);
+const resource=e.asyncResource,bound=resource.bind(function(a,b){return{same:this===e,args:[a,b]};},e);
+process.noDeprecation=true;const suppressed=bound.asyncResource===resource;process.noDeprecation=false;
+const exposed=bound.asyncResource===resource;bound.asyncResource='replacement';
+await new Promise(resolve=>setTimeout(resolve,1));
+console.log(JSON.stringify({values,ready:await ready,phases,bound:bound(3,4),suppressed,exposed,resource:e.asyncResource.eventEmitter===e,idMatch:e.asyncId===resource.asyncId(),names:e.eventNames(),warnings}));

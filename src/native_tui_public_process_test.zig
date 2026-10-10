@@ -1,12 +1,47 @@
 const std = @import("std");
 const builtin = @import("builtin");
 test "native worker public TUI components loaders image and actual callbacks run without Node" {
-    try runWorker(@embedFile("extensions/fixtures/tui-public-worker-original-6fb.input.js"), @embedFile("extensions/fixtures/tui-public-worker-original-6fb.json"));
+    try runWorker(@embedFile("extensions/fixtures/tui-public-worker-original-6fb.input.txt"), @embedFile("extensions/fixtures/tui-public-worker-original-6fb.json"));
 }
 test "native worker genuine Stack ScrollView layout state and transient timer run without Node" {
-    try runWorker(@embedFile("extensions/fixtures/stack-scroll-worker-original-6fb.input.js"), @embedFile("extensions/fixtures/stack-scroll-worker-original-6fb.json"));
+    try runWorker(@embedFile("extensions/fixtures/stack-scroll-worker-original-6fb.input.txt"), @embedFile("extensions/fixtures/stack-scroll-worker-original-6fb.json"));
+}
+test "native worker genuine StdinBuffer EventEmitter fragments paste and real Escape timer run without Node" {
+    try runWorker(@embedFile("extensions/fixtures/stdin-worker-original-6fb.input.txt"), @embedFile("extensions/fixtures/stdin-worker-original-6fb.json"));
 }
 fn runWorker(input: []const u8, expected: []const u8) !void {
+    return runWorkerWarnings(input, expected, "");
+}
+test "native worker actual event warning producer retains queued identity stdout and stderr order" {
+    try runWorkerWarnings(@embedFile("extensions/fixtures/node-warning-worker-24.input.txt"), @embedFile("extensions/fixtures/node-warning-worker-24.json"), @embedFile("extensions/fixtures/node-warning-worker-24.stderr.txt"));
+}
+test "native worker async event iterator once resource binding backpressure and deprecation run without Node" {
+    try runWorkerWarnings(@embedFile("extensions/fixtures/node-events-async-worker-24.input.txt"), @embedFile("extensions/fixtures/node-events-async-worker-24.json"), @embedFile("extensions/fixtures/node-events-async-worker-24.stderr.txt"));
+}
+test "native worker warning trace flags and deprecation suppression match actual Node output" {
+    try runWorkerWarnings(@embedFile("extensions/fixtures/node-warning-flags-worker-24.input.txt"), @embedFile("extensions/fixtures/node-warning-flags-worker-24.json"), @embedFile("extensions/fixtures/node-warning-flags-worker-24.stderr.txt"));
+}
+fn normalizeWarningHost(gpa: std.mem.Allocator, input: []const u8) ![]u8 {
+    var result: std.ArrayList(u8) = .empty;
+    errdefer result.deinit(gpa);
+    var lines = std.mem.splitScalar(u8, input, '\n');
+    var first = true;
+    while (lines.next()) |line| {
+        if (!first) try result.append(gpa, '\n');
+        first = false;
+        if (std.mem.startsWith(u8, line, "(pi:") or std.mem.startsWith(u8, line, "(node:")) {
+            const end = std.mem.indexOf(u8, line, ") ") orelse return error.InvalidNativeWarningPrefix;
+            try result.appendSlice(gpa, "(HOST:PID) ");
+            try result.appendSlice(gpa, line[end + 2 ..]);
+        } else if (std.mem.startsWith(u8, line, "(Use `")) {
+            const end = std.mem.indexOfScalarPos(u8, line, 6, ' ') orelse return error.InvalidNativeWarningHint;
+            try result.appendSlice(gpa, "(Use `HOST");
+            try result.appendSlice(gpa, line[end..]);
+        } else try result.appendSlice(gpa, line);
+    }
+    return result.toOwnedSlice(gpa);
+}
+fn runWorkerWarnings(input: []const u8, expected: []const u8, expected_stderr: []const u8) !void {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
     var temporary = std.testing.tmpDir(.{});
@@ -42,6 +77,8 @@ fn runWorker(input: []const u8, expected: []const u8) !void {
     defer gpa.free(result.stderr);
     if (result.term != .exited or result.term.exited != 0) std.debug.print("TUI real-worker failure:\n{s}\n{s}\n", .{ result.stdout, result.stderr });
     try std.testing.expect(result.term == .exited and result.term.exited == 0);
-    try std.testing.expectEqualStrings("", result.stderr);
+    const stderr = try normalizeWarningHost(gpa, result.stderr);
+    defer gpa.free(stderr);
+    try std.testing.expectEqualStrings(std.mem.trim(u8, expected_stderr, "\r\n"), std.mem.trim(u8, stderr, "\r\n"));
     try std.testing.expectEqualStrings(std.mem.trim(u8, expected, "\r\n"), std.mem.trim(u8, result.stdout, "\r\n"));
 }

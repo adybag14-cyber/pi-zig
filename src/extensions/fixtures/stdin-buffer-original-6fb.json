@@ -1,0 +1,7275 @@
+{
+  "authority": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "split [\"abc\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "a",
+            true
+          ],
+          [
+            "data",
+            "b",
+            true
+          ],
+          [
+            "data",
+            "c",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"abc\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "a",
+            true
+          ],
+          [
+            "data",
+            "b",
+            true
+          ],
+          [
+            "data",
+            "c",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"abc\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "a",
+            true
+          ],
+          [
+            "data",
+            "b",
+            true
+          ],
+          [
+            "data",
+            "c",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"abc\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "a",
+            true
+          ],
+          [
+            "data",
+            "b",
+            true
+          ],
+          [
+            "data",
+            "c",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"界😀é\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "界",
+            true
+          ],
+          [
+            "data",
+            "\ud83d",
+            true
+          ],
+          [
+            "data",
+            "\ude00",
+            true
+          ],
+          [
+            "data",
+            "e",
+            true
+          ],
+          [
+            "data",
+            "́",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"界😀é\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "界",
+            true
+          ],
+          [
+            "data",
+            "\ud83d",
+            true
+          ],
+          [
+            "data",
+            "\ude00",
+            true
+          ],
+          [
+            "data",
+            "e",
+            true
+          ],
+          [
+            "data",
+            "́",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"界😀é\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "界",
+            true
+          ],
+          [
+            "data",
+            "\ud83d",
+            true
+          ],
+          [
+            "data",
+            "\ude00",
+            true
+          ],
+          [
+            "data",
+            "e",
+            true
+          ],
+          [
+            "data",
+            "́",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"界😀é\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "界",
+            true
+          ],
+          [
+            "data",
+            "\ud83d",
+            true
+          ],
+          [
+            "data",
+            "\ude00",
+            true
+          ],
+          [
+            "data",
+            "e",
+            true
+          ],
+          [
+            "data",
+            "́",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"界😀é\",4]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "界",
+            true
+          ],
+          [
+            "data",
+            "\ud83d",
+            true
+          ],
+          [
+            "data",
+            "\ude00",
+            true
+          ],
+          [
+            "data",
+            "e",
+            true
+          ],
+          [
+            "data",
+            "́",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"界😀é\",5]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "界",
+            true
+          ],
+          [
+            "data",
+            "\ud83d",
+            true
+          ],
+          [
+            "data",
+            "\ude00",
+            true
+          ],
+          [
+            "data",
+            "e",
+            true
+          ],
+          [
+            "data",
+            "́",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[A\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "\u001b[A",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[A\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[A",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            10,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[A\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[A",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[A\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[A",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<35;20;5m\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "\u001b[<35;20;5m",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<35;20;5m\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<35;20;5m",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            10,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<35;20;5m\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<35;20;5m",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<35;20;5m\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<35;20;5m",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<35;20;5m\",4]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<35;20;5m",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<3",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<35;20;5m\",5]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<35;20;5m",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<35",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<35;20;5m\",6]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<35;20;5m",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<35;",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<35;20;5m\",7]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<35;20;5m",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<35;2",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<35;20;5m\",8]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<35;20;5m",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<35;20",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<35;20;5m\",9]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<35;20;5m",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<35;20;",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<35;20;5m\",10]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<35;20;5m",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<35;20;5",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<35;20;5m\",11]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<35;20;5m",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[Mabc\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "\u001b[Mabc",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[Mabc\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[Mabc",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            10,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[Mabc\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[Mabc",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[Mabc\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[Mabc",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[M",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[Mabc\",4]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[Mabc",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[Ma",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[Mabc\",5]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[Mabc",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[Mab",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[Mabc\",6]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[Mabc",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            10,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]1",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",4]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",5]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",6]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;r",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",7]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;rg",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",8]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;rgb",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",9]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;rgb:",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",10]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;rgb:a",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",11]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;rgb:aa",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",12]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;rgb:aa/",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",13]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;rgb:aa/b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",14]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;rgb:aa/bb",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",15]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;rgb:aa/bb/",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",16]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;rgb:aa/bb/c",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",17]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b]10;rgb:aa/bb/cc",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b]10;rgb:aa/bb/cc\\u0007\",18]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b]10;rgb:aa/bb/cc\u0007",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            10,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001bP",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001bP>",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",4]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001bP>|",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",5]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001bP>|v",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",6]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001bP>|ve",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",7]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001bP>|ver",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",8]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001bP>|vers",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",9]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001bP>|versi",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",10]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001bP>|versio",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",11]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001bP>|version",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",12]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001bP>|version\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bP>|version\\u001b\\\\\",13]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bP>|version\u001b\\",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b_GOK\\u001b\\\\\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "\u001b_GOK\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b_GOK\\u001b\\\\\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b_GOK\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            10,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b_GOK\\u001b\\\\\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b_GOK\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b_",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b_GOK\\u001b\\\\\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b_GOK\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b_G",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b_GOK\\u001b\\\\\",4]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b_GOK\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b_GO",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b_GOK\\u001b\\\\\",5]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b_GOK\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b_GOK",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b_GOK\\u001b\\\\\",6]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b_GOK\u001b\\",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b_GOK\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b_GOK\\u001b\\\\\",7]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b_GOK\u001b\\",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001bOP\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "\u001bOP",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001bOP\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bOP",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            10,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bOP\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bOP",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001bO",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001bOP\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001bOP",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b\\u001b[27;1:3u\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "\u001b",
+            true
+          ],
+          [
+            "data",
+            "\u001b[27;1:3u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b\\u001b[27;1:3u\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b",
+            true
+          ],
+          [
+            "data",
+            "\u001b[27;1:3u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            10,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b\\u001b[27;1:3u\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b\u001b",
+            true
+          ],
+          [
+            "data",
+            "[",
+            true
+          ],
+          [
+            "data",
+            "2",
+            true
+          ],
+          [
+            "data",
+            "7",
+            true
+          ],
+          [
+            "data",
+            ";",
+            true
+          ],
+          [
+            "data",
+            "1",
+            true
+          ],
+          [
+            "data",
+            ":",
+            true
+          ],
+          [
+            "data",
+            "3",
+            true
+          ],
+          [
+            "data",
+            "u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b\\u001b[27;1:3u\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b",
+            true
+          ],
+          [
+            "data",
+            "\u001b[27;1:3u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b\\u001b[27;1:3u\",4]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b",
+            true
+          ],
+          [
+            "data",
+            "\u001b[27;1:3u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[2",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b\\u001b[27;1:3u\",5]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b",
+            true
+          ],
+          [
+            "data",
+            "\u001b[27;1:3u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[27",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b\\u001b[27;1:3u\",6]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b",
+            true
+          ],
+          [
+            "data",
+            "\u001b[27;1:3u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[27;",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b\\u001b[27;1:3u\",7]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b",
+            true
+          ],
+          [
+            "data",
+            "\u001b[27;1:3u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[27;1",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b\\u001b[27;1:3u\",8]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b",
+            true
+          ],
+          [
+            "data",
+            "\u001b[27;1:3u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[27;1:",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b\\u001b[27;1:3u\",9]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b",
+            true
+          ],
+          [
+            "data",
+            "\u001b[27;1:3u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[27;1:3",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b\\u001b[27;1:3u\",10]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b",
+            true
+          ],
+          [
+            "data",
+            "\u001b[27;1:3u",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[97ua\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "\u001b[97u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[97ua\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[97u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            10,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[97ua\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[97u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[97ua\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[97u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[9",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[97ua\",4]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[97u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[97",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[97ua\",5]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[97u",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": "",
+          "pending": 97
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[97ua\",6]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[97u",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            10,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",4]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[2",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",5]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[20",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",6]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[200",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",7]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",8]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "p"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",9]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "pa"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",10]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "pas"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",11]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "past"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",12]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "paste"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",13]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "paste界"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",14]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "paste界\u001b"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",15]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "paste界\u001b["
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",16]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "paste界\u001b[2"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",17]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "paste界\u001b[20"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",18]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "paste界\u001b[201"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",19]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"x\\u001b[200~paste界\\u001b[201~z\",20]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "x",
+            true
+          ],
+          [
+            "paste",
+            "paste界",
+            true
+          ],
+          [
+            "data",
+            "z",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",1]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            10,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",2]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",3]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[2",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",4]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[20",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",5]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[200",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",6]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",7]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "\u001b"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",8]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "\u001b["
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",9]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "\u001b[A"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",10]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "\u001b[A\n"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",11]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "\u001b[A\n\u001b"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",12]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "\u001b[A\n\u001b["
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",13]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "\u001b[A\n\u001b[2"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",14]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "\u001b[A\n\u001b[20"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",15]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": true,
+          "pasteBuffer": "\u001b[A\n\u001b[201"
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[200~\\u001b[A\\n\\u001b[201~\",16]",
+      "value": {
+        "output": [
+          [
+            "paste",
+            "\u001b[A\n",
+            true
+          ],
+          [
+            "data",
+            "",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<badm\",0]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "",
+            true
+          ],
+          [
+            "data",
+            "\u001b[<badm",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "\u001b[<badm",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<badm\",1]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<badm",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "\u001b[<badm",
+          "timeout": 2,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            10,
+            0
+          ],
+          [
+            "clear",
+            1
+          ],
+          [
+            "set",
+            2,
+            50,
+            0
+          ],
+          [
+            "clear",
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<badm\",2]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<badm",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "\u001b[<badm",
+          "timeout": 2,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ],
+          [
+            "set",
+            2,
+            50,
+            0
+          ],
+          [
+            "clear",
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<badm\",3]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<badm",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "\u001b[<badm",
+          "timeout": 2,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ],
+          [
+            "set",
+            2,
+            50,
+            0
+          ],
+          [
+            "clear",
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<badm\",4]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<badm",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<b",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "\u001b[<badm",
+          "timeout": 2,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ],
+          [
+            "set",
+            2,
+            50,
+            0
+          ],
+          [
+            "clear",
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<badm\",5]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<badm",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<ba",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "\u001b[<badm",
+          "timeout": 2,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ],
+          [
+            "set",
+            2,
+            50,
+            0
+          ],
+          [
+            "clear",
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<badm\",6]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<badm",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<bad",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "\u001b[<badm",
+          "timeout": 2,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ],
+          [
+            "set",
+            2,
+            50,
+            0
+          ],
+          [
+            "clear",
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "name": "split [\"\\u001b[<badm\",7]",
+      "value": {
+        "output": [
+          [
+            "data",
+            "\u001b[<badm",
+            true
+          ]
+        ],
+        "first": {
+          "buffer": "\u001b[<badm",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "second": {
+          "buffer": "\u001b[<badm",
+          "timeout": 2,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ],
+          [
+            "set",
+            2,
+            50,
+            0
+          ],
+          [
+            "clear",
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "name": "shape fields and genuine EventEmitter",
+      "value": {
+        "fields": [
+          "_events",
+          "_eventsCount",
+          "_maxListeners",
+          "buffer",
+          "timeout",
+          "timeoutMs",
+          "escapeTimeoutMs",
+          "pasteMode",
+          "pasteBuffer",
+          "pendingKittyPrintableCodepoint"
+        ],
+        "symbols": [
+          [
+            "shapeMode",
+            false
+          ],
+          [
+            "kCapture",
+            false
+          ]
+        ],
+        "name": "StdinBuffer",
+        "length": 0,
+        "prototype": [
+          {
+            "name": "constructor",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "process",
+            "length": 1,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "emitDataSequence",
+            "length": 1,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "flush",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "clear",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "getBuffer",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          },
+          {
+            "name": "destroy",
+            "length": 0,
+            "enumerable": false,
+            "configurable": true,
+            "writable": true
+          }
+        ],
+        "inherits": true,
+        "events": []
+      }
+    },
+    {
+      "name": "Buffer [0]",
+      "value": {
+        "output": [
+          "\u0000"
+        ],
+        "state": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "Buffer [127]",
+      "value": {
+        "output": [
+          ""
+        ],
+        "state": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "Buffer [128]",
+      "value": {
+        "output": [
+          "\u001b\u0000"
+        ],
+        "state": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "Buffer [225]",
+      "value": {
+        "output": [
+          "\u001ba"
+        ],
+        "state": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "Buffer [255]",
+      "value": {
+        "output": [
+          "\u001b"
+        ],
+        "state": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "Buffer [195,169]",
+      "value": {
+        "output": [
+          "é"
+        ],
+        "state": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "Buffer [240,159,152,128]",
+      "value": {
+        "output": [
+          "\ud83d",
+          "\ude00"
+        ],
+        "state": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "Buffer [195]",
+      "value": {
+        "output": [
+          "\u001bC"
+        ],
+        "state": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "Buffer [255,255]",
+      "value": {
+        "output": [
+          "�",
+          "�"
+        ],
+        "state": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "timeout options raw values",
+      "value": {
+        "state": {
+          "buffer": "\u001b[",
+          "timeout": 2,
+          "timeoutMs": 0,
+          "escapeTimeoutMs": 3.5,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            3.5,
+            0
+          ],
+          [
+            "clear",
+            1
+          ],
+          [
+            "set",
+            2,
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "name": "ordinary fields authority",
+      "value": {
+        "output": [
+          "m",
+          "a",
+          "n",
+          "u",
+          "a",
+          "l",
+          "Q",
+          "Z"
+        ],
+        "first": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "last": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "flush returns fresh arrays without emitting",
+      "value": {
+        "first": [
+          "\u001b["
+        ],
+        "second": [],
+        "fresh": true,
+        "output": [],
+        "state": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ],
+          [
+            "clear",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "destroy calls virtual clear and retains listeners",
+      "value": {
+        "count": 1,
+        "events": [
+          [
+            "clear",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "virtual emitDataSequence and process recursion",
+      "value": {
+        "seen": [
+          [
+            "process",
+            "a\u001b[200~b\u001b[201~z"
+          ],
+          [
+            true,
+            "a"
+          ],
+          [
+            "process",
+            "z"
+          ],
+          [
+            true,
+            "z"
+          ]
+        ],
+        "state": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    },
+    {
+      "name": "listener raw throw identity",
+      "value": true
+    },
+    {
+      "name": "listener mutates pending remainder",
+      "value": {
+        "output": [
+          "a",
+          "b"
+        ],
+        "state": {
+          "buffer": "listener",
+          "timeout": 1,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": [
+          [
+            "set",
+            1,
+            50,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "name": "emitDataSequence field override and codepoint suppression",
+      "value": {
+        "output": [
+          "\u001b[97u",
+          "a",
+          "\u001b[128512u",
+          "\ud83d",
+          "\ude00"
+        ],
+        "state": {
+          "buffer": "",
+          "timeout": null,
+          "timeoutMs": 50,
+          "escapeTimeoutMs": 10,
+          "pasteMode": false,
+          "pasteBuffer": ""
+        },
+        "events": []
+      }
+    }
+  ]
+}

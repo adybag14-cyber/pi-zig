@@ -1,0 +1,290 @@
+{
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "static once values cleanup and promise",
+      "value": {
+        "before": {
+          "promise": true,
+          "names": [
+            "x",
+            "error"
+          ],
+          "counts": [
+            1,
+            1
+          ]
+        },
+        "value": [
+          1,
+          "two"
+        ],
+        "after": []
+      }
+    },
+    {
+      "name": "static once error identity cleanup",
+      "value": {
+        "same": true,
+        "names": []
+      }
+    },
+    {
+      "name": "static once error event resolves arguments",
+      "value": {
+        "count": 1,
+        "value": [
+          "reason",
+          2
+        ],
+        "names": []
+      }
+    },
+    {
+      "name": "static once signal abort reason and cleanup",
+      "value": {
+        "name": "AbortError",
+        "message": "The operation was aborted",
+        "code": "ABORT_ERR",
+        "cause": true,
+        "names": [],
+        "causeDescriptor": false
+      }
+    },
+    {
+      "name": "static once preaborted signal rejects asynchronously",
+      "value": {
+        "sync": false,
+        "promise": true,
+        "name": "AbortError",
+        "message": "The operation was aborted",
+        "code": "ABORT_ERR",
+        "cause": true,
+        "names": []
+      }
+    },
+    {
+      "name": "static once resolved then abort no retained listeners",
+      "value": {
+        "value": [
+          "done"
+        ],
+        "names": []
+      }
+    },
+    {
+      "name": "static once target duck receiver and getter order",
+      "value": {
+        "value": [
+          1,
+          2
+        ],
+        "seen": [
+          "on",
+          "once",
+          [
+            "once call",
+            true,
+            "x"
+          ],
+          "once",
+          "once",
+          [
+            "once call",
+            true,
+            "error"
+          ],
+          [
+            "remove",
+            true,
+            "error",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "static once registration raw throw rejects promise",
+      "value": {
+        "sync": false,
+        "promise": true,
+        "same": true
+      }
+    },
+    {
+      "name": "static once invalid emitter undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'on')"
+      }
+    },
+    {
+      "name": "static once invalid emitter null",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of null (reading 'on')"
+      }
+    },
+    {
+      "name": "static once invalid emitter 0",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter. Received type number (0)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid emitter x",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter. Received type string ('x')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid emitter [object Object]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid emitter ",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter. Received an instance of Array",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid options null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options\" argument must be of type object. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid options 0",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options\" argument must be of type object. Received type number (0)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid options x",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options\" argument must be of type object. Received type string ('x')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid options ",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options\" argument must be of type object. Received an instance of Array",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid options ()=>{}",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options\" argument must be of type object. Received function ",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid signal null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.signal\" property must be an instance of AbortSignal. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid signal 0",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.signal\" property must be an instance of AbortSignal. Received type number (0)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid signal x",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.signal\" property must be an instance of AbortSignal. Received type string ('x')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid signal [object Object]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.signal\" property must be an instance of AbortSignal. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once invalid signal ()=>{}",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.signal\" property must be an instance of AbortSignal. Received function ",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static once duck signal receiver flags and cleanup",
+      "value": {
+        "value": [
+          7
+        ],
+        "seen": [
+          [
+            "add",
+            true,
+            "abort",
+            true
+          ],
+          [
+            "remove",
+            true,
+            "abort",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "static once options and signal getters",
+      "value": [
+        "signal",
+        "aborted",
+        "add",
+        "remove"
+      ]
+    },
+    {
+      "name": "static once EventTarget style listener path",
+      "value": {
+        "value": [
+          {
+            "event": true
+          }
+        ],
+        "seen": [
+          [
+            "add",
+            true,
+            "x",
+            true
+          ]
+        ]
+      }
+    }
+  ]
+}

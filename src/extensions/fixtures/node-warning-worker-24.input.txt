@@ -1,0 +1,7 @@
+import{EventEmitter}from'node:events';
+const seen=[];
+process.on('warning',warning=>seen.push({name:warning.name,message:warning.message,code:warning.code,count:warning.count}));
+const e=new EventEmitter();e.setMaxListeners(1).on('x',()=>{}).on('x',()=>{});
+process.emitWarning('second',{type:'CustomWarning',code:'CUSTOM',detail:'warning detail'});
+await new Promise(resolve=>setTimeout(resolve,1));
+console.log(JSON.stringify({seen,count:e.listenerCount('x'),warned:e._events.x.warned}));

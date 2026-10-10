@@ -1,0 +1,4 @@
+(HOST:PID) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 2 x listeners added to [EventEmitter]. MaxListeners is 1. Use emitter.setMaxListeners() to increase limit
+(Use `HOST --trace-warnings ...` to show where the warning was created)
+(HOST:PID) [CUSTOM] CustomWarning: second
+warning detail

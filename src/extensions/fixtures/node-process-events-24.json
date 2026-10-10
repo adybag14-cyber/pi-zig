@@ -1,0 +1,271 @@
+{
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "producer metadata",
+      "value": {
+        "nextTick": {
+          "name": "nextTick",
+          "length": 1
+        },
+        "emitWarning": {
+          "name": "emitWarning",
+          "length": 4
+        }
+      }
+    },
+    {
+      "name": "nextTick exiting skips enqueue but preserves validation",
+      "value": [
+        {
+          "name": "TypeError",
+          "message": "The \"callback\" argument must be of type function. Received null",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      ]
+    },
+    {
+      "name": "ESM nextTick receiver args nested order",
+      "value": [
+        "sync",
+        "micro",
+        "nested micro",
+        [
+          "tick",
+          true,
+          1,
+          "two"
+        ],
+        "nested tick",
+        "from tick micro"
+      ]
+    },
+    {
+      "name": "nextTick invalid undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "nextTick invalid null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "nextTick invalid 1",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received type number (1)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "nextTick invalid x",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received type string ('x')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "nextTick invalid [object Object]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "nextTick invalid ",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"callback\" argument must be of type function. Received an instance of Array",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "warning Error identity and queued receiver",
+      "value": [
+        [
+          "sync",
+          true
+        ],
+        "micro",
+        [
+          true,
+          true
+        ]
+      ]
+    },
+    {
+      "name": "warning string overloads",
+      "value": [
+        {
+          "name": "Warning",
+          "message": "first",
+          "keys": [
+            "name"
+          ],
+          "error": true
+        },
+        {
+          "name": "Custom",
+          "message": "second",
+          "code": "CODE",
+          "keys": [
+            "name",
+            "code"
+          ],
+          "error": true
+        },
+        {
+          "name": "Named",
+          "message": "third",
+          "code": "THIRD",
+          "detail": "extra",
+          "keys": [
+            "name",
+            "code",
+            "detail"
+          ],
+          "error": true
+        },
+        {
+          "name": "Warning",
+          "message": "fourth",
+          "keys": [
+            "name"
+          ],
+          "error": true
+        }
+      ]
+    },
+    {
+      "name": "warning options getter authority",
+      "value": [
+        "ctor",
+        "code",
+        "detail",
+        "detail",
+        "type",
+        [
+          "tick",
+          true,
+          "doEmitWarning",
+          1,
+          "Named",
+          "CODE",
+          "DETAIL"
+        ]
+      ]
+    },
+    {
+      "name": "warning dynamic nextTick error raw identity",
+      "value": true
+    },
+    {
+      "name": "warning noDeprecation fast path skips validation",
+      "value": true
+    },
+    {
+      "name": "warning noDeprecation Error name skips enqueue",
+      "value": []
+    },
+    {
+      "name": "warning validation [null]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"warning\" argument must be of type string or an instance of Error. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "warning validation [null]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"warning\" argument must be of type string or an instance of Error. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "warning validation [1]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"warning\" argument must be of type string or an instance of Error. Received type number (1)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "warning validation [{}]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"warning\" argument must be of type string or an instance of Error. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "warning validation [\"text\",1]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"type\" argument must be of type string. Received type number (1)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "warning validation [\"text\",null]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"type\" argument must be of type string. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "warning validation [\"text\",[]]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"type\" argument must be of type string. Received an instance of Array",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "warning validation [\"text\",\"Warning\",42]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"code\" argument must be of type string. Received type number (42)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "warning validation [\"text\",{\"type\":\"Warning\",\"code\":3}]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"code\" argument must be of type string. Received type number (3)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "warning validation [\"text\",{\"type\":0}]",
+      "value": "accepted"
+    },
+    {
+      "name": "warning validation [\"text\",{\"detail\":2}]",
+      "value": "accepted"
+    },
+    {
+      "name": "warning throwDeprecation queues raw Error throw callback",
+      "value": [
+        {
+          "name": "",
+          "length": 0,
+          "args": 0
+        },
+        true
+      ]
+    }
+  ]
+}

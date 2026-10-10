@@ -1,0 +1,858 @@
+{
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "all EventEmitter functions descriptors and constructor behavior",
+      "value": [
+        {
+          "name": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false
+        },
+        {
+          "name": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false
+        },
+        {
+          "name": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true
+        },
+        {
+          "name": "addAbortListener",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "addAbortListener",
+            "length": 2,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        },
+        {
+          "name": "once",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "once",
+            "length": 2,
+            "keys": [
+              "length",
+              "name"
+            ],
+            "constructible": false,
+            "asyncPrototype": true,
+            "ordinaryPrototype": false
+          }
+        },
+        {
+          "name": "on",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "on",
+            "length": 2,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        },
+        {
+          "name": "getEventListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "getEventListeners",
+            "length": 2,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        },
+        {
+          "name": "getMaxListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "getMaxListeners",
+            "length": 1,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        },
+        {
+          "name": "listenerCount",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "listenerCount",
+            "length": 2,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        },
+        {
+          "name": "EventEmitter",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "EventEmitter",
+            "length": 1,
+            "keys": [
+              "length",
+              "name",
+              "prototype",
+              "addAbortListener",
+              "once",
+              "on",
+              "getEventListeners",
+              "getMaxListeners",
+              "listenerCount",
+              "EventEmitter",
+              "usingDomains",
+              "captureRejectionSymbol",
+              "captureRejections",
+              "EventEmitterAsyncResource",
+              "errorMonitor",
+              "defaultMaxListeners",
+              "kMaxEventTargetListeners",
+              "kMaxEventTargetListenersWarned",
+              "setMaxListeners",
+              "init"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor",
+              "_events",
+              "_eventsCount",
+              "_maxListeners",
+              "setMaxListeners",
+              "getMaxListeners",
+              "emit",
+              "addListener",
+              "on",
+              "prependListener",
+              "once",
+              "prependOnceListener",
+              "removeListener",
+              "off",
+              "removeAllListeners",
+              "listeners",
+              "rawListeners",
+              "listenerCount",
+              "eventNames"
+            ]
+          }
+        },
+        {
+          "name": "usingDomains",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "name": "captureRejectionSymbol",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "name": "captureRejections",
+          "enumerable": true,
+          "configurable": false,
+          "get": {
+            "name": "get",
+            "length": 0,
+            "keys": [
+              "length",
+              "name"
+            ],
+            "constructible": false,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true
+          },
+          "set": {
+            "name": "set",
+            "length": 1,
+            "keys": [
+              "length",
+              "name"
+            ],
+            "constructible": false,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true
+          }
+        },
+        {
+          "name": "EventEmitterAsyncResource",
+          "enumerable": true,
+          "configurable": true,
+          "get": {
+            "name": "lazyEventEmitterAsyncResource",
+            "length": 0,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        },
+        {
+          "name": "errorMonitor",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true
+        },
+        {
+          "name": "defaultMaxListeners",
+          "enumerable": true,
+          "configurable": false,
+          "get": {
+            "name": "get",
+            "length": 0,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          },
+          "set": {
+            "name": "set",
+            "length": 1,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        },
+        {
+          "name": "kMaxEventTargetListeners",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false
+        },
+        {
+          "name": "kMaxEventTargetListenersWarned",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false
+        },
+        {
+          "name": "setMaxListeners",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        },
+        {
+          "name": "init",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 1,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "all EventEmitter prototype function metadata",
+      "value": [
+        [
+          "constructor",
+          {
+            "name": "EventEmitter",
+            "length": 1,
+            "keys": [
+              "length",
+              "name",
+              "prototype",
+              "addAbortListener",
+              "once",
+              "on",
+              "getEventListeners",
+              "getMaxListeners",
+              "listenerCount",
+              "EventEmitter",
+              "usingDomains",
+              "captureRejectionSymbol",
+              "captureRejections",
+              "EventEmitterAsyncResource",
+              "errorMonitor",
+              "defaultMaxListeners",
+              "kMaxEventTargetListeners",
+              "kMaxEventTargetListenersWarned",
+              "setMaxListeners",
+              "init"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor",
+              "_events",
+              "_eventsCount",
+              "_maxListeners",
+              "setMaxListeners",
+              "getMaxListeners",
+              "emit",
+              "addListener",
+              "on",
+              "prependListener",
+              "once",
+              "prependOnceListener",
+              "removeListener",
+              "off",
+              "removeAllListeners",
+              "listeners",
+              "rawListeners",
+              "listenerCount",
+              "eventNames"
+            ]
+          }
+        ],
+        [
+          "setMaxListeners",
+          {
+            "name": "setMaxListeners",
+            "length": 1,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "getMaxListeners",
+          {
+            "name": "getMaxListeners",
+            "length": 0,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "emit",
+          {
+            "name": "emit",
+            "length": 1,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "addListener",
+          {
+            "name": "addListener",
+            "length": 2,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "on",
+          {
+            "name": "addListener",
+            "length": 2,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "prependListener",
+          {
+            "name": "prependListener",
+            "length": 2,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "once",
+          {
+            "name": "once",
+            "length": 2,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "prependOnceListener",
+          {
+            "name": "prependOnceListener",
+            "length": 2,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "removeListener",
+          {
+            "name": "removeListener",
+            "length": 2,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "off",
+          {
+            "name": "removeListener",
+            "length": 2,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "removeAllListeners",
+          {
+            "name": "removeAllListeners",
+            "length": 1,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "listeners",
+          {
+            "name": "listeners",
+            "length": 1,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "rawListeners",
+          {
+            "name": "rawListeners",
+            "length": 1,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "listenerCount",
+          {
+            "name": "listenerCount",
+            "length": 2,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ],
+        [
+          "eventNames",
+          {
+            "name": "eventNames",
+            "length": 0,
+            "keys": [
+              "length",
+              "name",
+              "prototype"
+            ],
+            "constructible": true,
+            "asyncPrototype": false,
+            "ordinaryPrototype": true,
+            "prototypeConstructor": true,
+            "prototypeKeys": [
+              "constructor"
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "name": "ESM namespace exact keys and captured values",
+      "value": {
+        "keys": [
+          "EventEmitter",
+          "EventEmitterAsyncResource",
+          "addAbortListener",
+          "captureRejectionSymbol",
+          "captureRejections",
+          "default",
+          "defaultMaxListeners",
+          "errorMonitor",
+          "getEventListeners",
+          "getMaxListeners",
+          "init",
+          "listenerCount",
+          "on",
+          "once",
+          "setMaxListeners",
+          "usingDomains"
+        ],
+        "usingDomains": false,
+        "captureRejections": false,
+        "defaultMaxListeners": 10,
+        "init": true,
+        "default": true
+      }
+    },
+    {
+      "name": "ordinary Node functions construct genuine receivers",
+      "value": {
+        "maximum": 3,
+        "maximumPrototype": true,
+        "names": [],
+        "listeners": [],
+        "emittedKeys": [],
+        "emittedPrototype": true
+      }
+    },
+    {
+      "name": "once wrapper genuine bound constructibility",
+      "value": {
+        "name": "bound onceWrapper",
+        "length": 0,
+        "keys": [
+          "length",
+          "name",
+          "listener"
+        ],
+        "constructible": true,
+        "asyncPrototype": false,
+        "ordinaryPrototype": true
+      }
+    },
+    {
+      "name": "on iterator methods are nonconstructible and listener functions constructible",
+      "value": {
+        "methods": [
+          [
+            "next",
+            {
+              "name": "next",
+              "length": 0,
+              "keys": [
+                "length",
+                "name"
+              ],
+              "constructible": false,
+              "asyncPrototype": false,
+              "ordinaryPrototype": true
+            }
+          ],
+          [
+            "return",
+            {
+              "name": "return",
+              "length": 0,
+              "keys": [
+                "length",
+                "name"
+              ],
+              "constructible": false,
+              "asyncPrototype": false,
+              "ordinaryPrototype": true
+            }
+          ],
+          [
+            "throw",
+            {
+              "name": "throw",
+              "length": 1,
+              "keys": [
+                "length",
+                "name"
+              ],
+              "constructible": false,
+              "asyncPrototype": false,
+              "ordinaryPrototype": true
+            }
+          ]
+        ],
+        "handlers": [
+          [
+            "x",
+            {
+              "name": "",
+              "length": 0,
+              "keys": [
+                "length",
+                "name",
+                "prototype"
+              ],
+              "constructible": true,
+              "asyncPrototype": false,
+              "ordinaryPrototype": true,
+              "prototypeConstructor": true,
+              "prototypeKeys": [
+                "constructor"
+              ]
+            }
+          ],
+          [
+            "error",
+            {
+              "name": "errorHandler",
+              "length": 1,
+              "keys": [
+                "length",
+                "name",
+                "prototype"
+              ],
+              "constructible": true,
+              "asyncPrototype": false,
+              "ordinaryPrototype": true,
+              "prototypeConstructor": true,
+              "prototypeKeys": [
+                "constructor"
+              ]
+            }
+          ]
+        ]
+      }
+    }
+  ]
+}

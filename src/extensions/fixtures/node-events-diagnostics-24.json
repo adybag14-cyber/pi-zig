@@ -1,0 +1,328 @@
+{
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "unhandled case 0",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (undefined)",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 1",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (null)",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 2",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (true)",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 3",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (false)",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 4",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (0)",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 5",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (NaN)",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 6",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (Infinity)",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 7",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (-0)",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 8",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (1n)",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 9",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (Symbol(reason))",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 10",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. ('text')",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 11",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (\"a'b\")",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 12",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. ('a\"b')",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 13",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. ({})",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 14",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. ([Object: null prototype] { x: 1 })",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 15",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. ({ x: 1, y: 'text' })",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 16",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. ([ 1, 'text', null ])",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 17",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. ([Function: named])",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 18",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (/abc/gi)",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled case 19",
+      "value": {
+        "name": "Error",
+        "message": "Unhandled error. (2026-10-10T00:00:00.000Z)",
+        "code": "ERR_UNHANDLED_ERROR",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled custom inspect",
+      "value": {
+        "seen": [
+          [
+            true,
+            2,
+            2,
+            "function"
+          ]
+        ],
+        "message": "Unhandled error. (custom reason)",
+        "same": true
+      }
+    },
+    {
+      "name": "unhandled inspect getter not invoked",
+      "value": {
+        "seen": [],
+        "message": "Unhandled error. ({ value: [Getter] })"
+      }
+    },
+    {
+      "name": "unhandled nested and circular",
+      "value": "Unhandled error. (<ref *1> { x: { y: { z: [Object] } }, self: [Circular *1] })"
+    },
+    {
+      "name": "warning target ()=>new EventEmitter()",
+      "value": {
+        "seen": [
+          {
+            "receiver": true,
+            "name": "MaxListenersExceededWarning",
+            "message": "Possible EventEmitter memory leak detected. 2 x listeners added to [EventEmitter]. MaxListeners is 1. Use emitter.setMaxListeners() to increase limit",
+            "count": 2,
+            "type": "x",
+            "emitter": true,
+            "keys": [
+              "name",
+              "emitter",
+              "type",
+              "count"
+            ]
+          }
+        ],
+        "warned": true,
+        "count": 3
+      }
+    },
+    {
+      "name": "warning target ()=>new(class Named extends EventEmitter{})()",
+      "value": {
+        "seen": [
+          {
+            "receiver": true,
+            "name": "MaxListenersExceededWarning",
+            "message": "Possible EventEmitter memory leak detected. 2 x listeners added to [Named]. MaxListeners is 1. Use emitter.setMaxListeners() to increase limit",
+            "count": 2,
+            "type": "x",
+            "emitter": true,
+            "keys": [
+              "name",
+              "emitter",
+              "type",
+              "count"
+            ]
+          }
+        ],
+        "warned": true,
+        "count": 3
+      }
+    },
+    {
+      "name": "warning target ()=>{const e=Object.create(null);EventEmitter.call(e);e.on=EventEmitter.prototype.on;return e;}",
+      "value": {
+        "seen": [
+          {
+            "receiver": true,
+            "name": "MaxListenersExceededWarning",
+            "message": "Possible EventEmitter memory leak detected. 2 x listeners added to [Object: null prototype]. MaxListeners is 1. Use emitter.setMaxListeners() to increase limit",
+            "count": 2,
+            "type": "x",
+            "emitter": true,
+            "keys": [
+              "name",
+              "emitter",
+              "type",
+              "count"
+            ]
+          }
+        ],
+        "warned": true,
+        "count": 3
+      }
+    },
+    {
+      "name": "warning target ()=>{const e=new EventEmitter();e[Symbol.toStringTag]='Tagged';return e;}",
+      "value": {
+        "seen": [
+          {
+            "receiver": true,
+            "name": "MaxListenersExceededWarning",
+            "message": "Possible EventEmitter memory leak detected. 2 x listeners added to [EventEmitter]. MaxListeners is 1. Use emitter.setMaxListeners() to increase limit",
+            "count": 2,
+            "type": "x",
+            "emitter": true,
+            "keys": [
+              "name",
+              "emitter",
+              "type",
+              "count"
+            ]
+          }
+        ],
+        "warned": true,
+        "count": 3
+      }
+    },
+    {
+      "name": "warning custom inspect and raw warning throw",
+      "value": [
+        [
+          "inspect",
+          true,
+          -1,
+          -1,
+          "function"
+        ],
+        "Possible EventEmitter memory leak detected. 2 x listeners added to CUSTOM. MaxListeners is 1. Use emitter.setMaxListeners() to increase limit",
+        [
+          "same",
+          true,
+          2,
+          true
+        ]
+      ]
+    },
+    {
+      "name": "warning symbol event type",
+      "value": [
+        "Possible EventEmitter memory leak detected. 2 Symbol(x) listeners added to [EventEmitter]. MaxListeners is 1. Use emitter.setMaxListeners() to increase limit"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,446 @@
+{
+  "stdioScope": [
+    {
+      "kind": "old-input-pure"
+    },
+    {
+      "kind": "write",
+      "text": "old-sdk-global",
+      "receiver": true
+    },
+    {
+      "kind": "global-write-return",
+      "value": true
+    },
+    {
+      "kind": "resource-pure"
+    },
+    {
+      "kind": "write",
+      "text": "resource-output",
+      "receiver": true
+    },
+    {
+      "kind": "resource-context-error",
+      "name": "Error",
+      "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+    },
+    {
+      "kind": "stdin-pure",
+      "text": "authenticated-source"
+    },
+    {
+      "kind": "write",
+      "text": "stdin-output",
+      "receiver": true
+    },
+    {
+      "kind": "stdin-context-error",
+      "name": "Error",
+      "message": "This extension ctx is stale after session replacement or reload. Do not use a captured pi or command ctx after ctx.newSession(), ctx.fork(), ctx.switchSession(), or ctx.reload(). For newSession, fork, and switchSession, move post-replacement work into withSession and use the ctx passed to withSession. For reload, do not use the old ctx after await ctx.reload()."
+    }
+  ],
+  "sourceSha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+  "defaults": {
+    "streaming": false,
+    "idle": true,
+    "compacting": false,
+    "retrying": false,
+    "retryAttempt": 0,
+    "steeringMode": "one-at-a-time",
+    "followUpMode": "one-at-a-time",
+    "pending": 0
+  },
+  "dispositions": [
+    "queued",
+    "queued",
+    "handled"
+  ],
+  "commandError": {
+    "name": "Error",
+    "message": "Extension command \"/cmd\" cannot be queued. Use prompt() or execute the command when not streaming."
+  },
+  "queued": {
+    "flags": {
+      "streaming": false,
+      "idle": true,
+      "compacting": false,
+      "retrying": false,
+      "retryAttempt": 0,
+      "steeringMode": "one-at-a-time",
+      "followUpMode": "one-at-a-time",
+      "pending": 2
+    },
+    "steeringSame": true,
+    "followUpSame": true,
+    "steering": [
+      "one"
+    ],
+    "followUp": [
+      "converted"
+    ]
+  },
+  "cleared": {
+    "steering": [
+      "one"
+    ],
+    "followUp": [
+      "converted"
+    ]
+  },
+  "afterClear": {
+    "flags": {
+      "streaming": false,
+      "idle": true,
+      "compacting": false,
+      "retrying": false,
+      "retryAttempt": 0,
+      "steeringMode": "one-at-a-time",
+      "followUpMode": "one-at-a-time",
+      "pending": 0
+    },
+    "returnedDistinct": true,
+    "oldSteering": [
+      "one"
+    ],
+    "oldFollowUp": [
+      "converted"
+    ],
+    "newSteering": true,
+    "newFollowUp": true
+  },
+  "modeChange": {
+    "flags": {
+      "streaming": false,
+      "idle": true,
+      "compacting": false,
+      "retrying": false,
+      "retryAttempt": 0,
+      "steeringMode": "all",
+      "followUpMode": "one-at-a-time",
+      "pending": 0
+    },
+    "settingsSteering": "all",
+    "settingsFollowUp": "one-at-a-time"
+  },
+  "input": [
+    {
+      "handler": 1,
+      "text": "one",
+      "source": "interactive",
+      "behavior": null,
+      "idle": true
+    },
+    {
+      "handler": 2,
+      "text": "one",
+      "source": "interactive",
+      "behavior": null
+    },
+    {
+      "handler": 1,
+      "text": "convert",
+      "source": "rpc",
+      "behavior": null,
+      "idle": true
+    },
+    {
+      "handler": 2,
+      "text": "converted",
+      "source": "rpc",
+      "behavior": null
+    },
+    {
+      "handler": 1,
+      "text": "drop",
+      "source": "interactive",
+      "behavior": null,
+      "idle": true
+    },
+    {
+      "handler": 1,
+      "text": "hello",
+      "source": "interactive",
+      "behavior": null,
+      "idle": true
+    },
+    {
+      "handler": 2,
+      "text": "hello",
+      "source": "interactive",
+      "behavior": null
+    },
+    {
+      "handler": 2,
+      "text": "after-dispose",
+      "source": "interactive",
+      "behavior": null
+    }
+  ],
+  "immediatePrompt": {
+    "streaming": false,
+    "idle": true,
+    "compacting": false,
+    "retrying": false,
+    "retryAttempt": 0,
+    "steeringMode": "all",
+    "followUpMode": "one-at-a-time",
+    "pending": 0
+  },
+  "preflight": [
+    {
+      "disposition": "started",
+      "flags": {
+        "streaming": false,
+        "idle": true,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      }
+    }
+  ],
+  "afterPrompt": {
+    "flags": {
+      "streaming": false,
+      "idle": true,
+      "compacting": false,
+      "retrying": false,
+      "retryAttempt": 0,
+      "steeringMode": "all",
+      "followUpMode": "one-at-a-time",
+      "pending": 0
+    },
+    "roles": [
+      "system",
+      "user",
+      "assistant"
+    ]
+  },
+  "requests": [
+    [
+      "system",
+      "user"
+    ]
+  ],
+  "events": [
+    {
+      "type": "queue_update",
+      "steering": [
+        "one"
+      ],
+      "followUp": []
+    },
+    {
+      "type": "queue_update",
+      "steering": [
+        "one"
+      ],
+      "followUp": [
+        "converted"
+      ]
+    },
+    {
+      "type": "queue_update",
+      "steering": [],
+      "followUp": []
+    },
+    {
+      "type": "agent_start",
+      "flags": {
+        "streaming": true,
+        "idle": false,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      },
+      "persisted": 0
+    },
+    {
+      "type": "turn_start",
+      "flags": {
+        "streaming": true,
+        "idle": false,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      },
+      "persisted": 0
+    },
+    {
+      "type": "message_start",
+      "flags": {
+        "streaming": true,
+        "idle": false,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      },
+      "persisted": 0
+    },
+    {
+      "type": "message_end",
+      "flags": {
+        "streaming": true,
+        "idle": false,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      },
+      "persisted": 0
+    },
+    {
+      "type": "message_start",
+      "flags": {
+        "streaming": true,
+        "idle": false,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      },
+      "persisted": 1
+    },
+    {
+      "type": "message_end",
+      "flags": {
+        "streaming": true,
+        "idle": false,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      },
+      "persisted": 1
+    },
+    {
+      "type": "message_start",
+      "flags": {
+        "streaming": true,
+        "idle": false,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      },
+      "persisted": 2
+    },
+    {
+      "type": "message_update",
+      "flags": {
+        "streaming": true,
+        "idle": false,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      },
+      "persisted": 2
+    },
+    {
+      "type": "message_end",
+      "flags": {
+        "streaming": true,
+        "idle": false,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      },
+      "persisted": 2
+    },
+    {
+      "type": "turn_end",
+      "flags": {
+        "streaming": true,
+        "idle": false,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      },
+      "persisted": 3
+    },
+    {
+      "type": "agent_end",
+      "flags": {
+        "streaming": true,
+        "idle": false,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      },
+      "persisted": 3
+    },
+    {
+      "type": "agent_settled",
+      "flags": {
+        "streaming": false,
+        "idle": true,
+        "compacting": false,
+        "retrying": false,
+        "retryAttempt": 0,
+        "steeringMode": "all",
+        "followUpMode": "one-at-a-time",
+        "pending": 0
+      },
+      "persisted": 3
+    }
+  ],
+  "disposedBefore": {
+    "streaming": false,
+    "idle": true,
+    "compacting": false,
+    "retrying": false,
+    "retryAttempt": 0,
+    "steeringMode": "all",
+    "followUpMode": "one-at-a-time",
+    "pending": 0
+  },
+  "disposedQueue": "queued",
+  "disposedAfter": {
+    "streaming": false,
+    "idle": true,
+    "compacting": false,
+    "retrying": false,
+    "retryAttempt": 0,
+    "steeringMode": "all",
+    "followUpMode": "one-at-a-time",
+    "pending": 1
+  },
+  "disposedClear": {
+    "steering": [
+      "after-dispose"
+    ],
+    "followUp": []
+  }
+}

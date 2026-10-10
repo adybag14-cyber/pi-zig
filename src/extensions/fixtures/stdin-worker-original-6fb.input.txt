@@ -1,0 +1,11 @@
+import {StdinBuffer} from '@earendil-works/pi-tui';
+import {EventEmitter} from 'node:events';
+const buffer=new StdinBuffer({timeout:5,escapeTimeout:1}),events=[];
+buffer.on('data',function(value){events.push(['data',value,this===buffer]);});
+buffer.on('paste',function(value){events.push(['paste',value,this===buffer]);});
+buffer.process('\x1b');buffer.process('[<35;');buffer.process('20;5m');
+buffer.process('\x1b[200~');buffer.process('paste界\x1b[201~');
+let done;const escaped=new Promise(resolve=>done=resolve);buffer.once('data',function(value){if(value!=='\x1b')throw Error('unexpected lone Escape');done();});buffer.process('\x1b');
+let deadline;try{await Promise.race([escaped,new Promise((_,reject)=>deadline=setTimeout(()=>reject(Error('stdin real-worker Escape deadline')),5000))]);}finally{clearTimeout(deadline);}
+buffer.destroy();export const observed={events,buffer:buffer.getBuffer(),pasteMode:buffer.pasteMode,pending:buffer.pendingKittyPrintableCodepoint,timeout:buffer.timeout,listenerCount:buffer.listenerCount('data'),instance:buffer instanceof EventEmitter,ancestor:Object.getPrototypeOf(StdinBuffer)===EventEmitter};
+console.log(JSON.stringify(observed));

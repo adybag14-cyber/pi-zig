@@ -1,0 +1,5 @@
+const seen=[];process.on('warning',warning=>seen.push({name:warning.name,message:warning.message,code:warning.code}));
+process.traceDeprecation=true;const first=new Error('one');first.name='DeprecationWarning';first.stack='DEPRECATION TRACE';process.emitWarning(first);await new Promise(resolve=>setTimeout(resolve,1));
+process.traceDeprecation=false;process.traceProcessWarnings=true;const second=new Error('two');second.code='TRACE';second.detail='extra detail';second.stack='GENERAL TRACE';process.emitWarning(second);await new Promise(resolve=>setTimeout(resolve,1));
+process.traceProcessWarnings=false;process.noDeprecation=true;const suppressed=process.emitWarning({},'DeprecationWarning',42)===undefined;process.noDeprecation=false;
+console.log(JSON.stringify({seen,suppressed}));

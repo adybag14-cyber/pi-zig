@@ -419,6 +419,7 @@ fn fire(state: *Scheduler, index: usize) !bool {
     }
     const result = try engine.checked(c.JS_Call(engine.context, retained.callback, timer.handle, @intCast(retained.arguments.len), retained.arguments.ptr));
     engine.freeValue(result);
+    try @import("node_events.zig").drainHostTicks(engine);
     return true;
 }
 

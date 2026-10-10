@@ -1,0 +1,2 @@
+(HOST:PID) [DEP0172] DeprecationWarning: The asyncResource property on bound functions is deprecated
+(Use `HOST --trace-deprecation ...` to show where the warning was created)

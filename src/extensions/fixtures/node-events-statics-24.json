@@ -1,0 +1,440 @@
+{
+  "node": "24.14.0",
+  "cases": [
+    {
+      "name": "capture symbol registry",
+      "value": true
+    },
+    {
+      "name": "default capture accessor",
+      "value": {
+        "default": true,
+        "capture": [
+          true
+        ],
+        "descriptor": [
+          [
+            "get",
+            {
+              "name": "get",
+              "length": 0
+            }
+          ],
+          [
+            "set",
+            {
+              "name": "set",
+              "length": 1
+            }
+          ],
+          [
+            "enumerable",
+            true
+          ],
+          [
+            "configurable",
+            false
+          ]
+        ]
+      }
+    },
+    {
+      "name": "invalid capture default undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.captureRejections\" property must be of type boolean. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid capture default null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.captureRejections\" property must be of type boolean. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid capture default 0",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.captureRejections\" property must be of type boolean. Received type number (0)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid capture default 1",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.captureRejections\" property must be of type boolean. Received type number (1)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid capture default true",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.captureRejections\" property must be of type boolean. Received type string ('true')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid capture default [object Object]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.captureRejections\" property must be of type boolean. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid capture default ",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.captureRejections\" property must be of type boolean. Received an instance of Array",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "invalid capture default ()=>{}",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"EventEmitter.captureRejections\" property must be of type boolean. Received function ",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "capture constructor 0",
+      "value": [
+        false
+      ]
+    },
+    {
+      "name": "capture constructor 1",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.captureRejections\" property must be of type boolean. Received type number (1)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "capture constructor true",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.captureRejections\" property must be of type boolean. Received type string ('true')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "capture constructor [object Object]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.captureRejections\" property must be of type boolean. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "capture constructor ",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"options.captureRejections\" property must be of type boolean. Received an instance of Array",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "capture constructor null",
+      "value": [
+        false
+      ]
+    },
+    {
+      "name": "capture constructor false",
+      "value": [
+        false
+      ]
+    },
+    {
+      "name": "capture constructor true",
+      "value": [
+        true
+      ]
+    },
+    {
+      "name": "capture options getters",
+      "value": {
+        "seen": [
+          "capture",
+          "capture",
+          "capture"
+        ],
+        "capture": [
+          true
+        ]
+      }
+    },
+    {
+      "name": "static listeners actual receiver",
+      "value": {
+        "result": [
+          "actual"
+        ],
+        "seen": [
+          [
+            true,
+            "x"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "static listener count actual receiver",
+      "value": {
+        "result": 71,
+        "seen": [
+          [
+            true,
+            "x"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "static max does not invoke virtual method",
+      "value": {
+        "result": 7,
+        "seen": [
+          "method",
+          "field",
+          "field"
+        ]
+      }
+    },
+    {
+      "name": "static max default",
+      "value": 10
+    },
+    {
+      "name": "static max target symbol field",
+      "value": 13
+    },
+    {
+      "name": "static max target symbol getter twice",
+      "value": {
+        "result": 4,
+        "seen": [
+          "max",
+          "max"
+        ]
+      }
+    },
+    {
+      "name": "getEventListeners invalid null",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of null (reading 'listeners')"
+      }
+    },
+    {
+      "name": "getEventListeners invalid undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'listeners')"
+      }
+    },
+    {
+      "name": "getEventListeners invalid 0",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter or EventTarget. Received type number (0)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "getEventListeners invalid x",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter or EventTarget. Received type string ('x')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "getEventListeners invalid [object Object]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter or EventTarget. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "getMaxListeners invalid null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter or EventTarget. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "getMaxListeners invalid undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter or EventTarget. Received undefined",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "getMaxListeners invalid 0",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter or EventTarget. Received type number (0)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "getMaxListeners invalid x",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter or EventTarget. Received type string ('x')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "getMaxListeners invalid [object Object]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter or EventTarget. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "listenerCount invalid null",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of null (reading 'listenerCount')"
+      }
+    },
+    {
+      "name": "listenerCount invalid undefined",
+      "error": {
+        "name": "TypeError",
+        "message": "Cannot read properties of undefined (reading 'listenerCount')"
+      }
+    },
+    {
+      "name": "listenerCount invalid 0",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter or EventTarget. Received type number (0)",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "listenerCount invalid x",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter or EventTarget. Received type string ('x')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "listenerCount invalid [object Object]",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"emitter\" argument must be an instance of EventEmitter or EventTarget. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static max set default restore",
+      "value": {
+        "actual": 17,
+        "newInstance": 17
+      }
+    },
+    {
+      "name": "static max undefined default",
+      "value": 9
+    },
+    {
+      "name": "static max set virtual target receivers",
+      "value": {
+        "seen": [
+          [
+            "first",
+            true,
+            3.5
+          ],
+          "getter",
+          "getter",
+          [
+            "second",
+            true,
+            3.5
+          ]
+        ]
+      }
+    },
+    {
+      "name": "static max set partial failure",
+      "value": {
+        "seen": [
+          4
+        ],
+        "error": {
+          "name": "TypeError",
+          "message": "The \"eventTargets\" argument must be an instance of EventEmitter or EventTarget. Received an instance of Object",
+          "code": "ERR_INVALID_ARG_TYPE"
+        }
+      }
+    },
+    {
+      "name": "static max invalid -1",
+      "error": {
+        "name": "RangeError",
+        "message": "The value of \"setMaxListeners\" is out of range. It must be >= 0. Received -1",
+        "code": "ERR_OUT_OF_RANGE"
+      }
+    },
+    {
+      "name": "static max invalid NaN",
+      "error": {
+        "name": "RangeError",
+        "message": "The value of \"setMaxListeners\" is out of range. It must be >= 0. Received NaN",
+        "code": "ERR_OUT_OF_RANGE"
+      }
+    },
+    {
+      "name": "static max invalid 2",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"setMaxListeners\" argument must be of type number. Received type string ('2')",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static max invalid null",
+      "error": {
+        "name": "TypeError",
+        "message": "The \"setMaxListeners\" argument must be of type number. Received null",
+        "code": "ERR_INVALID_ARG_TYPE"
+      }
+    },
+    {
+      "name": "static max symbols descriptors",
+      "value": [
+        {
+          "name": "kMaxEventTargetListeners",
+          "description": "events.maxEventTargetListeners",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false
+        },
+        {
+          "name": "kMaxEventTargetListenersWarned",
+          "description": "events.maxEventTargetListenersWarned",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false
+        }
+      ]
+    }
+  ]
+}
