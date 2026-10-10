@@ -1,7 +1,7 @@
 # pi-zig
 
 The Pi 1.x update is in progress on this branch, targeting upstream commit
-`6fb2e7815167e6b19006fc526d1a5d0f5f998787` (package version 1.1.0), newer than
+`42a3497d03ad17e308a2299fa824727894f2c0ec` (package version 1.1.0), newer than
 [the v1.1.0 release](https://github.com/earendil-works/pi/releases/tag/v1.1.0).
 Zig **0.16.0** remains pinned. Repository implementation work uses Zig and narrow
 linked C dependencies; user-authored JavaScript/TypeScript extension compatibility
@@ -12,17 +12,19 @@ extension API package version are 1.1.0. Full Pi 1.x parity and release
 certification remain incomplete, and production extension discovery retains its
 legacy Node bridge while native parity and lifecycle work continues.
 
-The frozen checkpoint210 source passes the full local test and provider-contract
-graphs in Windows and native Linux Debug and ReleaseSafe. Windows passes 2,190
-tests with 71 skips per mode; Linux passes 2,382 with 12 skips per mode. All 953
-compiled source hashes were rechecked after validation. These results describe
-that exact source checkpoint; hosted CI and the unfinished native migration have
-separate qualification requirements.
+Checkpoint 237 preserves the validated native generation, public submission,
+compaction, transaction query, scheduler environment, SDK capability and runtime
+changes. The latest scoped qualification runs nine affected test targets in
+Windows and native Linux Debug and ReleaseSafe: Windows passes 403 tests with
+5 platform skips per mode, and Linux passes 404 with 2 skips per mode. All
+1,520 compiled source hashes were rechecked on both platforms. All 26 cached Windows
+test executables import no SQLite DLL. These are affected-area checks; the
+complete hosted suite and the unfinished native migration have separate gates.
 
 See [the active update record](UPSTREAM-UPDATE-20261003.md) and
-[checkpoint210 evidence](verification/checkpoint-210/local-qualified.json) for
-scope, remaining work and source-bound validation. Historical checkpoint records
-remain available under `verification/`.
+[checkpoint 237 evidence](verification/checkpoint-237/local-scoped-qualified.json)
+for scope, remaining work and source-bound validation. Historical full and
+scoped checkpoint records remain available under `verification/`.
 
 `pi-zig` is a native Zig 0.16 rewrite of the Pi coding-agent and AI runtime. It
 implements provider, model, session, extension, tool, RPC, TUI, storage,
@@ -39,8 +41,8 @@ native code and language-neutral data; the reference source is not restored to
 this repository. `pi-zig` is an independent rewrite and is not an official Pi
 release.
 
-The current immutable typed catalog contains 1,602 models across 42 providers:
-1,530 chat, 57 image and 15 classifier models. Its native Zig generator records
+The current immutable typed catalog contains 1,653 models across 42 providers.
+Its native Zig generator records
 the upstream package version/commit, source-archive digest and separate catalog
 revision/digest. Imported Git tar metadata and package version must match the
 supplied provenance. Unknown or unprojected fields fail explicitly.
@@ -75,8 +77,9 @@ Use the final Zig 0.16.0 release:
 zig build -Doptimize=Debug
 ```
 
-The default artifact is `zig-out/bin/pi` (`pi.exe` on Windows). It does not
-link SQLite.
+The default artifact is `zig-out/bin/pi` (`pi.exe` on Windows). Default builds
+link the pinned SQLite C source statically, so the executable and tests do not
+require `sqlite3.dll`.
 
 Build the optional SQLite administration and live-server binaries with:
 
@@ -98,8 +101,9 @@ zig build sqlite -Doptimize=ReleaseSafe -Dsqlite-lib-dir=C:\path\to\sqlite
 zig build test --summary all
 ```
 
-The Windows test command accepts the same `-Dsqlite-lib-dir` option. CI installs
-a matching SQLite development package before running the complete graph.
+Tests use the pinned SQLite C source by default. `-Dsqlite-lib-dir` selects an
+external SQLite library; when that library is dynamic, its matching runtime
+library must be available to the executables.
 
 Focused extension bridge checks can also be run directly:
 

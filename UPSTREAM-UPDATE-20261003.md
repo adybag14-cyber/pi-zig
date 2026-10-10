@@ -1,5 +1,52 @@
 # Active Pi upstream update
 
+## Checkpoint 237 - 10 October 2026
+
+Status: active migration; incomplete Pi 1.x parity. The reviewed upstream target
+is `42a3497d03ad17e308a2299fa824727894f2c0ec`, package 1.1.0, newer than
+v1.1.0. Zig 0.16.0 remains pinned. The catalog still contains 1,653 models across
+42 providers; its separate catalog provenance records the earlier unchanged
+catalog source rather than substituting the current contract target.
+
+This checkpoint composes genuine native GenerationTask, ToolTask and
+CompactionTask definitions with public Harness input submission, submission
+status/wait/withdrawal, prompt planning, retry/deferred requests, sequential and
+parallel tool rounds, blocking/background compaction, manual compaction/reset,
+and scheduler environment callbacks. Transaction scans now honor source order,
+entry bounds, continuation cursors and lifecycle errors. Linked QuickJS runtime
+support retains async iterator and AsyncFunction prototype identity. Native SDK,
+read/image, terminal component and ownership changes preserve their earlier
+scoped qualification records; they do not certify complete API parity.
+
+The source head `0aaa0edcdb9c59787a5edc95f8911807e6d4a604` passed these nine
+related targets: `test-native-durable-tool-output`, `test-native-durable-vm`,
+`test-extension-engine`, `test-native-weakref`, `test-durable-backend`,
+`test-durable-scheduler`, `test-native-async-function-intrinsic`,
+`test-native-async-iterator-intrinsic` and `test-native-async-scope`.
+
+| Platform | Debug | ReleaseSafe | Build steps |
+| --- | --- | --- | --- |
+| Windows x64 | 403 passed / 5 skipped | 403 passed / 5 skipped | 35 |
+| Native Linux x64 | 404 passed / 2 skipped | 404 passed / 2 skipped | 35 |
+
+The [scoped receipt](verification/checkpoint-237/local-scoped-qualified.json)
+binds those terminal results to [1,520 compiled inputs](verification/checkpoint-237/compiled-inputs.json).
+[Linux posthash verification](verification/checkpoint-237/linux-posthash.log)
+and [26 cached Windows PE import audits](verification/checkpoint-237/windows-static-imports.json)
+confirm unchanged sources and no dynamic SQLite dependency. Documentation and
+inventory regeneration preserve those compiled inputs. Earlier full-suite
+results below qualify their earlier source heads only. Hosted CI must qualify
+this checkpoint's own head before any merge or release.
+
+Remaining work includes complete SDK/AgentSession behavior, scheduler controls
+and invocation-bound conversation capabilities, custom Storage and remaining
+durable workflows, conversation views/watches, the remaining public terminal
+components and their real frontend integration, and native image processing.
+Production extension discovery keeps the legacy bridge until native parity and
+lifecycle gates pass. The older full-parity certification marker and release
+guard remain unchanged; inventory generation does not certify parity.
+
+
 ## Checkpoint210 - 8 October 2026
 
 Status: active migration; incomplete Pi 1.x parity. The target is upstream
@@ -586,7 +633,7 @@ October 5 native host checkpoint:
   certified upstream identity, the source inventory, language audit and C vendor
   provenance. Candidate builds remain possible. The draft checkpoint correctly
   rejects release publication with IncompleteParityCheckpoint.
-- Latest observed upstream is 6100fe5a8358709a26050b8da97ccd188ae93101, two commits
+- Latest observed upstream is 6100fe5a8404709a26050b8da97ccd188ae93101, two commits
   beyond the prior pin: Azure Foundry Chat Completions and fullscreen Home/End
   routing. Its source archive, catalog and changelog are now pinned and verified.
   The reviewed Azure transform retains the immutable raw catalog digest, renames
