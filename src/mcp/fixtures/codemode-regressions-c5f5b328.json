@@ -1,0 +1,388 @@
+{
+  "upstream": "c5f5b3282d5e4203c085e59837ba17aeaf2829b5",
+  "cases": [
+    {
+      "name": "roundtrip",
+      "code": "text('before'); const value=await tools.my_tool({value:3}); console.log('after',value); store('answer',value); return {value};",
+      "store": {},
+      "result": {
+        "ok": true,
+        "value": {
+          "value": 6
+        },
+        "output": [
+          {
+            "type": "text",
+            "text": "before"
+          },
+          {
+            "type": "text",
+            "text": "after 6",
+            "console": true
+          }
+        ],
+        "calls": [
+          {
+            "name": "my-tool",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {
+            "answer": 6
+          },
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "originalName",
+      "code": "return await tools['my-tool']({value:4});",
+      "store": {},
+      "result": {
+        "ok": true,
+        "value": 8,
+        "output": [],
+        "calls": [
+          {
+            "name": "my-tool",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "storeClone",
+      "code": "const first=load('a'); first.x=9; store('b',first); store('a',undefined); return load('a');",
+      "store": {
+        "a": {
+          "x": 1
+        }
+      },
+      "result": {
+        "ok": true,
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {
+            "b": {
+              "x": 9
+            }
+          },
+          "delete": [
+            "a"
+          ]
+        }
+      }
+    },
+    {
+      "name": "throwRetainsOutput",
+      "code": "text('retained'); store('a',1); throw new Error('source failure');",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "name": "Error",
+          "message": "source failure",
+          "stack": "Error: source failure\n    at <anonymous> (codemode.js:1:71)"
+        },
+        "output": [
+          {
+            "type": "text",
+            "text": "retained"
+          }
+        ],
+        "calls": []
+      }
+    },
+    {
+      "name": "exit",
+      "code": "text('early'); exit(); text('late');",
+      "store": {},
+      "result": {
+        "ok": true,
+        "output": [
+          {
+            "type": "text",
+            "text": "early"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "metadata",
+      "code": "return ALL_TOOLS;",
+      "store": {},
+      "result": {
+        "ok": true,
+        "value": [
+          {
+            "name": "my_tool",
+            "description": "double"
+          }
+        ],
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "images",
+      "code": "image('data:image/jpeg;base64,iVBORw0KGgo='); image({type:'image',data:'R0lGODlh',mimeType:'ignored'}); image({image_url:'DATA:;BASE64,/9j/AA=='});",
+      "store": {},
+      "result": {
+        "ok": true,
+        "output": [
+          {
+            "type": "image",
+            "data": "iVBORw0KGgo=",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "image",
+            "data": "R0lGODlh",
+            "mimeType": "image/gif"
+          },
+          {
+            "type": "image",
+            "data": "/9j/AA==",
+            "mimeType": "image/jpeg"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "intrinsics",
+      "code": "class CustomError extends Error {constructor(){super('owned');this.name='CustomError'}}; const own={};own.toString=()=> 'own'; return {array:Object.isFrozen(Array.prototype),console:Object.isFrozen(console),tools:Object.isFrozen(tools),globalWritable:Object.getOwnPropertyDescriptor(globalThis,'JSON').writable,error:new CustomError().name,own:own.toString()};",
+      "store": {},
+      "result": {
+        "ok": true,
+        "value": {
+          "array": true,
+          "console": true,
+          "tools": true,
+          "globalWritable": false,
+          "error": "CustomError",
+          "own": "own"
+        },
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "caughtExit",
+      "code": "text('before'); try {exit()} catch {} text('after'); return 9;",
+      "store": {},
+      "result": {
+        "ok": true,
+        "output": [
+          {
+            "type": "text",
+            "text": "before"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "throw-string",
+      "code": "throw 'plain'",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "message": "plain"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "throw-null",
+      "code": "throw null",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "message": "null"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "throw-number",
+      "code": "throw 123",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "message": "123"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "throw-object",
+      "code": "throw {name:\"pretend\",message:\"field\",extra:3}",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "message": "{\"name\":\"pretend\",\"message\":\"field\",\"extra\":3}"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "throw-symbol",
+      "code": "throw Symbol(\"x\")",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "message": "Symbol(x)"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "throw-undefined",
+      "code": "throw undefined",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "message": "undefined"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "throw-bigint",
+      "code": "throw 12n",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "message": "12"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "throw-cycle",
+      "code": "const x={};x.x=x;throw x",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "message": "[object Object]"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "throw-error-fields",
+      "code": "const x=new Error(\"before\");x.name=123;x.message={x:1};throw x",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "name": "123",
+          "message": "[object Object]",
+          "stack": "123: [object Object]\n    at <anonymous> (codemode.js:1:41)"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "throw-uncoercible-error",
+      "code": "const x=new Error(\"before\");x.name={toString(){throw 1}};throw x",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "message": "The script threw a value that cannot be described"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "throw-prototype-error",
+      "code": "throw Object.create(Error.prototype)",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "name": "Error",
+          "message": "",
+          "stack": "Error"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "parse-error",
+      "code": "return (",
+      "store": {},
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "name": "SyntaxError",
+          "message": "unexpected token in expression: '}'",
+          "stack": "SyntaxError: unexpected token in expression: '}'\n    at codemode.js:2:1"
+        },
+        "output": [],
+        "calls": []
+      }
+    }
+  ]
+}

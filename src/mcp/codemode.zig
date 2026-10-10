@@ -145,22 +145,80 @@ const Execution = struct {
         }
     }
     fn captureTerminalError(self: *Execution, reason: c.JSValue) !void {
+        self.describeTerminalError(reason) catch |cause| {
+            if (cause == error.OutOfMemory) return cause;
+            const a = self.result.arena.allocator();
+            var placeholder: Value = .{ .object = .empty };
+            try placeholder.object.put(a, "message", .{ .string = "The script threw a value that cannot be described" });
+            self.terminal_error = placeholder;
+        };
+    }
+    fn stringConstructor(self: *Execution, value: c.JSValue) ![]u8 {
+        const global = c.JS_GetGlobalObject(self.engine.context);
+        defer self.engine.freeValue(global);
+        const constructor = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, global, "String"));
+        defer self.engine.freeValue(constructor);
+        var args = [_]c.JSValue{value};
+        const rendered = try self.engine.checked(c.JS_Call(self.engine.context, constructor, c.pi_js_undefined(), 1, &args));
+        defer self.engine.freeValue(rendered);
+        return self.engine.toString(rendered);
+    }
+    fn describeTerminalError(self: *Execution, reason: c.JSValue) !void {
         const a = self.result.arena.allocator();
         var description: Value = .{ .object = .empty };
+        const global = c.JS_GetGlobalObject(self.engine.context);
+        defer self.engine.freeValue(global);
+        const constructor = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, global, "Error"));
+        defer self.engine.freeValue(constructor);
+        const instance = c.JS_IsInstanceOf(self.engine.context, reason, constructor);
+        if (instance < 0) {
+            _ = try self.engine.checked(c.JS_Throw(self.engine.context, c.JS_GetException(self.engine.context)));
+            unreachable;
+        }
+        if (instance == 0) {
+            const encoded = c.JS_JSONStringify(self.engine.context, reason, c.pi_js_undefined(), c.pi_js_undefined());
+            const rendered = if (c.JS_IsException(encoded)) blk: {
+                _ = self.engine.checked(encoded) catch c.pi_js_undefined();
+                break :blk try self.stringConstructor(reason);
+            } else blk: {
+                defer self.engine.freeValue(encoded);
+                break :blk try self.stringConstructor(if (c.JS_IsUndefined(encoded)) reason else encoded);
+            };
+            defer self.gpa.free(rendered);
+            try description.object.put(a, "message", .{ .string = try a.dupe(u8, rendered) });
+            self.terminal_error = description;
+            return;
+        }
         const name_value = if (c.JS_IsObject(reason)) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, reason, "name")) else c.pi_js_undefined();
         defer self.engine.freeValue(name_value);
-        const name = if (c.JS_IsUndefined(name_value)) try self.gpa.dupe(u8, "Error") else try self.engine.toString(name_value);
+        const name = try self.stringConstructor(name_value);
         defer self.gpa.free(name);
         const message_value = if (c.JS_IsObject(reason)) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, reason, "message")) else c.pi_js_undefined();
         defer self.engine.freeValue(message_value);
-        const message = try self.engine.toString(if (c.JS_IsUndefined(message_value)) reason else message_value);
+        const message = try self.stringConstructor(message_value);
         defer self.gpa.free(message);
         try description.object.put(a, "name", .{ .string = try a.dupe(u8, name) });
         try description.object.put(a, "message", .{ .string = try a.dupe(u8, message) });
-        const stack_value = if (c.JS_IsObject(reason)) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, reason, "stack")) else c.pi_js_undefined();
+        const head_message = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, reason, "message"));
+        defer self.engine.freeValue(head_message);
+        const head_name = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, reason, "name"));
+        defer self.engine.freeValue(head_name);
+        const head_name_text = if (c.JS_ToBool(self.engine.context, head_message) != 0) try self.engine.toString(head_name) else try self.stringConstructor(head_name);
+        defer self.gpa.free(head_name_text);
+        const head = if (c.JS_ToBool(self.engine.context, head_message) != 0) blk: {
+            const final_message = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, reason, "message"));
+            defer self.engine.freeValue(final_message);
+            const text = try self.engine.toString(final_message);
+            defer self.gpa.free(text);
+            break :blk try std.fmt.allocPrint(a, "{s}: {s}", .{ head_name_text, text });
+        } else try a.dupe(u8, head_name_text);
+        const stack_value = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, reason, "stack"));
         defer self.engine.freeValue(stack_value);
-        const head = if (message.len == 0) try a.dupe(u8, name) else try std.fmt.allocPrint(a, "{s}: {s}", .{ name, message });
-        const stack = if (c.JS_IsUndefined(stack_value)) try self.gpa.dupe(u8, "") else try self.engine.toString(stack_value);
+        const stack = if (!c.JS_IsString(stack_value)) try self.gpa.dupe(u8, "") else blk: {
+            const final_stack = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, reason, "stack"));
+            defer self.engine.freeValue(final_stack);
+            break :blk try self.engine.toString(final_stack);
+        };
         defer self.gpa.free(stack);
         const trimmed = std.mem.trimEnd(u8, stack, "\r\n\t ");
         try description.object.put(a, "stack", .{ .string = if (trimmed.len == 0) head else if (std.mem.startsWith(u8, trimmed, head)) try a.dupe(u8, trimmed) else try std.fmt.allocPrint(a, "{s}\n{s}", .{ head, trimmed }) });
@@ -966,6 +1024,10 @@ const ExecutionMeasurements = struct { interrupt_polls: f64 = 0, budget_exhauste
 fn executeMeasured(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: []const u8, options: Options, measurements: ?*ExecutionMeasurements) !json.Owned {
     const engine = try engine_mod.Engine.init(gpa, .{ .memory_limit = options.memory_limit, .stack_limit = options.stack_limit, .interrupt_budget = std.math.maxInt(u64) });
     defer engine.deinit();
+    // Error description below owns guest coercion order. Engine diagnostics
+    // must retain the original thrown value without an earlier ToString call.
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var state: Execution = .{ .gpa = gpa, .io = io, .engine = engine, .tools = tools, .options = options, .result = try json.Owned.empty(gpa), .stored = .{ .object = .empty }, .deadline = if (options.timeout_ms) |timeout| std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(timeout, std.math.maxInt(i64)))) else null };
     defer if (measurements) |value| {
         value.* = .{ .interrupt_polls = state.interrupt_polls, .budget_exhausted = state.budget_exhausted };
@@ -1011,6 +1073,12 @@ fn executeMeasured(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, sour
     var script_failure: ?anyerror = null;
     const promise = if (state.checkLimits(false)) c.pi_js_undefined() else engine.eval(wrapped, "codemode.js", c.JS_EVAL_TYPE_GLOBAL) catch |cause| blk: {
         script_failure = cause;
+        if (cause == error.OutOfMemory) return cause;
+        if (!state.timed_out and !state.aborted) if (engine.captured_exception) |exception| {
+            const retained = c.JS_DupValue(engine.context, exception);
+            defer engine.freeValue(retained);
+            try state.captureTerminalError(retained);
+        };
         break :blk c.pi_js_undefined();
     };
     defer engine.freeValue(promise);
@@ -1219,9 +1287,9 @@ test "native codemode executes isolated user script with JSON tool promises orde
     try std.testing.expectEqual(@as(u64, 6), try json.asInteger(result.value.object.get("storeWrites").?.object.get("set").?.object.get("answer").?));
 }
 
-test "native codemode replays actual original 7fb sandbox output stores aliases and error results" {
+test "native codemode replays actual current c5 sandbox roundtrips and genuine script errors" {
     const gpa = std.testing.allocator;
-    var fixture = try json.Owned.parse(gpa, @embedFile("fixtures/codemode-7fb.json"));
+    var fixture = try json.Owned.parse(gpa, @embedFile("fixtures/codemode-regressions-c5f5b328.json"));
     defer fixture.deinit();
     const Double = struct {
         fn run(_: ?*anyopaque, allocator: std.mem.Allocator, args: ?Value, _: ?*bool) !json.Owned {
@@ -1244,6 +1312,19 @@ test "native codemode replays actual original 7fb sandbox output stores aliases 
         defer expected.deinit();
         const replayed = try std.json.parseFromSlice(Value, gpa, actual_bytes, .{});
         defer replayed.deinit();
+        // Error frames belong to the actual VM build. Compare the genuine
+        // exception head, then strictly compare every remaining result field.
+        if (expected.value.object.getPtr("error")) |failure| {
+            if (failure.object.get("stack")) |stack| {
+                const current = replayed.value.object.getPtr("error").?;
+                const native_stack = current.object.get("stack").?.string;
+                const head = std.mem.sliceTo(stack.string, '\n');
+                try std.testing.expectEqualStrings(head, std.mem.sliceTo(native_stack, '\n'));
+                _ = failure.object.orderedRemove("stack");
+                _ = current.object.orderedRemove("stack");
+            }
+        }
+        if (!json.equal(expected.value, replayed.value)) std.debug.print("Codemode Source case: {s}\nexpected: {s}\nactual: {s}\n", .{ case.object.get("name").?.string, expected_bytes, actual_bytes });
         try expectJsonEquivalent(expected.value, replayed.value);
     }
 }
