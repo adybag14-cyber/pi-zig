@@ -558,7 +558,10 @@ pub fn build(b: *std.Build) void {
     const owned_tasks_tests = b.addTest(.{ .root_module = native_durable_tests.root_module, .use_llvm = use_llvm, .filters = &.{"ownedTasks actual ea"} });
     const run_owned_tasks_tests = b.addRunArtifact(owned_tasks_tests);
     b.step("test-native-durable-owned-tasks", "Replay actual ea Source direct-owned live task copies and cancellation").dependOn(&run_owned_tasks_tests.step);
-    const ea_retention_tests = b.addTest(.{ .root_module = native_durable_tests.root_module, .use_llvm = use_llvm, .filters = &.{ "ownedTasks actual ea", "actual ea retention", "ownership publication index readiness" } });
+    const ea_retention_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_ea_retention_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{ "ownedTasks actual ea", "actual ea retention", "ownership publication index readiness" } });
+    linkQuickJs(b, ea_retention_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, ea_retention_tests.root_module);
+    linkSqlite(ea_retention_tests.root_module, sqlite_lib_dir, sqlite_library);
     b.step("test-native-durable-ea-retention", "Replay actual ea retention and direct ownership while fencing partial owner publications").dependOn(&b.addRunArtifact(ea_retention_tests).step);
     const ea_nested_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_ea_nested_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable ea nested"} });
     linkQuickJs(b, ea_nested_tests.root_module, quickjs, sqlite_lib_dir);
