@@ -193,10 +193,8 @@ fn run(client: http.Client, store: Store, options: Options) !Result {
     defer gpa.free(fallback_endpoint);
     var token_options: flow.TokenOptions = .{ .endpoint = if (metadata) |value| try protocol.text(value, "token_endpoint") else fallback_endpoint, .client_id = try protocol.text(client_information, "client_id"), .client_secret = text(client_information, "client_secret"), .redirect_url = redirect_uri, .resource = selected_resource, .scope = scope, .supported_methods = methods.items, .preferred_method = text(client_information, "token_endpoint_auth_method") };
     if (nonempty(options.authorization_code)) |code| {
-        if (metadata) |value| {
-            const required = json.get(value, "authorization_response_iss_parameter_supported");
-            try oauth.validateResponseIssuer(try protocol.text(value, "issuer"), options.response_issuer, required != null and required.? == .bool and required.?.bool);
-        }
+        const required = if (metadata) |value| json.get(value, "authorization_response_iss_parameter_supported") else null;
+        try oauth.validateResponseIssuer(if (metadata) |value| try protocol.text(value, "issuer") else null, options.response_issuer, required != null and required.? == .bool and required.?.bool);
         const verifier = nonempty(text(state.value, "codeVerifier")) orelse return error.OAuthCodeVerifierMissing;
         var tokens = try flow.exchange(client, token_options, code, verifier);
         defer tokens.deinit();
@@ -314,6 +312,44 @@ test "mcp.runtime complete native authorization preserves PKCE and resource scop
     try std.testing.expectEqualStrings("read", try protocol.text(tokens, "scope"));
     try std.testing.expect(json.get(saved.value, "tokensExpireAt") == null);
     try server.finish();
+}
+
+test "mcp.runtime Source c5f5b328 missing metadata rejects iss before token POST while omission still authorizes" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var scratch = std.testing.tmpDir(.{});
+    defer scratch.cleanup();
+    var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const count = try scratch.dir.realPath(io, &buffer);
+    var store = try Store.init(gpa, io, buffer[0..count]);
+    defer store.deinit();
+    const server = try @import("../ai/http_fixture.zig").PlanServer.init(gpa, io, &.{
+        .{ .path = "/.well-known/oauth-authorization-server", .status = .not_found, .body = "" },
+        .{ .path = "/.well-known/openid-configuration", .status = .not_found, .body = "" },
+        .{ .path = "/.well-known/oauth-authorization-server", .status = .not_found, .body = "" },
+        .{ .path = "/.well-known/openid-configuration", .status = .not_found, .body = "" },
+        .{ .path = "/token", .body = "{\"access_token\":\"accepted\",\"token_type\":\"Bearer\"}", .payload_contains = "code=no-metadata" },
+    });
+    defer server.deinit();
+    const issuer = try server.url(gpa, "");
+    defer gpa.free(issuer);
+    const endpoint = try server.url(gpa, "/token");
+    defer gpa.free(endpoint);
+    var state = try cachedFixture(gpa, issuer, endpoint);
+    defer state.deinit();
+    _ = json.get(state.value, "discovery").?.object.orderedRemove("authorizationServerMetadata");
+    try put(&state, "codeVerifier", .{ .string = "source-verifier" });
+    try store.save("server", "https://service.example/mcp", state.value, null);
+    const client: http.Client = .{ .gpa = gpa, .io = io };
+    var options: Options = .{ .name = "server", .server_url = "https://service.example/mcp", .redirect_uri = "http://127.0.0.1/callback", .client_metadata = .{ .object = .empty }, .authorization_code = "unverifiable", .response_issuer = "https://other.example" };
+    try std.testing.expectError(error.OAuthIssuerMismatch, authorize(client, store, options));
+    options.authorization_code = "no-metadata";
+    options.response_issuer = null;
+    var accepted = try authorize(client, store, options);
+    defer accepted.deinit(gpa);
+    try std.testing.expect(accepted == .authorized);
+    try server.finish();
+    try std.testing.expectEqual(@as(usize, 5), server.captured.items.len);
 }
 
 test "mcp.runtime invalid grant clears only tokens then creates browser authorization without a second stale refresh" {

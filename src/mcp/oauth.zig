@@ -60,9 +60,9 @@ pub fn parseTokens(gpa: std.mem.Allocator, source: []const u8) !OwnedTokens {
 }
 
 /// Validate RFC 9207 before any authorization code is sent for exchange.
-pub fn validateResponseIssuer(expected: []const u8, received: ?[]const u8, issuer_required: bool) !void {
+pub fn validateResponseIssuer(expected: ?[]const u8, received: ?[]const u8, issuer_required: bool) !void {
     if (received) |issuer| {
-        if (!std.mem.eql(u8, expected, issuer)) return error.OAuthIssuerMismatch;
+        if (!std.mem.eql(u8, expected orelse return error.OAuthIssuerMismatch, issuer)) return error.OAuthIssuerMismatch;
     } else if (issuer_required) return error.OAuthIssuerMismatch;
 }
 
@@ -167,11 +167,34 @@ test "MCP OAuth empty and null optionals are absent rather than expired" {
 }
 
 test "MCP OAuth rejects foreign and required missing authorization response issuers" {
+    try validateResponseIssuer(null, null, false);
+    try std.testing.expectError(error.OAuthIssuerMismatch, validateResponseIssuer(null, "https://issuer.example", false));
+    try std.testing.expectError(error.OAuthIssuerMismatch, validateResponseIssuer(null, "https://other.example", false));
+    try std.testing.expectError(error.OAuthIssuerMismatch, validateResponseIssuer(null, "", false));
     try validateResponseIssuer("https://issuer.example", null, false);
     try validateResponseIssuer("https://issuer.example", "https://issuer.example", true);
     try std.testing.expectError(error.OAuthIssuerMismatch, validateResponseIssuer("https://issuer.example", "https://other.example", false));
     try std.testing.expectError(error.OAuthIssuerMismatch, validateResponseIssuer("https://issuer.example", null, true));
     try validateDiscoveryIssuer("https://issuer.example/", "https://issuer.example");
+}
+
+test "Source c5f5b328 OAuth response issuers require discovered metadata before exchange" {
+    var source = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, @embedFile("fixtures/oauth-issuer-c5f5b328.json"), .{});
+    defer source.deinit();
+    for (source.value.object.get("rows").?.array.items) |row| {
+        const has_metadata = row.object.get("metadata").?.bool;
+        const raw_issuer = row.object.get("iss").?;
+        const received: ?[]const u8 = if (raw_issuer == .null) null else raw_issuer.string;
+        const required = has_metadata and row.object.get("required").?.bool;
+        const expected: ?[]const u8 = if (has_metadata) "https://issuer.example" else null;
+        if (row.object.get("error") != null) {
+            try std.testing.expectError(error.OAuthIssuerMismatch, validateResponseIssuer(expected, received, required));
+            try std.testing.expectEqual(@as(i64, 0), row.object.get("posts").?.integer);
+        } else {
+            try validateResponseIssuer(expected, received, required);
+            try std.testing.expectEqual(@as(i64, 1), row.object.get("posts").?.integer);
+        }
+    }
 }
 
 test "MCP OAuth step-up unions granted scopes and credentials separate same URL accounts" {

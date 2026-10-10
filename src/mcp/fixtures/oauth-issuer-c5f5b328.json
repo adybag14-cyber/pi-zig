@@ -1,0 +1,188 @@
+{
+  "source": "c5f5b3282d5e4203c085e59837ba17aeaf2829b5",
+  "rows": [
+    {
+      "metadata": false,
+      "required": false,
+      "iss": null,
+      "result": "AUTHORIZED",
+      "posts": 1,
+      "saved": 1
+    },
+    {
+      "metadata": false,
+      "required": false,
+      "iss": "https://issuer.example",
+      "error": {
+        "name": "OAuthIssuerMismatchError",
+        "message": "OAuth issuer mismatch: expected none, received \"https://issuer.example\"",
+        "expected": null,
+        "received": "https://issuer.example"
+      },
+      "posts": 0,
+      "saved": 0
+    },
+    {
+      "metadata": false,
+      "required": false,
+      "iss": "https://other.example",
+      "error": {
+        "name": "OAuthIssuerMismatchError",
+        "message": "OAuth issuer mismatch: expected none, received \"https://other.example\"",
+        "expected": null,
+        "received": "https://other.example"
+      },
+      "posts": 0,
+      "saved": 0
+    },
+    {
+      "metadata": false,
+      "required": false,
+      "iss": "",
+      "error": {
+        "name": "OAuthIssuerMismatchError",
+        "message": "OAuth issuer mismatch: expected none, received \"\"",
+        "expected": null,
+        "received": ""
+      },
+      "posts": 0,
+      "saved": 0
+    },
+    {
+      "metadata": false,
+      "required": true,
+      "iss": null,
+      "result": "AUTHORIZED",
+      "posts": 1,
+      "saved": 1
+    },
+    {
+      "metadata": false,
+      "required": true,
+      "iss": "https://issuer.example",
+      "error": {
+        "name": "OAuthIssuerMismatchError",
+        "message": "OAuth issuer mismatch: expected none, received \"https://issuer.example\"",
+        "expected": null,
+        "received": "https://issuer.example"
+      },
+      "posts": 0,
+      "saved": 0
+    },
+    {
+      "metadata": false,
+      "required": true,
+      "iss": "https://other.example",
+      "error": {
+        "name": "OAuthIssuerMismatchError",
+        "message": "OAuth issuer mismatch: expected none, received \"https://other.example\"",
+        "expected": null,
+        "received": "https://other.example"
+      },
+      "posts": 0,
+      "saved": 0
+    },
+    {
+      "metadata": false,
+      "required": true,
+      "iss": "",
+      "error": {
+        "name": "OAuthIssuerMismatchError",
+        "message": "OAuth issuer mismatch: expected none, received \"\"",
+        "expected": null,
+        "received": ""
+      },
+      "posts": 0,
+      "saved": 0
+    },
+    {
+      "metadata": true,
+      "required": false,
+      "iss": null,
+      "result": "AUTHORIZED",
+      "posts": 1,
+      "saved": 1
+    },
+    {
+      "metadata": true,
+      "required": false,
+      "iss": "https://issuer.example",
+      "result": "AUTHORIZED",
+      "posts": 1,
+      "saved": 1
+    },
+    {
+      "metadata": true,
+      "required": false,
+      "iss": "https://other.example",
+      "error": {
+        "name": "OAuthIssuerMismatchError",
+        "message": "OAuth issuer mismatch: expected \"https://issuer.example\", received \"https://other.example\"",
+        "expected": "https://issuer.example",
+        "received": "https://other.example"
+      },
+      "posts": 0,
+      "saved": 0
+    },
+    {
+      "metadata": true,
+      "required": false,
+      "iss": "",
+      "error": {
+        "name": "OAuthIssuerMismatchError",
+        "message": "OAuth issuer mismatch: expected \"https://issuer.example\", received \"\"",
+        "expected": "https://issuer.example",
+        "received": ""
+      },
+      "posts": 0,
+      "saved": 0
+    },
+    {
+      "metadata": true,
+      "required": true,
+      "iss": null,
+      "error": {
+        "name": "OAuthIssuerMismatchError",
+        "message": "OAuth issuer mismatch: expected \"https://issuer.example\", received none",
+        "expected": "https://issuer.example",
+        "received": null
+      },
+      "posts": 0,
+      "saved": 0
+    },
+    {
+      "metadata": true,
+      "required": true,
+      "iss": "https://issuer.example",
+      "result": "AUTHORIZED",
+      "posts": 1,
+      "saved": 1
+    },
+    {
+      "metadata": true,
+      "required": true,
+      "iss": "https://other.example",
+      "error": {
+        "name": "OAuthIssuerMismatchError",
+        "message": "OAuth issuer mismatch: expected \"https://issuer.example\", received \"https://other.example\"",
+        "expected": "https://issuer.example",
+        "received": "https://other.example"
+      },
+      "posts": 0,
+      "saved": 0
+    },
+    {
+      "metadata": true,
+      "required": true,
+      "iss": "",
+      "error": {
+        "name": "OAuthIssuerMismatchError",
+        "message": "OAuth issuer mismatch: expected \"https://issuer.example\", received \"\"",
+        "expected": "https://issuer.example",
+        "received": ""
+      },
+      "posts": 0,
+      "saved": 0
+    }
+  ]
+}
