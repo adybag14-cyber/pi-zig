@@ -1,0 +1,436 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "view": {
+    "entries": [
+      {
+        "id": 1
+      },
+      {
+        "id": 2
+      }
+    ],
+    "contributions": [
+      [
+        {
+          "role": "user",
+          "content": "old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old ",
+          "timestamp": 1
+        }
+      ],
+      [
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent "
+            }
+          ],
+          "timestamp": 2,
+          "usage": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 0
+          }
+        }
+      ]
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content": "old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old old ",
+        "timestamp": 1
+      },
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent recent "
+          }
+        ],
+        "timestamp": 2,
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0
+        }
+      }
+    ]
+  },
+  "rows": [
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 0,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 0
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 0,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 0
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 100,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 0
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 100,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 0
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 0,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 50
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 0,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 50
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 100,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 50
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 100,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 50
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 0,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 200
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 0,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 200
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 100,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 200
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 100,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 200
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 0,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 500
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 0,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 500
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 100,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 500
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 100,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 500
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 0,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 1000
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 0,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 1000
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 100,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 1000
+    },
+    {
+      "policy": {
+        "enabled": false,
+        "reserveTokens": 100,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 1000
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 0,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 0
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 0,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 0
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 100,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 0
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 100,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 0
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 0,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 50,
+      "result": "blocking"
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 0,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 50,
+      "result": "blocking"
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 100,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 50,
+      "result": "blocking"
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 100,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 50,
+      "result": "blocking"
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 0,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 200,
+      "result": "blocking"
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 0,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 200,
+      "result": "blocking"
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 100,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 200,
+      "result": "blocking"
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 100,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 200,
+      "result": "blocking"
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 0,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 500
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 0,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 500
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 100,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 500
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 100,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 500,
+      "result": "background"
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 0,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 1000
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 0,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 1000
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 100,
+        "backgroundTokens": 0,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 1000
+    },
+    {
+      "policy": {
+        "enabled": true,
+        "reserveTokens": 100,
+        "backgroundTokens": 100,
+        "keepRecentTokens": 1
+      },
+      "contextWindow": 1000
+    }
+  ]
+}

@@ -1,0 +1,232 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "deferred",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          null
+        ],
+        [
+          "context",
+          3,
+          true,
+          {
+            "at": 2
+          }
+        ],
+        [
+          "hooks",
+          "beforeRequest"
+        ],
+        [
+          "snapshot",
+          true,
+          3,
+          true
+        ],
+        [
+          "stream",
+          {
+            "id": "m"
+          },
+          {
+            "messages": [
+              {
+                "role": "user",
+                "content": "hi"
+              }
+            ]
+          },
+          {
+            "temperature": 0.2,
+            "signal": "original",
+            "sessionId": "session"
+          }
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 1,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 2,
+              "handle": {
+                "id": "h",
+                "pollAfterMs": 0
+              },
+              "pollAt": 5
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 1,
+          "deferred": {
+            "pollAt": 5
+          }
+        }
+      }
+    },
+    {
+      "scenario": "before-replace",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          null
+        ],
+        [
+          "context",
+          3,
+          true,
+          {
+            "at": 2
+          }
+        ],
+        [
+          "hooks",
+          "beforeRequest"
+        ],
+        [
+          "snapshot",
+          true,
+          3,
+          true
+        ],
+        [
+          "stream",
+          {
+            "id": "m"
+          },
+          {
+            "messages": [
+              {
+                "role": "user",
+                "content": "changed"
+              }
+            ]
+          },
+          {
+            "temperature": 0.2,
+            "signal": "original",
+            "sessionId": "session"
+          }
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 1,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 2,
+              "handle": {
+                "id": "h",
+                "pollAfterMs": 0
+              },
+              "pollAt": 5
+            }
+          }
+        ]
+      ],
+      "live": {
+        "generation": {
+          "attempt": 1,
+          "deferred": {
+            "pollAt": 5
+          }
+        }
+      }
+    },
+    {
+      "scenario": "missing-model",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          null
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "failed",
+              "error": {
+                "message": "Model p/m is not available",
+                "detail": {
+                  "reason": "no_model"
+                }
+              }
+            }
+          }
+        ]
+      ],
+      "live": {}
+    }
+  ]
+}

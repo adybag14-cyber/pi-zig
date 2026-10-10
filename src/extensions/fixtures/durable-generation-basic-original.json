@@ -1,0 +1,163 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "shape": {
+    "name": "pi.generation",
+    "version": 1,
+    "initial": {
+      "phase": "prepare",
+      "attempt": 1
+    },
+    "keys": [
+      "name",
+      "version",
+      "initial",
+      "phases",
+      "abort"
+    ],
+    "phases": [
+      "prepare",
+      "request",
+      "retry",
+      "poll",
+      "tools"
+    ]
+  },
+  "rows": [
+    {
+      "scenario": "no-model",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "no_model"
+          }
+        ],
+        [
+          "settle",
+          2,
+          {
+            "status": "unanswered",
+            "reason": "no_model"
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "failed",
+              "error": {
+                "message": "No model is configured",
+                "detail": {
+                  "reason": "no_model"
+                }
+              }
+            }
+          }
+        ]
+      ],
+      "live": {}
+    },
+    {
+      "scenario": "missing-model",
+      "trace": [
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "no_model"
+          }
+        ],
+        [
+          "settle",
+          2,
+          {
+            "status": "unanswered",
+            "reason": "no_model"
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "failed",
+              "error": {
+                "message": "Model p/m is not available",
+                "detail": {
+                  "reason": "no_model"
+                }
+              }
+            }
+          }
+        ]
+      ],
+      "live": {}
+    },
+    {
+      "scenario": "retry",
+      "trace": [
+        [
+          "sleep",
+          10,
+          true
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "prepare",
+              "attempt": 2,
+              "compacted": 9
+            }
+          }
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 7,
+          "inputs": [
+            1,
+            2
+          ]
+        },
+        "generation": {
+          "attempt": 2
+        },
+        "tools": [],
+        "nestedTools": []
+      }
+    }
+  ]
+}

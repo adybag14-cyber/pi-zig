@@ -1,0 +1,14 @@
+import {Harness,MemoryStorage,createRegistry,InboxDoc} from '@earendil-works/pi-durable';
+const rows=[];
+for(const scenario of ['queued-abort','close-waiter']) {
+ let ready;const started=new Promise(resolve=>ready=resolve),reports=[];
+ const usage={input:1,output:2,cacheRead:0,cacheWrite:0,totalTokens:3,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};
+ const models={getModel:()=>({id:'m',maxTokens:100,contextWindow:10000}),streamSimple:(model,context,options)=>({async*[Symbol.asyncIterator](){ready();yield{type:'start',partial:{content:[]}}},result:()=>new Promise(resolve=>{const done=()=>resolve({role:'assistant',provider:'p',model:'m',content:[],stopReason:'aborted',usage});if(options.signal.aborted)done();else options.signal.addEventListener('abort',done,{once:true})})})};
+ const harness=await Harness.open(new MemoryStorage(),{registry:createRegistry(),models,settings:{compaction:{enabled:false}},onReport:error=>reports.push(String(error))},{});
+ let closed=false;
+ try{const root=await harness.root({},{agent:{model:{provider:'p',modelId:'m'}}}),first=await root.submit({type:'input',content:'first',requestId:'first'},{});await started;
+ if(scenario==='queued-abort'){const second=await root.submit({type:'input',content:'second',requestId:'queued'},{}),same=await root.submit({type:'input',content:'ignored duplicate',requestId:'queued'},{});if(second.id!==same.id||(await second.status({})).status!=='queued')throw Error('queue dedup');const pending=second.wait({}),abort=await second.abort({}),record=await pending,inbox=await harness.snapshot(InboxDoc,root.id,{});if(abort!=='aborted'||record.status!=='unanswered'||record.reason!=='aborted'||inbox.items.length)throw Error(JSON.stringify({abort,record,inbox}));let missing;const ctor=Object.getPrototypeOf(second).constructor,absent=new ctor(-1,{abort:async()=> 'not_found'});try{await absent.abort({})}catch(error){missing=error.message}if(missing!=='Submission -1 does not exist')throw Error('missing '+missing);rows.push({scenario,status:record.status,reason:record.reason,abort,missing});}
+ else{let error;const pending=first.wait({}).catch(reason=>error=reason);await Promise.resolve();await Promise.resolve();await harness.close({});closed=true;await pending;if(error?.message!=='Harness is closed')throw Error('close cause '+String(error));rows.push({scenario,error:{name:error.name,message:error.message}});}
+ }finally{if(!closed)await harness.close({})}
+}
+globalThis.submissionLifecycleRows=rows;

@@ -68,6 +68,8 @@ pub const Engine = struct {
     native_sdk_resource_owner_deinit: ?*const fn (*Engine) void = null,
     native_sdk_next_runtime_id: u64 = 1,
     native_durable_harness_class: c.JSClassID = 0,
+    native_durable_submission_class: c.JSClassID = 0,
+    native_durable_submission_prototype_ready: bool = false,
     native_durable_runtime_class: c.JSClassID = 0,
     native_durable_scheduler_class: c.JSClassID = 0,
     native_durable_watch_class: c.JSClassID = 0,
@@ -152,6 +154,7 @@ pub const Engine = struct {
         c.JS_SetMaxStackSize(runtime, options.stack_limit);
         const context = c.JS_NewContext(runtime) orelse return error.OutOfMemory;
         errdefer c.JS_FreeContext(context);
+        if (c.JS_AddPerformance(context) < 0) return error.OutOfMemory;
         const commonjs_cache = c.JS_NewObjectProto(context, c.pi_js_null());
         if (c.JS_IsException(commonjs_cache)) {
             return error.OutOfMemory;

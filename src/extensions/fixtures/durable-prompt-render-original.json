@@ -1,0 +1,131 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "tagged",
+      "result": [
+        [
+          "a",
+          "<a>\nnew\n</a>"
+        ],
+        [
+          "b",
+          "<b>\nB\n</b>"
+        ]
+      ],
+      "trace": [
+        [
+          "render",
+          true,
+          true
+        ],
+        [
+          "second"
+        ]
+      ]
+    },
+    {
+      "scenario": "plain",
+      "result": [
+        [
+          "a",
+          "new"
+        ],
+        [
+          "b",
+          "<b>\nB\n</b>"
+        ]
+      ],
+      "trace": [
+        [
+          "render",
+          true,
+          true
+        ],
+        [
+          "second"
+        ]
+      ]
+    },
+    {
+      "scenario": "omit",
+      "result": [
+        [
+          "b",
+          "<b>\nB\n</b>"
+        ]
+      ],
+      "trace": [
+        [
+          "render",
+          true,
+          true
+        ],
+        [
+          "second"
+        ]
+      ]
+    },
+    {
+      "scenario": "throw-kept",
+      "result": [
+        [
+          "a",
+          "shown"
+        ],
+        [
+          "b",
+          "<b>\nB\n</b>"
+        ]
+      ],
+      "trace": [
+        [
+          "render",
+          true,
+          true
+        ],
+        [
+          "report",
+          true
+        ],
+        [
+          "second"
+        ]
+      ]
+    },
+    {
+      "scenario": "throw-new",
+      "result": [
+        [
+          "b",
+          "<b>\nB\n</b>"
+        ]
+      ],
+      "trace": [
+        [
+          "render",
+          true,
+          true
+        ],
+        [
+          "report",
+          true
+        ],
+        [
+          "second"
+        ]
+      ]
+    },
+    {
+      "scenario": "aborted",
+      "failure": true,
+      "trace": [
+        [
+          "render",
+          true,
+          true
+        ]
+      ]
+    }
+  ]
+}

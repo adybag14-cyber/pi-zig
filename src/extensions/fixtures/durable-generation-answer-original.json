@@ -1,0 +1,529 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "normal",
+      "trace": [
+        [
+          "hooks",
+          "onYield"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "head",
+          3
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          "assistant",
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "answer"
+                  }
+                ],
+                "stopReason": "stop",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "done",
+            "answer": 10
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "entryId": 10
+              }
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "ledger": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      },
+      "inbox": {
+        "items": []
+      }
+    },
+    {
+      "scenario": "continue",
+      "trace": [
+        [
+          "hooks",
+          "onYield"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "head",
+          3
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          "assistant",
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "answer"
+                  }
+                ],
+                "stopReason": "stop",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "append",
+          "user",
+          3,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "keep going",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "task",
+          true,
+          {},
+          {
+            "ownership": {
+              "kind": "conversation"
+            },
+            "conversationId": 3
+          },
+          12
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "entryId": 10
+              }
+            }
+          }
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 12,
+          "inputs": [
+            1
+          ]
+        }
+      },
+      "ledger": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      },
+      "inbox": {
+        "items": []
+      }
+    },
+    {
+      "scenario": "queued-user",
+      "trace": [
+        [
+          "hooks",
+          "onYield"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "head",
+          3
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          "assistant",
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "answer"
+                  }
+                ],
+                "stopReason": "stop",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "append",
+          "user",
+          3,
+          {
+            "model": [
+              {
+                "role": "user",
+                "content": "next",
+                "timestamp": 5
+              }
+            ]
+          },
+          11
+        ],
+        [
+          "place",
+          2,
+          11
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "done",
+            "answer": 10
+          }
+        ],
+        [
+          "task",
+          true,
+          {},
+          {
+            "ownership": {
+              "kind": "conversation"
+            },
+            "conversationId": 3
+          },
+          12
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "entryId": 10
+              }
+            }
+          }
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 12,
+          "inputs": [
+            2
+          ]
+        }
+      },
+      "ledger": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      },
+      "inbox": {
+        "items": []
+      }
+    },
+    {
+      "scenario": "reset",
+      "trace": [
+        [
+          "hooks",
+          "onYield"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "head",
+          3
+        ],
+        [
+          "doc",
+          "inbox",
+          3
+        ],
+        [
+          "doc",
+          "live",
+          3
+        ],
+        [
+          "doc",
+          "usage",
+          3
+        ],
+        [
+          "append",
+          "assistant",
+          3,
+          {
+            "model": [
+              {
+                "role": "assistant",
+                "provider": "p",
+                "model": "m",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "answer"
+                  }
+                ],
+                "stopReason": "stop",
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                }
+              }
+            ]
+          },
+          10
+        ],
+        [
+          "append",
+          3,
+          {
+            "kind": "custom",
+            "head": "self",
+            "model": []
+          },
+          11
+        ],
+        [
+          "place",
+          2,
+          11
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "done",
+            "answer": 10
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "completed",
+              "result": {
+                "entryId": 10
+              }
+            }
+          }
+        ]
+      ],
+      "live": {},
+      "ledger": {
+        "models": {
+          "p/m": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "tools": {}
+      },
+      "inbox": {
+        "items": []
+      }
+    }
+  ]
+}

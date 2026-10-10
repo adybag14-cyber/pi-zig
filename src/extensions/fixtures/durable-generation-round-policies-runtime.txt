@@ -1,0 +1,12 @@
+import {Harness,MemoryStorage,createRegistry,defineExtension,defineTool,LiveDoc,UsageDoc} from '@earendil-works/pi-durable';
+const rows=[];
+for(const scenario of ['global-sequential','tool-sequential','parallel','unavailable']) {
+ let calls=0,active=0,maxActive=0;const trace=[],reports=[];
+ const usage={input:1,output:2,cacheRead:0,cacheWrite:0,totalTokens:3,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}},registry=createRegistry();
+ const tool=defineTool({name:'echo',description:'echo',parameters:{type:'object'},...(scenario==='tool-sequential'?{executionMode:'sequential'}:{}),execute:async(args)=>{trace.push('start'+args.n);active++;maxActive=Math.max(maxActive,active);await new Promise(resolve=>setTimeout(resolve,5));active--;trace.push('end'+args.n);return{output:[{type:'text',text:'done'+args.n}]}}});
+ registry.install(defineExtension({name:'round-policy',tools:[tool]}));
+ const models={getModel:()=>({id:'m',maxTokens:100,contextWindow:10000}),streamSimple:()=>{calls++;const first=calls===1;return{async*[Symbol.asyncIterator](){yield{type:'start',partial:{content:[]}}},result:async()=>({role:'assistant',provider:'p',model:'m',content:first?[{type:'toolCall',id:'c1',name:'echo',arguments:{n:1}},{type:'toolCall',id:'c2',name:scenario==='unavailable'?'missing':'echo',arguments:{n:2}}]:[{type:'text',text:'final'}],stopReason:first?'toolUse':'stop',usage})}}};
+ const harness=await Harness.open(new MemoryStorage(),{registry,models,settings:{compaction:{enabled:false},toolExecution:scenario==='global-sequential'?'sequential':'parallel'},onReport:error=>reports.push(String(error))},{});
+ try{const root=await harness.root({},{agent:{model:{provider:'p',modelId:'m'}}}),submission=await root.submit({type:'input',content:'tools'},{}),record=await submission.wait({});const live=await harness.snapshot(LiveDoc,root.id,{}),ledger=await harness.snapshot(UsageDoc,root.id,{});if(record.status!=='done'||calls!==2||reports.length||Object.keys(live).length||ledger.models['p/m'].totalTokens!==6)throw Error(JSON.stringify({scenario,record,calls,reports,live,ledger}));if(scenario.includes('sequential')&&(maxActive!==1||trace.join(',')!=='start1,end1,start2,end2'))throw Error(JSON.stringify({scenario,trace,maxActive}));if(scenario==='unavailable'&&trace.join(',')!=='start1,end1')throw Error(JSON.stringify({scenario,trace}));rows.push({scenario,calls,trace,maxActive});}finally{await harness.close({})}
+}
+globalThis.generationRoundPolicies=rows;

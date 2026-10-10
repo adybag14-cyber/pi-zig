@@ -1,0 +1,291 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "empty",
+      "result": {},
+      "trace": [
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "toolResult",
+                "toolCallId": "c1",
+                "toolName": "tool",
+                "content": [],
+                "isError": false,
+                "timestamp": 5
+              }
+            ],
+            "data": {
+              "diagnostics": []
+            }
+          }
+        ]
+      ],
+      "ledger": {
+        "tools": {},
+        "models": {}
+      },
+      "entry": {
+        "id": 10
+      }
+    },
+    {
+      "scenario": "error",
+      "result": {
+        "output": [],
+        "isError": true,
+        "diagnostics": [
+          {
+            "severity": "error",
+            "code": "aborted",
+            "message": "Tool tool was aborted"
+          }
+        ]
+      },
+      "trace": [
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "toolResult",
+                "toolCallId": "c1",
+                "toolName": "tool",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<harness>\n[error] Tool tool was aborted\n</harness>"
+                  }
+                ],
+                "isError": true,
+                "timestamp": 5
+              }
+            ],
+            "data": {
+              "diagnostics": [
+                {
+                  "severity": "error",
+                  "code": "aborted",
+                  "message": "Tool tool was aborted"
+                }
+              ]
+            }
+          }
+        ]
+      ],
+      "ledger": {
+        "tools": {},
+        "models": {}
+      },
+      "entry": {
+        "id": 10
+      }
+    },
+    {
+      "scenario": "text",
+      "result": {
+        "output": [
+          {
+            "type": "text",
+            "text": "hi"
+          }
+        ],
+        "diagnostics": [
+          {
+            "severity": "warn",
+            "code": "x",
+            "message": "warning"
+          }
+        ],
+        "details": {
+          "x": 1
+        }
+      },
+      "trace": [
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "toolResult",
+                "toolCallId": "c1",
+                "toolName": "tool",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "hi"
+                  },
+                  {
+                    "type": "text",
+                    "text": "<harness>\n[warn] warning\n</harness>"
+                  }
+                ],
+                "details": {
+                  "x": 1
+                },
+                "isError": false,
+                "durationMs": 7,
+                "timestamp": 5
+              }
+            ],
+            "data": {
+              "diagnostics": [
+                {
+                  "severity": "warn",
+                  "code": "x",
+                  "message": "warning"
+                }
+              ]
+            }
+          }
+        ]
+      ],
+      "ledger": {
+        "tools": {},
+        "models": {}
+      },
+      "entry": {
+        "id": 10
+      }
+    },
+    {
+      "scenario": "usage",
+      "result": {
+        "output": [],
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 3,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        }
+      },
+      "trace": [
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "toolResult",
+                "toolCallId": "c1",
+                "toolName": "tool",
+                "content": [],
+                "usage": {
+                  "input": 1,
+                  "output": 2,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "totalTokens": 3,
+                  "cost": {
+                    "input": 0,
+                    "output": 0,
+                    "cacheRead": 0,
+                    "cacheWrite": 0,
+                    "total": 0
+                  }
+                },
+                "isError": false,
+                "timestamp": 5
+              }
+            ],
+            "data": {
+              "diagnostics": []
+            }
+          }
+        ]
+      ],
+      "ledger": {
+        "tools": {
+          "tool": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "totalTokens": 3,
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "total": 0
+            }
+          }
+        },
+        "models": {}
+      },
+      "entry": {
+        "id": 10
+      }
+    },
+    {
+      "scenario": "image",
+      "result": {
+        "output": [
+          {
+            "type": "image",
+            "data": "AA==",
+            "mimeType": "image/png"
+          }
+        ]
+      },
+      "trace": [
+        [
+          "append",
+          true,
+          3,
+          {
+            "model": [
+              {
+                "role": "toolResult",
+                "toolCallId": "c1",
+                "toolName": "tool",
+                "content": [
+                  {
+                    "type": "image",
+                    "data": "AA==",
+                    "mimeType": "image/png"
+                  }
+                ],
+                "isError": false,
+                "timestamp": 5
+              }
+            ],
+            "data": {
+              "diagnostics": []
+            }
+          }
+        ]
+      ],
+      "ledger": {
+        "tools": {},
+        "models": {}
+      },
+      "entry": {
+        "id": 10
+      }
+    }
+  ]
+}

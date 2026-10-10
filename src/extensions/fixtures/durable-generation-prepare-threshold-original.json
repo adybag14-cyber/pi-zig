@@ -1,0 +1,155 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "blocking",
+      "trace": [
+        [
+          "env"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "task",
+          {
+            "reason": "threshold"
+          },
+          {
+            "ownership": {
+              "kind": "task",
+              "taskId": 7
+            },
+            "conversationId": 3,
+            "background": false
+          }
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "waiting",
+            "checkpoint": {
+              "phase": "prepare",
+              "attempt": 1,
+              "compacted": 20
+            },
+            "on": [
+              20
+            ],
+            "policy": "allSettled"
+          }
+        ]
+      ]
+    },
+    {
+      "scenario": "background",
+      "trace": [
+        [
+          "env"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "scan",
+          {
+            "conversationId": 3
+          },
+          1
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "task",
+          {
+            "reason": "threshold"
+          },
+          {
+            "ownership": {
+              "kind": "conversation"
+            },
+            "conversationId": 3,
+            "background": true
+          }
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "request",
+              "attempt": 1,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "thinkingLevel": "off",
+              "streamOptions": {
+                "temperature": 0.2
+              },
+              "cutoff": 2
+            }
+          }
+        ]
+      ]
+    },
+    {
+      "scenario": "background-existing",
+      "trace": [
+        [
+          "env"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "scan",
+          {
+            "conversationId": 3
+          },
+          1
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "request",
+              "attempt": 1,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "thinkingLevel": "off",
+              "streamOptions": {
+                "temperature": 0.2
+              },
+              "cutoff": 2
+            }
+          }
+        ]
+      ]
+    }
+  ]
+}

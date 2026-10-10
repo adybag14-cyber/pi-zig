@@ -362,6 +362,11 @@ pub fn install(engine: *Engine) !void {
     try @import("native_durable_compaction_builtin.zig").install(engine, exports);
     try @import("native_durable_documents.zig").install(engine, exports);
     try @import("native_durable_tool_builtin.zig").install(engine, exports);
+    try @import("native_durable_generation_builtin.zig").install(engine, exports);
+    const builtins = try sdk.array(engine);
+    defer engine.freeValue(builtins);
+    inline for (.{ "GenerationTask", "ToolTask", "CompactionTask" }) |name| try sdk.append(engine, builtins, try sdk.get(engine, exports, name));
+    try @import("native_durable_registry.zig").install(engine, exports, builtins);
     if (!engine.native_module_names.contains("@earendil-works/pi-durable")) try engine.registerValueModule("@earendil-works/pi-durable", exports);
     inline for (.{ .{ "jsonl", "openNodeJsonlStorage", 0 }, .{ "sqlite", "openNodeSqliteStorage", 1 } }) |item| {
         const storage_exports = try sdk.object(engine);
@@ -488,7 +493,7 @@ pub fn transactionObject(engine: *Engine, native: *session_module.Transaction, p
     errdefer engine.freeValue(result_object);
     const self = try engine.gpa.create(State);
     errdefer engine.gpa.destroy(self);
-    try methods(engine, result_object, &.{ .createRootConversation, .createConversation, .forkConversation, .appendEntry, .conversation, .entry, .task, .submission, .submissionByRequest, .latestHeadMarker, .createSubmission, .placeSubmission, .settleSubmission, .createTask, .doc, .retireDoc });
+    try methods(engine, result_object, &.{ .createRootConversation, .createConversation, .forkConversation, .appendEntry, .conversation, .entry, .task, .submission, .submissionByRequest, .latestHeadMarker, .scanEntries, .createSubmission, .placeSubmission, .settleSubmission, .createTask, .doc, .retireDoc });
     self.* = .{ .engine = engine, .kind = .transaction, .memory = undefined, .transaction = native.retain(), .parent = c.JS_DupValue(engine.context, parent), .tail = c.pi_js_undefined() };
     _ = c.JS_SetOpaque(result_object, self);
     return result_object;
@@ -756,6 +761,13 @@ fn transactionDispatch(self: *State, receiver: c.JSValue, operation: Method, arg
         return create(engine, parent.creation_owner orelse c.pi_js_undefined(), receiver, args);
     }
     const output: json.Value = switch (operation) {
+        .scanEntries => blk: {
+            var query = try owned(engine, argument(args, 0));
+            defer query.deinit();
+            const limit = if (c.JS_IsUndefined(argument(args, 1))) 100 else try number(engine, argument(args, 1));
+            const conversation = if (json.get(query.value, "conversationId")) |value| try json.asInteger(value) else null;
+            break :blk try native.scan(.{ .table = .entry, .filters = query.value, .limit = limit, .conversationId = conversation });
+        },
         .submission => (try native.readRecord(.submission, try number(engine, argument(args, 0)))) orelse return sdk.promise(engine, c.pi_js_undefined()),
         .submissionByRequest => blk: {
             const request = try engine.toString(argument(args, 1));

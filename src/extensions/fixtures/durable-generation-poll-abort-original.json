@@ -1,0 +1,156 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "scenario": "poll",
+      "trace": [
+        [
+          "sleep",
+          10,
+          true
+        ],
+        [
+          "fetch",
+          {
+            "id": "m"
+          },
+          {
+            "id": "h"
+          },
+          "signal"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "next",
+          {
+            "status": "running",
+            "checkpoint": {
+              "phase": "poll",
+              "attempt": 1,
+              "model": {
+                "provider": "p",
+                "modelId": "m"
+              },
+              "cutoff": 2,
+              "handle": {
+                "id": "h",
+                "pollAfterMs": 0
+              },
+              "pollAt": 11
+            }
+          }
+        ]
+      ],
+      "live": {
+        "run": {
+          "taskId": 7,
+          "inputs": [
+            1
+          ]
+        },
+        "generation": {
+          "attempt": 1,
+          "deferred": {
+            "pollAt": 11
+          }
+        }
+      }
+    },
+    {
+      "scenario": "abort-poll",
+      "trace": [
+        [
+          "cancel",
+          {
+            "id": "m"
+          },
+          {
+            "id": "h"
+          },
+          "signal"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "aborted"
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "aborted"
+            }
+          }
+        ]
+      ],
+      "live": {}
+    },
+    {
+      "scenario": "abort-failed-cancel",
+      "trace": [
+        [
+          "cancel",
+          {
+            "id": "m"
+          },
+          {
+            "id": "h"
+          },
+          "signal"
+        ],
+        [
+          "report",
+          "cancel failed"
+        ],
+        [
+          "commit",
+          true
+        ],
+        [
+          "doc",
+          true,
+          3
+        ],
+        [
+          "settle",
+          1,
+          {
+            "status": "unanswered",
+            "reason": "aborted"
+          }
+        ],
+        [
+          "next",
+          {
+            "status": "terminal",
+            "outcome": {
+              "status": "aborted"
+            }
+          }
+        ]
+      ],
+      "live": {}
+    }
+  ]
+}
