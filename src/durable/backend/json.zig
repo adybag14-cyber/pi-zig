@@ -7,6 +7,7 @@ pub const Parser = struct {
     gpa: std.mem.Allocator,
     input: []const u8,
     position: usize = 0,
+    allow_nonfinite_numbers: bool = false,
     fn space(self: *Parser) void {
         while (self.position < self.input.len and std.mem.indexOfScalar(u8, " \r\n\t", self.input[self.position]) != null) self.position += 1;
     }
@@ -87,7 +88,7 @@ pub const Parser = struct {
             if (digits == self.position) return error.InvalidJSON;
         }
         const value = std.fmt.parseFloat(f64, self.input[from..self.position]) catch return error.InvalidJSON;
-        if (!std.math.isFinite(value)) return error.NonfiniteJSONNumber;
+        if (!self.allow_nonfinite_numbers and !std.math.isFinite(value)) return error.NonfiniteJSONNumber;
         return .{ .float = value };
     }
     fn parseValue(self: *Parser, depth: usize) anyerror!Value {
@@ -143,8 +144,11 @@ pub const Parser = struct {
 /// Parser allocations belong to an arena or another allocation scope supplied
 /// by the caller. Failed parses may have allocated partial container trees.
 pub fn parseLeaky(gpa: std.mem.Allocator, input: []const u8) !Value {
+    return parseNumbers(gpa, input, false);
+}
+fn parseNumbers(gpa: std.mem.Allocator, input: []const u8, allow_nonfinite_numbers: bool) !Value {
     if (!std.unicode.utf8ValidateSlice(input)) return error.InvalidJSON;
-    var parser: Parser = .{ .gpa = gpa, .input = input };
+    var parser: Parser = .{ .gpa = gpa, .input = input, .allow_nonfinite_numbers = allow_nonfinite_numbers };
     const value = try parser.parseValue(0);
     parser.space();
     if (parser.position != input.len) return error.InvalidJSON;
@@ -180,6 +184,14 @@ pub const Owned = struct {
         var owned = try empty(gpa);
         errdefer owned.deinit();
         owned.value = try parseLeaky(owned.arena.allocator(), input);
+        return owned;
+    }
+    /// JSON.parse turns a syntactically valid overflowing number into Infinity.
+    /// Keep durable storage's stricter default separate from source directives.
+    pub fn parseJavaScriptNumbers(gpa: std.mem.Allocator, input: []const u8) !Owned {
+        var owned = try empty(gpa);
+        errdefer owned.deinit();
+        owned.value = try parseNumbers(owned.arena.allocator(), input, true);
         return owned;
     }
     pub fn empty(gpa: std.mem.Allocator) !Owned {

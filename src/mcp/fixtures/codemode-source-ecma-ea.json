@@ -1,0 +1,766 @@
+{
+  "source": "ea448f454af474f3e2fe9733b331e17b0662f5d6",
+  "sourceFile": "packages/codemode/src/source.ts",
+  "rows": [
+    {
+      "name": "empty-whitespace-9",
+      "input": "\t",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-9",
+      "input": "\t// @options: \t{\"timeout_ms\":1}\t\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-9",
+      "input": "// @options: {}\n\t",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-10",
+      "input": "\n",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "empty-code-10",
+      "input": "// @options: {}\n\n",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-11",
+      "input": "\u000b",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-11",
+      "input": "\u000b// @options: \u000b{\"timeout_ms\":1}\u000b\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-11",
+      "input": "// @options: {}\n\u000b",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-12",
+      "input": "\f",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-12",
+      "input": "\f// @options: \f{\"timeout_ms\":1}\f\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-12",
+      "input": "// @options: {}\n\f",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-13",
+      "input": "\r",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-13",
+      "input": "\r// @options: \r{\"timeout_ms\":1}\r\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-13",
+      "input": "// @options: {}\n\r",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-32",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-32",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-32",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-160",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-160",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-160",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-5760",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-5760",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-5760",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8192",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8192",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8192",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8193",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8193",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8193",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8194",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8194",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8194",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8195",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8195",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8195",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8196",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8196",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8196",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8197",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8197",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8197",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8198",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8198",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8198",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8199",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8199",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8199",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8200",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8200",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8200",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8201",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8201",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8201",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8202",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8202",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8202",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8232",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8232",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8232",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8233",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8233",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8233",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8239",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8239",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8239",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-8287",
+      "input": " ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-8287",
+      "input": " // @options:  {\"timeout_ms\":1} \nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-8287",
+      "input": "// @options: {}\n ",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-12288",
+      "input": "　",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-12288",
+      "input": "　// @options: 　{\"timeout_ms\":1}　\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-12288",
+      "input": "// @options: {}\n　",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "empty-whitespace-65279",
+      "input": "﻿",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "Expected JavaScript source text (non-empty). Provide JS only, optionally with a first line `// @options: {\"max_output_tokens\": 1000}`."
+      }
+    },
+    {
+      "name": "directive-whitespace-65279",
+      "input": "﻿// @options: ﻿{\"timeout_ms\":1}﻿\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "empty-code-65279",
+      "input": "// @options: {}\n﻿",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "The @options line must be followed by JavaScript source on subsequent lines"
+      }
+    },
+    {
+      "name": "zero",
+      "input": "// @options: {\"max_output_tokens\":-0}\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "maxOutputTokens": 0
+        }
+      }
+    },
+    {
+      "name": "decimal",
+      "input": "// @options: {\"timeout_ms\":1.0}\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 1
+        }
+      }
+    },
+    {
+      "name": "exponent",
+      "input": "// @options: {\"timeout_ms\":1e2}\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 100
+        }
+      }
+    },
+    {
+      "name": "duplicate-last",
+      "input": "// @options: {\"timeout_ms\":-1,\"timeout_ms\":12}\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {
+          "timeoutMs": 12
+        }
+      }
+    },
+    {
+      "name": "unknown-priority",
+      "input": "// @options: {\"max_output_tokens\":-1,\"unknown\":true}\nreturn 1;",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "@options only supports `max_output_tokens` and `timeout_ms`; got `unknown`"
+      }
+    },
+    {
+      "name": "unknown-priority-timeout",
+      "input": "// @options: {\"timeout_ms\":0,\"unknown\":true}\nreturn 1;",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "@options only supports `max_output_tokens` and `timeout_ms`; got `unknown`"
+      }
+    },
+    {
+      "name": "numeric-keys-order",
+      "input": "// @options: {\"b\":0,\"2\":0,\"1\":0}\nreturn 1;",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "@options only supports `max_output_tokens` and `timeout_ms`; got `1`"
+      }
+    },
+    {
+      "name": "overflow-tokens",
+      "input": "// @options: {\"max_output_tokens\":1e999}\nreturn 1;",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "@options field `max_output_tokens` must be a non-negative safe integer"
+      }
+    },
+    {
+      "name": "overflow-timeout",
+      "input": "// @options: {\"timeout_ms\":-1e999}\nreturn 1;",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "@options field `timeout_ms` must be a positive integer up to 2147483647"
+      }
+    },
+    {
+      "name": "overflow-unknown-priority",
+      "input": "// @options: {\"timeout_ms\":1e999,\"unknown\":true}\nreturn 1;",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "@options only supports `max_output_tokens` and `timeout_ms`; got `unknown`"
+      }
+    },
+    {
+      "name": "null",
+      "input": "// @options: null\nreturn 1;",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "@options must be a JSON object with supported fields `max_output_tokens` and `timeout_ms`"
+      }
+    },
+    {
+      "name": "array",
+      "input": "// @options: []\nreturn 1;",
+      "error": {
+        "name": "CodemodeSourceError",
+        "message": "@options must be a JSON object with supported fields `max_output_tokens` and `timeout_ms`"
+      }
+    },
+    {
+      "name": "zero-width-space-is-source",
+      "input": "​",
+      "result": {
+        "code": "​",
+        "options": {}
+      }
+    },
+    {
+      "name": "lone-cr-before-newline",
+      "input": "// @options: {}\r\nreturn 1;",
+      "result": {
+        "code": "\nreturn 1;",
+        "options": {}
+      }
+    }
+  ]
+}

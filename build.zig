@@ -13,6 +13,12 @@ pub fn build(b: *std.Build) void {
     // optional companions on constrained builders. Default remains Zig's
     // platform choice; callers may select `-Duse-llvm=false` explicitly.
     const use_llvm = b.option(bool, "use-llvm", "Use LLVM for executables and test artifacts");
+    const codemode_source_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/codemode_source_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native codemode source"},
+        .use_llvm = use_llvm,
+    });
+    b.step("test-codemode-source", "Compare ECMAScript source directives with actual upstream results").dependOn(&b.addRunArtifact(codemode_source_tests).step);
     const photon_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_photon_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
         .use_llvm = use_llvm,
