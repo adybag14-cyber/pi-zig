@@ -972,6 +972,8 @@ pub fn build(b: *std.Build) void {
     linkDurable(b, async_scope_tests.root_module);
     async_scope_tests.root_module.addImport("catalog_tool", catalog_tool);
     const async_scope_run = b.addRunArtifact(async_scope_tests);
+    async_scope_run.step.dependOn(&install_durable_fixture.step);
+    async_scope_run.setEnvironmentVariable("PI_DURABLE_FIXTURE", durable_fixture_path);
     b.step("test-native-async-scope", "Prove four private promise and timer execution scopes").dependOn(&async_scope_run.step);
     test_step.dependOn(&async_scope_run.step);
     const sdk_public_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_public_session_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK public"}, .use_llvm = use_llvm });
@@ -1145,6 +1147,7 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, native_list_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, native_list_tests.root_module);
     const run_native_list_tests = b.addRunArtifact(native_list_tests);
     b.step("test-native-lists", "Replay Source public SelectList and SettingsList callbacks layout and lifecycle").dependOn(&run_native_list_tests.step);
     test_step.dependOn(&run_native_list_tests.step);
@@ -1401,6 +1404,7 @@ pub fn build(b: *std.Build) void {
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, renderer_control_race_tests.root_module, quickjs, sqlite_lib_dir);
+    linkDurable(b, renderer_control_race_tests.root_module);
     linkTypeScriptParser(b, renderer_control_race_tests.root_module, typescript_parser);
     const run_renderer_control_race_tests = b.addRunArtifact(renderer_control_race_tests);
     const renderer_control_race_step = b.step("test-renderer-control-race", "Exercise persistent renderer controls arriving between owner pump and FIFO dequeue");

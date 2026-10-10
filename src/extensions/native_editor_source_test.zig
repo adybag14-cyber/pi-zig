@@ -20,7 +20,7 @@ test "Source6fb public Editor full input dispatch paste kitty history completion
     defer engine.freeValue(global);
     const bytes = @embedFile("fixtures/editor-full-input-original-6fb.json");
     try js.define(engine, global, "editorFullInputSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "editor-full-input-original-6fb.json")));
-    const result = engine.evalModule("import{Editor,getKeybindings,setKeybindings}from'pi-tui';\n" ++ @embedFile("fixtures/editor-full-input-original-6fb.input.js") ++
+    const result = engine.evalModule("import{Editor,getKeybindings,setKeybindings}from'pi-tui';\n" ++ @embedFile("fixtures/editor-full-input-original-6fb.input.txt") ++
         \\for(let i=0;i<editorFullInputSource.cases.length;i++){const actual=editorFullInputResult[i],expected=editorFullInputSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-full-input.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public Editor full input: {s}\n", .{message});
@@ -39,7 +39,7 @@ test "Source6fb public Editor CustomEditor exact shape working status app overri
     defer engine.freeValue(global);
     const bytes = @embedFile("fixtures/custom-editor-original-6fb.json");
     try js.define(engine, global, "customEditorSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "custom-editor-original-6fb.json")));
-    const result = engine.evalModule("import{CustomEditor}from'pi-coding-agent';\n" ++ @embedFile("fixtures/custom-editor-original-6fb.input.js") ++
+    const result = engine.evalModule("import{CustomEditor}from'pi-coding-agent';\n" ++ @embedFile("fixtures/custom-editor-original-6fb.input.txt") ++
         \\for(let i=0;i<customEditorSource.cases.length;i++){const actual=customEditorResult[i],expected=customEditorSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-custom.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public CustomEditor: {s}\n", .{message});
@@ -58,7 +58,7 @@ test "Source6fb public Editor deletion graphemes marker renumber word kills and 
     defer engine.freeValue(global);
     const bytes = @embedFile("fixtures/editor-deletion-original-6fb.json");
     try js.define(engine, global, "editorDeletionSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "editor-deletion-original-6fb.json")));
-    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-deletion-original-6fb.input.js") ++
+    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-deletion-original-6fb.input.txt") ++
         \\for(let i=0;i<editorDeletionSource.cases.length;i++){const actual=editorDeletionResult[i],expected=editorDeletionSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-deletion.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public Editor deletion: {s}\n", .{message});
@@ -77,7 +77,7 @@ test "Source6fb public Editor movement words graphemes jumps and virtual segment
     defer engine.freeValue(global);
     const bytes = @embedFile("fixtures/editor-movement-original-6fb.json");
     try js.define(engine, global, "editorMovementSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "editor-movement-original-6fb.json")));
-    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-movement-original-6fb.input.js") ++
+    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-movement-original-6fb.input.txt") ++
         \\for(let i=0;i<editorMovementSource.cases.length;i++){const actual=editorMovementResult[i],expected=editorMovementSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-movement.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public Editor movement: {s}\n", .{message});
@@ -97,7 +97,7 @@ test "Source6fb public Editor autocomplete original async serialization abort st
     defer engine.freeValue(global);
     const bytes = @embedFile("fixtures/editor-autocomplete-original-6fb.json");
     try js.define(engine, global, "editorAutocompleteSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "editor-autocomplete-original-6fb.json")));
-    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-autocomplete-original-6fb.input.js") ++
+    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-autocomplete-original-6fb.input.txt") ++
         \\for(let i=0;i<editorAutocompleteSource.cases.length;i++){const actual=editorAutocompleteResult[i],expected=editorAutocompleteSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-autocomplete.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public Editor autocomplete: {s}\n", .{message});
@@ -116,7 +116,7 @@ test "Source6fb public Editor navigation mouse hit testing vertical snap and pag
     defer engine.freeValue(global);
     const bytes = @embedFile("fixtures/editor-navigation-original-6fb.json");
     try js.define(engine, global, "editorNavigationSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "editor-navigation-original-6fb.json")));
-    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-navigation-original-6fb.input.js") ++
+    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-navigation-original-6fb.input.txt") ++
         \\for(let i=0;i<editorNavigationSource.cases.length;i++){const actual=editorNavigationResult[i],expected=editorNavigationSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-navigation.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public Editor navigation: {s}\n", .{message});
@@ -208,7 +208,7 @@ test "Source6fb public Editor render border padding scroll cursor and virtual li
     defer engine.freeValue(global);
     const bytes = @embedFile("fixtures/editor-render-original-6fb.json");
     try js.define(engine, global, "editorRenderSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "editor-render-original-6fb.json")));
-    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-render-original-6fb.input.js") ++
+    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-render-original-6fb.input.txt") ++
         \\for(let i=0;i<editorRenderSource.cases.length;i++){const actual=editorRenderResult[i],expected=editorRenderSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-render.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public Editor render: {s}\n", .{message});
@@ -227,7 +227,7 @@ test "Source6fb public Editor visual wrap layout maps lookup and sticky columns"
     defer engine.freeValue(global);
     const bytes = @embedFile("fixtures/editor-visual-original-6fb.json");
     try js.define(engine, global, "editorVisualSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "editor-visual-original-6fb.json")));
-    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-visual-original-6fb.input.js") ++
+    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-visual-original-6fb.input.txt") ++
         \\for(let i=0;i<editorVisualSource.cases.length;i++){const actual=editorVisualResult[i],expected=editorVisualSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-visual.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public Editor visual: {s}\n", .{message});
@@ -246,7 +246,7 @@ test "Source6fb public Editor kills line boundaries ordinary ring and yank callb
     defer engine.freeValue(global);
     const bytes = @embedFile("fixtures/editor-kills-original-6fb.json");
     try js.define(engine, global, "editorKillsSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "editor-kills-original-6fb.json")));
-    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-kills-original-6fb.input.js") ++
+    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-kills-original-6fb.input.txt") ++
         \\for(let i=0;i<editorKillsSource.cases.length;i++){const actual=editorKillsResult[i],expected=editorKillsSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-kills.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public Editor kills: {s}\n", .{message});
@@ -265,7 +265,7 @@ test "Source6fb public Editor segments native iterables containing and atomic ma
     defer engine.freeValue(global);
     const bytes = @embedFile("fixtures/editor-segments-original-6fb.json");
     try js.define(engine, global, "editorSegmentsSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "editor-segments-original-6fb.json")));
-    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-segments-original-6fb.input.js") ++
+    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-segments-original-6fb.input.txt") ++
         \\for(let i=0;i<editorSegmentsSource.cases.length;i++){const actual=editorSegmentsResult[i],expected=editorSegmentsSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-segments.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public Editor segments: {s}\n", .{message});
@@ -284,7 +284,7 @@ test "Source6fb public Editor paste cleanup markers newline and ordered submissi
     defer engine.freeValue(global);
     const bytes = @embedFile("fixtures/editor-paste-original-6fb.json");
     try js.define(engine, global, "editorPasteSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "editor-paste-original-6fb.json")));
-    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-paste-original-6fb.input.js") ++
+    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-paste-original-6fb.input.txt") ++
         \\for(let i=0;i<editorPasteSource.cases.length;i++){const actual=editorPasteResult[i],expected=editorPasteSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-paste.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public Editor paste: {s}\n", .{message});
@@ -304,7 +304,7 @@ test "Source6fb public Editor history draft cursor clone callbacks and undo" {
     try js.define(engine, global, "nativeDefaultClone", try engine.checked(c.pi_js_function_magic(engine.context, defaultClone, "structuredClone", 1, 0)));
     const bytes = @embedFile("fixtures/editor-history-original-6fb.json");
     try js.define(engine, global, "editorHistorySource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "editor-history-original-6fb.json")));
-    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-history-original-6fb.input.js") ++
+    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-history-original-6fb.input.txt") ++
         \\for(let i=0;i<editorHistorySource.cases.length;i++){const actual=editorHistoryResult[i],expected=editorHistorySource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-history.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public Editor history: {s}\n", .{message});
@@ -323,7 +323,7 @@ test "Source6fb public Editor core ordinary fields aliases callbacks and undo" {
     defer engine.freeValue(global);
     const bytes = @embedFile("fixtures/editor-core-fields-original-6fb.json");
     try js.define(engine, global, "editorCoreSource", try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "editor-core-fields-original-6fb.json")));
-    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-core-fields-original-6fb.input.js") ++
+    const result = engine.evalModule("import {Editor} from 'pi-tui';\n" ++ @embedFile("fixtures/editor-core-fields-original-6fb.input.txt") ++
         \\for(let i=0;i<editorCoreSource.cases.length;i++){const actual=editorCoreResult[i],expected=editorCoreSource.cases[i];if(JSON.stringify(actual)!==JSON.stringify(expected))throw Error(JSON.stringify({index:i,actual,expected}));}
     , "editor-source-core-fields.mjs") catch |err| {
         if (engine.last_error) |message| std.debug.print("Native public Editor core fields: {s}\n", .{message});
