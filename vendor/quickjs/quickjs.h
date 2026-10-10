@@ -542,6 +542,8 @@ JS_EXTERN JSValue JS_GetClassProto(JSContext *ctx, JSClassID class_id);
 JS_EXTERN JSValue JS_GetFunctionProto(JSContext *ctx);
 /* Returns an owned reference to this context's intrinsic async iterator prototype. */
 JS_EXTERN JSValue JS_GetAsyncIteratorPrototype(JSContext *ctx);
+/* Owned reference to the current context's intrinsic AsyncFunction prototype. */
+JS_EXTERN JSValue JS_GetAsyncFunctionPrototype(JSContext *ctx);
 
 /* the following functions are used to select the intrinsic object to
    save memory */
