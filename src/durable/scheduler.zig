@@ -1126,7 +1126,8 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
         fn finish(self: *@This(), tx: *Transaction, id: u64) !void {
             var current = (try tx.session.storage.readTableRecord(tx.gpa, .task, id)).?;
             defer current.deinit();
-            try tx.setTask(try model.withState(tx.allocator(), current.value, try model.outcomeState(tx.allocator(), "terminal", try model.makeOutcome(tx.allocator(), "completed", .null))));
+            const arena = tx.owned.arena.allocator();
+            try tx.setTask(try model.withState(arena, current.value, try model.outcomeState(arena, "terminal", try model.makeOutcome(arena, "completed", .null))));
             _ = self;
         }
         fn apply(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
