@@ -442,22 +442,40 @@ pub const Manager = struct {
         var index = self.signals.items.len;
         while (index > 0) {
             index -= 1;
+            if (index >= self.signals.items.len) continue;
             const signal = self.signals.items[index];
             if (signal.entry.runtime.isActive() and !signal.entry.runtime.context().aborted() and !self.closed) continue;
-            const aborted = try sdk.get(self.engine, signal.value, "aborted");
+            const entry = signal.entry.retain();
+            defer entry.release();
+            const value = c.JS_DupValue(self.engine.context, signal.value);
+            defer self.engine.freeValue(value);
+            // A worker can enqueue its last publication after the outer drain
+            // but before this acquire observes invocation retirement. Admit it
+            // before firing the phase signal, as Source's commit observer does.
+            if (!self.closed) try Manager.deliver(self);
+            // Delivery and abort listeners may reenter this pump and retire or
+            // reallocate the signal array. Re-find its retained private owner.
+            if (self.signalIndex(entry, value) == null) continue;
+            const aborted = try sdk.get(self.engine, value, "aborted");
             defer self.engine.freeValue(aborted);
             if (c.JS_ToBool(self.engine.context, aborted) == 0) {
-                const failure = try endedError(self.engine, signal.entry.runtime.taskId());
+                const failure = try endedError(self.engine, entry.runtime.taskId());
                 defer self.engine.freeValue(failure);
-                try aborts.abort(self.engine, signal.value, failure);
+                try aborts.abort(self.engine, value, failure);
             }
-            if (!signal.entry.runtime.isActive()) {
-                _ = self.signals.orderedRemove(index);
-                self.engine.freeValue(signal.value);
-                self.engine.freeValue(signal.context);
-                signal.entry.release();
+            if (!entry.runtime.isActive()) {
+                const retired_index = self.signalIndex(entry, value) orelse continue;
+                const retired = self.signals.orderedRemove(retired_index);
+                self.engine.freeValue(retired.value);
+                self.engine.freeValue(retired.context);
+                retired.entry.release();
             }
+            index = @min(index, self.signals.items.len);
         }
+    }
+    fn signalIndex(self: *Manager, entry: *Entry, value: c.JSValue) ?usize {
+        for (self.signals.items, 0..) |signal, index| if (signal.entry == entry and c.JS_IsStrictEqual(self.engine.context, signal.value, value)) return index;
+        return null;
     }
     fn pollSleepers(self: *Manager) !void {
         if (self.sleepers.items.len == 0) return;
@@ -1693,6 +1711,12 @@ fn settlePublishedWaiters(self: *Manager, expire_contexts: bool) !void {
             value = try schedulerClosedError(self);
             rejected = true;
         } else if (waiter.id) |id| {
+            // Source registers live-task waits against #live and resolves them
+            // only at publication admission. A native storage swap can become
+            // visible between waiter iterations, before its queued VM event.
+            if (self.published_graph) |graph| if (graph.rows.get(id)) |published| {
+                if (published.table == .task and try @import("../durable/task_state.zig").live(published.record)) continue;
+            };
             // A scheduler commit can swap and free the Memory backend state.
             // The owner must not block on the Session line: a worker holding it
             // can itself be awaiting an owner-VM transaction callback.
@@ -1819,7 +1843,7 @@ pub fn defineTask(engine: *Engine, exports: c.JSValue) !void {
 }
 
 fn environmentExercise(gpa: std.mem.Allocator, with_harness: bool) !void {
-    const engine = try Engine.init(gpa, .{});
+    const engine = try Engine.init(gpa, .{ .host_await_timeout_ms = 3000 });
     defer engine.deinit();
     engine.native_io = std.testing.io;
     try durable.install(engine);
@@ -1841,13 +1865,38 @@ fn environmentExercise(gpa: std.mem.Allocator, with_harness: bool) !void {
     try sdk.put(engine, global, "envMode", try sdk.text(engine, if (with_harness) "harness" else "scheduler"));
     const source = @embedFile("../durable/fixtures/durable-scheduler-env-eba.json");
     try sdk.put(engine, global, "envSource", try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-eba-environment")));
+    const Probe = struct {
+        fn read(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const owner = Engine.fromContext(context.?);
+            return snapshot(owner) catch |err| durable.reject(owner, err);
+        }
+        fn snapshot(owner: *Engine) !c.JSValue {
+            const root = c.JS_GetGlobalObject(owner.context);
+            defer owner.freeValue(root);
+            const result = try sdk.object(owner);
+            errdefer owner.freeValue(result);
+            inline for (.{ "envOwnerWait", "envOwnerIdle", "envOwnerCanceled", "envPublicationWait", "envLate" }) |name| {
+                const value = try sdk.get(owner, root, name);
+                defer owner.freeValue(value);
+                try sdk.put(owner, result, name, c.JS_NewInt32(owner.context, if (c.JS_IsObject(value)) c.JS_PromiseState(owner.context, value) else -1));
+            }
+            const runtime = try sdk.get(owner, root, "envOriginalRuntime");
+            defer owner.freeValue(runtime);
+            if (runtimeState(owner, runtime)) |private| {
+                try sdk.put(owner, result, "active", c.pi_js_bool(owner.context, @intFromBool(private.entry.runtime.isActive())));
+                try sdk.put(owner, result, "phaseAborted", try sdk.get(owner, private.signal, "aborted"));
+            }
+            return result;
+        }
+    };
+    try sdk.put(engine, global, "envPromiseStates", try engine.checked(c.JS_NewCFunction(engine.context, Probe.read, "fixtureEnvPromiseStates", 0)));
     const setup = try engine.evalModule(
         \\import{defineTask}from'@earendil-works/pi-durable';
         \\globalThis.envRows=[];globalThis.envCalls=[];globalThis.envOrdinal=0;globalThis.envCancelObserved=false;globalThis.envValue=Object.freeze({owned:envMode});globalThis.envCause=Object.freeze({cause:envMode});
         \\globalThis.envBuild=function(first,callContext){let receiver;if(envMode==='scheduler'){const proto=Object.getPrototypeOf(this);let forged=false;try{this.resume.call({})}catch(error){forged=error.name==='TypeError'}receiver={same:this===envScheduler,name:this.constructor.name,ownKeys:Reflect.ownKeys(this),prototypeKeys:Reflect.ownKeys(proto),prototypeEnumerable:Object.keys(proto),baseObject:Object.getPrototypeOf(proto)===Object.prototype,methods:Object.getOwnPropertyNames(proto).filter(name=>name!=='constructor').map(name=>({name,length:proto[name].length,writable:Object.getOwnPropertyDescriptor(proto,name).writable,enumerable:Object.getOwnPropertyDescriptor(proto,name).enumerable,configurable:Object.getOwnPropertyDescriptor(proto,name).configurable})),resumeUndefined:this.resume()===undefined,forged};}
         \\ envCalls.push({first:envMode==='scheduler'?first:{keys:Object.keys(first),conversationId:first.conversationId,readSame:first.read===envHarness,cwd:first.cwd},conversationMatches:(envMode==='scheduler'?first:first.conversationId)===1,sameContext:callContext===envSavedContext,undefinedReceiver:this===undefined,...(receiver?{receiver}:{})});envOrdinal++;if(envOrdinal===1){if(envMode==='scheduler'){globalThis.envOwnerWait=this.waitForTask(envTaskId,callContext);globalThis.envOwnerIdle=this.waitForIdle(undefined,callContext);const cancel=new AbortController();globalThis.envOwnerCanceled=this.waitForIdle(undefined,{abortSignal:cancel.signal}).then(()=>false,error=>{envCancelObserved=error===envCause;return error===envCause});cancel.abort(envCause);globalThis.envPublicationController=new AbortController();globalThis.envPublicationWait=this.waitForTask(envTaskId,{abortSignal:envPublicationController.signal});}return envValue;}if(envOrdinal===2)throw envCause;return new Promise(resolve=>globalThis.envRelease=resolve)};
         \\const Parent=defineTask({name:'fixture.env.'+envMode,version:1,initial:()=>({phase:'work'}),phases:{work:async(_,runtime,ctx)=>{try{
-        \\ runtime.conversationId=999999;globalThis.envSaved=runtime.env;globalThis.envSavedContext=ctx;const first=runtime.env(ctx),isPromise=first instanceof Promise,value=await first;let rawCause=false;try{await envSaved.call({},ctx)}catch(error){rawCause=error===envCause}globalThis.envLate=envSaved(ctx);envLate.catch(()=>{});envRows.push({name:envMode,isPromise,originalValue:value===envValue,...(envMode==='scheduler'?{cancellationObserved:envCancelObserved}:{}),rawCause,alias:runtime.env===envSaved});await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:null}}),ctx);
+        \\ runtime.conversationId=999999;globalThis.envOriginalRuntime=runtime;globalThis.envSaved=runtime.env;globalThis.envSavedContext=ctx;const first=runtime.env(ctx),isPromise=first instanceof Promise,value=await first;let rawCause=false;try{await envSaved.call({},ctx)}catch(error){rawCause=error===envCause}globalThis.envLate=envSaved(ctx);envLate.catch(()=>{});envRows.push({name:envMode,isPromise,originalValue:value===envValue,...(envMode==='scheduler'?{cancellationObserved:envCancelObserved}:{}),rawCause,alias:runtime.env===envSaved});await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:null}}),ctx);
         \\}catch(error){globalThis.envOriginalError=String(error?.stack??error);throw error}}}});
         \\envRegistry.install({name:'actual-env-fixture',tasks:[Parent]});await envSession.commit(tx=>tx.createRootConversation(),{});globalThis.envTaskId=await envSession.commit(tx=>tx.createTask(Parent,null,{conversationId:1,ownership:{kind:'conversation'}}),{});
     , "actual-env-setup.mjs");
@@ -1884,9 +1933,21 @@ fn environmentExercise(gpa: std.mem.Allocator, with_harness: bool) !void {
         std.debug.print("Source environment original failure: {s}\n", .{text});
         return error.EnvironmentTaskDidNotComplete;
     }
+    // Abort immediately after the outer task waiter returns. Waiting for phase
+    // retirement first would conceal a waiter which bypassed publication.
+    const abort = try engine.eval("globalThis.envBeforeAbort=envPromiseStates();if(envMode==='scheduler')envPublicationController.abort(envCause);", "env-publication-abort-order", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(abort);
+    // The actual Source capture then observes stale methods after five event
+    // turns. Observe the genuine native lease retirement before that check.
+    const retirement_deadline = std.Io.Clock.awake.now(engine.native_io.?).toMilliseconds() + 3000;
+    while (manager.thread != null) {
+        _ = try engine.pumpControls();
+        if (std.Io.Clock.awake.now(engine.native_io.?).toMilliseconds() >= retirement_deadline) return error.EnvironmentPhaseDidNotRetire;
+        if (manager.thread != null) try engine.native_io.?.sleep(.fromMilliseconds(1), .awake);
+    }
     const compare = engine.evalModule(
-        \\if(envMode==='scheduler')envPublicationController.abort(envCause);envRelease(envValue);const lateValue=await envLate;let ended;try{await envSaved({})}catch(error){ended=error.message.replaceAll(String(envTaskId),'$TASK')};
-        \\envRows.push({name:envMode+'-settled',lateOriginal:lateValue===envValue,ended,...(envMode==='scheduler'?{ownerWaitMatches:(await envOwnerWait).id===envTaskId,ownerIdleUndefined:(await envOwnerIdle)===undefined,ownerCanceledOriginal:await envOwnerCanceled,ownerPublicationWins:(await envPublicationWait).id===envTaskId}:{}),calls:envCalls.map(call=>({...call,first:envMode==='scheduler'?'$CONVERSATION':{...call.first,conversationId:'$CONVERSATION'}}))});
+        \\const observed=async(name,pending)=>{try{return await pending}catch(error){throw Error(JSON.stringify({await:name,mode:envMode,originalCause:error===envCause,errorName:error?.name,message:error?.message,beforeAbort:envBeforeAbort,now:envPromiseStates()}))}};envRelease(envValue);const lateValue=await observed('late-environment',envLate);let ended;try{await envSaved({})}catch(error){ended=error.message.replaceAll(String(envTaskId),'$TASK')};
+        \\envRows.push({name:envMode+'-settled',lateOriginal:lateValue===envValue,ended,...(envMode==='scheduler'?{ownerWaitMatches:(await observed('owner-task',envOwnerWait)).id===envTaskId,ownerIdleUndefined:(await observed('owner-idle',envOwnerIdle))===undefined,ownerCanceledOriginal:await observed('owner-canceled',envOwnerCanceled),ownerPublicationWins:(await observed('publication-wins',envPublicationWait)).id===envTaskId}:{}),calls:envCalls.map(call=>({...call,first:envMode==='scheduler'?'$CONVERSATION':{...call.first,conversationId:'$CONVERSATION'}}))});
         \\const expected=envSource.cases.filter(row=>row.name===envMode||row.name===envMode+'-settled');if(JSON.stringify(envRows)!==JSON.stringify(expected))throw Error(JSON.stringify({actual:envRows,expected}));export const proof=true;
     , "actual-env-compare.mjs") catch |err| {
         std.debug.print("Source environment comparison: {s}\n", .{engine.last_error orelse "no diagnostic"});
@@ -1989,6 +2050,100 @@ test "native durable VM phase dispatch refreshes replacement registry without re
     var record = (try manager.lease.value.storage.readTableRecord(gpa, .task, 7)).?;
     defer record.deinit();
     try std.testing.expectEqualStrings("pending", try json.asString(try json.required(try json.required(record.value, "state"), "status")));
+}
+fn publicationAdmissionExercise(gpa: std.mem.Allocator, retiring_signal: bool) !void {
+    const engine = try Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const builtins = try sdk.array(engine);
+    defer engine.freeValue(builtins);
+    const registry = try @import("native_durable_registry.zig").create(engine, builtins);
+    defer engine.freeValue(registry);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "publicationAdmissionRegistry", c.JS_DupValue(engine.context, registry));
+    const installed = try engine.evalModule(
+        \\import{defineTask}from'@earendil-works/pi-durable';const Task=defineTask({name:'fixture.publication-admission',version:1,initial:()=>({phase:'work'}),phases:{work(){}}});publicationAdmissionRegistry.install({name:'publication-admission-fixture',tasks:[Task]});
+    , "publication-admission-definition.mjs");
+    engine.freeValue(installed);
+    const options = try sdk.object(engine);
+    defer engine.freeValue(options);
+    try sdk.put(engine, options, "registry", c.JS_DupValue(engine.context, registry));
+    try attach(engine, session, options, c.pi_js_undefined());
+    const manager = try getManager(engine, session);
+    var live = try json.Owned.parse(gpa, "[{\"type\":\"conversation\",\"value\":{\"id\":1}},{\"type\":\"task\",\"value\":{\"id\":2,\"kind\":\"fixture.publication-admission\",\"version\":1,\"conversationId\":1,\"input\":null,\"background\":false,\"abortRequested\":false,\"state\":{\"status\":\"running\",\"checkpoint\":{\"phase\":\"work\"}}}}]");
+    defer live.deinit();
+    _ = try manager.lease.value.storage.commitAt(live.value, null);
+    try manager.cachePublication(live.value);
+    const context = try sdk.object(engine);
+    defer engine.freeValue(context);
+    const signal = try aborts.create(engine);
+    defer engine.freeValue(signal);
+    if (retiring_signal) try sdk.put(engine, context, "abortSignal", c.JS_DupValue(engine.context, signal));
+    var promises: [2]c.JSValue = .{ c.pi_js_undefined(), c.pi_js_undefined() };
+    defer for (promises) |promise| engine.freeValue(promise);
+    for (&promises) |*promise| promise.* = try appendTestWaiter(manager, 2, context);
+    var terminal = try json.Owned.parse(gpa, "[{\"type\":\"task\",\"value\":{\"id\":2,\"kind\":\"fixture.publication-admission\",\"version\":1,\"conversationId\":1,\"input\":null,\"background\":false,\"abortRequested\":false,\"state\":{\"status\":\"terminal\",\"outcome\":{\"status\":\"completed\",\"result\":42}}}}]");
+    defer terminal.deinit();
+    const seq = try manager.lease.value.storage.commitAt(terminal.value, null);
+    if (retiring_signal) {
+        // The acquire of inactive observes the worker's prior queued event.
+        const Invocation = @typeInfo(@TypeOf(@as(scheduling.Runtime, undefined).invocation)).pointer.child;
+        const invocation = try gpa.create(Invocation);
+        invocation.* = .{ .scheduler = &manager.scheduler, .task_id = 2, .conversation_id = 1, .definition = manager.scheduler.definitions.items[0], .mode = .run, .active = .init(false), .canceled = .init(true) };
+        defer invocation.release();
+        const entry = try gpa.create(Entry);
+        entry.* = .{ .manager = manager.retain(), .runtime = (scheduling.Runtime{ .invocation = invocation }).retain(), .generation = 1, .definition = 0, .refs = .init(1) };
+        defer entry.release();
+        try manager.signals.ensureUnusedCapacity(gpa, 1);
+        manager.signals.appendAssumeCapacity(.{ .entry = entry.retain(), .value = c.JS_DupValue(engine.context, signal), .context = c.JS_DupValue(engine.context, context) });
+        const Reenter = struct {
+            fn poll(callback_context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+                const owner = Engine.fromContext(callback_context.?);
+                const current = getManager(owner, data[0]) catch |err| return durable.reject(owner, err);
+                current.pollSignals() catch |err| return durable.reject(owner, err);
+                return c.pi_js_undefined();
+            }
+        };
+        var captured = [_]c.JSValue{session};
+        const listener = try engine.checked(c.JS_NewCFunctionData(engine.context, Reenter.poll, 0, 0, captured.len, &captured));
+        defer engine.freeValue(listener);
+        const unsubscribe = try sdk.invoke(engine, session, "subscribeCommits", &.{listener});
+        defer engine.freeValue(unsubscribe);
+        try Manager.forward(manager, &.{ .seq = seq, .changes = terminal.value });
+        // Deliberately skip the normal outer drain. pollSignals must admit the
+        // publication which raced that drain before it aborts the phase signal.
+        try manager.pollSignals();
+        try std.testing.expectEqual(@as(usize, 0), manager.signals.items.len);
+        const aborted = try sdk.get(engine, signal, "aborted");
+        defer engine.freeValue(aborted);
+        try std.testing.expect(c.JS_ToBool(engine.context, aborted) != 0);
+    } else {
+        // Storage already contains the terminal record, but Source's committed
+        // publication has not reached the owner yet. Neither waiter may win.
+        try settleWaiters(manager);
+        for (promises) |promise| try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, promise));
+        try manager.cachePublication(terminal.value);
+    }
+    for (promises) |promise| {
+        try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(engine.context, promise));
+        const record = c.JS_PromiseResult(engine.context, promise);
+        defer engine.freeValue(record);
+        const id = try sdk.get(engine, record, "id");
+        defer engine.freeValue(id);
+        try std.testing.expectEqual(@as(u64, 2), try durable.number(engine, id));
+    }
+}
+test "native durable VM live task waiters cannot observe a terminal storage swap before VM publication admission" {
+    try publicationAdmissionExercise(std.testing.allocator, false);
+}
+test "native durable VM phase signal retirement drains its already queued terminal publication before aborting context waiters" {
+    try publicationAdmissionExercise(std.testing.allocator, true);
 }
 fn publicationWaiterExercise(gpa: std.mem.Allocator, with_worker: bool) !void {
     const engine = try Engine.init(gpa, .{});
