@@ -540,6 +540,7 @@ pub fn build(b: *std.Build) void {
     const guest_join_tests = b.addTest(.{ .root_module = native_durable_tests.root_module, .use_llvm = use_llvm, .filters = &.{
         "observed guest dispatch remains joined",
         "Harness closed getter returns",
+        "late builtin Storage getter overrides",
         "public task abort joins observed run while cleanup",
         "task abort observed-run cancellation uses Source",
         "task abort observed run ends with SessionFailed",
