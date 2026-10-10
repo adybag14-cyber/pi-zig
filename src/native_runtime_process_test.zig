@@ -2860,6 +2860,13 @@ const DialogUi = struct {
     }
 };
 
+fn invokeUiWithDiagnostic(runtime: *runtime_mod.Runtime, mode: []const u8) ![]u8 {
+    return runtime.invokeCommand("ui", mode, "{}") catch |err| {
+        std.debug.print("native UI command mode={s} failure={s} last_error={s} owner_error={s}\n", .{ mode, @errorName(err), runtime.lastError() orelse "<none>", runtime.last_owner_error orelse "<none>" });
+        return err;
+    };
+}
+
 test "native runtime UI real selector promises FIFO retained actions headless errors and stale methods" {
     const gpa = std.testing.allocator;
     var fixture = try Fixture.init();
@@ -2875,7 +2882,7 @@ test "native runtime UI real selector promises FIFO retained actions headless er
     started.runtime.setUiBridge(dialogs.bridge());
     dialogs.runtime = started.runtime;
     try started.runtime.setContextJson("{\"hasUI\":true,\"editorText\":\"before\"}");
-    const result = try started.runtime.invokeCommand("ui", "roundtrip", "{}");
+    const result = try invokeUiWithDiagnostic(started.runtime, "roundtrip");
     defer gpa.free(result);
     try std.testing.expect(std.mem.indexOf(u8, result, "green") != null and std.mem.indexOf(u8, result, "Ada") != null and std.mem.indexOf(u8, result, "edited") != null);
     try std.testing.expectEqual(@as(usize, 4), dialogs.requests.load(.acquire));
@@ -2921,7 +2928,7 @@ test "native runtime reader and human dialogs progress with zero eager async cap
     defer gpa.free(started.manifest_json);
     started.runtime.setUiBridge(dialogs.bridge());
     try started.runtime.setContextJson("{\"hasUI\":true}");
-    const human = try started.runtime.invokeCommand("ui", "human", "{}");
+    const human = try invokeUiWithDiagnostic(started.runtime, "human");
     defer gpa.free(human);
     try std.testing.expect(std.mem.indexOf(u8, human, "green") != null);
     started.runtime.timeout_ms = 1000;
@@ -2959,7 +2966,7 @@ test "native runtime UI explicit cancellation timeout and live invocation abort 
     defer gpa.free(started.manifest_json);
     started.runtime.setUiBridge(dialogs.bridge());
     try started.runtime.setContextJson("{\"hasUI\":true}");
-    const result = try started.runtime.invokeCommand("ui", "cancel", "{}");
+    const result = try invokeUiWithDiagnostic(started.runtime, "cancel");
     defer gpa.free(result);
     try std.testing.expect(std.mem.indexOf(u8, result, "cancel-defaults") != null);
     try std.testing.expectEqual(@as(usize, 3), dialogs.cancelled.load(.acquire));
