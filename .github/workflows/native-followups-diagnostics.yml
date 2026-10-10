@@ -9,7 +9,7 @@ permissions:
 
 concurrency:
   group: native-followups-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   regressions:
@@ -46,7 +46,7 @@ jobs:
             export PI_CODEMODE_ALLOCATION_SHARD=0 PI_CODEMODE_ALLOCATION_SHARDS=8
             export PI_SDK_ALLOCATION_SHARD=0 PI_SDK_ALLOCATION_SHARDS=8
           fi
-          zig build test-codemode test-extension-engine test-native-weakref test-mcp-issuer-exchange -Doptimize=Debug -j1 --test-timeout 180s --summary all 2>&1 | tee verification/followup-diagnostics/shard-0.log
+          zig build test-codemode-source test-codemode test-extension-engine test-native-weakref test-mcp-issuer-exchange -Doptimize=Debug -j1 --test-timeout 180s --summary all 2>&1 | tee verification/followup-diagnostics/shard-0.log
       - name: Preserve diagnostic source receipts
         if: always()
         uses: actions/upload-artifact@v4
