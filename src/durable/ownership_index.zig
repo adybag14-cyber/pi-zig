@@ -74,6 +74,36 @@ pub const Index = struct {
         self.drop_queue.deinit(self.gpa);
         self.* = undefined;
     }
+    /// A transaction-local candidate index. Only live records and the minimal
+    /// links around them are copied; no historical Storage snapshot is read.
+    /// Child and worklist insertion order survives the copy.
+    pub fn duplicate(self: *const Index, gpa: std.mem.Allocator) !Index {
+        try self.check();
+        var copied = Index.init(gpa);
+        errdefer copied.deinit();
+        try copied.live.ensureTotalCapacity(gpa, self.live.count());
+        var records = self.live.iterator();
+        while (records.next()) |entry| {
+            var record = entry.value_ptr.*;
+            record.wait_on = try gpa.dupe(u64, record.wait_on);
+            copied.live.putAssumeCapacity(entry.key_ptr.*, record);
+        }
+        copied.settled = try self.settled.clone(gpa);
+        copied.edges = try self.edges.clone(gpa);
+        try copied.below.ensureTotalCapacity(gpa, self.below.count());
+        var children = self.below.iterator();
+        while (children.next()) |entry| copied.below.putAssumeCapacity(entry.key_ptr.*, try entry.value_ptr.clone(gpa));
+        copied.roots = try self.roots.clone(gpa);
+        copied.unloaded = try self.unloaded.clone(gpa);
+        copied.intents = try self.intents.clone(gpa);
+        copied.runnable = try self.runnable.clone(gpa);
+        copied.finalize_checks = try self.finalize_checks.clone(gpa);
+        try copied.waiters.ensureTotalCapacity(gpa, self.waiters.count());
+        var waiters = self.waiters.iterator();
+        while (waiters.next()) |entry| copied.waiters.putAssumeCapacity(entry.key_ptr.*, try entry.value_ptr.clone(gpa));
+        copied.drop_queue = try self.drop_queue.clone(gpa);
+        return copied;
+    }
     fn check(self: *const Index) !void {
         if (!self.usable) return error.OwnershipIndexFailed;
     }
@@ -347,6 +377,14 @@ pub const Index = struct {
         return ids.toOwnedSlice(gpa);
     }
     pub fn ordinaryOwned(self: *const Index, gpa: std.mem.Allocator, owner: u64) ![]u64 {
+        return self.walkOwned(gpa, owner, false);
+    }
+    /// Reach another live cancellation intent, but do not enter it: that
+    /// owner's own cascade determines the nearest reason for work below it.
+    pub fn cascadeOwned(self: *const Index, gpa: std.mem.Allocator, owner: u64) ![]u64 {
+        return self.walkOwned(gpa, owner, true);
+    }
+    fn walkOwned(self: *const Index, gpa: std.mem.Allocator, owner: u64, stop_at_intent: bool) ![]u64 {
         try self.check();
         var pending: std.ArrayList(Node) = .empty;
         defer pending.deinit(gpa);
@@ -365,7 +403,7 @@ pub const Index = struct {
                 }
                 const fields = self.link(node.id) orelse continue;
                 if (self.live.contains(node.id) and !fields.background) try ids.append(gpa, node.id);
-                if (!fields.background) try pending.append(gpa, node);
+                if (!fields.background and !(stop_at_intent and self.intents.contains(node.id))) try pending.append(gpa, node);
             }
         }
         return ids.toOwnedSlice(gpa);
@@ -442,6 +480,23 @@ fn boundaryExercise(gpa: std.mem.Allocator) !void {
     try std.testing.expectEqual(@as(?u64, null), try index.cancellingOwner(Node.task(13)));
     try std.testing.expect(!try index.idle(gpa, null));
     try std.testing.expectEqual(@as(?bool, false), try index.inScope(Node.task(13), null, false));
+    {
+        var overlay = try index.duplicate(gpa);
+        defer overlay.deinit();
+        const copied = overlay.live.get(10).?.wait_on;
+        try std.testing.expect(copied.ptr != index.live.get(10).?.wait_on.ptr);
+        try std.testing.expectEqualSlices(u64, &.{11}, copied);
+        try overlay.track(.{ .id = 10, .link = .{ .conversation = 1, .owner = 7 }, .status = .running, .abort_requested = true });
+        try overlay.track(.{ .id = 12, .link = .{ .conversation = 1, .owner = 10 }, .status = .running });
+        const cascade = try overlay.cascadeOwned(gpa, 7);
+        defer gpa.free(cascade);
+        try std.testing.expectEqualSlices(u64, &.{ 10, 11 }, cascade);
+        const ordinary_overlay = try overlay.ordinaryOwned(gpa, 7);
+        defer gpa.free(ordinary_overlay);
+        try std.testing.expectEqualSlices(u64, &.{ 10, 11, 12 }, ordinary_overlay);
+        try std.testing.expect(!index.live.contains(12));
+        try std.testing.expectEqualSlices(u64, &.{11}, index.live.get(10).?.wait_on);
+    }
     // Reservation removes a waiter it finds still blocked. Ending a member
     // puts it back, without scanning unrelated live records.
     _ = index.runnable.orderedRemove(10);

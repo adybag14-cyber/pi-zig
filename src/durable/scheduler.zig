@@ -233,6 +233,7 @@ pub const Scheduler = struct {
     ownership_index: ownership.Index,
     live_records: std.AutoHashMapUnmanaged(u64, json.Owned) = .{},
     maintenance_subscription: ?u64 = null,
+    fail_fast_checks: std.AutoArrayHashMapUnmanaged(u64, void) = .empty,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, session: *session_mod.Session, options: Options) !Scheduler {
         if (options.max_workers == 0 or options.max_workers > 64 or options.max_phase_steps == 0) return error.InvalidSchedulerBounds;
         return .{ .gpa = gpa, .io = io, .session = session, .options = options, .migration_failures = .init(gpa), .ownership_index = .init(gpa) };
@@ -248,6 +249,7 @@ pub const Scheduler = struct {
         while (records.next()) |record| record.deinit();
         self.live_records.deinit(self.gpa);
         self.ownership_index.deinit();
+        self.fail_fast_checks.deinit(self.gpa);
         for (self.invocations.items) |invocation| {
             std.debug.assert(invocation.refs.load(.acquire) == 1);
             invocation.release();
@@ -386,10 +388,14 @@ pub const Scheduler = struct {
         errdefer |err| _ = self.session.fail(err);
         const id = try model.number(record, "id");
         const status = try model.status(record);
-        var members: std.ArrayList(u64) = .empty;
-        defer members.deinit(self.gpa);
-        if (status == .waiting) for ((try model.field(try model.field(record, "state"), "on")).array.items) |member| try members.append(self.gpa, try json.asInteger(member));
-        try self.ownership_index.track(.{ .id = id, .link = try recordLink(record), .status = @enumFromInt(@intFromEnum(status)), .abort_requested = try model.flag(record, "abortRequested"), .failed_outcome = try model.failed(record), .wait_on = members.items });
+        const prior_record = self.live_records.get(id);
+        if (try model.failed(record) and (prior_record == null or !try model.failed(prior_record.?.value))) {
+            if (self.ownership_index.waiters.get(id)) |waiters| for (waiters.keys()) |waiter| try self.fail_fast_checks.put(self.gpa, waiter, {});
+        }
+        if (status == .terminal) {
+            _ = self.fail_fast_checks.orderedRemove(id);
+        } else if (status == .waiting and (prior_record == null or try model.status(prior_record.?.value) != .waiting) and std.mem.eql(u8, try model.text(try model.field(record, "state"), "policy"), "failFast")) try self.fail_fast_checks.put(self.gpa, id, {});
+        try indexRecord(self.gpa, &self.ownership_index, record);
         if (status == .terminal) {
             if (self.live_records.fetchRemove(id)) |removed| {
                 var previous = removed.value;
@@ -403,6 +409,13 @@ pub const Scheduler = struct {
         const slot = try self.live_records.getOrPut(self.gpa, id);
         if (slot.found_existing) slot.value_ptr.deinit();
         slot.value_ptr.* = copied;
+    }
+    fn indexRecord(gpa: std.mem.Allocator, index: *ownership.Index, record: Value) !void {
+        const status = try model.status(record);
+        var members: std.ArrayList(u64) = .empty;
+        defer members.deinit(gpa);
+        if (status == .waiting) for ((try model.field(try model.field(record, "state"), "on")).array.items) |member| try members.append(gpa, try json.asInteger(member));
+        try index.track(.{ .id = try model.number(record, "id"), .link = try recordLink(record), .status = @enumFromInt(@intFromEnum(status)), .abort_requested = try model.flag(record, "abortRequested"), .failed_outcome = try model.failed(record), .wait_on = members.items });
     }
     /// Real Storage reads on the Session line, only for unknown owner links.
     /// A missing task leaves the chain unresolved, as in upstream; a missing
@@ -471,68 +484,118 @@ pub const Scheduler = struct {
         return .null;
     }
     pub fn reconcile(self: *Scheduler) !void {
-        var result = try self.session.commit(reconcileLine, self, .{}, .{});
+        var result = self.session.commit(reconcileLine, self, .{}, .{}) catch |err| {
+            if (err != error.SessionClosed) _ = self.session.fail(err);
+            return err;
+        };
         result.deinit();
+    }
+    fn anyFailed(self: *Scheduler, members: Value) !bool {
+        for (members.array.items) |member| {
+            const id = try json.asInteger(member);
+            if (self.live_records.get(id)) |record| {
+                if (try model.failed(record.value)) return true;
+            } else {
+                var fetched = try self.session.storage.readTableRecord(self.gpa, .task, id);
+                defer if (fetched) |*record| record.deinit();
+                if (fetched) |record| if (try model.failed(record.value)) return true;
+            }
+        }
+        return false;
+    }
+    fn queueMark(self: *Scheduler, marks: *std.AutoArrayHashMapUnmanaged(u64, model.Cancellation), record: Value, reason: model.Cancellation) !void {
+        const id = try model.number(record, "id");
+        if (marks.get(id)) |prior| if (prior == .request) return;
+        if (try model.flag(record, "abortRequested") and (json.get(record, "abortReason") == null or reason == .restart)) return;
+        try marks.put(self.gpa, id, reason);
+    }
+    fn queuedInputs(self: *Scheduler, gpa: std.mem.Allocator) ![]u64 {
+        var filters: Value = .{ .object = .empty };
+        try filters.object.put(gpa, "status", .{ .string = "queued" });
+        defer filters.object.deinit(gpa);
+        var conversations: std.AutoArrayHashMapUnmanaged(u64, void) = .empty;
+        defer conversations.deinit(gpa);
+        var cursor: ?json.Owned = null;
+        defer if (cursor) |*value| value.deinit();
+        while (true) {
+            var page = try self.session.storage.sourceScan(self.gpa, .submission, filters, 100, if (cursor) |value| value.value else null);
+            defer page.deinit();
+            for ((try model.field(page.value, "items")).array.items) |submission| {
+                if (!std.mem.eql(u8, try model.text(submission, "type"), "input")) continue;
+                try conversations.put(gpa, try model.number(submission, "conversationId"), {});
+            }
+            const next = json.get(page.value, "next") orelse break;
+            var owned = try json.Owned.empty(self.gpa);
+            errdefer owned.deinit();
+            owned.value = try json.clone(owned.arena.allocator(), next);
+            if (cursor) |*value| value.deinit();
+            cursor = owned;
+        }
+        for (conversations.keys()) |id| try self.loadChain(ownership.Node.conversation(id));
+        return gpa.dupe(u64, conversations.keys());
     }
     fn reconcileLine(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
         const self: *Scheduler = @ptrCast(@alignCast(raw.?));
+        if (self.closing.load(.acquire)) return .null;
         try self.loadScopes();
         if (self.options.poll_reads) |poll| try poll(self.options.callback_context, tx.session);
-        const view = try self.session.storage.snapshot(self.gpa);
-        defer view.destroy(self.gpa);
-        const a = view.arena.allocator();
-        const graph: model.Graph = .{ .state = view };
-        // Repeat until held outcomes and inherited abort marks reach a fixed point.
-        var changed = true;
-        while (changed) {
-            changed = false;
-            var rows = view.rows.iterator();
-            while (rows.next()) |item| {
-                if (item.value_ptr.table != .task) continue;
-                var record = item.value_ptr.record;
-                if (!try model.live(record)) continue;
-                const inherited = if (try model.flag(record, "background")) model.Cancellation.none else try graph.cancellingOwner(try model.parent(record));
-                var mark = inherited != .none;
-                if (try model.status(record) == .waiting) {
-                    const state = try model.field(record, "state");
-                    if (std.mem.eql(u8, try model.text(state, "policy"), "failFast")) {
-                        var any_failed = false;
-                        for ((try model.field(state, "on")).array.items) |member| if (try model.failed(try graph.task(try json.asInteger(member)))) {
-                            any_failed = true;
-                            break;
-                        };
-                        if (any_failed) for ((try model.field(state, "on")).array.items) |member| {
-                            const id = try json.asInteger(member);
-                            const child = try graph.task(id);
-                            if (try model.live(child) and !try model.failed(child) and (!try model.flag(child, "abortRequested") or json.get(child, "abortReason") != null)) {
-                                const child_mark = try model.abortMark(a, child, .request);
-                                view.rows.getPtr(id).?.record = child_mark;
-                                try tx.setTask(child_mark);
-                                changed = true;
-                            }
-                        };
-                    }
-                }
-                mark = mark and (!try model.flag(record, "abortRequested") or (json.get(record, "abortReason") != null and inherited == .request));
-                if (mark) {
-                    record = try model.abortMark(a, record, inherited);
-                }
-                var finalize = false;
-                if (try model.status(record) == .completing and !try graph.hasOwnedLive(item.key_ptr.*)) {
-                    record = try model.withState(a, record, try model.outcomeState(a, "terminal", try model.field(try model.field(record, "state"), "outcome")));
-                    finalize = true;
-                }
-                if (mark or finalize) {
-                    item.value_ptr.record = record;
-                    try tx.setTask(record);
-                    changed = true;
-                }
-                if (finalize) try self.settle(tx, record);
+        const a = tx.owned.arena.allocator();
+        const queued = if (self.options.withdraw_inputs != null and self.ownership_index.intents.count() != 0) try self.queuedInputs(a) else &.{};
+        // Collect every mark before staging any, so an explicit request wins
+        // over restart propagation in the same pass. Cascades stop at another
+        // intent, whose own walk supplies the nearest inherited reason.
+        var marks: std.AutoArrayHashMapUnmanaged(u64, model.Cancellation) = .empty;
+        defer marks.deinit(self.gpa);
+        for (self.ownership_index.intents.keys()) |owner_id| {
+            const owner = self.live_records.get(owner_id).?.value;
+            const reason: model.Cancellation = if (json.get(owner, "abortReason")) |value| if (value == .string and std.mem.eql(u8, value.string, "restart") and !try model.failed(owner)) .restart else .request else .request;
+            const children = try self.ownership_index.cascadeOwned(self.gpa, owner_id);
+            defer self.gpa.free(children);
+            for (children) |id| try self.queueMark(&marks, self.live_records.get(id).?.value, reason);
+        }
+        const checks = try self.gpa.dupe(u64, self.fail_fast_checks.keys());
+        defer self.gpa.free(checks);
+        self.fail_fast_checks.clearRetainingCapacity();
+        for (checks) |id| {
+            const waiter = (self.live_records.get(id) orelse continue).value;
+            if (try model.status(waiter) != .waiting) continue;
+            const state = try model.field(waiter, "state");
+            if (!std.mem.eql(u8, try model.text(state, "policy"), "failFast") or !try self.anyFailed(try model.field(state, "on"))) continue;
+            for ((try model.field(state, "on")).array.items) |member| {
+                const record = (self.live_records.get(try json.asInteger(member)) orelse continue).value;
+                if (!try model.failed(record)) try self.queueMark(&marks, record, .request);
             }
         }
-        if (self.options.withdraw_inputs) |withdraw| {
-            const queued = try queuedConversations(view);
-            for (queued) |id| if (try graph.belowCancelled(.{ .conversation = id })) try withdraw(self.options.callback_context, tx, id);
+        var working = try self.ownership_index.duplicate(self.gpa);
+        defer working.deinit();
+        var candidates: std.AutoHashMapUnmanaged(u64, Value) = .{};
+        defer candidates.deinit(self.gpa);
+        var marked = marks.iterator();
+        while (marked.next()) |item| {
+            const record = try model.abortMark(a, self.live_records.get(item.key_ptr.*).?.value, item.value_ptr.*);
+            try candidates.put(self.gpa, item.key_ptr.*, record);
+            try tx.setTask(record);
+            try indexRecord(self.gpa, &working, record);
+        }
+        if (self.options.withdraw_inputs) |withdraw| for (queued) |id| if (try self.ownership_index.cancellingOwner(ownership.Node.conversation(id)) != null) try withdraw(self.options.callback_context, tx, id);
+        // Each terminal candidate removes its live metadata in the local
+        // overlay and enqueues its nearest held owner. In rounds, many siblings
+        // finishing together cause one check of their holder in the next round.
+        self.ownership_index.finalize_checks.clearRetainingCapacity();
+        while (working.finalize_checks.count() != 0) {
+            const round = try self.gpa.dupe(u64, working.finalize_checks.keys());
+            defer self.gpa.free(round);
+            working.finalize_checks.clearRetainingCapacity();
+            for (round) |id| {
+                const metadata = working.live.get(id) orelse continue;
+                if (metadata.status != .completing or try working.hasOrdinaryBelow(self.gpa, ownership.Node.task(id))) continue;
+                const record = candidates.get(id) orelse self.live_records.get(id).?.value;
+                const terminal = try model.withState(a, record, try model.outcomeState(a, "terminal", try model.field(try model.field(record, "state"), "outcome")));
+                try candidates.put(self.gpa, id, terminal);
+                try tx.setTask(terminal);
+                try indexRecord(self.gpa, &working, terminal);
+                try self.settle(tx, terminal);
+            }
         }
         return .null;
     }
@@ -1092,7 +1155,7 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
     const Probe = struct {
         memory: *backend.memory.Memory,
         scheduler: *Scheduler,
-        operation: enum { root, seed, end_link, reload_empty, reload_reject, leaf, end_leaf, end_parent, reserve_without_history } = .root,
+        operation: enum { root, seed, end_link, reload_empty, reload_reject, leaf, end_leaf, end_parent, reserve_without_history, hold_parent } = .root,
         parent: u64 = 0,
         link: u64 = 0,
         conversation: u64 = 0,
@@ -1158,6 +1221,12 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
                 .end_link => try self.finish(tx, self.link),
                 .end_leaf => try self.finish(tx, self.leaf),
                 .end_parent => try self.finish(tx, self.parent),
+                .hold_parent => {
+                    var current = (try tx.session.storage.readTableRecord(tx.gpa, .task, self.parent)).?;
+                    defer current.deinit();
+                    const arena = tx.owned.arena.allocator();
+                    try tx.setTask(try model.withState(arena, current.value, try model.outcomeState(arena, "completing", try model.makeOutcome(arena, "completed", .null))));
+                },
                 .reserve_without_history => {
                     self.forbid_snapshot = true;
                     defer self.forbid_snapshot = false;
@@ -1184,6 +1253,8 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
             self.operation = operation;
             var result = try self.scheduler.session.commit(apply, self, .{}, .{});
             result.deinit();
+            if (operation == .seed or operation == .leaf or operation == .reserve_without_history) self.forbid_snapshot = true;
+            defer self.forbid_snapshot = false;
             try self.scheduler.reconcile();
         }
         fn expect(self: *@This(), golden: Value) !void {
@@ -1235,6 +1306,17 @@ test "durable.scheduler ea actual Storage owner line retention reload and separa
     try probe.expect(rows[4]);
     try probe.run(.end_parent);
     try probe.expect(rows[5]);
+    // A held owner is checked again only after its last live child ends. The
+    // local index sees the child's terminal candidate before considering the
+    // owner, and the authoritative live copies disappear on publication.
+    try probe.run(.seed);
+    try probe.run(.hold_parent);
+    try probe.expect(rows[1]);
+    try probe.run(.end_link);
+    try probe.expect(rows[5]);
+    var held_owner = (try session.storage.readTableRecord(gpa, .task, probe.parent)).?;
+    defer held_owner.deinit();
+    try std.testing.expectEqual(model.Status.terminal, try model.status(held_owner.value));
 }
 fn ordinaryInIdleScope(view: *const backend.memory.State, start: model.Up, conversation: ?u64) !bool {
     var at = start;
