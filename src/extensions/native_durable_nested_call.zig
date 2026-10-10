@@ -1,4 +1,4 @@
-//! Atomic nested-call admission: task, index and live slot share one commit.
+//! Atomic nested-call admission: task, keyed member and live slot share one commit.
 //! A replay reattaches only when the previous call has the same tool/arguments.
 const std = @import("std");
 const engine_mod = @import("engine.zig");
@@ -72,11 +72,12 @@ fn start(engine: *Engine, state: c.JSValue, tx: c.JSValue) !c.JSValue {
     const runtime = try scope.get(state, "runtime");
     const id = try scope.get(runtime, "taskId");
     const token = try scope.get(state, "indexToken");
-    const pending = try scope.invoke(tx, "doc", &.{ token, id });
+    const key = try scope.get(state, "key");
+    const pending = try scope.invoke(tx, "doc", &.{ token, id, key, c.pi_js_null() });
     return wait(engine, state, pending, .index);
 }
 fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, raw_stage: c_int) !c.JSValue {
-    if (rejected) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value)));
+    if (rejected) return c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
     const stage: Stage = @enumFromInt(raw_stage);
     if (stage == .committed) return vm.get(engine, state, "id");
     var scope: Scope = .{ .engine = engine };
@@ -88,10 +89,7 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
     switch (stage) {
         .index => {
             try put(engine, state, "index", value);
-            const object = try scope.own(try js.global(engine, "Object"));
-            const calls = try scope.get(value, "calls");
-            const own = try scope.invoke(object, "hasOwn", &.{ calls, key });
-            const existing = if (c.JS_ToBool(engine.context, own) != 0) try scope.own(try js.getKey(engine, calls, key)) else c.pi_js_undefined();
+            const existing = try scope.get(value, "taskId");
             if (!c.JS_IsUndefined(existing)) {
                 try put(engine, state, "existing", existing);
                 const pending = try scope.invoke(tx, "task", &.{existing});
@@ -119,14 +117,10 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
             const input = if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) c.pi_js_undefined() else try scope.get(value, "input");
             var same = false;
             if (!c.JS_IsUndefined(input) and !c.JS_IsNull(input) and try @import("native_durable_tool_call.zig").equalsString(engine, try scope.get(input, "kind"), "nested")) {
-                const parent = try scope.get(input, "parent");
-                const owner = try scope.get(runtime, "taskId");
-                if (c.JS_IsStrictEqual(engine.context, parent, owner)) {
-                    const previous = try scope.get(input, "call");
-                    const previous_name = try scope.get(previous, "name");
-                    const name = try scope.get(state, "name");
-                    if (c.JS_IsStrictEqual(engine.context, previous_name, name)) same = try @import("native_durable_tool_json.zig").equal(engine, try scope.get(previous, "arguments"), try scope.get(call, "arguments"));
-                }
+                const previous = try scope.get(input, "call");
+                const previous_name = try scope.get(previous, "name");
+                const name = try scope.get(state, "name");
+                if (c.JS_IsStrictEqual(engine.context, previous_name, name)) same = try @import("native_durable_tool_json.zig").equal(engine, try scope.get(previous, "arguments"), try scope.get(call, "arguments"));
             }
             if (!same) {
                 const id = try engine.toString(try scope.get(call, "id"));
@@ -141,8 +135,7 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
         .created => {
             try put(engine, state, "created", value);
             const index = try scope.get(state, "index");
-            const calls = try scope.get(index, "calls");
-            try js.setKey(engine, calls, key, value);
+            try put(engine, index, "taskId", value);
             const token = try scope.get(state, "liveToken");
             const conversation = try scope.get(runtime, "conversationId");
             const pending = try scope.invoke(tx, "doc", &.{ token, conversation });

@@ -4,6 +4,7 @@ const engine_mod = @import("engine.zig");
 const durable = @import("native_durable.zig");
 const sdk = @import("native_sdk.zig");
 const scheduling = @import("../durable/scheduler.zig");
+const owner_index = @import("../durable/ownership_index.zig");
 const session_mod = @import("../durable/session.zig");
 const backend = @import("../durable/backend/root.zig");
 const broker_mod = @import("native_durable_broker.zig");
@@ -14,7 +15,16 @@ const Engine = engine_mod.Engine;
 const Migration = struct { key: []u8, value: ?json.Owned };
 const NativeDefinition = struct { manager: *Manager, id: usize, migrations: std.ArrayList(Migration) = .empty };
 const Definition = struct { native: *NativeDefinition, token: c.JSValue };
-const Event = struct { seq: u64, changes: json.Owned };
+const Event = struct {
+    seq: u64,
+    changes: json.Owned,
+    ready: bool = true,
+    index: ?owner_index.Index = null,
+    fn deinit(self: *Event) void {
+        self.changes.deinit();
+        if (self.index) |*index| index.deinit();
+    }
+};
 const DispatchPhase = enum(u8) { pending, active, done };
 const Entry = struct {
     manager: *Manager,
@@ -66,7 +76,7 @@ const PendingPhase = struct {
     allocation_generation: u64,
 };
 const Runtime = struct { entry: *Entry, session: c.JSValue, signal: c.JSValue, context: c.JSValue, agent: c.JSValue, snapshot: c.JSValue };
-const RuntimeMethod = enum(c_int) { getTask, outcomes, conversation, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc, agent, env, context, sleep, waitForTask, abortOwned };
+const RuntimeMethod = enum(c_int) { getTask, outcomes, conversation, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc, agent, env, context, sleep, waitForTask, ownedTasks, abortOwned };
 const Waiter = struct { id: ?u64, conversation: ?u64, resolve: c.JSValue, reject: c.JSValue, context: c.JSValue };
 const Signal = struct { entry: *Entry, value: c.JSValue, context: c.JSValue };
 const Sleeper = struct { runtime: c.JSValue, until: f64, context: c.JSValue, resolve: c.JSValue, reject: c.JSValue };
@@ -89,6 +99,9 @@ pub const Manager = struct {
     mutex: std.Io.Mutex = .init,
     waiters: std.ArrayList(Waiter) = .empty,
     terminal_tasks: std.AutoHashMapUnmanaged(u64, json.Owned) = .empty,
+    // Source's #live owns committed copies; Storage reads must not replace
+    // them. Terminal publications release these records immediately.
+    live_task_records: std.AutoHashMapUnmanaged(u64, json.Owned) = .empty,
     missing_tasks: std.AutoHashMapUnmanaged(u64, void) = .empty,
     pending_reads: std.AutoHashMapUnmanaged(u64, u64) = .empty,
     read_queries: std.ArrayList(ReadQuery) = .empty,
@@ -115,7 +128,10 @@ pub const Manager = struct {
     custom_clock: bool = false,
     clock_callback: c.JSValue,
     vm_owner: ?c.JSValue = null,
-    published_graph: ?*backend.memory.State = null,
+    published_index: ?owner_index.Index = null,
+    pending_index: ?owner_index.Index = null,
+    prepared_publication_index: ?owner_index.Index = null,
+    prepared_publication_seq: ?u64 = null,
     abort_controls: @import("native_durable_abort_control.zig").Queue = .{},
     task_aborts: @import("native_durable_task_abort.zig").Queue = .{},
     active_dispatches: usize = 0,
@@ -173,7 +189,9 @@ pub const Manager = struct {
         self.abort_controls.deinit(self.engine);
         for (self.join_waiters.items) |resolve| self.engine.freeValue(resolve);
         self.join_waiters.deinit(self.engine.gpa);
-        if (self.published_graph) |graph| graph.destroy(self.engine.gpa);
+        if (self.published_index) |*index| index.deinit();
+        if (self.pending_index) |*index| index.deinit();
+        if (self.prepared_publication_index) |*index| index.deinit();
         self.broker.deinit();
         for (self.definitions.items) |definition| {
             for (definition.native.migrations.items) |*migration| {
@@ -184,13 +202,15 @@ pub const Manager = struct {
             self.engine.gpa.destroy(definition.native);
         }
         self.definitions.deinit(self.engine.gpa);
-        for (self.events.items) |*event| event.changes.deinit();
+        for (self.events.items) |*event| event.deinit();
         self.events.deinit(std.heap.page_allocator);
         self.ledger.deinit(std.heap.page_allocator);
         self.waiters.deinit(self.engine.gpa);
         var terminal = self.terminal_tasks.valueIterator();
         while (terminal.next()) |item| item.deinit();
         self.terminal_tasks.deinit(self.engine.gpa);
+        self.clearLiveTaskRecords();
+        self.live_task_records.deinit(self.engine.gpa);
         self.missing_tasks.deinit(self.engine.gpa);
         self.pending_reads.deinit(self.engine.gpa);
         self.read_queries.deinit(std.heap.page_allocator);
@@ -307,24 +327,89 @@ pub const Manager = struct {
         errdefer changes.deinit();
         changes.value = try json.clone(changes.arena.allocator(), event.changes);
         self.mutex.lockUncancelable(self.lease.value.io);
-        self.events.append(std.heap.page_allocator, .{ .seq = event.seq, .changes = changes }) catch |err| {
+        // Native Session runs internal observers before external subscribers.
+        // Usually the scheduler has already prepared this exact sequence's
+        // index. The reverse order is also supported, without draining an
+        // event before the corresponding internal tracking has completed.
+        if (self.prepared_publication_index != null and self.prepared_publication_seq != event.seq) {
+            self.mutex.unlock(self.lease.value.io);
+            return error.PublicationOwnershipIndexSequenceMismatch;
+        }
+        const prepared = self.prepared_publication_index;
+        self.events.append(std.heap.page_allocator, .{ .seq = event.seq, .changes = changes, .index = prepared, .ready = prepared != null or self.lease.value.ownerThread.load(.acquire) == 0 }) catch |err| {
             self.mutex.unlock(self.lease.value.io);
             return err;
         };
+        self.prepared_publication_index = null;
+        self.prepared_publication_seq = null;
+        // The new publication's snapshot supersedes earlier load-only jobs.
+        // Keeping one would restore older ownership after this event drains.
+        if (self.pending_index) |*previous| previous.deinit();
+        self.pending_index = null;
         self.mutex.unlock(self.lease.value.io);
         if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
+    }
+    fn forwardIndex(raw: ?*anyopaque, seq: ?u64, index: *const owner_index.Index) !void {
+        const self: *Manager = @ptrCast(@alignCast(raw.?));
+        var copied = try index.duplicate(std.heap.page_allocator);
+        errdefer copied.deinit();
+        self.mutex.lockUncancelable(self.lease.value.io);
+        if (seq) |committed| {
+            for (self.events.items) |*event| if (event.seq == committed) {
+                if (event.index) |*previous| previous.deinit();
+                event.index = copied;
+                event.ready = true;
+                self.mutex.unlock(self.lease.value.io);
+                if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
+                return;
+            };
+            if (self.prepared_publication_index != null) {
+                self.mutex.unlock(self.lease.value.io);
+                return error.PublicationOwnershipIndexOverlap;
+            }
+            self.prepared_publication_index = copied;
+            self.prepared_publication_seq = committed;
+            self.mutex.unlock(self.lease.value.io);
+            return;
+        }
+        if (self.pending_index) |*previous| previous.deinit();
+        self.pending_index = copied;
+        self.mutex.unlock(self.lease.value.io);
+        if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
+    }
+    fn adoptIndex(self: *Manager, index: *?owner_index.Index) void {
+        if (index.*) |next| {
+            if (self.published_index) |*previous| previous.deinit();
+            self.published_index = next;
+            index.* = null;
+        }
+    }
+    fn publishedIdle(self: *Manager, conversation: ?u64) !bool {
+        const index = if (self.published_index) |*current| current else return error.TaskPublicationIndexUnavailable;
+        return index.idle(self.engine.gpa, conversation);
+    }
+    fn publicationPending(self: *Manager) bool {
+        self.mutex.lockUncancelable(self.lease.value.io);
+        defer self.mutex.unlock(self.lease.value.io);
+        return self.events.items.len != 0 and !self.events.items[0].ready;
     }
     pub fn deliver(raw: ?*anyopaque) !void {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
         while (true) {
             self.mutex.lockUncancelable(self.lease.value.io);
             if (self.events.items.len == 0) {
+                self.adoptIndex(&self.pending_index);
+                self.mutex.unlock(self.lease.value.io);
+                return;
+            }
+            if (!self.events.items[0].ready) {
                 self.mutex.unlock(self.lease.value.io);
                 return;
             }
             var event = self.events.orderedRemove(0);
             self.mutex.unlock(self.lease.value.io);
-            defer event.changes.deinit();
+            defer event.deinit();
+            self.adoptIndex(&event.index);
             try self.cachePublication(event.changes.value);
             const parent = try durable.state(self.engine, self.session);
             try durable.deliverPublication(parent, &.{ .seq = event.seq, .changes = event.changes.value });
@@ -336,26 +421,25 @@ pub const Manager = struct {
             const kind = try json.asString(try json.required(change, "type"));
             if (std.mem.eql(u8, kind, "task") or std.mem.eql(u8, kind, "conversation")) self.drive_requested = true;
         }
-        if (self.published_graph) |previous| {
-            var relevant = false;
-            for (changes.array.items) |change| {
-                const kind = try json.asString(try json.required(change, "type"));
-                if (std.mem.eql(u8, kind, "task") or std.mem.eql(u8, kind, "conversation")) relevant = true;
-            }
-            if (relevant) {
-                const next = try previous.duplicate(self.engine.gpa);
-                errdefer next.destroy(self.engine.gpa);
-                for (changes.array.items) |change| {
-                    const kind = try json.asString(try json.required(change, "type"));
-                    const table: backend.memory.Table = if (std.mem.eql(u8, kind, "task")) .task else if (std.mem.eql(u8, kind, "conversation")) .conversation else continue;
-                    const record = try json.required(change, "value");
-                    const id = try json.asInteger(try json.required(record, "id"));
-                    try next.rows.put(id, .{ .table = table, .record = try graphRecord(next.arena.allocator(), table, record), .commitSeq = 0 });
-                }
-                self.published_graph = next;
-                previous.destroy(self.engine.gpa);
-            }
+        if (self.published_index == null) self.published_index = owner_index.Index.init(self.engine.gpa);
+        const index = &self.published_index.?;
+        for (changes.array.items) |change| {
+            if (!std.mem.eql(u8, try json.asString(try json.required(change, "type")), "conversation")) continue;
+            const record = try json.required(change, "value");
+            const id = try json.asInteger(try json.required(record, "id"));
+            if (!index.edges.contains(id)) try index.setEdge(id, if (json.get(record, "owner")) |owner| try json.asInteger(try json.required(owner, "taskId")) else null);
         }
+        for (changes.array.items) |change| {
+            if (!std.mem.eql(u8, try json.asString(try json.required(change, "type")), "task")) continue;
+            const record = try json.required(change, "value");
+            const model = @import("../durable/task_state.zig");
+            const status = try model.status(record);
+            var members: std.ArrayList(u64) = .empty;
+            defer members.deinit(self.engine.gpa);
+            if (status == .waiting) for ((try json.required(try json.required(record, "state"), "on")).array.items) |member| try members.append(self.engine.gpa, try json.asInteger(member));
+            try index.track(.{ .id = try model.number(record, "id"), .link = .{ .conversation = try model.number(record, "conversationId"), .owner = if (json.get(record, "owner")) |owner| try json.asInteger(owner) else null, .background = try model.flag(record, "background") }, .status = @enumFromInt(@intFromEnum(status)), .abort_requested = try model.flag(record, "abortRequested"), .failed_outcome = try model.failed(record), .wait_on = members.items });
+        }
+        try index.sweep();
         // The owner sees an immutable, owned committed publication. Retain
         // terminal task records for reads while the scheduler is committing.
         // This also prevents a fixed-period owner poll from starving behind
@@ -364,6 +448,7 @@ pub const Manager = struct {
             if (!std.mem.eql(u8, try json.asString(try json.required(change, "type")), "task")) continue;
             const record = try json.required(change, "value");
             const id = try json.asInteger(try json.required(record, "id"));
+            try self.cacheLiveTaskRecord(record);
             // A serialized publication supersedes any earlier requested read.
             self.retireRead(id);
             _ = self.missing_tasks.remove(id);
@@ -392,6 +477,28 @@ pub const Manager = struct {
         // before finishing a phase aborts its invocation signal. A later poll
         // cannot decide which of those already-ordered events won.
         try settlePublishedWaiters(self, false);
+    }
+    fn clearLiveTaskRecords(self: *Manager) void {
+        var records = self.live_task_records.valueIterator();
+        while (records.next()) |record| record.deinit();
+        self.live_task_records.clearRetainingCapacity();
+    }
+    fn cacheLiveTaskRecord(self: *Manager, record: json.Value) !void {
+        if (self.closed) return;
+        const id = try json.asInteger(try json.required(record, "id"));
+        if (!try @import("../durable/task_state.zig").live(record)) {
+            if (self.live_task_records.fetchRemove(id)) |removed| {
+                var previous = removed.value;
+                previous.deinit();
+            }
+            return;
+        }
+        var copied = try json.Owned.empty(self.engine.gpa);
+        errdefer copied.deinit();
+        copied.value = try json.clone(copied.arena.allocator(), record);
+        const slot = try self.live_task_records.getOrPut(self.engine.gpa, id);
+        if (slot.found_existing) slot.value_ptr.deinit();
+        slot.value_ptr.* = copied;
     }
     fn requestWaiterRead(self: *Manager, id: u64) !void {
         if (self.pending_reads.contains(id)) return;
@@ -494,6 +601,10 @@ pub const Manager = struct {
             // but before this acquire observes invocation retirement. Admit it
             // before firing the phase signal, as Source's commit observer does.
             if (!self.closed) try Manager.deliver(self);
+            // The observer has enqueued this publication, but its ownership
+            // tracking may still be finishing on the native line. Retiring the
+            // signal now would cancel waits before that committed event wins.
+            if (!self.closed and self.publicationPending()) continue;
             // Delivery and abort listeners may reenter this pump and retire or
             // reallocate the signal array. Re-find its retained private owner.
             if (self.signalIndex(entry, value) == null) continue;
@@ -716,6 +827,7 @@ pub const Manager = struct {
     pub fn retire(self: *Manager) void {
         if (self.closed) return;
         self.closed = true;
+        self.clearLiveTaskRecords();
         if (durable.state(self.engine, self.session)) |native| {
             // Source's failed promise ends an already-observing abort join at
             // failure admission, before cleanup can finish the held run.
@@ -884,12 +996,18 @@ const Hub = struct {
             while (true) {
                 manager.mutex.lockUncancelable(manager.lease.value.io);
                 if (manager.events.items.len == 0) {
+                    manager.adoptIndex(&manager.pending_index);
+                    manager.mutex.unlock(manager.lease.value.io);
+                    break;
+                }
+                if (!manager.events.items[0].ready) {
                     manager.mutex.unlock(manager.lease.value.io);
                     break;
                 }
                 var event = manager.events.orderedRemove(0);
                 manager.mutex.unlock(manager.lease.value.io);
-                defer event.changes.deinit();
+                defer event.deinit();
+                manager.adoptIndex(&event.index);
                 try manager.cachePublication(event.changes.value);
                 const parent = try durable.state(engine, manager.session);
                 try durable.deliverPublication(parent, &.{ .seq = event.seq, .changes = event.changes.value });
@@ -1053,11 +1171,17 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     errdefer engine.freeValue(snapshot);
     const clock_callback = try sdk.get(engine, options, "now");
     errdefer engine.freeValue(clock_callback);
-    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = c.JS_DupValue(engine.context, context), .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
+    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = c.JS_DupValue(engine.context, context), .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .index_changed = Manager.forwardIndex, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
     owner.next_generation += 1;
     errdefer {
         self.closed = true;
-        if (self.published_graph) |graph| graph.destroy(engine.gpa);
+        self.clearLiveTaskRecords();
+        self.live_task_records.deinit(engine.gpa);
+        if (self.published_index) |*index| index.deinit();
+        if (self.pending_index) |*index| index.deinit();
+        if (self.prepared_publication_index) |*index| index.deinit();
+        for (self.events.items) |*event| event.deinit();
+        self.events.deinit(std.heap.page_allocator);
         self.scheduler.deinit();
         for (self.definitions.items) |definition| {
             engine.freeValue(definition.token);
@@ -1090,28 +1214,17 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     if (native.session_lease.?.adapter) |adapter| try adapter.loadSchedulerRecords(true);
     const initial = try self.lease.value.storage.snapshot(engine.gpa);
     defer initial.destroy(engine.gpa);
-    const graph = try backend.memory.State.create(engine.gpa);
-    self.published_graph = graph;
+    if (self.published_index) |*index| index.deinit();
+    self.published_index = try self.scheduler.ownership_index.duplicate(engine.gpa);
+    if (self.pending_index) |*index| index.deinit();
+    self.pending_index = null;
     var rows = initial.rows.iterator();
     while (rows.next()) |row| {
         const table = row.value_ptr.table;
         if (table != .task and table != .conversation) continue;
-        try graph.rows.put(row.key_ptr.*, .{ .table = table, .record = try graphRecord(graph.arena.allocator(), table, row.value_ptr.record), .commitSeq = 0 });
+        if (table == .task) try self.cacheLiveTaskRecord(row.value_ptr.record);
     }
     owner.managers.appendAssumeCapacity(self);
-}
-fn graphRecord(allocator: std.mem.Allocator, table: backend.memory.Table, record: json.Value) !json.Value {
-    var result: json.Value = .{ .object = .empty };
-    try result.object.put(allocator, "id", try json.clone(allocator, try json.required(record, "id")));
-    if (json.get(record, "owner")) |owner| try result.object.put(allocator, "owner", try json.clone(allocator, owner));
-    if (table == .task) {
-        try result.object.put(allocator, "conversationId", try json.clone(allocator, try json.required(record, "conversationId")));
-        try result.object.put(allocator, "background", try json.clone(allocator, try json.required(record, "background")));
-        var state: json.Value = .{ .object = .empty };
-        try state.object.put(allocator, "status", try json.clone(allocator, try json.required(try json.required(record, "state"), "status")));
-        try result.object.put(allocator, "state", state);
-    }
-    return result;
 }
 fn loadDefinitions(self: *Manager) !void {
     const engine = self.engine;
@@ -1278,7 +1391,7 @@ fn runtimeObject(self: *Manager, entry: *Entry, record: json.Value) !c.JSValue {
     inline for (std.meta.fields(RuntimeMethod)) |operation| {
         const arity: c_int = switch (@as(RuntimeMethod, @enumFromInt(operation.value))) {
             .now, .entry, .snapshot, .snapshotAsOf, .watchDoc => 0,
-            .report, .memo, .agent, .env => 1,
+            .report, .memo, .agent, .env, .ownedTasks => 1,
             .context => 3,
             else => 2,
         };
@@ -1327,8 +1440,26 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
     const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
     // Source's conversation read and binding.check only test invocation end;
     // the operation's supplied context carries cancellation independently.
-    if (operation == .conversation or operation == .abortOwned or operation == .getTask or operation == .outcomes or operation == .entry) try invocationLive(self) else try active(self);
+    const memo_read = operation == .memo and args.len == 2;
+    if (operation == .conversation or operation == .abortOwned or operation == .getTask or operation == .outcomes or operation == .entry or operation == .ownedTasks or memo_read) try invocationLive(self) else try active(self);
     const owner = self.entry.manager;
+    if (memo_read) {
+        // Source's memo read observes its live map immediately, ignores the
+        // supplied Context, and performs no Storage read or mutation.
+        try Manager.deliver(owner);
+        const name = try engine.toString(args[0]);
+        defer engine.gpa.free(name);
+        const value = if (owner.live_task_records.get(self.entry.runtime.taskId())) |record| if (json.get(record.value, "memos")) |memos| if (json.get(memos, name)) |winner| try durable.jsValue(engine, winner) else c.pi_js_undefined() else c.pi_js_undefined() else c.pi_js_undefined();
+        defer engine.freeValue(value);
+        return sdk.promise(engine, value);
+    }
+    if (operation == .ownedTasks) {
+        const context = if (args.len > 0) args[0] else c.pi_js_undefined();
+        var captures = [_]c.JSValue{ receiver, context };
+        const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, ownedTasksRead, 0, 0, captures.len, &captures));
+        defer engine.freeValue(callback);
+        return durable.enqueueRead(engine, self.session, callback, context);
+    }
     if (operation == .abortOwned) {
         const bound = try @import("native_durable_context.zig").withAbortSignal(engine, self.signal, if (args.len > 1) args[1] else c.pi_js_undefined());
         defer engine.freeValue(bound);
@@ -1507,6 +1638,27 @@ fn invocationLive(self: *Runtime) !void {
     const failure = try endedError(engine, self.entry.runtime.taskId());
     _ = try engine.checked(c.JS_Throw(engine.context, failure));
 }
+fn ownedTasksRead(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return ownedTasksOnLine(engine, data[0], data[1]) catch |err| durable.reject(engine, err);
+}
+fn ownedTasksOnLine(engine: *Engine, receiver: c.JSValue, context: c.JSValue) !c.JSValue {
+    const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
+    const owner = self.entry.manager;
+    // Admit publications from the commit preceding this serialized read;
+    // external Storage reads never enter this committed live-record map.
+    try Manager.deliver(owner);
+    try invocationLive(self);
+    try durable.checkCancellation(engine, context);
+    // This callback owns the real Session line, so the scheduler's committed
+    // downward index is stable while the VM admits its publication copies.
+    const ids = try owner.scheduler.ownership_index.directOwned(engine.gpa, self.entry.runtime.taskId());
+    defer engine.gpa.free(ids);
+    const result = try sdk.array(engine);
+    errdefer engine.freeValue(result);
+    for (ids) |id| try sdk.append(engine, result, try durable.jsValue(engine, owner.live_task_records.get(id).?.value));
+    return result;
+}
 fn runtimeAbortOwnedMarkedValue(engine: *Engine, terminal: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
     if (c.JS_ToBool(engine.context, terminal) != 0) return c.pi_js_undefined();
     const runtime = runtimeState(engine, data[0]) orelse return error.InvalidTaskRuntime;
@@ -1521,6 +1673,132 @@ fn runtimeAbortOwnedMarkedValue(engine: *Engine, terminal: c.JSValue, data: [*c]
     runtime.entry.runtime.suspendWait();
     errdefer runtime.entry.runtime.resumeWait();
     return sdk.invoke(engine, pending, "then", &.{ fulfilled, rejected });
+}
+fn diagnoseSourceFailure(engine: *Engine, name: []const u8, cause: anyerror) void {
+    std.debug.print("Actual ea {s} {s}: {s}\n", .{ name, @errorName(cause), engine.last_error orelse "no VM diagnostic" });
+    const raw = engine.native_durable_control_context orelse return;
+    const owner: *Hub = @ptrCast(@alignCast(raw));
+    for (owner.managers.items) |manager| {
+        const failure = manager.lease.value.failure();
+        std.debug.print("Native Session original={s} closed={} queued={d} pending={} preparedSeq={?d} dispatches={d}\n", .{ if (failure) |err| @errorName(err) else "none", manager.closed, manager.events.items.len, manager.publicationPending(), manager.prepared_publication_seq, manager.active_dispatches });
+    }
+}
+test "native durable VM ownedTasks actual ea direct live copies cancellation and extracted aliases" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-ea-ownedtasks-program.txt"), "actual-ea-ownedtasks") catch |err| {
+        diagnoseSourceFailure(engine, "ownedTasks", err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "ownedTasksTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-ea-ownedtasks.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual ea ownedTasks trace: {s}\n", .{encoded});
+        return error.SourceOwnedTasksMismatch;
+    }
+}
+test "native durable VM actual ea retention uses real Harness index sizes and late Storage owner reloads" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    try @import("timers.zig").install(engine, std.testing.io);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-ea-retention-program.txt"), "actual-ea-retention") catch |err| {
+        diagnoseSourceFailure(engine, "retention", err);
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "retentionTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-ea-retention.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual ea retention trace: {s}\n", .{encoded});
+        return error.SourceRetentionMismatch;
+    }
+}
+test "native durable VM ownership publication index readiness preserves committed live waiter barriers" {
+    const gpa = std.testing.allocator;
+    const engine = try Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const options = try engine.eval("({registry:{snapshot(){return{tasks(){return[]}}}}})", "publication-index-options", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(options);
+    try attach(engine, session, options, c.pi_js_undefined());
+    const manager = try getManager(engine, session);
+    var live = try json.Owned.parse(gpa, "[{\"type\":\"conversation\",\"value\":{\"id\":1}},{\"type\":\"task\",\"value\":{\"id\":2,\"kind\":\"fixture.ready\",\"version\":1,\"conversationId\":1,\"input\":null,\"background\":false,\"abortRequested\":false,\"state\":{\"status\":\"running\",\"checkpoint\":{\"phase\":\"hold\"}}}}]");
+    defer live.deinit();
+    var original = owner_index.Index.init(gpa);
+    defer original.deinit();
+    try Manager.forwardIndex(manager, null, &original);
+    const Check = struct {
+        manager: *Manager,
+        changes: json.Value,
+        fn apply(raw: ?*anyopaque, _: *session_mod.Transaction, _: @import("../durable/types.zig").Context) !json.Value {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            // Exercise the actual reserved Session line, without changing its
+            // owner word or manufacturing a ready flag in test code.
+            try Manager.forward(self.manager, &.{ .seq = 77, .changes = self.changes });
+            try std.testing.expect(self.manager.pending_index == null);
+            try Manager.deliver(self.manager);
+            try std.testing.expectEqual(@as(usize, 1), self.manager.events.items.len);
+            try std.testing.expect(self.manager.publicationPending());
+            try std.testing.expect(!self.manager.live_task_records.contains(2));
+            var tracked = owner_index.Index.init(self.manager.engine.gpa);
+            defer tracked.deinit();
+            try tracked.observe(&.{.{ .id = 1 }}, &.{.{ .id = 2, .link = .{ .conversation = 1 }, .status = .running }});
+            try Manager.forwardIndex(self.manager, 77, &tracked);
+            try Manager.deliver(self.manager);
+            try std.testing.expectEqual(@as(usize, 0), self.manager.events.items.len);
+            try std.testing.expect(!self.manager.publicationPending());
+            try std.testing.expect(self.manager.live_task_records.contains(2));
+            try std.testing.expect(!try self.manager.publishedIdle(null));
+            // Production ordering: the internal observer finishes before the
+            // external subscriber forwards the same committed sequence.
+            try Manager.forwardIndex(self.manager, 78, &tracked);
+            try std.testing.expectEqual(@as(?u64, 78), self.manager.prepared_publication_seq);
+            try Manager.deliver(self.manager);
+            try std.testing.expectEqual(@as(usize, 0), self.manager.events.items.len);
+            try Manager.forward(self.manager, &.{ .seq = 78, .changes = self.changes });
+            try std.testing.expect(self.manager.prepared_publication_index == null);
+            try Manager.deliver(self.manager);
+            try std.testing.expect(!self.manager.publicationPending());
+            try std.testing.expect(self.manager.live_task_records.contains(2));
+            return .null;
+        }
+    };
+    var check: Check = .{ .manager = manager, .changes = live.value };
+    var completed = try manager.lease.value.commit(Check.apply, &check, .{}, .{});
+    completed.deinit();
+    // The earlier load-only snapshot must not undo the newer publication.
+    try Manager.deliver(manager);
+    try std.testing.expectEqual(@as(usize, 1), manager.published_index.?.sizes().live);
+    const promise = try appendTestWaiter(manager, 2, c.pi_js_undefined());
+    defer engine.freeValue(promise);
+    try settleWaiters(manager);
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, promise));
 }
 fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();
@@ -1775,12 +2053,19 @@ fn runtimeReadOwned(engine: *Engine, receiver: c.JSValue, args: c.JSValue, opera
         const Memo = struct {
             name: []const u8,
             value: json.Value,
+            winner: ?json.Owned = null,
             fn apply(raw: ?*anyopaque, tx: *session_mod.Transaction, current: json.Value) !?json.Value {
                 const change: *@This() = @ptrCast(@alignCast(raw.?));
                 const a = tx.owned.arena.allocator();
                 var next = try json.clone(a, current);
                 var map = json.get(next, "memos") orelse json.Value{ .object = .empty };
-                if (json.get(map, change.name) != null) return null;
+                if (json.get(map, change.name)) |winner| {
+                    var copied = try json.Owned.empty(tx.gpa);
+                    errdefer copied.deinit();
+                    copied.value = try json.clone(copied.arena.allocator(), winner);
+                    change.winner = copied;
+                    return null;
+                }
                 try map.object.put(a, try a.dupe(u8, change.name), try json.clone(a, change.value));
                 try next.object.put(a, "memos", map);
                 try tx.setTask(next);
@@ -1788,8 +2073,13 @@ fn runtimeReadOwned(engine: *Engine, receiver: c.JSValue, args: c.JSValue, opera
             }
         };
         var change: Memo = .{ .name = name, .value = value.value };
-        try self.entry.runtime.commit(Memo.apply, &change);
+        defer if (change.winner) |*winner| winner.deinit();
+        if (!try self.entry.runtime.tryCommit(Memo.apply, &change)) {
+            var captures = [_]c.JSValue{ receiver, args, c.pi_js_undefined(), self.session, c.pi_js_undefined() };
+            return @import("native_durable_storage.zig").deferRuntimeMemo(engine, &captures);
+        }
         try Manager.deliver(owner);
+        if (change.winner) |winner| return durable.jsValue(engine, winner.value);
         return durable.jsValue(engine, value.value);
     }
     return error.UnknownRuntimeOperation;
@@ -1868,11 +2158,14 @@ fn runtimeCommitQueued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.
 pub fn retryRuntimeCommit(engine: *Engine, captures: []const c.JSValue) c.JSValue {
     return runtimeCommitQueued(engine.context, c.pi_js_undefined(), 0, null, 0, @constCast(captures.ptr));
 }
+pub fn retryRuntimeMemo(engine: *Engine, captures: []const c.JSValue) c.JSValue {
+    return runtimeReadQueued(engine.context, c.pi_js_undefined(), 0, null, @intFromEnum(RuntimeMethod.memo), @constCast(captures.ptr));
+}
 pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c.JSValue {
     if (self.closed) return self.engine.checked(c.JS_Throw(self.engine.context, try schedulerClosedError(self)));
     // Source's idle fast path never registers a waiter or observes its context.
     // Public Harness waits resume scheduling before reaching this check.
-    if (id == null and try scheduling.idleState(self.published_graph orelse return error.TaskPublicationGraphUnavailable, conversation)) {
+    if (id == null and try self.publishedIdle(conversation)) {
         try self.@"resume"();
         return sdk.promise(self.engine, c.pi_js_undefined());
     }
@@ -1897,6 +2190,18 @@ pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c
     self.waiters.appendAssumeCapacity(.{ .id = id, .conversation = conversation, .resolve = c.JS_DupValue(self.engine.context, functions[0]), .reject = c.JS_DupValue(self.engine.context, functions[1]), .context = c.JS_DupValue(self.engine.context, context) });
     try self.@"resume"();
     return promise;
+}
+/// Real committed ownership structures admitted on the VM owner. The mirror
+/// contains live work and only the ended links that still connect it; it never
+/// counts historical Storage rows or invents values for an absent scheduler.
+pub fn indexSizes(engine: *Engine, session: c.JSValue) !c.JSValue {
+    const manager = try getManager(engine, session);
+    const index = if (manager.published_index) |*current| current else return error.TaskPublicationIndexUnavailable;
+    const sizes = index.sizes();
+    const result = try sdk.object(engine);
+    errdefer engine.freeValue(result);
+    inline for (std.meta.fields(owner_index.Sizes)) |field| try sdk.put(engine, result, field.name, c.JS_NewInt64(engine.context, @intCast(@field(sizes, field.name))));
+    return result;
 }
 pub fn schedulerClosedError(self: *Manager) !c.JSValue {
     const native = try durable.state(self.engine, self.session);
@@ -2006,9 +2311,7 @@ fn settlePublishedWaiters(self: *Manager, expire_contexts: bool) !void {
             // Source registers live-task waits against #live and resolves them
             // only at publication admission. A native storage swap can become
             // visible between waiter iterations, before its queued VM event.
-            if (self.published_graph) |graph| if (graph.rows.get(id)) |published| {
-                if (published.table == .task and try @import("../durable/task_state.zig").live(published.record)) continue;
-            };
+            if (self.live_task_records.contains(id)) continue;
             // A scheduler commit can swap and free the Memory backend state.
             // The owner must not block on the Session line: a worker holding it
             // can itself be awaiting an owner-VM transaction callback.
@@ -2035,7 +2338,7 @@ fn settlePublishedWaiters(self: *Manager, expire_contexts: bool) !void {
                 value = try messageError(self.engine, message);
                 rejected = true;
             }
-        } else if (!try scheduling.idleState(self.published_graph orelse return error.TaskPublicationGraphUnavailable, waiter.conversation)) continue;
+        } else if (!try self.publishedIdle(waiter.conversation)) continue;
         defer self.engine.freeValue(value);
         var args = [_]c.JSValue{value};
         const result = try self.engine.checked(c.JS_Call(self.engine.context, if (rejected) waiter.reject else waiter.resolve, c.pi_js_undefined(), 1, &args));

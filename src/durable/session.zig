@@ -23,6 +23,7 @@ pub const Result = struct {
 };
 const Subscription = struct { id: u64, callback: Listener, context: ?*anyopaque, internal: bool = false };
 const CloseSubscription = struct { id: u64, callback: CloseListener, context: ?*anyopaque };
+const MaintenanceSubscription = struct { id: u64, callback: *const fn (?*anyopaque) anyerror!void, context: ?*anyopaque };
 /// All Session components use this field, including reads outside its mutation
 /// line. Deriving the containing owner keeps init-by-value and moved fixtures
 /// valid without a stale self pointer.
@@ -147,6 +148,7 @@ pub const Session = struct {
     closeMutex: std.Io.Mutex = .init,
     closeOwnerThread: std.atomic.Value(std.Thread.Id) = .init(0),
     closeNotified: bool = false,
+    maintenance: std.ArrayList(MaintenanceSubscription) = .empty,
     source_clock: ?*const fn (?*anyopaque) i64 = null,
     source_clock_context: ?*anyopaque = null,
     pub fn init(gpa: std.mem.Allocator, io: std.Io, storage: backend.Backend) Session {
@@ -157,6 +159,7 @@ pub const Session = struct {
         self.storage.drain();
         self.closeListeners.deinit(self.gpa);
         self.listeners.deinit(self.gpa);
+        self.maintenance.deinit(self.gpa);
         self.* = undefined;
     }
     fn healthy(self: *const Session) !void {
@@ -201,6 +204,37 @@ pub const Session = struct {
             return;
         };
     }
+    /// A separate native maintenance job after the current operation has
+    /// released its Transaction, including rejected and read-only operations.
+    /// Jobs run while the line remains reserved and must not do I/O, enter the
+    /// Session again, or mutate registrations. This lets loaded owner chains
+    /// survive the whole operation that may publish new work below them.
+    pub fn subscribeMaintenance(self: *Session, callback: *const fn (?*anyopaque) anyerror!void, context: ?*anyopaque) !u64 {
+        try self.mutex.lock(self.io);
+        defer self.mutex.unlock(self.io);
+        try self.healthy();
+        const id = self.nextSubscription.fetchAdd(1, .monotonic);
+        try self.maintenance.append(self.gpa, .{ .id = id, .callback = callback, .context = context });
+        return id;
+    }
+    pub fn unsubscribeMaintenance(self: *Session, id: u64) void {
+        self.mutex.lockUncancelable(self.io);
+        defer self.mutex.unlock(self.io);
+        for (self.maintenance.items, 0..) |item, index| if (item.id == id) {
+            _ = self.maintenance.orderedRemove(index);
+            return;
+        };
+    }
+    fn maintainLine(self: *Session) void {
+        self.mutex.lockUncancelable(self.io);
+        var cause: ?anyerror = null;
+        for (self.maintenance.items) |job| job.callback(job.context) catch |err| {
+            cause = err;
+            break;
+        };
+        self.mutex.unlock(self.io);
+        if (cause) |err| _ = self.fail(err);
+    }
     pub fn subscribeClose(self: *Session, callback: CloseListener, context: ?*anyopaque) !u64 {
         try self.healthy();
         try self.closeMutex.lock(self.io);
@@ -243,7 +277,9 @@ pub const Session = struct {
             self.wakeLine();
             self.notifyClose();
         }
-        return self.commitOnLine(callback, callback_context, scope, context);
+        const result = self.commitOnLine(callback, callback_context, scope, context);
+        self.maintainLine();
+        return result;
     }
     /// Owner pumps must never wait for a worker which may itself await the VM.
     /// A busy line admits nothing; the caller retains its request for a later pump.
@@ -257,7 +293,9 @@ pub const Session = struct {
             self.wakeLine();
             self.notifyClose();
         }
-        return try self.commitOnLine(callback, callback_context, scope, context);
+        const result = self.commitOnLine(callback, callback_context, scope, context);
+        self.maintainLine();
+        return try result;
     }
     fn commitOnLine(self: *Session, callback: CommitFn, callback_context: ?*anyopaque, scope: Scope, context: types.Context) !Result {
         try self.healthy();

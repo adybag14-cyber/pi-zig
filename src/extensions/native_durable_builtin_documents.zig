@@ -23,18 +23,19 @@ pub fn install(engine: *Engine, exports: c.JSValue) !void {
     }
     const nested = try sdk.object(engine);
     defer engine.freeValue(nested);
-    try sdk.put(engine, nested, "kind", try sdk.text(engine, "pi.tool.nested-result"));
+    try sdk.put(engine, nested, "kind", try sdk.text(engine, "pi.tool.nested-call"));
     try sdk.put(engine, nested, "version", c.JS_NewInt64(engine.context, 1));
     try sdk.put(engine, nested, "scope", try sdk.text(engine, "task"));
     try sdk.put(engine, nested, "family", c.pi_js_bool(engine.context, 1));
-    try sdk.put(engine, nested, "initial", try engine.checked(c.JS_NewCFunction(engine.context, nestedInitial, "initial", 1)));
+    try sdk.put(engine, nested, "initial", try engine.checked(c.JS_NewCFunction(engine.context, nestedInitial, "initial", 0)));
     const nested_token = try sdk.object(engine);
     errdefer engine.freeValue(nested_token);
     try sdk.put(engine, nested_token, "definition", c.JS_DupValue(engine.context, nested));
-    try sdk.put(engine, exports, "NestedResultDoc", nested_token);
+    try sdk.put(engine, exports, "NestedCallDoc", nested_token);
 }
-fn nestedInitial(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
-    return c.JS_DupValue(context, if (argc > 0) argv[0] else c.pi_js_undefined());
+fn nestedInitial(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return sdk.object(engine) catch |err| durable.reject(engine, err);
 }
 fn initial(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, operation: c_int) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);

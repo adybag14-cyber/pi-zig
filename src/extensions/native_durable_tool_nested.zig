@@ -78,21 +78,50 @@ fn execute(engine: *Engine, attempt: c.JSValue, args: []const c.JSValue) !c.JSVa
     const context = if (args.len > 2) args[2] else c.pi_js_undefined();
     const runtime = try scope.get(attempt, "runtime");
     var captured = try intrinsics(&scope, attempt);
-    const tokens: @import("native_durable_nested_call.zig").Tokens = .{ .task = try scope.get(attempt, "toolTaskToken"), .index = try scope.get(attempt, "nestedCallsToken"), .live = try scope.get(attempt, "liveToken") };
     const parent_id = try scope.get(call, "id");
     const progress = try scope.get(options, "progress");
     const resumes = c.JS_ToBool(engine.context, try scope.get(attempt, "resumes")) != 0;
-    const admission = try scope.own(@import("native_durable_nested_call.zig").admit(engine, &captured, tokens, runtime, parent_id, name, arguments, key, progress, !resumes, context) catch |err| try engine.checked(@import("native_durable.zig").rejectedPromise(engine, err)));
-    const admissions = try scope.get(attempt, "admissions");
-    _ = try scope.invoke(admissions, "push", &.{admission});
     const state = try scope.own(try vm.object(engine));
     try put(engine, state, "attempt", attempt);
     try put(engine, state, "name", name);
     try put(engine, state, "context", context);
+    try put(engine, state, "arguments", arguments);
+    try put(engine, state, "key", key);
+    try put(engine, state, "parentCallId", parent_id);
+    try put(engine, state, "progress", progress);
+    try put(engine, state, "abandonOnRestart", c.pi_js_bool(engine.context, @intFromBool(!resumes)));
+    var memo = try scope.get(attempt, "madeNestedMemo");
+    if (c.JS_IsUndefined(memo)) {
+        const label = try scope.own(try engine.checked(c.JS_NewString(engine.context, "pi.tool.madeNestedCalls")));
+        const pending = try scope.invoke(runtime, "memo", &.{ label, c.pi_js_bool(engine.context, 1), context });
+        memo = try scope.own(try awaiting.continueWith(memoSettled, engine, &captured, attempt, pending, 0));
+        try put(engine, attempt, "madeNestedMemo", memo);
+    }
+    const admission = try scope.own(try awaiting.continueWith(admitAfterMemo, engine, &captured, state, memo, 0));
+    const admissions = try scope.get(attempt, "admissions");
+    // Track admission before the memo or nested-call commit can finish, so
+    // cleanup observes every call started by this attempt.
+    _ = try scope.invoke(admissions, "push", &.{admission});
     return wait(engine, state, admission, .admitted);
 }
+fn memoSettled(engine: *Engine, attempt: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !c.JSValue {
+    if (rejected) {
+        try put(engine, attempt, "madeNestedMemo", c.pi_js_undefined());
+        return c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
+    }
+    return c.JS_DupValue(engine.context, value);
+}
+fn admitAfterMemo(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !c.JSValue {
+    if (rejected) return c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const attempt = try scope.get(state, "attempt");
+    var captured = try intrinsics(&scope, attempt);
+    const tokens: @import("native_durable_nested_call.zig").Tokens = .{ .task = try scope.get(attempt, "toolTaskToken"), .index = try scope.get(attempt, "nestedCallsToken"), .live = try scope.get(attempt, "liveToken") };
+    return @import("native_durable_nested_call.zig").admit(engine, &captured, tokens, try scope.get(attempt, "runtime"), try scope.get(state, "parentCallId"), try scope.get(state, "name"), try scope.get(state, "arguments"), try scope.get(state, "key"), try scope.get(state, "progress"), c.JS_ToBool(engine.context, try scope.get(state, "abandonOnRestart")) != 0, try scope.get(state, "context"));
+}
 fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, raw_stage: c_int) !c.JSValue {
-    if (rejected) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value)));
+    if (rejected) return c.JS_Throw(engine.context, c.JS_DupValue(engine.context, value));
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const attempt = try scope.get(state, "attempt");
@@ -106,16 +135,15 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
         },
         .settled => {
             try put(engine, state, "settled", value);
-            const id = try scope.get(state, "id");
-            const string = try scope.own(try js.global(engine, "String"));
-            const key = try scope.own(try js.call(engine, string, c.pi_js_undefined(), &.{id}));
-            const token = try scope.get(attempt, "nestedResultToken");
+            const key = try scope.get(state, "key");
+            const token = try scope.get(attempt, "nestedCallsToken");
             const owner_id = try scope.get(runtime, "taskId");
             const pending = try scope.invoke(runtime, "snapshot", &.{ token, owner_id, key, context });
             return wait(engine, state, pending, .stored);
         },
         .stored => {
-            if (!c.JS_IsUndefined(value)) return @import("native_chord_json.zig").copyJson(engine, try scope.get(value, "result"), c.pi_js_undefined());
+            const stored = if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) c.pi_js_undefined() else try scope.get(value, "result");
+            if (!c.JS_IsUndefined(stored)) return @import("native_chord_json.zig").copyJson(engine, stored, c.pi_js_undefined());
             const settled = try scope.get(state, "settled");
             const task_state = try scope.get(settled, "state");
             const outcome = try scope.get(task_state, "outcome");
