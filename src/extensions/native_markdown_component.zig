@@ -1081,7 +1081,13 @@ fn allocationProbe(gpa: std.mem.Allocator) !void {
     defer engine.beginInvocation();
     const result = engine.eval(
         \\(()=>{setCapabilities({images:null,trueColor:true,hyperlinks:true});const names=['heading','link','linkUrl','code','codeBlock','codeBlockBorder','quote','quoteBorder','hr','listBullet','bold','italic','strikethrough','underline'],theme=Object.fromEntries(names.map(name=>[name,text=>'\x1b[1m'+text+'\x1b[0m'])),text='# Heading\n\n> words **bold**\n\n- [x] first\n  - child\n\n| A | B |\n| - | - |\n| long words | 界😀 |\n\n[link](/target) $x^2$\n\n```js\nvalue\n``',md=new Markdown(text,1,1,theme,{color:text=>'FG('+text+')',bgColor:text=>'BG('+text+')',bold:true});const first=md.render(24);if(first!==md.render(24))throw Error('render cache identity');const tree=md.cachedTokens.deref();md.invalidate();md.render(16);if(md.cachedTokens.deref()!==tree)throw Error('weak token burst identity');md.setText('next');md.render(10);return true})()
-    , "markdown-owned-allocation.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| return @import("native_text_component.zig").allocationError(engine, err);
+    , "markdown-owned-allocation.js", c.JS_EVAL_TYPE_GLOBAL) catch |err| {
+        const failure = @import("native_text_component.zig").allocationError(engine, err);
+        if (failure != error.OutOfMemory) {
+            if (engine.last_error) |message| std.debug.print("Markdown allocation probe: {s}\n", .{message});
+        }
+        return failure;
+    };
     engine.freeValue(result);
     engine.finishJob();
     c.JS_RunGC(engine.runtime);

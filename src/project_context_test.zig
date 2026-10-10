@@ -14,6 +14,17 @@ test "Source f1 project context precedence ordering and nested worktree symlink 
         if (row.object.get("skipped") != null) continue;
         var scratch = std.testing.tmpDir(.{});
         defer scratch.cleanup();
+        // macOS volumes may be case-sensitive or case-insensitive. Probe the
+        // actual fixture filesystem rather than assigning Linux rules by OS.
+        try scratch.dir.writeFile(io, .{ .sub_path = ".pi-case-probe-Aa", .data = "" });
+        const case_insensitive = blk: {
+            const alternate = scratch.dir.openFile(io, ".pi-case-probe-aa", .{}) catch |err| switch (err) {
+                error.FileNotFound => break :blk false,
+                else => return err,
+            };
+            alternate.close(io);
+            break :blk true;
+        };
         var buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
         const length = try scratch.dir.realPath(io, &buffer);
         const root = buffer[0..length];
@@ -45,7 +56,12 @@ test "Source f1 project context precedence ordering and nested worktree symlink 
         if (owned.items.len != expected.len) std.debug.print("Context scenario{s} expected{} actual{}\n", .{ row.object.get("name").?.string, expected.len, owned.items.len });
         try std.testing.expectEqual(expected.len, owned.items.len);
         for (owned.items, expected) |item, prior| {
-            const path = try std.fs.path.resolve(gpa, &.{ root, prior.object.get("path").?.string });
+            const relative = prior.object.get("path").?.string;
+            const basename = std.fs.path.basename(relative);
+            const normalized_name: ?[]const u8 = if (!case_insensitive) null else if (std.mem.eql(u8, basename, "AGENTS.MD")) "AGENTS.md" else if (std.mem.eql(u8, basename, "CLAUDE.MD")) "CLAUDE.md" else null;
+            const normalized = if (normalized_name) |name| try std.mem.concat(gpa, u8, &.{ relative[0 .. relative.len - basename.len], name }) else null;
+            defer if (normalized) |value| gpa.free(value);
+            const path = try std.fs.path.resolve(gpa, &.{ root, normalized orelse relative });
             defer gpa.free(path);
             try std.testing.expectEqualStrings(path, item.path);
             try std.testing.expectEqualStrings(prior.object.get("content").?.string, item.content);
