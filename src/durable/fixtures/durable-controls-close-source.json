@@ -1,0 +1,31 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "name": "admitted-abort",
+      "before": {
+        "abortDone": false,
+        "closeDone": false
+      },
+      "abort": {
+        "error": "Harness is closed"
+      },
+      "atBackendClose": [
+        {
+          "status": "unanswered",
+          "reason": "aborted"
+        },
+        {
+          "status": "queued"
+        }
+      ]
+    },
+    {
+      "name": "admitted-conversation",
+      "lookup": {
+        "defined": true,
+        "idMatches": true
+      }
+    }
+  ]
+}

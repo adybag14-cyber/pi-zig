@@ -1,0 +1,92 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "keepWrite": true,
+      "writes": [
+        [
+          {
+            "type": "submission",
+            "index": 2,
+            "status": "unanswered",
+            "reason": "aborted"
+          },
+          {
+            "type": "submission",
+            "index": 0,
+            "status": "unanswered",
+            "reason": "aborted"
+          },
+          {
+            "type": "document.change",
+            "content": {
+              "version": 1,
+              "kind": "delta",
+              "ops": [
+                [
+                  "p",
+                  [
+                    "items"
+                  ],
+                  2,
+                  1,
+                  []
+                ],
+                [
+                  "p",
+                  [
+                    "items"
+                  ],
+                  0,
+                  1,
+                  []
+                ]
+              ]
+            }
+          }
+        ]
+      ],
+      "cache": {
+        "beforeCount": 3,
+        "afterCount": 1,
+        "replaced": true,
+        "publishedCanonical": true
+      }
+    },
+    {
+      "keepWrite": false,
+      "writes": [
+        [
+          {
+            "type": "submission",
+            "index": 1,
+            "status": "unanswered",
+            "reason": "aborted"
+          },
+          {
+            "type": "submission",
+            "index": 0,
+            "status": "unanswered",
+            "reason": "aborted"
+          },
+          {
+            "type": "document.change",
+            "content": {
+              "version": 1,
+              "kind": "base",
+              "value": {
+                "items": []
+              }
+            }
+          }
+        ]
+      ],
+      "cache": {
+        "beforeCount": 2,
+        "afterCount": 0,
+        "replaced": true,
+        "publishedCanonical": true
+      }
+    }
+  ]
+}

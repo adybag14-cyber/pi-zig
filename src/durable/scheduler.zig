@@ -10,6 +10,7 @@ const Value = json.Value;
 const Transaction = session_mod.Transaction;
 test {
     _ = @import("restart_test.zig");
+    _ = @import("harness/inbox_native.zig");
 }
 pub const Handler = *const fn (?*anyopaque, *Runtime, Value, types.Context) anyerror!void;
 pub const Initial = *const fn (?*anyopaque, std.mem.Allocator, Value) anyerror!Value;
@@ -416,10 +417,24 @@ pub const Scheduler = struct {
         result.deinit();
         try self.reconcile();
     }
+    /// Nonblocking owner admission. The returned reached IDs are owned by gpa;
+    /// background traversal waits for these tasks as well as ordinary idle.
+    pub fn tryAbortConversation(self: *Scheduler, gpa: std.mem.Allocator, conversation: u64, cross_background: bool, context: types.Context) !?[]u64 {
+        var reached: std.ArrayList(u64) = .empty;
+        defer reached.deinit(gpa);
+        var call: ScopeAbort = .{ .scheduler = self, .conversation = conversation, .cross_background = cross_background, .reached = &reached, .reached_gpa = gpa };
+        var result = (try self.session.tryCommit(ScopeAbort.apply, &call, .{}, context)) orelse return null;
+        defer result.deinit();
+        // The refill driver observes the committed marks. Do not synchronously
+        // reconcile here: a worker can acquire the Session line after release.
+        return try reached.toOwnedSlice(gpa);
+    }
     const ScopeAbort = struct {
         scheduler: *Scheduler,
         conversation: u64,
         cross_background: bool,
+        reached: ?*std.ArrayList(u64) = null,
+        reached_gpa: std.mem.Allocator = std.heap.page_allocator,
         fn apply(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
             const view = try self.scheduler.session.storage.snapshot(self.scheduler.gpa);
@@ -430,6 +445,7 @@ pub const Scheduler = struct {
                 const row = item.value_ptr.*;
                 if (row.table != .task or !try model.live(row.record) or (try model.flag(row.record, "background") and !self.cross_background)) continue;
                 if (!try graph.reaches(try model.parent(row.record), .{ .conversation = self.conversation }, self.cross_background)) continue;
+                if (self.reached) |reached| try reached.append(self.reached_gpa, item.key_ptr.*);
                 const marked = try model.abortMark(tx.owned.arena.allocator(), row.record, .request);
                 try tx.setTask(marked);
             }
@@ -870,18 +886,52 @@ pub const Scheduler = struct {
 /// Ownership traversal over an immutable committed-state view. A VM owner can
 /// apply the same rule to its publication mirror without taking the Session line.
 pub fn idleState(view: *const backend.memory.State, conversation: ?u64) !bool {
-    const graph: model.Graph = .{ .state = view };
     var rows = view.rows.iterator();
     while (rows.next()) |item| {
         const row = item.value_ptr.*;
         if (row.table != .task or !try model.live(row.record) or try model.flag(row.record, "background")) continue;
-        if (conversation) |id| {
-            if (try graph.reaches(try model.parent(row.record), .{ .conversation = id }, false)) return false;
-        } else {
-            // Root-wide idle excludes descendants hidden behind a background owner.
-            var conversations = view.rows.iterator();
-            while (conversations.next()) |root_row| if (root_row.value_ptr.table == .conversation and json.get(root_row.value_ptr.record, "owner") == null and try graph.reaches(try model.parent(row.record), .{ .conversation = root_row.key_ptr.* }, false)) return false;
-        }
+        if (try ordinaryInIdleScope(view, try model.parent(row.record), conversation)) return false;
     }
     return true;
+}
+fn ordinaryInIdleScope(view: *const backend.memory.State, start: model.Up, conversation: ?u64) !bool {
+    var at = start;
+    var remaining = view.rows.count() + 1;
+    while (remaining > 0) : (remaining -= 1) switch (at) {
+        .task => |id| {
+            // Source treats an edge not loaded yet as inside until resolved.
+            const row = view.rows.get(id) orelse return true;
+            if (row.table != .task) return true;
+            if (try model.flag(row.record, "background")) return false;
+            at = try model.parent(row.record);
+        },
+        .conversation => |id| {
+            if (conversation == id) return true;
+            const row = view.rows.get(id) orelse return true;
+            if (row.table != .conversation) return true;
+            const owner = json.get(row.record, "owner") orelse return conversation == null;
+            at = .{ .task = try json.asInteger(try json.required(owner, "taskId")) };
+        },
+    };
+    return error.TaskOwnershipCycle;
+}
+test "durable.scheduler idle publication views conservatively retain unknown ownership edges and stop at background owners" {
+    const gpa = std.testing.allocator;
+    const view = try backend.memory.State.create(gpa);
+    defer view.destroy(gpa);
+    var records = try json.Owned.parse(gpa, "[{\"id\":1},{\"id\":2},{\"id\":3,\"conversationId\":1,\"background\":false,\"state\":{\"status\":\"running\"}},{\"id\":1,\"owner\":{\"taskId\":9}},{\"id\":9,\"conversationId\":2,\"background\":true,\"state\":{\"status\":\"terminal\"}}]");
+    defer records.deinit();
+    for (records.value.array.items[0..3], 0..) |record, index| try view.rows.put(try json.asInteger(try json.required(record, "id")), .{ .table = if (index == 2) .task else .conversation, .record = record, .commitSeq = 0 });
+    try std.testing.expect(!try idleState(view, null));
+    try std.testing.expect(!try idleState(view, 1));
+    try std.testing.expect(try idleState(view, 2));
+    _ = view.rows.remove(1);
+    try std.testing.expect(!try idleState(view, null));
+    try std.testing.expect(!try idleState(view, 2));
+    try view.rows.put(1, .{ .table = .conversation, .record = records.value.array.items[3], .commitSeq = 0 });
+    try std.testing.expect(!try idleState(view, null));
+    try view.rows.put(9, .{ .table = .task, .record = records.value.array.items[4], .commitSeq = 0 });
+    try std.testing.expect(try idleState(view, null));
+    try std.testing.expect(try idleState(view, 2));
+    try std.testing.expect(!try idleState(view, 1));
 }

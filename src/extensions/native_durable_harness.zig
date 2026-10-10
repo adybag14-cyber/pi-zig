@@ -154,7 +154,7 @@ fn dispatch(engine: *Engine, receiver: c.JSValue, operation: Method, args: []con
     if (operation == .close) {
         const result = try durable.sessionDispatch(session, self.session, .close, args);
         errdefer engine.freeValue(result);
-        (try tasks.getManager(engine, self.session)).close();
+        (try tasks.getManager(engine, self.session)).retire();
         return result;
     }
     if (operation == .abortTask) {

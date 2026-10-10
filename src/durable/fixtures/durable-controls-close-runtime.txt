@@ -1,0 +1,28 @@
+import { Harness, MemoryStorage, InboxDoc, createRegistry, defineExtension, defineTask } from '@earendil-works/pi-durable';
+
+import { BACKGROUND_CONTEXT as context } from '@earendil-works/chord/context';
+
+const deferred=()=>Promise.withResolvers(),cases=[];
+{
+ let ids,captured;class Recorded extends MemoryStorage{async close(ctx){captured=await Promise.all(ids.map(id=>super.submission(id,ctx)));return super.close(ctx)}}
+ const harness=await Harness.open(new Recorded(),{models:{},registry:createRegistry()},context);
+ try{
+  const root=await harness.root(context);ids=await root.commit(async tx=>{const input=await tx.createSubmission({conversationId:root.id,type:'input',status:'queued'}),write=await tx.createSubmission({conversationId:root.id,type:'write',status:'queued'});(await tx.doc(InboxDoc,root.id)).items.push({id:input.id,mode:'steer',content:'input'},{id:write.id,mode:'write',entry:{kind:'fixture.kept'}});return[input.id,write.id]},context);
+  const entered=deferred(),release=deferred();const held=harness.commit(async()=>{entered.resolve();await release.promise},context);await entered.promise;
+  let abortDone=false,closeDone=false;harness.resume();const aborting=fixtureActualScheduler(harness).abortConversation(root.id,false,context).then(()=>{abortDone=true;return{resolved:true}},error=>{abortDone=true;return{error:error.message}});const closing=harness.close(context).then(()=>{closeDone=true});
+  await Promise.resolve();await Promise.resolve();const before={abortDone,closeDone};release.resolve();await held;const abort=await aborting;await closing;
+  cases.push({name:'admitted-abort',before,abort,atBackendClose:captured.map(row=>({status:row.status,...(row.reason===undefined?{}:{reason:row.reason})}))});
+ }finally{await harness.close(context)}
+}
+{
+ const started=deferred(),trigger=deferred(),readQueued=deferred(),lookupDone=deferred(),registry=createRegistry();let conversation,lookup;
+ const Parent=defineTask({name:'fixture.closing-read',version:1,initial:()=>({phase:'work'}),phases:{work:async(_,runtime,ctx)=>{started.resolve();await trigger.promise;const pending=runtime.conversation(conversation,ctx);readQueued.resolve();try{const handle=await pending;lookup={defined:handle!==undefined,idMatches:handle?.id===conversation}}catch(error){lookup={error:error.message}}lookupDone.resolve()}},abort:async()=>{}});
+ registry.install(defineExtension({name:'closing-read-fixture',tasks:[Parent]}));const harness=await Harness.open(new MemoryStorage(),{models:{},registry},context);
+ try{
+  const root=await harness.root(context);conversation=root.id;await root.commit(tx=>tx.createTask(Parent,null,{ownership:{kind:'conversation'}}),context);harness.resume();await started.promise;
+  const entered=deferred(),release=deferred();const held=harness.commit(async()=>{entered.resolve();await release.promise},context);await entered.promise;trigger.resolve();await readQueued.promise;const closing=harness.close(context);release.resolve();await held;await lookupDone.promise;await closing;
+  cases.push({name:'admitted-conversation',lookup});
+ }finally{await harness.close(context)}
+}
+if(cases.length!==2||cases[0].before.abortDone||cases[0].before.closeDone)throw Error('Incomplete close admission '+JSON.stringify(cases));
+globalThis.controlCloseCases=cases;

@@ -1,0 +1,102 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "name": "bound",
+      "absent": true,
+      "shape": {
+        "keys": [
+          "id",
+          "submit",
+          "abort",
+          "waitForIdle"
+        ],
+        "prototype": true,
+        "methods": [
+          {
+            "name": "submit",
+            "length": 2,
+            "prototype": false
+          },
+          {
+            "name": "abort",
+            "length": 2,
+            "prototype": false
+          },
+          {
+            "name": "waitForIdle",
+            "length": 1,
+            "prototype": false
+          }
+        ]
+      },
+      "receiptShape": {
+        "keys": [
+          "id",
+          "status",
+          "wait",
+          "abort"
+        ],
+        "prototype": true,
+        "methods": [
+          {
+            "name": "status",
+            "length": 1,
+            "prototype": false
+          },
+          {
+            "name": "wait",
+            "length": 1,
+            "prototype": false
+          },
+          {
+            "name": "abort",
+            "length": 1,
+            "prototype": false
+          }
+        ]
+      },
+      "status": "done",
+      "waited": "done",
+      "originalReceipt": true,
+      "canceledOriginal": true
+    },
+    {
+      "name": "bound-settled",
+      "idleUndefined": true,
+      "ended": [
+        {
+          "name": "runtime",
+          "error": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "submit",
+          "error": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "abort",
+          "error": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "idle",
+          "error": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "status",
+          "error": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "wait",
+          "error": "Task $TASK invocation has ended"
+        },
+        {
+          "name": "receipt-abort",
+          "error": "Task $TASK invocation has ended"
+        }
+      ],
+      "writeKinds": [
+        "fixture.bound-write"
+      ]
+    }
+  ]
+}

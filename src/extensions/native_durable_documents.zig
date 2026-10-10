@@ -255,6 +255,45 @@ pub fn publicationValue(owner: *durable.State, record: json.Value, version: u64)
     }
     return null;
 }
+/// Native scheduler document commands do not pass through VM Drafts.adopt.
+/// Adopt their already-owned publication on the VM owner before observers or
+/// waiters run; preserve the canonical VM object when it was adopted already.
+pub fn adoptNativePublication(owner: *durable.State, changes: json.Value) !void {
+    if (std.Thread.getCurrentId() != owner.owner_thread) return error.VMCallbackOnWorker;
+    const values = owner.document_cache orelse return;
+    const engine = owner.engine;
+    for (changes.array.items) |change| {
+        const kind = json.get(change, "type") orelse continue;
+        if (kind != .string or !std.mem.eql(u8, kind.string, "document")) continue;
+        const record = json.get(change, "record") orelse continue;
+        const id = try json.asInteger(try json.required(record, "id"));
+        var index: usize = 0;
+        while (index < values.items.items.len) {
+            const item = &values.items.items[index];
+            if (try json.asInteger(try json.required(item.record.value, "id")) != id) {
+                index += 1;
+                continue;
+            }
+            const value = json.get(change, "value") orelse .null;
+            const version = json.get(change, "version");
+            if (value == .null or version == null or version.? == .null or try json.asInteger(version.?) != item.version) {
+                var retired = values.items.orderedRemove(index);
+                retired.address.deinit();
+                retired.record.deinit();
+                engine.freeValue(retired.value);
+                continue;
+            }
+            var prior = try durable.owned(engine, item.value);
+            defer prior.deinit();
+            if (!json.equal(prior.value, value)) {
+                const adopted = try durable.jsValue(engine, value);
+                engine.freeValue(item.value);
+                item.value = adopted;
+            }
+            index += 1;
+        }
+    }
+}
 pub fn install(engine: *Engine, exports: c.JSValue) !void {
     try sdk.put(engine, exports, "defineDoc", try engine.checked(c.JS_NewCFunction(engine.context, define, "defineDoc", 1)));
     try sdk.put(engine, exports, "defineDocFamily", try engine.checked(c.JS_NewCFunction(engine.context, define, "defineDocFamily", 1)));

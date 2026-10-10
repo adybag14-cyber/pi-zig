@@ -224,6 +224,23 @@ pub const Session = struct {
             self.io.futexWake(std.Thread.Id, &self.ownerThread.raw, std.math.maxInt(u32));
             self.notifyClose();
         }
+        return self.commitOnLine(callback, callback_context, scope, context);
+    }
+    /// Owner pumps must never wait for a worker which may itself await the VM.
+    /// A busy line admits nothing; the caller retains its request for a later pump.
+    pub fn tryCommit(self: *Session, callback: CommitFn, callback_context: ?*anyopaque, scope: Scope, context: types.Context) !?Result {
+        try self.healthy();
+        if (context.aborted()) return error.Canceled;
+        const thread = std.Thread.getCurrentId();
+        if (self.ownerThread.cmpxchgStrong(0, thread, .acq_rel, .acquire) != null) return null;
+        defer {
+            self.ownerThread.store(0, .release);
+            self.io.futexWake(std.Thread.Id, &self.ownerThread.raw, std.math.maxInt(u32));
+            self.notifyClose();
+        }
+        return try self.commitOnLine(callback, callback_context, scope, context);
+    }
+    fn commitOnLine(self: *Session, callback: CommitFn, callback_context: ?*anyopaque, scope: Scope, context: types.Context) !Result {
         try self.healthy();
         if (context.aborted()) return error.Canceled;
         const tx = try Transaction.create(self, scope, context);
@@ -237,6 +254,26 @@ pub const Session = struct {
         result.value.value = try json.clone(result.value.arena.allocator(), returned);
         tx.active = false;
         try tx.assembleSubmissions();
+        // Source assembles table records before document commands. Submission
+        // settlements are assembled after the callback and can otherwise land
+        // behind an already-staged document command.
+        var saw_document = false;
+        var documents_before_tables = false;
+        for (tx.writes.array.items) |write| {
+            if (std.mem.startsWith(u8, try json.asString(try json.required(write, "type")), "document.")) {
+                saw_document = true;
+            } else if (saw_document) documents_before_tables = true;
+        }
+        if (documents_before_tables) {
+            const ordered = try tx.owned.arena.allocator().alloc(Value, tx.writes.array.items.len);
+            var index: usize = 0;
+            for ([_]bool{ false, true }) |documents| for (tx.writes.array.items) |write| {
+                if (std.mem.startsWith(u8, try json.asString(try json.required(write, "type")), "document.") != documents) continue;
+                ordered[index] = write;
+                index += 1;
+            };
+            @memcpy(tx.writes.array.items, ordered);
+        }
         if (tx.writes.array.items.len == 0) return result;
         // Stage both durable state   and   publication before admitting storage.
         var predicted: backend.memory.Memory = .{ .gpa = self.gpa, .state = try self.storage.snapshot(self.gpa) };
@@ -751,6 +788,59 @@ fn buildPublication(gpa: std.mem.Allocator, state: *const backend.memory.State, 
     _ = seq;
     result.value = .{ .array = changes };
     return result;
+}
+
+test "durable Session owner pump admits nothing behind a held worker line and later commits exactly once" {
+    const gpa = std.testing.allocator;
+    var store = try backend.memory.Memory.init(gpa);
+    defer store.deinit();
+    var session = Session.init(gpa, std.testing.io, .{ .memory = &store });
+    defer session.deinit();
+    const Barrier = struct {
+        session: *Session,
+        entered: std.atomic.Value(bool) = .init(false),
+        release: std.atomic.Value(bool) = .init(false),
+        failure: ?anyerror = null,
+        fn held(raw: ?*anyopaque, _: *Transaction, _: types.Context) !Value {
+            const self: *@This() = @ptrCast(@alignCast(raw.?));
+            self.entered.store(true, .release);
+            while (!self.release.load(.acquire)) std.atomic.spinLoopHint();
+            return .null;
+        }
+        fn run(self: *@This()) void {
+            var result = self.session.commit(held, self, .{}, .{}) catch |err| {
+                self.failure = err;
+                self.entered.store(true, .release);
+                return;
+            };
+            result.deinit();
+        }
+        fn create(_: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
+            return tx.createRootConversation();
+        }
+    };
+    var barrier: Barrier = .{ .session = &session };
+    const worker = try std.Thread.spawn(.{}, Barrier.run, .{&barrier});
+    var joined = false;
+    defer if (!joined) {
+        barrier.release.store(true, .release);
+        worker.join();
+    };
+    while (!barrier.entered.load(.acquire)) std.atomic.spinLoopHint();
+    if (barrier.failure) |failure| return failure;
+    try std.testing.expect((try session.tryCommit(Barrier.create, null, .{}, .{})) == null);
+    try std.testing.expect((try session.tryCommit(Barrier.create, null, .{}, .{})) == null);
+    try std.testing.expectEqual(@as(usize, 0), store.state.rows.count());
+    const canceled = std.atomic.Value(bool).init(true);
+    try std.testing.expectError(error.Canceled, session.tryCommit(Barrier.create, null, .{}, .{ .abort_flag = &canceled }));
+    barrier.release.store(true, .release);
+    worker.join();
+    joined = true;
+    if (barrier.failure) |failure| return failure;
+    var result = (try session.tryCommit(Barrier.create, null, .{}, .{})).?;
+    defer result.deinit();
+    try std.testing.expectEqual(@as(usize, 1), store.state.rows.count());
+    try std.testing.expectEqual(@as(u64, 1), result.seq.?);
 }
 
 test "durable Session validates transaction lifetime read ordering callback rollback  and  publications" {

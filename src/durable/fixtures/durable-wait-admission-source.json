@@ -1,0 +1,33 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "name": "root-idle",
+      "undefined": true
+    },
+    {
+      "name": "all-idle",
+      "undefined": true
+    },
+    {
+      "name": "missing",
+      "original": false,
+      "message": "Task 999999 does not exist"
+    },
+    {
+      "name": "terminal",
+      "same": true,
+      "outcome": "completed"
+    },
+    {
+      "name": "closed-idle",
+      "original": false,
+      "message": "Harness is closed"
+    },
+    {
+      "name": "closed-task",
+      "original": false,
+      "message": "Session is closed"
+    }
+  ]
+}

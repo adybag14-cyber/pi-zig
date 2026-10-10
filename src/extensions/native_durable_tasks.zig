@@ -36,7 +36,7 @@ const Entry = struct {
     }
 };
 const Runtime = struct { entry: *Entry, session: c.JSValue, signal: c.JSValue, context: c.JSValue, agent: c.JSValue, snapshot: c.JSValue };
-const RuntimeMethod = enum(c_int) { getTask, outcomes, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc, agent, env, context, sleep, waitForTask, abortOwned };
+const RuntimeMethod = enum(c_int) { getTask, outcomes, conversation, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc, agent, env, context, sleep, waitForTask, abortOwned };
 const Waiter = struct { id: ?u64, conversation: ?u64, resolve: c.JSValue, reject: c.JSValue, context: c.JSValue };
 const Signal = struct { entry: *Entry, value: c.JSValue, context: c.JSValue };
 const Sleeper = struct { runtime: c.JSValue, until: f64, context: c.JSValue, resolve: c.JSValue, reject: c.JSValue };
@@ -86,6 +86,9 @@ pub const Manager = struct {
     clock_callback: c.JSValue,
     vm_owner: ?c.JSValue = null,
     published_graph: ?*backend.memory.State = null,
+    abort_controls: @import("native_durable_abort_control.zig").Queue = .{},
+    active_dispatches: usize = 0,
+    join_waiters: std.ArrayList(c.JSValue) = .empty,
     fn nativeClock(raw: ?*anyopaque) i64 {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
         return if (self.custom_clock) self.clock_value.load(.acquire) else std.Io.Clock.real.now(self.lease.value.io).toMilliseconds();
@@ -133,6 +136,9 @@ pub const Manager = struct {
         if (self.refs.fetchSub(1, .acq_rel) != 1) return;
         std.debug.assert(self.closed and self.thread == null and self.ledger.items.len == 0);
         self.scheduler.deinit();
+        self.abort_controls.deinit(self.engine);
+        for (self.join_waiters.items) |resolve| self.engine.freeValue(resolve);
+        self.join_waiters.deinit(self.engine.gpa);
         if (self.published_graph) |graph| graph.destroy(self.engine.gpa);
         self.broker.deinit();
         for (self.definitions.items) |definition| {
@@ -291,6 +297,7 @@ pub const Manager = struct {
         }
     }
     fn cachePublication(self: *Manager, changes: json.Value) !void {
+        try @import("native_durable_documents.zig").adoptNativePublication(try durable.state(self.engine, self.session), changes);
         for (changes.array.items) |change| {
             const kind = try json.asString(try json.required(change, "type"));
             if (std.mem.eql(u8, kind, "task") or std.mem.eql(u8, kind, "conversation")) self.drive_requested = true;
@@ -542,6 +549,8 @@ pub const Manager = struct {
     fn dispatch(raw: ?*anyopaque, identity: broker_mod.Identity, payload: json.Value, _: *const std.atomic.Value(bool)) !json.Owned {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
         std.debug.assert(std.Thread.getCurrentId() == self.broker.owner);
+        self.active_dispatches += 1;
+        defer self.active_dispatches -= 1;
         self.mutex.lockUncancelable(self.lease.value.io);
         var found: ?*Entry = null;
         for (self.ledger.items) |entry| if (entry.generation == identity.invocation_generation and entry.runtime.taskId() == identity.task_id and entry.active.load(.acquire)) {
@@ -592,10 +601,15 @@ pub const Manager = struct {
         self.engine.freeValue(settled);
         return json.Owned.empty(self.engine.gpa);
     }
-    pub fn close(self: *Manager) void {
+    pub fn retire(self: *Manager) void {
         if (self.closed) return;
         self.closed = true;
         self.rejectClosingWaiters() catch {};
+        const control_reason = schedulerClosedError(self) catch null;
+        if (control_reason) |reason| {
+            defer self.engine.freeValue(reason);
+            self.abort_controls.close(self.engine, reason) catch {};
+        }
         if (self.vm_owner) |value| {
             self.vm_owner = null;
             self.engine.freeValue(value);
@@ -611,9 +625,34 @@ pub const Manager = struct {
         self.watches.clearRetainingCapacity();
         self.scheduler.close();
         self.broker.close();
+    }
+    /// Final native teardown runs after owner callbacks have unwound. Public
+    /// Session close uses retire plus an owner-pumped join promise instead.
+    pub fn close(self: *Manager) void {
+        self.retire();
         if (self.thread) |thread| {
             thread.join();
             self.thread = null;
+        }
+        self.settleJoins() catch {};
+    }
+    fn joinPromise(self: *Manager) !c.JSValue {
+        if (self.closed and self.thread == null and self.active_dispatches == 0) return sdk.promise(self.engine, c.pi_js_undefined());
+        var functions: [2]c.JSValue = undefined;
+        const pending = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &functions));
+        errdefer self.engine.freeValue(pending);
+        defer for (functions) |function| self.engine.freeValue(function);
+        try self.join_waiters.ensureUnusedCapacity(self.engine.gpa, 1);
+        self.join_waiters.appendAssumeCapacity(c.JS_DupValue(self.engine.context, functions[0]));
+        return pending;
+    }
+    fn settleJoins(self: *Manager) !void {
+        if (!self.closed or self.thread != null or self.active_dispatches != 0) return;
+        while (self.join_waiters.items.len > 0) {
+            const resolve = self.join_waiters.orderedRemove(0);
+            defer self.engine.freeValue(resolve);
+            const ignored = try self.engine.checked(c.JS_Call(self.engine.context, resolve, c.pi_js_undefined(), 0, null));
+            self.engine.freeValue(ignored);
         }
     }
     fn rejectClosingWaiters(self: *Manager) !void {
@@ -683,7 +722,7 @@ fn schedulerOwner(self: *Manager) !c.JSValue {
 }
 fn schedulerMethod(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
-    return schedulerMethodOwned(engine, receiver, @enumFromInt(magic), argv[0..@intCast(argc)]) catch |err| if (magic == @intFromEnum(SchedulerMethod.@"resume")) durable.reject(engine, err) else durable.rejectedPromise(engine, err);
+    return schedulerMethodOwned(engine, receiver, @enumFromInt(magic), argv[0..@intCast(argc)]) catch |err| if (magic == @intFromEnum(SchedulerMethod.@"resume") or magic == @intFromEnum(SchedulerMethod.waitForIdle)) durable.reject(engine, err) else durable.rejectedPromise(engine, err);
 }
 fn schedulerMethodOwned(engine: *Engine, receiver: c.JSValue, operation: SchedulerMethod, args: []const c.JSValue) !c.JSValue {
     const owner: *SchedulerOwner = @ptrCast(@alignCast(c.JS_GetOpaque2(engine.context, receiver, engine.native_durable_scheduler_class) orelse return error.JavaScriptException));
@@ -696,7 +735,8 @@ fn schedulerMethodOwned(engine: *Engine, receiver: c.JSValue, operation: Schedul
         },
         .waitForTask => return wait(manager, try durable.number(engine, if (args.len > 0) args[0] else c.pi_js_undefined()), null, if (args.len > 1) args[1] else c.pi_js_undefined()),
         .waitForIdle => return wait(manager, null, if (args.len > 0 and !c.JS_IsUndefined(args[0])) try durable.number(engine, args[0]) else null, if (args.len > 1) args[1] else c.pi_js_undefined()),
-        .open, .join, .abort, .abortConversation, .inspect => return error.NativeTaskSchedulerMethodUnavailable,
+        .abortConversation => return @import("native_durable_abort_control.zig").abortConversation(manager, try durable.number(engine, if (args.len > 0) args[0] else c.pi_js_undefined()), args.len > 1 and c.JS_ToBool(engine.context, args[1]) != 0, if (args.len > 2) args[2] else c.pi_js_undefined()),
+        .open, .join, .abort, .inspect => return error.NativeTaskSchedulerMethodUnavailable,
     }
 }
 const Hub = struct {
@@ -708,6 +748,8 @@ const Hub = struct {
         var worked = false;
         for (self.managers.items) |manager| {
             if (!manager.closed) try manager.refreshRegistry();
+            try Manager.deliver(manager);
+            if (try manager.abort_controls.pump(manager)) worked = true;
             try Manager.deliver(manager);
             try manager.pollSignals();
             try manager.pollSleepers();
@@ -742,6 +784,7 @@ const Hub = struct {
                 }
             }
             manager.mutex.unlock(manager.lease.value.io);
+            try manager.settleJoins();
             try manager.drainReads();
             try settleWaiters(manager);
             if (!manager.closed and manager.thread == null and manager.enabled and (manager.drive_requested or manager.last_count > 0)) try manager.start();
@@ -818,8 +861,16 @@ pub fn retireSession(engine: *Engine, session: c.JSValue) void {
     if (engine.native_durable_control_context == null) return;
     const owner: *Hub = @ptrCast(@alignCast(engine.native_durable_control_context.?));
     for (owner.managers.items) |manager| {
-        if (c.JS_IsStrictEqual(engine.context, manager.session, session)) manager.close();
+        if (c.JS_IsStrictEqual(engine.context, manager.session, session)) manager.retire();
     }
+}
+/// Allocated before close seals admission, so a host allocation failure cannot
+/// abandon mandatory cleanup after the Session is already closing.
+pub fn retirementPromise(engine: *Engine, session: c.JSValue) !c.JSValue {
+    if (engine.native_durable_control_context == null) return c.pi_js_undefined();
+    const owner: *Hub = @ptrCast(@alignCast(engine.native_durable_control_context.?));
+    for (owner.managers.items) |manager| if (c.JS_IsStrictEqual(engine.context, manager.session, session)) return manager.joinPromise();
+    return c.pi_js_undefined();
 }
 pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: c.JSValue) !void {
     if (!engine.abort_signals_ready) try aborts.install(engine);
@@ -834,7 +885,7 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     errdefer engine.freeValue(snapshot);
     const clock_callback = try sdk.get(engine, options, "now");
     errdefer engine.freeValue(clock_callback);
-    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = c.JS_DupValue(engine.context, context), .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
+    self.* = .{ .engine = engine, .hub = owner, .lease = native.session_lease.?.retain(), .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .context = c.JS_DupValue(engine.context, context), .registry = registry, .snapshot = snapshot, .generation = owner.next_generation, .clock_callback = clock_callback, .custom_clock = !c.JS_IsUndefined(clock_callback), .scheduler = try scheduling.Scheduler.init(engine.gpa, native.session.?.io, native.session.?, .{ .callback_context = self, .poll_reads = Manager.pollReads, .withdraw_inputs = if (native.creation_owner != null) @import("../durable/harness/inbox_native.zig").withdraw else null }), .broker = broker_mod.Broker.init(engine.gpa, native.session.?.io, owner.next_generation, .{ .context = engine.host_owner_notify_context, .call = engine.host_owner_notify }) };
     owner.next_generation += 1;
     errdefer {
         self.closed = true;
@@ -1104,8 +1155,28 @@ fn runtimeMethod(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.
 }
 fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMethod, args: []const c.JSValue) !c.JSValue {
     const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
-    try active(self);
+    // Source's conversation read and binding.check only test invocation end;
+    // the operation's supplied context carries cancellation independently.
+    if (operation == .conversation) try invocationLive(self) else try active(self);
     const owner = self.entry.manager;
+    if (operation == .conversation) {
+        const native = try durable.state(engine, self.session);
+        if (native.creation_owner != null) return @import("native_durable_bound_conversation.zig").acquire(engine, receiver, self.session, owner.options, if (args.len > 0) args[0] else c.pi_js_undefined(), self.signal, if (args.len > 1) args[1] else c.pi_js_undefined());
+        const callback = try sdk.get(engine, owner.options, "conversation");
+        defer engine.freeValue(callback);
+        const binding = try sdk.object(engine);
+        defer engine.freeValue(binding);
+        try sdk.put(engine, binding, "signal", c.JS_DupValue(engine.context, self.signal));
+        var captures = [_]c.JSValue{receiver};
+        const check = try engine.checked(c.JS_NewCFunctionData(engine.context, conversationBindingCheck, 0, 0, captures.len, &captures));
+        try sdk.put(engine, binding, "check", check);
+        const callback_receiver = try schedulerOwner(owner);
+        defer engine.freeValue(callback_receiver);
+        var arguments = [_]c.JSValue{ if (args.len > 0) args[0] else c.pi_js_undefined(), binding, if (args.len > 1) args[1] else c.pi_js_undefined() };
+        const value = try engine.checked(c.JS_Call(engine.context, callback, callback_receiver, arguments.len, &arguments));
+        defer engine.freeValue(value);
+        return sdk.promise(engine, value);
+    }
     if (operation == .sleep or operation == .waitForTask) {
         const context = if (args.len > 1) args[1] else c.pi_js_undefined();
         const bound = try @import("native_durable_context.zig").withAbortSignal(engine, self.signal, context);
@@ -1232,6 +1303,22 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
 fn runtimeAbortOwnedMarked(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     return runtimeAbortOwnedMarkedValue(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), data) catch |err| durable.reject(engine, err);
+}
+fn conversationBindingCheck(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const self = runtimeState(engine, data[0]) orelse return durable.reject(engine, error.InvalidTaskRuntime);
+    invocationLive(self) catch |err| return durable.reject(engine, err);
+    return c.pi_js_undefined();
+}
+pub fn checkInvocation(engine: *Engine, receiver: c.JSValue) !void {
+    const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
+    try invocationLive(self);
+}
+fn invocationLive(self: *Runtime) !void {
+    if (self.entry.runtime.isActive()) return;
+    const engine = self.entry.manager.engine;
+    const failure = try endedError(engine, self.entry.runtime.taskId());
+    _ = try engine.checked(c.JS_Throw(engine.context, failure));
 }
 fn runtimeAbortOwnedMarkedValue(engine: *Engine, terminal: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
     if (c.JS_ToBool(engine.context, terminal) != 0) return c.pi_js_undefined();
@@ -1584,6 +1671,12 @@ fn runtimeCommitQueued(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.
 }
 pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c.JSValue {
     if (self.closed) return self.engine.checked(c.JS_Throw(self.engine.context, try schedulerClosedError(self)));
+    // Source's idle fast path never registers a waiter or observes its context.
+    // Public Harness waits resume scheduling before reaching this check.
+    if (id == null and try scheduling.idleState(self.published_graph orelse return error.TaskPublicationGraphUnavailable, conversation)) {
+        try self.@"resume"();
+        return sdk.promise(self.engine, c.pi_js_undefined());
+    }
     try durable.checkCancellation(self.engine, context);
     var functions: [2]c.JSValue = undefined;
     const promise = try self.engine.checked(c.JS_NewPromiseCapability(self.engine.context, &functions));
@@ -1606,7 +1699,7 @@ pub fn wait(self: *Manager, id: ?u64, conversation: ?u64, context: c.JSValue) !c
     try self.@"resume"();
     return promise;
 }
-fn schedulerClosedError(self: *Manager) !c.JSValue {
+pub fn schedulerClosedError(self: *Manager) !c.JSValue {
     const native = try durable.state(self.engine, self.session);
     if (native.failure_reason) |cause| return @import("native_durable_errors.zig").sessionFailed(self.engine, cause);
     return messageError(self.engine, "Harness is closed");
@@ -1958,6 +2051,234 @@ fn environmentExercise(gpa: std.mem.Allocator, with_harness: bool) !void {
 test "native durable VM actual scheduler env and genuine Harness env adapter preserve Source original arguments receiver causes and admitted promises" {
     try environmentExercise(std.testing.allocator, false);
     try environmentExercise(std.testing.allocator, true);
+}
+test "native durable VM runtime conversation callback preserves actual Source receiver binding causes and admitted promises" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const builtins = try sdk.array(engine);
+    defer engine.freeValue(builtins);
+    const registry = try @import("native_durable_registry.zig").create(engine, builtins);
+    defer engine.freeValue(registry);
+    const options = try sdk.object(engine);
+    defer engine.freeValue(options);
+    try sdk.put(engine, options, "registry", c.JS_DupValue(engine.context, registry));
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "conversationSession", c.JS_DupValue(engine.context, session));
+    try sdk.put(engine, global, "conversationRegistry", c.JS_DupValue(engine.context, registry));
+    const source = @embedFile("../durable/fixtures/durable-runtime-conversation-source.json");
+    try sdk.put(engine, global, "conversationSource", try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-runtime-conversation")));
+    const setup = try engine.evalModule(
+        \\import{defineTask}from'@earendil-works/pi-durable';
+        \\globalThis.conversationRows=[];globalThis.conversationCalls=[];globalThis.conversationOriginal=Object.freeze({conversation:true});globalThis.conversationCause=Object.freeze({cause:true});globalThis.conversationOrdinal=0;
+        \\globalThis.conversationBuild=function(id,binding,ctx){globalThis.conversationBinding=binding;conversationCalls.push({id,receiver:this===conversationScheduler,context:ctx===conversationContext,signal:binding.signal===conversationSignal,keys:Object.keys(binding),checkLength:binding.check.length,checkUndefined:binding.check.call({})===undefined});conversationOrdinal++;if(conversationOrdinal===1)return conversationOriginal;if(conversationOrdinal===2)throw conversationCause;return new Promise(resolve=>{globalThis.conversationRelease=resolve})};
+        \\const Parent=defineTask({name:'fixture.runtime-conversation',version:1,initial:()=>({phase:'work'}),phases:{work:async(_,runtime,ctx)=>{globalThis.conversationSaved=runtime.conversation;globalThis.conversationContext=ctx;globalThis.conversationSignal=runtime.signal;const first=conversationSaved.call({},777,ctx),value=await first;let rawCause=false;try{await conversationSaved(888,ctx)}catch(error){rawCause=error===conversationCause}globalThis.conversationLate=conversationSaved(999,ctx);conversationLate.catch(()=>{});conversationRows.push({name:'direct',length:conversationSaved.length,isPromise:first instanceof Promise,original:value===conversationOriginal,rawCause});await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:null}}),ctx)}}});
+        \\conversationRegistry.install({name:'conversation-fixture',tasks:[Parent]});await conversationSession.commit(tx=>tx.createRootConversation(),{});globalThis.conversationTaskId=await conversationSession.commit(tx=>tx.createTask(Parent,null,{conversationId:1,ownership:{kind:'conversation'}}),{});
+    , "runtime-conversation-setup.mjs");
+    engine.freeValue(setup);
+    try sdk.put(engine, options, "conversation", try sdk.get(engine, global, "conversationBuild"));
+    const context = try sdk.object(engine);
+    defer engine.freeValue(context);
+    try attach(engine, session, options, context);
+    const manager = try getManager(engine, session);
+    try sdk.put(engine, global, "conversationScheduler", try schedulerOwner(manager));
+    const id = try sdk.get(engine, global, "conversationTaskId");
+    defer engine.freeValue(id);
+    const pending = try wait(manager, try durable.number(engine, id), null, context);
+    defer engine.freeValue(pending);
+    const settled = try engine.awaitValue(pending);
+    defer engine.freeValue(settled);
+    var record = try durable.owned(engine, settled);
+    defer record.deinit();
+    try std.testing.expectEqualStrings("completed", try json.asString(try json.required(try json.required(try json.required(record.value, "state"), "outcome"), "status")));
+    const compare = engine.evalModule(
+        \\conversationRelease(conversationOriginal);const lateValue=await conversationLate;let ended,checkEnded;try{await conversationSaved(777,{})}catch(error){ended=error.message.replaceAll(String(conversationTaskId),'$TASK')}try{conversationBinding.check.call({})}catch(error){checkEnded=error.message.replaceAll(String(conversationTaskId),'$TASK')}conversationRows.push({name:'direct-settled',lateOriginal:lateValue===conversationOriginal,ended,checkEnded,calls:conversationCalls});if(JSON.stringify(conversationRows)!==JSON.stringify(conversationSource.cases))throw Error(JSON.stringify({actual:conversationRows,expected:conversationSource.cases}));export const proof=true;
+    , "runtime-conversation-compare.mjs") catch |err| {
+        std.debug.print("Source runtime conversation comparison: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(compare);
+}
+test "native durable VM genuine scheduler abortConversation matches Source ordinary background and owned conversation traversal" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const storage = try durable.memoryObject(engine);
+    defer engine.freeValue(storage);
+    const session = try durable.sessionObject(engine, storage);
+    defer engine.freeValue(session);
+    const builtins = try sdk.array(engine);
+    defer engine.freeValue(builtins);
+    const registry = try @import("native_durable_registry.zig").create(engine, builtins);
+    defer engine.freeValue(registry);
+    const options = try sdk.object(engine);
+    defer engine.freeValue(options);
+    try sdk.put(engine, options, "registry", c.JS_DupValue(engine.context, registry));
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "abortSession", c.JS_DupValue(engine.context, session));
+    try sdk.put(engine, global, "abortRegistry", c.JS_DupValue(engine.context, registry));
+    const source = @embedFile("../durable/fixtures/durable-abort-conversation-source.json");
+    try sdk.put(engine, global, "abortSource", try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-abort-conversation")));
+    const setup = try engine.evalModule(
+        \\import{defineTask}from'@earendil-works/pi-durable';
+        \\globalThis.abortStarted=0;globalThis.abortRows=[];globalThis.abortStartedPromise=new Promise(resolve=>{globalThis.abortNotifyStarted=resolve});
+        \\const Waiting=defineTask({name:'fixture.abort-conversation',version:1,initial:()=>({phase:'work'}),phases:{work:async(_,runtime)=>{abortStarted++;if(abortStarted===3)abortNotifyStarted();await new Promise((_,reject)=>{if(runtime.signal.aborted)reject(runtime.signal.reason);else runtime.signal.addEventListener('abort',()=>reject(runtime.signal.reason),{once:true})})}},abort:async(_,runtime,ctx)=>{await runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),ctx)}});
+        \\abortRegistry.install({name:'abort-conversation-fixture',tasks:[Waiting]});await abortSession.commit(tx=>tx.createRootConversation(),{});globalThis.abortOwner=await abortSession.commit(tx=>tx.createTask(Waiting,null,{conversationId:1,ownership:{kind:'conversation'}}),{});globalThis.abortBackground=await abortSession.commit(tx=>tx.createTask(Waiting,null,{conversationId:1,ownership:{kind:'conversation'},background:true}),{});const nested=await abortSession.commit(tx=>tx.createConversation({ownership:{kind:'task',taskId:abortOwner}}),{});globalThis.abortLeaf=await abortSession.commit(tx=>tx.createTask(Waiting,null,{conversationId:nested.id,ownership:{kind:'conversation'}}),{});
+    , "abort-conversation-setup.mjs");
+    engine.freeValue(setup);
+    const context = try sdk.object(engine);
+    defer engine.freeValue(context);
+    try attach(engine, session, options, context);
+    const manager = try getManager(engine, session);
+    try sdk.put(engine, global, "abortScheduler", try schedulerOwner(manager));
+    try manager.@"resume"();
+    const proof = engine.evalModule(
+        \\await abortStartedPromise;await abortScheduler.abortConversation(1,false,{});const rows=await Promise.all([abortOwner,abortBackground,abortLeaf].map(id=>abortSession.commit(tx=>tx.task(id),{})));abortRows.push({name:'ordinary',statuses:rows.map(row=>row.state.status),outcomes:rows.map(row=>row.state.status==='terminal'?row.state.outcome.status:null),idleUndefined:await abortScheduler.waitForIdle(1,{})===undefined});await abortScheduler.abortConversation(1,true,{});const backgroundDone=await abortSession.commit(tx=>tx.task(abortBackground),{});abortRows.push({name:'background',status:backgroundDone.state.status,outcome:backgroundDone.state.outcome.status});const expected=abortSource.cases.filter(row=>row.name!=='withdraw');if(JSON.stringify(abortRows)!==JSON.stringify(expected))throw Error(JSON.stringify({actual:abortRows,expected}));export const proof=true;
+    , "abort-conversation-compare.mjs") catch |err| {
+        std.debug.print("Source abort conversation comparison: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(proof);
+}
+test "native durable VM genuine Harness runtime conversation and submission handles match actual Source invocation gates" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 3000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const source = @embedFile("../durable/fixtures/durable-runtime-bound-conversation-source.json");
+    try sdk.put(engine, global, "boundConversationSource", try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-bound-conversation")));
+    var functions: [2]c.JSValue = undefined;
+    const retired = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
+    defer engine.freeValue(retired);
+    defer for (functions) |function| engine.freeValue(function);
+    try sdk.put(engine, global, "boundConversationRetired", c.JS_DupValue(engine.context, retired));
+    const Retirement = struct {
+        resolve: c.JSValue,
+        settled: bool = false,
+        fn pump(owner: *Engine) !bool {
+            const self: *@This() = @ptrCast(@alignCast(owner.host_control_context.?));
+            if (self.settled) return false;
+            const root = c.JS_GetGlobalObject(owner.context);
+            defer owner.freeValue(root);
+            const runtime = try sdk.get(owner, root, "boundConversationRuntime");
+            defer owner.freeValue(runtime);
+            const private = runtimeState(owner, runtime) orelse return false;
+            if (private.entry.runtime.isActive()) return false;
+            const ignored = try owner.checked(c.JS_Call(owner.context, self.resolve, c.pi_js_undefined(), 0, null));
+            owner.freeValue(ignored);
+            self.settled = true;
+            return true;
+        }
+    };
+    var retirement: Retirement = .{ .resolve = functions[0] };
+    engine.host_control_context = &retirement;
+    engine.host_control_pump = Retirement.pump;
+    defer {
+        engine.host_control_context = null;
+        engine.host_control_pump = null;
+    }
+    const proof = engine.evalModule(
+        \\import{Harness,MemoryStorage,createRegistry,defineExtension,defineTask}from'@earendil-works/pi-durable';
+        \\const cases=[];let task,conversation,handle,receipt,idle,savedRuntimeConversation;
+        \\const Parent=defineTask({name:'fixture.bound-conversation',version:1,initial:()=>({phase:'work'}),phases:{work:async(_,runtime,ctx)=>{globalThis.boundConversationRuntime=runtime;savedRuntimeConversation=runtime.conversation;globalThis.boundConversationStage='conversation';handle=await runtime.conversation(conversation,ctx);globalThis.boundConversationStage='absent';const absent=await runtime.conversation(999999,ctx);const shape={keys:Object.keys(handle),prototype:Object.getPrototypeOf(handle)===Object.prototype,methods:['submit','abort','waitForIdle'].map(name=>({name,length:handle[name].length,prototype:Object.hasOwn(handle[name],'prototype')}))};handle.id=999999;globalThis.boundConversationStage='submit';receipt=await handle.submit.call({},{type:'write',entry:{kind:'fixture.bound-write',model:[]}},ctx);const receiptShape={keys:Object.keys(receipt),prototype:Object.getPrototypeOf(receipt)===Object.prototype,methods:['status','wait','abort'].map(name=>({name,length:receipt[name].length,prototype:Object.hasOwn(receipt[name],'prototype')}))};globalThis.boundConversationStage='status';const status=await receipt.status.call({},ctx);const receiptId=receipt.id;receipt.id=999999;globalThis.boundConversationStage='wait';const waited=await receipt.wait.call({},ctx);const controller=new AbortController(),cause=Object.freeze({canceled:true});controller.abort(cause);let canceledOriginal=false;try{await handle.submit({type:'write',entry:{kind:'fixture.canceled-write'}},{abortSignal:controller.signal,value:ctx.value.bind(ctx)})}catch(error){canceledOriginal=error===cause}globalThis.boundConversationStage='idle';idle=handle.waitForIdle.call({},ctx);idle.catch(()=>{});cases.push({name:'bound',absent:absent===undefined,shape,receiptShape,status:status.status,waited:waited.status,originalReceipt:status.id===receiptId&&waited.id===receiptId,canceledOriginal});globalThis.boundConversationStage='commit';await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:null}}),ctx)}}});
+        \\const registry=createRegistry();registry.install(defineExtension({name:'bound-conversation-fixture',tasks:[Parent]}));const harness=await Harness.open(new MemoryStorage(),{models:{},registry},{});try{const root=await harness.root({});conversation=root.id;task=await root.commit(tx=>tx.createTask(Parent,null,{ownership:{kind:'conversation'}}),{});harness.resume();globalThis.boundConversationStage='outer-wait';const settled=await harness.waitForTask(task,{});if(settled.state.outcome.status!=='completed')throw Error(JSON.stringify(settled));await boundConversationRetired;const ended=[];for(const[name,call]of[['runtime',()=>savedRuntimeConversation(conversation,{})],['submit',()=>handle.submit({type:'write',entry:{kind:'fixture.late-write'}},{})],['abort',()=>handle.abort({})],['idle',()=>handle.waitForIdle({})],['status',()=>receipt.status({})],['wait',()=>receipt.wait({})],['receipt-abort',()=>receipt.abort({})]]){try{await call();ended.push({name,resolved:true})}catch(error){ended.push({name,error:error.message.replaceAll(String(task),'$TASK')})}}const entries=await root.entries({},256,undefined,{});cases.push({name:'bound-settled',idleUndefined:await idle===undefined,ended,writeKinds:entries.items.map(entry=>entry.kind)});}finally{await harness.close({})}if(JSON.stringify(cases)!==JSON.stringify(boundConversationSource.cases))throw Error(JSON.stringify({actual:cases,expected:boundConversationSource.cases}));export const proof=true;
+    , "genuine-runtime-bound-conversation.mjs") catch |err| {
+        const stage = try sdk.get(engine, global, "boundConversationStage");
+        defer engine.freeValue(stage);
+        const stage_text = try engine.toString(stage);
+        defer engine.gpa.free(stage_text);
+        std.debug.print("Bound conversation stage: {s}\n", .{stage_text});
+        std.debug.print("Source bound conversation comparison: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(proof);
+}
+test "native durable VM native inbox withdrawal adopts cached snapshots before genuine Harness publications like Source" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 3000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const Fixture = struct {
+        fn owner(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const guest = Engine.fromContext(context.?);
+            if (argc == 0) return durable.reject(guest, error.InvalidFixtureHarness);
+            const harness = @import("native_durable_harness.zig").state(guest, argv[0]) catch |err| return durable.reject(guest, err);
+            const manager = getManager(guest, harness.session) catch |err| return durable.reject(guest, err);
+            return schedulerOwner(manager) catch |err| durable.reject(guest, err);
+        }
+    };
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const source = @embedFile("../durable/fixtures/durable-withdraw-inbox-cache-source.json");
+    try sdk.put(engine, global, "withdrawCacheSource", try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-withdraw-cache")));
+    try sdk.put(engine, global, "withdrawActualScheduler", try engine.checked(c.JS_NewCFunction(engine.context, Fixture.owner, "fixtureActualScheduler", 1)));
+    const proof = engine.evalModule(
+        \\import{Harness,MemoryStorage,InboxDoc,createRegistry}from'@earendil-works/pi-durable';const cases=[];
+        \\for(const keepWrite of[true,false]){const store=new MemoryStorage(),harness=await Harness.open(store,{models:{},registry:createRegistry()},{});try{const root=await harness.root({});const ids=await root.commit(async tx=>{const first=await tx.createSubmission({conversationId:root.id,type:'input',status:'queued'}),write=keepWrite?await tx.createSubmission({conversationId:root.id,type:'write',status:'queued'}):undefined,second=await tx.createSubmission({conversationId:root.id,type:'input',status:'queued'});(await tx.doc(InboxDoc,root.id)).items.push({id:first.id,mode:'steer',content:'one'},...(write?[{id:write.id,mode:'write',entry:{kind:'fixture.queued-write'}}]:[]),{id:second.id,mode:'followUp',content:'two'});return[first.id,...(write?[write.id]:[]),second.id]},{});const before=await harness.snapshot(InboxDoc,root.id,{});let published;harness.subscribeCommits(publication=>{const change=publication.changes.find(change=>change.type==='document'&&change.record.kind==='pi.inbox');if(change)published=change.value});const scheduler=withdrawActualScheduler(harness);const controller=new AbortController(),cause={cancel:true};controller.abort(cause);let canceledOriginal=false;try{await scheduler.abortConversation(root.id,false,{abortSignal:controller.signal})}catch(error){canceledOriginal=error===cause}if(!canceledOriginal||(await Promise.all(ids.map(id=>store.submission(id,{})))).some(row=>row.status!=='queued'))throw Error('canceled withdrawal changed durable inputs');harness.resume();await scheduler.abortConversation(root.id,false,{});const after=await harness.snapshot(InboxDoc,root.id,{});const cache={beforeCount:before.items.length,afterCount:after.items.length,replaced:before!==after,publishedCanonical:published===after};cases.push({keepWrite,cache});const rows=await Promise.all(ids.map(id=>store.submission(id,{})));if(rows.some((row,index)=>row.status!==(keepWrite&&index===1?'queued':'unanswered')))throw Error('withdrawal settlement');}finally{await harness.close({})}}const expected=withdrawCacheSource.cases.map(({keepWrite,cache})=>({keepWrite,cache}));if(JSON.stringify(cases)!==JSON.stringify(expected))throw Error(JSON.stringify({actual:cases,expected}));export const proof=true;
+    , "native-inbox-cache-adoption.mjs") catch |err| {
+        std.debug.print("Source native inbox cache comparison: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(proof);
+}
+test "native durable VM genuine Harness already idle waits ignore preaborted contexts like actual Source" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 3000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const source = @embedFile("../durable/fixtures/durable-wait-admission-source.json");
+    try sdk.put(engine, global, "idleAdmissionSource", try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-idle-admission")));
+    const proof = engine.evalModule(
+        \\import{Harness,MemoryStorage,createRegistry}from'@earendil-works/pi-durable';const cases=[],controller=new AbortController(),cause={cause:true};controller.abort(cause);const canceled={abortSignal:controller.signal},harness=await Harness.open(new MemoryStorage(),{models:{},registry:createRegistry()},{});try{const root=await harness.root({});for(const[name,call]of[['root-idle',()=>root.waitForIdle(canceled)],['all-idle',()=>harness.waitForIdle(canceled)]]){try{cases.push({name,undefined:await call()===undefined})}catch(error){cases.push({name,original:error===cause,message:error.message})}}await harness.close({});try{await root.waitForIdle(canceled);cases.push({name:'closed-idle',resolved:true})}catch(error){cases.push({name:'closed-idle',original:error===cause,message:error.message})}}finally{await harness.close({})}const expected=idleAdmissionSource.cases.filter(row=>['root-idle','all-idle','closed-idle'].includes(row.name));if(JSON.stringify(cases)!==JSON.stringify(expected))throw Error(JSON.stringify({actual:cases,expected}));export const proof=true;
+    , "actual-idle-wait-admission.mjs") catch |err| {
+        std.debug.print("Source idle admission comparison: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(proof);
+}
+test "native durable VM accepted abort writes and conversation reads survive close admission behind the owner line like Source" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 3000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const Fixture = struct {
+        fn owner(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+            const guest = Engine.fromContext(context.?);
+            if (argc == 0) return durable.reject(guest, error.InvalidFixtureHarness);
+            const harness = @import("native_durable_harness.zig").state(guest, argv[0]) catch |err| return durable.reject(guest, err);
+            const manager = getManager(guest, harness.session) catch |err| return durable.reject(guest, err);
+            return schedulerOwner(manager) catch |err| durable.reject(guest, err);
+        }
+    };
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "fixtureActualScheduler", try engine.checked(c.JS_NewCFunction(engine.context, Fixture.owner, "fixtureActualScheduler", 1)));
+    const source = @embedFile("../durable/fixtures/durable-controls-close-source.json");
+    try sdk.put(engine, global, "controlCloseSource", try engine.checked(c.JS_ParseJSON(engine.context, source, source.len, "actual-close-controls")));
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-controls-close-runtime.txt"), "actual-controls-close-admission.mjs") catch |err| {
+        std.debug.print("Source close controls {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no diagnostic" });
+        return err;
+    };
+    engine.freeValue(result);
+    const compare = engine.evalModule(
+        \\if(JSON.stringify(controlCloseCases)!==JSON.stringify(controlCloseSource.cases))throw Error(JSON.stringify({actual:controlCloseCases,expected:controlCloseSource.cases}));export const proof=true;
+    , "actual-controls-close-compare.mjs") catch |err| {
+        std.debug.print("Source close controls comparison: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(compare);
 }
 fn schedulerOwnerExercise(gpa: std.mem.Allocator) !void {
     const engine = try Engine.init(gpa, .{});

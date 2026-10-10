@@ -1,0 +1,56 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "name": "direct",
+      "length": 2,
+      "isPromise": true,
+      "original": true,
+      "rawCause": true
+    },
+    {
+      "name": "direct-settled",
+      "lateOriginal": true,
+      "ended": "Task $TASK invocation has ended",
+      "checkEnded": "Task $TASK invocation has ended",
+      "calls": [
+        {
+          "id": 777,
+          "receiver": true,
+          "context": true,
+          "signal": true,
+          "keys": [
+            "signal",
+            "check"
+          ],
+          "checkLength": 0,
+          "checkUndefined": true
+        },
+        {
+          "id": 888,
+          "receiver": true,
+          "context": true,
+          "signal": true,
+          "keys": [
+            "signal",
+            "check"
+          ],
+          "checkLength": 0,
+          "checkUndefined": true
+        },
+        {
+          "id": 999,
+          "receiver": true,
+          "context": true,
+          "signal": true,
+          "keys": [
+            "signal",
+            "check"
+          ],
+          "checkLength": 0,
+          "checkUndefined": true
+        }
+      ]
+    }
+  ]
+}

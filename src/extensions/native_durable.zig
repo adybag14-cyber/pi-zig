@@ -542,15 +542,13 @@ fn queuedContinuation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.J
         self.session.?.close();
         for (self.commit_listeners.items) |listener| engine.freeValue(listener);
         self.commit_listeners.clearRetainingCapacity();
-        self.session.?.storage.drain();
-        return closeBackend(self, data[0], data[2]) catch |err| {
-            _ = reject(engine, err);
-            const reason = c.JS_GetException(engine.context);
-            defer engine.freeValue(reason);
-            recordFailure(self, reason);
-            settleClosed(self) catch |settle_error| return reject(engine, settle_error);
-            return c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
-        };
+        if (!c.JS_IsUndefined(data[4])) {
+            var captures = [_]c.JSValue{ data[0], data[2] };
+            const after = engine.checked(c.JS_NewCFunctionData(engine.context, closeAfterScheduler, 0, 0, captures.len, &captures)) catch |err| return closeFailure(self, err);
+            defer engine.freeValue(after);
+            return sdk.invoke(engine, data[4], "then", &.{after}) catch |err| closeFailure(self, err);
+        }
+        return finishBackendClose(self, data[0], data[2]);
     }
     checkCancellation(engine, data[2]) catch |err| return reject(engine, err);
     self.publication_context = data[2];
@@ -572,6 +570,24 @@ fn queuedContinuation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.J
         return reject(engine, err);
     };
     return call.returned;
+}
+fn closeAfterScheduler(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const self = state(engine, data[0]) catch |err| return reject(engine, err);
+    return finishBackendClose(self, data[0], data[1]);
+}
+fn finishBackendClose(self: *State, receiver: c.JSValue, context: c.JSValue) c.JSValue {
+    self.session.?.storage.drain();
+    return closeBackend(self, receiver, context) catch |err| closeFailure(self, err);
+}
+fn closeFailure(self: *State, err: anyerror) c.JSValue {
+    const engine = self.engine;
+    _ = reject(engine, err);
+    const reason = c.JS_GetException(engine.context);
+    defer engine.freeValue(reason);
+    recordFailure(self, reason);
+    settleClosed(self) catch |settle_error| return reject(engine, settle_error);
+    return c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
 }
 fn recordFailure(self: *State, reason: c.JSValue) void {
     if (self.failure_reason == null) {
@@ -645,7 +661,9 @@ pub fn sessionDispatchScoped(self: *State, receiver: c.JSValue, operation: Metho
     defer if (close_snapshot) |listeners| freeListeners(engine, listeners);
     const scope = if (conversation) |id| try engine.checked(c.JS_NewInt64(engine.context, @intCast(id))) else c.pi_js_undefined();
     defer engine.freeValue(scope);
-    var data = [_]c.JSValue{ receiver, argument(args, 0), argument(args, if (operation == .close) 0 else 1), scope };
+    const joined = if (operation == .close) try @import("native_durable_tasks.zig").retirementPromise(engine, receiver) else c.pi_js_undefined();
+    defer engine.freeValue(joined);
+    var data = [_]c.JSValue{ receiver, argument(args, 0), argument(args, if (operation == .close) 0 else 1), scope, joined };
     // Allocate the normalization callback before admitting the queue callback.
     const ignored = try engine.checked(c.JS_NewCFunction(engine.context, ignore, "durable-line-settled", 0));
     defer engine.freeValue(ignored);

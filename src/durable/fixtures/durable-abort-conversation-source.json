@@ -1,0 +1,50 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "cases": [
+    {
+      "name": "ordinary",
+      "statuses": [
+        "terminal",
+        "running",
+        "terminal"
+      ],
+      "outcomes": [
+        "aborted",
+        null,
+        "aborted"
+      ],
+      "idleUndefined": true
+    },
+    {
+      "name": "background",
+      "status": "terminal",
+      "outcome": "aborted"
+    },
+    {
+      "name": "withdraw",
+      "canceledOriginal": true,
+      "before": [
+        "queued",
+        "queued",
+        "queued"
+      ],
+      "after": [
+        {
+          "status": "unanswered",
+          "reason": "aborted"
+        },
+        {
+          "status": "queued"
+        },
+        {
+          "status": "unanswered",
+          "reason": "aborted"
+        }
+      ],
+      "keptModes": [
+        "write"
+      ],
+      "keptWrite": true
+    }
+  ]
+}
