@@ -16,8 +16,7 @@ its required checks.
   Markdown, project context, layout, and OAuth issuer targets: 62 tests and
   21 build steps. This includes the overlay service regression and 16 actual
   upstream issuer-validation cases. The separate HTTP authorization regression
-  in `oauth_authorize.zig` still needs `test-mcp-runtime` or its focused
-  `test-mcp-issuer-exchange` target.
+  in `oauth_authorize.zig` passed its focused target on Windows Debug locally and on all three hosted operating systems at `5d9043a`.
 - The ProcessTerminal pipe follow-on at `cdd0b38d7f41aa51789c62b7f13e17f5c4d45f8a`
   passed 42 tests in each of Windows Debug, Windows ReleaseSafe, Linux Debug,
   and Linux ReleaseSafe. Its 1,969 tracked source hashes matched after the runs.
@@ -30,7 +29,7 @@ its required checks.
 
 ## Open work
 
-The codemode changes in `32aa424` are not yet compiled or qualified. They add
+The codemode changes through `5a30133` passed the focused Windows Debug targets (8 tests, 10 build steps), with all 1,636 source hashes unchanged. Broader engine, allocation, and platform qualification remains open. They add
 bounded promise-job draining, inline interrupt budgets, and upstream fixtures
 for startup and terminal-result ordering. The new remote and Cloudflare APIs
 remain open. Low interrupt budgets and orphan promise work must be checked
@@ -45,8 +44,7 @@ rate as dependent on code and machine; this quantitative backend difference is
 retained in the evidence rather than reproduced with dummy polls or a JavaScript
 host prelude. The follow-on enforces a real budget admission check before user
 effects, compares finite semantics under ample budget, and checks tiny positive
-budgets against actual cumulative native polls. Those follow-on changes still
-need qualification.
+budgets against actual cumulative native polls. Those follow-on changes passed the focused Windows Debug tests; other modes and platforms still need qualification.
 
 Terminal value serialization is part of execution: getters and `toJSON` may
 produce output/store writes or fail before the result is selected. Added upstream
