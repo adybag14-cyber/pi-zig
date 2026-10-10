@@ -158,7 +158,7 @@ pub fn create(engine: *js.Engine, exports: c.JSValue) !c.JSValue {
     try js.define(engine, bindings, "primitiveSymbol", try js.get(engine, symbols, "toPrimitive"));
     try js.define(engine, bindings, "deviceAttributesResponsePattern", try utilities.regexp(engine, "^\x1b\\[\\?[\\d;]*c$", ""));
     try js.define(engine, bindings, "cellSizeResponsePattern", try utilities.regexp(engine, "^\x1b\\[6;(\\d+);(\\d+)t$", ""));
-    try js.define(engine, bindings, "focusedFakeRegex", try utilities.regexp(engine, "(\x1b_pi:c\x07)(\x1b_pi:fc\x07)(.*?)(?:\x1b_pi:/fc\x07|$)", "s"));
+    try js.define(engine, bindings, "focusedFakeRegex", try utilities.regexp(engine, "(\x1b_pi:c\x07)\x1b_pi:fc\x07(.*?)(?:\x1b_pi:/fc\x07|$)", "s"));
     try utilities.install(engine, bindings);
     const container = try js.get(engine, bindings, "Container");
     defer engine.freeValue(container);
