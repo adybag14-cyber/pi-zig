@@ -1,0 +1,160 @@
+{
+  "source": "c5f5b3282d5e4203c085e59837ba17aeaf2829b5",
+  "rows": [
+    {
+      "name": "sync",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 1000"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "jobs",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 1000"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "budget-0",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 0"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "budget-0.5",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 0.5"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "budget--1",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of -1"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "budget-NaN",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of NaN"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "remote-tool",
+      "result": {
+        "ok": true,
+        "value": 2,
+        "output": [
+          {
+            "type": "text",
+            "text": "hi"
+          }
+        ],
+        "calls": [
+          {
+            "name": "add",
+            "status": "ok"
+          }
+        ],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "remote-cap",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 1000"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "reject",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "sandbox",
+          "message": "Remote sandbox failed: object reset"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "silent",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "sandbox",
+          "message": "Remote sandbox returned before the script settled"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "unreachable",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "sandbox",
+          "message": "Failed to reach the remote sandbox: no binding"
+        },
+        "output": [],
+        "calls": []
+      }
+    }
+  ],
+  "exchanges": [
+    [
+      "output",
+      "call"
+    ],
+    [
+      "done"
+    ],
+    [
+      "failure"
+    ]
+  ]
+}

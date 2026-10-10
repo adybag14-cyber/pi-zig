@@ -30,6 +30,8 @@ pub const Options = struct {
     enable_discovery: bool = false,
     timeout_ms: ?u64 = 300_000,
     memory_limit: usize = 256 * 1024 * 1024,
+    stack_limit: usize = 1024 * 1024,
+    interrupt_budget: ?f64 = null,
     abort_flag: ?*bool = null,
     store: Value = .{ .object = .empty },
 };
@@ -93,6 +95,9 @@ const Execution = struct {
     deadline: ?i64,
     aborted: bool = false,
     timed_out: bool = false,
+    interrupt_polls: f64 = 0,
+    budget_exhausted: bool = false,
+    script_settled: bool = false,
     tool_names: std.ArrayList([]u8) = .empty,
     discovery_tools: []const discovery.Tool = &.{},
     model_call_count: usize = 0,
@@ -106,15 +111,49 @@ const Execution = struct {
     }
     fn interrupt(_: ?*c.JSRuntime, raw: ?*anyopaque) callconv(.c) c_int {
         const self: *Execution = @ptrCast(@alignCast(raw.?));
+        return @intFromBool(self.checkLimits(true));
+    }
+    fn checkLimits(self: *Execution, consume_poll: bool) bool {
         if (self.options.abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) {
             self.aborted = true;
-            return 1;
+            return true;
         };
         if (self.deadline) |deadline| if (self.now() >= deadline) {
             self.timed_out = true;
-            return 1;
+            return true;
         };
-        return @intFromBool(self.exit_requested or self.output_overflow);
+        if (self.exit_requested or self.output_overflow or self.budget_exhausted or self.script_settled) return true;
+        if (consume_poll) if (self.options.interrupt_budget) |budget| {
+            self.interrupt_polls += 1;
+            if (!(self.interrupt_polls <= budget)) {
+                self.budget_exhausted = true;
+                self.timed_out = true;
+                return true;
+            }
+        };
+        return false;
+    }
+    fn drainJobs(self: *Execution) !void {
+        defer self.engine.finishJob();
+        while (c.JS_IsJobPending(self.engine.runtime)) {
+            const jobs = try self.engine.runReadyJobs(50);
+            if (self.script_settled) return;
+            if (jobs == 50 and self.checkLimits(true)) return;
+        }
+    }
+    fn markSettled(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+        from(context).script_settled = true;
+        return c.pi_js_undefined();
+    }
+    fn observeTerminal(self: *Execution, promise: c.JSValue) !void {
+        if (!c.JS_IsObject(promise)) return;
+        const then = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, promise, "then"));
+        defer self.engine.freeValue(then);
+        const callback = try self.engine.checked(c.JS_NewCFunction(self.engine.context, markSettled, "", 0));
+        defer self.engine.freeValue(callback);
+        var callbacks = [_]c.JSValue{ callback, callback };
+        const observed = try self.engine.checked(c.JS_Call(self.engine.context, then, promise, 2, &callbacks));
+        self.engine.freeValue(observed);
     }
     fn fail(self: *Execution, cause: anyerror) c.JSValue {
         if (cause == error.JavaScriptException) return self.engine.throwCaptured();
@@ -784,7 +823,7 @@ pub fn identifier(gpa: std.mem.Allocator, name: []const u8) ![]u8 {
     return output.toOwnedSlice(gpa);
 }
 pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: []const u8, options: Options) !json.Owned {
-    const engine = try engine_mod.Engine.init(gpa, .{ .memory_limit = options.memory_limit, .interrupt_budget = std.math.maxInt(u64) });
+    const engine = try engine_mod.Engine.init(gpa, .{ .memory_limit = options.memory_limit, .stack_limit = options.stack_limit, .interrupt_budget = std.math.maxInt(u64) });
     defer engine.deinit();
     var state: Execution = .{ .gpa = gpa, .io = io, .engine = engine, .tools = tools, .options = options, .result = try json.Owned.empty(gpa), .stored = .{ .object = .empty }, .deadline = if (options.timeout_ms) |timeout| std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(timeout, std.math.maxInt(i64)))) else null };
     errdefer state.result.deinit();
@@ -888,14 +927,19 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
     const wrapped = try std.fmt.allocPrint(gpa, "(async (tools, console) => {{{s}\n}})(tools, console)", .{source});
     defer gpa.free(wrapped);
     var script_failure: ?anyerror = null;
-    const promise = if (Execution.interrupt(null, &state) != 0) c.pi_js_undefined() else engine.eval(wrapped, "codemode.js", c.JS_EVAL_TYPE_GLOBAL) catch |cause| blk: {
+    const promise = if (state.checkLimits(false)) c.pi_js_undefined() else engine.eval(wrapped, "codemode.js", c.JS_EVAL_TYPE_GLOBAL) catch |cause| blk: {
         script_failure = cause;
         break :blk c.pi_js_undefined();
     };
     defer engine.freeValue(promise);
+    if (script_failure == null and !state.timed_out and !state.aborted) state.observeTerminal(promise) catch |cause| {
+        if (state.budget_exhausted) {
+            script_failure = cause;
+        } else return cause;
+    };
     while (script_failure == null and !state.exit_requested) {
-        if (Execution.interrupt(null, &state) != 0) break;
-        _ = engine.drainReadyJobs() catch |cause| {
+        if (state.checkLimits(false)) break;
+        state.drainJobs() catch |cause| {
             script_failure = cause;
             break;
         };
@@ -905,7 +949,7 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
             break;
         }
     }
-    const success = state.exit_requested or (script_failure == null and !state.aborted and !state.timed_out and !state.output_overflow and c.JS_PromiseState(engine.context, promise) == c.JS_PROMISE_FULFILLED);
+    const success = state.exit_requested or ((script_failure == null or state.script_settled) and !state.aborted and !state.timed_out and !state.output_overflow and c.JS_PromiseState(engine.context, promise) == c.JS_PROMISE_FULFILLED);
     for (state.pending.items) |pending| try state.completeCall(pending.record_index, "cancelled", pending.started);
     try state.result.value.object.put(a, "ok", .{ .bool = success });
     if (success) {
@@ -941,10 +985,57 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
             defer gpa.free(described);
             message = try a.dupe(u8, described);
         }
+        if (state.budget_exhausted) {
+            const budget_text = try engine.toString(c.JS_NewFloat64(engine.context, options.interrupt_budget.?));
+            defer gpa.free(budget_text);
+            message = try std.fmt.allocPrint(a, "Execution exceeded its interrupt budget of {s}", .{budget_text});
+        }
         try error_value.object.put(a, "message", .{ .string = message });
         try state.result.value.object.put(a, "error", error_value);
     }
     return state.result;
+}
+
+pub fn executeInline(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: []const u8, options: Options) !json.Owned {
+    var inline_options = options;
+    if (inline_options.interrupt_budget == null) inline_options.interrupt_budget = 100_000;
+    inline_options.stack_limit = 256 * 1024;
+    return execute(gpa, io, tools, source, inline_options);
+}
+
+test "native codemode Source c5 inline interrupt budget bounds synchronous and promise job loops" {
+    const gpa = std.testing.allocator;
+    var original = try json.Owned.parse(gpa, @embedFile("fixtures/codemode-portable-c5f5b328.json"));
+    defer original.deinit();
+    for (original.value.object.get("rows").?.array.items) |row| {
+        const name = row.object.get("name").?.string;
+        const is_budget = std.mem.startsWith(u8, name, "budget-");
+        if (!is_budget and !std.mem.eql(u8, name, "sync") and !std.mem.eql(u8, name, "jobs")) continue;
+        const budget: f64 = if (!is_budget) 1000 else if (std.mem.eql(u8, name[7..], "NaN")) std.math.nan(f64) else try std.fmt.parseFloat(f64, name[7..]);
+        var result = try executeInline(gpa, std.testing.io, &.{}, if (std.mem.eql(u8, name, "jobs")) "while(true)await null" else "while(true){}", .{ .timeout_ms = null, .interrupt_budget = budget });
+        defer result.deinit();
+        const expected = row.object.get("result").?;
+        try std.testing.expectEqual(expected.object.get("ok").?.bool, result.value.object.get("ok").?.bool);
+        try std.testing.expect(json.equal(expected.object.get("error").?, result.value.object.get("error").?));
+    }
+}
+
+test "native codemode Source c5 inline startup limits and terminal result precede orphan promise work" {
+    const gpa = std.testing.allocator;
+    var original = try json.Owned.parse(gpa, @embedFile("fixtures/codemode-inline-boundaries-c5f5b328.json"));
+    defer original.deinit();
+    for (original.value.object.get("rows").?.array.items) |row| {
+        const budget_text = row.object.get("budget").?.string;
+        const budget = if (std.mem.eql(u8, budget_text, "NaN")) std.math.nan(f64) else try std.fmt.parseFloat(f64, budget_text);
+        var result = try executeInline(gpa, std.testing.io, &.{}, row.object.get("code").?.string, .{ .timeout_ms = null, .interrupt_budget = budget });
+        defer result.deinit();
+        const expected = row.object.get("result").?;
+        if (!json.equal(expected.object.get("output").?, result.value.object.get("output").?)) std.debug.print("Inline budget{s} code{s}: output differs\n", .{ budget_text, row.object.get("code").?.string });
+        try std.testing.expectEqual(expected.object.get("ok").?.bool, result.value.object.get("ok").?.bool);
+        try std.testing.expect(json.equal(expected.object.get("output").?, result.value.object.get("output").?));
+        if (expected.object.get("error")) |failure| try std.testing.expect(json.equal(failure, result.value.object.get("error").?));
+        if (expected.object.get("value")) |value| try std.testing.expect(json.equal(value, result.value.object.get("value").?));
+    }
 }
 
 test "native codemode executes isolated user script with JSON tool promises ordered output and successful store writes" {

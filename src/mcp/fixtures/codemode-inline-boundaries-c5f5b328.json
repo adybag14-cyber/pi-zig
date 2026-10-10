@@ -1,0 +1,227 @@
+{
+  "source": "c5f5b3282d5e4203c085e59837ba17aeaf2829b5",
+  "rows": [
+    {
+      "budget": "0",
+      "code": "return 1",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 0"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "budget": "0",
+      "code": "text(\"before\");return 2",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 0"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "budget": "0",
+      "code": "Promise.resolve().then(()=>text(\"late\"));return 3",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 0"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "budget": "0",
+      "code": "void(async()=>{for(;;)await null})();return 4",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 0"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "budget": "1",
+      "code": "return 1",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 1"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "budget": "1",
+      "code": "text(\"before\");return 2",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 1"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "budget": "1",
+      "code": "Promise.resolve().then(()=>text(\"late\"));return 3",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 1"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "budget": "1",
+      "code": "void(async()=>{for(;;)await null})();return 4",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 1"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "budget": "1000",
+      "code": "return 1",
+      "result": {
+        "ok": true,
+        "value": 1,
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "budget": "1000",
+      "code": "text(\"before\");return 2",
+      "result": {
+        "ok": true,
+        "value": 2,
+        "output": [
+          {
+            "type": "text",
+            "text": "before"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "budget": "1000",
+      "code": "Promise.resolve().then(()=>text(\"late\"));return 3",
+      "result": {
+        "ok": true,
+        "value": 3,
+        "output": [
+          {
+            "type": "text",
+            "text": "late"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "budget": "1000",
+      "code": "void(async()=>{for(;;)await null})();return 4",
+      "result": {
+        "ok": true,
+        "value": 4,
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "budget": "NaN",
+      "code": "return 1",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of NaN"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "budget": "NaN",
+      "code": "text(\"before\");return 2",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of NaN"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "budget": "NaN",
+      "code": "Promise.resolve().then(()=>text(\"late\"));return 3",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of NaN"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "budget": "NaN",
+      "code": "void(async()=>{for(;;)await null})();return 4",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of NaN"
+        },
+        "output": [],
+        "calls": []
+      }
+    }
+  ]
+}

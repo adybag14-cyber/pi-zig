@@ -668,9 +668,17 @@ pub const Engine = struct {
     /// host scheduler. Used by the persistent owner's idle event loop.
     pub fn drainReadyJobs(self: *Engine) !bool {
         defer self.finishJob();
+        const jobs = try self.runReadyJobs(self.options.job_budget);
+        if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
+        return jobs != 0;
+    }
+
+    /// Run part of a microtask checkpoint. The caller must finish the checkpoint
+    /// after the queue empties or execution is interrupted; a batch boundary
+    /// alone must not release kept WeakRef targets.
+    pub fn runReadyJobs(self: *Engine, limit: usize) !usize {
         var jobs: usize = 0;
-        while (c.JS_IsJobPending(self.runtime)) {
-            if (jobs >= self.options.job_budget) return error.JavaScriptJobLimit;
+        while (jobs < limit and c.JS_IsJobPending(self.runtime)) {
             var context: ?*c.JSContext = null;
             if (c.JS_ExecutePendingJob(self.runtime, &context) < 0) {
                 self.captureException(context orelse self.context);
@@ -678,7 +686,7 @@ pub const Engine = struct {
             }
             jobs += 1;
         }
-        return jobs != 0;
+        return jobs;
     }
 
     fn refreshUiDeadline(self: *Engine) void {
