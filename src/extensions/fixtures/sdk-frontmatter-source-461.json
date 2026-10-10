@@ -1,0 +1,746 @@
+{
+  "source": "6fb2e7815167e6b19006fc526d1a5d0f5f998787",
+  "sourcePath": "C:/Users/adyba/pi-upstream-sdk-reference-6fb-20261008/packages/coding-agent/src/utils/frontmatter.ts",
+  "sourceSha256": "99142d78b94e658e0be65cf05046be8069b3700168a683e0af64219ad903bcd6",
+  "node": "24.14.0",
+  "capturedUtc": "2026-10-10T16:02:27.436Z",
+  "rows": [
+    {
+      "id": "yaml-0",
+      "content": "---\n\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-1",
+      "content": "---\n# comment\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-2",
+      "content": "---\nnull\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-3",
+      "content": "---\n~\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-4",
+      "content": "---\nfalse\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-5",
+      "content": "---\n42\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-6",
+      "content": "---\n3.5\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-7",
+      "content": "---\n[]\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-8",
+      "content": "---\n{}\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-9",
+      "content": "---\n[a, b]\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-10",
+      "content": "---\nplain scalar\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-11",
+      "content": "---\nname: valid\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-12",
+      "content": "---\nname: \"quoted: value\"\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-13",
+      "content": "---\nname: 'single quoted'\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-14",
+      "content": "---\ndescription: |\n  line one\n  line two\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-15",
+      "content": "---\ndescription: >-\n  line one\n  line two\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-16",
+      "content": "---\nname: [a, b, {c: d}]\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-17",
+      "content": "---\nname:\n - a\n - b\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-18",
+      "content": "---\nname: {a: b, c: d}\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-19",
+      "content": "---\nname: true\ncount: 001\nhex: 0x2a\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-20",
+      "content": "---\nname: café Ω🦊\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-21",
+      "content": "---\nname: \"\\u03a9\\U0001f98a\"\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-22",
+      "content": "---\na: &a [1, 2]\nb: *a\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-23",
+      "content": "---\na: &a {self: *a}\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-24",
+      "content": "---\na: 1\n<<: {b: 2}\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-25",
+      "content": "---\na: 1\na: 2\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Map keys must be unique at line 2, column 1:\n\na: 1\na: 2\n^\n",
+        "code": "DUPLICATE_KEY",
+        "pos": [
+          5,
+          6
+        ],
+        "linePos": [
+          {
+            "line": 2,
+            "col": 1
+          },
+          {
+            "line": 2,
+            "col": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-26",
+      "content": "---\na: 1\n\"a\": 2\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Map keys must be unique at line 2, column 1:\n\na: 1\n\"a\": 2\n^\n",
+        "code": "DUPLICATE_KEY",
+        "pos": [
+          5,
+          6
+        ],
+        "linePos": [
+          {
+            "line": 2,
+            "col": 1
+          },
+          {
+            "line": 2,
+            "col": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-27",
+      "content": "---\n1: a\n01: b\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Map keys must be unique at line 2, column 1:\n\n1: a\n01: b\n^\n",
+        "code": "DUPLICATE_KEY",
+        "pos": [
+          5,
+          6
+        ],
+        "linePos": [
+          {
+            "line": 2,
+            "col": 1
+          },
+          {
+            "line": 2,
+            "col": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-28",
+      "content": "---\ntrue: a\nTrue: b\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Map keys must be unique at line 2, column 1:\n\ntrue: a\nTrue: b\n^\n",
+        "code": "DUPLICATE_KEY",
+        "pos": [
+          8,
+          9
+        ],
+        "linePos": [
+          {
+            "line": 2,
+            "col": 1
+          },
+          {
+            "line": 2,
+            "col": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-29",
+      "content": "---\na: [one, two\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Flow sequence in block collection must be sufficiently indented and end with a ] at line 1, column 13:\n\na: [one, two\n            ^\n",
+        "code": "BAD_INDENT",
+        "pos": [
+          12,
+          13
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 13
+          },
+          {
+            "line": 1,
+            "col": 14
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-30",
+      "content": "---\na: {one: two\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Flow map in block collection must be sufficiently indented and end with a } at line 1, column 13:\n\na: {one: two\n            ^\n",
+        "code": "BAD_INDENT",
+        "pos": [
+          12,
+          13
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 13
+          },
+          {
+            "line": 1,
+            "col": 14
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-31",
+      "content": "---\na: \"unterminated\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Missing closing \"quote at line 1, column 17:\n\na: \"unterminated\n                ^\n",
+        "code": "MISSING_CHAR",
+        "pos": [
+          16,
+          17
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 17
+          },
+          {
+            "line": 1,
+            "col": 18
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-32",
+      "content": "---\na: 'unterminated\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Missing closing 'quote at line 1, column 17:\n\na: 'unterminated\n                ^\n",
+        "code": "MISSING_CHAR",
+        "pos": [
+          16,
+          17
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 17
+          },
+          {
+            "line": 1,
+            "col": 18
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-33",
+      "content": "---\na: \"\\q\"\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Invalid escape sequence \\q at line 1, column 5:\n\na: \"\\q\"\n    ^\n",
+        "code": "BAD_DQ_ESCAPE",
+        "pos": [
+          4,
+          5
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 5
+          },
+          {
+            "line": 1,
+            "col": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-34",
+      "content": "---\na: *missing\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "ReferenceError",
+        "message": "Unresolved alias (the anchor must be set before the alias): missing",
+        "code": null,
+        "pos": null,
+        "linePos": null
+      }
+    },
+    {
+      "id": "yaml-35",
+      "content": "---\na: &duplicate 1\nb: &duplicate 2\nc: *duplicate\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-36",
+      "content": "---\na:\n\tb: 1\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Tabs are not allowed as indentation at line 2, column 1:\n\na:\n\tb: 1\n^\n",
+        "code": "TAB_AS_INDENT",
+        "pos": [
+          3,
+          4
+        ],
+        "linePos": [
+          {
+            "line": 2,
+            "col": 1
+          },
+          {
+            "line": 2,
+            "col": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-37",
+      "content": "---\n\tname: value\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Tabs are not allowed as indentation at line 1, column 1:\n\n\tname: value\n^\n",
+        "code": "TAB_AS_INDENT",
+        "pos": [
+          0,
+          1
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 1
+          },
+          {
+            "line": 1,
+            "col": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-38",
+      "content": "---\na: value\n b: bad\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Nested mappings are not allowed in compact mappings at line 1, column 4:\n\na: value\n   ^\n",
+        "code": "BLOCK_AS_IMPLICIT_KEY",
+        "pos": [
+          3,
+          4
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 4
+          },
+          {
+            "line": 1,
+            "col": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-39",
+      "content": "---\na: one: two\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Nested mappings are not allowed in compact mappings at line 1, column 4:\n\na: one: two\n   ^\n",
+        "code": "BLOCK_AS_IMPLICIT_KEY",
+        "pos": [
+          3,
+          4
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 4
+          },
+          {
+            "line": 1,
+            "col": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-40",
+      "content": "---\na: [one,,two]\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Unexpected , in flow sequence at line 1, column 9:\n\na: [one,,two]\n        ^\n",
+        "code": "UNEXPECTED_TOKEN",
+        "pos": [
+          8,
+          9
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 9
+          },
+          {
+            "line": 1,
+            "col": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-41",
+      "content": "---\na: [one,]\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-42",
+      "content": "---\na: {one: two,}\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-43",
+      "content": "---\na: |\n text\n  nested\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-44",
+      "content": "---\na: |0\n  invalid\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Block scalar header includes extra characters: |0 at line 1, column 5:\n\na: |0\n    ^\n",
+        "code": "UNEXPECTED_TOKEN",
+        "pos": [
+          4,
+          5
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 5
+          },
+          {
+            "line": 1,
+            "col": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-45",
+      "content": "---\na: |10\n  invalid\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Block scalar header includes extra characters: |10 at line 1, column 6:\n\na: |10\n     ^\n",
+        "code": "UNEXPECTED_TOKEN",
+        "pos": [
+          5,
+          6
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 6
+          },
+          {
+            "line": 1,
+            "col": 7
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-46",
+      "content": "---\na: >+-\n  invalid\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Block scalar header includes extra characters: >+- at line 1, column 6:\n\na: >+-\n     ^\n",
+        "code": "UNEXPECTED_TOKEN",
+        "pos": [
+          5,
+          6
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 6
+          },
+          {
+            "line": 1,
+            "col": 7
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-47",
+      "content": "---\n? [a, b]\n: complex\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-48",
+      "content": "---\na: !!str 42\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-49",
+      "content": "---\na: !!int invalid\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-50",
+      "content": "---\na: !!bool notbool\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-51",
+      "content": "---\na: !!binary SGVsbG8=\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-52",
+      "content": "---\na: !custom tagged\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-53",
+      "content": "---\n%YAML 1.2\n---\na: b\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Missing directives-end indicator line at line 1, column 10:\n\n%YAML 1.2\n         ^\n",
+        "code": "MISSING_CHAR",
+        "pos": [
+          9,
+          10
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 10
+          },
+          {
+            "line": 1,
+            "col": 11
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-54",
+      "content": "---\n%YAML 1.3\n---\na: b\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Missing directives-end indicator line at line 1, column 10:\n\n%YAML 1.3\n         ^\n",
+        "code": "MISSING_CHAR",
+        "pos": [
+          9,
+          10
+        ],
+        "linePos": [
+          {
+            "line": 1,
+            "col": 10
+          },
+          {
+            "line": 1,
+            "col": 11
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-55",
+      "content": "---\na: b\n...\nextra\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "YAMLParseError",
+        "message": "Source contains multiple documents; please use YAML.parseAllDocuments() at line 3, column 1:\n\n...\nextra\n^^^^^\n",
+        "code": "MULTIPLE_DOCS",
+        "pos": [
+          9,
+          14
+        ],
+        "linePos": [
+          {
+            "line": 3,
+            "col": 1
+          },
+          {
+            "line": 3,
+            "col": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "yaml-56",
+      "content": "---\na: b\n...\n# end\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-57",
+      "content": "---\na: \"\\0\"\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-58",
+      "content": "---\na: \"\u0000\"\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-59",
+      "content": "---\na: 2026-10-10\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-60",
+      "content": "---\na: .nan\nb: .inf\nc: -.inf\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-61",
+      "content": "---\na: >\n\n  block\n\n\n---\n  body Ω🦊  \n",
+      "body": "body Ω🦊"
+    },
+    {
+      "id": "yaml-62",
+      "content": "---\na: &a [x,x,x,x,x,x,x,x,x,x]\nb: &b [*a,*a,*a,*a,*a,*a,*a,*a,*a,*a]\nc: [*b,*b,*b,*b,*b,*b,*b,*b,*b,*b]\n---\n  body Ω🦊  \n",
+      "error": {
+        "name": "ReferenceError",
+        "message": "Excessive alias count indicates a resource exhaustion attack",
+        "code": null,
+        "pos": null,
+        "linePos": null
+      }
+    },
+    {
+      "id": "extract-63",
+      "content": "plain\r\nbody\r",
+      "body": "plain\nbody\n"
+    },
+    {
+      "id": "extract-64",
+      "content": "﻿plain\rbody",
+      "body": "plain\nbody"
+    },
+    {
+      "id": "extract-65",
+      "content": "---\nno closing fence",
+      "body": "---\nno closing fence"
+    },
+    {
+      "id": "extract-66",
+      "content": "---\n---\n  body  ",
+      "body": "body"
+    },
+    {
+      "id": "extract-67",
+      "content": "---x\na: b\n---suffix\nbody",
+      "body": "suffix\nbody"
+    },
+    {
+      "id": "extract-68",
+      "content": "---\r\na: b\r\n---\r\nbody",
+      "body": "body"
+    },
+    {
+      "id": "extract-69",
+      "content": "---\ra: b\r---\rbody",
+      "body": "body"
+    },
+    {
+      "id": "extract-70",
+      "content": " ---\na: b\n---\nbody",
+      "body": " ---\na: b\n---\nbody"
+    },
+    {
+      "id": "extract-71",
+      "content": "﻿---\na: b\n---\nbody",
+      "body": "body"
+    },
+    {
+      "id": "extract-72",
+      "content": "---\n\n---\n﻿body",
+      "body": "body"
+    }
+  ]
+}

@@ -1,0 +1,385 @@
+{
+  "repository": "https://github.com/pantoniou/libfyaml",
+  "commit": "1ed9bae3b1e5fc57e31a14a2ea12810fdf423473",
+  "version": "0.9.6",
+  "archiveSha256": "7922F3BC15425B693BA3F715205E90753B1043852063B84D0F3943B84258F91F",
+  "selection": "Full parser/document CMake subset: src/lib,src/util,src/xxhash,public include headers and LICENSE;27separate C units including native ABI shim. No threading, general allocator or BLAKE3 C implementation included.",
+  "status": "source only uncompiled",
+  "files": [
+    {
+      "path": "config.h",
+      "sha256": "110669b7ba4ee9ec82229bd5cfe8c94e0d8c9b5898d5eab0ea7116be4fae75a4",
+      "origin": "native ABI and static platform configuration"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "8c6ab373d0f40d39fc976227010f22a52e83e0e40fd25e5ac8f19945fed8aa5a",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "pi_yaml.c",
+      "sha256": "54205caa0105420c214ac5d1dbdbb4fbbdbfb0b05f2a6b58cdf3af280ad5137f",
+      "origin": "native ABI and static platform configuration"
+    },
+    {
+      "path": "pi_yaml.h",
+      "sha256": "1624218b452e9a41b09feb08ca1dfac1a21c789004e28a2faee13687969f544a",
+      "origin": "native ABI and static platform configuration"
+    },
+    {
+      "path": "include/libfyaml.h",
+      "sha256": "955d8b594786abbc1dcc2a6fd018fbe27f4d4d5c6b0cc379924159e19effbf5b",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-align.h",
+      "sha256": "d97a1a100b6d7e294185221985fee257def4114fa39c401fa8aba1e6bbb00840",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-allocator.h",
+      "sha256": "59b0cff0a7b5857d1b811a91a3137e1e5a4f8fe9b663c11953a3f92b51f1ad6d",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-atomics.h",
+      "sha256": "b8b121fbe781c830e07889869fa7a3357e8a0aa535537e99d9b0d60f5e747be2",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-blake3.h",
+      "sha256": "1e5092d5d6ce771cb683241439efe58439ed9d30d67fcfe6397f7fa74f915b4a",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-composer.h",
+      "sha256": "ebc5a55cd28bc31e603cde9088e26fdd79b4adbeff0e391dfe4b648511d70911",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-core.h",
+      "sha256": "78ff40ac2eacbf9ce213c36da726c392786d772314d7bce170ae9951dd156ce5",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-docbuild.h",
+      "sha256": "fb631c062179c76a1ba8f0c044b55c84f4688a202160425b1c338b09f9fdb2d0",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-dociter.h",
+      "sha256": "9aa35166c1341078878384d7476ffe0fc8047a8ba598c35a747338465bc51662",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-endian.h",
+      "sha256": "55967696bee84ad4406f2b50f8a99de406e35af7edc7fe41f1c101066814288f",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-path-exec.h",
+      "sha256": "a0ac0df8c2ec638c2e717d640612a93035e6f553edd0d568a8048bf6d949d4dd",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-thread.h",
+      "sha256": "534eef3f4ad8cdd77fe9001aeae6cfec25fc3bf458ca776401a535190be0716e",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-util.h",
+      "sha256": "1da5bb40f1b2bbe0f4f3937f2d77bda98eaf039990a3dedd2b97ffb6522233d8",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "include/libfyaml/libfyaml-vlsize.h",
+      "sha256": "0be379be052905453ee354e923a8ed9d8e6e2d470942da344b33ffea9a591c45",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-accel.c",
+      "sha256": "fe229eee0192a32b825d806533ddaf536d0a3275727ac70119acfd945d6f7fcf",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-accel.h",
+      "sha256": "4b1e30aec214b16c65bec21fcfc4e7db53bf0a09a00b84d5eb8a32a2aa064481",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-atom.c",
+      "sha256": "adbdd213088ad15dd17d6fd4f1af6da6028fb2d14d9b1e536f94b84ec617fc43",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-atom.h",
+      "sha256": "84cfd80fb20326f25a92958993d9a94f78fdebb8c0de18aa9ed5b20d140860d8",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-composer-diag.c",
+      "sha256": "db9f5e61db80cf7daa99bf794d37497d131d4552037723b7e0a019570a033a44",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-composer.c",
+      "sha256": "25ff57175159927dca431e042c261066f3c8f849645dfda3191f1a6f6882cc9b",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-composer.h",
+      "sha256": "0d04932512a68ae329186771a3a167e0cb0d34d99977ae57777c0261f0c805e3",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-diag.c",
+      "sha256": "257b7b319a0750029534aba838a36da631e62a7f89530b6a9c2c6f9558e8cdb1",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-diag.h",
+      "sha256": "463285420039da930046286ee826c12923846227b1ca95d54661a301a5825bf0",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-doc-diag.c",
+      "sha256": "17e72a0eadc251a8d19e9385c7be0088311e9101358a746b3ac80efe0f5401e3",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-doc.c",
+      "sha256": "5562c165f4acd1f9b4ba81c031ee3adcb08341d3287625f872f2212f1d84d791",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-doc.h",
+      "sha256": "0c7705d4c9625ae08245f473a500796bb41a814b74cb694f434a95855b7f8321",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-docbuilder-diag.c",
+      "sha256": "331afe4d7f4d03d094875cd6ef9328b13f178b01419ba557b9780ac3a3735b94",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-docbuilder.c",
+      "sha256": "1f5dbf8e0805a82915a214c515bb5b9adfb90e85267146b408fd801c8f2836a6",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-docbuilder.h",
+      "sha256": "7dd1e83fa781f59f35e0abe78ffa6426b144a3996b44b91aae8eda1a90f5b0e4",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-docstate.c",
+      "sha256": "bad1b8b17d9341ab222b852471aa7798b8e5acf88e82cb99b4ef4474de1cb652",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-docstate.h",
+      "sha256": "0b59013a2d5b333b0957e1e1aa8c809f9e0f3d92f91b05fa2b49b462a743d570",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-dump.c",
+      "sha256": "aab6507119a38a6e778259bfd6637e4698031ad11143a5534157da1198d420d3",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-dump.h",
+      "sha256": "0c7e5c152f1b952d6a9e82b5903615fd0cfc38192f7556d9ef75218976b2e5c1",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-emit-accum.h",
+      "sha256": "fdabf63a317a5617f70447b553066725522fd365c18c7f3cec0bd8f50f9fbdd9",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-emit.c",
+      "sha256": "1c5b28ea447786bead177d20a60595c802db56df55506764ed3e2b57e934c20e",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-emit.h",
+      "sha256": "beeb13448a81455e82b74cdaa607f1a730e23e6941ff299056a94b39001a6f61",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-event.c",
+      "sha256": "879ea9a0af58df867a7e87eb12dfdb8a10596e553430ec96548bfe6bd26f90df",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-event.h",
+      "sha256": "31e32249a1ffb51980abad0b86861838fe68fb17efbbd50c0f1e9cfba7bc1d52",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-input-diag.c",
+      "sha256": "608996e25a87a66218247de2a2dfbe2a74a55d0f32ae98c4411a8a3d28079a36",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-input.c",
+      "sha256": "bfaaee36ab5bf739d673f21f2339b76c1f0b9b6d0e45201436d6a0eed0fda64b",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-input.h",
+      "sha256": "36b9b53ebcaaac8e2cac2d05315b72248baeff2537bc1f22cdf746f8137d9e5f",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-parse-diag.c",
+      "sha256": "9fa9ac284c2a3e6b879911b2505065f1fef1e18e16e46bf35ca2ee1f2a6c5e4d",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-parse.c",
+      "sha256": "cba44eb59fcadf5f5eb499fef4fe6a95bc3eb250643e54b5c6251e1d6fe63110",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-parse.h",
+      "sha256": "2dbe3c21125d2755eaf1506484ad6b9ebd3dcde0788d54035e4c090bf454794d",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-path.c",
+      "sha256": "0d568962561bd10d111884eac798c498e4d8852edd326b764cca8cc92e7ac482",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-path.h",
+      "sha256": "392e934846b5e72aee4d2e982ac75452b35803ade6edf83652ee03dfe8c6b996",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-token.c",
+      "sha256": "dabdefbb675e77e33d46599c03a2bdbfff681e6f39edb53758884d182c582466",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-token.h",
+      "sha256": "ddc895a4e342554e5d77884f6d9ae9850b5168e4e23363a6d27abc1940dbe5a7",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-types.c",
+      "sha256": "59b784aeec4aebaf3ff7314eb415c6815fe2bde1f7951f49add196c39308b2de",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-types.h",
+      "sha256": "e3234732c258c5560fed55f265f6bea8ebf271ff0df38e8ed638bc7a67eff8cb",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-walk.c",
+      "sha256": "e8348bfe2ce93fcb1e7f5c94c8b6c44d993925bf3a05a353653fb121e4662515",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/lib/fy-walk.h",
+      "sha256": "3a1a2ac3f2ff609755f6f2f022e44211bd349089069e9e75663cfcea612a60b7",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-align.h",
+      "sha256": "e8733b9751807e7453e04e086bfd6f17fbee639176b45277cf0df2adea0d40c1",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-atomics.h",
+      "sha256": "f63afee6b1666e5df9c210216c4b7ae12d465cd59e12fb01e1d6d5ef2ddebbe7",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-bit64.h",
+      "sha256": "2d32d91b8827992528f6db3d3bf8fe8226eecdc3f66b49ad63916899a4204dbc",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-blob.c",
+      "sha256": "f7325e7f7c42f6c1db98213a4176a6f41fb39b09e02da104a88c9e8ce8322dc9",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-blob.h",
+      "sha256": "fb23cff83a8808930bc820eee5d70d8008e5bac333d3f6750c84ac336f0917a1",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-ctype.c",
+      "sha256": "316e96a3409e48fe59f77f9b9488239a22b95db066477334ebab6d34ec9207ff",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-ctype.h",
+      "sha256": "7f30b44bd53bb070beeabdbf95bc8652e39fbb3c89ba1f540d945d82566220dd",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-endian.h",
+      "sha256": "076d626d5dc4b6e5f73c18943b135740fc6c58d67d6552b75c1a0ab4e8764e44",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-id.h",
+      "sha256": "e080d701809a766886bf04fe17e5bb194e0bf2474991f752b25d1b3a3e18cdaa",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-list.h",
+      "sha256": "44be34da7f54b7edd068cf42266a2941f77573855533eca2fab9d07fa0912732",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-typelist.h",
+      "sha256": "1cc39da70d5fd4b5b92f7791cca9e52ecd19628ed3c76b9d5c1c92d355b5c2ad",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-utf8.c",
+      "sha256": "5b38d38b3e929e492e18e5bf6015655ff38a2eef2886bcbe8af3f378b3e025da",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-utf8.h",
+      "sha256": "e7f96120c4f6a899ef03d96ee2df0f4fdb19b2f0713ae0d22df4f95e92790ec0",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-utils.c",
+      "sha256": "e92b7692dff3e73b1d362d3fe400493ea04681cd145e39b1d0cd6b65a964f1e8",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-utils.h",
+      "sha256": "5f06b182074b953fe1513d18815f9698042c8fe303a0f7f22dd552a118df3e23",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-vlsize.h",
+      "sha256": "a62e4753b4c09a596f33fd8bcd075a8ae1d89fcdb7445f8263a3d4c68199b608",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/util/fy-win32.h",
+      "sha256": "dedd7c149a486a3c2ca9e3165e4e72ab9d8b3bd8d9c6a067250d217d3438304d",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/xxhash/xxhash.c",
+      "sha256": "ef7e7862c4e8d0efbcfb34a458e18d4154279167c917139801f89227599c6104",
+      "origin": "unmodified official archive"
+    },
+    {
+      "path": "src/xxhash/xxhash.h",
+      "sha256": "4fd2cefb0b18dafd2bd2fcc46fac49f4d7fe14d2c6ca9fce291dc9d6bd5175c0",
+      "origin": "unmodified official archive"
+    }
+  ]
+}
