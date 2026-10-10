@@ -658,21 +658,21 @@ test "real custom editor original modal input replaces editor row changes submit
     var observed = try Observer.init();
     defer observed.deinit();
     try observed.waitInitialStartup(&child, "INSERT");
-    try observed.send(&child, "modal Ω🦊", "> modal Ω🦊");
+    try observed.sendEditorRow(&child, "modal Ω🦊", "modal Ω🦊");
     try observed.send(&child, "\x1b", "NORMAL");
-    try observed.send(&child, "hiX", "> modal ΩX🦊");
+    try observed.sendEditorRow(&child, "hiX", "modal ΩX🦊");
     try std.testing.expect(try observed.screen.contains("INSERT"));
     try observed.send(&child, "\r", "stream-first");
     try observed.wait(&child, "stream-final", 0);
-    try observed.send(&child, "retained-draft", "> retained-draft");
+    try observed.sendEditorRow(&child, "retained-draft", "retained-draft");
     const before_resize = observed.screen.frames;
     try observed.screen.resize(70, 22);
     try child.resize(70, 22);
     try observed.wait(&child, "INSERT", before_resize);
-    try std.testing.expect(try observed.screen.contains("> retained-draft"));
+    try std.testing.expect(try observed.containsExactRow("retained-draft"));
     try observed.send(&child, "\x15/reload\r", "Reloaded:");
     try observed.wait(&child, "INSERT", 0);
-    try observed.send(&child, "after-reload-draft", "> after-reload-draft");
+    try observed.sendEditorRow(&child, "after-reload-draft", "after-reload-draft");
     try cleanExit(&fixture, &child, &observed);
 }
 
@@ -728,30 +728,30 @@ test "real custom editor autocomplete asynchronous wrapper dropdown selection fa
     defer observed.deinit();
     try observed.acknowledgeStartup(&child, "/auto-ready\r", "AUTO_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "history-row-059", 0);
-    try observed.send(&child, "%", "> %");
+    try observed.sendEditorRow(&child, "%", "%");
     try observed.wait(&child, "→ Plugin One", 0);
     try observed.send(&child, "\x1b[B", "→ Plugin Two");
-    try observed.send(&child, "\t", "> two");
+    try observed.sendEditorRow(&child, "\t", "two");
     try std.testing.expect(!try observed.screen.contains("Plugin One"));
-    try observed.send(&child, "\x15/hel\t", "> /help");
-    try observed.send(&child, "\x15%cancel", "> %cancel");
-    try observed.send(&child, "\x15fresh", "> fresh");
+    try observed.sendEditorRow(&child, "\x15/hel\t", "/help");
+    try observed.sendEditorRow(&child, "\x15%cancel", "%cancel");
+    try observed.sendEditorRow(&child, "\x15fresh", "fresh");
     try std.testing.io.sleep(.fromMilliseconds(400), .awake);
     try observed.drain(&child);
     try std.testing.expect(!try observed.screen.contains("Plugin One"));
-    try observed.send(&child, "\x15%error", "> %error");
+    try observed.sendEditorRow(&child, "\x15%error", "%error");
     try observed.wait(&child, "autocomplete-original-rejection", 0);
     try observed.send(&child, "\x15%", "→ Plugin One");
     const before_resize = observed.screen.frames;
     try observed.screen.resize(70, 22);
     try child.resize(70, 22);
     try observed.wait(&child, "Plugin One", before_resize);
-    try observed.send(&child, "\x1b", "> %");
+    try observed.sendEditorRow(&child, "\x1b", "%");
     const before_cancel = observed.screen.frames;
     try observed.waitAbsent(&child, "Plugin One", before_cancel -| 1);
     try observed.send(&child, "\x15/reload\r", "Reloaded:");
     try observed.send(&child, "%", "→ Plugin One");
-    try observed.send(&child, "\t", "> one");
+    try observed.sendEditorRow(&child, "\t", "one");
     try cleanExit(&fixture, &child, &observed);
 }
 test "real custom editor focus modal handoff retained draft default restoration and owner disposal" {
@@ -766,17 +766,17 @@ test "real custom editor focus modal handoff retained draft default restoration 
     defer observed.deinit();
     try observed.acknowledgeStartup(&child, "/owned-ready\r", "OWNED_FIXTURE_READY:OWNER_INSTALLED");
     try observed.wait(&child, "OWNED_WIDTH:100 FOCUS:true", 0);
-    try observed.send(&child, "focus-draft Ω", "> focus-draft Ω");
+    try observed.sendEditorRow(&child, "focus-draft Ω", "focus-draft Ω");
     try observed.send(&child, "\x07", "FOCUS:false");
     const before_focus = observed.screen.frames;
     try child.send("LOST");
     try observed.wait(&child, "FOCUS:true", before_focus);
-    if (!try observed.screen.contains("> focus-draft Ω")) return error.CustomEditorFocusDraftLost;
+    if (!try observed.containsExactRow("focus-draft Ω")) return error.CustomEditorFocusDraftLost;
     if (try observed.screen.contains("LOST")) return error.CustomEditorUnfocusedInputDelivered;
     try child.send("\x15/editor-dialog\r");
     try observed.waitAny(&child, "EDITOR_MODAL");
     try child.send("y\r");
-    try observed.wait(&child, "> modal-restored", 0);
+    try observed.waitEditorRow(&child, "modal-restored", 0);
     if (!try observed.screen.contains("OWNED_WIDTH:100 FOCUS:true")) return error.CustomEditorModalFocusNotRestored;
     const before_restore = observed.screen.frames;
     try child.send("\x12");
@@ -1250,6 +1250,35 @@ const Observer = struct {
         std.debug.print("Native frontend expected current cells {s}; frames={d}:\n{s}\n", .{ marker, self.screen.frames, cells });
         self.dumpRawTail(child);
         return error.TestUnexpectedResult;
+    }
+    fn containsExactRow(self: *Observer, expected: []const u8) !bool {
+        const cells = try self.screen.textAlloc(std.testing.allocator);
+        defer std.testing.allocator.free(cells);
+        var rows = std.mem.splitScalar(u8, cells, '\n');
+        while (rows.next()) |row| if (std.mem.eql(u8, std.mem.trim(u8, row, " \r"), expected)) return true;
+        return false;
+    }
+    fn waitEditorRow(self: *Observer, child: *pty.Session, expected: []const u8, after_frame: usize) !void {
+        // Genuine Source CustomEditor.render supplies borders and its text row;
+        // the host line editor's "> " prefix is not part of that row. Require
+        // exact current cells so default-editor fallback cannot satisfy this.
+        const end = Io.Clock.awake.now(child.io).toMilliseconds() + 5000;
+        while (Io.Clock.awake.now(child.io).toMilliseconds() < end) {
+            try self.drain(child);
+            if (!self.screen.synchronized_update and self.screen.frames > after_frame and try self.containsExactRow(expected)) return;
+            if (try child.exited()) break;
+            try child.io.sleep(.fromMilliseconds(10), .awake);
+        }
+        const cells = try self.screen.textAlloc(std.testing.allocator);
+        defer std.testing.allocator.free(cells);
+        std.debug.print("Source editor exact row missing {s}; frames={d}:\n{s}\n", .{ expected, self.screen.frames, cells });
+        self.dumpRawTail(child);
+        return error.SourceEditorRowMismatch;
+    }
+    fn sendEditorRow(self: *Observer, child: *pty.Session, input: []const u8, expected: []const u8) !void {
+        const frame = self.screen.frames;
+        try child.send(input);
+        try self.waitEditorRow(child, expected, frame);
     }
     fn wait(self: *Observer, child: *pty.Session, marker: []const u8, after_frame: usize) !void {
         const end = Io.Clock.awake.now(child.io).toMilliseconds() + 5000;
