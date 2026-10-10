@@ -98,6 +98,8 @@ const Execution = struct {
     interrupt_polls: f64 = 0,
     budget_exhausted: bool = false,
     script_settled: bool = false,
+    terminal_failure: ?anyerror = null,
+    terminal_error: ?Value = null,
     tool_names: std.ArrayList([]u8) = .empty,
     discovery_tools: []const discovery.Tool = &.{},
     model_call_count: usize = 0,
@@ -114,6 +116,7 @@ const Execution = struct {
         return @intFromBool(self.checkLimits(true));
     }
     fn checkLimits(self: *Execution, consume_poll: bool) bool {
+        if (self.script_settled) return true;
         if (self.options.abort_flag) |flag| if (@atomicLoad(bool, flag, .acquire)) {
             self.aborted = true;
             return true;
@@ -122,7 +125,7 @@ const Execution = struct {
             self.timed_out = true;
             return true;
         };
-        if (self.exit_requested or self.output_overflow or self.budget_exhausted or self.script_settled) return true;
+        if (self.exit_requested or self.output_overflow or self.budget_exhausted) return true;
         if (consume_poll) if (self.options.interrupt_budget) |budget| {
             self.interrupt_polls += 1;
             if (!(self.interrupt_polls <= budget)) {
@@ -141,19 +144,143 @@ const Execution = struct {
             if (jobs == 50 and self.checkLimits(true)) return;
         }
     }
-    fn markSettled(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
-        from(context).script_settled = true;
+    fn captureTerminalError(self: *Execution, reason: c.JSValue) !void {
+        const a = self.result.arena.allocator();
+        var description: Value = .{ .object = .empty };
+        const name_value = if (c.JS_IsObject(reason)) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, reason, "name")) else c.pi_js_undefined();
+        defer self.engine.freeValue(name_value);
+        const name = if (c.JS_IsUndefined(name_value)) try self.gpa.dupe(u8, "Error") else try self.engine.toString(name_value);
+        defer self.gpa.free(name);
+        const message_value = if (c.JS_IsObject(reason)) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, reason, "message")) else c.pi_js_undefined();
+        defer self.engine.freeValue(message_value);
+        const message = try self.engine.toString(if (c.JS_IsUndefined(message_value)) reason else message_value);
+        defer self.gpa.free(message);
+        try description.object.put(a, "name", .{ .string = try a.dupe(u8, name) });
+        try description.object.put(a, "message", .{ .string = try a.dupe(u8, message) });
+        const stack_value = if (c.JS_IsObject(reason)) try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, reason, "stack")) else c.pi_js_undefined();
+        defer self.engine.freeValue(stack_value);
+        const head = if (message.len == 0) try a.dupe(u8, name) else try std.fmt.allocPrint(a, "{s}: {s}", .{ name, message });
+        const stack = if (c.JS_IsUndefined(stack_value)) try self.gpa.dupe(u8, "") else try self.engine.toString(stack_value);
+        defer self.gpa.free(stack);
+        const trimmed = std.mem.trimEnd(u8, stack, "\r\n\t ");
+        try description.object.put(a, "stack", .{ .string = if (trimmed.len == 0) head else if (std.mem.startsWith(u8, trimmed, head)) try a.dupe(u8, trimmed) else try std.fmt.allocPrint(a, "{s}\n{s}", .{ head, trimmed }) });
+        self.terminal_error = description;
+    }
+    fn finishTerminal(self: *Execution, fulfilled: bool, value: c.JSValue) !void {
+        if (self.exit_requested or self.aborted or self.timed_out) return;
+        if (fulfilled) {
+            if (try self.parseArgument(value)) |owned| {
+                var parsed = owned;
+                defer parsed.deinit();
+                const a = self.result.arena.allocator();
+                try self.result.value.object.put(a, "value", try json.clone(a, parsed.value));
+            }
+        } else try self.captureTerminalError(value);
+    }
+    fn markSettled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+        const self = from(context);
+        self.finishTerminal(magic == 1, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |cause| {
+            self.terminal_failure = cause;
+            if (cause != error.OutOfMemory and !self.timed_out and !self.aborted) {
+                if (self.engine.captured_exception) |exception| {
+                    const retained = c.JS_DupValue(context, exception);
+                    defer self.engine.freeValue(retained);
+                    self.captureTerminalError(retained) catch |description_failure| {
+                        if (description_failure == error.OutOfMemory) self.terminal_failure = description_failure;
+                    };
+                }
+            }
+        };
+        self.script_settled = true;
         return c.pi_js_undefined();
     }
     fn observeTerminal(self: *Execution, promise: c.JSValue) !void {
         if (!c.JS_IsObject(promise)) return;
         const then = try self.engine.checked(c.JS_GetPropertyStr(self.engine.context, promise, "then"));
         defer self.engine.freeValue(then);
-        const callback = try self.engine.checked(c.JS_NewCFunction(self.engine.context, markSettled, "", 0));
-        defer self.engine.freeValue(callback);
-        var callbacks = [_]c.JSValue{ callback, callback };
+        const fulfilled = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, markSettled, "", 0, 1, 0, null));
+        defer self.engine.freeValue(fulfilled);
+        const rejected = try self.engine.checked(c.JS_NewCFunctionData2(self.engine.context, markSettled, "", 0, 0, 0, null));
+        defer self.engine.freeValue(rejected);
+        var callbacks = [_]c.JSValue{ fulfilled, rejected };
         const observed = try self.engine.checked(c.JS_Call(self.engine.context, then, promise, 2, &callbacks));
         self.engine.freeValue(observed);
+    }
+    fn installVm(self: *Execution) !void {
+        const state = self;
+        const engine = self.engine;
+        const gpa = self.gpa;
+        const options = self.options;
+        const tools = self.tools;
+        const discovery_tools = self.discovery_tools;
+        try engine.bindFunction("text", Execution.emitText, 1);
+        try engine.bindFunction("image", Execution.image, 1);
+        try engine.bindFunction("store", Execution.store, 2);
+        try engine.bindFunction("load", Execution.load, 1);
+        try engine.bindFunction("exit", Execution.exit, 0);
+        const globals = c.JS_GetGlobalObject(engine.context);
+        defer engine.freeValue(globals);
+        const tool_object = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
+        defer engine.freeValue(tool_object);
+        const metadata = try engine.checked(c.JS_NewArray(engine.context));
+        defer engine.freeValue(metadata);
+        for (tools, 0..) |tool, index| {
+            const js_name = try identifier(gpa, tool.name);
+            defer gpa.free(js_name);
+            const name_z = try gpa.dupeZ(u8, tool.name);
+            defer gpa.free(name_z);
+            const js_name_z = try gpa.dupeZ(u8, js_name);
+            defer gpa.free(js_name_z);
+            const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, Execution.callTool, name_z, 1, @intCast(index), 0, null));
+            defer engine.freeValue(function);
+            const alias_atom = c.JS_NewAtom(engine.context, js_name_z);
+            defer c.JS_FreeAtom(engine.context, alias_atom);
+            if (c.JS_HasProperty(engine.context, tool_object, alias_atom) == 0) {
+                try state.put(tool_object, js_name_z, c.JS_DupValue(engine.context, function));
+                const owned_name = try gpa.dupe(u8, js_name);
+                state.tool_names.append(gpa, owned_name) catch |cause| {
+                    gpa.free(owned_name);
+                    return cause;
+                };
+                const info = try engine.checked(c.JS_NewObject(engine.context));
+                defer engine.freeValue(info);
+                try state.put(info, "name", try engine.checked(c.JS_NewStringLen(engine.context, js_name.ptr, js_name.len)));
+                const detail = if (options.enable_discovery) discovery_tools[index].sample else tool.description;
+                try state.put(info, "description", try engine.checked(c.JS_NewStringLen(engine.context, detail.ptr, detail.len)));
+                if (c.JS_SetPropertyUint32(engine.context, metadata, @intCast(state.tool_names.items.len - 1), c.JS_DupValue(engine.context, info)) < 0) return error.JavaScriptException;
+            }
+            if (!std.mem.eql(u8, js_name, tool.name)) {
+                const raw_atom = c.JS_NewAtom(engine.context, name_z);
+                defer c.JS_FreeAtom(engine.context, raw_atom);
+                if (c.JS_HasProperty(engine.context, tool_object, raw_atom) == 0) try state.put(tool_object, name_z, c.JS_DupValue(engine.context, function));
+            }
+        }
+        const handler = try engine.checked(c.JS_NewObject(engine.context));
+        defer engine.freeValue(handler);
+        try state.put(handler, "get", try engine.checked(c.JS_NewCFunction(engine.context, Execution.guardedGet, "get", 3)));
+        const proxy_type = try engine.checked(c.JS_GetPropertyStr(engine.context, globals, "Proxy"));
+        defer engine.freeValue(proxy_type);
+        var proxy_args = [_]c.JSValue{ tool_object, handler };
+        const guarded_tools = try engine.checked(c.JS_CallConstructor(engine.context, proxy_type, 2, &proxy_args));
+        defer engine.freeValue(guarded_tools);
+        try state.put(globals, "tools", c.JS_DupValue(engine.context, guarded_tools));
+        try state.put(globals, "ALL_TOOLS", c.JS_DupValue(engine.context, metadata));
+        if (options.model_runtime != null) {
+            const model_object = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
+            defer engine.freeValue(model_object);
+            inline for (std.meta.fields(models.Operation)) |field| try state.put(model_object, field.name, try engine.checked(c.JS_NewCFunctionData2(engine.context, Execution.callModel, field.name, 0, field.value, 0, null)));
+            try state.put(globals, "models", c.JS_DupValue(engine.context, model_object));
+        }
+        if (options.enable_discovery) inline for (.{ "searchTools", "describeTool", "describeNamespace" }, 0..) |name, index| try state.put(globals, name, try engine.checked(c.JS_NewCFunctionData2(engine.context, Execution.discover, name, 1, index, 0, null)));
+        const console = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
+        defer engine.freeValue(console);
+        inline for (.{ "log", "info", "warn", "error", "debug" }) |name| try state.put(console, name, try engine.checked(c.JS_NewCFunction(engine.context, Execution.consoleCall, name, 0)));
+        try state.put(globals, "console", c.JS_DupValue(engine.context, console));
+        inline for (.{ "text", "image", "store", "load", "exit" }) |name| {
+            const function = try engine.checked(c.JS_GetPropertyStr(engine.context, globals, name));
+            try state.put(globals, name, function);
+        }
+        try state.freezeGraph(globals);
     }
     fn fail(self: *Execution, cause: anyerror) c.JSValue {
         if (cause == error.JavaScriptException) return self.engine.throwCaptured();
@@ -447,18 +574,23 @@ const Execution = struct {
     }
     fn parseArgument(self: *Execution, value: c.JSValue) !?json.Owned {
         if (c.JS_IsUndefined(value)) return null;
-        const bytes = try self.engine.stringify(value);
+        const encoded = try self.engine.checked(c.JS_JSONStringify(self.engine.context, value, c.pi_js_undefined(), c.pi_js_undefined()));
+        defer self.engine.freeValue(encoded);
+        if (c.JS_IsUndefined(encoded)) return null;
+        const bytes = try self.engine.toString(encoded);
         defer self.gpa.free(bytes);
         if (std.mem.eql(u8, bytes, "undefined")) return null;
         return try json.Owned.parse(self.gpa, bytes);
     }
     fn callTool(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
         const self = from(context);
+        if (self.script_settled) return c.pi_js_undefined();
         const args = self.parseArgument(if (argc > 0) argv[0] else c.pi_js_undefined()) catch |cause| return self.fail(cause);
         return self.enqueue(self.tools[@intCast(magic)], args, null) catch |cause| self.fail(cause);
     }
     fn callModel(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
         const self = from(context);
+        if (self.script_settled) return c.pi_js_undefined();
         const array = self.engine.checked(c.JS_NewArray(context)) catch |cause| return self.fail(cause);
         defer self.engine.freeValue(array);
         for (0..@intCast(argc)) |index| if (c.JS_SetPropertyUint32(context, array, @intCast(index), c.JS_DupValue(context, argv[index])) < 0) return self.fail(error.JavaScriptException);
@@ -539,6 +671,7 @@ const Execution = struct {
     }
     fn emitText(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
         const self = from(context);
+        if (self.script_settled) return c.pi_js_undefined();
         const value = if (argc > 0) argv[0] else c.pi_js_undefined();
         const rendered = (if (c.JS_IsObject(value)) self.engine.stringify(value) else self.engine.toString(value)) catch |cause| return self.fail(cause);
         defer self.gpa.free(rendered);
@@ -547,6 +680,7 @@ const Execution = struct {
     }
     fn consoleCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
         const self = from(context);
+        if (self.script_settled) return c.pi_js_undefined();
         var buffer: std.Io.Writer.Allocating = .init(self.gpa);
         defer buffer.deinit();
         for (0..@intCast(argc)) |index| {
@@ -560,6 +694,7 @@ const Execution = struct {
     }
     fn image(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
         const self = from(context);
+        if (self.script_settled) return c.pi_js_undefined();
         self.appendImage(if (argc > 0) argv[0] else c.pi_js_undefined()) catch |cause| return self.fail(cause);
         return c.pi_js_undefined();
     }
@@ -635,6 +770,7 @@ const Execution = struct {
     }
     fn store(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
         const self = from(context);
+        if (self.script_settled) return c.pi_js_undefined();
         const name = self.storeKey(argc, argv) catch |cause| return self.fail(cause);
         defer self.gpa.free(name);
         const a = self.result.arena.allocator();
@@ -672,6 +808,7 @@ const Execution = struct {
     }
     fn exit(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
         const self = from(context);
+        if (self.script_settled) return c.pi_js_undefined();
         self.exit_requested = true;
         return c.JS_ThrowTypeError(context, "codemode exit");
     }
@@ -823,9 +960,16 @@ pub fn identifier(gpa: std.mem.Allocator, name: []const u8) ![]u8 {
     return output.toOwnedSlice(gpa);
 }
 pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: []const u8, options: Options) !json.Owned {
+    return executeMeasured(gpa, io, tools, source, options, null);
+}
+const ExecutionMeasurements = struct { interrupt_polls: f64 = 0, budget_exhausted: bool = false };
+fn executeMeasured(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: []const u8, options: Options, measurements: ?*ExecutionMeasurements) !json.Owned {
     const engine = try engine_mod.Engine.init(gpa, .{ .memory_limit = options.memory_limit, .stack_limit = options.stack_limit, .interrupt_budget = std.math.maxInt(u64) });
     defer engine.deinit();
     var state: Execution = .{ .gpa = gpa, .io = io, .engine = engine, .tools = tools, .options = options, .result = try json.Owned.empty(gpa), .stored = .{ .object = .empty }, .deadline = if (options.timeout_ms) |timeout| std.Io.Clock.awake.now(io).toMilliseconds() +| @as(i64, @intCast(@min(timeout, std.math.maxInt(i64)))) else null };
+    defer if (measurements) |value| {
+        value.* = .{ .interrupt_polls = state.interrupt_polls, .budget_exhausted = state.budget_exhausted };
+    };
     errdefer state.result.deinit();
     const a = state.result.arena.allocator();
     const discovery_tools = try a.alloc(discovery.Tool, tools.len);
@@ -855,75 +999,13 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
         state.pending.deinit(gpa);
     }
     engine.host_data = &state;
-    try engine.bindFunction("text", Execution.emitText, 1);
-    try engine.bindFunction("image", Execution.image, 1);
-    try engine.bindFunction("store", Execution.store, 2);
-    try engine.bindFunction("load", Execution.load, 1);
-    try engine.bindFunction("exit", Execution.exit, 0);
-    const globals = c.JS_GetGlobalObject(engine.context);
-    defer engine.freeValue(globals);
-    const tool_object = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
-    defer engine.freeValue(tool_object);
-    const metadata = try engine.checked(c.JS_NewArray(engine.context));
-    defer engine.freeValue(metadata);
-    for (tools, 0..) |tool, index| {
-        const js_name = try identifier(gpa, tool.name);
-        defer gpa.free(js_name);
-        const name_z = try gpa.dupeZ(u8, tool.name);
-        defer gpa.free(name_z);
-        const js_name_z = try gpa.dupeZ(u8, js_name);
-        defer gpa.free(js_name_z);
-        const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, Execution.callTool, name_z, 1, @intCast(index), 0, null));
-        defer engine.freeValue(function);
-        const alias_atom = c.JS_NewAtom(engine.context, js_name_z);
-        defer c.JS_FreeAtom(engine.context, alias_atom);
-        if (c.JS_HasProperty(engine.context, tool_object, alias_atom) == 0) {
-            try state.put(tool_object, js_name_z, c.JS_DupValue(engine.context, function));
-            const owned_name = try gpa.dupe(u8, js_name);
-            state.tool_names.append(gpa, owned_name) catch |cause| {
-                gpa.free(owned_name);
-                return cause;
-            };
-            const info = try engine.checked(c.JS_NewObject(engine.context));
-            defer engine.freeValue(info);
-            try state.put(info, "name", try engine.checked(c.JS_NewStringLen(engine.context, js_name.ptr, js_name.len)));
-            const detail = if (options.enable_discovery) discovery_tools[index].sample else tool.description;
-            try state.put(info, "description", try engine.checked(c.JS_NewStringLen(engine.context, detail.ptr, detail.len)));
-            if (c.JS_SetPropertyUint32(engine.context, metadata, @intCast(state.tool_names.items.len - 1), c.JS_DupValue(engine.context, info)) < 0) return error.JavaScriptException;
-        }
-        if (!std.mem.eql(u8, js_name, tool.name)) {
-            const raw_atom = c.JS_NewAtom(engine.context, name_z);
-            defer c.JS_FreeAtom(engine.context, raw_atom);
-            if (c.JS_HasProperty(engine.context, tool_object, raw_atom) == 0) try state.put(tool_object, name_z, c.JS_DupValue(engine.context, function));
-        }
-    }
-    const handler = try engine.checked(c.JS_NewObject(engine.context));
-    defer engine.freeValue(handler);
-    try state.put(handler, "get", try engine.checked(c.JS_NewCFunction(engine.context, Execution.guardedGet, "get", 3)));
-    const proxy_type = try engine.checked(c.JS_GetPropertyStr(engine.context, globals, "Proxy"));
-    defer engine.freeValue(proxy_type);
-    var proxy_args = [_]c.JSValue{ tool_object, handler };
-    const guarded_tools = try engine.checked(c.JS_CallConstructor(engine.context, proxy_type, 2, &proxy_args));
-    defer engine.freeValue(guarded_tools);
-    try state.put(globals, "tools", c.JS_DupValue(engine.context, guarded_tools));
-    try state.put(globals, "ALL_TOOLS", c.JS_DupValue(engine.context, metadata));
-    if (options.model_runtime != null) {
-        const model_object = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
-        defer engine.freeValue(model_object);
-        inline for (std.meta.fields(models.Operation)) |field| try state.put(model_object, field.name, try engine.checked(c.JS_NewCFunctionData2(engine.context, Execution.callModel, field.name, 0, field.value, 0, null)));
-        try state.put(globals, "models", c.JS_DupValue(engine.context, model_object));
-    }
-    if (options.enable_discovery) inline for (.{ "searchTools", "describeTool", "describeNamespace" }, 0..) |name, index| try state.put(globals, name, try engine.checked(c.JS_NewCFunctionData2(engine.context, Execution.discover, name, 1, index, 0, null)));
-    const console = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
-    defer engine.freeValue(console);
-    inline for (.{ "log", "info", "warn", "error", "debug" }) |name| try state.put(console, name, try engine.checked(c.JS_NewCFunction(engine.context, Execution.consoleCall, name, 0)));
-    try state.put(globals, "console", c.JS_DupValue(engine.context, console));
-    inline for (.{ "text", "image", "store", "load", "exit" }) |name| {
-        const function = try engine.checked(c.JS_GetPropertyStr(engine.context, globals, name));
-        try state.put(globals, name, function);
-    }
-    try state.freezeGraph(globals);
     c.JS_SetInterruptHandler(engine.runtime, Execution.interrupt, &state);
+    // Admission is a real budget check before installing capabilities. A zero
+    // budget must not reach user code or a host tool through a cheap program
+    // that never triggers the VM's opcode-based interrupt counter.
+    if (!state.checkLimits(true)) state.installVm() catch |cause| {
+        if (!state.aborted and !state.timed_out) return cause;
+    };
     const wrapped = try std.fmt.allocPrint(gpa, "(async (tools, console) => {{{s}\n}})(tools, console)", .{source});
     defer gpa.free(wrapped);
     var script_failure: ?anyerror = null;
@@ -949,19 +1031,11 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
             break;
         }
     }
-    const success = state.exit_requested or ((script_failure == null or state.script_settled) and !state.aborted and !state.timed_out and !state.output_overflow and c.JS_PromiseState(engine.context, promise) == c.JS_PROMISE_FULFILLED);
+    if (state.terminal_failure == error.OutOfMemory) return error.OutOfMemory;
+    const success = state.exit_requested or ((script_failure == null or state.script_settled) and state.terminal_failure == null and !state.aborted and !state.timed_out and !state.output_overflow and c.JS_PromiseState(engine.context, promise) == c.JS_PROMISE_FULFILLED);
     for (state.pending.items) |pending| try state.completeCall(pending.record_index, "cancelled", pending.started);
     try state.result.value.object.put(a, "ok", .{ .bool = success });
     if (success) {
-        if (!state.exit_requested) {
-            const value = c.JS_PromiseResult(engine.context, promise);
-            defer engine.freeValue(value);
-            if (try state.parseArgument(value)) |owned| {
-                var actual = owned;
-                defer actual.deinit();
-                try state.result.value.object.put(a, "value", try json.clone(a, actual.value));
-            }
-        }
         var set: Value = .{ .object = .empty };
         var delete: Value = .{ .array = .init(a) };
         var writes = state.writes.object.iterator();
@@ -976,15 +1050,11 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
         var error_value: Value = .{ .object = .empty };
         try error_value.object.put(a, "kind", .{ .string = if (state.aborted) "aborted" else if (state.timed_out) "timeout" else "script" });
         var message: []const u8 = if (state.aborted) "The script was aborted" else if (state.timed_out) "The script timed out" else if (state.output_overflow) "script output exceeded the limit" else if (script_failure) |cause| @errorName(cause) else "The script failed";
-        if (c.JS_PromiseState(engine.context, promise) == c.JS_PROMISE_REJECTED) {
-            const rejection = c.JS_PromiseResult(engine.context, promise);
-            defer engine.freeValue(rejection);
-            const error_message = if (c.JS_IsObject(rejection)) try engine.checked(c.JS_GetPropertyStr(engine.context, rejection, "message")) else c.pi_js_undefined();
-            defer engine.freeValue(error_message);
-            const described = try engine.toString(if (c.JS_IsUndefined(error_message)) rejection else error_message);
-            defer gpa.free(described);
-            message = try a.dupe(u8, described);
-        }
+        if (!state.aborted and !state.timed_out and !state.output_overflow) if (state.terminal_error) |description| {
+            var fields = description.object.iterator();
+            while (fields.next()) |field| try error_value.object.put(a, field.key_ptr.*, field.value_ptr.*);
+            message = description.object.get("message").?.string;
+        };
         if (state.budget_exhausted) {
             const budget_text = try engine.toString(c.JS_NewFloat64(engine.context, options.interrupt_budget.?));
             defer gpa.free(budget_text);
@@ -997,10 +1067,13 @@ pub fn execute(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: 
 }
 
 pub fn executeInline(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: []const u8, options: Options) !json.Owned {
+    return executeInlineMeasured(gpa, io, tools, source, options, null);
+}
+fn executeInlineMeasured(gpa: std.mem.Allocator, io: std.Io, tools: []const Tool, source: []const u8, options: Options, measurements: ?*ExecutionMeasurements) !json.Owned {
     var inline_options = options;
     if (inline_options.interrupt_budget == null) inline_options.interrupt_budget = 100_000;
     inline_options.stack_limit = 256 * 1024;
-    return execute(gpa, io, tools, source, inline_options);
+    return executeMeasured(gpa, io, tools, source, inline_options, measurements);
 }
 
 test "native codemode Source c5 inline interrupt budget bounds synchronous and promise job loops" {
@@ -1020,12 +1093,16 @@ test "native codemode Source c5 inline interrupt budget bounds synchronous and p
     }
 }
 
-test "native codemode Source c5 inline startup limits and terminal result precede orphan promise work" {
+test "native codemode Source c5 inline zero admission ample budget semantics and terminal result precede orphan promise work" {
     const gpa = std.testing.allocator;
     var original = try json.Owned.parse(gpa, @embedFile("fixtures/codemode-inline-boundaries-c5f5b328.json"));
     defer original.deinit();
     for (original.value.object.get("rows").?.array.items) |row| {
         const budget_text = row.object.get("budget").?.string;
+        // Source's four startup polls execute its JavaScript prelude. Native
+        // bindings do not execute that prelude; tiny positive budget cost is
+        // covered by the accounting test below rather than a WASI cost golden.
+        if (std.mem.eql(u8, budget_text, "1")) continue;
         const budget = if (std.mem.eql(u8, budget_text, "NaN")) std.math.nan(f64) else try std.fmt.parseFloat(f64, budget_text);
         var result = try executeInline(gpa, std.testing.io, &.{}, row.object.get("code").?.string, .{ .timeout_ms = null, .interrupt_budget = budget });
         defer result.deinit();
@@ -1035,6 +1112,90 @@ test "native codemode Source c5 inline startup limits and terminal result preced
         try std.testing.expect(json.equal(expected.object.get("output").?, result.value.object.get("output").?));
         if (expected.object.get("error")) |failure| try std.testing.expect(json.equal(failure, result.value.object.get("error").?));
         if (expected.object.get("value")) |value| try std.testing.expect(json.equal(value, result.value.object.get("value").?));
+    }
+}
+
+test "native codemode Source c5 inline tiny positive budget obeys actual polls and preserves finite program semantics" {
+    const gpa = std.testing.allocator;
+    var original = try json.Owned.parse(gpa, @embedFile("fixtures/codemode-inline-boundaries-c5f5b328.json"));
+    defer original.deinit();
+    const rows = original.value.object.get("rows").?.array.items;
+    for (rows) |row| {
+        if (!std.mem.eql(u8, row.object.get("budget").?.string, "1")) continue;
+        const code = row.object.get("code").?.string;
+        var measured: ExecutionMeasurements = .{};
+        var result = try executeInlineMeasured(gpa, std.testing.io, &.{}, code, .{ .timeout_ms = null, .interrupt_budget = 1 }, &measured);
+        defer result.deinit();
+        if (result.value.object.get("ok").?.bool) {
+            try std.testing.expect(!measured.budget_exhausted);
+            try std.testing.expect(measured.interrupt_polls <= 1);
+            const ample = for (rows) |candidate| {
+                if (std.mem.eql(u8, candidate.object.get("budget").?.string, "1000") and std.mem.eql(u8, candidate.object.get("code").?.string, code)) break candidate.object.get("result").?;
+            } else return error.MissingAmpleBudgetReference;
+            try std.testing.expect(json.equal(ample.object.get("output").?, result.value.object.get("output").?));
+            try std.testing.expect(json.equal(ample.object.get("value").?, result.value.object.get("value").?));
+        } else {
+            try std.testing.expect(measured.budget_exhausted);
+            try std.testing.expectEqual(@as(f64, 2), measured.interrupt_polls);
+            const failure = result.value.object.get("error").?;
+            try std.testing.expectEqualStrings("timeout", failure.object.get("kind").?.string);
+            try std.testing.expectEqualStrings("Execution exceeded its interrupt budget of 1", failure.object.get("message").?.string);
+        }
+    }
+}
+
+test "native codemode Source c5 inline zero budget admits no tool output or store effects" {
+    const Check = struct {
+        fn effect(raw: ?*anyopaque, gpa: std.mem.Allocator, _: ?Value, _: ?*bool) !json.Owned {
+            const calls: *usize = @ptrCast(@alignCast(raw.?));
+            calls.* += 1;
+            return json.Owned.parse(gpa, "1");
+        }
+    };
+    var calls: usize = 0;
+    var result = try executeInline(std.testing.allocator, std.testing.io, &.{.{ .name = "effect", .context = &calls, .execute = Check.effect }}, "text('not admitted');store('key',1);await tools.effect();return 1", .{ .timeout_ms = null, .interrupt_budget = 0 });
+    defer result.deinit();
+    try std.testing.expectEqual(@as(usize, 0), calls);
+    try std.testing.expect(!result.value.object.get("ok").?.bool);
+    try std.testing.expectEqual(@as(usize, 0), result.value.object.get("output").?.array.items.len);
+    try std.testing.expectEqual(@as(usize, 0), result.value.object.get("calls").?.array.items.len);
+    try std.testing.expect(result.value.object.get("storeWrites") == null);
+}
+
+test "native codemode Source c5 inline serializes terminal values before choosing result and ignores later effects" {
+    const gpa = std.testing.allocator;
+    var original = try json.Owned.parse(gpa, @embedFile("fixtures/codemode-inline-serialization-c5f5b328.json"));
+    defer original.deinit();
+    for (original.value.object.get("rows").?.array.items) |row| {
+        var result = try executeInline(gpa, std.testing.io, &.{}, row.object.get("code").?.string, .{ .timeout_ms = null, .interrupt_budget = 1000 });
+        defer result.deinit();
+        const expected = row.object.get("result").?;
+        if (expected.object.get("ok").?.bool != result.value.object.get("ok").?.bool) std.debug.print("Terminal serialization case: {s}\n", .{row.object.get("name").?.string});
+        try std.testing.expectEqual(expected.object.get("ok").?.bool, result.value.object.get("ok").?.bool);
+        try std.testing.expect(json.equal(expected.object.get("output").?, result.value.object.get("output").?));
+        try std.testing.expect(json.equal(expected.object.get("calls").?, result.value.object.get("calls").?));
+        for ([_][]const u8{ "value", "storeWrites" }) |field| {
+            const prior = expected.object.get(field);
+            const actual = result.value.object.get(field);
+            try std.testing.expectEqual(prior != null, actual != null);
+            if (prior) |value| try std.testing.expect(json.equal(value, actual.?));
+        }
+        if (expected.object.get("error")) |failure| {
+            const actual = result.value.object.get("error").?;
+            for ([_][]const u8{ "kind", "name", "message" }) |field| {
+                const prior = failure.object.get(field);
+                const current = actual.object.get(field);
+                try std.testing.expectEqual(prior != null, current != null);
+                if (prior) |value| try std.testing.expect(json.equal(value, current.?));
+            }
+            // Stack frames belong to the native VM; preserve the genuine
+            // exception head without inventing WASI-only wrapper frames.
+            if (failure.object.get("name")) |name| {
+                const head = try std.fmt.allocPrint(gpa, "{s}: {s}", .{ name.string, failure.object.get("message").?.string });
+                defer gpa.free(head);
+                try std.testing.expect(std.mem.startsWith(u8, actual.object.get("stack").?.string, head));
+            }
+        }
     }
 }
 

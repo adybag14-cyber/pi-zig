@@ -1,0 +1,130 @@
+{
+  "source": "c5f5b3282d5e4203c085e59837ba17aeaf2829b5",
+  "rows": [
+    {
+      "name": "getter",
+      "code": "return {get x(){text('getter');store('getter',1);return 7}}",
+      "result": {
+        "ok": true,
+        "value": {
+          "x": 7
+        },
+        "output": [
+          {
+            "type": "text",
+            "text": "getter"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {
+            "getter": 1
+          },
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "to-json",
+      "code": "return {toJSON(){text('serialize');store('json',2);return {answer:9}}}",
+      "result": {
+        "ok": true,
+        "value": {
+          "answer": 9
+        },
+        "output": [
+          {
+            "type": "text",
+            "text": "serialize"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {
+            "json": 2
+          },
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "undefined",
+      "code": "return {toJSON(){store('gone',3);return undefined}}",
+      "result": {
+        "ok": true,
+        "output": [],
+        "calls": [],
+        "storeWrites": {
+          "set": {
+            "gone": 3
+          },
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "getter-error",
+      "code": "return {get x(){throw new Error('getter-failed')}}",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "name": "Error",
+          "message": "getter-failed",
+          "stack": "Error: getter-failed\n    at get x (codemode.js:1:55)\n    at stringify (native)"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "cyclic",
+      "code": "const value={};value.self=value;return value",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "script",
+          "name": "TypeError",
+          "message": "circular reference",
+          "stack": "TypeError: circular reference\n    at stringify (native)"
+        },
+        "output": [],
+        "calls": []
+      }
+    },
+    {
+      "name": "late-output",
+      "code": "Promise.resolve().then(()=>Promise.resolve()).then(()=>{text('too-late');store('late',1)});return {get x(){text('getter-first');return 4}}",
+      "result": {
+        "ok": true,
+        "value": {
+          "x": 4
+        },
+        "output": [
+          {
+            "type": "text",
+            "text": "getter-first"
+          }
+        ],
+        "calls": [],
+        "storeWrites": {
+          "set": {},
+          "delete": []
+        }
+      }
+    },
+    {
+      "name": "serializer-loop",
+      "code": "return {toJSON(){while(true){} }}",
+      "result": {
+        "ok": false,
+        "error": {
+          "kind": "timeout",
+          "message": "Execution exceeded its interrupt budget of 1000"
+        },
+        "output": [],
+        "calls": []
+      }
+    }
+  ]
+}

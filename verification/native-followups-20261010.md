@@ -36,6 +36,24 @@ for startup and terminal-result ordering. The new remote and Cloudflare APIs
 remain open. Low interrupt budgets and orphan promise work must be checked
 against the actual upstream fixtures before these changes can be certified.
 
+The first isolated OS matrix passed the actual issuer-exchange test on all three
+platforms and the bounded synchronous/promise-loop cases. Its finite tiny-budget
+golden failed. Actual upstream instrumentation then located all four polls for
+`return 1` inside the WASI JavaScript prelude. Native bindings implement that
+setup in Zig/C, so their startup poll cost differs. Upstream documents polling
+rate as dependent on code and machine; this quantitative backend difference is
+retained in the evidence rather than reproduced with dummy polls or a JavaScript
+host prelude. The follow-on enforces a real budget admission check before user
+effects, compares finite semantics under ample budget, and checks tiny positive
+budgets against actual cumulative native polls. Those follow-on changes still
+need qualification.
+
+Terminal value serialization is part of execution: getters and `toJSON` may
+produce output/store writes or fail before the result is selected. Added upstream
+fixtures cover those paths, undefined serialization, cyclic values, an infinite
+serializer, and suppression of effects after the first terminal result. Native
+error stacks preserve genuine native frames rather than inventing WASI frames.
+
 Storage/context and dynamic receiver work, remaining SDK APIs and parent
 terminal transport, TUI constructors/autocomplete/collation, native image
 processing, full platform CI, and removal of the maintained JavaScript host
