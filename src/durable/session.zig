@@ -130,6 +130,7 @@ pub const Session = struct {
     report_error: ?*const fn (?*anyopaque, anyerror) void = null,
     report_context: ?*anyopaque = null,
     ownerThread: std.atomic.Value(std.Thread.Id) = .init(0),
+    line_epoch: std.atomic.Value(u32) = .init(0),
     closeListeners: std.ArrayList(CloseSubscription) = .empty,
     closeMutex: std.Io.Mutex = .init,
     closeOwnerThread: std.atomic.Value(std.Thread.Id) = .init(0),
@@ -213,15 +214,21 @@ pub const Session = struct {
         if (context.aborted()) return error.Canceled;
         // Reserve the serialized mutation line without holding an OS mutex
         // across caller code, awaits, or a custom Storage method.
-        while (self.ownerThread.cmpxchgStrong(0, thread, .acq_rel, .acquire)) |owner| {
-            if (owner == thread) return error.ReentrantSessionCommit;
-            try self.healthy();
-            if (context.aborted()) return error.Canceled;
-            try self.io.futexWait(std.Thread.Id, &self.ownerThread.raw, owner);
+        while (true) {
+            // Io futex words are always 32 bits, whereas Darwin thread IDs are
+            // 64 bits. Observe the epoch before testing ownership so a release
+            // between the failed exchange and wait cannot be missed.
+            const epoch = self.line_epoch.load(.acquire);
+            if (self.ownerThread.cmpxchgStrong(0, thread, .acq_rel, .acquire)) |owner| {
+                if (owner == thread) return error.ReentrantSessionCommit;
+                try self.healthy();
+                if (context.aborted()) return error.Canceled;
+                try self.io.futexWait(u32, &self.line_epoch.raw, epoch);
+            } else break;
         }
         defer {
             self.ownerThread.store(0, .release);
-            self.io.futexWake(std.Thread.Id, &self.ownerThread.raw, std.math.maxInt(u32));
+            self.wakeLine();
             self.notifyClose();
         }
         return self.commitOnLine(callback, callback_context, scope, context);
@@ -235,7 +242,7 @@ pub const Session = struct {
         if (self.ownerThread.cmpxchgStrong(0, thread, .acq_rel, .acquire) != null) return null;
         defer {
             self.ownerThread.store(0, .release);
-            self.io.futexWake(std.Thread.Id, &self.ownerThread.raw, std.math.maxInt(u32));
+            self.wakeLine();
             self.notifyClose();
         }
         return try self.commitOnLine(callback, callback_context, scope, context);
@@ -306,6 +313,12 @@ pub const Session = struct {
             };
         };
         return result;
+    }
+    pub fn wakeLine(self: *Session) void {
+        // The epoch is only a wake signal; thread identity is retained in full
+        // in ownerThread. Atomic fetchAdd deliberately wraps this 32-bit word.
+        _ = self.line_epoch.fetchAdd(1, .release);
+        self.io.futexWake(u32, &self.line_epoch.raw, std.math.maxInt(u32));
     }
     pub fn close(self: *Session) void {
         self.closed.store(true, .release);
@@ -841,6 +854,37 @@ test "durable Session owner pump admits nothing behind a held worker line and la
     defer result.deinit();
     try std.testing.expectEqual(@as(usize, 1), store.state.rows.count());
     try std.testing.expectEqual(@as(u64, 1), result.seq.?);
+}
+
+test "durable Session wake epoch wraps while full thread ownership and reentrancy remain intact" {
+    const gpa = std.testing.allocator;
+    var store = try backend.memory.Memory.init(gpa);
+    defer store.deinit();
+    var session = Session.init(gpa, std.testing.io, .{ .memory = &store });
+    defer session.deinit();
+    session.line_epoch.store(std.math.maxInt(u32), .release);
+    const Probe = struct {
+        fn noop(_: ?*anyopaque, _: *Transaction, _: types.Context) !Value {
+            return .null;
+        }
+        fn owned(raw: ?*anyopaque, _: *Transaction, context: types.Context) !Value {
+            const current: *Session = @ptrCast(@alignCast(raw.?));
+            try std.testing.expectEqual(std.Thread.getCurrentId(), current.ownerThread.load(.acquire));
+            try std.testing.expectError(error.ReentrantSessionCommit, current.commit(noop, null, .{}, context));
+            return .null;
+        }
+    };
+    var first = try session.commit(Probe.owned, &session, .{}, .{});
+    defer first.deinit();
+    try std.testing.expectEqual(@as(u32, 0), session.line_epoch.load(.acquire));
+    try std.testing.expectEqual(@as(std.Thread.Id, 0), session.ownerThread.load(.acquire));
+    var second = try session.commit(Probe.noop, null, .{}, .{});
+    defer second.deinit();
+    try std.testing.expectEqual(@as(u32, 1), session.line_epoch.load(.acquire));
+    var third = (try session.tryCommit(Probe.noop, null, .{}, .{})).?;
+    defer third.deinit();
+    try std.testing.expectEqual(@as(u32, 2), session.line_epoch.load(.acquire));
+    try std.testing.expectEqual(@as(std.Thread.Id, 0), session.ownerThread.load(.acquire));
 }
 
 test "durable Session validates transaction lifetime read ordering callback rollback  and  publications" {
