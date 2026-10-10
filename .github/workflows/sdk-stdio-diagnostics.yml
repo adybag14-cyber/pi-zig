@@ -35,7 +35,7 @@ jobs:
           New-Item -ItemType Directory -Path $taskRepro -Force | Out-Null
 
           $taskSources = [ordered]@{
-            'build.zig' = 'Y29uc3Qgc3RkID0gQGltcG9ydCgic3RkIik7CnB1YiBmbiBidWlsZChiOiAqc3RkLkJ1aWxkKSB2b2lkIHsKICAgIGNvbnN0IHRhcmdldCA9IGIuc3RhbmRhcmRUYXJnZXRPcHRpb25zKC57fSk7CiAgICBpbmxpbmUgZm9yICgueyAib3JpZ2luYWwiLCAidmFyaWFudHMiIH0pIHxuYW1lfCB7CiAgICAgICAgY29uc3QgdGVzdHMgPSBiLmFkZFRlc3QoLnsgLnJvb3RfbW9kdWxlID0gYi5jcmVhdGVNb2R1bGUoLnsgLnJvb3Rfc291cmNlX2ZpbGUgPSBiLnBhdGgobmFtZSArKyAiLnppZyIpLCAudGFyZ2V0ID0gdGFyZ2V0LCAub3B0aW1pemUgPSAuRGVidWcgfSkgfSk7CiAgICAgICAgY29uc3QgcnVuID0gYi5hZGRSdW5BcnRpZmFjdCh0ZXN0cyk7CiAgICAgICAgYi5zdGVwKG5hbWUsIG5hbWUgKysgIiBlcnJvciByZXR1cm4gY2FwdHVyZSBwYXR0ZXJuIikuZGVwZW5kT24oJnJ1bi5zdGVwKTsKICAgIH0KfQo='
+            'build.zig' = 'Y29uc3Qgc3RkID0gQGltcG9ydCgic3RkIik7CnB1YiBmbiBidWlsZChiOiAqc3RkLkJ1aWxkKSB2b2lkIHsKICAgIGNvbnN0IHRhcmdldCA9IGIuc3RhbmRhcmRUYXJnZXRPcHRpb25zKC57fSk7CiAgICBpbmxpbmUgZm9yICgueyAib3JpZ2luYWwiLCAidmFyaWFudHMiIH0pIHxuYW1lfCB7CiAgICAgICAgY29uc3QgdGVzdHMgPSBiLmFkZFRlc3QoLnsgLnJvb3RfbW9kdWxlID0gYi5jcmVhdGVNb2R1bGUoLnsgLnJvb3Rfc291cmNlX2ZpbGUgPSBiLnBhdGgobmFtZSArKyAiLnppZyIpLCAudGFyZ2V0ID0gdGFyZ2V0LCAub3B0aW1pemUgPSAuRGVidWcgfSkgfSk7CiAgICAgICAgY29uc3QgcnVuID0gYi5hZGRSdW5BcnRpZmFjdCh0ZXN0cyk7CiAgICAgICAgYi5zdGVwKG5hbWUsIG5hbWUgKysgIiBlcnJvciByZXR1cm4gY2FwdHVyZSBwYXR0ZXJuIikuZGVwZW5kT24oJnJ1bi5zdGVwKTsKICAgIH0KICAgIGlubGluZSBmb3IgKC57IC57ICJjYXN0IiwgImV4cGxpY2l0IGVycm9yIHVuaW9uIGNhc3QiIH0sIC57ICJibG9jayIsICJibG9jayBmb3JtIGVycmRlZmVyIiB9IH0pIHxlbnRyeXwgewogICAgICAgIGNvbnN0IHRlc3RzID0gYi5hZGRUZXN0KC57IC5yb290X21vZHVsZSA9IGIuY3JlYXRlTW9kdWxlKC57IC5yb290X3NvdXJjZV9maWxlID0gYi5wYXRoKCJ2YXJpYW50cy56aWciKSwgLnRhcmdldCA9IHRhcmdldCwgLm9wdGltaXplID0gLkRlYnVnIH0pLCAuZmlsdGVycyA9ICYue2VudHJ5WzFdfSB9KTsKICAgICAgICBjb25zdCBydW4gPSBiLmFkZFJ1bkFydGlmYWN0KHRlc3RzKTsKICAgICAgICBiLnN0ZXAoZW50cnlbMF0sIGVudHJ5WzBdICsrICIgaXNvbGF0ZWQgY2FwdHVyZSBwYXR0ZXJuIikuZGVwZW5kT24oJnJ1bi5zdGVwKTsKICAgIH0KfQo='
             'helpers.zig' = 'cHViIHZhciBvYnNlcnZlZDogP2FueWVycm9yID0gbnVsbDsKcHViIGZuIGxvYWRTb3VyY2UoZmFpbGVkOiBib29sKSAhdm9pZCB7CiAgICBpZiAoZmFpbGVkKSByZXR1cm4gZXJyb3IuU291cmNlTG9hZEZhaWx1cmU7Cn0KcHViIGZuIHdyaXRlT3duZXJUZXJtaW5hdGlvbihmYWlsdXJlOiA/YW55ZXJyb3IpICF2b2lkIHsKICAgIG9ic2VydmVkID0gZmFpbHVyZTsKfQo='
             'original.zig' = 'Y29uc3Qgc3RkID0gQGltcG9ydCgic3RkIik7CmNvbnN0IGggPSBAaW1wb3J0KCJoZWxwZXJzLnppZyIpOwpmbiBydW5Pd25lcihmYWlsZWQ6IGJvb2wpIGFueWVycm9yIXZvaWQgewogICAgdmFyIG93bmVyX2ZhaWx1cmU6ID9hbnllcnJvciA9IG51bGw7CiAgICB2YXIgZ3JhY2VmdWxfc2h1dGRvd24gPSBmYWxzZTsKICAgIGRlZmVyIGlmICghZ3JhY2VmdWxfc2h1dGRvd24pIGgud3JpdGVPd25lclRlcm1pbmF0aW9uKG93bmVyX2ZhaWx1cmUpIGNhdGNoIHt9OwogICAgZXJyZGVmZXIgfGVycnwgb3duZXJfZmFpbHVyZSA9IGVycjsKICAgIGNvbnN0IGxvYWRlZF9mYWN0b3J5ID0gaC5sb2FkU291cmNlKGZhaWxlZCk7CiAgICBsb2FkZWRfZmFjdG9yeSBjYXRjaCB8ZXJyfCB7CiAgICAgICAgcmV0dXJuIGVycjsKICAgIH07CiAgICBncmFjZWZ1bF9zaHV0ZG93biA9IHRydWU7Cn0KdGVzdCAib3JpZ2luYWwgZXhwcmVzc2lvbiBjYXB0dXJlIGFuZCBiYXJlIGVycm9yIHJldHVybiIgewogICAgaC5vYnNlcnZlZCA9IG51bGw7CiAgICB0cnkgc3RkLnRlc3RpbmcuZXhwZWN0RXJyb3IoZXJyb3IuU291cmNlTG9hZEZhaWx1cmUsIHJ1bk93bmVyKHRydWUpKTsKICAgIHRyeSBzdGQudGVzdGluZy5leHBlY3RFcXVhbChlcnJvci5Tb3VyY2VMb2FkRmFpbHVyZSwgaC5vYnNlcnZlZC4/KTsKfQo='
             'variants.zig' = 'Y29uc3Qgc3RkID0gQGltcG9ydCgic3RkIik7CmNvbnN0IGggPSBAaW1wb3J0KCJoZWxwZXJzLnppZyIpOwpmbiBjYXN0T3duZXIoZmFpbGVkOiBib29sKSBhbnllcnJvciF2b2lkIHsKICAgIHZhciBvd25lcl9mYWlsdXJlOiA/YW55ZXJyb3IgPSBudWxsOwogICAgdmFyIGdyYWNlZnVsX3NodXRkb3duID0gZmFsc2U7CiAgICBkZWZlciBpZiAoIWdyYWNlZnVsX3NodXRkb3duKSBoLndyaXRlT3duZXJUZXJtaW5hdGlvbihvd25lcl9mYWlsdXJlKSBjYXRjaCB7fTsKICAgIGVycmRlZmVyIHxlcnJ8IG93bmVyX2ZhaWx1cmUgPSBlcnI7CiAgICBjb25zdCBsb2FkZWRfZmFjdG9yeSA9IGgubG9hZFNvdXJjZShmYWlsZWQpOwogICAgbG9hZGVkX2ZhY3RvcnkgY2F0Y2ggfGVycnwgewogICAgICAgIHJldHVybiBAYXMoYW55ZXJyb3Ihdm9pZCwgZXJyKTsKICAgIH07CiAgICBncmFjZWZ1bF9zaHV0ZG93biA9IHRydWU7Cn0KZm4gYmxvY2tPd25lcihmYWlsZWQ6IGJvb2wpIGFueWVycm9yIXZvaWQgewogICAgdmFyIG93bmVyX2ZhaWx1cmU6ID9hbnllcnJvciA9IG51bGw7CiAgICB2YXIgZ3JhY2VmdWxfc2h1dGRvd24gPSBmYWxzZTsKICAgIGRlZmVyIGlmICghZ3JhY2VmdWxfc2h1dGRvd24pIGgud3JpdGVPd25lclRlcm1pbmF0aW9uKG93bmVyX2ZhaWx1cmUpIGNhdGNoIHt9OwogICAgZXJyZGVmZXIgfGVycnwgewogICAgICAgIG93bmVyX2ZhaWx1cmUgPSBlcnI7CiAgICB9CiAgICBjb25zdCBsb2FkZWRfZmFjdG9yeSA9IGgubG9hZFNvdXJjZShmYWlsZWQpOwogICAgbG9hZGVkX2ZhY3RvcnkgY2F0Y2ggfGVycnwgewogICAgICAgIHJldHVybiBlcnI7CiAgICB9OwogICAgZ3JhY2VmdWxfc2h1dGRvd24gPSB0cnVlOwp9CnRlc3QgImV4cGxpY2l0IGVycm9yIHVuaW9uIGNhc3QgcmV0YWlucyBvcmlnaW5hbCBjYXB0dXJlIiB7CiAgICBoLm9ic2VydmVkID0gbnVsbDsKICAgIHRyeSBzdGQudGVzdGluZy5leHBlY3RFcnJvcihlcnJvci5Tb3VyY2VMb2FkRmFpbHVyZSwgY2FzdE93bmVyKHRydWUpKTsKICAgIHRyeSBzdGQudGVzdGluZy5leHBlY3RFcXVhbChlcnJvci5Tb3VyY2VMb2FkRmFpbHVyZSwgaC5vYnNlcnZlZC4/KTsKfQp0ZXN0ICJibG9jayBmb3JtIGVycmRlZmVyIHJldGFpbnMgb3JpZ2luYWwgY2FwdHVyZSIgewogICAgaC5vYnNlcnZlZCA9IG51bGw7CiAgICB0cnkgc3RkLnRlc3RpbmcuZXhwZWN0RXJyb3IoZXJyb3IuU291cmNlTG9hZEZhaWx1cmUsIGJsb2NrT3duZXIodHJ1ZSkpOwogICAgdHJ5IHN0ZC50ZXN0aW5nLmV4cGVjdEVxdWFsKGVycm9yLlNvdXJjZUxvYWRGYWlsdXJlLCBoLm9ic2VydmVkLj8pOwp9Cg=='
@@ -90,7 +90,7 @@ jobs:
             [ordered]@{target='original';exit_code=$taskExit;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content -LiteralPath "$taskDir/original-result.json"
             if ($taskExit -ne 0) { exit $taskExit }
           } finally { Pop-Location }
-      - name: Explicit-cast and block capture variants
+      - name: Explicit-cast capture positive
         shell: pwsh
         timeout-minutes: 2
         run: >
@@ -103,9 +103,29 @@ jobs:
           Push-Location "$taskDir/repro"
 
           try {
-            & zig build variants -j1 --test-timeout 30s --summary all 2>&1 | Tee-Object -FilePath "$taskDir/variants.log"
+            & zig build cast -j1 --test-timeout 30s --summary all 2>&1 | Tee-Object -FilePath "$taskDir/cast.log"
             $taskExit = $LASTEXITCODE
-            [ordered]@{target='variants';exit_code=$taskExit;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content -LiteralPath "$taskDir/variants-result.json"
+            [ordered]@{target='cast';exit_code=$taskExit;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content -LiteralPath "$taskDir/cast-result.json"
+            if ($taskExit -ne 0) { exit $taskExit }
+          } finally { Pop-Location }
+      - name: Block capture bare return - preserve expected compile failure
+        if: always()
+        continue-on-error: true
+        shell: pwsh
+        timeout-minutes: 2
+        run: >
+          $ErrorActionPreference = 'Stop'
+
+          $PSNativeCommandUseErrorActionPreference = $false
+
+          $taskDir = (Resolve-Path 'verification/sdk-stdio-pattern').Path
+
+          Push-Location "$taskDir/repro"
+
+          try {
+            & zig build block -j1 --test-timeout 30s --summary all 2>&1 | Tee-Object -FilePath "$taskDir/block.log"
+            $taskExit = $LASTEXITCODE
+            [ordered]@{target='block';exit_code=$taskExit;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content -LiteralPath "$taskDir/block-result.json"
             if ($taskExit -ne 0) { exit $taskExit }
           } finally { Pop-Location }
       - name: Distinguish reproduction from refutation
@@ -115,15 +135,19 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $taskDir = 'verification/sdk-stdio-pattern'
           $original = Get-Content -Raw -LiteralPath "$taskDir/original-result.json" | ConvertFrom-Json
-          $variants = Get-Content -Raw -LiteralPath "$taskDir/variants-result.json" | ConvertFrom-Json
+          $cast = Get-Content -Raw -LiteralPath "$taskDir/cast-result.json" | ConvertFrom-Json
+          $block = Get-Content -Raw -LiteralPath "$taskDir/block-result.json" | ConvertFrom-Json
           $originalLog = Get-Content -Raw -LiteralPath "$taskDir/original.log"
-          $variantLog = Get-Content -Raw -LiteralPath "$taskDir/variants.log"
+          $castLog = Get-Content -Raw -LiteralPath "$taskDir/cast.log"
+          $blockLog = Get-Content -Raw -LiteralPath "$taskDir/block.log"
           $reproduced = $original.exit_code -ne 0 -and $originalLog.Contains('expected error union type')
-          $variantsPass = $variants.exit_code -eq 0 -and $variantLog.Contains('2/2 tests passed')
-          [ordered]@{original_exit=$original.exit_code;expected_original_compile_failure_reproduced=$reproduced;variants_exit=$variants.exit_code;cast_and_block_capture_tests_passed=$variantsPass;scope='Compiler pattern only; original negative is retained explicitly; no SDK conclusion'} | ConvertTo-Json | Set-Content -LiteralPath "$taskDir/pattern-result.json"
+          $castPass = $cast.exit_code -eq 0 -and $castLog.Contains('1/1 tests passed')
+          $blockReproduced = $block.exit_code -ne 0 -and $blockLog.Contains('expected error union type')
+          [ordered]@{original_exit=$original.exit_code;expected_original_compile_failure_reproduced=$reproduced;cast_exit=$cast.exit_code;explicit_cast_capture_test_passed=$castPass;block_exit=$block.exit_code;block_bare_return_compile_failure_reproduced=$blockReproduced;scope='Compiler pattern only; original and block negatives retained explicitly; no SDK runtime conclusion'} | ConvertTo-Json | Set-Content -LiteralPath "$taskDir/pattern-result.json"
           if ($original.exit_code -eq 0) { throw 'REFUTED: minimal original compiled. Inspect the actual SDK catch/return context before attributing a fix.' }
           if (-not $reproduced) { throw 'Original failed for a different reason; expected diagnostic not reproduced' }
-          if (-not $variantsPass) { throw 'Explicit-cast/block variants not proven' }
+          if (-not $castPass) { throw 'Explicit union-cast capture is not proven' }
+          if (-not $blockReproduced) { throw 'Previously observed block-form negative is not reproduced' }
       - name: Upload tiny pattern source, logs and results
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
