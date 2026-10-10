@@ -190,7 +190,6 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-json-envelope", "Validate ECMA JSON grammar while retaining opaque UTF16 escapes and top-level routing").dependOn(&json_envelope_run.step);
     const process_stdio_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_process_stdio_process_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native process stdio factory startup"}, .use_llvm = use_llvm });
     linkQuickJs(b, process_stdio_tests.root_module, quickjs, sqlite_lib_dir);
-    linkDurable(b, process_stdio_tests.root_module);
     process_stdio_tests.root_module.addImport("catalog_tool", catalog_tool);
     const process_stdio_run = b.addRunArtifact(process_stdio_tests);
     process_stdio_run.step.dependOn(&sdk_install.step);

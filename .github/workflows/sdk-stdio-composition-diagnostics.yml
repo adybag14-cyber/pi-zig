@@ -2,7 +2,7 @@ name: SDK stdio composition diagnostics
 
 on:
   push:
-    branches: [work/pi-native-followups-20261010]
+    branches: [work/pi-native-followups-20261010, work/sdk-stdio-composition-fix-20261010]
 
 permissions:
   contents: read
@@ -13,7 +13,6 @@ concurrency:
 
 jobs:
   platform-debug:
-    if: github.ref == 'refs/heads/work/pi-native-followups-20261010'
     strategy:
       fail-fast: false
       matrix:
