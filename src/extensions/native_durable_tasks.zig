@@ -66,7 +66,7 @@ const PendingPhase = struct {
     allocation_generation: u64,
 };
 const Runtime = struct { entry: *Entry, session: c.JSValue, signal: c.JSValue, context: c.JSValue, agent: c.JSValue, snapshot: c.JSValue };
-const RuntimeMethod = enum(c_int) { getTask, outcomes, conversation, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc, agent, env, context, sleep, waitForTask, abortOwned };
+const RuntimeMethod = enum(c_int) { getTask, outcomes, conversation, entry, now, report, memo, snapshot, snapshotAsOf, watchDoc, agent, env, context, sleep, waitForTask, ownedTasks, abortOwned };
 const Waiter = struct { id: ?u64, conversation: ?u64, resolve: c.JSValue, reject: c.JSValue, context: c.JSValue };
 const Signal = struct { entry: *Entry, value: c.JSValue, context: c.JSValue };
 const Sleeper = struct { runtime: c.JSValue, until: f64, context: c.JSValue, resolve: c.JSValue, reject: c.JSValue };
@@ -89,6 +89,9 @@ pub const Manager = struct {
     mutex: std.Io.Mutex = .init,
     waiters: std.ArrayList(Waiter) = .empty,
     terminal_tasks: std.AutoHashMapUnmanaged(u64, json.Owned) = .empty,
+    // Source's #live owns committed copies; Storage reads must not replace
+    // them. Terminal publications release these records immediately.
+    live_task_records: std.AutoHashMapUnmanaged(u64, json.Owned) = .empty,
     missing_tasks: std.AutoHashMapUnmanaged(u64, void) = .empty,
     pending_reads: std.AutoHashMapUnmanaged(u64, u64) = .empty,
     read_queries: std.ArrayList(ReadQuery) = .empty,
@@ -191,6 +194,8 @@ pub const Manager = struct {
         var terminal = self.terminal_tasks.valueIterator();
         while (terminal.next()) |item| item.deinit();
         self.terminal_tasks.deinit(self.engine.gpa);
+        self.clearLiveTaskRecords();
+        self.live_task_records.deinit(self.engine.gpa);
         self.missing_tasks.deinit(self.engine.gpa);
         self.pending_reads.deinit(self.engine.gpa);
         self.read_queries.deinit(std.heap.page_allocator);
@@ -364,6 +369,7 @@ pub const Manager = struct {
             if (!std.mem.eql(u8, try json.asString(try json.required(change, "type")), "task")) continue;
             const record = try json.required(change, "value");
             const id = try json.asInteger(try json.required(record, "id"));
+            try self.cacheLiveTaskRecord(record);
             // A serialized publication supersedes any earlier requested read.
             self.retireRead(id);
             _ = self.missing_tasks.remove(id);
@@ -392,6 +398,28 @@ pub const Manager = struct {
         // before finishing a phase aborts its invocation signal. A later poll
         // cannot decide which of those already-ordered events won.
         try settlePublishedWaiters(self, false);
+    }
+    fn clearLiveTaskRecords(self: *Manager) void {
+        var records = self.live_task_records.valueIterator();
+        while (records.next()) |record| record.deinit();
+        self.live_task_records.clearRetainingCapacity();
+    }
+    fn cacheLiveTaskRecord(self: *Manager, record: json.Value) !void {
+        if (self.closed) return;
+        const id = try json.asInteger(try json.required(record, "id"));
+        if (!try @import("../durable/task_state.zig").live(record)) {
+            if (self.live_task_records.fetchRemove(id)) |removed| {
+                var previous = removed.value;
+                previous.deinit();
+            }
+            return;
+        }
+        var copied = try json.Owned.empty(self.engine.gpa);
+        errdefer copied.deinit();
+        copied.value = try json.clone(copied.arena.allocator(), record);
+        const slot = try self.live_task_records.getOrPut(self.engine.gpa, id);
+        if (slot.found_existing) slot.value_ptr.deinit();
+        slot.value_ptr.* = copied;
     }
     fn requestWaiterRead(self: *Manager, id: u64) !void {
         if (self.pending_reads.contains(id)) return;
@@ -716,6 +744,7 @@ pub const Manager = struct {
     pub fn retire(self: *Manager) void {
         if (self.closed) return;
         self.closed = true;
+        self.clearLiveTaskRecords();
         if (durable.state(self.engine, self.session)) |native| {
             // Source's failed promise ends an already-observing abort join at
             // failure admission, before cleanup can finish the held run.
@@ -1057,7 +1086,11 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     owner.next_generation += 1;
     errdefer {
         self.closed = true;
+        self.clearLiveTaskRecords();
+        self.live_task_records.deinit(engine.gpa);
         if (self.published_graph) |graph| graph.destroy(engine.gpa);
+        for (self.events.items) |*event| event.changes.deinit();
+        self.events.deinit(std.heap.page_allocator);
         self.scheduler.deinit();
         for (self.definitions.items) |definition| {
             engine.freeValue(definition.token);
@@ -1096,6 +1129,7 @@ pub fn attach(engine: *Engine, session: c.JSValue, options: c.JSValue, context: 
     while (rows.next()) |row| {
         const table = row.value_ptr.table;
         if (table != .task and table != .conversation) continue;
+        if (table == .task) try self.cacheLiveTaskRecord(row.value_ptr.record);
         try graph.rows.put(row.key_ptr.*, .{ .table = table, .record = try graphRecord(graph.arena.allocator(), table, row.value_ptr.record), .commitSeq = 0 });
     }
     owner.managers.appendAssumeCapacity(self);
@@ -1278,7 +1312,7 @@ fn runtimeObject(self: *Manager, entry: *Entry, record: json.Value) !c.JSValue {
     inline for (std.meta.fields(RuntimeMethod)) |operation| {
         const arity: c_int = switch (@as(RuntimeMethod, @enumFromInt(operation.value))) {
             .now, .entry, .snapshot, .snapshotAsOf, .watchDoc => 0,
-            .report, .memo, .agent, .env => 1,
+            .report, .memo, .agent, .env, .ownedTasks => 1,
             .context => 3,
             else => 2,
         };
@@ -1327,8 +1361,15 @@ fn runtimeMethodOwned(engine: *Engine, receiver: c.JSValue, operation: RuntimeMe
     const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
     // Source's conversation read and binding.check only test invocation end;
     // the operation's supplied context carries cancellation independently.
-    if (operation == .conversation or operation == .abortOwned or operation == .getTask or operation == .outcomes or operation == .entry) try invocationLive(self) else try active(self);
+    if (operation == .conversation or operation == .abortOwned or operation == .getTask or operation == .outcomes or operation == .entry or operation == .ownedTasks) try invocationLive(self) else try active(self);
     const owner = self.entry.manager;
+    if (operation == .ownedTasks) {
+        const context = if (args.len > 0) args[0] else c.pi_js_undefined();
+        var captures = [_]c.JSValue{ receiver, context };
+        const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, ownedTasksRead, 0, 0, captures.len, &captures));
+        defer engine.freeValue(callback);
+        return durable.enqueueRead(engine, self.session, callback, context);
+    }
     if (operation == .abortOwned) {
         const bound = try @import("native_durable_context.zig").withAbortSignal(engine, self.signal, if (args.len > 1) args[1] else c.pi_js_undefined());
         defer engine.freeValue(bound);
@@ -1507,6 +1548,31 @@ fn invocationLive(self: *Runtime) !void {
     const failure = try endedError(engine, self.entry.runtime.taskId());
     _ = try engine.checked(c.JS_Throw(engine.context, failure));
 }
+fn ownedTasksRead(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    return ownedTasksOnLine(engine, data[0], data[1]) catch |err| durable.reject(engine, err);
+}
+fn ownedTasksOnLine(engine: *Engine, receiver: c.JSValue, context: c.JSValue) !c.JSValue {
+    const self = runtimeState(engine, receiver) orelse return error.InvalidTaskRuntime;
+    const owner = self.entry.manager;
+    // Admit publications from the commit preceding this serialized read;
+    // external Storage reads never enter this committed live-record map.
+    try Manager.deliver(owner);
+    try invocationLive(self);
+    try durable.checkCancellation(engine, context);
+    var ids: std.ArrayList(u64) = .empty;
+    defer ids.deinit(engine.gpa);
+    var records = owner.live_task_records.iterator();
+    while (records.next()) |record| {
+        const direct = json.get(record.value_ptr.value, "owner") orelse continue;
+        if (try json.asInteger(direct) == self.entry.runtime.taskId()) try ids.append(engine.gpa, record.key_ptr.*);
+    }
+    std.mem.sort(u64, ids.items, {}, std.sort.asc(u64));
+    const result = try sdk.array(engine);
+    errdefer engine.freeValue(result);
+    for (ids.items) |id| try sdk.append(engine, result, try durable.jsValue(engine, owner.live_task_records.get(id).?.value));
+    return result;
+}
 fn runtimeAbortOwnedMarkedValue(engine: *Engine, terminal: c.JSValue, data: [*c]c.JSValue) !c.JSValue {
     if (c.JS_ToBool(engine.context, terminal) != 0) return c.pi_js_undefined();
     const runtime = runtimeState(engine, data[0]) orelse return error.InvalidTaskRuntime;
@@ -1521,6 +1587,31 @@ fn runtimeAbortOwnedMarkedValue(engine: *Engine, terminal: c.JSValue, data: [*c]
     runtime.entry.runtime.suspendWait();
     errdefer runtime.entry.runtime.resumeWait();
     return sdk.invoke(engine, pending, "then", &.{ fulfilled, rejected });
+}
+test "native durable VM ownedTasks actual ea direct live copies cancellation and extracted aliases" {
+    const engine = try Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 5000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const result = engine.evalModule(@embedFile("../durable/fixtures/durable-ea-ownedtasks-program.txt"), "actual-ea-ownedtasks") catch |err| {
+        std.debug.print("Actual ea ownedTasks {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "no VM diagnostic" });
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const trace = try sdk.get(engine, global, "ownedTasksTrace");
+    defer engine.freeValue(trace);
+    var actual = try durable.owned(engine, trace);
+    defer actual.deinit();
+    var expected = try json.Owned.parse(std.testing.allocator, @embedFile("../durable/fixtures/durable-ea-ownedtasks.json"));
+    defer expected.deinit();
+    if (!json.equal(actual.value, expected.value)) {
+        const encoded = try json.stringify(std.testing.allocator, actual.value);
+        defer std.testing.allocator.free(encoded);
+        std.debug.print("Actual ea ownedTasks trace: {s}\n", .{encoded});
+        return error.SourceOwnedTasksMismatch;
+    }
 }
 fn ignoreAgentFailure(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.pi_js_undefined();
