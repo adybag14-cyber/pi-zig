@@ -88,8 +88,10 @@ test "native photon public boundary isolates concurrent callers across failures 
     var first: ConcurrentProbe = .{};
     var second: ConcurrentProbe = .{};
     const a = try std.Thread.spawn(.{}, ConcurrentProbe.run, .{&first});
-    errdefer a.join();
-    const b = try std.Thread.spawn(.{}, ConcurrentProbe.run, .{&second});
+    const b = std.Thread.spawn(.{}, ConcurrentProbe.run, .{&second}) catch |cause| {
+        a.join();
+        return cause;
+    };
     b.join();
     a.join();
     if (first.failure) |failure| return failure;
