@@ -4,7 +4,7 @@ const engine_mod = @import("engine.zig");
 const durable = @import("native_durable.zig");
 const sdk = @import("native_sdk.zig");
 const scheduling = @import("../durable/scheduler.zig");
-const ownership = @import("../durable/ownership_index.zig");
+const owner_index = @import("../durable/ownership_index.zig");
 const session_mod = @import("../durable/session.zig");
 const backend = @import("../durable/backend/root.zig");
 const broker_mod = @import("native_durable_broker.zig");
@@ -19,7 +19,7 @@ const Event = struct {
     seq: u64,
     changes: json.Owned,
     ready: bool = true,
-    index: ?ownership.Index = null,
+    index: ?owner_index.Index = null,
     fn deinit(self: *Event) void {
         self.changes.deinit();
         if (self.index) |*index| index.deinit();
@@ -128,8 +128,8 @@ pub const Manager = struct {
     custom_clock: bool = false,
     clock_callback: c.JSValue,
     vm_owner: ?c.JSValue = null,
-    published_index: ?ownership.Index = null,
-    pending_index: ?ownership.Index = null,
+    published_index: ?owner_index.Index = null,
+    pending_index: ?owner_index.Index = null,
     abort_controls: @import("native_durable_abort_control.zig").Queue = .{},
     task_aborts: @import("native_durable_task_abort.zig").Queue = .{},
     active_dispatches: usize = 0,
@@ -335,7 +335,7 @@ pub const Manager = struct {
         self.mutex.unlock(self.lease.value.io);
         if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
     }
-    fn forwardIndex(raw: ?*anyopaque, seq: ?u64, index: *const ownership.Index) !void {
+    fn forwardIndex(raw: ?*anyopaque, seq: ?u64, index: *const owner_index.Index) !void {
         const self: *Manager = @ptrCast(@alignCast(raw.?));
         var copied = try index.duplicate(std.heap.page_allocator);
         errdefer copied.deinit();
@@ -357,7 +357,7 @@ pub const Manager = struct {
         self.mutex.unlock(self.lease.value.io);
         if (self.broker.notify.call) |notify| notify(self.broker.notify.context);
     }
-    fn adoptIndex(self: *Manager, index: *?ownership.Index) void {
+    fn adoptIndex(self: *Manager, index: *?owner_index.Index) void {
         if (index.*) |next| {
             if (self.published_index) |*previous| previous.deinit();
             self.published_index = next;
@@ -401,7 +401,7 @@ pub const Manager = struct {
             const kind = try json.asString(try json.required(change, "type"));
             if (std.mem.eql(u8, kind, "task") or std.mem.eql(u8, kind, "conversation")) self.drive_requested = true;
         }
-        if (self.published_index == null) self.published_index = ownership.Index.init(self.engine.gpa);
+        if (self.published_index == null) self.published_index = owner_index.Index.init(self.engine.gpa);
         const index = &self.published_index.?;
         for (changes.array.items) |change| {
             if (!std.mem.eql(u8, try json.asString(try json.required(change, "type")), "conversation")) continue;
@@ -1720,7 +1720,7 @@ test "native durable VM ownership publication index readiness preserves committe
     const manager = try getManager(engine, session);
     var live = try json.Owned.parse(gpa, "[{\"type\":\"conversation\",\"value\":{\"id\":1}},{\"type\":\"task\",\"value\":{\"id\":2,\"kind\":\"fixture.ready\",\"version\":1,\"conversationId\":1,\"input\":null,\"background\":false,\"abortRequested\":false,\"state\":{\"status\":\"running\",\"checkpoint\":{\"phase\":\"hold\"}}}}]");
     defer live.deinit();
-    var original = ownership.Index.init(gpa);
+    var original = owner_index.Index.init(gpa);
     defer original.deinit();
     try Manager.forwardIndex(manager, null, &original);
     const Check = struct {
@@ -1736,7 +1736,7 @@ test "native durable VM ownership publication index readiness preserves committe
             try std.testing.expectEqual(@as(usize, 1), self.manager.events.items.len);
             try std.testing.expect(self.manager.publicationPending());
             try std.testing.expect(!self.manager.live_task_records.contains(2));
-            var tracked = ownership.Index.init(self.manager.engine.gpa);
+            var tracked = owner_index.Index.init(self.manager.engine.gpa);
             defer tracked.deinit();
             try tracked.observe(&.{.{ .id = 1 }}, &.{.{ .id = 2, .link = .{ .conversation = 1 }, .status = .running }});
             try Manager.forwardIndex(self.manager, 77, &tracked);
@@ -2159,7 +2159,7 @@ pub fn indexSizes(engine: *Engine, session: c.JSValue) !c.JSValue {
     const sizes = index.sizes();
     const result = try sdk.object(engine);
     errdefer engine.freeValue(result);
-    inline for (std.meta.fields(ownership.Sizes)) |field| try sdk.put(engine, result, field.name, c.JS_NewInt64(engine.context, @intCast(@field(sizes, field.name))));
+    inline for (std.meta.fields(owner_index.Sizes)) |field| try sdk.put(engine, result, field.name, c.JS_NewInt64(engine.context, @intCast(@field(sizes, field.name))));
     return result;
 }
 pub fn schedulerClosedError(self: *Manager) !c.JSValue {
