@@ -1,0 +1,42 @@
+[
+  {
+    "platform": 1,
+    "nameId": 0,
+    "value": "Copyright 2011 Google Inc. All Rights Reserved."
+  },
+  {
+    "platform": 1,
+    "nameId": 7,
+    "value": "Roboto is a trademark of Google."
+  },
+  {
+    "platform": 1,
+    "nameId": 13,
+    "value": "Licensed under the Apache License, Version 2.0"
+  },
+  {
+    "platform": 1,
+    "nameId": 14,
+    "value": "http://www.apache.org/licenses/LICENSE-2.0"
+  },
+  {
+    "platform": 3,
+    "nameId": 0,
+    "value": "Copyright 2011 Google Inc. All Rights Reserved."
+  },
+  {
+    "platform": 3,
+    "nameId": 7,
+    "value": "Roboto is a trademark of Google."
+  },
+  {
+    "platform": 3,
+    "nameId": 13,
+    "value": "Licensed under the Apache License, Version 2.0"
+  },
+  {
+    "platform": 3,
+    "nameId": 14,
+    "value": "http://www.apache.org/licenses/LICENSE-2.0"
+  }
+]

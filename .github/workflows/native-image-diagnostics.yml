@@ -1,0 +1,62 @@
+name: Native image codec diagnostics
+
+on:
+  push:
+    branches: [work/native-image-codec-20261010]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: image-codec-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  codec:
+    name: Native codec (${{ matrix.os }}, ${{ matrix.mode }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        mode: [Debug, ReleaseSafe]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Record exact source and verify native input bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verification/image-codec-diagnostics
+          git rev-parse HEAD > verification/image-codec-diagnostics/source.txt
+          git rev-parse 'HEAD^{tree}' >> verification/image-codec-diagnostics/source.txt
+          zig version >> verification/image-codec-diagnostics/source.txt
+          (cd vendor/photon-native && sha256sum -c TRANSLATED-SOURCE.sha256) > verification/image-codec-diagnostics/codec-inputs.txt
+          git ls-files -z src tools vendor build.zig | xargs -0 sha256sum > verification/image-codec-diagnostics/inputs.sha256
+      - name: Check native source formatting
+        run: zig fmt --check build.zig src tools
+      - name: Compare original codec bytes, resize results, orientation and allocation ownership
+        shell: bash
+        timeout-minutes: 20
+        run: |
+          set -euo pipefail
+          zig build test-native-photon -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | tee verification/image-codec-diagnostics/tests.log
+          sha256sum -c verification/image-codec-diagnostics/inputs.sha256 > verification/image-codec-diagnostics/posthash.txt
+          git diff --exit-code
+      - name: Preserve scoped results and required dependency notices
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-codec-${{ runner.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: |
+            verification/image-codec-diagnostics/**
+            vendor/photon-native/LICENSE*
+            vendor/photon-native/notices/**
+            vendor/photon-native/README.md
+            vendor/photon-native/PROVENANCE*.json
+            vendor/photon-native/PROVENANCE-AUDIT.md

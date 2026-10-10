@@ -1,0 +1,226 @@
+{
+  "status": "SOURCE_ONLY_AUDIT_KNOWN_COMPONENT_NOTICES_COLLECTED_DEPENDENCY_CLOSURE_UNRESOLVED",
+  "createdUtc": "2026-10-10T16:45:04.0808516+00:00",
+  "npm": {
+    "wasmBytes": 1881634,
+    "gitHead": "685f5b155b36c5611c08ca678bb78ddbab3edbac",
+    "tarballSHA256": "5A23015C1CD2C38E3C492DD96929985247B92F52D2FF0FB948D29EDCA52BC50A",
+    "registrySHA512IntegrityVerified": true,
+    "license": "Apache-2.0",
+    "registryUrl": "https://registry.npmjs.org/@silvia-odwyer%2fphoton-node/0.3.4",
+    "wasmSHA256": "10468181565c56004c867f3a4af96f89a0ef5a63a72f2b5fb12c1f1992a3615c",
+    "publishedWasmEqualsInstalledCompilerInput": true,
+    "registrySHA1Verified": true,
+    "version": "0.3.4",
+    "name": "@silvia-odwyer/photon-node"
+  },
+  "photonSource": {
+    "originalDependencyFeaturesPreservedIn": "photon-pinned-crate-Cargo.toml",
+    "CargoLockTracked": false,
+    "sourceLicense": "Apache-2.0",
+    "commit": "685f5b155b36c5611c08ca678bb78ddbab3edbac",
+    "crateVersionIsNotNpmVersion": true,
+    "crateVersion": "0.3.3",
+    "NOTICETracked": false,
+    "treeComplete": true
+  },
+  "rustArtifact": {
+    "otherProducers": [
+      "walrus0.22.0",
+      "wasm-bindgen0.2.95 (3a8da7cb8)"
+    ],
+    "runtimeTransitiveClosure": "UNRESOLVED",
+    "producerNamesAreNotRuntimeDependencyClaims": true,
+    "stdlibLicenses": "MIT OR Apache-2.0",
+    "embeddedCommit": "3f43b1a636738f41c48df073c5bcb97a97bf8459",
+    "producer": "rustc 1.86.0-nightly (3f43b1a63 2025-01-03)"
+  },
+  "font": {
+    "exactArtifactOffset": 1403285,
+    "bytes": 171676,
+    "name": "Roboto-Regular.ttf",
+    "sourceCommit": "685f5b155b36c5611c08ca678bb78ddbab3edbac",
+    "trademark": "Roboto is a trademark of Google.",
+    "copyright": "Copyright 2011 Google Inc. All Rights Reserved.",
+    "license": "Apache-2.0",
+    "sha256": "79E851404657DAC2106B3D22AD256D47824A9A5765458EDB72C9102A45816D95"
+  },
+  "wabt": {
+    "runtimeFiles": [
+      {
+        "file": "wasm-rt-impl.c",
+        "sha256": "FDE8736198E7704B9BE5CC8C9073BF0E8765106C4B10AECE792AE5DB2081FE98",
+        "pinnedSourceCommit": "ff0ef7e0009402740c805a9744c09b05be063e48",
+        "matchesPinnedSourceExceptLineEndings": true
+      },
+      {
+        "file": "wasm-rt-mem-impl.c",
+        "sha256": "B32D641DF9DA08B1D723504B95F61B73B7D58FBC44CF321904CAF773319A4650",
+        "pinnedSourceCommit": "ff0ef7e0009402740c805a9744c09b05be063e48",
+        "matchesPinnedSourceExceptLineEndings": true
+      },
+      {
+        "file": "wasm-rt-exceptions-impl.c",
+        "sha256": "A9B2B9DFB83A848C398F0CC2074E3EC236A69EB0CAAA7DFFC0EF166E555244A6",
+        "pinnedSourceCommit": "ff0ef7e0009402740c805a9744c09b05be063e48",
+        "matchesPinnedSourceExceptLineEndings": true
+      },
+      {
+        "file": "wasm-rt.h",
+        "sha256": "1D946BACF7891EC6CEF4660EE340FF7DDE23776135F17DB2F43B91E15AE9E5F3",
+        "pinnedSourceCommit": "ff0ef7e0009402740c805a9744c09b05be063e48",
+        "matchesPinnedSourceExceptLineEndings": true
+      },
+      {
+        "file": "wasm-rt-impl.h",
+        "sha256": "F15655A78FA6FA8DDC38450AEAD6C9EAC06927F2D2C14745810A928CD6DDE2AA",
+        "pinnedSourceCommit": "ff0ef7e0009402740c805a9744c09b05be063e48",
+        "matchesPinnedSourceExceptLineEndings": true
+      },
+      {
+        "file": "wasm-rt-exceptions.h",
+        "sha256": "D098856D55F6BF42FD02EB2BEC50FAAD156A95378A29FECE9BBE00F23ADF487C",
+        "pinnedSourceCommit": "ff0ef7e0009402740c805a9744c09b05be063e48",
+        "matchesPinnedSourceExceptLineEndings": true
+      },
+      {
+        "file": "wasm-rt-impl-tableops.inc",
+        "sha256": "BF5FF7919376A1219943407E5BEE2799A6FF7B83647BD5CC757A52C1CE5CFDB2",
+        "pinnedSourceCommit": "ff0ef7e0009402740c805a9744c09b05be063e48",
+        "matchesPinnedSourceExceptLineEndings": true
+      },
+      {
+        "file": "wasm-rt-mem-impl-helper.inc",
+        "sha256": "7E1699F52C3D55D19A23D81A9ABF915B4531421499410CD749E0EED18BE37C63",
+        "pinnedSourceCommit": "ff0ef7e0009402740c805a9744c09b05be063e48",
+        "matchesPinnedSourceExceptLineEndings": true
+      }
+    ],
+    "tag": "1.0.42",
+    "commit": "ff0ef7e0009402740c805a9744c09b05be063e48",
+    "license": "Apache-2.0",
+    "generatedC": [
+      {
+        "file": "photon_0.c",
+        "bytes": 3105706,
+        "sha256": "2AFF3AD0C21EA8EF752E6E7FA51C5B052421165BFB563AFB79FEB2251FA7AB8C"
+      },
+      {
+        "file": "photon_1.c",
+        "bytes": 496166,
+        "sha256": "01C63A7770E855CC33C40A618E76FCBF14436AAE6E54430035B629D34B7763B1"
+      },
+      {
+        "file": "photon_10.c",
+        "bytes": 3985430,
+        "sha256": "7A47C3F407D17CCED512CC40D831EEBB2540B5BE39390578866E50A86F6FC414"
+      },
+      {
+        "file": "photon_11.c",
+        "bytes": 3346617,
+        "sha256": "B57D52267B39294634A4C721776CFAD5EE455C9F96B4B7601BC85EC6E57592A1"
+      },
+      {
+        "file": "photon_12.c",
+        "bytes": 1988133,
+        "sha256": "81F90C38097AF42490871256F25B0B9D407C3C7A06AD34AFFA31E95F46A2B3F8"
+      },
+      {
+        "file": "photon_13.c",
+        "bytes": 1146730,
+        "sha256": "3B76820130765867589F5B858400EBAEF297F45756439A30B910D4D3E79D2B48"
+      },
+      {
+        "file": "photon_14.c",
+        "bytes": 2007241,
+        "sha256": "3D94B350D116833F7F0B551899555E090725149080CE62D43C83BC44B3008D50"
+      },
+      {
+        "file": "photon_15.c",
+        "bytes": 2205334,
+        "sha256": "938B3886F5C42AC2DDE21216D7C0EBCE09D22ADF52478C734B47C7DA88C20AE0"
+      },
+      {
+        "file": "photon_2.c",
+        "bytes": 1307211,
+        "sha256": "26767B4F91D22A906794658497F9DE0703CBD3ACCC3F7750C51B52988DEEACBE"
+      },
+      {
+        "file": "photon_3.c",
+        "bytes": 1131529,
+        "sha256": "CCA39D3D87DEA2455055A8A7F659209165387ED4B6E3572BACF8218D6BFC70A3"
+      },
+      {
+        "file": "photon_4.c",
+        "bytes": 866505,
+        "sha256": "E4A88FBCC22CDE3E0F58EC6599E5DC20D282DD07B8B869AB52269FB705022DD7"
+      },
+      {
+        "file": "photon_5.c",
+        "bytes": 896057,
+        "sha256": "8EAD0B5205505316A6615C1036F349878F796F28346762DBFEB17036FD692248"
+      },
+      {
+        "file": "photon_6.c",
+        "bytes": 524735,
+        "sha256": "DA4C5E867295E79A817C2FB1EF42F8D58F10A12C145D1D2D46B996C8BB9CEE20"
+      },
+      {
+        "file": "photon_7.c",
+        "bytes": 807203,
+        "sha256": "D7F3745823E5AA0A508FE542B8F47B75581FD1BFB593D03F0D310C696316889A"
+      },
+      {
+        "file": "photon_8.c",
+        "bytes": 1652294,
+        "sha256": "C3680ABAC752D9F06ED8BC0D521AC34D71DB25519D14EFC5EC573416E575A362"
+      },
+      {
+        "file": "photon_9.c",
+        "bytes": 2547051,
+        "sha256": "8AA030C944173CD7EA3554121C3A49A463E6FDF380173BB3F721B5DD9BEEFE83"
+      },
+      {
+        "file": "photon-impl.h",
+        "bytes": 377185,
+        "sha256": "C793C312D86EBA1DCFD9F042CDD25D9EC7E88D0EAD251C582E3149D3ABD1956F"
+      },
+      {
+        "file": "photon.h",
+        "bytes": 28970,
+        "sha256": "19E1ECC143FB716984B943737AA18C7271F93093223DC85E0AC934FCB70D2EAD"
+      }
+    ],
+    "generatedFilesNeedProminentTranslationAndModificationNotices": true,
+    "runtimeCopyright": "Copyright 2018 WebAssembly Community Group participants",
+    "originalGeneratorHeader": "Automatically generated by wasm2c",
+    "releaseArchiveSHA256": "62F1EB2B51AA57CF0F0B8BA333BF2C72A049930AA9C5DE01DCAD271C4FE48C88",
+    "generationOwnedReceipt": {
+      "name": "photon-wasm2c-no-tail-split16-first-20261010",
+      "pid": 8360,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\wabt-1.0.42-research-20261010\\wabt-1.0.42\\bin\\wasm2c.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\wabt-1.0.42-research-20261010\\wabt-1.0.42\\bin\\wasm2c.exe\" C:\\Users\\adyba\\pi-upstream-sdk-reference-6fb-20261008\\node_modules\\@silvia-odwyer\\photon-node\\photon_rs_bg.wasm --module-name=pi_photon --disable-tail-call --num-outputs=16 -o photon.c",
+      "created_utc": "2026-10-10T13:51:47.641128Z",
+      "launched_utc": "2026-10-10T14:51:47.6372531+01:00",
+      "identity_captured": true,
+      "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\photon-c-split-research-20261010",
+      "status": "passed",
+      "exit_code": 0,
+      "completed_utc": "2026-10-10T14:51:48.1647566+01:00"
+    }
+  },
+  "crateEvidence": {
+    "additionalEmbeddedNotices": [
+      "IJG libjpeg9a fdct",
+      "NeuQuant Anthony Dekker1994",
+      "ab_glyph Google2015/AlexButler2020"
+    ],
+    "completeSBOM": false,
+    "embeddedVersionStrings": 23,
+    "publishedCratesChecksumVerified": 23,
+    "sourceDependencyRequirementCandidates": 101
+  },
+  "productMutation": "NONE",
+  "compilerRuns": "NONE",
+  "originalTuiWip": "PRESERVED"
+}
