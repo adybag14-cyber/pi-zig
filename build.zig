@@ -175,6 +175,9 @@ pub fn build(b: *std.Build) void {
     const process_protocol_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/process_stream_parent.zig"), .target = target, .optimize = optimize }), .filters = &.{"process stream"}, .use_llvm = use_llvm });
     const process_protocol_run = b.addRunArtifact(process_protocol_tests);
     b.step("test-native-process-stream-protocol", "Check binary process IO, exact leases, EOF ordering and paired detach").dependOn(&process_protocol_run.step);
+    const json_envelope_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/extensions/native_json_envelope.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm });
+    const json_envelope_run = b.addRunArtifact(json_envelope_tests);
+    b.step("test-native-json-envelope", "Validate ECMA JSON grammar while retaining opaque UTF16 escapes and top-level routing").dependOn(&json_envelope_run.step);
     const process_stdio_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_process_stdio_process_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native process stdio factory startup"}, .use_llvm = use_llvm });
     linkQuickJs(b, process_stdio_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, process_stdio_tests.root_module);
@@ -328,6 +331,7 @@ pub fn build(b: *std.Build) void {
     run_sqlite_live_tests.addArtifactArg(sqlite_live_tests);
 
     const test_step = b.step("test", "Run unit and integration tests");
+    test_step.dependOn(&json_envelope_run.step);
     test_step.dependOn(&stdio_process_run.step);
     test_step.dependOn(&process_protocol_run.step);
     test_step.dependOn(&process_stdio_run.step);
