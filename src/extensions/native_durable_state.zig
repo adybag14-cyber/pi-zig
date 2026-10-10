@@ -18,6 +18,8 @@ const State = struct {
     close_detach: c.JSValue,
     id: u64,
     version: u64,
+    projected: bool = false,
+    projection_report: ?c.JSValue = null,
     sequence: u64 = 0,
     subscribers: std.ArrayList(c.JSValue) = .empty,
     revisions: std.ArrayList(Revision) = .empty,
@@ -89,12 +91,14 @@ fn stateFinalizer(runtime: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
     for (self.subscribers.items) |value| c.JS_FreeValueRT(runtime, value);
     self.subscribers.deinit(engine.gpa);
     inline for (.{ "parent", "value", "commit_detach", "close_detach" }) |name| c.JS_FreeValueRT(runtime, @field(self, name));
+    if (self.projection_report) |reporter| c.JS_FreeValueRT(runtime, reporter);
     engine.gpa.destroy(self);
 }
 fn stateMark(runtime: ?*c.JSRuntime, object: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
     const engine: *Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
     const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(object, engine.native_durable_state_class) orelse return));
     inline for (.{ "parent", "value", "commit_detach", "close_detach" }) |name| c.JS_MarkValue(runtime, @field(self, name), marker);
+    if (self.projection_report) |reporter| c.JS_MarkValue(runtime, reporter, marker);
     for (self.subscribers.items) |value| c.JS_MarkValue(runtime, value, marker);
     for (self.revisions.items) |frame| {
         c.JS_MarkValue(runtime, frame.value, marker);
@@ -187,6 +191,37 @@ fn create(engine: *Engine, parent: c.JSValue, observation: docs.Observation) !c.
     defer engine.freeValue(close_callback);
     self.close_detach = try durable.subscribe(try durable.state(engine, parent), parent, .subscribeClose, close_callback);
     return object;
+}
+/// A state of a conversation/task-graph mount, released by that mount rather
+/// than by a document incarnation subscription.
+pub fn createProjection(engine: *Engine, parent: c.JSValue, value: c.JSValue, release: c.JSValue, on_error: c.JSValue) !c.JSValue {
+    try classes(engine);
+    const object = try engine.checked(c.JS_NewObjectClass(engine.context, engine.native_durable_state_class));
+    errdefer engine.freeValue(object);
+    const self = try engine.gpa.create(State);
+    self.* = .{ .engine = engine, .parent = c.JS_DupValue(engine.context, parent), .value = c.JS_DupValue(engine.context, value), .commit_detach = c.JS_DupValue(engine.context, release), .close_detach = c.pi_js_undefined(), .id = 0, .version = 0, .projected = true, .projection_report = c.JS_DupValue(engine.context, on_error) };
+    _ = c.JS_SetOpaque(object, self);
+    return object;
+}
+pub fn disposeProjection(engine: *Engine, object: c.JSValue) !void {
+    try (try state(engine, object)).dispose();
+}
+pub fn advanceProjection(engine: *Engine, object: c.JSValue, value: c.JSValue, context: c.JSValue) !void {
+    const self = try state(engine, object);
+    if (!self.projected) return error.NotProjectedState;
+    if (self.disposed) return;
+    try self.revisions.ensureUnusedCapacity(engine.gpa, 1);
+    self.revisions.appendAssumeCapacity(.{ .value = c.JS_DupValue(engine.context, value), .context = c.JS_DupValue(engine.context, context) });
+    if (!self.delivering and !self.scheduled) {
+        var data = [_]c.JSValue{object};
+        const callback = try engine.checked(c.JS_NewCFunctionData(engine.context, flushCallback, 0, 0, 1, &data));
+        defer engine.freeValue(callback);
+        const resolved = try sdk.promise(engine, c.pi_js_undefined());
+        defer engine.freeValue(resolved);
+        const result = try sdk.invoke(engine, resolved, "then", &.{callback});
+        engine.freeValue(result);
+        self.scheduled = true;
+    }
 }
 fn valueGetter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
@@ -335,6 +370,7 @@ fn flush(engine: *Engine, object: c.JSValue) !void {
 }
 fn drainSubscriber(engine: *Engine, object: c.JSValue) anyerror!void {
     const sub = try subscriber(engine, object);
+    const self = try state(engine, sub.owner);
     if (sub.running or sub.closed) return;
     sub.running = true;
     var asynchronous = false;
@@ -357,7 +393,7 @@ fn drainSubscriber(engine: *Engine, object: c.JSValue) anyerror!void {
         if (c.JS_IsException(returned)) {
             const failure = c.JS_GetException(engine.context);
             defer engine.freeValue(failure);
-            try report(engine, failure);
+            try reportState(self, failure);
             continue;
         }
         defer engine.freeValue(returned);
@@ -382,28 +418,41 @@ fn settled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValu
     const engine = Engine.fromContext(context.?);
     const sub = subscriber(engine, data[0]) catch |err| return durable.reject(engine, err);
     sub.running = false;
-    if (failure == 1) report(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| return durable.reject(engine, err);
+    if (failure == 1) reportState(state(engine, sub.owner) catch |err| return durable.reject(engine, err), if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| return durable.reject(engine, err);
     drainSubscriber(engine, data[0]) catch |err| return durable.reject(engine, err);
     return c.pi_js_undefined();
 }
 fn report(engine: *Engine, failure: c.JSValue) !void {
+    const error_value = try normalizeError(engine, failure);
+    defer engine.freeValue(error_value);
+    var args = [_]c.JSValue{error_value};
+    if (c.JS_EnqueueJob(engine.context, reportJob, 1, &args) < 0) return error.JavaScriptException;
+}
+fn normalizeError(engine: *Engine, failure: c.JSValue) !c.JSValue {
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
     const constructor = try sdk.get(engine, global, "Error");
     defer engine.freeValue(constructor);
     const instance = c.JS_IsInstanceOf(engine.context, failure, constructor);
     if (instance < 0) return error.JavaScriptException;
-    const error_value = if (instance > 0) c.JS_DupValue(engine.context, failure) else blk: {
-        const text = try engine.toString(failure);
-        defer engine.gpa.free(text);
-        const message = try sdk.text(engine, text);
+    return if (instance > 0) c.JS_DupValue(engine.context, failure) else blk: {
+        const string = try sdk.get(engine, global, "String");
+        defer engine.freeValue(string);
+        var conversion = [_]c.JSValue{failure};
+        const message = try engine.checked(c.JS_Call(engine.context, string, c.pi_js_undefined(), 1, &conversion));
         defer engine.freeValue(message);
         var args = [_]c.JSValue{message};
         break :blk try engine.checked(c.JS_CallConstructor(engine.context, constructor, 1, &args));
     };
-    defer engine.freeValue(error_value);
-    var args = [_]c.JSValue{error_value};
-    if (c.JS_EnqueueJob(engine.context, reportJob, 1, &args) < 0) return error.JavaScriptException;
+}
+fn reportState(self: *State, failure: c.JSValue) !void {
+    const reporter = self.projection_report orelse return report(self.engine, failure);
+    if (!self.projected or c.JS_IsUndefined(reporter)) return report(self.engine, failure);
+    const normalized = try normalizeError(self.engine, failure);
+    defer self.engine.freeValue(normalized);
+    var args = [_]c.JSValue{normalized};
+    const result = try self.engine.checked(c.JS_Call(self.engine.context, reporter, c.pi_js_undefined(), 1, &args));
+    self.engine.freeValue(result);
 }
 fn reportJob(context: ?*c.JSContext, _: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.JS_Throw(context, c.JS_DupValue(context, argv[0]));

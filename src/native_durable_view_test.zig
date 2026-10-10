@@ -124,3 +124,103 @@ test "native durable view mount fan-out releases every failed allocation" {
         }
     }
 }
+
+test "native durable view public states hydrate and watches deliver committed exact frames" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/durable-view-public-runtime.txt"), "native-public-conversation-view") catch |err| {
+        std.debug.print("Public view {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "missing" });
+        return err;
+    };
+    engine.freeValue(result);
+    const normalized = try engine.eval("JSON.stringify(publicViewProof,(key,value)=>key==='sessionId'?'<session-id>':value)", "public-view-normalization", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(normalized);
+    const text = try engine.toString(normalized);
+    defer std.testing.allocator.free(text);
+    var actual = try json.Owned.parse(std.testing.allocator, text);
+    defer actual.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-view-public-original.json"));
+    defer source.deinit();
+    if (!json.equal(source.value, actual.value)) std.debug.print("Public view actual: {s}\n", .{text});
+    try std.testing.expect(json.equal(source.value, actual.value));
+}
+
+test "native durable view cancellation closure and listener failures match actual Source" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/durable-view-lifecycle-runtime.txt"), "native-public-view-lifecycle") catch |err| {
+        std.debug.print("View lifecycle {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "missing" });
+        return err;
+    };
+    engine.freeValue(result);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const rows = try vm.get(engine, global, "publicViewLifecycleRows");
+    defer engine.freeValue(rows);
+    const text = try engine.stringify(rows);
+    defer std.testing.allocator.free(text);
+    var actual = try json.Owned.parse(std.testing.allocator, text);
+    defer actual.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-view-lifecycle-original.json"));
+    defer source.deinit();
+    if (!json.equal(source.value.object.get("rows").?, actual.value)) std.debug.print("View lifecycle actual: {s}\n", .{text});
+    try std.testing.expect(json.equal(source.value.object.get("rows").?, actual.value));
+}
+
+test "native durable views reset remount cancellation and exact frame overflow match actual Source" {
+    const engine = try engine_mod.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    try @import("extensions/native_durable.zig").install(engine);
+    const result = engine.evalModule(@embedFile("extensions/fixtures/durable-view-revisions-runtime.txt"), "native-public-view-revisions") catch |err| {
+        std.debug.print("View revisions {s}: {s}\n", .{ @errorName(err), engine.last_error orelse "missing" });
+        return err;
+    };
+    engine.freeValue(result);
+    const normalized = try engine.eval("JSON.stringify(publicViewRevisionRows,(key,value)=>key==='sessionId'?'<session-id>':value)", "public-view-revision-normalization", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(normalized);
+    const text = try engine.toString(normalized);
+    defer std.testing.allocator.free(text);
+    var actual = try json.Owned.parse(std.testing.allocator, text);
+    defer actual.deinit();
+    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/durable-view-revisions-original.json"));
+    defer source.deinit();
+    if (!json.equal(source.value.object.get("rows").?, actual.value)) std.debug.print("View revisions actual: {s}\n", .{text});
+    try std.testing.expect(json.equal(source.value.object.get("rows").?, actual.value));
+}
+
+fn exerciseProjectionAcquisition(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_io = std.testing.io;
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    const generation = engine.native_allocation_generation;
+    try @import("extensions/native_durable.zig").install(engine);
+    const result = engine.evalModule(
+        \\import{Harness,MemoryStorage,createRegistry}from'@earendil-works/pi-durable';const harness=await Harness.open(new MemoryStorage(),{registry:createRegistry()},{});try{const root=await harness.root({}),first=await root.viewState({}),watch=await root.watch({}),second=await root.viewState({});const a=first.subscribe(()=>{}),b=second.subscribe(()=>{});watch.start(async()=>{});await watch.stop();a();b();first.dispose();second.dispose();}finally{await harness.close({})}
+    , "native-view-acquisition-allocation") catch |err| return engine.nativeAllocationError(err, generation);
+    engine.freeValue(result);
+}
+
+test "native durable view public mount acquisition shared observers and release unwind every allocation failure" {
+    // Acquiring/releasing views never resumes the task scheduler. Counters
+    // remain on this owner thread; no failing allocator crosses a worker.
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try exerciseProjectionAcquisition(baseline.allocator());
+    for (0..baseline.alloc_index) |index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = index });
+        exerciseProjectionAcquisition(failing.allocator()) catch |err| {
+            if (!failing.has_induced_failure) return err;
+        };
+        if (failing.allocated_bytes != failing.freed_bytes) {
+            std.debug.print("Public view acquisition {d}/{d}: {d}/{d} bytes\n", .{ index, baseline.alloc_index, failing.allocated_bytes, failing.freed_bytes });
+            return error.MemoryLeakDetected;
+        }
+    }
+}

@@ -1,0 +1,30 @@
+import { Harness, MemoryStorage, createRegistry } from '@earendil-works/pi-durable';
+const rows=[];
+for(const scenario of ['reset-remount','unstarted-overflow','blocked-overflow','already-cancelled']) {
+ const reports=[],harness=await Harness.open(new MemoryStorage(),{registry:createRegistry(),now:()=>42,onReport:error=>reports.push(String(error))},{});
+ try {
+  const root=await harness.root({});
+  if(scenario==='already-cancelled') {
+   const marker={cancelled:true},controller=new AbortController();controller.abort(marker);
+   const outcomes=[];for(const method of ['viewState','watch'])try{await root[method]({abortSignal:controller.signal});outcomes.push('fulfilled')}catch(error){outcomes.push(error===marker)}
+   const state=await root.viewState({});rows.push({scenario,outcomes,entries:state.value.entries.length,reports});state.dispose();continue;
+  }
+  const state=await root.viewState({}),watch=await root.watch({}),initial=state.value,events=[];
+  const write=()=>root.submit({type:'write',entry:{kind:'test',model:[]}},{});
+  if(scenario==='reset-remount') {
+   let ready;const seen=new Promise(resolve=>ready=resolve);watch.start(async(value,ops)=>{events.push({entries:value.entries.map(entry=>({id:entry.id,head:entry.head??null,kind:entry.kind})),ops});if(events.length===3)ready()});
+   await write();await root.reset('handoff',{});await write();await seen;
+   const final=state.value;const same=final===watch.value;await watch.stop();state.dispose();
+   const remount=await root.viewState({});rows.push({scenario,events,same,rebuilt:remount.value!==final,value:remount.value,initialUnchanged:initial.entries.length===0,reports});remount.dispose();
+  } else {
+   let enter,release,done;const entered=new Promise(resolve=>enter=resolve),held=new Promise(resolve=>release=resolve),finished=new Promise(resolve=>done=resolve);
+   const listener=async(value,ops)=>{events.push({count:value.entries.length,op:ops[0]?.[0],replaced:ops[0]?.[0]==='r'&&ops[0][1]===value});if(scenario==='blocked-overflow'&&events.length===1){enter();await held}if(value.entries.length===103)done()};
+   if(scenario==='blocked-overflow'){watch.start(listener);await write();await entered}
+   const count=scenario==='blocked-overflow'?102:103;for(let i=0;i<count;i++)await write();
+   const heldValue=watch.value.entries.length;
+   if(scenario==='unstarted-overflow')watch.start(listener);else release();
+   await finished;rows.push({scenario,events,heldValue,latest:watch.value===state.value,end:await watch.stop(),initialUnchanged:initial.entries.length===0,reports});state.dispose();
+  }
+ }finally{await harness.close({})}
+}
+globalThis.publicViewRevisionRows=rows;

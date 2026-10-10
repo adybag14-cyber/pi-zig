@@ -22,6 +22,8 @@ const Watch = struct {
     end: c.JSValue,
     id: u64,
     version: u64,
+    projected: bool = false,
+    projection_report: ?c.JSValue = null,
     pending: std.ArrayList(Frame) = .empty,
     started: bool = false,
     scheduled: bool = false,
@@ -55,26 +57,30 @@ const Watch = struct {
     fn terminate(self: *Watch, reason: []const u8, failure: ?c.JSValue) !void {
         if (!c.JS_IsUndefined(self.end)) return;
         const end = try sdk.object(self.engine);
-        errdefer self.engine.freeValue(end);
+        var admitted = false;
+        errdefer if (!admitted) self.engine.freeValue(end);
         try sdk.put(self.engine, end, "reason", try sdk.text(self.engine, reason));
         if (failure) |value| {
-            const global = c.JS_GetGlobalObject(self.engine.context);
-            defer self.engine.freeValue(global);
-            const constructor = try sdk.get(self.engine, global, "Error");
-            defer self.engine.freeValue(constructor);
-            const instance = c.JS_IsInstanceOf(self.engine.context, value, constructor);
-            if (instance < 0) return error.JavaScriptException;
-            if (instance > 0) try sdk.put(self.engine, end, "error", c.JS_DupValue(self.engine.context, value)) else {
-                const message = try self.engine.toString(value);
-                defer self.engine.gpa.free(message);
-                const text = try sdk.text(self.engine, message);
-                defer self.engine.freeValue(text);
-                var args = [_]c.JSValue{text};
-                const normalized = try self.engine.checked(c.JS_CallConstructor(self.engine.context, constructor, 1, &args));
-                try sdk.put(self.engine, end, "error", normalized);
+            if (!std.mem.eql(u8, reason, "listener_error")) {
+                try sdk.put(self.engine, end, "error", c.JS_DupValue(self.engine.context, value));
+            } else {
+                const global = c.JS_GetGlobalObject(self.engine.context);
+                defer self.engine.freeValue(global);
+                const constructor = try sdk.get(self.engine, global, "Error");
+                defer self.engine.freeValue(constructor);
+                const instance = c.JS_IsInstanceOf(self.engine.context, value, constructor);
+                if (instance < 0) return error.JavaScriptException;
+                if (instance > 0) try sdk.put(self.engine, end, "error", c.JS_DupValue(self.engine.context, value)) else {
+                    const text = try @import("native_durable_errors.zig").errorMessage(self.engine, value);
+                    defer self.engine.freeValue(text);
+                    var args = [_]c.JSValue{text};
+                    const normalized = try self.engine.checked(c.JS_CallConstructor(self.engine.context, constructor, 1, &args));
+                    try sdk.put(self.engine, end, "error", normalized);
+                }
             }
         }
         self.end = end;
+        admitted = true;
         try self.detach();
         self.clear(self.engine.runtime);
         var args = [_]c.JSValue{end};
@@ -91,12 +97,14 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     self.clear(runtime);
     self.pending.deinit(engine.gpa);
     inline for (.{ "parent", "value", "closed", "resolve", "listener", "commit_detach", "close_detach", "signal", "cancellation", "end" }) |name| c.JS_FreeValueRT(runtime, @field(self, name));
+    if (self.projection_report) |reporter| c.JS_FreeValueRT(runtime, reporter);
     engine.gpa.destroy(self);
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
     const engine: *Engine = @ptrCast(@alignCast(c.JS_GetRuntimeOpaque(runtime)));
     const self: *Watch = @ptrCast(@alignCast(c.JS_GetOpaque(value, engine.native_durable_watch_class) orelse return));
     inline for (.{ "parent", "value", "closed", "resolve", "listener", "commit_detach", "close_detach", "signal", "cancellation", "end" }) |name| c.JS_MarkValue(runtime, @field(self, name), marker);
+    if (self.projection_report) |reporter| c.JS_MarkValue(runtime, reporter, marker);
     for (self.pending.items) |frame| {
         c.JS_MarkValue(runtime, frame.value, marker);
         c.JS_MarkValue(runtime, frame.ops, marker);
@@ -183,6 +191,65 @@ fn installPrototype(engine: *Engine) !void {
     }
     c.JS_SetClassProto(engine.context, engine.native_durable_watch_class, prototype);
 }
+pub fn createProjection(engine: *Engine, parent: c.JSValue, value: c.JSValue, context: c.JSValue, release: c.JSValue, on_error: c.JSValue) !c.JSValue {
+    if (engine.native_durable_watch_class == 0) _ = c.JS_NewClassID(engine.runtime, &engine.native_durable_watch_class);
+    const definition: c.JSClassDef = .{ .class_name = "Native committed watch", .finalizer = finalizer, .gc_mark = mark, .call = null, .exotic = null };
+    if (!c.JS_IsRegisteredClass(engine.runtime, engine.native_durable_watch_class)) {
+        if (c.JS_NewClass(engine.runtime, engine.native_durable_watch_class, &definition) < 0) return error.OutOfMemory;
+        try installPrototype(engine);
+    }
+    const object = try engine.checked(c.JS_NewObjectClass(engine.context, engine.native_durable_watch_class));
+    errdefer engine.freeValue(object);
+    const self = try engine.gpa.create(Watch);
+    self.* = .{ .engine = engine, .parent = c.JS_DupValue(engine.context, parent), .value = c.JS_DupValue(engine.context, value), .closed = c.pi_js_undefined(), .resolve = c.pi_js_undefined(), .listener = c.pi_js_undefined(), .commit_detach = c.JS_DupValue(engine.context, release), .close_detach = c.pi_js_undefined(), .signal = c.pi_js_undefined(), .cancellation = c.pi_js_undefined(), .end = c.pi_js_undefined(), .id = 0, .version = 0, .projected = true, .projection_report = c.JS_DupValue(engine.context, on_error) };
+    _ = c.JS_SetOpaque(object, self);
+    errdefer self.detach() catch {};
+    var functions: [2]c.JSValue = undefined;
+    self.closed = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
+    self.resolve = functions[0];
+    engine.freeValue(functions[1]);
+    const signal = try sdk.get(engine, context, "abortSignal");
+    if (!c.JS_IsUndefined(signal)) {
+        self.signal = signal;
+        var captures = [_]c.JSValue{object};
+        self.cancellation = try engine.checked(c.JS_NewCFunctionData(engine.context, terminateCallback, 0, 1, 1, &captures));
+        const abort = try sdk.text(engine, "abort");
+        defer engine.freeValue(abort);
+        const once = try sdk.object(engine);
+        defer engine.freeValue(once);
+        try sdk.put(engine, once, "once", c.pi_js_bool(engine.context, 1));
+        const returned = try sdk.invoke(engine, signal, "addEventListener", &.{ abort, self.cancellation, once });
+        engine.freeValue(returned);
+        const aborted = try sdk.get(engine, signal, "aborted");
+        defer engine.freeValue(aborted);
+        if (c.JS_ToBool(engine.context, aborted) != 0) try self.terminate("cancelled", null);
+    } else engine.freeValue(signal);
+    return object;
+}
+pub fn closeProjection(engine: *Engine, object: c.JSValue, failure: ?c.JSValue) !void {
+    try (try state(engine, object)).terminate(if (failure == null) "session_closed" else "session_failed", failure);
+}
+pub fn advanceProjection(engine: *Engine, object: c.JSValue, value: c.JSValue, operations: c.JSValue, context: c.JSValue) !void {
+    const self = try state(engine, object);
+    if (!self.projected) return error.NotProjectedWatch;
+    if (!c.JS_IsUndefined(self.end) or self.retired) return;
+    try self.pending.ensureUnusedCapacity(engine.gpa, 1);
+    const clean = try @import("native_durable_context.zig").withoutAbortSignal(engine, context);
+    errdefer engine.freeValue(clean);
+    const ops = if (self.pending.items.len >= 100) try replacement(engine, value) else c.JS_DupValue(engine.context, operations);
+    errdefer engine.freeValue(ops);
+    if (self.pending.items.len >= 100) self.clear(engine.runtime);
+    self.pending.appendAssumeCapacity(.{ .value = c.JS_DupValue(engine.context, value), .ops = ops, .context = clean });
+    if (c.JS_IsNull(value)) self.retired = true;
+    if (self.started) try schedule(self, object);
+}
+fn reportProjection(self: *Watch, failure: c.JSValue) !void {
+    const reporter = self.projection_report orelse return;
+    if (!self.projected or c.JS_IsUndefined(reporter)) return;
+    var args = [_]c.JSValue{failure};
+    const returned = try self.engine.checked(c.JS_Call(self.engine.context, reporter, c.pi_js_undefined(), 1, &args));
+    self.engine.freeValue(returned);
+}
 fn getter(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, operation: c_int) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const self = state(engine, receiver) catch |err| return durable.reject(engine, err);
@@ -245,6 +312,7 @@ fn drain(engine: *Engine, object: c.JSValue) !c.JSValue {
         const failure = c.JS_GetException(engine.context);
         defer engine.freeValue(failure);
         self.running = false;
+        try reportProjection(self, failure);
         try self.terminate("listener_error", failure);
         return c.pi_js_undefined();
     }
@@ -266,6 +334,7 @@ fn settled(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValu
     self.running = false;
     if (!c.JS_IsUndefined(self.end)) return c.pi_js_undefined();
     if (failure == 1) {
+        reportProjection(self, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| return durable.reject(engine, err);
         self.terminate("listener_error", if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| return durable.reject(engine, err);
     } else if (c.JS_ToBool(engine.context, data[1]) > 0) {
         self.terminate("retired", null) catch |err| return durable.reject(engine, err);

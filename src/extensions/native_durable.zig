@@ -51,6 +51,7 @@ pub const State = struct {
     filesystem: ?*filesystem_module.FileSystem = null,
     storage_closed: bool = false,
     commit_listeners: std.ArrayList(c.JSValue) = .empty,
+    commit_observers: std.ArrayList(c.JSValue) = .empty,
     close_listeners: std.ArrayList(c.JSValue) = .empty,
     publication_context: ?c.JSValue = null,
     creation_owner: ?c.JSValue = null,
@@ -60,6 +61,7 @@ pub const State = struct {
     plans: std.ArrayList(json.Owned) = .empty,
     documents: ?*@import("native_durable_documents.zig").Drafts = null,
     document_cache: ?*@import("native_durable_documents.zig").Cache = null,
+    conversation_views: ?c.JSValue = null,
     fn storage(self: *State) !backend.Backend {
         if (self.storage_closed) return error.StorageClosed;
         return switch (self.kind) {
@@ -118,11 +120,14 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     if (self.creation_owner) |owner| c.JS_FreeValueRT(runtime, owner);
     if (self.documents) |documents| documents.deinit(runtime);
     if (self.document_cache) |cache| cache.deinit(runtime);
+    if (self.conversation_views) |views| c.JS_FreeValueRT(runtime, views);
     for (self.plans.items) |*plan| plan.deinit();
     self.plans.deinit(engine.gpa);
     for (self.commit_listeners.items) |listener| c.JS_FreeValueRT(runtime, listener);
+    for (self.commit_observers.items) |listener| c.JS_FreeValueRT(runtime, listener);
     for (self.close_listeners.items) |listener| c.JS_FreeValueRT(runtime, listener);
     self.commit_listeners.deinit(engine.gpa);
+    self.commit_observers.deinit(engine.gpa);
     self.close_listeners.deinit(engine.gpa);
     engine.gpa.destroy(self);
 }
@@ -138,7 +143,9 @@ fn mark(runtime: ?*c.JSRuntime, input: c.JSValue, marker: ?*const c.JS_MarkFunc)
     if (self.creation_owner) |owner| c.JS_MarkValue(runtime, owner, marker);
     if (self.documents) |documents| documents.mark(runtime, marker);
     if (self.document_cache) |cache| cache.mark(runtime, marker);
+    if (self.conversation_views) |views| c.JS_MarkValue(runtime, views, marker);
     for (self.commit_listeners.items) |listener| c.JS_MarkValue(runtime, listener, marker);
+    for (self.commit_observers.items) |listener| c.JS_MarkValue(runtime, listener, marker);
     for (self.close_listeners.items) |listener| c.JS_MarkValue(runtime, listener, marker);
 }
 pub fn owned(engine: *Engine, value: c.JSValue) !json.Owned {
@@ -668,7 +675,7 @@ pub fn sessionDispatchScoped(self: *State, receiver: c.JSValue, operation: Metho
     }
     return queued;
 }
-fn contained(engine: *Engine, callback: c.JSValue, arguments: []const c.JSValue) void {
+pub fn contained(engine: *Engine, callback: c.JSValue, arguments: []const c.JSValue) void {
     const returned = c.JS_Call(engine.context, callback, c.pi_js_undefined(), @intCast(arguments.len), if (arguments.len == 0) null else @constCast(arguments.ptr));
     if (c.JS_IsException(returned)) {
         engine.freeValue(c.JS_GetException(engine.context));
@@ -707,10 +714,20 @@ pub fn subscribe(self: *State, receiver: c.JSValue, operation: Method, listener:
     list.appendAssumeCapacity(c.JS_DupValue(engine.context, listener));
     return cancel;
 }
+pub fn observeCommitted(self: *State, receiver: c.JSValue, listener: c.JSValue) !c.JSValue {
+    try assertVMHealthy(self);
+    if (self.closing) return error.SessionClosed;
+    var data = [_]c.JSValue{ receiver, listener };
+    const cancel = try self.engine.checked(c.JS_NewCFunctionData(self.engine.context, unsubscribe, 0, 2, data.len, &data));
+    errdefer self.engine.freeValue(cancel);
+    try self.commit_observers.ensureUnusedCapacity(self.engine.gpa, 1);
+    self.commit_observers.appendAssumeCapacity(c.JS_DupValue(self.engine.context, listener));
+    return cancel;
+}
 fn unsubscribe(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, close_listener: c_int, data: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
     const self = state(engine, data[0]) catch |err| return reject(engine, err);
-    const list = if (close_listener == 1) &self.close_listeners else &self.commit_listeners;
+    const list = if (close_listener == 1) &self.close_listeners else if (close_listener == 2) &self.commit_observers else &self.commit_listeners;
     for (list.items, 0..) |listener, index| if (c.JS_IsStrictEqual(engine.context, listener, data[1])) {
         engine.freeValue(list.orderedRemove(index));
         break;
@@ -727,7 +744,9 @@ fn publication(raw: ?*anyopaque, event: *const session_module.Publication, _: co
 }
 pub fn deliverPublication(self: *State, event: *const session_module.Publication) !void {
     const engine = self.engine;
-    if (self.commit_listeners.items.len == 0) return;
+    if (self.commit_listeners.items.len == 0 and self.commit_observers.items.len == 0) return;
+    const observers = try duplicateListeners(engine, self.commit_observers.items);
+    defer freeListeners(engine, observers);
     const listeners = try duplicateListeners(engine, self.commit_listeners.items);
     defer freeListeners(engine, listeners);
     const value = try sdk.object(engine);
@@ -747,6 +766,7 @@ pub fn deliverPublication(self: *State, event: *const session_module.Publication
     }
     try sdk.put(engine, value, "changes", c.JS_DupValue(engine.context, changes));
     var args = [_]c.JSValue{ value, self.publication_context orelse c.pi_js_undefined() };
+    for (observers) |observer| contained(engine, observer, &args);
     for (listeners) |listener| {
         contained(engine, listener, &args);
     }

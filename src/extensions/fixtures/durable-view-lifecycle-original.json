@@ -1,0 +1,97 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "scenario": "cancel",
+      "events": [
+        [
+          "state",
+          "hydrate",
+          0
+        ]
+      ],
+      "end": {
+        "reason": "cancelled"
+      },
+      "reports": []
+    },
+    {
+      "scenario": "close",
+      "events": [
+        [
+          "state",
+          "hydrate",
+          0
+        ]
+      ],
+      "end": {
+        "reason": "session_closed"
+      },
+      "reports": []
+    },
+    {
+      "scenario": "listener-error",
+      "events": [
+        [
+          "state",
+          "hydrate",
+          0
+        ],
+        [
+          "watch",
+          [
+            7
+          ]
+        ],
+        [
+          "state",
+          "update",
+          1
+        ]
+      ],
+      "end": {
+        "reason": "listener_error",
+        "error": {
+          "name": "Error",
+          "message": "[object Object]"
+        }
+      },
+      "reports": [
+        {
+          "raw": true
+        }
+      ]
+    },
+    {
+      "scenario": "state-error",
+      "events": [
+        [
+          "state",
+          "hydrate",
+          0
+        ],
+        [
+          "watch",
+          [
+            7
+          ]
+        ],
+        [
+          "state",
+          "update",
+          1
+        ]
+      ],
+      "end": {
+        "reason": "stopped"
+      },
+      "reports": [
+        {
+          "raw": false,
+          "name": "Error",
+          "message": "[object Object]"
+        }
+      ]
+    }
+  ]
+}

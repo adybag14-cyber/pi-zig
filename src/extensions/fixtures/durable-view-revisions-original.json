@@ -1,0 +1,210 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "scenario": "reset-remount",
+      "events": [
+        {
+          "entries": [
+            {
+              "id": 7,
+              "head": null,
+              "kind": "test"
+            }
+          ],
+          "ops": [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              0,
+              0,
+              [
+                {
+                  "kind": "test",
+                  "model": [],
+                  "id": 7,
+                  "conversationId": 1
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "entries": [
+            {
+              "id": 9,
+              "head": 9,
+              "kind": "pi.reset"
+            }
+          ],
+          "ops": [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              0,
+              1,
+              [
+                {
+                  "kind": "pi.reset",
+                  "model": [
+                    {
+                      "role": "user",
+                      "content": "handoff",
+                      "timestamp": 42
+                    }
+                  ],
+                  "id": 9,
+                  "conversationId": 1,
+                  "head": 9
+                }
+              ]
+            ]
+          ]
+        },
+        {
+          "entries": [
+            {
+              "id": 9,
+              "head": 9,
+              "kind": "pi.reset"
+            },
+            {
+              "id": 11,
+              "head": null,
+              "kind": "test"
+            }
+          ],
+          "ops": [
+            [
+              "p",
+              [
+                "entries"
+              ],
+              1,
+              0,
+              [
+                {
+                  "kind": "test",
+                  "model": [],
+                  "id": 11,
+                  "conversationId": 1
+                }
+              ]
+            ]
+          ]
+        }
+      ],
+      "same": true,
+      "rebuilt": true,
+      "value": {
+        "conversation": {
+          "id": 1
+        },
+        "entries": [
+          {
+            "kind": "pi.reset",
+            "model": [
+              {
+                "role": "user",
+                "content": "handoff",
+                "timestamp": 42
+              }
+            ],
+            "id": 9,
+            "conversationId": 1,
+            "head": 9
+          },
+          {
+            "kind": "test",
+            "model": [],
+            "id": 11,
+            "conversationId": 1
+          }
+        ],
+        "docs": {
+          "pi.agent": {},
+          "pi.live": {},
+          "pi.inbox": {
+            "items": []
+          },
+          "pi.provider": {
+            "sessionId": "<session-id>"
+          },
+          "pi.usage": {
+            "models": {},
+            "tools": {}
+          }
+        }
+      },
+      "initialUnchanged": true,
+      "reports": []
+    },
+    {
+      "scenario": "unstarted-overflow",
+      "events": [
+        {
+          "count": 101,
+          "op": "r",
+          "replaced": true
+        },
+        {
+          "count": 102,
+          "op": "p",
+          "replaced": false
+        },
+        {
+          "count": 103,
+          "op": "p",
+          "replaced": false
+        }
+      ],
+      "heldValue": 0,
+      "latest": true,
+      "end": {
+        "reason": "stopped"
+      },
+      "initialUnchanged": true,
+      "reports": []
+    },
+    {
+      "scenario": "blocked-overflow",
+      "events": [
+        {
+          "count": 1,
+          "op": "p",
+          "replaced": false
+        },
+        {
+          "count": 102,
+          "op": "r",
+          "replaced": true
+        },
+        {
+          "count": 103,
+          "op": "p",
+          "replaced": false
+        }
+      ],
+      "heldValue": 1,
+      "latest": true,
+      "end": {
+        "reason": "stopped"
+      },
+      "initialUnchanged": true,
+      "reports": []
+    },
+    {
+      "scenario": "already-cancelled",
+      "outcomes": [
+        true,
+        true
+      ],
+      "entries": 0,
+      "reports": []
+    }
+  ]
+}

@@ -512,6 +512,7 @@ pub fn build(b: *std.Build) void {
     const durable_view_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_durable_view_test.zig"), .target = target, .optimize = optimize }), .use_llvm = use_llvm, .filters = &.{"native durable view"} });
     linkQuickJs(b, durable_view_tests.root_module, quickjs, sqlite_lib_dir);
     linkDurable(b, durable_view_tests.root_module);
+    linkTypeScriptParser(b, durable_view_tests.root_module, typescript_parser);
     durable_view_tests.root_module.addImport("catalog_tool", catalog_tool);
     const durable_view_run = b.addRunArtifact(durable_view_tests);
     b.step("test-native-durable-views", "Compare native conversation view projections and persistent revisions with upstream").dependOn(&durable_view_run.step);

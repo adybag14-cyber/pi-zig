@@ -1,0 +1,147 @@
+{
+  "initial": {
+    "shared": true,
+    "value": {
+      "conversation": {
+        "id": 1
+      },
+      "entries": [],
+      "docs": {
+        "pi.agent": {},
+        "pi.live": {},
+        "pi.inbox": {
+          "items": []
+        },
+        "pi.provider": {
+          "sessionId":"<session-id>"
+        },
+        "pi.usage": {
+          "models": {},
+          "tools": {}
+        }
+      }
+    }
+  },
+  "first": {
+    "state": {
+      "conversation": {
+        "id": 1
+      },
+      "entries": [
+        {
+          "kind": "custom",
+          "model": [
+            {
+              "role": "user",
+              "content": "one",
+              "timestamp": 1
+            }
+          ],
+          "id": 7,
+          "conversationId": 1
+        }
+      ],
+      "docs": {
+        "pi.agent": {},
+        "pi.live": {},
+        "pi.inbox": {
+          "items": []
+        },
+        "pi.provider": {
+          "sessionId":"<session-id>"
+        },
+        "pi.usage": {
+          "models": {},
+          "tools": {}
+        }
+      }
+    },
+    "watch": {
+      "conversation": {
+        "id": 1
+      },
+      "entries": [
+        {
+          "kind": "custom",
+          "model": [
+            {
+              "role": "user",
+              "content": "one",
+              "timestamp": 1
+            }
+          ],
+          "id": 7,
+          "conversationId": 1
+        }
+      ],
+      "docs": {
+        "pi.agent": {},
+        "pi.live": {},
+        "pi.inbox": {
+          "items": []
+        },
+        "pi.provider": {
+          "sessionId":"<session-id>"
+        },
+        "pi.usage": {
+          "models": {},
+          "tools": {}
+        }
+      }
+    },
+    "shared": true
+  },
+  "events": [
+    [
+      "state",
+      [],
+      "hydrate",
+      0,
+      true
+    ],
+    [
+      "state",
+      [
+        7
+      ],
+      "update",
+      1,
+      true
+    ],
+    [
+      "watch",
+      [
+        7
+      ],
+      [
+        [
+          "p",
+          [
+            "entries"
+          ],
+          0,
+          0,
+          [
+            {
+              "kind": "custom",
+              "model": [
+                {
+                  "role": "user",
+                  "content": "one",
+                  "timestamp": 1
+                }
+              ],
+              "id": 7,
+              "conversationId": 1
+            }
+          ]
+        ]
+      ],
+      true
+    ]
+  ],
+  "end": {
+    "reason": "stopped"
+  },
+  "reports": []
+}
