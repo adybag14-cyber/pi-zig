@@ -13,6 +13,12 @@ pub fn build(b: *std.Build) void {
     // optional companions on constrained builders. Default remains Zig's
     // platform choice; callers may select `-Duse-llvm=false` explicitly.
     const use_llvm = b.option(bool, "use-llvm", "Use LLVM for executables and test artifacts");
+    const native_yaml = @import("tools/build_native_yaml.zig").add(b, target, optimize);
+    const frontmatter_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_frontmatter_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native frontmatter"}, .use_llvm = use_llvm });
+    frontmatter_tests.root_module.addIncludePath(b.path("vendor/libfyaml"));
+    frontmatter_tests.root_module.linkLibrary(native_yaml);
+    const frontmatter_run = b.addRunArtifact(frontmatter_tests);
+    b.step("test-native-frontmatter", "Replay all Source461 YAML grammar errors and native schema alias allocation ownership").dependOn(&frontmatter_run.step);
     const codemode_source_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/codemode_source_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"native codemode source"},

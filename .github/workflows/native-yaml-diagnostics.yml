@@ -1,0 +1,86 @@
+name: Native YAML diagnostics
+
+on:
+  push:
+    branches: [work/native-yaml-20261010]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-yaml-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  grammar:
+    name: Native YAML (${{ matrix.os }}, ${{ matrix.mode }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        mode: [Debug, ReleaseSafe]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29
+        with:
+          version: 0.16.0
+          use-cache: false
+      - name: Verify pinned dependency and record exact compiled source
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $taskDirectory = 'verification/native-yaml'
+          New-Item -ItemType Directory -Path $taskDirectory -Force | Out-Null
+          $taskVersion = (& zig version).Trim()
+          if ($taskVersion -cne '0.16.0') { throw 'Unexpected Zig release' }
+          $taskVendor = Get-Content -Raw -LiteralPath 'vendor/libfyaml/UPSTREAM.json' | ConvertFrom-Json
+          foreach ($taskFile in $taskVendor.files) {
+            $taskPath = Join-Path 'vendor/libfyaml' $taskFile.path
+            if ((Get-FileHash -Algorithm SHA256 -LiteralPath $taskPath).Hash -ine $taskFile.sha256) { throw "Pinned vendor drift: $taskPath" }
+          }
+          $taskInputs = @(git ls-files | Sort-Object | ForEach-Object {
+            [ordered]@{ path = $_; sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $_).Hash }
+          })
+          $taskInputs | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$taskDirectory/inputs.json"
+          [ordered]@{
+            head = (git rev-parse HEAD).Trim(); tree = (git rev-parse 'HEAD^{tree}').Trim()
+            zig = $taskVersion; mode = '${{ matrix.mode }}'; vendor_commit = $taskVendor.commit
+            vendor_files = $taskVendor.files.Count; input_count = $taskInputs.Count
+            scope = 'Native YAML/frontmatter prerequisite only; complete SDK and YAML API/value parity remain unfinished.'
+          } | ConvertTo-Json | Set-Content -LiteralPath "$taskDirectory/source.json"
+      - name: Check native source formatting
+        run: zig fmt --check build.zig src tools
+      - name: Compare all original YAML results and allocation ownership
+        shell: pwsh
+        timeout-minutes: 20
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $false
+          & zig build test-native-frontmatter -Doptimize=${{ matrix.mode }} -j1 --test-timeout 120s --summary all 2>&1 | Tee-Object -FilePath 'verification/native-yaml/tests.log'
+          $taskExit = $LASTEXITCODE
+          [ordered]@{ exit_code = $taskExit; checked_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content -LiteralPath 'verification/native-yaml/result.json'
+          if ($taskExit -ne 0) { exit $taskExit }
+      - name: Verify retained input hashes
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (Test-Path -LiteralPath 'verification/native-yaml/inputs.json') {
+            $taskInputs = @(Get-Content -Raw -LiteralPath 'verification/native-yaml/inputs.json' | ConvertFrom-Json)
+            $taskDrift = @($taskInputs | Where-Object { (Get-FileHash -Algorithm SHA256 -LiteralPath $_.path).Hash -cne $_.sha256 })
+            [ordered]@{ input_count = $taskInputs.Count; mismatches = $taskDrift.Count; checked_utc = [DateTimeOffset]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content -LiteralPath 'verification/native-yaml/posthash.json'
+            if ($taskDrift.Count -ne 0) { throw 'Tracked inputs changed during validation' }
+          }
+          git diff --exit-code
+          if ($LASTEXITCODE -ne 0) { throw 'Tracked source changed' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: native-yaml-${{ runner.os }}-${{ matrix.mode }}-${{ github.sha }}
+          retention-days: 14
+          path: |
+            verification/native-yaml/**
+            vendor/libfyaml/LICENSE
+            vendor/libfyaml/UPSTREAM.json
