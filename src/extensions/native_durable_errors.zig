@@ -6,6 +6,17 @@ const sdk = @import("native_sdk.zig");
 const Engine = engine_mod.Engine;
 const c = engine_mod.c;
 pub const failed_message = "Session failed after a storage error; close and reopen it";
+pub fn throwMessage(engine: *Engine, message: []const u8) !void {
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const constructor = try sdk.get(engine, global, "Error");
+    defer engine.freeValue(constructor);
+    const text = try sdk.text(engine, message);
+    defer engine.freeValue(text);
+    var args = [_]c.JSValue{text};
+    const failure = try engine.checked(c.JS_CallConstructor(engine.context, constructor, 1, &args));
+    _ = try engine.checked(c.JS_Throw(engine.context, failure));
+}
 const Kind = enum(c_int) { ReadAfterWrite, StorageRequestError, SessionFailed, ConversationBusy };
 fn construct(context: ?*c.JSContext, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, kind: Kind) c.JSValue {
     const engine = Engine.fromContext(context.?);

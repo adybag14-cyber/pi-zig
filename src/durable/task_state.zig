@@ -174,7 +174,11 @@ pub const Graph = struct {
     pub fn waitingOn(self: Graph, record: Value) !bool {
         if (try status(record) != .waiting) return false;
         for ((try field(try field(record, "state"), "on")).array.items) |member| {
-            if (try live(try self.task(try json.asInteger(member)))) return true;
+            // Source checks membership in its committed live map. A terminal
+            // task leaves the scheduler snapshot, so its absence stops the
+            // wait without a Storage read or an UnknownTask driver failure.
+            const row = self.state.rows.get(try json.asInteger(member)) orelse continue;
+            if (row.table == .task and try live(row.record)) return true;
         }
         return false;
     }

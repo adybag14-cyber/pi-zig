@@ -362,14 +362,21 @@ const Hub = struct {
         };
         index = 0;
         while (index < self.commits.items.len) {
-            const native = try durable.state(engine, self.commits.items[index].captures[0]);
+            const item = self.commits.items[index];
+            const native = try durable.state(engine, item.captures[if (item.kind == .runtime_commit) 3 else 0]);
             if (native.session.?.ownerThread.load(.acquire) != 0) {
                 index += 1;
                 continue;
             }
             const request = self.commits.orderedRemove(index);
             defer request.release(engine);
-            const value = if (request.read) durable.retryQueuedRead(engine, &request.captures) else durable.retryQueuedCommit(engine, &request.captures);
+            const value = switch (request.kind) {
+                .read => durable.retryQueuedRead(engine, &request.captures),
+                .commit => durable.retryQueuedCommit(engine, &request.captures),
+                .runtime_commit => @import("native_durable_tasks.zig").retryRuntimeCommit(engine, &request.captures),
+                .task_abort => @import("native_durable_task_abort.zig").retry(engine, &request.captures),
+            };
+
             defer engine.freeValue(value);
             const rejected = c.JS_IsException(value);
             const returned = if (rejected) c.JS_GetException(engine.context) else c.JS_DupValue(engine.context, value);
@@ -446,7 +453,7 @@ pub fn deinit(engine: *Engine) void {
     engine.native_durable_storage_close = null;
 }
 const PendingCommit = struct {
-    read: bool = false,
+    kind: enum { commit, read, runtime_commit, task_abort },
     captures: [5]c.JSValue,
     resolve: c.JSValue,
     reject: c.JSValue,
@@ -457,10 +464,16 @@ const PendingCommit = struct {
     }
 };
 pub fn deferCommit(engine: *Engine, captures: []const c.JSValue) !c.JSValue {
-    return admitPending(engine, captures, false);
+    return admitPending(engine, captures, .commit);
 }
 pub fn deferRead(engine: *Engine, captures: []const c.JSValue) !c.JSValue {
-    return admitPending(engine, captures, true);
+    return admitPending(engine, captures, .read);
+}
+pub fn deferRuntimeCommit(engine: *Engine, captures: []const c.JSValue) !c.JSValue {
+    return admitPending(engine, captures, .runtime_commit);
+}
+pub fn deferTaskAbort(engine: *Engine, captures: []const c.JSValue) !c.JSValue {
+    return admitPending(engine, captures, .task_abort);
 }
 pub const Drain = struct {
     owner: *durable.State,
@@ -512,12 +525,12 @@ pub fn prepareDrain(owner: *durable.State, context: c.JSValue) !void {
     slot.* = .{ .owner = owner, .hub = owner_hub, .session = c.pi_js_undefined(), .context = c.JS_DupValue(engine.context, context), .promise = pending, .resolve = functions[0], .reject = functions[1] };
     owner.storage_drain = slot;
 }
-fn admitPending(engine: *Engine, captures: []const c.JSValue, read: bool) !c.JSValue {
+fn admitPending(engine: *Engine, captures: []const c.JSValue, kind: @FieldType(PendingCommit, "kind")) !c.JSValue {
     const owner_hub = try hub(engine);
     try owner_hub.commits.ensureUnusedCapacity(engine.gpa, 1);
     var functions: [2]c.JSValue = undefined;
     const pending = try engine.checked(c.JS_NewPromiseCapability(engine.context, &functions));
-    var request: PendingCommit = .{ .captures = undefined, .resolve = functions[0], .reject = functions[1], .read = read };
+    var request: PendingCommit = .{ .captures = undefined, .resolve = functions[0], .reject = functions[1], .kind = kind };
     for (captures, &request.captures) |input, *output| output.* = c.JS_DupValue(engine.context, input);
     owner_hub.commits.appendAssumeCapacity(request);
     return pending;

@@ -1,0 +1,20 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "phase": "cleanup-held",
+      "ownedObserved": false,
+      "parentDone": false,
+      "abortRequested": true
+    },
+    {
+      "phase": "owned-done",
+      "undefinedResult": true,
+      "outcome": "aborted"
+    },
+    {
+      "phase": "settled",
+      "outcome": "completed"
+    }
+  ]
+}

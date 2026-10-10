@@ -1,0 +1,17 @@
+import{Harness,MemoryStorage,createRegistry,defineTask,defineExtension}from'@earendil-works/pi-durable';
+
+import{BACKGROUND_CONTEXT as context}from'@earendil-works/chord/context';
+
+const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return{promise,resolve}},started=deferred(),otherStarted=deferred(),sawAbort=deferred(),releaseRun=deferred(),releaseCleanup=deferred(),releaseOther=deferred(),rows=[];let abortSettled=false,otherFinished=false,cleanupWasStarted=false,coercions=0;
+const cause=Object.freeze({toString(){coercions++;throw Error('do not coerce failed Storage cause')}}),storage=new MemoryStorage();
+const Target=defineTask({name:'fixture.failed-abort-join',version:1,initial:()=>({phase:'work'}),phases:{work:async(_,runtime)=>{started.resolve();await new Promise(resolve=>runtime.signal.addEventListener('abort',resolve,{once:true}));sawAbort.resolve();await releaseRun.promise}},abort:async(_,runtime,ctx)=>{cleanupWasStarted=true;await releaseCleanup.promise;await runtime.commit(()=>({status:'terminal',outcome:{status:'aborted'}}),ctx)}});
+const Other=defineTask({name:'fixture.failed-abort-unrelated',version:1,initial:()=>({phase:'work'}),phases:{work:async(_,runtime,ctx)=>{otherStarted.resolve();await releaseOther.promise;otherFinished=true;await runtime.commit(()=>({status:'terminal',outcome:{status:'completed',result:null}}),ctx)}}});
+const registry=createRegistry();registry.install(defineExtension({name:'failed-abort-join-fixture',tasks:[Target,Other]}));const harness=await Harness.open(storage,{models:{},registry,now:()=>123},context);
+try{
+ const root=await harness.root(context),target=await root.commit(tx=>tx.createTask(Target,null,{ownership:{kind:'conversation'}}),context);await root.commit(tx=>tx.createTask(Other,null,{ownership:{kind:'conversation'}}),context);harness.resume();await Promise.all([started.promise,otherStarted.promise]);
+ const abort=harness.abortTask(target,context);abort.then(()=>{abortSettled=true},()=>{abortSettled=true});await sawAbort.promise;rows.push({phase:'run-held',abortSettled,otherFinished});
+ const originalTask=storage.task;storage.task=async function(id,ctx){if(id===999)throw cause;return originalTask.call(this,id,ctx)};let readOriginal=false;try{await harness.getTask(999,context)}catch(error){readOriginal=error===cause}
+ let failure;try{await abort;failure={unexpected:true}}catch(error){failure={name:error.name,causeOriginal:error.cause===cause}}rows.push({phase:'failed-while-run-held',readOriginal,failure,abortSettled,otherFinished,coercions});
+}finally{releaseRun.resolve();releaseCleanup.resolve();releaseOther.resolve();await harness.close(context)}
+const end=await harness.closed;rows.push({phase:'closed',reason:end.reason,causeOriginal:end.error===cause,cleanupWasStarted,coercions});
+const result={source:'eba849739511223c51a62bbd7e3f1c00f99fb1d0',rows};globalThis.taskAbortTrace=result;

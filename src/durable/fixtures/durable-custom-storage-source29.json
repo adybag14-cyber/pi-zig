@@ -1,0 +1,146 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "marked": "marked",
+  "terminal": "terminal",
+  "missing": {
+    "name": "Error",
+    "message": "Task 999 does not exist"
+  },
+  "cancelledOriginal": true,
+  "publications": [
+    {
+      "seq": 2,
+      "changes": [
+        {
+          "type": "task",
+          "value": {
+            "id": 8,
+            "conversationId": 1,
+            "kind": "fixture.missing-definition",
+            "version": 1,
+            "input": null,
+            "background": false,
+            "abortRequested": false,
+            "state": {
+              "status": "terminal",
+              "outcome": {
+                "status": "orphaned",
+                "reason": "missing_task"
+              }
+            },
+            "endedAt": 123
+          }
+        },
+        {
+          "type": "document",
+          "record": {
+            "id": 12,
+            "kind": "fixture.task-doc",
+            "scope": {
+              "kind": "task",
+              "taskId": 8
+            },
+            "createdAt": 1,
+            "retiredAt": 2
+          },
+          "conversationId": 1,
+          "value": null,
+          "ops": []
+        }
+      ]
+    }
+  ],
+  "calls": [
+    {
+      "name": "task",
+      "args": [
+        8
+      ],
+      "receiver": true,
+      "originalContext": true,
+      "contextValue": true,
+      "withoutSignal": true
+    },
+    {
+      "name": "scanDocuments",
+      "args": [
+        {
+          "scope": {
+            "kind": "task",
+            "taskId": 8
+          },
+          "at": "current"
+        },
+        256,
+        null
+      ],
+      "receiver": true,
+      "originalContext": true,
+      "contextValue": true,
+      "withoutSignal": true
+    },
+    {
+      "name": "commit",
+      "args": [
+        [
+          {
+            "type": "task",
+            "value": {
+              "id": 8,
+              "conversationId": 1,
+              "kind": "fixture.missing-definition",
+              "version": 1,
+              "input": null,
+              "background": false,
+              "abortRequested": false,
+              "state": {
+                "status": "terminal",
+                "outcome": {
+                  "status": "orphaned",
+                  "reason": "missing_task"
+                }
+              },
+              "endedAt": 123
+            }
+          },
+          {
+            "type": "document.retire",
+            "id": 12
+          }
+        ]
+      ],
+      "receiver": true,
+      "originalContext": false,
+      "contextValue": true,
+      "withoutSignal": true
+    },
+    {
+      "name": "task",
+      "args": [
+        8
+      ],
+      "receiver": true,
+      "originalContext": true,
+      "contextValue": true,
+      "withoutSignal": true
+    },
+    {
+      "name": "task",
+      "args": [
+        999
+      ],
+      "receiver": true,
+      "originalContext": true,
+      "contextValue": true,
+      "withoutSignal": true
+    },
+    {
+      "name": "close",
+      "args": [],
+      "receiver": true,
+      "originalContext": false,
+      "contextValue": true,
+      "withoutSignal": true
+    }
+  ]
+}

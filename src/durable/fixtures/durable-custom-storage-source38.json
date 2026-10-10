@@ -1,0 +1,44 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "name": "terminal-cancelled",
+      "undefinedResult": true
+    },
+    {
+      "name": "foreign",
+      "message": "Task 801 is not owned by task $PARENT"
+    },
+    {
+      "name": "missing",
+      "message": "Task 999 is not owned by task $PARENT"
+    },
+    {
+      "name": "settled",
+      "status": "completed"
+    }
+  ],
+  "calls": [
+    {
+      "id": 800,
+      "receiver": true,
+      "boundContext": true,
+      "originalValue": true,
+      "aborted": true
+    },
+    {
+      "id": 801,
+      "receiver": true,
+      "boundContext": true,
+      "originalValue": true,
+      "aborted": true
+    },
+    {
+      "id": 999,
+      "receiver": true,
+      "boundContext": true,
+      "originalValue": true,
+      "aborted": true
+    }
+  ]
+}

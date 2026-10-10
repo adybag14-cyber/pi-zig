@@ -1,0 +1,35 @@
+{
+  "source": "eba849739511223c51a62bbd7e3f1c00f99fb1d0",
+  "rows": [
+    {
+      "phase": "run-held",
+      "abortSettled": false,
+      "abortRequested": true,
+      "otherFinished": false
+    },
+    {
+      "phase": "caller-cancelled",
+      "original": false,
+      "cancelError": {
+        "name": "AbortError",
+        "message": "The operation was aborted",
+        "domException": true
+      },
+      "abortSettled": true,
+      "otherFinished": false,
+      "coercions": 0
+    },
+    {
+      "phase": "cleanup-held",
+      "marked": "caller-cancelled",
+      "abortSettled": true,
+      "otherFinished": false,
+      "status": "running"
+    },
+    {
+      "phase": "settled",
+      "target": "aborted",
+      "other": "completed"
+    }
+  ]
+}

@@ -83,10 +83,61 @@ pub fn object(engine: *Engine, session: c.JSValue, options: c.JSValue, conversat
     }
     if (conversation) |id| {
         if (c.JS_DefinePropertyValueStr(engine.context, result, "id", c.JS_NewInt64(engine.context, @intCast(id)), c.JS_PROP_ENUMERABLE) < 0) return error.JavaScriptException;
+    } else {
+        const atom = c.JS_NewAtom(engine.context, "closed");
+        defer c.JS_FreeAtom(engine.context, atom);
+        if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+        const getter = try engine.checked(c.pi_js_function_magic(engine.context, closed, "get closed", 0, 0));
+        if (c.JS_DefinePropertyGetSet(engine.context, result, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     }
     self.* = .{ .engine = engine, .session = c.JS_DupValue(engine.context, session), .options = c.JS_DupValue(engine.context, options), .conversation = conversation };
     _ = c.JS_SetOpaque(result, self);
     return result;
+}
+fn closed(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int) callconv(.c) c.JSValue {
+    const engine = Engine.fromContext(context.?);
+    const self = state(engine, receiver) catch |err| return durable.reject(engine, err);
+    const native = durable.state(engine, self.session) catch |err| return durable.reject(engine, err);
+    return c.JS_DupValue(context, native.closed_promise orelse return durable.reject(engine, error.SessionClosedPromiseUnavailable));
+}
+test "native durable VM Harness closed getter returns the actual Session promise on every read" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    var stage: []const u8 = "install";
+    errdefer |err| std.debug.print("Harness.closed identity at {s}: {s}: {s}\n", .{ stage, @errorName(err), engine.last_error orelse "no VM diagnostic" });
+    engine.native_io = std.testing.io;
+    try durable.install(engine);
+    const memory = try durable.memoryObject(engine);
+    defer engine.freeValue(memory);
+    const session = try durable.sessionObject(engine, memory);
+    defer engine.freeValue(session);
+    const options = try sdk.object(engine);
+    defer engine.freeValue(options);
+    const harness = try object(engine, session, options, null);
+    defer engine.freeValue(harness);
+    stage = "read original and Harness promise";
+    const original = try sdk.get(engine, session, "closed");
+    defer engine.freeValue(original);
+    const first = try sdk.get(engine, harness, "closed");
+    defer engine.freeValue(first);
+    const second = try sdk.get(engine, harness, "closed");
+    defer engine.freeValue(second);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, first));
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, second));
+    // Session.close takes a Context. An absent Context rejects in
+    // awaitWithContext before this identity test can observe the close.
+    const context = try @import("native_durable_context.zig").withoutAbortSignal(engine, c.pi_js_undefined());
+    defer engine.freeValue(context);
+    stage = "admit close with Context";
+    const closing = try sdk.invoke(engine, session, "close", &.{context});
+    defer engine.freeValue(closing);
+    stage = "await close";
+    const done = try engine.awaitValue(closing);
+    engine.freeValue(done);
+    stage = "read Harness promise after close";
+    const after = try sdk.get(engine, harness, "closed");
+    defer engine.freeValue(after);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, after));
 }
 fn method(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
     const engine = Engine.fromContext(context.?);
@@ -159,15 +210,8 @@ fn dispatch(engine: *Engine, receiver: c.JSValue, operation: Method, args: []con
     }
     if (operation == .abortTask) {
         const owner = try tasks.getManager(engine, self.session);
-        try durable.checkCancellation(engine, argument(args, 1));
         const id = try durable.number(engine, argument(args, 0));
-        var record = (try owner.lease.value.storage.readTableRecord(engine.gpa, .task, id)) orelse return error.UnknownTask;
-        defer record.deinit();
-        const terminal = std.mem.eql(u8, try json.asString(try json.required(try json.required(record.value, "state"), "status")), "terminal");
-        try owner.scheduler.abort(id);
-        const result = try sdk.text(engine, if (terminal) "terminal" else "marked");
-        defer engine.freeValue(result);
-        return sdk.promise(engine, result);
+        return @import("native_durable_task_abort.zig").abortTask(owner, id, argument(args, 1));
     }
     if (operation == .subscribeCommits or operation == .subscribeClose) return sdk.invoke(engine, self.session, if (operation == .subscribeCommits) "subscribeCommits" else "subscribeClose", args);
     if (operation == .commit or operation == .close) return durable.sessionDispatchScoped(session, self.session, if (operation == .commit) .commit else .close, args, self.conversation);

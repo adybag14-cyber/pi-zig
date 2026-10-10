@@ -47,6 +47,8 @@ const Invocation = struct {
     definition: *DefinitionNode,
     mode: Mode,
     active: std.atomic.Value(bool) = .init(true),
+    finished: std.atomic.Value(bool) = .init(false),
+    owner_dispatches: std.atomic.Value(usize) = .init(0),
     canceled: std.atomic.Value(bool) = .init(false),
     suspended_waits: std.atomic.Value(usize) = .init(0),
     refs: std.atomic.Value(usize) = .init(1),
@@ -90,6 +92,15 @@ pub const Runtime = struct {
     pub fn isActive(self: Runtime) bool {
         return self.invocation.active.load(.acquire);
     }
+    pub fn isFinished(self: Runtime) bool {
+        return self.invocation.finished.load(.acquire) and self.invocation.owner_dispatches.load(.acquire) == 0;
+    }
+    pub fn beginOwnerDispatch(self: Runtime) void {
+        _ = self.invocation.owner_dispatches.fetchAdd(1, .acq_rel);
+    }
+    pub fn endOwnerDispatch(self: Runtime) void {
+        std.debug.assert(self.invocation.owner_dispatches.fetchSub(1, .acq_rel) > 0);
+    }
     pub fn suspendWait(self: Runtime) void {
         _ = self.invocation.suspended_waits.fetchAdd(1, .acq_rel);
     }
@@ -121,6 +132,15 @@ pub const Runtime = struct {
         var call: RuntimeCommit = .{ .runtime = self, .change = change, .userdata = userdata };
         var result = try self.invocation.scheduler.session.commit(RuntimeCommit.apply, &call, .{ .conversationId = self.invocation.conversation_id, .taskId = self.taskId() }, .{});
         result.deinit();
+    }
+    /// A VM owner must not wait for a worker which may await VM Storage.
+    /// A busy line invokes no change callback and is retried by its owner pump.
+    pub fn tryCommit(self: Runtime, change: Change, userdata: ?*anyopaque) !bool {
+        if (!self.invocation.active.load(.acquire)) return error.InvocationEnded;
+        var call: RuntimeCommit = .{ .runtime = self, .change = change, .userdata = userdata };
+        var result = (try self.invocation.scheduler.session.tryCommit(RuntimeCommit.apply, &call, .{ .conversationId = self.invocation.conversation_id, .taskId = self.taskId() }, .{})) orelse return false;
+        result.deinit();
+        return true;
     }
     /// Return null to commit only transaction side effects; return a running/waiting/terminal state to transition.
     pub const Change = *const fn (?*anyopaque, *Transaction, Value) anyerror!?Value;
@@ -478,6 +498,34 @@ pub const Scheduler = struct {
         result.deinit();
         try self.reconcile();
     }
+    pub const TaskAbortMark = struct {
+        terminal: bool,
+        run: ?Runtime = null,
+        pub fn deinit(self: *TaskAbortMark) void {
+            if (self.run) |runtime| runtime.release();
+            self.run = null;
+        }
+    };
+    /// Caller already owns the Session line. Only the observed run is retained;
+    /// joining it belongs outside the line so its final step can still commit.
+    pub fn abortTaskOnLine(self: *Scheduler, tx: *Transaction, id: u64, keep_restart: bool) !TaskAbortMark {
+        const record = (try tx.currentRecord(id, .task)) orelse return error.UnknownTask;
+        if (try model.status(record) == .terminal) return .{ .terminal = true };
+        if (keep_restart) if (json.get(record, "abortReason")) |reason| {
+            if (reason == .string and std.mem.eql(u8, reason.string, "restart")) return .{ .terminal = false };
+        };
+        var mark: TaskAbortMark = .{ .terminal = false };
+        errdefer mark.deinit();
+        self.mutex.lockUncancelable(self.io);
+        for (self.invocations.items) |invocation| if (invocation.task_id == id and invocation.mode == .run and invocation.active.load(.acquire)) {
+            mark.run = (Runtime{ .invocation = invocation }).retain();
+            break;
+        };
+        self.mutex.unlock(self.io);
+        var call: AbortCall = .{ .scheduler = self, .id = id, .keep_restart = keep_restart, .record = record };
+        _ = try AbortCall.apply(&call, tx, .{});
+        return mark;
+    }
     /// Validate direct task ownership on the mutation line. A nested caller's
     /// cleanup preserves a restart mark and then waits for actual settlement.
     pub fn abortOwned(self: *Scheduler, owner_id: u64, id: u64) !bool {
@@ -507,9 +555,10 @@ pub const Scheduler = struct {
         scheduler: *Scheduler,
         id: u64,
         keep_restart: bool = false,
+        record: ?Value = null,
         fn apply(raw: ?*anyopaque, tx: *Transaction, _: types.Context) !Value {
             const self: *@This() = @ptrCast(@alignCast(raw.?));
-            var record = (try tx.currentRecord(self.id, .task)) orelse return error.UnknownTask;
+            var record = self.record orelse (try tx.currentRecord(self.id, .task)) orelse return error.UnknownTask;
             if (try model.status(record) == .terminal) return .null;
             if (self.keep_restart) if (json.get(record, "abortReason")) |reason| {
                 if (reason == .string and std.mem.eql(u8, reason.string, "restart")) return .null;
@@ -588,7 +637,10 @@ pub const Scheduler = struct {
         try threads.ensureTotalCapacity(self.gpa, self.options.max_workers);
         try self.reports.ensureUnusedCapacity(self.gpa, self.options.max_workers);
         var result = self.session.commit(Batch.reserve, &batch, .{}, .{}) catch |err| {
-            for (batch.list.items) |invocation| invocation.end();
+            for (batch.list.items) |invocation| {
+                invocation.end();
+                invocation.finished.store(true, .release);
+            }
             return err;
         };
         result.deinit();
@@ -601,6 +653,7 @@ pub const Scheduler = struct {
             const thread = std.Thread.spawn(.{}, worker, .{invocation}) catch |err| {
                 // A durable reservation survives failed OS admission and is recovered at reopen.
                 invocation.end();
+                invocation.finished.store(true, .release);
                 invocation.cause = err;
                 continue;
             };
@@ -673,7 +726,10 @@ pub const Scheduler = struct {
                 try batch.list.ensureTotalCapacity(self.gpa, batch.limit);
                 try workers.ensureUnusedCapacity(self.gpa, batch.limit);
                 var result = self.session.commit(Batch.reserve, &batch, .{}, .{}) catch |err| {
-                    for (batch.list.items) |invocation| invocation.end();
+                    for (batch.list.items) |invocation| {
+                        invocation.end();
+                        invocation.finished.store(true, .release);
+                    }
                     return err;
                 };
                 const published = result.seq != null;
@@ -685,6 +741,7 @@ pub const Scheduler = struct {
                 for (batch.list.items) |invocation| {
                     const thread = std.Thread.spawn(.{}, worker, .{invocation}) catch |err| {
                         invocation.end();
+                        invocation.finished.store(true, .release);
                         invocation.cause = err;
                         try failed.put(self.gpa, invocation.task_id, {});
                         try self.reports.append(self.gpa, .{ .task_id = invocation.task_id, .cause = err });
@@ -801,6 +858,7 @@ pub const Scheduler = struct {
         }
     };
     fn worker(invocation: *Invocation) void {
+        defer invocation.finished.store(true, .release);
         invocation.scheduler.execute(invocation) catch |err| {
             invocation.cause = err;
         };

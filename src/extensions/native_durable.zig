@@ -698,7 +698,7 @@ pub fn captureStorageFailure(self: *State, receiver: c.JSValue, reason: c.JSValu
     const observed = sdk.invoke(engine, closing, "then", &.{ ignored, ignored }) catch return;
     engine.freeValue(observed);
 }
-fn assertVMHealthy(self: *State) !void {
+pub fn assertVMHealthy(self: *State) !void {
     if (self.failure_reason) |reason| {
         const value = try @import("native_durable_errors.zig").sessionFailed(self.engine, reason);
         _ = try self.engine.checked(c.JS_Throw(self.engine.context, value));
