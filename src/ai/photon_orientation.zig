@@ -2,7 +2,7 @@
 const std = @import("std");
 const photon = @import("photon_native.zig");
 
-pub fn apply(gpa: std.mem.Allocator, image: *photon.Image, orientation: u8) !void {
+pub fn apply(gpa: std.mem.Allocator, image: anytype, orientation: u8) !void {
     const w: usize = image.dimensions.width;
     const h: usize = image.dimensions.height;
     const count = std.math.mul(usize, w, h) catch return error.InvalidImageDimensions;

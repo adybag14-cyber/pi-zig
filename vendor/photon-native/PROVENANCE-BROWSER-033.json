@@ -1,0 +1,52 @@
+{
+  "artifact": "@silvia-odwyer/photon@0.3.3",
+  "registry": {
+    "shasum": "7d0291e5995daa1a2b4da1085dbfaac0e9b24c7d",
+    "tarball": "https://registry.npmjs.org/@silvia-odwyer/photon/-/photon-0.3.3.tgz",
+    "fileCount": 6,
+    "integrity": "sha512-8BhUjEch4slwRe8uXnaA4vcA5uiiOTT90UMsxulOj2gN98X1p0q9Z4Ysk4DkD05uNgbR9XoSqtZ37w+33w4QKQ==",
+    "signatures": [
+      {
+        "sig": "MEQCIBNBV5R+Z7XnadVCjJKp3PWoDa5ThOSCQmjPJXvAsXkqAiAkS59sR2cENYf74nDl3YwG2Q8EobDj7EcZ3HBM5hwvRg==",
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+      }
+    ],
+    "unpackedSize": 2154499
+  },
+  "gitHead": "685f5b155b36c5611c08ca678bb78ddbab3edbac",
+  "wasmSHA256": "06e9f6b245d53b488244e04dfe30e6731c029526101c6400e6490057fcfbdd04",
+  "wasmBytes": 1880773,
+  "licenseSHA256": "c984c291167af70cc5fb7c7f4cec9b4560565110b766a718b3e12aba650327a7",
+  "sameLicenseAsNode034": true,
+  "embeddedCrateVersions": [
+    "ab_glyph_rasterizer-0.1.5",
+    "base64-0.13.0",
+    "color_quant-1.1.0",
+    "console_error_panic_hook-0.1.7",
+    "dlmalloc-0.2.7",
+    "fdeflate-0.3.6",
+    "flate2-1.0.34",
+    "gif-0.13.1",
+    "hashbrown-0.15.2",
+    "image-0.24.9",
+    "imageproc-0.23.0",
+    "jpeg-decoder-0.3.1",
+    "js-sys-0.3.62",
+    "miniz_oxide-0.8.0",
+    "palette-0.6.1",
+    "png-0.17.14",
+    "rand-0.7.3",
+    "rand_chacha-0.2.2",
+    "rusttype-0.9.2",
+    "tiff-0.9.1",
+    "ttf-parser-0.6.2",
+    "wasm-bindgen-0.2.95",
+    "weezl-0.1.8"
+  ],
+  "producers": [
+    "\u0002\blanguage\u0001\u0004Rust\u0000\fprocessed-by\u0003\u0005rustc%1.86.0-nightly (3f43b1a63 2025-01-03)\u0006walrus\u00060.22.0\fwasm-bindgen\u00120.2.95 (3a8da7cb8)"
+  ],
+  "embeddedRobotoExactMatchOffset": 1402424,
+  "embeddedRobotoSHA256": "79e851404657dac2106b3d22ad256d47824a9a5765458edb72c9102a45816d95",
+  "completeDependencyClosureKnown": false
+}
