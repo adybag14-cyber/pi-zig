@@ -1,0 +1,922 @@
+{
+  "source": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "rows": [
+    {
+      "scenario": "noop",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [],
+      "held": []
+    },
+    {
+      "scenario": "documents",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "inbox_update",
+          "items": [
+            {
+              "id": 9,
+              "mode": "steer"
+            }
+          ]
+        },
+        {
+          "type": "agent_changed",
+          "agent": {
+            "model": {
+              "id": "m"
+            }
+          }
+        },
+        {
+          "type": "usage_changed",
+          "usage": {
+            "models": {
+              "m": 1
+            },
+            "tools": {}
+          }
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "retired-documents",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "inbox_update",
+          "items": []
+        },
+        {
+          "type": "agent_changed",
+          "agent": {}
+        },
+        {
+          "type": "usage_changed",
+          "usage": {
+            "models": {},
+            "tools": {}
+          }
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "entries",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "message_start",
+          "message": {
+            "role": "user",
+            "content": "hello"
+          }
+        },
+        {
+          "type": "message_end",
+          "entry": {
+            "id": 10,
+            "conversationId": 1,
+            "kind": "fixture",
+            "model": [
+              {
+                "role": "user",
+                "content": "hello"
+              }
+            ]
+          }
+        },
+        {
+          "type": "entry_appended",
+          "entry": {
+            "id": 11,
+            "conversationId": 1,
+            "kind": "fixture"
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "usage": {
+              "input": 1
+            }
+          }
+        },
+        {
+          "type": "message_end",
+          "entry": {
+            "id": 12,
+            "conversationId": 1,
+            "kind": "fixture",
+            "model": [
+              {
+                "role": "assistant",
+                "content": [],
+                "usage": {
+                  "input": 1
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "streamed-answer",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "generation": {
+          "attempt": 1,
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial"
+              }
+            ],
+            "usage": {
+              "input": 1
+            }
+          }
+        },
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "message_end",
+          "entry": {
+            "id": 10,
+            "conversationId": 1,
+            "kind": "fixture",
+            "model": [
+              {
+                "role": "assistant",
+                "content": [],
+                "usage": {
+                  "input": 1
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [],
+            "usage": {
+              "input": 1
+            }
+          }
+        },
+        {
+          "type": "message_end",
+          "entry": {
+            "id": 11,
+            "conversationId": 1,
+            "kind": "fixture",
+            "model": [
+              {
+                "role": "assistant",
+                "content": [],
+                "usage": {
+                  "input": 1
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "tool-start",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "tool_execution_start",
+          "toolCallId": "call",
+          "toolName": "tool",
+          "taskId": 5,
+          "args": {
+            "path": "file"
+          }
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "tool-progress",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [
+          {
+            "callId": "call",
+            "name": "tool",
+            "taskId": 5,
+            "status": "running",
+            "output": "one"
+          }
+        ],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "tool_execution_update",
+          "toolCallId": "call",
+          "toolName": "tool",
+          "taskId": 5,
+          "output": {
+            "append": "two"
+          }
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "tool-done",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [
+          {
+            "callId": "call",
+            "name": "tool",
+            "taskId": 5,
+            "status": "running"
+          }
+        ],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "tool_execution_end",
+          "toolCallId": "call",
+          "toolName": "tool",
+          "taskId": 5,
+          "entry": {
+            "id": 10,
+            "conversationId": 1,
+            "kind": "fixture",
+            "model": [
+              {
+                "role": "toolResult",
+                "toolCallId": "call",
+                "content": []
+              }
+            ]
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "toolResult",
+            "toolCallId": "call",
+            "content": []
+          }
+        },
+        {
+          "type": "message_end",
+          "entry": {
+            "id": 10,
+            "conversationId": 1,
+            "kind": "fixture",
+            "model": [
+              {
+                "role": "toolResult",
+                "toolCallId": "call",
+                "content": []
+              }
+            ]
+          }
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "tool-missing-result",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [
+          {
+            "callId": "call",
+            "name": "tool",
+            "taskId": 5,
+            "status": "running"
+          }
+        ],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "tool_execution_end",
+          "toolCallId": "call",
+          "toolName": "tool",
+          "taskId": 5
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "tool-created-done",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "tool_execution_end",
+          "toolCallId": "call",
+          "toolName": "tool",
+          "taskId": 5,
+          "entry": {
+            "id": 10,
+            "conversationId": 1,
+            "kind": "fixture",
+            "model": [
+              {
+                "role": "toolResult",
+                "toolCallId": "call",
+                "content": []
+              }
+            ]
+          }
+        },
+        {
+          "type": "message_start",
+          "message": {
+            "role": "toolResult",
+            "toolCallId": "call",
+            "content": []
+          }
+        },
+        {
+          "type": "message_end",
+          "entry": {
+            "id": 10,
+            "conversationId": 1,
+            "kind": "fixture",
+            "model": [
+              {
+                "role": "toolResult",
+                "toolCallId": "call",
+                "content": []
+              }
+            ]
+          }
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "nested-end",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [
+          {
+            "callId": "call/a",
+            "name": "tool",
+            "taskId": 5,
+            "status": "running",
+            "parentCallId": "call",
+            "parentTaskId": 4
+          },
+          {
+            "callId": "call/a/b",
+            "name": "tool",
+            "taskId": 6,
+            "status": "running",
+            "parentCallId": "call/a",
+            "parentTaskId": 5
+          }
+        ],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "tool_execution_end",
+          "toolCallId": "call/a/b",
+          "toolName": "tool",
+          "taskId": 6,
+          "parentToolCallId": "call/a",
+          "parentTaskId": 5,
+          "result": {
+            "text": "result6"
+          }
+        },
+        {
+          "type": "tool_execution_end",
+          "toolCallId": "call/a",
+          "toolName": "tool",
+          "taskId": 5,
+          "parentToolCallId": "call",
+          "parentTaskId": 4,
+          "result": {
+            "text": "result5"
+          }
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "nested-start",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "tool_execution_start",
+          "toolCallId": "call/a",
+          "toolName": "tool",
+          "taskId": 5,
+          "parentToolCallId": "call",
+          "parentTaskId": 4,
+          "args": {
+            "nested": true
+          }
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "retry-start",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "auto_retry_start",
+          "attempt": 2,
+          "at": 40,
+          "errorMessage": "retry"
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "retry-end",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "generation": {
+          "attempt": 2,
+          "retry": {
+            "at": 40,
+            "error": "retry"
+          }
+        },
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "message_start",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "partial"
+              }
+            ],
+            "usage": {
+              "input": 1
+            }
+          }
+        },
+        {
+          "type": "auto_retry_end",
+          "attempt": 2
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "deferred",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "deferred_poll",
+          "pollAt": 30
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "compactions",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [
+          {
+            "taskId": 11,
+            "reason": "threshold",
+            "blocking": true
+          }
+        ],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "compaction_end",
+          "taskId": 11,
+          "reason": "threshold"
+        },
+        {
+          "type": "compaction_start",
+          "taskId": 12,
+          "reason": "manual",
+          "blocking": false
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "run-start",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "run_start",
+          "inputs": [
+            8,
+            9
+          ]
+        },
+        {
+          "type": "turn_start"
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "run-end",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "run": {
+          "inputs": [
+            8
+          ]
+        },
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "turn_end"
+        },
+        {
+          "type": "run_end",
+          "inputs": [
+            8
+          ]
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "run-successor",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "run": {
+          "inputs": [
+            8
+          ]
+        },
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "turn_end"
+        },
+        {
+          "type": "turn_start"
+        }
+      ],
+      "held": [
+        20
+      ]
+    },
+    {
+      "scenario": "held-completion",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "turn_end"
+        }
+      ],
+      "held": [
+        20
+      ]
+    },
+    {
+      "scenario": "held-terminal",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [],
+      "held": []
+    },
+    {
+      "scenario": "task-failures",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "task_failed",
+          "taskId": 20,
+          "kind": "pi.generation",
+          "message": "failure"
+        },
+        {
+          "type": "task_failed",
+          "taskId": 21,
+          "kind": "pi.tool",
+          "message": "missing owner"
+        },
+        {
+          "type": "turn_end"
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "submissions",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "submission",
+          "record": {
+            "id": 8,
+            "conversationId": 1,
+            "status": "completed"
+          }
+        },
+        {
+          "type": "submission",
+          "record": {
+            "id": 10,
+            "conversationId": 1,
+            "status": "queued"
+          }
+        }
+      ],
+      "held": []
+    },
+    {
+      "scenario": "duplicate-task",
+      "snapshot": {
+        "type": "snapshot",
+        "entries": [],
+        "tools": [],
+        "nestedTools": [],
+        "compactions": [],
+        "inbox": [],
+        "agent": {},
+        "usage": {
+          "models": {},
+          "tools": {}
+        }
+      },
+      "events": [
+        {
+          "type": "turn_end"
+        }
+      ],
+      "held": []
+    }
+  ]
+}

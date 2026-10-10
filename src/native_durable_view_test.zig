@@ -329,6 +329,62 @@ test "native durable view progress event allocation failures unwind without leak
     }
 }
 
+fn exerciseEventBatches(gpa: std.mem.Allocator) !void {
+    const engine = try engine_mod.Engine.init(gpa, .{});
+    defer engine.deinit();
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    const generation = engine.native_allocation_generation;
+    return exerciseEventBatchesWithEngine(engine) catch |err| engine.nativeAllocationError(err, generation);
+}
+fn exerciseEventBatchesWithEngine(engine: *engine_mod.Engine) !void {
+    const translate = @import("extensions/native_durable_event_translate.zig");
+    const js = @import("extensions/native_js_values.zig");
+    var scope: @import("extensions/native_durable_view_mount.zig").Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const bytes = @embedFile("extensions/fixtures/durable-events-batches-original.json");
+    const source = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, bytes.ptr, bytes.len, "actual-event-batches")));
+    const make = try scope.own(try engine.eval(@embedFile("extensions/fixtures/durable-events-batches-runtime.txt"), "actual-event-batch-fixture", c.JS_EVAL_TYPE_GLOBAL));
+    const rows = try scope.get(source, "rows");
+    for (0..try vm.length(engine, rows)) |index| {
+        const row = try scope.item(rows, index);
+        const scenario = try scope.get(row, "scenario");
+        const fixture = try scope.own(try js.call(engine, make, c.pi_js_undefined(), &.{scenario}));
+        const before = try scope.get(fixture, "before");
+        const after = try scope.get(fixture, "after");
+        const held = try scope.get(fixture, "held");
+        const events = try scope.own(try translate.translate(engine, c.JS_NewInt32(engine.context, 1), before, after, try scope.get(fixture, "ops"), try scope.get(fixture, "publication"), held));
+        const snapshot = try scope.own(try translate.snapshotOf(engine, before));
+        const held_values = try scope.invoke(try scope.own(try js.global(engine, "Array")), "from", &.{held});
+        const actual = try scope.own(try vm.object(engine));
+        inline for (.{ .{ "scenario", scenario }, .{ "snapshot", snapshot }, .{ "events", events }, .{ "held", held_values } }) |field| try @import("extensions/native_tool_info.zig").putData(engine, actual, field[0], c.JS_DupValue(engine.context, field[1]));
+        const actual_text = try engine.stringify(actual);
+        defer engine.gpa.free(actual_text);
+        const expected_text = try engine.stringify(row);
+        defer engine.gpa.free(expected_text);
+        var result = try json.Owned.parse(engine.gpa, actual_text);
+        defer result.deinit();
+        var expected = try json.Owned.parse(engine.gpa, expected_text);
+        defer expected.deinit();
+        if (!json.equal(expected.value, result.value)) std.debug.print("Event batch row {d}: {s}\nExpected: {s}\n", .{ index, actual_text, expected_text });
+        try std.testing.expect(json.equal(expected.value, result.value));
+    }
+}
+test "native durable view agent event batches match actual Source ordering and held turns" {
+    try exerciseEventBatches(std.testing.allocator);
+}
+test "native durable view agent event batch allocation failures unwind" {
+    var baseline = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    try exerciseEventBatches(baseline.allocator());
+    for (0..baseline.alloc_index) |index| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{ .fail_index = index });
+        exerciseEventBatches(failing.allocator()) catch |err| {
+            if (!failing.has_induced_failure) return err;
+        };
+        try std.testing.expectEqual(failing.allocated_bytes, failing.freed_bytes);
+    }
+}
+
 fn exerciseProjectionAcquisition(gpa: std.mem.Allocator) !void {
     const engine = try engine_mod.Engine.init(gpa, .{});
     defer engine.deinit();

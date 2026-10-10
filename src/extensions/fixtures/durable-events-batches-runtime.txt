@@ -1,0 +1,32 @@
+const make=scenario=>{
+ const usage={models:{},tools:{}},agent={},inbox={items:[]},live={},before={conversation:{id:1},entries:[],docs:{'pi.live':live,'pi.agent':agent,'pi.inbox':inbox,'pi.usage':usage}},held=new Set(),ops=[],changes=[];
+ let nextLive={...live},docs={...before.docs,'pi.live':nextLive};const after={...before,docs};
+ const task=(id,kind,state)=>({type:'task',value:{id,kind,conversationId:1,state}}),entry=(id,model)=>({type:'entry',value:{id,conversationId:1,kind:'fixture',...(model===undefined?{}:{model})}}),slot={callId:'call',name:'tool',taskId:5,status:'running'},partial={role:'assistant',content:[{type:'text',text:'partial'}],usage:{input:1}};
+ const op=()=>ops.push(['s',['docs','pi.live'],nextLive]);
+ if(scenario==='noop')after.docs=before.docs;
+ if(scenario==='documents'){after.docs={'pi.live':live,'pi.agent':{model:{id:'m'}},'pi.inbox':{items:[{id:9,mode:'steer',hidden:1}]},'pi.usage':{models:{m:1},tools:{}}};ops.push(['s',['docs'],after.docs])}
+ if(scenario==='retired-documents'){after.docs={};ops.push(['s',['docs'],{}])}
+ if(scenario==='entries'){changes.push(entry(10,[{role:'user',content:'hello'}]),entry(11),entry(12,[{role:'assistant',content:[],usage:{input:1}}]))}
+ if(scenario==='streamed-answer'){live.generation={attempt:1,message:partial};changes.push(entry(10,[{role:'assistant',content:[],usage:{input:1}}]),entry(11,[{role:'assistant',content:[],usage:{input:1}}]));delete nextLive.generation;op()}
+ if(scenario==='tool-start'){nextLive.tools=[slot];changes.push(task(5,'pi.tool',{status:'running',checkpoint:{arguments:{path:'file'}}}));op()}
+ if(scenario==='tool-progress'){live.tools=[{...slot,output:'one'}];nextLive.tools=[{...slot,output:'onetwo'}];ops.push(['a',['docs','pi.live','tools',0,'output'],'two'])}
+ if(scenario==='tool-done'){live.tools=[slot];nextLive.tools=[{...slot,status:'done',entry:10}];changes.push(entry(10,[{role:'toolResult',toolCallId:'call',content:[]} ]));op()}
+ if(scenario==='tool-missing-result'){live.tools=[slot];nextLive.tools=[];op()}
+ if(scenario==='tool-created-done'){nextLive.tools=[{...slot,status:'done',entry:10}];changes.push(entry(10,[{role:'toolResult',toolCallId:'call',content:[]} ]));op()}
+ if(scenario==='nested-end'){live.nestedTools=[{...slot,callId:'call/a',parentCallId:'call',parentTaskId:4,taskId:5},{...slot,callId:'call/a/b',parentCallId:'call/a',parentTaskId:5,taskId:6}];nextLive.nestedTools=[];for(const id of[5,6])changes.push({type:'document',conversationId:1,record:{kind:'pi.tool.nested-result',key:String(id)},value:{result:{text:'result'+id}}});op()}
+ if(scenario==='nested-start'){nextLive.nestedTools=[{...slot,callId:'call/a',parentCallId:'call',parentTaskId:4,arguments:{nested:true}}];op()}
+ if(scenario==='retry-start'){nextLive.generation={attempt:2,retry:{at:40,error:'retry'}};op()}
+ if(scenario==='retry-end'){live.generation={attempt:2,retry:{at:40,error:'retry'}};nextLive.generation={attempt:3,message:partial};op()}
+ if(scenario==='deferred'){nextLive.generation={attempt:1,deferred:{pollAt:30}};op()}
+ if(scenario==='compactions'){live.compactions=[{taskId:11,reason:'threshold',blocking:true}];nextLive.compactions=[{taskId:12,reason:'manual',blocking:false}];op()}
+ if(scenario==='run-start'){nextLive.run={inputs:[8,9],taskId:20};changes.push(task(20,'pi.generation',{status:'pending',checkpoint:{phase:'request'}}));op()}
+ if(scenario==='run-end'){live.run={inputs:[8],taskId:20};delete nextLive.run;changes.push(task(20,'pi.generation',{status:'terminal',outcome:{status:'completed'}}));op()}
+ if(scenario==='run-successor'){live.run={inputs:[8],taskId:20};nextLive.run={inputs:live.run.inputs,taskId:21};changes.push(task(20,'pi.generation',{status:'completing',outcome:{status:'completed'}}),task(21,'pi.generation',{status:'pending',checkpoint:{phase:'request'}}));op()}
+ if(scenario==='held-completion'){changes.push(task(20,'pi.generation',{status:'completing',outcome:{status:'completed'}}))}
+ if(scenario==='held-terminal'){held.add(20);changes.push(task(20,'pi.generation',{status:'terminal',outcome:{status:'completed'}}))}
+ if(scenario==='task-failures'){changes.push(task(20,'pi.generation',{status:'terminal',outcome:{status:'faulted',error:{message:'failure'}}}),task(21,'pi.tool',{status:'terminal',outcome:{status:'orphaned',reason:'missing owner'}}))}
+ if(scenario==='submissions'){changes.push({type:'submission',value:{id:10,conversationId:1,status:'queued'}},{type:'submission',value:{id:8,conversationId:1,status:'completed'}},{type:'submission',value:{id:1,conversationId:2,status:'queued'}})}
+ if(scenario==='duplicate-task'){changes.push(task(20,'pi.generation',{status:'completing',outcome:{status:'completed'}}),task(20,'pi.generation',{status:'terminal',outcome:{status:'completed'}}))}
+ return{scenario,before,after,ops,publication:{changes},held};
+};
+make
