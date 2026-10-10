@@ -13,6 +13,14 @@ pub fn build(b: *std.Build) void {
     // optional companions on constrained builders. Default remains Zig's
     // platform choice; callers may select `-Duse-llvm=false` explicitly.
     const use_llvm = b.option(bool, "use-llvm", "Use LLVM for executables and test artifacts");
+    const photon_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_photon_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
+        .use_llvm = use_llvm,
+    });
+    photon_tests.root_module.addIncludePath(b.path("vendor/photon-native"));
+    photon_tests.root_module.linkLibrary(@import("tools/build_photon.zig").library(b, target, optimize));
+    if (target.result.os.tag != .windows) photon_tests.root_module.linkSystemLibrary("m", .{});
+    b.step("test-native-photon", "Compare native C image algorithms and Zig resize ownership against actual upstream results").dependOn(&b.addRunArtifact(photon_tests).step);
     const sqlite_lib_dir = b.option([]const u8, "sqlite-lib-dir", "Directory containing a linkable sqlite3 library");
     const sqlite_library: ?*std.Build.Step.Compile = if (sqlite_lib_dir == null) blk: {
         const library = b.addLibrary(.{

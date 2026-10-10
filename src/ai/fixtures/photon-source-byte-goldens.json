@@ -1,0 +1,182 @@
+{
+  "source": "c5f5b3282d5e4203c085e59837ba17aeaf2829b5",
+  "locked_photon": "node0.3.4",
+  "wasmSha256": "10468181565c56004c867f3a4af96f89a0ef5a63a72f2b5fb12c1f1992a3615c",
+  "translation": "WABT1.0.42 wasm2c no-tail-call split16",
+  "count": 24,
+  "failures": 0,
+  "results": [
+    {
+      "file": "c034-1x1.png",
+      "sourceSha256": "56e435c72a77be209b31f8f14ae7f5a387d36d0dbc601181da684602d6dbbf8e",
+      "cSha256": "56e435c72a77be209b31f8f14ae7f5a387d36d0dbc601181da684602d6dbbf8e",
+      "equal": true,
+      "bytes": 73
+    },
+    {
+      "file": "c034-1x1-decoded.rgba",
+      "sourceSha256": "36ad759ab800d333ccc8632e4af6134a7f69a6ac893333e35f6f4e07eab6cc2a",
+      "cSha256": "36ad759ab800d333ccc8632e4af6134a7f69a6ac893333e35f6f4e07eab6cc2a",
+      "equal": true,
+      "bytes": 4
+    },
+    {
+      "file": "c034-1x1-resized.rgba",
+      "sourceSha256": "36ad759ab800d333ccc8632e4af6134a7f69a6ac893333e35f6f4e07eab6cc2a",
+      "cSha256": "36ad759ab800d333ccc8632e4af6134a7f69a6ac893333e35f6f4e07eab6cc2a",
+      "equal": true,
+      "bytes": 4
+    },
+    {
+      "file": "c034-1x1-q80.jpg",
+      "sourceSha256": "0cd95d8c5eb0b46d9cd3031d09531b6d4632750606ae69f40f82d5f846869656",
+      "cSha256": "0cd95d8c5eb0b46d9cd3031d09531b6d4632750606ae69f40f82d5f846869656",
+      "equal": true,
+      "bytes": 630
+    },
+    {
+      "file": "c034-1x1-q85.jpg",
+      "sourceSha256": "7915469165495f900ec3f9f18e26e0a09c21370afdf3825910008efb1a472179",
+      "cSha256": "7915469165495f900ec3f9f18e26e0a09c21370afdf3825910008efb1a472179",
+      "equal": true,
+      "bytes": 631
+    },
+    {
+      "file": "c034-1x1-q70.jpg",
+      "sourceSha256": "70d97f24c6f5d6274a20a7302a2c8918a54b89657ebd50d3d4bed537f362cbd9",
+      "cSha256": "70d97f24c6f5d6274a20a7302a2c8918a54b89657ebd50d3d4bed537f362cbd9",
+      "equal": true,
+      "bytes": 630
+    },
+    {
+      "file": "c034-1x1-q55.jpg",
+      "sourceSha256": "7fba51a8e8a6f47da183522f93d3f5c5d5ea3c084d25d476ebd121fcb0a7dec3",
+      "cSha256": "7fba51a8e8a6f47da183522f93d3f5c5d5ea3c084d25d476ebd121fcb0a7dec3",
+      "equal": true,
+      "bytes": 630
+    },
+    {
+      "file": "c034-1x1-q40.jpg",
+      "sourceSha256": "5a4a5a184c816ca29f871f3ee7b81a8ab7afbd54a274add7d3137b853eb6db0c",
+      "cSha256": "5a4a5a184c816ca29f871f3ee7b81a8ab7afbd54a274add7d3137b853eb6db0c",
+      "equal": true,
+      "bytes": 629
+    },
+    {
+      "file": "c034-8x5.png",
+      "sourceSha256": "25687f3b640ce718c035ca22cec2c570af992c53b34a1f48f936b70fcc33fa56",
+      "cSha256": "25687f3b640ce718c035ca22cec2c570af992c53b34a1f48f936b70fcc33fa56",
+      "equal": true,
+      "bytes": 233
+    },
+    {
+      "file": "c034-8x5-decoded.rgba",
+      "sourceSha256": "2d698e2767f0355597df74f694aefd84a0c8f026a94d8a81332d7661483e0b4d",
+      "cSha256": "2d698e2767f0355597df74f694aefd84a0c8f026a94d8a81332d7661483e0b4d",
+      "equal": true,
+      "bytes": 160
+    },
+    {
+      "file": "c034-8x5-resized.rgba",
+      "sourceSha256": "ed6a8c43cc4549fe757d80b30714d7d04aae9124e55fbb0a021f32aab1987ab6",
+      "cSha256": "ed6a8c43cc4549fe757d80b30714d7d04aae9124e55fbb0a021f32aab1987ab6",
+      "equal": true,
+      "bytes": 72
+    },
+    {
+      "file": "c034-8x5-q80.jpg",
+      "sourceSha256": "a5ac09f5d8b80ba0d72fb0e632bce15374bd9563914e6257efd18add30a6f549",
+      "cSha256": "a5ac09f5d8b80ba0d72fb0e632bce15374bd9563914e6257efd18add30a6f549",
+      "equal": true,
+      "bytes": 710
+    },
+    {
+      "file": "c034-8x5-q85.jpg",
+      "sourceSha256": "d6355aea6f065a7365b291fa502ec8572d30cad3508e737d7adf3d51583186c0",
+      "cSha256": "d6355aea6f065a7365b291fa502ec8572d30cad3508e737d7adf3d51583186c0",
+      "equal": true,
+      "bytes": 721
+    },
+    {
+      "file": "c034-8x5-q70.jpg",
+      "sourceSha256": "6a13d41a28d7a7796099cd7d9b89b07fdd39d6c0ecc56db556242491842c3679",
+      "cSha256": "6a13d41a28d7a7796099cd7d9b89b07fdd39d6c0ecc56db556242491842c3679",
+      "equal": true,
+      "bytes": 693
+    },
+    {
+      "file": "c034-8x5-q55.jpg",
+      "sourceSha256": "694e459d9e081ce0dc957a59eb76d1fa98101359696cf0665d3955bf8c8ad637",
+      "cSha256": "694e459d9e081ce0dc957a59eb76d1fa98101359696cf0665d3955bf8c8ad637",
+      "equal": true,
+      "bytes": 680
+    },
+    {
+      "file": "c034-8x5-q40.jpg",
+      "sourceSha256": "138f1e7110c131e4e18ae34f971ebb07fe53ddedb0bcacba574756a3395daa56",
+      "cSha256": "138f1e7110c131e4e18ae34f971ebb07fe53ddedb0bcacba574756a3395daa56",
+      "equal": true,
+      "bytes": 669
+    },
+    {
+      "file": "c034-32x24.png",
+      "sourceSha256": "f1074b555cf26512b2963b5ba949714651568ca782a03070642402bfb4e2ae06",
+      "cSha256": "f1074b555cf26512b2963b5ba949714651568ca782a03070642402bfb4e2ae06",
+      "equal": true,
+      "bytes": 3164
+    },
+    {
+      "file": "c034-32x24-decoded.rgba",
+      "sourceSha256": "dbcf68f811a6e16ba369d2f111f996c6a8500890b7eb6263657dd36cd8460150",
+      "cSha256": "dbcf68f811a6e16ba369d2f111f996c6a8500890b7eb6263657dd36cd8460150",
+      "equal": true,
+      "bytes": 3072
+    },
+    {
+      "file": "c034-32x24-resized.rgba",
+      "sourceSha256": "e2d8669e4eada307c110a819f3b22c1f583dc0908b88cb1b42162b0581cb375e",
+      "cSha256": "e2d8669e4eada307c110a819f3b22c1f583dc0908b88cb1b42162b0581cb375e",
+      "equal": true,
+      "bytes": 1728
+    },
+    {
+      "file": "c034-32x24-q80.jpg",
+      "sourceSha256": "884013732813cc484ba98061388fdb588802fe3d44f4ab735aee3f387ea29db1",
+      "cSha256": "884013732813cc484ba98061388fdb588802fe3d44f4ab735aee3f387ea29db1",
+      "equal": true,
+      "bytes": 1437
+    },
+    {
+      "file": "c034-32x24-q85.jpg",
+      "sourceSha256": "5233bea7cfd84ac21cfed2770567360120e1fcbeed3b40a68731f24f505519a0",
+      "cSha256": "5233bea7cfd84ac21cfed2770567360120e1fcbeed3b40a68731f24f505519a0",
+      "equal": true,
+      "bytes": 1554
+    },
+    {
+      "file": "c034-32x24-q70.jpg",
+      "sourceSha256": "ec1e825bd584ea51ef34eb67ba226349ea95683404c154911be8f5e51bf7338e",
+      "cSha256": "ec1e825bd584ea51ef34eb67ba226349ea95683404c154911be8f5e51bf7338e",
+      "equal": true,
+      "bytes": 1277
+    },
+    {
+      "file": "c034-32x24-q55.jpg",
+      "sourceSha256": "9f5ffc5f43f7d1290fa9758be1ec25328de1d234b686353e1f5f7057509d6270",
+      "cSha256": "9f5ffc5f43f7d1290fa9758be1ec25328de1d234b686353e1f5f7057509d6270",
+      "equal": true,
+      "bytes": 1149
+    },
+    {
+      "file": "c034-32x24-q40.jpg",
+      "sourceSha256": "e98715fe325e9abe2831082f806c28aa07f00a17250ecda4cad2b0ccfe5b9d43",
+      "cSha256": "e98715fe325e9abe2831082f806c28aa07f00a17250ecda4cad2b0ccfe5b9d43",
+      "equal": true,
+      "bytes": 1060
+    }
+  ],
+  "scope": "External research only; no repository integration or complete codec parity claim",
+  "capture_upstream": "42a3497d03ad17e308a2299fa824727894f2c0ec",
+  "current_reference": "c5f5b3282d5e4203c085e59837ba17aeaf2829b5",
+  "capture_note": "Byte goldens were captured against42a; exact Photon0.3.4 artifact and relevant upstream source are unchanged atc5. Current resize/EXIF fixtures were captured directly atc5."
+}
